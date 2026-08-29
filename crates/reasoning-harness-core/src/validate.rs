@@ -1,14 +1,16 @@
 use std::collections::HashSet;
 
+use serde::Serialize;
+
 use crate::{EpistemicState, ReasoningArtifact};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Diagnostic {
     pub code: &'static str,
     pub message: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct ValidationReport {
     pub diagnostics: Vec<Diagnostic>,
 }
@@ -21,25 +23,54 @@ impl ValidationReport {
 
 pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
     let mut diagnostics = Vec::new();
-    let mut ids = HashSet::new();
+    let mut evidence_ids = HashSet::new();
+    let mut claim_ids = HashSet::new();
+    let mut inference_ids = HashSet::new();
 
     for evidence in &artifact.evidence {
-        if !ids.insert(format!("evidence:{}", evidence.id)) {
+        if evidence.id.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_evidence_id",
+                message: "evidence id must not be empty".into(),
+            });
+        }
+        if !evidence_ids.insert(evidence.id.as_str()) {
             diagnostics.push(Diagnostic {
                 code: "duplicate_evidence_id",
                 message: format!("duplicate evidence id: {}", evidence.id),
             });
         }
+        if evidence.source.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_evidence_source",
+                message: format!("evidence {} has an empty source", evidence.id),
+            });
+        }
+        if evidence.observation.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_evidence_observation",
+                message: format!("evidence {} has an empty observation", evidence.id),
+            });
+        }
     }
 
-    let evidence_ids: HashSet<&str> = artifact.evidence.iter().map(|e| e.id.as_str()).collect();
-    let claim_ids: HashSet<&str> = artifact.claims.iter().map(|c| c.id.as_str()).collect();
-
     for claim in &artifact.claims {
-        if !ids.insert(format!("claim:{}", claim.id)) {
+        if claim.id.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_claim_id",
+                message: "claim id must not be empty".into(),
+            });
+        }
+        if !claim_ids.insert(claim.id.as_str()) {
             diagnostics.push(Diagnostic {
                 code: "duplicate_claim_id",
                 message: format!("duplicate claim id: {}", claim.id),
+            });
+        }
+        if claim.statement.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_claim_statement",
+                message: format!("claim {} has an empty statement", claim.id),
             });
         }
 
@@ -71,6 +102,31 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
     }
 
     for inference in &artifact.inferences {
+        if inference.id.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_inference_id",
+                message: "inference id must not be empty".into(),
+            });
+        }
+        if !inference_ids.insert(inference.id.as_str()) {
+            diagnostics.push(Diagnostic {
+                code: "duplicate_inference_id",
+                message: format!("duplicate inference id: {}", inference.id),
+            });
+        }
+        if inference.method.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_inference_method",
+                message: format!("inference {} has an empty method", inference.id),
+            });
+        }
+        if inference.premise_claim_ids.is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "inference_without_premises",
+                message: format!("inference {} has no premises", inference.id),
+            });
+        }
+
         for premise in &inference.premise_claim_ids {
             if !claim_ids.contains(premise.as_str()) {
                 diagnostics.push(Diagnostic {
@@ -89,6 +145,22 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
                     "inference {} references missing conclusion {}",
                     inference.id, inference.conclusion_claim_id
                 ),
+            });
+        }
+    }
+
+    let inferred_conclusions: HashSet<&str> = artifact
+        .inferences
+        .iter()
+        .map(|inference| inference.conclusion_claim_id.as_str())
+        .collect();
+    for claim in &artifact.claims {
+        if claim.state == EpistemicState::Inferred
+            && !inferred_conclusions.contains(claim.id.as_str())
+        {
+            diagnostics.push(Diagnostic {
+                code: "inferred_claim_without_inference",
+                message: format!("claim {} is inferred but has no inference edge", claim.id),
             });
         }
     }

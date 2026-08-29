@@ -158,23 +158,16 @@ Consequences:
 Do not introduce a monorepo or multiple publishable packages before there is a concrete
 consumer need.
 
-Initial repository shape remains intentionally small:
+The repository is a small Cargo workspace with ownership boundaries that already exist in code:
 
 ```text
-src/                 native runtime, IR, validators, passes, adapters
-examples/            executable examples
-test/                deterministic regression tests
-docs/                architecture, ADRs, research notes
+crates/reasoning-harness-core/   runtime, IR, validators, passes, eval primitives
+crates/reasoning-harness-cli/    native `reason` executable
+examples/                        executable artifacts
+docs/                            architecture, ADRs, research notes
 ```
 
-Expected evolution, only when justified:
-
-```text
-src/cli/             CLI implementation
-src/eval/            eval runner modules
-apps/desktop/        deferred desktop application
-adapters/mcp/        deferred optional MCP adapter
-```
+Additional provider, oracle, desktop, or integration crates are added only when they have a real independent dependency or ownership boundary. The workspace must not grow merely to mirror conceptual modules.
 
 A future package split is allowed if independent versioning or external embedding makes
 it valuable. Package topology is not part of the correctness model.

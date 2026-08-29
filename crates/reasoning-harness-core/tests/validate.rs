@@ -58,3 +58,23 @@ fn rejects_references_to_missing_evidence() {
             .any(|diagnostic| diagnostic.code == "missing_evidence_reference")
     );
 }
+
+#[test]
+fn rejects_an_inferred_claim_without_an_inference_edge() {
+    let artifact = ReasoningArtifact {
+        claims: vec![Claim {
+            id: "c1".into(),
+            statement: "derived conclusion".into(),
+            state: EpistemicState::Inferred,
+            evidence_ids: vec![],
+        }],
+        ..Default::default()
+    };
+
+    assert!(
+        validate_artifact(&artifact)
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "inferred_claim_without_inference")
+    );
+}

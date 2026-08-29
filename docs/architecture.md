@@ -31,6 +31,8 @@ The model is never part of the trusted computing base. A model may propose facts
 5. Soft semantic judging must be separately identified from hard validation.
 6. A failed pass cannot silently continue with partially invalid state.
 7. Provider/model adapters stay replaceable and outside core semantics.
+8. Schema-valid model output is still only a candidate until validation and acceptance policy run.
+9. Live model quality and deterministic contract regression are separate execution modes.
 
 
 ## Interfaces
@@ -46,3 +48,9 @@ See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md).
 ## Implementation language boundary
 
 All first-party executable and library components are implemented in Rust. This includes the native runtime, CLI, evaluation tooling, model adapters, and any future desktop client or optional integration adapter. Model providers remain external services and are reached through Rust adapters. No JavaScript/TypeScript runtime is part of the correctness boundary.
+
+## Runtime decision boundary
+
+The runtime validates the input artifact before the first pass and after every pass. A policy then maps the valid artifact to `accept | reject | unknown`. The initial strict policy rejects explicit contradictions and preserves `assumed` or `unknown` claims as an `unknown` outcome. This policy is intentionally conservative and will evolve only with fixture evidence.
+
+See [prior art](prior-art.md) for external design patterns considered without adding runtime dependencies.

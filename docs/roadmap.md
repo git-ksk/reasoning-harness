@@ -6,9 +6,11 @@
 - provenance coverage gates
 - explicit unknown/assumption handling
 - fixture-based eval runner
-- native CLI for run / verify / explain / eval workflows
+- native CLI for run / verify / eval workflows; explain remains deferred until renderer semantics are defined
 - JSON output and CI-safe exit semantics
 - first provider adapter experiment
+- offline fixture regression separated from live provider benchmark runs
+- explicit hard-validator vs soft-judge metric classification
 
 ## v0.2 — adversarial reasoning passes
 - contradiction pass
@@ -17,7 +19,7 @@
 - semantic-loss checks
 
 ## v0.3 — framework plugins
-- evidence-aware 5 Whys
+- mature the existing evidence-aware 5 Whys prototype
 - first principles
 - Feynman/simplification renderer
 - framework plugin contract

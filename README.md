@@ -21,7 +21,7 @@ This repository exists to measure that question rather than assume the answer.
 - A first structured framework primitive for evidence-aware 5 Whys.
 - Basic eval metrics for evidence coverage and unsupported accepted claims.
 - Provider-neutral Rust `ModelAdapter`; model output is always outside the correctness boundary.
-- Native Rust CLI (`reason verify`, `reason eval`) sharing the exact same core validators.
+- Native Rust CLI (`reason run`, `reason verify`, `reason eval`) sharing the exact same core validators and acceptance policy.
 - Native runtime is the correctness owner; CLI and eval are the first supported interfaces.
 
 ## What this is not
@@ -43,8 +43,9 @@ Rust 1.88+ is the supported toolchain. The repository intentionally has no Node.
 cargo fmt --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
-cargo run -p reasoning-harness-cli -- verify examples/artifact.json
+cargo run -p reasoning-harness-cli -- run examples/artifact.json --format json
+cargo run -p reasoning-harness-cli -- verify examples/artifact.json --format json
 cargo run -p reasoning-harness-cli -- eval examples/artifact.json
 ```
 
-See [docs/research-plan.md](docs/research-plan.md), [docs/architecture.md](docs/architecture.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).
+See [docs/research-plan.md](docs/research-plan.md), [docs/architecture.md](docs/architecture.md), [docs/prior-art.md](docs/prior-art.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).
