@@ -10,7 +10,7 @@ use reasoning_harness_core::{
     evaluate_benchmark_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
     validate_artifact,
 };
-use reasoning_harness_providers::{GemmaAdapter, MistralAdapter};
+use reasoning_harness_providers::{GoogleAdapter, MistralAdapter};
 use serde::{Serialize, de::DeserializeOwned};
 
 #[derive(Debug, Parser)]
@@ -34,12 +34,14 @@ enum OutputFormat {
 #[derive(Debug, Clone, Copy, ValueEnum)]
 enum Provider {
     Mistral,
+    Google,
+    #[value(hide = true)]
     Gemma,
 }
 
 enum LiveGenerator {
     Mistral(MistralAdapter),
-    Gemma(GemmaAdapter),
+    Google(GoogleAdapter),
 }
 
 impl LiveGenerator {
@@ -48,8 +50,8 @@ impl LiveGenerator {
             Provider::Mistral => MistralAdapter::from_env(model)
                 .map(Self::Mistral)
                 .map_err(|error| error.to_string()),
-            Provider::Gemma => GemmaAdapter::from_env(model)
-                .map(Self::Gemma)
+            Provider::Google | Provider::Gemma => GoogleAdapter::from_env(model)
+                .map(Self::Google)
                 .map_err(|error| error.to_string()),
         }
     }
@@ -64,8 +66,8 @@ impl LiveGenerator {
             Self::Mistral(adapter) => {
                 generate_with_adapter(adapter, "mistral", input, max_tokens, seed).await
             }
-            Self::Gemma(adapter) => {
-                generate_with_adapter(adapter, "gemma", input, max_tokens, seed).await
+            Self::Google(adapter) => {
+                generate_with_adapter(adapter, "google", input, max_tokens, seed).await
             }
         }
     }

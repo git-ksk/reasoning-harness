@@ -19,7 +19,7 @@ A live model study uses the same fixture inputs but replaces `recorded_candidate
 
 ```bash
 reason eval fixtures --provider mistral --model ministral-8b-latest --trials 5
-reason eval fixtures --provider gemma --model gemma-4-26b-a4b-it --trials 5
+reason eval fixtures --provider google --model gemma-4-26b-a4b-it --trials 5
 ```
 
 Use `--seed` when a provider supports it. Trial N uses `base_seed + N`. Live runs are intentionally not part of the required CI gate because network availability, provider behavior, quota, and cost are external variables.
@@ -103,7 +103,7 @@ Live benchmark labels no longer bind to provider-generated claim IDs. Unsupporte
 
 `HarnessInput.hypotheses` now carries harness-owned propositions that formalize hypotheses explicitly posed by the task. Candidates cannot add or mutate these targets. The runtime materializes a missing hypothesis as an assumed claim so deterministic structured-fact verification and adversarial discovery do not depend on the provider choosing the same proposition key.
 
-The manual live workflow runs the same 20-case corpus against `ministral-3b-latest`, `ministral-8b-latest`, `ministral-14b-latest`, and `mistral-small-latest`. It also supports Gemma 4 through the Google Gemini Interactions API with `gemma-4-26b-a4b-it` and `gemma-4-31b-it` when `GEMINI_API_KEY` is configured. Every provider remains an untrusted candidate generator; provider output cannot grant verification authority or decide the final verdict. This matrix is diagnostic and is not a required CI gate.
+The manual live workflow runs the same 20-case corpus against `ministral-3b-latest`, `ministral-8b-latest`, `ministral-14b-latest`, and `mistral-small-latest`. It also supports Google-hosted models through the Gemini Interactions API when `GEMINI_API_KEY` is configured: `gemma-4-26b-a4b-it`, `gemma-4-31b-it`, `gemini-3.1-flash-lite`, and `gemini-3.5-flash-lite`. Antigravity managed agents are intentionally excluded because they are not equivalent candidate generators. Every provider remains an untrusted candidate generator; provider output cannot grant verification authority or decide the final verdict. This matrix is diagnostic and is not a required CI gate.
 
 ### First 20-case cross-model result
 

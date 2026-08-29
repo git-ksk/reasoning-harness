@@ -41,19 +41,20 @@ jobs:
             > "/tmp/reason-live-${MODEL}.json"
           jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational}' "/tmp/reason-live-${MODEL}.json"
 
-  gemma:
-    name: gemma-${{ matrix.model }}
+  google:
+    name: google-${{ matrix.model }}
     runs-on: ubuntu-latest
-    # 26B is currently returning provider-side 403 for this project while 31B is available.
-    # Keep probing it without making the diagnostic matrix unusable.
+    # Keep probing 26B without making the diagnostic matrix unusable while its latency is characterized.
     continue-on-error: ${{ matrix.model == 'gemma-4-26b-a4b-it' }}
-    timeout-minutes: 15
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
         model:
           - gemma-4-26b-a4b-it
           - gemma-4-31b-it
+          - gemini-3.1-flash-lite
+          - gemini-3.5-flash-lite
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -69,9 +70,9 @@ jobs:
             echo "available=true" >> "$GITHUB_OUTPUT"
           else
             echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::GEMINI_API_KEY is not configured; skipping Gemma live benchmark."
+            echo "::notice::GEMINI_API_KEY is not configured; skipping Google live benchmark."
           fi
-      - name: Run live Gemma benchmark trial
+      - name: Run live Google benchmark trial
         if: steps.credential.outputs.available == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -79,7 +80,7 @@ jobs:
         run: |
           cargo run -q --locked -p reasoning-harness-cli -- \
             eval fixtures \
-            --provider gemma \
+            --provider google \
             --model "$MODEL" \
             --max-tokens 4096 \
             --trials 1 \

@@ -11,18 +11,18 @@ use serde_json::{Value, json};
 const DEFAULT_BASE_URL: &str = "https://generativelanguage.googleapis.com/v1beta/";
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(180);
 
-/// Google Gemini API / AI Studio adapter for Gemma models.
+/// Google Gemini API / AI Studio adapter for Google-hosted text models.
 ///
 /// This adapter is intentionally limited to untrusted candidate generation. It never
 /// participates in harness verification or verdict authority.
-pub struct GemmaAdapter {
+pub struct GoogleAdapter {
     client: Client,
     api_key: String,
     base_url: Url,
     model: String,
 }
 
-impl GemmaAdapter {
+impl GoogleAdapter {
     pub fn from_env(model: impl Into<String>) -> Result<Self, ModelError> {
         let api_key = env::var("GEMINI_API_KEY").map_err(|_| {
             ModelError::new(ModelErrorKind::Credentials, "GEMINI_API_KEY is not set")
@@ -50,7 +50,7 @@ impl GemmaAdapter {
         if model.trim().is_empty() {
             return Err(ModelError::new(
                 ModelErrorKind::Protocol,
-                "Gemma model identifier must not be empty",
+                "Google model identifier must not be empty",
             ));
         }
 
@@ -145,7 +145,7 @@ impl GemmaAdapter {
     }
 }
 
-impl ModelAdapter for GemmaAdapter {
+impl ModelAdapter for GoogleAdapter {
     fn generate<'a>(
         &'a self,
         request: ModelRequest,
@@ -297,7 +297,7 @@ mod tests {
 
     #[test]
     fn rejects_empty_credentials_without_echoing_them() {
-        let error = GemmaAdapter::new("", "gemma-4-26b-a4b-it").err().unwrap();
+        let error = GoogleAdapter::new("", "gemma-4-26b-a4b-it").err().unwrap();
         assert_eq!(error.kind, ModelErrorKind::Credentials);
         assert!(!error.to_string().contains("x-goog-api-key"));
     }
