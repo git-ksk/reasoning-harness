@@ -96,11 +96,19 @@ pub struct ReasoningCandidate {
     pub inferences: Vec<Inference>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct CandidateDiagnostic {
+    pub code: String,
+    pub message: String,
+}
+
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct ReasoningArtifact {
     pub task: String,
     #[serde(default)]
     pub evidence: Vec<Evidence>,
+    #[serde(default)]
+    pub candidate_diagnostics: Vec<CandidateDiagnostic>,
     #[serde(default)]
     pub verification_receipts: Vec<VerificationReceipt>,
     #[serde(default)]

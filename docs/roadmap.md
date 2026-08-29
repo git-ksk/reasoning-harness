@@ -20,6 +20,7 @@
 - [done] bind verifier results to structured propositions plus harness-owned structured facts, never model self-asserted authority
 - restore live accept/reject utility without increasing unsupported accepted claims
 - [done] preserve exact-string receipt binding as a conservative compatibility mode
+- [done] normalize malformed untrusted inference edges with explicit `candidate_diagnostics` rather than failing unrelated claims
 
 ## v0.2 — adversarial reasoning passes
 - generic contradiction discovery pass; trusted-oracle contradiction receipts are implemented

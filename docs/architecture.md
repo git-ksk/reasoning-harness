@@ -71,3 +71,8 @@ A receipt is not a semantic score. It represents a hard verifier result whose au
 ## Narrow deterministic framework checks
 
 The Five Whys restatement pass removes a causal edge only when a deliberately narrow lexical heuristic recognizes that the proposed cause substantially restates the effect. The conclusion remains uncertain. This avoids turning a string heuristic into semantic causal authority.
+
+
+## Candidate normalization boundary
+
+`ReasoningCandidate` is untrusted syntax, not trusted reasoning state. Structurally invalid inference suggestions (for example, missing premises or references to non-existent claims) are removed before artifact validation and recorded as `candidate_diagnostics`. This is not silent repair: the artifact preserves an inspectable record of every dropped edge. Claims themselves still pass through the normal downgrade and hard-verification boundary, so normalization cannot promote a claim or create authority.

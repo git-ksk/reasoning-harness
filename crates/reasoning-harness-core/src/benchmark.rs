@@ -137,6 +137,7 @@ fn naive_materialize(input: HarnessInput, candidate: ReasoningCandidate) -> Reas
     ReasoningArtifact {
         task: input.task,
         evidence: input.evidence,
+        candidate_diagnostics: Vec::new(),
         verification_receipts: Vec::new(),
         claims: candidate
             .claims

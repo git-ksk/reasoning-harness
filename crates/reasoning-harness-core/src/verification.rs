@@ -234,6 +234,7 @@ mod tests {
         let artifact = ReasoningArtifact {
             task: "status".into(),
             evidence: vec![evidence("503")],
+            candidate_diagnostics: vec![],
             verification_receipts: vec![],
             claims: vec![claim("503")],
             inferences: vec![],

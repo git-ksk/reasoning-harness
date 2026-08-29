@@ -32,3 +32,5 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 ## Release posture
 
 No stable API guarantee is made yet. Breaking schema/runtime changes are acceptable while the research contracts are still being validated by fixtures and live experiments.
+
+- Live Mistral testing exposed malformed inference suggestions as a separate provider-quality issue. The runtime now isolates structurally invalid inference edges and records them in `candidate_diagnostics` instead of failing unrelated claims.
