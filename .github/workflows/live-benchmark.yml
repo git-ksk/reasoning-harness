@@ -25,6 +25,7 @@ jobs:
             eval fixtures \
             --provider mistral \
             --model ministral-8b-latest \
+            --max-tokens 4096 \
             --trials 1 \
             --format json \
             > /tmp/reason-live-benchmark.json
