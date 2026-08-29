@@ -41,3 +41,8 @@ is stabilized only after real usage, and MCP is an optional integration adapter 
 than part of the correctness boundary.
 
 See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md).
+
+
+## Implementation language boundary
+
+All first-party executable and library components are implemented in Rust. This includes the native runtime, CLI, evaluation tooling, model adapters, and any future desktop client or optional integration adapter. Model providers remain external services and are reached through Rust adapters. No JavaScript/TypeScript runtime is part of the correctness boundary.

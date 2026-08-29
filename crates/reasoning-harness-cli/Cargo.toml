@@ -1,0 +1,18 @@
+[package]
+name = "reasoning-harness-cli"
+description = "Native CLI for the reasoning harness."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[[bin]]
+name = "reason"
+path = "src/main.rs"
+
+[dependencies]
+clap.workspace = true
+reasoning-harness-core = { path = "../reasoning-harness-core" }
+serde_json.workspace = true

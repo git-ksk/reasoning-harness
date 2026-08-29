@@ -130,7 +130,7 @@ its own hidden prompt flow, validator implementation, or competing state machine
 
 ### Embedding API
 
-The internal TypeScript boundaries already make embedding possible, but a stable public
+The internal Rust crate boundaries already make embedding possible, but a stable public
 library API is not a v0.1 goal. Public compatibility promises will be made only after
 real CLI/eval use reveals the correct runtime contract.
 

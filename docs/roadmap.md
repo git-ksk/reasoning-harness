@@ -38,3 +38,8 @@ These are intentional non-goals until the native runtime, CLI, and eval contract
 - MCP adapter: optional agent integration; never a required correctness boundary.
 
 See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md).
+
+
+## Implementation constraint
+
+All first-party components remain Rust-only. A future desktop application must use a Rust-capable native UI stack without requiring a JavaScript application runtime. Any future MCP adapter, if justified, is implemented in Rust and remains outside the core correctness boundary.

@@ -1,0 +1,24 @@
+{
+  "evidence": [
+    {
+      "id": "e1",
+      "source": "fixture",
+      "observation": "The source explicitly states the observed fact."
+    }
+  ],
+  "claims": [
+    {
+      "id": "c1",
+      "statement": "The observed fact is known from the source.",
+      "state": "known",
+      "evidence_ids": ["e1"]
+    },
+    {
+      "id": "c2",
+      "statement": "A required external fact is not available.",
+      "state": "unknown",
+      "evidence_ids": []
+    }
+  ],
+  "inferences": []
+}

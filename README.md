@@ -20,7 +20,8 @@ This repository exists to measure that question rather than assume the answer.
 - A pass-based harness runtime that fails closed when a pass produces invalid state.
 - A first structured framework primitive for evidence-aware 5 Whys.
 - Basic eval metrics for evidence coverage and unsupported accepted claims.
-- Provider-neutral `ModelAdapter`; model output is always outside the correctness boundary.
+- Provider-neutral Rust `ModelAdapter`; model output is always outside the correctness boundary.
+- Native Rust CLI (`reason verify`, `reason eval`) sharing the exact same core validators.
 - Native runtime is the correctness owner; CLI and eval are the first supported interfaces.
 
 ## What this is not
@@ -36,12 +37,14 @@ The harness is intentionally model-agnostic. Cheap/free inference can be useful 
 
 ## Development
 
-Node.js 22+ is the supported runtime.
+Rust 1.88+ is the supported toolchain. The repository intentionally has no Node.js/TypeScript runtime dependency.
 
 ```bash
-npm ci
-npm test
-npm run demo
+cargo fmt --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+cargo run -p reasoning-harness-cli -- verify examples/artifact.json
+cargo run -p reasoning-harness-cli -- eval examples/artifact.json
 ```
 
 See [docs/research-plan.md](docs/research-plan.md), [docs/architecture.md](docs/architecture.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).
