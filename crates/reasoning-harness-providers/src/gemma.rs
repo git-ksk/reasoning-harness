@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 const DEFAULT_BASE_URL: &str = "https://generativelanguage.googleapis.com/v1beta/";
-const DEFAULT_TIMEOUT: Duration = Duration::from_secs(60);
+const DEFAULT_TIMEOUT: Duration = Duration::from_secs(180);
 
 /// Google Gemini API / AI Studio adapter for Gemma models.
 ///
@@ -107,10 +107,12 @@ impl GemmaAdapter {
             .send()
             .await
             .map_err(|error| {
-                ModelError::new(
-                    ModelErrorKind::Transport,
-                    format!("Gemini API request failed: {error}"),
-                )
+                let detail = if error.is_timeout() {
+                    "Gemini API request timed out".to_string()
+                } else {
+                    format!("Gemini API request failed: {error}")
+                };
+                ModelError::new(ModelErrorKind::Transport, detail)
             })?;
 
         let status = response.status();
