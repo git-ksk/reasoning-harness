@@ -103,3 +103,16 @@ Live benchmark labels no longer bind to provider-generated claim IDs. Unsupporte
 `HarnessInput.hypotheses` now carries harness-owned propositions that formalize hypotheses explicitly posed by the task. Candidates cannot add or mutate these targets. The runtime materializes a missing hypothesis as an assumed claim so deterministic structured-fact verification and adversarial discovery do not depend on the provider choosing the same proposition key.
 
 The manual live workflow runs the same 20-case corpus against `ministral-3b-latest`, `ministral-8b-latest`, `ministral-14b-latest`, and `mistral-small-latest` with one trial per model. This matrix is diagnostic and is not a required CI gate.
+
+### First 20-case cross-model result
+
+A one-trial manual matrix on the hardened 20-case corpus produced the following harness-arm results:
+
+| Model | Baseline accuracy | Harness accuracy | Accept recall | Reject recall | Unknown recall | Unsafe accept cases | Contradiction detection | Counterexample detection | Tokens | Provider latency |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `ministral-3b-latest` | 0.60 | 0.80 | 0.20 | 1.00 | 1.00 | 0 | 1.00 | 1.00 | 7,414 | 19.0s |
+| `ministral-8b-latest` | 0.65 | 1.00 | 1.00 | 1.00 | 1.00 | 0 | 1.00 | 1.00 | 27,221 | 71.5s |
+| `ministral-14b-latest` | 0.85 | 1.00 | 1.00 | 1.00 | 1.00 | 0 | 1.00 | 1.00 | 32,033 | 109.5s |
+| `mistral-small-latest` | 0.75 | 1.00 | 1.00 | 1.00 | 1.00 | 0 | 1.00 | 1.00 | 7,319 | 24.2s |
+
+All four harness runs had zero deterministic verifier failures and zero unsupported strong claims for the typed benchmark targets. This is one stochastic trial per model, not a statistically stable ranking. The result nevertheless shows a useful boundary: the harness fully recovered the 8B, 14B, and Small runs on this structured corpus, while the 3B run remained over-conservative on direct-accept cases despite preserving reject/unknown safety.
