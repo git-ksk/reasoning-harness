@@ -19,6 +19,7 @@ A live model study uses the same fixture inputs but replaces `recorded_candidate
 
 ```bash
 reason eval fixtures --provider mistral --model ministral-8b-latest --trials 5
+reason eval fixtures --provider gemma --model gemma-4-26b-a4b-it --trials 5
 ```
 
 Use `--seed` when a provider supports it. Trial N uses `base_seed + N`. Live runs are intentionally not part of the required CI gate because network availability, provider behavior, quota, and cost are external variables.
@@ -102,7 +103,7 @@ Live benchmark labels no longer bind to provider-generated claim IDs. Unsupporte
 
 `HarnessInput.hypotheses` now carries harness-owned propositions that formalize hypotheses explicitly posed by the task. Candidates cannot add or mutate these targets. The runtime materializes a missing hypothesis as an assumed claim so deterministic structured-fact verification and adversarial discovery do not depend on the provider choosing the same proposition key.
 
-The manual live workflow runs the same 20-case corpus against `ministral-3b-latest`, `ministral-8b-latest`, `ministral-14b-latest`, and `mistral-small-latest` with one trial per model. This matrix is diagnostic and is not a required CI gate.
+The manual live workflow runs the same 20-case corpus against `ministral-3b-latest`, `ministral-8b-latest`, `ministral-14b-latest`, and `mistral-small-latest`. It also supports Gemma 4 through the Google Gemini Interactions API with `gemma-4-26b-a4b-it` and `gemma-4-31b-it` when `GEMINI_API_KEY` is configured. Every provider remains an untrusted candidate generator; provider output cannot grant verification authority or decide the final verdict. This matrix is diagnostic and is not a required CI gate.
 
 ### First 20-case cross-model result
 
@@ -116,3 +117,10 @@ A one-trial manual matrix on the hardened 20-case corpus produced the following 
 | `mistral-small-latest` | 0.75 | 1.00 | 1.00 | 1.00 | 1.00 | 0 | 1.00 | 1.00 | 7,319 | 24.2s |
 
 All four harness runs had zero deterministic verifier failures and zero unsupported strong claims for the typed benchmark targets. This is one stochastic trial per model, not a statistically stable ranking. The result nevertheless shows a useful boundary: the harness fully recovered the 8B, 14B, and Small runs on this structured corpus, while the 3B run remained over-conservative on direct-accept cases despite preserving reject/unknown safety.
+
+
+### Gemma 4 adapter
+
+The Rust `GemmaAdapter` uses the Google Gemini Interactions REST API (`/v1beta/interactions`) and the standard `GEMINI_API_KEY` credential. It maps the provider-neutral `ModelRequest` contract to `system_instruction`, `input`, `generation_config`, and `response_format`, including JSON Schema structured output. It parses only model text and token usage back into `ModelResponse`. The API key is sent only in the `x-goog-api-key` request header and is never included in diagnostics.
+
+Gemma live CI is optional: if the repository secret is absent, the Gemma matrix reports a notice and skips provider calls rather than weakening required CI.

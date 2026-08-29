@@ -10,7 +10,7 @@ use reasoning_harness_core::{
     evaluate_benchmark_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
     validate_artifact,
 };
-use reasoning_harness_providers::MistralAdapter;
+use reasoning_harness_providers::{GemmaAdapter, MistralAdapter};
 use serde::{Serialize, de::DeserializeOwned};
 
 #[derive(Debug, Parser)]
@@ -34,10 +34,12 @@ enum OutputFormat {
 #[derive(Debug, Clone, Copy, ValueEnum)]
 enum Provider {
     Mistral,
+    Gemma,
 }
 
 enum LiveGenerator {
     Mistral(MistralAdapter),
+    Gemma(GemmaAdapter),
 }
 
 impl LiveGenerator {
@@ -45,6 +47,9 @@ impl LiveGenerator {
         match provider {
             Provider::Mistral => MistralAdapter::from_env(model)
                 .map(Self::Mistral)
+                .map_err(|error| error.to_string()),
+            Provider::Gemma => GemmaAdapter::from_env(model)
+                .map(Self::Gemma)
                 .map_err(|error| error.to_string()),
         }
     }
@@ -57,62 +62,73 @@ impl LiveGenerator {
     ) -> Result<(ReasoningCandidate, GenerationObservation), String> {
         match self {
             Self::Mistral(adapter) => {
-                let request = build_candidate_request(input, Some(max_tokens), seed)
-                    .map_err(|error| error.to_string())?;
-                let started = Instant::now();
-                let first = adapter
-                    .generate(request)
-                    .await
-                    .map_err(|error| error.to_string())?;
-                let (candidate, response, provider_attempts, usage) = match serde_json::from_str::<
-                    ReasoningCandidate,
-                >(
-                    &first.text
-                ) {
-                    Ok(candidate) => {
-                        let usage = first.usage.clone();
-                        (candidate, first, 1, usage)
-                    }
-                    Err(first_error) => {
-                        let fallback =
-                            build_candidate_json_fallback_request(input, Some(max_tokens), seed)
-                                .map_err(|error| error.to_string())?;
-                        let second = adapter.generate(fallback).await.map_err(|error| {
-                                format!(
-                                    "Mistral structured-output fallback failed after invalid first candidate (finish_reason={}, bytes={}): {error}",
-                                    first.finish_reason.as_deref().unwrap_or("unknown"),
-                                    first.text.len(),
-                                )
-                            })?;
-                        let candidate = serde_json::from_str::<ReasoningCandidate>(&second.text)
-                                .map_err(|second_error| {
-                                    format!(
-                                        "provider returned invalid candidate JSON after structured-output fallback: first_error={first_error}; first_finish_reason={}; first_bytes={}; second_error={second_error}; second_finish_reason={}; second_bytes={}",
-                                        first.finish_reason.as_deref().unwrap_or("unknown"),
-                                        first.text.len(),
-                                        second.finish_reason.as_deref().unwrap_or("unknown"),
-                                        second.text.len(),
-                                    )
-                                })?;
-                        let usage = add_usage(&first.usage, &second.usage);
-                        (candidate, second, 2, usage)
-                    }
-                };
-                let latency_ms = started.elapsed().as_millis();
-                Ok((
-                    candidate,
-                    GenerationObservation {
-                        provider: "mistral",
-                        model: response.model,
-                        usage,
-                        latency_ms,
-                        provider_attempts,
-                        cost_usd: None,
-                    },
-                ))
+                generate_with_adapter(adapter, "mistral", input, max_tokens, seed).await
+            }
+            Self::Gemma(adapter) => {
+                generate_with_adapter(adapter, "gemma", input, max_tokens, seed).await
             }
         }
     }
+}
+
+async fn generate_with_adapter<A: ModelAdapter>(
+    adapter: &A,
+    provider: &'static str,
+    input: &HarnessInput,
+    max_tokens: u32,
+    seed: Option<u64>,
+) -> Result<(ReasoningCandidate, GenerationObservation), String> {
+    let request = build_candidate_request(input, Some(max_tokens), seed)
+        .map_err(|error| error.to_string())?;
+    let started = Instant::now();
+    let first = adapter
+        .generate(request)
+        .await
+        .map_err(|error| error.to_string())?;
+    let (candidate, response, provider_attempts, usage) = match serde_json::from_str::<
+        ReasoningCandidate,
+    >(&first.text)
+    {
+        Ok(candidate) => {
+            let usage = first.usage.clone();
+            (candidate, first, 1, usage)
+        }
+        Err(first_error) => {
+            let fallback = build_candidate_json_fallback_request(input, Some(max_tokens), seed)
+                .map_err(|error| error.to_string())?;
+            let second = adapter.generate(fallback).await.map_err(|error| {
+                    format!(
+                        "{provider} structured-output fallback failed after invalid first candidate (finish_reason={}, bytes={}): {error}",
+                        first.finish_reason.as_deref().unwrap_or("unknown"),
+                        first.text.len(),
+                    )
+                })?;
+            let candidate = serde_json::from_str::<ReasoningCandidate>(&second.text)
+                    .map_err(|second_error| {
+                        format!(
+                            "provider returned invalid candidate JSON after structured-output fallback: first_error={first_error}; first_finish_reason={}; first_bytes={}; second_error={second_error}; second_finish_reason={}; second_bytes={}",
+                            first.finish_reason.as_deref().unwrap_or("unknown"),
+                            first.text.len(),
+                            second.finish_reason.as_deref().unwrap_or("unknown"),
+                            second.text.len(),
+                        )
+                    })?;
+            let usage = add_usage(&first.usage, &second.usage);
+            (candidate, second, 2, usage)
+        }
+    };
+    let latency_ms = started.elapsed().as_millis();
+    Ok((
+        candidate,
+        GenerationObservation {
+            provider,
+            model: response.model,
+            usage,
+            latency_ms,
+            provider_attempts,
+            cost_usd: None,
+        },
+    ))
 }
 
 #[derive(Debug, Subcommand)]

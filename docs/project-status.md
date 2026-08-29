@@ -8,7 +8,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 
 ## Implemented
 
-- Rust-only core, CLI, eval, and provider adapter crates.
+- Rust-only core, CLI, eval, and provider adapter crates. Mistral and Gemma 4 candidate-generation adapters are implemented.
 - Harness-owned evidence and untrusted `ReasoningCandidate` boundary.
 - Deterministic structural/provenance validation.
 - `accept | reject | unknown` policy.
@@ -16,7 +16,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Receipt-backed support promotion and contradiction rejection.
 - Narrow deterministic Five Whys lexical-restatement removal.
 - Twenty committed regression fixtures (5 accept / 6 reject / 9 unknown).
-- Mistral live benchmark workflow, manually triggered and secret-isolated.
+- Mistral live benchmark workflow plus optional Gemma 4 matrix, manually triggered and secret-isolated.
 - GitHub CI, Dependabot configuration, contribution/security guidance, issue and PR templates.
 
 ## Known gaps
@@ -49,3 +49,5 @@ The 20-case benchmark now uses typed proposition labels instead of provider-gene
 ### Cross-model observation
 
 The first hardened 20-case Mistral matrix completed successfully for Ministral 3B/8B/14B and Mistral Small. Harness accuracy was 0.80 for 3B and 1.00 for 8B, 14B, and Small. Every harness arm recorded zero unsafe final accepts, 1.00 contradiction detection, 1.00 counterexample detection, and zero deterministic verifier failures. Mistral Small achieved the 20/20 result with substantially fewer tokens and lower latency than the 8B and 14B runs in this single trial; repeated trials are required before drawing a model-ranking conclusion.
+
+- Gemma 4 support uses the current Google Gemini Interactions API and remains outside the correctness authority boundary. Live Gemma acceptance is pending a configured `GEMINI_API_KEY`.

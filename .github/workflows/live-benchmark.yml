@@ -40,3 +40,46 @@ jobs:
             --format json \
             > "/tmp/reason-live-${MODEL}.json"
           jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational}' "/tmp/reason-live-${MODEL}.json"
+
+  gemma:
+    name: gemma-${{ matrix.model }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        model:
+          - gemma-4-26b-a4b-it
+          - gemma-4-31b-it
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check Gemini API credential availability
+        id: credential
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -n "$GEMINI_API_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::GEMINI_API_KEY is not configured; skipping Gemma live benchmark."
+          fi
+      - name: Run live Gemma benchmark trial
+        if: steps.credential.outputs.available == 'true'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MODEL: ${{ matrix.model }}
+        run: |
+          cargo run -q --locked -p reasoning-harness-cli -- \
+            eval fixtures \
+            --provider gemma \
+            --model "$MODEL" \
+            --max-tokens 4096 \
+            --trials 1 \
+            --format json \
+            > "/tmp/reason-live-${MODEL}.json"
+          jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational}' "/tmp/reason-live-${MODEL}.json"
