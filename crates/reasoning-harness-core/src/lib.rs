@@ -9,6 +9,7 @@ pub mod model;
 pub mod schema;
 pub mod types;
 pub mod validate;
+pub mod verification;
 
 pub use benchmark::{
     BenchmarkAggregate, BenchmarkArmResult, BenchmarkCaseResult, BenchmarkComparison,
@@ -26,6 +27,7 @@ pub use model::{
 pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema};
 pub use types::{
     CandidateClaim, Claim, EpistemicState, Evidence, HarnessInput, Inference, ReasoningArtifact,
-    ReasoningCandidate, Verdict,
+    ReasoningCandidate, Verdict, VerificationConclusion, VerificationReceipt,
 };
 pub use validate::{Diagnostic, ValidationReport, validate_artifact};
+pub use verification::TrustedVerificationPass;

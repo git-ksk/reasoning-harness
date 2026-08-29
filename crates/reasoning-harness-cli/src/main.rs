@@ -3,9 +3,11 @@ use std::{fs, path::PathBuf, process::ExitCode, time::Instant};
 use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
     BenchmarkCaseResult, BenchmarkComparison, BenchmarkFixture, HarnessInput, ModelAdapter,
-    ModelUsage, ReasoningArtifact, ReasoningCandidate, StrictAcceptancePolicy, aggregate_benchmark,
+    ModelUsage, ReasoningArtifact, ReasoningCandidate, StrictAcceptancePolicy,
+    TrustedVerificationPass, VerificationReceipt, aggregate_benchmark,
     build_candidate_json_fallback_request, build_candidate_request, evaluate,
-    evaluate_benchmark_fixture, run_harness, validate_artifact,
+    evaluate_benchmark_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
+    validate_artifact,
 };
 use reasoning_harness_providers::MistralAdapter;
 use serde::{Serialize, de::DeserializeOwned};
@@ -122,6 +124,9 @@ enum Command {
         /// Offline candidate JSON. Mutually exclusive with --provider.
         #[arg(long)]
         candidate: Option<PathBuf>,
+        /// Trusted verification receipts JSON array. Never sent to the model.
+        #[arg(long)]
+        receipts: Option<PathBuf>,
         /// Live candidate generator. Mutually exclusive with --candidate.
         #[arg(long, value_enum)]
         provider: Option<Provider>,
@@ -263,6 +268,7 @@ async fn run(cli: Cli) -> Result<(), String> {
         Command::Run {
             input,
             candidate,
+            receipts,
             provider,
             model,
             max_tokens,
@@ -286,7 +292,15 @@ async fn run(cli: Cli) -> Result<(), String> {
                 }
             };
 
-            let outcome = run_harness(input, candidate.clone(), &[], &StrictAcceptancePolicy)
+            let receipts: Vec<VerificationReceipt> = match receipts {
+                Some(path) => read_json(&path)?,
+                None => Vec::new(),
+            };
+            let passes: Vec<Box<dyn reasoning_harness_core::Pass>> = vec![
+                Box::new(TrustedVerificationPass::new(receipts)),
+                Box::new(FiveWhysRestatementPass),
+            ];
+            let outcome = run_harness(input, candidate.clone(), &passes, &StrictAcceptancePolicy)
                 .map_err(|error| error.to_string())?;
             let output = RunOutput {
                 candidate,

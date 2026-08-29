@@ -29,17 +29,18 @@ fn recorded_fixture_suite_is_a_stable_regression_baseline() {
     assert_eq!(comparison.baseline.unsupported_accepted_claims, 3);
     assert_eq!(comparison.harness.unsupported_accepted_claims, 0);
     assert_close(comparison.baseline.verdict_accuracy, 2.0 / 7.0);
-    assert_close(comparison.harness.verdict_accuracy, 4.0 / 7.0);
+    assert_close(comparison.harness.verdict_accuracy, 1.0);
     assert_close(comparison.baseline.accept_recall, 1.0);
-    assert_close(comparison.harness.accept_recall, 0.0);
+    assert_close(comparison.harness.accept_recall, 1.0);
     assert_close(comparison.baseline.reject_recall, 0.0);
-    assert_close(comparison.harness.reject_recall, 0.0);
+    assert_close(comparison.harness.reject_recall, 1.0);
     assert_close(comparison.baseline.unknown_recall, 0.25);
     assert_close(comparison.harness.unknown_recall, 1.0);
     assert_close(comparison.baseline.hidden_assumption_exposure_rate, 0.0);
     assert_close(comparison.harness.hidden_assumption_exposure_rate, 1.0);
-    assert_close(comparison.harness.contradiction_detection_rate, 0.0);
-    assert_eq!(comparison.harness.bad_inference_edges_retained, 1);
+    assert_close(comparison.harness.contradiction_detection_rate, 1.0);
+    assert_eq!(comparison.harness.bad_inference_edges_retained, 0);
+    assert_close(comparison.harness.causal_edge_quality, 1.0);
     assert_close(comparison.harness.deterministic_verifier_failure_rate, 0.0);
 }
 

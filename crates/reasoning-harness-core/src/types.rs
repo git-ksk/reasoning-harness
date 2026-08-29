@@ -46,6 +46,25 @@ pub struct Inference {
     pub method: String,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum VerificationConclusion {
+    Supported,
+    Contradicted,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct VerificationReceipt {
+    pub id: String,
+    pub verifier: String,
+    pub claim_statement: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claim_id: Option<String>,
+    pub conclusion: VerificationConclusion,
+    #[serde(default)]
+    pub evidence_ids: Vec<String>,
+}
+
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct HarnessInput {
     pub task: String,
@@ -66,6 +85,8 @@ pub struct ReasoningArtifact {
     pub task: String,
     #[serde(default)]
     pub evidence: Vec<Evidence>,
+    #[serde(default)]
+    pub verification_receipts: Vec<VerificationReceipt>,
     #[serde(default)]
     pub claims: Vec<Claim>,
     #[serde(default)]

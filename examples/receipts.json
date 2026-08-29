@@ -1,0 +1,10 @@
+[
+  {
+    "id": "vr1",
+    "verifier": "example_oracle",
+    "claim_statement": "The observed fact is known from the source.",
+    "claim_id": "c1",
+    "conclusion": "supported",
+    "evidence_ids": ["e1"]
+  }
+]

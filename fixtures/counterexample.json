@@ -4,18 +4,50 @@
   "input": {
     "task": "Do all requests succeed?",
     "evidence": [
-      {"id": "e1", "source": "sample A", "observation": "Requests 1 through 9 succeeded."},
-      {"id": "e2", "source": "sample B", "observation": "Request 10 failed."}
+      {
+        "id": "e1",
+        "source": "sample A",
+        "observation": "Requests 1 through 9 succeeded."
+      },
+      {
+        "id": "e2",
+        "source": "sample B",
+        "observation": "Request 10 failed."
+      }
     ]
   },
   "recorded_candidate": {
     "claims": [
-      {"id": "c1", "statement": "All requests succeed.", "proposed_state": "supported", "evidence_ids": ["e1"]}
+      {
+        "id": "c1",
+        "statement": "All requests succeed.",
+        "proposed_state": "supported",
+        "evidence_ids": [
+          "e1"
+        ]
+      }
     ],
     "inferences": []
   },
   "expected_verdict": "reject",
-  "unsupported_claim_ids": ["c1"],
-  "hidden_assumption_claim_ids": ["c1"],
-  "contradiction_claim_ids": ["c1"]
+  "unsupported_claim_ids": [
+    "c1"
+  ],
+  "hidden_assumption_claim_ids": [
+    "c1"
+  ],
+  "contradiction_claim_ids": [
+    "c1"
+  ],
+  "verification_receipts": [
+    {
+      "id": "vr1",
+      "verifier": "fixture_oracle",
+      "claim_statement": "All requests succeed.",
+      "conclusion": "contradicted",
+      "evidence_ids": [
+        "e2"
+      ]
+    }
+  ]
 }

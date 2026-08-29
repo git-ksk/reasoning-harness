@@ -4,7 +4,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     AcceptancePolicy, Claim, EpistemicState, HarnessInput, ReasoningArtifact, ReasoningCandidate,
-    StrictAcceptancePolicy, Verdict, evaluate, run_harness,
+    StrictAcceptancePolicy, TrustedVerificationPass, Verdict, evaluate,
+    frameworks::five_whys::FiveWhysRestatementPass, run_harness,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -22,6 +23,8 @@ pub struct BenchmarkFixture {
     pub contradiction_claim_ids: Vec<String>,
     #[serde(default)]
     pub bad_inference_ids: Vec<String>,
+    #[serde(default)]
+    pub verification_receipts: Vec<crate::VerificationReceipt>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -84,10 +87,16 @@ pub fn evaluate_benchmark_fixture(
         false,
     );
 
+    let passes: Vec<Box<dyn crate::Pass>> = vec![
+        Box::new(TrustedVerificationPass::new(
+            fixture.verification_receipts.clone(),
+        )),
+        Box::new(FiveWhysRestatementPass),
+    ];
     let harness_run = run_harness(
         fixture.input.clone(),
         candidate,
-        &[],
+        &passes,
         &StrictAcceptancePolicy,
     );
     let harness = match harness_run {
@@ -121,6 +130,7 @@ fn naive_materialize(input: HarnessInput, candidate: ReasoningCandidate) -> Reas
     ReasoningArtifact {
         task: input.task,
         evidence: input.evidence,
+        verification_receipts: Vec::new(),
         claims: candidate
             .claims
             .into_iter()
@@ -204,7 +214,9 @@ fn arm_result(
                     assumption_ids.contains(claim.id.as_str())
                         && matches!(
                             claim.state,
-                            EpistemicState::Assumed | EpistemicState::Unknown
+                            EpistemicState::Assumed
+                                | EpistemicState::Unknown
+                                | EpistemicState::Contradicted
                         )
                 })
                 .count()

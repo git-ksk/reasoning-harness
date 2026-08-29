@@ -61,6 +61,54 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
         }
     }
 
+    let mut receipt_ids = HashSet::new();
+    for receipt in &artifact.verification_receipts {
+        if receipt.id.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_verification_receipt_id",
+                message: "verification receipt id must not be empty".into(),
+            });
+        }
+        if !receipt_ids.insert(receipt.id.as_str()) {
+            diagnostics.push(Diagnostic {
+                code: "duplicate_verification_receipt_id",
+                message: format!("duplicate verification receipt id: {}", receipt.id),
+            });
+        }
+        if receipt.verifier.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_verifier",
+                message: format!("verification receipt {} has an empty verifier", receipt.id),
+            });
+        }
+        if receipt.evidence_ids.is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "verification_without_evidence",
+                message: format!("verification receipt {} has no evidence", receipt.id),
+            });
+        }
+        if receipt.claim_statement.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_verification_claim_statement",
+                message: format!(
+                    "verification receipt {} has an empty claim statement",
+                    receipt.id
+                ),
+            });
+        }
+        for evidence_id in &receipt.evidence_ids {
+            if !evidence_ids.contains(evidence_id.as_str()) {
+                diagnostics.push(Diagnostic {
+                    code: "verification_missing_evidence_reference",
+                    message: format!(
+                        "verification receipt {} references missing evidence {}",
+                        receipt.id, evidence_id
+                    ),
+                });
+            }
+        }
+    }
+
     for claim in &artifact.claims {
         if claim.id.trim().is_empty() {
             diagnostics.push(Diagnostic {
@@ -105,6 +153,29 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
                     ),
                 });
             }
+        }
+    }
+
+    for receipt in &artifact.verification_receipts {
+        let matching_claims = artifact
+            .claims
+            .iter()
+            .filter(|claim| {
+                claim.statement == receipt.claim_statement
+                    && receipt
+                        .claim_id
+                        .as_ref()
+                        .is_none_or(|claim_id| claim_id == &claim.id)
+            })
+            .count();
+        if matching_claims != 1 {
+            diagnostics.push(Diagnostic {
+                code: "verification_claim_binding_invalid",
+                message: format!(
+                    "verification receipt {} matched {} claims; expected exactly one",
+                    receipt.id, matching_claims
+                ),
+            });
         }
     }
 

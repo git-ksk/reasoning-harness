@@ -23,6 +23,7 @@ pub fn materialize_candidate(
     ReasoningArtifact {
         task: input.task,
         evidence: input.evidence,
+        verification_receipts: Vec::new(),
         claims,
         inferences: candidate.inferences,
     }
