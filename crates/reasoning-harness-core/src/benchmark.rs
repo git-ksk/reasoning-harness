@@ -40,6 +40,8 @@ pub struct BenchmarkArmResult {
     pub contradiction_claims_detected: usize,
     pub bad_inference_edges_retained: usize,
     pub deterministic_failure: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deterministic_failure_reason: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
@@ -85,6 +87,7 @@ pub fn evaluate_benchmark_fixture(
         Some(&baseline_artifact),
         Some(baseline_verdict),
         false,
+        None,
     );
 
     let passes: Vec<Box<dyn crate::Pass>> = vec![
@@ -108,8 +111,9 @@ pub fn evaluate_benchmark_fixture(
             Some(&outcome.artifact),
             Some(outcome.verdict),
             false,
+            None,
         ),
-        Err(_) => arm_result(fixture, None, None, true),
+        Err(error) => arm_result(fixture, None, None, true, Some(error.to_string())),
     };
 
     BenchmarkCaseResult {
@@ -154,6 +158,7 @@ fn arm_result(
     artifact: Option<&ReasoningArtifact>,
     verdict: Option<Verdict>,
     deterministic_failure: bool,
+    deterministic_failure_reason: Option<String>,
 ) -> BenchmarkArmResult {
     let unsupported_ids: HashSet<&str> = fixture
         .unsupported_claim_ids
@@ -264,6 +269,7 @@ fn arm_result(
         contradiction_claims_detected,
         bad_inference_edges_retained,
         deterministic_failure,
+        deterministic_failure_reason,
     }
 }
 
