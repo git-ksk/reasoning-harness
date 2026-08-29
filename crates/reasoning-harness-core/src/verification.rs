@@ -236,6 +236,7 @@ mod tests {
             evidence: vec![evidence("503")],
             candidate_diagnostics: vec![],
             verification_receipts: vec![],
+            adversarial_findings: vec![],
             claims: vec![claim("503")],
             inferences: vec![],
         };

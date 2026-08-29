@@ -37,6 +37,7 @@ pub fn materialize_candidate(
         evidence: input.evidence,
         candidate_diagnostics,
         verification_receipts: Vec::new(),
+        adversarial_findings: Vec::new(),
         claims,
         inferences,
     }

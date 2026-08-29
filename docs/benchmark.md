@@ -42,6 +42,7 @@ Use `--seed` when a provider supports it. Trial N uses `base_seed + N`. Live run
 | verdict accuracy / accept / reject / unknown recall | golden fixture verdict | yes |
 | hidden assumption exposure | golden fixture labels + typed state | yes |
 | contradiction detection | golden fixture labels + typed verdict/state | yes |
+| counterexample detection | golden fixture labels + typed adversarial findings | yes |
 | causal edge quality | golden bad-edge labels | yes |
 | deterministic verifier failure rate | runtime result | yes |
 | token usage | provider usage metadata | live only |

@@ -230,6 +230,57 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
         }
     }
 
+    for finding in &artifact.adversarial_findings {
+        if finding.id.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_adversarial_finding_id",
+                message: "adversarial finding id must not be empty".into(),
+            });
+        }
+        if finding.detector.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_adversarial_detector",
+                message: format!("adversarial finding {} has an empty detector", finding.id),
+            });
+        }
+        if finding.proposition.key.trim().is_empty() || finding.proposition.value.trim().is_empty()
+        {
+            diagnostics.push(Diagnostic {
+                code: "invalid_adversarial_proposition",
+                message: format!(
+                    "adversarial finding {} has an empty proposition key/value",
+                    finding.id
+                ),
+            });
+        }
+        if !claim_ids.contains(finding.claim_id.as_str()) {
+            diagnostics.push(Diagnostic {
+                code: "adversarial_missing_claim",
+                message: format!(
+                    "adversarial finding {} references missing claim {}",
+                    finding.id, finding.claim_id
+                ),
+            });
+        }
+        if finding.strength == crate::FindingStrength::Hard && finding.evidence_ids.is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "hard_adversarial_without_evidence",
+                message: format!("hard adversarial finding {} has no evidence", finding.id),
+            });
+        }
+        for evidence_id in &finding.evidence_ids {
+            if !evidence_ids.contains(evidence_id.as_str()) {
+                diagnostics.push(Diagnostic {
+                    code: "adversarial_missing_evidence",
+                    message: format!(
+                        "adversarial finding {} references missing evidence {}",
+                        finding.id, evidence_id
+                    ),
+                });
+            }
+        }
+    }
+
     for inference in &artifact.inferences {
         if inference.id.trim().is_empty() {
             diagnostics.push(Diagnostic {

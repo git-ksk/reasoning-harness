@@ -19,6 +19,8 @@ This repository exists to measure that question rather than assume the answer.
 - `ReasoningArtifact`: harness-materialized task, evidence, verification receipts, claims, and inference edges.
 - Epistemic states: `known`, `supported`, `inferred`, `assumed`, `contradicted`, `unknown`.
 - Deterministic validation for provenance, receipt binding, and reference integrity.
+- Typed adversarial findings for contradictions and counterexamples with explicit `hard` vs `soft` strength; discovery cannot directly force a verdict.
+- Provider-neutral `AdversarialDetector` adapters; the first hard detector operates only on harness-owned structured facts.
 - Trusted verification receipts for oracle-backed support promotion or contradiction; receipts are never model-owned or model-visible.
 - A narrow deterministic Five Whys pass that removes lexical symptom-restatement edges without pretending to be a semantic causal judge.
 - A pass-based harness runtime that fails closed when a pass produces invalid state.

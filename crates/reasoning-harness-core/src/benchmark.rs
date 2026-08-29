@@ -3,8 +3,9 @@ use std::collections::HashSet;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    AcceptancePolicy, Claim, EpistemicState, HarnessInput, ReasoningArtifact, ReasoningCandidate,
-    StrictAcceptancePolicy, StructuredFactVerifier, TrustedVerificationPass, Verdict,
+    AcceptancePolicy, AdversarialDiscoveryPass, AdversarialFindingKind, Claim, EpistemicState,
+    FindingStrength, HarnessInput, ReasoningArtifact, ReasoningCandidate, StrictAcceptancePolicy,
+    StructuredFactConflictDetector, StructuredFactVerifier, TrustedVerificationPass, Verdict,
     VerificationPass, evaluate, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
 };
 
@@ -22,6 +23,8 @@ pub struct BenchmarkFixture {
     #[serde(default)]
     pub contradiction_claim_ids: Vec<String>,
     #[serde(default)]
+    pub counterexample_claim_ids: Vec<String>,
+    #[serde(default)]
     pub bad_inference_ids: Vec<String>,
     #[serde(default)]
     pub verification_receipts: Vec<crate::VerificationReceipt>,
@@ -38,6 +41,9 @@ pub struct BenchmarkArmResult {
     pub unsupported_accepted_claims: usize,
     pub hidden_assumptions_exposed: usize,
     pub contradiction_claims_detected: usize,
+    pub counterexamples_detected: usize,
+    pub hard_adversarial_findings: usize,
+    pub soft_adversarial_findings: usize,
     pub bad_inference_edges_retained: usize,
     pub deterministic_failure: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -50,6 +56,7 @@ pub struct BenchmarkCaseResult {
     pub expected_verdict: Verdict,
     pub expected_hidden_assumptions: usize,
     pub expected_contradictions: usize,
+    pub expected_counterexamples: usize,
     pub baseline: BenchmarkArmResult,
     pub harness: BenchmarkArmResult,
 }
@@ -65,6 +72,7 @@ pub struct BenchmarkAggregate {
     pub unsupported_accepted_claims: usize,
     pub hidden_assumption_exposure_rate: f64,
     pub contradiction_detection_rate: f64,
+    pub counterexample_detection_rate: f64,
     pub bad_inference_edges_retained: usize,
     pub causal_edge_quality: f64,
     pub deterministic_verifier_failure_rate: f64,
@@ -91,6 +99,9 @@ pub fn evaluate_benchmark_fixture(
     );
 
     let passes: Vec<Box<dyn crate::Pass>> = vec![
+        Box::new(AdversarialDiscoveryPass::new(vec![Box::new(
+            StructuredFactConflictDetector,
+        )])),
         Box::new(VerificationPass::new(vec![Box::new(
             StructuredFactVerifier,
         )])),
@@ -121,6 +132,7 @@ pub fn evaluate_benchmark_fixture(
         expected_verdict: fixture.expected_verdict,
         expected_hidden_assumptions: fixture.hidden_assumption_claim_ids.len(),
         expected_contradictions: fixture.contradiction_claim_ids.len(),
+        expected_counterexamples: fixture.counterexample_claim_ids.len(),
         baseline,
         harness,
     }
@@ -139,6 +151,7 @@ fn naive_materialize(input: HarnessInput, candidate: ReasoningCandidate) -> Reas
         evidence: input.evidence,
         candidate_diagnostics: Vec::new(),
         verification_receipts: Vec::new(),
+        adversarial_findings: Vec::new(),
         claims: candidate
             .claims
             .into_iter()
@@ -173,6 +186,11 @@ fn arm_result(
         .collect();
     let contradiction_ids: HashSet<&str> = fixture
         .contradiction_claim_ids
+        .iter()
+        .map(String::as_str)
+        .collect();
+    let counterexample_ids: HashSet<&str> = fixture
+        .counterexample_claim_ids
         .iter()
         .map(String::as_str)
         .collect();
@@ -257,6 +275,36 @@ fn arm_result(
                 .count()
         })
         .unwrap_or(0);
+    let counterexamples_detected = artifact
+        .map(|artifact| {
+            artifact
+                .adversarial_findings
+                .iter()
+                .filter(|finding| {
+                    finding.kind == AdversarialFindingKind::Counterexample
+                        && counterexample_ids.contains(finding.claim_id.as_str())
+                })
+                .count()
+        })
+        .unwrap_or(0);
+    let hard_adversarial_findings = artifact
+        .map(|artifact| {
+            artifact
+                .adversarial_findings
+                .iter()
+                .filter(|finding| finding.strength == FindingStrength::Hard)
+                .count()
+        })
+        .unwrap_or(0);
+    let soft_adversarial_findings = artifact
+        .map(|artifact| {
+            artifact
+                .adversarial_findings
+                .iter()
+                .filter(|finding| finding.strength == FindingStrength::Soft)
+                .count()
+        })
+        .unwrap_or(0);
 
     BenchmarkArmResult {
         verdict,
@@ -268,6 +316,9 @@ fn arm_result(
         unsupported_accepted_claims,
         hidden_assumptions_exposed,
         contradiction_claims_detected,
+        counterexamples_detected,
+        hard_adversarial_findings,
+        soft_adversarial_findings,
         bad_inference_edges_retained,
         deterministic_failure,
         deterministic_failure_reason,
@@ -361,6 +412,20 @@ fn aggregate_arm<'a>(
         contradiction_detected as f64 / expected_contradictions as f64
     };
 
+    let counterexamples_detected: usize = results
+        .iter()
+        .map(|result| select(result).counterexamples_detected)
+        .sum();
+    let expected_counterexamples: usize = results
+        .iter()
+        .map(|result| result.expected_counterexamples)
+        .sum();
+    let counterexample_detection_rate = if expected_counterexamples == 0 {
+        1.0
+    } else {
+        counterexamples_detected as f64 / expected_counterexamples as f64
+    };
+
     let total_inference_edges: usize = results
         .iter()
         .map(|result| select(result).inference_edges)
@@ -403,6 +468,7 @@ fn aggregate_arm<'a>(
         unsupported_accepted_claims,
         hidden_assumption_exposure_rate,
         contradiction_detection_rate,
+        counterexample_detection_rate,
         bad_inference_edges_retained,
         causal_edge_quality,
         deterministic_verifier_failure_rate: deterministic_failures as f64 / denominator,

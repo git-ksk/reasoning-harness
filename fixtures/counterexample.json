@@ -45,5 +45,8 @@
   ],
   "contradiction_claim_ids": [
     "c1"
+  ],
+  "counterexample_claim_ids": [
+    "c1"
   ]
 }

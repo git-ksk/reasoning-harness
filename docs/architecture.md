@@ -76,3 +76,9 @@ The Five Whys restatement pass removes a causal edge only when a deliberately na
 ## Candidate normalization boundary
 
 `ReasoningCandidate` is untrusted syntax, not trusted reasoning state. Structurally invalid inference suggestions (for example, missing premises or references to non-existent claims) are removed before artifact validation and recorded as `candidate_diagnostics`. This is not silent repair: the artifact preserves an inspectable record of every dropped edge. Claims themselves still pass through the normal downgrade and hard-verification boundary, so normalization cannot promote a claim or create authority.
+
+## Adversarial discovery boundary
+
+`AdversarialDetector` produces typed `AdversarialFinding` records with `contradiction | counterexample` kind and `hard | soft` strength. Discovery is observational: findings are recorded in the artifact but do not mutate claim epistemic state and cannot directly force `reject`. Hard authority remains in deterministic `Verifier` implementations and trusted verification receipts. The initial `StructuredFactConflictDetector` reads only harness-owned structured facts. A future model-backed semantic detector must emit `soft` findings until an independent hard verifier confirms them.
+
+This separation prevents a model-generated contradiction label or counterexample suggestion from becoming self-authenticating evidence.

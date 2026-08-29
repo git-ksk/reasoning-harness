@@ -61,6 +61,33 @@ pub struct Inference {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
+pub enum FindingStrength {
+    Hard,
+    Soft,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum AdversarialFindingKind {
+    Contradiction,
+    Counterexample,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct AdversarialFinding {
+    pub id: String,
+    pub detector: String,
+    pub kind: AdversarialFindingKind,
+    pub strength: FindingStrength,
+    pub claim_id: String,
+    pub proposition: Proposition,
+    #[serde(default)]
+    pub evidence_ids: Vec<String>,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
 pub enum VerificationConclusion {
     Supported,
     Contradicted,
@@ -111,6 +138,8 @@ pub struct ReasoningArtifact {
     pub candidate_diagnostics: Vec<CandidateDiagnostic>,
     #[serde(default)]
     pub verification_receipts: Vec<VerificationReceipt>,
+    #[serde(default)]
+    pub adversarial_findings: Vec<AdversarialFinding>,
     #[serde(default)]
     pub claims: Vec<Claim>,
     #[serde(default)]

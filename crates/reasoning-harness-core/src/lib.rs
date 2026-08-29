@@ -1,3 +1,4 @@
+pub mod adversarial;
 pub mod benchmark;
 pub mod candidate;
 pub mod decision;
@@ -11,6 +12,10 @@ pub mod types;
 pub mod validate;
 pub mod verification;
 
+pub use adversarial::{
+    AdversarialDetector, AdversarialDiscoveryPass, StructuredFactConflictDetector,
+    record_soft_finding,
+};
 pub use benchmark::{
     BenchmarkAggregate, BenchmarkArmResult, BenchmarkCaseResult, BenchmarkComparison,
     BenchmarkFixture, aggregate_benchmark, evaluate_benchmark_fixture,
@@ -26,9 +31,9 @@ pub use model::{
 };
 pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema};
 pub use types::{
-    CandidateClaim, CandidateDiagnostic, Claim, EpistemicState, Evidence, HarnessInput, Inference,
-    Proposition, ReasoningArtifact, ReasoningCandidate, Verdict, VerificationConclusion,
-    VerificationReceipt,
+    AdversarialFinding, AdversarialFindingKind, CandidateClaim, CandidateDiagnostic, Claim,
+    EpistemicState, Evidence, FindingStrength, HarnessInput, Inference, Proposition,
+    ReasoningArtifact, ReasoningCandidate, Verdict, VerificationConclusion, VerificationReceipt,
 };
 pub use validate::{Diagnostic, ValidationReport, validate_artifact};
 pub use verification::{

@@ -23,8 +23,11 @@
 - [done] normalize malformed untrusted inference edges with explicit `candidate_diagnostics` rather than failing unrelated claims
 
 ## v0.2 — adversarial reasoning passes
-- generic contradiction discovery pass; trusted-oracle contradiction receipts are implemented
-- counterexample generation + deterministic verification; trusted-oracle counterexample rejection is implemented
+- [done] provider-neutral `AdversarialDetector` contract with typed contradiction/counterexample findings
+- [done] explicit `hard` vs `soft` finding strength; findings never own verdict authority
+- [done] deterministic structured-fact contradiction/counterexample detector
+- [done] counterexample detection metric and adversarial fixture coverage
+- semantic/model-backed discovery remains soft until independently verified
 - assumption pass
 - semantic-loss checks
 
