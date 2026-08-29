@@ -14,7 +14,13 @@ pub fn materialize_candidate(
     input: HarnessInput,
     candidate: ReasoningCandidate,
 ) -> ReasoningArtifact {
-    let (mut claims, mut candidate_diagnostics) = normalize_claims(candidate.claims);
+    let valid_evidence_ids = input
+        .evidence
+        .iter()
+        .map(|evidence| evidence.id.clone())
+        .collect::<HashSet<_>>();
+    let (mut claims, mut candidate_diagnostics) =
+        normalize_claims(candidate.claims, &valid_evidence_ids);
     for (index, proposition) in input.hypotheses.iter().enumerate() {
         if claims
             .iter()
@@ -57,7 +63,10 @@ pub fn materialize_candidate(
     }
 }
 
-fn normalize_claims(claims: Vec<crate::CandidateClaim>) -> (Vec<Claim>, Vec<CandidateDiagnostic>) {
+fn normalize_claims(
+    claims: Vec<crate::CandidateClaim>,
+    valid_evidence_ids: &HashSet<String>,
+) -> (Vec<Claim>, Vec<CandidateDiagnostic>) {
     let mut accepted = Vec::new();
     let mut diagnostics = Vec::new();
     let mut claim_ids = HashSet::new();
@@ -70,12 +79,26 @@ fn normalize_claims(claims: Vec<crate::CandidateClaim>) -> (Vec<Claim>, Vec<Cand
             });
             continue;
         }
+        let mut evidence_ids = Vec::new();
+        for evidence_id in claim.evidence_ids {
+            if valid_evidence_ids.contains(&evidence_id) {
+                evidence_ids.push(evidence_id);
+            } else {
+                diagnostics.push(CandidateDiagnostic {
+                    code: "dropped_missing_candidate_evidence_reference".into(),
+                    message: format!(
+                        "candidate claim {} references missing evidence {}",
+                        claim.id, evidence_id
+                    ),
+                });
+            }
+        }
         accepted.push(Claim {
             id: claim.id,
             statement: claim.statement,
             state: materialized_state(claim.proposed_state),
             proposition: claim.proposition,
-            evidence_ids: claim.evidence_ids,
+            evidence_ids,
         });
     }
 
@@ -162,7 +185,7 @@ fn materialized_state(proposed: EpistemicState) -> EpistemicState {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{CandidateClaim, HarnessInput};
+    use crate::{CandidateClaim, Evidence, HarnessInput};
 
     #[test]
     fn drops_duplicate_candidate_claim_id_but_preserves_first_claim() {
@@ -201,6 +224,41 @@ mod tests {
         assert_eq!(
             artifact.candidate_diagnostics[0].code,
             "dropped_duplicate_claim_id"
+        );
+    }
+
+    #[test]
+    fn drops_missing_candidate_evidence_reference_but_keeps_valid_reference() {
+        let candidate = ReasoningCandidate {
+            claims: vec![CandidateClaim {
+                id: "c1".into(),
+                statement: "claim".into(),
+                proposed_state: EpistemicState::Supported,
+                proposition: None,
+                evidence_ids: vec!["e1".into(), "invented".into()],
+            }],
+            inferences: vec![],
+        };
+        let artifact = materialize_candidate(
+            HarnessInput {
+                task: "task".into(),
+                evidence: vec![Evidence {
+                    id: "e1".into(),
+                    source: "fixture".into(),
+                    observation: "observed".into(),
+                    facts: Default::default(),
+                }],
+                hypotheses: vec![],
+            },
+            candidate,
+        );
+
+        assert_eq!(artifact.claims[0].evidence_ids, vec!["e1"]);
+        assert_eq!(artifact.claims[0].state, EpistemicState::Assumed);
+        assert_eq!(artifact.candidate_diagnostics.len(), 1);
+        assert_eq!(
+            artifact.candidate_diagnostics[0].code,
+            "dropped_missing_candidate_evidence_reference"
         );
     }
 
