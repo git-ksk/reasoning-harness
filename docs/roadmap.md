@@ -1,14 +1,14 @@
 # Roadmap
 
 ## v0.1 — trustworthy intermediate state and native CLI
-- stabilize ReasoningArtifact schema
+- stabilize HarnessInput / ReasoningCandidate / ReasoningArtifact schemas
 - JSON Schema export
 - provenance coverage gates
 - explicit unknown/assumption handling
 - fixture-based eval runner
 - native CLI for run / verify / eval workflows; explain remains deferred until renderer semantics are defined
 - JSON output and CI-safe exit semantics
-- first provider adapter experiment
+- first provider adapter experiment (Mistral HTTP adapter implemented; live benchmark pending credentials)
 - offline fixture regression separated from live provider benchmark runs
 - explicit hard-validator vs soft-judge metric classification
 

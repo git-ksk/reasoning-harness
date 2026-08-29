@@ -1,6 +1,6 @@
 [package]
-name = "reasoning-harness-cli"
-description = "Native CLI for the reasoning harness."
+name = "reasoning-harness-providers"
+description = "Provider adapters for the reasoning harness candidate-generation boundary."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -8,14 +8,11 @@ license.workspace = true
 repository.workspace = true
 publish = false
 
-[[bin]]
-name = "reason"
-path = "src/main.rs"
-
 [dependencies]
-clap.workspace = true
 reasoning-harness-core = { path = "../reasoning-harness-core" }
-reasoning-harness-providers = { path = "../reasoning-harness-providers" }
+reqwest.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+
+[dev-dependencies]
 tokio.workspace = true

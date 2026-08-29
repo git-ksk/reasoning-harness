@@ -1,12 +1,13 @@
 use reasoning_harness_core::{
-    Claim, EpistemicState, HarnessError, ReasoningArtifact, StrictAcceptancePolicy, Verdict,
-    run_harness, run_passes,
+    CandidateClaim, EpistemicState, Evidence, HarnessError, HarnessInput, ReasoningArtifact,
+    ReasoningCandidate, StrictAcceptancePolicy, Verdict, run_harness, run_passes,
 };
 
 #[test]
 fn validates_input_even_when_there_are_no_passes() {
     let artifact = ReasoningArtifact {
-        claims: vec![Claim {
+        task: "test invalid input".into(),
+        claims: vec![reasoning_harness_core::Claim {
             id: "c1".into(),
             statement: "unsupported".into(),
             state: EpistemicState::Supported,
@@ -23,32 +24,45 @@ fn validates_input_even_when_there_are_no_passes() {
 
 #[test]
 fn strict_policy_preserves_unknown_as_a_successful_outcome() {
-    let artifact = ReasoningArtifact {
-        claims: vec![Claim {
+    let input = HarnessInput {
+        task: "answer only when evidence is sufficient".into(),
+        evidence: vec![],
+    };
+    let candidate = ReasoningCandidate {
+        claims: vec![CandidateClaim {
             id: "c1".into(),
             statement: "not enough evidence".into(),
-            state: EpistemicState::Unknown,
+            proposed_state: EpistemicState::Unknown,
             evidence_ids: vec![],
         }],
-        ..Default::default()
+        inferences: vec![],
     };
 
-    let outcome = run_harness(artifact, &[], &StrictAcceptancePolicy).unwrap();
+    let outcome = run_harness(input, candidate, &[], &StrictAcceptancePolicy).unwrap();
     assert_eq!(outcome.verdict, Verdict::Unknown);
 }
 
 #[test]
-fn strict_policy_rejects_contradicted_state() {
-    let artifact = ReasoningArtifact {
-        claims: vec![Claim {
+fn model_proposed_contradiction_cannot_force_runtime_reject() {
+    let input = HarnessInput {
+        task: "check a proposed contradiction".into(),
+        evidence: vec![Evidence {
+            id: "e1".into(),
+            source: "fixture".into(),
+            observation: "fact".into(),
+        }],
+    };
+    let candidate = ReasoningCandidate {
+        claims: vec![CandidateClaim {
             id: "c1".into(),
             statement: "conflict detected".into(),
-            state: EpistemicState::Contradicted,
-            evidence_ids: vec![],
+            proposed_state: EpistemicState::Contradicted,
+            evidence_ids: vec!["e1".into()],
         }],
-        ..Default::default()
+        inferences: vec![],
     };
 
-    let outcome = run_harness(artifact, &[], &StrictAcceptancePolicy).unwrap();
-    assert_eq!(outcome.verdict, Verdict::Reject);
+    let outcome = run_harness(input, candidate, &[], &StrictAcceptancePolicy).unwrap();
+    assert_eq!(outcome.verdict, Verdict::Unknown);
+    assert_eq!(outcome.artifact.claims[0].state, EpistemicState::Assumed);
 }

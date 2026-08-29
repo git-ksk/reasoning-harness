@@ -1,10 +1,12 @@
-use std::{fs, path::PathBuf, process::ExitCode};
+use std::{fs, path::PathBuf, process::ExitCode, time::Instant};
 
 use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
-    ReasoningArtifact, StrictAcceptancePolicy, evaluate, run_harness, validate_artifact,
+    HarnessInput, ModelAdapter, ModelUsage, ReasoningArtifact, ReasoningCandidate,
+    StrictAcceptancePolicy, build_candidate_request, evaluate, run_harness, validate_artifact,
 };
-use serde::Serialize;
+use reasoning_harness_providers::MistralAdapter;
+use serde::{Serialize, de::DeserializeOwned};
 
 #[derive(Debug, Parser)]
 #[command(
@@ -24,21 +26,43 @@ enum OutputFormat {
     Json,
 }
 
+#[derive(Debug, Clone, Copy, ValueEnum)]
+enum Provider {
+    Mistral,
+}
+
 #[derive(Debug, Subcommand)]
 enum Command {
-    /// Execute the deterministic harness over a candidate ReasoningArtifact.
+    /// Generate or load a candidate, then execute the harness-owned correctness process.
     Run {
-        artifact: PathBuf,
+        /// Harness-owned task and evidence JSON.
+        #[arg(long)]
+        input: PathBuf,
+        /// Offline candidate JSON. Mutually exclusive with --provider.
+        #[arg(long)]
+        candidate: Option<PathBuf>,
+        /// Live candidate generator. Mutually exclusive with --candidate.
+        #[arg(long, value_enum)]
+        provider: Option<Provider>,
+        /// Provider model identifier used for live candidate generation.
+        #[arg(long, default_value = "ministral-8b-latest")]
+        model: String,
+        /// Maximum candidate-generation tokens.
+        #[arg(long, default_value_t = 1024)]
+        max_tokens: u32,
+        /// Optional provider random seed for repeatable research runs.
+        #[arg(long)]
+        seed: Option<u64>,
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// Deterministically validate a ReasoningArtifact JSON file.
+    /// Deterministically validate a finalized ReasoningArtifact JSON file.
     Verify {
         artifact: PathBuf,
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// Compute reproducible harness metrics for a ReasoningArtifact JSON file.
+    /// Compute reproducible metrics for a finalized ReasoningArtifact JSON file.
     Eval {
         artifact: PathBuf,
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
@@ -52,8 +76,25 @@ struct VerifyOutput<'a> {
     diagnostics: &'a [reasoning_harness_core::Diagnostic],
 }
 
-fn main() -> ExitCode {
-    match run(Cli::parse()) {
+#[derive(Debug, Serialize)]
+struct GenerationObservation {
+    provider: &'static str,
+    model: String,
+    usage: ModelUsage,
+    latency_ms: u128,
+}
+
+#[derive(Debug, Serialize)]
+struct RunOutput {
+    candidate: ReasoningCandidate,
+    outcome: reasoning_harness_core::HarnessOutcome,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    generation: Option<GenerationObservation>,
+}
+
+#[tokio::main]
+async fn main() -> ExitCode {
+    match run(Cli::parse()).await {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
             eprintln!("{error}");
@@ -62,20 +103,74 @@ fn main() -> ExitCode {
     }
 }
 
-fn run(cli: Cli) -> Result<(), String> {
+async fn run(cli: Cli) -> Result<(), String> {
     match cli.command {
-        Command::Run { artifact, format } => {
-            let artifact = read_artifact(&artifact)?;
-            let outcome = run_harness(artifact, &[], &StrictAcceptancePolicy)
+        Command::Run {
+            input,
+            candidate,
+            provider,
+            model,
+            max_tokens,
+            seed,
+            format,
+        } => {
+            let input: HarnessInput = read_json(&input)?;
+            let (candidate, generation) = match (candidate, provider) {
+                (Some(path), None) => (read_json(&path)?, None),
+                (None, Some(Provider::Mistral)) => {
+                    let adapter =
+                        MistralAdapter::from_env(model).map_err(|error| error.to_string())?;
+                    let request = build_candidate_request(&input, Some(max_tokens), seed)
+                        .map_err(|error| error.to_string())?;
+                    let started = Instant::now();
+                    let response = adapter
+                        .generate(request)
+                        .await
+                        .map_err(|error| error.to_string())?;
+                    let latency_ms = started.elapsed().as_millis();
+                    let candidate: ReasoningCandidate = serde_json::from_str(&response.text)
+                        .map_err(|error| {
+                            format!("provider returned invalid candidate JSON: {error}")
+                        })?;
+                    let observation = GenerationObservation {
+                        provider: "mistral",
+                        model: response.model,
+                        usage: response.usage,
+                        latency_ms,
+                    };
+                    (candidate, Some(observation))
+                }
+                (Some(_), Some(_)) => {
+                    return Err("choose either --candidate or --provider, not both".into());
+                }
+                (None, None) => {
+                    return Err("reason run requires either --candidate or --provider".into());
+                }
+            };
+
+            let outcome = run_harness(input, candidate.clone(), &[], &StrictAcceptancePolicy)
                 .map_err(|error| error.to_string())?;
+            let output = RunOutput {
+                candidate,
+                outcome,
+                generation,
+            };
             match format {
-                OutputFormat::Human => println!("{:?}", outcome.verdict),
-                OutputFormat::Json => print_json(&outcome)?,
+                OutputFormat::Human => {
+                    println!("verdict: {:?}", output.outcome.verdict);
+                    if let Some(generation) = &output.generation {
+                        println!(
+                            "generation: provider={} model={} latency_ms={}",
+                            generation.provider, generation.model, generation.latency_ms
+                        );
+                    }
+                }
+                OutputFormat::Json => print_json(&output)?,
             }
             Ok(())
         }
         Command::Verify { artifact, format } => {
-            let artifact = read_artifact(&artifact)?;
+            let artifact: ReasoningArtifact = read_json(&artifact)?;
             let report = validate_artifact(&artifact);
             match format {
                 OutputFormat::Human if report.is_ok() => println!("valid"),
@@ -96,7 +191,7 @@ fn run(cli: Cli) -> Result<(), String> {
             }
         }
         Command::Eval { artifact, format } => {
-            let artifact = read_artifact(&artifact)?;
+            let artifact: ReasoningArtifact = read_json(&artifact)?;
             let metrics = evaluate(&artifact);
             match format {
                 OutputFormat::Human => println!(
@@ -117,7 +212,7 @@ fn run(cli: Cli) -> Result<(), String> {
     }
 }
 
-fn read_artifact(path: &PathBuf) -> Result<ReasoningArtifact, String> {
+fn read_json<T: DeserializeOwned>(path: &PathBuf) -> Result<T, String> {
     let bytes = fs::read(path).map_err(|error| format!("{}: {error}", path.display()))?;
     serde_json::from_slice(&bytes).map_err(|error| format!("{}: {error}", path.display()))
 }

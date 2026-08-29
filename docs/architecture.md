@@ -54,3 +54,9 @@ All first-party executable and library components are implemented in Rust. This 
 The runtime validates the input artifact before the first pass and after every pass. A policy then maps the valid artifact to `accept | reject | unknown`. The initial strict policy rejects explicit contradictions and preserves `assumed` or `unknown` claims as an `unknown` outcome. This policy is intentionally conservative and will evolve only with fixture evidence.
 
 See [prior art](prior-art.md) for external design patterns considered without adding runtime dependencies.
+
+## Candidate authority boundary
+
+Model output is represented as `ReasoningCandidate`, not as a finalized `ReasoningArtifact`. The candidate contains proposed claims, proposed epistemic states, and inference edges, but it cannot supply evidence. The runtime combines the candidate with harness-owned `HarnessInput` and initially materializes model-proposed `known`, `supported`, `inferred`, or `contradicted` states as `assumed`. Only harness-owned verification passes may later establish stronger states. A model may preserve `unknown` because uncertainty is a safe epistemic outcome.
+
+This prevents a provider from fabricating its own evidence records, self-certifying a claim as supported, or forcing a final contradiction verdict merely by emitting a schema-valid label.

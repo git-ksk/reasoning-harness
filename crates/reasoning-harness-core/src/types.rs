@@ -1,6 +1,7 @@
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum EpistemicState {
     Known,
@@ -11,14 +12,14 @@ pub enum EpistemicState {
     Unknown,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct Evidence {
     pub id: String,
     pub source: String,
     pub observation: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct Claim {
     pub id: String,
     pub statement: String,
@@ -27,7 +28,16 @@ pub struct Claim {
     pub evidence_ids: Vec<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct CandidateClaim {
+    pub id: String,
+    pub statement: String,
+    pub proposed_state: EpistemicState,
+    #[serde(default)]
+    pub evidence_ids: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct Inference {
     pub id: String,
     #[serde(default)]
@@ -36,8 +46,24 @@ pub struct Inference {
     pub method: String,
 }
 
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct HarnessInput {
+    pub task: String,
+    #[serde(default)]
+    pub evidence: Vec<Evidence>,
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct ReasoningCandidate {
+    #[serde(default)]
+    pub claims: Vec<CandidateClaim>,
+    #[serde(default)]
+    pub inferences: Vec<Inference>,
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct ReasoningArtifact {
+    pub task: String,
     #[serde(default)]
     pub evidence: Vec<Evidence>,
     #[serde(default)]
@@ -46,7 +72,7 @@ pub struct ReasoningArtifact {
     pub inferences: Vec<Inference>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum Verdict {
     Accept,

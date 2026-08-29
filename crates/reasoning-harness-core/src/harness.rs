@@ -1,7 +1,10 @@
 use serde::Serialize;
 use thiserror::Error;
 
-use crate::{AcceptancePolicy, ReasoningArtifact, ValidationReport, Verdict, validate_artifact};
+use crate::{
+    AcceptancePolicy, HarnessInput, ReasoningArtifact, ReasoningCandidate, ValidationReport,
+    Verdict, materialize_candidate, validate_artifact,
+};
 
 pub trait Pass {
     fn name(&self) -> &'static str;
@@ -47,10 +50,12 @@ pub fn run_passes(
 }
 
 pub fn run_harness(
-    artifact: ReasoningArtifact,
+    input: HarnessInput,
+    candidate: ReasoningCandidate,
     passes: &[Box<dyn Pass>],
     policy: &dyn AcceptancePolicy,
 ) -> Result<HarnessOutcome, HarnessError> {
+    let artifact = materialize_candidate(input, candidate);
     let artifact = run_passes(artifact, passes)?;
     Ok(HarnessOutcome {
         verdict: policy.decide(&artifact),

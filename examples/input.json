@@ -1,0 +1,10 @@
+{
+  "task": "Determine what can be concluded from the supplied evidence.",
+  "evidence": [
+    {
+      "id": "e1",
+      "source": "fixture",
+      "observation": "The source explicitly states the observed fact."
+    }
+  ]
+}

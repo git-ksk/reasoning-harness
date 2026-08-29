@@ -1,23 +1,15 @@
 {
-  "task": "Determine what can be concluded from the supplied evidence.",
-  "evidence": [
-    {
-      "id": "e1",
-      "source": "fixture",
-      "observation": "The source explicitly states the observed fact."
-    }
-  ],
   "claims": [
     {
       "id": "c1",
       "statement": "The observed fact is known from the source.",
-      "state": "known",
+      "proposed_state": "known",
       "evidence_ids": ["e1"]
     },
     {
       "id": "c2",
       "statement": "A required external fact is not available.",
-      "state": "unknown",
+      "proposed_state": "unknown",
       "evidence_ids": []
     }
   ],

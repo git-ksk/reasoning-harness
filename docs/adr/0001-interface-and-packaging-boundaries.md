@@ -43,6 +43,8 @@ run({
 
 The exact public API may evolve during v0.x, but these ownership rules are stable:
 
+- Harness-owned input supplies task and evidence; model candidates cannot create trusted evidence.
+- Model-proposed strong epistemic states are not final authority.
 - The runtime owns execution order.
 - The runtime validates state after every pass.
 - The runtime decides `accept | reject | unknown` according to explicit policy.
@@ -163,6 +165,7 @@ The repository is a small Cargo workspace with ownership boundaries that already
 ```text
 crates/reasoning-harness-core/   runtime, IR, validators, passes, eval primitives
 crates/reasoning-harness-cli/    native `reason` executable
+crates/reasoning-harness-providers/ provider-specific HTTP adapters
 examples/                        executable artifacts
 docs/                            architecture, ADRs, research notes
 ```

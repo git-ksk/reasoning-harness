@@ -5,6 +5,7 @@ use reasoning_harness_core::{
 #[test]
 fn accepts_an_evidence_backed_known_claim() {
     let artifact = ReasoningArtifact {
+        task: "fixture task".into(),
         evidence: vec![Evidence {
             id: "e1".into(),
             source: "fixture".into(),
@@ -24,6 +25,7 @@ fn accepts_an_evidence_backed_known_claim() {
 #[test]
 fn rejects_a_supported_claim_without_evidence() {
     let artifact = ReasoningArtifact {
+        task: "fixture task".into(),
         claims: vec![Claim {
             id: "c1".into(),
             statement: "unsupported".into(),
@@ -43,6 +45,7 @@ fn rejects_a_supported_claim_without_evidence() {
 #[test]
 fn rejects_references_to_missing_evidence() {
     let artifact = ReasoningArtifact {
+        task: "fixture task".into(),
         claims: vec![Claim {
             id: "c1".into(),
             statement: "bad ref".into(),
@@ -62,6 +65,7 @@ fn rejects_references_to_missing_evidence() {
 #[test]
 fn rejects_an_inferred_claim_without_an_inference_edge() {
     let artifact = ReasoningArtifact {
+        task: "fixture task".into(),
         claims: vec![Claim {
             id: "c1".into(),
             statement: "derived conclusion".into(),

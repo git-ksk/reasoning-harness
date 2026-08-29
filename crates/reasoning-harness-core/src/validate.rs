@@ -27,6 +27,13 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
     let mut claim_ids = HashSet::new();
     let mut inference_ids = HashSet::new();
 
+    if artifact.task.trim().is_empty() {
+        diagnostics.push(Diagnostic {
+            code: "empty_task",
+            message: "reasoning artifact task must not be empty".into(),
+        });
+    }
+
     for evidence in &artifact.evidence {
         if evidence.id.trim().is_empty() {
             diagnostics.push(Diagnostic {
