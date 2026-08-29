@@ -36,7 +36,7 @@ Transform a verified artifact into progressively simpler explanations and detect
 - assumption extraction
 - first-principles decomposition
 - semantic-loss verification
-- oracle adapter interface
+- generalized oracle adapter interface (typed trusted receipts are implemented; adapter contract remains)
 - verification-budget policies
 
 ## Evaluation principle
@@ -48,3 +48,7 @@ Do not optimize for a single judge-model score. Prefer measurable protocol prope
 The first benchmark holds the generated candidate constant between a naive baseline and the harness arm so that measured differences come from the deterministic process rather than a different model sample. Recorded candidates are CI regression fixtures only; empirical claims require live repeated provider runs. See [benchmark design](benchmark.md).
 
 The benchmark must penalize both false acceptance and trivial over-conservatism. Therefore verdict accuracy and per-class accept/reject/unknown recall are reported alongside unsupported accepted claims.
+
+## Oracle-controlled regression vs open-world research
+
+Fixture oracle receipts are used only where the expected hard result is deliberately known. They test whether the harness correctly consumes authority without granting that authority to the model. Open-world contradiction discovery, counterexample generation, and semantic causal evaluation are separate research problems and must be measured separately.

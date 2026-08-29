@@ -13,8 +13,9 @@ ReasoningArtifact / framework trace
    |
    +--> deterministic validation
    +--> evidence / provenance gates
-   +--> contradiction and adversarial passes (planned)
-   +--> external oracle checks when available
+   +--> trusted verification receipts from deterministic/external oracles
+   +--> narrow deterministic framework passes
+   +--> contradiction and adversarial discovery passes (planned)
    |
    v
 accept | reject | unknown
@@ -60,3 +61,13 @@ See [prior art](prior-art.md) for external design patterns considered without ad
 Model output is represented as `ReasoningCandidate`, not as a finalized `ReasoningArtifact`. The candidate contains proposed claims, proposed epistemic states, and inference edges, but it cannot supply evidence. The runtime combines the candidate with harness-owned `HarnessInput` and initially materializes model-proposed `known`, `supported`, `inferred`, or `contradicted` states as `assumed`. Only harness-owned verification passes may later establish stronger states. A model may preserve `unknown` because uncertainty is a safe epistemic outcome.
 
 This prevents a provider from fabricating its own evidence records, self-certifying a claim as supported, or forcing a final contradiction verdict merely by emitting a schema-valid label.
+
+## Verification receipt boundary
+
+`VerificationReceipt` is authority-bearing data and is deliberately absent from `ReasoningCandidate` and the provider prompt. A trusted verifier creates receipts only after candidate generation. Receipts bind to an exact claim statement and optionally a claim ID, identify the verifier, cite harness-owned evidence, and conclude either `supported` or `contradicted`. The trusted verification pass fails closed unless each receipt binds to exactly one claim.
+
+A receipt is not a semantic score. It represents a hard verifier result whose authority comes from the verifier named by the caller. The current fixture benchmark uses explicit `fixture_oracle` receipts to test process correctness under known oracle coverage; this must not be reported as generic reasoning accuracy.
+
+## Narrow deterministic framework checks
+
+The Five Whys restatement pass removes a causal edge only when a deliberately narrow lexical heuristic recognizes that the proposed cause substantially restates the effect. The conclusion remains uncertain. This avoids turning a string heuristic into semantic causal authority.

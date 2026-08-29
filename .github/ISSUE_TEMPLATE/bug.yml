@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible harness, CLI, provider, or benchmark defect.
+title: "bug: "
+labels: [bug]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What happened and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Minimal commands, fixture, or artifact. Remove credentials and sensitive data.
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Correctness boundary
+      description: Which trusted/untrusted boundary appears affected?

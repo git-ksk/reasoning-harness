@@ -1,0 +1,24 @@
+name: Research / benchmark proposal
+description: Propose a reasoning pass, adversarial fixture, metric, or experiment.
+title: "research: "
+labels: [research]
+body:
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis
+      description: What measurable reliability property should improve?
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: Proposed method
+      description: Describe fixtures, oracle, pass, metrics, and confounders.
+    validations:
+      required: true
+  - type: textarea
+    id: gate
+    attributes:
+      label: Hard vs soft evidence
+      description: Which results are deterministic gates and which are only soft/model-based evidence?

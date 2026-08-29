@@ -62,19 +62,21 @@ The resulting report records token counts, latency, and calculated cost when all
 
 ## Current recorded-fixture baseline
 
-The initial seven-fixture regression baseline is intentionally imperfect:
+With fixture-owned trusted verification receipts for cases where a deterministic golden oracle is available, the seven recorded fixtures currently produce:
 
 - naive baseline verdict accuracy: 2/7;
-- harness verdict accuracy: 4/7;
+- harness verdict accuracy under fixture-oracle coverage: 7/7;
 - unsupported accepted claims: 3 → 0;
+- accept recall: 1.0 → 1.0;
+- reject recall: 0.0 → 1.0;
 - unknown recall: 0.25 → 1.0;
 - hidden assumption exposure: 0.0 → 1.0;
-- accept recall: 1.0 → 0.0;
-- reject recall: 0.0 → 0.0;
-- contradiction detection: 0.0 → 0.0;
-- the known bad 5 Whys causal edge is still retained.
+- contradiction detection: 0.0 → 1.0 where a trusted contradiction receipt exists;
+- known bad Five Whys edges retained: 1 → 0.
 
-These numbers are not a model benchmark. They show what the current deterministic policy fixes and, equally importantly, what it still cannot establish. In particular, the harness is currently too conservative to upgrade an actually supported claim to `accept`, and it lacks contradiction/counterexample passes.
+This **is not 100% generic model reasoning accuracy**. It is a deterministic process regression result under explicit golden-oracle coverage. The support and contradiction fixtures contain trusted receipts that the model cannot see or create. Cases without oracle authority still resolve conservatively to `unknown`. Generic semantic contradiction discovery and counterexample verification remain research gaps.
+
+A first live Mistral run before receipt-backed verification was introduced used seven generations, 6,022 tokens, and roughly 17.2 seconds of provider latency. It confirmed the core safety trade-off: untrusted candidate states could accept an unsupported claim, while the harness eliminated unsupported acceptance but was over-conservative. Future live runs should be compared as stochastic research observations, never as a replacement for the committed deterministic fixture baseline.
 
 ## Regression policy
 

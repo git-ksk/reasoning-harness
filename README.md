@@ -16,9 +16,11 @@ This repository exists to measure that question rather than assume the answer.
 
 - Harness-owned `HarnessInput`: task plus immutable supplied evidence.
 - Untrusted `ReasoningCandidate`: model-proposed claims, epistemic states, and inference edges; it cannot create evidence.
-- `ReasoningArtifact`: harness-materialized task, evidence, claims, and inference edges.
+- `ReasoningArtifact`: harness-materialized task, evidence, verification receipts, claims, and inference edges.
 - Epistemic states: `known`, `supported`, `inferred`, `assumed`, `contradicted`, `unknown`.
-- Deterministic validation for provenance and reference integrity.
+- Deterministic validation for provenance, receipt binding, and reference integrity.
+- Trusted verification receipts for oracle-backed support promotion or contradiction; receipts are never model-owned or model-visible.
+- A narrow deterministic Five Whys pass that removes lexical symptom-restatement edges without pretending to be a semantic causal judge.
 - A pass-based harness runtime that fails closed when a pass produces invalid state.
 - A first structured framework primitive for evidence-aware 5 Whys.
 - Basic eval metrics for evidence coverage and unsupported accepted claims.
@@ -47,6 +49,7 @@ cargo fmt --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 cargo run -p reasoning-harness-cli -- run --input examples/input.json --candidate examples/candidate.json --format json
+cargo run -p reasoning-harness-cli -- run --input examples/input.json --candidate examples/candidate.json --receipts examples/receipts.json --format json
 cargo run -p reasoning-harness-cli -- verify examples/artifact.json --format json
 cargo run -p reasoning-harness-cli -- eval examples/artifact.json
 cargo run -p reasoning-harness-cli -- eval fixtures --format human
@@ -55,4 +58,4 @@ cargo run -p reasoning-harness-cli -- eval fixtures --format human
 cargo run -p reasoning-harness-cli -- run --input examples/input.json --provider mistral --model ministral-8b-latest --format json
 ```
 
-See [docs/research-plan.md](docs/research-plan.md), [docs/benchmark.md](docs/benchmark.md), [docs/architecture.md](docs/architecture.md), [docs/prior-art.md](docs/prior-art.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).
+See [project status](docs/project-status.md), [research plan](docs/research-plan.md), [benchmark design](docs/benchmark.md), [architecture](docs/architecture.md), [prior art](docs/prior-art.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).
