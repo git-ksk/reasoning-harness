@@ -4,12 +4,14 @@ use reasoning_harness_core::{
     ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
     ModelUsage,
 };
-use reqwest::{Client, Url};
+use reqwest::{Client, StatusCode, Url, header::RETRY_AFTER};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 const DEFAULT_BASE_URL: &str = "https://generativelanguage.googleapis.com/v1beta/";
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(180);
+const MAX_RATE_LIMIT_RETRIES: usize = 3;
+const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(10);
 
 /// Google Gemini API / AI Studio adapter for Google-hosted text models.
 ///
@@ -99,27 +101,42 @@ impl GoogleAdapter {
             store: false,
         };
 
-        let response = self
-            .client
-            .post(endpoint)
-            .header("x-goog-api-key", &self.api_key)
-            .json(&body)
-            .send()
-            .await
-            .map_err(|error| {
-                let detail = if error.is_timeout() {
-                    "Gemini API request timed out".to_string()
-                } else {
-                    format!("Gemini API request failed: {error}")
-                };
-                ModelError::new(ModelErrorKind::Transport, detail)
-            })?;
+        let mut rate_limit_retries = 0usize;
+        let response = loop {
+            let response = self
+                .client
+                .post(endpoint.clone())
+                .header("x-goog-api-key", &self.api_key)
+                .json(&body)
+                .send()
+                .await
+                .map_err(|error| {
+                    let detail = if error.is_timeout() {
+                        "Gemini API request timed out".to_string()
+                    } else {
+                        format!("Gemini API request failed: {error}")
+                    };
+                    ModelError::new(ModelErrorKind::Transport, detail)
+                })?;
+
+            if response.status() != StatusCode::TOO_MANY_REQUESTS
+                || rate_limit_retries >= MAX_RATE_LIMIT_RETRIES
+            {
+                break response;
+            }
+
+            let delay = rate_limit_delay(response.headers(), rate_limit_retries);
+            rate_limit_retries += 1;
+            tokio::time::sleep(delay).await;
+        };
 
         let status = response.status();
         if !status.is_success() {
             return Err(ModelError::new(
                 ModelErrorKind::Provider,
-                format!("Gemini API returned HTTP {status}"),
+                format!(
+                    "Gemini API returned HTTP {status} after {rate_limit_retries} rate-limit retries"
+                ),
             ));
         }
 
@@ -183,6 +200,21 @@ struct ResponseFormat {
     mime_type: &'static str,
     #[serde(skip_serializing_if = "Option::is_none")]
     schema: Option<Value>,
+}
+
+fn rate_limit_delay(headers: &reqwest::header::HeaderMap, retry_index: usize) -> Duration {
+    if let Some(seconds) = headers
+        .get(RETRY_AFTER)
+        .and_then(|value| value.to_str().ok())
+        .and_then(|value| value.parse::<u64>().ok())
+    {
+        return Duration::from_secs(seconds.max(1));
+    }
+
+    let multiplier = 1u32.checked_shl(retry_index as u32).unwrap_or(u32::MAX);
+    INITIAL_RATE_LIMIT_BACKOFF
+        .checked_mul(multiplier)
+        .unwrap_or(Duration::MAX)
 }
 
 fn response_format(format: ModelOutputFormat) -> ResponseFormat {
@@ -293,6 +325,21 @@ mod tests {
         .unwrap();
         assert_eq!(response.text().unwrap(), "{\"claims\":[]}");
         assert_eq!(response.usage.unwrap().total_tokens, Some(14));
+    }
+
+    #[test]
+    fn rate_limit_delay_prefers_retry_after_header() {
+        let mut headers = reqwest::header::HeaderMap::new();
+        headers.insert(RETRY_AFTER, reqwest::header::HeaderValue::from_static("7"));
+        assert_eq!(rate_limit_delay(&headers, 2), Duration::from_secs(7));
+    }
+
+    #[test]
+    fn rate_limit_delay_uses_bounded_exponential_fallback() {
+        let headers = reqwest::header::HeaderMap::new();
+        assert_eq!(rate_limit_delay(&headers, 0), Duration::from_secs(10));
+        assert_eq!(rate_limit_delay(&headers, 1), Duration::from_secs(20));
+        assert_eq!(rate_limit_delay(&headers, 2), Duration::from_secs(40));
     }
 
     #[test]

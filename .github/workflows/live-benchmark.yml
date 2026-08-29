@@ -67,9 +67,9 @@ jobs:
     if: inputs.google_model != 'none'
     name: google-${{ matrix.model }}
     runs-on: ubuntu-latest
-    # Keep probing 26B without making the diagnostic matrix unusable while its latency is characterized.
+    # Keep probing 26B without making the diagnostic matrix unusable while its larger output is characterized.
     continue-on-error: ${{ matrix.model == 'gemma-4-26b-a4b-it' }}
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       max-parallel: 1
