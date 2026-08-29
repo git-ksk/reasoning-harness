@@ -1,0 +1,41 @@
+{
+  "id": "partial-population",
+  "description": "A successful sample does not establish a universal population-level claim.",
+  "input": {
+    "task": "Did every batch job succeed?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sample summary",
+        "observation": "Jobs 1 through 20 succeeded.",
+        "facts": {
+          "sample.jobs_1_20_succeeded": "true"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "Every batch job succeeded.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "jobs.all_succeeded",
+          "value": "true"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "unknown",
+  "unsupported_claim_ids": [
+    "c1"
+  ],
+  "hidden_assumption_claim_ids": [
+    "c1"
+  ]
+}

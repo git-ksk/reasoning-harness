@@ -1,0 +1,46 @@
+{
+  "id": "contradictory-version",
+  "description": "Two supplied manifests disagree on the deployed version.",
+  "input": {
+    "task": "Which version is deployed?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "manifest A",
+        "observation": "Version 2.0 is deployed.",
+        "facts": {
+          "service.version": "2.0"
+        }
+      },
+      {
+        "id": "e2",
+        "source": "manifest B",
+        "observation": "Version 2.1 is deployed.",
+        "facts": {
+          "service.version": "2.1"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "Version 2.1 is deployed.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "service.version",
+          "value": "2.1"
+        },
+        "evidence_ids": [
+          "e2"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "reject",
+  "contradiction_claim_ids": [
+    "c1"
+  ]
+}

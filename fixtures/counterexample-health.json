@@ -1,0 +1,52 @@
+{
+  "id": "counterexample-health",
+  "description": "A universal health claim is defeated by one structured unhealthy observation.",
+  "input": {
+    "task": "Are all workers healthy?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "worker 1 probe",
+        "observation": "Worker 1 is healthy."
+      },
+      {
+        "id": "e2",
+        "source": "worker 2 probe",
+        "observation": "Worker 2 is unhealthy.",
+        "facts": {
+          "workers.all_healthy": "false"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "All workers are healthy.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "workers.all_healthy",
+          "value": "true"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "reject",
+  "unsupported_claim_ids": [
+    "c1"
+  ],
+  "hidden_assumption_claim_ids": [
+    "c1"
+  ],
+  "contradiction_claim_ids": [
+    "c1"
+  ],
+  "counterexample_claim_ids": [
+    "c1"
+  ]
+}

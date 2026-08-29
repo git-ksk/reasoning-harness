@@ -23,15 +23,19 @@ reason eval fixtures --provider mistral --model ministral-8b-latest --trials 5
 
 Use `--seed` when a provider supports it. Trial N uses `base_seed + N`. Live runs are intentionally not part of the required CI gate because network availability, provider behavior, quota, and cost are external variables.
 
-## Initial fixtures
+## Recorded corpus
 
-- sufficient direct evidence;
-- intentionally missing evidence;
-- misleading evidence from a different scope;
-- contradictory evidence;
-- 5 Whys symptom restatement;
-- a supplied counterexample to a universal claim;
-- a case where `unknown` is the correct answer.
+The committed regression corpus contains 20 fixtures: 5 expected `accept`, 6 expected `reject`, and 9 expected `unknown`. It covers:
+
+- direct structured facts across booleans, counts, versions, regions, and HTTP status;
+- missing facts and correctly preserved unknowns;
+- environment, tenant, temporal, and population-scope overreach;
+- contradictory structured observations;
+- counterexamples to universal health, policy, and request-success claims;
+- unsupported causal attribution;
+- Five Whys symptom restatement.
+
+The corpus is intentionally adversarial and is still small enough to inspect case-by-case. It is a deterministic protocol regression suite, not a statistically representative model benchmark.
 
 ## Metrics
 
@@ -63,19 +67,20 @@ The resulting report records token counts, latency, and calculated cost when all
 
 ## Current recorded-fixture baseline
 
-With fixture-owned trusted verification receipts for cases where a deterministic golden oracle is available, the seven recorded fixtures currently produce:
+With harness-owned structured facts and trusted verification where deterministic authority is available, the 20 recorded fixtures currently produce:
 
-- naive baseline verdict accuracy: 2/7;
-- harness verdict accuracy under fixture-oracle coverage: 7/7;
-- unsupported accepted claims: 3 → 0;
+- naive baseline verdict accuracy: 8/20 (40%);
+- harness verdict accuracy under deterministic fixture coverage: 20/20;
+- unsupported accepted claims: 8 → 0;
 - accept recall: 1.0 → 1.0;
 - reject recall: 0.0 → 1.0;
-- unknown recall: 0.25 → 1.0;
-- hidden assumption exposure: 0.0 → 1.0;
-- contradiction detection: 0.0 → 1.0 where a trusted contradiction receipt exists;
+- unknown recall: 0.333 → 1.0;
+- hidden assumption exposure: 0.1 → 1.0;
+- contradiction detection: 0.0 → 1.0 for labeled deterministic conflicts;
+- counterexample detection: 0.0 → 1.0 for labeled deterministic counterexamples;
 - known bad Five Whys edges retained: 1 → 0.
 
-This **is not 100% generic model reasoning accuracy**. It is a deterministic process regression result under explicit golden-oracle coverage. The support and contradiction fixtures contain trusted receipts that the model cannot see or create. Cases without oracle authority still resolve conservatively to `unknown`. Generic semantic contradiction discovery and counterexample verification remain research gaps.
+This **is not 100% generic model reasoning accuracy**. It is a deterministic process regression result under explicit structured-fact/oracle coverage. Harness-owned facts and hard verifier outputs cannot be created by the model. Cases without hard authority still resolve conservatively to `unknown`. Soft semantic discovery remains a research gap.
 
 A first live Mistral run before receipt-backed verification was introduced used seven generations, 6,022 tokens, and roughly 17.2 seconds of provider latency. It confirmed the core safety trade-off: untrusted candidate states could accept an unsupported claim, while the harness eliminated unsupported acceptance but was over-conservative.
 

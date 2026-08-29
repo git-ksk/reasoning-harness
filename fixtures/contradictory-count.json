@@ -1,0 +1,46 @@
+{
+  "id": "contradictory-count",
+  "description": "Two authoritative snapshots disagree on the same replica count.",
+  "input": {
+    "task": "How many replicas are ready?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "snapshot A",
+        "observation": "Three replicas are ready.",
+        "facts": {
+          "replicas.ready": "3"
+        }
+      },
+      {
+        "id": "e2",
+        "source": "snapshot B",
+        "observation": "Four replicas are ready.",
+        "facts": {
+          "replicas.ready": "4"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "Three replicas are ready.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "replicas.ready",
+          "value": "3"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "reject",
+  "contradiction_claim_ids": [
+    "c1"
+  ]
+}

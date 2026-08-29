@@ -26,6 +26,7 @@ This repository exists to measure that question rather than assume the answer.
 - A pass-based harness runtime that fails closed when a pass produces invalid state.
 - A first structured framework primitive for evidence-aware 5 Whys.
 - Basic eval metrics for evidence coverage and unsupported accepted claims.
+- Twenty committed adversarial regression fixtures spanning direct facts, missing/scope-limited evidence, contradictions, counterexamples, causal overreach, and correct unknowns.
 - Provider-neutral Rust `ModelAdapter`; model output is always outside the correctness boundary.
 - Initial Mistral HTTP adapter in a separate Rust crate, using structured candidate output without granting provider authority.
 - Native Rust CLI (`reason run`, `reason verify`, `reason eval`) sharing the exact same core validators and acceptance policy.

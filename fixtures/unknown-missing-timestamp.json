@@ -1,0 +1,29 @@
+{
+  "id": "unknown-missing-timestamp",
+  "description": "The candidate correctly reports unknown when the requested timestamp is absent.",
+  "input": {
+    "task": "When was the backup completed?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "backup summary",
+        "observation": "The backup completed successfully.",
+        "facts": {
+          "backup.succeeded": "true"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "The completion timestamp cannot be determined from the supplied evidence.",
+        "proposed_state": "unknown",
+        "evidence_ids": []
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "unknown"
+}

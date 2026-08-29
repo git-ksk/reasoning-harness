@@ -1,0 +1,35 @@
+{
+  "id": "direct-count",
+  "description": "A numeric count is directly supported by a machine-owned fact.",
+  "input": {
+    "task": "How many replicas are ready?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "orchestrator status",
+        "observation": "Three replicas are ready.",
+        "facts": {
+          "replicas.ready": "3"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "There are three ready replicas.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "replicas.ready",
+          "value": "3"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "accept"
+}

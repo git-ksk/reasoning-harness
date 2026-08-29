@@ -1,0 +1,41 @@
+{
+  "id": "stale-scope",
+  "description": "A previous-deployment fact cannot establish the current deployment state.",
+  "input": {
+    "task": "Is the current deployment healthy?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "previous deployment",
+        "observation": "The previous deployment was healthy.",
+        "facts": {
+          "previous_deployment.healthy": "true"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "The current deployment is healthy.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "current_deployment.healthy",
+          "value": "true"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "unknown",
+  "unsupported_claim_ids": [
+    "c1"
+  ],
+  "hidden_assumption_claim_ids": [
+    "c1"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "cross-tenant-scope",
+  "description": "A fact about one tenant cannot be generalized to another tenant.",
+  "input": {
+    "task": "Is tenant B billing enabled?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "tenant A config",
+        "observation": "Billing is enabled for tenant A.",
+        "facts": {
+          "tenant_a.billing.enabled": "true"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "Billing is enabled for tenant B.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "tenant_b.billing.enabled",
+          "value": "true"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "unknown",
+  "unsupported_claim_ids": [
+    "c1"
+  ],
+  "hidden_assumption_claim_ids": [
+    "c1"
+  ]
+}

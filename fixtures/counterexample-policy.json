@@ -1,0 +1,52 @@
+{
+  "id": "counterexample-policy",
+  "description": "A universal policy-compliance claim ignores one violating record.",
+  "input": {
+    "task": "Did every record comply with policy?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "audit sample",
+        "observation": "Most sampled records complied."
+      },
+      {
+        "id": "e2",
+        "source": "audit violation",
+        "observation": "Record 42 violated policy.",
+        "facts": {
+          "records.all_compliant": "false"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "Every record complied with policy.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "records.all_compliant",
+          "value": "true"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "reject",
+  "unsupported_claim_ids": [
+    "c1"
+  ],
+  "hidden_assumption_claim_ids": [
+    "c1"
+  ],
+  "contradiction_claim_ids": [
+    "c1"
+  ],
+  "counterexample_claim_ids": [
+    "c1"
+  ]
+}

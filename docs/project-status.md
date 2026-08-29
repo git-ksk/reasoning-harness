@@ -15,16 +15,15 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Trusted verification receipts that are never model-owned or model-visible.
 - Receipt-backed support promotion and contradiction rejection.
 - Narrow deterministic Five Whys lexical-restatement removal.
-- Seven committed regression fixtures.
+- Twenty committed regression fixtures (5 accept / 6 reject / 9 unknown).
 - Mistral live benchmark workflow, manually triggered and secret-isolated.
 - GitHub CI, Dependabot configuration, contribution/security guidance, issue and PR templates.
 
 ## Known gaps
 
 - Exact natural-language receipt binding was confirmed too brittle for live paraphrases. The current implementation now uses typed propositions and harness-owned structured facts for the built-in hard verifier; exact-string binding remains compatibility-only.
-- P0 validation still requires a live Mistral benchmark after the typed-target migration before Issue #2 can be closed.
-- No generic semantic contradiction detector: contradiction authority currently requires a trusted receipt/oracle.
-- No generic counterexample generator/verifier.
+- Hard contradiction/counterexample discovery exists for structured harness-owned facts; semantic/model-backed discovery remains soft-only and is not yet implemented.
+- Counterexample discovery coverage is still narrow outside explicit structured propositions.
 - Five Whys pass is intentionally lexical and narrow, not a semantic causal judge.
 - No assumption extraction, first-principles pass, semantic-loss verifier, or verification-budget policy yet.
 - Live model results are too small and stochastic for broad model-quality claims.
@@ -41,4 +40,4 @@ After migrating the built-in hard verifier to typed propositions, canonical veri
 
 ### Adversarial discovery
 
-The core now has a provider-neutral `AdversarialDetector` contract and typed `AdversarialFinding` records. Structured harness-owned fact conflicts are classified deterministically as hard contradictions or counterexamples. Findings themselves remain observational; only the verifier boundary can change epistemic state or force rejection. The recorded counterexample fixture reaches counterexample detection 1.0.
+The core now has a provider-neutral `AdversarialDetector` contract and typed `AdversarialFinding` records. Structured harness-owned fact conflicts are classified deterministically as hard contradictions or counterexamples. Findings themselves remain observational; only the verifier boundary can change epistemic state or force rejection. The 20-case recorded corpus reaches contradiction detection 1.0 and counterexample detection 1.0 under deterministic structured-fact coverage.

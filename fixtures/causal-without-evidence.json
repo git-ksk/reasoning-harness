@@ -1,0 +1,47 @@
+{
+  "id": "causal-without-evidence",
+  "description": "An observed symptom does not establish the proposed root cause.",
+  "input": {
+    "task": "What caused the service restart?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "event log",
+        "observation": "The service restarted at 10:04.",
+        "facts": {
+          "service.restarted": "true"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "The service restarted.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "service.restarted",
+          "value": "true"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      },
+      {
+        "id": "c2",
+        "statement": "An out-of-memory condition caused the restart.",
+        "proposed_state": "assumed",
+        "evidence_ids": []
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "unknown",
+  "unsupported_claim_ids": [
+    "c2"
+  ],
+  "hidden_assumption_claim_ids": [
+    "c2"
+  ]
+}

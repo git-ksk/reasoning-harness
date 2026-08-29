@@ -1,0 +1,35 @@
+{
+  "id": "direct-boolean",
+  "description": "A direct boolean machine fact supports a narrow enabled-state claim.",
+  "input": {
+    "task": "Is maintenance mode enabled?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "runtime config",
+        "observation": "Maintenance mode is disabled.",
+        "facts": {
+          "maintenance.enabled": "false"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "Maintenance mode is disabled.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "maintenance.enabled",
+          "value": "false"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "accept"
+}

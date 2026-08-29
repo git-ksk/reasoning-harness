@@ -1,0 +1,35 @@
+{
+  "id": "direct-version",
+  "description": "A version string is directly available as a structured fact.",
+  "input": {
+    "task": "Which API version is deployed?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "deployment manifest",
+        "observation": "API version v3.2.1 is deployed.",
+        "facts": {
+          "api.version": "v3.2.1"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "The deployed API version is v3.2.1.",
+        "proposed_state": "known",
+        "proposition": {
+          "key": "api.version",
+          "value": "v3.2.1"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "accept"
+}

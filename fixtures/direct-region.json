@@ -1,0 +1,35 @@
+{
+  "id": "direct-region",
+  "description": "A deployment region is explicitly provided as a structured fact.",
+  "input": {
+    "task": "Which region handled the request?",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "trace metadata",
+        "observation": "The request ran in eu-west-1.",
+        "facts": {
+          "request.region": "eu-west-1"
+        }
+      }
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "The request ran in eu-west-1.",
+        "proposed_state": "supported",
+        "proposition": {
+          "key": "request.region",
+          "value": "eu-west-1"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "accept"
+}
