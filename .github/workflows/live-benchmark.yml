@@ -44,6 +44,9 @@ jobs:
   gemma:
     name: gemma-${{ matrix.model }}
     runs-on: ubuntu-latest
+    # 26B is currently returning provider-side 403 for this project while 31B is available.
+    # Keep probing it without making the diagnostic matrix unusable.
+    continue-on-error: ${{ matrix.model == 'gemma-4-26b-a4b-it' }}
     timeout-minutes: 15
     strategy:
       fail-fast: false

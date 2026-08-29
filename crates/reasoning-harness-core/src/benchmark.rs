@@ -377,10 +377,12 @@ fn aggregate_arm<'a>(
         hidden_exposed as f64 / expected_hidden as f64
     };
 
-    let contradiction_detected: usize = results
+    let contradiction_detected = results
         .iter()
-        .map(|result| select(result).contradiction_claims_detected)
-        .sum();
+        .filter(|result| {
+            result.expected_contradiction && select(result).contradiction_claims_detected > 0
+        })
+        .count();
     let expected_contradictions = results
         .iter()
         .filter(|result| result.expected_contradiction)
@@ -391,10 +393,12 @@ fn aggregate_arm<'a>(
         contradiction_detected as f64 / expected_contradictions as f64
     };
 
-    let counterexamples_detected: usize = results
+    let counterexamples_detected = results
         .iter()
-        .map(|result| select(result).counterexamples_detected)
-        .sum();
+        .filter(|result| {
+            result.expected_counterexample && select(result).counterexamples_detected > 0
+        })
+        .count();
     let expected_counterexamples = results
         .iter()
         .filter(|result| result.expected_counterexample)

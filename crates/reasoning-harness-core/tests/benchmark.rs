@@ -1,6 +1,9 @@
 use std::{fs, path::PathBuf};
 
-use reasoning_harness_core::{BenchmarkFixture, aggregate_benchmark, evaluate_benchmark_fixture};
+use reasoning_harness_core::{
+    BenchmarkArmResult, BenchmarkCaseResult, BenchmarkFixture, Verdict, aggregate_benchmark,
+    evaluate_benchmark_fixture,
+};
 
 #[test]
 fn recorded_fixture_suite_is_a_stable_regression_baseline() {
@@ -52,4 +55,48 @@ fn recorded_fixture_suite_is_a_stable_regression_baseline() {
 
 fn assert_close(actual: f64, expected: f64) {
     assert!((actual - expected).abs() < f64::EPSILON * 8.0);
+}
+
+#[test]
+fn detection_rates_ignore_findings_outside_labeled_cases() {
+    let empty_arm = |counterexamples_detected| BenchmarkArmResult {
+        verdict: Some(Verdict::Unknown),
+        claims: 0,
+        claims_with_evidence: 0,
+        inference_edges: 0,
+        verdict_correct: true,
+        evidence_coverage: 0.0,
+        unsupported_accepted_claims: 0,
+        unsafe_accept: false,
+        hidden_assumptions_exposed: 0,
+        contradiction_claims_detected: 0,
+        counterexamples_detected,
+        hard_adversarial_findings: counterexamples_detected,
+        soft_adversarial_findings: 0,
+        bad_inference_edges_retained: 0,
+        deterministic_failure: false,
+        deterministic_failure_reason: None,
+    };
+
+    let labeled = BenchmarkCaseResult {
+        fixture_id: "labeled".into(),
+        expected_verdict: Verdict::Unknown,
+        expected_hidden_assumptions: 0,
+        expected_contradiction: false,
+        expected_counterexample: true,
+        baseline: empty_arm(0),
+        harness: empty_arm(1),
+    };
+    let unlabeled = BenchmarkCaseResult {
+        fixture_id: "unlabeled".into(),
+        expected_verdict: Verdict::Unknown,
+        expected_hidden_assumptions: 0,
+        expected_contradiction: false,
+        expected_counterexample: false,
+        baseline: empty_arm(0),
+        harness: empty_arm(1),
+    };
+
+    let comparison = aggregate_benchmark(&[labeled, unlabeled]);
+    assert_close(comparison.harness.counterexample_detection_rate, 1.0);
 }
