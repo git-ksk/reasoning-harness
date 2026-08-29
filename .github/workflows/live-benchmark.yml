@@ -98,15 +98,11 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MODEL: ${{ matrix.model }}
         run: |
-          MAX_TOKENS=4096
-          if [ "$MODEL" = "gemma-4-26b-a4b-it" ]; then
-            MAX_TOKENS=8192
-          fi
           cargo run -q --locked -p reasoning-harness-cli -- \
             eval fixtures \
             --provider google \
             --model "$MODEL" \
-            --max-tokens "$MAX_TOKENS" \
+            --max-tokens 4096 \
             --trials 1 \
             --format json \
             > "/tmp/reason-live-${MODEL}.json"

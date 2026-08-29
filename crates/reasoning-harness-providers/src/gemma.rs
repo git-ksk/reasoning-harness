@@ -12,6 +12,7 @@ const DEFAULT_BASE_URL: &str = "https://generativelanguage.googleapis.com/v1beta
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(180);
 const MAX_RATE_LIMIT_RETRIES: usize = 3;
 const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(10);
+const GOOGLE_RECOMMENDED_TEMPERATURE: f32 = 1.0;
 
 /// Google Gemini API / AI Studio adapter for Google-hosted text models.
 ///
@@ -96,7 +97,7 @@ impl GoogleAdapter {
             generation_config: GenerationConfig {
                 max_output_tokens: request.max_tokens,
                 seed: request.random_seed,
-                temperature: 0.0,
+                temperature: GOOGLE_RECOMMENDED_TEMPERATURE,
             },
             store: false,
         };
@@ -325,6 +326,17 @@ mod tests {
         .unwrap();
         assert_eq!(response.text().unwrap(), "{\"claims\":[]}");
         assert_eq!(response.usage.unwrap().total_tokens, Some(14));
+    }
+
+    #[test]
+    fn uses_google_recommended_sampling_temperature() {
+        let value = serde_json::to_value(GenerationConfig {
+            max_output_tokens: Some(4096),
+            seed: Some(7),
+            temperature: GOOGLE_RECOMMENDED_TEMPERATURE,
+        })
+        .unwrap();
+        assert_eq!(value["temperature"], 1.0);
     }
 
     #[test]
