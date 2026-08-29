@@ -39,4 +39,4 @@ jobs:
             --trials 1 \
             --format json \
             > "/tmp/reason-live-${MODEL}.json"
-          jq '{model: "'"$MODEL"'", aggregate: .aggregate, operational: .operational}' "/tmp/reason-live-${MODEL}.json"
+          jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational}' "/tmp/reason-live-${MODEL}.json"
