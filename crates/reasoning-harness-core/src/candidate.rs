@@ -7,24 +7,14 @@ use crate::{
 
 /// Materializes an untrusted model candidate using harness-owned task and evidence.
 ///
-/// Strong epistemic states are downgraded until a trusted pass establishes them. Invalid
-/// inference suggestions are dropped rather than allowed to invalidate unrelated claims;
-/// every dropped edge is recorded in `candidate_diagnostics` so normalization is inspectable.
+/// Strong epistemic states are downgraded until a trusted pass establishes them. Duplicate
+/// untrusted claim IDs and invalid inference suggestions are isolated rather than allowed to
+/// invalidate unrelated claims; every dropped item is recorded in `candidate_diagnostics`.
 pub fn materialize_candidate(
     input: HarnessInput,
     candidate: ReasoningCandidate,
 ) -> ReasoningArtifact {
-    let mut claims = candidate
-        .claims
-        .into_iter()
-        .map(|claim| Claim {
-            id: claim.id,
-            statement: claim.statement,
-            state: materialized_state(claim.proposed_state),
-            proposition: claim.proposition,
-            evidence_ids: claim.evidence_ids,
-        })
-        .collect::<Vec<_>>();
+    let (mut claims, mut candidate_diagnostics) = normalize_claims(candidate.claims);
     for (index, proposition) in input.hypotheses.iter().enumerate() {
         if claims
             .iter()
@@ -51,8 +41,9 @@ pub fn materialize_candidate(
         .iter()
         .map(|claim| claim.id.as_str())
         .collect::<HashSet<_>>();
-    let (inferences, candidate_diagnostics) =
+    let (inferences, inference_diagnostics) =
         normalize_inferences(candidate.inferences, &claim_ids);
+    candidate_diagnostics.extend(inference_diagnostics);
 
     ReasoningArtifact {
         task: input.task,
@@ -64,6 +55,31 @@ pub fn materialize_candidate(
         claims,
         inferences,
     }
+}
+
+fn normalize_claims(claims: Vec<crate::CandidateClaim>) -> (Vec<Claim>, Vec<CandidateDiagnostic>) {
+    let mut accepted = Vec::new();
+    let mut diagnostics = Vec::new();
+    let mut claim_ids = HashSet::new();
+
+    for claim in claims {
+        if !claim_ids.insert(claim.id.clone()) {
+            diagnostics.push(CandidateDiagnostic {
+                code: "dropped_duplicate_claim_id".into(),
+                message: format!("duplicate candidate claim id {}", claim.id),
+            });
+            continue;
+        }
+        accepted.push(Claim {
+            id: claim.id,
+            statement: claim.statement,
+            state: materialized_state(claim.proposed_state),
+            proposition: claim.proposition,
+            evidence_ids: claim.evidence_ids,
+        });
+    }
+
+    (accepted, diagnostics)
 }
 
 fn normalize_inferences(
@@ -147,6 +163,46 @@ fn materialized_state(proposed: EpistemicState) -> EpistemicState {
 mod tests {
     use super::*;
     use crate::{CandidateClaim, HarnessInput};
+
+    #[test]
+    fn drops_duplicate_candidate_claim_id_but_preserves_first_claim() {
+        let candidate = ReasoningCandidate {
+            claims: vec![
+                CandidateClaim {
+                    id: "c1".into(),
+                    statement: "first".into(),
+                    proposed_state: EpistemicState::Supported,
+                    proposition: None,
+                    evidence_ids: vec![],
+                },
+                CandidateClaim {
+                    id: "c1".into(),
+                    statement: "duplicate".into(),
+                    proposed_state: EpistemicState::Known,
+                    proposition: None,
+                    evidence_ids: vec![],
+                },
+            ],
+            inferences: vec![],
+        };
+        let artifact = materialize_candidate(
+            HarnessInput {
+                task: "task".into(),
+                evidence: vec![],
+                hypotheses: vec![],
+            },
+            candidate,
+        );
+
+        assert_eq!(artifact.claims.len(), 1);
+        assert_eq!(artifact.claims[0].statement, "first");
+        assert_eq!(artifact.claims[0].state, EpistemicState::Assumed);
+        assert_eq!(artifact.candidate_diagnostics.len(), 1);
+        assert_eq!(
+            artifact.candidate_diagnostics[0].code,
+            "dropped_duplicate_claim_id"
+        );
+    }
 
     #[test]
     fn drops_invalid_inference_but_preserves_claim_and_diagnostic() {
