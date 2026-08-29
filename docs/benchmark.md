@@ -124,3 +124,11 @@ All four harness runs had zero deterministic verifier failures and zero unsuppor
 The Rust `GemmaAdapter` uses the Google Gemini Interactions REST API (`/v1beta/interactions`) and the standard `GEMINI_API_KEY` credential. It maps the provider-neutral `ModelRequest` contract to `system_instruction`, `input`, `generation_config`, and `response_format`, including JSON Schema structured output. It parses only model text and token usage back into `ModelResponse`. The API key is sent only in the `x-goog-api-key` request header and is never included in diagnostics.
 
 Gemma live CI is optional: if the repository secret is absent, the Gemma matrix reports a notice and skips provider calls rather than weakening required CI.
+
+### First Gemma 4 cross-family result
+
+The first live Gemma 4 run used `gemma-4-31b-it` through the provider-neutral Google adapter on the same hardened 20-case corpus. In one stochastic trial, baseline verdict accuracy was 0.85 and harness verdict accuracy was 0.95 (19/20). Harness accept recall was 0.80, reject recall 1.00, unknown recall 1.00, unsafe accept cases 0, contradiction detection 1.00, counterexample detection 1.00, and deterministic verifier failure rate 0. The run used 8,005 total tokens and approximately 103.2 seconds of provider latency.
+
+This is the first successful live result from a non-Mistral model family and therefore provides an initial cross-family check of the provider-neutral boundary. It remains a single trial and does not establish a stable ranking against the Mistral models.
+
+`gemma-4-26b-a4b-it` is also kept in the diagnostic matrix, but the current GitHub project received HTTP 403 for that model while 31B succeeded with the same credential and adapter. The 26B matrix entry is therefore experimental/allow-failure until provider access is resolved.
