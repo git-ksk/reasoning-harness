@@ -133,10 +133,12 @@ impl GoogleAdapter {
 
         let status = response.status();
         if !status.is_success() {
+            let body = response.text().await.unwrap_or_default();
+            let detail = google_error_detail(&body);
             return Err(ModelError::new(
                 ModelErrorKind::Provider,
                 format!(
-                    "Gemini API returned HTTP {status} after {rate_limit_retries} rate-limit retries"
+                    "Gemini API returned HTTP {status} after {rate_limit_retries} rate-limit retries{detail}"
                 ),
             ));
         }
@@ -201,6 +203,37 @@ struct ResponseFormat {
     mime_type: &'static str,
     #[serde(skip_serializing_if = "Option::is_none")]
     schema: Option<Value>,
+}
+
+fn google_error_detail(body: &str) -> String {
+    let Ok(value) = serde_json::from_str::<Value>(body) else {
+        return String::new();
+    };
+    let Some(error) = value.get("error") else {
+        return String::new();
+    };
+    let provider_status = error.get("status").and_then(Value::as_str);
+    let message = error.get("message").and_then(Value::as_str);
+    match (provider_status, message) {
+        (Some(status), Some(message)) => format!(
+            "; provider_status={status}; message={}",
+            truncate_diagnostic(message, 512)
+        ),
+        (Some(status), None) => format!("; provider_status={status}"),
+        (None, Some(message)) => format!("; message={}", truncate_diagnostic(message, 512)),
+        (None, None) => String::new(),
+    }
+}
+
+fn truncate_diagnostic(value: &str, max_chars: usize) -> String {
+    let normalized = value.replace(['\n', '\r'], " ");
+    let mut chars = normalized.chars();
+    let prefix = chars.by_ref().take(max_chars).collect::<String>();
+    if chars.next().is_some() {
+        format!("{prefix}…")
+    } else {
+        prefix
+    }
 }
 
 fn rate_limit_delay(headers: &reqwest::header::HeaderMap, retry_index: usize) -> Duration {
@@ -352,6 +385,16 @@ mod tests {
         assert_eq!(rate_limit_delay(&headers, 0), Duration::from_secs(10));
         assert_eq!(rate_limit_delay(&headers, 1), Duration::from_secs(20));
         assert_eq!(rate_limit_delay(&headers, 2), Duration::from_secs(40));
+    }
+
+    #[test]
+    fn extracts_bounded_google_provider_error_detail() {
+        let detail = google_error_detail(
+            r#"{"error":{"code":400,"status":"INVALID_ARGUMENT","message":"bad request\nwithout secrets"}}"#,
+        );
+        assert!(detail.contains("provider_status=INVALID_ARGUMENT"));
+        assert!(detail.contains("message=bad request without secrets"));
+        assert!(!detail.contains('\n'));
     }
 
     #[test]

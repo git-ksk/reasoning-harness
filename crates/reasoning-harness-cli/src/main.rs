@@ -494,7 +494,13 @@ async fn run_fixture_suite(
             let (candidate, mut generation) = if let Some(generator) = &generator {
                 let (candidate, observation) = generator
                     .generate(&fixture.input, config.max_tokens, trial_seed)
-                    .await?;
+                    .await
+                    .map_err(|error| {
+                        format!(
+                            "fixture {} trial {} candidate generation failed: {error}",
+                            fixture.id, trial
+                        )
+                    })?;
                 (candidate, Some(observation))
             } else {
                 (fixture.recorded_candidate.clone(), None)
