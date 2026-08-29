@@ -34,3 +34,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 No stable API guarantee is made yet. Breaking schema/runtime changes are acceptable while the research contracts are still being validated by fixtures and live experiments.
 
 - Live Mistral testing exposed malformed inference suggestions as a separate provider-quality issue. The runtime now isolates structurally invalid inference edges and records them in `candidate_diagnostics` instead of failing unrelated claims.
+
+## Latest live verification result
+
+After migrating the built-in hard verifier to typed propositions, canonical verified rendering, and explicit normalization of malformed untrusted inference edges, the 2026-08-30 Mistral live benchmark completed 7/7 runs with zero deterministic verifier failures. The harness arm reached 6/7 verdict accuracy (85.7%), kept unsupported accepted claims at 0, achieved 100% accept recall and 100% unknown recall, and reached 50% reject recall. The remaining miss is now tracked as generic contradiction/counterexample discovery rather than verifier binding.

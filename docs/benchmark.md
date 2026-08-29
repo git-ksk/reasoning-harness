@@ -85,3 +85,7 @@ Live runs are stochastic research observations and never replace the committed d
 ## Regression policy
 
 `cargo test --workspace` contains a snapshot-style regression test for the recorded fixture aggregate. Intentional semantic changes must update both the implementation and the expected benchmark baseline. Live provider results never silently rewrite the committed baseline.
+
+### Typed-target live result
+
+A subsequent seven-case live Mistral run after typed proposition verification and malformed-inference isolation reached 6/7 harness verdict accuracy (85.7%) with zero deterministic verifier failures and zero unsupported accepted claims. Accept recall and unknown recall were 1.0; reject recall was 0.5. This materially improves on the exact-statement receipt run (3/7 with four deterministic failures) and shows that verifier binding is no longer the dominant failure mode. The remaining reject miss belongs to generic contradiction/counterexample discovery rather than hard-verifier transport or binding. As with every live run, these seven samples are diagnostic rather than a statistically stable model-quality estimate.
