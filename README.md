@@ -21,6 +21,7 @@ This repository exists to measure that question rather than assume the answer.
 - A first structured framework primitive for evidence-aware 5 Whys.
 - Basic eval metrics for evidence coverage and unsupported accepted claims.
 - Provider-neutral `ModelAdapter`; model output is always outside the correctness boundary.
+- Native runtime is the correctness owner; CLI and eval are the first supported interfaces.
 
 ## What this is not
 
@@ -43,4 +44,4 @@ npm test
 npm run demo
 ```
 
-See [docs/research-plan.md](docs/research-plan.md) and [docs/architecture.md](docs/architecture.md).
+See [docs/research-plan.md](docs/research-plan.md), [docs/architecture.md](docs/architecture.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).
