@@ -131,6 +131,7 @@ mod tests {
                     facts: BTreeMap::from([("feature.enabled".into(), (*value).into())]),
                 })
                 .collect(),
+            hypotheses: vec![],
             candidate_diagnostics: vec![],
             verification_receipts: vec![],
             adversarial_findings: vec![],

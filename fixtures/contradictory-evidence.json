@@ -20,6 +20,12 @@
           "feature.enabled": "false"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "feature.enabled",
+        "value": "true"
+      }
     ]
   },
   "recorded_candidate": {
@@ -52,8 +58,5 @@
     "inferences": []
   },
   "expected_verdict": "reject",
-  "contradiction_claim_ids": [
-    "c1",
-    "c2"
-  ]
+  "expect_contradiction_finding": true
 }

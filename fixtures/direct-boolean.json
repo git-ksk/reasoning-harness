@@ -12,6 +12,12 @@
           "maintenance.enabled": "false"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "maintenance.enabled",
+        "value": "false"
+      }
     ]
   },
   "recorded_candidate": {

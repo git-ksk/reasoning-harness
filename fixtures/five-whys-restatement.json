@@ -4,19 +4,45 @@
   "input": {
     "task": "Identify the root cause of the timeout.",
     "evidence": [
-      {"id": "e1", "source": "job log", "observation": "The job timed out after 60 seconds."}
+      {
+        "id": "e1",
+        "source": "job log",
+        "observation": "The job timed out after 60 seconds."
+      }
     ]
   },
   "recorded_candidate": {
     "claims": [
-      {"id": "c1", "statement": "The job timed out.", "proposed_state": "supported", "evidence_ids": ["e1"]},
-      {"id": "c2", "statement": "A timeout occurred in the job.", "proposed_state": "inferred", "evidence_ids": ["e1"]}
+      {
+        "id": "c1",
+        "statement": "The job timed out.",
+        "proposed_state": "supported",
+        "evidence_ids": [
+          "e1"
+        ]
+      },
+      {
+        "id": "c2",
+        "statement": "A timeout occurred in the job.",
+        "proposed_state": "inferred",
+        "evidence_ids": [
+          "e1"
+        ]
+      }
     ],
     "inferences": [
-      {"id": "i1", "premise_claim_ids": ["c1"], "conclusion_claim_id": "c2", "method": "five_whys"}
+      {
+        "id": "i1",
+        "premise_claim_ids": [
+          "c1"
+        ],
+        "conclusion_claim_id": "c2",
+        "method": "five_whys"
+      }
     ]
   },
   "expected_verdict": "unknown",
-  "hidden_assumption_claim_ids": ["c2"],
-  "bad_inference_ids": ["i1"]
+  "bad_inference_ids": [
+    "i1"
+  ]
 }

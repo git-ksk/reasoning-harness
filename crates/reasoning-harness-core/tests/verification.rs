@@ -12,6 +12,7 @@ fn input() -> HarnessInput {
             observation: "HTTP 503".into(),
             facts: Default::default(),
         }],
+        hypotheses: vec![],
     }
 }
 

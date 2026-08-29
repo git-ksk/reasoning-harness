@@ -12,6 +12,12 @@
           "replicas.ready": "3"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "replicas.ready",
+        "value": "3"
+      }
     ]
   },
   "recorded_candidate": {

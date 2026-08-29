@@ -4,16 +4,45 @@
   "input": {
     "task": "Which deployment region was used?",
     "evidence": [
-      {"id": "e1", "source": "request log", "observation": "The request returned HTTP 503."}
+      {
+        "id": "e1",
+        "source": "request log",
+        "observation": "The request returned HTTP 503."
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "deployment.region",
+        "value": "us-east-1"
+      }
     ]
   },
   "recorded_candidate": {
     "claims": [
-      {"id": "c1", "statement": "The deployment region was us-east-1.", "proposed_state": "known", "evidence_ids": []}
+      {
+        "id": "c1",
+        "statement": "The deployment region was us-east-1.",
+        "proposed_state": "known",
+        "evidence_ids": [],
+        "proposition": {
+          "key": "deployment.region",
+          "value": "us-east-1"
+        }
+      }
     ],
     "inferences": []
   },
   "expected_verdict": "unknown",
-  "unsupported_claim_ids": ["c1"],
-  "hidden_assumption_claim_ids": ["c1"]
+  "unsupported_propositions": [
+    {
+      "key": "deployment.region",
+      "value": "us-east-1"
+    }
+  ],
+  "hidden_assumption_propositions": [
+    {
+      "key": "deployment.region",
+      "value": "us-east-1"
+    }
+  ]
 }

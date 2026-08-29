@@ -20,6 +20,12 @@
           "replicas.ready": "4"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "replicas.ready",
+        "value": "3"
+      }
     ]
   },
   "recorded_candidate": {
@@ -40,7 +46,5 @@
     "inferences": []
   },
   "expected_verdict": "reject",
-  "contradiction_claim_ids": [
-    "c1"
-  ]
+  "expect_contradiction_finding": true
 }

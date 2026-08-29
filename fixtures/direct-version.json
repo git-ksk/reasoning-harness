@@ -12,6 +12,12 @@
           "api.version": "v3.2.1"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "api.version",
+        "value": "v3.2.1"
+      }
     ]
   },
   "recorded_candidate": {

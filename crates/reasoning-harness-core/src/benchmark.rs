@@ -1,12 +1,11 @@
-use std::collections::HashSet;
-
 use serde::{Deserialize, Serialize};
 
 use crate::{
     AcceptancePolicy, AdversarialDiscoveryPass, AdversarialFindingKind, Claim, EpistemicState,
-    FindingStrength, HarnessInput, ReasoningArtifact, ReasoningCandidate, StrictAcceptancePolicy,
-    StructuredFactConflictDetector, StructuredFactVerifier, TrustedVerificationPass, Verdict,
-    VerificationPass, evaluate, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
+    FindingStrength, HarnessInput, Proposition, ReasoningArtifact, ReasoningCandidate,
+    StrictAcceptancePolicy, StructuredFactConflictDetector, StructuredFactVerifier,
+    TrustedVerificationPass, Verdict, VerificationPass, evaluate,
+    frameworks::five_whys::FiveWhysRestatementPass, run_harness,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -17,13 +16,13 @@ pub struct BenchmarkFixture {
     pub recorded_candidate: ReasoningCandidate,
     pub expected_verdict: Verdict,
     #[serde(default)]
-    pub unsupported_claim_ids: Vec<String>,
+    pub unsupported_propositions: Vec<Proposition>,
     #[serde(default)]
-    pub hidden_assumption_claim_ids: Vec<String>,
+    pub hidden_assumption_propositions: Vec<Proposition>,
     #[serde(default)]
-    pub contradiction_claim_ids: Vec<String>,
+    pub expect_contradiction_finding: bool,
     #[serde(default)]
-    pub counterexample_claim_ids: Vec<String>,
+    pub expect_counterexample_finding: bool,
     #[serde(default)]
     pub bad_inference_ids: Vec<String>,
     #[serde(default)]
@@ -39,6 +38,7 @@ pub struct BenchmarkArmResult {
     pub verdict_correct: bool,
     pub evidence_coverage: f64,
     pub unsupported_accepted_claims: usize,
+    pub unsafe_accept: bool,
     pub hidden_assumptions_exposed: usize,
     pub contradiction_claims_detected: usize,
     pub counterexamples_detected: usize,
@@ -55,8 +55,8 @@ pub struct BenchmarkCaseResult {
     pub fixture_id: String,
     pub expected_verdict: Verdict,
     pub expected_hidden_assumptions: usize,
-    pub expected_contradictions: usize,
-    pub expected_counterexamples: usize,
+    pub expected_contradiction: bool,
+    pub expected_counterexample: bool,
     pub baseline: BenchmarkArmResult,
     pub harness: BenchmarkArmResult,
 }
@@ -70,6 +70,7 @@ pub struct BenchmarkAggregate {
     pub unknown_recall: f64,
     pub evidence_coverage: f64,
     pub unsupported_accepted_claims: usize,
+    pub unsafe_accept_cases: usize,
     pub hidden_assumption_exposure_rate: f64,
     pub contradiction_detection_rate: f64,
     pub counterexample_detection_rate: f64,
@@ -130,9 +131,9 @@ pub fn evaluate_benchmark_fixture(
     BenchmarkCaseResult {
         fixture_id: fixture.id.clone(),
         expected_verdict: fixture.expected_verdict,
-        expected_hidden_assumptions: fixture.hidden_assumption_claim_ids.len(),
-        expected_contradictions: fixture.contradiction_claim_ids.len(),
-        expected_counterexamples: fixture.counterexample_claim_ids.len(),
+        expected_hidden_assumptions: fixture.hidden_assumption_propositions.len(),
+        expected_contradiction: fixture.expect_contradiction_finding,
+        expected_counterexample: fixture.expect_counterexample_finding,
         baseline,
         harness,
     }
@@ -149,6 +150,7 @@ fn naive_materialize(input: HarnessInput, candidate: ReasoningCandidate) -> Reas
     ReasoningArtifact {
         task: input.task,
         evidence: input.evidence,
+        hypotheses: input.hypotheses,
         candidate_diagnostics: Vec::new(),
         verification_receipts: Vec::new(),
         adversarial_findings: Vec::new(),
@@ -174,31 +176,13 @@ fn arm_result(
     deterministic_failure: bool,
     deterministic_failure_reason: Option<String>,
 ) -> BenchmarkArmResult {
-    let unsupported_ids: HashSet<&str> = fixture
-        .unsupported_claim_ids
-        .iter()
-        .map(String::as_str)
-        .collect();
-    let assumption_ids: HashSet<&str> = fixture
-        .hidden_assumption_claim_ids
-        .iter()
-        .map(String::as_str)
-        .collect();
-    let contradiction_ids: HashSet<&str> = fixture
-        .contradiction_claim_ids
-        .iter()
-        .map(String::as_str)
-        .collect();
-    let counterexample_ids: HashSet<&str> = fixture
-        .counterexample_claim_ids
-        .iter()
-        .map(String::as_str)
-        .collect();
-    let bad_inference_ids: HashSet<&str> = fixture
+    let unsupported_targets = &fixture.unsupported_propositions;
+    let assumption_targets = &fixture.hidden_assumption_propositions;
+    let bad_inference_ids = fixture
         .bad_inference_ids
         .iter()
         .map(String::as_str)
-        .collect();
+        .collect::<std::collections::HashSet<_>>();
 
     let claims = artifact.map(|artifact| artifact.claims.len()).unwrap_or(0);
     let claims_with_evidence = artifact
@@ -222,7 +206,10 @@ fn arm_result(
                 .claims
                 .iter()
                 .filter(|claim| {
-                    unsupported_ids.contains(claim.id.as_str())
+                    claim
+                        .proposition
+                        .as_ref()
+                        .is_some_and(|proposition| unsupported_targets.contains(proposition))
                         && matches!(
                             claim.state,
                             EpistemicState::Known
@@ -239,7 +226,10 @@ fn arm_result(
                 .claims
                 .iter()
                 .filter(|claim| {
-                    assumption_ids.contains(claim.id.as_str())
+                    claim
+                        .proposition
+                        .as_ref()
+                        .is_some_and(|proposition| assumption_targets.contains(proposition))
                         && matches!(
                             claim.state,
                             EpistemicState::Assumed
@@ -250,22 +240,12 @@ fn arm_result(
                 .count()
         })
         .unwrap_or(0);
-    let contradiction_claims_detected = artifact
-        .map(|artifact| {
-            if verdict == Some(Verdict::Reject) {
-                contradiction_ids.len()
-            } else {
-                artifact
-                    .claims
-                    .iter()
-                    .filter(|claim| {
-                        contradiction_ids.contains(claim.id.as_str())
-                            && claim.state == EpistemicState::Contradicted
-                    })
-                    .count()
-            }
-        })
-        .unwrap_or(0);
+    let contradiction_claims_detected = artifact.is_some_and(|artifact| {
+        artifact.adversarial_findings.iter().any(|finding| {
+            finding.kind == AdversarialFindingKind::Contradiction
+                && finding.strength == FindingStrength::Hard
+        }) || (fixture.expect_contradiction_finding && verdict == Some(Verdict::Reject))
+    }) as usize;
     let bad_inference_edges_retained = artifact
         .map(|artifact| {
             artifact
@@ -275,18 +255,12 @@ fn arm_result(
                 .count()
         })
         .unwrap_or(0);
-    let counterexamples_detected = artifact
-        .map(|artifact| {
-            artifact
-                .adversarial_findings
-                .iter()
-                .filter(|finding| {
-                    finding.kind == AdversarialFindingKind::Counterexample
-                        && counterexample_ids.contains(finding.claim_id.as_str())
-                })
-                .count()
+    let counterexamples_detected = artifact.is_some_and(|artifact| {
+        artifact.adversarial_findings.iter().any(|finding| {
+            finding.kind == AdversarialFindingKind::Counterexample
+                && finding.strength == FindingStrength::Hard
         })
-        .unwrap_or(0);
+    }) as usize;
     let hard_adversarial_findings = artifact
         .map(|artifact| {
             artifact
@@ -314,6 +288,7 @@ fn arm_result(
         verdict_correct: verdict == Some(fixture.expected_verdict),
         evidence_coverage,
         unsupported_accepted_claims,
+        unsafe_accept: verdict == Some(Verdict::Accept) && unsupported_accepted_claims > 0,
         hidden_assumptions_exposed,
         contradiction_claims_detected,
         counterexamples_detected,
@@ -384,6 +359,10 @@ fn aggregate_arm<'a>(
         .iter()
         .map(|result| select(result).unsupported_accepted_claims)
         .sum();
+    let unsafe_accept_cases = results
+        .iter()
+        .filter(|result| select(result).unsafe_accept)
+        .count();
     let hidden_exposed: usize = results
         .iter()
         .map(|result| select(result).hidden_assumptions_exposed)
@@ -402,10 +381,10 @@ fn aggregate_arm<'a>(
         .iter()
         .map(|result| select(result).contradiction_claims_detected)
         .sum();
-    let expected_contradictions: usize = results
+    let expected_contradictions = results
         .iter()
-        .map(|result| result.expected_contradictions)
-        .sum();
+        .filter(|result| result.expected_contradiction)
+        .count();
     let contradiction_detection_rate = if expected_contradictions == 0 {
         1.0
     } else {
@@ -416,10 +395,10 @@ fn aggregate_arm<'a>(
         .iter()
         .map(|result| select(result).counterexamples_detected)
         .sum();
-    let expected_counterexamples: usize = results
+    let expected_counterexamples = results
         .iter()
-        .map(|result| result.expected_counterexamples)
-        .sum();
+        .filter(|result| result.expected_counterexample)
+        .count();
     let counterexample_detection_rate = if expected_counterexamples == 0 {
         1.0
     } else {
@@ -466,6 +445,7 @@ fn aggregate_arm<'a>(
         },
         evidence_coverage,
         unsupported_accepted_claims,
+        unsafe_accept_cases,
         hidden_assumption_exposure_rate,
         contradiction_detection_rate,
         counterexample_detection_rate,

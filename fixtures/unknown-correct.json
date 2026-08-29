@@ -7,7 +7,12 @@
   },
   "recorded_candidate": {
     "claims": [
-      {"id": "c1", "statement": "The database engine cannot be determined from the supplied evidence.", "proposed_state": "unknown", "evidence_ids": []}
+      {
+        "id": "c1",
+        "statement": "The database engine cannot be determined from the supplied evidence.",
+        "proposed_state": "unknown",
+        "evidence_ids": []
+      }
     ],
     "inferences": []
   },

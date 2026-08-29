@@ -14,7 +14,7 @@ pub fn materialize_candidate(
     input: HarnessInput,
     candidate: ReasoningCandidate,
 ) -> ReasoningArtifact {
-    let claims = candidate
+    let mut claims = candidate
         .claims
         .into_iter()
         .map(|claim| Claim {
@@ -25,6 +25,28 @@ pub fn materialize_candidate(
             evidence_ids: claim.evidence_ids,
         })
         .collect::<Vec<_>>();
+    for (index, proposition) in input.hypotheses.iter().enumerate() {
+        if claims
+            .iter()
+            .any(|claim| claim.proposition.as_ref() == Some(proposition))
+        {
+            continue;
+        }
+        let base = format!("harness_hypothesis_{index}");
+        let mut id = base.clone();
+        let mut suffix = 1usize;
+        while claims.iter().any(|claim| claim.id == id) {
+            id = format!("{base}_{suffix}");
+            suffix += 1;
+        }
+        claims.push(Claim {
+            id,
+            statement: format!("{} = {}", proposition.key, proposition.value),
+            state: EpistemicState::Assumed,
+            proposition: Some(proposition.clone()),
+            evidence_ids: vec![],
+        });
+    }
     let claim_ids = claims
         .iter()
         .map(|claim| claim.id.as_str())
@@ -35,6 +57,7 @@ pub fn materialize_candidate(
     ReasoningArtifact {
         task: input.task,
         evidence: input.evidence,
+        hypotheses: input.hypotheses,
         candidate_diagnostics,
         verification_receipts: Vec::new(),
         adversarial_findings: Vec::new(),
@@ -146,6 +169,7 @@ mod tests {
             HarnessInput {
                 task: "task".into(),
                 evidence: vec![],
+                hypotheses: vec![],
             },
             candidate,
         );

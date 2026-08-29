@@ -113,6 +113,10 @@ pub struct HarnessInput {
     pub task: String,
     #[serde(default)]
     pub evidence: Vec<Evidence>,
+    /// Harness-owned propositions that formalize hypotheses explicitly posed by the task.
+    /// Candidates cannot add or mutate these targets.
+    #[serde(default)]
+    pub hypotheses: Vec<Proposition>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
@@ -134,6 +138,8 @@ pub struct ReasoningArtifact {
     pub task: String,
     #[serde(default)]
     pub evidence: Vec<Evidence>,
+    #[serde(default)]
+    pub hypotheses: Vec<Proposition>,
     #[serde(default)]
     pub candidate_diagnostics: Vec<CandidateDiagnostic>,
     #[serde(default)]

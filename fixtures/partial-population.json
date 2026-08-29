@@ -12,6 +12,12 @@
           "sample.jobs_1_20_succeeded": "true"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "jobs.all_succeeded",
+        "value": "true"
+      }
     ]
   },
   "recorded_candidate": {
@@ -32,10 +38,16 @@
     "inferences": []
   },
   "expected_verdict": "unknown",
-  "unsupported_claim_ids": [
-    "c1"
+  "unsupported_propositions": [
+    {
+      "key": "jobs.all_succeeded",
+      "value": "true"
+    }
   ],
-  "hidden_assumption_claim_ids": [
-    "c1"
+  "hidden_assumption_propositions": [
+    {
+      "key": "jobs.all_succeeded",
+      "value": "true"
+    }
   ]
 }

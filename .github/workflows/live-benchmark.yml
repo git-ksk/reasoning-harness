@@ -8,25 +8,35 @@ permissions:
 
 jobs:
   mistral:
+    name: mistral-${{ matrix.model }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        model:
+          - ministral-3b-latest
+          - ministral-8b-latest
+          - ministral-14b-latest
+          - mistral-small-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
       - uses: Swatinem/rust-cache@v2
-      - name: Run one live Mistral benchmark trial
+      - name: Run live Mistral benchmark trial
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          MODEL: ${{ matrix.model }}
         run: |
           test -n "$MISTRAL_API_KEY"
           cargo run -q --locked -p reasoning-harness-cli -- \
             eval fixtures \
             --provider mistral \
-            --model ministral-8b-latest \
+            --model "$MODEL" \
             --max-tokens 4096 \
             --trials 1 \
             --format json \
-            > /tmp/reason-live-benchmark.json
-          jq '.aggregate // .' /tmp/reason-live-benchmark.json
+            > "/tmp/reason-live-${MODEL}.json"
+          jq '{model: "'"$MODEL"'", aggregate: .aggregate, operational: .operational}' "/tmp/reason-live-${MODEL}.json"

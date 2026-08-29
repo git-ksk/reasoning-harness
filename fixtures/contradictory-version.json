@@ -20,6 +20,12 @@
           "service.version": "2.1"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "service.version",
+        "value": "2.1"
+      }
     ]
   },
   "recorded_candidate": {
@@ -40,7 +46,5 @@
     "inferences": []
   },
   "expected_verdict": "reject",
-  "contradiction_claim_ids": [
-    "c1"
-  ]
+  "expect_contradiction_finding": true
 }

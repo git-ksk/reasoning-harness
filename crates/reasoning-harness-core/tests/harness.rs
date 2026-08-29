@@ -28,6 +28,7 @@ fn strict_policy_preserves_unknown_as_a_successful_outcome() {
     let input = HarnessInput {
         task: "answer only when evidence is sufficient".into(),
         evidence: vec![],
+        hypotheses: vec![],
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {
@@ -54,6 +55,7 @@ fn model_proposed_contradiction_cannot_force_runtime_reject() {
             observation: "fact".into(),
             facts: Default::default(),
         }],
+        hypotheses: vec![],
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {

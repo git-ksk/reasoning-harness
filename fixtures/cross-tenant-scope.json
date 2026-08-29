@@ -12,6 +12,12 @@
           "tenant_a.billing.enabled": "true"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "tenant_b.billing.enabled",
+        "value": "true"
+      }
     ]
   },
   "recorded_candidate": {
@@ -32,10 +38,16 @@
     "inferences": []
   },
   "expected_verdict": "unknown",
-  "unsupported_claim_ids": [
-    "c1"
+  "unsupported_propositions": [
+    {
+      "key": "tenant_b.billing.enabled",
+      "value": "true"
+    }
   ],
-  "hidden_assumption_claim_ids": [
-    "c1"
+  "hidden_assumption_propositions": [
+    {
+      "key": "tenant_b.billing.enabled",
+      "value": "true"
+    }
   ]
 }

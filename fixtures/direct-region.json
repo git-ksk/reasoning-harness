@@ -12,6 +12,12 @@
           "request.region": "eu-west-1"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "request.region",
+        "value": "eu-west-1"
+      }
     ]
   },
   "recorded_candidate": {

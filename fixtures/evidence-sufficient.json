@@ -12,6 +12,12 @@
           "http.status_code": "503"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "http.status_code",
+        "value": "503"
+      }
     ]
   },
   "recorded_candidate": {

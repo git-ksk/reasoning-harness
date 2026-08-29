@@ -87,3 +87,21 @@ fn rejects_an_inferred_claim_without_an_inference_edge() {
             .any(|diagnostic| diagnostic.code == "inferred_claim_without_inference")
     );
 }
+
+#[test]
+fn rejects_invalid_harness_hypothesis() {
+    let artifact = ReasoningArtifact {
+        task: "fixture task".into(),
+        hypotheses: vec![reasoning_harness_core::Proposition {
+            key: "".into(),
+            value: "true".into(),
+        }],
+        ..Default::default()
+    };
+    assert!(
+        validate_artifact(&artifact)
+            .diagnostics
+            .iter()
+            .any(|d| d.code == "invalid_hypothesis")
+    );
+}

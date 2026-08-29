@@ -12,6 +12,12 @@
           "service.restarted": "true"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "service.restarted",
+        "value": "true"
+      }
     ]
   },
   "recorded_candidate": {
@@ -32,16 +38,26 @@
         "id": "c2",
         "statement": "An out-of-memory condition caused the restart.",
         "proposed_state": "assumed",
-        "evidence_ids": []
+        "evidence_ids": [],
+        "proposition": {
+          "key": "service.restart_cause",
+          "value": "out_of_memory"
+        }
       }
     ],
     "inferences": []
   },
   "expected_verdict": "unknown",
-  "unsupported_claim_ids": [
-    "c2"
+  "unsupported_propositions": [
+    {
+      "key": "service.restart_cause",
+      "value": "out_of_memory"
+    }
   ],
-  "hidden_assumption_claim_ids": [
-    "c2"
+  "hidden_assumption_propositions": [
+    {
+      "key": "service.restart_cause",
+      "value": "out_of_memory"
+    }
   ]
 }

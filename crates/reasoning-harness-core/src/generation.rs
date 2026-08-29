@@ -6,14 +6,15 @@ pub fn build_candidate_request(
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, serde_json::Error> {
     let evidence = serde_json::to_string_pretty(&input.evidence)?;
+    let hypotheses = serde_json::to_string_pretty(&input.hypotheses)?;
     Ok(ModelRequest {
         system: Some(
             "You are a candidate generator inside a reasoning harness. Return only the requested structured candidate. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support."
                 .into(),
         ),
         task: format!(
-            "Task:\n{}\n\nHarness-owned evidence:\n{}\n\nGenerate candidate claims and inference edges.",
-            input.task, evidence
+            "Task:\n{}\n\nHarness-owned hypotheses:\n{}\n\nHarness-owned evidence:\n{}\n\nGenerate candidate claims and inference edges. Evaluate supplied hypotheses when present; do not alter their key/value pair.",
+            input.task, hypotheses, evidence
         ),
         output_format: ModelOutputFormat::JsonSchema {
             name: "reasoning_candidate".into(),
@@ -30,6 +31,7 @@ pub fn build_candidate_json_fallback_request(
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, serde_json::Error> {
     let evidence = serde_json::to_string_pretty(&input.evidence)?;
+    let hypotheses = serde_json::to_string_pretty(&input.hypotheses)?;
     let schema = serde_json::to_string_pretty(&reasoning_candidate_schema())?;
     Ok(ModelRequest {
         system: Some(
@@ -37,8 +39,8 @@ pub fn build_candidate_json_fallback_request(
                 .into(),
         ),
         task: format!(
-            "JSON Schema:\n{}\n\nTask:\n{}\n\nHarness-owned evidence:\n{}\n\nGenerate candidate claims and inference edges as one JSON object conforming to the schema.",
-            schema, input.task, evidence
+            "JSON Schema:\n{}\n\nTask:\n{}\n\nHarness-owned hypotheses:\n{}\n\nHarness-owned evidence:\n{}\n\nGenerate candidate claims and inference edges as one JSON object conforming to the schema. Evaluate supplied hypotheses when present; do not alter their key/value pair.",
+            schema, input.task, hypotheses, evidence
         ),
         output_format: ModelOutputFormat::JsonObject,
         max_tokens,
@@ -61,6 +63,7 @@ mod tests {
                 facts: Default::default(),
                 source: "fixture".into(),
             }],
+            hypotheses: vec![],
         };
         let request = build_candidate_json_fallback_request(&input, Some(512), Some(7)).unwrap();
 

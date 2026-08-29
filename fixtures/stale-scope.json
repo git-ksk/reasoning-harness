@@ -12,6 +12,12 @@
           "previous_deployment.healthy": "true"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "current_deployment.healthy",
+        "value": "true"
+      }
     ]
   },
   "recorded_candidate": {
@@ -32,10 +38,16 @@
     "inferences": []
   },
   "expected_verdict": "unknown",
-  "unsupported_claim_ids": [
-    "c1"
+  "unsupported_propositions": [
+    {
+      "key": "current_deployment.healthy",
+      "value": "true"
+    }
   ],
-  "hidden_assumption_claim_ids": [
-    "c1"
+  "hidden_assumption_propositions": [
+    {
+      "key": "current_deployment.healthy",
+      "value": "true"
+    }
   ]
 }

@@ -13,6 +13,7 @@ fn model_cannot_promote_its_own_claim_to_supported() {
             observation: "observed fact".into(),
             facts: Default::default(),
         }],
+        hypotheses: vec![],
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {
@@ -34,6 +35,7 @@ fn model_cannot_inject_evidence_into_harness_owned_input() {
     let input = HarnessInput {
         task: "decide from supplied evidence".into(),
         evidence: vec![],
+        hypotheses: vec![],
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {

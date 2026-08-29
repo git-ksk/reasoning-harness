@@ -34,6 +34,25 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
         });
     }
 
+    let mut hypotheses = HashSet::new();
+    for hypothesis in &artifact.hypotheses {
+        if hypothesis.key.trim().is_empty() || hypothesis.value.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "invalid_hypothesis",
+                message: "harness-owned hypothesis key/value must not be empty".into(),
+            });
+        }
+        if !hypotheses.insert((hypothesis.key.as_str(), hypothesis.value.as_str())) {
+            diagnostics.push(Diagnostic {
+                code: "duplicate_hypothesis",
+                message: format!(
+                    "duplicate harness-owned hypothesis: {}={}",
+                    hypothesis.key, hypothesis.value
+                ),
+            });
+        }
+    }
+
     for evidence in &artifact.evidence {
         if evidence.id.trim().is_empty() {
             diagnostics.push(Diagnostic {

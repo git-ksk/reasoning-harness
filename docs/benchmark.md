@@ -95,3 +95,11 @@ Live runs are stochastic research observations and never replace the committed d
 ### Typed-target live result
 
 A subsequent seven-case live Mistral run after typed proposition verification and malformed-inference isolation reached 6/7 harness verdict accuracy (85.7%) with zero deterministic verifier failures and zero unsupported accepted claims. Accept recall and unknown recall were 1.0; reject recall was 0.5. This materially improves on the exact-statement receipt run (3/7 with four deterministic failures) and shows that verifier binding is no longer the dominant failure mode. The remaining reject miss belongs to generic contradiction/counterexample discovery rather than hard-verifier transport or binding. As with every live run, these seven samples are diagnostic rather than a statistically stable model-quality estimate.
+
+### Live metric hardening and cross-model matrix
+
+Live benchmark labels no longer bind to provider-generated claim IDs. Unsupported/hidden-assumption labels bind to typed propositions, while contradiction/counterexample detection is measured at fixture level. `unsafe_accept_cases` separately counts only final `Accept` verdicts that contain an unsupported strong claim; this avoids conflating an internal strong claim with an overall `Unknown` verdict. The earlier 20-case report of one harness unsafe accept was a metric false positive in `partial-population`, whose final verdict was `Unknown`.
+
+`HarnessInput.hypotheses` now carries harness-owned propositions that formalize hypotheses explicitly posed by the task. Candidates cannot add or mutate these targets. The runtime materializes a missing hypothesis as an assumed claim so deterministic structured-fact verification and adversarial discovery do not depend on the provider choosing the same proposition key.
+
+The manual live workflow runs the same 20-case corpus against `ministral-3b-latest`, `ministral-8b-latest`, `ministral-14b-latest`, and `mistral-small-latest` with one trial per model. This matrix is diagnostic and is not a required CI gate.

@@ -41,3 +41,7 @@ After migrating the built-in hard verifier to typed propositions, canonical veri
 ### Adversarial discovery
 
 The core now has a provider-neutral `AdversarialDetector` contract and typed `AdversarialFinding` records. Structured harness-owned fact conflicts are classified deterministically as hard contradictions or counterexamples. Findings themselves remain observational; only the verifier boundary can change epistemic state or force rejection. The 20-case recorded corpus reaches contradiction detection 1.0 and counterexample detection 1.0 under deterministic structured-fact coverage.
+
+### Benchmark hardening
+
+The 20-case benchmark now uses typed proposition labels instead of provider-generated claim IDs. Harness-owned hypotheses formalize task propositions independently of model output, and `unsafe_accept_cases` distinguishes true final unsafe acceptance from strong intermediate claims inside an overall `Unknown` result. The manual Mistral workflow now compares Ministral 3B/8B/14B and Mistral Small on the same corpus.

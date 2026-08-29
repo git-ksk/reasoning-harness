@@ -17,6 +17,12 @@
           "workers.all_healthy": "false"
         }
       }
+    ],
+    "hypotheses": [
+      {
+        "key": "workers.all_healthy",
+        "value": "true"
+      }
     ]
   },
   "recorded_candidate": {
@@ -37,16 +43,18 @@
     "inferences": []
   },
   "expected_verdict": "reject",
-  "unsupported_claim_ids": [
-    "c1"
+  "unsupported_propositions": [
+    {
+      "key": "workers.all_healthy",
+      "value": "true"
+    }
   ],
-  "hidden_assumption_claim_ids": [
-    "c1"
+  "hidden_assumption_propositions": [
+    {
+      "key": "workers.all_healthy",
+      "value": "true"
+    }
   ],
-  "contradiction_claim_ids": [
-    "c1"
-  ],
-  "counterexample_claim_ids": [
-    "c1"
-  ]
+  "expect_contradiction_finding": true,
+  "expect_counterexample_finding": true
 }
