@@ -87,11 +87,13 @@ async fn generate_with_adapter<A: ModelAdapter>(
         .generate(request)
         .await
         .map_err(|error| error.to_string())?;
-    let (candidate, response, provider_attempts, usage) = match serde_json::from_str::<
-        ReasoningCandidate,
-    >(&first.text)
-    {
-        Ok(candidate) => {
+    let (candidate, response, provider_attempts, usage) = match parse_candidate_json(&first.text) {
+        Ok((candidate, ignored_trailing_text)) => {
+            if ignored_trailing_text {
+                eprintln!(
+                    "{provider} candidate normalization: ignored non-JSON trailing text after one complete candidate object"
+                );
+            }
             let usage = first.usage.clone();
             (candidate, first, 1, usage)
         }
@@ -105,16 +107,21 @@ async fn generate_with_adapter<A: ModelAdapter>(
                         first.text.len(),
                     )
                 })?;
-            let candidate = serde_json::from_str::<ReasoningCandidate>(&second.text)
-                    .map_err(|second_error| {
-                        format!(
-                            "provider returned invalid candidate JSON after structured-output fallback: first_error={first_error}; first_finish_reason={}; first_bytes={}; second_error={second_error}; second_finish_reason={}; second_bytes={}",
-                            first.finish_reason.as_deref().unwrap_or("unknown"),
-                            first.text.len(),
-                            second.finish_reason.as_deref().unwrap_or("unknown"),
-                            second.text.len(),
-                        )
-                    })?;
+            let (candidate, ignored_trailing_text) = parse_candidate_json(&second.text)
+                .map_err(|second_error| {
+                    format!(
+                        "provider returned invalid candidate JSON after structured-output fallback: first_error={first_error}; first_finish_reason={}; first_bytes={}; second_error={second_error}; second_finish_reason={}; second_bytes={}",
+                        first.finish_reason.as_deref().unwrap_or("unknown"),
+                        first.text.len(),
+                        second.finish_reason.as_deref().unwrap_or("unknown"),
+                        second.text.len(),
+                    )
+                })?;
+            if ignored_trailing_text {
+                eprintln!(
+                    "{provider} fallback candidate normalization: ignored non-JSON trailing text after one complete candidate object"
+                );
+            }
             let usage = add_usage(&first.usage, &second.usage);
             (candidate, second, 2, usage)
         }
@@ -131,6 +138,27 @@ async fn generate_with_adapter<A: ModelAdapter>(
             cost_usd: None,
         },
     ))
+}
+
+fn parse_candidate_json(text: &str) -> Result<(ReasoningCandidate, bool), serde_json::Error> {
+    match serde_json::from_str::<ReasoningCandidate>(text) {
+        Ok(candidate) => Ok((candidate, false)),
+        Err(strict_error) => {
+            let mut stream =
+                serde_json::Deserializer::from_str(text).into_iter::<ReasoningCandidate>();
+            let Some(Ok(candidate)) = stream.next() else {
+                return Err(strict_error);
+            };
+            let remainder = &text[stream.byte_offset()..];
+            let mut trailing_values =
+                serde_json::Deserializer::from_str(remainder).into_iter::<serde_json::Value>();
+            match trailing_values.next() {
+                Some(Ok(_)) => Err(strict_error),
+                Some(Err(_)) => Ok((candidate, true)),
+                None => Err(strict_error),
+            }
+        }
+    }
 }
 
 #[derive(Debug, Subcommand)]
@@ -619,4 +647,31 @@ fn print_json(value: &impl Serialize) -> Result<(), String> {
         serde_json::to_string_pretty(value).map_err(|error| error.to_string())?
     );
     Ok(())
+}
+
+#[cfg(test)]
+mod candidate_json_tests {
+    use super::*;
+
+    #[test]
+    fn accepts_one_complete_candidate_with_non_json_trailing_text() {
+        let text = r#"{"claims":[],"inferences":[]}
+<|channel|>done"#;
+        let (candidate, normalized) = parse_candidate_json(text).unwrap();
+        assert!(candidate.claims.is_empty());
+        assert!(normalized);
+    }
+
+    #[test]
+    fn rejects_multiple_json_candidate_values() {
+        let text = r#"{"claims":[],"inferences":[]}
+{"claims":[],"inferences":[]}"#;
+        assert!(parse_candidate_json(text).is_err());
+    }
+
+    #[test]
+    fn rejects_incomplete_candidate_json() {
+        let text = r#"{"claims":[{"#;
+        assert!(parse_candidate_json(text).is_err());
+    }
 }
