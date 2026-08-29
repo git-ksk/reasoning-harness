@@ -1,0 +1,21 @@
+{
+  "id": "counterexample",
+  "description": "A universal claim ignores a supplied counterexample.",
+  "input": {
+    "task": "Do all requests succeed?",
+    "evidence": [
+      {"id": "e1", "source": "sample A", "observation": "Requests 1 through 9 succeeded."},
+      {"id": "e2", "source": "sample B", "observation": "Request 10 failed."}
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id": "c1", "statement": "All requests succeed.", "proposed_state": "supported", "evidence_ids": ["e1"]}
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "reject",
+  "unsupported_claim_ids": ["c1"],
+  "hidden_assumption_claim_ids": ["c1"],
+  "contradiction_claim_ids": ["c1"]
+}

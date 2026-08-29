@@ -49,9 +49,10 @@ cargo test --workspace
 cargo run -p reasoning-harness-cli -- run --input examples/input.json --candidate examples/candidate.json --format json
 cargo run -p reasoning-harness-cli -- verify examples/artifact.json --format json
 cargo run -p reasoning-harness-cli -- eval examples/artifact.json
+cargo run -p reasoning-harness-cli -- eval fixtures --format human
 
 # Optional live candidate generation (requires MISTRAL_API_KEY)
 cargo run -p reasoning-harness-cli -- run --input examples/input.json --provider mistral --model ministral-8b-latest --format json
 ```
 
-See [docs/research-plan.md](docs/research-plan.md), [docs/architecture.md](docs/architecture.md), [docs/prior-art.md](docs/prior-art.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).
+See [docs/research-plan.md](docs/research-plan.md), [docs/benchmark.md](docs/benchmark.md), [docs/architecture.md](docs/architecture.md), [docs/prior-art.md](docs/prior-art.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).

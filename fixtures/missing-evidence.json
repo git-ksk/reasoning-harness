@@ -1,0 +1,19 @@
+{
+  "id": "missing-evidence",
+  "description": "The candidate invents a fact that is absent from the supplied evidence.",
+  "input": {
+    "task": "Which deployment region was used?",
+    "evidence": [
+      {"id": "e1", "source": "request log", "observation": "The request returned HTTP 503."}
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id": "c1", "statement": "The deployment region was us-east-1.", "proposed_state": "known", "evidence_ids": []}
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "unknown",
+  "unsupported_claim_ids": ["c1"],
+  "hidden_assumption_claim_ids": ["c1"]
+}

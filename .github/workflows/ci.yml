@@ -18,8 +18,16 @@ jobs:
           toolchain: 1.88.0
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
-      - run: cargo fmt --check
-      - run: cargo clippy --workspace --all-targets -- -D warnings
-      - run: cargo test --workspace
-      - run: cargo run -p reasoning-harness-cli -- verify examples/artifact.json
-      - run: cargo run -p reasoning-harness-cli -- eval examples/artifact.json
+      - name: Format
+        run: cargo fmt --check
+      - name: Clippy
+        run: cargo clippy --locked --workspace --all-targets -- -D warnings
+      - name: Test
+        run: cargo test --locked --workspace
+      - name: CLI smoke
+        run: |
+          cargo run -q --locked -p reasoning-harness-cli -- run --input examples/input.json --candidate examples/candidate.json --format json >/tmp/reason-run.json
+          cargo run -q --locked -p reasoning-harness-cli -- verify examples/artifact.json --format json >/tmp/reason-verify.json
+          cargo run -q --locked -p reasoning-harness-cli -- eval examples/artifact.json --format json >/tmp/reason-eval.json
+      - name: Fixture regression
+        run: cargo run -q --locked -p reasoning-harness-cli -- eval fixtures --format json >/tmp/reason-fixtures.json

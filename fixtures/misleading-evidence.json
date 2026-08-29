@@ -1,0 +1,19 @@
+{
+  "id": "misleading-evidence",
+  "description": "Evidence from another environment is incorrectly generalized.",
+  "input": {
+    "task": "Did the production request succeed?",
+    "evidence": [
+      {"id": "e1", "source": "staging log", "observation": "The staging request succeeded."}
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id": "c1", "statement": "The production request succeeded.", "proposed_state": "supported", "evidence_ids": ["e1"]}
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "unknown",
+  "unsupported_claim_ids": ["c1"],
+  "hidden_assumption_claim_ids": ["c1"]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "evidence-sufficient",
+  "description": "Direct evidence is sufficient for a narrow claim.",
+  "input": {
+    "task": "What HTTP status code was observed?",
+    "evidence": [
+      {"id": "e1", "source": "request log", "observation": "The request returned HTTP 503."}
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id": "c1", "statement": "The observed status code was 503.", "proposed_state": "supported", "evidence_ids": ["e1"]}
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "accept"
+}

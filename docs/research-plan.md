@@ -42,3 +42,9 @@ Transform a verified artifact into progressively simpler explanations and detect
 ## Evaluation principle
 
 Do not optimize for a single judge-model score. Prefer measurable protocol properties, golden fixtures, adversarial fixtures, and external oracles. Model-judge metrics should be explicitly labeled as soft evidence.
+
+## Benchmark methodology
+
+The first benchmark holds the generated candidate constant between a naive baseline and the harness arm so that measured differences come from the deterministic process rather than a different model sample. Recorded candidates are CI regression fixtures only; empirical claims require live repeated provider runs. See [benchmark design](benchmark.md).
+
+The benchmark must penalize both false acceptance and trivial over-conservatism. Therefore verdict accuracy and per-class accept/reject/unknown recall are reported alongside unsupported accepted claims.

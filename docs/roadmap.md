@@ -4,6 +4,8 @@
 - stabilize HarnessInput / ReasoningCandidate / ReasoningArtifact schemas
 - JSON Schema export
 - provenance coverage gates
+- harness-owned evidence / untrusted candidate authority boundary
+- verification receipts or oracle-backed promotion for safely upgrading supported/known claims
 - explicit unknown/assumption handling
 - fixture-based eval runner
 - native CLI for run / verify / eval workflows; explain remains deferred until renderer semantics are defined
@@ -13,13 +15,13 @@
 - explicit hard-validator vs soft-judge metric classification
 
 ## v0.2 — adversarial reasoning passes
-- contradiction pass
-- counterexample pass
+- contradiction pass (current recorded fixtures: detection gap)
+- counterexample pass (current recorded fixtures: reject gap)
 - assumption pass
 - semantic-loss checks
 
 ## v0.3 — framework plugins
-- mature the existing evidence-aware 5 Whys prototype
+- mature the existing evidence-aware 5 Whys prototype into a harness pass; reject symptom-restatement edges
 - first principles
 - Feynman/simplification renderer
 - framework plugin contract

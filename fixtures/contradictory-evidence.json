@@ -1,0 +1,20 @@
+{
+  "id": "contradictory-evidence",
+  "description": "Two supplied observations directly conflict and require contradiction handling.",
+  "input": {
+    "task": "Is the feature enabled?",
+    "evidence": [
+      {"id": "e1", "source": "config snapshot A", "observation": "The feature is enabled."},
+      {"id": "e2", "source": "config snapshot B", "observation": "The feature is disabled."}
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id": "c1", "statement": "The feature is enabled.", "proposed_state": "supported", "evidence_ids": ["e1"]},
+      {"id": "c2", "statement": "The feature is disabled.", "proposed_state": "supported", "evidence_ids": ["e2"]}
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "reject",
+  "contradiction_claim_ids": ["c1", "c2"]
+}

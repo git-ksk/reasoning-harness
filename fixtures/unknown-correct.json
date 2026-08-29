@@ -1,0 +1,15 @@
+{
+  "id": "unknown-correct",
+  "description": "The candidate correctly preserves uncertainty when evidence is absent.",
+  "input": {
+    "task": "What database engine is in use?",
+    "evidence": []
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id": "c1", "statement": "The database engine cannot be determined from the supplied evidence.", "proposed_state": "unknown", "evidence_ids": []}
+    ],
+    "inferences": []
+  },
+  "expected_verdict": "unknown"
+}

@@ -1,3 +1,4 @@
+pub mod benchmark;
 pub mod candidate;
 pub mod decision;
 pub mod eval;
@@ -9,6 +10,10 @@ pub mod schema;
 pub mod types;
 pub mod validate;
 
+pub use benchmark::{
+    BenchmarkAggregate, BenchmarkArmResult, BenchmarkCaseResult, BenchmarkComparison,
+    BenchmarkFixture, aggregate_benchmark, evaluate_benchmark_fixture,
+};
 pub use candidate::materialize_candidate;
 pub use decision::{AcceptancePolicy, StrictAcceptancePolicy};
 pub use eval::{EvalMetrics, evaluate};
