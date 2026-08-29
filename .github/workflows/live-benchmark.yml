@@ -3,12 +3,25 @@ name: live-benchmark
 on:
   workflow_dispatch:
     inputs:
+      mistral_model:
+        description: Optional single Mistral model to run
+        required: false
+        type: choice
+        options:
+          - all
+          - none
+          - ministral-3b-latest
+          - ministral-8b-latest
+          - ministral-14b-latest
+          - mistral-small-latest
+        default: all
       google_model:
         description: Optional single Google model to run
         required: false
         type: choice
         options:
           - all
+          - none
           - gemma-4-26b-a4b-it
           - gemma-4-31b-it
           - gemini-3.1-flash-lite
@@ -20,17 +33,14 @@ permissions:
 
 jobs:
   mistral:
+    if: inputs.mistral_model != 'none'
     name: mistral-${{ matrix.model }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        model:
-          - ministral-3b-latest
-          - ministral-8b-latest
-          - ministral-14b-latest
-          - mistral-small-latest
+        model: ${{ fromJSON(inputs.mistral_model == 'all' && '["ministral-3b-latest","ministral-8b-latest","ministral-14b-latest","mistral-small-latest"]' || format('["{0}"]', inputs.mistral_model)) }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -51,9 +61,10 @@ jobs:
             --trials 1 \
             --format json \
             > "/tmp/reason-live-${MODEL}.json"
-          jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational}' "/tmp/reason-live-${MODEL}.json"
+          jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational, deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
 
   google:
+    if: inputs.google_model != 'none'
     name: google-${{ matrix.model }}
     runs-on: ubuntu-latest
     # Keep probing 26B without making the diagnostic matrix unusable while its latency is characterized.
@@ -87,12 +98,16 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MODEL: ${{ matrix.model }}
         run: |
+          MAX_TOKENS=4096
+          if [ "$MODEL" = "gemma-4-26b-a4b-it" ]; then
+            MAX_TOKENS=8192
+          fi
           cargo run -q --locked -p reasoning-harness-cli -- \
             eval fixtures \
             --provider google \
             --model "$MODEL" \
-            --max-tokens 4096 \
+            --max-tokens "$MAX_TOKENS" \
             --trials 1 \
             --format json \
             > "/tmp/reason-live-${MODEL}.json"
-          jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational}' "/tmp/reason-live-${MODEL}.json"
+          jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational, deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
