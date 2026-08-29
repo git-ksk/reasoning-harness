@@ -14,6 +14,13 @@
 - offline fixture regression separated from live provider benchmark runs
 - explicit hard-validator vs soft-judge metric classification
 
+## P0 next — structured verifier binding
+- replace brittle exact-prose receipt matching with a typed verification target
+- define a provider-neutral verifier/oracle adapter contract that runs after candidate generation
+- bind verifier results to structured propositions plus harness-owned evidence, never model self-asserted authority
+- restore live accept/reject utility without increasing unsupported accepted claims
+- preserve exact-string receipt binding as a conservative compatibility mode
+
 ## v0.2 — adversarial reasoning passes
 - generic contradiction discovery pass; trusted-oracle contradiction receipts are implemented
 - counterexample generation + deterministic verification; trusted-oracle counterexample rejection is implemented

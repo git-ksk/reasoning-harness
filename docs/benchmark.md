@@ -76,7 +76,11 @@ With fixture-owned trusted verification receipts for cases where a deterministic
 
 This **is not 100% generic model reasoning accuracy**. It is a deterministic process regression result under explicit golden-oracle coverage. The support and contradiction fixtures contain trusted receipts that the model cannot see or create. Cases without oracle authority still resolve conservatively to `unknown`. Generic semantic contradiction discovery and counterexample verification remain research gaps.
 
-A first live Mistral run before receipt-backed verification was introduced used seven generations, 6,022 tokens, and roughly 17.2 seconds of provider latency. It confirmed the core safety trade-off: untrusted candidate states could accept an unsupported claim, while the harness eliminated unsupported acceptance but was over-conservative. Future live runs should be compared as stochastic research observations, never as a replacement for the committed deterministic fixture baseline.
+A first live Mistral run before receipt-backed verification was introduced used seven generations, 6,022 tokens, and roughly 17.2 seconds of provider latency. It confirmed the core safety trade-off: untrusted candidate states could accept an unsupported claim, while the harness eliminated unsupported acceptance but was over-conservative.
+
+A second live run after exact-statement-bound verification receipts used seven generations, 6,870 tokens, and roughly 19.8 seconds of provider latency. The naive arm reached 5/7 verdict accuracy while the harness arm reached 3/7. The harness still reduced unsupported accepted claims to zero, but four of seven harness cases failed closed because live model paraphrases did not exactly match fixture receipt statements. This is a useful negative result: exact natural-language string binding is safe but too brittle for a live verifier contract. The next P0 is a structured verification target / oracle-adapter contract that can bind hard verifier results to typed propositions without trusting model-authored prose.
+
+Live runs are stochastic research observations and never replace the committed deterministic fixture baseline.
 
 ## Regression policy
 
