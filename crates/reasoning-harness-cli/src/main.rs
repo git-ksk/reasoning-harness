@@ -4,7 +4,8 @@ use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
     BenchmarkCaseResult, BenchmarkComparison, BenchmarkFixture, HarnessInput, ModelAdapter,
     ModelUsage, ReasoningArtifact, ReasoningCandidate, StrictAcceptancePolicy, aggregate_benchmark,
-    build_candidate_request, evaluate, evaluate_benchmark_fixture, run_harness, validate_artifact,
+    build_candidate_json_fallback_request, build_candidate_request, evaluate,
+    evaluate_benchmark_fixture, run_harness, validate_artifact,
 };
 use reasoning_harness_providers::MistralAdapter;
 use serde::{Serialize, de::DeserializeOwned};
@@ -56,22 +57,53 @@ impl LiveGenerator {
                 let request = build_candidate_request(input, Some(max_tokens), seed)
                     .map_err(|error| error.to_string())?;
                 let started = Instant::now();
-                let response = adapter
+                let first = adapter
                     .generate(request)
                     .await
                     .map_err(|error| error.to_string())?;
+                let (candidate, response, provider_attempts, usage) = match serde_json::from_str::<
+                    ReasoningCandidate,
+                >(
+                    &first.text
+                ) {
+                    Ok(candidate) => {
+                        let usage = first.usage.clone();
+                        (candidate, first, 1, usage)
+                    }
+                    Err(first_error) => {
+                        let fallback =
+                            build_candidate_json_fallback_request(input, Some(max_tokens), seed)
+                                .map_err(|error| error.to_string())?;
+                        let second = adapter.generate(fallback).await.map_err(|error| {
+                                format!(
+                                    "Mistral structured-output fallback failed after invalid first candidate (finish_reason={}, bytes={}): {error}",
+                                    first.finish_reason.as_deref().unwrap_or("unknown"),
+                                    first.text.len(),
+                                )
+                            })?;
+                        let candidate = serde_json::from_str::<ReasoningCandidate>(&second.text)
+                                .map_err(|second_error| {
+                                    format!(
+                                        "provider returned invalid candidate JSON after structured-output fallback: first_error={first_error}; first_finish_reason={}; first_bytes={}; second_error={second_error}; second_finish_reason={}; second_bytes={}",
+                                        first.finish_reason.as_deref().unwrap_or("unknown"),
+                                        first.text.len(),
+                                        second.finish_reason.as_deref().unwrap_or("unknown"),
+                                        second.text.len(),
+                                    )
+                                })?;
+                        let usage = add_usage(&first.usage, &second.usage);
+                        (candidate, second, 2, usage)
+                    }
+                };
                 let latency_ms = started.elapsed().as_millis();
-                let candidate: ReasoningCandidate =
-                    serde_json::from_str(&response.text).map_err(|error| {
-                        format!("provider returned invalid candidate JSON: {error}")
-                    })?;
                 Ok((
                     candidate,
                     GenerationObservation {
                         provider: "mistral",
                         model: response.model,
-                        usage: response.usage,
+                        usage,
                         latency_ms,
+                        provider_attempts,
                         cost_usd: None,
                     },
                 ))
@@ -150,8 +182,24 @@ struct GenerationObservation {
     model: String,
     usage: ModelUsage,
     latency_ms: u128,
+    provider_attempts: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     cost_usd: Option<f64>,
+}
+
+fn add_usage(left: &ModelUsage, right: &ModelUsage) -> ModelUsage {
+    ModelUsage {
+        input_tokens: add_optional(left.input_tokens, right.input_tokens),
+        output_tokens: add_optional(left.output_tokens, right.output_tokens),
+        total_tokens: add_optional(left.total_tokens, right.total_tokens),
+    }
+}
+
+fn add_optional(left: Option<u64>, right: Option<u64>) -> Option<u64> {
+    match (left, right) {
+        (Some(left), Some(right)) => left.checked_add(right),
+        _ => None,
+    }
 }
 
 #[derive(Debug, Serialize)]

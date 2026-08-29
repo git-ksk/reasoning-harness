@@ -153,6 +153,7 @@ impl MistralAdapter {
                     .and_then(|usage| usage.completion_tokens),
                 total_tokens: response.usage.and_then(|usage| usage.total_tokens),
             },
+            finish_reason: choice.finish_reason,
         })
     }
 }
@@ -222,6 +223,7 @@ struct ChatResponse {
 
 #[derive(Debug, Deserialize)]
 struct Choice {
+    finish_reason: Option<String>,
     message: ResponseMessage,
 }
 

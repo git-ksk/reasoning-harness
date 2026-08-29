@@ -17,7 +17,7 @@ pub use benchmark::{
 pub use candidate::materialize_candidate;
 pub use decision::{AcceptancePolicy, StrictAcceptancePolicy};
 pub use eval::{EvalMetrics, evaluate};
-pub use generation::build_candidate_request;
+pub use generation::{build_candidate_json_fallback_request, build_candidate_request};
 pub use harness::{HarnessError, HarnessOutcome, Pass, run_harness, run_passes};
 pub use model::{
     ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,

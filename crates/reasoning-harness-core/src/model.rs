@@ -35,6 +35,8 @@ pub struct ModelResponse {
     pub text: String,
     pub model: String,
     pub usage: ModelUsage,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub finish_reason: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
