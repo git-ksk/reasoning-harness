@@ -59,6 +59,23 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
                 message: format!("evidence {} has an empty observation", evidence.id),
             });
         }
+        for (key, value) in &evidence.facts {
+            if key.trim().is_empty() {
+                diagnostics.push(Diagnostic {
+                    code: "empty_evidence_fact_key",
+                    message: format!("evidence {} has an empty structured fact key", evidence.id),
+                });
+            }
+            if value.trim().is_empty() {
+                diagnostics.push(Diagnostic {
+                    code: "empty_evidence_fact_value",
+                    message: format!(
+                        "evidence {} structured fact {} has an empty value",
+                        evidence.id, key
+                    ),
+                });
+            }
+        }
     }
 
     let mut receipt_ids = HashSet::new();
@@ -87,11 +104,24 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
                 message: format!("verification receipt {} has no evidence", receipt.id),
             });
         }
-        if receipt.claim_statement.trim().is_empty() {
+        if receipt
+            .claim_statement
+            .as_ref()
+            .is_some_and(|statement| statement.trim().is_empty())
+        {
             diagnostics.push(Diagnostic {
                 code: "empty_verification_claim_statement",
                 message: format!(
                     "verification receipt {} has an empty claim statement",
+                    receipt.id
+                ),
+            });
+        }
+        if receipt.claim_statement.is_none() && receipt.proposition.is_none() {
+            diagnostics.push(Diagnostic {
+                code: "verification_without_binding",
+                message: format!(
+                    "verification receipt {} has neither statement nor proposition binding",
                     receipt.id
                 ),
             });
@@ -128,6 +158,20 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
                 message: format!("claim {} has an empty statement", claim.id),
             });
         }
+        if let Some(proposition) = &claim.proposition {
+            if proposition.key.trim().is_empty() {
+                diagnostics.push(Diagnostic {
+                    code: "empty_proposition_key",
+                    message: format!("claim {} has an empty proposition key", claim.id),
+                });
+            }
+            if proposition.value.trim().is_empty() {
+                diagnostics.push(Diagnostic {
+                    code: "empty_proposition_value",
+                    message: format!("claim {} has an empty proposition value", claim.id),
+                });
+            }
+        }
 
         if matches!(
             claim.state,
@@ -161,7 +205,14 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
             .claims
             .iter()
             .filter(|claim| {
-                claim.statement == receipt.claim_statement
+                receipt
+                    .claim_statement
+                    .as_ref()
+                    .is_none_or(|statement| statement == &claim.statement)
+                    && receipt
+                        .proposition
+                        .as_ref()
+                        .is_none_or(|proposition| claim.proposition.as_ref() == Some(proposition))
                     && receipt
                         .claim_id
                         .as_ref()

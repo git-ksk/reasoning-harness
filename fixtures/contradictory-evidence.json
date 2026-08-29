@@ -7,12 +7,18 @@
       {
         "id": "e1",
         "source": "config snapshot A",
-        "observation": "The feature is enabled."
+        "observation": "The feature is enabled.",
+        "facts": {
+          "feature.enabled": "true"
+        }
       },
       {
         "id": "e2",
         "source": "config snapshot B",
-        "observation": "The feature is disabled."
+        "observation": "The feature is disabled.",
+        "facts": {
+          "feature.enabled": "false"
+        }
       }
     ]
   },
@@ -24,7 +30,11 @@
         "proposed_state": "supported",
         "evidence_ids": [
           "e1"
-        ]
+        ],
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        }
       },
       {
         "id": "c2",
@@ -32,7 +42,11 @@
         "proposed_state": "supported",
         "evidence_ids": [
           "e2"
-        ]
+        ],
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "false"
+        }
       }
     ],
     "inferences": []
@@ -41,25 +55,5 @@
   "contradiction_claim_ids": [
     "c1",
     "c2"
-  ],
-  "verification_receipts": [
-    {
-      "id": "vr1",
-      "verifier": "fixture_oracle",
-      "claim_statement": "The feature is enabled.",
-      "conclusion": "contradicted",
-      "evidence_ids": [
-        "e2"
-      ]
-    },
-    {
-      "id": "vr2",
-      "verifier": "fixture_oracle",
-      "claim_statement": "The feature is disabled.",
-      "conclusion": "contradicted",
-      "evidence_ids": [
-        "e1"
-      ]
-    }
   ]
 }

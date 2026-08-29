@@ -64,7 +64,7 @@ This prevents a provider from fabricating its own evidence records, self-certify
 
 ## Verification receipt boundary
 
-`VerificationReceipt` is authority-bearing data and is deliberately absent from `ReasoningCandidate` and the provider prompt. A trusted verifier creates receipts only after candidate generation. Receipts bind to an exact claim statement and optionally a claim ID, identify the verifier, cite harness-owned evidence, and conclude either `supported` or `contradicted`. The trusted verification pass fails closed unless each receipt binds to exactly one claim.
+`VerificationReceipt` is authority-bearing data and is deliberately absent from `ReasoningCandidate`. A trusted verifier creates receipts only after candidate generation. The preferred hard-verification contract binds a typed `Proposition { key, value }` to structured facts owned by harness evidence. `StructuredFactVerifier` compares those values deterministically and emits either `supported` or `contradicted`; missing facts yield no receipt and preserve uncertainty. When such a receipt is applied, the authoritative claim text is canonicalized to `key = value` so model-authored prose is never presented as verifier-endorsed wording. Exact statement-bound receipts remain available only as a conservative compatibility path for external verifiers.
 
 A receipt is not a semantic score. It represents a hard verifier result whose authority comes from the verifier named by the caller. The current fixture benchmark uses explicit `fixture_oracle` receipts to test process correctness under known oracle coverage; this must not be reported as generic reasoning accuracy.
 

@@ -8,7 +8,7 @@ pub fn build_candidate_request(
     let evidence = serde_json::to_string_pretty(&input.evidence)?;
     Ok(ModelRequest {
         system: Some(
-            "You are a candidate generator inside a reasoning harness. Return only the requested structured candidate. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support."
+            "You are a candidate generator inside a reasoning harness. Return only the requested structured candidate. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support."
                 .into(),
         ),
         task: format!(
@@ -33,7 +33,7 @@ pub fn build_candidate_json_fallback_request(
     let schema = serde_json::to_string_pretty(&reasoning_candidate_schema())?;
     Ok(ModelRequest {
         system: Some(
-            "You are a candidate generator inside a reasoning harness. Return exactly one JSON object and no prose. The object must conform to the supplied JSON Schema. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support."
+            "You are a candidate generator inside a reasoning harness. Return exactly one JSON object and no prose. The object must conform to the supplied JSON Schema. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support."
                 .into(),
         ),
         task: format!(
@@ -58,6 +58,7 @@ mod tests {
             evidence: vec![Evidence {
                 id: "e1".into(),
                 observation: "observed".into(),
+                facts: Default::default(),
                 source: "fixture".into(),
             }],
         };

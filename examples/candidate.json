@@ -4,7 +4,13 @@
       "id": "c1",
       "statement": "The observed fact is known from the source.",
       "proposed_state": "known",
-      "evidence_ids": ["e1"]
+      "evidence_ids": [
+        "e1"
+      ],
+      "proposition": {
+        "key": "fixture.observed_fact",
+        "value": "present"
+      }
     },
     {
       "id": "c2",

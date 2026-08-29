@@ -21,7 +21,8 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 
 ## Known gaps
 
-- Exact natural-language receipt binding is intentionally fail-closed but too brittle for live paraphrases; a structured verification target is the current P0.
+- Exact natural-language receipt binding was confirmed too brittle for live paraphrases. The current implementation now uses typed propositions and harness-owned structured facts for the built-in hard verifier; exact-string binding remains compatibility-only.
+- P0 validation still requires a live Mistral benchmark after the typed-target migration before Issue #2 can be closed.
 - No generic semantic contradiction detector: contradiction authority currently requires a trusted receipt/oracle.
 - No generic counterexample generator/verifier.
 - Five Whys pass is intentionally lexical and narrow, not a semantic causal judge.

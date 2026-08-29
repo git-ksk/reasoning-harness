@@ -7,7 +7,10 @@
       {
         "id": "e1",
         "source": "request log",
-        "observation": "The request returned HTTP 503."
+        "observation": "The request returned HTTP 503.",
+        "facts": {
+          "http.status_code": "503"
+        }
       }
     ]
   },
@@ -19,21 +22,14 @@
         "proposed_state": "supported",
         "evidence_ids": [
           "e1"
-        ]
+        ],
+        "proposition": {
+          "key": "http.status_code",
+          "value": "503"
+        }
       }
     ],
     "inferences": []
   },
-  "expected_verdict": "accept",
-  "verification_receipts": [
-    {
-      "id": "vr1",
-      "verifier": "fixture_oracle",
-      "claim_statement": "The observed status code was 503.",
-      "conclusion": "supported",
-      "evidence_ids": [
-        "e1"
-      ]
-    }
-  ]
+  "expected_verdict": "accept"
 }

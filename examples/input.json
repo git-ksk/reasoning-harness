@@ -4,7 +4,10 @@
     {
       "id": "e1",
       "source": "fixture",
-      "observation": "The source explicitly states the observed fact."
+      "observation": "The source explicitly states the observed fact.",
+      "facts": {
+        "fixture.observed_fact": "present"
+      }
     }
   ]
 }

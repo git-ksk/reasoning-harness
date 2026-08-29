@@ -12,7 +12,10 @@
       {
         "id": "e2",
         "source": "sample B",
-        "observation": "Request 10 failed."
+        "observation": "Request 10 failed.",
+        "facts": {
+          "requests.all_succeed": "false"
+        }
       }
     ]
   },
@@ -24,7 +27,11 @@
         "proposed_state": "supported",
         "evidence_ids": [
           "e1"
-        ]
+        ],
+        "proposition": {
+          "key": "requests.all_succeed",
+          "value": "true"
+        }
       }
     ],
     "inferences": []
@@ -38,16 +45,5 @@
   ],
   "contradiction_claim_ids": [
     "c1"
-  ],
-  "verification_receipts": [
-    {
-      "id": "vr1",
-      "verifier": "fixture_oracle",
-      "claim_statement": "All requests succeed.",
-      "conclusion": "contradicted",
-      "evidence_ids": [
-        "e2"
-      ]
-    }
   ]
 }

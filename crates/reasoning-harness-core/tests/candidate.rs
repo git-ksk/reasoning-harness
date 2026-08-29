@@ -11,6 +11,7 @@ fn model_cannot_promote_its_own_claim_to_supported() {
             id: "e1".into(),
             source: "fixture".into(),
             observation: "observed fact".into(),
+            facts: Default::default(),
         }],
     };
     let candidate = ReasoningCandidate {
@@ -18,6 +19,7 @@ fn model_cannot_promote_its_own_claim_to_supported() {
             id: "c1".into(),
             statement: "candidate assertion".into(),
             proposed_state: EpistemicState::Supported,
+            proposition: None,
             evidence_ids: vec!["e1".into()],
         }],
         inferences: vec![],
@@ -38,6 +40,7 @@ fn model_cannot_inject_evidence_into_harness_owned_input() {
             id: "c1".into(),
             statement: "candidate assertion".into(),
             proposed_state: EpistemicState::Supported,
+            proposition: None,
             evidence_ids: vec!["invented".into()],
         }],
         inferences: vec![],

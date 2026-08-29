@@ -10,6 +10,7 @@ fn input() -> HarnessInput {
             id: "e1".into(),
             source: "request log".into(),
             observation: "HTTP 503".into(),
+            facts: Default::default(),
         }],
     }
 }
@@ -32,7 +33,8 @@ fn trusted_receipt_can_promote_exact_bound_claim() {
     let pass = TrustedVerificationPass::new(vec![VerificationReceipt {
         id: "vr1".into(),
         verifier: "test_oracle".into(),
-        claim_statement: "The observed status code was 503.".into(),
+        claim_statement: Some("The observed status code was 503.".into()),
+        proposition: None,
         claim_id: None,
         conclusion: VerificationConclusion::Supported,
         evidence_ids: vec!["e1".into()],
@@ -50,7 +52,8 @@ fn trusted_contradiction_can_reject_exact_bound_claim() {
     let pass = TrustedVerificationPass::new(vec![VerificationReceipt {
         id: "vr1".into(),
         verifier: "test_oracle".into(),
-        claim_statement: "The observed status code was 503.".into(),
+        claim_statement: Some("The observed status code was 503.".into()),
+        proposition: None,
         claim_id: None,
         conclusion: VerificationConclusion::Contradicted,
         evidence_ids: vec!["e1".into()],
@@ -70,7 +73,8 @@ fn receipt_fails_closed_when_statement_does_not_match() {
     let pass = TrustedVerificationPass::new(vec![VerificationReceipt {
         id: "vr1".into(),
         verifier: "test_oracle".into(),
-        claim_statement: "A different claim.".into(),
+        claim_statement: Some("A different claim.".into()),
+        proposition: None,
         claim_id: None,
         conclusion: VerificationConclusion::Supported,
         evidence_ids: vec!["e1".into()],

@@ -15,11 +15,11 @@
 - explicit hard-validator vs soft-judge metric classification
 
 ## P0 next — structured verifier binding
-- replace brittle exact-prose receipt matching with a typed verification target
+- [done] replace brittle exact-prose receipt matching with a typed `Proposition { key, value }` verification target
 - define a provider-neutral verifier/oracle adapter contract that runs after candidate generation
-- bind verifier results to structured propositions plus harness-owned evidence, never model self-asserted authority
+- [done] bind verifier results to structured propositions plus harness-owned structured facts, never model self-asserted authority
 - restore live accept/reject utility without increasing unsupported accepted claims
-- preserve exact-string receipt binding as a conservative compatibility mode
+- [done] preserve exact-string receipt binding as a conservative compatibility mode
 
 ## v0.2 — adversarial reasoning passes
 - generic contradiction discovery pass; trusted-oracle contradiction receipts are implemented

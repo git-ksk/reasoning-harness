@@ -10,11 +10,13 @@ fn accepts_an_evidence_backed_known_claim() {
             id: "e1".into(),
             source: "fixture".into(),
             observation: "observed".into(),
+            facts: Default::default(),
         }],
         claims: vec![Claim {
             id: "c1".into(),
             statement: "supported".into(),
             state: EpistemicState::Known,
+            proposition: None,
             evidence_ids: vec!["e1".into()],
         }],
         ..Default::default()
@@ -30,6 +32,7 @@ fn rejects_a_supported_claim_without_evidence() {
             id: "c1".into(),
             statement: "unsupported".into(),
             state: EpistemicState::Supported,
+            proposition: None,
             evidence_ids: vec![],
         }],
         ..Default::default()
@@ -50,6 +53,7 @@ fn rejects_references_to_missing_evidence() {
             id: "c1".into(),
             statement: "bad ref".into(),
             state: EpistemicState::Inferred,
+            proposition: None,
             evidence_ids: vec!["missing".into()],
         }],
         ..Default::default()
@@ -70,6 +74,7 @@ fn rejects_an_inferred_claim_without_an_inference_edge() {
             id: "c1".into(),
             statement: "derived conclusion".into(),
             state: EpistemicState::Inferred,
+            proposition: None,
             evidence_ids: vec![],
         }],
         ..Default::default()

@@ -4,8 +4,8 @@ use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
     BenchmarkCaseResult, BenchmarkComparison, BenchmarkFixture, HarnessInput, ModelAdapter,
     ModelUsage, ReasoningArtifact, ReasoningCandidate, StrictAcceptancePolicy,
-    TrustedVerificationPass, VerificationReceipt, aggregate_benchmark,
-    build_candidate_json_fallback_request, build_candidate_request, evaluate,
+    StructuredFactVerifier, TrustedVerificationPass, VerificationPass, VerificationReceipt,
+    aggregate_benchmark, build_candidate_json_fallback_request, build_candidate_request, evaluate,
     evaluate_benchmark_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
     validate_artifact,
 };
@@ -297,6 +297,9 @@ async fn run(cli: Cli) -> Result<(), String> {
                 None => Vec::new(),
             };
             let passes: Vec<Box<dyn reasoning_harness_core::Pass>> = vec![
+                Box::new(VerificationPass::new(vec![Box::new(
+                    StructuredFactVerifier,
+                )])),
                 Box::new(TrustedVerificationPass::new(receipts)),
                 Box::new(FiveWhysRestatementPass),
             ];

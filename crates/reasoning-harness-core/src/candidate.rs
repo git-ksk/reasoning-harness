@@ -16,6 +16,7 @@ pub fn materialize_candidate(
             id: claim.id,
             statement: claim.statement,
             state: materialized_state(claim.proposed_state),
+            proposition: claim.proposition,
             evidence_ids: claim.evidence_ids,
         })
         .collect();

@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     AcceptancePolicy, Claim, EpistemicState, HarnessInput, ReasoningArtifact, ReasoningCandidate,
-    StrictAcceptancePolicy, TrustedVerificationPass, Verdict, evaluate,
-    frameworks::five_whys::FiveWhysRestatementPass, run_harness,
+    StrictAcceptancePolicy, StructuredFactVerifier, TrustedVerificationPass, Verdict,
+    VerificationPass, evaluate, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -88,6 +88,9 @@ pub fn evaluate_benchmark_fixture(
     );
 
     let passes: Vec<Box<dyn crate::Pass>> = vec![
+        Box::new(VerificationPass::new(vec![Box::new(
+            StructuredFactVerifier,
+        )])),
         Box::new(TrustedVerificationPass::new(
             fixture.verification_receipts.clone(),
         )),
@@ -138,6 +141,7 @@ fn naive_materialize(input: HarnessInput, candidate: ReasoningCandidate) -> Reas
                 id: claim.id,
                 statement: claim.statement,
                 state: claim.proposed_state,
+                proposition: claim.proposition,
                 evidence_ids: claim.evidence_ids,
             })
             .collect(),

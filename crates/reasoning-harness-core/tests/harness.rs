@@ -11,6 +11,7 @@ fn validates_input_even_when_there_are_no_passes() {
             id: "c1".into(),
             statement: "unsupported".into(),
             state: EpistemicState::Supported,
+            proposition: None,
             evidence_ids: vec![],
         }],
         ..Default::default()
@@ -33,6 +34,7 @@ fn strict_policy_preserves_unknown_as_a_successful_outcome() {
             id: "c1".into(),
             statement: "not enough evidence".into(),
             proposed_state: EpistemicState::Unknown,
+            proposition: None,
             evidence_ids: vec![],
         }],
         inferences: vec![],
@@ -50,6 +52,7 @@ fn model_proposed_contradiction_cannot_force_runtime_reject() {
             id: "e1".into(),
             source: "fixture".into(),
             observation: "fact".into(),
+            facts: Default::default(),
         }],
     };
     let candidate = ReasoningCandidate {
@@ -57,6 +60,7 @@ fn model_proposed_contradiction_cannot_force_runtime_reject() {
             id: "c1".into(),
             statement: "conflict detected".into(),
             proposed_state: EpistemicState::Contradicted,
+            proposition: None,
             evidence_ids: vec!["e1".into()],
         }],
         inferences: vec![],

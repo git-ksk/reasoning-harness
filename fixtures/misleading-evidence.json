@@ -4,16 +4,38 @@
   "input": {
     "task": "Did the production request succeed?",
     "evidence": [
-      {"id": "e1", "source": "staging log", "observation": "The staging request succeeded."}
+      {
+        "id": "e1",
+        "source": "staging log",
+        "observation": "The staging request succeeded.",
+        "facts": {
+          "staging.request.succeeded": "true"
+        }
+      }
     ]
   },
   "recorded_candidate": {
     "claims": [
-      {"id": "c1", "statement": "The production request succeeded.", "proposed_state": "supported", "evidence_ids": ["e1"]}
+      {
+        "id": "c1",
+        "statement": "The production request succeeded.",
+        "proposed_state": "supported",
+        "evidence_ids": [
+          "e1"
+        ],
+        "proposition": {
+          "key": "production.request.succeeded",
+          "value": "true"
+        }
+      }
     ],
     "inferences": []
   },
   "expected_verdict": "unknown",
-  "unsupported_claim_ids": ["c1"],
-  "hidden_assumption_claim_ids": ["c1"]
+  "unsupported_claim_ids": [
+    "c1"
+  ],
+  "hidden_assumption_claim_ids": [
+    "c1"
+  ]
 }

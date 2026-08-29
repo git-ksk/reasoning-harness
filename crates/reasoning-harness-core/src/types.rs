@@ -1,5 +1,6 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
@@ -17,6 +18,14 @@ pub struct Evidence {
     pub id: String,
     pub source: String,
     pub observation: String,
+    #[serde(default)]
+    pub facts: BTreeMap<String, String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct Proposition {
+    pub key: String,
+    pub value: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
@@ -24,6 +33,8 @@ pub struct Claim {
     pub id: String,
     pub statement: String,
     pub state: EpistemicState,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub proposition: Option<Proposition>,
     #[serde(default)]
     pub evidence_ids: Vec<String>,
 }
@@ -33,6 +44,8 @@ pub struct CandidateClaim {
     pub id: String,
     pub statement: String,
     pub proposed_state: EpistemicState,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub proposition: Option<Proposition>,
     #[serde(default)]
     pub evidence_ids: Vec<String>,
 }
@@ -57,7 +70,10 @@ pub enum VerificationConclusion {
 pub struct VerificationReceipt {
     pub id: String,
     pub verifier: String,
-    pub claim_statement: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claim_statement: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub proposition: Option<Proposition>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claim_id: Option<String>,
     pub conclusion: VerificationConclusion,

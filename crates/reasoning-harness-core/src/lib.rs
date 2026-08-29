@@ -26,8 +26,10 @@ pub use model::{
 };
 pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema};
 pub use types::{
-    CandidateClaim, Claim, EpistemicState, Evidence, HarnessInput, Inference, ReasoningArtifact,
-    ReasoningCandidate, Verdict, VerificationConclusion, VerificationReceipt,
+    CandidateClaim, Claim, EpistemicState, Evidence, HarnessInput, Inference, Proposition,
+    ReasoningArtifact, ReasoningCandidate, Verdict, VerificationConclusion, VerificationReceipt,
 };
 pub use validate::{Diagnostic, ValidationReport, validate_artifact};
-pub use verification::TrustedVerificationPass;
+pub use verification::{
+    StructuredFactVerifier, TrustedVerificationPass, VerificationPass, Verifier,
+};
