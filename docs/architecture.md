@@ -92,6 +92,8 @@ See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md) and [ADR-0002](ad
 
 For durable policy/session control, see [ADR-0003](adr/0003-reasoning-control-plane.md).
 
+The durable control plane is now implemented in two layers: #27 `ReasoningPolicy` governs admissibility/escalation/invalidation, while #28 `ReasoningThread` records typed append-oriented events and reconstructable checkpoints. Replay is pure harness-state reconstruction: recorded resolver attempts are never re-executed, interrupted/pending-policy/finalized states are fail-closed, and fork is the only way to continue from immutable finalized history. See [durable reasoning threads](reasoning-thread.md).
+
 ## Implementation language boundary
 
 All first-party executable and library components are implemented in Rust. This includes the native runtime, CLI, evaluation tooling, model adapters, and any future desktop client or optional integration adapter. Model providers remain external services and are reached through Rust adapters. No JavaScript/TypeScript runtime is part of the correctness boundary.

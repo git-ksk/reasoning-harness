@@ -36,7 +36,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 
 ### Reasoning control plane
 
-ADR-0003 defines the durable-runtime layer without expanding core into a generic agent framework. #27 now implements composable `ReasoningPolicy` and policy-change dependency invalidation while reusing #16/#22 authority boundaries. #28 remains open for append-oriented `ReasoningThread` events, checkpoint/resume/fork, and deterministic replay. Skills/subagents remain deferred.
+ADR-0003 durable control-plane work is implemented without expanding core into a generic agent framework. #27 provides composable `ReasoningPolicy` and policy-change dependency invalidation; #28 provides append-oriented `ReasoningThread` events, deterministic checkpoints, interrupt/resume, non-destructive fork lineage, and replay-time policy verification. Resolver side effects are never replayed implicitly, persistence storage remains abstract, and skills/subagents remain deferred.
 
 
 ### Grounded runtime integration gaps
@@ -47,7 +47,7 @@ The provider-neutral bounded loop is implemented, but production acquisition int
 - live repeated resolution studies against stochastic model/resolver combinations;
 - automatic causal-evidence acquisition/ingestion for the typed `CausalRelation` resolution target;
 - model-backed final renderers evaluated against the implemented claim-coverage gate;
-- durable pause/resume or persistence for resolution state when a consumer requires it.
+- concrete persistence/storage and product-level pause orchestration when a consumer requires it; core thread/checkpoint replay itself is implemented.
 
 Resolver success must continue to be distinguished from verification success. The deterministic nine-scenario suite proves control-flow and authority invariants, not open-world answer quality.
 
