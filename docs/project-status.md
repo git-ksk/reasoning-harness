@@ -26,8 +26,11 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Hard contradiction/counterexample discovery exists for structured harness-owned facts; semantic/model-backed discovery remains soft-only and is not yet implemented.
 - Counterexample discovery coverage is still narrow outside explicit structured propositions.
 - Five Whys lexical cleanup remains intentionally syntactic; evidence-aware causal inspection is observational and does not certify the whole artifact or change the final claim verdict.
-- Candidate-supplied causal-evidence references, general temporal/domain constraints, and live repeated-trial causal diagnostic variability are deferred until a provider-neutral causal input/reporting contract is justified.
-- No assumption extraction, first-principles pass, semantic-loss verifier, or verification-budget policy yet.
+- Candidate-supplied causal-evidence references and general temporal/domain constraints remain deferred; repeated-trial causal/adversarial diagnostic variability is now tracked by #11.
+- Metamorphic/invariance robustness is not yet measured; #10 is the immediate next research priority.
+- No assumption extraction yet; #12 defines the next diagnostic family. First-principles, Feynman/simplification, and semantic-loss work are intentionally behind robustness and calibration gates.
+- Semantic/model-backed discovery remains soft-only and is not yet calibrated; #13 defines the calibration boundary before expanding it.
+- The current 20-case claim corpus and 8-case causal corpus are not yet versioned/stratified as a public benchmark; #14 tracks corpus longevity and contamination/saturation policy.
 - Stable ranking claims require repeated trials. Issue #6 completed the 5-trial Mistral/Google matrix plus a targeted 10-trial follow-up for models tied on all primary correctness metrics; operational completeness is reported separately from correctness variance.
 
 ## Release posture
