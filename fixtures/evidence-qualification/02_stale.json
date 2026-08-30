@@ -1,0 +1,49 @@
+{
+  "id": "stale",
+  "description": "Evidence expired before the required as-of time.",
+  "input": {
+    "task": "Qualify evidence for a typed proposition.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "fixture-source",
+        "observation": "feature.enabled=true",
+        "facts": {
+          "feature.enabled": "true"
+        },
+        "metadata": {
+          "temporal": {
+            "effective_from_unix_seconds": 100,
+            "effective_until_unix_seconds": 120
+          }
+        }
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "as_of_unix_seconds": 150
+      }
+    ],
+    "authority_policy": {
+      "ranks": {
+        "community": 5,
+        "secondary": 10,
+        "primary": 20
+      }
+    }
+  },
+  "expected_statuses": [
+    "disqualified"
+  ],
+  "expected_reasons": [
+    "stale"
+  ],
+  "expected_hard_findings": 1,
+  "expected_soft_findings": 0
+}

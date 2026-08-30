@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use serde::Serialize;
 
-use crate::{EpistemicState, ReasoningArtifact};
+use crate::{ApplicabilityScope, EpistemicState, ReasoningArtifact, ScopeCoverage};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Diagnostic {
@@ -18,6 +18,31 @@ pub struct ValidationReport {
 impl ValidationReport {
     pub fn is_ok(&self) -> bool {
         self.diagnostics.is_empty()
+    }
+}
+
+fn validate_scope(scope: &ApplicabilityScope, owner: &str, diagnostics: &mut Vec<Diagnostic>) {
+    for (dimension, coverage) in scope {
+        if dimension.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_scope_dimension",
+                message: format!("{owner} has an empty scope dimension"),
+            });
+        }
+        if let ScopeCoverage::Values { values } = coverage {
+            if values.is_empty() {
+                diagnostics.push(Diagnostic {
+                    code: "empty_scope_values",
+                    message: format!("{owner} scope dimension {dimension} has no values"),
+                });
+            }
+            if values.iter().any(|value| value.trim().is_empty()) {
+                diagnostics.push(Diagnostic {
+                    code: "empty_scope_value",
+                    message: format!("{owner} scope dimension {dimension} has an empty value"),
+                });
+            }
+        }
     }
 }
 
@@ -72,6 +97,55 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
         }
     }
 
+    for class in artifact.authority_policy.ranks.keys() {
+        if class.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_authority_class",
+                message: "authority policy class must not be empty".into(),
+            });
+        }
+    }
+
+    let mut evidence_requirements = HashSet::new();
+    for requirement in &artifact.evidence_requirements {
+        if requirement.proposition.key.trim().is_empty()
+            || requirement.proposition.value.trim().is_empty()
+        {
+            diagnostics.push(Diagnostic {
+                code: "invalid_evidence_requirement_proposition",
+                message: "evidence requirement proposition key/value must not be empty".into(),
+            });
+        }
+        if !evidence_requirements.insert(requirement.proposition.key.as_str()) {
+            diagnostics.push(Diagnostic {
+                code: "duplicate_evidence_requirement_key",
+                message: format!(
+                    "multiple evidence requirements target proposition key {}",
+                    requirement.proposition.key
+                ),
+            });
+        }
+        if let Some(scope) = &requirement.scope {
+            validate_scope(scope, "evidence requirement", &mut diagnostics);
+        }
+        if let Some(class) = &requirement.minimum_authority_class {
+            if class.trim().is_empty() {
+                diagnostics.push(Diagnostic {
+                    code: "empty_minimum_authority_class",
+                    message: "evidence requirement minimum authority class must not be empty"
+                        .into(),
+                });
+            } else if !artifact.authority_policy.ranks.contains_key(class) {
+                diagnostics.push(Diagnostic {
+                    code: "unknown_minimum_authority_class",
+                    message: format!(
+                        "evidence requirement references authority class not present in policy: {class}"
+                    ),
+                });
+            }
+        }
+    }
+
     for evidence in &artifact.evidence {
         if evidence.id.trim().is_empty() {
             diagnostics.push(Diagnostic {
@@ -95,6 +169,41 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
             diagnostics.push(Diagnostic {
                 code: "empty_evidence_observation",
                 message: format!("evidence {} has an empty observation", evidence.id),
+            });
+        }
+        if let Some(temporal) = &evidence.metadata.temporal {
+            if matches!(
+                (
+                    temporal.effective_from_unix_seconds,
+                    temporal.effective_until_unix_seconds
+                ),
+                (Some(from), Some(until)) if from > until
+            ) {
+                diagnostics.push(Diagnostic {
+                    code: "invalid_evidence_temporal_window",
+                    message: format!(
+                        "evidence {} effective_from is after effective_until",
+                        evidence.id
+                    ),
+                });
+            }
+        }
+        if let Some(scope) = &evidence.metadata.scope {
+            validate_scope(
+                scope,
+                &format!("evidence {}", evidence.id),
+                &mut diagnostics,
+            );
+        }
+        if evidence
+            .metadata
+            .provenance_class
+            .as_ref()
+            .is_some_and(|class| class.trim().is_empty())
+        {
+            diagnostics.push(Diagnostic {
+                code: "empty_evidence_provenance_class",
+                message: format!("evidence {} has an empty provenance class", evidence.id),
             });
         }
         for (key, value) in &evidence.facts {
@@ -434,6 +543,64 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
                     message: format!(
                         "assumption finding {} references missing inference {}",
                         finding.id, inference_id
+                    ),
+                });
+            }
+        }
+    }
+
+    let mut evidence_qualification_finding_ids = HashSet::new();
+    for finding in &artifact.evidence_qualification_findings {
+        if finding.id.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_evidence_qualification_finding_id",
+                message: "evidence qualification finding id must not be empty".into(),
+            });
+        }
+        if !evidence_qualification_finding_ids.insert(finding.id.as_str()) {
+            diagnostics.push(Diagnostic {
+                code: "duplicate_evidence_qualification_finding_id",
+                message: format!(
+                    "duplicate evidence qualification finding id: {}",
+                    finding.id
+                ),
+            });
+        }
+        if finding.detector.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_evidence_qualification_detector",
+                message: format!(
+                    "evidence qualification finding {} has an empty detector",
+                    finding.id
+                ),
+            });
+        }
+        if finding.proposition.key.trim().is_empty() || finding.proposition.value.trim().is_empty()
+        {
+            diagnostics.push(Diagnostic {
+                code: "invalid_evidence_qualification_proposition",
+                message: format!(
+                    "evidence qualification finding {} has an empty proposition key/value",
+                    finding.id
+                ),
+            });
+        }
+        if finding.evidence_ids.is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "evidence_qualification_without_evidence",
+                message: format!(
+                    "evidence qualification finding {} has no evidence references",
+                    finding.id
+                ),
+            });
+        }
+        for evidence_id in &finding.evidence_ids {
+            if !evidence_ids.contains(evidence_id.as_str()) {
+                diagnostics.push(Diagnostic {
+                    code: "evidence_qualification_missing_evidence",
+                    message: format!(
+                        "evidence qualification finding {} references missing evidence {}",
+                        finding.id, evidence_id
                     ),
                 });
             }

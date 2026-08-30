@@ -10,6 +10,8 @@ pub mod causal_benchmark;
 pub mod decision;
 pub mod diagnostic_stability;
 pub mod eval;
+pub mod evidence_qualification;
+pub mod evidence_qualification_benchmark;
 pub mod frameworks;
 pub mod generation;
 pub mod harness;
@@ -55,6 +57,17 @@ pub use diagnostic_stability::{
     RepeatedDiagnosticReport, aggregate_repeated_diagnostics, observe_diagnostics, wilson_95,
 };
 pub use eval::{EvalMetrics, evaluate};
+pub use evidence_qualification::{
+    EvidenceQualificationAssessment, EvidenceQualificationFinding,
+    EvidenceQualificationFindingKind, EvidenceQualificationFindingReason,
+    EvidenceQualificationInspection, EvidenceQualificationInspector, EvidenceQualificationPass,
+    EvidenceQualificationStatus,
+};
+pub use evidence_qualification_benchmark::{
+    EvidenceQualificationBenchmarkAggregate, EvidenceQualificationBenchmarkCaseResult,
+    EvidenceQualificationBenchmarkFixture, aggregate_evidence_qualification_benchmark,
+    evaluate_evidence_qualification_fixture,
+};
 pub use generation::{build_candidate_json_fallback_request, build_candidate_request};
 pub use harness::{HarnessError, HarnessOutcome, Pass, run_harness, run_passes};
 pub use metamorphic::{
@@ -69,11 +82,14 @@ pub use model::{
 };
 pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema};
 pub use types::{
-    AdversarialFinding, AdversarialFindingKind, CandidateClaim, CandidateDiagnostic, Claim,
-    EpistemicState, Evidence, FindingStrength, HarnessInput, Inference, Proposition,
-    ReasoningArtifact, ReasoningCandidate, Verdict, VerificationConclusion, VerificationReceipt,
+    AdversarialFinding, AdversarialFindingKind, ApplicabilityScope, CandidateClaim,
+    CandidateDiagnostic, Claim, EpistemicState, Evidence, EvidenceAuthorityPolicy,
+    EvidenceMetadata, EvidenceRequirement, FindingStrength, HarnessInput, Inference, Proposition,
+    ReasoningArtifact, ReasoningCandidate, ScopeCoverage, TemporalValidity, Verdict,
+    VerificationConclusion, VerificationReceipt,
 };
 pub use validate::{Diagnostic, ValidationReport, validate_artifact};
 pub use verification::{
-    StructuredFactVerifier, TrustedVerificationPass, VerificationPass, Verifier,
+    QualifiedStructuredFactVerifier, StructuredFactVerifier, TrustedVerificationPass,
+    VerificationPass, Verifier, structured_fact_verifier_for_input,
 };

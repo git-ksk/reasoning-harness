@@ -32,7 +32,7 @@ A trial is `operationally_complete` only when every expected fixture generated a
 
 For complete trials, baseline and harness distributions include verdict accuracy, accept/reject/unknown recall, unsafe-accept cases, deterministic verifier failure rate, contradiction detection, and counterexample detection. Every scalar distribution reports `count`, `mean`, `min`, `max`, and **population** standard deviation over the observed complete trials (`sqrt(sum((x - mean)^2) / N)`). No Bessel/sample correction is applied because the report describes the observed trial set rather than estimating an unobserved population parameter.
 
-`stability.diagnostics` is a sibling report, not part of correctness. It aggregates provider-neutral diagnostic signals per fixture across operationally complete trials: adversarial contradiction/counterexample findings, candidate-normalization diagnostic codes, and causal finding/reason records when a caller supplies causal inspection output. Incomplete trials are excluded from diagnostic frequency/count distributions as a whole and remain visible through `operational_failures` plus `excluded_incomplete_trial_observations`. Per-fixture reports preserve exact occurrence counts and denominators, plus mean/min/max/population-stddev for diagnostic counts.
+`stability.diagnostics` is a sibling report, not part of correctness. It aggregates provider-neutral diagnostic signals per fixture across operationally complete trials: adversarial contradiction/counterexample findings, assumption findings, evidence-qualification findings, candidate-normalization diagnostic codes, and causal finding/reason records when a caller supplies causal inspection output. Incomplete trials are excluded from diagnostic frequency/count distributions as a whole and remain visible through `operational_failures` plus `excluded_incomplete_trial_observations`. Per-fixture reports preserve exact occurrence counts and denominators, plus mean/min/max/population-stddev for diagnostic counts.
 
 Diagnostic proportions receive a **95% Wilson score interval** only when at least five complete observations exist for that fixture. Smaller samples keep the exact frequency/denominator but omit the interval rather than implying statistical precision. Wilson intervals are descriptive uncertainty bounds only; the harness does not infer model rankings or significance from them.
 
@@ -221,6 +221,14 @@ Issue #12 adds a separate deterministic corpus under `fixtures/assumptions/`. It
 The aggregate reports supported/explicit/unsupported/unbound premise counts, hard and soft finding counts, unsupported-premise detection rate, and explicit-assumption recognition rate. These cases never enter the 20-case verdict denominator or the eight-case causal denominator. `AssumptionFinding` is observational: even a hard unsupported-premise finding does not directly force `reject`; final authority remains with verification and acceptance policy. Assumption signals are also available to the provider-neutral repeated diagnostic report introduced by #11.
 
 See [assumption diagnostics](assumption-diagnostics.md) for the boundary between explicit assumptions, unknown claims, and unsupported causal edges.
+
+## Evidence qualification regression
+
+Issue #16 adds a separate deterministic corpus under `fixtures/evidence-qualification/`. The initial eight cases cover exact qualification, stale and not-yet-valid evidence, disjoint scope, unsupported scope expansion, insufficient authority, conflict between otherwise qualified structured values, and missing temporal/scope/provenance metadata.
+
+The aggregate reports qualified/disqualified/unknown evidence counts, hard/soft finding counts, and expected finding-reason detection rate. These cases do not enter the 20-case verdict denominator, the eight-case causal denominator, or the five-case assumption corpus. When ordinary benchmark inputs contain `evidence_requirements`, the built-in structured verifier uses the qualification-aware path; missing or disqualified evidence and conflicting qualified values cannot create a hard receipt.
+
+See [evidence qualification](evidence-qualification.md) for the exact temporal, scope, provenance, and trusted-receipt boundaries.
 
 ## Metamorphic robustness regression
 

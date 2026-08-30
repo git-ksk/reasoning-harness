@@ -30,6 +30,8 @@ fn strict_policy_preserves_unknown_as_a_successful_outcome() {
         evidence: vec![],
         hypotheses: vec![],
         assumptions: vec![],
+        evidence_requirements: vec![],
+        authority_policy: Default::default(),
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {
@@ -55,9 +57,12 @@ fn model_proposed_contradiction_cannot_force_runtime_reject() {
             source: "fixture".into(),
             observation: "fact".into(),
             facts: Default::default(),
+            metadata: Default::default(),
         }],
         hypotheses: vec![],
         assumptions: vec![],
+        evidence_requirements: vec![],
+        authority_policy: Default::default(),
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {

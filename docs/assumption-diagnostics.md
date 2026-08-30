@@ -26,3 +26,7 @@ An unsupported premise asks whether an input to an inference is grounded. An uns
 ## Reporting and authority
 
 The five-case deterministic corpus under `fixtures/assumptions/` is reported separately from final verdict accuracy and the causal corpus. Repeated-trial diagnostic aggregation can include assumption findings, but findings never create verification receipts, mutate claim state, or directly force `accept | reject | unknown`. Semantic extraction of assumptions from free-form prose remains a future soft diagnostic problem.
+
+## Evidence qualification interaction
+
+Assumption inspection runs after hard verification in the standard runtime sequence. If an input supplies temporal/scope/provenance evidence requirements, only evidence that passes those requirements can create built-in structured hard support. An unqualified structured fact therefore cannot bootstrap an `inferred` premise into the trusted-support closure.

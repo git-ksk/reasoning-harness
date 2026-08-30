@@ -2,10 +2,11 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     AcceptancePolicy, AdversarialDiscoveryPass, AdversarialFindingKind, AssumptionDiscoveryPass,
-    Claim, EpistemicState, FindingStrength, HarnessInput, Proposition, ReasoningArtifact,
-    ReasoningCandidate, StrictAcceptancePolicy, StructuredFactConflictDetector,
-    StructuredFactVerifier, TrustedVerificationPass, Verdict, VerificationPass, evaluate,
+    Claim, EpistemicState, EvidenceQualificationPass, FindingStrength, HarnessInput, Proposition,
+    ReasoningArtifact, ReasoningCandidate, StrictAcceptancePolicy, StructuredFactConflictDetector,
+    TrustedVerificationPass, Verdict, VerificationPass, evaluate,
     frameworks::five_whys::FiveWhysRestatementPass, run_harness,
+    structured_fact_verifier_for_input,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -157,9 +158,10 @@ pub(crate) fn run_benchmark_harness(
         Box::new(AdversarialDiscoveryPass::new(vec![Box::new(
             StructuredFactConflictDetector,
         )])),
-        Box::new(VerificationPass::new(vec![Box::new(
-            StructuredFactVerifier,
-        )])),
+        Box::new(EvidenceQualificationPass),
+        Box::new(VerificationPass::new(vec![
+            structured_fact_verifier_for_input(&fixture.input),
+        ])),
         Box::new(TrustedVerificationPass::new(
             fixture.verification_receipts.clone(),
         )),
@@ -187,10 +189,13 @@ fn naive_materialize(input: HarnessInput, candidate: ReasoningCandidate) -> Reas
         evidence: input.evidence,
         hypotheses: input.hypotheses,
         assumptions: input.assumptions,
+        evidence_requirements: input.evidence_requirements,
+        authority_policy: input.authority_policy,
         candidate_diagnostics: Vec::new(),
         verification_receipts: Vec::new(),
         adversarial_findings: Vec::new(),
         assumption_findings: Vec::new(),
+        evidence_qualification_findings: Vec::new(),
         claims: candidate
             .claims
             .into_iter()

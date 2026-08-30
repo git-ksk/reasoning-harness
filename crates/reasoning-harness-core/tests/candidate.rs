@@ -12,9 +12,12 @@ fn model_cannot_promote_its_own_claim_to_supported() {
             source: "fixture".into(),
             observation: "observed fact".into(),
             facts: Default::default(),
+            metadata: Default::default(),
         }],
         hypotheses: vec![],
         assumptions: vec![],
+        evidence_requirements: vec![],
+        authority_policy: Default::default(),
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {
@@ -38,6 +41,8 @@ fn model_cannot_inject_evidence_into_harness_owned_input() {
         evidence: vec![],
         hypotheses: vec![],
         assumptions: vec![],
+        evidence_requirements: vec![],
+        authority_policy: Default::default(),
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {
@@ -64,5 +69,11 @@ fn candidate_schema_does_not_allow_model_owned_evidence() {
     assert!(!schema_text.contains("verification_receipts"));
     assert!(!schema_text.contains("\"assumptions\""));
     assert!(!schema_text.contains("AssumptionFinding"));
+    assert!(!schema_text.contains("EvidenceMetadata"));
+    assert!(!schema_text.contains("EvidenceRequirement"));
+    assert!(!schema_text.contains("evidence_requirements"));
+    assert!(!schema_text.contains("authority_policy"));
+    assert!(!schema_text.contains("provenance_class"));
+    assert!(!schema_text.contains("EvidenceQualificationFinding"));
     assert!(schema_text.contains("proposed_state"));
 }

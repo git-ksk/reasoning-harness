@@ -8,14 +8,16 @@ pub fn build_candidate_request(
     let evidence = serde_json::to_string_pretty(&input.evidence)?;
     let hypotheses = serde_json::to_string_pretty(&input.hypotheses)?;
     let assumptions = serde_json::to_string_pretty(&input.assumptions)?;
+    let evidence_requirements = serde_json::to_string_pretty(&input.evidence_requirements)?;
+    let authority_policy = serde_json::to_string_pretty(&input.authority_policy)?;
     Ok(ModelRequest {
         system: Some(
             "You are a candidate generator inside a reasoning harness. Return only the requested structured candidate. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support."
                 .into(),
         ),
         task: format!(
-            "Task:\n{}\n\nHarness-owned hypotheses:\n{}\n\nHarness-owned explicit assumptions:\n{}\n\nHarness-owned evidence:\n{}\n\nGenerate candidate claims and inference edges. Evaluate supplied hypotheses when present; do not alter their key/value pair. Explicit assumptions may be used as premises, but do not treat them as verified facts.",
-            input.task, hypotheses, assumptions, evidence
+            "Task:\n{}\n\nHarness-owned hypotheses:\n{}\n\nHarness-owned explicit assumptions:\n{}\n\nHarness-owned evidence requirements:\n{}\n\nHarness-owned authority policy:\n{}\n\nHarness-owned evidence:\n{}\n\nGenerate candidate claims and inference edges. Evaluate supplied hypotheses when present; do not alter their key/value pair. Explicit assumptions may be used as premises, but do not treat them as verified facts. Evidence qualification metadata and authority policy are context only; never claim authority over them.",
+            input.task, hypotheses, assumptions, evidence_requirements, authority_policy, evidence
         ),
         output_format: ModelOutputFormat::JsonSchema {
             name: "reasoning_candidate".into(),
@@ -34,6 +36,8 @@ pub fn build_candidate_json_fallback_request(
     let evidence = serde_json::to_string_pretty(&input.evidence)?;
     let hypotheses = serde_json::to_string_pretty(&input.hypotheses)?;
     let assumptions = serde_json::to_string_pretty(&input.assumptions)?;
+    let evidence_requirements = serde_json::to_string_pretty(&input.evidence_requirements)?;
+    let authority_policy = serde_json::to_string_pretty(&input.authority_policy)?;
     let schema = serde_json::to_string_pretty(&reasoning_candidate_schema())?;
     Ok(ModelRequest {
         system: Some(
@@ -41,8 +45,8 @@ pub fn build_candidate_json_fallback_request(
                 .into(),
         ),
         task: format!(
-            "JSON Schema:\n{}\n\nTask:\n{}\n\nHarness-owned hypotheses:\n{}\n\nHarness-owned explicit assumptions:\n{}\n\nHarness-owned evidence:\n{}\n\nGenerate candidate claims and inference edges as one JSON object conforming to the schema. Evaluate supplied hypotheses when present; do not alter their key/value pair. Explicit assumptions may be used as premises, but do not treat them as verified facts.",
-            schema, input.task, hypotheses, assumptions, evidence
+            "JSON Schema:\n{}\n\nTask:\n{}\n\nHarness-owned hypotheses:\n{}\n\nHarness-owned explicit assumptions:\n{}\n\nHarness-owned evidence requirements:\n{}\n\nHarness-owned authority policy:\n{}\n\nHarness-owned evidence:\n{}\n\nGenerate candidate claims and inference edges as one JSON object conforming to the schema. Evaluate supplied hypotheses when present; do not alter their key/value pair. Explicit assumptions may be used as premises, but do not treat them as verified facts. Evidence qualification metadata and authority policy are context only; never claim authority over them.",
+            schema, input.task, hypotheses, assumptions, evidence_requirements, authority_policy, evidence
         ),
         output_format: ModelOutputFormat::JsonObject,
         max_tokens,
@@ -64,12 +68,25 @@ mod tests {
                 observation: "observed".into(),
                 facts: Default::default(),
                 source: "fixture".into(),
+                metadata: Default::default(),
             }],
             hypotheses: vec![],
             assumptions: vec![crate::Proposition {
                 key: "planning.mode".into(),
                 value: "dry_run".into(),
             }],
+            evidence_requirements: vec![crate::EvidenceRequirement {
+                proposition: crate::Proposition {
+                    key: "feature.enabled".into(),
+                    value: "true".into(),
+                },
+                as_of_unix_seconds: Some(150),
+                scope: None,
+                minimum_authority_class: Some("primary".into()),
+            }],
+            authority_policy: crate::EvidenceAuthorityPolicy {
+                ranks: std::collections::BTreeMap::from([("primary".into(), 20)]),
+            },
         };
         let request = build_candidate_json_fallback_request(&input, Some(512), Some(7)).unwrap();
 
@@ -79,6 +96,14 @@ mod tests {
         assert!(request.task.contains("e1"));
         assert!(request.task.contains("Harness-owned explicit assumptions:"));
         assert!(request.task.contains("planning.mode"));
+        assert!(
+            request
+                .task
+                .contains("Harness-owned evidence requirements:")
+        );
+        assert!(request.task.contains("feature.enabled"));
+        assert!(request.task.contains("Harness-owned authority policy:"));
+        assert!(request.task.contains("primary"));
         assert!(request.task.contains("do not treat them as verified facts"));
         assert_eq!(request.max_tokens, Some(512));
         assert_eq!(request.random_seed, Some(7));

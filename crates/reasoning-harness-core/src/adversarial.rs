@@ -129,14 +129,18 @@ mod tests {
                     source: "fixture".into(),
                     observation: format!("value={value}"),
                     facts: BTreeMap::from([("feature.enabled".into(), (*value).into())]),
+                    metadata: Default::default(),
                 })
                 .collect(),
             hypotheses: vec![],
             assumptions: vec![],
+            evidence_requirements: vec![],
+            authority_policy: Default::default(),
             candidate_diagnostics: vec![],
             verification_receipts: vec![],
             adversarial_findings: vec![],
             assumption_findings: vec![],
+            evidence_qualification_findings: vec![],
             claims: vec![Claim {
                 id: "c1".into(),
                 statement: "provider prose".into(),
