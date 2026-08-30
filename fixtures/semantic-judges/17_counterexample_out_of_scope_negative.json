@@ -1,0 +1,46 @@
+{
+  "id": "17_counterexample_out_of_scope_negative",
+  "request": {
+    "id": "soft-17_counterexample_out_of_scope_negative",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-managed-nodes-pass"
+    },
+    "context": [
+      "Target generalization: every node managed by controller A passes the readiness check.",
+      "A node managed by controller B failed readiness; the context explicitly states it is outside controller A\u2019s managed set."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-17_counterexample_out_of_scope_negative",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-17_counterexample_out_of_scope_negative",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-17_counterexample_out_of_scope_negative",
+      "decision": "no_finding"
+    }
+  ]
+}

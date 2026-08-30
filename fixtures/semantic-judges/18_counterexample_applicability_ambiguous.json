@@ -1,0 +1,53 @@
+{
+  "id": "18_counterexample_applicability_ambiguous",
+  "request": {
+    "id": "soft-18_counterexample_applicability_ambiguous",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-indexed-items-visible"
+    },
+    "context": [
+      "Target generalization: every item in the active index is visible to queries.",
+      "One invisible item is reported, but the supplied context does not establish whether that item was in the active index at the relevant time."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-18_counterexample_applicability_ambiguous",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-18_counterexample_applicability_ambiguous",
+      "decision": "abstain"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-18_counterexample_applicability_ambiguous",
+      "decision": "finding",
+      "finding": {
+        "kind": "counterexample",
+        "target": {
+          "type": "claim",
+          "claim_id": "claim-indexed-items-visible"
+        }
+      }
+    }
+  ]
+}

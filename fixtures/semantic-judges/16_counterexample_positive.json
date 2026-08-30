@@ -1,0 +1,67 @@
+{
+  "id": "16_counterexample_positive",
+  "request": {
+    "id": "soft-16_counterexample_positive",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-workers-finish"
+    },
+    "context": [
+      "Target generalization: every worker started by this scheduler reaches the finished state.",
+      "Worker W-42 was started by this scheduler and terminated in an unrecoverable error state before finishing."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-16_counterexample_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "counterexample",
+        "target": {
+          "type": "claim",
+          "claim_id": "claim-all-workers-finish"
+        }
+      }
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-16_counterexample_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "counterexample",
+        "target": {
+          "type": "claim",
+          "claim_id": "claim-all-workers-finish"
+        }
+      }
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-16_counterexample_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "counterexample",
+        "target": {
+          "type": "claim",
+          "claim_id": "claim-all-workers-finish"
+        }
+      }
+    }
+  ]
+}

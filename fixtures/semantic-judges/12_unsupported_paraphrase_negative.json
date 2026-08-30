@@ -1,0 +1,49 @@
+{
+  "id": "12_unsupported_paraphrase_negative",
+  "request": {
+    "id": "soft-12_unsupported_paraphrase_negative",
+    "task": "Determine whether the target premise is unsupported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "cache.mode",
+        "value": "read_only"
+      }
+    },
+    "context": [
+      "The supplied configuration note says the cache accepts reads and rejects all writes.",
+      "That description directly supplies the read-only mode premise using different wording."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-12_unsupported_paraphrase_negative",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-12_unsupported_paraphrase_negative",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-12_unsupported_paraphrase_negative",
+      "decision": "no_finding"
+    }
+  ]
+}

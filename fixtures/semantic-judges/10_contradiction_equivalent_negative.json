@@ -1,0 +1,49 @@
+{
+  "id": "10_contradiction_equivalent_negative",
+  "request": {
+    "id": "soft-10_contradiction_equivalent_negative",
+    "task": "Determine whether the supplied context contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "service.state",
+        "value": "operational"
+      }
+    },
+    "context": [
+      "The supplied status report says the service is up and functioning normally.",
+      "In this context, \u201cup and functioning normally\u201d is the same service state as operational."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-10_contradiction_equivalent_negative",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-10_contradiction_equivalent_negative",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-10_contradiction_equivalent_negative",
+      "decision": "no_finding"
+    }
+  ]
+}

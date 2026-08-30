@@ -128,7 +128,21 @@ The primary request uses JSON Schema structured output. If the adapter reports t
 - model findings remain soft regardless of observed precision or agreement;
 - the ordinary `reason eval` correctness denominator is unchanged.
 
-The manual live workflow can run the same nine-case calibration corpus using secret-isolated Mistral, Google, or NVIDIA credentials. Repeated live results are research observations, not correctness authority. The first repeated Mistral study and the v1/v2 prompt-sensitivity result are documented in [live soft semantic-judge study](live-semantic-judge-study.md). Because v2 was calibrated against the same nine cases, those results are not evidence of generalization.
+The manual live workflow can run the calibration corpus using secret-isolated Mistral, Google, or NVIDIA credentials. Repeated live results are research observations, not correctness authority. The first repeated Mistral study and the v1/v2 prompt-sensitivity result are documented in [live soft semantic-judge study](live-semantic-judge-study.md). Because v2 was calibrated against the original nine cases, those results are not evidence of generalization.
+
+## soft-semantic-v3 generic decision contract (#38)
+
+The v3 calibration revision expands the calibration corpus from 9 to 18 cases using generic semantic patterns rather than frozen holdout-v1 facts. It adds clear semantic equivalence, ambiguous proposition binding, paraphrased premise support, explicit reverse-causal alternatives, partial/scoped intervention evidence, and counterexample applicability.
+
+The decision boundary is intentionally asymmetric:
+
+- `finding` requires the supplied context to affirmatively establish the requested diagnostic concern;
+- `no_finding` requires the supplied context to affirmatively resolve or negate the concern, including semantic equivalence/paraphrase and clearly out-of-scope contrary cases;
+- `abstain` remains the terminal result when binding, scope, applicability, or mixed/partial evidence prevents either conclusion.
+
+For causal gaps specifically, explicit correlation-only, confounding, or an explicit viable reverse-causal alternative with undistinguished direction can establish a directional-support gap. Partial intervention evidence or incomplete scope does not automatically establish a gap; when adequacy remains unresolved, the required result is `abstain`.
+
+This revision changes only the advisory semantic contract and configuration identity (`soft-semantic-v3`). It does not add any path from model output to evidence, verification receipts, hard findings, epistemic promotion, or verdict authority. Holdout-v1 remains frozen and is not used to evaluate v3.
 
 ## Independent holdout v1
 

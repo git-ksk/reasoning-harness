@@ -25,32 +25,32 @@ fn load_fixtures() -> Vec<SoftJudgeCalibrationFixture> {
 #[test]
 fn semantic_judge_calibration_corpus_preserves_labels_disagreement_and_abstention() {
     let fixtures = load_fixtures();
-    assert_eq!(fixtures.len(), 9);
+    assert_eq!(fixtures.len(), 18);
     assert_eq!(
         fixtures
             .iter()
             .filter(|fixture| fixture.label == CalibrationLabel::Positive)
             .count(),
-        3
+        5
     );
     assert_eq!(
         fixtures
             .iter()
             .filter(|fixture| fixture.label == CalibrationLabel::Negative)
             .count(),
-        3
+        6
     );
     assert_eq!(
         fixtures
             .iter()
             .filter(|fixture| fixture.label == CalibrationLabel::Ambiguous)
             .count(),
-        3
+        7
     );
     validate_calibration_fixtures(&fixtures).unwrap();
 
     let report = aggregate_soft_judge_calibration(&fixtures).unwrap();
-    assert_eq!(report.cases, 9);
+    assert_eq!(report.cases, 18);
     assert_eq!(report.judges.len(), 3);
     assert!(report.agreement.disagreeing_pairs > 0);
     assert!(report.agreement.abstain_votes > 0);
@@ -59,13 +59,13 @@ fn semantic_judge_calibration_corpus_preserves_labels_disagreement_and_abstentio
         report
             .judges
             .iter()
-            .all(|metrics| metrics.labelled_cases == 6)
+            .all(|metrics| metrics.labelled_cases == 11)
     );
     assert!(
         report
             .judges
             .iter()
-            .all(|metrics| metrics.ambiguous_cases == 3)
+            .all(|metrics| metrics.ambiguous_cases == 7)
     );
     assert!(report.judges.iter().all(|metrics| {
         metrics.ambiguous_abstention_rate.is_some()
