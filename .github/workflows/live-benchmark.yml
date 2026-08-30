@@ -225,6 +225,7 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          JUDGE_CONCURRENCY: ${{ inputs.judge_provider == 'nvidia' && inputs.nvidia_concurrency || '1' }}
         run: |
           case "$PROVIDER" in
             mistral) KEY="$MISTRAL_API_KEY" ;;
@@ -261,6 +262,7 @@ jobs:
             --max-tokens 256 \
             --seed 1000 \
             --trials "${{ inputs.judge_trials }}" \
+            --concurrency "$JUDGE_CONCURRENCY" \
             --format json \
             > "$OUTPUT"
           jq '{provider, model, corpus, operational, stability, families, per_trial: [.per_trial[] | {trial_index, operationally_complete, successful_cases, report: (.report | if . == null then null else {judges: [.judges[] | {judge: .judge.judge_id, precision, recall, decision_coverage, ambiguous_abstention_rate, abstentions}]} end)}], failures: [.cases[] | select(.failure != null) | {fixture_id, trial, kind, label, failure: .failure}]}' "$OUTPUT"
