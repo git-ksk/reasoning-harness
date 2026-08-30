@@ -36,8 +36,7 @@ on:
           - none
           - nvidia/nemotron-3.5-lightning-30b-a3b
           - nvidia/nemotron-3-ultra-550b-a55b
-          - deepseek-ai/deepseek-v4-flash-0731
-          - deepseek-ai/deepseek-v4-pro-0813
+          - openai/gpt-oss-20b
           - google/gemma-4-31b-it
         default: all
       nvidia_concurrency:
@@ -149,7 +148,7 @@ jobs:
       # Serialize NVIDIA jobs to avoid manufacturing avoidable quota pressure.
       max-parallel: 1
       matrix:
-        model: ${{ fromJSON(inputs.nvidia_model == 'all' && '["nvidia/nemotron-3.5-lightning-30b-a3b","nvidia/nemotron-3-ultra-550b-a55b","deepseek-ai/deepseek-v4-flash-0731","deepseek-ai/deepseek-v4-pro-0813","google/gemma-4-31b-it"]' || format('["{0}"]', inputs.nvidia_model)) }}
+        model: ${{ fromJSON(inputs.nvidia_model == 'all' && '["nvidia/nemotron-3.5-lightning-30b-a3b","nvidia/nemotron-3-ultra-550b-a55b","openai/gpt-oss-20b","google/gemma-4-31b-it"]' || format('["{0}"]', inputs.nvidia_model)) }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
