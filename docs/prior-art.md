@@ -33,6 +33,12 @@ Process-supervision and causal-evaluation work informs diagnostic granularity wi
 
 The project adopts those structural patterns only. Learned process rewards, LLM graders, extracted causal graphs, retrieval entailment, or semantic similarity remain soft unless an independent trusted oracle establishes the relevant proposition or relation.
 
+### Robustness, repeated trials, and evaluation integrity
+
+lm-evaluation-harness robustness tasks reinforce measuring consistency under related variants rather than treating point accuracy as sufficient. UK AISI Inspect's epochs, confidence-interval metrics, multi-judge reliability, and transcript scanners reinforce keeping repeated observations, statistical uncertainty, and evaluation-integrity findings separate from task success. METR's evolving time-horizon suites reinforce that benchmark composition, difficulty distribution, saturation, and version changes can materially change the quantity being measured.
+
+Reasoning Harness borrows these measurement disciplines without copying their orchestration surfaces: metamorphic invariance (#10), diagnostic stability (#11), soft-judge calibration (#13), and corpus versioning/stratification (#14) remain subordinate to the existing harness-owned authority boundary.
+
 
 ## Deliberate differences
 
@@ -56,4 +62,9 @@ The project adopts those structural patterns only. Learned process rewards, LLM 
 - CLadder: https://arxiv.org/abs/2312.04350
 - FActScore: https://github.com/shmsw25/FActScore
 - UK AISI Inspect scorers: https://inspect.aisi.org.uk/scorers.html
+- UK AISI Inspect scanners: https://inspect.aisi.org.uk/scanners.html
+- UK AISI Inspect metrics: https://inspect.aisi.org.uk/metrics.html
+- lm-evaluation-harness robustness/SCORE tasks: https://github.com/EleutherAI/lm-evaluation-harness/tree/main/lm_eval/tasks/score
+- lm-evaluation-harness decontamination: https://github.com/EleutherAI/lm-evaluation-harness/blob/main/docs/decontamination.md
+- METR Time Horizon 1.1: https://metr.org/blog/2026-1-29-time-horizon-1-1/
 - NoisyCausal: https://arxiv.org/abs/2605.04313
