@@ -58,7 +58,7 @@ Issue #33 extends the manual workflow with an optional `semantic-judge` job. Set
 reason eval-judges fixtures/semantic-judges \
   --provider <provider> \
   --model <model> \
-  --max-tokens 256 \
+  --max-tokens <judge-max-tokens> \
   --seed 1000 \
   --trials <trials> \
   --concurrency <N> \
@@ -66,6 +66,8 @@ reason eval-judges fixtures/semantic-judges \
 ```
 
 Trials remain sequential stability samples, while `--concurrency` overlaps only independent fixtures inside the active trial. The workflow uses conservative provider-specific semantic fixture concurrency by default: Mistral 1, Google 2, and NVIDIA 4. NVIDIA workers share one adapter, so the existing 1.6-second request-start pacing and `Retry-After` handling remain authoritative across in-flight calls. Google starts at 2 rather than 3 so rate-limit behavior can be characterized before increasing parallelism.
+
+`judge_max_tokens` defaults to 256 and can be raised to 512 or 1024 when calibrating reasoning-heavy models. Characterize token-budget changes on the calibration corpus before any new independent holdout measurement. A structured parse failure with `finish_reason=length` is truncation evidence, not semantic evidence.
 
 The workflow stores the full JSON as a short-lived artifact and prints aggregate semantic metrics plus each failed run's fixture ID, trial, failure class, latency, and bounded provider-safe message. A provider/protocol failure does not become `no_finding`; any affected trial is excluded from semantic stability distributions. Precision/recall are accompanied by decision coverage and ambiguous-case abstention so aggressive decisions on intentionally uncertain cases stay visible. Ordinary Mistral and Google live benchmark summaries likewise print failed-run details instead of only a failure count. These metrics are independent of the ordinary live correctness benchmark. See [live soft semantic-judge study](live-semantic-judge-study.md) for the first repeated Mistral result and its holdout caveat.
 
