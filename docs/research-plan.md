@@ -90,7 +90,7 @@ Primary question: does the resolution loop reject false closure and preserve `un
 - [implemented #33] repeated live semantic contradiction/unsupported-premise/causal-gap discovery under the calibrated soft-only boundary, including explicit ambiguity-abstention measurement
 - [implemented #36] frozen independent semantic-judge holdout v1 with expanded ambiguity/counterexample coverage; first five-trial Mistral study completed without changing the frozen corpus
 - [implemented #38] `soft-semantic-v3` calibration and independent holdout-v2 study completed; five-trial holdout precision/recall 1.000, mean coverage 0.700, and ambiguous abstention 0.933
-- [in progress #46/#53] cross-model semantic conformance: v3 matrix characterized; provider/model-neutral `soft-semantic-v4` successor and frozen holdout-v3 prepared before independent provider measurement
+- [implemented #46/#53/#55] cross-model semantic conformance: v4 was independently measured on frozen holdout-v3, failed the predeclared portability gate with zero conformant/usable models, and the runtime baseline was restored to `soft-semantic-v3`; any future material successor requires calibration-only design plus a newly frozen holdout-v4 before provider measurement
 - [implemented #39] classify structured-output fallback causes with provider-neutral typed telemetry before broader model comparison
 - first-principles decomposition only if it adds measurable diagnostic signal
 - semantic-loss verification after finalization/coverage semantics are defined

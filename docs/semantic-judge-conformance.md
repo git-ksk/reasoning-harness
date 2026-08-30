@@ -59,3 +59,31 @@ Adopt v4 as a portability improvement only if at least two conformant models com
 `fixtures/semantic-judges-holdout-v3/` is the independent observation-free corpus for v4. It was frozen before any v4 provider measurement and contains 28 fixtures: seven per diagnostic kind, with 8 positive, 8 negative, and 12 intentionally ambiguous labels. Source `recorded_observations` remain empty.
 
 Holdout-v1 and holdout-v2 remain historical/diagnostic corpora. Once v4 results are observed on holdout-v3, a material contract or schema change requires a new configuration identity and another independently frozen holdout; holdout-v3 must not be tuned in place.
+
+## `soft-semantic-v4` holdout-v3 result
+
+The independent matrix used merged commit `3774e4f19db9da11cfd2ea065792b78b53b0c9dd`, five sequential trials per model, 256 output tokens, and provider-safe fixture concurrency. The frozen compatibility thresholds were not changed after observation.
+
+| Model | Run | Operational / protocol | Precision | Recall | Coverage | Ambiguous abstention | Fallback | Frozen tier |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| `ministral-8b-latest` | `33342332130` | 140/140, 5/5 complete | 0.889 | 1.000 | 0.714 | 0.667 | 0.429 | non-conformant |
+| `mistral-small-latest` | `33342547879` | 140/140, 5/5 complete | 1.000 | 1.000 | 1.000 | 0.000 | 0.050 | non-conformant |
+| `gemini-3.1-flash-lite` | `33342334655` | 140/140, 5/5 complete | 1.000 | 1.000 | 0.821 | 0.417 | 0.000 | non-conformant |
+| `ministral-14b-latest` | `33342335857` | 140/140, 5/5 complete | 0.800 | 1.000 | 0.786 | 0.500 | 0.543 | non-conformant |
+| `nvidia/nemotron-3.5-lightning-30b-a3b` | `33342337031` | 71/140 success, 69 protocol failures, 0/5 complete | n/a | n/a | n/a | n/a | 1.000 on successes | non-conformant |
+
+The adoption gate failed decisively: there are zero conformant models and zero usable-with-limitations models. The successor is not adopted.
+
+### What the failed successor established
+
+- Simplifying the three-way semantics weakened uncertainty calibration across provider families rather than reducing only model-specific interpretation noise.
+- Mistral Small's v3 abstention collapse persisted unchanged in kind, while 8B/Gemini/14B also became too assertive on intentionally ambiguous unsupported-premise and causal-scope cases.
+- The stricter discriminated schema improved a real protocol property for Ministral 14B: the repeated v3 non-finding-plus-finding violation disappeared and all 140 calls became protocol-valid. This is a protocol result, not evidence for the simplified semantic wording.
+- Nemotron's truncation confound stayed removed, but the remaining incompatibility was severe: 69 protocol failures and `finding` on every successful call.
+- Some Mistral failures were decision-mapping errors even when the structured note semantically described agreement rather than conflict, so the issue is not reducible to model knowledge or task comprehension.
+
+### Runtime decision
+
+Issue #55 restores the exact previously characterized `soft-semantic-v3` model request/schema behavior as the runtime baseline. The v4 commit, holdout-v3 fixtures, run IDs, and this result remain immutable research history. No v4 wording is tuned from observed holdout-v3 cases.
+
+A future successor must separate semantic wording from protocol/schema experiments on the calibration corpus and must freeze a new holdout-v4 before any provider measurement of a materially changed configuration.

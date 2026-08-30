@@ -169,3 +169,11 @@ Cross-model v3 results exposed two separable portability costs: model-dependent 
 The model-facing JSON Schema is a discriminated union rather than the public/internal optional-finding struct. `finding` requires the typed finding object; `no_finding` and `abstain` do not permit it. Parsed output is converted back to the same internal `SoftJudgeOutput` and exact kind/target validation remains mandatory. This is a protocol-expression change, not a relaxation of semantic or authority invariants.
 
 `fixtures/semantic-judges-holdout-v3/` is frozen before any live `soft-semantic-v4` provider measurement. It contains 28 observation-free cases, seven per diagnostic family, with 8 positive, 8 negative, and 12 ambiguous labels. Compatibility thresholds are fixed in [cross-model semantic judge conformance](semantic-judge-conformance.md). Holdout-v2 remains diagnostic-only for v3 behavior and is not an independent v4 evaluation corpus.
+
+### Independent holdout-v3 result and v4 rejection
+
+After the v4 contract, compatibility criteria, and `fixtures/semantic-judges-holdout-v3/` were merged and frozen, five-model provider measurement produced no model meeting even the predeclared `usable_with_limitations` tier. Runs `33342332130`, `33342547879`, `33342334655`, and `33342335857` completed 140/140 calls for Ministral 8B, Mistral Small, Gemini 3.1 Flash-Lite, and Ministral 14B respectively; Nemotron run `33342337031` completed only 71/140 calls with 69 protocol failures and no complete trial.
+
+The simplified global wording weakened uncertainty behavior across multiple model families. The stricter discriminated model schema did eliminate the repeated Ministral 14B non-finding-plus-finding protocol failure seen under v3, but that isolated protocol improvement did not satisfy semantic portability criteria. The v4 adoption gate therefore failed and the runtime baseline is restored to the exact previously characterized `soft-semantic-v3` request/schema contract.
+
+Holdout-v3 is now observed and remains frozen. It must not be used to tune v4 or a successor. Any future material contract/schema successor requires calibration-only design and a new observation-free holdout-v4 frozen before live provider measurement.
