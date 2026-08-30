@@ -41,8 +41,8 @@
 - [done] cross-model benchmark matrix across Mistral, Google, and NVIDIA Hosted NIM
 - [done] token/latency/cost accounting for live provider observations
 - [done] fixture-level live concurrency with provider-owned pacing/retry semantics preserved
-- [in progress] repeated-trial stability reporting with per-trial operational isolation and mean/min/max/stddev
-- [in progress] 5-trial Mistral + Google stability matrix; 10-trial follow-up only for materially overlapping models
+- [done] repeated-trial stability reporting with per-trial operational isolation and mean/min/max/stddev
+- [done] 5-trial Mistral + Google stability matrix plus targeted 10-trial follow-up for tied models
 - deterministic vs soft-verifier reporting
 - public benchmark corpus
 

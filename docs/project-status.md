@@ -26,7 +26,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Counterexample discovery coverage is still narrow outside explicit structured propositions.
 - Five Whys pass is intentionally lexical and narrow, not a semantic causal judge.
 - No assumption extraction, first-principles pass, semantic-loss verifier, or verification-budget policy yet.
-- Single live model runs are too stochastic for ranking claims; repeated-trial stability reporting is implemented for Issue #6 and the 5-trial Mistral/Google matrix is the next empirical gate.
+- Stable ranking claims require repeated trials. Issue #6 completed the 5-trial Mistral/Google matrix plus a targeted 10-trial follow-up for models tied on all primary correctness metrics; operational completeness is reported separately from correctness variance.
 
 ## Release posture
 
@@ -54,7 +54,7 @@ The first hardened 20-case Mistral matrix completed successfully for Ministral 3
 
 ### Gemma 4 provider validation
 
-The Rust provider boundary now includes Google-hosted Gemma and Gemini text models through the Gemini Interactions API. The live diagnostic matrix includes Gemma 4 26B/31B plus Gemini 3.1 Flash-Lite and Gemini 3.5 Flash-Lite; managed agents such as Antigravity are intentionally excluded. A live `gemma-4-31b-it` run completed all 20 benchmark cases: baseline accuracy 0.85, harness accuracy 0.95, unsafe final accepts 0, reject/unknown recall 1.00, contradiction and counterexample detection 1.00, and deterministic verifier failures 0. This is the first cross-family live validation beyond Mistral. `gemma-4-26b-a4b-it` currently returns provider-side HTTP 403 for the GitHub project and remains an experimental matrix entry.
+The Rust provider boundary now includes Google-hosted Gemma and Gemini text models through the Gemini Interactions API. The live diagnostic matrix includes Gemma 4 26B/31B plus Gemini 3.1 Flash-Lite and Gemini 3.5 Flash-Lite; managed agents such as Antigravity are intentionally excluded. A live `gemma-4-31b-it` run completed all 20 benchmark cases: baseline accuracy 0.85, harness accuracy 0.95, unsafe final accepts 0, reject/unknown recall 1.00, contradiction and counterexample detection 1.00, and deterministic verifier failures 0. This is the first cross-family live validation beyond Mistral. `gemma-4-26b-a4b-it` remains experimental: the Issue #6 five-trial study generated 98/100 cases, with two provider-side HTTP 400 copyright/recitation blocks producing 3 complete and 2 incomplete trials.
 
 ### NVIDIA Hosted NIM research
 
@@ -62,4 +62,4 @@ NVIDIA Hosted NIM support is implemented through the OpenAI-compatible Chat Comp
 
 ### Repeated-trial stability phase
 
-Issue #6 adds explicit per-trial operational completeness, correctness denominators, complete-trial-only mean/min/max/population-stddev, and separate token/latency distributions. The pooled case comparison remains available for backward compatibility but is not the stability estimate. Required deterministic CI remains credential-free; the manual Mistral/Google workflow defaults to five trials per model, while NVIDIA keeps a separate one-trial default.
+Issue #6 now provides explicit per-trial operational completeness, correctness denominators, complete-trial-only mean/min/max/population-stddev, and separate token/latency distributions. The five-trial matrix found perfect complete-trial harness correctness for Ministral 8B/14B and Gemini 3.1, 0.99 for Mistral Small, 0.98 for Gemini 3.5, 0.95 for Gemma 31B, 0.867 across three complete Gemma 26B trials, and a consistently over-conservative 0.75 for Ministral 3B. The targeted 10-trial follow-up left 8B/14B tied at 10/10 perfect complete trials; Gemini 3.1 remained correctness-perfect across 9 complete trials but had one protocol failure in 200 attempted generations. Required deterministic CI remains credential-free and live studies remain diagnostic.

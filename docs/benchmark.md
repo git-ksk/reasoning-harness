@@ -143,7 +143,36 @@ The first live Gemma 4 run used `gemma-4-31b-it` through the provider-neutral Go
 
 This is the first successful live result from a non-Mistral model family and therefore provides an initial cross-family check of the provider-neutral boundary. It remains a single trial and does not establish a stable ranking against the Mistral models.
 
-`gemma-4-26b-a4b-it` is also kept in the diagnostic matrix, but the current GitHub project received HTTP 403 for that model while 31B succeeded with the same credential and adapter. The 26B matrix entry is therefore experimental/allow-failure until provider access is resolved.
+`gemma-4-26b-a4b-it` remains an experimental/allow-failure matrix entry. In the Issue #6 five-trial study it generated 98/100 cases: two requests were rejected by the provider with HTTP 400 copyright/recitation blocks, leaving 3 operationally complete trials and 2 incomplete trials. The stability report therefore excludes those incomplete trials from correctness variance while retaining both failures as provider operational observations.
+
+### Repeated-trial stability results
+
+The Issue #6 stability study ran five full-corpus trials per Mistral/Google model (20 fixtures per trial). Correctness statistics below use only operationally complete trials; incomplete trials remain operational observations and are not folded into the accuracy distribution.
+
+| Model | Complete trials | Incomplete | Harness accuracy mean | Min-max | Pop. stddev | Accept recall | Reject recall | Unknown recall | Unsafe accepts | Verifier failures |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `ministral-8b-latest` | 5/5 | 0 | **1.000** | 1.00-1.00 | 0.000 | 1.000 | 1.000 | 1.000 | 0 | 0 |
+| `ministral-14b-latest` | 5/5 | 0 | **1.000** | 1.00-1.00 | 0.000 | 1.000 | 1.000 | 1.000 | 0 | 0 |
+| `gemini-3.1-flash-lite` | 5/5 | 0 | **1.000** | 1.00-1.00 | 0.000 | 1.000 | 1.000 | 1.000 | 0 | 0 |
+| `mistral-small-latest` | 5/5 | 0 | 0.990 | 0.95-1.00 | 0.020 | 1.000 | 1.000 | 0.978 | 0 | 0 |
+| `gemini-3.5-flash-lite` | 5/5 | 0 | 0.980 | 0.95-1.00 | 0.024 | 1.000 | 1.000 | 0.956 | 0 | 0 |
+| `gemma-4-31b-it` | 5/5 | 0 | 0.950 | 0.95-0.95 | 0.000 | 0.800 | 1.000 | 1.000 | 0 | 0 |
+| `gemma-4-26b-a4b-it` | 3/5 | 2 | 0.867 | 0.85-0.90 | 0.024 | 0.800 | 1.000 | 0.815 | 0 | 0 |
+| `ministral-3b-latest` | 5/5 | 0 | 0.750 | 0.75-0.75 | 0.000 | 0.000 | 1.000 | 1.000 | 0 | 0 |
+
+The five-trial result changes the interpretation of the earlier one-run matrix. Ministral 3B is not merely noisy around a lower point estimate: it was consistently over-conservative, with harness accuracy 0.75 and accept recall 0 in every trial while preserving reject/unknown recall and safety. Mistral Small and Gemini 3.5 are strong but show small unknown-class variance. Gemma 31B is stable at 0.95 but consistently misses one accept-class case. Gemma 26B combines lower correctness with an operational provider-blocking issue, so its three complete trials must not be compared as though five complete trials existed.
+
+The models still tied on all primary harness correctness metrics after five trials were `ministral-8b-latest`, `ministral-14b-latest`, and `gemini-3.1-flash-lite`. They therefore received the targeted 10-trial follow-up required by the research plan:
+
+| Model | Complete trials | Incomplete | Harness accuracy | All class recalls | Unsafe accepts | Verifier failures | Mean summed request latency / trial | Mean tokens / trial |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `ministral-8b-latest` | **10/10** | 0 | **1.000 ± 0.000** | 1.000 | 0 | 0 | 80.9s | 29,356 |
+| `ministral-14b-latest` | **10/10** | 0 | **1.000 ± 0.000** | 1.000 | 0 | 0 | 95.8s | 28,419 |
+| `gemini-3.1-flash-lite` | **9/10** | 1 | **1.000 ± 0.000** over complete trials | 1.000 | 0 | 0 | 154.8s | 8,731 |
+
+The Gemini 3.1 follow-up attempted all 200 fixture generations. One `contradictory-evidence` generation in trial index 4 failed operationally because the Gemini Interactions response contained no model text output (`protocol`); the other 199 generations succeeded. The nine complete trials remained perfect on harness accuracy and all class recalls. This run is intentionally **not retried to erase the failure**: operational instability is part of the observation and is exactly why correctness and provider reliability are reported separately.
+
+Accordingly, the 10-trial follow-up does **not** separate Ministral 8B, Ministral 14B, and Gemini 3.1 on complete-trial harness correctness. It does separate them operationally in this observation: both Mistral models completed 10/10 trials without a generation failure, while Gemini 3.1 completed 9/10 because of one protocol failure. Between the two Mistral models, 8B used slightly more tokens per trial but lower summed request latency than 14B. These are observations under this corpus/provider state, not universal model rankings.
 
 ### NVIDIA Hosted NIM research outcome
 
