@@ -5,8 +5,8 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::{
-    CausalRelation, ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest,
-    ModelUsage, Proposition, soft_judge_output_schema,
+    CausalRelation, ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat,
+    ModelReasoningPreference, ModelRequest, ModelUsage, Proposition, soft_judge_output_schema,
 };
 
 #[derive(
@@ -325,6 +325,7 @@ pub fn build_soft_judge_model_request(
         },
         max_tokens: Some(max_tokens),
         random_seed,
+        reasoning_preference: Some(ModelReasoningPreference::Minimize),
     })
 }
 
@@ -349,6 +350,7 @@ pub fn build_soft_judge_json_fallback_request(
         output_format: ModelOutputFormat::JsonObject,
         max_tokens: Some(max_tokens),
         random_seed,
+        reasoning_preference: Some(ModelReasoningPreference::Minimize),
     })
 }
 

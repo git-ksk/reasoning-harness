@@ -93,8 +93,8 @@ pub use metamorphic::{
     aggregate_metamorphic, evaluate_benchmark_metamorphic, evaluate_causal_metamorphic,
 };
 pub use model::{
-    ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
-    ModelUsage,
+    ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelReasoningPreference,
+    ModelRequest, ModelResponse, ModelUsage,
 };
 pub use reasoning_policy::{
     PolicyEscalation, PolicyEscalationAction, PolicyEvidenceConstraints, PolicyInvalidation,

@@ -2,10 +2,11 @@ use std::{collections::VecDeque, pin::Pin, sync::Mutex};
 
 use reasoning_harness_core::{
     CausalRelation, ModelAdapter, ModelBackedSoftJudgeError, ModelError, ModelErrorKind,
-    ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage, Proposition,
-    SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftJudgeDecision, SoftJudgeFallbackReason,
-    SoftJudgeIdentity, SoftJudgeRequest, build_soft_judge_json_fallback_request,
-    build_soft_judge_model_request, parse_soft_judge_output, run_model_backed_soft_judge,
+    ModelOutputFormat, ModelReasoningPreference, ModelRequest, ModelResponse, ModelUsage,
+    Proposition, SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftJudgeDecision,
+    SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeRequest,
+    build_soft_judge_json_fallback_request, build_soft_judge_model_request,
+    parse_soft_judge_output, run_model_backed_soft_judge,
 };
 
 struct SequenceAdapter {
@@ -122,6 +123,10 @@ fn structured_schema_exposes_only_soft_decision_fields() {
             .unwrap()
             .contains("advisory only")
     );
+    assert_eq!(
+        model_request.reasoning_preference,
+        Some(ModelReasoningPreference::Minimize)
+    );
 }
 
 #[test]
@@ -182,6 +187,9 @@ async fn invalid_primary_output_uses_json_fallback_and_sums_usage() {
         ModelOutputFormat::JsonSchema { .. }
     ));
     assert_eq!(requests[1].output_format, ModelOutputFormat::JsonObject);
+    assert!(requests.iter().all(|request|
+        request.reasoning_preference == Some(ModelReasoningPreference::Minimize)
+    ));
 }
 
 #[tokio::test]

@@ -11,6 +11,12 @@ pub enum ModelOutputFormat {
     JsonSchema { name: String, schema: Value },
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ModelReasoningPreference {
+    Minimize,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ModelRequest {
     pub task: String,
@@ -21,6 +27,8 @@ pub struct ModelRequest {
     pub max_tokens: Option<u32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub random_seed: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reasoning_preference: Option<ModelReasoningPreference>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
