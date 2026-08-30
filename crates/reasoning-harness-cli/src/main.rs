@@ -10,13 +10,14 @@ use std::{
 use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
     AdversarialDiscoveryPass, AssumptionDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult,
-    BenchmarkComparison, BenchmarkFixture, DiagnosticObservation, DiagnosticTrial, HarnessInput,
-    ModelAdapter, ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact, ReasoningCandidate,
-    RepeatedDiagnosticReport, StrictAcceptancePolicy, StructuredFactConflictDetector,
-    StructuredFactVerifier, TrustedVerificationPass, VerificationPass, VerificationReceipt,
+    BenchmarkComparison, BenchmarkFixture, DiagnosticObservation, DiagnosticTrial,
+    EvidenceQualificationPass, HarnessInput, ModelAdapter, ModelError, ModelErrorKind, ModelUsage,
+    ReasoningArtifact, ReasoningCandidate, RepeatedDiagnosticReport, StrictAcceptancePolicy,
+    StructuredFactConflictDetector, TrustedVerificationPass, VerificationPass, VerificationReceipt,
     aggregate_benchmark, aggregate_repeated_diagnostics, build_candidate_json_fallback_request,
     build_candidate_request, evaluate, evaluate_benchmark_fixture_with_diagnostics,
-    frameworks::five_whys::FiveWhysRestatementPass, run_harness, validate_artifact,
+    frameworks::five_whys::FiveWhysRestatementPass, run_harness,
+    structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Serialize, de::DeserializeOwned};
@@ -522,13 +523,13 @@ async fn run(cli: Cli) -> Result<(), String> {
                 Some(path) => read_json(&path)?,
                 None => Vec::new(),
             };
+            let structured_verifier = structured_fact_verifier_for_input(&input);
             let passes: Vec<Box<dyn reasoning_harness_core::Pass>> = vec![
                 Box::new(AdversarialDiscoveryPass::new(vec![Box::new(
                     StructuredFactConflictDetector,
                 )])),
-                Box::new(VerificationPass::new(vec![Box::new(
-                    StructuredFactVerifier,
-                )])),
+                Box::new(EvidenceQualificationPass),
+                Box::new(VerificationPass::new(vec![structured_verifier])),
                 Box::new(TrustedVerificationPass::new(receipts)),
                 Box::new(FiveWhysRestatementPass),
                 Box::new(AssumptionDiscoveryPass),

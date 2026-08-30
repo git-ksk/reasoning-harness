@@ -37,3 +37,7 @@ The existing lexical restatement heuristic remains a narrow deterministic fast p
 This implementation intentionally does not provide general causal discovery, SCM/do-calculus, learned process reward models, LLM-judge final authority, provider-specific causal branches, or semantic similarity as a hard gate. Future model-backed causal critics must remain soft unless independently verified by a deterministic or external trusted oracle.
 
 Also deferred from #4 are candidate-supplied causal-evidence reference hints and a general temporal/domain-constraint reasoner. Issue #11 now provides a provider-neutral repeated-trial report that can aggregate causal finding/reason observations while keeping them outside Issue #6 correctness/availability denominators. A live causal-generation/input contract is still deferred; the current candidate schema has no causal-evidence authority fields, and no future reporting interface may grant candidate or model output hard authority.
+
+## Generic evidence-qualification interaction
+
+Issue #16 qualifies generic `Evidence` records used by structured claim verification. `CausalEvidence` remains a separate harness-owned relation-evidence contract with its own provenance and conclusion semantics; generic `EvidenceMetadata` is not silently projected onto causal records. Domain adapters may apply a common external source policy to both inputs, but the core keeps the authority types distinct so claim qualification cannot accidentally become causal proof.

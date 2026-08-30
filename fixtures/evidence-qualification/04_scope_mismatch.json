@@ -1,0 +1,60 @@
+{
+  "id": "scope_mismatch",
+  "description": "Evidence applies to a disjoint scope value.",
+  "input": {
+    "task": "Qualify evidence for a typed proposition.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "fixture-source",
+        "observation": "feature.enabled=true",
+        "facts": {
+          "feature.enabled": "true"
+        },
+        "metadata": {
+          "scope": {
+            "region": {
+              "kind": "values",
+              "values": [
+                "r1"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "scope": {
+          "region": {
+            "kind": "values",
+            "values": [
+              "r2"
+            ]
+          }
+        }
+      }
+    ],
+    "authority_policy": {
+      "ranks": {
+        "community": 5,
+        "secondary": 10,
+        "primary": 20
+      }
+    }
+  },
+  "expected_statuses": [
+    "disqualified"
+  ],
+  "expected_reasons": [
+    "scope_mismatch"
+  ],
+  "expected_hard_findings": 1,
+  "expected_soft_findings": 0
+}

@@ -1,6 +1,6 @@
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
@@ -14,18 +14,66 @@ pub enum EpistemicState {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum ScopeCoverage {
+    Any,
+    Values { values: BTreeSet<String> },
+}
+
+pub type ApplicabilityScope = BTreeMap<String, ScopeCoverage>;
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct TemporalValidity {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effective_from_unix_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effective_until_unix_seconds: Option<i64>,
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct EvidenceMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub temporal: Option<TemporalValidity>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scope: Option<ApplicabilityScope>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provenance_class: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct Evidence {
     pub id: String,
     pub source: String,
     pub observation: String,
     #[serde(default)]
     pub facts: BTreeMap<String, String>,
+    /// Harness-owned qualification metadata. Candidates cannot create or modify evidence.
+    #[serde(default)]
+    pub metadata: EvidenceMetadata,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct Proposition {
     pub key: String,
     pub value: String,
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct EvidenceAuthorityPolicy {
+    /// Domain-neutral authority ordering supplied by the harness. Higher ranks are stronger.
+    #[serde(default)]
+    pub ranks: BTreeMap<String, u16>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+pub struct EvidenceRequirement {
+    pub proposition: Proposition,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub as_of_unix_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scope: Option<ApplicabilityScope>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub minimum_authority_class: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
@@ -121,6 +169,12 @@ pub struct HarnessInput {
     /// These are input context, not candidate-authored epistemic labels.
     #[serde(default)]
     pub assumptions: Vec<Proposition>,
+    /// Harness-owned qualification requirements for proposition evidence.
+    #[serde(default)]
+    pub evidence_requirements: Vec<EvidenceRequirement>,
+    /// Domain-neutral mapping from provenance classes to comparable authority ranks.
+    #[serde(default)]
+    pub authority_policy: EvidenceAuthorityPolicy,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
@@ -147,6 +201,10 @@ pub struct ReasoningArtifact {
     #[serde(default)]
     pub assumptions: Vec<Proposition>,
     #[serde(default)]
+    pub evidence_requirements: Vec<EvidenceRequirement>,
+    #[serde(default)]
+    pub authority_policy: EvidenceAuthorityPolicy,
+    #[serde(default)]
     pub candidate_diagnostics: Vec<CandidateDiagnostic>,
     #[serde(default)]
     pub verification_receipts: Vec<VerificationReceipt>,
@@ -154,6 +212,8 @@ pub struct ReasoningArtifact {
     pub adversarial_findings: Vec<AdversarialFinding>,
     #[serde(default)]
     pub assumption_findings: Vec<crate::AssumptionFinding>,
+    #[serde(default)]
+    pub evidence_qualification_findings: Vec<crate::EvidenceQualificationFinding>,
     #[serde(default)]
     pub claims: Vec<Claim>,
     #[serde(default)]

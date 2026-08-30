@@ -1,0 +1,88 @@
+{
+  "id": "conflict",
+  "description": "Two differently scoped/windowed records both qualify at the requested context but conflict in value.",
+  "input": {
+    "task": "Qualify evidence for a typed proposition.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "fixture-source",
+        "observation": "feature.enabled=true",
+        "facts": {
+          "feature.enabled": "true"
+        },
+        "metadata": {
+          "temporal": {
+            "effective_from_unix_seconds": 100,
+            "effective_until_unix_seconds": 200
+          },
+          "scope": {
+            "region": {
+              "kind": "values",
+              "values": [
+                "r1"
+              ]
+            }
+          },
+          "provenance_class": "primary"
+        }
+      },
+      {
+        "id": "e2",
+        "source": "fixture-source",
+        "observation": "feature.enabled=false",
+        "facts": {
+          "feature.enabled": "false"
+        },
+        "metadata": {
+          "temporal": {
+            "effective_from_unix_seconds": 140,
+            "effective_until_unix_seconds": 180
+          },
+          "scope": {
+            "region": {
+              "kind": "any"
+            }
+          },
+          "provenance_class": "primary"
+        }
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "as_of_unix_seconds": 150,
+        "scope": {
+          "region": {
+            "kind": "values",
+            "values": [
+              "r1"
+            ]
+          }
+        },
+        "minimum_authority_class": "primary"
+      }
+    ],
+    "authority_policy": {
+      "ranks": {
+        "community": 5,
+        "secondary": 10,
+        "primary": 20
+      }
+    }
+  },
+  "expected_statuses": [
+    "qualified",
+    "qualified"
+  ],
+  "expected_reasons": [
+    "conflicting_qualified_evidence"
+  ],
+  "expected_hard_findings": 1,
+  "expected_soft_findings": 0
+}

@@ -86,7 +86,7 @@ Free-form LLM paraphrase generation remains outside the hard benchmark.
 ### #11 Repeated-trial diagnostic stability — implemented
 - [done] typed diagnostic signal/report contract independent from final correctness
 - [done] per-fixture complete-trial finding frequencies and count distributions
-- [done] adversarial, candidate-normalization, causal, and assumption signal types
+- [done] adversarial, candidate-normalization, causal, assumption, and evidence-qualification signal types
 - [done] operationally incomplete trials excluded from diagnostic denominators and reported explicitly
 - [done] 95% Wilson score intervals with exact denominator and minimum-observation policy
 - [done] live CLI JSON exposes `stability.diagnostics` alongside unchanged `stability.correctness`
@@ -102,17 +102,21 @@ Free-form LLM paraphrase generation remains outside the hard benchmark.
 - [done] five-case deterministic assumption corpus and separate detection/recognition metrics remain outside final correctness denominators
 - [done] assumption findings feed the #11 provider-neutral repeated diagnostic report without gaining verdict authority
 
-### #16 Temporal, scope, and provenance evidence diagnostics
-Extend harness-owned evidence with provider-neutral validity metadata so a proposition can be checked against the evidence's explicit time window, applicability scope, and configured provenance/authority requirement.
+### #16 Temporal, scope, and provenance evidence diagnostics — implemented
+- [done] harness-owned `EvidenceMetadata` for validity windows, applicability scope, and opaque provenance classes
+- [done] one provider-neutral `EvidenceRequirement` per proposition key plus harness-owned authority-rank policy
+- [done] hard stale/not-yet-valid/scope-mismatch/scope-expansion/insufficient-authority/conflict findings and soft missing-metadata findings
+- [done] qualification-aware structured-fact verification; unqualified or conflicting qualified evidence cannot create a hard receipt
+- [done] candidate schema cannot create evidence metadata, requirements, authority policy, or qualification findings
+- [done] eight-case deterministic qualification corpus and separate reason-detection metric outside final correctness/causal denominators
+- [done] evidence-qualification findings feed the #11 repeated diagnostic report without gaining verdict authority
 
-Hard findings require deterministic mismatch against explicit metadata. Missing metadata remains unknown; candidate-authored provenance cannot elevate authority; source-ranking policy stays outside domain-specific core logic. This is evidence qualification, not open-world retrieval or generic RAG orchestration.
-
-This work is a prerequisite for a useful resolution loop because newly acquired evidence must be qualified for time, applicability, and authority before it can safely resolve an unknown.
+Open-world retrieval, domain-specific source rankings, and generic RAG orchestration remain out of core scope. This work is now an implemented prerequisite for the future resolution loop because newly acquired evidence must be qualified for time, applicability, and authority before it can safely resolve an unknown.
 
 ## P2 — benchmark contract before end-to-end product claims
 
 ### #14 Version and stratify the benchmark corpus
-Version the current claim, causal, and assumption suites; define category/difficulty strata, score-compatibility rules, contamination notes, change discipline, and saturation warnings. Benchmark composition changes must not silently redefine historical scores.
+Version the current claim, causal, assumption, and evidence-qualification suites; define category/difficulty strata, score-compatibility rules, contamination notes, change discipline, and saturation warnings. Benchmark composition changes must not silently redefine historical scores.
 
 The corpus should also establish stable baselines for future resolution-loop research: diagnose-only, one-shot generation, and bounded-resolution variants must be comparable without changing denominators underneath the result.
 

@@ -45,7 +45,7 @@ See [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md) for the ta
 
 ## Current prototype
 
-- Harness-owned `HarnessInput`: task plus immutable supplied evidence and explicit assumptions.
+- Harness-owned `HarnessInput`: task plus immutable supplied evidence, explicit assumptions, and optional evidence-qualification requirements.
 - Untrusted `ReasoningCandidate`: model-proposed claims, epistemic states, and inference edges; it cannot create evidence.
 - `ReasoningArtifact`: harness-materialized task, evidence, verification receipts, claims, inference edges, and typed diagnostics.
 - Epistemic states: `known`, `supported`, `inferred`, `assumed`, `contradicted`, `unknown`.
@@ -55,9 +55,10 @@ See [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md) for the ta
 - Trusted verification receipts for oracle-backed support promotion or contradiction; receipts are never model-owned or model-visible.
 - Evidence-aware causal diagnostics with explicit support/refutation/unknown assessments while keeping causal findings outside final-verdict authority.
 - Harness-owned explicit assumptions plus unsupported-premise diagnostics that distinguish trusted support, allowed assumptions, unsupported typed premises, and unbound premises.
+- Provider-neutral temporal/scope/provenance evidence qualification; stale, out-of-scope, or insufficient-authority facts cannot create built-in hard receipts when requirements are present.
 - A pass-based harness runtime that fails closed when a pass produces invalid state.
 - Deterministic metamorphic robustness checks and repeated-trial diagnostic stability reporting.
-- Separate committed claim, causal, and assumption regression corpora.
+- Separate committed claim, causal, assumption, and evidence-qualification regression corpora.
 - Provider-neutral Rust `ModelAdapter`; model output is always outside the correctness boundary.
 - Provider adapters in a separate Rust crate for Mistral, Google Gemini/AI Studio, and NVIDIA Hosted NIM; all provider output remains outside the verification authority boundary.
 - Native Rust CLI (`reason run`, `reason verify`, `reason eval`) sharing the exact same core validators and acceptance policy.
@@ -102,4 +103,4 @@ cargo run -p reasoning-harness-cli -- run --input examples/input.json --provider
 cargo run -p reasoning-harness-cli -- run --input examples/input.json --provider nvidia --model nvidia/nemotron-3.5-lightning-30b-a3b --format json
 ```
 
-See [project status](docs/project-status.md), [research plan](docs/research-plan.md), [benchmark design](docs/benchmark.md), [live benchmark CI](docs/live-benchmark.md), [architecture](docs/architecture.md), [prior art](docs/prior-art.md), [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md), and [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md).
+See [project status](docs/project-status.md), [research plan](docs/research-plan.md), [benchmark design](docs/benchmark.md), [evidence qualification](docs/evidence-qualification.md), [live benchmark CI](docs/live-benchmark.md), [architecture](docs/architecture.md), [prior art](docs/prior-art.md), [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md), and [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md).

@@ -5,8 +5,8 @@ use thiserror::Error;
 
 use crate::{
     AdversarialFindingKind, AssumptionFindingKind, CausalFindingKind, CausalFindingReason,
-    CausalInspection, CausalRelation, CausalSupportStatus, FindingStrength, Proposition,
-    ReasoningArtifact,
+    CausalInspection, CausalRelation, CausalSupportStatus, EvidenceQualificationFindingKind,
+    EvidenceQualificationFindingReason, FindingStrength, Proposition, ReasoningArtifact,
 };
 
 const MIN_CI_OBSERVATIONS: usize = 5;
@@ -40,6 +40,13 @@ pub enum DiagnosticSignal {
         strength: FindingStrength,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         proposition: Option<Proposition>,
+    },
+    EvidenceQualification {
+        detector: String,
+        kind: EvidenceQualificationFindingKind,
+        reason: EvidenceQualificationFindingReason,
+        strength: FindingStrength,
+        proposition: Proposition,
     },
     Candidate {
         code: String,
@@ -104,6 +111,8 @@ pub struct DiagnosticFamilyDistributions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub assumption: Option<DiagnosticCountDistribution>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub evidence_qualification: Option<DiagnosticCountDistribution>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub candidate: Option<DiagnosticCountDistribution>,
 }
 
@@ -164,6 +173,18 @@ pub fn observe_diagnostics(
             proposition: finding.proposition.clone(),
         }
     }));
+    signals.extend(
+        artifact
+            .evidence_qualification_findings
+            .iter()
+            .map(|finding| DiagnosticSignal::EvidenceQualification {
+                detector: finding.detector.clone(),
+                kind: finding.kind,
+                reason: finding.reason,
+                strength: finding.strength,
+                proposition: finding.proposition.clone(),
+            }),
+    );
     signals.extend(artifact.candidate_diagnostics.iter().map(|diagnostic| {
         DiagnosticSignal::Candidate {
             code: diagnostic.code.clone(),
@@ -281,6 +302,9 @@ pub fn aggregate_repeated_diagnostics(
                 adversarial: scalar_distribution(family_counts(is_adversarial)),
                 causal: scalar_distribution(family_counts(is_causal)),
                 assumption: scalar_distribution(family_counts(is_assumption)),
+                evidence_qualification: scalar_distribution(family_counts(
+                    is_evidence_qualification,
+                )),
                 candidate: scalar_distribution(family_counts(is_candidate)),
             },
         });
@@ -386,6 +410,10 @@ fn is_assumption(signal: &DiagnosticSignal) -> bool {
     matches!(signal, DiagnosticSignal::Assumption { .. })
 }
 
+fn is_evidence_qualification(signal: &DiagnosticSignal) -> bool {
+    matches!(signal, DiagnosticSignal::EvidenceQualification { .. })
+}
+
 fn is_candidate(signal: &DiagnosticSignal) -> bool {
     matches!(signal, DiagnosticSignal::Candidate { .. })
 }
@@ -443,6 +471,16 @@ fn signal_sort_key(signal: &DiagnosticSignal) -> String {
                 .map(|proposition| format!("{}={}", proposition.key, proposition.value))
                 .unwrap_or_else(|| "unbound".into())
         ),
+        DiagnosticSignal::EvidenceQualification {
+            detector,
+            kind,
+            reason,
+            strength,
+            proposition,
+        } => format!(
+            "evidence_qualification|{detector}|{kind:?}|{reason:?}|{strength:?}|{}={}",
+            proposition.key, proposition.value
+        ),
         DiagnosticSignal::Candidate { code } => format!("candidate|{code}"),
     }
 }
@@ -467,7 +505,8 @@ mod tests {
     use crate::{
         AdversarialFinding, CandidateDiagnostic, CausalEdgeAssessment, CausalFinding,
         CausalFindingKind, CausalFindingReason, CausalInspection, CausalSupportStatus,
-        EpistemicState, FindingStrength, ReasoningArtifact,
+        EpistemicState, EvidenceQualificationFinding, EvidenceQualificationFindingKind,
+        EvidenceQualificationFindingReason, FindingStrength, ReasoningArtifact,
     };
 
     use super::*;
@@ -539,12 +578,24 @@ mod tests {
             evidence: vec![],
             hypotheses: vec![],
             assumptions: vec![],
+            evidence_requirements: vec![],
+            authority_policy: Default::default(),
             candidate_diagnostics: vec![CandidateDiagnostic {
                 code: "dropped_edge".into(),
                 message: "fixture".into(),
             }],
             verification_receipts: vec![],
             assumption_findings: vec![],
+            evidence_qualification_findings: vec![EvidenceQualificationFinding {
+                id: "eq1".into(),
+                detector: "evidence_qualification_inspector".into(),
+                kind: EvidenceQualificationFindingKind::TemporalMismatch,
+                reason: EvidenceQualificationFindingReason::Stale,
+                strength: FindingStrength::Hard,
+                proposition: proposition.clone(),
+                evidence_ids: vec!["e1".into()],
+                message: "fixture".into(),
+            }],
             adversarial_findings: vec![AdversarialFinding {
                 id: "a1".into(),
                 detector: "structured_fact_conflict".into(),
@@ -587,7 +638,14 @@ mod tests {
             }],
         };
         let observation = observe_diagnostics("fixture", &artifact, Some(&causal));
-        assert_eq!(observation.signals.len(), 4);
+        assert_eq!(observation.signals.len(), 5);
+        assert!(observation.signals.iter().any(|signal| matches!(
+            signal,
+            DiagnosticSignal::EvidenceQualification {
+                reason: EvidenceQualificationFindingReason::Stale,
+                ..
+            }
+        )));
         assert!(observation.signals.iter().any(|signal| matches!(
             signal,
             DiagnosticSignal::CausalAssessment {

@@ -1,0 +1,46 @@
+{
+  "id": "insufficient_authority",
+  "description": "Evidence provenance ranks below the harness-owned minimum.",
+  "input": {
+    "task": "Qualify evidence for a typed proposition.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "fixture-source",
+        "observation": "feature.enabled=true",
+        "facts": {
+          "feature.enabled": "true"
+        },
+        "metadata": {
+          "provenance_class": "secondary"
+        }
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "minimum_authority_class": "primary"
+      }
+    ],
+    "authority_policy": {
+      "ranks": {
+        "community": 5,
+        "secondary": 10,
+        "primary": 20
+      }
+    }
+  },
+  "expected_statuses": [
+    "disqualified"
+  ],
+  "expected_reasons": [
+    "insufficient_authority"
+  ],
+  "expected_hard_findings": 1,
+  "expected_soft_findings": 0
+}

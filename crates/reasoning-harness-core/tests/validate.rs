@@ -11,6 +11,7 @@ fn accepts_an_evidence_backed_known_claim() {
             source: "fixture".into(),
             observation: "observed".into(),
             facts: Default::default(),
+            metadata: Default::default(),
         }],
         claims: vec![Claim {
             id: "c1".into(),
@@ -138,5 +139,49 @@ fn rejects_invalid_and_duplicate_harness_assumptions() {
             .diagnostics
             .iter()
             .any(|diagnostic| diagnostic.code == "duplicate_input_assumption")
+    );
+}
+
+#[test]
+fn rejects_invalid_evidence_qualification_configuration() {
+    let artifact = ReasoningArtifact {
+        task: "fixture task".into(),
+        evidence: vec![Evidence {
+            id: "e1".into(),
+            source: "fixture".into(),
+            observation: "observed".into(),
+            facts: Default::default(),
+            metadata: reasoning_harness_core::EvidenceMetadata {
+                temporal: Some(reasoning_harness_core::TemporalValidity {
+                    effective_from_unix_seconds: Some(200),
+                    effective_until_unix_seconds: Some(100),
+                }),
+                scope: None,
+                provenance_class: None,
+            },
+        }],
+        evidence_requirements: vec![reasoning_harness_core::EvidenceRequirement {
+            proposition: reasoning_harness_core::Proposition {
+                key: "feature.enabled".into(),
+                value: "true".into(),
+            },
+            as_of_unix_seconds: Some(150),
+            scope: None,
+            minimum_authority_class: Some("primary".into()),
+        }],
+        ..Default::default()
+    };
+    let report = validate_artifact(&artifact);
+    assert!(
+        report
+            .diagnostics
+            .iter()
+            .any(|diagnostic| { diagnostic.code == "invalid_evidence_temporal_window" })
+    );
+    assert!(
+        report
+            .diagnostics
+            .iter()
+            .any(|diagnostic| { diagnostic.code == "unknown_minimum_authority_class" })
     );
 }

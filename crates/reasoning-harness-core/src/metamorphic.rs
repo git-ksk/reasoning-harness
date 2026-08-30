@@ -149,6 +149,7 @@ impl MetamorphicTransform<BenchmarkFixture> for AddIrrelevantEvidence {
             source: "metamorphic control".into(),
             observation: "An explicitly unrelated control fact is present.".into(),
             facts: BTreeMap::from([("metamorphic.irrelevant".into(), "true".into())]),
+            metadata: Default::default(),
         });
         transformed
     }

@@ -2,7 +2,7 @@
 
 ## Current phase
 
-The repository is an early research prototype with a maturing verification/diagnostic core. The core authority boundary, native CLI, deterministic fixture benchmark, live Mistral/Google/NVIDIA provider adapters, trusted verification receipts, edge-local Five Whys cleanup, observational evidence-aware causal diagnostics, assumption diagnostics, metamorphic robustness, and repeated diagnostic stability are implemented.
+The repository is an early research prototype with a maturing verification/diagnostic core. The core authority boundary, native CLI, deterministic fixture benchmark, live Mistral/Google/NVIDIA provider adapters, trusted verification receipts, edge-local Five Whys cleanup, observational evidence-aware causal diagnostics, assumption diagnostics, temporal/scope/provenance evidence qualification, metamorphic robustness, and repeated diagnostic stability are implemented.
 
 The product direction is broader than post-hoc diagnosis: the native runtime is intended to become an **evidence-grounded reasoning runtime** that can turn unresolved verified state into bounded resolution requests, re-verify repaired or newly grounded reasoning, and finalize answers only from adequately supported propositions. That end-to-end resolution/finalization loop is not yet implemented. See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
@@ -19,9 +19,10 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Narrow deterministic Five Whys lexical-restatement removal localized to the offending inference edge.
 - Observational typed causal diagnostics with exact scoped support/refutation and conservative unknown handling for association, reverse direction, partial support, conflict, missing binding, and missing exact evidence.
 - Harness-owned explicit assumptions and observational unsupported-premise diagnostics.
-- Twenty committed claim-verdict regression fixtures (5 accept / 6 reject / 9 unknown) plus a separate eight-case deterministic causal corpus and five-case assumption corpus.
+- Twenty committed claim-verdict regression fixtures (5 accept / 6 reject / 9 unknown) plus separate eight-case causal, five-case assumption, and eight-case evidence-qualification corpora.
 - A six-family deterministic metamorphic regression layer with dedicated seed fixtures outside the ordinary correctness denominators.
-- Repeated-trial diagnostic stability for adversarial, candidate-normalization, causal, and assumption signals, kept separate from correctness stability.
+- Repeated-trial diagnostic stability for adversarial, candidate-normalization, causal, assumption, and evidence-qualification signals, kept separate from correctness stability.
+- Harness-owned temporal/scope/provenance evidence metadata and requirements with qualification-aware built-in structured verification.
 - Manual, secret-isolated live benchmark workflow spanning Mistral, Google-hosted Gemma/Gemini, and a narrowed routine NVIDIA Nemotron target.
 - GitHub CI, Dependabot configuration, contribution/security guidance, issue and PR templates.
 
@@ -50,10 +51,10 @@ Retrieval, web search, databases, MCP tools, tests, compilers, and human review 
 - Counterexample discovery coverage is still narrow outside explicit structured propositions.
 - Five Whys lexical cleanup remains intentionally syntactic; evidence-aware causal inspection is observational and does not certify the whole artifact or change the final claim verdict.
 - Candidate-supplied causal-evidence references remain deferred; the repeated-trial report can aggregate causal support/refutation/unknown assessments plus finding/reason observations without moving them into correctness authority. A live causal-generation/input contract remains deferred.
-- Deterministic metamorphic robustness is implemented across six transform families. Repeated-trial diagnostic stability is also implemented: adversarial, candidate-normalization, causal, and assumption signals have complete-trial-only frequencies, count distributions, explicit operational exclusions, and Wilson intervals where the sample threshold is met.
+- Deterministic metamorphic robustness is implemented across six transform families. Repeated-trial diagnostic stability is also implemented: adversarial, candidate-normalization, causal, assumption, and evidence-qualification signals have complete-trial-only frequencies, count distributions, explicit operational exclusions, and Wilson intervals where the sample threshold is met.
 - Assumption/unsupported-premise diagnostics are implemented with harness-owned explicit assumptions, deterministic typed premise checks, a separate five-case corpus, and repeated-trial diagnostic signals. Semantic extraction of untyped assumptions remains soft/deferred.
-- Temporal validity, applicability scope, and provenance/authority qualification are not yet modeled on harness-owned evidence; #16 defines this provider-neutral evidence-quality boundary. Open-world retrieval and domain-specific source ranking remain out of core scope.
-- The current claim, causal, and assumption corpora are not yet versioned/stratified as a public benchmark; #14 tracks corpus longevity and contamination/saturation policy.
+- Temporal validity, applicability scope, and provenance/authority qualification are implemented for generic harness-owned evidence. Domain-specific source taxonomy, open-world retrieval, and automatic qualification of the separate `CausalEvidence` contract remain out of core scope.
+- The current claim, causal, assumption, and evidence-qualification corpora are not yet versioned/stratified as a public benchmark; #14 tracks corpus longevity and contamination/saturation policy.
 - Semantic/model-backed discovery remains soft-only and is not yet calibrated; #13 is intentionally sequenced after deterministic measurement, evidence qualification, corpus discipline, and the grounded-runtime boundary are stable.
 - Stable ranking claims require repeated trials. Issue #6 completed the 5-trial Mistral/Google matrix plus a targeted 10-trial follow-up for models tied on all primary correctness metrics; operational completeness is reported separately from correctness variance.
 
@@ -80,6 +81,10 @@ Issue #4 adds typed `CausalRelation`, harness-owned `CausalEvidence`, per-edge a
 ### Assumption and unsupported-premise diagnostics
 
 Issue #12 adds harness-owned explicit `assumptions` separately from task `hypotheses`, plus an observational `AssumptionDiscoveryPass`. Premises with trusted supported/known state or a derivation from trusted support are classified `supported`; propositions explicitly supplied as assumptions are `explicit_input_assumption`; typed premises with neither are `unsupported`; untyped premises are `unbound`. Unsupported typed premises produce hard process findings relative to the supplied context, while unbound premises remain soft because semantic identity is unavailable. Findings do not mutate claim state or final verdict. The five-case assumption corpus is reported separately from the 20-case correctness and eight-case causal corpora, and its signals participate in the repeated diagnostic report.
+
+### Temporal, scope, and provenance evidence qualification
+
+Issue #16 adds harness-owned `EvidenceMetadata`, proposition-key qualification requirements, and a domain-neutral authority-rank policy. Exact metadata coverage qualifies evidence; stale/not-yet-valid records, disjoint or expanded scope, insufficient authority, and conflicts among otherwise qualified structured values produce hard findings. Missing temporal/scope/provenance bindings remain soft/unknown. When requirements exist, the built-in structured verifier uses only qualified evidence and withholds hard receipts on missing qualification or qualified-value conflict; old inputs without requirements keep historical verifier behavior. The eight-case qualification corpus and repeated diagnostic signals are separate from final correctness and causal-edge metrics. Explicit external trusted receipts remain an independent oracle boundary whose caller owns qualification policy.
 
 ### Benchmark hardening
 

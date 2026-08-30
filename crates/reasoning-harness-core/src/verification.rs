@@ -1,6 +1,6 @@
 use crate::{
-    Claim, EpistemicState, Evidence, HarnessError, Pass, ReasoningArtifact, VerificationConclusion,
-    VerificationReceipt,
+    Claim, EpistemicState, Evidence, EvidenceAuthorityPolicy, EvidenceRequirement, HarnessError,
+    HarnessInput, Pass, ReasoningArtifact, VerificationConclusion, VerificationReceipt,
 };
 
 /// Produces hard verification receipts from a candidate claim and harness-owned evidence.
@@ -35,27 +35,118 @@ impl Verifier for StructuredFactVerifier {
                     .map(|value| (item.id.clone(), value))
             })
             .collect::<Vec<_>>();
-        if observed.is_empty() {
+        structured_receipt(self.name(), claim, proposition, observed)
+    }
+}
+
+fn structured_receipt(
+    verifier: &'static str,
+    claim: &Claim,
+    proposition: &crate::Proposition,
+    observed: Vec<(String, &String)>,
+) -> Option<VerificationReceipt> {
+    if observed.is_empty() {
+        return None;
+    }
+    let conclusion = if observed
+        .iter()
+        .all(|(_, value)| *value == &proposition.value)
+    {
+        VerificationConclusion::Supported
+    } else {
+        VerificationConclusion::Contradicted
+    };
+    Some(VerificationReceipt {
+        id: format!("{verifier}:{}", claim.id),
+        verifier: verifier.into(),
+        claim_statement: None,
+        proposition: Some(proposition.clone()),
+        claim_id: Some(claim.id.clone()),
+        conclusion,
+        evidence_ids: observed.into_iter().map(|(id, _)| id).collect(),
+    })
+}
+
+/// Deterministic structured-fact verifier that applies harness-owned evidence qualification
+/// requirements before a fact can create a hard receipt. Missing/insufficient qualification
+/// withholds the receipt and therefore preserves uncertainty rather than forcing rejection.
+#[derive(Debug, Clone, Default)]
+pub struct QualifiedStructuredFactVerifier {
+    requirements: Vec<EvidenceRequirement>,
+    authority_policy: EvidenceAuthorityPolicy,
+}
+
+impl QualifiedStructuredFactVerifier {
+    pub fn new(
+        requirements: Vec<EvidenceRequirement>,
+        authority_policy: EvidenceAuthorityPolicy,
+    ) -> Self {
+        Self {
+            requirements,
+            authority_policy,
+        }
+    }
+}
+
+impl Verifier for QualifiedStructuredFactVerifier {
+    fn name(&self) -> &'static str {
+        "qualified_structured_fact_equality"
+    }
+
+    fn verify(&self, claim: &Claim, evidence: &[Evidence]) -> Option<VerificationReceipt> {
+        let proposition = claim.proposition.as_ref()?;
+        let requirement = self
+            .requirements
+            .iter()
+            .find(|requirement| requirement.proposition.key == proposition.key);
+        let observed = evidence
+            .iter()
+            .filter(|item| item.facts.contains_key(&proposition.key))
+            .filter(|item| {
+                requirement.is_none_or(|requirement| {
+                    crate::evidence_qualification::qualification_reasons(
+                        &self.authority_policy,
+                        requirement,
+                        item,
+                    )
+                    .is_empty()
+                })
+            })
+            .filter_map(|item| {
+                item.facts
+                    .get(&proposition.key)
+                    .map(|value| (item.id.clone(), value))
+            })
+            .collect::<Vec<_>>();
+
+        // When qualification requirements are active, multiple qualified records with
+        // conflicting values are an evidence conflict, not a hard verdict. The
+        // qualification inspector records that conflict separately; verification
+        // withholds a receipt so the claim remains uncertain.
+        if requirement.is_some()
+            && observed
+                .iter()
+                .map(|(_, value)| value.as_str())
+                .collect::<std::collections::BTreeSet<_>>()
+                .len()
+                > 1
+        {
             return None;
         }
+        structured_receipt(self.name(), claim, proposition, observed)
+    }
+}
 
-        let conclusion = if observed
-            .iter()
-            .all(|(_, value)| *value == &proposition.value)
-        {
-            VerificationConclusion::Supported
-        } else {
-            VerificationConclusion::Contradicted
-        };
-        Some(VerificationReceipt {
-            id: format!("{}:{}", self.name(), claim.id),
-            verifier: self.name().into(),
-            claim_statement: None,
-            proposition: Some(proposition.clone()),
-            claim_id: Some(claim.id.clone()),
-            conclusion,
-            evidence_ids: observed.into_iter().map(|(id, _)| id).collect(),
-        })
+/// Selects the compatibility verifier when no qualification requirements exist and the
+/// qualification-aware verifier otherwise. This preserves historical behavior for old inputs.
+pub fn structured_fact_verifier_for_input(input: &HarnessInput) -> Box<dyn Verifier> {
+    if input.evidence_requirements.is_empty() {
+        Box::new(StructuredFactVerifier)
+    } else {
+        Box::new(QualifiedStructuredFactVerifier::new(
+            input.evidence_requirements.clone(),
+            input.authority_policy.clone(),
+        ))
     }
 }
 
@@ -197,6 +288,7 @@ mod tests {
             source: "machine fact".into(),
             observation: format!("status={value}"),
             facts: BTreeMap::from([("http.status_code".into(), value.into())]),
+            metadata: Default::default(),
         }
     }
 
@@ -236,10 +328,13 @@ mod tests {
             evidence: vec![evidence("503")],
             hypotheses: vec![],
             assumptions: vec![],
+            evidence_requirements: vec![],
+            authority_policy: Default::default(),
             candidate_diagnostics: vec![],
             verification_receipts: vec![],
             adversarial_findings: vec![],
             assumption_findings: vec![],
+            evidence_qualification_findings: vec![],
             claims: vec![claim("503")],
             inferences: vec![],
         };
@@ -247,5 +342,90 @@ mod tests {
         let result = pass.apply(artifact).unwrap();
         assert_eq!(result.claims[0].state, EpistemicState::Supported);
         assert_eq!(result.claims[0].statement, "http.status_code = 503");
+    }
+
+    fn qualified_requirement(
+        as_of: Option<i64>,
+        minimum_authority_class: Option<&str>,
+    ) -> EvidenceRequirement {
+        EvidenceRequirement {
+            proposition: crate::Proposition {
+                key: "http.status_code".into(),
+                value: "503".into(),
+            },
+            as_of_unix_seconds: as_of,
+            scope: None,
+            minimum_authority_class: minimum_authority_class.map(str::to_string),
+        }
+    }
+
+    #[test]
+    fn qualified_verifier_supports_only_qualified_evidence() {
+        let mut item = evidence("503");
+        item.metadata.temporal = Some(crate::TemporalValidity {
+            effective_from_unix_seconds: Some(100),
+            effective_until_unix_seconds: Some(300),
+        });
+        let verifier = QualifiedStructuredFactVerifier::new(
+            vec![qualified_requirement(Some(200), None)],
+            Default::default(),
+        );
+        let receipt = verifier.verify(&claim("503"), &[item]).unwrap();
+        assert_eq!(receipt.conclusion, VerificationConclusion::Supported);
+        assert_eq!(receipt.verifier, "qualified_structured_fact_equality");
+    }
+
+    #[test]
+    fn qualified_verifier_withholds_stale_evidence() {
+        let mut item = evidence("503");
+        item.metadata.temporal = Some(crate::TemporalValidity {
+            effective_from_unix_seconds: Some(0),
+            effective_until_unix_seconds: Some(100),
+        });
+        let verifier = QualifiedStructuredFactVerifier::new(
+            vec![qualified_requirement(Some(200), None)],
+            Default::default(),
+        );
+        assert!(verifier.verify(&claim("503"), &[item]).is_none());
+    }
+
+    #[test]
+    fn qualified_verifier_withholds_insufficient_authority() {
+        let mut item = evidence("503");
+        item.metadata.provenance_class = Some("secondary".into());
+        let verifier = QualifiedStructuredFactVerifier::new(
+            vec![qualified_requirement(None, Some("primary"))],
+            crate::EvidenceAuthorityPolicy {
+                ranks: BTreeMap::from([("secondary".into(), 10), ("primary".into(), 20)]),
+            },
+        );
+        assert!(verifier.verify(&claim("503"), &[item]).is_none());
+    }
+
+    #[test]
+    fn qualified_verifier_withholds_conflicting_qualified_evidence() {
+        let verifier = QualifiedStructuredFactVerifier::new(
+            vec![qualified_requirement(None, None)],
+            Default::default(),
+        );
+        assert!(
+            verifier
+                .verify(&claim("503"), &[evidence("503"), evidence("200")])
+                .is_none()
+        );
+    }
+
+    #[test]
+    fn same_key_opposite_value_cannot_bypass_qualification_requirement() {
+        let mut item = evidence("503");
+        item.metadata.temporal = Some(crate::TemporalValidity {
+            effective_from_unix_seconds: Some(0),
+            effective_until_unix_seconds: Some(100),
+        });
+        let verifier = QualifiedStructuredFactVerifier::new(
+            vec![qualified_requirement(Some(200), None)],
+            Default::default(),
+        );
+        assert!(verifier.verify(&claim("200"), &[item]).is_none());
     }
 }

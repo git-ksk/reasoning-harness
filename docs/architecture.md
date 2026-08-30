@@ -112,7 +112,7 @@ The same rule applies to future repair/regeneration. A model receiving diagnosti
 
 ## Verification receipt boundary
 
-`VerificationReceipt` is authority-bearing data and is deliberately absent from `ReasoningCandidate`. A trusted verifier creates receipts only after candidate generation. The preferred hard-verification contract binds a typed `Proposition { key, value }` to structured facts owned by harness evidence. `StructuredFactVerifier` compares those values deterministically and emits either `supported` or `contradicted`; missing facts yield no receipt and preserve uncertainty. When such a receipt is applied, the authoritative claim text is canonicalized to `key = value` so model-authored prose is never presented as verifier-endorsed wording. Exact statement-bound receipts remain available only as a conservative compatibility path for external verifiers.
+`VerificationReceipt` is authority-bearing data and is deliberately absent from `ReasoningCandidate`. A trusted verifier creates receipts only after candidate generation. The preferred hard-verification contract binds a typed `Proposition { key, value }` to structured facts owned by harness evidence. Inputs without evidence qualification requirements retain `StructuredFactVerifier` compatibility behavior. Inputs with requirements use `QualifiedStructuredFactVerifier`, which filters structured facts through harness-owned temporal/scope/provenance requirements before a hard receipt can be created and withholds a receipt when multiple qualified values conflict. Missing or unqualified facts preserve uncertainty. When a receipt is applied, the authoritative claim text is canonicalized to `key = value` so model-authored prose is never presented as verifier-endorsed wording. Exact statement-bound receipts remain available only as a conservative compatibility path for external verifiers.
 
 A receipt is not a semantic score. It represents a hard verifier result whose authority comes from the verifier named by the caller. The current fixture benchmark uses explicit `fixture_oracle` receipts to test process correctness under known oracle coverage; this must not be reported as generic reasoning accuracy.
 
@@ -167,6 +167,16 @@ This separation prevents a model-generated contradiction label or counterexample
 
 In the target resolution loop, these findings may motivate a resolution request or candidate revision, but they do not gain additional authority by becoming actionable.
 
+## Evidence qualification boundary
+
+`Evidence.metadata`, `EvidenceRequirement`, and `EvidenceAuthorityPolicy` are harness-owned and absent from `ReasoningCandidate`. They let the runtime test whether a structured fact is applicable at an explicit time, scope, and minimum opaque authority rank without embedding domain-specific source names in core logic. Deterministic mismatches are hard findings; missing metadata stays soft/unknown.
+
+Evidence qualification itself is observational, but the built-in structured verifier consumes the same requirements before producing hard receipts. This prevents stale, out-of-scope, or insufficient-authority facts from silently becoming `supported`/`contradicted`. Conflicting qualified values produce a diagnostic conflict and no built-in hard receipt. Explicit external trusted receipts remain an independent oracle compatibility boundary and are not automatically reinterpreted by this layer.
+
+In the target resolution loop, newly acquired evidence must pass the same qualification boundary before it can resolve an unknown. Retrieval therefore cannot bypass time, scope, or provenance policy merely because it returned a relevant-looking record.
+
+See [temporal, scope, and provenance evidence qualification](evidence-qualification.md) for scope semantics, authority-policy rules, and cross-diagnostic interactions.
+
 ## Evidence-aware causal diagnostic boundary
 
 `CausalInspector` extends Five Whys inspection beyond lexical restatement without becoming a verdict authority. It canonicalizes a typed causal relation as cause proposition(s) -> effect proposition and matches that relation only against harness-owned `CausalEvidence` with explicit provenance. Exact support can mark an edge `supported`; exact trusted refutation can mark it `refuted`. Association-only evidence, partial support, reverse-direction support, conflicting evidence, missing relation evidence, and incomplete proposition bindings remain `unknown` with soft diagnostics.
@@ -185,7 +195,7 @@ See [metamorphic reasoning robustness](metamorphic-testing.md) for the current t
 
 ## Repeated diagnostic measurement boundary
 
-Repeated diagnostic aggregation is an evaluation/reporting boundary, not a verifier. `DiagnosticSignal` records adversarial findings, candidate-normalization codes, causal finding/reason observations, and assumption signals without granting any of them new authority. `stability.diagnostics` is serialized alongside, not inside, final correctness stability.
+Repeated diagnostic aggregation is an evaluation/reporting boundary, not a verifier. `DiagnosticSignal` records adversarial findings, candidate-normalization codes, causal finding/reason observations, assumption signals, and evidence-qualification findings without granting any of them new authority. `stability.diagnostics` is serialized alongside, not inside, final correctness stability.
 
 Only operationally complete trials contribute to diagnostic frequencies and count distributions. Partial successful observations from an incomplete provider trial are reported as excluded observations rather than interpreted as diagnostic absence. Confidence intervals use the documented 95% Wilson score method only after the minimum complete-observation threshold; exact counts and denominators are always retained.
 

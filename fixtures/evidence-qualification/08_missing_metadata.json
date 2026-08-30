@@ -1,0 +1,55 @@
+{
+  "id": "missing_metadata",
+  "description": "Required temporal, scope, and provenance bindings are absent.",
+  "input": {
+    "task": "Qualify evidence for a typed proposition.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "fixture-source",
+        "observation": "feature.enabled=true",
+        "facts": {
+          "feature.enabled": "true"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "as_of_unix_seconds": 150,
+        "scope": {
+          "region": {
+            "kind": "values",
+            "values": [
+              "r1"
+            ]
+          }
+        },
+        "minimum_authority_class": "primary"
+      }
+    ],
+    "authority_policy": {
+      "ranks": {
+        "community": 5,
+        "secondary": 10,
+        "primary": 20
+      }
+    }
+  },
+  "expected_statuses": [
+    "unknown"
+  ],
+  "expected_reasons": [
+    "missing_temporal_metadata",
+    "missing_scope_metadata",
+    "missing_provenance_metadata"
+  ],
+  "expected_hard_findings": 0,
+  "expected_soft_findings": 3
+}
