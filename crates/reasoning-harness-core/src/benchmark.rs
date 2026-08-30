@@ -99,24 +99,7 @@ pub fn evaluate_benchmark_fixture(
         None,
     );
 
-    let passes: Vec<Box<dyn crate::Pass>> = vec![
-        Box::new(AdversarialDiscoveryPass::new(vec![Box::new(
-            StructuredFactConflictDetector,
-        )])),
-        Box::new(VerificationPass::new(vec![Box::new(
-            StructuredFactVerifier,
-        )])),
-        Box::new(TrustedVerificationPass::new(
-            fixture.verification_receipts.clone(),
-        )),
-        Box::new(FiveWhysRestatementPass),
-    ];
-    let harness_run = run_harness(
-        fixture.input.clone(),
-        candidate,
-        &passes,
-        &StrictAcceptancePolicy,
-    );
+    let harness_run = run_benchmark_harness(fixture, candidate);
     let harness = match harness_run {
         Ok(outcome) => arm_result(
             fixture,
@@ -137,6 +120,30 @@ pub fn evaluate_benchmark_fixture(
         baseline,
         harness,
     }
+}
+
+pub(crate) fn run_benchmark_harness(
+    fixture: &BenchmarkFixture,
+    candidate: ReasoningCandidate,
+) -> Result<crate::HarnessOutcome, crate::HarnessError> {
+    let passes: Vec<Box<dyn crate::Pass>> = vec![
+        Box::new(AdversarialDiscoveryPass::new(vec![Box::new(
+            StructuredFactConflictDetector,
+        )])),
+        Box::new(VerificationPass::new(vec![Box::new(
+            StructuredFactVerifier,
+        )])),
+        Box::new(TrustedVerificationPass::new(
+            fixture.verification_receipts.clone(),
+        )),
+        Box::new(FiveWhysRestatementPass),
+    ];
+    run_harness(
+        fixture.input.clone(),
+        candidate,
+        &passes,
+        &StrictAcceptancePolicy,
+    )
 }
 
 pub fn aggregate_benchmark(results: &[BenchmarkCaseResult]) -> BenchmarkComparison {

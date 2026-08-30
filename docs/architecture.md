@@ -15,7 +15,7 @@ ReasoningArtifact / framework trace
    +--> evidence / provenance gates
    +--> trusted verification receipts from deterministic/external oracles
    +--> narrow deterministic framework passes
-   +--> contradiction and adversarial discovery passes (planned)
+   +--> contradiction and adversarial discovery passes
    |
    v
 accept | reject | unknown
@@ -90,3 +90,11 @@ This separation prevents a model-generated contradiction label or counterexample
 Causal inspection is observational: it does not mutate claim epistemic state, create verification receipts, or directly alter the final `accept | reject | unknown` policy result. The existing lexical Five Whys cleanup remains a narrow deterministic fast path, but cleanup is now local to the exact offending inference edge and cannot downgrade an independently hard-supported claim. The dedicated deterministic corpus under `fixtures/causal/` is evaluated separately from the original claim-verdict benchmark and from repeated-trial correctness denominators.
 
 See [evidence-aware causal diagnostics](causal-reasoning.md) for the detailed contract and deferred scope.
+
+## Metamorphic evaluation boundary
+
+Metamorphic transforms live in the evaluation layer, not the runtime authority boundary. A transform may reorder set-like records, consistently remap referential IDs, or add an explicitly unrelated control fact, but it may not change proposition meaning, trusted verification conclusions, causal direction/membership, or other oracle semantics.
+
+The evaluator compares semantic diagnostic signatures separately from raw finding IDs. This is necessary because a valid stable-ID remap can change generated diagnostic identifiers while preserving the same hard finding. Final-verdict invariance, hard-finding invariance, soft-finding stability, and typed diagnostic-status invariance are reported independently and never replace the original benchmark correctness denominator.
+
+See [metamorphic reasoning robustness](metamorphic-testing.md) for the current transform contract.

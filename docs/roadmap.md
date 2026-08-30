@@ -60,15 +60,19 @@ The next phase therefore prioritizes measurement quality before adding more name
 
 ## P0 next — robustness and diagnostic stability
 
-### #10 Metamorphic reasoning robustness
-Add deterministic semantics-preserving transformations and measure invariance of verdicts and hard findings separately from raw benchmark accuracy.
+### #10 Metamorphic reasoning robustness — implemented
+- [done] provider-neutral typed transform contract
+- [done] six deterministic transform families covering evidence order, independent inference order, stable-ID remapping, irrelevant evidence, causal cause-set order, and causal evidence order
+- [done] final-verdict, hard-finding, soft-finding, and typed diagnostic-status invariance reporting
+- [done] raw diagnostic-ID/reason delta reporting without treating referential IDs as semantic truth
+- [done] dedicated reproducible metamorphic seed fixtures kept outside the 20-case and eight-case correctness denominators
 
-Priority transformations include ordering changes, irrelevant structured facts, stable-ID changes, and cause-set order. Free-form LLM paraphrase generation is not part of the initial hard benchmark.
+Free-form LLM paraphrase generation remains outside the hard benchmark.
 
 ### #11 Repeated-trial diagnostic stability
 Extend the repeated-trial layer beyond final correctness to finding frequency and causal/adversarial diagnostic stability. Operational failures keep separate denominators. Add confidence intervals only with explicit methods and sample counts.
 
-These two issues are the immediate next implementation sequence. They validate that the harness diagnoses the same reasoning problem reliably before semantic scope grows.
+#10 establishes deterministic representation invariance. #11 is now the immediate next implementation step: it tests whether live repeated generations produce stable diagnostic observations before semantic scope grows.
 
 ## P1 — broaden grounded reasoning signal conservatively
 

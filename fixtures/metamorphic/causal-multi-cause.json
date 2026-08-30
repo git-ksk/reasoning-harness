@@ -1,0 +1,21 @@
+{
+  "id": "metamorphic-causal-multi-cause",
+  "description": "Exact two-cause support is invariant to cause-set ordering.",
+  "artifact": {
+    "task": "Explain the deterministic multi-cause outcome.",
+    "claims": [
+      {"id":"cause-a","statement":"Condition A held","state":"assumed","proposition":{"key":"condition.a","value":"true"}},
+      {"id":"cause-b","statement":"Condition B held","state":"assumed","proposition":{"key":"condition.b","value":"true"}},
+      {"id":"effect","statement":"Outcome occurred","state":"assumed","proposition":{"key":"outcome.occurred","value":"true"}}
+    ],
+    "inferences": [
+      {"id":"cause-edge","premise_claim_ids":["cause-a","cause-b"],"conclusion_claim_id":"effect","method":"causal_forward"}
+    ]
+  },
+  "evidence": [
+    {"id":"ce-exact","source":"fixture-oracle","relation":{"causes":[{"key":"condition.a","value":"true"},{"key":"condition.b","value":"true"}],"effect":{"key":"outcome.occurred","value":"true"}},"conclusion":"supports"}
+  ],
+  "expected_statuses": ["supported"],
+  "expected_hard_findings": 0,
+  "expected_soft_findings": 0
+}
