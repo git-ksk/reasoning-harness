@@ -62,6 +62,13 @@ pub struct BenchmarkCaseResult {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct BenchmarkEvaluation {
+    pub result: BenchmarkCaseResult,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub diagnostics: Option<crate::DiagnosticObservation>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct BenchmarkAggregate {
     pub cases: usize,
     pub verdict_accuracy: f64,
@@ -89,6 +96,13 @@ pub fn evaluate_benchmark_fixture(
     fixture: &BenchmarkFixture,
     candidate: ReasoningCandidate,
 ) -> BenchmarkCaseResult {
+    evaluate_benchmark_fixture_with_diagnostics(fixture, candidate).result
+}
+
+pub fn evaluate_benchmark_fixture_with_diagnostics(
+    fixture: &BenchmarkFixture,
+    candidate: ReasoningCandidate,
+) -> BenchmarkEvaluation {
     let baseline_artifact = naive_materialize(fixture.input.clone(), candidate.clone());
     let baseline_verdict = StrictAcceptancePolicy.decide(&baseline_artifact);
     let baseline = arm_result(
@@ -100,25 +114,38 @@ pub fn evaluate_benchmark_fixture(
     );
 
     let harness_run = run_benchmark_harness(fixture, candidate);
-    let harness = match harness_run {
-        Ok(outcome) => arm_result(
-            fixture,
-            Some(&outcome.artifact),
-            Some(outcome.verdict),
-            false,
+    let (harness, diagnostics) = match harness_run {
+        Ok(outcome) => (
+            arm_result(
+                fixture,
+                Some(&outcome.artifact),
+                Some(outcome.verdict),
+                false,
+                None,
+            ),
+            Some(crate::observe_diagnostics(
+                &fixture.id,
+                &outcome.artifact,
+                None,
+            )),
+        ),
+        Err(error) => (
+            arm_result(fixture, None, None, true, Some(error.to_string())),
             None,
         ),
-        Err(error) => arm_result(fixture, None, None, true, Some(error.to_string())),
     };
 
-    BenchmarkCaseResult {
-        fixture_id: fixture.id.clone(),
-        expected_verdict: fixture.expected_verdict,
-        expected_hidden_assumptions: fixture.hidden_assumption_propositions.len(),
-        expected_contradiction: fixture.expect_contradiction_finding,
-        expected_counterexample: fixture.expect_counterexample_finding,
-        baseline,
-        harness,
+    BenchmarkEvaluation {
+        result: BenchmarkCaseResult {
+            fixture_id: fixture.id.clone(),
+            expected_verdict: fixture.expected_verdict,
+            expected_hidden_assumptions: fixture.hidden_assumption_propositions.len(),
+            expected_contradiction: fixture.expect_contradiction_finding,
+            expected_counterexample: fixture.expect_counterexample_finding,
+            baseline,
+            harness,
+        },
+        diagnostics,
     }
 }
 

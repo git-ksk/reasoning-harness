@@ -10,12 +10,13 @@ use std::{
 use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
     AdversarialDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult, BenchmarkComparison,
-    BenchmarkFixture, HarnessInput, ModelAdapter, ModelError, ModelErrorKind, ModelUsage,
-    ReasoningArtifact, ReasoningCandidate, StrictAcceptancePolicy, StructuredFactConflictDetector,
+    BenchmarkFixture, DiagnosticObservation, DiagnosticTrial, HarnessInput, ModelAdapter,
+    ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact, ReasoningCandidate,
+    RepeatedDiagnosticReport, StrictAcceptancePolicy, StructuredFactConflictDetector,
     StructuredFactVerifier, TrustedVerificationPass, VerificationPass, VerificationReceipt,
-    aggregate_benchmark, build_candidate_json_fallback_request, build_candidate_request, evaluate,
-    evaluate_benchmark_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
-    validate_artifact,
+    aggregate_benchmark, aggregate_repeated_diagnostics, build_candidate_json_fallback_request,
+    build_candidate_request, evaluate, evaluate_benchmark_fixture_with_diagnostics,
+    frameworks::five_whys::FiveWhysRestatementPass, run_harness, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Serialize, de::DeserializeOwned};
@@ -367,6 +368,8 @@ struct ObservedBenchmarkCase {
     #[serde(skip_serializing_if = "Option::is_none")]
     result: Option<BenchmarkCaseResult>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    diagnostics: Option<DiagnosticObservation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     generation: Option<GenerationObservation>,
     #[serde(skip_serializing_if = "Option::is_none")]
     failure: Option<GenerationFailure>,
@@ -443,6 +446,7 @@ struct TrialStabilitySummary {
     incomplete_trials: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
     correctness: Option<BenchmarkStabilityComparison>,
+    diagnostics: RepeatedDiagnosticReport,
     operational: OperationalDistributions,
     per_trial: Vec<TrialSummary>,
 }
@@ -722,10 +726,14 @@ async fn run_fixture_suite(
                             Ok((candidate, mut observation)) => {
                                 observation.cost_usd =
                                     estimate_cost(&observation.usage, input_cost, output_cost);
+                                let evaluation = evaluate_benchmark_fixture_with_diagnostics(
+                                    &fixture, candidate,
+                                );
                                 ObservedBenchmarkCase {
                                     fixture_id: fixture.id.clone(),
                                     trial,
-                                    result: Some(evaluate_benchmark_fixture(&fixture, candidate)),
+                                    result: Some(evaluation.result),
+                                    diagnostics: evaluation.diagnostics,
                                     generation: Some(observation),
                                     failure: None,
                                 }
@@ -734,6 +742,7 @@ async fn run_fixture_suite(
                                 fixture_id: fixture.id.clone(),
                                 trial,
                                 result: None,
+                                diagnostics: None,
                                 generation: None,
                                 failure: Some(failure),
                             },
@@ -780,13 +789,15 @@ async fn run_fixture_suite(
     } else {
         let mut observed = Vec::with_capacity(total_runs);
         for fixture in fixtures {
+            let evaluation = evaluate_benchmark_fixture_with_diagnostics(
+                &fixture,
+                fixture.recorded_candidate.clone(),
+            );
             observed.push(ObservedBenchmarkCase {
                 fixture_id: fixture.id.clone(),
                 trial: 0,
-                result: Some(evaluate_benchmark_fixture(
-                    &fixture,
-                    fixture.recorded_candidate.clone(),
-                )),
+                result: Some(evaluation.result),
+                diagnostics: evaluation.diagnostics,
                 generation: None,
                 failure: None,
             });
@@ -800,13 +811,15 @@ async fn run_fixture_suite(
         .collect();
     let comparison = aggregate_benchmark(&results);
     let operational = operational_summary(&observed);
-    let stability = config.provider.map(|_| {
-        trial_stability_summary(
+    let stability = if config.provider.is_some() {
+        Some(trial_stability_summary(
             &observed,
             fixtures_per_trial(total_runs, config.trials),
             config.trials,
-        )
-    });
+        )?)
+    } else {
+        None
+    };
     Ok(BenchmarkOutput {
         provider: config.provider.map(provider_name),
         model: config.provider.map(|_| config.model.to_string()),
@@ -905,7 +918,7 @@ fn trial_stability_summary(
     cases: &[ObservedBenchmarkCase],
     expected_runs_per_trial: usize,
     requested_trials: usize,
-) -> TrialStabilitySummary {
+) -> Result<TrialStabilitySummary, String> {
     let mut per_trial = Vec::with_capacity(requested_trials);
     for trial_index in 0..requested_trials {
         let trial_cases: Vec<&ObservedBenchmarkCase> = cases
@@ -960,14 +973,31 @@ fn trial_stability_summary(
         })
     };
 
-    TrialStabilitySummary {
+    let diagnostic_trials = per_trial
+        .iter()
+        .map(|trial| DiagnosticTrial {
+            trial_index: trial.trial_index,
+            operationally_complete: trial.operationally_complete,
+            operational_failures: trial.operational.failed_runs,
+            observations: cases
+                .iter()
+                .filter(|case| case.trial == trial.trial_index)
+                .filter_map(|case| case.diagnostics.clone())
+                .collect(),
+        })
+        .collect::<Vec<_>>();
+    let diagnostics = aggregate_repeated_diagnostics(&diagnostic_trials)
+        .map_err(|error| format!("diagnostic stability aggregation failed: {error}"))?;
+
+    Ok(TrialStabilitySummary {
         requested_trials,
         complete_trials,
         incomplete_trials: requested_trials.saturating_sub(complete_trials),
         correctness,
+        diagnostics,
         operational: operational_distributions(cases, &per_trial),
         per_trial,
-    }
+    })
 }
 
 fn benchmark_arm_stability(
@@ -1168,6 +1198,13 @@ fn print_benchmark_human(output: &BenchmarkOutput) {
                 accuracy.mean, accuracy.min, accuracy.max, accuracy.stddev, accuracy.count
             );
         }
+        println!(
+            "diagnostic_stability: complete_trials={} incomplete_trials={} fixtures={} operational_failures={}",
+            stability.diagnostics.complete_trials,
+            stability.diagnostics.incomplete_trials,
+            stability.diagnostics.fixtures.len(),
+            stability.diagnostics.operational_failures
+        );
     }
 }
 
@@ -1259,6 +1296,7 @@ mod candidate_json_tests {
             fixture_id: "fixture-a".into(),
             trial: 0,
             result: None,
+            diagnostics: None,
             generation: None,
             failure: Some(GenerationFailure {
                 provider: "nvidia",
@@ -1346,6 +1384,10 @@ mod candidate_json_tests {
                 fixture_id: "a".into(),
                 trial: 0,
                 result: Some(result("a", true)),
+                diagnostics: Some(DiagnosticObservation {
+                    fixture_id: "a".into(),
+                    signals: vec![],
+                }),
                 generation: Some(generation(10, 100)),
                 failure: None,
             },
@@ -1353,6 +1395,10 @@ mod candidate_json_tests {
                 fixture_id: "b".into(),
                 trial: 0,
                 result: Some(result("b", true)),
+                diagnostics: Some(DiagnosticObservation {
+                    fixture_id: "b".into(),
+                    signals: vec![],
+                }),
                 generation: Some(generation(20, 200)),
                 failure: None,
             },
@@ -1360,6 +1406,10 @@ mod candidate_json_tests {
                 fixture_id: "a".into(),
                 trial: 1,
                 result: Some(result("a", false)),
+                diagnostics: Some(DiagnosticObservation {
+                    fixture_id: "a".into(),
+                    signals: vec![],
+                }),
                 generation: Some(generation(30, 300)),
                 failure: None,
             },
@@ -1367,6 +1417,7 @@ mod candidate_json_tests {
                 fixture_id: "b".into(),
                 trial: 1,
                 result: None,
+                diagnostics: None,
                 generation: None,
                 failure: Some(GenerationFailure {
                     provider: "test",
@@ -1378,7 +1429,7 @@ mod candidate_json_tests {
             },
         ];
 
-        let stability = trial_stability_summary(&cases, 2, 2);
+        let stability = trial_stability_summary(&cases, 2, 2).unwrap();
         assert_eq!(stability.complete_trials, 1);
         assert_eq!(stability.incomplete_trials, 1);
         assert!(stability.per_trial[0].operationally_complete);
@@ -1392,6 +1443,14 @@ mod candidate_json_tests {
                 .get("timeout"),
             Some(&1)
         );
+
+        let diagnostics = &stability.diagnostics;
+        assert_eq!(diagnostics.requested_trials, 2);
+        assert_eq!(diagnostics.complete_trials, 1);
+        assert_eq!(diagnostics.incomplete_trials, 1);
+        assert_eq!(diagnostics.operational_failures, 1);
+        assert_eq!(diagnostics.excluded_incomplete_trial_observations, 1);
+        assert_eq!(diagnostics.fixtures.len(), 2);
 
         let accuracy = &stability.correctness.unwrap().harness.verdict_accuracy;
         assert_eq!(accuracy.count, 1);

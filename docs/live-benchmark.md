@@ -36,6 +36,8 @@ The workflow exposes a `trials` selector (`1`, `5`, or `10`) for Mistral and Goo
 
 For `--trials > 1`, read `stability.correctness` rather than treating the pooled top-level `comparison` as a stability estimate. Each trial is a full 20-fixture pass; `--concurrency` only overlaps fixtures inside that pass, and the next trial starts after the current one finishes. Only trials that generated/evaluated every expected fixture contribute to correctness mean/min/max/population-stddev. Incomplete trials remain in `stability.per_trial` with explicit denominators and failure classes. Token/latency distributions are reported separately under `stability.operational`.
 
+`stability.diagnostics` is independent from correctness. It reports complete-trial-only per-fixture frequencies for typed diagnostic signals, diagnostic-count distributions, exact denominators, and 95% Wilson intervals when a fixture has at least five complete observations. Operationally incomplete trials are excluded from those diagnostic denominators and reported explicitly instead of being treated as diagnostic absence.
+
 A one-trial live result remains a diagnostic point observation and is not enough to claim a stable ranking. Models whose 5-trial distributions materially overlap are candidates for a targeted 10-trial follow-up.
 
 Each live model job preserves its raw JSON as a short-retention GitHub Actions artifact so the per-case/per-trial evidence can be reviewed after the workflow completes instead of relying only on console summaries.
