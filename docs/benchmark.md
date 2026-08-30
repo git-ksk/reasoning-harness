@@ -259,3 +259,11 @@ The initial deterministic aggregate is 9/9 expected scenarios. All nine begin `u
 These values measure protocol regression only. Resolver outputs and trusted metadata are fixture-controlled, so the recovery rate is not an empirical claim about web retrieval, model self-correction, or external tool quality. Resolution metrics are serialized separately from ordinary `BenchmarkComparison` and `stability.diagnostics`.
 
 See [bounded grounded resolution and finalization](grounded-resolution.md) for the acquisition/admission/verifier and finalization boundaries.
+
+## Soft semantic-judge calibration regression
+
+Issue #13 adds a separate deterministic calibration corpus under `fixtures/semantic-judges/`. It is not part of corpus-v1 verdict accuracy, repeated diagnostic stability, or resolution-recovery denominators. Nine labelled cases cover positive, negative, and intentionally ambiguous examples across contradiction, unsupported-premise, and causal-gap discovery.
+
+The offline report preserves three synthetic judge identities, per-judge precision/recall, decision coverage and abstention, pairwise categorical agreement, and nominal Krippendorff alpha with abstentions treated as missing ratings. The synthetic recorded observations are aggregation fixtures, not empirical model-quality results. Live judge studies remain optional/manual.
+
+See [soft semantic-judge calibration](semantic-judge-calibration.md) for the authority boundary and metric definitions.

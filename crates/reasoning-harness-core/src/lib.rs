@@ -22,6 +22,7 @@ pub mod model;
 pub mod resolution;
 pub mod resolution_benchmark;
 pub mod schema;
+pub mod semantic_judge;
 pub mod types;
 pub mod validate;
 pub mod verification;
@@ -111,6 +112,13 @@ pub use resolution_benchmark::{
     evaluate_resolution_fixture,
 };
 pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema};
+pub use semantic_judge::{
+    CalibrationLabel, SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftDiagnosticJudge,
+    SoftJudgeAgreement, SoftJudgeCalibrationError, SoftJudgeCalibrationFixture,
+    SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeError, SoftJudgeIdentity,
+    SoftJudgeMetrics, SoftJudgeObservation, SoftJudgeOutput, SoftJudgeRequest, SoftSemanticFinding,
+    aggregate_soft_judge_calibration, run_soft_judge, validate_calibration_fixtures,
+};
 pub use types::{
     AdversarialFinding, AdversarialFindingKind, ApplicabilityScope, CandidateClaim,
     CandidateDiagnostic, Claim, EpistemicState, Evidence, EvidenceAuthorityPolicy,

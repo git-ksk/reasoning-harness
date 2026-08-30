@@ -79,11 +79,11 @@ Primary question: does the resolution loop reject false closure and preserve `un
 - [implemented] candidate repair/regeneration followed by mandatory re-verification
 - [implemented] grounded finalization with factual claim coverage checks
 - [implemented] explicit resolution/finalization terminal states including grounded, qualified, refuted, exhausted, unavailable, human-review, unresolved, and abstain
-- calibrated semantic discovery only after deterministic/runtime foundations (#13)
+- [implemented] calibrated soft semantic-judge contract and offline reliability metrics (#13); live semantic discovery remains optional/manual
 
 ## Planned diagnostic/reasoning work
 
-- semantic contradiction/counterexample discovery under a calibrated soft-only boundary
+- live semantic contradiction/counterexample discovery experiments under the implemented calibrated soft-only boundary
 - first-principles decomposition only if it adds measurable diagnostic signal
 - semantic-loss verification after finalization/coverage semantics are defined
 - generalized oracle adapter interface where concrete consumer needs justify it

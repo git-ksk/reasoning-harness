@@ -1,0 +1,58 @@
+{
+  "id": "05_unsupported_negative",
+  "request": {
+    "id": "soft-05_unsupported_negative",
+    "task": "Determine whether this premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "deployment.region",
+        "value": "us-east-1"
+      }
+    },
+    "context": [
+      "The region premise is explicitly present in trusted structured input."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-05_unsupported_negative",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-05_unsupported_negative",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-05_unsupported_negative",
+      "decision": "finding",
+      "finding": {
+        "kind": "unsupported_premise",
+        "target": {
+          "type": "proposition",
+          "proposition": {
+            "key": "deployment.region",
+            "value": "us-east-1"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -14,12 +14,13 @@ use reasoning_harness_core::{
     DiagnosticObservation, DiagnosticTrial, EvidenceQualificationPass, HarnessInput, ModelAdapter,
     ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact, ReasoningCandidate,
     RepeatedDiagnosticReport, ResolutionBenchmarkAggregate, ResolutionBenchmarkCaseResult,
-    ResolutionBenchmarkFixture, StrictAcceptancePolicy, StructuredFactConflictDetector,
-    TrustedVerificationPass, VerificationPass, VerificationReceipt, aggregate_benchmark,
-    aggregate_claim_corpus, aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
-    build_candidate_json_fallback_request, build_candidate_request, evaluate,
-    evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture,
-    frameworks::five_whys::FiveWhysRestatementPass, run_harness,
+    ResolutionBenchmarkFixture, SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport,
+    StrictAcceptancePolicy, StructuredFactConflictDetector, TrustedVerificationPass,
+    VerificationPass, VerificationReceipt, aggregate_benchmark, aggregate_claim_corpus,
+    aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
+    aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
+    build_candidate_request, evaluate, evaluate_benchmark_fixture_with_diagnostics,
+    evaluate_resolution_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
     structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
@@ -330,6 +331,13 @@ enum Command {
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
+    /// Evaluate the offline soft semantic-judge calibration corpus.
+    EvalJudges {
+        /// Directory containing SoftJudgeCalibrationFixture JSON cases.
+        target: PathBuf,
+        #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
+        format: OutputFormat,
+    },
 }
 
 #[derive(Debug, Serialize)]
@@ -610,6 +618,17 @@ async fn run(cli: Cli) -> Result<(), String> {
             match format {
                 OutputFormat::Human => print_resolution_benchmark_human(&output),
                 OutputFormat::Json => print_json(&output)?,
+            }
+            Ok(())
+        }
+        Command::EvalJudges { target, format } => {
+            if !target.is_dir() {
+                return Err("eval-judges requires a fixture directory".into());
+            }
+            let report = run_soft_judge_calibration_suite(&target)?;
+            match format {
+                OutputFormat::Human => print_soft_judge_calibration_human(&report),
+                OutputFormat::Json => print_json(&report)?,
             }
             Ok(())
         }
@@ -941,6 +960,33 @@ fn run_resolution_fixture_suite(directory: &PathBuf) -> Result<ResolutionBenchma
     }
     let aggregate = aggregate_resolution_benchmark(&cases);
     Ok(ResolutionBenchmarkOutput { aggregate, cases })
+}
+
+fn run_soft_judge_calibration_suite(
+    directory: &PathBuf,
+) -> Result<SoftJudgeCalibrationReport, String> {
+    let entries =
+        fs::read_dir(directory).map_err(|error| format!("{}: {error}", directory.display()))?;
+    let mut paths = entries
+        .map(|entry| entry.map(|entry| entry.path()))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|error| format!("{}: {error}", directory.display()))?;
+    paths.retain(|path| {
+        path.extension()
+            .is_some_and(|extension| extension == "json")
+    });
+    paths.sort();
+    if paths.is_empty() {
+        return Err(format!(
+            "{} contains no semantic-judge calibration fixtures",
+            directory.display()
+        ));
+    }
+    let fixtures = paths
+        .iter()
+        .map(read_json)
+        .collect::<Result<Vec<SoftJudgeCalibrationFixture>, _>>()?;
+    aggregate_soft_judge_calibration(&fixtures).map_err(|error| error.to_string())
 }
 
 fn fixtures_per_trial(total_runs: usize, trials: usize) -> usize {
@@ -1375,6 +1421,39 @@ fn print_resolution_benchmark_human(output: &ResolutionBenchmarkOutput) {
         output.aggregate.added_tokens,
         output.aggregate.elapsed_ms
     );
+}
+
+fn print_soft_judge_calibration_human(report: &SoftJudgeCalibrationReport) {
+    println!(
+        "soft_judge_cases: {} judges={}",
+        report.cases,
+        report.judges.len()
+    );
+    for metrics in &report.judges {
+        println!(
+            "judge: id={} model={} config={} precision={} recall={} coverage={:.3} abstentions={}",
+            metrics.judge.judge_id,
+            metrics.judge.model_id,
+            metrics.judge.configuration_id,
+            format_optional_metric(metrics.precision),
+            format_optional_metric(metrics.recall),
+            metrics.decision_coverage,
+            metrics.abstentions
+        );
+    }
+    println!(
+        "agreement: comparable_pairs={} agree={} disagree={} abstain_votes={} observed={} krippendorff_alpha={}",
+        report.agreement.comparable_pairs,
+        report.agreement.agreeing_pairs,
+        report.agreement.disagreeing_pairs,
+        report.agreement.abstain_votes,
+        format_optional_metric(report.agreement.observed_pairwise_agreement),
+        format_optional_metric(report.agreement.krippendorff_alpha_nominal)
+    );
+}
+
+fn format_optional_metric(value: Option<f64>) -> String {
+    value.map_or_else(|| "n/a".into(), |value| format!("{value:.3}"))
 }
 
 fn read_json<T: DeserializeOwned>(path: &PathBuf) -> Result<T, String> {

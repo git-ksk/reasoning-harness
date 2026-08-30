@@ -22,6 +22,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Twenty committed claim-verdict regression fixtures (5 accept / 6 reject / 9 unknown) plus separate eight-case causal, five-case assumption, and eight-case evidence-qualification corpora.
 - A six-family deterministic metamorphic regression layer with dedicated seed fixtures outside the ordinary correctness denominators.
 - Repeated-trial diagnostic stability for adversarial, candidate-normalization, causal, assumption, and evidence-qualification signals, kept separate from correctness stability.
+- Provider-neutral soft semantic-judge calibration with typed finding/no-finding/abstain observations, stable judge provenance, labelled positive/negative/ambiguous fixtures, precision/recall, pairwise agreement, and nominal Krippendorff alpha.
 - Harness-owned temporal/scope/provenance evidence metadata and requirements with qualification-aware built-in structured verification.
 - Versioned corpus v1 manifest covering 41 deterministic claim/causal/assumption/evidence-qualification cases with stable IDs, category/difficulty strata, score compatibility, provenance, contamination, redistribution, and lifecycle metadata.
 - Provider-neutral bounded resolution requests/results, resolver and trusted-verifier adapter boundaries, explicit evidence admission, per-run/per-request budgets, mandatory re-verification, and terminal-state accounting.
@@ -60,7 +61,7 @@ Resolver success must continue to be distinguished from verification success. Th
 - Assumption/unsupported-premise diagnostics are implemented with harness-owned explicit assumptions, deterministic typed premise checks, a separate five-case corpus, and repeated-trial diagnostic signals. Semantic extraction of untyped assumptions remains soft/deferred.
 - Temporal validity, applicability scope, and provenance/authority qualification are implemented for generic harness-owned evidence. Domain-specific source taxonomy, open-world retrieval, and automatic qualification of the separate `CausalEvidence` contract remain out of core scope.
 - Corpus v1 now versions and stratifies all 41 primary deterministic cases. Future version changes must preserve stable IDs and score-compatibility rules; metamorphic seeds remain unscored controls.
-- Semantic/model-backed discovery remains soft-only and is not yet calibrated; #13 is intentionally sequenced after deterministic measurement, evidence qualification, corpus discipline, and the grounded-runtime boundary are stable.
+- Soft semantic-judge calibration is implemented for typed offline observations and metrics (#13). Actual semantic model-backed discovery remains optional/manual and non-authoritative; no live judge quality claim is made by the recorded calibration fixtures.
 - Stable ranking claims require repeated trials. Issue #6 completed the 5-trial Mistral/Google matrix plus a targeted 10-trial follow-up for models tied on all primary correctness metrics; operational completeness is reported separately from correctness variance.
 
 ## Release posture

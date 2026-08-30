@@ -1,0 +1,92 @@
+{
+  "id": "07_causal_positive",
+  "request": {
+    "id": "soft-07_causal_positive",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "queue.depth",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "request.latency",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Only correlation is supplied; no directional causal support is established."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-07_causal_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "causal_gap",
+        "target": {
+          "type": "causal_relation",
+          "relation": {
+            "causes": [
+              {
+                "key": "queue.depth",
+                "value": "high"
+              }
+            ],
+            "effect": {
+              "key": "request.latency",
+              "value": "high"
+            }
+          }
+        }
+      }
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-07_causal_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "causal_gap",
+        "target": {
+          "type": "causal_relation",
+          "relation": {
+            "causes": [
+              {
+                "key": "queue.depth",
+                "value": "high"
+              }
+            ],
+            "effect": {
+              "key": "request.latency",
+              "value": "high"
+            }
+          }
+        }
+      }
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-07_causal_positive",
+      "decision": "abstain"
+    }
+  ]
+}

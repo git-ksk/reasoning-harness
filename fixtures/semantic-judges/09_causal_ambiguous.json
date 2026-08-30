@@ -1,0 +1,74 @@
+{
+  "id": "09_causal_ambiguous",
+  "request": {
+    "id": "soft-09_causal_ambiguous",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "queue.depth",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "request.latency",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Observational and partial intervention evidence point in different directions."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-09_causal_ambiguous",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-09_causal_ambiguous",
+      "decision": "abstain"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-09_causal_ambiguous",
+      "decision": "finding",
+      "finding": {
+        "kind": "causal_gap",
+        "target": {
+          "type": "causal_relation",
+          "relation": {
+            "causes": [
+              {
+                "key": "queue.depth",
+                "value": "high"
+              }
+            ],
+            "effect": {
+              "key": "request.latency",
+              "value": "high"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
