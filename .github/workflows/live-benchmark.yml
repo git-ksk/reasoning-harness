@@ -113,6 +113,9 @@ jobs:
     name: mistral-${{ matrix.model }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    concurrency:
+      group: reasoning-harness-mistral-live
+      cancel-in-progress: false
     strategy:
       fail-fast: false
       matrix:
@@ -137,7 +140,7 @@ jobs:
             --trials "${{ inputs.trials }}" \
             --format json \
             > "/tmp/reason-live-${MODEL}.json"
-          jq '{model: "'"$MODEL"'", stability: .stability, comparison: .comparison, operational: .operational, deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, trial, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
+          jq '{model: "'"$MODEL"'", stability: .stability, comparison: .comparison, operational: .operational, failures: [.cases[] | select(.failure != null) | {fixture_id, trial, failure: .failure}], deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, trial, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
           test "$(jq -r '.operational.failed_runs' "/tmp/reason-live-${MODEL}.json")" -eq 0
       - name: Preserve Mistral benchmark JSON
         if: always()
@@ -191,7 +194,7 @@ jobs:
             --trials "${{ inputs.trials }}" \
             --format json \
             > "/tmp/reason-live-${MODEL}.json"
-          jq '{model: "'"$MODEL"'", stability: .stability, comparison: .comparison, operational: .operational, deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, trial, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
+          jq '{model: "'"$MODEL"'", stability: .stability, comparison: .comparison, operational: .operational, failures: [.cases[] | select(.failure != null) | {fixture_id, trial, failure: .failure}], deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, trial, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
           test "$(jq -r '.operational.failed_runs' "/tmp/reason-live-${MODEL}.json")" -eq 0
       - name: Preserve Google benchmark JSON
         if: always() && steps.credential.outputs.available == 'true'
@@ -206,6 +209,9 @@ jobs:
     name: semantic-judge-${{ inputs.judge_provider }}-${{ inputs.judge_corpus }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    concurrency:
+      group: ${{ inputs.judge_provider == 'mistral' && 'reasoning-harness-mistral-live' || format('reasoning-harness-semantic-{0}', inputs.judge_provider) }}
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable

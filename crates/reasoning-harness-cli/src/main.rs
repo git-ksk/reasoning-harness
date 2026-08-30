@@ -1799,6 +1799,21 @@ fn print_benchmark_human(output: &BenchmarkOutput) {
             stability.diagnostics.operational_failures
         );
     }
+    if !output.operational.failure_classes.is_empty() {
+        println!("failure_classes: {:?}", output.operational.failure_classes);
+        for case in &output.cases {
+            if let Some(failure) = &case.failure {
+                println!(
+                    "failed_run: fixture={} trial={} class={} latency_ms={} message={}",
+                    case.fixture_id,
+                    case.trial,
+                    failure.failure_class,
+                    failure.latency_ms,
+                    failure.message
+                );
+            }
+        }
+    }
 }
 
 fn print_resolution_benchmark_human(output: &ResolutionBenchmarkOutput) {
@@ -1933,6 +1948,20 @@ fn print_live_soft_judge_human(output: &LiveSoftJudgeOutput) {
     }
     if !output.operational.failure_classes.is_empty() {
         println!("failure_classes: {:?}", output.operational.failure_classes);
+        for case in &output.cases {
+            if let Some(failure) = &case.failure {
+                println!(
+                    "failed_run: fixture={} trial={} kind={:?} label={:?} class={} latency_ms={} message={}",
+                    case.fixture_id,
+                    case.trial,
+                    case.kind,
+                    case.label,
+                    failure.failure_class,
+                    failure.latency_ms,
+                    failure.message
+                );
+            }
+        }
     }
 }
 
