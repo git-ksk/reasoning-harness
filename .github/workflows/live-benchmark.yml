@@ -251,7 +251,9 @@ jobs:
           OUTPUT="/tmp/reason-live-semantic-judge.json"
           case "$PROVIDER" in
             nvidia) JUDGE_CONCURRENCY="${NVIDIA_CONCURRENCY:-4}" ;;
-            *) JUDGE_CONCURRENCY=1 ;;
+            google) JUDGE_CONCURRENCY=2 ;;
+            mistral) JUDGE_CONCURRENCY=1 ;;
+            *) echo "unsupported judge provider: $PROVIDER" >&2; exit 2 ;;
           esac
           case "${{ inputs.judge_corpus }}" in
             calibration) CORPUS_DIR="fixtures/semantic-judges" ;;
