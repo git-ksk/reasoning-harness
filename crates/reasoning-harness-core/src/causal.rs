@@ -134,13 +134,15 @@ impl CausalInspector {
                     }
 
                     let relation = match (premise, conclusion) {
-                        (Some(effect), Some(cause)) => match (&cause.proposition, &effect.proposition) {
-                            (Some(cause), Some(effect)) => Some(CausalRelation {
-                                causes: vec![cause.clone()],
-                                effect: effect.clone(),
-                            }),
-                            _ => None,
-                        },
+                        (Some(effect), Some(cause)) => {
+                            match (&cause.proposition, &effect.proposition) {
+                                (Some(cause), Some(effect)) => Some(CausalRelation {
+                                    causes: vec![cause.clone()],
+                                    effect: effect.clone(),
+                                }),
+                                _ => None,
+                            }
+                        }
                         _ => None,
                     };
                     self.assess_edge(
@@ -238,7 +240,10 @@ impl CausalInspector {
             .copied()
             .collect::<Vec<_>>();
 
-        let mut relevant_ids = exact.iter().map(|evidence| evidence.id.clone()).collect::<Vec<_>>();
+        let mut relevant_ids = exact
+            .iter()
+            .map(|evidence| evidence.id.clone())
+            .collect::<Vec<_>>();
         let (status, finding) = if !supporting.is_empty() && !refuting.is_empty() {
             (
                 CausalSupportStatus::Unknown,
@@ -324,11 +329,12 @@ impl CausalInspector {
         }
     }
 
-    fn partial_support(&self, relation: &CausalRelation) -> Vec<&CausalEvidence> {
+    fn partial_support(&self, relation: &CausalRelation) -> Option<Vec<&CausalEvidence>> {
         if relation.causes.len() < 2 {
-            return vec![];
+            return None;
         }
-        self.evidence
+        let partial = self
+            .evidence
             .iter()
             .filter(|evidence| evidence.conclusion == CausalEvidenceConclusion::Supports)
             .filter(|evidence| evidence.relation.effect == relation.effect)
@@ -341,22 +347,25 @@ impl CausalInspector {
                         .iter()
                         .all(|cause| relation.causes.contains(cause))
             })
-            .collect()
+            .collect::<Vec<_>>();
+        (!partial.is_empty()).then_some(partial)
     }
 
-    fn reverse_support(&self, relation: &CausalRelation) -> Vec<&CausalEvidence> {
+    fn reverse_support(&self, relation: &CausalRelation) -> Option<Vec<&CausalEvidence>> {
         if relation.causes.len() != 1 {
-            return vec![];
+            return None;
         }
         let reverse = CausalRelation {
             causes: vec![relation.effect.clone()],
             effect: relation.causes[0].clone(),
         };
-        self.evidence
+        let reverse = self
+            .evidence
             .iter()
             .filter(|evidence| evidence.conclusion == CausalEvidenceConclusion::Supports)
             .filter(|evidence| same_relation(&evidence.relation, &reverse))
-            .collect()
+            .collect::<Vec<_>>();
+        (!reverse.is_empty()).then_some(reverse)
     }
 }
 
@@ -428,7 +437,10 @@ mod tests {
         let inspection = CausalInspector::new(vec![evidence]).inspect(&five_whys_artifact());
 
         assert_eq!(inspection.assessments.len(), 1);
-        assert_eq!(inspection.assessments[0].status, CausalSupportStatus::Supported);
+        assert_eq!(
+            inspection.assessments[0].status,
+            CausalSupportStatus::Supported
+        );
         assert!(inspection.findings.is_empty());
     }
 
@@ -436,8 +448,14 @@ mod tests {
     fn endpoint_truth_without_relation_evidence_remains_unknown() {
         let inspection = CausalInspector::default().inspect(&five_whys_artifact());
 
-        assert_eq!(inspection.assessments[0].status, CausalSupportStatus::Unknown);
-        assert_eq!(inspection.findings[0].reason, CausalFindingReason::MissingCausalEvidence);
+        assert_eq!(
+            inspection.assessments[0].status,
+            CausalSupportStatus::Unknown
+        );
+        assert_eq!(
+            inspection.findings[0].reason,
+            CausalFindingReason::MissingCausalEvidence
+        );
         assert_eq!(inspection.findings[0].strength, FindingStrength::Soft);
     }
 
@@ -451,13 +469,19 @@ mod tests {
         };
         let inspection = CausalInspector::new(vec![evidence]).inspect(&five_whys_artifact());
 
-        assert_eq!(inspection.assessments[0].status, CausalSupportStatus::Unknown);
-        assert_eq!(inspection.findings[0].reason, CausalFindingReason::AssociationOnly);
+        assert_eq!(
+            inspection.assessments[0].status,
+            CausalSupportStatus::Unknown
+        );
+        assert_eq!(
+            inspection.findings[0].reason,
+            CausalFindingReason::AssociationOnly
+        );
         assert_eq!(inspection.findings[0].strength, FindingStrength::Soft);
     }
 
     #[test]
-    fn exact_refutation_is_a_hard_unsupported_edge_finding() {
+    fn exact_refutation_is_hard() {
         let evidence = CausalEvidence {
             id: "ce1".into(),
             source: "fixture-oracle".into(),
@@ -466,13 +490,19 @@ mod tests {
         };
         let inspection = CausalInspector::new(vec![evidence]).inspect(&five_whys_artifact());
 
-        assert_eq!(inspection.assessments[0].status, CausalSupportStatus::Refuted);
-        assert_eq!(inspection.findings[0].reason, CausalFindingReason::ExplicitRefutation);
+        assert_eq!(
+            inspection.assessments[0].status,
+            CausalSupportStatus::Refuted
+        );
+        assert_eq!(
+            inspection.findings[0].reason,
+            CausalFindingReason::ExplicitRefutation
+        );
         assert_eq!(inspection.findings[0].strength, FindingStrength::Hard);
     }
 
     #[test]
-    fn conflicting_trusted_records_remain_unknown() {
+    fn conflicting_records_remain_unknown() {
         let evidence = vec![
             CausalEvidence {
                 id: "support".into(),
@@ -489,8 +519,14 @@ mod tests {
         ];
         let inspection = CausalInspector::new(evidence).inspect(&five_whys_artifact());
 
-        assert_eq!(inspection.assessments[0].status, CausalSupportStatus::Unknown);
-        assert_eq!(inspection.findings[0].reason, CausalFindingReason::ConflictingEvidence);
+        assert_eq!(
+            inspection.assessments[0].status,
+            CausalSupportStatus::Unknown
+        );
+        assert_eq!(
+            inspection.findings[0].reason,
+            CausalFindingReason::ConflictingEvidence
+        );
     }
 
     #[test]
@@ -508,19 +544,31 @@ mod tests {
         };
         let inspection = CausalInspector::new(vec![evidence]).inspect(&five_whys_artifact());
 
-        assert_eq!(inspection.assessments[0].status, CausalSupportStatus::Unknown);
-        assert_eq!(inspection.findings[0].reason, CausalFindingReason::DirectionMismatch);
+        assert_eq!(
+            inspection.assessments[0].status,
+            CausalSupportStatus::Unknown
+        );
+        assert_eq!(
+            inspection.findings[0].reason,
+            CausalFindingReason::DirectionMismatch
+        );
         assert_eq!(inspection.findings[0].strength, FindingStrength::Soft);
     }
 
     #[test]
-    fn missing_proposition_binding_is_explicit_and_soft() {
+    fn missing_binding_is_explicit_and_soft() {
         let mut artifact = five_whys_artifact();
         artifact.claims[1].proposition = None;
         let inspection = CausalInspector::default().inspect(&artifact);
 
-        assert_eq!(inspection.assessments[0].status, CausalSupportStatus::Unknown);
-        assert_eq!(inspection.findings[0].reason, CausalFindingReason::MissingPropositionBinding);
+        assert_eq!(
+            inspection.assessments[0].status,
+            CausalSupportStatus::Unknown
+        );
+        assert_eq!(
+            inspection.findings[0].reason,
+            CausalFindingReason::MissingPropositionBinding
+        );
         assert_eq!(inspection.findings[0].strength, FindingStrength::Soft);
     }
 }
