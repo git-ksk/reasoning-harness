@@ -225,7 +225,6 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
-          JUDGE_CONCURRENCY: ${{ inputs.judge_provider == 'nvidia' && inputs.nvidia_concurrency || '1' }}
         run: |
           case "$PROVIDER" in
             mistral) KEY="$MISTRAL_API_KEY" ;;
@@ -247,8 +246,13 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          NVIDIA_CONCURRENCY: ${{ inputs.nvidia_concurrency }}
         run: |
           OUTPUT="/tmp/reason-live-semantic-judge.json"
+          case "$PROVIDER" in
+            nvidia) JUDGE_CONCURRENCY="${NVIDIA_CONCURRENCY:-4}" ;;
+            *) JUDGE_CONCURRENCY=1 ;;
+          esac
           case "${{ inputs.judge_corpus }}" in
             calibration) CORPUS_DIR="fixtures/semantic-judges" ;;
             holdout-v1) CORPUS_DIR="fixtures/semantic-judges-holdout" ;;
