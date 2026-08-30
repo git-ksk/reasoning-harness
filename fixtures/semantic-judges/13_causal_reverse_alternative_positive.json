@@ -1,0 +1,111 @@
+{
+  "id": "13_causal_reverse_alternative_positive",
+  "request": {
+    "id": "soft-13_causal_reverse_alternative_positive",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "alerts.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "operator.response",
+          "value": "fast"
+        }
+      }
+    },
+    "context": [
+      "Teams with faster response times are more likely to enable alerts, and alert-enabled teams also respond faster.",
+      "The supplied analysis states that the data cannot distinguish whether alerting causes faster response or faster-response teams adopt alerting."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-13_causal_reverse_alternative_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "causal_gap",
+        "target": {
+          "type": "causal_relation",
+          "relation": {
+            "causes": [
+              {
+                "key": "alerts.enabled",
+                "value": "true"
+              }
+            ],
+            "effect": {
+              "key": "operator.response",
+              "value": "fast"
+            }
+          }
+        }
+      }
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-13_causal_reverse_alternative_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "causal_gap",
+        "target": {
+          "type": "causal_relation",
+          "relation": {
+            "causes": [
+              {
+                "key": "alerts.enabled",
+                "value": "true"
+              }
+            ],
+            "effect": {
+              "key": "operator.response",
+              "value": "fast"
+            }
+          }
+        }
+      }
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-13_causal_reverse_alternative_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "causal_gap",
+        "target": {
+          "type": "causal_relation",
+          "relation": {
+            "causes": [
+              {
+                "key": "alerts.enabled",
+                "value": "true"
+              }
+            ],
+            "effect": {
+              "key": "operator.response",
+              "value": "fast"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

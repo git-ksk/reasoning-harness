@@ -1,0 +1,75 @@
+{
+  "id": "14_causal_partial_intervention_ambiguous",
+  "request": {
+    "id": "soft-14_causal_partial_intervention_ambiguous",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "prefetch.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "page.load",
+          "value": "fast"
+        }
+      }
+    },
+    "context": [
+      "A controlled intervention improved page load time for one subset of desktop visits.",
+      "Mobile visits were observational only, and the supplied context does not establish whether the intervention result applies to the full requested relation."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-14_causal_partial_intervention_ambiguous",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-14_causal_partial_intervention_ambiguous",
+      "decision": "abstain"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-14_causal_partial_intervention_ambiguous",
+      "decision": "finding",
+      "finding": {
+        "kind": "causal_gap",
+        "target": {
+          "type": "causal_relation",
+          "relation": {
+            "causes": [
+              {
+                "key": "prefetch.enabled",
+                "value": "true"
+              }
+            ],
+            "effect": {
+              "key": "page.load",
+              "value": "fast"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

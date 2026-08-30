@@ -346,16 +346,16 @@ pub fn build_soft_judge_json_fallback_request(
 fn soft_judge_decision_guidance(kind: SemanticDiagnosticKind) -> &'static str {
     match kind {
         SemanticDiagnosticKind::Contradiction => {
-            "contradiction: finding means the supplied context shows the target conflicts with another supplied statement or observation; no_finding means the supplied context affirmatively agrees with the target; abstain means conflict versus agreement cannot be established from the supplied context"
+            "contradiction: finding means the supplied context contains a statement or observation that is semantically incompatible with the target under the same relevant binding and scope; lexical difference, synonymy, paraphrase, or equivalent wording alone is not a contradiction; no_finding means the supplied context semantically agrees with or supports the target, including a clear paraphrase or equivalent expression; abstain means binding, authority, scope, or applicability prevents deciding conflict versus agreement"
         }
         SemanticDiagnosticKind::Counterexample => {
-            "counterexample: finding means the supplied context contains a concrete case incompatible with the target generalization; no_finding means the supplied context affirmatively contains no such incompatible case for the requested check; abstain means the context is insufficient to decide"
+            "counterexample: finding means the supplied context contains a concrete incompatible case that is applicable to the target generalization; no_finding means the supplied context affirmatively contains no applicable incompatible case for the requested check or an apparent contrary case is clearly outside the target scope; abstain means applicability of the contrary case to the target scope is uncertain"
         }
         SemanticDiagnosticKind::UnsupportedPremise => {
-            "unsupported_premise: finding means the supplied context indicates the target premise is introduced without support; no_finding means the supplied context explicitly supports or supplies that premise; abstain means support status is uncertain or only indirectly suggested"
+            "unsupported_premise: finding means the supplied context affirmatively indicates the target premise is introduced without support; no_finding means the supplied context directly or semantically supplies the premise, including a clear paraphrase with an unambiguous binding; abstain means support is partial, unbound, or uncertain in applicability or binding"
         }
         SemanticDiagnosticKind::CausalGap => {
-            "causal_gap: finding means the supplied context lacks directional causal support, for example it provides only correlation or association; no_finding means the supplied context explicitly establishes the requested causal direction, for example by a controlled intervention or equivalent directional evidence; abstain means causal support is mixed or uncertain"
+            "causal_gap: finding means the supplied context affirmatively establishes that directional support for the requested causal relation is missing, for example correlation-only evidence, temporal or mechanism-only evidence without direction, explicit confounding, or an explicit viable reverse-causal alternative when direction remains undistinguished; no_finding means the supplied context explicitly supports the requested causal direction sufficiently for the requested relation and scope; abstain means some directional evidence exists but its adequacy is mixed, partial, scoped, or uncertain; imperfect causal evidence alone is not a finding"
         }
     }
 }

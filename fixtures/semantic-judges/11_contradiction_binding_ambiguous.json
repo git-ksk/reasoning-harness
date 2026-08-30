@@ -1,0 +1,59 @@
+{
+  "id": "11_contradiction_binding_ambiguous",
+  "request": {
+    "id": "soft-11_contradiction_binding_ambiguous",
+    "task": "Determine whether the supplied context contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "release.channel",
+        "value": "stable"
+      }
+    },
+    "context": [
+      "One note says the stable channel is selected for the primary deployment.",
+      "Another note says beta is selected, but it does not identify which deployment it describes."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-11_contradiction_binding_ambiguous",
+      "decision": "no_finding"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-11_contradiction_binding_ambiguous",
+      "decision": "abstain"
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-11_contradiction_binding_ambiguous",
+      "decision": "finding",
+      "finding": {
+        "kind": "contradiction",
+        "target": {
+          "type": "proposition",
+          "proposition": {
+            "key": "release.channel",
+            "value": "stable"
+          }
+        }
+      }
+    }
+  ]
+}

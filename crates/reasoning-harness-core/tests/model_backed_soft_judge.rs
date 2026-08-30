@@ -228,6 +228,7 @@ fn model_requests_define_kind_specific_finding_no_finding_and_abstain_semantics(
     let primary = build_soft_judge_model_request(&unsupported, 128, Some(3)).unwrap();
     assert!(primary.task.contains("unsupported_premise:"));
     assert!(primary.task.contains("introduced without support"));
+    assert!(primary.task.contains("clear paraphrase"));
     assert!(primary.task.contains("no_finding means"));
     assert!(primary.task.contains("abstain only when"));
 
@@ -247,7 +248,34 @@ fn model_requests_define_kind_specific_finding_no_finding_and_abstain_semantics(
     };
     let fallback = build_soft_judge_json_fallback_request(&causal, 128, Some(3)).unwrap();
     assert!(fallback.task.contains("causal_gap:"));
-    assert!(fallback.task.contains("only correlation or association"));
-    assert!(fallback.task.contains("controlled intervention"));
+    assert!(fallback.task.contains("reverse-causal alternative"));
+    assert!(
+        fallback
+            .task
+            .contains("mixed, partial, scoped, or uncertain")
+    );
+    assert!(
+        fallback
+            .task
+            .contains("imperfect causal evidence alone is not a finding")
+    );
     assert!(fallback.task.contains("Use only the supplied context"));
+
+    let mut contradiction = request();
+    contradiction.kind = SemanticDiagnosticKind::Contradiction;
+    let contradiction_request =
+        build_soft_judge_model_request(&contradiction, 128, Some(3)).unwrap();
+    assert!(contradiction_request.task.contains("paraphrase"));
+    assert!(contradiction_request.task.contains("equivalent wording"));
+
+    let mut counterexample = request();
+    counterexample.kind = SemanticDiagnosticKind::Counterexample;
+    let counterexample_request =
+        build_soft_judge_model_request(&counterexample, 128, Some(3)).unwrap();
+    assert!(
+        counterexample_request
+            .task
+            .contains("clearly outside the target scope")
+    );
+    assert!(counterexample_request.task.contains("applicability"));
 }
