@@ -133,28 +133,30 @@ This is the first successful live result from a non-Mistral model family and the
 
 `gemma-4-26b-a4b-it` is also kept in the diagnostic matrix, but the current GitHub project received HTTP 403 for that model while 31B succeeded with the same credential and adapter. The 26B matrix entry is therefore experimental/allow-failure until provider access is resolved.
 
-### NVIDIA Hosted NIM matrix
+### NVIDIA Hosted NIM research outcome
 
-The NVIDIA adapter uses the OpenAI-compatible Hosted NIM endpoint at `https://integrate.api.nvidia.com/v1/chat/completions` with one provider-level `NVIDIA_API_KEY`. Model IDs are data, not adapter branches. The adapter requests generic JSON mode for structured candidate generation and leaves schema validation to the existing harness-owned candidate parser and validators. No NVIDIA model output gains verification or verdict authority.
+The NVIDIA adapter uses the OpenAI-compatible Hosted NIM endpoint at `https://integrate.api.nvidia.com/v1/chat/completions` with one provider-level `NVIDIA_API_KEY`. Model IDs remain data rather than adapter branches. The adapter requests generic JSON mode for structured candidate generation and leaves schema validation to the harness-owned candidate parser and validators. NVIDIA output never gains verification or verdict authority.
 
-The current manual NVIDIA matrix was checked against the NVIDIA Build catalog on 2026-08-30:
+The 2026-08-30 live research exercised several Hosted NIM models on the same 20-case corpus. Correctness metrics below are computed only over successfully generated cases, so operational success rate must be read first.
 
-| Model ID | Why it is in the matrix | Hosted catalog status at check time |
-| --- | --- | --- |
-| `nvidia/nemotron-3.5-lightning-30b-a3b` | Fast Nemotron-family baseline | Free Endpoint |
-| `nvidia/nemotron-3-ultra-550b-a55b` | Large Nemotron-family contrast | Free Endpoint |
-| `deepseek-ai/deepseek-v4-flash-0731` | Third-party fast/reasoning model served through NVIDIA | Free Endpoint |
-| `deepseek-ai/deepseek-v4-pro-0813` | Newer larger DeepSeek V4 contrast against Flash | Free Endpoint |
-| `google/gemma-4-31b-it` | Same Gemma model family already exercised through Google, enabling provider-level variance checks | Free Endpoint |
+| Model / run | Concurrency | Generated | Operational failures | Baseline accuracy | Harness accuracy | Total tokens | Sum of request latency | Approx. live wall time |
+| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: |
+| `nvidia/nemotron-3.5-lightning-30b-a3b` first run | 1 | 19/20 | protocol 1 | 0.368 | 0.947 | 46,989 | 757s | 15m22s |
+| `nvidia/nemotron-3.5-lightning-30b-a3b` repeat | 4 | **20/20** | **none** | 0.450 | **0.950** | 38,045 | 736s | **4m19s** |
+| `openai/gpt-oss-20b` | 4 | 18/20 | protocol 2 | 0.667 | 0.944 | 40,462 | 244s | 2m02s |
+| `google/gemma-4-31b-it` | 4 | 14/20 | timeout 5, protocol 1 | 0.857 | 0.929 | 19,045 | 780s | 10m53s |
+| `deepseek-ai/deepseek-v4-flash-0731` | 10 | 0/20 | timeout 20 | n/a | n/a | n/a | n/a | ~6m40s |
 
-The earlier unversioned `deepseek-ai/deepseek-v4-flash` trial identifier is not used because it is no longer listed in the current DeepSeek Hosted NIM catalog; the versioned Flash and Pro IDs above are the current entries checked for this work. Hosted model availability and trial quota are external provider state and can change without a repository change; the workflow therefore remains manual/secret-gated and does not promise a fixed RPM or token quota.
+The DeepSeek run hit the adapter's 180-second request timeout for every case; an earlier serial probe also spent roughly three minutes per case and eventually hit the 40-minute GitHub Actions job limit. The Gemma run returned useful results but still timed out on 5/20 cases. GPT-OSS was the fastest useful probe but produced two structured-output/protocol failures. Nemotron Lightning was the only model in this research set to complete all 20 cases without an operational failure, and its repeat run preserved harness accuracy while four-way fixture concurrency reduced wall time by roughly 3.5x.
 
-NVIDIA rate-limit handling honors `Retry-After` in either delay-seconds or HTTP-date form and otherwise uses bounded exponential retry. Operational failures are classified separately as `credentials`, `rate_limit`, `quota`, `provider_unavailable`, `timeout`, `transport`, `provider_error`, `protocol`, or `unsupported_capability`. A failed live generation is recorded in the benchmark case and the remaining cases continue; the workflow then fails that model job if any live case failed, while matrix `fail-fast: false` preserves results from the other models. Successful cases continue to record provider, returned model ID, token usage when exposed, and provider latency.
+For that reason, the routine NVIDIA live matrix is intentionally narrowed to **`nvidia/nemotron-3.5-lightning-30b-a3b` only**, with `--concurrency 4` as the workflow default. GPT-OSS, Gemma-through-NVIDIA, DeepSeek, and larger Nemotron variants remain available through the data-driven CLI adapter for ad-hoc research but are excluded from routine live CI to avoid making the diagnostic workflow slow or flaky. This is a repository policy based on these observations, not a claim that the excluded models are universally unavailable or slow.
 
-See [live benchmark CI](live-benchmark.md) for credential and workflow behavior.
+Hosted model availability, latency, capacity, and trial quota are external provider state and can change without a repository change. The live workflow therefore remains manual and secret-gated and does not promise a fixed RPM or token quota.
 
-The NVIDIA adapter applies conservative 1.6-second request-start pacing (37.5 requests/minute maximum per process) to reduce avoidable pressure on hosted trial endpoints. This value is not treated as NVIDIA's contractual rate limit; model/account limits remain external state, and `Retry-After` is honored when a 429 occurs.
+NVIDIA rate-limit handling honors `Retry-After` in either delay-seconds or HTTP-date form and otherwise uses bounded exponential retry. Operational failures are classified separately as `credentials`, `rate_limit`, `quota`, `provider_unavailable`, `timeout`, `transport`, `provider_error`, `protocol`, or `unsupported_capability`. A failed live generation is retained as a benchmark case rather than being misreported as harness correctness.
+
+The adapter also applies conservative 1.6-second request-start pacing (37.5 request starts/minute maximum per benchmark process). This is a client-side guardrail, not an asserted NVIDIA quota.
 
 ### Live fixture concurrency
 
-Live fixture suites accept `--concurrency N` (1-10, default 1). This controls how many independent fixture generations may be in flight while preserving output order. Provider adapters remain shared across workers, so provider-level pacing and `Retry-After` handling still apply globally. For NVIDIA Hosted NIM, `--concurrency 3` is the recommended initial research setting; the adapter's shared 1.6-second request-start spacing remains a client-side guardrail rather than a claimed provider limit.
+Live fixture suites accept `--concurrency N` (1-10, default 1 at the CLI). Independent fixture generations may be in flight concurrently, while final output is restored to fixture/trial order before aggregation. All workers share the same provider adapter, so NVIDIA pacing and `Retry-After` handling apply across the run. The routine NVIDIA workflow defaults to concurrency 4 because Nemotron Lightning completed 20/20 without timeout, rate-limit, or protocol failures at that setting.

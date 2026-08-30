@@ -14,21 +14,17 @@ Normal `ci.yml` does not require any of these secrets. Google and NVIDIA jobs sk
 
 ## Manual model selection
 
-`.github/workflows/live-benchmark.yml` exposes one selector per provider. Each selector accepts `all`, `none`, or one explicit model ID, so a single NVIDIA model can be exercised without running the full matrix. The NVIDIA `all` set is currently:
+`.github/workflows/live-benchmark.yml` exposes one selector per provider. The routine NVIDIA selector is intentionally narrow after the 2026-08-30 Hosted NIM research: its `all` set contains only `nvidia/nemotron-3.5-lightning-30b-a3b`. That model was the only NVIDIA research candidate to complete the full 20-case corpus without an operational failure.
 
-- `nvidia/nemotron-3.5-lightning-30b-a3b`;
-- `nvidia/nemotron-3-ultra-550b-a55b`;
-- `deepseek-ai/deepseek-v4-flash-0731`;
-- `deepseek-ai/deepseek-v4-pro-0813`;
-- `google/gemma-4-31b-it`.
+Other NVIDIA Hosted NIM model IDs can still be exercised through the data-driven CLI adapter for ad-hoc research. They are not routine workflow choices: GPT-OSS 20B produced 18/20 generations with two protocol failures, Gemma 4 31B produced 14/20 with five timeouts and one protocol failure, and DeepSeek V4 Flash timed out on all 20 requests in the ten-way probe. See [benchmark.md](benchmark.md#nvidia-hosted-nim-research-outcome) for the recorded results.
 
-NVIDIA jobs use `max-parallel: 1` to avoid creating unnecessary pressure on provider-managed trial limits. This is a scheduling precaution, not an asserted NVIDIA RPM limit. The matrix uses `fail-fast: false`, so one model job failing does not cancel the remaining models.
+NVIDIA jobs use `max-parallel: 1` at the model-job level. Within the selected model, the workflow defaults to fixture concurrency 4. This avoids multiplying account-level pressure across several NVIDIA models while still overlapping the slow Hosted NIM requests that proved safe for Nemotron Lightning. Neither value is an asserted provider quota.
 
 ## Result and failure semantics
 
 Live benchmark JSON makes the requested top-level provider and model explicit. Each successful generation records the returned provider model ID, latency, provider attempt count, and token usage when the API exposes it. Generation failures are retained as structured case records with fixture ID, provider, requested model, latency, failure class, and a bounded diagnostic message. Aggregate correctness metrics use only successfully generated/evaluated cases; `operational.attempted_runs`, `generated_runs`, and `failed_runs` make any reduced denominator explicit.
 
-Within a model run, provider failures do not abort collection of later fixtures. After the report is produced, the workflow marks that model job failed when `operational.failed_runs` is non-zero. This preserves diagnostics while still making live smoke failures visible. Deterministic harness failures remain separate in `result.harness.deterministic_failure`; provider outage, quota, or timeout must not be misreported as a harness correctness failure.
+Within a model run, provider failures do not abort collection of later fixtures. After the report is produced, the workflow marks that model job failed when `operational.failed_runs` is non-zero. Deterministic harness failures remain separate in `result.harness.deterministic_failure`; provider outage, quota, timeout, or malformed provider output must not be misreported as a harness correctness failure.
 
 The committed deterministic fixture regression remains the required correctness gate. Live results are diagnostic observations and never rewrite or override deterministic verification authority.
 
@@ -36,4 +32,4 @@ NVIDIA Hosted NIM calls use a conservative client-side minimum interval of 1.6 s
 
 ## In-model concurrency
 
-Use `--concurrency 3` to overlap independent fixture generations for one live model. Results are restored to fixture/trial order before aggregation, and one fixture failure remains isolated from other in-flight work. All workers share the same provider adapter, so NVIDIA request-start pacing and 429 `Retry-After` handling continue to apply across the run. Start at 3 for NVIDIA research runs and reduce it if the account reports sustained rate limiting.
+Use `--concurrency N` (1-10) to overlap independent fixture generations for one live model. Results are restored to fixture/trial order before aggregation, and one fixture failure remains isolated from other in-flight work. All workers share the same provider adapter, so NVIDIA request-start pacing and 429 `Retry-After` handling continue to apply across the run. The NVIDIA workflow defaults to 4 based on the successful 20/20 Nemotron Lightning repeat run.
