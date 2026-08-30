@@ -9,9 +9,9 @@ use std::{
 
 use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
-    AdversarialDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult, BenchmarkComparison,
-    BenchmarkFixture, DiagnosticObservation, DiagnosticTrial, HarnessInput, ModelAdapter,
-    ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact, ReasoningCandidate,
+    AdversarialDiscoveryPass, AssumptionDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult,
+    BenchmarkComparison, BenchmarkFixture, DiagnosticObservation, DiagnosticTrial, HarnessInput,
+    ModelAdapter, ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact, ReasoningCandidate,
     RepeatedDiagnosticReport, StrictAcceptancePolicy, StructuredFactConflictDetector,
     StructuredFactVerifier, TrustedVerificationPass, VerificationPass, VerificationReceipt,
     aggregate_benchmark, aggregate_repeated_diagnostics, build_candidate_json_fallback_request,
@@ -531,6 +531,7 @@ async fn run(cli: Cli) -> Result<(), String> {
                 )])),
                 Box::new(TrustedVerificationPass::new(receipts)),
                 Box::new(FiveWhysRestatementPass),
+                Box::new(AssumptionDiscoveryPass),
             ];
             let outcome = run_harness(input, candidate.clone(), &passes, &StrictAcceptancePolicy)
                 .map_err(|error| error.to_string())?;

@@ -213,6 +213,15 @@ The adapter also applies conservative 1.6-second request-start pacing (37.5 requ
 
 Live fixture suites accept `--concurrency N` (1-10, default 1 at the CLI). Independent fixture generations may be in flight concurrently, while final output is restored to fixture/trial order before aggregation. All workers share the same provider adapter, so NVIDIA pacing and `Retry-After` handling apply across the run. The routine NVIDIA workflow defaults to concurrency 4 because Nemotron Lightning completed 20/20 without timeout, rate-limit, or protocol failures at that setting.
 
+
+## Assumption diagnostic regression
+
+Issue #12 adds a separate deterministic corpus under `fixtures/assumptions/`. It measures premise support classification rather than final task correctness. The initial five cases cover a trusted supported premise, a harness-owned explicit input assumption, an introduced typed unsupported premise, semantic reuse of one unsupported premise across multiple inference edges, and an unbound premise.
+
+The aggregate reports supported/explicit/unsupported/unbound premise counts, hard and soft finding counts, unsupported-premise detection rate, and explicit-assumption recognition rate. These cases never enter the 20-case verdict denominator or the eight-case causal denominator. `AssumptionFinding` is observational: even a hard unsupported-premise finding does not directly force `reject`; final authority remains with verification and acceptance policy. Assumption signals are also available to the provider-neutral repeated diagnostic report introduced by #11.
+
+See [assumption diagnostics](assumption-diagnostics.md) for the boundary between explicit assumptions, unknown claims, and unsupported causal edges.
+
 ## Metamorphic robustness regression
 
 Issue #10 adds a deterministic metamorphic layer that measures whether trusted outcomes remain invariant under semantics-preserving representation changes. The initial suite covers six transform families across verdict, adversarial, and causal behavior. Its invariance metrics are separate from raw 20-case claim accuracy and from the eight-case causal corpus; transformed cases never enter either correctness denominator.

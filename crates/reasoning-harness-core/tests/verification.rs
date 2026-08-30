@@ -13,6 +13,7 @@ fn input() -> HarnessInput {
             facts: Default::default(),
         }],
         hypotheses: vec![],
+        assumptions: vec![],
     }
 }
 

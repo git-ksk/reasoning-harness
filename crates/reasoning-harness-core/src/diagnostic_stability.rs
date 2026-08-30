@@ -4,8 +4,9 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::{
-    AdversarialFindingKind, CausalFindingKind, CausalFindingReason, CausalInspection,
-    CausalRelation, CausalSupportStatus, FindingStrength, Proposition, ReasoningArtifact,
+    AdversarialFindingKind, AssumptionFindingKind, CausalFindingKind, CausalFindingReason,
+    CausalInspection, CausalRelation, CausalSupportStatus, FindingStrength, Proposition,
+    ReasoningArtifact,
 };
 
 const MIN_CI_OBSERVATIONS: usize = 5;
@@ -32,6 +33,13 @@ pub enum DiagnosticSignal {
         status: CausalSupportStatus,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         relation: Option<CausalRelation>,
+    },
+    Assumption {
+        detector: String,
+        kind: AssumptionFindingKind,
+        strength: FindingStrength,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        proposition: Option<Proposition>,
     },
     Candidate {
         code: String,
@@ -94,6 +102,8 @@ pub struct DiagnosticFamilyDistributions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub causal: Option<DiagnosticCountDistribution>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub assumption: Option<DiagnosticCountDistribution>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub candidate: Option<DiagnosticCountDistribution>,
 }
 
@@ -140,6 +150,14 @@ pub fn observe_diagnostics(
 
     signals.extend(artifact.adversarial_findings.iter().map(|finding| {
         DiagnosticSignal::Adversarial {
+            detector: finding.detector.clone(),
+            kind: finding.kind,
+            strength: finding.strength,
+            proposition: finding.proposition.clone(),
+        }
+    }));
+    signals.extend(artifact.assumption_findings.iter().map(|finding| {
+        DiagnosticSignal::Assumption {
             detector: finding.detector.clone(),
             kind: finding.kind,
             strength: finding.strength,
@@ -262,6 +280,7 @@ pub fn aggregate_repeated_diagnostics(
             count_distributions: DiagnosticFamilyDistributions {
                 adversarial: scalar_distribution(family_counts(is_adversarial)),
                 causal: scalar_distribution(family_counts(is_causal)),
+                assumption: scalar_distribution(family_counts(is_assumption)),
                 candidate: scalar_distribution(family_counts(is_candidate)),
             },
         });
@@ -363,6 +382,10 @@ fn is_causal(signal: &DiagnosticSignal) -> bool {
     )
 }
 
+fn is_assumption(signal: &DiagnosticSignal) -> bool {
+    matches!(signal, DiagnosticSignal::Assumption { .. })
+}
+
 fn is_candidate(signal: &DiagnosticSignal) -> bool {
     matches!(signal, DiagnosticSignal::Candidate { .. })
 }
@@ -406,6 +429,18 @@ fn signal_sort_key(signal: &DiagnosticSignal) -> String {
             relation
                 .as_ref()
                 .map(relation_sort_key)
+                .unwrap_or_else(|| "unbound".into())
+        ),
+        DiagnosticSignal::Assumption {
+            detector,
+            kind,
+            strength,
+            proposition,
+        } => format!(
+            "assumption|{detector}|{kind:?}|{strength:?}|{}",
+            proposition
+                .as_ref()
+                .map(|proposition| format!("{}={}", proposition.key, proposition.value))
                 .unwrap_or_else(|| "unbound".into())
         ),
         DiagnosticSignal::Candidate { code } => format!("candidate|{code}"),
@@ -503,11 +538,13 @@ mod tests {
             task: "test".into(),
             evidence: vec![],
             hypotheses: vec![],
+            assumptions: vec![],
             candidate_diagnostics: vec![CandidateDiagnostic {
                 code: "dropped_edge".into(),
                 message: "fixture".into(),
             }],
             verification_receipts: vec![],
+            assumption_findings: vec![],
             adversarial_findings: vec![AdversarialFinding {
                 id: "a1".into(),
                 detector: "structured_fact_conflict".into(),

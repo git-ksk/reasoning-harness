@@ -1,0 +1,20 @@
+{
+  "id": "introduced_unsupported_premise",
+  "description": "A typed premise introduced without trusted support or explicit input-assumption status is a hard process diagnostic.",
+  "input": {
+    "task": "Reason only from supplied context."
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id":"premise","statement":"A hidden prerequisite is satisfied.","proposed_state":"assumed","proposition":{"key":"prerequisite.satisfied","value":"true"}},
+      {"id":"result","statement":"The operation can proceed.","proposed_state":"assumed"}
+    ],
+    "inferences": [
+      {"id":"i1","premise_claim_ids":["premise"],"conclusion_claim_id":"result","method":"deduction"}
+    ]
+  },
+  "expected_statuses": ["unsupported"],
+  "expected_hard_findings": 1,
+  "expected_soft_findings": 0,
+  "expected_finding_inference_references": [1]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "reused_unsupported_premise",
+  "description": "One unsupported semantic premise reused by multiple inference edges is reported once with every edge reference.",
+  "input": {
+    "task": "Trace repeated use of an unsupported premise."
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id":"premise","statement":"A hidden prerequisite is satisfied.","proposed_state":"assumed","proposition":{"key":"prerequisite.satisfied","value":"true"}},
+      {"id":"result-a","statement":"First consequence.","proposed_state":"assumed"},
+      {"id":"result-b","statement":"Second consequence.","proposed_state":"assumed"}
+    ],
+    "inferences": [
+      {"id":"i1","premise_claim_ids":["premise"],"conclusion_claim_id":"result-a","method":"deduction"},
+      {"id":"i2","premise_claim_ids":["premise"],"conclusion_claim_id":"result-b","method":"deduction"}
+    ]
+  },
+  "expected_statuses": ["unsupported"],
+  "expected_hard_findings": 1,
+  "expected_soft_findings": 0,
+  "expected_finding_inference_references": [2]
+}

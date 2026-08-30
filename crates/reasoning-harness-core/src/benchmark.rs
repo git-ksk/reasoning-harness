@@ -1,10 +1,10 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    AcceptancePolicy, AdversarialDiscoveryPass, AdversarialFindingKind, Claim, EpistemicState,
-    FindingStrength, HarnessInput, Proposition, ReasoningArtifact, ReasoningCandidate,
-    StrictAcceptancePolicy, StructuredFactConflictDetector, StructuredFactVerifier,
-    TrustedVerificationPass, Verdict, VerificationPass, evaluate,
+    AcceptancePolicy, AdversarialDiscoveryPass, AdversarialFindingKind, AssumptionDiscoveryPass,
+    Claim, EpistemicState, FindingStrength, HarnessInput, Proposition, ReasoningArtifact,
+    ReasoningCandidate, StrictAcceptancePolicy, StructuredFactConflictDetector,
+    StructuredFactVerifier, TrustedVerificationPass, Verdict, VerificationPass, evaluate,
     frameworks::five_whys::FiveWhysRestatementPass, run_harness,
 };
 
@@ -164,6 +164,7 @@ pub(crate) fn run_benchmark_harness(
             fixture.verification_receipts.clone(),
         )),
         Box::new(FiveWhysRestatementPass),
+        Box::new(AssumptionDiscoveryPass),
     ];
     run_harness(
         fixture.input.clone(),
@@ -185,9 +186,11 @@ fn naive_materialize(input: HarnessInput, candidate: ReasoningCandidate) -> Reas
         task: input.task,
         evidence: input.evidence,
         hypotheses: input.hypotheses,
+        assumptions: input.assumptions,
         candidate_diagnostics: Vec::new(),
         verification_receipts: Vec::new(),
         adversarial_findings: Vec::new(),
+        assumption_findings: Vec::new(),
         claims: candidate
             .claims
             .into_iter()

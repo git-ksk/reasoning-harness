@@ -1,0 +1,23 @@
+{
+  "id": "supported_premise",
+  "description": "A premise verified by harness-owned structured evidence is supported, not an assumption finding.",
+  "input": {
+    "task": "Reason from a verified readiness fact.",
+    "evidence": [
+      {"id":"e1","source":"fixture-oracle","observation":"The service is ready.","facts":{"service.ready":"true"}}
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id":"premise","statement":"The service is ready.","proposed_state":"assumed","proposition":{"key":"service.ready","value":"true"}},
+      {"id":"result","statement":"Proceed with the next step.","proposed_state":"assumed"}
+    ],
+    "inferences": [
+      {"id":"i1","premise_claim_ids":["premise"],"conclusion_claim_id":"result","method":"deduction"}
+    ]
+  },
+  "expected_statuses": ["supported"],
+  "expected_hard_findings": 0,
+  "expected_soft_findings": 0,
+  "expected_finding_inference_references": []
+}

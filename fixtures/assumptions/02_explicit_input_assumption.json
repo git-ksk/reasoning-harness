@@ -1,0 +1,23 @@
+{
+  "id": "explicit_input_assumption",
+  "description": "A harness-owned explicit assumption may be used as a premise without being misreported as trusted fact support.",
+  "input": {
+    "task": "Reason under the supplied planning assumption.",
+    "assumptions": [
+      {"key":"plan.window_open","value":"true"}
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id":"premise","statement":"The planning window is open.","proposed_state":"assumed","proposition":{"key":"plan.window_open","value":"true"}},
+      {"id":"result","statement":"The plan can be evaluated under that assumption.","proposed_state":"assumed"}
+    ],
+    "inferences": [
+      {"id":"i1","premise_claim_ids":["premise"],"conclusion_claim_id":"result","method":"deduction"}
+    ]
+  },
+  "expected_statuses": ["explicit_input_assumption"],
+  "expected_hard_findings": 0,
+  "expected_soft_findings": 0,
+  "expected_finding_inference_references": []
+}

@@ -55,9 +55,11 @@ pub fn materialize_candidate(
         task: input.task,
         evidence: input.evidence,
         hypotheses: input.hypotheses,
+        assumptions: input.assumptions,
         candidate_diagnostics,
         verification_receipts: Vec::new(),
         adversarial_findings: Vec::new(),
+        assumption_findings: Vec::new(),
         claims,
         inferences,
     }
@@ -213,6 +215,7 @@ mod tests {
                 task: "task".into(),
                 evidence: vec![],
                 hypotheses: vec![],
+                assumptions: vec![],
             },
             candidate,
         );
@@ -249,6 +252,7 @@ mod tests {
                     facts: Default::default(),
                 }],
                 hypotheses: vec![],
+                assumptions: vec![],
             },
             candidate,
         );
@@ -284,6 +288,7 @@ mod tests {
                 task: "task".into(),
                 evidence: vec![],
                 hypotheses: vec![],
+                assumptions: vec![],
             },
             candidate,
         );

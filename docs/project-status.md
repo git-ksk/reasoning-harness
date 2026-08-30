@@ -18,6 +18,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Observational typed causal diagnostics with exact scoped support/refutation and conservative unknown handling for association, reverse direction, partial support, conflict, missing binding, and missing exact evidence.
 - Twenty committed claim-verdict regression fixtures (5 accept / 6 reject / 9 unknown) plus a separate eight-case deterministic causal corpus.
 - A six-family deterministic metamorphic regression layer with dedicated seed fixtures outside the ordinary correctness denominators.
+- Harness-owned explicit assumptions and observational unsupported-premise diagnostics with a separate deterministic five-case corpus.
 - Manual, secret-isolated live benchmark workflow spanning Mistral, Google-hosted Gemma/Gemini, and a narrowed routine NVIDIA Nemotron target.
 - GitHub CI, Dependabot configuration, contribution/security guidance, issue and PR templates.
 
@@ -29,7 +30,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Five Whys lexical cleanup remains intentionally syntactic; evidence-aware causal inspection is observational and does not certify the whole artifact or change the final claim verdict.
 - Candidate-supplied causal-evidence references remain deferred; the #11 repeated-trial report can now aggregate causal support/refutation/unknown assessments plus finding/reason observations without moving them into correctness authority. A live causal-generation/input contract remains deferred.
 - Deterministic metamorphic robustness is implemented across six transform families. Repeated-trial diagnostic stability is also implemented: adversarial, candidate-normalization, and causal signals have complete-trial-only frequencies, count distributions, explicit operational exclusions, and Wilson intervals where the sample threshold is met.
-- No assumption extraction yet; #12 is the next diagnostic family. First-principles, Feynman/simplification, and semantic-loss work are intentionally behind robustness and evidence-quality gates.
+- Assumption/unsupported-premise diagnostics are implemented with harness-owned explicit assumptions, deterministic typed premise checks, a separate five-case corpus, and repeated-trial diagnostic signals. Semantic extraction of untyped assumptions remains soft/deferred.
 - Temporal validity, applicability scope, and provenance/authority qualification are not yet modeled on harness-owned evidence; #16 defines this provider-neutral evidence-quality boundary. Open-world retrieval and domain-specific source ranking remain out of core scope.
 - The current 20-case claim corpus and 8-case causal corpus are not yet versioned/stratified as a public benchmark; #14 tracks corpus longevity and contamination/saturation policy.
 - Semantic/model-backed discovery remains soft-only and is not yet calibrated; #13 is intentionally sequenced after #10/#11/#12/#16/#14 so soft judges are added only after deterministic measurement and corpus foundations are stable.
@@ -52,6 +53,11 @@ The core now has a provider-neutral `AdversarialDetector` contract and typed `Ad
 ### Evidence-aware causal diagnostics
 
 Issue #4 adds typed `CausalRelation`, harness-owned `CausalEvidence`, per-edge assessments, and typed hard/soft findings. Exact scoped support can mark an edge supported; exact explicit refutation can mark it refuted. Association-only evidence, reverse-direction support, partial support, conflicting evidence, missing exact evidence, and incomplete proposition binding remain unknown. The inspector cannot mutate claim state, create verification receipts, or directly decide `accept | reject | unknown`. Its eight-case deterministic corpus is reported separately from the 20-case claim benchmark and from Issue #6 correctness denominators.
+
+
+### Assumption and unsupported-premise diagnostics
+
+Issue #12 adds harness-owned explicit `assumptions` separately from task `hypotheses`, plus an observational `AssumptionDiscoveryPass`. Premises with trusted supported/known state or a derivation from trusted support are classified `supported`; propositions explicitly supplied as assumptions are `explicit_input_assumption`; typed premises with neither are `unsupported`; untyped premises are `unbound`. Unsupported typed premises produce hard process findings relative to the supplied context, while unbound premises remain soft because semantic identity is unavailable. Findings do not mutate claim state or final verdict. The five-case assumption corpus is reported separately from the 20-case correctness and eight-case causal corpora, and its signals participate in the #11 repeated diagnostic report.
 
 ### Benchmark hardening
 

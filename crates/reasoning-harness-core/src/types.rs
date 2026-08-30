@@ -117,6 +117,10 @@ pub struct HarnessInput {
     /// Candidates cannot add or mutate these targets.
     #[serde(default)]
     pub hypotheses: Vec<Proposition>,
+    /// Harness-owned premises that the task explicitly permits reasoning to assume.
+    /// These are input context, not candidate-authored epistemic labels.
+    #[serde(default)]
+    pub assumptions: Vec<Proposition>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
@@ -141,11 +145,15 @@ pub struct ReasoningArtifact {
     #[serde(default)]
     pub hypotheses: Vec<Proposition>,
     #[serde(default)]
+    pub assumptions: Vec<Proposition>,
+    #[serde(default)]
     pub candidate_diagnostics: Vec<CandidateDiagnostic>,
     #[serde(default)]
     pub verification_receipts: Vec<VerificationReceipt>,
     #[serde(default)]
     pub adversarial_findings: Vec<AdversarialFinding>,
+    #[serde(default)]
+    pub assumption_findings: Vec<crate::AssumptionFinding>,
     #[serde(default)]
     pub claims: Vec<Claim>,
     #[serde(default)]
