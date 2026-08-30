@@ -1,10 +1,11 @@
 use std::{collections::VecDeque, pin::Pin, sync::Mutex};
 
 use reasoning_harness_core::{
-    ModelAdapter, ModelBackedSoftJudgeError, ModelError, ModelErrorKind, ModelOutputFormat,
-    ModelRequest, ModelResponse, ModelUsage, Proposition, SemanticDiagnosticKind,
-    SemanticDiagnosticTarget, SoftJudgeDecision, SoftJudgeIdentity, SoftJudgeRequest,
-    build_soft_judge_model_request, parse_soft_judge_output, run_model_backed_soft_judge,
+    CausalRelation, ModelAdapter, ModelBackedSoftJudgeError, ModelError, ModelErrorKind,
+    ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage, Proposition,
+    SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftJudgeDecision, SoftJudgeIdentity,
+    SoftJudgeRequest, build_soft_judge_json_fallback_request, build_soft_judge_model_request,
+    parse_soft_judge_output, run_model_backed_soft_judge,
 };
 
 struct SequenceAdapter {
@@ -209,4 +210,35 @@ async fn malformed_fallback_fails_closed() {
         ModelBackedSoftJudgeError::InvalidStructuredOutput(_)
     ));
     assert_eq!(adapter.requests().len(), 2);
+}
+
+#[test]
+fn model_requests_define_kind_specific_finding_no_finding_and_abstain_semantics() {
+    let mut unsupported = request();
+    unsupported.kind = SemanticDiagnosticKind::UnsupportedPremise;
+    let primary = build_soft_judge_model_request(&unsupported, 128, Some(3)).unwrap();
+    assert!(primary.task.contains("unsupported_premise:"));
+    assert!(primary.task.contains("introduced without support"));
+    assert!(primary.task.contains("no_finding means"));
+    assert!(primary.task.contains("abstain only when"));
+
+    let mut causal = request();
+    causal.kind = SemanticDiagnosticKind::CausalGap;
+    causal.target = SemanticDiagnosticTarget::CausalRelation {
+        relation: CausalRelation {
+            causes: vec![Proposition {
+                key: "queue.depth".into(),
+                value: "high".into(),
+            }],
+            effect: Proposition {
+                key: "request.latency".into(),
+                value: "high".into(),
+            },
+        },
+    };
+    let fallback = build_soft_judge_json_fallback_request(&causal, 128, Some(3)).unwrap();
+    assert!(fallback.task.contains("causal_gap:"));
+    assert!(fallback.task.contains("only correlation or association"));
+    assert!(fallback.task.contains("controlled intervention"));
+    assert!(fallback.task.contains("Use only the supplied context"));
 }

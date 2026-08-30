@@ -284,9 +284,10 @@ pub fn build_soft_judge_model_request(
 ) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
     let request_json = serde_json::to_string_pretty(request)
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
+    let decision_guidance = soft_judge_decision_guidance(request.kind);
     Ok(ModelRequest {
         task: format!(
-            "Evaluate this semantic diagnostic request:\n{request_json}\n\nReturn only the typed soft diagnostic decision. A finding must exactly preserve the requested kind and target. If the available context is insufficient or ambiguous, abstain. Do not invent evidence or verification authority."
+            "Evaluate this semantic diagnostic request:\n{request_json}\n\nDecision rule:\n{decision_guidance}\n\nUse only the supplied context. Return finding when the context affirmatively supports the requested diagnostic concern, no_finding when the context affirmatively resolves or negates that concern, and abstain only when the context is genuinely insufficient, mixed, or ambiguous. A finding must exactly preserve the requested kind and target. Do not invent evidence or verification authority."
         ),
         system: Some(
             "You are a soft semantic diagnostic judge inside a reasoning harness. Your output is advisory only. Return finding, no_finding, or abstain using the requested schema. You cannot create verification receipts, hard findings, epistemic-state promotion, verdicts, trusted evidence, or hidden-chain-of-thought grades."
@@ -310,9 +311,10 @@ pub fn build_soft_judge_json_fallback_request(
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
     let schema = serde_json::to_string_pretty(&soft_judge_output_schema())
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
+    let decision_guidance = soft_judge_decision_guidance(request.kind);
     Ok(ModelRequest {
         task: format!(
-            "JSON Schema:\n{schema}\n\nSemantic diagnostic request:\n{request_json}\n\nReturn exactly one JSON object conforming to the schema. A finding must exactly preserve the requested kind and target. If context is insufficient or ambiguous, abstain."
+            "JSON Schema:\n{schema}\n\nSemantic diagnostic request:\n{request_json}\n\nDecision rule:\n{decision_guidance}\n\nUse only the supplied context. Return finding when the context affirmatively supports the requested diagnostic concern, no_finding when the context affirmatively resolves or negates that concern, and abstain only when the context is genuinely insufficient, mixed, or ambiguous. Return exactly one JSON object conforming to the schema. A finding must exactly preserve the requested kind and target."
         ),
         system: Some(
             "You are a soft semantic diagnostic judge inside a reasoning harness. Return exactly one JSON object and no prose. Your output is advisory only and cannot create verification authority, hard findings, epistemic promotion, or verdicts."
@@ -322,6 +324,23 @@ pub fn build_soft_judge_json_fallback_request(
         max_tokens: Some(max_tokens),
         random_seed,
     })
+}
+
+fn soft_judge_decision_guidance(kind: SemanticDiagnosticKind) -> &'static str {
+    match kind {
+        SemanticDiagnosticKind::Contradiction => {
+            "contradiction: finding means the supplied context shows the target conflicts with another supplied statement or observation; no_finding means the supplied context affirmatively agrees with the target; abstain means conflict versus agreement cannot be established from the supplied context"
+        }
+        SemanticDiagnosticKind::Counterexample => {
+            "counterexample: finding means the supplied context contains a concrete case incompatible with the target generalization; no_finding means the supplied context affirmatively contains no such incompatible case for the requested check; abstain means the context is insufficient to decide"
+        }
+        SemanticDiagnosticKind::UnsupportedPremise => {
+            "unsupported_premise: finding means the supplied context indicates the target premise is introduced without support; no_finding means the supplied context explicitly supports or supplies that premise; abstain means support status is uncertain or only indirectly suggested"
+        }
+        SemanticDiagnosticKind::CausalGap => {
+            "causal_gap: finding means the supplied context lacks directional causal support, for example it provides only correlation or association; no_finding means the supplied context explicitly establishes the requested causal direction, for example by a controlled intervention or equivalent directional evidence; abstain means causal support is mixed or uncertain"
+        }
+    }
 }
 
 pub fn parse_soft_judge_output(text: &str) -> Result<SoftJudgeOutput, serde_json::Error> {

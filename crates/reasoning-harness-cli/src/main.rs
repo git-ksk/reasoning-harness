@@ -1131,7 +1131,7 @@ async fn run_live_soft_judge_calibration_suite(
     let identity = SoftJudgeIdentity {
         judge_id: format!("live:{}:{model}", provider_name(provider)),
         model_id: model.to_string(),
-        configuration_id: "soft-semantic-v1".into(),
+        configuration_id: "soft-semantic-v2".into(),
     };
     let mut cases = Vec::with_capacity(fixtures.len() * trials);
     let mut per_trial = Vec::with_capacity(trials);
