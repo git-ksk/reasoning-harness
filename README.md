@@ -60,7 +60,7 @@ See [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md) for the ta
 - Provider-neutral bounded resolution with explicit resolver/admission/verifier boundaries, per-run and per-request budgets, mandatory re-verification, terminal-state accounting, and grounded final-claim coverage.
 - Composable `ReasoningPolicy` constraints for authority/scope/time/resolver capabilities plus immutable-snapshot dependency invalidation when policy changes.
 - Durable `ReasoningThread` event/checkpoint replay with fail-closed interrupt/resume, non-destructive fork lineage, and abstract persistence storage.
-- Deterministic metamorphic robustness checks, repeated-trial diagnostic stability reporting, and calibrated soft semantic-judge evaluation with explicit abstention/agreement metrics.
+- Deterministic metamorphic robustness checks, repeated-trial diagnostic stability reporting, calibrated soft semantic-judge evaluation, and an optional model-backed soft judge over the same provider-neutral `ModelAdapter` boundary.
 - A versioned corpus-v1 manifest covering 41 committed claim, causal, assumption, and evidence-qualification cases with stable IDs and category/difficulty strata.
 - Provider-neutral Rust `ModelAdapter`; model output is always outside the correctness boundary.
 - Provider adapters in a separate Rust crate for Mistral, Google Gemini/AI Studio, and NVIDIA Hosted NIM; all provider output remains outside the verification authority boundary.

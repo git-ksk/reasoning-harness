@@ -163,7 +163,7 @@ The Five Whys restatement pass removes a causal edge only when a deliberately na
 
 ## Adversarial discovery boundary
 
-`AdversarialDetector` produces typed `AdversarialFinding` records with `contradiction | counterexample` kind and `hard | soft` strength. Discovery is observational: findings are recorded in the artifact but do not mutate claim epistemic state and cannot directly force `reject`. Hard authority remains in deterministic `Verifier` implementations and trusted verification receipts. The initial `StructuredFactConflictDetector` reads only harness-owned structured facts. A future model-backed semantic detector must emit `soft` findings until an independent hard verifier confirms them.
+`AdversarialDetector` produces typed `AdversarialFinding` records with `contradiction | counterexample` kind and `hard | soft` strength. Discovery is observational: findings are recorded in the artifact but do not mutate claim epistemic state and cannot directly force `reject`. Hard authority remains in deterministic `Verifier` implementations and trusted verification receipts. The initial `StructuredFactConflictDetector` reads only harness-owned structured facts. Model-backed semantic discovery is available separately through the calibrated soft-judge contract and remains advisory even when a model reports a finding; an independent hard verifier is still required for authority.
 
 This separation prevents a model-generated contradiction label or counterexample suggestion from becoming self-authenticating evidence.
 
@@ -181,7 +181,7 @@ A policy change creates a new `ReasoningArtifact` snapshot rather than mutating 
 
 Calibration reports precision/recall, decision coverage, disagreement, abstention, pairwise categorical agreement, and nominal Krippendorff alpha separately from final harness correctness. Ambiguous labels are retained but excluded from positive/negative precision/recall. Abstention remains explicit and is treated as missing data for alpha rather than being majority-voted into a finding.
 
-A future policy/thread layer may record a soft observation or use it to request additional evidence, but only existing harness-owned evidence/verifier boundaries may create hard authority. See [soft semantic-judge calibration](semantic-judge-calibration.md).
+The implemented policy/thread layer may record a soft observation or use it to request additional evidence, but only existing harness-owned evidence/verifier boundaries may create hard authority. Model-backed soft judging uses the same rule and cannot promote its own output. See [soft semantic-judge calibration](semantic-judge-calibration.md).
 
 ## Assumption diagnostic boundary
 

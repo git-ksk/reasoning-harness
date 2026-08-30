@@ -1,11 +1,17 @@
 use std::{collections::BTreeMap, future::Future, pin::Pin};
 
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use crate::{CausalRelation, Proposition};
+use crate::{
+    CausalRelation, ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest,
+    ModelUsage, Proposition, soft_judge_output_schema,
+};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, JsonSchema,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum SemanticDiagnosticKind {
     Contradiction,
@@ -14,7 +20,7 @@ pub enum SemanticDiagnosticKind {
     CausalGap,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum SemanticDiagnosticTarget {
     Proposition { proposition: Proposition },
@@ -23,7 +29,7 @@ pub enum SemanticDiagnosticTarget {
     Inference { inference_id: String },
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct SoftJudgeRequest {
     pub id: String,
     pub task: String,
@@ -40,7 +46,9 @@ pub struct SoftJudgeIdentity {
     pub configuration_id: String,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, JsonSchema,
+)]
 #[serde(rename_all = "snake_case")]
 pub enum SoftJudgeDecision {
     Finding,
@@ -48,7 +56,7 @@ pub enum SoftJudgeDecision {
     Abstain,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct SoftSemanticFinding {
     pub kind: SemanticDiagnosticKind,
     pub target: SemanticDiagnosticTarget,
@@ -56,7 +64,7 @@ pub struct SoftSemanticFinding {
     pub note: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct SoftJudgeOutput {
     pub decision: SoftJudgeDecision,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -98,12 +106,7 @@ pub async fn run_soft_judge(
     request: &SoftJudgeRequest,
 ) -> Result<SoftJudgeObservation, SoftJudgeError> {
     let identity = judge.identity();
-    if identity.judge_id.trim().is_empty()
-        || identity.model_id.trim().is_empty()
-        || identity.configuration_id.trim().is_empty()
-    {
-        return Err(SoftJudgeError::InvalidIdentity);
-    }
+    validate_identity(&identity)?;
     let output = judge.judge(request).await?;
     validate_output(request, &output)?;
     Ok(SoftJudgeObservation {
@@ -133,6 +136,248 @@ fn validate_output(
             ))
         }
         _ => Ok(()),
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ModelBackedSoftJudgeObservation {
+    pub observation: SoftJudgeObservation,
+    pub model: String,
+    pub usage: ModelUsage,
+    pub provider_attempts: u32,
+}
+
+#[derive(Debug, Error)]
+pub enum ModelBackedSoftJudgeError {
+    #[error("model-backed soft judge adapter failed: {0}")]
+    Model(#[from] ModelError),
+    #[error("model-backed soft judge returned invalid structured output: {0}")]
+    InvalidStructuredOutput(String),
+    #[error(transparent)]
+    SoftJudge(#[from] SoftJudgeError),
+}
+
+impl ModelBackedSoftJudgeError {
+    pub fn model_error_kind(&self) -> Option<ModelErrorKind> {
+        match self {
+            Self::Model(error) => Some(error.kind),
+            Self::InvalidStructuredOutput(_) | Self::SoftJudge(_) => None,
+        }
+    }
+}
+
+pub struct ModelBackedSoftJudge<'a> {
+    adapter: &'a dyn ModelAdapter,
+    identity: SoftJudgeIdentity,
+    max_tokens: u32,
+    random_seed: Option<u64>,
+}
+
+impl<'a> ModelBackedSoftJudge<'a> {
+    pub fn new(
+        adapter: &'a dyn ModelAdapter,
+        identity: SoftJudgeIdentity,
+        max_tokens: u32,
+        random_seed: Option<u64>,
+    ) -> Self {
+        Self {
+            adapter,
+            identity,
+            max_tokens,
+            random_seed,
+        }
+    }
+}
+
+impl SoftDiagnosticJudge for ModelBackedSoftJudge<'_> {
+    fn identity(&self) -> SoftJudgeIdentity {
+        self.identity.clone()
+    }
+
+    fn judge<'a>(
+        &'a self,
+        request: &'a SoftJudgeRequest,
+    ) -> Pin<Box<dyn Future<Output = Result<SoftJudgeOutput, SoftJudgeError>> + Send + 'a>> {
+        Box::pin(async move {
+            let result = run_model_backed_soft_judge(
+                self.adapter,
+                self.identity.clone(),
+                request,
+                self.max_tokens,
+                self.random_seed,
+            )
+            .await
+            .map_err(|error| SoftJudgeError::Judge(error.to_string()))?;
+            Ok(SoftJudgeOutput {
+                decision: result.observation.decision,
+                finding: result.observation.finding,
+            })
+        })
+    }
+}
+
+pub async fn run_model_backed_soft_judge(
+    adapter: &dyn ModelAdapter,
+    identity: SoftJudgeIdentity,
+    request: &SoftJudgeRequest,
+    max_tokens: u32,
+    random_seed: Option<u64>,
+) -> Result<ModelBackedSoftJudgeObservation, ModelBackedSoftJudgeError> {
+    validate_identity(&identity)?;
+    let primary_request = build_soft_judge_model_request(request, max_tokens, random_seed)?;
+    let primary = match adapter.generate(primary_request).await {
+        Ok(response) => Some(response),
+        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => None,
+        Err(error) => return Err(error.into()),
+    };
+
+    if let Some(response) = primary.as_ref() {
+        if let Ok(output) = parse_and_validate_soft_output(request, &response.text) {
+            return Ok(ModelBackedSoftJudgeObservation {
+                observation: SoftJudgeObservation {
+                    judge: identity,
+                    request_id: request.id.clone(),
+                    decision: output.decision,
+                    finding: output.finding,
+                },
+                model: response.model.clone(),
+                usage: response.usage.clone(),
+                provider_attempts: 1,
+            });
+        }
+    }
+
+    let fallback_request =
+        build_soft_judge_json_fallback_request(request, max_tokens, random_seed)?;
+    let fallback = adapter.generate(fallback_request).await?;
+    let output = parse_and_validate_soft_output(request, &fallback.text).map_err(|error| {
+        let first = primary.as_ref().map_or_else(
+            || "primary schema mode unsupported".to_string(),
+            |response| format!("primary_bytes={}", response.text.len()),
+        );
+        ModelBackedSoftJudgeError::InvalidStructuredOutput(format!(
+            "{first}; fallback_bytes={}; {error}",
+            fallback.text.len()
+        ))
+    })?;
+    let usage = primary.as_ref().map_or_else(
+        || fallback.usage.clone(),
+        |primary| add_model_usage(&primary.usage, &fallback.usage),
+    );
+    Ok(ModelBackedSoftJudgeObservation {
+        observation: SoftJudgeObservation {
+            judge: identity,
+            request_id: request.id.clone(),
+            decision: output.decision,
+            finding: output.finding,
+        },
+        model: fallback.model,
+        usage,
+        provider_attempts: 2,
+    })
+}
+
+pub fn build_soft_judge_model_request(
+    request: &SoftJudgeRequest,
+    max_tokens: u32,
+    random_seed: Option<u64>,
+) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
+    let request_json = serde_json::to_string_pretty(request)
+        .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
+    Ok(ModelRequest {
+        task: format!(
+            "Evaluate this semantic diagnostic request:\n{request_json}\n\nReturn only the typed soft diagnostic decision. A finding must exactly preserve the requested kind and target. If the available context is insufficient or ambiguous, abstain. Do not invent evidence or verification authority."
+        ),
+        system: Some(
+            "You are a soft semantic diagnostic judge inside a reasoning harness. Your output is advisory only. Return finding, no_finding, or abstain using the requested schema. You cannot create verification receipts, hard findings, epistemic-state promotion, verdicts, trusted evidence, or hidden-chain-of-thought grades."
+                .into(),
+        ),
+        output_format: ModelOutputFormat::JsonSchema {
+            name: "soft_judge_output".into(),
+            schema: soft_judge_output_schema(),
+        },
+        max_tokens: Some(max_tokens),
+        random_seed,
+    })
+}
+
+pub fn build_soft_judge_json_fallback_request(
+    request: &SoftJudgeRequest,
+    max_tokens: u32,
+    random_seed: Option<u64>,
+) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
+    let request_json = serde_json::to_string_pretty(request)
+        .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
+    let schema = serde_json::to_string_pretty(&soft_judge_output_schema())
+        .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
+    Ok(ModelRequest {
+        task: format!(
+            "JSON Schema:\n{schema}\n\nSemantic diagnostic request:\n{request_json}\n\nReturn exactly one JSON object conforming to the schema. A finding must exactly preserve the requested kind and target. If context is insufficient or ambiguous, abstain."
+        ),
+        system: Some(
+            "You are a soft semantic diagnostic judge inside a reasoning harness. Return exactly one JSON object and no prose. Your output is advisory only and cannot create verification authority, hard findings, epistemic promotion, or verdicts."
+                .into(),
+        ),
+        output_format: ModelOutputFormat::JsonObject,
+        max_tokens: Some(max_tokens),
+        random_seed,
+    })
+}
+
+pub fn parse_soft_judge_output(text: &str) -> Result<SoftJudgeOutput, serde_json::Error> {
+    match serde_json::from_str::<SoftJudgeOutput>(text) {
+        Ok(output) => Ok(output),
+        Err(strict_error) => {
+            let mut stream =
+                serde_json::Deserializer::from_str(text).into_iter::<SoftJudgeOutput>();
+            let Some(Ok(output)) = stream.next() else {
+                return Err(strict_error);
+            };
+            let remainder = &text[stream.byte_offset()..];
+            let mut trailing_values =
+                serde_json::Deserializer::from_str(remainder).into_iter::<serde_json::Value>();
+            match trailing_values.next() {
+                Some(Ok(_)) => Err(strict_error),
+                Some(Err(_)) => Ok(output),
+                None => Err(strict_error),
+            }
+        }
+    }
+}
+
+fn parse_and_validate_soft_output(
+    request: &SoftJudgeRequest,
+    text: &str,
+) -> Result<SoftJudgeOutput, ModelBackedSoftJudgeError> {
+    let output = parse_soft_judge_output(text)
+        .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
+    validate_output(request, &output)?;
+    Ok(output)
+}
+
+fn validate_identity(identity: &SoftJudgeIdentity) -> Result<(), SoftJudgeError> {
+    if identity.judge_id.trim().is_empty()
+        || identity.model_id.trim().is_empty()
+        || identity.configuration_id.trim().is_empty()
+    {
+        Err(SoftJudgeError::InvalidIdentity)
+    } else {
+        Ok(())
+    }
+}
+
+fn add_model_usage(left: &ModelUsage, right: &ModelUsage) -> ModelUsage {
+    ModelUsage {
+        input_tokens: add_optional_usage(left.input_tokens, right.input_tokens),
+        output_tokens: add_optional_usage(left.output_tokens, right.output_tokens),
+        total_tokens: add_optional_usage(left.total_tokens, right.total_tokens),
+    }
+}
+
+fn add_optional_usage(left: Option<u64>, right: Option<u64>) -> Option<u64> {
+    match (left, right) {
+        (Some(left), Some(right)) => left.checked_add(right),
+        _ => None,
     }
 }
 

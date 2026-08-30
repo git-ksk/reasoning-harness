@@ -12,15 +12,16 @@ use reasoning_harness_core::{
     AdversarialDiscoveryPass, AssumptionDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult,
     BenchmarkComparison, BenchmarkFixture, ClaimCorpusSummary, CorpusManifest,
     DiagnosticObservation, DiagnosticTrial, EvidenceQualificationPass, HarnessInput, ModelAdapter,
-    ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact, ReasoningCandidate,
-    RepeatedDiagnosticReport, ResolutionBenchmarkAggregate, ResolutionBenchmarkCaseResult,
-    ResolutionBenchmarkFixture, SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport,
-    StrictAcceptancePolicy, StructuredFactConflictDetector, TrustedVerificationPass,
-    VerificationPass, VerificationReceipt, aggregate_benchmark, aggregate_claim_corpus,
-    aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
-    aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
-    build_candidate_request, evaluate, evaluate_benchmark_fixture_with_diagnostics,
-    evaluate_resolution_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
+    ModelBackedSoftJudgeError, ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact,
+    ReasoningCandidate, RepeatedDiagnosticReport, ResolutionBenchmarkAggregate,
+    ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, SoftJudgeCalibrationFixture,
+    SoftJudgeCalibrationReport, SoftJudgeIdentity, SoftJudgeObservation, StrictAcceptancePolicy,
+    StructuredFactConflictDetector, TrustedVerificationPass, VerificationPass, VerificationReceipt,
+    aggregate_benchmark, aggregate_claim_corpus, aggregate_repeated_diagnostics,
+    aggregate_resolution_benchmark, aggregate_soft_judge_calibration,
+    build_candidate_json_fallback_request, build_candidate_request, evaluate,
+    evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture,
+    frameworks::five_whys::FiveWhysRestatementPass, run_harness, run_model_backed_soft_judge,
     structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
@@ -71,6 +72,14 @@ impl LiveGenerator {
             Provider::Nvidia => NvidiaAdapter::from_env(model)
                 .map(Self::Nvidia)
                 .map_err(|error| error.to_string()),
+        }
+    }
+
+    fn adapter(&self) -> &dyn ModelAdapter {
+        match self {
+            Self::Mistral(adapter) => adapter,
+            Self::Google(adapter) => adapter,
+            Self::Nvidia(adapter) => adapter,
         }
     }
 
@@ -331,10 +340,25 @@ enum Command {
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
-    /// Evaluate the offline soft semantic-judge calibration corpus.
+    /// Evaluate recorded or live soft semantic-judge calibration.
     EvalJudges {
         /// Directory containing SoftJudgeCalibrationFixture JSON cases.
         target: PathBuf,
+        /// Optional live provider. Without this, committed recorded observations are used.
+        #[arg(long, value_enum)]
+        provider: Option<Provider>,
+        /// Provider model identifier used for live semantic judging.
+        #[arg(long, default_value = "ministral-8b-latest")]
+        model: String,
+        /// Maximum tokens for one soft-judge generation.
+        #[arg(long, default_value_t = 256)]
+        max_tokens: u32,
+        /// Base random seed. Trial N uses base_seed + N.
+        #[arg(long)]
+        seed: Option<u64>,
+        /// Number of live calibration trials. Recorded mode requires exactly one.
+        #[arg(long, default_value_t = 1)]
+        trials: usize,
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
@@ -499,6 +523,80 @@ struct ResolutionBenchmarkOutput {
     cases: Vec<ResolutionBenchmarkCaseResult>,
 }
 
+#[derive(Debug, Clone, Serialize)]
+struct LiveSoftJudgeFailure {
+    fixture_id: String,
+    trial: usize,
+    failure_class: &'static str,
+    latency_ms: u128,
+    message: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct LiveSoftJudgeCase {
+    fixture_id: String,
+    trial: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    observation: Option<SoftJudgeObservation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider_model: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    usage: Option<ModelUsage>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider_attempts: Option<u32>,
+    latency_ms: u128,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    failure: Option<LiveSoftJudgeFailure>,
+}
+
+#[derive(Debug, Serialize)]
+struct LiveSoftJudgeOperationalSummary {
+    attempted_runs: usize,
+    successful_runs: usize,
+    failed_runs: usize,
+    failure_classes: BTreeMap<&'static str, usize>,
+    input_tokens: u64,
+    output_tokens: u64,
+    total_tokens: u64,
+    successful_provider_attempts: u64,
+    total_latency_ms: u128,
+}
+
+#[derive(Debug, Serialize)]
+struct LiveSoftJudgeTrialSummary {
+    trial_index: usize,
+    expected_cases: usize,
+    successful_cases: usize,
+    operationally_complete: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    report: Option<SoftJudgeCalibrationReport>,
+}
+
+#[derive(Debug, Serialize)]
+struct LiveSoftJudgeStability {
+    requested_trials: usize,
+    complete_trials: usize,
+    incomplete_trials: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    precision: Option<ScalarDistribution>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    recall: Option<ScalarDistribution>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    decision_coverage: Option<ScalarDistribution>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    abstentions: Option<ScalarDistribution>,
+}
+
+#[derive(Debug, Serialize)]
+struct LiveSoftJudgeOutput {
+    provider: &'static str,
+    model: String,
+    operational: LiveSoftJudgeOperationalSummary,
+    stability: LiveSoftJudgeStability,
+    per_trial: Vec<LiveSoftJudgeTrialSummary>,
+    cases: Vec<LiveSoftJudgeCase>,
+}
+
 #[derive(Debug, Clone)]
 struct BenchmarkRunConfig<'a> {
     provider: Option<Provider>,
@@ -621,14 +719,42 @@ async fn run(cli: Cli) -> Result<(), String> {
             }
             Ok(())
         }
-        Command::EvalJudges { target, format } => {
+        Command::EvalJudges {
+            target,
+            provider,
+            model,
+            max_tokens,
+            seed,
+            trials,
+            format,
+        } => {
             if !target.is_dir() {
                 return Err("eval-judges requires a fixture directory".into());
             }
-            let report = run_soft_judge_calibration_suite(&target)?;
-            match format {
-                OutputFormat::Human => print_soft_judge_calibration_human(&report),
-                OutputFormat::Json => print_json(&report)?,
+            if trials == 0 {
+                return Err("--trials must be at least 1".into());
+            }
+            match provider {
+                None => {
+                    if trials != 1 {
+                        return Err("recorded eval-judges supports exactly one trial".into());
+                    }
+                    let report = run_soft_judge_calibration_suite(&target)?;
+                    match format {
+                        OutputFormat::Human => print_soft_judge_calibration_human(&report),
+                        OutputFormat::Json => print_json(&report)?,
+                    }
+                }
+                Some(provider) => {
+                    let output = run_live_soft_judge_calibration_suite(
+                        &target, provider, &model, max_tokens, seed, trials,
+                    )
+                    .await?;
+                    match format {
+                        OutputFormat::Human => print_live_soft_judge_human(&output),
+                        OutputFormat::Json => print_json(&output)?,
+                    }
+                }
             }
             Ok(())
         }
@@ -962,9 +1088,9 @@ fn run_resolution_fixture_suite(directory: &PathBuf) -> Result<ResolutionBenchma
     Ok(ResolutionBenchmarkOutput { aggregate, cases })
 }
 
-fn run_soft_judge_calibration_suite(
+fn load_soft_judge_fixtures(
     directory: &PathBuf,
-) -> Result<SoftJudgeCalibrationReport, String> {
+) -> Result<Vec<SoftJudgeCalibrationFixture>, String> {
     let entries =
         fs::read_dir(directory).map_err(|error| format!("{}: {error}", directory.display()))?;
     let mut paths = entries
@@ -982,11 +1108,200 @@ fn run_soft_judge_calibration_suite(
             directory.display()
         ));
     }
-    let fixtures = paths
-        .iter()
-        .map(read_json)
-        .collect::<Result<Vec<SoftJudgeCalibrationFixture>, _>>()?;
+    paths.iter().map(read_json).collect()
+}
+
+fn run_soft_judge_calibration_suite(
+    directory: &PathBuf,
+) -> Result<SoftJudgeCalibrationReport, String> {
+    let fixtures = load_soft_judge_fixtures(directory)?;
     aggregate_soft_judge_calibration(&fixtures).map_err(|error| error.to_string())
+}
+
+async fn run_live_soft_judge_calibration_suite(
+    directory: &PathBuf,
+    provider: Provider,
+    model: &str,
+    max_tokens: u32,
+    seed: Option<u64>,
+    trials: usize,
+) -> Result<LiveSoftJudgeOutput, String> {
+    let fixtures = load_soft_judge_fixtures(directory)?;
+    let generator = LiveGenerator::from_provider(provider, model)?;
+    let identity = SoftJudgeIdentity {
+        judge_id: format!("live:{}:{model}", provider_name(provider)),
+        model_id: model.to_string(),
+        configuration_id: "soft-semantic-v1".into(),
+    };
+    let mut cases = Vec::with_capacity(fixtures.len() * trials);
+    let mut per_trial = Vec::with_capacity(trials);
+
+    for trial_index in 0..trials {
+        let trial_seed = seed
+            .map(|base| {
+                base.checked_add(trial_index as u64)
+                    .ok_or_else(|| "soft-judge trial seed overflow".to_string())
+            })
+            .transpose()?;
+        let mut evaluated = fixtures.clone();
+        let mut successful_cases = 0usize;
+        let mut trial_failed = false;
+
+        for fixture in &mut evaluated {
+            fixture.recorded_observations.clear();
+            let started = Instant::now();
+            match run_model_backed_soft_judge(
+                generator.adapter(),
+                identity.clone(),
+                &fixture.request,
+                max_tokens,
+                trial_seed,
+            )
+            .await
+            {
+                Ok(result) => {
+                    let latency_ms = started.elapsed().as_millis();
+                    successful_cases += 1;
+                    fixture
+                        .recorded_observations
+                        .push(result.observation.clone());
+                    cases.push(LiveSoftJudgeCase {
+                        fixture_id: fixture.id.clone(),
+                        trial: trial_index,
+                        observation: Some(result.observation),
+                        provider_model: Some(result.model),
+                        usage: Some(result.usage),
+                        provider_attempts: Some(result.provider_attempts),
+                        latency_ms,
+                        failure: None,
+                    });
+                }
+                Err(error) => {
+                    let latency_ms = started.elapsed().as_millis();
+                    trial_failed = true;
+                    let failure_class = soft_judge_failure_class(&error);
+                    let message = error.to_string();
+                    cases.push(LiveSoftJudgeCase {
+                        fixture_id: fixture.id.clone(),
+                        trial: trial_index,
+                        observation: None,
+                        provider_model: None,
+                        usage: None,
+                        provider_attempts: None,
+                        latency_ms,
+                        failure: Some(LiveSoftJudgeFailure {
+                            fixture_id: fixture.id.clone(),
+                            trial: trial_index,
+                            failure_class,
+                            latency_ms,
+                            message,
+                        }),
+                    });
+                }
+            }
+        }
+
+        let operationally_complete = !trial_failed && successful_cases == fixtures.len();
+        let report = if operationally_complete {
+            Some(
+                aggregate_soft_judge_calibration(&evaluated)
+                    .map_err(|error| format!("live soft-judge calibration failed: {error}"))?,
+            )
+        } else {
+            None
+        };
+        per_trial.push(LiveSoftJudgeTrialSummary {
+            trial_index,
+            expected_cases: fixtures.len(),
+            successful_cases,
+            operationally_complete,
+            report,
+        });
+    }
+
+    let operational = live_soft_judge_operational_summary(&cases);
+    let stability = live_soft_judge_stability(&per_trial, trials);
+    Ok(LiveSoftJudgeOutput {
+        provider: provider_name(provider),
+        model: model.to_string(),
+        operational,
+        stability,
+        per_trial,
+        cases,
+    })
+}
+
+fn soft_judge_failure_class(error: &ModelBackedSoftJudgeError) -> &'static str {
+    if let Some(kind) = error.model_error_kind() {
+        return model_error_class(kind);
+    }
+    match error {
+        ModelBackedSoftJudgeError::InvalidStructuredOutput(_) => "protocol",
+        ModelBackedSoftJudgeError::SoftJudge(_) => "soft_judge_protocol",
+        ModelBackedSoftJudgeError::Model(_) => unreachable!("model errors have a classified kind"),
+    }
+}
+
+fn live_soft_judge_operational_summary(
+    cases: &[LiveSoftJudgeCase],
+) -> LiveSoftJudgeOperationalSummary {
+    let mut failure_classes = BTreeMap::new();
+    let mut input_tokens = 0u64;
+    let mut output_tokens = 0u64;
+    let mut total_tokens = 0u64;
+    let mut successful_provider_attempts = 0u64;
+    let mut successful_runs = 0usize;
+    let total_latency_ms = cases.iter().map(|case| case.latency_ms).sum();
+
+    for case in cases {
+        if let Some(failure) = &case.failure {
+            *failure_classes.entry(failure.failure_class).or_insert(0) += 1;
+            continue;
+        }
+        successful_runs += 1;
+        if let Some(usage) = &case.usage {
+            input_tokens += usage.input_tokens.unwrap_or(0);
+            output_tokens += usage.output_tokens.unwrap_or(0);
+            total_tokens += observed_total_tokens(usage).unwrap_or(0);
+        }
+        successful_provider_attempts += case.provider_attempts.unwrap_or(0) as u64;
+    }
+
+    LiveSoftJudgeOperationalSummary {
+        attempted_runs: cases.len(),
+        successful_runs,
+        failed_runs: cases.len().saturating_sub(successful_runs),
+        failure_classes,
+        input_tokens,
+        output_tokens,
+        total_tokens,
+        successful_provider_attempts,
+        total_latency_ms,
+    }
+}
+
+fn live_soft_judge_stability(
+    per_trial: &[LiveSoftJudgeTrialSummary],
+    requested_trials: usize,
+) -> LiveSoftJudgeStability {
+    let complete = per_trial
+        .iter()
+        .filter(|trial| trial.operationally_complete)
+        .filter_map(|trial| trial.report.as_ref())
+        .filter_map(|report| report.judges.first())
+        .collect::<Vec<_>>();
+    let complete_trials = complete.len();
+    LiveSoftJudgeStability {
+        requested_trials,
+        complete_trials,
+        incomplete_trials: requested_trials.saturating_sub(complete_trials),
+        precision: scalar_distribution(complete.iter().filter_map(|metrics| metrics.precision)),
+        recall: scalar_distribution(complete.iter().filter_map(|metrics| metrics.recall)),
+        decision_coverage: scalar_distribution(
+            complete.iter().map(|metrics| metrics.decision_coverage),
+        ),
+        abstentions: scalar_distribution(complete.iter().map(|metrics| metrics.abstentions as f64)),
+    }
 }
 
 fn fixtures_per_trial(total_runs: usize, trials: usize) -> usize {
@@ -1452,6 +1767,52 @@ fn print_soft_judge_calibration_human(report: &SoftJudgeCalibrationReport) {
     );
 }
 
+fn print_live_soft_judge_human(output: &LiveSoftJudgeOutput) {
+    println!(
+        "live_soft_judge: provider={} model={} attempted={} successful={} failed={}",
+        output.provider,
+        output.model,
+        output.operational.attempted_runs,
+        output.operational.successful_runs,
+        output.operational.failed_runs
+    );
+    println!(
+        "trials: requested={} complete={} incomplete={}",
+        output.stability.requested_trials,
+        output.stability.complete_trials,
+        output.stability.incomplete_trials
+    );
+    if let Some(precision) = &output.stability.precision {
+        println!(
+            "precision_stability: mean={:.3} min={:.3} max={:.3} stddev={:.3} n={}",
+            precision.mean, precision.min, precision.max, precision.stddev, precision.count
+        );
+    }
+    if let Some(recall) = &output.stability.recall {
+        println!(
+            "recall_stability: mean={:.3} min={:.3} max={:.3} stddev={:.3} n={}",
+            recall.mean, recall.min, recall.max, recall.stddev, recall.count
+        );
+    }
+    if let Some(coverage) = &output.stability.decision_coverage {
+        println!(
+            "coverage_stability: mean={:.3} min={:.3} max={:.3} stddev={:.3} n={}",
+            coverage.mean, coverage.min, coverage.max, coverage.stddev, coverage.count
+        );
+    }
+    println!(
+        "tokens: input={} output={} total={} successful_provider_attempts={} latency_ms={}",
+        output.operational.input_tokens,
+        output.operational.output_tokens,
+        output.operational.total_tokens,
+        output.operational.successful_provider_attempts,
+        output.operational.total_latency_ms
+    );
+    if !output.operational.failure_classes.is_empty() {
+        println!("failure_classes: {:?}", output.operational.failure_classes);
+    }
+}
+
 fn format_optional_metric(value: Option<f64>) -> String {
     value.map_or_else(|| "n/a".into(), |value| format!("{value:.3}"))
 }
@@ -1559,6 +1920,43 @@ mod candidate_json_tests {
         assert_eq!(summary.generated_runs, 0);
         assert_eq!(summary.failed_runs, 1);
         assert_eq!(summary.failure_classes.get("rate_limit"), Some(&1));
+    }
+
+    #[test]
+    fn live_soft_judge_stability_excludes_incomplete_trials() {
+        let fixture_dir =
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/semantic-judges");
+        let report = run_soft_judge_calibration_suite(&fixture_dir).unwrap();
+        let per_trial = vec![
+            LiveSoftJudgeTrialSummary {
+                trial_index: 0,
+                expected_cases: 9,
+                successful_cases: 9,
+                operationally_complete: true,
+                report: Some(report.clone()),
+            },
+            LiveSoftJudgeTrialSummary {
+                trial_index: 1,
+                expected_cases: 9,
+                successful_cases: 8,
+                operationally_complete: false,
+                report: None,
+            },
+            LiveSoftJudgeTrialSummary {
+                trial_index: 2,
+                expected_cases: 9,
+                successful_cases: 9,
+                operationally_complete: true,
+                report: Some(report),
+            },
+        ];
+        let stability = live_soft_judge_stability(&per_trial, 3);
+        assert_eq!(stability.complete_trials, 2);
+        assert_eq!(stability.incomplete_trials, 1);
+        assert_eq!(stability.precision.as_ref().unwrap().count, 2);
+        assert_eq!(stability.recall.as_ref().unwrap().count, 2);
+        assert_eq!(stability.decision_coverage.as_ref().unwrap().count, 2);
+        assert_eq!(stability.abstentions.as_ref().unwrap().count, 2);
     }
 
     #[test]

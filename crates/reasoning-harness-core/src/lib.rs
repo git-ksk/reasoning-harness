@@ -125,13 +125,16 @@ pub use resolution_benchmark::{
     ResolutionFixtureStep, ResolutionFixtureStepResult, aggregate_resolution_benchmark,
     evaluate_resolution_fixture,
 };
-pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema};
+pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema, soft_judge_output_schema};
 pub use semantic_judge::{
-    CalibrationLabel, SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftDiagnosticJudge,
-    SoftJudgeAgreement, SoftJudgeCalibrationError, SoftJudgeCalibrationFixture,
-    SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeError, SoftJudgeIdentity,
-    SoftJudgeMetrics, SoftJudgeObservation, SoftJudgeOutput, SoftJudgeRequest, SoftSemanticFinding,
-    aggregate_soft_judge_calibration, run_soft_judge, validate_calibration_fixtures,
+    CalibrationLabel, ModelBackedSoftJudge, ModelBackedSoftJudgeError,
+    ModelBackedSoftJudgeObservation, SemanticDiagnosticKind, SemanticDiagnosticTarget,
+    SoftDiagnosticJudge, SoftJudgeAgreement, SoftJudgeCalibrationError,
+    SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeError,
+    SoftJudgeIdentity, SoftJudgeMetrics, SoftJudgeObservation, SoftJudgeOutput, SoftJudgeRequest,
+    SoftSemanticFinding, aggregate_soft_judge_calibration, build_soft_judge_json_fallback_request,
+    build_soft_judge_model_request, parse_soft_judge_output, run_model_backed_soft_judge,
+    run_soft_judge, validate_calibration_fixtures,
 };
 pub use types::{
     AdversarialFinding, AdversarialFindingKind, ApplicabilityScope, CandidateClaim,

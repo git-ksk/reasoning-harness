@@ -1,6 +1,6 @@
 use serde_json::Value;
 
-use crate::{ReasoningArtifact, ReasoningCandidate};
+use crate::{ReasoningArtifact, ReasoningCandidate, SoftJudgeOutput};
 
 pub fn reasoning_artifact_schema() -> Value {
     serialize_schema(schemars::schema_for!(ReasoningArtifact))
@@ -8,6 +8,10 @@ pub fn reasoning_artifact_schema() -> Value {
 
 pub fn reasoning_candidate_schema() -> Value {
     serialize_schema(schemars::schema_for!(ReasoningCandidate))
+}
+
+pub fn soft_judge_output_schema() -> Value {
+    serialize_schema(schemars::schema_for!(SoftJudgeOutput))
 }
 
 fn serialize_schema(schema: schemars::Schema) -> Value {
