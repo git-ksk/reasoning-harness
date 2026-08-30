@@ -1,0 +1,29 @@
+{
+  "id": "v3h16",
+  "request": {
+    "id": "holdout-v3-soft-v3h16",
+    "task": "Determine whether the requested directional causal relation lacks adequate support in the supplied context.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "cache.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "throughput",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Cached workloads show higher throughput, but workload class also determines both cache eligibility and expected throughput.",
+      "The supplied analysis explicitly says the confounding prevents attributing the throughput increase to cache enablement."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

@@ -1,0 +1,19 @@
+{
+  "id": "v3h25",
+  "request": {
+    "id": "holdout-v3-soft-v3h25",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-active-records-indexed"
+    },
+    "context": [
+      "Target generalization: every active record in dataset D is indexed.",
+      "The supplied audit checked every active record in dataset D and found all of them indexed.",
+      "One archived record is not indexed, and archived records are explicitly outside the target scope."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

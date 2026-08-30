@@ -1,0 +1,18 @@
+{
+  "id": "v3h22",
+  "request": {
+    "id": "holdout-v3-soft-v3h22",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-managed-jobs-complete"
+    },
+    "context": [
+      "Target generalization: every job managed by scheduler S reaches the completed state.",
+      "Job J-77 was managed by scheduler S and terminated permanently in an error state before completion."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

@@ -111,6 +111,7 @@ on:
           - calibration
           - holdout-v1
           - holdout-v2
+          - holdout-v3
         default: calibration
 
 permissions:
@@ -268,6 +269,7 @@ jobs:
             calibration) CORPUS_DIR="fixtures/semantic-judges" ;;
             holdout-v1) CORPUS_DIR="fixtures/semantic-judges-holdout" ;;
             holdout-v2) CORPUS_DIR="fixtures/semantic-judges-holdout-v2" ;;
+            holdout-v3) CORPUS_DIR="fixtures/semantic-judges-holdout-v3" ;;
             *) echo "unsupported semantic-judge corpus" >&2; exit 2 ;;
           esac
           cargo run -q --locked -p reasoning-harness-cli -- \

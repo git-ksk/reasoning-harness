@@ -1,0 +1,29 @@
+{
+  "id": "v3h19",
+  "request": {
+    "id": "holdout-v3-soft-v3h19",
+    "task": "Determine whether the requested directional causal relation lacks adequate support in the supplied context.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "batching.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "throughput",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "A controlled test supports the requested direction for single-worker jobs.",
+      "The target relation also covers multi-worker jobs, for which only observational evidence is supplied."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

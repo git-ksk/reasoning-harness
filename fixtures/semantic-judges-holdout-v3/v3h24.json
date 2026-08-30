@@ -1,0 +1,18 @@
+{
+  "id": "v3h24",
+  "request": {
+    "id": "holdout-v3-soft-v3h24",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-v2-nodes-ready"
+    },
+    "context": [
+      "Target generalization: every version-2 node in pool P passes readiness.",
+      "A version-1 node failed readiness; the context explicitly states version-1 nodes are outside the target generalization."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

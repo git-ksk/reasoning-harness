@@ -1,0 +1,20 @@
+{
+  "id": "v3h03",
+  "request": {
+    "id": "holdout-v3-soft-v3h03",
+    "task": "Determine whether the supplied context contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "service.health",
+        "value": "healthy"
+      }
+    },
+    "context": [
+      "The current health report states that the service passed all required checks and is healthy."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

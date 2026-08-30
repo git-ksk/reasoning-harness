@@ -1,0 +1,21 @@
+{
+  "id": "v3h04",
+  "request": {
+    "id": "holdout-v3-soft-v3h04",
+    "task": "Determine whether the supplied context contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "access.mode",
+        "value": "read_only"
+      }
+    },
+    "context": [
+      "The access policy allows reads and rejects every write operation.",
+      "For this policy, allowing reads while rejecting writes is the defined read-only mode."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

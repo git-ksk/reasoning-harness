@@ -1,0 +1,21 @@
+{
+  "id": "v3h07",
+  "request": {
+    "id": "holdout-v3-soft-v3h07",
+    "task": "Determine whether the supplied context contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "feature.rollout",
+        "value": "enabled"
+      }
+    },
+    "context": [
+      "One unranked summary says rollout is enabled and another says it is disabled.",
+      "Source authority and the binding to the target environment are not established."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

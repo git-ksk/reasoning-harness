@@ -1,0 +1,29 @@
+{
+  "id": "v3h21",
+  "request": {
+    "id": "holdout-v3-soft-v3h21",
+    "task": "Determine whether the requested directional causal relation lacks adequate support in the supplied context.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "scheduler.v2",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "job.duration",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "One controlled region reports shorter job duration after enabling scheduler v2.",
+      "A second controlled region reports no effect, and the context does not resolve whether either region matches the target operating conditions."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

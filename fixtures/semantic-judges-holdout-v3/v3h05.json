@@ -1,0 +1,21 @@
+{
+  "id": "v3h05",
+  "request": {
+    "id": "holdout-v3-soft-v3h05",
+    "task": "Determine whether the supplied context contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "release.channel",
+        "value": "stable"
+      }
+    },
+    "context": [
+      "One note says the primary deployment uses the stable channel.",
+      "A second note says beta is selected, but it does not identify which deployment it describes."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

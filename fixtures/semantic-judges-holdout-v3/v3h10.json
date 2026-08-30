@@ -1,0 +1,20 @@
+{
+  "id": "v3h10",
+  "request": {
+    "id": "holdout-v3-soft-v3h10",
+    "task": "Determine whether the target premise is unsupported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "deployment.region",
+        "value": "eu-west-1"
+      }
+    },
+    "context": [
+      "Trusted structured input sets deployment.region to eu-west-1."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

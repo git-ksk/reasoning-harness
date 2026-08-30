@@ -1,0 +1,29 @@
+{
+  "id": "v3h18",
+  "request": {
+    "id": "holdout-v3-soft-v3h18",
+    "task": "Determine whether the requested directional causal relation lacks adequate support in the supplied context.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "prefetch.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "page.load",
+          "value": "fast"
+        }
+      }
+    },
+    "context": [
+      "A controlled intervention enabled prefetch for the target visit population and then disabled it in a planned rollback.",
+      "Load time improved when enabled and returned to baseline when disabled, supporting the requested direction for the target scope."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

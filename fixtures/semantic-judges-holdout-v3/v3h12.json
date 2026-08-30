@@ -1,0 +1,21 @@
+{
+  "id": "v3h12",
+  "request": {
+    "id": "holdout-v3-soft-v3h12",
+    "task": "Determine whether the target premise is unsupported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "replica.count",
+        "value": "3"
+      }
+    },
+    "context": [
+      "The context says three workers will be started.",
+      "It does not establish whether worker count is the same field or binding as replica count."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

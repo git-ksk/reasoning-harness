@@ -1,0 +1,18 @@
+{
+  "id": "v3h27",
+  "request": {
+    "id": "holdout-v3-soft-v3h27",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-current-builds-pass"
+    },
+    "context": [
+      "Target generalization: every build in the current release line passes the policy check.",
+      "A build failed the policy check, but the supplied context does not establish whether it belongs to the current or previous release line."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}
