@@ -32,7 +32,7 @@
 - semantic-loss checks
 
 ## v0.3 — framework plugins
-- extend the implemented lexical Five Whys restatement pass with evidence-aware semantic checks that remain explicitly soft unless oracle-backed
+- [done] extend the lexical Five Whys restatement pass with evidence-aware causal edge diagnostics; exact oracle-backed support/refutation is typed, unresolved semantic cases remain soft/unknown, and causal diagnostics stay outside final-verdict authority
 - first principles
 - Feynman/simplification renderer
 - framework plugin contract
