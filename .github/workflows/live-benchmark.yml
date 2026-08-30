@@ -94,6 +94,15 @@ on:
           - '5'
           - '10'
         default: '5'
+      judge_max_tokens:
+        description: Maximum output tokens for one live semantic-judge call
+        required: false
+        type: choice
+        options:
+          - '256'
+          - '512'
+          - '1024'
+        default: '256'
       judge_corpus:
         description: Semantic-judge corpus to run
         required: false
@@ -265,7 +274,7 @@ jobs:
             eval-judges "$CORPUS_DIR" \
             --provider "$PROVIDER" \
             --model "$MODEL" \
-            --max-tokens 256 \
+            --max-tokens "${{ inputs.judge_max_tokens }}" \
             --seed 1000 \
             --trials "${{ inputs.judge_trials }}" \
             --concurrency "$JUDGE_CONCURRENCY" \
