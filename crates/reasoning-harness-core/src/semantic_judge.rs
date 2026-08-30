@@ -269,11 +269,20 @@ pub async fn run_model_backed_soft_judge(
     let output = parse_and_validate_soft_output(request, &fallback.text).map_err(|error| {
         let first = primary.as_ref().map_or_else(
             || "primary schema mode unsupported".to_string(),
-            |response| format!("primary_bytes={}", response.text.len()),
+            |response| {
+                format!(
+                    "primary_bytes={} primary_shape={} primary_finish={}",
+                    response.text.len(),
+                    structured_output_shape(&response.text),
+                    finish_reason_class(response.finish_reason.as_deref())
+                )
+            },
         );
         ModelBackedSoftJudgeError::InvalidStructuredOutput(format!(
-            "{first}; fallback_bytes={}; {error}",
-            fallback.text.len()
+            "{first}; fallback_bytes={} fallback_shape={} fallback_finish={}; {error}",
+            fallback.text.len(),
+            structured_output_shape(&fallback.text),
+            finish_reason_class(fallback.finish_reason.as_deref())
         ))
     })?;
     let usage = primary.as_ref().map_or_else(
@@ -358,6 +367,41 @@ fn soft_judge_decision_guidance(kind: SemanticDiagnosticKind) -> &'static str {
             "causal_gap: finding means the supplied context affirmatively establishes that directional support for the requested causal relation is missing, for example correlation-only evidence, temporal or mechanism-only evidence without direction, explicit confounding, or an explicit viable reverse-causal alternative when direction remains undistinguished; no_finding means the supplied context explicitly supports the requested causal direction sufficiently for the requested relation and scope; abstain means some directional evidence exists but its adequacy is mixed, partial, scoped, or uncertain; imperfect causal evidence alone is not a finding"
         }
     }
+}
+
+fn finish_reason_class(finish_reason: Option<&str>) -> &'static str {
+    match finish_reason {
+        Some("stop") => "stop",
+        Some("length") => "length",
+        Some("tool_calls") => "tool_calls",
+        Some("content_filter") => "content_filter",
+        Some(_) => "other",
+        None => "missing",
+    }
+}
+
+fn structured_output_shape(text: &str) -> String {
+    let trimmed = text.trim_start();
+    if trimmed.is_empty() {
+        return "empty".into();
+    }
+    if trimmed.starts_with('{') {
+        return "json_object_start".into();
+    }
+    if trimmed.starts_with('[') {
+        return "json_array_start".into();
+    }
+    if trimmed.starts_with("```") {
+        return "markdown_fence".into();
+    }
+    if trimmed.starts_with('<') {
+        return "markup_prefix".into();
+    }
+    if let Some(byte_offset) = trimmed.find('{') {
+        let char_offset = trimmed[..byte_offset].chars().count();
+        return format!("leading_text_then_json_object:{char_offset}");
+    }
+    "non_json_text".into()
 }
 
 pub fn parse_soft_judge_output(text: &str) -> Result<SoftJudgeOutput, serde_json::Error> {
@@ -1005,6 +1049,39 @@ mod tests {
         ])
         .unwrap();
         assert_eq!(report.agreement.krippendorff_alpha_nominal, Some(1.0));
+    }
+
+    #[test]
+    fn finish_reason_diagnostic_uses_bounded_classes() {
+        assert_eq!(finish_reason_class(Some("stop")), "stop");
+        assert_eq!(finish_reason_class(Some("length")), "length");
+        assert_eq!(
+            finish_reason_class(Some("provider-specific-value")),
+            "other"
+        );
+        assert_eq!(finish_reason_class(None), "missing");
+    }
+
+    #[test]
+    fn output_shape_diagnostic_is_content_free_and_distinguishes_common_wrappers() {
+        assert_eq!(
+            structured_output_shape("  {\"decision\":\"abstain\"}"),
+            "json_object_start"
+        );
+        assert_eq!(
+            structured_output_shape("```json\n{}\n```"),
+            "markdown_fence"
+        );
+        assert_eq!(
+            structured_output_shape("<think>hidden</think>\n{}"),
+            "markup_prefix"
+        );
+        assert_eq!(
+            structured_output_shape("analysis first\n{}"),
+            "leading_text_then_json_object:15"
+        );
+        assert_eq!(structured_output_shape("plain prose"), "non_json_text");
+        assert_eq!(structured_output_shape("   "), "empty");
     }
 
     #[test]
