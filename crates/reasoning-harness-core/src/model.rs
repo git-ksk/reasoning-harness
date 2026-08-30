@@ -44,6 +44,10 @@ pub enum ModelErrorKind {
     Credentials,
     Transport,
     Provider,
+    RateLimit,
+    Quota,
+    ProviderUnavailable,
+    Timeout,
     Protocol,
     UnsupportedCapability,
 }

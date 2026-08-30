@@ -27,6 +27,19 @@ on:
           - gemini-3.1-flash-lite
           - gemini-3.5-flash-lite
         default: all
+      nvidia_model:
+        description: Optional single NVIDIA Hosted NIM model to run
+        required: false
+        type: choice
+        options:
+          - all
+          - none
+          - nvidia/nemotron-3.5-lightning-30b-a3b
+          - nvidia/nemotron-3-ultra-550b-a55b
+          - deepseek-ai/deepseek-v4-flash-0731
+          - deepseek-ai/deepseek-v4-pro-0813
+          - google/gemma-4-31b-it
+        default: all
 
 permissions:
   contents: read
@@ -62,6 +75,7 @@ jobs:
             --format json \
             > "/tmp/reason-live-${MODEL}.json"
           jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational, deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
+          test "$(jq -r '.operational.failed_runs' "/tmp/reason-live-${MODEL}.json")" -eq 0
 
   google:
     if: inputs.google_model != 'none'
@@ -107,3 +121,51 @@ jobs:
             --format json \
             > "/tmp/reason-live-${MODEL}.json"
           jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational, deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
+          test "$(jq -r '.operational.failed_runs' "/tmp/reason-live-${MODEL}.json")" -eq 0
+  nvidia:
+    if: inputs.nvidia_model != 'none'
+    name: nvidia-${{ strategy.job-index }}-${{ matrix.model }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      # Hosted trial quotas are provider-managed and can vary by account/model.
+      # Serialize NVIDIA jobs to avoid manufacturing avoidable quota pressure.
+      max-parallel: 1
+      matrix:
+        model: ${{ fromJSON(inputs.nvidia_model == 'all' && '["nvidia/nemotron-3.5-lightning-30b-a3b","nvidia/nemotron-3-ultra-550b-a55b","deepseek-ai/deepseek-v4-flash-0731","deepseek-ai/deepseek-v4-pro-0813","google/gemma-4-31b-it"]' || format('["{0}"]', inputs.nvidia_model)) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check NVIDIA API credential availability
+        id: credential
+        env:
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: |
+          if [ -n "$NVIDIA_API_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::NVIDIA_API_KEY is not configured; skipping NVIDIA live benchmark."
+          fi
+      - name: Run live NVIDIA benchmark trial
+        if: steps.credential.outputs.available == 'true'
+        env:
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          MODEL: ${{ matrix.model }}
+        run: |
+          SAFE_MODEL="${MODEL//\//_}"
+          OUTPUT="/tmp/reason-live-nvidia-${SAFE_MODEL}.json"
+          cargo run -q --locked -p reasoning-harness-cli -- \
+            eval fixtures \
+            --provider nvidia \
+            --model "$MODEL" \
+            --max-tokens 4096 \
+            --trials 1 \
+            --format json \
+            > "$OUTPUT"
+          jq '{provider, model, comparison, operational, failures: [.cases[] | select(.failure != null) | {fixture_id, trial, failure: .failure}], deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, reason: .result.harness.deterministic_failure_reason}]}' "$OUTPUT"
+          test "$(jq -r '.operational.failed_runs' "$OUTPUT")" -eq 0

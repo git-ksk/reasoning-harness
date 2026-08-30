@@ -28,7 +28,7 @@ This repository exists to measure that question rather than assume the answer.
 - Basic eval metrics for evidence coverage and unsupported accepted claims.
 - Twenty committed adversarial regression fixtures spanning direct facts, missing/scope-limited evidence, contradictions, counterexamples, causal overreach, and correct unknowns.
 - Provider-neutral Rust `ModelAdapter`; model output is always outside the correctness boundary.
-- Initial Mistral HTTP adapter in a separate Rust crate, using structured candidate output without granting provider authority.
+- Provider adapters in a separate Rust crate for Mistral, Google Gemini/AI Studio, and NVIDIA Hosted NIM; all provider output remains outside the verification authority boundary.
 - Native Rust CLI (`reason run`, `reason verify`, `reason eval`) sharing the exact same core validators and acceptance policy.
 - Native runtime is the correctness owner; CLI and eval are the first supported interfaces.
 
@@ -57,8 +57,12 @@ cargo run -p reasoning-harness-cli -- verify examples/artifact.json --format jso
 cargo run -p reasoning-harness-cli -- eval examples/artifact.json
 cargo run -p reasoning-harness-cli -- eval fixtures --format human
 
-# Optional live candidate generation (requires MISTRAL_API_KEY)
+# Optional live candidate generation
+# Mistral: requires MISTRAL_API_KEY
 cargo run -p reasoning-harness-cli -- run --input examples/input.json --provider mistral --model ministral-8b-latest --format json
+
+# NVIDIA Hosted NIM: requires NVIDIA_API_KEY
+cargo run -p reasoning-harness-cli -- run --input examples/input.json --provider nvidia --model nvidia/nemotron-3.5-lightning-30b-a3b --format json
 ```
 
-See [project status](docs/project-status.md), [research plan](docs/research-plan.md), [benchmark design](docs/benchmark.md), [architecture](docs/architecture.md), [prior art](docs/prior-art.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).
+See [project status](docs/project-status.md), [research plan](docs/research-plan.md), [benchmark design](docs/benchmark.md), [live benchmark CI](docs/live-benchmark.md), [architecture](docs/architecture.md), [prior art](docs/prior-art.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).

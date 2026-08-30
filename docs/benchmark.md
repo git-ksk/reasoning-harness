@@ -103,7 +103,7 @@ Live benchmark labels no longer bind to provider-generated claim IDs. Unsupporte
 
 `HarnessInput.hypotheses` now carries harness-owned propositions that formalize hypotheses explicitly posed by the task. Candidates cannot add or mutate these targets. The runtime materializes a missing hypothesis as an assumed claim so deterministic structured-fact verification and adversarial discovery do not depend on the provider choosing the same proposition key.
 
-The manual live workflow runs the same 20-case corpus against `ministral-3b-latest`, `ministral-8b-latest`, `ministral-14b-latest`, and `mistral-small-latest`. It also supports Google-hosted models through the Gemini Interactions API when `GEMINI_API_KEY` is configured: `gemma-4-26b-a4b-it`, `gemma-4-31b-it`, `gemini-3.1-flash-lite`, and `gemini-3.5-flash-lite`. Antigravity managed agents are intentionally excluded because they are not equivalent candidate generators. Every provider remains an untrusted candidate generator; provider output cannot grant verification authority or decide the final verdict. This matrix is diagnostic and is not a required CI gate.
+The manual live workflow runs the same 20-case corpus against `ministral-3b-latest`, `ministral-8b-latest`, `ministral-14b-latest`, and `mistral-small-latest`. It also supports Google-hosted models through the Gemini Interactions API when `GEMINI_API_KEY` is configured: `gemma-4-26b-a4b-it`, `gemma-4-31b-it`, `gemini-3.1-flash-lite`, and `gemini-3.5-flash-lite`. Antigravity managed agents are intentionally excluded because they are not equivalent candidate generators. Every provider remains an untrusted candidate generator; provider output cannot grant verification authority or decide the final verdict. This matrix is diagnostic and is not a required CI gate. NVIDIA Hosted NIM is an additional optional matrix described below.
 
 ### First 20-case cross-model result
 
@@ -132,3 +132,25 @@ The first live Gemma 4 run used `gemma-4-31b-it` through the provider-neutral Go
 This is the first successful live result from a non-Mistral model family and therefore provides an initial cross-family check of the provider-neutral boundary. It remains a single trial and does not establish a stable ranking against the Mistral models.
 
 `gemma-4-26b-a4b-it` is also kept in the diagnostic matrix, but the current GitHub project received HTTP 403 for that model while 31B succeeded with the same credential and adapter. The 26B matrix entry is therefore experimental/allow-failure until provider access is resolved.
+
+### NVIDIA Hosted NIM matrix
+
+The NVIDIA adapter uses the OpenAI-compatible Hosted NIM endpoint at `https://integrate.api.nvidia.com/v1/chat/completions` with one provider-level `NVIDIA_API_KEY`. Model IDs are data, not adapter branches. The adapter requests generic JSON mode for structured candidate generation and leaves schema validation to the existing harness-owned candidate parser and validators. No NVIDIA model output gains verification or verdict authority.
+
+The current manual NVIDIA matrix was checked against the NVIDIA Build catalog on 2026-08-30:
+
+| Model ID | Why it is in the matrix | Hosted catalog status at check time |
+| --- | --- | --- |
+| `nvidia/nemotron-3.5-lightning-30b-a3b` | Fast Nemotron-family baseline | Free Endpoint |
+| `nvidia/nemotron-3-ultra-550b-a55b` | Large Nemotron-family contrast | Free Endpoint |
+| `deepseek-ai/deepseek-v4-flash-0731` | Third-party fast/reasoning model served through NVIDIA | Free Endpoint |
+| `deepseek-ai/deepseek-v4-pro-0813` | Newer larger DeepSeek V4 contrast against Flash | Free Endpoint |
+| `google/gemma-4-31b-it` | Same Gemma model family already exercised through Google, enabling provider-level variance checks | Free Endpoint |
+
+The earlier unversioned `deepseek-ai/deepseek-v4-flash` trial identifier is not used because it is no longer listed in the current DeepSeek Hosted NIM catalog; the versioned Flash and Pro IDs above are the current entries checked for this work. Hosted model availability and trial quota are external provider state and can change without a repository change; the workflow therefore remains manual/secret-gated and does not promise a fixed RPM or token quota.
+
+NVIDIA rate-limit handling honors `Retry-After` in either delay-seconds or HTTP-date form and otherwise uses bounded exponential retry. Operational failures are classified separately as `credentials`, `rate_limit`, `quota`, `provider_unavailable`, `timeout`, `transport`, `provider_error`, `protocol`, or `unsupported_capability`. A failed live generation is recorded in the benchmark case and the remaining cases continue; the workflow then fails that model job if any live case failed, while matrix `fail-fast: false` preserves results from the other models. Successful cases continue to record provider, returned model ID, token usage when exposed, and provider latency.
+
+See [live benchmark CI](live-benchmark.md) for credential and workflow behavior.
+
+The NVIDIA adapter applies conservative 1.6-second request-start pacing (37.5 requests/minute maximum per process) to reduce avoidable pressure on hosted trial endpoints. This value is not treated as NVIDIA's contractual rate limit; model/account limits remain external state, and `Retry-After` is honored when a 429 occurs.
