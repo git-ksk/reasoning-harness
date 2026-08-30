@@ -70,13 +70,15 @@ Extend the repeated-trial layer beyond final correctness to finding frequency an
 
 These two issues are the immediate next implementation sequence. They validate that the harness diagnoses the same reasoning problem reliably before semantic scope grows.
 
-## P1 — broaden reasoning signal conservatively
+## P1 — broaden grounded reasoning signal conservatively
 
 ### #12 Assumption and unsupported-premise diagnostics
 Add a narrow assumption pass that distinguishes explicit input assumptions from candidate-introduced unsupported premises. Hard status requires harness-owned structured support; semantic discovery remains soft.
 
-### #13 Calibrated soft semantic diagnostic judges
-Before introducing broad model-backed contradiction, counterexample, causal, or assumption discovery, define a calibration corpus and reliability reporting. Judge disagreement and abstention are data, not hard truth. No model judge gains verdict or verification authority.
+### #16 Temporal, scope, and provenance evidence diagnostics
+Extend harness-owned evidence with provider-neutral validity metadata so a proposition can be checked against the evidence's explicit time window, applicability scope, and configured provenance/authority requirement.
+
+Hard findings require deterministic mismatch against explicit metadata. Missing metadata remains unknown; candidate-authored provenance cannot elevate authority; source-ranking policy stays outside domain-specific core logic. This is evidence qualification, not open-world retrieval or generic RAG orchestration.
 
 ## P2 — benchmark longevity and public research surface
 
@@ -84,6 +86,11 @@ Before introducing broad model-backed contradiction, counterexample, causal, or 
 Version the current claim and causal suites, define category/difficulty strata, score-compatibility rules, contamination notes, change discipline, and saturation warnings. Benchmark composition changes must not silently redefine historical scores.
 
 After #14, evaluate whether a larger public corpus, offline transcript scanning, or external eval-format export provides the highest research value. Avoid expanding provider count merely to increase matrix size.
+
+## P3 — calibrated semantic expansion
+
+### #13 Calibrated soft semantic diagnostic judges
+Only after deterministic robustness, diagnostic stability, assumption/evidence-qualification diagnostics, and corpus discipline are established, define a calibration boundary for model-backed semantic discovery. Judge disagreement and abstention are data, not hard truth. No model judge gains verdict or verification authority.
 
 ## Decision gates for future features
 
