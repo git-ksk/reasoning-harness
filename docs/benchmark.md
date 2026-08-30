@@ -40,9 +40,17 @@ Operational variability is reported separately. `stability.operational` includes
 
 The manual workflow defaults Mistral and Google stability studies to 5 trials/model. A 10-trial follow-up is reserved for models whose 5-trial distributions still overlap materially. NVIDIA has a separate trial-count input and remains 1 trial by default because Hosted NIM is supplementary to the Issue #6 Mistral/Google study and is slower/more capacity-sensitive.
 
+## Versioned corpus contract
+
+`fixtures/corpus/v1.json` defines corpus `1.0.0` / score-compatibility ID `corpus-v1` across 41 active deterministic cases: 20 claim, 8 causal, 5 assumption, and 8 evidence-qualification cases. Stable suite-prefixed IDs, categories, difficulty strata, scoring modes, provenance/redistribution metadata, contamination notes, and lifecycle status are part of the manifest contract. Metamorphic seed fixtures remain unscored evaluation controls.
+
+Recorded claim JSON keeps the historical top-level `comparison` unchanged and additionally exposes `corpus.stratification.by_category` and `by_difficulty`. Live runs preserve `corpus_version` and `score_compatibility_id` but omit pooled stratification so repeated/incomplete trial handling continues to be owned only by `stability.correctness`.
+
+Direct score comparison requires the same `score_compatibility_id` and unchanged metric case/scoring contract. See [corpus versioning](corpus-versioning.md) for change discipline, contamination posture, and saturation warnings.
+
 ## Recorded corpus
 
-The committed regression corpus contains 20 fixtures: 5 expected `accept`, 6 expected `reject`, and 9 expected `unknown`. It covers:
+The claim/verdict suite contains 20 fixtures: 5 expected `accept`, 6 expected `reject`, and 9 expected `unknown`. It covers:
 
 - direct structured facts across booleans, counts, versions, regions, and HTTP status;
 - missing facts and correctly preserved unknowns;

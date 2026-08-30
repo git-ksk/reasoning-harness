@@ -1,7 +1,7 @@
 use std::{
     collections::{BTreeMap, VecDeque},
     fs,
-    path::PathBuf,
+    path::{Path, PathBuf},
     process::ExitCode,
     sync::Arc,
     time::Instant,
@@ -10,11 +10,12 @@ use std::{
 use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
     AdversarialDiscoveryPass, AssumptionDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult,
-    BenchmarkComparison, BenchmarkFixture, DiagnosticObservation, DiagnosticTrial,
-    EvidenceQualificationPass, HarnessInput, ModelAdapter, ModelError, ModelErrorKind, ModelUsage,
-    ReasoningArtifact, ReasoningCandidate, RepeatedDiagnosticReport, StrictAcceptancePolicy,
-    StructuredFactConflictDetector, TrustedVerificationPass, VerificationPass, VerificationReceipt,
-    aggregate_benchmark, aggregate_repeated_diagnostics, build_candidate_json_fallback_request,
+    BenchmarkComparison, BenchmarkFixture, ClaimCorpusSummary, CorpusManifest,
+    DiagnosticObservation, DiagnosticTrial, EvidenceQualificationPass, HarnessInput, ModelAdapter,
+    ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact, ReasoningCandidate,
+    RepeatedDiagnosticReport, StrictAcceptancePolicy, StructuredFactConflictDetector,
+    TrustedVerificationPass, VerificationPass, VerificationReceipt, aggregate_benchmark,
+    aggregate_claim_corpus, aggregate_repeated_diagnostics, build_candidate_json_fallback_request,
     build_candidate_request, evaluate, evaluate_benchmark_fixture_with_diagnostics,
     frameworks::five_whys::FiveWhysRestatementPass, run_harness,
     structured_fact_verifier_for_input, validate_artifact,
@@ -453,11 +454,21 @@ struct TrialStabilitySummary {
 }
 
 #[derive(Debug, Serialize)]
+struct BenchmarkCorpusOutput {
+    corpus_version: String,
+    score_compatibility_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stratification: Option<ClaimCorpusSummary>,
+}
+
+#[derive(Debug, Serialize)]
 struct BenchmarkOutput {
     #[serde(skip_serializing_if = "Option::is_none")]
     provider: Option<&'static str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     model: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    corpus: Option<BenchmarkCorpusOutput>,
     comparison: BenchmarkComparison,
     operational: OperationalSummary,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -812,6 +823,23 @@ async fn run_fixture_suite(
         .filter_map(|case| case.result.clone())
         .collect();
     let comparison = aggregate_benchmark(&results);
+    let corpus = load_corpus_manifest(directory)?
+        .map(|manifest| {
+            let stratification = if config.provider.is_none() {
+                Some(
+                    aggregate_claim_corpus(&manifest, &results)
+                        .map_err(|error| error.to_string())?,
+                )
+            } else {
+                None
+            };
+            Ok::<_, String>(BenchmarkCorpusOutput {
+                corpus_version: manifest.corpus_version,
+                score_compatibility_id: manifest.score_compatibility_id,
+                stratification,
+            })
+        })
+        .transpose()?;
     let operational = operational_summary(&observed);
     let stability = if config.provider.is_some() {
         Some(trial_stability_summary(
@@ -825,6 +853,7 @@ async fn run_fixture_suite(
     Ok(BenchmarkOutput {
         provider: config.provider.map(provider_name),
         model: config.provider.map(|_| config.model.to_string()),
+        corpus,
         comparison,
         operational,
         stability,
@@ -835,6 +864,14 @@ async fn run_fixture_suite(
 fn fixtures_per_trial(total_runs: usize, trials: usize) -> usize {
     debug_assert!(trials > 0);
     total_runs / trials
+}
+
+fn load_corpus_manifest(directory: &Path) -> Result<Option<CorpusManifest>, String> {
+    let path = directory.join("corpus/v1.json");
+    if !path.is_file() {
+        return Ok(None);
+    }
+    read_json(&path).map(Some)
 }
 
 fn load_fixtures(directory: &PathBuf) -> Result<Vec<BenchmarkFixture>, String> {
@@ -1188,6 +1225,26 @@ fn print_benchmark_human(output: &BenchmarkOutput) {
         output.comparison.baseline.causal_edge_quality,
         output.comparison.harness.causal_edge_quality
     );
+    if let Some(corpus) = &output.corpus {
+        println!(
+            "corpus: version={} compatibility={}",
+            corpus.corpus_version, corpus.score_compatibility_id
+        );
+        if let Some(stratification) = &corpus.stratification {
+            for slice in &stratification.by_category {
+                println!(
+                    "corpus_category: {} cases={} harness_accuracy={:.3}",
+                    slice.label, slice.cases, slice.comparison.harness.verdict_accuracy
+                );
+            }
+            for slice in &stratification.by_difficulty {
+                println!(
+                    "corpus_difficulty: {} cases={} harness_accuracy={:.3}",
+                    slice.label, slice.cases, slice.comparison.harness.verdict_accuracy
+                );
+            }
+        }
+    }
     if let Some(stability) = &output.stability {
         println!(
             "trials: requested={} complete={} incomplete={}",
@@ -1467,6 +1524,19 @@ mod candidate_json_tests {
         let trial_tokens = stability.operational.complete_trial_total_tokens.unwrap();
         assert_eq!(trial_tokens.count, 1);
         assert!((trial_tokens.mean - 30.0).abs() < 1e-12);
+    }
+
+    #[test]
+    fn live_corpus_identity_serializes_without_pooled_stratification() {
+        let corpus = BenchmarkCorpusOutput {
+            corpus_version: "1.0.0".into(),
+            score_compatibility_id: "corpus-v1".into(),
+            stratification: None,
+        };
+        let json = serde_json::to_value(corpus).unwrap();
+        assert_eq!(json["corpus_version"], "1.0.0");
+        assert_eq!(json["score_compatibility_id"], "corpus-v1");
+        assert!(json.get("stratification").is_none());
     }
 
     #[test]

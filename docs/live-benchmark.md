@@ -42,6 +42,8 @@ A one-trial live result remains a diagnostic point observation and is not enough
 
 Each live model job preserves its raw JSON as a short-retention GitHub Actions artifact so the per-case/per-trial evidence can be reviewed after the workflow completes instead of relying only on console summaries.
 
+Every live fixture-suite JSON also records the committed corpus identity (`corpus_version` and `score_compatibility_id`) when a manifest is present. Live output intentionally omits pooled category/difficulty stratification: complete-trial correctness remains owned by `stability.correctness`, so partial provider failures cannot silently change a stratum denominator.
+
 ## In-model concurrency
 
 Use `--concurrency N` (1-10) to overlap independent fixture generations for one live model. Results are restored to fixture/trial order before aggregation, and one fixture failure remains isolated from other in-flight work. All workers share the same provider adapter, so NVIDIA request-start pacing and 429 `Retry-After` handling continue to apply across the run. The NVIDIA workflow defaults to 4 based on the successful 20/20 Nemotron Lightning repeat run.

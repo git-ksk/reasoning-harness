@@ -7,6 +7,7 @@ pub mod benchmark;
 pub mod candidate;
 pub mod causal;
 pub mod causal_benchmark;
+pub mod corpus;
 pub mod decision;
 pub mod diagnostic_stability;
 pub mod eval;
@@ -48,6 +49,11 @@ pub use causal::{
 pub use causal_benchmark::{
     CausalBenchmarkAggregate, CausalBenchmarkCaseResult, CausalBenchmarkFixture,
     aggregate_causal_benchmark, evaluate_causal_fixture,
+};
+pub use corpus::{
+    ClaimCorpusSummary, CorpusCaseMetadata, CorpusCaseStatus, CorpusDifficulty, CorpusError,
+    CorpusManifest, CorpusRedistribution, CorpusScoringMode, CorpusSliceComparison, CorpusSuite,
+    aggregate_claim_corpus, validate_corpus_manifest,
 };
 pub use decision::{AcceptancePolicy, StrictAcceptancePolicy};
 pub use diagnostic_stability::{
