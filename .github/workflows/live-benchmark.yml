@@ -27,6 +27,15 @@ on:
           - gemini-3.1-flash-lite
           - gemini-3.5-flash-lite
         default: all
+      trials:
+        description: Stability trials per Mistral/Google model
+        required: false
+        type: choice
+        options:
+          - '1'
+          - '5'
+          - '10'
+        default: '5'
       nvidia_model:
         description: Optional single NVIDIA Hosted NIM model to run
         required: false
@@ -36,6 +45,15 @@ on:
           - none
           - nvidia/nemotron-3.5-lightning-30b-a3b
         default: all
+      nvidia_trials:
+        description: Stability trials for the selected NVIDIA model
+        required: false
+        type: choice
+        options:
+          - '1'
+          - '5'
+          - '10'
+        default: '1'
       nvidia_concurrency:
         description: Maximum in-flight fixtures per NVIDIA model
         required: false
@@ -61,7 +79,7 @@ jobs:
     if: inputs.mistral_model != 'none'
     name: mistral-${{ matrix.model }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
@@ -72,7 +90,7 @@ jobs:
         with:
           toolchain: 1.88.0
       - uses: Swatinem/rust-cache@v2
-      - name: Run live Mistral benchmark trial
+      - name: Run live Mistral stability benchmark
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           MODEL: ${{ matrix.model }}
@@ -83,11 +101,19 @@ jobs:
             --provider mistral \
             --model "$MODEL" \
             --max-tokens 4096 \
-            --trials 1 \
+            --trials "${{ inputs.trials }}" \
             --format json \
             > "/tmp/reason-live-${MODEL}.json"
-          jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational, deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
+          jq '{model: "'"$MODEL"'", stability: .stability, comparison: .comparison, operational: .operational, deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, trial, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
           test "$(jq -r '.operational.failed_runs' "/tmp/reason-live-${MODEL}.json")" -eq 0
+      - name: Preserve Mistral benchmark JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-mistral-${{ matrix.model }}
+          path: /tmp/reason-live-${{ matrix.model }}.json
+          if-no-files-found: ignore
+          retention-days: 14
 
   google:
     if: inputs.google_model != 'none'
@@ -95,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     # Keep probing 26B without making the diagnostic matrix unusable while its larger output is characterized.
     continue-on-error: ${{ matrix.model == 'gemma-4-26b-a4b-it' }}
-    timeout-minutes: 30
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -118,7 +144,7 @@ jobs:
             echo "available=false" >> "$GITHUB_OUTPUT"
             echo "::notice::GEMINI_API_KEY is not configured; skipping Google live benchmark."
           fi
-      - name: Run live Google benchmark trial
+      - name: Run live Google stability benchmark
         if: steps.credential.outputs.available == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -129,11 +155,19 @@ jobs:
             --provider google \
             --model "$MODEL" \
             --max-tokens 4096 \
-            --trials 1 \
+            --trials "${{ inputs.trials }}" \
             --format json \
             > "/tmp/reason-live-${MODEL}.json"
-          jq '{model: "'"$MODEL"'", comparison: .comparison, operational: .operational, deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
+          jq '{model: "'"$MODEL"'", stability: .stability, comparison: .comparison, operational: .operational, deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, trial, reason: .result.harness.deterministic_failure_reason}]}' "/tmp/reason-live-${MODEL}.json"
           test "$(jq -r '.operational.failed_runs' "/tmp/reason-live-${MODEL}.json")" -eq 0
+      - name: Preserve Google benchmark JSON
+        if: always() && steps.credential.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-google-${{ matrix.model }}
+          path: /tmp/reason-live-${{ matrix.model }}.json
+          if-no-files-found: ignore
+          retention-days: 14
   nvidia:
     if: inputs.nvidia_model != 'none'
     name: nvidia-${{ strategy.job-index }}-${{ matrix.model }}
@@ -163,7 +197,7 @@ jobs:
             echo "available=false" >> "$GITHUB_OUTPUT"
             echo "::notice::NVIDIA_API_KEY is not configured; skipping NVIDIA live benchmark."
           fi
-      - name: Run live NVIDIA benchmark trial
+      - name: Run live NVIDIA benchmark
         if: steps.credential.outputs.available == 'true'
         env:
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
@@ -176,9 +210,17 @@ jobs:
             --provider nvidia \
             --model "$MODEL" \
             --max-tokens 4096 \
-            --trials 1 \
+            --trials "${{ inputs.nvidia_trials }}" \
             --concurrency "${{ inputs.nvidia_concurrency }}" \
             --format json \
             > "$OUTPUT"
-          jq '{provider, model, comparison, operational, failures: [.cases[] | select(.failure != null) | {fixture_id, trial, failure: .failure}], deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, reason: .result.harness.deterministic_failure_reason}]}' "$OUTPUT"
+          jq '{provider, model, stability, comparison, operational, failures: [.cases[] | select(.failure != null) | {fixture_id, trial, failure: .failure}], deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, reason: .result.harness.deterministic_failure_reason}]}' "$OUTPUT"
           test "$(jq -r '.operational.failed_runs' "$OUTPUT")" -eq 0
+      - name: Preserve NVIDIA benchmark JSON
+        if: always() && steps.credential.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-nvidia-${{ strategy.job-index }}
+          path: /tmp/reason-live-nvidia-*.json
+          if-no-files-found: ignore
+          retention-days: 14
