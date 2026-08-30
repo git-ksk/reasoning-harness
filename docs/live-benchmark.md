@@ -1,0 +1,35 @@
+# Live benchmark CI
+
+The live benchmark workflow is a manual research workflow. It is intentionally separate from required deterministic CI because provider availability, trial quota, rate limits, model catalog state, and stochastic output are external variables.
+
+## Credentials
+
+Repository secrets are provider-level credentials:
+
+- `MISTRAL_API_KEY` for Mistral;
+- `GEMINI_API_KEY` for Google Gemini/AI Studio;
+- `NVIDIA_API_KEY` for NVIDIA Hosted NIM.
+
+Normal `ci.yml` does not require any of these secrets. Google and NVIDIA jobs skip provider calls when their secret is absent. Credentials are sent only in provider authentication headers and must never be written to benchmark JSON, logs, committed fixtures, or issue comments.
+
+## Manual model selection
+
+`.github/workflows/live-benchmark.yml` exposes one selector per provider. The routine NVIDIA selector is intentionally narrow after the 2026-08-30 Hosted NIM research: its `all` set contains only `nvidia/nemotron-3.5-lightning-30b-a3b`. That model was the only NVIDIA research candidate to complete the full 20-case corpus without an operational failure.
+
+Other NVIDIA Hosted NIM model IDs can still be exercised through the data-driven CLI adapter for ad-hoc research. They are not routine workflow choices: GPT-OSS 20B produced 18/20 generations with two protocol failures, Gemma 4 31B produced 14/20 with five timeouts and one protocol failure, and DeepSeek V4 Flash timed out on all 20 requests in the ten-way probe. See [benchmark.md](benchmark.md#nvidia-hosted-nim-research-outcome) for the recorded results.
+
+NVIDIA jobs use `max-parallel: 1` at the model-job level. Within the selected model, the workflow defaults to fixture concurrency 4. This avoids multiplying account-level pressure across several NVIDIA models while still overlapping the slow Hosted NIM requests that proved safe for Nemotron Lightning. Neither value is an asserted provider quota.
+
+## Result and failure semantics
+
+Live benchmark JSON makes the requested top-level provider and model explicit. Each successful generation records the returned provider model ID, latency, provider attempt count, and token usage when the API exposes it. Generation failures are retained as structured case records with fixture ID, provider, requested model, latency, failure class, and a bounded diagnostic message. Aggregate correctness metrics use only successfully generated/evaluated cases; `operational.attempted_runs`, `generated_runs`, and `failed_runs` make any reduced denominator explicit.
+
+Within a model run, provider failures do not abort collection of later fixtures. After the report is produced, the workflow marks that model job failed when `operational.failed_runs` is non-zero. Deterministic harness failures remain separate in `result.harness.deterministic_failure`; provider outage, quota, timeout, or malformed provider output must not be misreported as a harness correctness failure.
+
+The committed deterministic fixture regression remains the required correctness gate. Live results are diagnostic observations and never rewrite or override deterministic verification authority.
+
+NVIDIA Hosted NIM calls use a conservative client-side minimum interval of 1.6 seconds (at most 37.5 request starts/minute per benchmark process). This is pacing, not a claimed provider quota: NVIDIA limits may vary by model/account, and HTTP `429` with `Retry-After` remains authoritative.
+
+## In-model concurrency
+
+Use `--concurrency N` (1-10) to overlap independent fixture generations for one live model. Results are restored to fixture/trial order before aggregation, and one fixture failure remains isolated from other in-flight work. All workers share the same provider adapter, so NVIDIA request-start pacing and 429 `Retry-After` handling continue to apply across the run. The NVIDIA workflow defaults to 4 based on the successful 20/20 Nemotron Lightning repeat run.

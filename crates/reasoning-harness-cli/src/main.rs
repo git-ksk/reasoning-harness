@@ -1,16 +1,23 @@
-use std::{fs, path::PathBuf, process::ExitCode, time::Instant};
+use std::{
+    collections::{BTreeMap, VecDeque},
+    fs,
+    path::PathBuf,
+    process::ExitCode,
+    sync::Arc,
+    time::Instant,
+};
 
 use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
     AdversarialDiscoveryPass, BenchmarkCaseResult, BenchmarkComparison, BenchmarkFixture,
-    HarnessInput, ModelAdapter, ModelUsage, ReasoningArtifact, ReasoningCandidate,
-    StrictAcceptancePolicy, StructuredFactConflictDetector, StructuredFactVerifier,
-    TrustedVerificationPass, VerificationPass, VerificationReceipt, aggregate_benchmark,
-    build_candidate_json_fallback_request, build_candidate_request, evaluate,
+    HarnessInput, ModelAdapter, ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact,
+    ReasoningCandidate, StrictAcceptancePolicy, StructuredFactConflictDetector,
+    StructuredFactVerifier, TrustedVerificationPass, VerificationPass, VerificationReceipt,
+    aggregate_benchmark, build_candidate_json_fallback_request, build_candidate_request, evaluate,
     evaluate_benchmark_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
     validate_artifact,
 };
-use reasoning_harness_providers::{GoogleAdapter, MistralAdapter};
+use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Serialize, de::DeserializeOwned};
 
 #[derive(Debug, Parser)]
@@ -35,6 +42,7 @@ enum OutputFormat {
 enum Provider {
     Mistral,
     Google,
+    Nvidia,
     #[value(hide = true)]
     Gemma,
 }
@@ -42,6 +50,7 @@ enum Provider {
 enum LiveGenerator {
     Mistral(MistralAdapter),
     Google(GoogleAdapter),
+    Nvidia(NvidiaAdapter),
 }
 
 impl LiveGenerator {
@@ -53,6 +62,9 @@ impl LiveGenerator {
             Provider::Google | Provider::Gemma => GoogleAdapter::from_env(model)
                 .map(Self::Google)
                 .map_err(|error| error.to_string()),
+            Provider::Nvidia => NvidiaAdapter::from_env(model)
+                .map(Self::Nvidia)
+                .map_err(|error| error.to_string()),
         }
     }
 
@@ -61,13 +73,20 @@ impl LiveGenerator {
         input: &HarnessInput,
         max_tokens: u32,
         seed: Option<u64>,
-    ) -> Result<(ReasoningCandidate, GenerationObservation), String> {
+        requested_model: &str,
+    ) -> Result<(ReasoningCandidate, GenerationObservation), GenerationFailure> {
         match self {
             Self::Mistral(adapter) => {
-                generate_with_adapter(adapter, "mistral", input, max_tokens, seed).await
+                generate_with_adapter(adapter, "mistral", requested_model, input, max_tokens, seed)
+                    .await
             }
             Self::Google(adapter) => {
-                generate_with_adapter(adapter, "google", input, max_tokens, seed).await
+                generate_with_adapter(adapter, "google", requested_model, input, max_tokens, seed)
+                    .await
+            }
+            Self::Nvidia(adapter) => {
+                generate_with_adapter(adapter, "nvidia", requested_model, input, max_tokens, seed)
+                    .await
             }
         }
     }
@@ -76,17 +95,24 @@ impl LiveGenerator {
 async fn generate_with_adapter<A: ModelAdapter>(
     adapter: &A,
     provider: &'static str,
+    requested_model: &str,
     input: &HarnessInput,
     max_tokens: u32,
     seed: Option<u64>,
-) -> Result<(ReasoningCandidate, GenerationObservation), String> {
-    let request = build_candidate_request(input, Some(max_tokens), seed)
-        .map_err(|error| error.to_string())?;
+) -> Result<(ReasoningCandidate, GenerationObservation), GenerationFailure> {
     let started = Instant::now();
+    let request = build_candidate_request(input, Some(max_tokens), seed).map_err(|error| {
+        generation_failure(
+            provider,
+            requested_model,
+            started,
+            ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+        )
+    })?;
     let first = adapter
         .generate(request)
         .await
-        .map_err(|error| error.to_string())?;
+        .map_err(|error| generation_failure(provider, requested_model, started, error))?;
     let (candidate, response, provider_attempts, usage) = match parse_candidate_json(&first.text) {
         Ok((candidate, ignored_trailing_text)) => {
             if ignored_trailing_text {
@@ -99,22 +125,46 @@ async fn generate_with_adapter<A: ModelAdapter>(
         }
         Err(first_error) => {
             let fallback = build_candidate_json_fallback_request(input, Some(max_tokens), seed)
-                .map_err(|error| error.to_string())?;
-            let second = adapter.generate(fallback).await.map_err(|error| {
-                    format!(
-                        "{provider} structured-output fallback failed after invalid first candidate (finish_reason={}, bytes={}): {error}",
-                        first.finish_reason.as_deref().unwrap_or("unknown"),
-                        first.text.len(),
+                .map_err(|error| {
+                    generation_failure(
+                        provider,
+                        requested_model,
+                        started,
+                        ModelError::new(ModelErrorKind::Protocol, error.to_string()),
                     )
                 })?;
+            let second = adapter.generate(fallback).await.map_err(|error| {
+                let kind = error.kind;
+                generation_failure(
+                    provider,
+                    requested_model,
+                    started,
+                    ModelError::new(
+                        kind,
+                        format!(
+                            "{provider} structured-output fallback failed after invalid first candidate (finish_reason={}, bytes={}): {error}",
+                            first.finish_reason.as_deref().unwrap_or("unknown"),
+                            first.text.len(),
+                        ),
+                    ),
+                )
+            })?;
             let (candidate, ignored_trailing_text) = parse_candidate_json(&second.text)
                 .map_err(|second_error| {
-                    format!(
-                        "provider returned invalid candidate JSON after structured-output fallback: first_error={first_error}; first_finish_reason={}; first_bytes={}; second_error={second_error}; second_finish_reason={}; second_bytes={}",
-                        first.finish_reason.as_deref().unwrap_or("unknown"),
-                        first.text.len(),
-                        second.finish_reason.as_deref().unwrap_or("unknown"),
-                        second.text.len(),
+                    generation_failure(
+                        provider,
+                        requested_model,
+                        started,
+                        ModelError::new(
+                            ModelErrorKind::Protocol,
+                            format!(
+                                "provider returned invalid candidate JSON after structured-output fallback: first_error={first_error}; first_finish_reason={}; first_bytes={}; second_error={second_error}; second_finish_reason={}; second_bytes={}",
+                                first.finish_reason.as_deref().unwrap_or("unknown"),
+                                first.text.len(),
+                                second.finish_reason.as_deref().unwrap_or("unknown"),
+                                second.text.len(),
+                            ),
+                        ),
                     )
                 })?;
             if ignored_trailing_text {
@@ -138,6 +188,51 @@ async fn generate_with_adapter<A: ModelAdapter>(
             cost_usd: None,
         },
     ))
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct GenerationFailure {
+    provider: &'static str,
+    model: String,
+    latency_ms: u128,
+    failure_class: &'static str,
+    message: String,
+}
+
+fn generation_failure(
+    provider: &'static str,
+    requested_model: &str,
+    started: Instant,
+    error: ModelError,
+) -> GenerationFailure {
+    GenerationFailure {
+        provider,
+        model: requested_model.to_string(),
+        latency_ms: started.elapsed().as_millis(),
+        failure_class: model_error_class(error.kind),
+        message: error.to_string(),
+    }
+}
+
+fn model_error_class(kind: ModelErrorKind) -> &'static str {
+    match kind {
+        ModelErrorKind::Credentials => "credentials",
+        ModelErrorKind::Transport => "transport",
+        ModelErrorKind::Provider => "provider_error",
+        ModelErrorKind::RateLimit => "rate_limit",
+        ModelErrorKind::Quota => "quota",
+        ModelErrorKind::ProviderUnavailable => "provider_unavailable",
+        ModelErrorKind::Timeout => "timeout",
+        ModelErrorKind::Protocol => "protocol",
+        ModelErrorKind::UnsupportedCapability => "unsupported_capability",
+    }
+}
+
+fn format_generation_failure(failure: &GenerationFailure) -> String {
+    format!(
+        "provider={} model={} failure_class={} latency_ms={}: {}",
+        failure.provider, failure.model, failure.failure_class, failure.latency_ms, failure.message
+    )
 }
 
 fn parse_candidate_json(text: &str) -> Result<(ReasoningCandidate, bool), serde_json::Error> {
@@ -211,6 +306,9 @@ enum Command {
         /// Number of live generations per fixture.
         #[arg(long, default_value_t = 1)]
         trials: usize,
+        /// Maximum number of live fixture generations in flight.
+        #[arg(long, default_value_t = 1)]
+        concurrency: usize,
         /// Optional input-token price in USD per million tokens.
         #[arg(long)]
         input_cost_per_million: Option<f64>,
@@ -264,15 +362,22 @@ struct RunOutput {
 
 #[derive(Debug, Serialize)]
 struct ObservedBenchmarkCase {
+    fixture_id: String,
     trial: usize,
-    result: BenchmarkCaseResult,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    result: Option<BenchmarkCaseResult>,
     #[serde(skip_serializing_if = "Option::is_none")]
     generation: Option<GenerationObservation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    failure: Option<GenerationFailure>,
 }
 
 #[derive(Debug, Serialize)]
 struct OperationalSummary {
+    attempted_runs: usize,
     generated_runs: usize,
+    failed_runs: usize,
+    failure_classes: BTreeMap<&'static str, usize>,
     input_tokens: u64,
     output_tokens: u64,
     total_tokens: u64,
@@ -283,6 +388,10 @@ struct OperationalSummary {
 
 #[derive(Debug, Serialize)]
 struct BenchmarkOutput {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    model: Option<String>,
     comparison: BenchmarkComparison,
     operational: OperationalSummary,
     cases: Vec<ObservedBenchmarkCase>,
@@ -295,6 +404,7 @@ struct BenchmarkRunConfig<'a> {
     max_tokens: u32,
     seed: Option<u64>,
     trials: usize,
+    concurrency: usize,
     input_cost_per_million: Option<f64>,
     output_cost_per_million: Option<f64>,
 }
@@ -327,8 +437,10 @@ async fn run(cli: Cli) -> Result<(), String> {
                 (Some(path), None) => (read_json(&path)?, None),
                 (None, Some(provider)) => {
                     let generator = LiveGenerator::from_provider(provider, &model)?;
-                    let (candidate, observation) =
-                        generator.generate(&input, max_tokens, seed).await?;
+                    let (candidate, observation) = generator
+                        .generate(&input, max_tokens, seed, &model)
+                        .await
+                        .map_err(|failure| format_generation_failure(&failure))?;
                     (candidate, Some(observation))
                 }
                 (Some(_), Some(_)) => {
@@ -402,6 +514,7 @@ async fn run(cli: Cli) -> Result<(), String> {
             max_tokens,
             seed,
             trials,
+            concurrency,
             input_cost_per_million,
             output_cost_per_million,
             format,
@@ -413,6 +526,7 @@ async fn run(cli: Cli) -> Result<(), String> {
                     max_tokens,
                     seed,
                     trials,
+                    concurrency,
                     input_cost_per_million,
                     output_cost_per_million,
                 };
@@ -423,7 +537,7 @@ async fn run(cli: Cli) -> Result<(), String> {
                 }
                 Ok(())
             } else {
-                if provider.is_some() || trials != 1 {
+                if provider.is_some() || trials != 1 || concurrency != 1 {
                     return Err(
                         "live provider and multi-trial options require a fixture directory".into(),
                     );
@@ -457,8 +571,14 @@ async fn run_fixture_suite(
     if config.trials == 0 {
         return Err("--trials must be at least 1".into());
     }
+    if !(1..=10).contains(&config.concurrency) {
+        return Err("--concurrency must be between 1 and 10".into());
+    }
     if config.provider.is_none() && config.trials != 1 {
         return Err("offline recorded fixtures support exactly one trial".into());
+    }
+    if config.provider.is_none() && config.concurrency != 1 {
+        return Err("--concurrency requires a live provider".into());
     }
     if config.input_cost_per_million.is_some() ^ config.output_cost_per_million.is_some() {
         return Err("provide both input and output token prices, or neither".into());
@@ -476,56 +596,143 @@ async fn run_fixture_suite(
     }
 
     let fixtures = load_fixtures(directory)?;
-    let generator = config
-        .provider
-        .map(|provider| LiveGenerator::from_provider(provider, config.model))
-        .transpose()?;
-    let mut observed = Vec::new();
-    for fixture in fixtures {
-        for trial in 0..config.trials {
-            let trial_seed = match config.seed {
-                Some(value) => Some(
-                    value
-                        .checked_add(trial as u64)
-                        .ok_or("trial seed overflowed u64")?,
-                ),
-                None => None,
-            };
-            let (candidate, mut generation) = if let Some(generator) = &generator {
-                let (candidate, observation) = generator
-                    .generate(&fixture.input, config.max_tokens, trial_seed)
-                    .await
-                    .map_err(|error| {
-                        format!(
-                            "fixture {} trial {} candidate generation failed: {error}",
-                            fixture.id, trial
-                        )
-                    })?;
-                (candidate, Some(observation))
-            } else {
-                (fixture.recorded_candidate.clone(), None)
-            };
+    let total_runs = fixtures
+        .len()
+        .checked_mul(config.trials)
+        .ok_or("fixture/trial count overflowed usize")?;
 
-            if let Some(observation) = generation.as_mut() {
-                observation.cost_usd = estimate_cost(
-                    &observation.usage,
-                    config.input_cost_per_million,
-                    config.output_cost_per_million,
-                );
+    let observed = if let Some(provider) = config.provider {
+        let generator = Arc::new(LiveGenerator::from_provider(provider, config.model)?);
+        let mut pending = VecDeque::new();
+        let mut sequence = 0usize;
+        for fixture in fixtures {
+            for trial in 0..config.trials {
+                pending.push_back((sequence, fixture.clone(), trial));
+                sequence += 1;
             }
+        }
+
+        let mut tasks = tokio::task::JoinSet::new();
+        let mut completed_runs = 0usize;
+        let mut ordered: Vec<Option<ObservedBenchmarkCase>> =
+            (0..total_runs).map(|_| None).collect();
+
+        loop {
+            while tasks.len() < config.concurrency {
+                let Some((sequence, fixture, trial)) = pending.pop_front() else {
+                    break;
+                };
+                let generator = Arc::clone(&generator);
+                let model = config.model.to_string();
+                let max_tokens = config.max_tokens;
+                let input_cost = config.input_cost_per_million;
+                let output_cost = config.output_cost_per_million;
+                let trial_seed = match config.seed {
+                    Some(value) => Some(
+                        value
+                            .checked_add(trial as u64)
+                            .ok_or("trial seed overflowed u64")?,
+                    ),
+                    None => None,
+                };
+                eprintln!(
+                    "[benchmark] provider={} model={} start={}/{} fixture={} trial={} in_flight={}",
+                    provider_name(provider),
+                    model,
+                    sequence + 1,
+                    total_runs,
+                    fixture.id,
+                    trial + 1,
+                    tasks.len() + 1
+                );
+                tasks.spawn(async move {
+                    let generated = generator
+                        .generate(&fixture.input, max_tokens, trial_seed, &model)
+                        .await;
+                    let case = match generated {
+                        Ok((candidate, mut observation)) => {
+                            observation.cost_usd =
+                                estimate_cost(&observation.usage, input_cost, output_cost);
+                            ObservedBenchmarkCase {
+                                fixture_id: fixture.id.clone(),
+                                trial,
+                                result: Some(evaluate_benchmark_fixture(&fixture, candidate)),
+                                generation: Some(observation),
+                                failure: None,
+                            }
+                        }
+                        Err(failure) => ObservedBenchmarkCase {
+                            fixture_id: fixture.id.clone(),
+                            trial,
+                            result: None,
+                            generation: None,
+                            failure: Some(failure),
+                        },
+                    };
+                    (sequence, case)
+                });
+            }
+
+            if tasks.is_empty() {
+                break;
+            }
+            let joined = tasks
+                .join_next()
+                .await
+                .ok_or("live benchmark task set ended unexpectedly")?
+                .map_err(|error| format!("live benchmark worker failed: {error}"))?;
+            let (sequence, case) = joined;
+            completed_runs += 1;
+            eprintln!(
+                "[benchmark] provider={} model={} completed={}/{} fixture={} trial={} status={}",
+                provider_name(provider),
+                config.model,
+                completed_runs,
+                total_runs,
+                case.fixture_id,
+                case.trial + 1,
+                if case.failure.is_some() {
+                    "failed"
+                } else {
+                    "ok"
+                }
+            );
+            ordered[sequence] = Some(case);
+        }
+
+        ordered
+            .into_iter()
+            .enumerate()
+            .map(|(index, case)| {
+                case.ok_or_else(|| format!("missing benchmark result for sequence {index}"))
+            })
+            .collect::<Result<Vec<_>, _>>()?
+    } else {
+        let mut observed = Vec::with_capacity(total_runs);
+        for fixture in fixtures {
             observed.push(ObservedBenchmarkCase {
-                trial,
-                result: evaluate_benchmark_fixture(&fixture, candidate),
-                generation,
+                fixture_id: fixture.id.clone(),
+                trial: 0,
+                result: Some(evaluate_benchmark_fixture(
+                    &fixture,
+                    fixture.recorded_candidate.clone(),
+                )),
+                generation: None,
+                failure: None,
             });
         }
-    }
+        observed
+    };
 
-    let results: Vec<BenchmarkCaseResult> =
-        observed.iter().map(|case| case.result.clone()).collect();
+    let results: Vec<BenchmarkCaseResult> = observed
+        .iter()
+        .filter_map(|case| case.result.clone())
+        .collect();
     let comparison = aggregate_benchmark(&results);
     let operational = operational_summary(&observed);
     Ok(BenchmarkOutput {
+        provider: config.provider.map(provider_name),
+        model: config.provider.map(|_| config.model.to_string()),
         comparison,
         operational,
         cases: observed,
@@ -567,6 +774,12 @@ fn estimate_cost(
 
 fn operational_summary(cases: &[ObservedBenchmarkCase]) -> OperationalSummary {
     let generations = cases.iter().filter_map(|case| case.generation.as_ref());
+    let attempted_runs = cases.len();
+    let failed_runs = cases.iter().filter(|case| case.failure.is_some()).count();
+    let mut failure_classes = BTreeMap::new();
+    for failure in cases.iter().filter_map(|case| case.failure.as_ref()) {
+        *failure_classes.entry(failure.failure_class).or_insert(0) += 1;
+    }
     let mut generated_runs = 0;
     let mut input_tokens = 0;
     let mut output_tokens = 0;
@@ -593,7 +806,10 @@ fn operational_summary(cases: &[ObservedBenchmarkCase]) -> OperationalSummary {
     }
 
     OperationalSummary {
+        attempted_runs,
         generated_runs,
+        failed_runs,
+        failure_classes,
         input_tokens,
         output_tokens,
         total_tokens,
@@ -602,7 +818,21 @@ fn operational_summary(cases: &[ObservedBenchmarkCase]) -> OperationalSummary {
     }
 }
 
+fn provider_name(provider: Provider) -> &'static str {
+    match provider {
+        Provider::Mistral => "mistral",
+        Provider::Google | Provider::Gemma => "google",
+        Provider::Nvidia => "nvidia",
+    }
+}
+
 fn print_benchmark_human(output: &BenchmarkOutput) {
+    println!(
+        "attempted_runs: {} generated_runs: {} failed_runs: {}",
+        output.operational.attempted_runs,
+        output.operational.generated_runs,
+        output.operational.failed_runs
+    );
     println!("cases: {}", output.comparison.harness.cases);
     println!(
         "verdict_accuracy: baseline={:.3} harness={:.3}",
@@ -679,5 +909,82 @@ mod candidate_json_tests {
     fn rejects_incomplete_candidate_json() {
         let text = r#"{"claims":[{"#;
         assert!(parse_candidate_json(text).is_err());
+    }
+
+    #[test]
+    fn parses_nvidia_single_model_selection() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "eval",
+            "fixtures",
+            "--provider",
+            "nvidia",
+            "--model",
+            "google/gemma-4-31b-it",
+        ])
+        .unwrap();
+        match cli.command {
+            Command::Eval {
+                provider, model, ..
+            } => {
+                assert!(matches!(provider, Some(Provider::Nvidia)));
+                assert_eq!(model, "google/gemma-4-31b-it");
+            }
+            _ => panic!("expected eval command"),
+        }
+    }
+
+    #[test]
+    fn parses_live_concurrency() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "eval",
+            "fixtures",
+            "--provider",
+            "nvidia",
+            "--model",
+            "nvidia/nemotron-3.5-lightning-30b-a3b",
+            "--concurrency",
+            "3",
+        ])
+        .unwrap();
+        match cli.command {
+            Command::Eval { concurrency, .. } => assert_eq!(concurrency, 3),
+            _ => panic!("expected eval command"),
+        }
+    }
+
+    #[test]
+    fn operational_summary_preserves_failed_generation_class() {
+        let cases = vec![ObservedBenchmarkCase {
+            fixture_id: "fixture-a".into(),
+            trial: 0,
+            result: None,
+            generation: None,
+            failure: Some(GenerationFailure {
+                provider: "nvidia",
+                model: "test-model".into(),
+                latency_ms: 12,
+                failure_class: "rate_limit",
+                message: "NVIDIA API returned HTTP 429".into(),
+            }),
+        }];
+        let summary = operational_summary(&cases);
+        assert_eq!(summary.attempted_runs, 1);
+        assert_eq!(summary.generated_runs, 0);
+        assert_eq!(summary.failed_runs, 1);
+        assert_eq!(summary.failure_classes.get("rate_limit"), Some(&1));
+    }
+
+    #[test]
+    fn maps_operational_failure_classes_stably() {
+        assert_eq!(model_error_class(ModelErrorKind::RateLimit), "rate_limit");
+        assert_eq!(model_error_class(ModelErrorKind::Quota), "quota");
+        assert_eq!(
+            model_error_class(ModelErrorKind::ProviderUnavailable),
+            "provider_unavailable"
+        );
+        assert_eq!(model_error_class(ModelErrorKind::Timeout), "timeout");
+        assert_eq!(model_error_class(ModelErrorKind::Protocol), "protocol");
     }
 }
