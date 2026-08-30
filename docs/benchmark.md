@@ -157,4 +157,4 @@ The NVIDIA adapter applies conservative 1.6-second request-start pacing (37.5 re
 
 ### Live fixture concurrency
 
-Live fixture suites accept `--concurrency N` (1-8, default 1). This controls how many independent fixture generations may be in flight while preserving output order. Provider adapters remain shared across workers, so provider-level pacing and `Retry-After` handling still apply globally. For NVIDIA Hosted NIM, `--concurrency 3` is the recommended initial research setting; the adapter's shared 1.6-second request-start spacing remains a client-side guardrail rather than a claimed provider limit.
+Live fixture suites accept `--concurrency N` (1-10, default 1). This controls how many independent fixture generations may be in flight while preserving output order. Provider adapters remain shared across workers, so provider-level pacing and `Retry-After` handling still apply globally. For NVIDIA Hosted NIM, `--concurrency 3` is the recommended initial research setting; the adapter's shared 1.6-second request-start spacing remains a client-side guardrail rather than a claimed provider limit.

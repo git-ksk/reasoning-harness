@@ -571,8 +571,8 @@ async fn run_fixture_suite(
     if config.trials == 0 {
         return Err("--trials must be at least 1".into());
     }
-    if !(1..=8).contains(&config.concurrency) {
-        return Err("--concurrency must be between 1 and 8".into());
+    if !(1..=10).contains(&config.concurrency) {
+        return Err("--concurrency must be between 1 and 10".into());
     }
     if config.provider.is_none() && config.trials != 1 {
         return Err("offline recorded fixtures support exactly one trial".into());
