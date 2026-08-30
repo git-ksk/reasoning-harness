@@ -71,8 +71,8 @@ Primary question: does the resolution loop reject false closure and preserve `un
 
 ## Planned runtime capabilities
 
-- temporal, scope, and provenance evidence qualification (#16)
-- versioned/stratified benchmark corpus (#14)
+- [implemented] temporal, scope, and provenance evidence qualification (#16)
+- [implemented] versioned/stratified benchmark corpus v1 with stable base-case identity (#14)
 - provider-neutral typed resolution requests
 - bounded resolution attempt/token/time policies
 - resolver adapters that remain outside the correctness authority boundary
@@ -101,7 +101,7 @@ The first benchmark holds the generated candidate constant between a naive basel
 
 The benchmark must penalize both false acceptance and trivial over-conservatism. Therefore verdict accuracy and per-class accept/reject/unknown recall are reported alongside unsupported accepted claims.
 
-Future resolution-loop benchmarks must preserve the same base-case identity across one-shot, diagnose-only, and bounded-resolution variants. A recovered case must not silently replace the original correctness denominator. Operational failures, resolution exhaustion, and missing resolver coverage are reported separately from correctness.
+Future resolution-loop benchmarks must preserve the same corpus-v1 stable base-case identity across one-shot, diagnose-only, and bounded-resolution variants. A recovered case must not silently replace the original correctness denominator. Operational failures, resolution exhaustion, and missing resolver coverage are reported separately from correctness.
 
 ## Oracle-controlled regression vs open-world research
 

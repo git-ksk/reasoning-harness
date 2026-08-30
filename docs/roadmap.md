@@ -115,10 +115,18 @@ Open-world retrieval, domain-specific source rankings, and generic RAG orchestra
 
 ## P2 — benchmark contract before end-to-end product claims
 
-### #14 Version and stratify the benchmark corpus
-Version the current claim, causal, assumption, and evidence-qualification suites; define category/difficulty strata, score-compatibility rules, contamination notes, change discipline, and saturation warnings. Benchmark composition changes must not silently redefine historical scores.
+### #14 Version and stratify the benchmark corpus — implemented
+- [done] corpus v1 manifest covers 20 claim, 8 causal, 5 assumption, and 8 evidence-qualification cases with stable suite-prefixed IDs
+- [done] category/difficulty/scoring/provenance/redistribution/contamination/lifecycle metadata is explicit and validated
+- [done] `score_compatibility_id` defines direct score-comparison compatibility instead of inferring it from version strings
+- [done] recorded claim eval reports category and difficulty slices alongside the unchanged historical aggregate
+- [done] live eval records corpus identity but leaves repeated-trial stratification to future complete-trial-aware reporting
+- [done] case add/change/deprecate/supersede discipline, contamination posture, and saturation warning policy are documented
+- [done] public manifest coverage and obvious provider/credential coupling are deterministic CI checks
 
-The corpus should also establish stable baselines for future resolution-loop research: diagnose-only, one-shot generation, and bounded-resolution variants must be comparable without changing denominators underneath the result.
+Corpus v1 now establishes the stable base-case identities needed for direct, diagnose-only, and bounded-resolution comparisons without changing denominators underneath recovery metrics.
+
+With #16 and #14 complete, #22 bounded grounded resolution/finalization is the next implementation phase. #13 calibrated semantic judges remains sequenced after that runtime boundary is established.
 
 ## P3 — grounded resolution and finalization runtime
 

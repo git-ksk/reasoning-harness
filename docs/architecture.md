@@ -193,6 +193,14 @@ The evaluator compares semantic diagnostic signatures separately from raw findin
 
 See [metamorphic reasoning robustness](metamorphic-testing.md) for the current transform contract.
 
+## Versioned corpus measurement boundary
+
+`CorpusManifest` is evaluation metadata, not runtime authority. It fixes stable suite-prefixed case identity, category/difficulty strata, scoring mode, provenance/redistribution notes, contamination posture, and lifecycle status independently from model/provider output. `score_compatibility_id` makes direct score-comparison compatibility explicit.
+
+Recorded claim stratification reuses the existing `BenchmarkComparison` aggregation and therefore cannot redefine correctness semantics. Live runs record corpus identity but do not pool category/difficulty scores across repeated or incomplete trials. Future resolution variants must reuse stable base case IDs so recovery metrics remain additions to, not replacements for, the original denominator.
+
+See [versioned benchmark corpus](corpus-versioning.md) for compatibility and change rules.
+
 ## Repeated diagnostic measurement boundary
 
 Repeated diagnostic aggregation is an evaluation/reporting boundary, not a verifier. `DiagnosticSignal` records adversarial findings, candidate-normalization codes, causal finding/reason observations, assumption signals, and evidence-qualification findings without granting any of them new authority. `stability.diagnostics` is serialized alongside, not inside, final correctness stability.
