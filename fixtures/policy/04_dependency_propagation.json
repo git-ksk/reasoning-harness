@@ -1,0 +1,125 @@
+{
+  "id": "dependency_propagation",
+  "artifact": {
+    "task": "Determine whether the feature is enabled.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "fixture primary-like record",
+        "observation": "The feature is enabled.",
+        "facts": {
+          "feature.enabled": "true"
+        },
+        "metadata": {
+          "temporal": {
+            "effective_from_unix_seconds": 100,
+            "effective_until_unix_seconds": 200
+          },
+          "scope": {
+            "region": {
+              "kind": "values",
+              "values": [
+                "r1"
+              ]
+            }
+          },
+          "provenance_class": "secondary"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "feature.enabled",
+        "value": "true"
+      }
+    ],
+    "authority_policy": {
+      "ranks": {
+        "untrusted": 0,
+        "secondary": 1,
+        "primary": 2
+      }
+    },
+    "verification_receipts": [
+      {
+        "id": "receipt-1",
+        "verifier": "fixture_oracle",
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "claim_id": "c1",
+        "conclusion": "supported",
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "feature.enabled = true",
+        "state": "supported",
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      },
+      {
+        "id": "c2",
+        "statement": "feature.usable = true",
+        "state": "inferred",
+        "proposition": {
+          "key": "feature.usable",
+          "value": "true"
+        },
+        "evidence_ids": []
+      }
+    ],
+    "inferences": [
+      {
+        "id": "i1",
+        "premise_claim_ids": [
+          "c1"
+        ],
+        "conclusion_claim_id": "c2",
+        "method": "derived"
+      }
+    ]
+  },
+  "policy": {
+    "version_id": "policy-dependency",
+    "source_layers": [
+      "run"
+    ],
+    "evidence": {
+      "as_of_unix_seconds": 150,
+      "scope": {
+        "region": {
+          "kind": "values",
+          "values": [
+            "r1"
+          ]
+        }
+      },
+      "minimum_authority_class": "primary"
+    },
+    "allow_derived_support": true,
+    "soft_finding_escalation": "ignore"
+  },
+  "expected_verdict": "unknown",
+  "expected_invalidated_claim_ids": [
+    "c1",
+    "c2"
+  ],
+  "expected_invalidated_inference_ids": [
+    "i1"
+  ],
+  "expected_invalidated_receipt_ids": [
+    "receipt-1"
+  ],
+  "expected_finalization_invalidated": true
+}

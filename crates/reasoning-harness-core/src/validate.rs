@@ -351,20 +351,7 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
         let matching_claims = artifact
             .claims
             .iter()
-            .filter(|claim| {
-                receipt
-                    .claim_statement
-                    .as_ref()
-                    .is_none_or(|statement| statement == &claim.statement)
-                    && receipt
-                        .proposition
-                        .as_ref()
-                        .is_none_or(|proposition| claim.proposition.as_ref() == Some(proposition))
-                    && receipt
-                        .claim_id
-                        .as_ref()
-                        .is_none_or(|claim_id| claim_id == &claim.id)
-            })
+            .filter(|claim| crate::verification::receipt_matches(receipt, claim))
             .count();
         if matching_claims != 1 {
             diagnostics.push(Diagnostic {

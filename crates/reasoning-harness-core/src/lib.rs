@@ -19,6 +19,7 @@ pub mod generation;
 pub mod harness;
 pub mod metamorphic;
 pub mod model;
+pub mod reasoning_policy;
 pub mod resolution;
 pub mod resolution_benchmark;
 pub mod schema;
@@ -93,6 +94,12 @@ pub use metamorphic::{
 pub use model::{
     ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
     ModelUsage,
+};
+pub use reasoning_policy::{
+    PolicyEscalation, PolicyEscalationAction, PolicyEvidenceConstraints, PolicyInvalidation,
+    PolicyInvalidationReason, PolicyInvalidationTarget, ReasoningPolicy, ReasoningPolicyError,
+    ReasoningPolicyLayer, ReasoningPolicyTransition, SoftFindingEscalation, apply_reasoning_policy,
+    compose_reasoning_policy, constrain_resolution_policy, escalation_for_soft_observation,
 };
 pub use resolution::{
     AcquiredEvidence, DefaultResolutionPlanner, EvidenceAdmissionPolicy,

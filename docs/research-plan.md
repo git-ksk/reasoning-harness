@@ -79,6 +79,8 @@ Primary question: does the resolution loop reject false closure and preserve `un
 - [implemented] candidate repair/regeneration followed by mandatory re-verification
 - [implemented] grounded finalization with factual claim coverage checks
 - [implemented] explicit resolution/finalization terminal states including grounded, qualified, refuted, exhausted, unavailable, human-review, unresolved, and abstain
+- [implemented] composable reasoning policy with policy-change dependency/finalization invalidation (#27)
+- durable reasoning threads, checkpoint/resume/fork, and deterministic replay (#28)
 - [implemented] calibrated soft semantic-judge contract and offline reliability metrics (#13); live semantic discovery remains optional/manual
 
 ## Planned diagnostic/reasoning work

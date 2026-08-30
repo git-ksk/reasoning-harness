@@ -26,6 +26,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Harness-owned temporal/scope/provenance evidence metadata and requirements with qualification-aware built-in structured verification.
 - Versioned corpus v1 manifest covering 41 deterministic claim/causal/assumption/evidence-qualification cases with stable IDs, category/difficulty strata, score compatibility, provenance, contamination, redistribution, and lifecycle metadata.
 - Provider-neutral bounded resolution requests/results, resolver and trusted-verifier adapter boundaries, explicit evidence admission, per-run/per-request budgets, mandatory re-verification, and terminal-state accounting.
+- Composable `ReasoningPolicy` layers with policy identity, conservative authority/scope/resolver capability composition, immutable-snapshot invalidation, inference dependency propagation, finalization invalidation, and soft-finding escalation without truth authority.
 - Grounded finalization with typed factual-claim coverage and re-routing of newly introduced factual propositions through hypothesis/resolution/verification.
 - Nine deterministic controlled resolution scenarios plus `reason eval-resolution`, reported separately from corpus correctness and repeated diagnostic stability.
 - Manual, secret-isolated live benchmark workflow spanning Mistral, Google-hosted Gemma/Gemini, and a narrowed routine NVIDIA Nemotron target.
@@ -35,7 +36,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 
 ### Reasoning control plane
 
-ADR-0003 defines the next durable-runtime layer without expanding core into a generic agent framework: composable `ReasoningPolicy`, append-oriented `ReasoningThread` events, checkpoint/resume/fork, and policy-change invalidation. The design reuses #22 acquisition/verification boundaries and explicitly defers skills/subagents. Implementation is split into #27 policy/invalidation and #28 durable-thread issues and does not block #13 soft-judge calibration.
+ADR-0003 defines the durable-runtime layer without expanding core into a generic agent framework. #27 now implements composable `ReasoningPolicy` and policy-change dependency invalidation while reusing #16/#22 authority boundaries. #28 remains open for append-oriented `ReasoningThread` events, checkpoint/resume/fork, and deterministic replay. Skills/subagents remain deferred.
 
 
 ### Grounded runtime integration gaps

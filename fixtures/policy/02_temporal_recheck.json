@@ -1,0 +1,102 @@
+{
+  "id": "temporal_recheck",
+  "artifact": {
+    "task": "Determine whether the feature is enabled.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "fixture primary-like record",
+        "observation": "The feature is enabled.",
+        "facts": {
+          "feature.enabled": "true"
+        },
+        "metadata": {
+          "temporal": {
+            "effective_from_unix_seconds": 100,
+            "effective_until_unix_seconds": 200
+          },
+          "scope": {
+            "region": {
+              "kind": "values",
+              "values": [
+                "r1"
+              ]
+            }
+          },
+          "provenance_class": "secondary"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "feature.enabled",
+        "value": "true"
+      }
+    ],
+    "authority_policy": {
+      "ranks": {
+        "untrusted": 0,
+        "secondary": 1,
+        "primary": 2
+      }
+    },
+    "verification_receipts": [
+      {
+        "id": "receipt-1",
+        "verifier": "fixture_oracle",
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "claim_id": "c1",
+        "conclusion": "supported",
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ],
+    "claims": [
+      {
+        "id": "c1",
+        "statement": "feature.enabled = true",
+        "state": "supported",
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "evidence_ids": [
+          "e1"
+        ]
+      }
+    ]
+  },
+  "policy": {
+    "version_id": "policy-temporal",
+    "source_layers": [
+      "run"
+    ],
+    "evidence": {
+      "as_of_unix_seconds": 250,
+      "scope": {
+        "region": {
+          "kind": "values",
+          "values": [
+            "r1"
+          ]
+        }
+      },
+      "minimum_authority_class": "secondary"
+    },
+    "allow_derived_support": true,
+    "soft_finding_escalation": "ignore"
+  },
+  "expected_verdict": "unknown",
+  "expected_invalidated_claim_ids": [
+    "c1"
+  ],
+  "expected_invalidated_inference_ids": [],
+  "expected_invalidated_receipt_ids": [
+    "receipt-1"
+  ],
+  "expected_finalization_invalidated": true
+}
