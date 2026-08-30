@@ -1,0 +1,21 @@
+{
+  "id": "partial_support",
+  "description": "Support for only one member of a multi-cause relation remains unknown.",
+  "artifact": {
+    "task": "Explain why deployment failed.",
+    "claims": [
+      {"id":"cause-a","statement":"Database lock persisted","state":"assumed","proposition":{"key":"deploy.db_lock","value":"true"}},
+      {"id":"cause-b","statement":"Retry budget was exhausted","state":"assumed","proposition":{"key":"deploy.retry_exhausted","value":"true"}},
+      {"id":"effect","statement":"Deployment failed","state":"assumed","proposition":{"key":"deploy.failed","value":"true"}}
+    ],
+    "inferences": [
+      {"id":"cause-edge","premise_claim_ids":["cause-a","cause-b"],"conclusion_claim_id":"effect","method":"causal_forward"}
+    ]
+  },
+  "evidence": [
+    {"id":"ce-partial","source":"fixture-oracle","relation":{"causes":[{"key":"deploy.db_lock","value":"true"}],"effect":{"key":"deploy.failed","value":"true"}},"conclusion":"supports"}
+  ],
+  "expected_statuses": ["unknown"],
+  "expected_hard_findings": 0,
+  "expected_soft_findings": 1
+}
