@@ -1,3 +1,5 @@
+#![cfg_attr(test, allow(clippy::field_reassign_with_default))]
+
 pub mod adversarial;
 pub mod benchmark;
 pub mod candidate;
