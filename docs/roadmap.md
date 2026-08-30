@@ -152,7 +152,7 @@ The core now owns the bounded control protocol, not domain acquisition. Generic 
 - [done] preserve repair as untrusted replacement + complete re-verification
 - [done] defer skills/subagents and generic workflow orchestration until benchmark evidence justifies them
 
-ADR-0003 split implementation into #27 policy/invalidation and #28 durable-thread tracks. #27 is now implemented; #28 remains the next durable-runtime step.
+ADR-0003 control-plane implementation is complete across #27 policy/invalidation and #28 durable-thread replay.
 
 ### #27 Composable reasoning policy and dependency invalidation — implemented
 - [done] typed global/domain/run `ReasoningPolicyLayer` composition with stable effective policy version identity
@@ -168,6 +168,20 @@ ADR-0003 split implementation into #27 policy/invalidation and #28 durable-threa
 
 See [reasoning policy and dependency invalidation](reasoning-policy.md).
 
+### #28 Durable reasoning threads and checkpoint replay — implemented
+- [done] stable thread, checkpoint, event, candidate, and fork-lineage identities with schema/policy version binding
+- [done] append-oriented task, candidate, artifact, soft-finding, resolution-attempt, policy, invalidation, checkpoint, interrupt/resume/fork, and finalization events
+- [done] deterministic checkpoint/resume reconstruction of explicit harness-owned state
+- [done] interrupted work is frozen and cannot be mistaken for verified/finalized state
+- [done] fork creates a new lineage without rewriting source history; finalized source threads remain immutable
+- [done] policy-change and invalidation events are replayed through deterministic #27 re-evaluation, preventing serialized authority injection
+- [done] active policy is rechecked when accepted artifacts are recorded
+- [done] recorded #22 resolution attempts are observations only; replay never re-executes resolver side effects
+- [done] abstract `ReasoningThreadStore` boundary with no filesystem/database/cloud backend in core
+- [done] credential-free replay/tamper tests and explicit no-hidden-chain-of-thought persistence contract
+
+See [durable reasoning threads and deterministic replay](reasoning-thread.md). Concrete storage products, retention policy, UI/session surfaces, and content-addressed blob stores remain outside core.
+
 ## P4 — calibrated semantic expansion
 
 ### #13 Calibrated soft semantic diagnostic judges — implemented
@@ -182,7 +196,7 @@ See [reasoning policy and dependency invalidation](reasoning-policy.md).
 
 Live semantic discovery is now permitted as optional/manual research under this boundary, but a judge remains soft even when its calibration metrics are strong. It may suggest a resolution target; hard authority must still come from evidence qualification or an explicit trusted verifier.
 
-With #13 and #27 complete, #28 durable reasoning threads/checkpoint replay is the next runtime implementation step unless live research exposes a higher-priority failure.
+With #13, #27, and #28 complete, the deterministic authority/control-plane roadmap is implemented through durable replay. The next phase should be selected from live research or concrete consumer integration pressure rather than adding generic agent orchestration by default.
 
 ## Decision gates for future features
 

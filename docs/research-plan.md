@@ -78,6 +78,8 @@ Primary question: does the resolution loop reject false closure and preserve `un
 - [implemented contract] resolver adapters remain outside the correctness authority boundary; concrete domain adapters are deferred
 - [implemented] candidate repair/regeneration followed by mandatory re-verification
 - [implemented] grounded finalization with factual claim coverage checks
+- [implemented] composable reasoning policy/invalidation (#27)
+- [implemented] durable typed ReasoningThread checkpoint/resume/fork replay (#28)
 - [implemented] explicit resolution/finalization terminal states including grounded, qualified, refuted, exhausted, unavailable, human-review, unresolved, and abstain
 - [implemented] composable reasoning policy with policy-change dependency/finalization invalidation (#27)
 - durable reasoning threads, checkpoint/resume/fork, and deterministic replay (#28)

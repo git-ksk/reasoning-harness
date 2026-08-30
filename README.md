@@ -59,6 +59,7 @@ See [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md) for the ta
 - A pass-based harness runtime that fails closed when a pass produces invalid state.
 - Provider-neutral bounded resolution with explicit resolver/admission/verifier boundaries, per-run and per-request budgets, mandatory re-verification, terminal-state accounting, and grounded final-claim coverage.
 - Composable `ReasoningPolicy` constraints for authority/scope/time/resolver capabilities plus immutable-snapshot dependency invalidation when policy changes.
+- Durable `ReasoningThread` event/checkpoint replay with fail-closed interrupt/resume, non-destructive fork lineage, and abstract persistence storage.
 - Deterministic metamorphic robustness checks, repeated-trial diagnostic stability reporting, and calibrated soft semantic-judge evaluation with explicit abstention/agreement metrics.
 - A versioned corpus-v1 manifest covering 41 committed claim, causal, assumption, and evidence-qualification cases with stable IDs and category/difficulty strata.
 - Provider-neutral Rust `ModelAdapter`; model output is always outside the correctness boundary.

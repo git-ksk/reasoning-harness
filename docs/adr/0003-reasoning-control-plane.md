@@ -152,9 +152,9 @@ Rejected:
 This ADR creates two focused future implementation tracks:
 
 1. #27 — `ReasoningPolicy` composition, capability/promotion rules, and dependency invalidation. **Implemented.**
-2. #28 — `ReasoningThread` events, checkpoint/resume/fork, and deterministic reconstruction. **Next.**
+2. #28 — `ReasoningThread` events, checkpoint/resume/fork, and deterministic reconstruction. **Implemented.**
 
-They are not prerequisites for #13 soft-judge calibration. #13 should proceed now, with its typed soft findings designed so they can later be recorded as non-authoritative thread events.
+Both control-plane tracks are now implemented. #13 soft-judge calibration is also implemented; typed soft findings may be recorded as non-authoritative thread observations but never gain replay authority.
 
 ## Research references
 

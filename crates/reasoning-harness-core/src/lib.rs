@@ -20,6 +20,7 @@ pub mod harness;
 pub mod metamorphic;
 pub mod model;
 pub mod reasoning_policy;
+pub mod reasoning_thread;
 pub mod resolution;
 pub mod resolution_benchmark;
 pub mod schema;
@@ -100,6 +101,12 @@ pub use reasoning_policy::{
     PolicyInvalidationReason, PolicyInvalidationTarget, ReasoningPolicy, ReasoningPolicyError,
     ReasoningPolicyLayer, ReasoningPolicyTransition, SoftFindingEscalation, apply_reasoning_policy,
     compose_reasoning_policy, constrain_resolution_policy, escalation_for_soft_observation,
+};
+pub use reasoning_thread::{
+    REASONING_THREAD_SCHEMA_VERSION, ReasoningCheckpoint, ReasoningThread, ReasoningThreadError,
+    ReasoningThreadEvent, ReasoningThreadEventKind, ReasoningThreadLineage, ReasoningThreadReplay,
+    ReasoningThreadSnapshot, ReasoningThreadStatus, ReasoningThreadStore, ThreadCandidateState,
+    policy_invalidations, replay_thread, validate_thread,
 };
 pub use resolution::{
     AcquiredEvidence, DefaultResolutionPlanner, EvidenceAdmissionPolicy,
