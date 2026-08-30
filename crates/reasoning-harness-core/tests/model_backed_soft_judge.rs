@@ -103,8 +103,6 @@ fn structured_schema_exposes_only_soft_decision_fields() {
     let serialized = serde_json::to_string(&schema).unwrap();
     assert!(serialized.contains("decision"));
     assert!(serialized.contains("finding"));
-    assert!(serialized.contains("anyOf") || serialized.contains("oneOf"));
-    assert!(serialized.contains("additionalProperties"));
     for forbidden in [
         "verification_receipt",
         "verification_receipts",
@@ -232,33 +230,15 @@ async fn malformed_fallback_fails_closed() {
 }
 
 #[test]
-fn model_requests_use_global_three_way_rule_and_compact_concern_definitions() {
+fn model_requests_define_kind_specific_finding_no_finding_and_abstain_semantics() {
     let mut unsupported = request();
     unsupported.kind = SemanticDiagnosticKind::UnsupportedPremise;
     let primary = build_soft_judge_model_request(&unsupported, 128, Some(3)).unwrap();
     assert!(primary.task.contains("unsupported_premise:"));
-    assert!(primary.task.contains("affirmatively shown to lack support"));
-    assert!(primary.task.contains("clear semantic paraphrase"));
-    assert!(
-        primary
-            .task
-            .contains("finding: the supplied context affirmatively supports")
-    );
-    assert!(
-        primary
-            .task
-            .contains("no_finding: the supplied context affirmatively resolves or negates")
-    );
-    assert!(
-        primary
-            .task
-            .contains("abstain: neither conclusion is sufficiently supported")
-    );
-    assert!(
-        primary
-            .task
-            .contains("Do not treat mere absence of proof as a finding")
-    );
+    assert!(primary.task.contains("introduced without support"));
+    assert!(primary.task.contains("clear paraphrase"));
+    assert!(primary.task.contains("no_finding means"));
+    assert!(primary.task.contains("abstain only when"));
 
     let mut causal = request();
     causal.kind = SemanticDiagnosticKind::CausalGap;
@@ -276,14 +256,17 @@ fn model_requests_use_global_three_way_rule_and_compact_concern_definitions() {
     };
     let fallback = build_soft_judge_json_fallback_request(&causal, 128, Some(3)).unwrap();
     assert!(fallback.task.contains("causal_gap:"));
+    assert!(fallback.task.contains("reverse-causal alternative"));
     assert!(
         fallback
             .task
-            .contains("undistinguished viable reverse direction")
+            .contains("mixed, partial, scoped, or uncertain")
     );
-    assert!(fallback.task.contains(
-        "merely imperfect, partial, or scoped evidence does not by itself establish a gap"
-    ));
+    assert!(
+        fallback
+            .task
+            .contains("imperfect causal evidence alone is not a finding")
+    );
     assert!(fallback.task.contains("Use only the supplied context"));
 
     let mut contradiction = request();
@@ -291,7 +274,7 @@ fn model_requests_use_global_three_way_rule_and_compact_concern_definitions() {
     let contradiction_request =
         build_soft_judge_model_request(&contradiction, 128, Some(3)).unwrap();
     assert!(contradiction_request.task.contains("paraphrase"));
-    assert!(contradiction_request.task.contains("equivalent-expression"));
+    assert!(contradiction_request.task.contains("equivalent wording"));
 
     let mut counterexample = request();
     counterexample.kind = SemanticDiagnosticKind::Counterexample;
@@ -300,29 +283,7 @@ fn model_requests_use_global_three_way_rule_and_compact_concern_definitions() {
     assert!(
         counterexample_request
             .task
-            .contains("actually falls within its relevant scope")
+            .contains("clearly outside the target scope")
     );
-}
-
-#[tokio::test]
-async fn model_protocol_rejects_non_finding_with_finding_object() {
-    let invalid = r#"{
-      "decision":"no_finding",
-      "finding":{
-        "kind":"contradiction",
-        "target":{
-          "type":"proposition",
-          "proposition":{"key":"feature.enabled","value":"true"}
-        }
-      }
-    }"#;
-    let adapter = SequenceAdapter::new(vec![response(invalid, 10, 3), response(invalid, 10, 3)]);
-    let error = run_model_backed_soft_judge(&adapter, identity(), &request(), 128, None)
-        .await
-        .unwrap_err();
-    assert!(matches!(
-        error,
-        ModelBackedSoftJudgeError::InvalidStructuredOutput(_)
-    ));
-    assert_eq!(adapter.requests().len(), 2);
+    assert!(counterexample_request.task.contains("applicability"));
 }

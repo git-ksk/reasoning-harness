@@ -1170,7 +1170,7 @@ async fn run_live_soft_judge_calibration_suite(
     let identity = SoftJudgeIdentity {
         judge_id: format!("live:{}:{model}", provider_name(provider)),
         model_id: model.to_string(),
-        configuration_id: "soft-semantic-v4".into(),
+        configuration_id: "soft-semantic-v3".into(),
     };
     let total_runs = fixtures
         .len()

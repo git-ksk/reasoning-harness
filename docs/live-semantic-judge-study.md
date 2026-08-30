@@ -131,3 +131,21 @@ The subsequent holdout-v2 matrix showed materially different implementations of 
 The initial Nemotron 3.5 Lightning holdout run (`33321109608`) produced no complete semantic trial and is not a valid semantic score. Content-free diagnostics showed that the dominant failure was reasoning-token truncation before the final JSON. Provider-neutral reasoning minimization removed that confound on calibration (`33340942700`: 14/18 successful at 256 output tokens), but finding bias, non-finding-plus-finding protocol failures, and schema-completeness failures remained. Bounded-reasoning experiments were worse and are not merged.
 
 Issue #46 therefore treats the matrix as a contract-portability study rather than a model ranking. Issue #53 introduces a v3-semantics-preserving successor with a compact global three-way decision rule and a stricter discriminated model-facing output schema. `soft-semantic-v4` is paired with a new observation-free 28-case holdout-v3 frozen before any v4 provider measurement. See [cross-model semantic judge conformance](semantic-judge-conformance.md).
+
+## soft-semantic-v4 independent holdout-v3 matrix and rejection
+
+`soft-semantic-v4` was measured only after its 28-case holdout-v3 corpus and compatibility thresholds were frozen. Each model requested five full-corpus trials at 256 output tokens with provider-safe fixture concurrency.
+
+| model | run | operational | precision | recall | coverage | ambiguous abstention | fallback | tier |
+|---|---:|---|---:|---:|---:|---:|---:|---|
+| `ministral-8b-latest` | `33342332130` | 140/140, 5/5 complete | 0.889 | 1.000 | 0.714 | 0.667 | 0.429 | non-conformant |
+| `mistral-small-latest` | `33342547879` | 140/140, 5/5 complete | 1.000 | 1.000 | 1.000 | 0.000 | 0.050 | non-conformant |
+| `gemini-3.1-flash-lite` | `33342334655` | 140/140, 5/5 complete | 1.000 | 1.000 | 0.821 | 0.417 | 0.000 | non-conformant |
+| `ministral-14b-latest` | `33342335857` | 140/140, 5/5 complete | 0.800 | 1.000 | 0.786 | 0.500 | 0.543 | non-conformant |
+| `nvidia/nemotron-3.5-lightning-30b-a3b` | `33342337031` | 71/140; 69 protocol failures; 0/5 complete | n/a | n/a | n/a | n/a | 1.000 on successes | non-conformant |
+
+The matrix contains zero conformant and zero usable-with-limitations models, so the predeclared successor adoption gate failed. The strongest cross-family failure pattern is uncertainty collapse: ambiguous unsupported-premise and scoped causal cases became assertive findings for multiple Mistral/Google models. Ministral 8B also produced a stable labelled false positive on a semantic-equivalence case. Mistral Small made no abstentions at all.
+
+The discriminated schema did improve one separable protocol property: Ministral 14B moved from 135/140 under v3 to 140/140 under v4, eliminating its repeated non-finding-plus-finding protocol violation. That improvement is retained as research evidence but is not sufficient to adopt the combined v4 semantic/schema change. Nemotron remained strongly finding-biased: all 71 successful calls returned `finding`, while the remaining 69 failed typed parsing.
+
+The experiment is therefore rejected rather than tuned against holdout-v3. Runtime defaults return to the previously characterized `soft-semantic-v3` contract. A future successor must separate protocol/schema experiments from semantic wording experiments on calibration-only data, then freeze a new holdout-v4 before independent measurement.

@@ -6,7 +6,7 @@ use thiserror::Error;
 
 use crate::{
     CausalRelation, ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat,
-    ModelReasoningPreference, ModelRequest, ModelUsage, Proposition,
+    ModelReasoningPreference, ModelRequest, ModelUsage, Proposition, soft_judge_output_schema,
 };
 
 #[derive(
@@ -69,75 +69,6 @@ pub struct SoftJudgeOutput {
     pub decision: SoftJudgeDecision,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finding: Option<SoftSemanticFinding>,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-enum ModelFindingDecision {
-    #[serde(rename = "finding")]
-    Finding,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-enum ModelNoFindingDecision {
-    #[serde(rename = "no_finding")]
-    NoFinding,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-enum ModelAbstainDecision {
-    #[serde(rename = "abstain")]
-    Abstain,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-#[serde(deny_unknown_fields)]
-struct ModelFindingOutput {
-    decision: ModelFindingDecision,
-    finding: SoftSemanticFinding,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-#[serde(deny_unknown_fields)]
-struct ModelNoFindingOutput {
-    decision: ModelNoFindingDecision,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-#[serde(deny_unknown_fields)]
-struct ModelAbstainOutput {
-    decision: ModelAbstainDecision,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
-#[serde(untagged)]
-enum ModelSoftJudgeOutput {
-    Finding(ModelFindingOutput),
-    NoFinding(ModelNoFindingOutput),
-    Abstain(ModelAbstainOutput),
-}
-
-impl From<ModelSoftJudgeOutput> for SoftJudgeOutput {
-    fn from(output: ModelSoftJudgeOutput) -> Self {
-        match output {
-            ModelSoftJudgeOutput::Finding(output) => Self {
-                decision: SoftJudgeDecision::Finding,
-                finding: Some(output.finding),
-            },
-            ModelSoftJudgeOutput::NoFinding(_) => Self {
-                decision: SoftJudgeDecision::NoFinding,
-                finding: None,
-            },
-            ModelSoftJudgeOutput::Abstain(_) => Self {
-                decision: SoftJudgeDecision::Abstain,
-                finding: None,
-            },
-        }
-    }
-}
-
-fn model_soft_judge_output_schema() -> serde_json::Value {
-    serde_json::to_value(schemars::schema_for!(ModelSoftJudgeOutput))
-        .expect("model soft-judge JSON Schema must be serializable")
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -379,18 +310,18 @@ pub fn build_soft_judge_model_request(
 ) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
     let request_json = serde_json::to_string_pretty(request)
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
-    let concern = soft_judge_concern_definition(request.kind);
+    let decision_guidance = soft_judge_decision_guidance(request.kind);
     Ok(ModelRequest {
         task: format!(
-            "Evaluate this semantic diagnostic request:\n{request_json}\n\nRequested concern:\n{concern}\n\nDecision rule:\n- finding: the supplied context affirmatively supports the requested concern.\n- no_finding: the supplied context affirmatively resolves or negates the requested concern.\n- abstain: neither conclusion is sufficiently supported because binding, scope, applicability, authority, or evidence adequacy remains unresolved, mixed, or partial.\n\nUse only the supplied context. Do not treat mere absence of proof as a finding unless the requested concern is specifically lack of support and the context affirmatively establishes that absence. A finding must exactly preserve the requested kind and target. Do not invent evidence or verification authority."
+            "Evaluate this semantic diagnostic request:\n{request_json}\n\nDecision rule:\n{decision_guidance}\n\nUse only the supplied context. Return finding when the context affirmatively supports the requested diagnostic concern, no_finding when the context affirmatively resolves or negates that concern, and abstain only when the context is genuinely insufficient, mixed, or ambiguous. A finding must exactly preserve the requested kind and target. Do not invent evidence or verification authority."
         ),
         system: Some(
-            "You are a soft semantic diagnostic judge inside a reasoning harness. Your output is advisory only. Return exactly one schema-valid finding, no_finding, or abstain decision. You cannot create verification receipts, hard findings, epistemic-state promotion, verdicts, trusted evidence, or hidden-chain-of-thought grades."
+            "You are a soft semantic diagnostic judge inside a reasoning harness. Your output is advisory only. Return finding, no_finding, or abstain using the requested schema. You cannot create verification receipts, hard findings, epistemic-state promotion, verdicts, trusted evidence, or hidden-chain-of-thought grades."
                 .into(),
         ),
         output_format: ModelOutputFormat::JsonSchema {
             name: "soft_judge_output".into(),
-            schema: model_soft_judge_output_schema(),
+            schema: soft_judge_output_schema(),
         },
         max_tokens: Some(max_tokens),
         random_seed,
@@ -405,12 +336,12 @@ pub fn build_soft_judge_json_fallback_request(
 ) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
     let request_json = serde_json::to_string_pretty(request)
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
-    let schema = serde_json::to_string_pretty(&model_soft_judge_output_schema())
+    let schema = serde_json::to_string_pretty(&soft_judge_output_schema())
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
-    let concern = soft_judge_concern_definition(request.kind);
+    let decision_guidance = soft_judge_decision_guidance(request.kind);
     Ok(ModelRequest {
         task: format!(
-            "JSON Schema:\n{schema}\n\nSemantic diagnostic request:\n{request_json}\n\nRequested concern:\n{concern}\n\nDecision rule:\n- finding: the supplied context affirmatively supports the requested concern.\n- no_finding: the supplied context affirmatively resolves or negates the requested concern.\n- abstain: neither conclusion is sufficiently supported because binding, scope, applicability, authority, or evidence adequacy remains unresolved, mixed, or partial.\n\nUse only the supplied context. Do not treat mere absence of proof as a finding unless the requested concern is specifically lack of support and the context affirmatively establishes that absence. Return exactly one JSON object conforming to the schema. A finding must exactly preserve the requested kind and target."
+            "JSON Schema:\n{schema}\n\nSemantic diagnostic request:\n{request_json}\n\nDecision rule:\n{decision_guidance}\n\nUse only the supplied context. Return finding when the context affirmatively supports the requested diagnostic concern, no_finding when the context affirmatively resolves or negates that concern, and abstain only when the context is genuinely insufficient, mixed, or ambiguous. Return exactly one JSON object conforming to the schema. A finding must exactly preserve the requested kind and target."
         ),
         system: Some(
             "You are a soft semantic diagnostic judge inside a reasoning harness. Return exactly one JSON object and no prose. Your output is advisory only and cannot create verification authority, hard findings, epistemic promotion, or verdicts."
@@ -423,19 +354,19 @@ pub fn build_soft_judge_json_fallback_request(
     })
 }
 
-fn soft_judge_concern_definition(kind: SemanticDiagnosticKind) -> &'static str {
+fn soft_judge_decision_guidance(kind: SemanticDiagnosticKind) -> &'static str {
     match kind {
         SemanticDiagnosticKind::Contradiction => {
-            "contradiction: semantic incompatibility with the target under the same relevant binding and scope; wording, synonym, paraphrase, or equivalent-expression differences alone are not incompatibility"
+            "contradiction: finding means the supplied context contains a statement or observation that is semantically incompatible with the target under the same relevant binding and scope; lexical difference, synonymy, paraphrase, or equivalent wording alone is not a contradiction; no_finding means the supplied context semantically agrees with or supports the target, including a clear paraphrase or equivalent expression; abstain means binding, authority, scope, or applicability prevents deciding conflict versus agreement"
         }
         SemanticDiagnosticKind::Counterexample => {
-            "counterexample: a concrete case that is incompatible with the target generalization and actually falls within its relevant scope"
+            "counterexample: finding means the supplied context contains a concrete incompatible case that is applicable to the target generalization; no_finding means the supplied context affirmatively contains no applicable incompatible case for the requested check or an apparent contrary case is clearly outside the target scope; abstain means applicability of the contrary case to the target scope is uncertain"
         }
         SemanticDiagnosticKind::UnsupportedPremise => {
-            "unsupported_premise: the target premise is affirmatively shown to lack support in the supplied context; a clear semantic paraphrase can supply support when the binding is unambiguous"
+            "unsupported_premise: finding means the supplied context affirmatively indicates the target premise is introduced without support; no_finding means the supplied context directly or semantically supplies the premise, including a clear paraphrase with an unambiguous binding; abstain means support is partial, unbound, or uncertain in applicability or binding"
         }
         SemanticDiagnosticKind::CausalGap => {
-            "causal_gap: directional support for the requested causal relation is affirmatively shown to be missing; correlation-only evidence, temporal or mechanism-only evidence without direction, explicit confounding, or an undistinguished viable reverse direction can establish the concern, while merely imperfect, partial, or scoped evidence does not by itself establish a gap"
+            "causal_gap: finding means the supplied context affirmatively establishes that directional support for the requested causal relation is missing, for example correlation-only evidence, temporal or mechanism-only evidence without direction, explicit confounding, or an explicit viable reverse-causal alternative when direction remains undistinguished; no_finding means the supplied context explicitly supports the requested causal direction sufficiently for the requested relation and scope; abstain means some directional evidence exists but its adequacy is mixed, partial, scoped, or uncertain; imperfect causal evidence alone is not a finding"
         }
     }
 }
@@ -496,32 +427,11 @@ pub fn parse_soft_judge_output(text: &str) -> Result<SoftJudgeOutput, serde_json
     }
 }
 
-fn parse_model_soft_judge_output(text: &str) -> Result<SoftJudgeOutput, serde_json::Error> {
-    match serde_json::from_str::<ModelSoftJudgeOutput>(text) {
-        Ok(output) => Ok(output.into()),
-        Err(strict_error) => {
-            let mut stream =
-                serde_json::Deserializer::from_str(text).into_iter::<ModelSoftJudgeOutput>();
-            let Some(Ok(output)) = stream.next() else {
-                return Err(strict_error);
-            };
-            let remainder = &text[stream.byte_offset()..];
-            let mut trailing_values =
-                serde_json::Deserializer::from_str(remainder).into_iter::<serde_json::Value>();
-            match trailing_values.next() {
-                Some(Ok(_)) => Err(strict_error),
-                Some(Err(_)) => Ok(output.into()),
-                None => Err(strict_error),
-            }
-        }
-    }
-}
-
 fn parse_and_validate_soft_output(
     request: &SoftJudgeRequest,
     text: &str,
 ) -> Result<SoftJudgeOutput, ModelBackedSoftJudgeError> {
-    let output = parse_model_soft_judge_output(text)
+    let output = parse_soft_judge_output(text)
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
     validate_output(request, &output)?;
     Ok(output)
