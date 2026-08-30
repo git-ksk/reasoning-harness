@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    CausalEvidence, CausalInspector, CausalSupportStatus, FindingStrength, ReasoningArtifact,
+    CausalEvidence, CausalInputError, CausalInspector, CausalSupportStatus, FindingStrength,
+    ReasoningArtifact,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -41,8 +42,10 @@ pub struct CausalBenchmarkAggregate {
     pub soft_findings: usize,
 }
 
-pub fn evaluate_causal_fixture(fixture: &CausalBenchmarkFixture) -> CausalBenchmarkCaseResult {
-    let inspection = CausalInspector::new(fixture.evidence.clone()).inspect(&fixture.artifact);
+pub fn evaluate_causal_fixture(
+    fixture: &CausalBenchmarkFixture,
+) -> Result<CausalBenchmarkCaseResult, CausalInputError> {
+    let inspection = CausalInspector::new(fixture.evidence.clone())?.inspect(&fixture.artifact);
     let statuses = inspection
         .assessments
         .iter()
@@ -71,7 +74,7 @@ pub fn evaluate_causal_fixture(fixture: &CausalBenchmarkFixture) -> CausalBenchm
         .filter(|finding| finding.strength == FindingStrength::Soft)
         .count();
 
-    CausalBenchmarkCaseResult {
+    Ok(CausalBenchmarkCaseResult {
         fixture_id: fixture.id.clone(),
         edge_assessments: statuses.len(),
         supported_edges,
@@ -82,7 +85,7 @@ pub fn evaluate_causal_fixture(fixture: &CausalBenchmarkFixture) -> CausalBenchm
         expectations_met: statuses == fixture.expected_statuses
             && hard_findings == fixture.expected_hard_findings
             && soft_findings == fixture.expected_soft_findings,
-    }
+    })
 }
 
 pub fn aggregate_causal_benchmark(

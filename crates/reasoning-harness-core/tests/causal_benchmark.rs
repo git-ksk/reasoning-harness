@@ -24,7 +24,8 @@ fn causal_fixture_suite_is_a_separate_deterministic_regression_baseline() {
                 serde_json::from_slice(&fs::read(path).unwrap()).unwrap();
             evaluate_causal_fixture(&fixture)
         })
-        .collect::<Vec<_>>();
+        .collect::<Result<Vec<_>, _>>()
+        .unwrap();
     let aggregate = aggregate_causal_benchmark(&results);
 
     assert_eq!(aggregate.cases, 8);

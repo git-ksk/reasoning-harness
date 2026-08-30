@@ -57,5 +57,8 @@ fn candidate_schema_does_not_allow_model_owned_evidence() {
     let schema = reasoning_harness_core::reasoning_candidate_schema();
     let schema_text = serde_json::to_string(&schema).unwrap();
     assert!(!schema_text.contains("\"evidence\""));
+    assert!(!schema_text.contains("CausalEvidence"));
+    assert!(!schema_text.contains("CausalFinding"));
+    assert!(!schema_text.contains("verification_receipts"));
     assert!(schema_text.contains("proposed_state"));
 }

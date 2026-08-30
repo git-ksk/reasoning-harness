@@ -1,5 +1,8 @@
+use std::collections::HashSet;
+
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use thiserror::Error;
 
 use crate::frameworks::five_whys::is_lexical_restatement;
 use crate::{FindingStrength, Proposition, ReasoningArtifact};
@@ -90,14 +93,35 @@ pub struct CausalInspection {
     pub findings: Vec<CausalFinding>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Error)]
+pub enum CausalInputError {
+    #[error("causal evidence id must not be empty")]
+    EmptyEvidenceId,
+    #[error("duplicate causal evidence id: {id}")]
+    DuplicateEvidenceId { id: String },
+    #[error("causal evidence {id} has an empty source")]
+    EmptyEvidenceSource { id: String },
+    #[error("causal evidence {id} relation has no causes")]
+    EmptyCauseSet { id: String },
+    #[error("causal evidence {id} has an empty {role} proposition key/value")]
+    InvalidProposition { id: String, role: &'static str },
+    #[error("causal evidence {id} repeats cause proposition {key}={value}")]
+    DuplicateCause {
+        id: String,
+        key: String,
+        value: String,
+    },
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct CausalInspector {
     evidence: Vec<CausalEvidence>,
 }
 
 impl CausalInspector {
-    pub fn new(evidence: Vec<CausalEvidence>) -> Self {
-        Self { evidence }
+    pub fn new(evidence: Vec<CausalEvidence>) -> Result<Self, CausalInputError> {
+        validate_causal_evidence(&evidence)?;
+        Ok(Self { evidence })
     }
 
     pub fn inspect(&self, artifact: &ReasoningArtifact) -> CausalInspection {
@@ -369,15 +393,70 @@ impl CausalInspector {
     }
 }
 
+fn validate_causal_evidence(evidence: &[CausalEvidence]) -> Result<(), CausalInputError> {
+    let mut ids = HashSet::new();
+    for record in evidence {
+        if record.id.trim().is_empty() {
+            return Err(CausalInputError::EmptyEvidenceId);
+        }
+        if !ids.insert(record.id.as_str()) {
+            return Err(CausalInputError::DuplicateEvidenceId {
+                id: record.id.clone(),
+            });
+        }
+        if record.source.trim().is_empty() {
+            return Err(CausalInputError::EmptyEvidenceSource {
+                id: record.id.clone(),
+            });
+        }
+        if record.relation.causes.is_empty() {
+            return Err(CausalInputError::EmptyCauseSet {
+                id: record.id.clone(),
+            });
+        }
+        if proposition_is_empty(&record.relation.effect) {
+            return Err(CausalInputError::InvalidProposition {
+                id: record.id.clone(),
+                role: "effect",
+            });
+        }
+
+        let mut causes = HashSet::new();
+        for cause in &record.relation.causes {
+            if proposition_is_empty(cause) {
+                return Err(CausalInputError::InvalidProposition {
+                    id: record.id.clone(),
+                    role: "cause",
+                });
+            }
+            if !causes.insert((cause.key.as_str(), cause.value.as_str())) {
+                return Err(CausalInputError::DuplicateCause {
+                    id: record.id.clone(),
+                    key: cause.key.clone(),
+                    value: cause.value.clone(),
+                });
+            }
+        }
+    }
+    Ok(())
+}
+
+fn proposition_is_empty(proposition: &Proposition) -> bool {
+    proposition.key.trim().is_empty() || proposition.value.trim().is_empty()
+}
+
 fn same_relation(left: &CausalRelation, right: &CausalRelation) -> bool {
-    if left.effect != right.effect || left.causes.len() != right.causes.len() {
+    if left.effect != right.effect {
         return false;
     }
-    let mut left_causes = left.causes.clone();
-    let mut right_causes = right.causes.clone();
-    left_causes.sort_by(|a, b| (&a.key, &a.value).cmp(&(&b.key, &b.value)));
-    right_causes.sort_by(|a, b| (&a.key, &a.value).cmp(&(&b.key, &b.value)));
-    left_causes == right_causes
+    normalized_causes(&left.causes) == normalized_causes(&right.causes)
+}
+
+fn normalized_causes(causes: &[Proposition]) -> Vec<Proposition> {
+    let mut causes = causes.to_vec();
+    causes.sort_by(|a, b| (&a.key, &a.value).cmp(&(&b.key, &b.value)));
+    causes.dedup();
+    causes
 }
 
 #[cfg(test)]
@@ -427,6 +506,21 @@ mod tests {
     }
 
     #[test]
+    fn malformed_harness_owned_causal_evidence_is_rejected() {
+        let evidence = CausalEvidence {
+            id: "ce1".into(),
+            source: "".into(),
+            relation: proposed_relation(),
+            conclusion: CausalEvidenceConclusion::Supports,
+        };
+
+        assert_eq!(
+            CausalInspector::new(vec![evidence]).unwrap_err(),
+            CausalInputError::EmptyEvidenceSource { id: "ce1".into() }
+        );
+    }
+
+    #[test]
     fn exact_harness_owned_support_marks_edge_supported() {
         let evidence = CausalEvidence {
             id: "ce1".into(),
@@ -434,9 +528,67 @@ mod tests {
             relation: proposed_relation(),
             conclusion: CausalEvidenceConclusion::Supports,
         };
-        let inspection = CausalInspector::new(vec![evidence]).inspect(&five_whys_artifact());
+        let inspection = CausalInspector::new(vec![evidence])
+            .unwrap()
+            .inspect(&five_whys_artifact());
 
         assert_eq!(inspection.assessments.len(), 1);
+        assert_eq!(
+            inspection.assessments[0].status,
+            CausalSupportStatus::Supported
+        );
+        assert!(inspection.findings.is_empty());
+    }
+
+    #[test]
+    fn exact_relation_support_ignores_cause_order() {
+        let mut artifact = ReasoningArtifact::default();
+        artifact.claims = vec![
+            Claim {
+                id: "cause-a".into(),
+                statement: "Database lock persisted".into(),
+                state: EpistemicState::Assumed,
+                proposition: Some(proposition("deploy.db_lock", "true")),
+                evidence_ids: vec![],
+            },
+            Claim {
+                id: "cause-b".into(),
+                statement: "Retry budget was exhausted".into(),
+                state: EpistemicState::Assumed,
+                proposition: Some(proposition("deploy.retry_exhausted", "true")),
+                evidence_ids: vec![],
+            },
+            Claim {
+                id: "effect".into(),
+                statement: "Deployment failed".into(),
+                state: EpistemicState::Assumed,
+                proposition: Some(proposition("deploy.failed", "true")),
+                evidence_ids: vec![],
+            },
+        ];
+        artifact.inferences = vec![Inference {
+            id: "cause-edge".into(),
+            premise_claim_ids: vec!["cause-a".into(), "cause-b".into()],
+            conclusion_claim_id: "effect".into(),
+            method: "causal_forward".into(),
+        }];
+        let evidence = CausalEvidence {
+            id: "ce1".into(),
+            source: "fixture-oracle".into(),
+            relation: CausalRelation {
+                causes: vec![
+                    proposition("deploy.retry_exhausted", "true"),
+                    proposition("deploy.db_lock", "true"),
+                ],
+                effect: proposition("deploy.failed", "true"),
+            },
+            conclusion: CausalEvidenceConclusion::Supports,
+        };
+
+        let inspection = CausalInspector::new(vec![evidence])
+            .unwrap()
+            .inspect(&artifact);
+
         assert_eq!(
             inspection.assessments[0].status,
             CausalSupportStatus::Supported
@@ -467,7 +619,9 @@ mod tests {
             relation: proposed_relation(),
             conclusion: CausalEvidenceConclusion::AssociationOnly,
         };
-        let inspection = CausalInspector::new(vec![evidence]).inspect(&five_whys_artifact());
+        let inspection = CausalInspector::new(vec![evidence])
+            .unwrap()
+            .inspect(&five_whys_artifact());
 
         assert_eq!(
             inspection.assessments[0].status,
@@ -488,7 +642,9 @@ mod tests {
             relation: proposed_relation(),
             conclusion: CausalEvidenceConclusion::Refutes,
         };
-        let inspection = CausalInspector::new(vec![evidence]).inspect(&five_whys_artifact());
+        let inspection = CausalInspector::new(vec![evidence])
+            .unwrap()
+            .inspect(&five_whys_artifact());
 
         assert_eq!(
             inspection.assessments[0].status,
@@ -517,7 +673,9 @@ mod tests {
                 conclusion: CausalEvidenceConclusion::Refutes,
             },
         ];
-        let inspection = CausalInspector::new(evidence).inspect(&five_whys_artifact());
+        let inspection = CausalInspector::new(evidence)
+            .unwrap()
+            .inspect(&five_whys_artifact());
 
         assert_eq!(
             inspection.assessments[0].status,
@@ -542,7 +700,9 @@ mod tests {
             relation: reverse,
             conclusion: CausalEvidenceConclusion::Supports,
         };
-        let inspection = CausalInspector::new(vec![evidence]).inspect(&five_whys_artifact());
+        let inspection = CausalInspector::new(vec![evidence])
+            .unwrap()
+            .inspect(&five_whys_artifact());
 
         assert_eq!(
             inspection.assessments[0].status,

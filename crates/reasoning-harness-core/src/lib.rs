@@ -27,8 +27,8 @@ pub use benchmark::{
 pub use candidate::materialize_candidate;
 pub use causal::{
     CausalEdgeAssessment, CausalEvidence, CausalEvidenceConclusion, CausalFinding,
-    CausalFindingKind, CausalFindingReason, CausalInspection, CausalInspector, CausalRelation,
-    CausalSupportStatus,
+    CausalFindingKind, CausalFindingReason, CausalInputError, CausalInspection, CausalInspector,
+    CausalRelation, CausalSupportStatus,
 };
 pub use causal_benchmark::{
     CausalBenchmarkAggregate, CausalBenchmarkCaseResult, CausalBenchmarkFixture,

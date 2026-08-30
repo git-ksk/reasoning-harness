@@ -9,6 +9,7 @@ A causal relation is represented as a non-empty set of cause propositions and on
 ## Authority boundary
 
 `CausalEvidence` is harness-owned and carries provenance plus a typed conclusion: `supports`, `refutes`, or `association_only`. Candidate/model output may suggest claims and inference edges, but it cannot create trusted causal evidence or hard causal findings.
+Malformed harness-owned causal records fail at the causal input boundary: evidence IDs and sources must be non-empty, IDs must be unique, relations must contain at least one unique non-empty cause proposition, and the effect proposition must be non-empty. Invalid oracle input is not converted into an `unknown` edge result.
 
 `CausalInspector` is observational. It emits per-edge assessments and findings but does not mutate claim epistemic state, create verification receipts, or directly change the final `accept | reject | unknown` verdict. The current final verdict remains claim-oriented; whole-artifact causal gating is deliberately deferred.
 
@@ -34,3 +35,5 @@ The existing lexical restatement heuristic remains a narrow deterministic fast p
 ## Deferred scope
 
 This implementation intentionally does not provide general causal discovery, SCM/do-calculus, learned process reward models, LLM-judge final authority, provider-specific causal branches, or semantic similarity as a hard gate. Future model-backed causal critics must remain soft unless independently verified by a deterministic or external trusted oracle.
+
+Also deferred from #4 are candidate-supplied causal-evidence reference hints, a general temporal/domain-constraint reasoner, and live/repeated-trial causal diagnostic variability. The current candidate schema therefore has no causal-evidence authority fields, and the deterministic causal corpus stays outside Issue #6 correctness/availability aggregation. Those interfaces should be added only with a provider-neutral harness-owned causal input/reporting contract; none may grant candidate or model output hard authority.

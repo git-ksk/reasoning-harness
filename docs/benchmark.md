@@ -67,6 +67,13 @@ The corpus is intentionally adversarial and is still small enough to inspect cas
 | provider cost | token usage + explicit caller-supplied price rates | live only |
 | model-judge semantic score | soft evidence, not yet implemented | no hard gate |
 
+### Evidence-aware causal diagnostic regression
+
+Issue #4 adds a separate deterministic corpus under `fixtures/causal/`. It evaluates typed causal relations and per-edge support status for exact scoped support/refutation, association-only evidence, reverse-direction support, conflicting evidence, missing proposition bindings, partial multi-cause support, and scoped near-neighbors. The regression reports `supported | refuted | unknown` edge counts plus hard/soft causal finding counts.
+Malformed harness-owned causal evidence is a fixture/input error rather than a scored unknown case, so broken oracle data cannot inflate conservative-edge counts.
+
+This corpus is deliberately separate from the 20-case claim-verdict benchmark. The existing `causal_edge_quality` metric above remains the historical fixture-label metric for retained bad inference IDs; it is **not** evidence-grounded causal accuracy. Causal diagnostic results do not enter Issue #6 verdict-correctness denominators or operational-completeness calculations. Live/repeated-trial causal diagnostic variability is deferred until a provider-neutral runtime input/reporting contract exists; when added, it must remain a separate diagnostic distribution rather than a verdict authority.
+
 Provider pricing is not hard-coded into the runtime because prices change independently of harness semantics. A live run can supply explicit rates:
 
 ```bash
