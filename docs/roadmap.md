@@ -2,9 +2,23 @@
 
 ## Project direction
 
-Reasoning Harness is not trying to become a general-purpose model runner or a second Inspect/lm-eval. Its differentiator is a provider-neutral, authority-aware diagnostic layer for intermediate reasoning: deterministic structure and harness-owned evidence may create hard findings, while model-backed semantic discovery remains soft and observational until independently verified.
+Reasoning Harness is not trying to become a general-purpose model runner or a second Inspect/lm-eval. Its core differentiator is provider-neutral, authority-aware control of intermediate reasoning: deterministic structure and harness-owned evidence may create hard findings, while model-backed semantic discovery remains soft and observational until independently verified.
 
-The next phase therefore prioritizes measurement quality before adding more named reasoning frameworks.
+That diagnostic layer is a foundation, not the final product boundary.
+
+The long-term product direction is an **evidence-grounded reasoning runtime** that owns the loop around stochastic candidate generation:
+
+```text
+generate
+  -> ground / verify / diagnose
+  -> resolve missing support or revise refuted reasoning
+  -> re-verify under the same authority boundary
+  -> finalize only from sufficiently grounded propositions
+```
+
+The runtime must also be allowed to stop with `unknown`, a qualified partial answer, or abstention. Improving answerability must never require silently promoting retrieved data, model repairs, or fluent final prose into correctness authority.
+
+See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
 ## v0.1 — trustworthy intermediate state and native CLI
 - stabilize HarnessInput / ReasoningCandidate / ReasoningArtifact schemas
@@ -58,7 +72,7 @@ The next phase therefore prioritizes measurement quality before adding more name
 - single live runs remain diagnostic observations and must not be presented as stable rankings
 - NVIDIA routine coverage remains `nvidia/nemotron-3.5-lightning-30b-a3b`; other Hosted NIM model IDs are ad-hoc research inputs
 
-## P0 next — robustness and diagnostic stability
+## P0 completed — robustness and diagnostic stability
 
 ### #10 Metamorphic reasoning robustness — implemented
 - [done] provider-neutral typed transform contract
@@ -72,12 +86,10 @@ Free-form LLM paraphrase generation remains outside the hard benchmark.
 ### #11 Repeated-trial diagnostic stability — implemented
 - [done] typed diagnostic signal/report contract independent from final correctness
 - [done] per-fixture complete-trial finding frequencies and count distributions
-- [done] adversarial, candidate-normalization, and causal finding/reason signal types
+- [done] adversarial, candidate-normalization, causal, and assumption signal types
 - [done] operationally incomplete trials excluded from diagnostic denominators and reported explicitly
 - [done] 95% Wilson score intervals with exact denominator and minimum-observation policy
 - [done] live CLI JSON exposes `stability.diagnostics` alongside unchanged `stability.correctness`
-
-#10 and #11 now establish deterministic representation invariance plus repeated diagnostic measurement. #12 is the next implementation step.
 
 ## P1 — broaden grounded reasoning signal conservatively
 
@@ -90,45 +102,94 @@ Free-form LLM paraphrase generation remains outside the hard benchmark.
 - [done] five-case deterministic assumption corpus and separate detection/recognition metrics remain outside final correctness denominators
 - [done] assumption findings feed the #11 provider-neutral repeated diagnostic report without gaining verdict authority
 
-
 ### #16 Temporal, scope, and provenance evidence diagnostics
 Extend harness-owned evidence with provider-neutral validity metadata so a proposition can be checked against the evidence's explicit time window, applicability scope, and configured provenance/authority requirement.
 
 Hard findings require deterministic mismatch against explicit metadata. Missing metadata remains unknown; candidate-authored provenance cannot elevate authority; source-ranking policy stays outside domain-specific core logic. This is evidence qualification, not open-world retrieval or generic RAG orchestration.
 
-## P2 — benchmark longevity and public research surface
+This work is a prerequisite for a useful resolution loop because newly acquired evidence must be qualified for time, applicability, and authority before it can safely resolve an unknown.
+
+## P2 — benchmark contract before end-to-end product claims
 
 ### #14 Version and stratify the benchmark corpus
-Version the current claim and causal suites, define category/difficulty strata, score-compatibility rules, contamination notes, change discipline, and saturation warnings. Benchmark composition changes must not silently redefine historical scores.
+Version the current claim, causal, and assumption suites; define category/difficulty strata, score-compatibility rules, contamination notes, change discipline, and saturation warnings. Benchmark composition changes must not silently redefine historical scores.
 
-After #14, evaluate whether a larger public corpus, offline transcript scanning, or external eval-format export provides the highest research value. Avoid expanding provider count merely to increase matrix size.
+The corpus should also establish stable baselines for future resolution-loop research: diagnose-only, one-shot generation, and bounded-resolution variants must be comparable without changing denominators underneath the result.
 
-## P3 — calibrated semantic expansion
+## P3 — grounded resolution and finalization runtime
+
+This is the main step from research harness toward a general product runtime. Diagnostics become control signals for a bounded recovery loop rather than only observations.
+
+### Bounded resolution loop
+
+Add a provider-neutral runtime contract that can turn unresolved verified state into typed requests for additional evidence, deterministic verification, candidate revision, or explicit human review.
+
+Required properties:
+
+- resolution requests identify missing support without inventing the missing answer;
+- resolver output is acquired data, not trusted authority by default;
+- evidence and verifier results re-enter through existing harness-owned authority boundaries;
+- regenerated/repaired candidates are fully untrusted and re-run through normalization, validation, verification, diagnostics, and policy;
+- attempt, token, time, and resolver-class budgets are explicit;
+- exhaustion preserves `unknown`/abstain instead of forcing an answer;
+- domain-specific web/RAG/tool logic remains outside core behind adapters.
+
+### Grounded finalization
+
+Make final answer construction a first-class correctness boundary rather than a presentation afterthought.
+
+Required properties:
+
+- a finalizer consumes verified `ReasoningArtifact` state;
+- a model may render prose but cannot upgrade epistemic state;
+- factual final-answer claims must be covered by supported artifact propositions or explicitly represented as uncertainty according to policy;
+- newly introduced factual claims are routed back through the reasoning/verification loop;
+- finalization can emit grounded answer, qualified partial answer, or abstention;
+- `reason explain` can later reuse the same renderer/coverage primitives without becoming a second correctness implementation.
+
+### Resolution research metrics
+
+Report separately from ordinary correctness and diagnostic stability:
+
+- initially-unknown case recovery rate;
+- unsafe final answer rate;
+- final factual-claim coverage;
+- resolution attempts to convergence/exhaustion;
+- added token/latency/tool cost;
+- supported/refuted/exhausted terminal distribution;
+- regression against direct-generation and diagnose-only baselines.
+
+The primary success criterion is **more grounded answerable cases without increasing unsafe final answers**.
+
+## P4 — calibrated semantic expansion
 
 ### #13 Calibrated soft semantic diagnostic judges
-Only after deterministic robustness, diagnostic stability, assumption/evidence-qualification diagnostics, and corpus discipline are established, define a calibration boundary for model-backed semantic discovery. Judge disagreement and abstention are data, not hard truth. No model judge gains verdict or verification authority.
+Only after deterministic robustness, diagnostic stability, assumption/evidence-qualification diagnostics, corpus discipline, and the grounded runtime boundary are established, define a calibration boundary for model-backed semantic discovery. Judge disagreement and abstention are data, not hard truth. No model judge gains verdict or verification authority.
+
+Semantic judges may eventually help propose resolution targets or identify missing semantic links, but they remain soft inputs to the same runtime rather than becoming the runtime's source of truth.
 
 ## Decision gates for future features
 
-A proposed feature should normally satisfy at least one of these before entering P0/P1:
+A proposed feature should normally satisfy at least one of these before entering a near-term phase:
 
 1. exposes a failure mode that current verdict/diagnostic metrics cannot distinguish;
 2. improves reproducibility, calibration, uncertainty reporting, or benchmark validity;
 3. strengthens the harness-owned authority boundary;
-4. is motivated by repeated failures observed in live model runs.
+4. increases grounded answerability without increasing unsafe final output;
+5. is motivated by repeated failures observed in live model runs.
 
 Features that primarily add UI, named reasoning styles, provider breadth, or generic agent orchestration remain deferred unless real consumer/research pressure appears.
 
 ## Deferred interfaces
 
-These are intentional non-goals until the native runtime, CLI, and eval contracts mature:
+These are intentional non-goals until the native runtime, artifact, resolution, and finalization contracts mature:
 
 - desktop UI: thin visualization/review client after artifact formats stabilize.
-- public embedding API compatibility: after real consumer pressure validates the contract.
+- public embedding API compatibility: after real consumer pressure validates the runtime contract.
 - MCP adapter: optional agent integration; never a required correctness boundary.
 
 See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md).
 
 ## Implementation constraint
 
-All first-party components remain Rust-only. A future desktop application must use a Rust-capable native UI stack without requiring a JavaScript application runtime. Any future MCP adapter, if justified, is implemented in Rust and remains outside the core correctness boundary.
+All first-party components remain Rust-only. A future desktop application must use a Rust-capable native UI stack without requiring a JavaScript application runtime. Any future resolver adapter, MCP adapter, or embedding API must preserve the same core authority boundary rather than owning a competing reasoning loop.
