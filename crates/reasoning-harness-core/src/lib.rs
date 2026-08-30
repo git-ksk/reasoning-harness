@@ -10,6 +10,7 @@ pub mod eval;
 pub mod frameworks;
 pub mod generation;
 pub mod harness;
+pub mod metamorphic;
 pub mod model;
 pub mod schema;
 pub mod types;
@@ -38,6 +39,12 @@ pub use decision::{AcceptancePolicy, StrictAcceptancePolicy};
 pub use eval::{EvalMetrics, evaluate};
 pub use generation::{build_candidate_json_fallback_request, build_candidate_request};
 pub use harness::{HarnessError, HarnessOutcome, Pass, run_harness, run_passes};
+pub use metamorphic::{
+    AddIrrelevantEvidence, MetamorphicAggregate, MetamorphicCaseResult, MetamorphicEvaluationError,
+    MetamorphicTransform, MetamorphicTransformFamily, ReverseCausalCauseOrder,
+    ReverseCausalEvidenceOrder, ReverseEvidenceOrder, ReverseInferenceOrder, StableIdRemap,
+    aggregate_metamorphic, evaluate_benchmark_metamorphic, evaluate_causal_metamorphic,
+};
 pub use model::{
     ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
     ModelUsage,

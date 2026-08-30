@@ -17,6 +17,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Narrow deterministic Five Whys lexical-restatement removal localized to the offending inference edge.
 - Observational typed causal diagnostics with exact scoped support/refutation and conservative unknown handling for association, reverse direction, partial support, conflict, missing binding, and missing exact evidence.
 - Twenty committed claim-verdict regression fixtures (5 accept / 6 reject / 9 unknown) plus a separate eight-case deterministic causal corpus.
+- A six-family deterministic metamorphic regression layer with dedicated seed fixtures outside the ordinary correctness denominators.
 - Manual, secret-isolated live benchmark workflow spanning Mistral, Google-hosted Gemma/Gemini, and a narrowed routine NVIDIA Nemotron target.
 - GitHub CI, Dependabot configuration, contribution/security guidance, issue and PR templates.
 
@@ -27,7 +28,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Counterexample discovery coverage is still narrow outside explicit structured propositions.
 - Five Whys lexical cleanup remains intentionally syntactic; evidence-aware causal inspection is observational and does not certify the whole artifact or change the final claim verdict.
 - Candidate-supplied causal-evidence references remain deferred; repeated-trial causal/adversarial diagnostic variability is tracked by #11.
-- Metamorphic/invariance robustness is not yet measured; #10 is the immediate next research priority.
+- Deterministic metamorphic robustness is implemented across six transform families. The suite reports verdict, hard-finding, soft-finding, and causal-status invariance separately from raw benchmark accuracy. Live repeated-trial diagnostic variability remains #11.
 - No assumption extraction yet; #12 defines the next diagnostic family. First-principles, Feynman/simplification, and semantic-loss work are intentionally behind robustness and evidence-quality gates.
 - Temporal validity, applicability scope, and provenance/authority qualification are not yet modeled on harness-owned evidence; #16 defines this provider-neutral evidence-quality boundary. Open-world retrieval and domain-specific source ranking remain out of core scope.
 - The current 20-case claim corpus and 8-case causal corpus are not yet versioned/stratified as a public benchmark; #14 tracks corpus longevity and contamination/saturation policy.

@@ -1,0 +1,24 @@
+{
+  "id": "metamorphic-independent-inferences",
+  "description": "Two independent inference edges provide a deterministic seed for inference-order invariance.",
+  "input": {
+    "task": "Track two independent observations without coupling their derivations.",
+    "evidence": [
+      {"id":"e-a","source":"fixture","observation":"Observation A is present."},
+      {"id":"e-b","source":"fixture","observation":"Observation B is present."}
+    ]
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id":"a-premise","statement":"Observation A is present.","proposed_state":"assumed","evidence_ids":["e-a"]},
+      {"id":"a-result","statement":"A remains independently tracked.","proposed_state":"inferred","evidence_ids":["e-a"]},
+      {"id":"b-premise","statement":"Observation B is present.","proposed_state":"assumed","evidence_ids":["e-b"]},
+      {"id":"b-result","statement":"B remains independently tracked.","proposed_state":"inferred","evidence_ids":["e-b"]}
+    ],
+    "inferences": [
+      {"id":"i-a","premise_claim_ids":["a-premise"],"conclusion_claim_id":"a-result","method":"independent_fixture"},
+      {"id":"i-b","premise_claim_ids":["b-premise"],"conclusion_claim_id":"b-result","method":"independent_fixture"}
+    ]
+  },
+  "expected_verdict": "unknown"
+}
