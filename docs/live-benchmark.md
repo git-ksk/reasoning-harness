@@ -33,3 +33,7 @@ Within a model run, provider failures do not abort collection of later fixtures.
 The committed deterministic fixture regression remains the required correctness gate. Live results are diagnostic observations and never rewrite or override deterministic verification authority.
 
 NVIDIA Hosted NIM calls use a conservative client-side minimum interval of 1.6 seconds (at most 37.5 request starts/minute per benchmark process). This is pacing, not a claimed provider quota: NVIDIA limits may vary by model/account, and HTTP `429` with `Retry-After` remains authoritative.
+
+## In-model concurrency
+
+Use `--concurrency 3` to overlap independent fixture generations for one live model. Results are restored to fixture/trial order before aggregation, and one fixture failure remains isolated from other in-flight work. All workers share the same provider adapter, so NVIDIA request-start pacing and 429 `Retry-After` handling continue to apply across the run. Start at 3 for NVIDIA research runs and reduce it if the account reports sustained rate limiting.

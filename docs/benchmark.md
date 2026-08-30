@@ -154,3 +154,7 @@ NVIDIA rate-limit handling honors `Retry-After` in either delay-seconds or HTTP-
 See [live benchmark CI](live-benchmark.md) for credential and workflow behavior.
 
 The NVIDIA adapter applies conservative 1.6-second request-start pacing (37.5 requests/minute maximum per process) to reduce avoidable pressure on hosted trial endpoints. This value is not treated as NVIDIA's contractual rate limit; model/account limits remain external state, and `Retry-After` is honored when a 429 occurs.
+
+### Live fixture concurrency
+
+Live fixture suites accept `--concurrency N` (1-8, default 1). This controls how many independent fixture generations may be in flight while preserving output order. Provider adapters remain shared across workers, so provider-level pacing and `Retry-After` handling still apply globally. For NVIDIA Hosted NIM, `--concurrency 3` is the recommended initial research setting; the adapter's shared 1.6-second request-start spacing remains a client-side guardrail rather than a claimed provider limit.

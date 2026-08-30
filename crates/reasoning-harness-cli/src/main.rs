@@ -1,4 +1,11 @@
-use std::{collections::BTreeMap, fs, path::PathBuf, process::ExitCode, time::Instant};
+use std::{
+    collections::{BTreeMap, VecDeque},
+    fs,
+    path::PathBuf,
+    process::ExitCode,
+    sync::Arc,
+    time::Instant,
+};
 
 use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
@@ -299,6 +306,9 @@ enum Command {
         /// Number of live generations per fixture.
         #[arg(long, default_value_t = 1)]
         trials: usize,
+        /// Maximum number of live fixture generations in flight.
+        #[arg(long, default_value_t = 1)]
+        concurrency: usize,
         /// Optional input-token price in USD per million tokens.
         #[arg(long)]
         input_cost_per_million: Option<f64>,
@@ -394,6 +404,7 @@ struct BenchmarkRunConfig<'a> {
     max_tokens: u32,
     seed: Option<u64>,
     trials: usize,
+    concurrency: usize,
     input_cost_per_million: Option<f64>,
     output_cost_per_million: Option<f64>,
 }
@@ -503,6 +514,7 @@ async fn run(cli: Cli) -> Result<(), String> {
             max_tokens,
             seed,
             trials,
+            concurrency,
             input_cost_per_million,
             output_cost_per_million,
             format,
@@ -514,6 +526,7 @@ async fn run(cli: Cli) -> Result<(), String> {
                     max_tokens,
                     seed,
                     trials,
+                    concurrency,
                     input_cost_per_million,
                     output_cost_per_million,
                 };
@@ -524,7 +537,7 @@ async fn run(cli: Cli) -> Result<(), String> {
                 }
                 Ok(())
             } else {
-                if provider.is_some() || trials != 1 {
+                if provider.is_some() || trials != 1 || concurrency != 1 {
                     return Err(
                         "live provider and multi-trial options require a fixture directory".into(),
                     );
@@ -558,8 +571,14 @@ async fn run_fixture_suite(
     if config.trials == 0 {
         return Err("--trials must be at least 1".into());
     }
+    if !(1..=8).contains(&config.concurrency) {
+        return Err("--concurrency must be between 1 and 8".into());
+    }
     if config.provider.is_none() && config.trials != 1 {
         return Err("offline recorded fixtures support exactly one trial".into());
+    }
+    if config.provider.is_none() && config.concurrency != 1 {
+        return Err("--concurrency requires a live provider".into());
     }
     if config.input_cost_per_million.is_some() ^ config.output_cost_per_million.is_some() {
         return Err("provide both input and output token prices, or neither".into());
@@ -577,76 +596,133 @@ async fn run_fixture_suite(
     }
 
     let fixtures = load_fixtures(directory)?;
-    let generator = config
-        .provider
-        .map(|provider| LiveGenerator::from_provider(provider, config.model))
-        .transpose()?;
     let total_runs = fixtures
         .len()
         .checked_mul(config.trials)
         .ok_or("fixture/trial count overflowed usize")?;
-    let mut completed_runs = 0usize;
-    let mut observed = Vec::new();
-    for fixture in fixtures {
-        for trial in 0..config.trials {
-            if let Some(provider) = config.provider {
+
+    let observed = if let Some(provider) = config.provider {
+        let generator = Arc::new(LiveGenerator::from_provider(provider, config.model)?);
+        let mut pending = VecDeque::new();
+        let mut sequence = 0usize;
+        for fixture in fixtures {
+            for trial in 0..config.trials {
+                pending.push_back((sequence, fixture.clone(), trial));
+                sequence += 1;
+            }
+        }
+
+        let mut tasks = tokio::task::JoinSet::new();
+        let mut completed_runs = 0usize;
+        let mut ordered: Vec<Option<ObservedBenchmarkCase>> =
+            (0..total_runs).map(|_| None).collect();
+
+        loop {
+            while tasks.len() < config.concurrency {
+                let Some((sequence, fixture, trial)) = pending.pop_front() else {
+                    break;
+                };
+                let generator = Arc::clone(&generator);
+                let model = config.model.to_string();
+                let max_tokens = config.max_tokens;
+                let input_cost = config.input_cost_per_million;
+                let output_cost = config.output_cost_per_million;
+                let trial_seed = match config.seed {
+                    Some(value) => Some(
+                        value
+                            .checked_add(trial as u64)
+                            .ok_or("trial seed overflowed u64")?,
+                    ),
+                    None => None,
+                };
                 eprintln!(
-                    "[benchmark] provider={} model={} [{}/{}] fixture={} trial={}",
+                    "[benchmark] provider={} model={} start={}/{} fixture={} trial={} in_flight={}",
                     provider_name(provider),
-                    config.model,
-                    completed_runs + 1,
+                    model,
+                    sequence + 1,
                     total_runs,
                     fixture.id,
-                    trial + 1
+                    trial + 1,
+                    tasks.len() + 1
                 );
-            }
-            let trial_seed = match config.seed {
-                Some(value) => Some(
-                    value
-                        .checked_add(trial as u64)
-                        .ok_or("trial seed overflowed u64")?,
-                ),
-                None => None,
-            };
-            let (candidate, mut generation) = if let Some(generator) = &generator {
-                let generated = generator
-                    .generate(&fixture.input, config.max_tokens, trial_seed, config.model)
-                    .await;
-                match generated {
-                    Ok((candidate, observation)) => (candidate, Some(observation)),
-                    Err(failure) => {
-                        observed.push(ObservedBenchmarkCase {
+                tasks.spawn(async move {
+                    let generated = generator
+                        .generate(&fixture.input, max_tokens, trial_seed, &model)
+                        .await;
+                    let case = match generated {
+                        Ok((candidate, mut observation)) => {
+                            observation.cost_usd =
+                                estimate_cost(&observation.usage, input_cost, output_cost);
+                            ObservedBenchmarkCase {
+                                fixture_id: fixture.id.clone(),
+                                trial,
+                                result: Some(evaluate_benchmark_fixture(&fixture, candidate)),
+                                generation: Some(observation),
+                                failure: None,
+                            }
+                        }
+                        Err(failure) => ObservedBenchmarkCase {
                             fixture_id: fixture.id.clone(),
                             trial,
                             result: None,
                             generation: None,
                             failure: Some(failure),
-                        });
-                        completed_runs += 1;
-                        continue;
-                    }
-                }
-            } else {
-                (fixture.recorded_candidate.clone(), None)
-            };
-
-            if let Some(observation) = generation.as_mut() {
-                observation.cost_usd = estimate_cost(
-                    &observation.usage,
-                    config.input_cost_per_million,
-                    config.output_cost_per_million,
-                );
+                        },
+                    };
+                    (sequence, case)
+                });
             }
+
+            if tasks.is_empty() {
+                break;
+            }
+            let joined = tasks
+                .join_next()
+                .await
+                .ok_or("live benchmark task set ended unexpectedly")?
+                .map_err(|error| format!("live benchmark worker failed: {error}"))?;
+            let (sequence, case) = joined;
+            completed_runs += 1;
+            eprintln!(
+                "[benchmark] provider={} model={} completed={}/{} fixture={} trial={} status={}",
+                provider_name(provider),
+                config.model,
+                completed_runs,
+                total_runs,
+                case.fixture_id,
+                case.trial + 1,
+                if case.failure.is_some() {
+                    "failed"
+                } else {
+                    "ok"
+                }
+            );
+            ordered[sequence] = Some(case);
+        }
+
+        ordered
+            .into_iter()
+            .enumerate()
+            .map(|(index, case)| {
+                case.ok_or_else(|| format!("missing benchmark result for sequence {index}"))
+            })
+            .collect::<Result<Vec<_>, _>>()?
+    } else {
+        let mut observed = Vec::with_capacity(total_runs);
+        for fixture in fixtures {
             observed.push(ObservedBenchmarkCase {
                 fixture_id: fixture.id.clone(),
-                trial,
-                result: Some(evaluate_benchmark_fixture(&fixture, candidate)),
-                generation,
+                trial: 0,
+                result: Some(evaluate_benchmark_fixture(
+                    &fixture,
+                    fixture.recorded_candidate.clone(),
+                )),
+                generation: None,
                 failure: None,
             });
-            completed_runs += 1;
         }
-    }
+        observed
+    };
 
     let results: Vec<BenchmarkCaseResult> = observed
         .iter()
@@ -854,6 +930,26 @@ mod candidate_json_tests {
                 assert!(matches!(provider, Some(Provider::Nvidia)));
                 assert_eq!(model, "google/gemma-4-31b-it");
             }
+            _ => panic!("expected eval command"),
+        }
+    }
+
+    #[test]
+    fn parses_live_concurrency() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "eval",
+            "fixtures",
+            "--provider",
+            "nvidia",
+            "--model",
+            "nvidia/nemotron-3.5-lightning-30b-a3b",
+            "--concurrency",
+            "3",
+        ])
+        .unwrap();
+        match cli.command {
+            Command::Eval { concurrency, .. } => assert_eq!(concurrency, 3),
             _ => panic!("expected eval command"),
         }
     }
