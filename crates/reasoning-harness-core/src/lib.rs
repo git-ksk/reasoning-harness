@@ -2,6 +2,7 @@ pub mod adversarial;
 pub mod benchmark;
 pub mod candidate;
 pub mod causal;
+pub mod causal_benchmark;
 pub mod decision;
 pub mod eval;
 pub mod frameworks;
@@ -26,6 +27,10 @@ pub use causal::{
     CausalEdgeAssessment, CausalEvidence, CausalEvidenceConclusion, CausalFinding,
     CausalFindingKind, CausalFindingReason, CausalInspection, CausalInspector, CausalRelation,
     CausalSupportStatus,
+};
+pub use causal_benchmark::{
+    CausalBenchmarkAggregate, CausalBenchmarkCaseResult, CausalBenchmarkFixture,
+    aggregate_causal_benchmark, evaluate_causal_fixture,
 };
 pub use decision::{AcceptancePolicy, StrictAcceptancePolicy};
 pub use eval::{EvalMetrics, evaluate};
