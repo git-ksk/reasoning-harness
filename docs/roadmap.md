@@ -143,6 +143,19 @@ The core now owns the bounded control protocol, not domain acquisition. Generic 
 
 With #22 implemented, #13 calibrated soft semantic judges is the next planned research phase. Semantic judges may propose diagnostic or resolution targets but remain soft and non-authoritative.
 
+## P3.5 — reasoning control-plane architecture — designed
+
+### #25 Mature harness control patterns — architecture complete
+- [done] map execution sandbox to evidence/inference promotion policy rather than a new execution sandbox
+- [done] define `ReasoningPolicy` as promotion/escalation policy that never owns truth authority
+- [done] adopt durable `ReasoningThread`, typed append-oriented events, checkpoint/resume/fork, and explicit policy-change invalidation
+- [done] reuse #22 resolver/admission/verifier boundaries instead of adding a competing evidence-provider abstraction
+- [done] define proposition -> evidence -> edge -> artifact -> final-answer validation ladder and dependency invalidation
+- [done] preserve repair as untrusted replacement + complete re-verification
+- [done] defer skills/subagents and generic workflow orchestration until benchmark evidence justifies them
+
+ADR-0003 splits future implementation into #27 policy/invalidation and #28 durable-thread tracks. Neither blocks #13; soft semantic findings should later be recordable as non-authoritative thread events.
+
 ## P4 — calibrated semantic expansion
 
 ### #13 Calibrated soft semantic diagnostic judges
