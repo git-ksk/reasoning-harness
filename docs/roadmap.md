@@ -69,10 +69,15 @@ The next phase therefore prioritizes measurement quality before adding more name
 
 Free-form LLM paraphrase generation remains outside the hard benchmark.
 
-### #11 Repeated-trial diagnostic stability
-Extend the repeated-trial layer beyond final correctness to finding frequency and causal/adversarial diagnostic stability. Operational failures keep separate denominators. Add confidence intervals only with explicit methods and sample counts.
+### #11 Repeated-trial diagnostic stability — implemented
+- [done] typed diagnostic signal/report contract independent from final correctness
+- [done] per-fixture complete-trial finding frequencies and count distributions
+- [done] adversarial, candidate-normalization, and causal finding/reason signal types
+- [done] operationally incomplete trials excluded from diagnostic denominators and reported explicitly
+- [done] 95% Wilson score intervals with exact denominator and minimum-observation policy
+- [done] live CLI JSON exposes `stability.diagnostics` alongside unchanged `stability.correctness`
 
-#10 establishes deterministic representation invariance. #11 is now the immediate next implementation step: it tests whether live repeated generations produce stable diagnostic observations before semantic scope grows.
+#10 and #11 now establish deterministic representation invariance plus repeated diagnostic measurement. #12 is the next implementation step.
 
 ## P1 — broaden grounded reasoning signal conservatively
 

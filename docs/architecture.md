@@ -98,3 +98,9 @@ Metamorphic transforms live in the evaluation layer, not the runtime authority b
 The evaluator compares semantic diagnostic signatures separately from raw finding IDs. This is necessary because a valid stable-ID remap can change generated diagnostic identifiers while preserving the same hard finding. Final-verdict invariance, hard-finding invariance, soft-finding stability, and typed diagnostic-status invariance are reported independently and never replace the original benchmark correctness denominator.
 
 See [metamorphic reasoning robustness](metamorphic-testing.md) for the current transform contract.
+
+## Repeated diagnostic measurement boundary
+
+Repeated diagnostic aggregation is an evaluation/reporting boundary, not a verifier. `DiagnosticSignal` records adversarial findings, candidate-normalization codes, and causal finding/reason observations without granting any of them new authority. `stability.diagnostics` is serialized alongside, not inside, final correctness stability.
+
+Only operationally complete trials contribute to diagnostic frequencies and count distributions. Partial successful observations from an incomplete provider trial are reported as excluded observations rather than interpreted as diagnostic absence. Confidence intervals use the documented 95% Wilson score method only after the minimum complete-observation threshold; exact counts and denominators are always retained.
