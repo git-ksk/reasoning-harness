@@ -1,15 +1,20 @@
-use std::{env, time::Duration};
+use std::{
+    env,
+    time::{Duration, SystemTime},
+};
 
 use reasoning_harness_core::{
     ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
     ModelUsage,
 };
-use reqwest::{Client, Url};
+use reqwest::{Client, StatusCode, Url, header::RETRY_AFTER};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 const DEFAULT_BASE_URL: &str = "https://api.mistral.ai/v1/";
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(60);
+const MAX_RATE_LIMIT_RETRIES: usize = 3;
+const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(5);
 
 pub struct MistralAdapter {
     client: Client,
@@ -104,25 +109,38 @@ impl MistralAdapter {
             temperature: 0.0,
         };
 
-        let response = self
-            .client
-            .post(endpoint)
-            .bearer_auth(&self.api_key)
-            .json(&body)
-            .send()
-            .await
-            .map_err(|error| {
-                ModelError::new(
-                    ModelErrorKind::Transport,
-                    format!("Mistral request failed: {error}"),
-                )
-            })?;
+        let mut rate_limit_retries = 0usize;
+        let response = loop {
+            let response = self
+                .client
+                .post(endpoint.clone())
+                .bearer_auth(&self.api_key)
+                .json(&body)
+                .send()
+                .await
+                .map_err(classify_transport_error)?;
+
+            if response.status() != StatusCode::TOO_MANY_REQUESTS
+                || rate_limit_retries >= MAX_RATE_LIMIT_RETRIES
+            {
+                break response;
+            }
+
+            let delay = rate_limit_delay(response.headers(), rate_limit_retries);
+            rate_limit_retries += 1;
+            tokio::time::sleep(delay).await;
+        };
 
         let status = response.status();
         if !status.is_success() {
+            let body = response.text().await.unwrap_or_default();
+            let kind = classify_http_error(status, &body);
+            let detail = provider_error_detail(&body);
             return Err(ModelError::new(
-                ModelErrorKind::Provider,
-                format!("Mistral returned HTTP {status}"),
+                kind,
+                format!(
+                    "Mistral returned HTTP {status} after {rate_limit_retries} rate-limit retries{detail}"
+                ),
             ));
         }
 
@@ -198,6 +216,91 @@ struct JsonSchema {
     name: String,
     schema: Value,
     strict: bool,
+}
+
+fn classify_transport_error(error: reqwest::Error) -> ModelError {
+    let kind = if error.is_timeout() {
+        ModelErrorKind::Timeout
+    } else {
+        ModelErrorKind::Transport
+    };
+    let message = if error.is_timeout() {
+        "Mistral request timed out".to_string()
+    } else {
+        format!("Mistral request failed: {error}")
+    };
+    ModelError::new(kind, message)
+}
+
+fn classify_http_error(status: StatusCode, body: &str) -> ModelErrorKind {
+    if status == StatusCode::TOO_MANY_REQUESTS {
+        let normalized = body.to_ascii_lowercase();
+        if ["quota", "billing", "credit", "insufficient balance"]
+            .iter()
+            .any(|needle| normalized.contains(needle))
+        {
+            ModelErrorKind::Quota
+        } else {
+            ModelErrorKind::RateLimit
+        }
+    } else if status == StatusCode::PAYMENT_REQUIRED {
+        ModelErrorKind::Quota
+    } else if status == StatusCode::REQUEST_TIMEOUT || status == StatusCode::GATEWAY_TIMEOUT {
+        ModelErrorKind::Timeout
+    } else if matches!(status.as_u16(), 502 | 503) || status.is_server_error() {
+        ModelErrorKind::ProviderUnavailable
+    } else if status == StatusCode::UNAUTHORIZED {
+        ModelErrorKind::Credentials
+    } else {
+        ModelErrorKind::Provider
+    }
+}
+
+fn rate_limit_delay(headers: &reqwest::header::HeaderMap, retry_index: usize) -> Duration {
+    if let Some(value) = headers
+        .get(RETRY_AFTER)
+        .and_then(|value| value.to_str().ok())
+    {
+        if let Ok(seconds) = value.parse::<u64>() {
+            return Duration::from_secs(seconds.max(1));
+        }
+        if let Ok(instant) = httpdate::parse_http_date(value) {
+            return instant
+                .duration_since(SystemTime::now())
+                .unwrap_or(Duration::from_secs(1))
+                .max(Duration::from_secs(1));
+        }
+    }
+
+    let multiplier = 1u32.checked_shl(retry_index as u32).unwrap_or(u32::MAX);
+    INITIAL_RATE_LIMIT_BACKOFF
+        .checked_mul(multiplier)
+        .unwrap_or(Duration::MAX)
+}
+
+fn provider_error_detail(body: &str) -> String {
+    let Ok(value) = serde_json::from_str::<Value>(body) else {
+        return String::new();
+    };
+    let error = value.get("error").unwrap_or(&value);
+    let message = error
+        .get("message")
+        .and_then(Value::as_str)
+        .or_else(|| error.get("detail").and_then(Value::as_str));
+    message
+        .map(|message| format!("; message={}", truncate_diagnostic(message, 512)))
+        .unwrap_or_default()
+}
+
+fn truncate_diagnostic(value: &str, max_chars: usize) -> String {
+    let normalized = value.replace(['\r', '\n'], " ");
+    let mut chars = normalized.chars();
+    let prefix = chars.by_ref().take(max_chars).collect::<String>();
+    if chars.next().is_some() {
+        format!("{prefix}…")
+    } else {
+        prefix
+    }
 }
 
 fn response_format(format: ModelOutputFormat) -> ResponseFormat {
@@ -301,5 +404,109 @@ mod tests {
             .unwrap();
         assert_eq!(error.kind, ModelErrorKind::Credentials);
         assert!(!error.to_string().contains("Bearer"));
+    }
+
+    #[test]
+    fn classifies_429_as_rate_limit_without_quota_signal() {
+        assert_eq!(
+            classify_http_error(
+                StatusCode::TOO_MANY_REQUESTS,
+                r#"{"message":"too many requests"}"#
+            ),
+            ModelErrorKind::RateLimit
+        );
+    }
+
+    #[test]
+    fn classifies_429_quota_signal_separately() {
+        assert_eq!(
+            classify_http_error(
+                StatusCode::TOO_MANY_REQUESTS,
+                r#"{"message":"quota exhausted"}"#
+            ),
+            ModelErrorKind::Quota
+        );
+    }
+
+    #[test]
+    fn rate_limit_delay_prefers_retry_after_header() {
+        let mut headers = reqwest::header::HeaderMap::new();
+        headers.insert(RETRY_AFTER, reqwest::header::HeaderValue::from_static("7"));
+        assert_eq!(rate_limit_delay(&headers, 2), Duration::from_secs(7));
+    }
+
+    #[test]
+    fn rate_limit_delay_uses_bounded_exponential_fallback() {
+        let headers = reqwest::header::HeaderMap::new();
+        assert_eq!(rate_limit_delay(&headers, 0), Duration::from_secs(5));
+        assert_eq!(rate_limit_delay(&headers, 1), Duration::from_secs(10));
+        assert_eq!(rate_limit_delay(&headers, 2), Duration::from_secs(20));
+    }
+
+    #[test]
+    fn provider_error_detail_is_bounded_and_single_line() {
+        let body = serde_json::json!({"error": {"message": format!("first\n{}", "x".repeat(600))}})
+            .to_string();
+        let detail = provider_error_detail(&body);
+        assert!(!detail.contains('\n'));
+        assert!(detail.ends_with('…'));
+        assert!(detail.chars().count() < 530);
+    }
+
+    #[tokio::test]
+    async fn retries_http_429_then_returns_success() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            for attempt in 0..2 {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = [0u8; 4096];
+                let _ = stream.read(&mut buffer);
+                let (status, extra_headers, body) = if attempt == 0 {
+                    (
+                        "429 Too Many Requests",
+                        "Retry-After: 1\r\n",
+                        r#"{"error":{"message":"busy"}}"#,
+                    )
+                } else {
+                    (
+                        "200 OK",
+                        "",
+                        r#"{"model":"test-model","choices":[{"finish_reason":"stop","message":{"content":"ok"}}]}"#,
+                    )
+                };
+                write!(
+                    stream,
+                    "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n{extra_headers}\r\n{body}",
+                    body.len()
+                )
+                .unwrap();
+            }
+        });
+        let adapter = MistralAdapter::with_base_url(
+            "test-key",
+            "test-model",
+            &format!("http://{address}/v1/"),
+        )
+        .unwrap();
+        let response = adapter
+            .generate(ModelRequest {
+                task: "test".into(),
+                system: None,
+                output_format: ModelOutputFormat::Text,
+                max_tokens: Some(8),
+                random_seed: None,
+            })
+            .await
+            .unwrap();
+        assert_eq!(response.text, "ok");
+        assert_eq!(response.model, "test-model");
+        server.join().unwrap();
     }
 }
