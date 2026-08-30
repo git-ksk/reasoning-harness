@@ -9,9 +9,9 @@ use std::{
 
 use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
-    AdversarialDiscoveryPass, BenchmarkCaseResult, BenchmarkComparison, BenchmarkFixture,
-    HarnessInput, ModelAdapter, ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact,
-    ReasoningCandidate, StrictAcceptancePolicy, StructuredFactConflictDetector,
+    AdversarialDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult, BenchmarkComparison,
+    BenchmarkFixture, HarnessInput, ModelAdapter, ModelError, ModelErrorKind, ModelUsage,
+    ReasoningArtifact, ReasoningCandidate, StrictAcceptancePolicy, StructuredFactConflictDetector,
     StructuredFactVerifier, TrustedVerificationPass, VerificationPass, VerificationReceipt,
     aggregate_benchmark, build_candidate_json_fallback_request, build_candidate_request, evaluate,
     evaluate_benchmark_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
@@ -360,7 +360,7 @@ struct RunOutput {
     generation: Option<GenerationObservation>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize)]
 struct ObservedBenchmarkCase {
     fixture_id: String,
     trial: usize,
@@ -387,6 +387,67 @@ struct OperationalSummary {
 }
 
 #[derive(Debug, Serialize)]
+struct ScalarDistribution {
+    count: usize,
+    mean: f64,
+    min: f64,
+    max: f64,
+    stddev: f64,
+}
+
+#[derive(Debug, Serialize)]
+struct BenchmarkArmStability {
+    verdict_accuracy: ScalarDistribution,
+    accept_recall: ScalarDistribution,
+    reject_recall: ScalarDistribution,
+    unknown_recall: ScalarDistribution,
+    unsafe_accept_cases: ScalarDistribution,
+    deterministic_verifier_failure_rate: ScalarDistribution,
+    contradiction_detection_rate: ScalarDistribution,
+    counterexample_detection_rate: ScalarDistribution,
+}
+
+#[derive(Debug, Serialize)]
+struct BenchmarkStabilityComparison {
+    baseline: BenchmarkArmStability,
+    harness: BenchmarkArmStability,
+}
+
+#[derive(Debug, Serialize)]
+struct TrialSummary {
+    trial_index: usize,
+    expected_runs: usize,
+    correctness_cases: usize,
+    operationally_complete: bool,
+    operational: OperationalSummary,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    comparison: Option<BenchmarkComparison>,
+}
+
+#[derive(Debug, Serialize)]
+struct OperationalDistributions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    successful_request_total_tokens: Option<ScalarDistribution>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    successful_request_latency_ms: Option<ScalarDistribution>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    complete_trial_total_tokens: Option<ScalarDistribution>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    complete_trial_total_latency_ms: Option<ScalarDistribution>,
+}
+
+#[derive(Debug, Serialize)]
+struct TrialStabilitySummary {
+    requested_trials: usize,
+    complete_trials: usize,
+    incomplete_trials: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    correctness: Option<BenchmarkStabilityComparison>,
+    operational: OperationalDistributions,
+    per_trial: Vec<TrialSummary>,
+}
+
+#[derive(Debug, Serialize)]
 struct BenchmarkOutput {
     #[serde(skip_serializing_if = "Option::is_none")]
     provider: Option<&'static str>,
@@ -394,6 +455,8 @@ struct BenchmarkOutput {
     model: Option<String>,
     comparison: BenchmarkComparison,
     operational: OperationalSummary,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stability: Option<TrialStabilitySummary>,
     cases: Vec<ObservedBenchmarkCase>,
 }
 
@@ -603,101 +666,108 @@ async fn run_fixture_suite(
 
     let observed = if let Some(provider) = config.provider {
         let generator = Arc::new(LiveGenerator::from_provider(provider, config.model)?);
-        let mut pending = VecDeque::new();
-        let mut sequence = 0usize;
-        for fixture in fixtures {
-            for trial in 0..config.trials {
-                pending.push_back((sequence, fixture.clone(), trial));
-                sequence += 1;
-            }
-        }
-
-        let mut tasks = tokio::task::JoinSet::new();
         let mut completed_runs = 0usize;
+        let mut started_runs = 0usize;
         let mut ordered: Vec<Option<ObservedBenchmarkCase>> =
             (0..total_runs).map(|_| None).collect();
 
-        loop {
-            while tasks.len() < config.concurrency {
-                let Some((sequence, fixture, trial)) = pending.pop_front() else {
-                    break;
-                };
-                let generator = Arc::clone(&generator);
-                let model = config.model.to_string();
-                let max_tokens = config.max_tokens;
-                let input_cost = config.input_cost_per_million;
-                let output_cost = config.output_cost_per_million;
-                let trial_seed = match config.seed {
-                    Some(value) => Some(
-                        value
-                            .checked_add(trial as u64)
-                            .ok_or("trial seed overflowed u64")?,
-                    ),
-                    None => None,
-                };
-                eprintln!(
-                    "[benchmark] provider={} model={} start={}/{} fixture={} trial={} in_flight={}",
-                    provider_name(provider),
-                    model,
-                    sequence + 1,
-                    total_runs,
-                    fixture.id,
-                    trial + 1,
-                    tasks.len() + 1
-                );
-                tasks.spawn(async move {
-                    let generated = generator
-                        .generate(&fixture.input, max_tokens, trial_seed, &model)
-                        .await;
-                    let case = match generated {
-                        Ok((candidate, mut observation)) => {
-                            observation.cost_usd =
-                                estimate_cost(&observation.usage, input_cost, output_cost);
-                            ObservedBenchmarkCase {
+        // A trial is one full-corpus pass. Keep concurrency inside that pass so
+        // provider timing/failures from a later trial do not overlap an earlier trial.
+        // `sequence` preserves the historical fixture-major/trial-minor JSON order.
+        for trial in 0..config.trials {
+            let mut pending = VecDeque::new();
+            for (fixture_index, fixture) in fixtures.iter().cloned().enumerate() {
+                let sequence = fixture_index
+                    .checked_mul(config.trials)
+                    .and_then(|value| value.checked_add(trial))
+                    .ok_or("fixture/trial sequence overflowed usize")?;
+                pending.push_back((sequence, fixture));
+            }
+            let mut tasks = tokio::task::JoinSet::new();
+
+            loop {
+                while tasks.len() < config.concurrency {
+                    let Some((sequence, fixture)) = pending.pop_front() else {
+                        break;
+                    };
+                    let generator = Arc::clone(&generator);
+                    let model = config.model.to_string();
+                    let max_tokens = config.max_tokens;
+                    let input_cost = config.input_cost_per_million;
+                    let output_cost = config.output_cost_per_million;
+                    let trial_seed = match config.seed {
+                        Some(value) => Some(
+                            value
+                                .checked_add(trial as u64)
+                                .ok_or("trial seed overflowed u64")?,
+                        ),
+                        None => None,
+                    };
+                    started_runs += 1;
+                    eprintln!(
+                        "[benchmark] provider={} model={} start={}/{} fixture={} trial={} in_flight={}",
+                        provider_name(provider),
+                        model,
+                        started_runs,
+                        total_runs,
+                        fixture.id,
+                        trial + 1,
+                        tasks.len() + 1
+                    );
+                    tasks.spawn(async move {
+                        let generated = generator
+                            .generate(&fixture.input, max_tokens, trial_seed, &model)
+                            .await;
+                        let case = match generated {
+                            Ok((candidate, mut observation)) => {
+                                observation.cost_usd =
+                                    estimate_cost(&observation.usage, input_cost, output_cost);
+                                ObservedBenchmarkCase {
+                                    fixture_id: fixture.id.clone(),
+                                    trial,
+                                    result: Some(evaluate_benchmark_fixture(&fixture, candidate)),
+                                    generation: Some(observation),
+                                    failure: None,
+                                }
+                            }
+                            Err(failure) => ObservedBenchmarkCase {
                                 fixture_id: fixture.id.clone(),
                                 trial,
-                                result: Some(evaluate_benchmark_fixture(&fixture, candidate)),
-                                generation: Some(observation),
-                                failure: None,
-                            }
-                        }
-                        Err(failure) => ObservedBenchmarkCase {
-                            fixture_id: fixture.id.clone(),
-                            trial,
-                            result: None,
-                            generation: None,
-                            failure: Some(failure),
-                        },
-                    };
-                    (sequence, case)
-                });
-            }
-
-            if tasks.is_empty() {
-                break;
-            }
-            let joined = tasks
-                .join_next()
-                .await
-                .ok_or("live benchmark task set ended unexpectedly")?
-                .map_err(|error| format!("live benchmark worker failed: {error}"))?;
-            let (sequence, case) = joined;
-            completed_runs += 1;
-            eprintln!(
-                "[benchmark] provider={} model={} completed={}/{} fixture={} trial={} status={}",
-                provider_name(provider),
-                config.model,
-                completed_runs,
-                total_runs,
-                case.fixture_id,
-                case.trial + 1,
-                if case.failure.is_some() {
-                    "failed"
-                } else {
-                    "ok"
+                                result: None,
+                                generation: None,
+                                failure: Some(failure),
+                            },
+                        };
+                        (sequence, case)
+                    });
                 }
-            );
-            ordered[sequence] = Some(case);
+
+                if tasks.is_empty() {
+                    break;
+                }
+                let joined = tasks
+                    .join_next()
+                    .await
+                    .ok_or("live benchmark task set ended unexpectedly")?
+                    .map_err(|error| format!("live benchmark worker failed: {error}"))?;
+                let (sequence, case) = joined;
+                completed_runs += 1;
+                eprintln!(
+                    "[benchmark] provider={} model={} completed={}/{} fixture={} trial={} status={}",
+                    provider_name(provider),
+                    config.model,
+                    completed_runs,
+                    total_runs,
+                    case.fixture_id,
+                    case.trial + 1,
+                    if case.failure.is_some() {
+                        "failed"
+                    } else {
+                        "ok"
+                    }
+                );
+                ordered[sequence] = Some(case);
+            }
         }
 
         ordered
@@ -730,13 +800,26 @@ async fn run_fixture_suite(
         .collect();
     let comparison = aggregate_benchmark(&results);
     let operational = operational_summary(&observed);
+    let stability = config.provider.map(|_| {
+        trial_stability_summary(
+            &observed,
+            fixtures_per_trial(total_runs, config.trials),
+            config.trials,
+        )
+    });
     Ok(BenchmarkOutput {
         provider: config.provider.map(provider_name),
         model: config.provider.map(|_| config.model.to_string()),
         comparison,
         operational,
+        stability,
         cases: observed,
     })
+}
+
+fn fixtures_per_trial(total_runs: usize, trials: usize) -> usize {
+    debug_assert!(trials > 0);
+    total_runs / trials
 }
 
 fn load_fixtures(directory: &PathBuf) -> Result<Vec<BenchmarkFixture>, String> {
@@ -818,6 +901,209 @@ fn operational_summary(cases: &[ObservedBenchmarkCase]) -> OperationalSummary {
     }
 }
 
+fn trial_stability_summary(
+    cases: &[ObservedBenchmarkCase],
+    expected_runs_per_trial: usize,
+    requested_trials: usize,
+) -> TrialStabilitySummary {
+    let mut per_trial = Vec::with_capacity(requested_trials);
+    for trial_index in 0..requested_trials {
+        let trial_cases: Vec<&ObservedBenchmarkCase> = cases
+            .iter()
+            .filter(|case| case.trial == trial_index)
+            .collect();
+        let trial_results: Vec<BenchmarkCaseResult> = trial_cases
+            .iter()
+            .filter_map(|case| case.result.clone())
+            .collect();
+        let correctness_cases = trial_results.len();
+        let trial_owned: Vec<ObservedBenchmarkCase> =
+            trial_cases.iter().map(|case| (*case).clone()).collect();
+        let operational = operational_summary(&trial_owned);
+        let operationally_complete = operational.attempted_runs == expected_runs_per_trial
+            && operational.generated_runs == expected_runs_per_trial
+            && operational.failed_runs == 0;
+        let comparison = if trial_results.is_empty() {
+            None
+        } else {
+            Some(aggregate_benchmark(&trial_results))
+        };
+        per_trial.push(TrialSummary {
+            trial_index,
+            expected_runs: expected_runs_per_trial,
+            correctness_cases,
+            operationally_complete,
+            operational,
+            comparison,
+        });
+    }
+
+    let complete_trials = per_trial
+        .iter()
+        .filter(|trial| trial.operationally_complete)
+        .count();
+    let complete_comparisons: Vec<&BenchmarkComparison> = per_trial
+        .iter()
+        .filter(|trial| trial.operationally_complete)
+        .filter_map(|trial| trial.comparison.as_ref())
+        .collect();
+    let correctness = if complete_comparisons.is_empty() {
+        None
+    } else {
+        Some(BenchmarkStabilityComparison {
+            baseline: benchmark_arm_stability(&complete_comparisons, |comparison| {
+                &comparison.baseline
+            }),
+            harness: benchmark_arm_stability(&complete_comparisons, |comparison| {
+                &comparison.harness
+            }),
+        })
+    };
+
+    TrialStabilitySummary {
+        requested_trials,
+        complete_trials,
+        incomplete_trials: requested_trials.saturating_sub(complete_trials),
+        correctness,
+        operational: operational_distributions(cases, &per_trial),
+        per_trial,
+    }
+}
+
+fn benchmark_arm_stability(
+    comparisons: &[&BenchmarkComparison],
+    select: impl Fn(&BenchmarkComparison) -> &BenchmarkAggregate,
+) -> BenchmarkArmStability {
+    let metrics: Vec<&BenchmarkAggregate> = comparisons
+        .iter()
+        .map(|comparison| select(comparison))
+        .collect();
+    BenchmarkArmStability {
+        verdict_accuracy: required_distribution(
+            metrics.iter().map(|metric| metric.verdict_accuracy),
+        ),
+        accept_recall: required_distribution(metrics.iter().map(|metric| metric.accept_recall)),
+        reject_recall: required_distribution(metrics.iter().map(|metric| metric.reject_recall)),
+        unknown_recall: required_distribution(metrics.iter().map(|metric| metric.unknown_recall)),
+        unsafe_accept_cases: required_distribution(
+            metrics
+                .iter()
+                .map(|metric| metric.unsafe_accept_cases as f64),
+        ),
+        deterministic_verifier_failure_rate: required_distribution(
+            metrics
+                .iter()
+                .map(|metric| metric.deterministic_verifier_failure_rate),
+        ),
+        contradiction_detection_rate: required_distribution(
+            metrics
+                .iter()
+                .map(|metric| metric.contradiction_detection_rate),
+        ),
+        counterexample_detection_rate: required_distribution(
+            metrics
+                .iter()
+                .map(|metric| metric.counterexample_detection_rate),
+        ),
+    }
+}
+
+fn operational_distributions(
+    cases: &[ObservedBenchmarkCase],
+    per_trial: &[TrialSummary],
+) -> OperationalDistributions {
+    let successful_request_total_tokens = scalar_distribution(cases.iter().filter_map(|case| {
+        case.generation
+            .as_ref()
+            .and_then(|generation| observed_total_tokens(&generation.usage))
+            .map(|tokens| tokens as f64)
+    }));
+    let successful_request_latency_ms = scalar_distribution(cases.iter().filter_map(|case| {
+        case.generation
+            .as_ref()
+            .map(|generation| generation.latency_ms as f64)
+    }));
+
+    let mut complete_trial_tokens = Vec::new();
+    let mut complete_trial_latency = Vec::new();
+    for trial in per_trial
+        .iter()
+        .filter(|trial| trial.operationally_complete)
+    {
+        let trial_cases: Vec<&ObservedBenchmarkCase> = cases
+            .iter()
+            .filter(|case| case.trial == trial.trial_index)
+            .collect();
+        let tokens: Option<Vec<u64>> = trial_cases
+            .iter()
+            .map(|case| {
+                case.generation
+                    .as_ref()
+                    .and_then(|generation| observed_total_tokens(&generation.usage))
+            })
+            .collect();
+        if let Some(tokens) = tokens {
+            complete_trial_tokens.push(tokens.into_iter().sum::<u64>() as f64);
+        }
+        complete_trial_latency.push(
+            trial_cases
+                .iter()
+                .filter_map(|case| case.generation.as_ref())
+                .map(|generation| generation.latency_ms)
+                .sum::<u128>() as f64,
+        );
+    }
+
+    OperationalDistributions {
+        successful_request_total_tokens,
+        successful_request_latency_ms,
+        complete_trial_total_tokens: scalar_distribution(complete_trial_tokens),
+        complete_trial_total_latency_ms: scalar_distribution(complete_trial_latency),
+    }
+}
+
+fn observed_total_tokens(usage: &ModelUsage) -> Option<u64> {
+    usage.total_tokens.or_else(|| {
+        usage
+            .input_tokens
+            .zip(usage.output_tokens)
+            .and_then(|(input, output)| input.checked_add(output))
+    })
+}
+
+fn required_distribution(values: impl IntoIterator<Item = f64>) -> ScalarDistribution {
+    scalar_distribution(values).expect("complete trial stability always has at least one value")
+}
+
+fn scalar_distribution(values: impl IntoIterator<Item = f64>) -> Option<ScalarDistribution> {
+    let values: Vec<f64> = values
+        .into_iter()
+        .filter(|value| value.is_finite())
+        .collect();
+    if values.is_empty() {
+        return None;
+    }
+    let count = values.len();
+    let mean = values.iter().sum::<f64>() / count as f64;
+    let min = values.iter().copied().fold(f64::INFINITY, f64::min);
+    let max = values.iter().copied().fold(f64::NEG_INFINITY, f64::max);
+    let variance = values
+        .iter()
+        .map(|value| {
+            let delta = value - mean;
+            delta * delta
+        })
+        .sum::<f64>()
+        / count as f64;
+    Some(ScalarDistribution {
+        count,
+        mean,
+        min,
+        max,
+        stddev: variance.sqrt(),
+    })
+}
+
 fn provider_name(provider: Provider) -> &'static str {
     match provider {
         Provider::Mistral => "mistral",
@@ -870,6 +1156,19 @@ fn print_benchmark_human(output: &BenchmarkOutput) {
         output.comparison.baseline.causal_edge_quality,
         output.comparison.harness.causal_edge_quality
     );
+    if let Some(stability) = &output.stability {
+        println!(
+            "trials: requested={} complete={} incomplete={}",
+            stability.requested_trials, stability.complete_trials, stability.incomplete_trials
+        );
+        if let Some(correctness) = &stability.correctness {
+            let accuracy = &correctness.harness.verdict_accuracy;
+            println!(
+                "harness_accuracy_stability: mean={:.3} min={:.3} max={:.3} stddev={:.3} n={}",
+                accuracy.mean, accuracy.min, accuracy.max, accuracy.stddev, accuracy.count
+            );
+        }
+    }
 }
 
 fn read_json<T: DeserializeOwned>(path: &PathBuf) -> Result<T, String> {
@@ -974,6 +1273,139 @@ mod candidate_json_tests {
         assert_eq!(summary.generated_runs, 0);
         assert_eq!(summary.failed_runs, 1);
         assert_eq!(summary.failure_classes.get("rate_limit"), Some(&1));
+    }
+
+    #[test]
+    fn scalar_distribution_uses_population_standard_deviation() {
+        let distribution = scalar_distribution([0.8, 1.0]).unwrap();
+        assert_eq!(distribution.count, 2);
+        assert!((distribution.mean - 0.9).abs() < 1e-12);
+        assert!((distribution.min - 0.8).abs() < 1e-12);
+        assert!((distribution.max - 1.0).abs() < 1e-12);
+        assert!((distribution.stddev - 0.1).abs() < 1e-12);
+    }
+
+    #[test]
+    fn stability_excludes_incomplete_trials_from_correctness_distribution() {
+        use reasoning_harness_core::{BenchmarkArmResult, Verdict};
+
+        fn arm(correct: bool) -> BenchmarkArmResult {
+            BenchmarkArmResult {
+                verdict: Some(if correct {
+                    Verdict::Accept
+                } else {
+                    Verdict::Unknown
+                }),
+                claims: 1,
+                claims_with_evidence: 1,
+                inference_edges: 0,
+                verdict_correct: correct,
+                evidence_coverage: 1.0,
+                unsupported_accepted_claims: 0,
+                unsafe_accept: false,
+                hidden_assumptions_exposed: 0,
+                contradiction_claims_detected: 0,
+                counterexamples_detected: 0,
+                hard_adversarial_findings: 0,
+                soft_adversarial_findings: 0,
+                bad_inference_edges_retained: 0,
+                deterministic_failure: false,
+                deterministic_failure_reason: None,
+            }
+        }
+
+        fn result(id: &str, correct: bool) -> BenchmarkCaseResult {
+            BenchmarkCaseResult {
+                fixture_id: id.into(),
+                expected_verdict: Verdict::Accept,
+                expected_hidden_assumptions: 0,
+                expected_contradiction: false,
+                expected_counterexample: false,
+                baseline: arm(correct),
+                harness: arm(correct),
+            }
+        }
+
+        fn generation(tokens: u64, latency_ms: u128) -> GenerationObservation {
+            GenerationObservation {
+                provider: "test",
+                model: "test-model".into(),
+                usage: ModelUsage {
+                    input_tokens: Some(tokens / 2),
+                    output_tokens: Some(tokens - tokens / 2),
+                    total_tokens: Some(tokens),
+                },
+                latency_ms,
+                provider_attempts: 1,
+                cost_usd: None,
+            }
+        }
+
+        let cases = vec![
+            ObservedBenchmarkCase {
+                fixture_id: "a".into(),
+                trial: 0,
+                result: Some(result("a", true)),
+                generation: Some(generation(10, 100)),
+                failure: None,
+            },
+            ObservedBenchmarkCase {
+                fixture_id: "b".into(),
+                trial: 0,
+                result: Some(result("b", true)),
+                generation: Some(generation(20, 200)),
+                failure: None,
+            },
+            ObservedBenchmarkCase {
+                fixture_id: "a".into(),
+                trial: 1,
+                result: Some(result("a", false)),
+                generation: Some(generation(30, 300)),
+                failure: None,
+            },
+            ObservedBenchmarkCase {
+                fixture_id: "b".into(),
+                trial: 1,
+                result: None,
+                generation: None,
+                failure: Some(GenerationFailure {
+                    provider: "test",
+                    model: "test-model".into(),
+                    latency_ms: 400,
+                    failure_class: "timeout",
+                    message: "timed out".into(),
+                }),
+            },
+        ];
+
+        let stability = trial_stability_summary(&cases, 2, 2);
+        assert_eq!(stability.complete_trials, 1);
+        assert_eq!(stability.incomplete_trials, 1);
+        assert!(stability.per_trial[0].operationally_complete);
+        assert!(!stability.per_trial[1].operationally_complete);
+        assert_eq!(stability.per_trial[1].correctness_cases, 1);
+        assert_eq!(stability.per_trial[1].operational.failed_runs, 1);
+        assert_eq!(
+            stability.per_trial[1]
+                .operational
+                .failure_classes
+                .get("timeout"),
+            Some(&1)
+        );
+
+        let accuracy = &stability.correctness.unwrap().harness.verdict_accuracy;
+        assert_eq!(accuracy.count, 1);
+        assert!((accuracy.mean - 1.0).abs() < 1e-12);
+        assert!((accuracy.stddev - 0.0).abs() < 1e-12);
+
+        let request_tokens = stability
+            .operational
+            .successful_request_total_tokens
+            .unwrap();
+        assert_eq!(request_tokens.count, 3);
+        let trial_tokens = stability.operational.complete_trial_total_tokens.unwrap();
+        assert_eq!(trial_tokens.count, 1);
+        assert!((trial_tokens.mean - 30.0).abs() < 1e-12);
     }
 
     #[test]

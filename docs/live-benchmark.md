@@ -30,6 +30,16 @@ The committed deterministic fixture regression remains the required correctness 
 
 NVIDIA Hosted NIM calls use a conservative client-side minimum interval of 1.6 seconds (at most 37.5 request starts/minute per benchmark process). This is pacing, not a claimed provider quota: NVIDIA limits may vary by model/account, and HTTP `429` with `Retry-After` remains authoritative.
 
+## Repeated trials
+
+The workflow exposes a `trials` selector (`1`, `5`, or `10`) for Mistral and Google and defaults it to **5** for stability research. NVIDIA uses a separate `nvidia_trials` selector with default **1** so the routine Hosted NIM diagnostic is not multiplied automatically.
+
+For `--trials > 1`, read `stability.correctness` rather than treating the pooled top-level `comparison` as a stability estimate. Each trial is a full 20-fixture pass; `--concurrency` only overlaps fixtures inside that pass, and the next trial starts after the current one finishes. Only trials that generated/evaluated every expected fixture contribute to correctness mean/min/max/population-stddev. Incomplete trials remain in `stability.per_trial` with explicit denominators and failure classes. Token/latency distributions are reported separately under `stability.operational`.
+
+A one-trial live result remains a diagnostic point observation and is not enough to claim a stable ranking. Models whose 5-trial distributions materially overlap are candidates for a targeted 10-trial follow-up.
+
+Each live model job preserves its raw JSON as a short-retention GitHub Actions artifact so the per-case/per-trial evidence can be reviewed after the workflow completes instead of relying only on console summaries.
+
 ## In-model concurrency
 
 Use `--concurrency N` (1-10) to overlap independent fixture generations for one live model. Results are restored to fixture/trial order before aggregation, and one fixture failure remains isolated from other in-flight work. All workers share the same provider adapter, so NVIDIA request-start pacing and 429 `Retry-After` handling continue to apply across the run. The NVIDIA workflow defaults to 4 based on the successful 20/20 Nemotron Lightning repeat run.

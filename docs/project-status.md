@@ -2,13 +2,13 @@
 
 ## Current phase
 
-The repository is an early research prototype. The core authority boundary, native CLI, deterministic fixture benchmark, one live provider adapter, trusted verification receipts, and a narrow Five Whys restatement pass are implemented.
+The repository is an early research prototype. The core authority boundary, native CLI, deterministic fixture benchmark, live Mistral/Google/NVIDIA provider adapters, trusted verification receipts, and a narrow Five Whys restatement pass are implemented.
 
 This is not a claim that open-world reasoning is solved. Current correctness gains depend on deterministic structure and on trusted oracles where a hard answer exists.
 
 ## Implemented
 
-- Rust-only core, CLI, eval, and provider adapter crates. Mistral and Gemma 4 candidate-generation adapters are implemented.
+- Rust-only core, CLI, eval, and provider adapter crates. Mistral, Google Gemini Interactions, and NVIDIA Hosted NIM candidate-generation adapters are implemented.
 - Harness-owned evidence and untrusted `ReasoningCandidate` boundary.
 - Deterministic structural/provenance validation.
 - `accept | reject | unknown` policy.
@@ -16,7 +16,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Receipt-backed support promotion and contradiction rejection.
 - Narrow deterministic Five Whys lexical-restatement removal.
 - Twenty committed regression fixtures (5 accept / 6 reject / 9 unknown).
-- Mistral live benchmark workflow plus optional Gemma 4 matrix, manually triggered and secret-isolated.
+- Manual, secret-isolated live benchmark workflow spanning Mistral, Google-hosted Gemma/Gemini, and a narrowed routine NVIDIA Nemotron target.
 - GitHub CI, Dependabot configuration, contribution/security guidance, issue and PR templates.
 
 ## Known gaps
@@ -26,7 +26,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Counterexample discovery coverage is still narrow outside explicit structured propositions.
 - Five Whys pass is intentionally lexical and narrow, not a semantic causal judge.
 - No assumption extraction, first-principles pass, semantic-loss verifier, or verification-budget policy yet.
-- Live model results are too small and stochastic for broad model-quality claims.
+- Single live model runs are too stochastic for ranking claims; repeated-trial stability reporting is implemented for Issue #6 and the 5-trial Mistral/Google matrix is the next empirical gate.
 
 ## Release posture
 
@@ -55,3 +55,11 @@ The first hardened 20-case Mistral matrix completed successfully for Ministral 3
 ### Gemma 4 provider validation
 
 The Rust provider boundary now includes Google-hosted Gemma and Gemini text models through the Gemini Interactions API. The live diagnostic matrix includes Gemma 4 26B/31B plus Gemini 3.1 Flash-Lite and Gemini 3.5 Flash-Lite; managed agents such as Antigravity are intentionally excluded. A live `gemma-4-31b-it` run completed all 20 benchmark cases: baseline accuracy 0.85, harness accuracy 0.95, unsafe final accepts 0, reject/unknown recall 1.00, contradiction and counterexample detection 1.00, and deterministic verifier failures 0. This is the first cross-family live validation beyond Mistral. `gemma-4-26b-a4b-it` currently returns provider-side HTTP 403 for the GitHub project and remains an experimental matrix entry.
+
+### NVIDIA Hosted NIM research
+
+NVIDIA Hosted NIM support is implemented through the OpenAI-compatible Chat Completions endpoint with model IDs treated as data. Nemotron Lightning is the only routine NVIDIA matrix target after the 20-case research sweep; GPT-OSS 20B, Gemma-through-NVIDIA, and DeepSeek V4 Flash remain ad-hoc because of observed protocol/timeout instability. NVIDIA request-start pacing is a client-side 1.6-second minimum interval (37.5 starts/minute), not a claimed provider quota.
+
+### Repeated-trial stability phase
+
+Issue #6 adds explicit per-trial operational completeness, correctness denominators, complete-trial-only mean/min/max/population-stddev, and separate token/latency distributions. The pooled case comparison remains available for backward compatibility but is not the stability estimate. Required deterministic CI remains credential-free; the manual Mistral/Google workflow defaults to five trials per model, while NVIDIA keeps a separate one-trial default.

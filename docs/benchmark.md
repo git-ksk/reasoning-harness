@@ -24,6 +24,18 @@ reason eval fixtures --provider google --model gemma-4-26b-a4b-it --trials 5
 
 Use `--seed` when a provider supports it. Trial N uses `base_seed + N`. Live runs are intentionally not part of the required CI gate because network availability, provider behavior, quota, and cost are external variables.
 
+### Repeated-trial stability semantics
+
+`--trials N` keeps every fixture/trial observation as an individual case, but repeated-trial analysis is **not** inferred from the pooled `N × fixtures` comparison alone. Each trial is executed as one full-corpus pass; fixture concurrency is contained within that pass, and the next trial does not start until the current pass finishes. Final case output is still restored to the historical fixture/trial order. Live JSON also includes `stability`, which groups cases by trial index and reports an explicit per-trial correctness denominator and operational status. The pooled top-level `comparison` remains for backward-compatible case-level inspection; stable model comparisons must use `stability.correctness`.
+
+A trial is `operationally_complete` only when every expected fixture generated and was evaluated without a provider/model operational failure. Partial trials remain visible under `stability.per_trial` with their successful correctness denominator and failure-class counts, but they are excluded from cross-trial correctness mean/min/max/stddev. Provider availability therefore does not masquerade as model correctness variance. If no complete trial exists, `stability.correctness` is omitted rather than synthesized from partial data.
+
+For complete trials, baseline and harness distributions include verdict accuracy, accept/reject/unknown recall, unsafe-accept cases, deterministic verifier failure rate, contradiction detection, and counterexample detection. Every scalar distribution reports `count`, `mean`, `min`, `max`, and **population** standard deviation over the observed complete trials (`sqrt(sum((x - mean)^2) / N)`). No Bessel/sample correction is applied because the report describes the observed trial set rather than estimating an unobserved population parameter.
+
+Operational variability is reported separately. `stability.operational` includes successful-request total-token and latency distributions plus complete-trial total-token and summed-request-latency distributions. Missing provider token metadata is omitted from token distributions rather than converted to zero. Provider failures are classified operationally and never assigned a correctness verdict.
+
+The manual workflow defaults Mistral and Google stability studies to 5 trials/model. A 10-trial follow-up is reserved for models whose 5-trial distributions still overlap materially. NVIDIA has a separate trial-count input and remains 1 trial by default because Hosted NIM is supplementary to the Issue #6 Mistral/Google study and is slower/more capacity-sensitive.
+
 ## Recorded corpus
 
 The committed regression corpus contains 20 fixtures: 5 expected `accept`, 6 expected `reject`, and 9 expected `unknown`. It covers:
