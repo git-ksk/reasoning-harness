@@ -75,3 +75,33 @@ The live study supports four narrow conclusions:
 4. None of these observations creates hard authority. Every live decision remains a `SoftJudgeObservation` and can only trigger further evidence acquisition, deterministic verification, or review through existing policy boundaries.
 
 The v2 numbers must **not** be presented as general model quality. The prompt was calibrated against the same nine cases used for measurement. The next semantic-quality study should use a separate holdout/expanded ambiguity corpus with paraphrases, mixed evidence, and unseen cases before comparing models or making reliability claims.
+
+
+## Independent holdout v1
+
+Issue #36 froze a separate 28-case, observation-free holdout corpus before any provider result was observed. The corpus contains 11 positive, 8 negative, and 9 ambiguous cases across contradiction, unsupported-premise, causal-gap, and counterexample families. The first live study ran from merged `main` commit `c50aa5b822307096b08dcdf63826cd3d40ad0f7d`; no holdout fixture or prompt change was made after observing the result.
+
+GitHub Actions run `33314808691` evaluated `ministral-8b-latest` for five trials, producing 140 fixture calls.
+
+Operational result:
+
+- 140/140 successful fixture runs and 5/5 complete trials;
+- 0 operational failures;
+- 151,699 total tokens;
+- 276,440 ms aggregate fixture latency;
+- 210 successful provider-generation attempts;
+- 70/140 successful runs used the harness JSON-object fallback path (`fallback_rate = 0.500`).
+
+Complete-trial semantic distributions:
+
+| metric | mean | min | max | stddev |
+|---|---:|---:|---:|---:|
+| precision | 0.909 | 0.909 | 0.909 | 0.000 |
+| recall | 0.909 | 0.909 | 0.909 | 0.000 |
+| decision coverage | 0.664 | 0.643 | 0.679 | 0.017 |
+| ambiguous abstention rate | 0.778 | 0.778 | 0.778 | 0.000 |
+| abstentions per 28 cases | 9.4 | 9 | 10 | 0.490 |
+
+The independent corpus exposed several stable generic error classes that the calibration-set score did not show: semantically equivalent wording was overcalled as contradiction, reverse-causality uncertainty was treated as abstention rather than a directional causal-gap finding under the current label contract, and partial or incompletely scoped causal evidence was overcalled on two intentionally ambiguous cases. Some negative cases also remained conservatively undecided.
+
+This result is evidence about `soft-semantic-v2` on this frozen holdout version only. It does not promote the model to correctness authority and does not justify a broad model ranking. Issue #38 tracks semantic calibration from the generic contract using the calibration corpus, while keeping holdout v1 frozen. Issue #39 separately tracks why half of successful calls required the JSON-object fallback path. The broader model matrix remains gated on those follow-ups.

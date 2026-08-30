@@ -88,7 +88,9 @@ Primary question: does the resolution loop reject false closure and preserve `un
 ## Planned diagnostic/reasoning work
 
 - [implemented #33] repeated live semantic contradiction/unsupported-premise/causal-gap discovery under the calibrated soft-only boundary, including explicit ambiguity-abstention measurement
-- [in progress #36] frozen independent semantic-judge holdout v1 with expanded ambiguity/counterexample coverage before any generalization or model-ranking claim
+- [implemented #36] frozen independent semantic-judge holdout v1 with expanded ambiguity/counterexample coverage; first five-trial Mistral study completed without changing the frozen corpus
+- [open #38] calibrate generic semantic decision boundaries after holdout-v1 error clusters, using the calibration corpus rather than tuning against holdout v1
+- [open #39] classify the structured-output fallback causes behind the 0.500 holdout fallback rate before broader model comparison
 - first-principles decomposition only if it adds measurable diagnostic signal
 - semantic-loss verification after finalization/coverage semantics are defined
 - generalized oracle adapter interface where concrete consumer needs justify it
