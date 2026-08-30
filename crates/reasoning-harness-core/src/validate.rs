@@ -53,6 +53,25 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
         }
     }
 
+    let mut assumptions = HashSet::new();
+    for assumption in &artifact.assumptions {
+        if assumption.key.trim().is_empty() || assumption.value.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "invalid_input_assumption",
+                message: "harness-owned assumption key/value must not be empty".into(),
+            });
+        }
+        if !assumptions.insert((assumption.key.as_str(), assumption.value.as_str())) {
+            diagnostics.push(Diagnostic {
+                code: "duplicate_input_assumption",
+                message: format!(
+                    "duplicate harness-owned assumption: {}={}",
+                    assumption.key, assumption.value
+                ),
+            });
+        }
+    }
+
     for evidence in &artifact.evidence {
         if evidence.id.trim().is_empty() {
             diagnostics.push(Diagnostic {
@@ -345,6 +364,79 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
                     inference.id, inference.conclusion_claim_id
                 ),
             });
+        }
+    }
+
+    let mut assumption_finding_ids = HashSet::new();
+    for finding in &artifact.assumption_findings {
+        if finding.id.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_assumption_finding_id",
+                message: "assumption finding id must not be empty".into(),
+            });
+        }
+        if !assumption_finding_ids.insert(finding.id.as_str()) {
+            diagnostics.push(Diagnostic {
+                code: "duplicate_assumption_finding_id",
+                message: format!("duplicate assumption finding id: {}", finding.id),
+            });
+        }
+        if finding.detector.trim().is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "empty_assumption_detector",
+                message: format!("assumption finding {} has an empty detector", finding.id),
+            });
+        }
+        if let Some(proposition) = &finding.proposition {
+            if proposition.key.trim().is_empty() || proposition.value.trim().is_empty() {
+                diagnostics.push(Diagnostic {
+                    code: "invalid_assumption_proposition",
+                    message: format!(
+                        "assumption finding {} has an empty proposition key/value",
+                        finding.id
+                    ),
+                });
+            }
+        }
+        if finding.strength == crate::FindingStrength::Hard && finding.proposition.is_none() {
+            diagnostics.push(Diagnostic {
+                code: "hard_assumption_without_binding",
+                message: format!(
+                    "hard assumption finding {} has no proposition binding",
+                    finding.id
+                ),
+            });
+        }
+        if finding.claim_ids.is_empty() || finding.inference_ids.is_empty() {
+            diagnostics.push(Diagnostic {
+                code: "assumption_finding_without_usage",
+                message: format!(
+                    "assumption finding {} must reference at least one claim and inference",
+                    finding.id
+                ),
+            });
+        }
+        for claim_id in &finding.claim_ids {
+            if !claim_ids.contains(claim_id.as_str()) {
+                diagnostics.push(Diagnostic {
+                    code: "assumption_missing_claim",
+                    message: format!(
+                        "assumption finding {} references missing claim {}",
+                        finding.id, claim_id
+                    ),
+                });
+            }
+        }
+        for inference_id in &finding.inference_ids {
+            if !inference_ids.contains(inference_id.as_str()) {
+                diagnostics.push(Diagnostic {
+                    code: "assumption_missing_inference",
+                    message: format!(
+                        "assumption finding {} references missing inference {}",
+                        finding.id, inference_id
+                    ),
+                });
+            }
         }
     }
 

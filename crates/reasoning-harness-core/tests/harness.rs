@@ -29,6 +29,7 @@ fn strict_policy_preserves_unknown_as_a_successful_outcome() {
         task: "answer only when evidence is sufficient".into(),
         evidence: vec![],
         hypotheses: vec![],
+        assumptions: vec![],
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {
@@ -56,6 +57,7 @@ fn model_proposed_contradiction_cannot_force_runtime_reject() {
             facts: Default::default(),
         }],
         hypotheses: vec![],
+        assumptions: vec![],
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {

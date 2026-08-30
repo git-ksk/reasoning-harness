@@ -105,3 +105,38 @@ fn rejects_invalid_harness_hypothesis() {
             .any(|d| d.code == "invalid_hypothesis")
     );
 }
+
+#[test]
+fn rejects_invalid_and_duplicate_harness_assumptions() {
+    let artifact = ReasoningArtifact {
+        task: "fixture task".into(),
+        assumptions: vec![
+            reasoning_harness_core::Proposition {
+                key: "".into(),
+                value: "true".into(),
+            },
+            reasoning_harness_core::Proposition {
+                key: "scope.mode".into(),
+                value: "test".into(),
+            },
+            reasoning_harness_core::Proposition {
+                key: "scope.mode".into(),
+                value: "test".into(),
+            },
+        ],
+        ..Default::default()
+    };
+    let report = validate_artifact(&artifact);
+    assert!(
+        report
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "invalid_input_assumption")
+    );
+    assert!(
+        report
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "duplicate_input_assumption")
+    );
+}

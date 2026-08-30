@@ -14,6 +14,7 @@ fn model_cannot_promote_its_own_claim_to_supported() {
             facts: Default::default(),
         }],
         hypotheses: vec![],
+        assumptions: vec![],
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {
@@ -36,6 +37,7 @@ fn model_cannot_inject_evidence_into_harness_owned_input() {
         task: "decide from supplied evidence".into(),
         evidence: vec![],
         hypotheses: vec![],
+        assumptions: vec![],
     };
     let candidate = ReasoningCandidate {
         claims: vec![CandidateClaim {
@@ -60,5 +62,7 @@ fn candidate_schema_does_not_allow_model_owned_evidence() {
     assert!(!schema_text.contains("CausalEvidence"));
     assert!(!schema_text.contains("CausalFinding"));
     assert!(!schema_text.contains("verification_receipts"));
+    assert!(!schema_text.contains("\"assumptions\""));
+    assert!(!schema_text.contains("AssumptionFinding"));
     assert!(schema_text.contains("proposed_state"));
 }

@@ -81,8 +81,15 @@ Free-form LLM paraphrase generation remains outside the hard benchmark.
 
 ## P1 — broaden grounded reasoning signal conservatively
 
-### #12 Assumption and unsupported-premise diagnostics
-Add a narrow assumption pass that distinguishes explicit input assumptions from candidate-introduced unsupported premises. Hard status requires harness-owned structured support; semantic discovery remains soft.
+### #12 Assumption and unsupported-premise diagnostics — implemented
+- [done] harness-owned explicit assumptions are a distinct input contract from hypotheses
+- [done] typed premise assessments distinguish supported, explicit input assumption, unsupported, and unbound
+- [done] typed unsupported premises are hard process findings relative to supplied context; missing proposition binding remains soft
+- [done] repeated premise reuse is deduplicated semantically while preserving all claim/inference references
+- [done] candidate-authored `inferred` state is not trusted as support; derived support requires a chain from trusted supported/known claims or explicit input assumptions
+- [done] five-case deterministic assumption corpus and separate detection/recognition metrics remain outside final correctness denominators
+- [done] assumption findings feed the #11 provider-neutral repeated diagnostic report without gaining verdict authority
+
 
 ### #16 Temporal, scope, and provenance evidence diagnostics
 Extend harness-owned evidence with provider-neutral validity metadata so a proposition can be checked against the evidence's explicit time window, applicability scope, and configured provenance/authority requirement.

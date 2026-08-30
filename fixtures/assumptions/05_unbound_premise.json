@@ -1,0 +1,20 @@
+{
+  "id": "unbound_premise",
+  "description": "A premise without a typed proposition cannot be deterministically checked and remains a soft unbound diagnostic.",
+  "input": {
+    "task": "Reason only from machine-checkable premise bindings when possible."
+  },
+  "recorded_candidate": {
+    "claims": [
+      {"id":"premise","statement":"Some contextual condition probably holds.","proposed_state":"assumed"},
+      {"id":"result","statement":"A consequence follows.","proposed_state":"assumed"}
+    ],
+    "inferences": [
+      {"id":"i1","premise_claim_ids":["premise"],"conclusion_claim_id":"result","method":"deduction"}
+    ]
+  },
+  "expected_statuses": ["unbound"],
+  "expected_hard_findings": 0,
+  "expected_soft_findings": 1,
+  "expected_finding_inference_references": [1]
+}

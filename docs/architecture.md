@@ -83,6 +83,13 @@ The Five Whys restatement pass removes a causal edge only when a deliberately na
 
 This separation prevents a model-generated contradiction label or counterexample suggestion from becoming self-authenticating evidence.
 
+
+## Assumption diagnostic boundary
+
+`HarnessInput.assumptions` is harness-owned input and is deliberately absent from `ReasoningCandidate`. It names propositions that the task is allowed to take as premises without claiming that those propositions were independently verified. This is distinct from `hypotheses`, which identify propositions the task asks the candidate to evaluate.
+
+`AssumptionInspector` examines propositions actually used as inference premises after trusted verification passes have run. `known`/`supported` premises are trusted, and `inferred` premises count as derived support only when their inference chain bottoms out in trusted support or an explicit input assumption. A candidate's own `inferred` label is therefore insufficient. Typed premises with no trusted support and no explicit input assumption produce hard `unsupported_premise` process findings; premises without a proposition binding produce soft `unbound_premise` findings. Findings remain observational and cannot create evidence, verification receipts, or verdict authority.
+
 ## Evidence-aware causal diagnostic boundary
 
 `CausalInspector` extends Five Whys inspection beyond lexical restatement without becoming a verdict authority. It canonicalizes a typed causal relation as cause proposition(s) -> effect proposition and matches that relation only against harness-owned `CausalEvidence` with explicit provenance. Exact support can mark an edge `supported`; exact trusted refutation can mark it `refuted`. Association-only evidence, partial support, reverse-direction support, conflicting evidence, missing relation evidence, and incomplete proposition bindings remain `unknown` with soft diagnostics.

@@ -235,9 +235,11 @@ mod tests {
             task: "status".into(),
             evidence: vec![evidence("503")],
             hypotheses: vec![],
+            assumptions: vec![],
             candidate_diagnostics: vec![],
             verification_receipts: vec![],
             adversarial_findings: vec![],
+            assumption_findings: vec![],
             claims: vec![claim("503")],
             inferences: vec![],
         };

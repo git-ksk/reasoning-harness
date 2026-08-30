@@ -132,9 +132,11 @@ mod tests {
                 })
                 .collect(),
             hypotheses: vec![],
+            assumptions: vec![],
             candidate_diagnostics: vec![],
             verification_receipts: vec![],
             adversarial_findings: vec![],
+            assumption_findings: vec![],
             claims: vec![Claim {
                 id: "c1".into(),
                 statement: "provider prose".into(),

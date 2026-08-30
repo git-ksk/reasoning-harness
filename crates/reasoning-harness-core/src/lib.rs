@@ -1,6 +1,8 @@
 #![cfg_attr(test, allow(clippy::field_reassign_with_default))]
 
 pub mod adversarial;
+pub mod assumption;
+pub mod assumption_benchmark;
 pub mod benchmark;
 pub mod candidate;
 pub mod causal;
@@ -21,6 +23,14 @@ pub mod verification;
 pub use adversarial::{
     AdversarialDetector, AdversarialDiscoveryPass, StructuredFactConflictDetector,
     record_soft_finding,
+};
+pub use assumption::{
+    AssumptionAssessment, AssumptionDiscoveryPass, AssumptionFinding, AssumptionFindingKind,
+    AssumptionInspection, AssumptionInspector, AssumptionSupportStatus,
+};
+pub use assumption_benchmark::{
+    AssumptionBenchmarkAggregate, AssumptionBenchmarkCaseResult, AssumptionBenchmarkFixture,
+    aggregate_assumption_benchmark, evaluate_assumption_fixture,
 };
 pub use benchmark::{
     BenchmarkAggregate, BenchmarkArmResult, BenchmarkCaseResult, BenchmarkComparison,
