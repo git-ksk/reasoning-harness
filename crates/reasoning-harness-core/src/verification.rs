@@ -260,7 +260,7 @@ fn canonical_statement(proposition: &crate::Proposition) -> String {
     format!("{} = {}", proposition.key, proposition.value)
 }
 
-fn receipt_matches(receipt: &VerificationReceipt, claim: &Claim) -> bool {
+pub(crate) fn receipt_matches(receipt: &VerificationReceipt, claim: &Claim) -> bool {
     let statement_matches = receipt
         .claim_statement
         .as_ref()

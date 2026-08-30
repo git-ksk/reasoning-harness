@@ -165,6 +165,14 @@ The Five Whys restatement pass removes a causal edge only when a deliberately na
 
 This separation prevents a model-generated contradiction label or counterexample suggestion from becoming self-authenticating evidence.
 
+## Reasoning policy and invalidation boundary
+
+`ReasoningPolicy` constrains admissibility and escalation; it does not decide truth. Global/domain/run policy layers compose conservatively for authority, scope, derived-support capability, and resolver-class permission. Soft semantic findings may request additional work, but no policy rule can create evidence, receipts, hard findings, epistemic promotion, or verdict authority.
+
+A policy change creates a new `ReasoningArtifact` snapshot rather than mutating history. Hard state is preserved only when its authority remains reconstructable under the effective policy. Invalidated receipts propagate to claims, dependent inference edges, downstream claims, and finalization. Affected edges are removed from the new accepted snapshot, policy-sensitive qualification/assumption diagnostics are recomputed, and `StrictAcceptancePolicy` is re-evaluated. The old artifact remains unchanged for future thread/history ownership.
+
+`constrain_resolution_policy` reuses #22 and can only tighten resolver classes and required evidence authority. See [reasoning policy and dependency invalidation](reasoning-policy.md) and [ADR-0003](adr/0003-reasoning-control-plane.md).
+
 ## Soft semantic-judge boundary
 
 `SoftDiagnosticJudge` is an explicitly non-authoritative discovery/calibration boundary. It emits `finding | no_finding | abstain` observations tied to a typed diagnostic request and stable judge/model/configuration identity. `SoftSemanticFinding` deliberately has no verification receipt, verdict, epistemic-state mutation, or hard-strength field, and it is not stored in `ReasoningArtifact` by the initial calibration implementation.

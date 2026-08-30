@@ -141,8 +141,6 @@ Corpus v1 now establishes the stable base-case identities needed for direct, dia
 
 The core now owns the bounded control protocol, not domain acquisition. Generic web/RAG/database/MCP/human-review implementations remain external adapters. Live resolution quality is not implied by the deterministic fixture-oracle baseline.
 
-With #22 implemented, #13 calibrated soft semantic judges is the next planned research phase. Semantic judges may propose diagnostic or resolution targets but remain soft and non-authoritative.
-
 ## P3.5 — reasoning control-plane architecture — designed
 
 ### #25 Mature harness control patterns — architecture complete
@@ -154,7 +152,21 @@ With #22 implemented, #13 calibrated soft semantic judges is the next planned re
 - [done] preserve repair as untrusted replacement + complete re-verification
 - [done] defer skills/subagents and generic workflow orchestration until benchmark evidence justifies them
 
-ADR-0003 splits future implementation into #27 policy/invalidation and #28 durable-thread tracks. Neither blocks #13; soft semantic findings should later be recordable as non-authoritative thread events.
+ADR-0003 split implementation into #27 policy/invalidation and #28 durable-thread tracks. #27 is now implemented; #28 remains the next durable-runtime step.
+
+### #27 Composable reasoning policy and dependency invalidation — implemented
+- [done] typed global/domain/run `ReasoningPolicyLayer` composition with stable effective policy version identity
+- [done] authority thresholds, scope, derived-support capability, and resolver-class permissions compose restrictively; contextual `as_of` changes force requalification
+- [done] direct/deserialized policy input is validated fail-closed independently of the composition helper
+- [done] policy changes create a new artifact snapshot; historical input is not mutated
+- [done] supported/contradicted state requires reconstructable retained receipt authority, while known state must retain qualified direct evidence
+- [done] invalidation propagates receipt -> claim -> inference edge -> downstream claim -> finalization
+- [done] invalidated edges are removed from the new accepted snapshot and policy-sensitive qualification/assumption findings are recomputed
+- [done] soft semantic findings may request evidence/verifier/human escalation but cannot create hard authority
+- [done] #22 resolution policy can only be tightened by policy resolver/authority constraints
+- [done] four deterministic policy fixtures cover authority, temporal, scope, and dependency invalidation outside existing score denominators
+
+See [reasoning policy and dependency invalidation](reasoning-policy.md).
 
 ## P4 — calibrated semantic expansion
 
@@ -170,7 +182,7 @@ ADR-0003 splits future implementation into #27 policy/invalidation and #28 durab
 
 Live semantic discovery is now permitted as optional/manual research under this boundary, but a judge remains soft even when its calibration metrics are strong. It may suggest a resolution target; hard authority must still come from evidence qualification or an explicit trusted verifier.
 
-With #13 complete, the next runtime implementation work is #27 policy/invalidation followed by #28 durable threads/checkpoint replay unless live calibration results expose a higher-priority failure.
+With #13 and #27 complete, #28 durable reasoning threads/checkpoint replay is the next runtime implementation step unless live research exposes a higher-priority failure.
 
 ## Decision gates for future features
 
