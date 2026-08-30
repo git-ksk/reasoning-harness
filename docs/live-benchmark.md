@@ -61,4 +61,4 @@ reason eval-judges fixtures/semantic-judges \
   --format json
 ```
 
-The workflow stores the full JSON as a short-lived artifact and prints only aggregate semantic metrics plus operational failures. A provider/protocol failure does not become `no_finding`; any affected trial is excluded from semantic stability distributions. These metrics are independent of the ordinary live correctness benchmark.
+The workflow stores the full JSON as a short-lived artifact and prints only aggregate semantic metrics plus operational failures. A provider/protocol failure does not become `no_finding`; any affected trial is excluded from semantic stability distributions. Precision/recall are accompanied by decision coverage and ambiguous-case abstention so aggressive decisions on intentionally uncertain cases stay visible. These metrics are independent of the ordinary live correctness benchmark. See [live soft semantic-judge study](live-semantic-judge-study.md) for the first repeated Mistral result and its holdout caveat.

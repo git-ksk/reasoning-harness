@@ -87,7 +87,8 @@ Primary question: does the resolution loop reject false closure and preserve `un
 
 ## Planned diagnostic/reasoning work
 
-- [in progress #33] repeated live semantic contradiction/counterexample/unsupported-premise/causal-gap discovery experiments under the calibrated soft-only boundary
+- [implemented #33] repeated live semantic contradiction/unsupported-premise/causal-gap discovery under the calibrated soft-only boundary, including explicit ambiguity-abstention measurement
+- semantic-judge holdout/expanded ambiguity corpus before any generalization or model-ranking claim
 - first-principles decomposition only if it adds measurable diagnostic signal
 - semantic-loss verification after finalization/coverage semantics are defined
 - generalized oracle adapter interface where concrete consumer needs justify it

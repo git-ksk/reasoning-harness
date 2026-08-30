@@ -41,7 +41,7 @@ The committed calibration corpus uses three labels:
 - `negative`: a labelled finding is not expected;
 - `ambiguous`: the case is intentionally not treated as positive or negative ground truth.
 
-Ambiguous cases are excluded from precision/recall confusion counts. They remain visible for decision coverage, disagreement, and abstention behavior.
+Ambiguous cases are excluded from precision/recall confusion counts. They remain visible for decision coverage, disagreement, and abstention behavior. `ambiguous_abstention_rate` is reported separately so a judge cannot look strong on labelled precision/recall while aggressively converting intentionally uncertain cases into findings.
 
 ## Precision, recall, and abstention
 
@@ -49,6 +49,7 @@ Per judge, the report records:
 
 - finding / no-finding / abstain counts;
 - decision coverage;
+- ambiguous-case abstention count and rate;
 - true/false positive and true/false negative counts;
 - precision where at least one positive prediction exists;
 - recall where at least one positive-labelled case exists.
@@ -127,4 +128,4 @@ The primary request uses JSON Schema structured output. If the adapter reports t
 - model findings remain soft regardless of observed precision or agreement;
 - the ordinary `reason eval` correctness denominator is unchanged.
 
-The manual live workflow can run the same nine-case calibration corpus using secret-isolated Mistral, Google, or NVIDIA credentials. Repeated live results are research observations, not correctness authority.
+The manual live workflow can run the same nine-case calibration corpus using secret-isolated Mistral, Google, or NVIDIA credentials. Repeated live results are research observations, not correctness authority. The first repeated Mistral study and the v1/v2 prompt-sensitivity result are documented in [live soft semantic-judge study](live-semantic-judge-study.md). Because v2 was calibrated against the same nine cases, a separate holdout/expanded ambiguity corpus is required before any generalization claim.
