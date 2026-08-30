@@ -271,16 +271,18 @@ pub async fn run_model_backed_soft_judge(
             || "primary schema mode unsupported".to_string(),
             |response| {
                 format!(
-                    "primary_bytes={} primary_shape={}",
+                    "primary_bytes={} primary_shape={} primary_finish={}",
                     response.text.len(),
-                    structured_output_shape(&response.text)
+                    structured_output_shape(&response.text),
+                    finish_reason_class(response.finish_reason.as_deref())
                 )
             },
         );
         ModelBackedSoftJudgeError::InvalidStructuredOutput(format!(
-            "{first}; fallback_bytes={} fallback_shape={}; {error}",
+            "{first}; fallback_bytes={} fallback_shape={} fallback_finish={}; {error}",
             fallback.text.len(),
-            structured_output_shape(&fallback.text)
+            structured_output_shape(&fallback.text),
+            finish_reason_class(fallback.finish_reason.as_deref())
         ))
     })?;
     let usage = primary.as_ref().map_or_else(
@@ -364,6 +366,17 @@ fn soft_judge_decision_guidance(kind: SemanticDiagnosticKind) -> &'static str {
         SemanticDiagnosticKind::CausalGap => {
             "causal_gap: finding means the supplied context affirmatively establishes that directional support for the requested causal relation is missing, for example correlation-only evidence, temporal or mechanism-only evidence without direction, explicit confounding, or an explicit viable reverse-causal alternative when direction remains undistinguished; no_finding means the supplied context explicitly supports the requested causal direction sufficiently for the requested relation and scope; abstain means some directional evidence exists but its adequacy is mixed, partial, scoped, or uncertain; imperfect causal evidence alone is not a finding"
         }
+    }
+}
+
+fn finish_reason_class(finish_reason: Option<&str>) -> &'static str {
+    match finish_reason {
+        Some("stop") => "stop",
+        Some("length") => "length",
+        Some("tool_calls") => "tool_calls",
+        Some("content_filter") => "content_filter",
+        Some(_) => "other",
+        None => "missing",
     }
 }
 
@@ -1036,6 +1049,17 @@ mod tests {
         ])
         .unwrap();
         assert_eq!(report.agreement.krippendorff_alpha_nominal, Some(1.0));
+    }
+
+    #[test]
+    fn finish_reason_diagnostic_uses_bounded_classes() {
+        assert_eq!(finish_reason_class(Some("stop")), "stop");
+        assert_eq!(finish_reason_class(Some("length")), "length");
+        assert_eq!(
+            finish_reason_class(Some("provider-specific-value")),
+            "other"
+        );
+        assert_eq!(finish_reason_class(None), "missing");
     }
 
     #[test]
