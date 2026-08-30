@@ -1,0 +1,79 @@
+{
+  "id": "01_contradiction_positive",
+  "request": {
+    "id": "soft-01_contradiction_positive",
+    "task": "Determine whether the candidate conflicts with supplied evidence.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "feature.enabled",
+        "value": "true"
+      }
+    },
+    "context": [
+      "The candidate says enabled.",
+      "The supplied record says disabled."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": [
+    {
+      "judge": {
+        "judge_id": "recorded-judge-a",
+        "model_id": "calibration-model-a",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-01_contradiction_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "contradiction",
+        "target": {
+          "type": "proposition",
+          "proposition": {
+            "key": "feature.enabled",
+            "value": "true"
+          }
+        }
+      }
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-b",
+        "model_id": "calibration-model-b",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-01_contradiction_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "contradiction",
+        "target": {
+          "type": "proposition",
+          "proposition": {
+            "key": "feature.enabled",
+            "value": "true"
+          }
+        }
+      }
+    },
+    {
+      "judge": {
+        "judge_id": "recorded-judge-c",
+        "model_id": "calibration-model-c",
+        "configuration_id": "v1"
+      },
+      "request_id": "soft-01_contradiction_positive",
+      "decision": "finding",
+      "finding": {
+        "kind": "contradiction",
+        "target": {
+          "type": "proposition",
+          "proposition": {
+            "key": "feature.enabled",
+            "value": "true"
+          }
+        }
+      }
+    }
+  ]
+}

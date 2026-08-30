@@ -165,6 +165,14 @@ The Five Whys restatement pass removes a causal edge only when a deliberately na
 
 This separation prevents a model-generated contradiction label or counterexample suggestion from becoming self-authenticating evidence.
 
+## Soft semantic-judge boundary
+
+`SoftDiagnosticJudge` is an explicitly non-authoritative discovery/calibration boundary. It emits `finding | no_finding | abstain` observations tied to a typed diagnostic request and stable judge/model/configuration identity. `SoftSemanticFinding` deliberately has no verification receipt, verdict, epistemic-state mutation, or hard-strength field, and it is not stored in `ReasoningArtifact` by the initial calibration implementation.
+
+Calibration reports precision/recall, decision coverage, disagreement, abstention, pairwise categorical agreement, and nominal Krippendorff alpha separately from final harness correctness. Ambiguous labels are retained but excluded from positive/negative precision/recall. Abstention remains explicit and is treated as missing data for alpha rather than being majority-voted into a finding.
+
+A future policy/thread layer may record a soft observation or use it to request additional evidence, but only existing harness-owned evidence/verifier boundaries may create hard authority. See [soft semantic-judge calibration](semantic-judge-calibration.md).
+
 ## Assumption diagnostic boundary
 
 `HarnessInput.assumptions` is harness-owned input and is deliberately absent from `ReasoningCandidate`. It names propositions that the task is allowed to take as premises without claiming that those propositions were independently verified. This is distinct from `hypotheses`, which identify propositions the task asks the candidate to evaluate.

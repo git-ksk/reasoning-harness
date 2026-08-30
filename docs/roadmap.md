@@ -158,10 +158,19 @@ ADR-0003 splits future implementation into #27 policy/invalidation and #28 durab
 
 ## P4 — calibrated semantic expansion
 
-### #13 Calibrated soft semantic diagnostic judges
-Only after deterministic robustness, diagnostic stability, assumption/evidence-qualification diagnostics, corpus discipline, and the grounded runtime boundary are established, define a calibration boundary for model-backed semantic discovery. Judge disagreement and abstention are data, not hard truth. No model judge gains verdict or verification authority.
+### #13 Calibrated soft semantic diagnostic judges — implemented
+- [done] provider-neutral async `SoftDiagnosticJudge` contract with harness/adapter-owned stable judge/model/configuration identity
+- [done] typed soft contradiction/counterexample/unsupported-premise/causal-gap request and finding targets
+- [done] `finding | no_finding | abstain` output with no API path to receipts, hard findings, epistemic promotion, or verdict authority
+- [done] nine-case offline calibration corpus with positive, negative, and ambiguous labels and deliberate disagreement/abstention
+- [done] per-judge confusion counts, precision, recall, decision coverage, and abstention metrics
+- [done] pairwise categorical agreement plus nominal Krippendorff alpha with abstention treated as missing data
+- [done] `reason eval-judges` keeps calibration metrics separate from final correctness, diagnostic stability, and resolution denominators
+- [done] required CI remains deterministic and credential-free; recorded identities are synthetic calibration fixtures, not model-quality claims
 
-Semantic judges may eventually help propose resolution targets or identify missing semantic links, but they remain soft inputs to the same runtime rather than becoming the runtime's source of truth.
+Live semantic discovery is now permitted as optional/manual research under this boundary, but a judge remains soft even when its calibration metrics are strong. It may suggest a resolution target; hard authority must still come from evidence qualification or an explicit trusted verifier.
+
+With #13 complete, the next runtime implementation work is #27 policy/invalidation followed by #28 durable threads/checkpoint replay unless live calibration results expose a higher-priority failure.
 
 ## Decision gates for future features
 
