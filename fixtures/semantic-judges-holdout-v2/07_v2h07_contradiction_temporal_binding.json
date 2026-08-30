@@ -1,0 +1,21 @@
+{
+  "id": "v2h07_contradiction_temporal_binding",
+  "request": {
+    "id": "holdout-v2-soft-v2h07_contradiction_temporal_binding",
+    "task": "Determine whether the supplied context semantically contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "autoscale.enabled",
+        "value": "true"
+      }
+    },
+    "context": [
+      "A maintenance log says autoscaling was disabled during a previous maintenance window.",
+      "A later note discusses autoscaling but does not state whether it was re-enabled before the time relevant to the target."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

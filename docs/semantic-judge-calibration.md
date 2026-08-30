@@ -149,3 +149,13 @@ This revision changes only the advisory semantic contract and configuration iden
 Issue #36 adds `fixtures/semantic-judges-holdout/` as a separate 28-case, observation-free holdout corpus. It contains 11 positive, 8 negative, and 9 ambiguous cases across contradiction, unsupported-premise, causal-gap, and counterexample families. Causal-gap coverage is intentionally heavier.
 
 The source corpus contains no recorded model observations. Labels are evaluator-owned and are not included in model requests. After the merge that introduces holdout v1, its fixture/request IDs, labels, targets, and contexts are frozen for the first live study. Provider results must not be used to tune the prompt against this holdout version; a later independently measured prompt revision requires a new holdout version rather than rewriting observed v1 cases.
+
+## Independent holdout v2 freeze
+
+`fixtures/semantic-judges-holdout-v2/` is the independent evaluation corpus for `soft-semantic-v3`. It contains 28 observation-free cases created after the generic v3 contract was calibrated but before any v3 provider result was observed on this corpus:
+
+- 10 positive, 9 negative, and 9 ambiguous labels;
+- 7 contradiction, 6 unsupported-premise, 9 causal-gap, and 6 counterexample cases;
+- independent facts and surfaces covering semantic equivalence, binding/scope ambiguity, paraphrased premise support, reverse causality, confounding, temporal-only support, partial and mixed interventions, incomplete applicability, and counterexample scope.
+
+The v2 source fixtures intentionally contain no recorded model observations. Labels are evaluator-owned and are not sent to the model. Once this corpus is merged into `main`, its fixture IDs, request IDs, labels, targets, tasks, and contexts are frozen for the first `soft-semantic-v3` live study. Any later prompt or contract revision that is informed by v2 results requires a new holdout version rather than editing this corpus.

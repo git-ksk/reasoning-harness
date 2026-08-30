@@ -1,0 +1,21 @@
+{
+  "id": "v2h02_contradiction_encryption_conflict",
+  "request": {
+    "id": "holdout-v2-soft-v2h02_contradiction_encryption_conflict",
+    "task": "Determine whether the supplied context semantically contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "archive.encryption",
+        "value": "enabled"
+      }
+    },
+    "context": [
+      "The target refers to archive A12.",
+      "The archive manifest for A12 explicitly says encryption is disabled."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

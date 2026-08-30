@@ -1,0 +1,29 @@
+{
+  "id": "v2h18_causal_randomized_support",
+  "request": {
+    "id": "holdout-v2-soft-v2h18_causal_randomized_support",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "retry.jitter",
+            "value": "enabled"
+          }
+        ],
+        "effect": {
+          "key": "collision.rate",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "Requests were randomly assigned to jitter-enabled and jitter-disabled retry behavior across the requested population.",
+      "The controlled comparison found a lower collision rate in the jitter-enabled group and attributes the difference to the assigned retry behavior."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

@@ -105,3 +105,13 @@ Complete-trial semantic distributions:
 The independent corpus exposed several stable generic error classes that the calibration-set score did not show: semantically equivalent wording was overcalled as contradiction, reverse-causality uncertainty was treated as abstention rather than a directional causal-gap finding under the current label contract, and partial or incompletely scoped causal evidence was overcalled on two intentionally ambiguous cases. Some negative cases also remained conservatively undecided.
 
 This result is evidence about `soft-semantic-v2` on this frozen holdout version only. It does not promote the model to correctness authority and does not justify a broad model ranking. Issue #38 tracks semantic calibration from the generic contract using the calibration corpus, while keeping holdout v1 frozen. Issue #39 separately tracks why half of successful calls required the JSON-object fallback path. The broader model matrix remains gated on those follow-ups.
+
+## soft-semantic-v3 calibration result
+
+After the generic decision contract and 18-case calibration corpus were merged, GitHub Actions run `33316513051` evaluated `ministral-8b-latest` for five calibration trials (90 calls). This is a calibration result, not independent evidence of generalization.
+
+Operationally, all 90 calls succeeded across 5/5 complete trials. The run used 80,646 total tokens and 143,197 ms aggregate fixture latency. There were 121 successful provider-generation attempts. The JSON-object fallback was used for 31/90 calls (`0.3444`); all 31 were classified as `invalid_primary_structured_output`, with zero `primary_json_schema_unsupported` cases.
+
+Semantic stability on the calibration corpus was precision `1.000`, recall `1.000`, mean decision coverage `0.622` (range `0.611`–`0.667`), and mean ambiguous abstention `0.971` (range `0.857`–`1.000`). Clear semantic equivalence and paraphrased premise support resolved to `no_finding` in all five trials; the explicit undistinguished reverse-causal alternative resolved to `finding` in all five; partial intervention and incomplete causal scope cases abstained in all five; and the clearly out-of-scope counterexample resolved to `no_finding` in all five. One older mixed causal calibration case produced one `finding` across five trials.
+
+Because the v3 contract was calibrated on this corpus, these numbers are not used as a reliability claim. A separate holdout-v2 is frozen before the first v3 provider evaluation.

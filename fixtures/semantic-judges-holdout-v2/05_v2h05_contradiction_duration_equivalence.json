@@ -1,0 +1,21 @@
+{
+  "id": "v2h05_contradiction_duration_equivalence",
+  "request": {
+    "id": "holdout-v2-soft-v2h05_contradiction_duration_equivalence",
+    "task": "Determine whether the supplied context semantically contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "retention.days",
+        "value": "30"
+      }
+    },
+    "context": [
+      "This retention policy defines one policy month as exactly 30 days.",
+      "The record requires retention for one policy month."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

@@ -1,0 +1,29 @@
+{
+  "id": "v2h21_causal_mixed_directional_evidence",
+  "request": {
+    "id": "holdout-v2-soft-v2h21_causal_mixed_directional_evidence",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "tracing.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "request.latency",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "One controlled experiment reports a small latency increase when tracing is enabled.",
+      "A second controlled experiment on another segment reports no measurable change, and the supplied context does not resolve which segment governs the requested relation."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

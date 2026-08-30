@@ -1,0 +1,21 @@
+{
+  "id": "v2h13_unsupported_dataset_binding",
+  "request": {
+    "id": "holdout-v2-soft-v2h13_unsupported_dataset_binding",
+    "task": "Determine whether the target premise is unsupported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "storage.tier",
+        "value": "warm"
+      }
+    },
+    "context": [
+      "One inventory entry places the archive dataset in warm storage.",
+      "The target refers to a dataset whose identifier is omitted, so the context does not establish that it is the archive dataset."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

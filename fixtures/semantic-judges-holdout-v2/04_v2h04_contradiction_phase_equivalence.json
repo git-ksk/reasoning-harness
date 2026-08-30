@@ -1,0 +1,21 @@
+{
+  "id": "v2h04_contradiction_phase_equivalence",
+  "request": {
+    "id": "holdout-v2-soft-v2h04_contradiction_phase_equivalence",
+    "task": "Determine whether the supplied context semantically contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "release.phase",
+        "value": "canary"
+      }
+    },
+    "context": [
+      "The release guide defines a limited rollout to a small validation cohort as the canary phase.",
+      "The current release is limited to that small validation cohort."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

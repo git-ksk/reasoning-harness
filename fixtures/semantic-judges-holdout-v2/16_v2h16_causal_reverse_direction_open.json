@@ -1,0 +1,29 @@
+{
+  "id": "v2h16_causal_reverse_direction_open",
+  "request": {
+    "id": "holdout-v2-soft-v2h16_causal_reverse_direction_open",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "cache.miss_rate",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "eviction.rate",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "High miss rate and high eviction rate are associated.",
+      "The analysis explicitly says either misses may drive evictions or evictions may drive misses, and the available evidence does not distinguish the direction."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

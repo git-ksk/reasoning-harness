@@ -1,0 +1,29 @@
+{
+  "id": "v2h15_causal_explicit_confounding",
+  "request": {
+    "id": "holdout-v2-soft-v2h15_causal_explicit_confounding",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "staffing.level",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "incident.count",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "Teams with more staff have fewer incidents in the raw data.",
+      "The analysis identifies operational maturity as a common cause of both higher staffing and fewer incidents and states that the supplied data do not isolate a staffing effect."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

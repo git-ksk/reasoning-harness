@@ -1,0 +1,21 @@
+{
+  "id": "v2h09_unsupported_backup_mode_unspecified",
+  "request": {
+    "id": "holdout-v2-soft-v2h09_unsupported_backup_mode_unspecified",
+    "task": "Determine whether the target premise is unsupported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "backup.mode",
+        "value": "incremental"
+      }
+    },
+    "context": [
+      "The target premise assumes incremental backups.",
+      "The supplied backup plan states that the backup mode has not yet been selected."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

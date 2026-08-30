@@ -1,0 +1,21 @@
+{
+  "id": "v2h11_unsupported_quota_semantic_support",
+  "request": {
+    "id": "holdout-v2-soft-v2h11_unsupported_quota_semantic_support",
+    "task": "Determine whether the target premise is unsupported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "quota.status",
+        "value": "exhausted"
+      }
+    },
+    "context": [
+      "The quota record shows zero remaining allowance and states that no additional requests can be admitted under the current quota.",
+      "Under the supplied terminology, that state is quota exhaustion."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

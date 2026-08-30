@@ -1,0 +1,29 @@
+{
+  "id": "v2h22_causal_environment_applicability",
+  "request": {
+    "id": "holdout-v2-soft-v2h22_causal_environment_applicability",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "dedup.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "write.errors",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "A controlled staging experiment supports fewer write errors when deduplication is enabled.",
+      "The requested relation concerns production traffic, and the supplied context does not establish whether the staging intervention is applicable to production."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

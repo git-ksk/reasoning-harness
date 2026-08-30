@@ -1,0 +1,18 @@
+{
+  "id": "v2h23_counterexample_signature_failure",
+  "request": {
+    "id": "holdout-v2-soft-v2h23_counterexample_signature_failure",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-signed-artifacts-validate"
+    },
+    "context": [
+      "Target generalization: every artifact signed by signer S passes signature validation.",
+      "Artifact K9 was signed by signer S and failed signature validation with an invalid-signature result."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

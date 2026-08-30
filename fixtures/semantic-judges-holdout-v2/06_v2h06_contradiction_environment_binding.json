@@ -1,0 +1,21 @@
+{
+  "id": "v2h06_contradiction_environment_binding",
+  "request": {
+    "id": "holdout-v2-soft-v2h06_contradiction_environment_binding",
+    "task": "Determine whether the supplied context semantically contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "routing.mode",
+        "value": "active"
+      }
+    },
+    "context": [
+      "The east environment is recorded as active routing and the west environment as standby routing.",
+      "The supplied target does not identify which environment its routing mode refers to."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

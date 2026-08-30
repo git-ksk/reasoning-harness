@@ -1,0 +1,18 @@
+{
+  "id": "v2h26_counterexample_nonviolating_replica_event",
+  "request": {
+    "id": "holdout-v2-soft-v2h26_counterexample_nonviolating_replica_event",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-datasets-have-two-copies"
+    },
+    "context": [
+      "Target generalization: every protected dataset retains at least two readable copies.",
+      "One node lost its local copy of dataset D, while the same record confirms two other readable copies of D remained available."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

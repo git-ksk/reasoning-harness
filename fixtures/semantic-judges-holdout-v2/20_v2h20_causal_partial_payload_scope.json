@@ -1,0 +1,29 @@
+{
+  "id": "v2h20_causal_partial_payload_scope",
+  "request": {
+    "id": "holdout-v2-soft-v2h20_causal_partial_payload_scope",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "compression.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "transfer.time",
+          "value": "short"
+        }
+      }
+    },
+    "context": [
+      "A controlled test shows shorter transfer time for small text payloads when compression is enabled.",
+      "The requested relation covers all payload classes, and no intervention evidence is supplied for large binary payloads."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}
