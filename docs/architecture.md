@@ -1,6 +1,12 @@
 # Architecture
 
-## Boundary
+## Product boundary
+
+Reasoning Harness is a native correctness runtime around stochastic candidate generation. Its current implementation materializes and evaluates a `ReasoningArtifact`; its target product boundary also owns the bounded protocol that turns unresolved reasoning into resolution requests, re-verifies revised state, and finalizes an answer only from adequately grounded propositions.
+
+The model is never part of the trusted computing base. A model may propose facts, claims, links, transformations, repairs, or rendered prose; the harness decides whether the resulting state is structurally admissible and what level of support can be claimed.
+
+### Current implemented execution path
 
 ```text
 source/task
@@ -15,13 +21,52 @@ ReasoningArtifact / framework trace
    +--> evidence / provenance gates
    +--> trusted verification receipts from deterministic/external oracles
    +--> narrow deterministic framework passes
-   +--> contradiction and adversarial discovery passes
+   +--> contradiction, assumption, causal, and adversarial diagnostics
    |
    v
 accept | reject | unknown
 ```
 
-The model is never part of the trusted computing base. A model may propose facts, claims, links, or transformations; the harness decides whether the resulting artifact is structurally admissible and what level of support can be claimed.
+### Target grounded execution loop
+
+`accept | reject | unknown` is an epistemic/policy decision, not necessarily the permanent end of a product run. The target runtime defined by [ADR-0002](adr/0002-grounded-resolution-and-finalization.md) adds bounded resolution and finalization:
+
+```text
+task + harness-owned evidence
+          |
+          v
+candidate generation
+          |
+          v
+materialize + validate + verify + diagnose
+          |
+          +--> supported enough ----------------------------+
+          |                                                 |
+          +--> unknown / insufficient support               |
+          |          |                                      |
+          |          v                                      |
+          |     typed resolution request                    |
+          |          |                                      |
+          |     external evidence / verifier adapter        |
+          |          |                                      |
+          |          v                                      |
+          |     revise / regenerate                         |
+          |          |                                      |
+          |          +----------> re-run harness -----------+
+          |                                                 |
+          +--> refuted --> discard/revise --> re-run -------+
+                                                            |
+                                                            v
+                                                       finalization
+                                                            |
+                                                            v
+                                                  claim coverage check
+                                                            |
+                                                            v
+                                              grounded answer | abstain
+```
+
+The resolution and finalization loop is architectural direction and is not yet implemented end-to-end. Existing diagnostics are inputs to that future control loop; they do not themselves perform retrieval or repair.
 
 ## Design rules
 
@@ -34,17 +79,16 @@ The model is never part of the trusted computing base. A model may propose facts
 7. Provider/model adapters stay replaceable and outside core semantics.
 8. Schema-valid model output is still only a candidate until validation and acceptance policy run.
 9. Live model quality and deterministic contract regression are separate execution modes.
-
+10. Retrieval or tool output is acquired data, not authority by default.
+11. Every repaired/regenerated candidate crosses the same validation and verification boundary as the original.
+12. A final renderer cannot upgrade epistemic state or introduce unsupported factual propositions.
+13. Resolution is budgeted; budget exhaustion yields an explicit unresolved/abstain outcome rather than fabricated completion.
 
 ## Interfaces
 
-The native runtime is the correctness boundary. CLI and eval are the first supported
-interfaces. A desktop UI is a deferred thin inspection client, the public embedding API
-is stabilized only after real usage, and MCP is an optional integration adapter rather
-than part of the correctness boundary.
+The native runtime is the correctness boundary. CLI and eval are the first supported interfaces. A desktop UI is a deferred thin inspection client, the public embedding API is stabilized only after real usage, and MCP is an optional integration adapter rather than part of the correctness boundary.
 
-See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md).
-
+See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md) and [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
 ## Implementation language boundary
 
@@ -54,6 +98,8 @@ All first-party executable and library components are implemented in Rust. This 
 
 The runtime validates the input artifact before the first pass and after every pass. A policy then maps the valid artifact to `accept | reject | unknown`. The initial strict policy rejects explicit contradictions and preserves `assumed` or `unknown` claims as an `unknown` outcome. This policy is intentionally conservative and will evolve only with fixture evidence.
 
+In the target grounded runtime, that policy result additionally determines whether the run may finalize, should emit a typed resolution request, should revise/regenerate, or must stop unresolved. Policy may choose to stop immediately on `unknown`; resolution is an explicit capability, never an obligation to manufacture an answer.
+
 See [prior art](prior-art.md) for external design patterns considered without adding runtime dependencies.
 
 ## Candidate authority boundary
@@ -62,16 +108,46 @@ Model output is represented as `ReasoningCandidate`, not as a finalized `Reasoni
 
 This prevents a provider from fabricating its own evidence records, self-certifying a claim as supported, or forcing a final contradiction verdict merely by emitting a schema-valid label.
 
+The same rule applies to future repair/regeneration. A model receiving diagnostic feedback may propose a better candidate, but the replacement candidate starts untrusted and receives no authority from the fact that it was generated in a repair phase.
+
 ## Verification receipt boundary
 
 `VerificationReceipt` is authority-bearing data and is deliberately absent from `ReasoningCandidate`. A trusted verifier creates receipts only after candidate generation. The preferred hard-verification contract binds a typed `Proposition { key, value }` to structured facts owned by harness evidence. `StructuredFactVerifier` compares those values deterministically and emits either `supported` or `contradicted`; missing facts yield no receipt and preserve uncertainty. When such a receipt is applied, the authoritative claim text is canonicalized to `key = value` so model-authored prose is never presented as verifier-endorsed wording. Exact statement-bound receipts remain available only as a conservative compatibility path for external verifiers.
 
 A receipt is not a semantic score. It represents a hard verifier result whose authority comes from the verifier named by the caller. The current fixture benchmark uses explicit `fixture_oracle` receipts to test process correctness under known oracle coverage; this must not be reported as generic reasoning accuracy.
 
+## Resolution boundary — target
+
+A future resolution layer converts unresolved verified state into typed requests for additional work. The request describes the missing support; it does not invent the missing fact.
+
+Expected request families include:
+
+- proposition evidence acquisition;
+- causal relation evidence acquisition;
+- temporal/scope/provenance qualification;
+- deterministic external verification;
+- candidate revision after hard refutation;
+- explicit human review where policy permits it.
+
+The runtime owns request identity, attempt history, budget, allowed resolver class, and the state transition back into verification. External systems own domain-specific acquisition mechanics.
+
+Web search, retrieval pipelines, databases, MCP tools, compilers, tests, policy engines, and humans may act as resolver adapters. Their output only gains authority according to the same harness-owned evidence or verifier contract used elsewhere. A retriever returning a document is not equivalent to a verifier proving the proposition that motivated the retrieval.
+
+No resolution implementation may silently convert `unknown` into `supported` merely because a resolver returned something.
+
+## Finalization boundary — target
+
+Finalization is distinct from verification and from presentation style.
+
+A future finalizer receives verified artifact state and produces either a grounded answer, a qualified partial answer, or abstention according to policy. A model may be used as a renderer, but the renderer cannot create authority.
+
+The required target invariant is **final claim coverage**: factual propositions that appear in the final answer must map to supported artifact propositions or be explicitly represented as unresolved/assumed according to policy. If a renderer introduces a new factual proposition, that proposition must re-enter the ordinary candidate/verification loop before it may appear as grounded output.
+
+This makes `ReasoningArtifact` the source of truth and prevents a fluent final-generation step from undoing the correctness work performed earlier in the run.
+
 ## Narrow deterministic framework checks
 
 The Five Whys restatement pass removes a causal edge only when a deliberately narrow lexical heuristic recognizes that the proposed cause substantially restates the effect. The conclusion remains uncertain. This avoids turning a string heuristic into semantic causal authority.
-
 
 ## Candidate normalization boundary
 
@@ -83,12 +159,13 @@ The Five Whys restatement pass removes a causal edge only when a deliberately na
 
 This separation prevents a model-generated contradiction label or counterexample suggestion from becoming self-authenticating evidence.
 
-
 ## Assumption diagnostic boundary
 
 `HarnessInput.assumptions` is harness-owned input and is deliberately absent from `ReasoningCandidate`. It names propositions that the task is allowed to take as premises without claiming that those propositions were independently verified. This is distinct from `hypotheses`, which identify propositions the task asks the candidate to evaluate.
 
 `AssumptionInspector` examines propositions actually used as inference premises after trusted verification passes have run. `known`/`supported` premises are trusted, and `inferred` premises count as derived support only when their inference chain bottoms out in trusted support or an explicit input assumption. A candidate's own `inferred` label is therefore insufficient. Typed premises with no trusted support and no explicit input assumption produce hard `unsupported_premise` process findings; premises without a proposition binding produce soft `unbound_premise` findings. Findings remain observational and cannot create evidence, verification receipts, or verdict authority.
+
+In the target resolution loop, these findings may motivate a resolution request or candidate revision, but they do not gain additional authority by becoming actionable.
 
 ## Evidence-aware causal diagnostic boundary
 
@@ -108,6 +185,8 @@ See [metamorphic reasoning robustness](metamorphic-testing.md) for the current t
 
 ## Repeated diagnostic measurement boundary
 
-Repeated diagnostic aggregation is an evaluation/reporting boundary, not a verifier. `DiagnosticSignal` records adversarial findings, candidate-normalization codes, and causal finding/reason observations without granting any of them new authority. `stability.diagnostics` is serialized alongside, not inside, final correctness stability.
+Repeated diagnostic aggregation is an evaluation/reporting boundary, not a verifier. `DiagnosticSignal` records adversarial findings, candidate-normalization codes, causal finding/reason observations, and assumption signals without granting any of them new authority. `stability.diagnostics` is serialized alongside, not inside, final correctness stability.
 
 Only operationally complete trials contribute to diagnostic frequencies and count distributions. Partial successful observations from an incomplete provider trial are reported as excluded observations rather than interpreted as diagnostic absence. Confidence intervals use the documented 95% Wilson score method only after the minimum complete-observation threshold; exact counts and denominators are always retained.
+
+Future resolution-loop evaluation must remain separate from both diagnostic stability and ordinary verdict accuracy. Recovery rate is useful only when paired with unsafe-final-answer rate, final claim coverage, resolution cost, and explicit exhaustion counts.
