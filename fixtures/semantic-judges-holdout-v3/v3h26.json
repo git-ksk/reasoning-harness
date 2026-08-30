@@ -1,0 +1,18 @@
+{
+  "id": "v3h26",
+  "request": {
+    "id": "holdout-v3-soft-v3h26",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-primary-workers-finish"
+    },
+    "context": [
+      "Target generalization: every primary worker reaches finished state.",
+      "Worker W-8 failed before finishing, but the supplied context does not establish whether W-8 was a primary or standby worker."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

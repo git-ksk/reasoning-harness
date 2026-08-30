@@ -1,0 +1,18 @@
+{
+  "id": "v3h28",
+  "request": {
+    "id": "holdout-v3-soft-v3h28",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-managed-devices-encrypted"
+    },
+    "context": [
+      "Target generalization: every device managed under policy M is encrypted.",
+      "An unencrypted device is reported, but policy ownership for that device is not identified in the supplied context."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

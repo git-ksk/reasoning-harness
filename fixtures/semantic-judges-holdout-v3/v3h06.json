@@ -1,0 +1,21 @@
+{
+  "id": "v3h06",
+  "request": {
+    "id": "holdout-v3-soft-v3h06",
+    "task": "Determine whether the supplied context contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "rate.limit",
+        "value": "100_per_minute"
+      }
+    },
+    "context": [
+      "A snapshot lists 80 requests per minute.",
+      "The supplied context does not establish whether that snapshot predates or matches the target configuration."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

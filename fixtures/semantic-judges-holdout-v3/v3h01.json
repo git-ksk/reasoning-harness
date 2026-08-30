@@ -1,0 +1,21 @@
+{
+  "id": "v3h01",
+  "request": {
+    "id": "holdout-v3-soft-v3h01",
+    "task": "Determine whether the supplied context contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "deployment.mode",
+        "value": "active"
+      }
+    },
+    "context": [
+      "The target refers to deployment D at the current release checkpoint.",
+      "The authoritative checkpoint record for deployment D marks its mode as inactive."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

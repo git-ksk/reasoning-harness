@@ -1,0 +1,18 @@
+{
+  "id": "v3h23",
+  "request": {
+    "id": "holdout-v3-soft-v3h23",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-signed-artifacts-verify"
+    },
+    "context": [
+      "Target generalization: every artifact signed by signer K passes verification.",
+      "Artifact A-12 was signed by signer K and failed signature verification under the required verifier."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

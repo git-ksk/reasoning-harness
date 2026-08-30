@@ -1,0 +1,29 @@
+{
+  "id": "v3h17",
+  "request": {
+    "id": "holdout-v3-soft-v3h17",
+    "task": "Determine whether the requested directional causal relation lacks adequate support in the supplied context.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "compression.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "network.bytes",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "A randomized controlled rollout toggled compression while holding the compared workload constant.",
+      "The intervention produced a repeatable reduction in network bytes in the requested direction and scope."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

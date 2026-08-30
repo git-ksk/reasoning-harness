@@ -1,0 +1,21 @@
+{
+  "id": "v3h02",
+  "request": {
+    "id": "holdout-v3-soft-v3h02",
+    "task": "Determine whether the supplied context contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "retry.policy",
+        "value": "enabled"
+      }
+    },
+    "context": [
+      "The target refers to the payment worker retry policy.",
+      "The payment worker policy explicitly states that automatic retries are disabled."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

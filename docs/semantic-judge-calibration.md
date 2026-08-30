@@ -159,3 +159,13 @@ The source corpus contains no recorded model observations. Labels are evaluator-
 - independent facts and surfaces covering semantic equivalence, binding/scope ambiguity, paraphrased premise support, reverse causality, confounding, temporal-only support, partial and mixed interventions, incomplete applicability, and counterexample scope.
 
 The v2 source fixtures intentionally contain no recorded model observations. Labels are evaluator-owned and are not sent to the model. Once this corpus is merged into `main`, its fixture IDs, request IDs, labels, targets, tasks, and contexts are frozen for the first `soft-semantic-v3` live study. Any later prompt or contract revision that is informed by v2 results requires a new holdout version rather than editing this corpus.
+
+The first post-freeze provider study is recorded as GitHub Actions run `33318380199`: 5/5 complete trials, 140/140 successful calls, precision/recall `1.000`, mean decision coverage `0.700`, and mean ambiguous abstention `0.933`. The corpus remains frozen after measurement; the repeated `v2h20_causal_partial_payload_scope` boundary is documented rather than tuned away.
+
+## soft-semantic-v4 portability successor (#46/#53)
+
+Cross-model v3 results exposed two separable portability costs: model-dependent uncertainty behavior and model-dependent typed-output consistency. The v4 candidate preserves the v3 semantic boundary but expresses it once as a global rule: `finding` requires affirmative support for the requested concern, `no_finding` requires affirmative resolution/negation, and `abstain` is terminal when neither conclusion is sufficiently supported because binding, scope, applicability, authority, or adequacy remains unresolved, mixed, or partial. Kind-specific text only defines the requested concern.
+
+The model-facing JSON Schema is a discriminated union rather than the public/internal optional-finding struct. `finding` requires the typed finding object; `no_finding` and `abstain` do not permit it. Parsed output is converted back to the same internal `SoftJudgeOutput` and exact kind/target validation remains mandatory. This is a protocol-expression change, not a relaxation of semantic or authority invariants.
+
+`fixtures/semantic-judges-holdout-v3/` is frozen before any live `soft-semantic-v4` provider measurement. It contains 28 observation-free cases, seven per diagnostic family, with 8 positive, 8 negative, and 12 ambiguous labels. Compatibility thresholds are fixed in [cross-model semantic judge conformance](semantic-judge-conformance.md). Holdout-v2 remains diagnostic-only for v3 behavior and is not an independent v4 evaluation corpus.

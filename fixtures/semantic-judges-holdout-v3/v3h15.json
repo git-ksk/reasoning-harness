@@ -1,0 +1,29 @@
+{
+  "id": "v3h15",
+  "request": {
+    "id": "holdout-v3-soft-v3h15",
+    "task": "Determine whether the requested directional causal relation lacks adequate support in the supplied context.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "autoscaling.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "request.latency",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "Autoscaling-enabled services have lower observed latency in the supplied dataset.",
+      "The analysis is correlation-only and provides no directional intervention or equivalent causal support."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

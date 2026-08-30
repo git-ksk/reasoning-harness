@@ -1,0 +1,21 @@
+{
+  "id": "v3h14",
+  "request": {
+    "id": "holdout-v3-soft-v3h14",
+    "task": "Determine whether the target premise is unsupported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "timeout.seconds",
+        "value": "30"
+      }
+    },
+    "context": [
+      "One endpoint configuration has a 30-second timeout.",
+      "The target premise applies to the service generally, and the supplied context does not establish that the endpoint setting governs the full scope."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "v3h11",
+  "request": {
+    "id": "holdout-v3-soft-v3h11",
+    "task": "Determine whether the target premise is unsupported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "cache.mode",
+        "value": "read_only"
+      }
+    },
+    "context": [
+      "The supplied configuration says the cache accepts reads and refuses all writes.",
+      "That wording directly supplies the read-only premise for the same cache."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}
