@@ -1,47 +1,84 @@
 # reasoning-harness
 
-Experimental OSS primitives for making stochastic model output pass through an explicit, inspectable correctness process.
+Experimental OSS primitives for making stochastic model output pass through an explicit, inspectable correctness process and, over time, converge on grounded final answers.
 
-The project treats a model as a **candidate generator**, not an authority. Claims become usable only after deterministic checks and, where available, external oracles validate them.
+The project treats a model as a **candidate generator**, not an authority. Claims become usable only after deterministic checks and, where available, external oracles validate them. The native harness runtime owns the reasoning protocol around the model rather than acting only as a post-hoc grader.
 
 > Stochastic intelligence, deterministic process.
 
 ## Research question
 
-Can a small model become materially more reliable when its reasoning is forced through typed intermediate state, evidence binding, explicit uncertainty, adversarial passes, and deterministic acceptance gates?
+Can a small or inexpensive model become materially more reliable when its reasoning is forced through typed intermediate state, evidence binding, explicit uncertainty, adversarial passes, deterministic acceptance gates, and bounded resolution/re-verification before finalization?
 
-This repository exists to measure that question rather than assume the answer.
+The long-term product question is not only whether the harness can diagnose bad reasoning. It is whether initially unsupported reasoning can be converted into a grounded answer by identifying exactly what support is missing, acquiring or verifying additional evidence through external adapters, re-running the same authority boundaries, and refusing to fabricate completion when support cannot be established.
+
+This repository exists to measure those questions rather than assume the answer.
+
+## Product direction
+
+Reasoning Harness is evolving toward an **evidence-grounded reasoning runtime**:
+
+```text
+task + harness-owned evidence
+          |
+          v
+candidate generation
+          |
+          v
+ground + verify + diagnose
+          |
+          +--> supported enough --> finalization --> grounded answer
+          |
+          +--> unresolved --> resolution request --> external evidence/verifier
+          |                                      |
+          |                                      v
+          +--------------------------- revise/regenerate --> re-verify
+          |
+          +--> refuted --> discard/revise --> re-verify
+```
+
+`unknown` remains a valid outcome. The runtime must be allowed to stop, qualify an answer, or abstain when a trusted resolver is unavailable or a configured budget is exhausted.
+
+Retrieval, web search, databases, tests, compilers, MCP servers, and human review may supply candidate evidence or verifier results through adapters. They do not automatically become correctness authorities. The harness keeps evidence provenance, verification, state transitions, and finalization policy inside the native runtime boundary.
+
+See [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md) for the target resolution and finalization loop.
 
 ## Current prototype
 
-- Harness-owned `HarnessInput`: task plus immutable supplied evidence.
+- Harness-owned `HarnessInput`: task plus immutable supplied evidence and explicit assumptions.
 - Untrusted `ReasoningCandidate`: model-proposed claims, epistemic states, and inference edges; it cannot create evidence.
-- `ReasoningArtifact`: harness-materialized task, evidence, verification receipts, claims, and inference edges.
+- `ReasoningArtifact`: harness-materialized task, evidence, verification receipts, claims, inference edges, and typed diagnostics.
 - Epistemic states: `known`, `supported`, `inferred`, `assumed`, `contradicted`, `unknown`.
 - Deterministic validation for provenance, receipt binding, and reference integrity.
 - Typed adversarial findings for contradictions and counterexamples with explicit `hard` vs `soft` strength; discovery cannot directly force a verdict.
 - Provider-neutral `AdversarialDetector` adapters; the first hard detector operates only on harness-owned structured facts.
 - Trusted verification receipts for oracle-backed support promotion or contradiction; receipts are never model-owned or model-visible.
-- A narrow deterministic Five Whys pass that removes lexical symptom-restatement edges without pretending to be a semantic causal judge.
+- Evidence-aware causal diagnostics with explicit support/refutation/unknown assessments while keeping causal findings outside final-verdict authority.
+- Harness-owned explicit assumptions plus unsupported-premise diagnostics that distinguish trusted support, allowed assumptions, unsupported typed premises, and unbound premises.
 - A pass-based harness runtime that fails closed when a pass produces invalid state.
-- A first structured framework primitive for evidence-aware 5 Whys.
-- Basic eval metrics for evidence coverage and unsupported accepted claims.
-- Twenty committed adversarial regression fixtures spanning direct facts, missing/scope-limited evidence, contradictions, counterexamples, causal overreach, and correct unknowns.
+- Deterministic metamorphic robustness checks and repeated-trial diagnostic stability reporting.
+- Separate committed claim, causal, and assumption regression corpora.
 - Provider-neutral Rust `ModelAdapter`; model output is always outside the correctness boundary.
 - Provider adapters in a separate Rust crate for Mistral, Google Gemini/AI Studio, and NVIDIA Hosted NIM; all provider output remains outside the verification authority boundary.
 - Native Rust CLI (`reason run`, `reason verify`, `reason eval`) sharing the exact same core validators and acceptance policy.
 - Native runtime is the correctness owner; CLI and eval are the first supported interfaces.
 
+The bounded resolution/retrieval loop and grounded final-answer coverage check described above are **product direction, not yet implemented end-to-end**.
+
 ## What this is not
 
 - A prompt collection.
 - A model-specific agent framework.
+- A post-hoc LLM judge that can self-certify another model's output.
 - A claim that LLM reasoning can be made mathematically correct in open-world tasks.
 - A replacement for deterministic oracles such as compilers, tests, schemas, policy engines, or proof checkers.
+- A general-purpose web crawler or RAG framework embedded in the correctness core.
 
 ## Model strategy
 
-The harness is intentionally model-agnostic. Cheap/free inference can be useful for candidate generation because correctness comes from the surrounding protocol and validators, not from trusting a particular provider. A Mistral adapter is a reasonable early experiment, but provider code does not belong in the core correctness boundary.
+The harness is intentionally model-agnostic. Cheap/free inference can be useful for candidate generation because correctness comes from the surrounding protocol and validators, not from trusting a particular provider. Provider code does not belong in the core correctness boundary.
+
+In the target runtime, the same rule also applies to repair and rendering: a model may regenerate reasoning or render a final answer, but every new factual proposition remains untrusted until it crosses the normal harness-owned verification boundary.
 
 ## Development
 
@@ -65,4 +102,4 @@ cargo run -p reasoning-harness-cli -- run --input examples/input.json --provider
 cargo run -p reasoning-harness-cli -- run --input examples/input.json --provider nvidia --model nvidia/nemotron-3.5-lightning-30b-a3b --format json
 ```
 
-See [project status](docs/project-status.md), [research plan](docs/research-plan.md), [benchmark design](docs/benchmark.md), [live benchmark CI](docs/live-benchmark.md), [architecture](docs/architecture.md), [prior art](docs/prior-art.md), and [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md).
+See [project status](docs/project-status.md), [research plan](docs/research-plan.md), [benchmark design](docs/benchmark.md), [live benchmark CI](docs/live-benchmark.md), [architecture](docs/architecture.md), [prior art](docs/prior-art.md), [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md), and [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md).
