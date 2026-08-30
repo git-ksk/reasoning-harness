@@ -1,0 +1,20 @@
+{
+  "id": "h08_unsupported_candidate_only",
+  "request": {
+    "id": "holdout-soft-h08_unsupported_candidate_only",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "storage.class",
+        "value": "archive"
+      }
+    },
+    "context": [
+      "The archive storage assumption appears in the candidate explanation only; supplied input does not mention storage class."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

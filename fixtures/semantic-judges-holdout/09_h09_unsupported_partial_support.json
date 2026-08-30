@@ -1,0 +1,20 @@
+{
+  "id": "h09_unsupported_partial_support",
+  "request": {
+    "id": "holdout-soft-h09_unsupported_partial_support",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "batch.size",
+        "value": "100"
+      }
+    },
+    "context": [
+      "The supplied note says the batch is large and may contain around one hundred items, but no exact size is bound."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

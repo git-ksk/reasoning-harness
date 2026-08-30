@@ -1,0 +1,18 @@
+{
+  "id": "h23_counterexample_clear",
+  "request": {
+    "id": "holdout-soft-h23_counterexample_clear",
+    "task": "Determine whether the supplied context contains a counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-jobs-complete"
+    },
+    "context": [
+      "Target generalization: every submitted job completes successfully.",
+      "A concrete submitted job J-17 ended in a terminal failed state."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

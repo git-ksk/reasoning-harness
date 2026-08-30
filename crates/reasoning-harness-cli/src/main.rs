@@ -10,19 +10,19 @@ use std::{
 use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
     AdversarialDiscoveryPass, AssumptionDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult,
-    BenchmarkComparison, BenchmarkFixture, ClaimCorpusSummary, CorpusManifest,
+    BenchmarkComparison, BenchmarkFixture, CalibrationLabel, ClaimCorpusSummary, CorpusManifest,
     DiagnosticObservation, DiagnosticTrial, EvidenceQualificationPass, HarnessInput, ModelAdapter,
     ModelBackedSoftJudgeError, ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact,
     ReasoningCandidate, RepeatedDiagnosticReport, ResolutionBenchmarkAggregate,
-    ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, SoftJudgeCalibrationFixture,
-    SoftJudgeCalibrationReport, SoftJudgeIdentity, SoftJudgeObservation, StrictAcceptancePolicy,
-    StructuredFactConflictDetector, TrustedVerificationPass, VerificationPass, VerificationReceipt,
-    aggregate_benchmark, aggregate_claim_corpus, aggregate_repeated_diagnostics,
-    aggregate_resolution_benchmark, aggregate_soft_judge_calibration,
-    build_candidate_json_fallback_request, build_candidate_request, evaluate,
-    evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture,
-    frameworks::five_whys::FiveWhysRestatementPass, run_harness, run_model_backed_soft_judge,
-    structured_fact_verifier_for_input, validate_artifact,
+    ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, SemanticDiagnosticKind,
+    SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeIdentity,
+    SoftJudgeObservation, StrictAcceptancePolicy, StructuredFactConflictDetector,
+    TrustedVerificationPass, VerificationPass, VerificationReceipt, aggregate_benchmark,
+    aggregate_claim_corpus, aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
+    aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
+    build_candidate_request, evaluate, evaluate_benchmark_fixture_with_diagnostics,
+    evaluate_resolution_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
+    run_model_backed_soft_judge, structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Serialize, de::DeserializeOwned};
@@ -536,6 +536,8 @@ struct LiveSoftJudgeFailure {
 struct LiveSoftJudgeCase {
     fixture_id: String,
     trial: usize,
+    kind: SemanticDiagnosticKind,
+    label: CalibrationLabel,
     #[serde(skip_serializing_if = "Option::is_none")]
     observation: Option<SoftJudgeObservation>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -559,7 +561,19 @@ struct LiveSoftJudgeOperationalSummary {
     output_tokens: u64,
     total_tokens: u64,
     successful_provider_attempts: u64,
+    fallback_runs: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    fallback_rate: Option<f64>,
     total_latency_ms: u128,
+}
+
+#[derive(Debug, Serialize)]
+struct LiveSoftJudgeFamilySummary {
+    kind: SemanticDiagnosticKind,
+    successful_runs: usize,
+    findings: usize,
+    no_findings: usize,
+    abstentions: usize,
 }
 
 #[derive(Debug, Serialize)]
@@ -593,8 +607,10 @@ struct LiveSoftJudgeStability {
 struct LiveSoftJudgeOutput {
     provider: &'static str,
     model: String,
+    corpus: String,
     operational: LiveSoftJudgeOperationalSummary,
     stability: LiveSoftJudgeStability,
+    families: Vec<LiveSoftJudgeFamilySummary>,
     per_trial: Vec<LiveSoftJudgeTrialSummary>,
     cases: Vec<LiveSoftJudgeCase>,
 }
@@ -1170,6 +1186,8 @@ async fn run_live_soft_judge_calibration_suite(
                     cases.push(LiveSoftJudgeCase {
                         fixture_id: fixture.id.clone(),
                         trial: trial_index,
+                        kind: fixture.request.kind,
+                        label: fixture.label,
                         observation: Some(result.observation),
                         provider_model: Some(result.model),
                         usage: Some(result.usage),
@@ -1186,6 +1204,8 @@ async fn run_live_soft_judge_calibration_suite(
                     cases.push(LiveSoftJudgeCase {
                         fixture_id: fixture.id.clone(),
                         trial: trial_index,
+                        kind: fixture.request.kind,
+                        label: fixture.label,
                         observation: None,
                         provider_model: None,
                         usage: None,
@@ -1223,11 +1243,19 @@ async fn run_live_soft_judge_calibration_suite(
 
     let operational = live_soft_judge_operational_summary(&cases);
     let stability = live_soft_judge_stability(&per_trial, trials);
+    let families = live_soft_judge_family_summary(&cases, &per_trial);
+    let corpus = directory
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("semantic-judges")
+        .to_string();
     Ok(LiveSoftJudgeOutput {
         provider: provider_name(provider),
         model: model.to_string(),
+        corpus,
         operational,
         stability,
+        families,
         per_trial,
         cases,
     })
@@ -1252,6 +1280,7 @@ fn live_soft_judge_operational_summary(
     let mut output_tokens = 0u64;
     let mut total_tokens = 0u64;
     let mut successful_provider_attempts = 0u64;
+    let mut fallback_runs = 0usize;
     let mut successful_runs = 0usize;
     let total_latency_ms = cases.iter().map(|case| case.latency_ms).sum();
 
@@ -1266,7 +1295,11 @@ fn live_soft_judge_operational_summary(
             output_tokens += usage.output_tokens.unwrap_or(0);
             total_tokens += observed_total_tokens(usage).unwrap_or(0);
         }
-        successful_provider_attempts += case.provider_attempts.unwrap_or(0) as u64;
+        let provider_attempts = case.provider_attempts.unwrap_or(0);
+        successful_provider_attempts += provider_attempts as u64;
+        if provider_attempts > 1 {
+            fallback_runs += 1;
+        }
     }
 
     LiveSoftJudgeOperationalSummary {
@@ -1278,8 +1311,47 @@ fn live_soft_judge_operational_summary(
         output_tokens,
         total_tokens,
         successful_provider_attempts,
+        fallback_runs,
+        fallback_rate: (successful_runs > 0).then(|| fallback_runs as f64 / successful_runs as f64),
         total_latency_ms,
     }
+}
+
+fn live_soft_judge_family_summary(
+    cases: &[LiveSoftJudgeCase],
+    per_trial: &[LiveSoftJudgeTrialSummary],
+) -> Vec<LiveSoftJudgeFamilySummary> {
+    let complete_trials = per_trial
+        .iter()
+        .filter(|trial| trial.operationally_complete)
+        .map(|trial| trial.trial_index)
+        .collect::<std::collections::BTreeSet<_>>();
+    let mut summaries = BTreeMap::<SemanticDiagnosticKind, LiveSoftJudgeFamilySummary>::new();
+    for case in cases
+        .iter()
+        .filter(|case| complete_trials.contains(&case.trial))
+        .filter(|case| case.failure.is_none())
+    {
+        let Some(observation) = &case.observation else {
+            continue;
+        };
+        let summary = summaries
+            .entry(case.kind)
+            .or_insert(LiveSoftJudgeFamilySummary {
+                kind: case.kind,
+                successful_runs: 0,
+                findings: 0,
+                no_findings: 0,
+                abstentions: 0,
+            });
+        summary.successful_runs += 1;
+        match observation.decision {
+            SoftJudgeDecision::Finding => summary.findings += 1,
+            SoftJudgeDecision::NoFinding => summary.no_findings += 1,
+            SoftJudgeDecision::Abstain => summary.abstentions += 1,
+        }
+    }
+    summaries.into_values().collect()
 }
 
 fn live_soft_judge_stability(
@@ -1777,9 +1849,10 @@ fn print_soft_judge_calibration_human(report: &SoftJudgeCalibrationReport) {
 
 fn print_live_soft_judge_human(output: &LiveSoftJudgeOutput) {
     println!(
-        "live_soft_judge: provider={} model={} attempted={} successful={} failed={}",
+        "live_soft_judge: provider={} model={} corpus={} attempted={} successful={} failed={}",
         output.provider,
         output.model,
+        output.corpus,
         output.operational.attempted_runs,
         output.operational.successful_runs,
         output.operational.failed_runs
@@ -1815,13 +1888,25 @@ fn print_live_soft_judge_human(output: &LiveSoftJudgeOutput) {
         );
     }
     println!(
-        "tokens: input={} output={} total={} successful_provider_attempts={} latency_ms={}",
+        "tokens: input={} output={} total={} successful_provider_attempts={} fallback_runs={} fallback_rate={} latency_ms={}",
         output.operational.input_tokens,
         output.operational.output_tokens,
         output.operational.total_tokens,
         output.operational.successful_provider_attempts,
+        output.operational.fallback_runs,
+        format_optional_metric(output.operational.fallback_rate),
         output.operational.total_latency_ms
     );
+    for family in &output.families {
+        println!(
+            "family: kind={:?} successful={} finding={} no_finding={} abstain={}",
+            family.kind,
+            family.successful_runs,
+            family.findings,
+            family.no_findings,
+            family.abstentions
+        );
+    }
     if !output.operational.failure_classes.is_empty() {
         println!("failure_classes: {:?}", output.operational.failure_classes);
     }
@@ -1934,6 +2019,81 @@ mod candidate_json_tests {
         assert_eq!(summary.generated_runs, 0);
         assert_eq!(summary.failed_runs, 1);
         assert_eq!(summary.failure_classes.get("rate_limit"), Some(&1));
+    }
+
+    fn soft_judge_case(
+        fixture_id: &str,
+        trial: usize,
+        decision: SoftJudgeDecision,
+        provider_attempts: u32,
+    ) -> LiveSoftJudgeCase {
+        LiveSoftJudgeCase {
+            fixture_id: fixture_id.into(),
+            trial,
+            kind: SemanticDiagnosticKind::Contradiction,
+            label: CalibrationLabel::Negative,
+            observation: Some(SoftJudgeObservation {
+                judge: SoftJudgeIdentity {
+                    judge_id: "judge".into(),
+                    model_id: "model".into(),
+                    configuration_id: "config".into(),
+                },
+                request_id: fixture_id.into(),
+                decision,
+                finding: None,
+            }),
+            provider_model: Some("model".into()),
+            usage: Some(ModelUsage {
+                input_tokens: Some(10),
+                output_tokens: Some(2),
+                total_tokens: Some(12),
+            }),
+            provider_attempts: Some(provider_attempts),
+            latency_ms: 5,
+            failure: None,
+        }
+    }
+
+    #[test]
+    fn live_soft_judge_operational_summary_reports_fallback_rate() {
+        let cases = vec![
+            soft_judge_case("a", 0, SoftJudgeDecision::NoFinding, 1),
+            soft_judge_case("b", 0, SoftJudgeDecision::NoFinding, 2),
+        ];
+        let summary = live_soft_judge_operational_summary(&cases);
+        assert_eq!(summary.successful_runs, 2);
+        assert_eq!(summary.successful_provider_attempts, 3);
+        assert_eq!(summary.fallback_runs, 1);
+        assert_eq!(summary.fallback_rate, Some(0.5));
+    }
+
+    #[test]
+    fn live_soft_judge_family_summary_excludes_incomplete_trials() {
+        let cases = vec![
+            soft_judge_case("complete", 0, SoftJudgeDecision::NoFinding, 1),
+            soft_judge_case("incomplete", 1, SoftJudgeDecision::Abstain, 1),
+        ];
+        let per_trial = vec![
+            LiveSoftJudgeTrialSummary {
+                trial_index: 0,
+                expected_cases: 1,
+                successful_cases: 1,
+                operationally_complete: true,
+                report: None,
+            },
+            LiveSoftJudgeTrialSummary {
+                trial_index: 1,
+                expected_cases: 2,
+                successful_cases: 1,
+                operationally_complete: false,
+                report: None,
+            },
+        ];
+        let families = live_soft_judge_family_summary(&cases, &per_trial);
+        assert_eq!(families.len(), 1);
+        assert_eq!(families[0].successful_runs, 1);
+        assert_eq!(families[0].no_findings, 1);
+        assert_eq!(families[0].abstentions, 0);
     }
 
     #[test]

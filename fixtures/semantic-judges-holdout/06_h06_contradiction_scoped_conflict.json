@@ -1,0 +1,21 @@
+{
+  "id": "h06_contradiction_scoped_conflict",
+  "request": {
+    "id": "holdout-soft-h06_contradiction_scoped_conflict",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "worker.state",
+        "value": "idle"
+      }
+    },
+    "context": [
+      "The target concerns worker-7 and says it is idle.",
+      "A supplied observation for worker-7 says it is currently processing a task."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

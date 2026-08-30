@@ -1,0 +1,28 @@
+{
+  "id": "h21_causal_randomized_replication",
+  "request": {
+    "id": "holdout-soft-h21_causal_randomized_replication",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "index.present",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "query.time",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "Multiple randomized trials compare otherwise identical query plans and consistently show lower query time when the index is present."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

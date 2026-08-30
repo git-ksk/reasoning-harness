@@ -1,0 +1,20 @@
+{
+  "id": "h07_unsupported_paraphrase_support",
+  "request": {
+    "id": "holdout-soft-h07_unsupported_paraphrase_support",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "retry.enabled",
+        "value": "true"
+      }
+    },
+    "context": [
+      "The trusted input says failed requests are automatically attempted again."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

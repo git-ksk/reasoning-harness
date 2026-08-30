@@ -1,0 +1,28 @@
+{
+  "id": "h18_causal_mixed_evidence",
+  "request": {
+    "id": "holdout-soft-h18_causal_mixed_evidence",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "scheduler.mode",
+            "value": "fair"
+          }
+        ],
+        "effect": {
+          "key": "tail.latency",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "A small intervention supports lower tail latency, but a larger observational sample shows no difference and the scopes are not directly comparable."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

@@ -1,0 +1,28 @@
+{
+  "id": "h15_causal_confounding",
+  "request": {
+    "id": "holdout-soft-h15_causal_confounding",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "fan.speed",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "error.rate",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Fan speed and error rate both rise during periods of high ambient temperature. Temperature was not controlled."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

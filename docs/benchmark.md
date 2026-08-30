@@ -262,7 +262,7 @@ See [bounded grounded resolution and finalization](grounded-resolution.md) for t
 
 ## Soft semantic-judge calibration regression
 
-Issue #13 adds a separate deterministic calibration corpus under `fixtures/semantic-judges/`. It is not part of corpus-v1 verdict accuracy, repeated diagnostic stability, or resolution-recovery denominators. Nine labelled cases cover positive, negative, and intentionally ambiguous examples across contradiction, unsupported-premise, and causal-gap discovery.
+Issue #13 adds a separate deterministic calibration corpus under `fixtures/semantic-judges/`. It is not part of corpus-v1 verdict accuracy, repeated diagnostic stability, or resolution-recovery denominators. Nine labelled cases cover positive, negative, and intentionally ambiguous examples across contradiction, unsupported-premise, and causal-gap discovery. Issue #36 adds a separate observation-free 28-case holdout v1 for live semantic generalization/ambiguity study; it also remains outside all hard correctness denominators.
 
 The offline report preserves three synthetic judge identities, per-judge precision/recall, decision coverage and abstention, pairwise categorical agreement, and nominal Krippendorff alpha with abstentions treated as missing ratings. The synthetic recorded observations are aggregation fixtures, not empirical model-quality results. Live judge studies remain optional/manual.
 

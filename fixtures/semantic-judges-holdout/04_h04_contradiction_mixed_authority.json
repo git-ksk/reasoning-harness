@@ -1,0 +1,21 @@
+{
+  "id": "h04_contradiction_mixed_authority",
+  "request": {
+    "id": "holdout-soft-h04_contradiction_mixed_authority",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "release.ready",
+        "value": "true"
+      }
+    },
+    "context": [
+      "An informal note says the release is ready.",
+      "A second informal note says it is not ready; neither note has established authority."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

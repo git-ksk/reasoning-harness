@@ -1,0 +1,20 @@
+{
+  "id": "h12_unsupported_explicit_support",
+  "request": {
+    "id": "holdout-soft-h12_unsupported_explicit_support",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "compression.enabled",
+        "value": "true"
+      }
+    },
+    "context": [
+      "Trusted input explicitly states that compression is enabled for this payload."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

@@ -1,0 +1,18 @@
+{
+  "id": "h24_counterexample_confirming_only",
+  "request": {
+    "id": "holdout-soft-h24_counterexample_confirming_only",
+    "task": "Determine whether the supplied context contains a counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-replicas-healthy"
+    },
+    "context": [
+      "Target generalization: every listed replica is healthy.",
+      "The supplied examples R1, R2, and R3 are all explicitly healthy, and the supplied list is complete for the requested check."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}
