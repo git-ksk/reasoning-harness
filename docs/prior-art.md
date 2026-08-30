@@ -40,6 +40,12 @@ lm-evaluation-harness robustness tasks reinforce measuring consistency under rel
 Reasoning Harness borrows these measurement disciplines without copying their orchestration surfaces: metamorphic invariance (#10), diagnostic stability (#11), soft-judge calibration (#13), and corpus versioning/stratification (#14) remain subordinate to the existing harness-owned authority boundary.
 
 
+### Durable control-plane patterns
+
+Mature agent runtimes reinforce separating permission/policy from execution authority and separating ephemeral model turns from durable runtime state. Codex App Server exposes durable create/resume/fork/archive thread lifecycle plus an event stream, while Codex operational guidance separates sandbox limits from approval policy. LangGraph uses thread-scoped checkpoints for interrupt/resume and non-destructive forks. Claude Code exposes resumable/forkable sessions, lifecycle hooks, permissions, and optional subagents.
+
+ADR-0003 borrows only the provider-neutral control-plane ideas: composable reasoning policy, explicit invalidation, durable typed thread events, and checkpoint/resume/fork. Skills/subagents and generic agent orchestration remain deferred.
+
 ## Deliberate differences
 
 - No framework is trusted merely because it emits schema-valid structured output.
@@ -68,3 +74,8 @@ Reasoning Harness borrows these measurement disciplines without copying their or
 - lm-evaluation-harness decontamination: https://github.com/EleutherAI/lm-evaluation-harness/blob/main/docs/decontamination.md
 - METR Time Horizon 1.1: https://metr.org/blog/2026-1-29-time-horizon-1-1/
 - NoisyCausal: https://arxiv.org/abs/2605.04313
+- OpenAI Codex App Server: https://openai.com/index/unlocking-the-codex-harness/
+- OpenAI Codex safety controls: https://openai.com/index/running-codex-safely/
+- LangGraph persistence: https://docs.langchain.com/oss/python/langgraph/persistence
+- LangGraph time travel/fork: https://docs.langchain.com/oss/python/langgraph/use-time-travel
+- Claude Code Agent SDK: https://docs.anthropic.com/en/docs/claude-code/sdk

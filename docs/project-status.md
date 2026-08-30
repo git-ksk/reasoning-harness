@@ -32,6 +32,11 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 
 ## Known gaps
 
+### Reasoning control plane
+
+ADR-0003 defines the next durable-runtime layer without expanding core into a generic agent framework: composable `ReasoningPolicy`, append-oriented `ReasoningThread` events, checkpoint/resume/fork, and policy-change invalidation. The design reuses #22 acquisition/verification boundaries and explicitly defers skills/subagents. Implementation is split into #27 policy/invalidation and #28 durable-thread issues and does not block #13 soft-judge calibration.
+
+
 ### Grounded runtime integration gaps
 
 The provider-neutral bounded loop is implemented, but production acquisition integrations are intentionally not in core. Remaining product/research work includes:

@@ -90,6 +90,8 @@ The native runtime is the correctness boundary. CLI and eval are the first suppo
 
 See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md) and [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
+For durable policy/session control, see [ADR-0003](adr/0003-reasoning-control-plane.md).
+
 ## Implementation language boundary
 
 All first-party executable and library components are implemented in Rust. This includes the native runtime, CLI, evaluation tooling, model adapters, and any future desktop client or optional integration adapter. Model providers remain external services and are reached through Rust adapters. No JavaScript/TypeScript runtime is part of the correctness boundary.
