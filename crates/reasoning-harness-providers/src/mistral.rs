@@ -502,6 +502,7 @@ mod tests {
                 output_format: ModelOutputFormat::Text,
                 max_tokens: Some(8),
                 random_seed: None,
+                reasoning_preference: None,
             })
             .await
             .unwrap();

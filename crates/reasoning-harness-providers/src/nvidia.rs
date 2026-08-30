@@ -4,8 +4,8 @@ use std::{
 };
 
 use reasoning_harness_core::{
-    ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
-    ModelUsage,
+    ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelReasoningPreference,
+    ModelRequest, ModelResponse, ModelUsage,
 };
 use reqwest::{Client, StatusCode, Url, header::RETRY_AFTER};
 use serde::{Deserialize, Serialize};
@@ -156,6 +156,7 @@ impl NvidiaAdapter {
             response_format: response_format(request.output_format),
             max_tokens: request.max_tokens,
             seed: request.random_seed,
+            chat_template_kwargs: reasoning_controls(request.reasoning_preference),
             temperature: 0.0,
             stream: false,
         };
@@ -245,6 +246,8 @@ struct ChatRequest<'a> {
     max_tokens: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     seed: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    chat_template_kwargs: Option<ChatTemplateKwargs>,
     temperature: f32,
     stream: bool,
 }
@@ -259,6 +262,17 @@ struct Message {
 struct ResponseFormat {
     #[serde(rename = "type")]
     kind: &'static str,
+}
+
+#[derive(Debug, Serialize)]
+struct ChatTemplateKwargs {
+    enable_thinking: bool,
+}
+
+fn reasoning_controls(preference: Option<ModelReasoningPreference>) -> Option<ChatTemplateKwargs> {
+    preference.map(|ModelReasoningPreference::Minimize| ChatTemplateKwargs {
+        enable_thinking: false,
+    })
 }
 
 fn response_format(format: ModelOutputFormat) -> Option<ResponseFormat> {
@@ -507,6 +521,7 @@ mod tests {
             response_format: response_format(ModelOutputFormat::JsonObject),
             max_tokens: Some(4096),
             seed: Some(42),
+            chat_template_kwargs: None,
             temperature: 0.0,
             stream: false,
         };
@@ -516,6 +531,14 @@ mod tests {
         assert_eq!(value["response_format"]["type"], "json_object");
         assert!(value.get("reasoning_effort").is_none());
         assert!(value.get("chat_template_kwargs").is_none());
+    }
+
+    #[test]
+    fn maps_minimized_reasoning_to_disable_thinking_without_changing_output_contract() {
+        let controls = reasoning_controls(Some(ModelReasoningPreference::Minimize)).unwrap();
+        let value = serde_json::to_value(controls).unwrap();
+        assert_eq!(value["enable_thinking"], false);
+        assert!(value.get("reasoning_budget").is_none());
     }
 
     #[tokio::test]
@@ -544,6 +567,7 @@ mod tests {
                 output_format: ModelOutputFormat::Text,
                 max_tokens: Some(8),
                 random_seed: None,
+                reasoning_preference: None,
             })
             .await
             .unwrap_err();
@@ -601,6 +625,7 @@ mod tests {
                 output_format: ModelOutputFormat::Text,
                 max_tokens: Some(8),
                 random_seed: None,
+                reasoning_preference: None,
             })
             .await
             .unwrap();
@@ -645,6 +670,7 @@ mod tests {
                 output_format: ModelOutputFormat::Text,
                 max_tokens: Some(8),
                 random_seed: None,
+                reasoning_preference: None,
             })
             .await
             .unwrap_err();
@@ -673,6 +699,7 @@ mod tests {
                 output_format: ModelOutputFormat::Text,
                 max_tokens: Some(8),
                 random_seed: None,
+                reasoning_preference: None,
             })
             .await
             .unwrap_err();

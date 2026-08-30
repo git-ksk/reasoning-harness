@@ -25,6 +25,7 @@ pub fn build_candidate_request(
         },
         max_tokens,
         random_seed,
+        reasoning_preference: None,
     })
 }
 
@@ -51,6 +52,7 @@ pub fn build_candidate_json_fallback_request(
         output_format: ModelOutputFormat::JsonObject,
         max_tokens,
         random_seed,
+        reasoning_preference: None,
     })
 }
 
