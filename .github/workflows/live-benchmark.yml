@@ -242,7 +242,7 @@ jobs:
             --trials "${{ inputs.judge_trials }}" \
             --format json \
             > "$OUTPUT"
-          jq '{provider, model, operational, stability, per_trial: [.per_trial[] | {trial_index, operationally_complete, successful_cases, report: (.report | if . == null then null else {judges: [.judges[] | {judge: .judge.judge_id, precision, recall, decision_coverage, abstentions}]} end)}], failures: [.cases[] | select(.failure != null) | {fixture_id, trial, failure: .failure}]}' "$OUTPUT"
+          jq '{provider, model, operational, stability, per_trial: [.per_trial[] | {trial_index, operationally_complete, successful_cases, report: (.report | if . == null then null else {judges: [.judges[] | {judge: .judge.judge_id, precision, recall, decision_coverage, ambiguous_abstention_rate, abstentions}]} end)}], failures: [.cases[] | select(.failure != null) | {fixture_id, trial, failure: .failure}]}' "$OUTPUT"
       - name: Preserve live semantic-judge JSON
         if: always() && steps.credential.outputs.available == 'true'
         uses: actions/upload-artifact@v4

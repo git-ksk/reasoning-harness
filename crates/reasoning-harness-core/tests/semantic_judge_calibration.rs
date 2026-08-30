@@ -67,6 +67,10 @@ fn semantic_judge_calibration_corpus_preserves_labels_disagreement_and_abstentio
             .iter()
             .all(|metrics| metrics.ambiguous_cases == 3)
     );
+    assert!(report.judges.iter().all(|metrics| {
+        metrics.ambiguous_abstention_rate.is_some()
+            && metrics.ambiguous_abstentions <= metrics.ambiguous_cases
+    }));
 
     for fixture in &fixtures {
         for observation in &fixture.recorded_observations {

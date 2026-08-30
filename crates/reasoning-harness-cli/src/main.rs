@@ -584,6 +584,8 @@ struct LiveSoftJudgeStability {
     #[serde(skip_serializing_if = "Option::is_none")]
     decision_coverage: Option<ScalarDistribution>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    ambiguous_abstention_rate: Option<ScalarDistribution>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     abstentions: Option<ScalarDistribution>,
 }
 
@@ -1300,6 +1302,11 @@ fn live_soft_judge_stability(
         decision_coverage: scalar_distribution(
             complete.iter().map(|metrics| metrics.decision_coverage),
         ),
+        ambiguous_abstention_rate: scalar_distribution(
+            complete
+                .iter()
+                .filter_map(|metrics| metrics.ambiguous_abstention_rate),
+        ),
         abstentions: scalar_distribution(complete.iter().map(|metrics| metrics.abstentions as f64)),
     }
 }
@@ -1746,13 +1753,14 @@ fn print_soft_judge_calibration_human(report: &SoftJudgeCalibrationReport) {
     );
     for metrics in &report.judges {
         println!(
-            "judge: id={} model={} config={} precision={} recall={} coverage={:.3} abstentions={}",
+            "judge: id={} model={} config={} precision={} recall={} coverage={:.3} ambiguous_abstention={} abstentions={}",
             metrics.judge.judge_id,
             metrics.judge.model_id,
             metrics.judge.configuration_id,
             format_optional_metric(metrics.precision),
             format_optional_metric(metrics.recall),
             metrics.decision_coverage,
+            format_optional_metric(metrics.ambiguous_abstention_rate),
             metrics.abstentions
         );
     }
@@ -1798,6 +1806,12 @@ fn print_live_soft_judge_human(output: &LiveSoftJudgeOutput) {
         println!(
             "coverage_stability: mean={:.3} min={:.3} max={:.3} stddev={:.3} n={}",
             coverage.mean, coverage.min, coverage.max, coverage.stddev, coverage.count
+        );
+    }
+    if let Some(ambiguous) = &output.stability.ambiguous_abstention_rate {
+        println!(
+            "ambiguous_abstention_stability: mean={:.3} min={:.3} max={:.3} stddev={:.3} n={}",
+            ambiguous.mean, ambiguous.min, ambiguous.max, ambiguous.stddev, ambiguous.count
         );
     }
     println!(
@@ -1956,6 +1970,10 @@ mod candidate_json_tests {
         assert_eq!(stability.precision.as_ref().unwrap().count, 2);
         assert_eq!(stability.recall.as_ref().unwrap().count, 2);
         assert_eq!(stability.decision_coverage.as_ref().unwrap().count, 2);
+        assert_eq!(
+            stability.ambiguous_abstention_rate.as_ref().unwrap().count,
+            2
+        );
         assert_eq!(stability.abstentions.as_ref().unwrap().count, 2);
     }
 

@@ -77,7 +77,7 @@ The corpus is intentionally adversarial and is still small enough to inspect cas
 | token usage | provider usage metadata | live only |
 | latency | local wall-clock around provider call | live only |
 | provider cost | token usage + explicit caller-supplied price rates | live only |
-| model-backed semantic-judge calibration | soft evidence only; precision/recall/coverage/abstention with operational completeness kept separate | no hard gate |
+| model-backed semantic-judge calibration | soft evidence only; precision/recall/coverage/abstention plus ambiguous-case abstention, with operational completeness kept separate | no hard gate |
 
 ### Evidence-aware causal diagnostic regression
 

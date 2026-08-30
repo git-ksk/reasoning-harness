@@ -423,6 +423,9 @@ pub struct SoftJudgeMetrics {
     pub cases: usize,
     pub labelled_cases: usize,
     pub ambiguous_cases: usize,
+    pub ambiguous_abstentions: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ambiguous_abstention_rate: Option<f64>,
     pub finding_decisions: usize,
     pub no_finding_decisions: usize,
     pub abstentions: usize,
@@ -637,6 +640,8 @@ fn metrics_for_judge(
         cases: fixtures.len(),
         labelled_cases: 0,
         ambiguous_cases: 0,
+        ambiguous_abstentions: 0,
+        ambiguous_abstention_rate: None,
         finding_decisions: 0,
         no_finding_decisions: 0,
         abstentions: 0,
@@ -666,7 +671,12 @@ fn metrics_for_judge(
         }
 
         match fixture.label {
-            CalibrationLabel::Ambiguous => metrics.ambiguous_cases += 1,
+            CalibrationLabel::Ambiguous => {
+                metrics.ambiguous_cases += 1;
+                if observation.decision == SoftJudgeDecision::Abstain {
+                    metrics.ambiguous_abstentions += 1;
+                }
+            }
             CalibrationLabel::Positive => {
                 metrics.labelled_cases += 1;
                 if observation.decision == SoftJudgeDecision::Finding {
@@ -688,6 +698,8 @@ fn metrics_for_judge(
 
     let decided = metrics.finding_decisions + metrics.no_finding_decisions;
     metrics.decision_coverage = rate(decided, metrics.cases);
+    metrics.ambiguous_abstention_rate =
+        optional_rate(metrics.ambiguous_abstentions, metrics.ambiguous_cases);
     metrics.precision = optional_rate(
         metrics.true_positives,
         metrics.true_positives + metrics.false_positives,
@@ -885,9 +897,36 @@ mod tests {
         let report = aggregate_soft_judge_calibration(&fixtures).unwrap();
         let metrics = &report.judges[0];
         assert_eq!(metrics.ambiguous_cases, 1);
+        assert_eq!(metrics.ambiguous_abstentions, 0);
+        assert_eq!(metrics.ambiguous_abstention_rate, Some(0.0));
         assert_eq!(metrics.labelled_cases, 0);
         assert_eq!(metrics.precision, None);
         assert_eq!(metrics.recall, None);
+    }
+
+    #[test]
+    fn ambiguous_abstention_rate_is_absent_when_corpus_has_no_ambiguous_cases() {
+        let fixtures = vec![SoftJudgeCalibrationFixture {
+            id: "negative".into(),
+            request: SoftJudgeRequest {
+                id: "request-negative".into(),
+                task: "check contradiction".into(),
+                kind: SemanticDiagnosticKind::Contradiction,
+                target: proposition_target(),
+                context: vec![],
+            },
+            label: CalibrationLabel::Negative,
+            recorded_observations: vec![observation(
+                identity("judge-a"),
+                "request-negative",
+                SoftJudgeDecision::NoFinding,
+            )],
+        }];
+        let report = aggregate_soft_judge_calibration(&fixtures).unwrap();
+        let metrics = &report.judges[0];
+        assert_eq!(metrics.ambiguous_cases, 0);
+        assert_eq!(metrics.ambiguous_abstentions, 0);
+        assert_eq!(metrics.ambiguous_abstention_rate, None);
     }
 
     #[test]
