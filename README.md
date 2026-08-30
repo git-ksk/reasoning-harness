@@ -57,14 +57,15 @@ See [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md) for the ta
 - Harness-owned explicit assumptions plus unsupported-premise diagnostics that distinguish trusted support, allowed assumptions, unsupported typed premises, and unbound premises.
 - Provider-neutral temporal/scope/provenance evidence qualification; stale, out-of-scope, or insufficient-authority facts cannot create built-in hard receipts when requirements are present.
 - A pass-based harness runtime that fails closed when a pass produces invalid state.
+- Provider-neutral bounded resolution with explicit resolver/admission/verifier boundaries, per-run and per-request budgets, mandatory re-verification, terminal-state accounting, and grounded final-claim coverage.
 - Deterministic metamorphic robustness checks and repeated-trial diagnostic stability reporting.
 - A versioned corpus-v1 manifest covering 41 committed claim, causal, assumption, and evidence-qualification cases with stable IDs and category/difficulty strata.
 - Provider-neutral Rust `ModelAdapter`; model output is always outside the correctness boundary.
 - Provider adapters in a separate Rust crate for Mistral, Google Gemini/AI Studio, and NVIDIA Hosted NIM; all provider output remains outside the verification authority boundary.
-- Native Rust CLI (`reason run`, `reason verify`, `reason eval`) sharing the exact same core validators and acceptance policy.
+- Native Rust CLI (`reason run`, `reason verify`, `reason eval`, `reason eval-resolution`) sharing the same core correctness contracts.
 - Native runtime is the correctness owner; CLI and eval are the first supported interfaces.
 
-The bounded resolution/retrieval loop and grounded final-answer coverage check described above are **product direction, not yet implemented end-to-end**.
+The provider-neutral bounded resolution/finalization core is implemented and covered by deterministic controlled scenarios. Concrete web, database, MCP, and human-review resolvers remain external integrations rather than correctness-core features.
 
 ## What this is not
 
@@ -79,7 +80,7 @@ The bounded resolution/retrieval loop and grounded final-answer coverage check d
 
 The harness is intentionally model-agnostic. Cheap/free inference can be useful for candidate generation because correctness comes from the surrounding protocol and validators, not from trusting a particular provider. Provider code does not belong in the core correctness boundary.
 
-In the target runtime, the same rule also applies to repair and rendering: a model may regenerate reasoning or render a final answer, but every new factual proposition remains untrusted until it crosses the normal harness-owned verification boundary.
+In the grounded runtime, the same rule also applies to repair and rendering: a model may regenerate reasoning or render a final answer, but every new factual proposition remains untrusted until it crosses the normal harness-owned verification boundary.
 
 ## Development
 
@@ -94,6 +95,7 @@ cargo run -p reasoning-harness-cli -- run --input examples/input.json --candidat
 cargo run -p reasoning-harness-cli -- verify examples/artifact.json --format json
 cargo run -p reasoning-harness-cli -- eval examples/artifact.json
 cargo run -p reasoning-harness-cli -- eval fixtures --format human
+cargo run -p reasoning-harness-cli -- eval-resolution fixtures/resolution --format human
 
 # Optional live candidate generation
 # Mistral: requires MISTRAL_API_KEY
@@ -103,4 +105,4 @@ cargo run -p reasoning-harness-cli -- run --input examples/input.json --provider
 cargo run -p reasoning-harness-cli -- run --input examples/input.json --provider nvidia --model nvidia/nemotron-3.5-lightning-30b-a3b --format json
 ```
 
-See [project status](docs/project-status.md), [research plan](docs/research-plan.md), [benchmark design](docs/benchmark.md), [corpus versioning](docs/corpus-versioning.md), [evidence qualification](docs/evidence-qualification.md), [live benchmark CI](docs/live-benchmark.md), [architecture](docs/architecture.md), [prior art](docs/prior-art.md), [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md), and [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md).
+See [project status](docs/project-status.md), [research plan](docs/research-plan.md), [benchmark design](docs/benchmark.md), [corpus versioning](docs/corpus-versioning.md), [evidence qualification](docs/evidence-qualification.md), [grounded resolution](docs/grounded-resolution.md), [live benchmark CI](docs/live-benchmark.md), [architecture](docs/architecture.md), [prior art](docs/prior-art.md), [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md), and [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md).

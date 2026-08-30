@@ -35,8 +35,8 @@ Transform a verified artifact into progressively simpler explanations and detect
 
 ## Next experiments
 
-### E6 — bounded resolution recovery
-Start from fixtures that intentionally produce `unknown` because required evidence is absent or insufficiently qualified. Give the runtime access to a controlled resolver that can return the missing evidence, a refuting fact, no result, or malformed/untrusted data.
+### E6 — bounded resolution recovery — deterministic baseline implemented
+The initial controlled nine-scenario suite starts from fixtures that intentionally produce `unknown` because required evidence is absent or insufficiently qualified. Give the runtime access to a controlled resolver that can return the missing evidence, a refuting fact, no result, or malformed/untrusted data.
 
 Compare:
 
@@ -54,8 +54,8 @@ Primary metrics:
 
 A higher answer rate is not a success if unsupported final claims increase.
 
-### E7 — grounded finalization coverage
-Give a renderer a verified artifact and test whether the final prose remains within the artifact's supported proposition set. Include adversarial renderers that paraphrase correctly, omit important qualifications, introduce plausible new facts, or convert uncertainty into certainty.
+### E7 — grounded finalization coverage — core gate implemented
+The finalization contract gives a renderer a verified artifact and tests whether the final prose remains within the artifact's supported proposition set. Include adversarial renderers that paraphrase correctly, omit important qualifications, introduce plausible new facts, or convert uncertainty into certainty.
 
 Primary metrics:
 
@@ -64,8 +64,8 @@ Primary metrics:
 - uncertainty/qualification preservation;
 - correct routing of newly introduced factual propositions back into verification.
 
-### E8 — evidence qualification during resolution
-After temporal/scope/provenance diagnostics are implemented, test resolvers that return evidence which is real but stale, wrong-scope, insufficient-authority, conflicting, or not-yet-valid.
+### E8 — evidence qualification during resolution — deterministic baseline implemented
+The controlled resolution suite includes resolvers that return evidence which is real but stale, wrong-scope, insufficient-authority, conflicting, or not-yet-valid.
 
 Primary question: does the resolution loop reject false closure and preserve `unknown` unless newly acquired evidence actually satisfies the required qualification?
 
@@ -73,12 +73,12 @@ Primary question: does the resolution loop reject false closure and preserve `un
 
 - [implemented] temporal, scope, and provenance evidence qualification (#16)
 - [implemented] versioned/stratified benchmark corpus v1 with stable base-case identity (#14)
-- provider-neutral typed resolution requests
-- bounded resolution attempt/token/time policies
-- resolver adapters that remain outside the correctness authority boundary
-- candidate repair/regeneration followed by mandatory re-verification
-- grounded finalization with factual claim coverage checks
-- explicit terminal states for grounded answer, qualified answer, unresolved, and abstain
+- [implemented] provider-neutral typed resolution requests
+- [implemented] bounded per-run and per-request resolution attempt/token/time policies
+- [implemented contract] resolver adapters remain outside the correctness authority boundary; concrete domain adapters are deferred
+- [implemented] candidate repair/regeneration followed by mandatory re-verification
+- [implemented] grounded finalization with factual claim coverage checks
+- [implemented] explicit resolution/finalization terminal states including grounded, qualified, refuted, exhausted, unavailable, human-review, unresolved, and abstain
 - calibrated semantic discovery only after deterministic/runtime foundations (#13)
 
 ## Planned diagnostic/reasoning work

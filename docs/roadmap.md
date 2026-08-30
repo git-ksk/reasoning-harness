@@ -126,52 +126,22 @@ Open-world retrieval, domain-specific source rankings, and generic RAG orchestra
 
 Corpus v1 now establishes the stable base-case identities needed for direct, diagnose-only, and bounded-resolution comparisons without changing denominators underneath recovery metrics.
 
-With #16 and #14 complete, #22 bounded grounded resolution/finalization is the next implementation phase. #13 calibrated semantic judges remains sequenced after that runtime boundary is established.
+## P3 — grounded resolution and finalization runtime — implemented
 
-## P3 — grounded resolution and finalization runtime
+### #22 Bounded grounded resolution and finalization — implemented
+- [done] typed provider-neutral requests for proposition, causal, evidence-qualification, revision, and human-review targets
+- [done] generic resolver output is acquisition/revision only; trusted evidence metadata crosses `EvidenceAdmissionPolicy`, and trusted receipts use a separate `TrustedResolutionVerifier` boundary
+- [done] per-run and per-request attempt/token/time budgets, resolver allowlists, required authority policy, attempt history, and explicit terminal states
+- [done] admitted evidence and repaired/regenerated candidates re-enter the ordinary normalization/validation/verification/diagnostic/decision pipeline
+- [done] grounded finalization consumes verified artifact state and machine-checks typed factual-claim coverage
+- [done] renderer-introduced factual propositions are withheld, converted into new hypotheses, and routed through resolution/verification before grounded output
+- [done] nine deterministic resolution variants cover support, refutation, stale/scope/authority mismatch, conflict, no-result, malformed output, and untrusted output
+- [done] `reason eval-resolution` compares direct one-shot, diagnose-only, and bounded resolution on stable corpus-v1 base identity
+- [done] recovery, unsafe-final-answer, final-claim-coverage, terminal, attempt, token, and elapsed-time metrics remain separate from ordinary correctness and diagnostic stability
 
-This is the main step from research harness toward a general product runtime. Diagnostics become control signals for a bounded recovery loop rather than only observations.
+The core now owns the bounded control protocol, not domain acquisition. Generic web/RAG/database/MCP/human-review implementations remain external adapters. Live resolution quality is not implied by the deterministic fixture-oracle baseline.
 
-### Bounded resolution loop
-
-Add a provider-neutral runtime contract that can turn unresolved verified state into typed requests for additional evidence, deterministic verification, candidate revision, or explicit human review.
-
-Required properties:
-
-- resolution requests identify missing support without inventing the missing answer;
-- resolver output is acquired data, not trusted authority by default;
-- evidence and verifier results re-enter through existing harness-owned authority boundaries;
-- regenerated/repaired candidates are fully untrusted and re-run through normalization, validation, verification, diagnostics, and policy;
-- attempt, token, time, and resolver-class budgets are explicit;
-- exhaustion preserves `unknown`/abstain instead of forcing an answer;
-- domain-specific web/RAG/tool logic remains outside core behind adapters.
-
-### Grounded finalization
-
-Make final answer construction a first-class correctness boundary rather than a presentation afterthought.
-
-Required properties:
-
-- a finalizer consumes verified `ReasoningArtifact` state;
-- a model may render prose but cannot upgrade epistemic state;
-- factual final-answer claims must be covered by supported artifact propositions or explicitly represented as uncertainty according to policy;
-- newly introduced factual claims are routed back through the reasoning/verification loop;
-- finalization can emit grounded answer, qualified partial answer, or abstention;
-- `reason explain` can later reuse the same renderer/coverage primitives without becoming a second correctness implementation.
-
-### Resolution research metrics
-
-Report separately from ordinary correctness and diagnostic stability:
-
-- initially-unknown case recovery rate;
-- unsafe final answer rate;
-- final factual-claim coverage;
-- resolution attempts to convergence/exhaustion;
-- added token/latency/tool cost;
-- supported/refuted/exhausted terminal distribution;
-- regression against direct-generation and diagnose-only baselines.
-
-The primary success criterion is **more grounded answerable cases without increasing unsafe final answers**.
+With #22 implemented, #13 calibrated soft semantic judges is the next planned research phase. Semantic judges may propose diagnostic or resolution targets but remain soft and non-authoritative.
 
 ## P4 — calibrated semantic expansion
 

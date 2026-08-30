@@ -1,0 +1,60 @@
+{
+  "base_case_id": "claim:missing-evidence",
+  "base_fixture_path": "missing-evidence.json",
+  "id": "malformed_output",
+  "request": {
+    "id": "resolution:deployment-region",
+    "reason": "missing_support",
+    "target": {
+      "kind": "proposition",
+      "proposition": {
+        "key": "deployment.region",
+        "value": "us-east-1"
+      }
+    },
+    "resolver_class": "evidence_acquisition"
+  },
+  "policy": {
+    "budget": {
+      "max_attempts": 1,
+      "max_added_tokens": 1000,
+      "max_elapsed_ms": 10000,
+      "allowed_resolver_classes": [
+        "evidence_acquisition"
+      ]
+    },
+    "revise_refuted": false,
+    "allow_human_review": false,
+    "proposition_resolver_class": "evidence_acquisition",
+    "finalization": {
+      "allow_qualified_partial": true
+    }
+  },
+  "resolver_steps": [
+    {
+      "result": {
+        "kind": "evidence",
+        "evidence": [
+          {
+            "id": "malformed",
+            "source": "",
+            "observation": "deployment.region=us-east-1",
+            "facts": {
+              "deployment.region": "us-east-1"
+            }
+          }
+        ]
+      },
+      "cost": {
+        "added_tokens": 10,
+        "elapsed_ms": 5
+      },
+      "trusted_metadata": {
+        "malformed": {}
+      }
+    }
+  ],
+  "expected_terminal_status": "exhausted",
+  "expected_final_verdict": "unknown",
+  "expected_finalization_status": "qualified_partial_answer"
+}

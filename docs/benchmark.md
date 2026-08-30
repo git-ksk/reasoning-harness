@@ -243,3 +243,19 @@ See [evidence qualification](evidence-qualification.md) for the exact temporal, 
 Issue #10 adds a deterministic metamorphic layer that measures whether trusted outcomes remain invariant under semantics-preserving representation changes. The initial suite covers six transform families across verdict, adversarial, and causal behavior. Its invariance metrics are separate from raw 20-case claim accuracy and from the eight-case causal corpus; transformed cases never enter either correctness denominator.
 
 See [metamorphic-testing.md](metamorphic-testing.md) for the semantic/non-semantic field contract and reporting rules.
+
+## Bounded resolution and finalization regression
+
+Issue #22 adds a separate deterministic suite under `fixtures/resolution/`. Resolution scenarios are **variants**, not new corpus-v1 primary cases: every initial scenario records a stable `base_case_id` and must match the path/fixture identity already committed in `fixtures/corpus/v1.json`. The initial nine variants reuse `claim:missing-evidence`, so direct one-shot, diagnose-only, and bounded-resolution observations share the same base-case identity without changing the 20-case claim denominator.
+
+Run:
+
+```bash
+cargo run -p reasoning-harness-cli -- eval-resolution fixtures/resolution --format json
+```
+
+The initial deterministic aggregate is 9/9 expected scenarios. All nine begin `unknown` in the diagnose-only harness. Bounded resolution produces one `resolved_supported`, one `resolved_refuted`, and seven `exhausted` outcomes for stale, wrong-scope, insufficient-authority, conflicting, no-result, malformed, and untrusted resolver conditions. Unsafe emitted final answers remain 0, blocked unverified finalizations are reported separately, and mean typed factual-claim coverage is 1.0. Ten total controlled resolver attempts are recorded.
+
+These values measure protocol regression only. Resolver outputs and trusted metadata are fixture-controlled, so the recovery rate is not an empirical claim about web retrieval, model self-correction, or external tool quality. Resolution metrics are serialized separately from ordinary `BenchmarkComparison` and `stability.diagnostics`.
+
+See [bounded grounded resolution and finalization](grounded-resolution.md) for the acquisition/admission/verifier and finalization boundaries.

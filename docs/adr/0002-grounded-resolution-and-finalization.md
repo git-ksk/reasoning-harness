@@ -3,6 +3,10 @@
 - Status: Accepted
 - Date: 2026-08-30
 
+## Implementation status
+
+The provider-neutral bounded control loop described by this ADR is implemented in core as of Issue #22: typed requests, separate resolver/admission/trusted-verifier boundaries, bounded re-verification, and factual final-claim coverage are available. Concrete open-world resolver integrations remain outside core and are not implied by this ADR status.
+
 ## Context
 
 ADR-0001 established that the native harness runtime owns the execution protocol around a stochastic model. The implementation has since developed strong verification and diagnostic boundaries: harness-owned evidence, trusted verification receipts, typed contradiction/counterexample findings, evidence-aware causal diagnostics, assumption diagnostics, metamorphic robustness, and repeated-trial stability reporting.
