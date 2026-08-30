@@ -1,0 +1,18 @@
+{
+  "id": "v2h28_counterexample_active_scope_unknown",
+  "request": {
+    "id": "holdout-v2-soft-v2h28_counterexample_active_scope_unknown",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-active-shards-balanced"
+    },
+    "context": [
+      "Target generalization: every active shard is balanced.",
+      "Shard S4 is reported as unbalanced, but the record does not establish whether S4 was active at the time of that observation."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

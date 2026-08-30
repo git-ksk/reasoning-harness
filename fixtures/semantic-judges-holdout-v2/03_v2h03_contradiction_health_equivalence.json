@@ -1,0 +1,21 @@
+{
+  "id": "v2h03_contradiction_health_equivalence",
+  "request": {
+    "id": "holdout-v2-soft-v2h03_contradiction_health_equivalence",
+    "task": "Determine whether the supplied context semantically contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "node.health",
+        "value": "healthy"
+      }
+    },
+    "context": [
+      "For this status vocabulary, a node that passes every health check with no detected fault is classified as healthy.",
+      "Node N8 passed every health check and no fault was detected."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

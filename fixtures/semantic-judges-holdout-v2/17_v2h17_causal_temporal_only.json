@@ -1,0 +1,29 @@
+{
+  "id": "v2h17_causal_temporal_only",
+  "request": {
+    "id": "holdout-v2-soft-v2h17_causal_temporal_only",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "prewarm.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "startup.time",
+          "value": "short"
+        }
+      }
+    },
+    "context": [
+      "Prewarming occurs before startup completes.",
+      "No comparison, intervention, or other evidence in the supplied context establishes that enabling prewarming shortens startup time."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "v2h01_contradiction_policy_conflict",
+  "request": {
+    "id": "holdout-v2-soft-v2h01_contradiction_policy_conflict",
+    "task": "Determine whether the supplied context semantically contradicts the target proposition.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "gateway.policy",
+        "value": "strict"
+      }
+    },
+    "context": [
+      "The target concerns the current policy of gateway G7 in deployment D4.",
+      "The configuration record for gateway G7 in deployment D4 states that its current policy is permissive, not strict."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

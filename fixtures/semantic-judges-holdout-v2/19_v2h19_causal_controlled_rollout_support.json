@@ -1,0 +1,29 @@
+{
+  "id": "v2h19_causal_controlled_rollout_support",
+  "request": {
+    "id": "holdout-v2-soft-v2h19_causal_controlled_rollout_support",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "index.prefetch",
+            "value": "enabled"
+          }
+        ],
+        "effect": {
+          "key": "query.latency",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "A controlled rollout alternated prefetch on and off across the full target workload while other relevant settings were held fixed.",
+      "The supplied analysis reports lower query latency when prefetch was enabled and explicitly supports that direction for the requested workload."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

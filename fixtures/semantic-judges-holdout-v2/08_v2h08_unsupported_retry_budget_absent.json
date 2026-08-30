@@ -1,0 +1,21 @@
+{
+  "id": "v2h08_unsupported_retry_budget_absent",
+  "request": {
+    "id": "holdout-v2-soft-v2h08_unsupported_retry_budget_absent",
+    "task": "Determine whether the target premise is unsupported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "retry.budget",
+        "value": "5"
+      }
+    },
+    "context": [
+      "The candidate relies on a retry budget of five attempts.",
+      "The supplied configuration specifies timeout behavior but explicitly provides no retry-attempt budget."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

@@ -1,0 +1,29 @@
+{
+  "id": "v2h14_causal_correlation_only",
+  "request": {
+    "id": "holdout-v2-soft-v2h14_causal_correlation_only",
+    "task": "Determine whether the requested directional causal relation lacks adequate support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "fan.speed",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "device.temperature",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "Measurements show that higher fan speed and lower device temperature occur together.",
+      "The study is observational and explicitly states that it does not identify whether fan speed caused the temperature difference."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "v2h12_unsupported_pool_scope_partial",
+  "request": {
+    "id": "holdout-v2-soft-v2h12_unsupported_pool_scope_partial",
+    "task": "Determine whether the target premise is unsupported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "worker.pool",
+        "value": "reserved"
+      }
+    },
+    "context": [
+      "A reserved worker pool is documented for workload group R.",
+      "The supplied target does not establish whether its worker belongs to workload group R or to another group."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

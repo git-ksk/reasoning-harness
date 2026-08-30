@@ -1,0 +1,18 @@
+{
+  "id": "v2h27_counterexample_membership_unknown",
+  "request": {
+    "id": "holdout-v2-soft-v2h27_counterexample_membership_unknown",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-premium-queues-encrypted"
+    },
+    "context": [
+      "Target generalization: every premium-tier queue uses encryption.",
+      "Queue Q5 is reported as unencrypted, but the supplied record does not identify whether Q5 belongs to the premium tier."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

@@ -1,0 +1,18 @@
+{
+  "id": "v2h25_counterexample_version_out_of_scope",
+  "request": {
+    "id": "holdout-v2-soft-v2h25_counterexample_version_out_of_scope",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-v2-requests-have-trace"
+    },
+    "context": [
+      "Target generalization: every API v2 request receives a trace identifier.",
+      "A request without a trace identifier is documented, but the record explicitly identifies it as an API v1 request."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}
