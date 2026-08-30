@@ -2,7 +2,7 @@
 
 ## Current phase
 
-The repository is an early research prototype. The core authority boundary, native CLI, deterministic fixture benchmark, live Mistral/Google/NVIDIA provider adapters, trusted verification receipts, and a narrow Five Whys restatement pass are implemented.
+The repository is an early research prototype. The core authority boundary, native CLI, deterministic fixture benchmark, live Mistral/Google/NVIDIA provider adapters, trusted verification receipts, edge-local Five Whys cleanup, and observational evidence-aware causal diagnostics are implemented.
 
 This is not a claim that open-world reasoning is solved. Current correctness gains depend on deterministic structure and on trusted oracles where a hard answer exists.
 
@@ -14,8 +14,9 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - `accept | reject | unknown` policy.
 - Trusted verification receipts that are never model-owned or model-visible.
 - Receipt-backed support promotion and contradiction rejection.
-- Narrow deterministic Five Whys lexical-restatement removal.
-- Twenty committed regression fixtures (5 accept / 6 reject / 9 unknown).
+- Narrow deterministic Five Whys lexical-restatement removal localized to the offending inference edge.
+- Observational typed causal diagnostics with exact scoped support/refutation and conservative unknown handling for association, reverse direction, partial support, conflict, missing binding, and missing exact evidence.
+- Twenty committed claim-verdict regression fixtures (5 accept / 6 reject / 9 unknown) plus a separate eight-case deterministic causal corpus.
 - Manual, secret-isolated live benchmark workflow spanning Mistral, Google-hosted Gemma/Gemini, and a narrowed routine NVIDIA Nemotron target.
 - GitHub CI, Dependabot configuration, contribution/security guidance, issue and PR templates.
 
@@ -24,7 +25,8 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Exact natural-language receipt binding was confirmed too brittle for live paraphrases. The current implementation now uses typed propositions and harness-owned structured facts for the built-in hard verifier; exact-string binding remains compatibility-only.
 - Hard contradiction/counterexample discovery exists for structured harness-owned facts; semantic/model-backed discovery remains soft-only and is not yet implemented.
 - Counterexample discovery coverage is still narrow outside explicit structured propositions.
-- Five Whys pass is intentionally lexical and narrow, not a semantic causal judge.
+- Five Whys lexical cleanup remains intentionally syntactic; evidence-aware causal inspection is observational and does not certify the whole artifact or change the final claim verdict.
+- Candidate-supplied causal-evidence references, general temporal/domain constraints, and live repeated-trial causal diagnostic variability are deferred until a provider-neutral causal input/reporting contract is justified.
 - No assumption extraction, first-principles pass, semantic-loss verifier, or verification-budget policy yet.
 - Stable ranking claims require repeated trials. Issue #6 completed the 5-trial Mistral/Google matrix plus a targeted 10-trial follow-up for models tied on all primary correctness metrics; operational completeness is reported separately from correctness variance.
 
@@ -41,6 +43,10 @@ After migrating the built-in hard verifier to typed propositions, canonical veri
 ### Adversarial discovery
 
 The core now has a provider-neutral `AdversarialDetector` contract and typed `AdversarialFinding` records. Structured harness-owned fact conflicts are classified deterministically as hard contradictions or counterexamples. Findings themselves remain observational; only the verifier boundary can change epistemic state or force rejection. The 20-case recorded corpus reaches contradiction detection 1.0 and counterexample detection 1.0 under deterministic structured-fact coverage.
+
+### Evidence-aware causal diagnostics
+
+Issue #4 adds typed `CausalRelation`, harness-owned `CausalEvidence`, per-edge assessments, and typed hard/soft findings. Exact scoped support can mark an edge supported; exact explicit refutation can mark it refuted. Association-only evidence, reverse-direction support, partial support, conflicting evidence, missing exact evidence, and incomplete proposition binding remain unknown. The inspector cannot mutate claim state, create verification receipts, or directly decide `accept | reject | unknown`. Its eight-case deterministic corpus is reported separately from the 20-case claim benchmark and from Issue #6 correctness denominators.
 
 ### Benchmark hardening
 

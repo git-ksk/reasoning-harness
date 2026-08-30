@@ -82,3 +82,11 @@ The Five Whys restatement pass removes a causal edge only when a deliberately na
 `AdversarialDetector` produces typed `AdversarialFinding` records with `contradiction | counterexample` kind and `hard | soft` strength. Discovery is observational: findings are recorded in the artifact but do not mutate claim epistemic state and cannot directly force `reject`. Hard authority remains in deterministic `Verifier` implementations and trusted verification receipts. The initial `StructuredFactConflictDetector` reads only harness-owned structured facts. A future model-backed semantic detector must emit `soft` findings until an independent hard verifier confirms them.
 
 This separation prevents a model-generated contradiction label or counterexample suggestion from becoming self-authenticating evidence.
+
+## Evidence-aware causal diagnostic boundary
+
+`CausalInspector` extends Five Whys inspection beyond lexical restatement without becoming a verdict authority. It canonicalizes a typed causal relation as cause proposition(s) -> effect proposition and matches that relation only against harness-owned `CausalEvidence` with explicit provenance. Exact support can mark an edge `supported`; exact trusted refutation can mark it `refuted`. Association-only evidence, partial support, reverse-direction support, conflicting evidence, missing relation evidence, and incomplete proposition bindings remain `unknown` with soft diagnostics.
+
+Causal inspection is observational: it does not mutate claim epistemic state, create verification receipts, or directly alter the final `accept | reject | unknown` policy result. The existing lexical Five Whys cleanup remains a narrow deterministic fast path, but cleanup is now local to the exact offending inference edge and cannot downgrade an independently hard-supported claim. The dedicated deterministic corpus under `fixtures/causal/` is evaluated separately from the original claim-verdict benchmark and from repeated-trial correctness denominators.
+
+See [evidence-aware causal diagnostics](causal-reasoning.md) for the detailed contract and deferred scope.

@@ -27,6 +27,13 @@ DSPy and established evaluation harnesses reinforce a useful research discipline
 
 Agent evaluation harnesses commonly separate live model-quality experiments from deterministic contract regression. This project follows that principle: live provider calls are research runs, while committed fixtures and recorded normalized candidates are the CI gate.
 
+### Edge-local process and causal inspection
+
+Process-supervision and causal-evaluation work informs diagnostic granularity without becoming correctness authority. PRM800K and ProcessBench motivate localizing failures to a reasoning step/edge; CLadder motivates typed cause/effect bindings and explicit causal direction; FActScore motivates atomic evidence inspection; UK AISI Inspect and lm-evaluation-harness reinforce solver/scorer and deterministic/live separation. NoisyCausal is used only as a corpus-design influence for mismatch, partial-observability, and distractor cases.
+
+The project adopts those structural patterns only. Learned process rewards, LLM graders, extracted causal graphs, retrieval entailment, or semantic similarity remain soft unless an independent trusted oracle establishes the relevant proposition or relation.
+
+
 ## Deliberate differences
 
 - No framework is trusted merely because it emits schema-valid structured output.
@@ -44,3 +51,9 @@ Agent evaluation harnesses commonly separate live model-quality experiments from
 - lm-evaluation-harness: https://github.com/EleutherAI/lm-evaluation-harness
 - harness-evals: https://github.com/harness/harness-evals
 - agent-harness: https://github.com/nderman/agent-harness
+- PRM800K: https://github.com/openai/prm800k
+- ProcessBench: https://github.com/QwenLM/ProcessBench
+- CLadder: https://arxiv.org/abs/2312.04350
+- FActScore: https://github.com/shmsw25/FActScore
+- UK AISI Inspect scorers: https://inspect.aisi.org.uk/scorers.html
+- NoisyCausal: https://arxiv.org/abs/2605.04313

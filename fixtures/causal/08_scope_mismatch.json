@@ -1,0 +1,20 @@
+{
+  "id": "scope_mismatch",
+  "description": "Semantically similar evidence with a different proposition scope does not support the proposed relation.",
+  "artifact": {
+    "task": "Explain why production requests timed out.",
+    "claims": [
+      {"id":"effect","statement":"Production requests timed out","state":"assumed","proposition":{"key":"prod.requests_timed_out","value":"true"}},
+      {"id":"cause","statement":"Production database lock blocked progress","state":"assumed","proposition":{"key":"prod.db_lock_blocked","value":"true"}}
+    ],
+    "inferences": [
+      {"id":"why-1","premise_claim_ids":["effect"],"conclusion_claim_id":"cause","method":"five_whys"}
+    ]
+  },
+  "evidence": [
+    {"id":"ce-staging","source":"fixture-near-neighbor","relation":{"causes":[{"key":"staging.db_lock_blocked","value":"true"}],"effect":{"key":"staging.requests_timed_out","value":"true"}},"conclusion":"supports"}
+  ],
+  "expected_statuses": ["unknown"],
+  "expected_hard_findings": 0,
+  "expected_soft_findings": 1
+}

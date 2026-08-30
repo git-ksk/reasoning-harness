@@ -1,0 +1,21 @@
+{
+  "id": "conflicting_evidence",
+  "description": "Conflicting trusted support and refutation remains unknown and soft.",
+  "artifact": {
+    "task": "Explain why requests timed out.",
+    "claims": [
+      {"id":"effect","statement":"Requests timed out","state":"assumed","proposition":{"key":"incident.requests_timed_out","value":"true"}},
+      {"id":"cause","statement":"Database lock blocked progress","state":"assumed","proposition":{"key":"incident.db_lock_blocked","value":"true"}}
+    ],
+    "inferences": [
+      {"id":"why-1","premise_claim_ids":["effect"],"conclusion_claim_id":"cause","method":"five_whys"}
+    ]
+  },
+  "evidence": [
+    {"id":"ce-support","source":"fixture-oracle-a","relation":{"causes":[{"key":"incident.db_lock_blocked","value":"true"}],"effect":{"key":"incident.requests_timed_out","value":"true"}},"conclusion":"supports"},
+    {"id":"ce-refute","source":"fixture-oracle-b","relation":{"causes":[{"key":"incident.db_lock_blocked","value":"true"}],"effect":{"key":"incident.requests_timed_out","value":"true"}},"conclusion":"refutes"}
+  ],
+  "expected_statuses": ["unknown"],
+  "expected_hard_findings": 0,
+  "expected_soft_findings": 1
+}

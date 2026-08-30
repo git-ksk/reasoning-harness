@@ -34,9 +34,10 @@ pub fn validate_trace(trace: &FiveWhysTrace) -> Vec<String> {
 
 /// Removes Five Whys edges that are deterministically recognizable lexical restatements.
 ///
-/// This is intentionally a narrow syntactic heuristic, not a semantic causal judge. The
-/// conclusion claim remains in the artifact as an assumption/unknown; only the invalid
-/// causal edge is removed.
+/// This is intentionally a narrow syntactic heuristic, not a semantic causal judge. Cleanup is
+/// localized to the exact offending inference edge. A conclusion is downgraded only when it has
+/// no surviving inference support, and a `supported` claim is never downgraded because that state
+/// may have been established independently by a trusted verifier.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct FiveWhysRestatementPass;
 
@@ -52,7 +53,7 @@ impl Pass for FiveWhysRestatementPass {
             .map(|claim| (claim.id.as_str(), claim.statement.as_str()))
             .collect::<std::collections::HashMap<_, _>>();
 
-        let removed_conclusions = artifact
+        let removed_inference_ids = artifact
             .inferences
             .iter()
             .filter(|inference| inference.method == "five_whys")
@@ -67,20 +68,30 @@ impl Pass for FiveWhysRestatementPass {
                         .is_some_and(|premise| is_lexical_restatement(premise, conclusion))
                 })
             })
+            .map(|inference| inference.id.clone())
+            .collect::<HashSet<_>>();
+
+        let removed_conclusions = artifact
+            .inferences
+            .iter()
+            .filter(|inference| removed_inference_ids.contains(&inference.id))
             .map(|inference| inference.conclusion_claim_id.clone())
             .collect::<HashSet<_>>();
 
-        artifact.inferences.retain(|inference| {
-            !(inference.method == "five_whys"
-                && removed_conclusions.contains(&inference.conclusion_claim_id))
-        });
+        artifact
+            .inferences
+            .retain(|inference| !removed_inference_ids.contains(&inference.id));
+
+        let surviving_inference_conclusions = artifact
+            .inferences
+            .iter()
+            .map(|inference| inference.conclusion_claim_id.clone())
+            .collect::<HashSet<_>>();
 
         for claim in &mut artifact.claims {
             if removed_conclusions.contains(&claim.id)
-                && matches!(
-                    claim.state,
-                    EpistemicState::Inferred | EpistemicState::Supported
-                )
+                && !surviving_inference_conclusions.contains(&claim.id)
+                && claim.state == EpistemicState::Inferred
             {
                 claim.state = EpistemicState::Assumed;
             }
@@ -90,7 +101,7 @@ impl Pass for FiveWhysRestatementPass {
     }
 }
 
-fn is_lexical_restatement(left: &str, right: &str) -> bool {
+pub(crate) fn is_lexical_restatement(left: &str, right: &str) -> bool {
     let left = content_tokens(left);
     let right = content_tokens(right);
     if left.is_empty() || right.is_empty() {
@@ -143,7 +154,8 @@ fn content_tokens(value: &str) -> HashSet<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::is_lexical_restatement;
+    use super::{FiveWhysRestatementPass, is_lexical_restatement};
+    use crate::{Claim, EpistemicState, Inference, Pass, ReasoningArtifact};
 
     #[test]
     fn detects_timeout_restatement() {
@@ -159,5 +171,133 @@ mod tests {
             "The job timed out.",
             "The database lock blocked progress."
         ));
+    }
+
+    #[test]
+    fn cleanup_is_local_to_the_offending_edge() {
+        let mut artifact = ReasoningArtifact::default();
+        artifact.claims = vec![
+            Claim {
+                id: "effect_bad".into(),
+                statement: "The job timed out".into(),
+                state: EpistemicState::Assumed,
+                proposition: None,
+                evidence_ids: vec![],
+            },
+            Claim {
+                id: "effect_good".into(),
+                statement: "The database lock blocked progress".into(),
+                state: EpistemicState::Assumed,
+                proposition: None,
+                evidence_ids: vec![],
+            },
+            Claim {
+                id: "cause".into(),
+                statement: "A timeout occurred in the job".into(),
+                state: EpistemicState::Inferred,
+                proposition: None,
+                evidence_ids: vec![],
+            },
+        ];
+        artifact.inferences = vec![
+            Inference {
+                id: "bad".into(),
+                premise_claim_ids: vec!["effect_bad".into()],
+                conclusion_claim_id: "cause".into(),
+                method: "five_whys".into(),
+            },
+            Inference {
+                id: "good".into(),
+                premise_claim_ids: vec!["effect_good".into()],
+                conclusion_claim_id: "cause".into(),
+                method: "five_whys".into(),
+            },
+        ];
+
+        let artifact = FiveWhysRestatementPass.apply(artifact).unwrap();
+
+        assert_eq!(artifact.inferences.len(), 1);
+        assert_eq!(artifact.inferences[0].id, "good");
+        assert_eq!(artifact.claims[2].state, EpistemicState::Inferred);
+    }
+
+    #[test]
+    fn cleanup_preserves_inferred_claim_with_surviving_non_five_whys_edge() {
+        let mut artifact = ReasoningArtifact::default();
+        artifact.claims = vec![
+            Claim {
+                id: "effect_bad".into(),
+                statement: "The job timed out".into(),
+                state: EpistemicState::Assumed,
+                proposition: None,
+                evidence_ids: vec![],
+            },
+            Claim {
+                id: "effect_good".into(),
+                statement: "The database lock blocked progress".into(),
+                state: EpistemicState::Assumed,
+                proposition: None,
+                evidence_ids: vec![],
+            },
+            Claim {
+                id: "cause".into(),
+                statement: "A timeout occurred in the job".into(),
+                state: EpistemicState::Inferred,
+                proposition: None,
+                evidence_ids: vec![],
+            },
+        ];
+        artifact.inferences = vec![
+            Inference {
+                id: "bad".into(),
+                premise_claim_ids: vec!["effect_bad".into()],
+                conclusion_claim_id: "cause".into(),
+                method: "five_whys".into(),
+            },
+            Inference {
+                id: "good".into(),
+                premise_claim_ids: vec!["effect_good".into()],
+                conclusion_claim_id: "cause".into(),
+                method: "causal_forward".into(),
+            },
+        ];
+
+        let artifact = FiveWhysRestatementPass.apply(artifact).unwrap();
+
+        assert_eq!(artifact.inferences.len(), 1);
+        assert_eq!(artifact.inferences[0].id, "good");
+        assert_eq!(artifact.claims[2].state, EpistemicState::Inferred);
+    }
+
+    #[test]
+    fn cleanup_does_not_downgrade_independently_supported_claim() {
+        let mut artifact = ReasoningArtifact::default();
+        artifact.claims = vec![
+            Claim {
+                id: "effect".into(),
+                statement: "The job timed out".into(),
+                state: EpistemicState::Assumed,
+                proposition: None,
+                evidence_ids: vec![],
+            },
+            Claim {
+                id: "cause".into(),
+                statement: "A timeout occurred in the job".into(),
+                state: EpistemicState::Supported,
+                proposition: None,
+                evidence_ids: vec![],
+            },
+        ];
+        artifact.inferences = vec![Inference {
+            id: "bad".into(),
+            premise_claim_ids: vec!["effect".into()],
+            conclusion_claim_id: "cause".into(),
+            method: "five_whys".into(),
+        }];
+
+        let artifact = FiveWhysRestatementPass.apply(artifact).unwrap();
+
+        assert!(artifact.inferences.is_empty());
+        assert_eq!(artifact.claims[1].state, EpistemicState::Supported);
     }
 }

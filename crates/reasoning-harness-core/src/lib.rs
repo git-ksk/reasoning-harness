@@ -1,6 +1,10 @@
+#![cfg_attr(test, allow(clippy::field_reassign_with_default))]
+
 pub mod adversarial;
 pub mod benchmark;
 pub mod candidate;
+pub mod causal;
+pub mod causal_benchmark;
 pub mod decision;
 pub mod eval;
 pub mod frameworks;
@@ -21,6 +25,15 @@ pub use benchmark::{
     BenchmarkFixture, aggregate_benchmark, evaluate_benchmark_fixture,
 };
 pub use candidate::materialize_candidate;
+pub use causal::{
+    CausalEdgeAssessment, CausalEvidence, CausalEvidenceConclusion, CausalFinding,
+    CausalFindingKind, CausalFindingReason, CausalInputError, CausalInspection, CausalInspector,
+    CausalRelation, CausalSupportStatus,
+};
+pub use causal_benchmark::{
+    CausalBenchmarkAggregate, CausalBenchmarkCaseResult, CausalBenchmarkFixture,
+    aggregate_causal_benchmark, evaluate_causal_fixture,
+};
 pub use decision::{AcceptancePolicy, StrictAcceptancePolicy};
 pub use eval::{EvalMetrics, evaluate};
 pub use generation::{build_candidate_json_fallback_request, build_candidate_request};

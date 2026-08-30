@@ -1,0 +1,20 @@
+{
+  "id": "reverse_direction",
+  "description": "Support for the reverse direction is not a hard refutation of the proposed edge.",
+  "artifact": {
+    "task": "Explain why requests timed out.",
+    "claims": [
+      {"id":"effect","statement":"Requests timed out","state":"assumed","proposition":{"key":"incident.requests_timed_out","value":"true"}},
+      {"id":"cause","statement":"Database lock blocked progress","state":"assumed","proposition":{"key":"incident.db_lock_blocked","value":"true"}}
+    ],
+    "inferences": [
+      {"id":"why-1","premise_claim_ids":["effect"],"conclusion_claim_id":"cause","method":"five_whys"}
+    ]
+  },
+  "evidence": [
+    {"id":"ce-reverse","source":"fixture-oracle","relation":{"causes":[{"key":"incident.requests_timed_out","value":"true"}],"effect":{"key":"incident.db_lock_blocked","value":"true"}},"conclusion":"supports"}
+  ],
+  "expected_statuses": ["unknown"],
+  "expected_hard_findings": 0,
+  "expected_soft_findings": 1
+}
