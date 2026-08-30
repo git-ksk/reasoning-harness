@@ -113,3 +113,18 @@ No live judge result may:
 - become a trusted resolver merely because it is another model.
 
 A future `ReasoningPolicy` may use calibrated soft findings as advisory triggers for evidence acquisition or deterministic verification, but the resulting authority must still come through the existing harness-owned boundaries.
+## Model-backed semantic discovery (#33)
+
+The same typed request/output contract can now be driven by any existing provider-neutral `ModelAdapter`. The harness builds a structured-output request for `SoftJudgeOutput`, attaches judge/model/configuration identity itself, and validates the returned decision against the original requested kind and target. Model output cannot choose its own provenance.
+
+The primary request uses JSON Schema structured output. If the adapter reports that schema mode is unsupported, or if the first response is not a valid typed decision, the harness may retry once using generic JSON-object mode plus the serialized schema. A malformed fallback fails closed as an operational/protocol failure; it is never converted into `no_finding`.
+
+`reason eval-judges` supports optional live execution with `--provider`, `--model`, and `--trials`. Recorded mode remains unchanged. For live repeated trials:
+
+- one failed fixture makes that entire trial operationally incomplete;
+- incomplete trials are excluded from precision/recall/coverage/abstention stability distributions;
+- provider/protocol failures are reported separately from semantic decisions;
+- model findings remain soft regardless of observed precision or agreement;
+- the ordinary `reason eval` correctness denominator is unchanged.
+
+The manual live workflow can run the same nine-case calibration corpus using secret-isolated Mistral, Google, or NVIDIA credentials. Repeated live results are research observations, not correctness authority.

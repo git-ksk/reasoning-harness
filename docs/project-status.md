@@ -54,7 +54,7 @@ Resolver success must continue to be distinguished from verification success. Th
 ### Existing research gaps
 
 - Exact natural-language receipt binding was confirmed too brittle for live paraphrases. The current implementation now uses typed propositions and harness-owned structured facts for the built-in hard verifier; exact-string binding remains compatibility-only.
-- Hard contradiction/counterexample discovery exists for structured harness-owned facts; semantic/model-backed discovery remains soft-only and is not yet implemented.
+- Hard contradiction/counterexample discovery exists for structured harness-owned facts. Model-backed semantic discovery is now implemented only through the calibrated soft-judge boundary; it cannot create hard findings, verification receipts, epistemic promotion, or verdict authority. Live quality remains an empirical/manual research question.
 - Counterexample discovery coverage is still narrow outside explicit structured propositions.
 - Five Whys lexical cleanup remains intentionally syntactic; evidence-aware causal inspection is observational and does not certify the whole artifact or change the final claim verdict.
 - Candidate-supplied causal-evidence references remain deferred; the repeated-trial report can aggregate causal support/refutation/unknown assessments plus finding/reason observations without moving them into correctness authority. A live causal-generation/input contract remains deferred.
@@ -62,7 +62,7 @@ Resolver success must continue to be distinguished from verification success. Th
 - Assumption/unsupported-premise diagnostics are implemented with harness-owned explicit assumptions, deterministic typed premise checks, a separate five-case corpus, and repeated-trial diagnostic signals. Semantic extraction of untyped assumptions remains soft/deferred.
 - Temporal validity, applicability scope, and provenance/authority qualification are implemented for generic harness-owned evidence. Domain-specific source taxonomy, open-world retrieval, and automatic qualification of the separate `CausalEvidence` contract remain out of core scope.
 - Corpus v1 now versions and stratifies all 41 primary deterministic cases. Future version changes must preserve stable IDs and score-compatibility rules; metamorphic seeds remain unscored controls.
-- Soft semantic-judge calibration is implemented for typed offline observations and metrics (#13). Actual semantic model-backed discovery remains optional/manual and non-authoritative; no live judge quality claim is made by the recorded calibration fixtures.
+- Soft semantic-judge calibration is implemented for typed offline observations and metrics (#13). #33 adds an optional model-backed `SoftDiagnosticJudge` path over the existing provider adapters plus repeated live operational/semantic reporting. Recorded fixtures remain synthetic and no live quality claim is made until a repeated provider study completes.
 - Stable ranking claims require repeated trials. Issue #6 completed the 5-trial Mistral/Google matrix plus a targeted 10-trial follow-up for models tied on all primary correctness metrics; operational completeness is reported separately from correctness variance.
 
 ## Release posture

@@ -47,3 +47,18 @@ Every live fixture-suite JSON also records the committed corpus identity (`corpu
 ## In-model concurrency
 
 Use `--concurrency N` (1-10) to overlap independent fixture generations for one live model. Results are restored to fixture/trial order before aggregation, and one fixture failure remains isolated from other in-flight work. All workers share the same provider adapter, so NVIDIA request-start pacing and 429 `Retry-After` handling continue to apply across the run. The NVIDIA workflow defaults to 4 based on the successful 20/20 Nemotron Lightning repeat run.
+## Live soft semantic-judge calibration
+
+Issue #33 extends the manual workflow with an optional `semantic-judge` job. Set `judge_provider` to `mistral`, `google`, or `nvidia`, provide a compatible `judge_model`, and choose `judge_trials` (normally 5 before making any stability observation). The job runs:
+
+```text
+reason eval-judges fixtures/semantic-judges \
+  --provider <provider> \
+  --model <model> \
+  --max-tokens 256 \
+  --seed 1000 \
+  --trials <trials> \
+  --format json
+```
+
+The workflow stores the full JSON as a short-lived artifact and prints only aggregate semantic metrics plus operational failures. A provider/protocol failure does not become `no_finding`; any affected trial is excluded from semantic stability distributions. These metrics are independent of the ordinary live correctness benchmark.

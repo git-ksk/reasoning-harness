@@ -70,6 +70,30 @@ on:
           - '9'
           - '10'
         default: '4'
+      judge_provider:
+        description: Optional provider for live soft semantic-judge calibration
+        required: false
+        type: choice
+        options:
+          - none
+          - mistral
+          - google
+          - nvidia
+        default: none
+      judge_model:
+        description: Model identifier for the live soft semantic judge
+        required: false
+        type: string
+        default: ministral-8b-latest
+      judge_trials:
+        description: Repeated live soft semantic-judge trials
+        required: false
+        type: choice
+        options:
+          - '1'
+          - '5'
+          - '10'
+        default: '5'
 
 permissions:
   contents: read
@@ -168,6 +192,66 @@ jobs:
           path: /tmp/reason-live-${{ matrix.model }}.json
           if-no-files-found: ignore
           retention-days: 14
+  semantic-judge:
+    if: inputs.judge_provider != 'none'
+    name: semantic-judge-${{ inputs.judge_provider }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check semantic-judge provider credential availability
+        id: credential
+        env:
+          PROVIDER: ${{ inputs.judge_provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: |
+          case "$PROVIDER" in
+            mistral) KEY="$MISTRAL_API_KEY" ;;
+            google) KEY="$GEMINI_API_KEY" ;;
+            nvidia) KEY="$NVIDIA_API_KEY" ;;
+            *) echo "unsupported judge provider: $PROVIDER" >&2; exit 2 ;;
+          esac
+          if [ -n "$KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::credential for $PROVIDER is not configured; skipping live semantic-judge calibration."
+          fi
+      - name: Run live soft semantic-judge calibration
+        if: steps.credential.outputs.available == 'true'
+        env:
+          PROVIDER: ${{ inputs.judge_provider }}
+          MODEL: ${{ inputs.judge_model }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: |
+          OUTPUT="/tmp/reason-live-semantic-judge.json"
+          cargo run -q --locked -p reasoning-harness-cli -- \
+            eval-judges fixtures/semantic-judges \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --max-tokens 256 \
+            --seed 1000 \
+            --trials "${{ inputs.judge_trials }}" \
+            --format json \
+            > "$OUTPUT"
+          jq '{provider, model, operational, stability, per_trial: [.per_trial[] | {trial_index, operationally_complete, successful_cases, report: (.report | if . == null then null else {judges: [.judges[] | {judge: .judge.judge_id, precision, recall, decision_coverage, abstentions}]} end)}], failures: [.cases[] | select(.failure != null) | {fixture_id, trial, failure: .failure}]}' "$OUTPUT"
+      - name: Preserve live semantic-judge JSON
+        if: always() && steps.credential.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-semantic-judge-${{ inputs.judge_provider }}
+          path: /tmp/reason-live-semantic-judge.json
+          if-no-files-found: ignore
+          retention-days: 14
+
   nvidia:
     if: inputs.nvidia_model != 'none'
     name: nvidia-${{ strategy.job-index }}-${{ matrix.model }}
