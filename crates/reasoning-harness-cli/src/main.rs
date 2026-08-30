@@ -360,6 +360,9 @@ enum Command {
         /// Number of live calibration trials. Recorded mode requires exactly one.
         #[arg(long, default_value_t = 1)]
         trials: usize,
+        /// Maximum number of live semantic-judge fixture calls in flight within one trial.
+        #[arg(long, default_value_t = 1)]
+        concurrency: usize,
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
@@ -748,6 +751,7 @@ async fn run(cli: Cli) -> Result<(), String> {
             max_tokens,
             seed,
             trials,
+            concurrency,
             format,
         } => {
             if !target.is_dir() {
@@ -756,10 +760,16 @@ async fn run(cli: Cli) -> Result<(), String> {
             if trials == 0 {
                 return Err("--trials must be at least 1".into());
             }
+            if !(1..=10).contains(&concurrency) {
+                return Err("--concurrency must be between 1 and 10".into());
+            }
             match provider {
                 None => {
                     if trials != 1 {
                         return Err("recorded eval-judges supports exactly one trial".into());
+                    }
+                    if concurrency != 1 {
+                        return Err("--concurrency requires a live eval-judges provider".into());
                     }
                     let report = run_soft_judge_calibration_suite(&target)?;
                     match format {
@@ -769,7 +779,13 @@ async fn run(cli: Cli) -> Result<(), String> {
                 }
                 Some(provider) => {
                     let output = run_live_soft_judge_calibration_suite(
-                        &target, provider, &model, max_tokens, seed, trials,
+                        &target,
+                        provider,
+                        &model,
+                        max_tokens,
+                        seed,
+                        trials,
+                        concurrency,
                     )
                     .await?;
                     match format {
@@ -1147,17 +1163,26 @@ async fn run_live_soft_judge_calibration_suite(
     max_tokens: u32,
     seed: Option<u64>,
     trials: usize,
+    concurrency: usize,
 ) -> Result<LiveSoftJudgeOutput, String> {
     let fixtures = load_soft_judge_fixtures(directory)?;
-    let generator = LiveGenerator::from_provider(provider, model)?;
+    let generator = Arc::new(LiveGenerator::from_provider(provider, model)?);
     let identity = SoftJudgeIdentity {
         judge_id: format!("live:{}:{model}", provider_name(provider)),
         model_id: model.to_string(),
         configuration_id: "soft-semantic-v3".into(),
     };
-    let mut cases = Vec::with_capacity(fixtures.len() * trials);
+    let total_runs = fixtures
+        .len()
+        .checked_mul(trials)
+        .ok_or("semantic-judge fixture/trial count overflowed usize")?;
+    let mut completed_runs = 0usize;
+    let mut started_runs = 0usize;
+    let mut cases = Vec::with_capacity(total_runs);
     let mut per_trial = Vec::with_capacity(trials);
 
+    // Keep trials sequential so each stability sample remains one full-corpus pass.
+    // Concurrency overlaps only independent fixtures within the active trial.
     for trial_index in 0..trials {
         let trial_seed = seed
             .map(|base| {
@@ -1166,68 +1191,155 @@ async fn run_live_soft_judge_calibration_suite(
             })
             .transpose()?;
         let mut evaluated = fixtures.clone();
+        for fixture in &mut evaluated {
+            fixture.recorded_observations.clear();
+        }
+        let mut pending = fixtures
+            .iter()
+            .cloned()
+            .enumerate()
+            .collect::<VecDeque<_>>();
+        let mut tasks = tokio::task::JoinSet::new();
+        let mut ordered_cases: Vec<Option<LiveSoftJudgeCase>> =
+            (0..fixtures.len()).map(|_| None).collect();
+        let mut ordered_observations: Vec<Option<SoftJudgeObservation>> =
+            (0..fixtures.len()).map(|_| None).collect();
         let mut successful_cases = 0usize;
         let mut trial_failed = false;
 
-        for fixture in &mut evaluated {
-            fixture.recorded_observations.clear();
-            let started = Instant::now();
-            match run_model_backed_soft_judge(
-                generator.adapter(),
-                identity.clone(),
-                &fixture.request,
-                max_tokens,
-                trial_seed,
-            )
-            .await
-            {
-                Ok(result) => {
+        loop {
+            while tasks.len() < concurrency {
+                let Some((fixture_index, fixture)) = pending.pop_front() else {
+                    break;
+                };
+                let generator = Arc::clone(&generator);
+                let identity = identity.clone();
+                let provider_label = provider_name(provider);
+                let model_label = model.to_string();
+                started_runs += 1;
+                eprintln!(
+                    "[semantic-judge] provider={} model={} start={}/{} fixture={} trial={} in_flight={}",
+                    provider_label,
+                    model_label,
+                    started_runs,
+                    total_runs,
+                    fixture.id,
+                    trial_index + 1,
+                    tasks.len() + 1
+                );
+                tasks.spawn(async move {
+                    let started = Instant::now();
+                    let result = run_model_backed_soft_judge(
+                        generator.adapter(),
+                        identity,
+                        &fixture.request,
+                        max_tokens,
+                        trial_seed,
+                    )
+                    .await;
                     let latency_ms = started.elapsed().as_millis();
-                    successful_cases += 1;
-                    fixture
-                        .recorded_observations
-                        .push(result.observation.clone());
-                    cases.push(LiveSoftJudgeCase {
-                        fixture_id: fixture.id.clone(),
-                        trial: trial_index,
-                        kind: fixture.request.kind,
-                        label: fixture.label,
-                        observation: Some(result.observation),
-                        provider_model: Some(result.model),
-                        usage: Some(result.usage),
-                        provider_attempts: Some(result.provider_attempts),
-                        fallback_reason: Some(result.fallback_reason),
-                        latency_ms,
-                        failure: None,
-                    });
+                    let (case, observation) = match result {
+                        Ok(result) => {
+                            let observation = result.observation.clone();
+                            (
+                                LiveSoftJudgeCase {
+                                    fixture_id: fixture.id.clone(),
+                                    trial: trial_index,
+                                    kind: fixture.request.kind,
+                                    label: fixture.label,
+                                    observation: Some(result.observation),
+                                    provider_model: Some(result.model),
+                                    usage: Some(result.usage),
+                                    provider_attempts: Some(result.provider_attempts),
+                                    fallback_reason: Some(result.fallback_reason),
+                                    latency_ms,
+                                    failure: None,
+                                },
+                                Some(observation),
+                            )
+                        }
+                        Err(error) => {
+                            let failure_class = soft_judge_failure_class(&error);
+                            let message = error.to_string();
+                            (
+                                LiveSoftJudgeCase {
+                                    fixture_id: fixture.id.clone(),
+                                    trial: trial_index,
+                                    kind: fixture.request.kind,
+                                    label: fixture.label,
+                                    observation: None,
+                                    provider_model: None,
+                                    usage: None,
+                                    provider_attempts: None,
+                                    fallback_reason: None,
+                                    latency_ms,
+                                    failure: Some(LiveSoftJudgeFailure {
+                                        fixture_id: fixture.id.clone(),
+                                        trial: trial_index,
+                                        failure_class,
+                                        latency_ms,
+                                        message,
+                                    }),
+                                },
+                                None,
+                            )
+                        }
+                    };
+                    (fixture_index, case, observation)
+                });
+            }
+
+            if tasks.is_empty() {
+                break;
+            }
+            let joined = tasks
+                .join_next()
+                .await
+                .ok_or("semantic-judge task set ended unexpectedly")?
+                .map_err(|error| format!("semantic-judge worker failed: {error}"))?;
+            let (fixture_index, case, observation) = joined;
+            completed_runs += 1;
+            if case.failure.is_some() {
+                trial_failed = true;
+            } else {
+                successful_cases += 1;
+            }
+            eprintln!(
+                "[semantic-judge] provider={} model={} completed={}/{} fixture={} trial={} status={}",
+                provider_name(provider),
+                model,
+                completed_runs,
+                total_runs,
+                case.fixture_id,
+                trial_index + 1,
+                if case.failure.is_some() {
+                    "failed"
+                } else {
+                    "ok"
                 }
-                Err(error) => {
-                    let latency_ms = started.elapsed().as_millis();
-                    trial_failed = true;
-                    let failure_class = soft_judge_failure_class(&error);
-                    let message = error.to_string();
-                    cases.push(LiveSoftJudgeCase {
-                        fixture_id: fixture.id.clone(),
-                        trial: trial_index,
-                        kind: fixture.request.kind,
-                        label: fixture.label,
-                        observation: None,
-                        provider_model: None,
-                        usage: None,
-                        provider_attempts: None,
-                        fallback_reason: None,
-                        latency_ms,
-                        failure: Some(LiveSoftJudgeFailure {
-                            fixture_id: fixture.id.clone(),
-                            trial: trial_index,
-                            failure_class,
-                            latency_ms,
-                            message,
-                        }),
-                    });
-                }
+            );
+            ordered_cases[fixture_index] = Some(case);
+            ordered_observations[fixture_index] = observation;
+        }
+
+        for (fixture_index, observation) in ordered_observations.into_iter().enumerate() {
+            if let Some(observation) = observation {
+                evaluated[fixture_index]
+                    .recorded_observations
+                    .push(observation);
             }
         }
+        cases.extend(
+            ordered_cases
+                .into_iter()
+                .enumerate()
+                .map(|(index, case)| {
+                    case.ok_or_else(|| {
+                        format!("missing semantic-judge result for fixture index {index}")
+                    })
+                })
+                .collect::<Result<Vec<_>, _>>()?,
+        );
 
         let operationally_complete = !trial_failed && successful_cases == fixtures.len();
         let report = if operationally_complete {
@@ -2048,6 +2160,26 @@ mod candidate_json_tests {
         match cli.command {
             Command::Eval { concurrency, .. } => assert_eq!(concurrency, 3),
             _ => panic!("expected eval command"),
+        }
+    }
+
+    #[test]
+    fn parses_live_soft_judge_concurrency() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "eval-judges",
+            "fixtures/semantic-judges-holdout-v2",
+            "--provider",
+            "nvidia",
+            "--model",
+            "nvidia/nemotron-3.5-lightning-30b-a3b",
+            "--concurrency",
+            "4",
+        ])
+        .unwrap();
+        match cli.command {
+            Command::EvalJudges { concurrency, .. } => assert_eq!(concurrency, 4),
+            _ => panic!("expected eval-judges command"),
         }
     }
 

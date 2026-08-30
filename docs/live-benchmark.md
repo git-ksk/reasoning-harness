@@ -49,6 +49,7 @@ Every live fixture-suite JSON also records the committed corpus identity (`corpu
 ## In-model concurrency
 
 Use `--concurrency N` (1-10) to overlap independent fixture generations for one live model. Results are restored to fixture/trial order before aggregation, and one fixture failure remains isolated from other in-flight work. All workers share the same provider adapter, so NVIDIA request-start pacing and 429 `Retry-After` handling continue to apply across the run. The NVIDIA workflow defaults to 4 based on the successful 20/20 Nemotron Lightning repeat run.
+
 ## Live soft semantic-judge calibration
 
 Issue #33 extends the manual workflow with an optional `semantic-judge` job. Set `judge_provider` to `mistral`, `google`, or `nvidia`, provide a compatible `judge_model`, and choose `judge_trials` (normally 5 before making any stability observation). The job runs:
@@ -60,8 +61,11 @@ reason eval-judges fixtures/semantic-judges \
   --max-tokens 256 \
   --seed 1000 \
   --trials <trials> \
+  --concurrency <N> \
   --format json
 ```
+
+Trials remain sequential stability samples, while `--concurrency` overlaps only independent fixtures inside the active trial. For NVIDIA semantic-judge runs, the workflow reuses `nvidia_concurrency` (default `4`); Mistral and Google semantic-judge runs stay at concurrency `1`. NVIDIA workers share one adapter, so the existing 1.6-second request-start pacing and `Retry-After` handling remain authoritative across in-flight calls.
 
 The workflow stores the full JSON as a short-lived artifact and prints aggregate semantic metrics plus each failed run's fixture ID, trial, failure class, latency, and bounded provider-safe message. A provider/protocol failure does not become `no_finding`; any affected trial is excluded from semantic stability distributions. Precision/recall are accompanied by decision coverage and ambiguous-case abstention so aggressive decisions on intentionally uncertain cases stay visible. Ordinary Mistral and Google live benchmark summaries likewise print failed-run details instead of only a failure count. These metrics are independent of the ordinary live correctness benchmark. See [live soft semantic-judge study](live-semantic-judge-study.md) for the first repeated Mistral result and its holdout caveat.
 
