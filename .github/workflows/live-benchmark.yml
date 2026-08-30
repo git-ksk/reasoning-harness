@@ -40,6 +40,16 @@ on:
           - deepseek-ai/deepseek-v4-pro-0813
           - google/gemma-4-31b-it
         default: all
+      nvidia_concurrency:
+        description: Maximum in-flight fixtures per NVIDIA model
+        required: false
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - '4'
+        default: '1'
 
 permissions:
   contents: read
@@ -165,6 +175,7 @@ jobs:
             --model "$MODEL" \
             --max-tokens 4096 \
             --trials 1 \
+            --concurrency "${{ inputs.nvidia_concurrency }}" \
             --format json \
             > "$OUTPUT"
           jq '{provider, model, comparison, operational, failures: [.cases[] | select(.failure != null) | {fixture_id, trial, failure: .failure}], deterministic_failures: [.cases[] | select(.result.harness.deterministic_failure == true) | {fixture_id: .result.fixture_id, reason: .result.harness.deterministic_failure_reason}]}' "$OUTPUT"
