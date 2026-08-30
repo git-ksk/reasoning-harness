@@ -581,9 +581,25 @@ async fn run_fixture_suite(
         .provider
         .map(|provider| LiveGenerator::from_provider(provider, config.model))
         .transpose()?;
+    let total_runs = fixtures
+        .len()
+        .checked_mul(config.trials)
+        .ok_or("fixture/trial count overflowed usize")?;
+    let mut completed_runs = 0usize;
     let mut observed = Vec::new();
     for fixture in fixtures {
         for trial in 0..config.trials {
+            if let Some(provider) = config.provider {
+                eprintln!(
+                    "[benchmark] provider={} model={} [{}/{}] fixture={} trial={}",
+                    provider_name(provider),
+                    config.model,
+                    completed_runs + 1,
+                    total_runs,
+                    fixture.id,
+                    trial + 1
+                );
+            }
             let trial_seed = match config.seed {
                 Some(value) => Some(
                     value
@@ -606,6 +622,7 @@ async fn run_fixture_suite(
                             generation: None,
                             failure: Some(failure),
                         });
+                        completed_runs += 1;
                         continue;
                     }
                 }
@@ -627,6 +644,7 @@ async fn run_fixture_suite(
                 generation,
                 failure: None,
             });
+            completed_runs += 1;
         }
     }
 
