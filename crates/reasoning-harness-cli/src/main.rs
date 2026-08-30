@@ -15,14 +15,15 @@ use reasoning_harness_core::{
     ModelBackedSoftJudgeError, ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact,
     ReasoningCandidate, RepeatedDiagnosticReport, ResolutionBenchmarkAggregate,
     ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, SemanticDiagnosticKind,
-    SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeIdentity,
-    SoftJudgeObservation, StrictAcceptancePolicy, StructuredFactConflictDetector,
-    TrustedVerificationPass, VerificationPass, VerificationReceipt, aggregate_benchmark,
-    aggregate_claim_corpus, aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
-    aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
-    build_candidate_request, evaluate, evaluate_benchmark_fixture_with_diagnostics,
-    evaluate_resolution_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
-    run_model_backed_soft_judge, structured_fact_verifier_for_input, validate_artifact,
+    SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport, SoftJudgeDecision,
+    SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeObservation, StrictAcceptancePolicy,
+    StructuredFactConflictDetector, TrustedVerificationPass, VerificationPass, VerificationReceipt,
+    aggregate_benchmark, aggregate_claim_corpus, aggregate_repeated_diagnostics,
+    aggregate_resolution_benchmark, aggregate_soft_judge_calibration,
+    build_candidate_json_fallback_request, build_candidate_request, evaluate,
+    evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture,
+    frameworks::five_whys::FiveWhysRestatementPass, run_harness, run_model_backed_soft_judge,
+    structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Serialize, de::DeserializeOwned};
@@ -546,6 +547,8 @@ struct LiveSoftJudgeCase {
     usage: Option<ModelUsage>,
     #[serde(skip_serializing_if = "Option::is_none")]
     provider_attempts: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    fallback_reason: Option<SoftJudgeFallbackReason>,
     latency_ms: u128,
     #[serde(skip_serializing_if = "Option::is_none")]
     failure: Option<LiveSoftJudgeFailure>,
@@ -564,6 +567,7 @@ struct LiveSoftJudgeOperationalSummary {
     fallback_runs: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
     fallback_rate: Option<f64>,
+    fallback_reason_counts: BTreeMap<SoftJudgeFallbackReason, usize>,
     total_latency_ms: u128,
 }
 
@@ -1192,6 +1196,7 @@ async fn run_live_soft_judge_calibration_suite(
                         provider_model: Some(result.model),
                         usage: Some(result.usage),
                         provider_attempts: Some(result.provider_attempts),
+                        fallback_reason: Some(result.fallback_reason),
                         latency_ms,
                         failure: None,
                     });
@@ -1210,6 +1215,7 @@ async fn run_live_soft_judge_calibration_suite(
                         provider_model: None,
                         usage: None,
                         provider_attempts: None,
+                        fallback_reason: None,
                         latency_ms,
                         failure: Some(LiveSoftJudgeFailure {
                             fixture_id: fixture.id.clone(),
@@ -1281,6 +1287,7 @@ fn live_soft_judge_operational_summary(
     let mut total_tokens = 0u64;
     let mut successful_provider_attempts = 0u64;
     let mut fallback_runs = 0usize;
+    let mut fallback_reason_counts = BTreeMap::new();
     let mut successful_runs = 0usize;
     let total_latency_ms = cases.iter().map(|case| case.latency_ms).sum();
 
@@ -1297,7 +1304,11 @@ fn live_soft_judge_operational_summary(
         }
         let provider_attempts = case.provider_attempts.unwrap_or(0);
         successful_provider_attempts += provider_attempts as u64;
-        if provider_attempts > 1 {
+        let fallback_reason = case
+            .fallback_reason
+            .unwrap_or(SoftJudgeFallbackReason::NotNeeded);
+        *fallback_reason_counts.entry(fallback_reason).or_insert(0) += 1;
+        if fallback_reason != SoftJudgeFallbackReason::NotNeeded {
             fallback_runs += 1;
         }
     }
@@ -1313,6 +1324,7 @@ fn live_soft_judge_operational_summary(
         successful_provider_attempts,
         fallback_runs,
         fallback_rate: (successful_runs > 0).then(|| fallback_runs as f64 / successful_runs as f64),
+        fallback_reason_counts,
         total_latency_ms,
     }
 }
@@ -1897,6 +1909,18 @@ fn print_live_soft_judge_human(output: &LiveSoftJudgeOutput) {
         format_optional_metric(output.operational.fallback_rate),
         output.operational.total_latency_ms
     );
+    if !output.operational.fallback_reason_counts.is_empty() {
+        println!(
+            "fallback_reasons: {}",
+            output
+                .operational
+                .fallback_reason_counts
+                .iter()
+                .map(|(reason, count)| format!("{reason:?}={count}"))
+                .collect::<Vec<_>>()
+                .join(" ")
+        );
+    }
     for family in &output.families {
         println!(
             "family: kind={:?} successful={} finding={} no_finding={} abstain={}",
@@ -2049,6 +2073,11 @@ mod candidate_json_tests {
                 total_tokens: Some(12),
             }),
             provider_attempts: Some(provider_attempts),
+            fallback_reason: Some(if provider_attempts > 1 {
+                SoftJudgeFallbackReason::InvalidPrimaryStructuredOutput
+            } else {
+                SoftJudgeFallbackReason::NotNeeded
+            }),
             latency_ms: 5,
             failure: None,
         }
@@ -2065,6 +2094,18 @@ mod candidate_json_tests {
         assert_eq!(summary.successful_provider_attempts, 3);
         assert_eq!(summary.fallback_runs, 1);
         assert_eq!(summary.fallback_rate, Some(0.5));
+        assert_eq!(
+            summary
+                .fallback_reason_counts
+                .get(&SoftJudgeFallbackReason::NotNeeded),
+            Some(&1)
+        );
+        assert_eq!(
+            summary
+                .fallback_reason_counts
+                .get(&SoftJudgeFallbackReason::InvalidPrimaryStructuredOutput),
+            Some(&1)
+        );
     }
 
     #[test]

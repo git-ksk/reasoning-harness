@@ -3,9 +3,9 @@ use std::{collections::VecDeque, pin::Pin, sync::Mutex};
 use reasoning_harness_core::{
     CausalRelation, ModelAdapter, ModelBackedSoftJudgeError, ModelError, ModelErrorKind,
     ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage, Proposition,
-    SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftJudgeDecision, SoftJudgeIdentity,
-    SoftJudgeRequest, build_soft_judge_json_fallback_request, build_soft_judge_model_request,
-    parse_soft_judge_output, run_model_backed_soft_judge,
+    SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftJudgeDecision, SoftJudgeFallbackReason,
+    SoftJudgeIdentity, SoftJudgeRequest, build_soft_judge_json_fallback_request,
+    build_soft_judge_model_request, parse_soft_judge_output, run_model_backed_soft_judge,
 };
 
 struct SequenceAdapter {
@@ -144,6 +144,7 @@ async fn successful_model_output_gets_harness_owned_identity_and_usage() {
     assert_eq!(result.observation.judge, identity());
     assert_eq!(result.observation.decision, SoftJudgeDecision::Finding);
     assert_eq!(result.provider_attempts, 1);
+    assert_eq!(result.fallback_reason, SoftJudgeFallbackReason::NotNeeded);
     assert_eq!(result.usage.total_tokens, Some(14));
     assert_eq!(adapter.requests().len(), 1);
 }
@@ -170,6 +171,10 @@ async fn invalid_primary_output_uses_json_fallback_and_sums_usage() {
     assert_eq!(result.observation.decision, SoftJudgeDecision::Abstain);
     assert!(result.observation.finding.is_none());
     assert_eq!(result.provider_attempts, 2);
+    assert_eq!(
+        result.fallback_reason,
+        SoftJudgeFallbackReason::InvalidPrimaryStructuredOutput
+    );
     assert_eq!(result.usage.total_tokens, Some(27));
     let requests = adapter.requests();
     assert!(matches!(
@@ -193,6 +198,10 @@ async fn unsupported_schema_mode_falls_back_without_promoting_authority() {
         .unwrap();
     assert_eq!(result.observation.decision, SoftJudgeDecision::NoFinding);
     assert_eq!(result.provider_attempts, 2);
+    assert_eq!(
+        result.fallback_reason,
+        SoftJudgeFallbackReason::PrimaryJsonSchemaUnsupported
+    );
     assert_eq!(adapter.requests().len(), 2);
 }
 

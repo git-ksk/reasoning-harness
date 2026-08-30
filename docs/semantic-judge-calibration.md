@@ -118,7 +118,7 @@ A future `ReasoningPolicy` may use calibrated soft findings as advisory triggers
 
 The same typed request/output contract can now be driven by any existing provider-neutral `ModelAdapter`. The harness builds a structured-output request for `SoftJudgeOutput`, attaches judge/model/configuration identity itself, and validates the returned decision against the original requested kind and target. Model output cannot choose its own provenance.
 
-The primary request uses JSON Schema structured output. If the adapter reports that schema mode is unsupported, or if the first response is not a valid typed decision, the harness may retry once using generic JSON-object mode plus the serialized schema. A malformed fallback fails closed as an operational/protocol failure; it is never converted into `no_finding`.
+The primary request uses JSON Schema structured output. If the adapter reports that schema mode is unsupported, or if the first response is not a valid typed decision, the harness may retry once using generic JSON-object mode plus the serialized schema. A malformed fallback fails closed as an operational/protocol failure; it is never converted into `no_finding`. Model-backed executions expose a harness-owned `fallback_reason` with `not_needed`, `primary_json_schema_unsupported`, or `invalid_primary_structured_output`. This telemetry describes only the harness primary→fallback protocol; provider-internal HTTP retries remain separate. Raw model output is not retained for fallback classification.
 
 `reason eval-judges` supports optional live execution with `--provider`, `--model`, and `--trials`. Recorded mode remains unchanged. For live repeated trials:
 

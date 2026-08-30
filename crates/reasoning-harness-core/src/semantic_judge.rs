@@ -145,6 +145,15 @@ pub struct ModelBackedSoftJudgeObservation {
     pub model: String,
     pub usage: ModelUsage,
     pub provider_attempts: u32,
+    pub fallback_reason: SoftJudgeFallbackReason,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SoftJudgeFallbackReason {
+    NotNeeded,
+    PrimaryJsonSchemaUnsupported,
+    InvalidPrimaryStructuredOutput,
 }
 
 #[derive(Debug, Error)]
@@ -243,9 +252,16 @@ pub async fn run_model_backed_soft_judge(
                 model: response.model.clone(),
                 usage: response.usage.clone(),
                 provider_attempts: 1,
+                fallback_reason: SoftJudgeFallbackReason::NotNeeded,
             });
         }
     }
+
+    let fallback_reason = if primary.is_some() {
+        SoftJudgeFallbackReason::InvalidPrimaryStructuredOutput
+    } else {
+        SoftJudgeFallbackReason::PrimaryJsonSchemaUnsupported
+    };
 
     let fallback_request =
         build_soft_judge_json_fallback_request(request, max_tokens, random_seed)?;
@@ -274,6 +290,7 @@ pub async fn run_model_backed_soft_judge(
         model: fallback.model,
         usage,
         provider_attempts: 2,
+        fallback_reason,
     })
 }
 
