@@ -13,11 +13,14 @@ pub mod diagnostic_stability;
 pub mod eval;
 pub mod evidence_qualification;
 pub mod evidence_qualification_benchmark;
+pub mod finalization;
 pub mod frameworks;
 pub mod generation;
 pub mod harness;
 pub mod metamorphic;
 pub mod model;
+pub mod resolution;
+pub mod resolution_benchmark;
 pub mod schema;
 pub mod types;
 pub mod validate;
@@ -74,6 +77,10 @@ pub use evidence_qualification_benchmark::{
     EvidenceQualificationBenchmarkFixture, aggregate_evidence_qualification_benchmark,
     evaluate_evidence_qualification_fixture,
 };
+pub use finalization::{
+    CanonicalFinalAnswerRenderer, FinalAnswerCandidate, FinalAnswerClaim, FinalAnswerRenderer,
+    FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus, finalize_answer,
+};
 pub use generation::{build_candidate_json_fallback_request, build_candidate_request};
 pub use harness::{HarnessError, HarnessOutcome, Pass, run_harness, run_passes};
 pub use metamorphic::{
@@ -85,6 +92,23 @@ pub use metamorphic::{
 pub use model::{
     ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
     ModelUsage,
+};
+pub use resolution::{
+    AcquiredEvidence, DefaultResolutionPlanner, EvidenceAdmissionPolicy,
+    EvidenceAdmissionRejection, FinalizationPolicyConfig, GroundedResolutionOutcome,
+    GroundedResolutionPolicy, GroundedResolutionRuntime, GroundingPipeline,
+    RejectAllEvidenceAdmission, ResolutionAdapterError, ResolutionAdapterErrorKind,
+    ResolutionAttempt, ResolutionAttemptStatus, ResolutionBudget, ResolutionCost, ResolutionError,
+    ResolutionPlanner, ResolutionReason, ResolutionRequest, ResolutionRequestBudget,
+    ResolutionResolver, ResolutionResolverContribution, ResolutionResolverOutput, ResolutionTarget,
+    ResolutionTerminalStatus, ResolutionUsage, ResolverClass, StandardGroundingPipeline,
+    TrustedResolutionVerifier, TrustedVerifierResolutionOutput,
+    default_grounded_resolution_runtime,
+};
+pub use resolution_benchmark::{
+    ResolutionBenchmarkAggregate, ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture,
+    ResolutionFixtureStep, ResolutionFixtureStepResult, aggregate_resolution_benchmark,
+    evaluate_resolution_fixture,
 };
 pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema};
 pub use types::{

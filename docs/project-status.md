@@ -2,9 +2,9 @@
 
 ## Current phase
 
-The repository is an early research prototype with a maturing verification/diagnostic core. The core authority boundary, native CLI, deterministic fixture benchmark, live Mistral/Google/NVIDIA provider adapters, trusted verification receipts, edge-local Five Whys cleanup, observational evidence-aware causal diagnostics, assumption diagnostics, temporal/scope/provenance evidence qualification, metamorphic robustness, and repeated diagnostic stability are implemented.
+The repository is an early research prototype with a maturing evidence-grounded runtime core. The authority boundary, native CLI, deterministic fixture benchmark, live Mistral/Google/NVIDIA candidate adapters, trusted verification receipts, causal/assumption/evidence-qualification diagnostics, metamorphic/repeated stability, corpus versioning, bounded resolution, and grounded finalization coverage are implemented.
 
-The product direction is broader than post-hoc diagnosis: the native runtime is intended to become an **evidence-grounded reasoning runtime** that can turn unresolved verified state into bounded resolution requests, re-verify repaired or newly grounded reasoning, and finalize answers only from adequately supported propositions. That end-to-end resolution/finalization loop is not yet implemented. See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
+The native core now implements the provider-neutral **evidence-grounded reasoning runtime** protocol from ADR-0002: unresolved verified state can produce bounded resolution requests, admitted evidence or revised candidates are re-verified, and final factual claims are coverage-checked. Concrete open-world resolver integrations and live resolution-quality evidence remain separate work.
 
 This is not a claim that open-world reasoning is solved. Current correctness gains depend on deterministic structure and on trusted oracles where a hard answer exists. Future resolution work must preserve that authority boundary rather than turning retrieval or model self-correction into implicit truth.
 
@@ -24,26 +24,25 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Repeated-trial diagnostic stability for adversarial, candidate-normalization, causal, assumption, and evidence-qualification signals, kept separate from correctness stability.
 - Harness-owned temporal/scope/provenance evidence metadata and requirements with qualification-aware built-in structured verification.
 - Versioned corpus v1 manifest covering 41 deterministic claim/causal/assumption/evidence-qualification cases with stable IDs, category/difficulty strata, score compatibility, provenance, contamination, redistribution, and lifecycle metadata.
+- Provider-neutral bounded resolution requests/results, resolver and trusted-verifier adapter boundaries, explicit evidence admission, per-run/per-request budgets, mandatory re-verification, and terminal-state accounting.
+- Grounded finalization with typed factual-claim coverage and re-routing of newly introduced factual propositions through hypothesis/resolution/verification.
+- Nine deterministic controlled resolution scenarios plus `reason eval-resolution`, reported separately from corpus correctness and repeated diagnostic stability.
 - Manual, secret-isolated live benchmark workflow spanning Mistral, Google-hosted Gemma/Gemini, and a narrowed routine NVIDIA Nemotron target.
 - GitHub CI, Dependabot configuration, contribution/security guidance, issue and PR templates.
 
 ## Known gaps
 
-### Grounded runtime closure
+### Grounded runtime integration gaps
 
-The largest product gap is no longer another diagnostic family. The runtime currently ends its implemented correctness path at `accept | reject | unknown`; it does not yet own an end-to-end bounded recovery loop from unresolved findings to additional evidence/verification, candidate repair, mandatory re-verification, and grounded final-answer construction.
+The provider-neutral bounded loop is implemented, but production acquisition integrations are intentionally not in core. Remaining product/research work includes:
 
-Specifically not yet implemented:
+- real web/database/MCP/human-review resolver adapters owned outside core;
+- live repeated resolution studies against stochastic model/resolver combinations;
+- automatic causal-evidence acquisition/ingestion for the typed `CausalRelation` resolution target;
+- model-backed final renderers evaluated against the implemented claim-coverage gate;
+- durable pause/resume or persistence for resolution state when a consumer requires it.
 
-- typed provider-neutral resolution requests;
-- resolver attempt/history/budget state;
-- adapters for acquiring new evidence or invoking external verifiers during a run;
-- mandatory re-verification semantics after repair/regeneration;
-- terminal resolution outcomes such as recovered, refuted, exhausted, or human-review-required;
-- grounded finalization from verified artifact state;
-- factual final-answer claim coverage checks that prevent a renderer from silently adding new unsupported propositions.
-
-Retrieval, web search, databases, MCP tools, tests, compilers, and human review are expected to remain external adapters. Their output is not trusted merely because it was retrieved; it must cross the harness-owned evidence/verifier boundary.
+Resolver success must continue to be distinguished from verification success. The deterministic nine-scenario suite proves control-flow and authority invariants, not open-world answer quality.
 
 ### Existing research gaps
 
@@ -63,9 +62,13 @@ Retrieval, web search, databases, MCP tools, tests, compilers, and human review 
 
 No stable API guarantee is made yet. Breaking schema/runtime changes are acceptable while the research contracts are still being validated by fixtures and live experiments.
 
-The project should not claim end-to-end grounded answer generation until the ADR-0002 resolution and finalization contracts are implemented and measured. Today the implemented strength is an authority-aware reasoning verification and diagnostic runtime.
+The project may claim an implemented provider-neutral bounded resolution/finalization protocol, but not generic open-world grounded-answer quality. That stronger claim requires real resolver integrations and live measurement beyond fixture oracles.
 
 - Live Mistral testing exposed malformed inference suggestions as a separate provider-quality issue. The runtime now isolates structurally invalid inference edges and records them in `candidate_diagnostics` instead of failing unrelated claims.
+
+### Bounded grounded resolution and finalization
+
+Issue #22 adds typed resolution requests for proposition, causal, evidence-qualification, revision, and human-review targets; separate untrusted resolver and trusted verifier boundaries; harness-owned evidence admission; per-run and per-request budgets; mandatory re-verification; explicit terminal states; and typed final factual-claim coverage. The initial nine deterministic resolution variants reuse corpus-v1 base case `claim:missing-evidence`: one recovers unknown to supported, one resolves to refuted, and seven preserve unknown under stale/scope/authority/conflict/no-result/malformed/untrusted resolver conditions. The aggregate records zero unsafe final answers and 1.0 typed final-claim coverage. These are regression fixtures, not model/resolver quality claims.
 
 ## Latest live verification result
 

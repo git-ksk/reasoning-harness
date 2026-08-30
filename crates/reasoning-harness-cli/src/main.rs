@@ -13,10 +13,12 @@ use reasoning_harness_core::{
     BenchmarkComparison, BenchmarkFixture, ClaimCorpusSummary, CorpusManifest,
     DiagnosticObservation, DiagnosticTrial, EvidenceQualificationPass, HarnessInput, ModelAdapter,
     ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact, ReasoningCandidate,
-    RepeatedDiagnosticReport, StrictAcceptancePolicy, StructuredFactConflictDetector,
+    RepeatedDiagnosticReport, ResolutionBenchmarkAggregate, ResolutionBenchmarkCaseResult,
+    ResolutionBenchmarkFixture, StrictAcceptancePolicy, StructuredFactConflictDetector,
     TrustedVerificationPass, VerificationPass, VerificationReceipt, aggregate_benchmark,
-    aggregate_claim_corpus, aggregate_repeated_diagnostics, build_candidate_json_fallback_request,
-    build_candidate_request, evaluate, evaluate_benchmark_fixture_with_diagnostics,
+    aggregate_claim_corpus, aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
+    build_candidate_json_fallback_request, build_candidate_request, evaluate,
+    evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture,
     frameworks::five_whys::FiveWhysRestatementPass, run_harness,
     structured_fact_verifier_for_input, validate_artifact,
 };
@@ -321,6 +323,13 @@ enum Command {
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
+    /// Evaluate the deterministic bounded-resolution research scenarios.
+    EvalResolution {
+        /// Directory containing ResolutionBenchmarkFixture JSON scenarios.
+        target: PathBuf,
+        #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
+        format: OutputFormat,
+    },
 }
 
 #[derive(Debug, Serialize)]
@@ -476,6 +485,12 @@ struct BenchmarkOutput {
     cases: Vec<ObservedBenchmarkCase>,
 }
 
+#[derive(Debug, Serialize)]
+struct ResolutionBenchmarkOutput {
+    aggregate: ResolutionBenchmarkAggregate,
+    cases: Vec<ResolutionBenchmarkCaseResult>,
+}
+
 #[derive(Debug, Clone)]
 struct BenchmarkRunConfig<'a> {
     provider: Option<Provider>,
@@ -586,6 +601,17 @@ async fn run(cli: Cli) -> Result<(), String> {
             } else {
                 Err("artifact validation failed".into())
             }
+        }
+        Command::EvalResolution { target, format } => {
+            if !target.is_dir() {
+                return Err("eval-resolution requires a fixture directory".into());
+            }
+            let output = run_resolution_fixture_suite(&target)?;
+            match format {
+                OutputFormat::Human => print_resolution_benchmark_human(&output),
+                OutputFormat::Json => print_json(&output)?,
+            }
+            Ok(())
         }
         Command::Eval {
             target,
@@ -859,6 +885,62 @@ async fn run_fixture_suite(
         stability,
         cases: observed,
     })
+}
+
+fn run_resolution_fixture_suite(directory: &PathBuf) -> Result<ResolutionBenchmarkOutput, String> {
+    let fixture_root = directory
+        .parent()
+        .ok_or_else(|| format!("{} has no fixture root", directory.display()))?;
+    let manifest: CorpusManifest = read_json(&fixture_root.join("corpus/v1.json"))?;
+    let entries =
+        fs::read_dir(directory).map_err(|error| format!("{}: {error}", directory.display()))?;
+    let mut paths = entries
+        .map(|entry| entry.map(|entry| entry.path()))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(|error| format!("{}: {error}", directory.display()))?;
+    paths.retain(|path| {
+        path.extension()
+            .is_some_and(|extension| extension == "json")
+    });
+    paths.sort();
+    if paths.is_empty() {
+        return Err(format!(
+            "{} contains no resolution fixtures",
+            directory.display()
+        ));
+    }
+
+    let mut cases = Vec::with_capacity(paths.len());
+    for path in paths {
+        let fixture: ResolutionBenchmarkFixture = read_json(&path)?;
+        let metadata = manifest
+            .cases
+            .iter()
+            .find(|case| case.case_id == fixture.base_case_id)
+            .ok_or_else(|| {
+                format!(
+                    "resolution scenario {} references unknown corpus case {}",
+                    fixture.id, fixture.base_case_id
+                )
+            })?;
+        if metadata.fixture_path != fixture.base_fixture_path {
+            return Err(format!(
+                "resolution scenario {} base path {} does not match corpus path {}",
+                fixture.id, fixture.base_fixture_path, metadata.fixture_path
+            ));
+        }
+        let base: BenchmarkFixture = read_json(&fixture_root.join(&fixture.base_fixture_path))?;
+        if base.id != metadata.fixture_id {
+            return Err(format!(
+                "resolution scenario {} base fixture id {} does not match corpus fixture id {}",
+                fixture.id, base.id, metadata.fixture_id
+            ));
+        }
+        cases
+            .push(evaluate_resolution_fixture(&fixture, &base).map_err(|error| error.to_string())?);
+    }
+    let aggregate = aggregate_resolution_benchmark(&cases);
+    Ok(ResolutionBenchmarkOutput { aggregate, cases })
 }
 
 fn fixtures_per_trial(total_runs: usize, trials: usize) -> usize {
@@ -1265,6 +1347,34 @@ fn print_benchmark_human(output: &BenchmarkOutput) {
             stability.diagnostics.operational_failures
         );
     }
+}
+
+fn print_resolution_benchmark_human(output: &ResolutionBenchmarkOutput) {
+    println!(
+        "resolution_cases: {} passed={} initially_unknown={} recovered_supported={} recovery_rate={:.3}",
+        output.aggregate.cases,
+        output.aggregate.passed_cases,
+        output.aggregate.initially_unknown_cases,
+        output.aggregate.recovered_supported_cases,
+        output.aggregate.recovery_rate
+    );
+    println!(
+        "terminal: refuted={} exhausted={} unavailable={} human_review={} unsafe_final_answers={} blocked_unverified_finalizations={}",
+        output.aggregate.resolved_refuted_cases,
+        output.aggregate.exhausted_cases,
+        output.aggregate.unavailable_cases,
+        output.aggregate.human_review_required_cases,
+        output.aggregate.unsafe_final_answers,
+        output.aggregate.blocked_unverified_finalizations
+    );
+    println!(
+        "final_claim_coverage={:.3} attempts={} mean_attempts={:.3} added_tokens={} elapsed_ms={}",
+        output.aggregate.mean_factual_claim_coverage,
+        output.aggregate.total_attempts,
+        output.aggregate.mean_attempts,
+        output.aggregate.added_tokens,
+        output.aggregate.elapsed_ms
+    );
 }
 
 fn read_json<T: DeserializeOwned>(path: &PathBuf) -> Result<T, String> {

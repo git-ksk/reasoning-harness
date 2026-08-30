@@ -1,0 +1,72 @@
+{
+  "base_case_id": "claim:missing-evidence",
+  "base_fixture_path": "missing-evidence.json",
+  "id": "insufficient_authority",
+  "request": {
+    "id": "resolution:deployment-region-qualified",
+    "reason": "evidence_qualification",
+    "target": {
+      "kind": "evidence_qualification",
+      "requirement": {
+        "proposition": {
+          "key": "deployment.region",
+          "value": "us-east-1"
+        },
+        "minimum_authority_class": "primary"
+      }
+    },
+    "resolver_class": "evidence_acquisition"
+  },
+  "policy": {
+    "budget": {
+      "max_attempts": 1,
+      "max_added_tokens": 1000,
+      "max_elapsed_ms": 10000,
+      "allowed_resolver_classes": [
+        "evidence_acquisition"
+      ],
+      "required_authority_class": "primary"
+    },
+    "revise_refuted": false,
+    "allow_human_review": false,
+    "proposition_resolver_class": "evidence_acquisition",
+    "finalization": {
+      "allow_qualified_partial": true
+    }
+  },
+  "authority_policy": {
+    "ranks": {
+      "secondary": 10,
+      "primary": 20
+    }
+  },
+  "resolver_steps": [
+    {
+      "result": {
+        "kind": "evidence",
+        "evidence": [
+          {
+            "id": "resolved-authority",
+            "source": "resolver fixture",
+            "observation": "deployment.region=us-east-1",
+            "facts": {
+              "deployment.region": "us-east-1"
+            }
+          }
+        ]
+      },
+      "cost": {
+        "added_tokens": 10,
+        "elapsed_ms": 5
+      },
+      "trusted_metadata": {
+        "resolved-authority": {
+          "provenance_class": "secondary"
+        }
+      }
+    }
+  ],
+  "expected_terminal_status": "exhausted",
+  "expected_final_verdict": "unknown",
+  "expected_finalization_status": "qualified_partial_answer"
+}
