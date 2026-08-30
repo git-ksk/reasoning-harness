@@ -1,0 +1,28 @@
+{
+  "id": "h16_causal_controlled_intervention",
+  "request": {
+    "id": "holdout-soft-h16_causal_controlled_intervention",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "feature.flag",
+            "value": "on"
+          }
+        ],
+        "effect": {
+          "key": "throughput.level",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "In a controlled experiment with other variables held fixed, enabling the feature repeatedly increased throughput relative to the control."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

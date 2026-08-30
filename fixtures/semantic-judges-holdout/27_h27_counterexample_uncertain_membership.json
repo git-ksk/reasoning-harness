@@ -1,0 +1,18 @@
+{
+  "id": "h27_counterexample_uncertain_membership",
+  "request": {
+    "id": "holdout-soft-h27_counterexample_uncertain_membership",
+    "task": "Determine whether the supplied context contains a counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-approved-artifacts-signed"
+    },
+    "context": [
+      "Target generalization: every approved artifact is signed.",
+      "An unsigned artifact is present, but its approval status is unknown."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

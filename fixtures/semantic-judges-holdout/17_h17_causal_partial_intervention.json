@@ -1,0 +1,28 @@
+{
+  "id": "h17_causal_partial_intervention",
+  "request": {
+    "id": "holdout-soft-h17_causal_partial_intervention",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "buffer.size",
+            "value": "large"
+          }
+        ],
+        "effect": {
+          "key": "drop.rate",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "A buffer-size intervention reduced drops on one traffic class, while other classes were observational only and were not measured consistently."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

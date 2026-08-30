@@ -1,0 +1,28 @@
+{
+  "id": "h20_causal_mechanism_only",
+  "request": {
+    "id": "holdout-soft-h20_causal_mechanism_only",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "lock.contention",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "request.latency",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "A plausible mechanism explains how lock contention could increase latency, but no observation or intervention establishes that it did so here."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

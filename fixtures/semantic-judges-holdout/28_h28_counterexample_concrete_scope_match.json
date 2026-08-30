@@ -1,0 +1,18 @@
+{
+  "id": "h28_counterexample_concrete_scope_match",
+  "request": {
+    "id": "holdout-soft-h28_counterexample_concrete_scope_match",
+    "task": "Determine whether the supplied context contains a counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-active-workers-responsive"
+    },
+    "context": [
+      "Target generalization: every active worker responds to health checks.",
+      "Worker W9 is explicitly active and repeatedly fails the health check."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

@@ -1,0 +1,28 @@
+{
+  "id": "h13_causal_correlation_only",
+  "request": {
+    "id": "holdout-soft-h13_causal_correlation_only",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "load.level",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "latency.level",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Across observations, higher load and higher latency occur together. No intervention or directional evidence is supplied."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

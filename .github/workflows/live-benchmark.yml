@@ -94,6 +94,14 @@ on:
           - '5'
           - '10'
         default: '5'
+      judge_corpus:
+        description: Semantic-judge corpus to run
+        required: false
+        type: choice
+        options:
+          - calibration
+          - holdout-v1
+        default: calibration
 
 permissions:
   contents: read
@@ -194,7 +202,7 @@ jobs:
           retention-days: 14
   semantic-judge:
     if: inputs.judge_provider != 'none'
-    name: semantic-judge-${{ inputs.judge_provider }}
+    name: semantic-judge-${{ inputs.judge_provider }}-${{ inputs.judge_corpus }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -233,8 +241,13 @@ jobs:
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
         run: |
           OUTPUT="/tmp/reason-live-semantic-judge.json"
+          case "${{ inputs.judge_corpus }}" in
+            calibration) CORPUS_DIR="fixtures/semantic-judges" ;;
+            holdout-v1) CORPUS_DIR="fixtures/semantic-judges-holdout" ;;
+            *) echo "unsupported semantic-judge corpus" >&2; exit 2 ;;
+          esac
           cargo run -q --locked -p reasoning-harness-cli -- \
-            eval-judges fixtures/semantic-judges \
+            eval-judges "$CORPUS_DIR" \
             --provider "$PROVIDER" \
             --model "$MODEL" \
             --max-tokens 256 \
@@ -242,12 +255,12 @@ jobs:
             --trials "${{ inputs.judge_trials }}" \
             --format json \
             > "$OUTPUT"
-          jq '{provider, model, operational, stability, per_trial: [.per_trial[] | {trial_index, operationally_complete, successful_cases, report: (.report | if . == null then null else {judges: [.judges[] | {judge: .judge.judge_id, precision, recall, decision_coverage, ambiguous_abstention_rate, abstentions}]} end)}], failures: [.cases[] | select(.failure != null) | {fixture_id, trial, failure: .failure}]}' "$OUTPUT"
+          jq '{provider, model, corpus, operational, stability, families, per_trial: [.per_trial[] | {trial_index, operationally_complete, successful_cases, report: (.report | if . == null then null else {judges: [.judges[] | {judge: .judge.judge_id, precision, recall, decision_coverage, ambiguous_abstention_rate, abstentions}]} end)}], failures: [.cases[] | select(.failure != null) | {fixture_id, trial, kind, label, failure: .failure}]}' "$OUTPUT"
       - name: Preserve live semantic-judge JSON
         if: always() && steps.credential.outputs.available == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: live-semantic-judge-${{ inputs.judge_provider }}
+          name: live-semantic-judge-${{ inputs.judge_provider }}-${{ inputs.judge_corpus }}
           path: /tmp/reason-live-semantic-judge.json
           if-no-files-found: ignore
           retention-days: 14

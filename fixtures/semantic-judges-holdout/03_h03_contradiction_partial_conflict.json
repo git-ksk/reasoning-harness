@@ -1,0 +1,21 @@
+{
+  "id": "h03_contradiction_partial_conflict",
+  "request": {
+    "id": "holdout-soft-h03_contradiction_partial_conflict",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "replica.count",
+        "value": "4"
+      }
+    },
+    "context": [
+      "One scoped observation reports four replicas in zone A.",
+      "Another summary reports three replicas but does not identify its scope."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

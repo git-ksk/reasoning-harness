@@ -1,0 +1,28 @@
+{
+  "id": "h19_causal_incomplete_scope",
+  "request": {
+    "id": "holdout-soft-h19_causal_incomplete_scope",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "prefetch.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "read.latency",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "A controlled intervention establishes lower read latency for sequential workloads only. The target relation is stated without a workload scope."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

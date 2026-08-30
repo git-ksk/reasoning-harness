@@ -128,4 +128,10 @@ The primary request uses JSON Schema structured output. If the adapter reports t
 - model findings remain soft regardless of observed precision or agreement;
 - the ordinary `reason eval` correctness denominator is unchanged.
 
-The manual live workflow can run the same nine-case calibration corpus using secret-isolated Mistral, Google, or NVIDIA credentials. Repeated live results are research observations, not correctness authority. The first repeated Mistral study and the v1/v2 prompt-sensitivity result are documented in [live soft semantic-judge study](live-semantic-judge-study.md). Because v2 was calibrated against the same nine cases, a separate holdout/expanded ambiguity corpus is required before any generalization claim.
+The manual live workflow can run the same nine-case calibration corpus using secret-isolated Mistral, Google, or NVIDIA credentials. Repeated live results are research observations, not correctness authority. The first repeated Mistral study and the v1/v2 prompt-sensitivity result are documented in [live soft semantic-judge study](live-semantic-judge-study.md). Because v2 was calibrated against the same nine cases, those results are not evidence of generalization.
+
+## Independent holdout v1
+
+Issue #36 adds `fixtures/semantic-judges-holdout/` as a separate 28-case, observation-free holdout corpus. It contains 11 positive, 8 negative, and 9 ambiguous cases across contradiction, unsupported-premise, causal-gap, and counterexample families. Causal-gap coverage is intentionally heavier.
+
+The source corpus contains no recorded model observations. Labels are evaluator-owned and are not included in model requests. After the merge that introduces holdout v1, its fixture/request IDs, labels, targets, and contexts are frozen for the first live study. Provider results must not be used to tune the prompt against this holdout version; a later independently measured prompt revision requires a new holdout version rather than rewriting observed v1 cases.

@@ -1,0 +1,21 @@
+{
+  "id": "h01_contradiction_paraphrase_conflict",
+  "request": {
+    "id": "holdout-soft-h01_contradiction_paraphrase_conflict",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "service.mode",
+        "value": "active"
+      }
+    },
+    "context": [
+      "The candidate states that the service is active.",
+      "The verified status note says the service is not running."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

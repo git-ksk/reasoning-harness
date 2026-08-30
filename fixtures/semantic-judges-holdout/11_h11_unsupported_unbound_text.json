@@ -1,0 +1,20 @@
+{
+  "id": "h11_unsupported_unbound_text",
+  "request": {
+    "id": "holdout-soft-h11_unsupported_unbound_text",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "region.class",
+        "value": "secondary"
+      }
+    },
+    "context": [
+      "A nearby paragraph mentions a secondary region, but it is unclear whether that phrase refers to this target proposition."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "h02_contradiction_equivalent_wording",
+  "request": {
+    "id": "holdout-soft-h02_contradiction_equivalent_wording",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "access.state",
+        "value": "denied"
+      }
+    },
+    "context": [
+      "The candidate says access is denied.",
+      "The supplied record says the request was refused and no access was granted."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

@@ -1,0 +1,18 @@
+{
+  "id": "h25_counterexample_ambiguous_applicability",
+  "request": {
+    "id": "holdout-soft-h25_counterexample_ambiguous_applicability",
+    "task": "Determine whether the supplied context contains a counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-requests-authenticated"
+    },
+    "context": [
+      "Target generalization: every in-scope request is authenticated.",
+      "One unauthenticated request is mentioned, but the context does not establish whether it is in scope."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

@@ -1,0 +1,28 @@
+{
+  "id": "h14_causal_reverse_possible",
+  "request": {
+    "id": "holdout-soft-h14_causal_reverse_possible",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "alert.rate",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "operator.activity",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Alert rate and operator activity rise together, and increased operator activity could itself cause more alerts to be recorded. No direction is isolated."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

@@ -1,0 +1,20 @@
+{
+  "id": "h10_unsupported_different_value",
+  "request": {
+    "id": "holdout-soft-h10_unsupported_different_value",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "protocol.version",
+        "value": "3"
+      }
+    },
+    "context": [
+      "Trusted structured input explicitly identifies protocol version 2. The candidate introduces version 3 without another source."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

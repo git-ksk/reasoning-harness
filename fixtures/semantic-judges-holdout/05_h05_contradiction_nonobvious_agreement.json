@@ -1,0 +1,21 @@
+{
+  "id": "h05_contradiction_nonobvious_agreement",
+  "request": {
+    "id": "holdout-soft-h05_contradiction_nonobvious_agreement",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "cache.state",
+        "value": "empty"
+      }
+    },
+    "context": [
+      "The candidate says the cache is empty.",
+      "The observation reports that zero entries remain after eviction completed."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

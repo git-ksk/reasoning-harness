@@ -1,0 +1,28 @@
+{
+  "id": "h22_causal_temporal_precedence",
+  "request": {
+    "id": "holdout-soft-h22_causal_temporal_precedence",
+    "task": "Determine whether the proposed causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "memory.pressure",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "restart.count",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Memory pressure rises before restart counts rise, but no intervention, confounder control, or directional mechanism is established."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

@@ -1,0 +1,18 @@
+{
+  "id": "h26_counterexample_scope_mismatch",
+  "request": {
+    "id": "holdout-soft-h26_counterexample_scope_mismatch",
+    "task": "Determine whether the supplied context contains a counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-production-nodes-encrypted"
+    },
+    "context": [
+      "Target generalization: every production node uses encryption.",
+      "A development node without encryption is supplied; its environment is explicitly development, not production."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}
