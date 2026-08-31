@@ -203,17 +203,13 @@ The #57 calibration-only follow-up isolated the strict discriminated output sche
 The next semantic-judge research sequence is deliberately staged:
 
 #### R1 — format-invariance characterization
-- [in progress #59] calibration-only R1a infrastructure now holds the exact v3 task/system request fixed while varying information-equivalent `JsonSchema` representations; decision-only forms are deferred to R2 and fallback/enforcement sensitivity is isolated as a separate diagnostic axis
-- [implemented #59] regression tests prove the v3 baseline request is byte-for-byte unchanged, every variant differs only in `output_format`, malformed representations fail closed, and matched operational failures stay out of the semantic flip denominator
-- [planned] keep the exact v3 semantic/system guidance fixed and vary only isomorphic model-facing representations on the calibration corpus
-- [planned] compare the current v3 JSON representation with information-equivalent nesting, tuple, key-layout, and other bounded forms; decision-only, scalar-label, or semantic label-alias protocols belong to R2/later controlled experiments because they cannot satisfy the unchanged v3 finding-binding contract
-- [planned] add `format_flip_rate`: the fraction of matched fixture/trial decisions that change solely because the output representation changed
-- [planned] report format-conditioned precision, recall, decision coverage, ambiguous abstention, protocol completion, fallback rate, token usage, and latency separately
-- [planned] treat format disagreement as instability evidence, never as a truth vote; model majority must not create authority
-- [planned] reject model-specific schema/prompt branches as a portability workaround
+- [calibration result #59] Gemini 3.5 Flash-Lite completed the counterbalanced five-trial v3-vs-`nested_result_object` study with 90/90 protocol-complete cases per representation and 2/90 matched format flips; both flips were the same ambiguous causal fixture, nested remained `abstain` across all five seeds, and the flips occurred under opposite execution orders
+- [calibration result #59] the 18-fixture single-trial matrix showed protocol robustness is representation-sensitive even when successful pairs are stable: v3 18/18, nested 18/18, compact keys 17/18, tuple 7/18; Mistral full-corpus R1a remains blocked by provider structured-generation errors
+- [implemented #59] regression tests prove the v3 baseline request is byte-for-byte unchanged, every R1a variant differs only in `output_format`, malformed representations fail closed, matched operational failures stay out of the semantic flip denominator, and multi-format execution is counterbalanced
+- [implemented #59] `format_flip_rate`, format-conditioned semantic/operational metrics, provider enforcement fidelity, and calibration-only corpus guards are recorded without majority-vote truth or model-specific semantic branches
 
 #### R2 — harness-owned semantic finding materialization
-- [planned] test whether the model can return only the minimum semantic choice (`finding | no_finding | abstain`) plus optional advisory note while the harness deterministically copies `kind` and `target` from the request
+- [in progress #59] test whether the model can return only the minimum semantic choice (`finding | no_finding | abstain`) plus optional advisory note while the harness deterministically copies `kind` and `target` from the request
 - [planned] remove redundant model-owned echoes of harness-known identity/binding fields where doing so reduces protocol surface without changing semantics
 - [planned] distinguish safe structural normalization from semantic repair: a normalizer may canonicalize representation but must not infer a different decision, invent a finding, or resolve ambiguity
 - [planned] fail closed whenever malformed output would require semantic interpretation to repair
