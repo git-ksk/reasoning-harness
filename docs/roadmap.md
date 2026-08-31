@@ -209,10 +209,11 @@ The next semantic-judge research sequence is deliberately staged:
 - [implemented #59] `format_flip_rate`, format-conditioned semantic/operational metrics, provider enforcement fidelity, and calibration-only corpus guards are recorded without majority-vote truth or model-specific semantic branches
 
 #### R2 — harness-owned semantic finding materialization
-- [in progress #59] test whether the model can return only the minimum semantic choice (`finding | no_finding | abstain`) plus optional advisory note while the harness deterministically copies `kind` and `target` from the request
-- [planned] remove redundant model-owned echoes of harness-known identity/binding fields where doing so reduces protocol surface without changing semantics
-- [planned] distinguish safe structural normalization from semantic repair: a normalizer may canonicalize representation but must not infer a different decision, invent a finding, or resolve ambiguity
-- [planned] fail closed whenever malformed output would require semantic interpretation to repair
+- [implemented infrastructure #59] the research arm exposes only model-owned `decision` plus optional `advisory_note`; when decision=`finding`, the harness copies request-known `kind` and `target` exactly, while non-finding decisions never materialize a finding
+- [implemented #59] v3 kind-specific decision guidance and request controls are regression-locked while the ownership instructions/schema change intentionally under `materialization-r2-v1`
+- [implemented #59] syntax-only normalization fails closed on unknown/authority-like fields or multiple semantic JSON values; advisory-note text is not persisted for research scoring
+- [implemented #59] a counterbalanced calibration-only runner reports protocol completion, semantic metrics, matched decision flips, token/latency cost, and operational failure classes; exact-path guards reject holdout or symlink substitution before credentials
+- [pending live validation #59] begin with the causal triad before any full-calibration or repeated R2 matrix
 
 #### R3 — selective abstention from instability
 - [planned] measure decision stability across bounded seed and representation perturbations on calibration data

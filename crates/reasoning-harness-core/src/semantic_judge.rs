@@ -354,7 +354,7 @@ pub fn build_soft_judge_json_fallback_request(
     })
 }
 
-fn soft_judge_decision_guidance(kind: SemanticDiagnosticKind) -> &'static str {
+pub(crate) fn soft_judge_decision_guidance(kind: SemanticDiagnosticKind) -> &'static str {
     match kind {
         SemanticDiagnosticKind::Contradiction => {
             "contradiction: finding means the supplied context contains a statement or observation that is semantically incompatible with the target under the same relevant binding and scope; lexical difference, synonymy, paraphrase, or equivalent wording alone is not a contradiction; no_finding means the supplied context semantically agrees with or supports the target, including a clear paraphrase or equivalent expression; abstain means binding, authority, scope, or applicability prevents deciding conflict versus agreement"
