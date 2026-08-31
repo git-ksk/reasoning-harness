@@ -32,7 +32,7 @@ struct Args {
     /// Optional fixture IDs for bounded validation. Without this, all calibration fixtures run.
     #[arg(long = "fixture")]
     fixture_ids: Vec<String>,
-    #[arg(long, default_value_t = 256)]
+    #[arg(long, default_value_t = 512)]
     max_tokens: u32,
     #[arg(long)]
     seed: Option<u64>,
@@ -102,6 +102,8 @@ struct StudyCase {
     usage: Option<ModelUsage>,
     #[serde(skip_serializing_if = "Option::is_none")]
     provider_model: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    finish_reason: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     failure_class: Option<&'static str>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -285,6 +287,7 @@ async fn run_representation(
                     latency_ms,
                     usage: Some(result.usage),
                     provider_model: Some(result.model),
+                    finish_reason: result.finish_reason,
                     failure_class: None,
                     failure: None,
                 },
@@ -298,6 +301,7 @@ async fn run_representation(
                     latency_ms,
                     usage: error.usage().cloned(),
                     provider_model: error.provider_model().map(str::to_string),
+                    finish_reason: error.finish_reason().map(str::to_string),
                     failure_class: Some(failure_class(&error)),
                     failure: Some(error.to_string()),
                 },
@@ -502,6 +506,12 @@ fn failure_class(error: &FormatJudgeError) -> &'static str {
     if matches!(error, FormatJudgeError::Setup(_)) {
         return "study_setup";
     }
+    if error
+        .finish_reason()
+        .is_some_and(is_truncation_finish_reason)
+    {
+        return "truncation_protocol";
+    }
     match error.model_error_kind() {
         Some(reasoning_harness_core::ModelErrorKind::Credentials) => "credentials",
         Some(reasoning_harness_core::ModelErrorKind::Transport) => "transport",
@@ -516,6 +526,13 @@ fn failure_class(error: &FormatJudgeError) -> &'static str {
         }
         None => "representation_protocol",
     }
+}
+
+fn is_truncation_finish_reason(reason: &str) -> bool {
+    matches!(
+        reason.trim().to_ascii_lowercase().as_str(),
+        "length" | "max_tokens" | "max_output_tokens"
+    )
 }
 
 fn provider_name(provider: Provider) -> &'static str {
