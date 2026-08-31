@@ -61,6 +61,12 @@ A matched 512-token rerun did **not** reproduce a token-limit finish: failed Mis
 
 The first Gemini 3.1 Flash-Lite causal-triad probes completed for `nested_result_object` and `decision_finding_tuple`, with all three matched decisions unchanged from v3 in each comparison (`format_flip_rate=0`). The ambiguous causal fixture was `finding` under both baseline and variants, so this is format stability, not evidence of good uncertainty calibration. A subsequent `compact_key_object` probe is **not** semantic evidence: all three variant calls exhausted the model's free-tier request quota after retries. That sample is retained as operational history and the Google adapter now distinguishes quota/rate-limit failures from generic provider failures.
 
+## Measured R1a calibration result
+
+Gemini 3.5 Flash-Lite completed a counterbalanced all-calibration single-trial study over all 18 fixtures. The v3 baseline and `nested_result_object` were both 18/18 protocol-complete with zero matched decision changes. `compact_key_object` was 17/18 complete with zero changes among successful pairs. `decision_finding_tuple` was only 7/18 complete because complete provider responses repeatedly paired `no_finding` or `abstain` with a non-null finding payload. Representation choice therefore affects protocol robustness even when successful semantic pairs are stable.
+
+The repeated R1a gate then compared only the v3 baseline with `nested_result_object` for five matched trials: 90 matched pairs, seeds 1000-1004. Both representations were 90/90 protocol-complete with no operational failures. Two decisions changed, both on `15_causal_incomplete_scope_ambiguous`, so `format_flip_rate = 2/90 = 0.0222`. V3 returned `finding` for seeds 1001 and 1002 while nested returned `abstain`. The two flips occurred under opposite execution orders, so a simple first/second-call position effect does not explain them. Across all five seeds the nested representation was fixture-stable; the only cross-seed decision instability was the v3 baseline on that one ambiguous fixture. This is bounded calibration evidence of a fixture/seed/representation interaction, not proof that nesting is universally superior.
+
 ## Calibration-only execution
 
 The research binary canonicalizes the requested path and accepts only this checkout's exact `fixtures/semantic-judges` directory. A renamed/copy/symlinked holdout cannot be substituted as tuning data.
