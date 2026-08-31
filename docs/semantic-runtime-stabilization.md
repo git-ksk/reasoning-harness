@@ -115,3 +115,12 @@ The same cases also execute the explicit `soft-semantic-v3` rollback profile and
 remain operationally executable. Fixture dispositions are recomputed before provider initialization,
 and live failures are reported with the existing typed operational classes. The smoke surface is not
 semantic calibration, does not score correctness, and must not consume or modify frozen holdouts.
+
+
+The strengthened live smoke in Actions run `33408032079` passed on both
+`mistral/ministral-8b-latest` and `google/gemma-4-31b-it`. Each provider completed 4/4 calls with
+no operational failures. Both produced a base `finding` on the matched clear-counterexample pair:
+D3 preserved `finding` for the deterministic `permit` case and forced `finding -> abstain` when only
+the harness-owned proposition binding was removed. Explicit `soft-semantic-v3` rollback remained
+executable and preserved the assertive `finding`. Latency/token values from this two-case smoke are
+descriptive only and are not performance benchmarks.
