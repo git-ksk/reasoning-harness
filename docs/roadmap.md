@@ -194,9 +194,51 @@ See [durable reasoning threads and deterministic replay](reasoning-thread.md). C
 - [done] `reason eval-judges` keeps calibration metrics separate from final correctness, diagnostic stability, and resolution denominators
 - [done] required CI remains deterministic and credential-free; recorded identities are synthetic calibration fixtures, not model-quality claims
 
-Live semantic discovery remains soft even when calibration metrics are strong. #46 documents both the v3 holdout-v2 portability matrix and the independent v4/holdout-v3 successor test rather than ranking models. The v4 matrix failed its predeclared adoption gate with zero conformant and zero usable-with-limitations models: simplification weakened uncertainty behavior across Mistral and Google families, while the stricter discriminated schema improved Ministral 14B protocol completion without producing semantic portability and Nemotron remained protocol-incomplete/finding-collapsed. #55 therefore restores the exact previously characterized `soft-semantic-v3` runtime baseline while preserving v4 and holdout-v3 as immutable research history. Any new material successor must be designed on calibration data and freeze holdout-v4 before provider measurement. Hard authority remains deterministic/trusted-verifier owned. See [cross-model semantic judge conformance](semantic-judge-conformance.md).
+Live semantic discovery remains soft even when calibration metrics are strong. #46 documents both the v3 holdout-v2 portability matrix and the independent v4/holdout-v3 successor test rather than ranking models. The v4 matrix failed its predeclared adoption gate with zero conformant and zero usable-with-limitations models: simplification weakened uncertainty behavior across Mistral and Google families, while the stricter discriminated schema improved Ministral 14B protocol completion without producing semantic portability and Nemotron remained protocol-incomplete/finding-collapsed. #55 therefore restores the exact previously characterized `soft-semantic-v3` runtime baseline while preserving v4 and holdout-v3 as immutable research history. Hard authority remains deterministic/trusted-verifier owned. See [cross-model semantic judge conformance](semantic-judge-conformance.md).
 
-With #13, #27, and #28 complete, the deterministic authority/control-plane roadmap is implemented through durable replay. The next phase should be selected from live research or concrete consumer integration pressure rather than adding generic agent orchestration by default.
+### #59 Next semantic research — representation robustness before another successor
+
+The #57 calibration-only follow-up isolated the strict discriminated output schema from the v3 semantic wording. The result rejects the assumption that a model-facing schema is semantically neutral: Ministral 14B improved from 84/90 successful calls and 0/5 complete trials under the baseline representation to 90/90 and 5/5 under the strict representation, but the strict arm's ambiguous abstention rate was only 0.286. Ministral 8B remained protocol-complete while its ambiguous abstention rate fell from 0.943 to 0.714 when only the representation changed. Gemini 3.1 Flash-Lite was effectively invariant, while Nemotron remained protocol-incomplete. PR #58 was therefore closed without merge and `soft-semantic-v3` remains the runtime baseline.
+
+The next semantic-judge research sequence is deliberately staged:
+
+#### R1 — format-invariance characterization
+- [planned] keep the exact v3 semantic/system guidance fixed and vary only isomorphic model-facing representations on the calibration corpus
+- [planned] compare the current v3 JSON representation, a minimal decision-only object, a single-label representation, label/token aliases, and other bounded protocol forms without changing diagnostic semantics
+- [planned] add `format_flip_rate`: the fraction of matched fixture/trial decisions that change solely because the output representation changed
+- [planned] report format-conditioned precision, recall, decision coverage, ambiguous abstention, protocol completion, fallback rate, token usage, and latency separately
+- [planned] treat format disagreement as instability evidence, never as a truth vote; model majority must not create authority
+- [planned] reject model-specific schema/prompt branches as a portability workaround
+
+#### R2 — harness-owned semantic finding materialization
+- [planned] test whether the model can return only the minimum semantic choice (`finding | no_finding | abstain`) plus optional advisory note while the harness deterministically copies `kind` and `target` from the request
+- [planned] remove redundant model-owned echoes of harness-known identity/binding fields where doing so reduces protocol surface without changing semantics
+- [planned] distinguish safe structural normalization from semantic repair: a normalizer may canonicalize representation but must not infer a different decision, invent a finding, or resolve ambiguity
+- [planned] fail closed whenever malformed output would require semantic interpretation to repair
+
+#### R3 — selective abstention from instability
+- [planned] measure decision stability across bounded seed and representation perturbations on calibration data
+- [planned] use disagreement only as a risk signal: unstable cases may be escalated to `abstain`, but repeated/model-majority outputs must never be promoted to truth, trusted evidence, hard findings, or verdict authority
+- [planned] evaluate the coverage-versus-abstention trade-off explicitly so trivial always-abstain behavior cannot pass the gate
+- [planned] investigate calibrated/selective-prediction methods only after the simpler stability signals are characterized
+
+#### R4 — independent successor evaluation
+- [blocked] do not create or consume holdout-v4 until one provider-neutral candidate passes the R1-R3 calibration gates without tuning against holdout-v1/v2/v3
+- [planned] freeze holdout-v4 before the first provider observation of that candidate
+- [planned] assign a new configuration identity for any materially changed semantic/protocol contract
+- [planned] require repeated cross-provider measurement with operational completeness separated from semantic denominators
+- [planned] preserve `soft-semantic-v3` as the production/research baseline unless the predeclared independent adoption gate is met
+
+This sequence changes the research question from “which schema makes models obey JSON?” to “how much semantic behavior survives representation changes, and how can the harness minimize representation-induced risk without granting the model more authority?”
+
+Research anchors for this phase are evidence, not normative designs:
+
+- Tam et al., [*Let Me Speak Freely? A Study On The Impact Of Format Restrictions On Large Language Model Performance*](https://aclanthology.org/2024.emnlp-industry.91/) (EMNLP Industry 2024): format restrictions can degrade reasoning performance and stricter restrictions can increase the effect.
+- Schall and de Melo, [*The Hidden Cost of Structure: How Constrained Decoding Affects Language Model Performance*](https://aclanthology.org/2025.ranlp-1.124/) (RANLP 2025): constrained decoding can move instruction-tuned models away from preferred generations and affect task performance.
+- Hamilton and Mimno, [*Lost in Space: Finding the Right Tokens for Structured Output*](https://aclanthology.org/2026.gem-main.18/) (GEM 2026): semantically similar output grammars/tokens can yield materially different downstream performance, especially for smaller models.
+- Wang et al., [*SConU: Selective Conformal Uncertainty in Large Language Models*](https://aclanthology.org/2025.acl-long.934/) (ACL 2025): selective/conformal uncertainty is a later-stage candidate for risk-controlled abstention after simpler format/seed stability signals are characterized.
+
+With #13, #27, and #28 complete, the deterministic authority/control-plane roadmap is implemented through durable replay. The next phase should be selected from the representation-robust semantic research above or concrete consumer integration pressure rather than adding generic agent orchestration by default.
 
 ## Decision gates for future features
 
