@@ -136,3 +136,5 @@ Issue #6 now provides explicit per-trial operational completeness, correctness d
 ### Repeated-trial diagnostic stability
 
 Issue #11 adds a provider-neutral diagnostic observation/report contract. Live claim benchmarks now emit `stability.diagnostics` as a sibling of `stability.correctness`, so finding frequency cannot alter Issue #6 correctness or operational denominators. Per-fixture diagnostic signals report exact complete-trial occurrences/denominators, family-level count mean/min/max/population-stddev, and a 95% Wilson score interval when at least five complete observations exist. Operationally incomplete trials are excluded from diagnostic distributions and counted explicitly. The same core report type accepts causal support/refutation/unknown assessments plus finding/reason observations, assumption signals, and evidence-qualification findings; live causal candidate generation remains a separate deferred input contract.
+
+- Gemma 4 cross-family replication is frozen in `docs/semantic-gemma4-replication.md`: `gemma-4-31b-it` replays R2, D2, and holdout-v5 without changing any semantic fixture or gate.

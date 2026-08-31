@@ -1,0 +1,146 @@
+name: semantic-gemma4-replication
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PROVIDER: google
+  MODEL: gemma-4-31b-it
+  REPLICATION_ID: gemma4-31b-replication-v1
+
+jobs:
+  r2:
+    name: gemma4-31b-r2-materialization
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    concurrency:
+      group: reasoning-harness-gemma4-replication
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check frozen Google credential availability
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: test -n "$GEMINI_API_KEY"
+      - name: Run frozen R2 replication
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          RAW=/tmp/reason-gemma4-r2-raw.json
+          OUTPUT=/tmp/reason-gemma4-r2.json
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-materialization-study -- \
+            fixtures/semantic-judges \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed 2000 \
+            --trials 5 \
+            --max-tokens 512 \
+            > "$RAW"
+          jq --arg replication_id "$REPLICATION_ID" '. + {replication_id: $replication_id, replication_stage: "r2"}' "$RAW" > "$OUTPUT"
+          jq '{replication_id, replication_stage, configuration_id, provider, model, fixture_count, execution_design, semantic_baseline, materialization_contract, arms: [.arms[] | {arm, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, total_tokens, total_latency_ms, mean_latency_ms, trials}], comparison, risky_stability: [.stability[] | {arm, risky_fixtures: [.fixtures[] | select(.assessment.risk_signals | length > 0) | {fixture_id, label, assessment}]}], failures: [.arms[] as $a | $a.cases[] | select(.failure_class != null) | {arm: $a.arm, fixture_id, trial, seed, failure_class, finish_reason}]}' "$OUTPUT"
+      - name: Preserve R2 replication JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-gemma4-replication-r2
+          path: /tmp/reason-gemma4-r2.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+  d2:
+    name: gemma4-31b-d2-decidability
+    needs: r2
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    concurrency:
+      group: reasoning-harness-gemma4-replication
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check frozen Google credential availability
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: test -n "$GEMINI_API_KEY"
+      - name: Run frozen D2 replication
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          RAW=/tmp/reason-gemma4-d2-raw.json
+          OUTPUT=/tmp/reason-gemma4-d2.json
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-decidability-study -- \
+            fixtures/semantic-decidability-d2 \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed 6000 \
+            --trials 5 \
+            --max-tokens 512 \
+            > "$RAW"
+          jq --arg replication_id "$REPLICATION_ID" '. + {replication_id: $replication_id, replication_stage: "d2"}' "$RAW" > "$OUTPUT"
+          jq '{replication_id, replication_stage, configuration_id, provider, model, fixture_count, variant_count, attempted_provider_calls, successful_provider_calls, failed_provider_calls, protocol_completion_rate, total_tokens, total_latency_ms, mean_latency_ms, trials, aggregate, risky_stability: [.stability[] | select(.base_decision_stability.risk_signals | length > 0)], failures: [.cases[] | select(.failure_class != null) | {fixture_id, source_fixture_id, semantic_label, trial, seed, failure_class, finish_reason}]}' "$OUTPUT"
+      - name: Preserve D2 replication JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-gemma4-replication-d2
+          path: /tmp/reason-gemma4-d2.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+  v5:
+    name: gemma4-31b-v5-pilot
+    needs: d2
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    concurrency:
+      group: reasoning-harness-gemma4-replication
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Verify frozen holdout-v5 payloads
+        run: sha256sum --check fixtures/semantic-decidability-holdout-v5.sha256
+      - name: Check frozen Google credential availability
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: test -n "$GEMINI_API_KEY"
+      - name: Run frozen v5 replication pilot
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          RAW=/tmp/reason-gemma4-v5-raw.json
+          OUTPUT=/tmp/reason-gemma4-v5.json
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-decidability-study -- \
+            fixtures/semantic-decidability-holdout-v5 \
+            --surface holdout-v5 \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed 7000 \
+            --trials 5 \
+            --max-tokens 512 \
+            > "$RAW"
+          jq --arg replication_id "$REPLICATION_ID" '. + {replication_id: $replication_id, replication_stage: "v5"}' "$RAW" > "$OUTPUT"
+          jq '{replication_id, replication_stage, configuration_id, study_surface, candidate_id, provider, model, fixture_count, variant_count, attempted_provider_calls, successful_provider_calls, failed_provider_calls, protocol_completion_rate, total_tokens, total_latency_ms, mean_latency_ms, trials, aggregate, risky_stability: [.stability[] | select(.base_decision_stability.risk_signals | length > 0)], failures: [.cases[] | select(.failure_class != null) | {fixture_id, source_fixture_id, semantic_label, trial, seed, failure_class, finish_reason}]}' "$OUTPUT"
+      - name: Preserve v5 replication JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-gemma4-replication-v5
+          path: /tmp/reason-gemma4-v5.json
+          if-no-files-found: ignore
+          retention-days: 30

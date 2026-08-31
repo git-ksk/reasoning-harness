@@ -438,14 +438,15 @@ async fn run_trials(
                 }
             };
             eprintln!(
-                "[decidability-study] fixture={} trial={} status={}",
+                "[decidability-study] fixture={} trial={} status={} failure_class={}",
                 fixture.id,
                 trial + 1,
                 if case.base_decision.is_some() {
                     "ok"
                 } else {
                     "failed"
-                }
+                },
+                case.failure_class.unwrap_or("none")
             );
             cases.push(case);
         }
