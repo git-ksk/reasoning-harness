@@ -39,3 +39,12 @@ Passing this gate validates R3b only as an independently supported **optional co
 `fixtures/semantic-judges-holdout-v4/` contains 28 new observation-free cases authored before the first R4 provider call: seven per diagnostic kind, with two positive, two negative, and three intentionally ambiguous cases per kind (8 positive, 8 negative, 12 ambiguous total).
 
 Fixture IDs, request IDs, and exact request payloads must be unique relative to calibration and historical holdouts. `recorded_observations` must remain empty. Holdout-v1/v2/v3 remain historical diagnostic evidence and are not tuning data for this successor.
+
+
+## Frozen R4 result: rejected
+
+The frozen workflow run `33371523453` evaluated merged main `55dbda5e71e83bdec95bf4495f65354ca301ef34` without changing the candidate, source set, holdout, seeds, token budget, or thresholds. Both sources completed 140/140 calls with zero operational failures.
+
+The primary `disagreement_only` policy retained trial-level precision and recall of 1.0 throughout and decision coverage ranged from 0.6071 to 0.7143, so the protocol, labelled-quality, and coverage gates passed. The uncertainty gate failed: trial-level ambiguous abstention was 0.5833, 0.7500, 0.8333, 0.7500, and 0.6667 (aggregate 0.7167), below the frozen aggregate >=0.85 and per-trial >=0.80 requirements. The fixture-collapsed sensitivity summary reached only 0.8333, which also remains below the frozen aggregate threshold.
+
+The failure is structurally informative. Cross-model disagreement catches several uncertain cases, but `v4h-13-unsupported-premise-ambiguous` and `v4h-20-causal-gap-ambiguous` remain unanimously assertive across both sources and all seeds. Two-source agreement therefore cannot be treated as adequate uncertainty evidence. R3b is rejected as an independently validated successor; runtime `soft-semantic-v3` remains unchanged. Holdout-v4 is now observed diagnostic evidence and must not be tuned, relabelled, or reused as an independent adoption corpus.

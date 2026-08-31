@@ -225,11 +225,10 @@ The next semantic-judge research sequence is deliberately staged:
 - [planned] investigate calibrated/selective-prediction methods only after these simple unanimity signals are characterized
 
 #### R4 — independent successor evaluation
-- [gate frozen #59] R3b passed the calibration gate; the independent acceptance criteria are predeclared in `docs/semantic-successor-r4.md` before the first holdout-v4 provider observation
-- [next #59] freeze a new observation-free 28-case holdout-v4 with 7 cases per semantic kind and 8/8/12 positive/negative/ambiguous balance
-- [planned] measure the exact `cross-model-selective-abstention-r3b-v1` Gemini 3.5 Flash-Lite + Ministral 8B source set for five matched trials without tuning after observation
-- [planned] require 100% operational completion, precision/recall and uncertainty gates, explicit clear-case coverage, polarity stability, provider-neutral semantics, and green deterministic authority regressions
-- [planned] preserve `soft-semantic-v3` as the default unless the independent gate is met; passing R4 validates R3b only as an optional frozen-source cross-model configuration, not as a universal source-set claim
+- [rejected #59] frozen run `33371523453` completed 280/280 calls with precision/recall 1.0 and sufficient coverage, but aggregate trial-level ambiguous abstention was 0.7167 versus the predeclared >=0.85 gate; four of five trials also missed the >=0.80 per-trial threshold
+- [rejected #59] cross-model disagreement caught useful uncertainty, including a stable negative-fixture disagreement, but correlated/self-consistent ambiguity remained: `v4h-13-unsupported-premise-ambiguous` and `v4h-20-causal-gap-ambiguous` stayed unanimously assertive across both sources and all five seeds
+- [frozen diagnostic #59] holdout-v4 is now observed evidence and must not be tuned, relabelled, or reused as an independent successor corpus
+- [baseline retained] `soft-semantic-v3` remains the runtime baseline; any successor requires new calibration-only design/configuration identity and a future independently frozen holdout-v5 before adoption testing
 
 This sequence changes the research question from “which schema makes models obey JSON?” to “how much semantic behavior survives representation changes, and how can the harness minimize representation-induced risk without granting the model more authority?”
 
