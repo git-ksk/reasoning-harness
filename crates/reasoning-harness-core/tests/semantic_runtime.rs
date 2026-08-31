@@ -4,7 +4,7 @@ use reasoning_harness_core::{
     DEFAULT_SEMANTIC_RUNTIME_PROFILE, ModelAdapter, ModelRequest, ModelResponse, ModelUsage,
     SEMANTIC_DECIDABILITY_D3_CONFIGURATION_ID, SOFT_SEMANTIC_V3_CONFIGURATION_ID,
     SemanticDecidabilityCalibrationFixture, SemanticDecidabilityDisposition,
-    SemanticRuntimeProfile, SoftJudgeDecision, run_semantic_runtime,
+    SemanticRuntimeProfile, SoftJudgeDecision, run_default_semantic_runtime, run_semantic_runtime,
 };
 
 struct DecisionOnlyAdapter;
@@ -25,6 +25,31 @@ impl ModelAdapter for DecisionOnlyAdapter {
             Ok(ModelResponse {
                 text: r#"{"decision":"finding"}"#.into(),
                 model: "compatible-model".into(),
+                usage: ModelUsage::default(),
+                finish_reason: Some("stop".into()),
+            })
+        })
+    }
+}
+
+struct BaselineNoFindingAdapter;
+
+impl ModelAdapter for BaselineNoFindingAdapter {
+    fn generate<'a>(
+        &'a self,
+        _request: ModelRequest,
+    ) -> Pin<
+        Box<
+            dyn std::future::Future<
+                    Output = Result<ModelResponse, reasoning_harness_core::ModelError>,
+                > + Send
+                + 'a,
+        >,
+    > {
+        Box::pin(async {
+            Ok(ModelResponse {
+                text: r#"{"decision":"no_finding"}"#.into(),
+                model: "rollback-model".into(),
                 usage: ModelUsage::default(),
                 finish_reason: Some("stop".into()),
             })
@@ -76,7 +101,7 @@ fn calibration_fixture(id: &str) -> SemanticDecidabilityCalibrationFixture {
 fn runtime_identity_and_rollback_are_frozen() {
     assert_eq!(
         DEFAULT_SEMANTIC_RUNTIME_PROFILE,
-        SemanticRuntimeProfile::SoftSemanticV3
+        SemanticRuntimeProfile::SemanticDecidabilityD3V1
     );
     let baseline = SemanticRuntimeProfile::SoftSemanticV3.identity();
     assert_eq!(
@@ -104,6 +129,51 @@ fn runtime_identity_and_rollback_are_frozen() {
         SemanticRuntimeProfile::SemanticDecidabilityD3V1.rollback_profile(),
         Some(SemanticRuntimeProfile::SoftSemanticV3)
     );
+}
+
+#[tokio::test]
+async fn default_runtime_executes_the_adopted_d3_profile() {
+    let fixture = calibration_fixture("02_binding_missing");
+    let result = run_default_semantic_runtime(
+        &DecisionOnlyAdapter,
+        "compatible-model",
+        &fixture.request,
+        &fixture.artifact,
+        256,
+        Some(7),
+    )
+    .await
+    .unwrap();
+
+    assert_eq!(
+        result.runtime.configuration_id(),
+        SEMANTIC_DECIDABILITY_D3_CONFIGURATION_ID
+    );
+    assert_eq!(result.base_decision, SoftJudgeDecision::Finding);
+    assert_eq!(result.observation.decision, SoftJudgeDecision::Abstain);
+}
+
+#[tokio::test]
+async fn soft_semantic_v3_remains_an_executable_rollback_profile() {
+    let fixture = calibration_fixture("02_binding_missing");
+    let result = run_semantic_runtime(
+        SemanticRuntimeProfile::SoftSemanticV3,
+        &BaselineNoFindingAdapter,
+        "rollback-model",
+        &fixture.request,
+        &fixture.artifact,
+        256,
+        Some(7),
+    )
+    .await
+    .unwrap();
+
+    assert_eq!(
+        result.runtime.configuration_id(),
+        SOFT_SEMANTIC_V3_CONFIGURATION_ID
+    );
+    assert_eq!(result.observation.decision, SoftJudgeDecision::NoFinding);
+    assert!(result.decidability.is_none());
 }
 
 #[tokio::test]

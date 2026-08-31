@@ -183,6 +183,8 @@ Calibration reports precision/recall, decision coverage, disagreement, abstentio
 
 The implemented policy/thread layer may record a soft observation or use it to request additional evidence, but only existing harness-owned evidence/verifier boundaries may create hard authority. Model-backed soft judging uses the same rule and cannot promote its own output. See [soft semantic-judge calibration](semantic-judge-calibration.md).
 
+The default semantic runtime profile is `semantic-decidability-d3-v1`: model output first crosses the harness-owned R2 decision-only materialization boundary, then the deterministic explicit-typed-preconditions gate may preserve that soft decision or force `abstain`. The previously characterized `soft-semantic-v3` profile remains an explicit rollback path. Runtime profile selection changes advisory behavior only; neither profile can create trusted evidence, verification receipts, hard findings, epistemic promotion, or verdict authority. See [semantic runtime stabilization and adoption](semantic-runtime-stabilization.md).
+
 ## Assumption diagnostic boundary
 
 `HarnessInput.assumptions` is harness-owned input and is deliberately absent from `ReasoningCandidate`. It names propositions that the task is allowed to take as premises without claiming that those propositions were independently verified. This is distinct from `hypotheses`, which identify propositions the task asks the candidate to evaluate.
