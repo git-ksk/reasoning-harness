@@ -55,6 +55,8 @@ Per representation, the study reports protocol completion, precision, recall, de
 
 The R1a runner defaults to a 512-token output budget. The first bounded 256-token Mistral probe hit exactly 256 output tokens and EOF parse failure on the positive causal fixture in both baseline and nested forms, so that incomplete probe is treated as operational truncation evidence rather than semantic format evidence. `finish_reason` is preserved so future truncation can be separated from malformed complete output.
 
+A matched 512-token rerun did **not** reproduce a token-limit finish: failed Mistral generations returned `finish_reason=error` after roughly 310 output tokens, including the positive fixture in both baseline and nested forms and the ambiguous baseline fixture. These are classified as `provider_generation_error`, remain outside semantic denominators, and block expansion to a full Mistral R1a matrix until the provider-side structured-generation behavior is characterized. A `stop` response that still fails parsing remains `representation_protocol`; token-limit finish reasons remain `truncation_protocol`.
+
 ## Calibration-only execution
 
 The research binary canonicalizes the requested path and accepts only this checkout's exact `fixtures/semantic-judges` directory. A renamed/copy/symlinked holdout cannot be substituted as tuning data.
