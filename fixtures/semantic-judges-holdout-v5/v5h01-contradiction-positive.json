@@ -1,0 +1,21 @@
+{
+  "id": "v5h01-contradiction-positive",
+  "request": {
+    "id": "holdout-v5-soft-v5h01-contradiction-positive",
+    "task": "Determine whether the candidate backup configuration conflicts with the supplied record.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "backup.cipher",
+        "value": "AES-256"
+      }
+    },
+    "context": [
+      "The candidate says nightly backup jobs use AES-256.",
+      "The control-plane snapshot for the same backup policy says the configured cipher is AES-128."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

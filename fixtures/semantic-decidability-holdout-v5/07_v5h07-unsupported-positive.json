@@ -1,0 +1,77 @@
+{
+  "id": "v5d07-v5h07-unsupported-positive",
+  "source_fixture_id": "v5h07-unsupported-positive",
+  "semantic_label": "positive",
+  "variants": [
+    {
+      "id": "permit-provenance-present",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "data.residency": "jp"
+            },
+            "metadata": {
+              "provenance_class": "primary"
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "data.residency",
+              "value": "jp"
+            },
+            "minimum_authority_class": "primary"
+          }
+        ],
+        "authority_policy": {
+          "ranks": {
+            "primary": 1
+          }
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-provenance-missing",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "data.residency": "jp"
+            },
+            "metadata": {}
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "data.residency",
+              "value": "jp"
+            },
+            "minimum_authority_class": "primary"
+          }
+        ],
+        "authority_policy": {
+          "ranks": {
+            "primary": 1
+          }
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

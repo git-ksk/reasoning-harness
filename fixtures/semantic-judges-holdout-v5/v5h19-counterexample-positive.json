@@ -1,0 +1,18 @@
+{
+  "id": "v5h19-counterexample-positive",
+  "request": {
+    "id": "holdout-v5-soft-v5h19-counterexample-positive",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-imported-rows-have-id"
+    },
+    "context": [
+      "Target generalization: every row successfully imported by this pipeline has a non-empty identifier.",
+      "Row R-91 was successfully imported by this pipeline with an empty identifier field."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

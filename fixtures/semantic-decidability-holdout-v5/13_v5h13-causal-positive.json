@@ -1,0 +1,21 @@
+{
+  "id": "v5d13-v5h13-causal-positive",
+  "source_fixture_id": "v5h13-causal-positive",
+  "semantic_label": "positive",
+  "variants": [
+    {
+      "id": "permit-control",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    }
+  ]
+}

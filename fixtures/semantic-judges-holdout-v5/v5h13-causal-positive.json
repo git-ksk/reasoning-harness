@@ -1,0 +1,29 @@
+{
+  "id": "v5h13-causal-positive",
+  "request": {
+    "id": "holdout-v5-soft-v5h13-causal-positive",
+    "task": "Determine whether the proposed CPU-to-latency causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "worker.cpu",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "request.latency",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Worker CPU and request latency rose during the same interval.",
+      "No intervention, mechanism trace, or directional evidence is supplied to distinguish causation from a shared load increase."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

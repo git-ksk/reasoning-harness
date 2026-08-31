@@ -1,0 +1,29 @@
+{
+  "id": "v5h16-causal-negative",
+  "request": {
+    "id": "holdout-v5-soft-v5h16-causal-negative",
+    "task": "Determine whether the proposed lock-contention-to-latency relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "lock.contention",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "request.latency",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Trace spans show requests blocked on the same contended lock before queueing delay accumulated.",
+      "Replacing the lock with a non-contended implementation removed both the blocking spans and the latency increase under the same load."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

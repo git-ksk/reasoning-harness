@@ -1,0 +1,29 @@
+{
+  "id": "v5h18-causal-ambiguous",
+  "request": {
+    "id": "holdout-v5-soft-v5h18-causal-ambiguous",
+    "task": "Determine whether the proposed packet-loss-to-retries relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "packet.loss",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "retries",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Observed packet loss rises before retry counts rise.",
+      "The loss observer shares the same network path and may itself miss packets during congestion; no independent measurement is supplied."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

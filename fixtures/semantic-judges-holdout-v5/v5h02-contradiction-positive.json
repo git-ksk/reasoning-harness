@@ -1,0 +1,21 @@
+{
+  "id": "v5h02-contradiction-positive",
+  "request": {
+    "id": "holdout-v5-soft-v5h02-contradiction-positive",
+    "task": "Determine whether the candidate API authentication statement conflicts with the supplied endpoint configuration.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "api.client_auth",
+        "value": "mtls"
+      }
+    },
+    "context": [
+      "The candidate says the endpoint requires mutual TLS client certificates.",
+      "The configuration for that endpoint disables client-certificate authentication and accepts bearer tokens instead."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

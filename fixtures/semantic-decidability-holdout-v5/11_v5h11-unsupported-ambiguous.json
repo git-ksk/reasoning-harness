@@ -1,0 +1,21 @@
+{
+  "id": "v5d11-v5h11-unsupported-ambiguous",
+  "source_fixture_id": "v5h11-unsupported-ambiguous",
+  "semantic_label": "ambiguous",
+  "variants": [
+    {
+      "id": "permit-control",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    }
+  ]
+}

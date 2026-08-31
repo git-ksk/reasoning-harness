@@ -1,0 +1,53 @@
+{
+  "id": "v5d20-v5h20-counterexample-positive",
+  "source_fixture_id": "v5h20-counterexample-positive",
+  "semantic_label": "positive",
+  "variants": [
+    {
+      "id": "permit-claim-bound",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-signed-builds-verify",
+            "statement": "Every signed production build passes provenance verification.",
+            "state": "unknown",
+            "evidence_ids": [],
+            "proposition": {
+              "key": "production.signed_builds_verify",
+              "value": "true"
+            }
+          }
+        ],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-claim-unbound",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-signed-builds-verify",
+            "statement": "Every signed production build passes provenance verification.",
+            "state": "unknown",
+            "evidence_ids": []
+          }
+        ],
+        "inferences": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

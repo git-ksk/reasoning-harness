@@ -1,0 +1,53 @@
+{
+  "id": "v5d21-v5h21-counterexample-negative",
+  "source_fixture_id": "v5h21-counterexample-negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-claim-bound",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-prod-kernel",
+            "statement": "Every production node runs kernel 6.8.",
+            "state": "unknown",
+            "evidence_ids": [],
+            "proposition": {
+              "key": "production.nodes_kernel_6_8",
+              "value": "true"
+            }
+          }
+        ],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-claim-unbound",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-prod-kernel",
+            "statement": "Every production node runs kernel 6.8.",
+            "state": "unknown",
+            "evidence_ids": []
+          }
+        ],
+        "inferences": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

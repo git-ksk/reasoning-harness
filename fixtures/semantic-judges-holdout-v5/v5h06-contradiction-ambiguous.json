@@ -1,0 +1,21 @@
+{
+  "id": "v5h06-contradiction-ambiguous",
+  "request": {
+    "id": "holdout-v5-soft-v5h06-contradiction-ambiguous",
+    "task": "Determine whether the candidate schema version conflicts with the supplied snapshot.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "schema.version",
+        "value": "v3"
+      }
+    },
+    "context": [
+      "The candidate says the deployment uses schema v3.",
+      "A configuration snapshot says v2, but its timestamp relative to the candidate deployment is not supplied."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

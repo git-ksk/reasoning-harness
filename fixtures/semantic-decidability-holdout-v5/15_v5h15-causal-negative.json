@@ -1,0 +1,21 @@
+{
+  "id": "v5d15-v5h15-causal-negative",
+  "source_fixture_id": "v5h15-causal-negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-control",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    }
+  ]
+}

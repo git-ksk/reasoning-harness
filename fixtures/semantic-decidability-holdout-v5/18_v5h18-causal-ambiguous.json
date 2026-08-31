@@ -1,0 +1,21 @@
+{
+  "id": "v5d18-v5h18-causal-ambiguous",
+  "source_fixture_id": "v5h18-causal-ambiguous",
+  "semantic_label": "ambiguous",
+  "variants": [
+    {
+      "id": "permit-control",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    }
+  ]
+}

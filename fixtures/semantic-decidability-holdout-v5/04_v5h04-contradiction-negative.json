@@ -1,0 +1,81 @@
+{
+  "id": "v5d04-v5h04-contradiction-negative",
+  "source_fixture_id": "v5h04-contradiction-negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-temporally-valid",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "retry.max_attempts": "4"
+            },
+            "metadata": {
+              "temporal": {
+                "effective_from_unix_seconds": 100,
+                "effective_until_unix_seconds": 300
+              }
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "retry.max_attempts",
+              "value": "4"
+            },
+            "as_of_unix_seconds": 200
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-stale-evidence",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "retry.max_attempts": "4"
+            },
+            "metadata": {
+              "temporal": {
+                "effective_from_unix_seconds": 100,
+                "effective_until_unix_seconds": 150
+              }
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "retry.max_attempts",
+              "value": "4"
+            },
+            "as_of_unix_seconds": 200
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

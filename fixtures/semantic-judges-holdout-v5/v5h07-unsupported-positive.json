@@ -1,0 +1,21 @@
+{
+  "id": "v5h07-unsupported-positive",
+  "request": {
+    "id": "holdout-v5-soft-v5h07-unsupported-positive",
+    "task": "Determine whether the data-residency premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "data.residency",
+        "value": "jp"
+      }
+    },
+    "context": [
+      "The candidate assumes all payload data is stored in Japan.",
+      "The supplied requirements specify encryption and backup durability but contain no storage-location requirement or observation."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

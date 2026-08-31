@@ -1,0 +1,32 @@
+{
+  "id": "v5d23-v5h23-counterexample-ambiguous",
+  "source_fixture_id": "v5h23-counterexample-ambiguous",
+  "semantic_label": "ambiguous",
+  "variants": [
+    {
+      "id": "permit-control",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-managed-encrypted",
+            "statement": "Every managed device has disk encryption enabled.",
+            "state": "unknown",
+            "evidence_ids": [],
+            "proposition": {
+              "key": "managed.devices_encrypted",
+              "value": "true"
+            }
+          }
+        ],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    }
+  ]
+}

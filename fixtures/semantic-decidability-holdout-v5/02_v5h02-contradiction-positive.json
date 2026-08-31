@@ -1,0 +1,81 @@
+{
+  "id": "v5d02-v5h02-contradiction-positive",
+  "source_fixture_id": "v5h02-contradiction-positive",
+  "semantic_label": "positive",
+  "variants": [
+    {
+      "id": "permit-primary-authority",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "api.client_auth": "bearer_token"
+            },
+            "metadata": {
+              "provenance_class": "primary"
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "api.client_auth",
+              "value": "mtls"
+            },
+            "minimum_authority_class": "primary"
+          }
+        ],
+        "authority_policy": {
+          "ranks": {
+            "secondary": 1,
+            "primary": 2
+          }
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-insufficient-authority",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "api.client_auth": "bearer_token"
+            },
+            "metadata": {
+              "provenance_class": "secondary"
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "api.client_auth",
+              "value": "mtls"
+            },
+            "minimum_authority_class": "primary"
+          }
+        ],
+        "authority_policy": {
+          "ranks": {
+            "secondary": 1,
+            "primary": 2
+          }
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "v5h21-counterexample-negative",
+  "request": {
+    "id": "holdout-v5-soft-v5h21-counterexample-negative",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-prod-kernel"
+    },
+    "context": [
+      "Target generalization: every production node runs kernel 6.8.",
+      "The observed node runs kernel 6.6, but it is explicitly a staging node and is not in the production population."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}
