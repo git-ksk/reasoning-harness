@@ -203,8 +203,10 @@ The #57 calibration-only follow-up isolated the strict discriminated output sche
 The next semantic-judge research sequence is deliberately staged:
 
 #### R1 — format-invariance characterization
+- [in progress #59] calibration-only R1a infrastructure now holds the exact v3 task/system request fixed while varying information-equivalent `JsonSchema` representations; decision-only forms are deferred to R2 and fallback/enforcement sensitivity is isolated as a separate diagnostic axis
+- [implemented #59] regression tests prove the v3 baseline request is byte-for-byte unchanged, every variant differs only in `output_format`, malformed representations fail closed, and matched operational failures stay out of the semantic flip denominator
 - [planned] keep the exact v3 semantic/system guidance fixed and vary only isomorphic model-facing representations on the calibration corpus
-- [planned] compare the current v3 JSON representation, a minimal decision-only object, a single-label representation, label/token aliases, and other bounded protocol forms without changing diagnostic semantics
+- [planned] compare the current v3 JSON representation with information-equivalent nesting, tuple, key-layout, and other bounded forms; decision-only, scalar-label, or semantic label-alias protocols belong to R2/later controlled experiments because they cannot satisfy the unchanged v3 finding-binding contract
 - [planned] add `format_flip_rate`: the fraction of matched fixture/trial decisions that change solely because the output representation changed
 - [planned] report format-conditioned precision, recall, decision coverage, ambiguous abstention, protocol completion, fallback rate, token usage, and latency separately
 - [planned] treat format disagreement as instability evidence, never as a truth vote; model majority must not create authority

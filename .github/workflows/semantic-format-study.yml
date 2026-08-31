@@ -1,0 +1,129 @@
+name: semantic-format-study
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: Provider for the bounded calibration-only format study
+        required: true
+        type: choice
+        options:
+          - mistral
+          - google
+        default: mistral
+      model:
+        description: Provider model identifier
+        required: true
+        type: string
+        default: ministral-8b-latest
+      representation:
+        description: Representation compared with the implicit v3_full_json baseline
+        required: true
+        type: choice
+        options:
+          - nested-result-object
+          - decision-finding-tuple
+          - compact-key-object
+        default: nested-result-object
+      fixture_set:
+        description: Calibration-only fixture selection
+        required: true
+        type: choice
+        options:
+          - causal-triad
+          - all-calibration
+        default: causal-triad
+      trials:
+        description: Matched trials per representation
+        required: true
+        type: choice
+        options:
+          - '1'
+          - '5'
+        default: '1'
+      max_tokens:
+        description: Maximum output tokens per provider call
+        required: true
+        type: choice
+        options:
+          - '256'
+          - '512'
+        default: '256'
+
+permissions:
+  contents: read
+
+jobs:
+  study:
+    name: ${{ inputs.provider }}-${{ inputs.representation }}-${{ inputs.fixture_set }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    concurrency:
+      group: reasoning-harness-format-${{ inputs.provider }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check provider credential availability
+        id: credential
+        env:
+          PROVIDER: ${{ inputs.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          case "$PROVIDER" in
+            mistral) KEY="$MISTRAL_API_KEY" ;;
+            google) KEY="$GEMINI_API_KEY" ;;
+            *) echo "unsupported provider: $PROVIDER" >&2; exit 2 ;;
+          esac
+          if [ -n "$KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::credential for $PROVIDER is not configured; skipping format study."
+          fi
+      - name: Run bounded calibration-only format study
+        if: steps.credential.outputs.available == 'true'
+        env:
+          PROVIDER: ${{ inputs.provider }}
+          MODEL: ${{ inputs.model }}
+          REPRESENTATION: ${{ inputs.representation }}
+          FIXTURE_SET: ${{ inputs.fixture_set }}
+          TRIALS: ${{ inputs.trials }}
+          MAX_TOKENS: ${{ inputs.max_tokens }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          OUTPUT=/tmp/reason-semantic-format-study.json
+          FIXTURE_ARGS=()
+          case "$FIXTURE_SET" in
+            causal-triad)
+              FIXTURE_ARGS+=(--fixture 07_causal_positive)
+              FIXTURE_ARGS+=(--fixture 08_causal_negative)
+              FIXTURE_ARGS+=(--fixture 09_causal_ambiguous)
+              ;;
+            all-calibration) ;;
+            *) echo "unsupported calibration fixture set: $FIXTURE_SET" >&2; exit 2 ;;
+          esac
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-format-study -- \
+            fixtures/semantic-judges \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --representation "$REPRESENTATION" \
+            --seed 1000 \
+            --trials "$TRIALS" \
+            --max-tokens "$MAX_TOKENS" \
+            "${FIXTURE_ARGS[@]}" \
+            > "$OUTPUT"
+          jq '{configuration_id, semantic_baseline, provider, model, fixture_count, representations: [.representations[] | {representation, requested_output_format, effective_enforcement_class, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, fallback_enabled, fallback_rate, input_tokens, output_tokens, total_tokens, total_latency_ms, mean_latency_ms, trials}], comparisons}' "$OUTPUT"
+      - name: Preserve format-study JSON
+        if: always() && steps.credential.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-format-${{ inputs.provider }}-${{ inputs.representation }}-${{ inputs.fixture_set }}
+          path: /tmp/reason-semantic-format-study.json
+          if-no-files-found: ignore
+          retention-days: 14
