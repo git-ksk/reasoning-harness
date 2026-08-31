@@ -1,0 +1,18 @@
+{
+  "id": "v5h22-counterexample-negative",
+  "request": {
+    "id": "holdout-v5-soft-v5h22-counterexample-negative",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-retry-idempotency"
+    },
+    "context": [
+      "Target generalization: every payment retry carries an idempotency key.",
+      "The observed request has no idempotency key, but it is explicitly the initial payment attempt rather than a retry."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

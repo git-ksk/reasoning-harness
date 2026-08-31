@@ -1,0 +1,78 @@
+{
+  "id": "v5d08-v5h08-unsupported-positive",
+  "source_fixture_id": "v5h08-unsupported-positive",
+  "semantic_label": "positive",
+  "variants": [
+    {
+      "id": "permit-single-qualified-value",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "queue.delivery": "at_least_once"
+            },
+            "metadata": {}
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "queue.delivery",
+              "value": "exactly_once"
+            }
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-conflicting-qualified-values",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "queue.delivery": "at_least_once"
+            },
+            "metadata": {}
+          },
+          {
+            "id": "e2",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "queue.delivery": "exactly_once"
+            },
+            "metadata": {}
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "queue.delivery",
+              "value": "exactly_once"
+            }
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

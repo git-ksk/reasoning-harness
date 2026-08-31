@@ -1,0 +1,32 @@
+{
+  "id": "v5d22-v5h22-counterexample-negative",
+  "source_fixture_id": "v5h22-counterexample-negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-control",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-retry-idempotency",
+            "statement": "Every payment retry carries an idempotency key.",
+            "state": "unknown",
+            "evidence_ids": [],
+            "proposition": {
+              "key": "payment.retries_have_idempotency_key",
+              "value": "true"
+            }
+          }
+        ],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    }
+  ]
+}

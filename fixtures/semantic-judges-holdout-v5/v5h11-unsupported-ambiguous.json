@@ -1,0 +1,21 @@
+{
+  "id": "v5h11-unsupported-ambiguous",
+  "request": {
+    "id": "holdout-v5-soft-v5h11-unsupported-ambiguous",
+    "task": "Determine whether the regional reachability premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "region.reachable",
+        "value": "true"
+      }
+    },
+    "context": [
+      "The candidate assumes the target region is reachable.",
+      "A global status excerpt says every listed region is reachable, but the supplied excerpt omits the region list, so it is not established whether the target region is covered."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

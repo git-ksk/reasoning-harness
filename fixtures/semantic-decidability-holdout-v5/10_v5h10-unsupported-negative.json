@@ -1,0 +1,91 @@
+{
+  "id": "v5d10-v5h10-unsupported-negative",
+  "source_fixture_id": "v5h10-unsupported-negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-inference-bound",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-versioning",
+            "statement": "Object versioning is enabled.",
+            "state": "unknown",
+            "evidence_ids": [],
+            "proposition": {
+              "key": "bucket.versioning",
+              "value": "enabled"
+            }
+          },
+          {
+            "id": "claim-rollback",
+            "statement": "A deleted latest version can be rolled back.",
+            "state": "unknown",
+            "evidence_ids": [],
+            "proposition": {
+              "key": "rollback.deleted_latest_possible",
+              "value": "true"
+            }
+          }
+        ],
+        "inferences": [
+          {
+            "id": "inf-versioning",
+            "premise_claim_ids": [
+              "claim-versioning"
+            ],
+            "conclusion_claim_id": "claim-rollback",
+            "method": "configuration implication"
+          }
+        ]
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-inference-premise-unbound",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-versioning",
+            "statement": "Object versioning is enabled.",
+            "state": "unknown",
+            "evidence_ids": []
+          },
+          {
+            "id": "claim-rollback",
+            "statement": "A deleted latest version can be rolled back.",
+            "state": "unknown",
+            "evidence_ids": [],
+            "proposition": {
+              "key": "rollback.deleted_latest_possible",
+              "value": "true"
+            }
+          }
+        ],
+        "inferences": [
+          {
+            "id": "inf-versioning",
+            "premise_claim_ids": [
+              "claim-versioning"
+            ],
+            "conclusion_claim_id": "claim-rollback",
+            "method": "configuration implication"
+          }
+        ]
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

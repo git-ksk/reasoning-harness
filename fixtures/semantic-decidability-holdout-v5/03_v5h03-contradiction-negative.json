@@ -1,0 +1,103 @@
+{
+  "id": "v5d03-v5h03-contradiction-negative",
+  "source_fixture_id": "v5h03-contradiction-negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-scope-match",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "maintenance.start": "02:00Z"
+            },
+            "metadata": {
+              "scope": {
+                "service": {
+                  "kind": "values",
+                  "values": [
+                    "payments"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "maintenance.start",
+              "value": "02:00Z"
+            },
+            "scope": {
+              "service": {
+                "kind": "values",
+                "values": [
+                  "payments"
+                ]
+              }
+            }
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-scope-mismatch",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "maintenance.start": "02:00Z"
+            },
+            "metadata": {
+              "scope": {
+                "service": {
+                  "kind": "values",
+                  "values": [
+                    "analytics"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "maintenance.start",
+              "value": "02:00Z"
+            },
+            "scope": {
+              "service": {
+                "kind": "values",
+                "values": [
+                  "payments"
+                ]
+              }
+            }
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

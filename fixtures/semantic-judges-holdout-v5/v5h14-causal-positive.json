@@ -1,0 +1,29 @@
+{
+  "id": "v5h14-causal-positive",
+  "request": {
+    "id": "holdout-v5-soft-v5h14-causal-positive",
+    "task": "Determine whether the proposed release-to-error causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "release.variant",
+            "value": "new"
+          }
+        ],
+        "effect": {
+          "key": "error.rate",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "The new release and a higher error rate appeared in the same window.",
+      "Traffic mix also shifted materially in that window, and no controlled comparison isolates the release."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

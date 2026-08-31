@@ -1,0 +1,21 @@
+{
+  "id": "v5h08-unsupported-positive",
+  "request": {
+    "id": "holdout-v5-soft-v5h08-unsupported-positive",
+    "task": "Determine whether the queue delivery premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "queue.delivery",
+        "value": "exactly_once"
+      }
+    },
+    "context": [
+      "The candidate assumes exactly-once delivery.",
+      "The supplied queue contract guarantees at-least-once delivery and does not establish exactly-once semantics."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

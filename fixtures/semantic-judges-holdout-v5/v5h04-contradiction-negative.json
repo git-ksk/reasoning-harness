@@ -1,0 +1,21 @@
+{
+  "id": "v5h04-contradiction-negative",
+  "request": {
+    "id": "holdout-v5-soft-v5h04-contradiction-negative",
+    "task": "Determine whether the candidate retry limit conflicts with the supplied retry configuration.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "retry.max_attempts",
+        "value": "4"
+      }
+    },
+    "context": [
+      "The candidate says a request may make at most four total attempts including the initial attempt.",
+      "The retry configuration defines max_attempts as four total attempts including the initial attempt."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

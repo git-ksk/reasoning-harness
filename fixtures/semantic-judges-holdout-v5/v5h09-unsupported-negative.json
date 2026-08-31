@@ -1,0 +1,21 @@
+{
+  "id": "v5h09-unsupported-negative",
+  "request": {
+    "id": "holdout-v5-soft-v5h09-unsupported-negative",
+    "task": "Determine whether the archive-retention premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "archive.retention_days",
+        "value": "30"
+      }
+    },
+    "context": [
+      "The candidate premise is that archived objects are retained for 30 days.",
+      "The active lifecycle policy explicitly retains archived objects for 30 days before expiration."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

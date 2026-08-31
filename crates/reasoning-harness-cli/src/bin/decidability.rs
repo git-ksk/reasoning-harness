@@ -21,16 +21,18 @@ use serde::Serialize;
 #[derive(Debug, Parser)]
 #[command(
     name = "reason-decidability-study",
-    about = "Calibration-only D2 semantic decidability/evidence-sufficiency study"
+    about = "Bounded semantic decidability/evidence-sufficiency study"
 )]
 struct Args {
-    /// D2 study manifest directory. Historical holdouts and other paths are rejected.
+    /// Exact manifest directory for the selected study surface. Other paths are rejected.
     target: PathBuf,
+    #[arg(long, value_enum, default_value_t = StudySurface::D2)]
+    surface: StudySurface,
     #[arg(long, value_enum)]
     provider: Provider,
     #[arg(long, default_value = "gemini-3.5-flash-lite")]
     model: String,
-    /// Optional D2 fixture IDs for bounded validation. Without this, all fixtures run.
+    /// Optional fixture IDs for bounded validation. Without this, all fixtures run.
     #[arg(long = "fixture")]
     fixture_ids: Vec<String>,
     #[arg(long, default_value_t = 512)]
@@ -39,6 +41,56 @@ struct Args {
     seed: Option<u64>,
     #[arg(long, default_value_t = 1)]
     trials: usize,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+enum StudySurface {
+    D2,
+    HoldoutV5,
+}
+
+impl StudySurface {
+    fn name(self) -> &'static str {
+        match self {
+            Self::D2 => "d2",
+            Self::HoldoutV5 => "holdout_v5",
+        }
+    }
+
+    fn configuration_id(self) -> &'static str {
+        match self {
+            Self::D2 => "semantic-decidability-d2-v1",
+            Self::HoldoutV5 => "semantic-decidability-d3-holdout-v5-v1",
+        }
+    }
+
+    fn target_relative_path(self) -> &'static str {
+        match self {
+            Self::D2 => "fixtures/semantic-decidability-d2",
+            Self::HoldoutV5 => "fixtures/semantic-decidability-holdout-v5",
+        }
+    }
+
+    fn source_relative_path(self) -> &'static str {
+        match self {
+            Self::D2 => "fixtures/semantic-judges",
+            Self::HoldoutV5 => "fixtures/semantic-judges-holdout-v5",
+        }
+    }
+
+    fn source_corpus_id(self) -> &'static str {
+        match self {
+            Self::D2 => "semantic-judges-calibration-v1",
+            Self::HoldoutV5 => "semantic-judges-holdout-v5",
+        }
+    }
+
+    fn candidate_id(self) -> Option<&'static str> {
+        match self {
+            Self::D2 => None,
+            Self::HoldoutV5 => Some("semantic-decidability-d3-v1"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -182,6 +234,10 @@ struct FixtureStabilityReport {
 #[derive(Debug, Serialize)]
 struct StudyOutput {
     configuration_id: &'static str,
+    study_surface: &'static str,
+    source_corpus: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    candidate_id: Option<&'static str>,
     semantic_baseline: &'static str,
     materialization_contract: &'static str,
     decidability_contract: &'static str,
@@ -237,23 +293,28 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
             .ok_or("trial seed overflow")?;
     }
 
-    // Validate the exact calibration surface and all deterministic labels before reading provider
-    // credentials. Historical holdouts can never be substituted through a symlink or CLI path.
-    let target = require_d2_corpus(&args.target)?;
-    let source_root = require_source_calibration_corpus()?;
+    // Validate the exact selected surface and all deterministic labels before reading provider
+    // credentials. D2 calibration and holdout-v5 are intentionally disjoint canonical paths.
+    let target = require_study_corpus(args.surface, &args.target)?;
+    let source_root = require_source_corpus(args.surface)?;
     let sources = load_source_fixtures(&source_root)?;
-    let mut fixtures = resolve_study_fixtures(load_study_manifests(&target)?, &sources)?;
+    validate_source_surface(args.surface, &sources)?;
+    let mut fixtures =
+        resolve_study_fixtures(args.surface, load_study_manifests(&target)?, &sources)?;
 
     if !args.fixture_ids.is_empty() {
         fixtures.retain(|fixture| args.fixture_ids.iter().any(|id| id == &fixture.id));
         for requested in &args.fixture_ids {
             if !fixtures.iter().any(|fixture| &fixture.id == requested) {
-                return Err(format!("requested D2 fixture not found: {requested}"));
+                return Err(format!(
+                    "requested {} fixture not found: {requested}",
+                    args.surface.name()
+                ));
             }
         }
     }
     if fixtures.is_empty() {
-        return Err("no D2 fixtures selected".into());
+        return Err(format!("no {} fixtures selected", args.surface.name()));
     }
 
     let generator = Generator::from_provider(args.provider, &args.model)?;
@@ -286,7 +347,10 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
     let stability = summarize_stability(&cases);
 
     Ok(StudyOutput {
-        configuration_id: "semantic-decidability-d2-v1",
+        configuration_id: args.surface.configuration_id(),
+        study_surface: args.surface.name(),
+        source_corpus: args.surface.source_corpus_id(),
+        candidate_id: args.surface.candidate_id(),
         semantic_baseline: "soft-semantic-v3",
         materialization_contract: "materialization-r2-v1",
         decidability_contract: "deterministic-explicit-typed-preconditions-v1",
@@ -597,6 +661,7 @@ fn summarize_stability(cases: &[StudyCase]) -> Vec<FixtureStabilityReport> {
 }
 
 fn resolve_study_fixtures(
+    surface: StudySurface,
     manifests: Vec<SemanticDecidabilityStudyFixture>,
     sources: &BTreeMap<String, SoftJudgeCalibrationFixture>,
 ) -> Result<Vec<ResolvedFixture>, String> {
@@ -605,33 +670,39 @@ fn resolve_study_fixtures(
     let mut resolved = Vec::with_capacity(manifests.len());
 
     for manifest in manifests {
+        if surface == StudySurface::HoldoutV5 && !manifest.id.starts_with("v5d") {
+            return Err(format!(
+                "holdout-v5 manifest id must start with v5d: {}",
+                manifest.id
+            ));
+        }
         if manifest.id.trim().is_empty() || !fixture_ids.insert(manifest.id.clone()) {
             return Err(format!(
-                "invalid or duplicate D2 fixture id: {}",
+                "invalid or duplicate semantic decidability fixture id: {}",
                 manifest.id
             ));
         }
         if !source_ids.insert(manifest.source_fixture_id.clone()) {
             return Err(format!(
-                "D2 source fixture is reused by multiple study cases: {}",
+                "semantic decidability source fixture is reused by multiple study cases: {}",
                 manifest.source_fixture_id
             ));
         }
         let source = sources.get(&manifest.source_fixture_id).ok_or_else(|| {
             format!(
-                "D2 source calibration fixture not found: {}",
+                "semantic decidability source fixture not found: {}",
                 manifest.source_fixture_id
             )
         })?;
         if source.label != manifest.semantic_label {
             return Err(format!(
-                "D2 semantic label does not match source calibration fixture: {}",
+                "semantic decidability label does not match source fixture: {}",
                 manifest.id
             ));
         }
         if manifest.variants.is_empty() || manifest.variants.len() > 2 {
             return Err(format!(
-                "D2 fixture must contain one permit control and at most one force variant: {}",
+                "semantic decidability fixture must contain one permit control and at most one force variant: {}",
                 manifest.id
             ));
         }
@@ -643,7 +714,7 @@ fn resolve_study_fixtures(
         for variant in manifest.variants {
             if variant.id.trim().is_empty() || !variant_ids.insert(variant.id.clone()) {
                 return Err(format!(
-                    "invalid or duplicate D2 variant id in {}: {}",
+                    "invalid or duplicate semantic decidability variant id in {}: {}",
                     manifest.id, variant.id
                 ));
             }
@@ -655,7 +726,7 @@ fn resolve_study_fixtures(
                 .map_err(|error| format!("{}:{}: {error}", manifest.id, variant.id))?;
             if assessment.disposition != variant.expected_disposition {
                 return Err(format!(
-                    "D2 gate expectation mismatch in {}:{}: expected {:?}, got {:?}",
+                    "semantic decidability gate expectation mismatch in {}:{}: expected {:?}, got {:?}",
                     manifest.id, variant.id, variant.expected_disposition, assessment.disposition
                 ));
             }
@@ -667,13 +738,13 @@ fn resolve_study_fixtures(
         }
         if permit_count != 1 || force_count > 1 {
             return Err(format!(
-                "D2 fixture must have exactly one permit control and at most one force variant: {}",
+                "semantic decidability fixture must have exactly one permit control and at most one force variant: {}",
                 manifest.id
             ));
         }
         if force_count == 1 && manifest.semantic_label == CalibrationLabel::Ambiguous {
             return Err(format!(
-                "D2 v1 keeps typed insufficiency separate from semantic ambiguity: {}",
+                "typed insufficiency is kept separate from semantic ambiguity: {}",
                 manifest.id
             ));
         }
@@ -688,30 +759,78 @@ fn resolve_study_fixtures(
     Ok(resolved)
 }
 
-fn require_d2_corpus(target: &Path) -> Result<PathBuf, String> {
-    let target = target
+fn repository_root() -> Result<PathBuf, String> {
+    let current = std::env::current_dir().map_err(|error| error.to_string())?;
+    if current.join("fixtures").is_dir() {
+        return current
+            .canonicalize()
+            .map_err(|error| format!("repository root unavailable: {error}"));
+    }
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
         .canonicalize()
-        .map_err(|error| format!("{}: {error}", target.display()))?;
-    let expected = std::env::current_dir()
-        .map_err(|error| error.to_string())?
-        .join("fixtures/semantic-decidability-d2")
+        .map_err(|error| format!("repository root unavailable: {error}"))
+}
+
+fn require_study_corpus(surface: StudySurface, target: &Path) -> Result<PathBuf, String> {
+    let root = repository_root()?;
+    let target_path = if target.is_absolute() {
+        target.to_path_buf()
+    } else {
+        root.join(target)
+    };
+    let target = target_path
         .canonicalize()
-        .map_err(|error| format!("D2 calibration corpus unavailable: {error}"))?;
+        .map_err(|error| format!("{}: {error}", target_path.display()))?;
+    let expected = root
+        .join(surface.target_relative_path())
+        .canonicalize()
+        .map_err(|error| format!("{} corpus unavailable: {error}", surface.name()))?;
     if target != expected {
-        return Err(
-            "D2 decidability study accepts only this checkout's fixtures/semantic-decidability-d2 calibration corpus"
-                .into(),
-        );
+        return Err(format!(
+            "{} decidability study accepts only this checkout's {} corpus",
+            surface.name(),
+            surface.target_relative_path()
+        ));
     }
     Ok(target)
 }
 
-fn require_source_calibration_corpus() -> Result<PathBuf, String> {
-    std::env::current_dir()
-        .map_err(|error| error.to_string())?
-        .join("fixtures/semantic-judges")
+fn require_source_corpus(surface: StudySurface) -> Result<PathBuf, String> {
+    repository_root()?
+        .join(surface.source_relative_path())
         .canonicalize()
-        .map_err(|error| format!("semantic calibration source corpus unavailable: {error}"))
+        .map_err(|error| format!("{} source corpus unavailable: {error}", surface.name()))
+}
+
+fn validate_source_surface(
+    surface: StudySurface,
+    sources: &BTreeMap<String, SoftJudgeCalibrationFixture>,
+) -> Result<(), String> {
+    if surface != StudySurface::HoldoutV5 {
+        return Ok(());
+    }
+    for source in sources.values() {
+        if !source.id.starts_with("v5h") {
+            return Err(format!(
+                "holdout-v5 source id must start with v5h: {}",
+                source.id
+            ));
+        }
+        if !source.request.id.starts_with("holdout-v5-soft-v5h") {
+            return Err(format!(
+                "holdout-v5 request id has unexpected identity: {}",
+                source.request.id
+            ));
+        }
+        if !source.recorded_observations.is_empty() {
+            return Err(format!(
+                "holdout-v5 must be observation-free before execution: {}",
+                source.id
+            ));
+        }
+    }
+    Ok(())
 }
 
 fn load_study_manifests(directory: &Path) -> Result<Vec<SemanticDecidabilityStudyFixture>, String> {
@@ -906,5 +1025,57 @@ mod tests {
         assert_eq!(metrics.eligible_ambiguous_cases, 1);
         assert_eq!(metrics.eligible_ambiguous_abstention_rate, Some(1.0));
         assert_eq!(metrics.typed_insufficiency_variants, 0);
+    }
+    #[test]
+    fn d2_and_holdout_v5_surfaces_are_canonically_disjoint() {
+        assert!(
+            require_study_corpus(
+                StudySurface::D2,
+                Path::new("fixtures/semantic-decidability-d2")
+            )
+            .is_ok()
+        );
+        assert!(
+            require_study_corpus(
+                StudySurface::HoldoutV5,
+                Path::new("fixtures/semantic-decidability-holdout-v5")
+            )
+            .is_ok()
+        );
+        assert!(
+            require_study_corpus(
+                StudySurface::D2,
+                Path::new("fixtures/semantic-decidability-holdout-v5")
+            )
+            .is_err()
+        );
+        assert!(
+            require_study_corpus(
+                StudySurface::HoldoutV5,
+                Path::new("fixtures/semantic-decidability-d2")
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn holdout_v5_preflight_rejects_recorded_observations() {
+        let root = require_source_corpus(StudySurface::HoldoutV5).unwrap();
+        let mut sources = load_source_fixtures(&root).unwrap();
+        validate_source_surface(StudySurface::HoldoutV5, &sources).unwrap();
+        let first = sources.values_mut().next().unwrap();
+        first
+            .recorded_observations
+            .push(reasoning_harness_core::SoftJudgeObservation {
+                judge: reasoning_harness_core::SoftJudgeIdentity {
+                    judge_id: "forbidden".into(),
+                    model_id: "forbidden".into(),
+                    configuration_id: "forbidden".into(),
+                },
+                request_id: first.request.id.clone(),
+                decision: SoftJudgeDecision::Abstain,
+                finding: None,
+            });
+        assert!(validate_source_surface(StudySurface::HoldoutV5, &sources).is_err());
     }
 }

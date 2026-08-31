@@ -1,0 +1,59 @@
+{
+  "id": "v5d01-v5h01-contradiction-positive",
+  "source_fixture_id": "v5h01-contradiction-positive",
+  "semantic_label": "positive",
+  "variants": [
+    {
+      "id": "permit-evidence-present",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "holdout-v5",
+            "observation": "fresh typed holdout evidence",
+            "facts": {
+              "backup.cipher": "AES-128"
+            },
+            "metadata": {}
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "backup.cipher",
+              "value": "AES-256"
+            }
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-evidence-missing",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "backup.cipher",
+              "value": "AES-256"
+            }
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [],
+        "inferences": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "id": "v5d19-v5h19-counterexample-positive",
+  "source_fixture_id": "v5h19-counterexample-positive",
+  "semantic_label": "positive",
+  "variants": [
+    {
+      "id": "permit-claim-bound",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-imported-rows-have-id",
+            "statement": "Every successfully imported row has a non-empty identifier.",
+            "state": "unknown",
+            "evidence_ids": [],
+            "proposition": {
+              "key": "import.rows_have_nonempty_id",
+              "value": "true"
+            }
+          }
+        ],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-claim-unbound",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-imported-rows-have-id",
+            "statement": "Every successfully imported row has a non-empty identifier.",
+            "state": "unknown",
+            "evidence_ids": []
+          }
+        ],
+        "inferences": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

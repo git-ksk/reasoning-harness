@@ -1,0 +1,29 @@
+{
+  "id": "v5h15-causal-negative",
+  "request": {
+    "id": "holdout-v5-soft-v5h15-causal-negative",
+    "task": "Determine whether the proposed prefetch-to-memory causal relation lacks adequate semantic support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "prefetch.enabled",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "memory.usage",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "On the same workload, disabling prefetch lowered memory usage and re-enabling it restored the higher usage.",
+      "The intervention was repeated while other configuration remained fixed."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

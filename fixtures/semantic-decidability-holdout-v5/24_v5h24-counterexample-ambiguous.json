@@ -1,0 +1,32 @@
+{
+  "id": "v5d24-v5h24-counterexample-ambiguous",
+  "source_fixture_id": "v5h24-counterexample-ambiguous",
+  "semantic_label": "ambiguous",
+  "variants": [
+    {
+      "id": "permit-control",
+      "artifact": {
+        "task": "Independent holdout-v5 semantic decidability artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-active-replicas-healthy",
+            "statement": "Every active replica is healthy.",
+            "state": "unknown",
+            "evidence_ids": [],
+            "proposition": {
+              "key": "active.replicas_healthy",
+              "value": "true"
+            }
+          }
+        ],
+        "inferences": []
+      },
+      "expected_disposition": "permit"
+    }
+  ]
+}

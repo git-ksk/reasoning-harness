@@ -366,8 +366,11 @@ applicability requirements, does not promote cause/effect endpoint requirements 
 causal requirement, does not use model confidence/agreement, and never repairs operational failure.
 
 This D3 candidate is not a runtime version and does not change `soft-semantic-v3`. Its independent
-adoption test must use a newly authored, observation-free holdout-v5 that is created only after this
-candidate freeze. Provider results remain separate; there is no majority/pooled rescue.
+adoption test uses the newly authored observation-free holdout-v5 created only after this candidate
+freeze. Provider results remain separate; there is no majority/pooled rescue. The frozen corpus,
+label/spec review, typed mutation set, hashes, execution plan, and adoption gates are documented in
+[semantic decidability holdout-v5](semantic-decidability-holdout-v5.md). No holdout-v5 provider
+observation exists at the time of this freeze.
 
 Predeclared holdout-v5 adoption gates for each provider are:
 

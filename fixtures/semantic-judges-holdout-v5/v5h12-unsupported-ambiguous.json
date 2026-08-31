@@ -1,0 +1,21 @@
+{
+  "id": "v5h12-unsupported-ambiguous",
+  "request": {
+    "id": "holdout-v5-soft-v5h12-unsupported-ambiguous",
+    "task": "Determine whether the decryption premise is supported by the supplied authorization context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "role.can_decrypt",
+        "value": "true"
+      }
+    },
+    "context": [
+      "The role policy includes the kms:Decrypt action.",
+      "The key policy and encryption-context conditions that may further restrict use are not supplied."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

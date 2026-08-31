@@ -1,0 +1,19 @@
+{
+  "id": "v5h10-unsupported-negative",
+  "request": {
+    "id": "holdout-v5-soft-v5h10-unsupported-negative",
+    "task": "Determine whether this inference relies on an unsupported premise.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "inference",
+      "inference_id": "inf-versioning"
+    },
+    "context": [
+      "The inference uses the premise that object versioning is enabled for the bucket.",
+      "The supplied bucket configuration explicitly reports Versioning=Enabled.",
+      "The inference concludes that a deleted latest version can be rolled back to an earlier stored version."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

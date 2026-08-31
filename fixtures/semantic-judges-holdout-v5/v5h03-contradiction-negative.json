@@ -1,0 +1,21 @@
+{
+  "id": "v5h03-contradiction-negative",
+  "request": {
+    "id": "holdout-v5-soft-v5h03-contradiction-negative",
+    "task": "Determine whether the candidate maintenance start time conflicts with the supplied schedule.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "maintenance.start",
+        "value": "02:00Z"
+      }
+    },
+    "context": [
+      "The candidate says maintenance begins at 02:00 UTC.",
+      "The published schedule for the same service says maintenance begins at 02:00 UTC."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

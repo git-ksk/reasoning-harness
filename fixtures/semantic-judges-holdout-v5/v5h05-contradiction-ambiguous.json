@@ -1,0 +1,21 @@
+{
+  "id": "v5h05-contradiction-ambiguous",
+  "request": {
+    "id": "holdout-v5-soft-v5h05-contradiction-ambiguous",
+    "task": "Determine whether the candidate cache TTL conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "cache.ttl_seconds",
+        "value": "300"
+      }
+    },
+    "context": [
+      "The candidate says this service uses a 300-second cache TTL.",
+      "The platform default is 300 seconds, while an override record sets 120 seconds for cache group edge; the supplied context does not establish whether this service belongs to that group."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}
