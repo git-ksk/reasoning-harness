@@ -61,10 +61,10 @@ impl SemanticRuntimeProfile {
     }
 }
 
-/// Stabilization keeps the previously characterized v3 runtime as the default. D3 adoption is a
-/// separate, explicit change to this constant after the operational contract is merged.
+/// The default runtime adopts the stabilized D3 profile. The previously characterized v3 profile
+/// remains an explicit rollback target and can still be selected directly.
 pub const DEFAULT_SEMANTIC_RUNTIME_PROFILE: SemanticRuntimeProfile =
-    SemanticRuntimeProfile::SoftSemanticV3;
+    SemanticRuntimeProfile::SemanticDecidabilityD3V1;
 
 pub const fn default_semantic_runtime_profile() -> SemanticRuntimeProfile {
     DEFAULT_SEMANTIC_RUNTIME_PROFILE

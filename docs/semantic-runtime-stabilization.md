@@ -19,9 +19,9 @@ The stabilization API freezes these identifiers:
 
 `SemanticRuntimeProfile::SemanticDecidabilityD3V1` records the baseline, R2 contract, deterministic
 gate, and rollback configuration together. `SemanticRuntimeProfile::SoftSemanticV3` remains the
-compiled default during stabilization. Changing the default to D3 is intentionally a separate,
-reviewable runtime-adoption change; rollback is the inverse change back to the already characterized
-v3 profile.
+compiled default during the stabilization PR. After that change passed CI, a separate reviewable
+runtime-adoption PR switched the default to D3. The already characterized v3 profile remains an
+explicit rollback selection.
 
 `run_semantic_runtime` provides both profiles behind one provider-neutral API. The D3 branch executes
 the unchanged R2 semantic materialization, evaluates the harness-owned typed decidability gate, and
@@ -83,12 +83,18 @@ This preserves evidence such as a timeout after a partially completed model run 
 partial rows to masquerade as the frozen study's semantic denominator. Existing complete-trial metric
 rules remain unchanged.
 
-## Adoption boundary
+## Adoption and rollback
 
-This stabilization change does **not** adopt D3 as the default runtime. The next change may switch
-`DEFAULT_SEMANTIC_RUNTIME_PROFILE` from `SoftSemanticV3` to `SemanticDecidabilityD3V1` only as a
-separate PR after CI is green. The rollback target remains `soft-semantic-v3` and no provider-specific
+The stabilization PR deliberately left the default unchanged until its CI gate passed. Runtime
+adoption then occurred as a separate reversible change: `DEFAULT_SEMANTIC_RUNTIME_PROFILE` now
+selects `SemanticDecidabilityD3V1`, so `run_default_semantic_runtime` executes the R2 materialization
+plus deterministic D3 gate. `SemanticRuntimeProfile::SoftSemanticV3` remains directly selectable for
+rollback, and the low-level v3 semantic-judge API is not rewritten or removed. No provider-specific
 semantic branch is permitted.
 
-The observed holdout-v4/v5 corpora remain immutable research history. Stabilization code must not use
-their content for prompt tuning, relabelling, threshold selection, or calibration.
+Rollback therefore does not require changing fixtures, prompts, thresholds, or recorded research:
+a caller can select `SoftSemanticV3` explicitly, or the default constant can be reverted to that
+profile in one isolated runtime change.
+
+The observed holdout-v4/v5 corpora remain immutable research history. Neither stabilization nor
+adoption may use their content for prompt tuning, relabelling, threshold selection, or calibration.

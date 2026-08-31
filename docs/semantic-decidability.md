@@ -408,7 +408,7 @@ The operational stabilization layer now implements the first four hardening requ
 3. atomic partial-result preservation whose status explicitly forbids semantic scoring while incomplete;
 4. immutable runtime/config identity plus an explicit rollback profile to `soft-semantic-v3`.
 
-The compiled runtime default intentionally remains `soft-semantic-v3` in the stabilization change. Runtime adoption is requirement 5 and must be a separate reversible PR that switches the default to `semantic-decidability-d3-v1`. See [semantic runtime stabilization](semantic-runtime-stabilization.md).
+The stabilization change kept `soft-semantic-v3` as the default until its CI gate passed. A separate reversible adoption change then switched the compiled default to `semantic-decidability-d3-v1`; `soft-semantic-v3` remains the explicit rollback profile. See [semantic runtime stabilization and adoption](semantic-runtime-stabilization.md).
 
 Model-matrix expansion is secondary once two independent model families reproduce the same v5 safety pattern. Additional models should be added when they test a specific capability boundary, not merely to increase model count.
 
@@ -444,9 +444,9 @@ they do not define harness authority semantics.
 
 The D1 -> D2 -> D3 freeze -> holdout-v5 sequence has now produced a successful two-family pilot/replication result, while Gemini remains operationally incomplete and Nemotron documents a protocol-capability boundary. The next order of work is:
 
-1. stabilize the frozen D3 contract and runtime/config identity without semantic retuning;
-2. harden capability preflight, failure telemetry, partial-result preservation, and rollback;
-3. perform runtime adoption as a separate reversible change while retaining `soft-semantic-v3` as the rollback baseline;
+1. [done] stabilize the frozen D3 contract and runtime/config identity without semantic retuning;
+2. [done] harden capability preflight, failure telemetry, partial-result preservation, and rollback;
+3. [done] perform runtime adoption as a separate reversible change while retaining `soft-semantic-v3` as the rollback baseline;
 4. rerun the exact frozen Gemini v5 arm after quota reset for completeness, without changing the candidate;
 5. only after D3 is stable, open residual soft decidability if a new calibration corpus demonstrates a measurable gap not represented by typed metadata;
 6. evaluate selective/conformal uncertainty or causal relation-level sufficiency later, each under a new calibration identity and fresh independent holdout if it becomes an adoption candidate.
