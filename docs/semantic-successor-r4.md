@@ -40,11 +40,31 @@ Passing this gate validates R3b only as an independently supported **optional co
 
 Fixture IDs, request IDs, and exact request payloads must be unique relative to calibration and historical holdouts. `recorded_observations` must remain empty. Holdout-v1/v2/v3 remain historical diagnostic evidence and are not tuning data for this successor.
 
-
 ## Frozen R4 result: rejected
 
-The frozen workflow run `33371523453` evaluated merged main `55dbda5e71e83bdec95bf4495f65354ca301ef34` without changing the candidate, source set, holdout, seeds, token budget, or thresholds. Both sources completed 140/140 calls with zero operational failures.
+Run `33371523453` evaluated frozen main `55dbda5e71e83bdec95bf4495f65354ca301ef34`. The canonical gate was recorded on Issue #59 at `08:08:47Z`, before the run was created at `08:08:54Z`; PR #71 synchronized the same gate to the repository before artifact inspection.
 
-The primary `disagreement_only` policy retained trial-level precision and recall of 1.0 throughout and decision coverage ranged from 0.6071 to 0.7143, so the protocol, labelled-quality, and coverage gates passed. The uncertainty gate failed: trial-level ambiguous abstention was 0.5833, 0.7500, 0.8333, 0.7500, and 0.6667 (aggregate 0.7167), below the frozen aggregate >=0.85 and per-trial >=0.80 requirements. The fixture-collapsed sensitivity summary reached only 0.8333, which also remains below the frozen aggregate threshold.
+Both sources completed 140/140 calls with zero operational failures. Under the primary `disagreement_only` policy:
 
-The failure is structurally informative. Cross-model disagreement catches several uncertain cases, but `v4h-13-unsupported-premise-ambiguous` and `v4h-20-causal-gap-ambiguous` remain unanimously assertive across both sources and all seeds. Two-source agreement therefore cannot be treated as adequate uncertainty evidence. R3b is rejected as an independently validated successor; runtime `soft-semantic-v3` remains unchanged. Holdout-v4 is now observed diagnostic evidence and must not be tuned, relabelled, or reused as an independent adoption corpus.
+- precision: `1.000` — pass;
+- recall: `1.000` — pass;
+- fixture-collapsed ambiguous abstention: `0.8333` — **fail** vs `>=0.85`;
+- decision coverage: `0.6071` — pass vs `>=0.50`;
+- clear-case coverage: `0.9375` — pass vs `>=0.90`.
+
+Per-trial ambiguous abstention was `0.5833`, `0.7500`, `0.8333`, `0.7500`, and `0.6667`; four of five trials fail the frozen `>=0.80` threshold. Their mean is `0.7167`, but that mean is not the frozen fixture-collapsed aggregate metric. Per-trial precision/recall, overall coverage, and clear-case-coverage thresholds pass.
+
+The independent labelled-polarity gate also fails. On `v4h-03-contradiction-negative`, Gemini returned `no_finding` for all five seeds while Ministral returned `finding` for all five. Cross-model disagreement makes the combined output safely `abstain`, but the source/seed assertive-polarity stability requirement is violated.
+
+R3b also retains its structural limitation: if both sources make the same assertive decision, disagreement cannot expose the risk. Several ambiguity-labelled cases are assertive on individual trials; notably `v4h-13` and `v4h-20` are `finding` from both sources on every seed.
+
+### Post-observation holdout-spec audit
+
+A static audit against the already-frozen semantic decision guidance found two label/spec conflicts in holdout-v4:
+
+- `v4h-13` explicitly states that backup frequency is not supplied. Under the frozen `unsupported_premise` rule, affirmative absence of support is a `finding`; `abstain` is reserved for partial, unbound, or uncertain support.
+- `v4h-20` explicitly states that a simultaneous garbage-collector change was not isolated. Under the frozen `causal_gap` rule, explicit confounding/lack of directional isolation is a `finding` condition.
+
+These issues were found only after provider observation. The corpus and labels therefore remain unchanged: holdout-v4 must not be post-hoc repaired, relabelled, or rerun as a corrected independent test. The spec conflicts make v4 imperfect diagnostic evidence, but they do not rescue the candidate because the predeclared per-trial uncertainty gate and labelled-polarity gate fail independently.
+
+**Decision:** R3b is not adopted as an independently validated successor. Runtime `soft-semantic-v3` remains unchanged. Holdout-v4 and run `33371523453` are frozen diagnostic history and cannot be tuning data. A future successor requires fresh calibration-only research, a pre-observation fixture-label/spec review gate, and a newly frozen holdout-v5 for adoption testing.
