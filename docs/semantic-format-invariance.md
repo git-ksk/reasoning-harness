@@ -43,6 +43,8 @@ One complete JSON value plus non-JSON trailing text follows the existing bounded
 
 Within one provider/model study, cases are matched by `(fixture_id, trial, seed)`; provider and model are fixed study-level coordinates.
 
+For multi-representation studies, execution is interleaved by fixture/trial instead of running one full format block at a time. The representation order rotates deterministically with `(fixture_index + trial) mod representation_count`, and each case records its `execution_position`. This counterbalances position and reduces provider-time/load drift as a confound. The execution-design change uses research configuration identity `format-invariance-r1a-v2`; earlier bounded probes remain v1 historical diagnostics.
+
 `format_flip_rate` is:
 
 ```text

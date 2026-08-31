@@ -24,6 +24,7 @@ on:
           - nested-result-object
           - decision-finding-tuple
           - compact-key-object
+          - all
         default: nested-result-object
       fixture_set:
         description: Calibration-only fixture selection
@@ -98,6 +99,18 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           OUTPUT=/tmp/reason-semantic-format-study.json
+          REPRESENTATION_ARGS=()
+          case "$REPRESENTATION" in
+            all)
+              REPRESENTATION_ARGS+=(--representation nested-result-object)
+              REPRESENTATION_ARGS+=(--representation decision-finding-tuple)
+              REPRESENTATION_ARGS+=(--representation compact-key-object)
+              ;;
+            nested-result-object|decision-finding-tuple|compact-key-object)
+              REPRESENTATION_ARGS+=(--representation "$REPRESENTATION")
+              ;;
+            *) echo "unsupported representation: $REPRESENTATION" >&2; exit 2 ;;
+          esac
           FIXTURE_ARGS=()
           case "$FIXTURE_SET" in
             causal-triad)
@@ -112,13 +125,13 @@ jobs:
             fixtures/semantic-judges \
             --provider "$PROVIDER" \
             --model "$MODEL" \
-            --representation "$REPRESENTATION" \
+            "${REPRESENTATION_ARGS[@]}" \
             --seed 1000 \
             --trials "$TRIALS" \
             --max-tokens "$MAX_TOKENS" \
             "${FIXTURE_ARGS[@]}" \
             > "$OUTPUT"
-          jq '{configuration_id, semantic_baseline, provider, model, fixture_count, representations: [.representations[] | {representation, requested_output_format, effective_enforcement_class, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, fallback_enabled, fallback_rate, input_tokens, output_tokens, total_tokens, total_latency_ms, mean_latency_ms, trials}], comparisons, failures: [.representations[] as $r | $r.cases[] | select(.failure_class != null) | {representation: $r.representation, fixture_id, trial, finish_reason, failure_class, latency_ms, usage}]}' "$OUTPUT"
+          jq '{configuration_id, execution_design, semantic_baseline, provider, model, fixture_count, representations: [.representations[] | {representation, requested_output_format, effective_enforcement_class, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, fallback_enabled, fallback_rate, input_tokens, output_tokens, total_tokens, total_latency_ms, mean_latency_ms, trials}], comparisons, failures: [.representations[] as $r | $r.cases[] | select(.failure_class != null) | {representation: $r.representation, fixture_id, trial, finish_reason, failure_class, latency_ms, usage}]}' "$OUTPUT"
       - name: Preserve format-study JSON
         if: always() && steps.credential.outputs.available == 'true'
         uses: actions/upload-artifact@v4
