@@ -225,11 +225,11 @@ The next semantic-judge research sequence is deliberately staged:
 - [planned] investigate calibrated/selective-prediction methods only after these simple unanimity signals are characterized
 
 #### R4 — independent successor evaluation
-- [gate frozen #59] R3b passed the calibration gate; the independent acceptance criteria are predeclared in `docs/semantic-successor-r4.md` before the first holdout-v4 provider observation
-- [next #59] freeze a new observation-free 28-case holdout-v4 with 7 cases per semantic kind and 8/8/12 positive/negative/ambiguous balance
-- [planned] measure the exact `cross-model-selective-abstention-r3b-v1` Gemini 3.5 Flash-Lite + Ministral 8B source set for five matched trials without tuning after observation
-- [planned] require 100% operational completion, precision/recall and uncertainty gates, explicit clear-case coverage, polarity stability, provider-neutral semantics, and green deterministic authority regressions
-- [planned] preserve `soft-semantic-v3` as the default unless the independent gate is met; passing R4 validates R3b only as an optional frozen-source cross-model configuration, not as a universal source-set claim
+- [rejected #59] frozen run `33371523453` completed 280/280 calls with precision/recall 1.0, but fixture-collapsed ambiguous abstention was 0.8333 versus required >=0.85 and four of five per-trial values were below required >=0.80
+- [rejected #59] labelled polarity stability failed on `v4h-03-contradiction-negative`: Gemini was consistently `no_finding`, Ministral consistently `finding`; the combined policy safely abstained but the frozen source/seed gate was violated
+- [frozen diagnostic #59] holdout-v4 is now observed immutable evidence. A post-observation static audit found label/decision-rule conflicts in `v4h-13` and `v4h-20`; they must not be relabelled or used to rescue/re-score the candidate
+- [baseline retained] `soft-semantic-v3` remains the runtime baseline and R3b is not adopted as an independently validated successor
+- [next research] return to fresh calibration-only design for correlated/self-consistent over-assertion, add a pre-observation fixture-label/spec review gate, and require a newly frozen holdout-v5 for any future adoption attempt
 
 This sequence changes the research question from “which schema makes models obey JSON?” to “how much semantic behavior survives representation changes, and how can the harness minimize representation-induced risk without granting the model more authority?”
 
