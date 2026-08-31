@@ -8,6 +8,30 @@ use crate::{
     SoftJudgeRequest, SoftSemanticFinding,
 };
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MaterializationRepresentation {
+    DecisionNoteObject,
+    CompactDecisionNoteObject,
+    NestedDecisionNoteObject,
+}
+
+impl MaterializationRepresentation {
+    pub const ALL: [Self; 3] = [
+        Self::DecisionNoteObject,
+        Self::CompactDecisionNoteObject,
+        Self::NestedDecisionNoteObject,
+    ];
+
+    pub fn id(self) -> &'static str {
+        match self {
+            Self::DecisionNoteObject => "decision_note_object",
+            Self::CompactDecisionNoteObject => "compact_decision_note_object",
+            Self::NestedDecisionNoteObject => "nested_decision_note_object",
+        }
+    }
+}
+
 /// Research-only R2 output. The model owns only the semantic decision and an optional advisory
 /// note; request-known finding identity/binding remains harness-owned.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
@@ -18,8 +42,23 @@ pub struct MaterializedDecisionOutput {
     pub advisory_note: Option<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct CompactMaterializedDecisionOutput {
+    d: SoftJudgeDecision,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    n: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct NestedMaterializedDecisionOutput {
+    result: MaterializedDecisionOutput,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct MaterializationObservation {
+    pub representation: MaterializationRepresentation,
     pub decision: SoftJudgeDecision,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub advisory_note: Option<String>,
@@ -81,17 +120,38 @@ pub async fn run_model_backed_soft_judge_materialization(
     max_tokens: u32,
     random_seed: Option<u64>,
 ) -> Result<MaterializationObservation, MaterializationError> {
-    let model_request = build_soft_judge_materialization_request(request, max_tokens, random_seed)
-        .map_err(|error| MaterializationError::Setup(error.to_string()))?;
+    run_model_backed_soft_judge_materialization_representation(
+        adapter,
+        request,
+        MaterializationRepresentation::DecisionNoteObject,
+        max_tokens,
+        random_seed,
+    )
+    .await
+}
+
+pub async fn run_model_backed_soft_judge_materialization_representation(
+    adapter: &dyn ModelAdapter,
+    request: &SoftJudgeRequest,
+    representation: MaterializationRepresentation,
+    max_tokens: u32,
+    random_seed: Option<u64>,
+) -> Result<MaterializationObservation, MaterializationError> {
+    let model_request = build_soft_judge_materialization_representation_request(
+        request,
+        representation,
+        max_tokens,
+        random_seed,
+    )
+    .map_err(|error| MaterializationError::Setup(error.to_string()))?;
     let response = adapter.generate(model_request).await?;
-    let output = parse_materialized_decision_output(&response.text).map_err(|error| {
-        MaterializationError::InvalidOutput {
+    let output = parse_materialized_decision_representation_output(representation, &response.text)
+        .map_err(|error| MaterializationError::InvalidOutput {
             message: error.to_string(),
             model: response.model.clone(),
             usage: response.usage.clone(),
             finish_reason: response.finish_reason.clone(),
-        }
-    })?;
+        })?;
     let materialized_output = materialize_soft_judge_output(request, &output);
     crate::semantic_judge::validate_output(request, &materialized_output).map_err(|error| {
         MaterializationError::InvalidOutput {
@@ -103,6 +163,7 @@ pub async fn run_model_backed_soft_judge_materialization(
     })?;
 
     Ok(MaterializationObservation {
+        representation,
         decision: output.decision,
         advisory_note: output.advisory_note,
         materialized_output,
@@ -119,11 +180,24 @@ pub fn build_soft_judge_materialization_request(
     max_tokens: u32,
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
+    build_soft_judge_materialization_representation_request(
+        request,
+        MaterializationRepresentation::DecisionNoteObject,
+        max_tokens,
+        random_seed,
+    )
+}
+
+pub fn build_soft_judge_materialization_representation_request(
+    request: &SoftJudgeRequest,
+    representation: MaterializationRepresentation,
+    max_tokens: u32,
+    random_seed: Option<u64>,
+) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
     let request_json = serde_json::to_string_pretty(request)
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
     let decision_guidance = crate::semantic_judge::soft_judge_decision_guidance(request.kind);
-    let schema = serde_json::to_value(schema_for!(MaterializedDecisionOutput))
-        .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
+    let schema = materialization_representation_schema(representation)?;
 
     Ok(ModelRequest {
         task: format!(
@@ -134,7 +208,12 @@ pub fn build_soft_judge_materialization_request(
                 .into(),
         ),
         output_format: ModelOutputFormat::JsonSchema {
-            name: "soft_judge_materialized_decision".into(),
+            name: match representation {
+                MaterializationRepresentation::DecisionNoteObject => {
+                    "soft_judge_materialized_decision".into()
+                }
+                _ => format!("soft_judge_materialized_{}", representation.id()),
+            },
             schema,
         },
         max_tokens: Some(max_tokens),
@@ -143,14 +222,59 @@ pub fn build_soft_judge_materialization_request(
     })
 }
 
+fn materialization_representation_schema(
+    representation: MaterializationRepresentation,
+) -> Result<serde_json::Value, ModelBackedSoftJudgeError> {
+    let value = match representation {
+        MaterializationRepresentation::DecisionNoteObject => {
+            serde_json::to_value(schema_for!(MaterializedDecisionOutput))
+        }
+        MaterializationRepresentation::CompactDecisionNoteObject => {
+            serde_json::to_value(schema_for!(CompactMaterializedDecisionOutput))
+        }
+        MaterializationRepresentation::NestedDecisionNoteObject => {
+            serde_json::to_value(schema_for!(NestedMaterializedDecisionOutput))
+        }
+    };
+    value.map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))
+}
+
+pub fn parse_materialized_decision_representation_output(
+    representation: MaterializationRepresentation,
+    text: &str,
+) -> Result<MaterializedDecisionOutput, ModelBackedSoftJudgeError> {
+    match representation {
+        MaterializationRepresentation::DecisionNoteObject => {
+            parse_materialized_decision_output(text)
+        }
+        MaterializationRepresentation::CompactDecisionNoteObject => {
+            let output: CompactMaterializedDecisionOutput =
+                parse_one_materialized_json_value(text)?;
+            Ok(MaterializedDecisionOutput {
+                decision: output.d,
+                advisory_note: output.n,
+            })
+        }
+        MaterializationRepresentation::NestedDecisionNoteObject => {
+            let output: NestedMaterializedDecisionOutput = parse_one_materialized_json_value(text)?;
+            Ok(output.result)
+        }
+    }
+}
+
 pub fn parse_materialized_decision_output(
     text: &str,
 ) -> Result<MaterializedDecisionOutput, ModelBackedSoftJudgeError> {
-    match serde_json::from_str::<MaterializedDecisionOutput>(text) {
+    parse_one_materialized_json_value(text)
+}
+
+fn parse_one_materialized_json_value<T: for<'de> Deserialize<'de>>(
+    text: &str,
+) -> Result<T, ModelBackedSoftJudgeError> {
+    match serde_json::from_str::<T>(text) {
         Ok(output) => Ok(output),
         Err(strict_error) => {
-            let mut stream =
-                serde_json::Deserializer::from_str(text).into_iter::<MaterializedDecisionOutput>();
+            let mut stream = serde_json::Deserializer::from_str(text).into_iter::<T>();
             let Some(Ok(output)) = stream.next() else {
                 return Err(ModelBackedSoftJudgeError::InvalidStructuredOutput(
                     strict_error.to_string(),
