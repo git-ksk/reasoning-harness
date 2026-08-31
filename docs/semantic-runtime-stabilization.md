@@ -98,3 +98,18 @@ profile in one isolated runtime change.
 
 The observed holdout-v4/v5 corpora remain immutable research history. Neither stabilization nor
 adoption may use their content for prompt tuning, relabelling, threshold selection, or calibration.
+
+## Live operational smoke
+
+The adopted runtime has a separate synthetic smoke surface that is deliberately outside the D2 and
+holdout-v5 research corpora. `reason-semantic-runtime-smoke` executes two bounded operational cases
+against a selected provider/model:
+
+- a deterministic `permit` case, where D3 must preserve the R2 base decision; and
+- a deterministic `force_abstain` case, where D3 must return `abstain` regardless of the R2 base
+  decision.
+
+The same cases also execute the explicit `soft-semantic-v3` rollback profile and require it to
+remain operationally executable. Fixture dispositions are recomputed before provider initialization,
+and live failures are reported with the existing typed operational classes. The smoke surface is not
+semantic calibration, does not score correctness, and must not consume or modify frozen holdouts.

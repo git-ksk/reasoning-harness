@@ -1,0 +1,55 @@
+name: semantic-runtime-smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: ${{ matrix.provider }}-${{ matrix.model }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-latest
+          - provider: google
+            model: gemma-4-31b-it
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Run live semantic runtime smoke
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          OUTPUT=/tmp/reason-semantic-runtime-smoke.json
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-semantic-runtime-smoke -- \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --fixtures fixtures/semantic-runtime-smoke \
+            --max-tokens 256 \
+            --seed 9000 \
+            > "$OUTPUT"
+          STATUS=$?
+          set -e
+          jq '{surface_id, provider, requested_model, default_configuration_id, rollback_configuration_id, fixture_count, attempted_provider_calls, successful_provider_calls, failure_counts, status, observations: [.observations[] | {fixture_id, expected_disposition, seed, default_d3: {status: .default_d3.status, base_decision: .default_d3.base_decision, final_decision: .default_d3.final_decision, disposition: .default_d3.disposition, observed_model: .default_d3.observed_model, usage: .default_d3.usage, latency_ms: .default_d3.latency_ms, failure_class: .default_d3.failure_class}, rollback_v3: {status: .rollback_v3.status, base_decision: .rollback_v3.base_decision, final_decision: .rollback_v3.final_decision, observed_model: .rollback_v3.observed_model, usage: .rollback_v3.usage, latency_ms: .rollback_v3.latency_ms, failure_class: .rollback_v3.failure_class}}]}' "$OUTPUT"
+          exit "$STATUS"
+      - name: Preserve runtime smoke JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-runtime-smoke-${{ matrix.provider }}-${{ matrix.model }}
+          path: /tmp/reason-semantic-runtime-smoke.json
+          if-no-files-found: error
+          retention-days: 30

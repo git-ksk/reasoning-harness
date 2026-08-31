@@ -1,0 +1,33 @@
+{
+  "id": "runtime-smoke-force-abstain",
+  "request": {
+    "id": "runtime-smoke-force-abstain",
+    "task": "Check whether the supplied context provides a counterexample to the target claim.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-limit"
+    },
+    "context": [
+      "The target intentionally lacks the harness-owned proposition binding required for an assertive counterexample decision."
+    ]
+  },
+  "artifact": {
+    "task": "Synthetic operational runtime smoke fixture.",
+    "evidence": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "claims": [
+      {
+        "id": "claim-limit",
+        "statement": "The limit is 100.",
+        "state": "unknown",
+        "evidence_ids": []
+      }
+    ],
+    "inferences": []
+  },
+  "expected_disposition": "force_abstain"
+}
