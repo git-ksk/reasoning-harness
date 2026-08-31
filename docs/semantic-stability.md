@@ -54,3 +54,17 @@ These are research policies, not runtime defaults.
 `reason-stability-study` interleaves the three R2 representations within each fixture/trial and rotates their order with `(fixture_index + trial) mod 3`. This reduces provider-time/order drift. The workflow starts with a causal positive/negative/ambiguous triad before any full calibration matrix.
 
 Only this checkout's canonical `fixtures/semantic-judges` directory is accepted. Historical holdouts remain blocked from R3 tuning.
+
+## Measured R3 calibration result
+
+The first 18-fixture single-trial R3 representation study produced two distinct regimes. Gemini 3.5 Flash-Lite had two ambiguous fixtures with cross-representation disagreement; unanimity-based selective abstention escalated both to `abstain`, yielding precision/recall 1.0, ambiguous abstention 1.0, and decision coverage 0.6111. Ministral 8B was 18/18 protocol-complete under all three R2 representations and produced identical decisions across them, leaving ambiguous abstention at 0.5714.
+
+The Mistral result is a stable-miscalibration/self-consistent-error case: seed and representation agreement do not imply correctness or adequate uncertainty handling. R3 therefore characterizes a useful but bounded detector rather than a complete reliability mechanism.
+
+## R3b cross-model risk
+
+R3b adds a separate optional risk axis for deployments that have more than one model/provider available. Every source receives the same R2 semantic/materialization contract and canonical `decision_note_object` representation. Model identity may affect adapter mechanics only; it cannot select a different semantic prompt or decision rule.
+
+Cross-model outputs are probes, never votes. If successful sources disagree, the existing unanimity evaluator conservatively returns `abstain`. If all sources agree, the soft decision may be preserved but gains no additional authority. Operationally missing sources remain a separate risk signal and can be handled by the stricter complete-unanimity candidate.
+
+The CLI accepts N distinct `provider:model` sources. The initial GitHub Actions surface is intentionally bounded to two sources for the first calibration study. This direction is motivated by Tan et al., *Too Consistent to Detect: A Study of Self-Consistent Errors in LLMs* (EMNLP 2025, DOI 10.18653/v1/2025.emnlp-main.238), which shows that self-consistent errors are difficult for same-model consistency detectors and that cross-model evidence can provide an orthogonal signal.

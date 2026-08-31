@@ -25,6 +25,10 @@ path = "src/bin/materialization.rs"
 name = "reason-stability-study"
 path = "src/bin/stability.rs"
 
+[[bin]]
+name = "reason-cross-model-study"
+path = "src/bin/cross_model.rs"
+
 [dependencies]
 clap.workspace = true
 reasoning-harness-core = { path = "../reasoning-harness-core" }

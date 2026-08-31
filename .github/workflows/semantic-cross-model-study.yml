@@ -1,0 +1,138 @@
+name: semantic-cross-model-study
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_a_provider:
+        description: Provider for source A
+        required: true
+        type: choice
+        options:
+          - google
+          - mistral
+        default: google
+      source_a_model:
+        description: Model for source A
+        required: true
+        type: string
+        default: gemini-3.5-flash-lite
+      source_b_provider:
+        description: Provider for source B
+        required: true
+        type: choice
+        options:
+          - mistral
+          - google
+        default: mistral
+      source_b_model:
+        description: Model for source B
+        required: true
+        type: string
+        default: ministral-8b-latest
+      fixture_set:
+        description: Calibration-only fixture selection
+        required: true
+        type: choice
+        options:
+          - causal-triad
+          - all-calibration
+        default: causal-triad
+      trials:
+        description: Matched seed trials per source
+        required: true
+        type: choice
+        options:
+          - '1'
+          - '5'
+        default: '1'
+      max_tokens:
+        description: Maximum output tokens per provider call
+        required: true
+        type: choice
+        options:
+          - '256'
+          - '512'
+        default: '512'
+
+permissions:
+  contents: read
+
+jobs:
+  study:
+    name: cross-model-${{ inputs.fixture_set }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    concurrency:
+      group: reasoning-harness-cross-model-study
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check source credential availability
+        id: credential
+        env:
+          SOURCE_A_PROVIDER: ${{ inputs.source_a_provider }}
+          SOURCE_B_PROVIDER: ${{ inputs.source_b_provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          provider_key() {
+            case "$1" in
+              mistral) printf '%s' "$MISTRAL_API_KEY" ;;
+              google) printf '%s' "$GEMINI_API_KEY" ;;
+              *) return 2 ;;
+            esac
+          }
+          A_KEY="$(provider_key "$SOURCE_A_PROVIDER")"
+          B_KEY="$(provider_key "$SOURCE_B_PROVIDER")"
+          if [ -n "$A_KEY" ] && [ -n "$B_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::one or more cross-model source credentials are not configured; skipping study."
+          fi
+      - name: Run bounded calibration-only cross-model study
+        if: steps.credential.outputs.available == 'true'
+        env:
+          SOURCE_A_PROVIDER: ${{ inputs.source_a_provider }}
+          SOURCE_A_MODEL: ${{ inputs.source_a_model }}
+          SOURCE_B_PROVIDER: ${{ inputs.source_b_provider }}
+          SOURCE_B_MODEL: ${{ inputs.source_b_model }}
+          FIXTURE_SET: ${{ inputs.fixture_set }}
+          TRIALS: ${{ inputs.trials }}
+          MAX_TOKENS: ${{ inputs.max_tokens }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          OUTPUT=/tmp/reason-semantic-cross-model-study.json
+          FIXTURE_ARGS=()
+          case "$FIXTURE_SET" in
+            causal-triad)
+              FIXTURE_ARGS+=(--fixture 07_causal_positive)
+              FIXTURE_ARGS+=(--fixture 08_causal_negative)
+              FIXTURE_ARGS+=(--fixture 09_causal_ambiguous)
+              ;;
+            all-calibration) ;;
+            *) echo "unsupported calibration fixture set: $FIXTURE_SET" >&2; exit 2 ;;
+          esac
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-cross-model-study -- \
+            fixtures/semantic-judges \
+            --source "$SOURCE_A_PROVIDER:$SOURCE_A_MODEL" \
+            --source "$SOURCE_B_PROVIDER:$SOURCE_B_MODEL" \
+            --seed 4000 \
+            --trials "$TRIALS" \
+            --max-tokens "$MAX_TOKENS" \
+            "${FIXTURE_ARGS[@]}" \
+            > "$OUTPUT"
+          jq '{configuration_id, execution_design, materialization_contract, representation, fixture_count, source_count, sources: [.sources[] | {source_id, provider, model, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, total_tokens, total_latency_ms, mean_latency_ms, trials}], combined_cross_model_stability: {source_count: .combined_cross_model_stability.source_count, trials: .combined_cross_model_stability.trials, expected_probes_per_fixture: .combined_cross_model_stability.expected_probes_per_fixture, policies: .combined_cross_model_stability.policies, risky_fixtures: [.combined_cross_model_stability.fixtures[] | select(.combined_assessment.risk_signals | length > 0) | {fixture_id, label, per_trial, combined_assessment, disagreement_only, complete_unanimity}]}, failures: [.sources[] as $s | $s.cases[] | select(.failure_class != null) | {source_id: $s.source_id, fixture_id, trial, seed, finish_reason, failure_class, latency_ms, usage}]}' "$OUTPUT"
+      - name: Preserve cross-model study JSON
+        if: always() && steps.credential.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-cross-model-${{ inputs.fixture_set }}
+          path: /tmp/reason-semantic-cross-model-study.json
+          if-no-files-found: ignore
+          retention-days: 14

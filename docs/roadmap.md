@@ -218,8 +218,10 @@ The next semantic-judge research sequence is deliberately staged:
 #### R3 — selective abstention from instability
 - [implemented #59] provider-neutral stability assessment separates decision disagreement, operational incompleteness, and no-success conditions; no vote count can become truth
 - [implemented #59] two calibration-only selective candidates are explicit: disagreement-only and complete-unanimity, both of which may only preserve a unanimous soft decision or conservatively escalate to `abstain`
-- [in progress #59] measure cross-seed plus information-equivalent R2 representation stability using decision-note, compact-key decision-note, and nested-decision-note surfaces with counterbalanced execution
+- [calibration result #59] cross-seed plus information-equivalent R2 representation stability is measured with decision-note, compact-key decision-note, and nested-decision-note surfaces under counterbalanced execution
 - [implemented #59] report coverage, precision/recall, ambiguous abstention, risk-fixture count, and abstention escalation so always-abstain behavior cannot pass by construction
+- [calibration result #59] R3 cross-representation stability detects two ambiguous Gemini 3.5 fixtures and safely escalates them to abstain, but Ministral 8B remains 18/18 protocol-complete and representation-stable while ambiguous abstention stays 0.5714; consistency alone is therefore insufficient
+- [in progress #59] R3b adds optional N-source cross-model unanimity as an orthogonal risk signal for self-consistent errors; model/provider disagreement can only escalate to abstain and never becomes majority-vote truth
 - [planned] investigate calibrated/selective-prediction methods only after these simple unanimity signals are characterized
 
 #### R4 — independent successor evaluation
