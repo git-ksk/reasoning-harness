@@ -9,8 +9,11 @@ use std::{
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
     CalibrationLabel, FormatJudgeError, MaterializationError, ModelAdapter, ModelErrorKind,
-    ModelUsage, SoftJudgeCalibrationFixture, SoftJudgeDecision, SoftJudgeRepresentation,
-    run_model_backed_soft_judge_materialization, run_model_backed_soft_judge_representation,
+    ModelUsage, SelectiveAbstentionOutcome, SelectiveAbstentionPolicy, SoftDecisionProbe,
+    SoftDecisionStabilityAssessment, SoftJudgeCalibrationFixture, SoftJudgeDecision,
+    SoftJudgeRepresentation, StabilityRiskSignal, apply_selective_abstention,
+    assess_soft_decision_stability, run_model_backed_soft_judge_materialization,
+    run_model_backed_soft_judge_representation,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter};
 use serde::Serialize;
@@ -158,6 +161,39 @@ struct MaterializationComparison {
 }
 
 #[derive(Debug, Serialize)]
+struct FixtureStabilityReport {
+    fixture_id: String,
+    label: CalibrationLabel,
+    assessment: SoftDecisionStabilityAssessment,
+    disagreement_only: SelectiveAbstentionOutcome,
+    complete_unanimity: SelectiveAbstentionOutcome,
+}
+
+#[derive(Debug, Serialize)]
+struct SelectivePolicyMetrics {
+    policy: SelectiveAbstentionPolicy,
+    fixture_count: usize,
+    risk_fixture_count: usize,
+    operationally_incomplete_fixture_count: usize,
+    escalated_to_abstain: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    precision: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    recall: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    decision_coverage: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ambiguous_abstention: Option<f64>,
+}
+
+#[derive(Debug, Serialize)]
+struct ArmStabilityReport {
+    arm: StudyArm,
+    fixtures: Vec<FixtureStabilityReport>,
+    policies: Vec<SelectivePolicyMetrics>,
+}
+
+#[derive(Debug, Serialize)]
 struct StudyOutput {
     configuration_id: &'static str,
     execution_design: &'static str,
@@ -169,6 +205,7 @@ struct StudyOutput {
     effective_enforcement_class: &'static str,
     arms: Vec<ArmReport>,
     comparison: MaterializationComparison,
+    stability: Vec<ArmStabilityReport>,
 }
 
 #[derive(Debug)]
@@ -237,6 +274,7 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
     )
     .await;
     let comparison = compare_arms(&reports)?;
+    let stability = reports.iter().map(summarize_stability).collect();
 
     Ok(StudyOutput {
         configuration_id: "materialization-r2-v1",
@@ -249,6 +287,7 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
         effective_enforcement_class: effective_enforcement_class(args.provider),
         arms: reports,
         comparison,
+        stability,
     })
 }
 
@@ -496,6 +535,129 @@ fn semantic_trial_metrics(trial: usize, cases: &[&StudyCase]) -> TrialMetrics {
         precision: ratio(tp, tp + fp),
         recall: ratio(tp, tp + fn_),
         decision_coverage: ratio(decided, cases.len()),
+        ambiguous_abstention: ratio(ambiguous_abstain, ambiguous),
+    }
+}
+
+fn summarize_stability(report: &ArmReport) -> ArmStabilityReport {
+    let mut by_fixture = BTreeMap::<String, Vec<&StudyCase>>::new();
+    for case in &report.cases {
+        by_fixture
+            .entry(case.fixture_id.clone())
+            .or_default()
+            .push(case);
+    }
+
+    let fixtures = by_fixture
+        .into_iter()
+        .map(|(fixture_id, mut cases)| {
+            cases.sort_by_key(|case| (case.trial, case.seed));
+            let label = cases[0].label;
+            let probes = cases
+                .iter()
+                .map(|case| SoftDecisionProbe {
+                    probe_id: format!("trial:{}:seed:{:?}", case.trial, case.seed),
+                    decision: case.decision,
+                })
+                .collect::<Vec<_>>();
+            let assessment = assess_soft_decision_stability(&probes);
+            let disagreement_only = apply_selective_abstention(
+                &assessment,
+                SelectiveAbstentionPolicy::DisagreementOnly,
+            );
+            let complete_unanimity = apply_selective_abstention(
+                &assessment,
+                SelectiveAbstentionPolicy::CompleteUnanimity,
+            );
+            FixtureStabilityReport {
+                fixture_id,
+                label,
+                assessment,
+                disagreement_only,
+                complete_unanimity,
+            }
+        })
+        .collect::<Vec<_>>();
+
+    let policies = [
+        SelectiveAbstentionPolicy::DisagreementOnly,
+        SelectiveAbstentionPolicy::CompleteUnanimity,
+    ]
+    .into_iter()
+    .map(|policy| selective_policy_metrics(&fixtures, policy))
+    .collect();
+
+    ArmStabilityReport {
+        arm: report.arm,
+        fixtures,
+        policies,
+    }
+}
+
+fn selective_policy_metrics(
+    fixtures: &[FixtureStabilityReport],
+    policy: SelectiveAbstentionPolicy,
+) -> SelectivePolicyMetrics {
+    let mut tp = 0usize;
+    let mut fp = 0usize;
+    let mut fn_ = 0usize;
+    let mut decided = 0usize;
+    let mut ambiguous = 0usize;
+    let mut ambiguous_abstain = 0usize;
+    let mut risk_fixture_count = 0usize;
+    let mut operationally_incomplete_fixture_count = 0usize;
+    let mut escalated_to_abstain = 0usize;
+
+    for fixture in fixtures {
+        let outcome = match policy {
+            SelectiveAbstentionPolicy::DisagreementOnly => &fixture.disagreement_only,
+            SelectiveAbstentionPolicy::CompleteUnanimity => &fixture.complete_unanimity,
+        };
+        if !fixture.assessment.risk_signals.is_empty() {
+            risk_fixture_count += 1;
+        }
+        if fixture
+            .assessment
+            .risk_signals
+            .contains(&StabilityRiskSignal::OperationalIncomplete)
+        {
+            operationally_incomplete_fixture_count += 1;
+        }
+        escalated_to_abstain += usize::from(outcome.escalated_to_abstain);
+        if outcome.decision != SoftJudgeDecision::Abstain {
+            decided += 1;
+        }
+        match fixture.label {
+            CalibrationLabel::Positive => {
+                if outcome.decision == SoftJudgeDecision::Finding {
+                    tp += 1;
+                } else {
+                    fn_ += 1;
+                }
+            }
+            CalibrationLabel::Negative => {
+                if outcome.decision == SoftJudgeDecision::Finding {
+                    fp += 1;
+                }
+            }
+            CalibrationLabel::Ambiguous => {
+                ambiguous += 1;
+                if outcome.decision == SoftJudgeDecision::Abstain {
+                    ambiguous_abstain += 1;
+                }
+            }
+        }
+    }
+
+    SelectivePolicyMetrics {
+        policy,
+        fixture_count: fixtures.len(),
+        risk_fixture_count,
+        operationally_incomplete_fixture_count,
+        escalated_to_abstain,
+        precision: ratio(tp, tp + fp),
+        recall: ratio(tp, tp + fn_),
+        decision_coverage: ratio(decided, fixtures.len()),
         ambiguous_abstention: ratio(ambiguous_abstain, ambiguous),
     }
 }

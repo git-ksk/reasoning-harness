@@ -1,12 +1,13 @@
 use std::{fs, path::Path, pin::Pin};
 
 use reasoning_harness_core::{
-    MaterializationError, MaterializedDecisionOutput, ModelAdapter, ModelOutputFormat,
-    ModelRequest, ModelResponse, ModelUsage, Proposition, SemanticDiagnosticKind,
-    SemanticDiagnosticTarget, SoftJudgeDecision, SoftJudgeRequest,
+    MaterializationError, MaterializationRepresentation, MaterializedDecisionOutput, ModelAdapter,
+    ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage, Proposition,
+    SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftJudgeDecision, SoftJudgeRequest,
+    build_soft_judge_materialization_representation_request,
     build_soft_judge_materialization_request, build_soft_judge_model_request,
     materialize_soft_judge_output, parse_materialized_decision_output,
-    run_model_backed_soft_judge_materialization,
+    parse_materialized_decision_representation_output, run_model_backed_soft_judge_materialization,
 };
 
 fn request() -> SoftJudgeRequest {
@@ -205,4 +206,88 @@ async fn invalid_model_payload_retains_provider_usage_without_semantic_repair() 
     assert_eq!(model, "provider-model");
     assert_eq!(usage.total_tokens, Some(14));
     assert_eq!(finish_reason.as_deref(), Some("stop"));
+}
+
+#[test]
+fn r2_representation_variants_change_only_output_format() {
+    let baseline = build_soft_judge_materialization_representation_request(
+        &request(),
+        MaterializationRepresentation::DecisionNoteObject,
+        256,
+        Some(11),
+    )
+    .unwrap();
+    for representation in MaterializationRepresentation::ALL
+        .into_iter()
+        .filter(|representation| {
+            *representation != MaterializationRepresentation::DecisionNoteObject
+        })
+    {
+        let variant = build_soft_judge_materialization_representation_request(
+            &request(),
+            representation,
+            256,
+            Some(11),
+        )
+        .unwrap();
+        assert_eq!(variant.task, baseline.task);
+        assert_eq!(variant.system, baseline.system);
+        assert_eq!(variant.max_tokens, baseline.max_tokens);
+        assert_eq!(variant.random_seed, baseline.random_seed);
+        assert_eq!(variant.reasoning_preference, baseline.reasoning_preference);
+        assert_ne!(variant.output_format, baseline.output_format);
+    }
+}
+
+#[test]
+fn r2_representation_parsers_preserve_the_same_decision_contract() {
+    let samples = [
+        (
+            MaterializationRepresentation::DecisionNoteObject,
+            r#"{"decision":"finding","advisory_note":"soft note"}"#,
+        ),
+        (
+            MaterializationRepresentation::CompactDecisionNoteObject,
+            r#"{"d":"finding","n":"soft note"}"#,
+        ),
+        (
+            MaterializationRepresentation::NestedDecisionNoteObject,
+            r#"{"result":{"decision":"finding","advisory_note":"soft note"}}"#,
+        ),
+    ];
+    for (representation, text) in samples {
+        let parsed =
+            parse_materialized_decision_representation_output(representation, text).unwrap();
+        assert_eq!(parsed.decision, SoftJudgeDecision::Finding);
+        let materialized = materialize_soft_judge_output(&request(), &parsed);
+        assert_eq!(materialized.decision, SoftJudgeDecision::Finding);
+        let finding = materialized
+            .finding
+            .expect("finding decision is harness-materialized");
+        assert_eq!(finding.kind, request().kind);
+        assert_eq!(finding.target, request().target);
+    }
+}
+
+#[test]
+fn compact_representation_preserves_note_and_rejects_model_owned_binding_fields() {
+    let parsed = parse_materialized_decision_representation_output(
+        MaterializationRepresentation::CompactDecisionNoteObject,
+        r#"{"d":"finding","n":"soft note"}"#,
+    )
+    .unwrap();
+    assert_eq!(parsed.advisory_note.as_deref(), Some("soft note"));
+
+    for text in [
+        r#"{"d":"finding","kind":"contradiction"}"#,
+        r#"{"decision":"finding","advisory_note":"wrong keys"}"#,
+    ] {
+        assert!(
+            parse_materialized_decision_representation_output(
+                MaterializationRepresentation::CompactDecisionNoteObject,
+                text,
+            )
+            .is_err()
+        );
+    }
 }

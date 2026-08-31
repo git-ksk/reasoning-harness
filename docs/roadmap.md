@@ -213,13 +213,14 @@ The next semantic-judge research sequence is deliberately staged:
 - [implemented #59] v3 kind-specific decision guidance and request controls are regression-locked while the ownership instructions/schema change intentionally under `materialization-r2-v1`
 - [implemented #59] syntax-only normalization fails closed on unknown/authority-like fields or multiple semantic JSON values; advisory-note text is not persisted for research scoring
 - [implemented #59] a counterbalanced calibration-only runner reports protocol completion, semantic metrics, matched decision flips, token/latency cost, and operational failure classes; exact-path guards reject holdout or symlink substitution before credentials
-- [pending live validation #59] begin with the causal triad before any full-calibration or repeated R2 matrix
+- [calibration result #59] causal-triad, 18-fixture single-trial, and five-trial R2 matrices are complete for Gemini 3.5 Flash-Lite and Ministral 8B; both R2 arms reached 90/90 protocol completion in repeated trials, while uncertainty behavior remained provider-dependent
 
 #### R3 — selective abstention from instability
-- [planned] measure decision stability across bounded seed and representation perturbations on calibration data
-- [planned] use disagreement only as a risk signal: unstable cases may be escalated to `abstain`, but repeated/model-majority outputs must never be promoted to truth, trusted evidence, hard findings, or verdict authority
-- [planned] evaluate the coverage-versus-abstention trade-off explicitly so trivial always-abstain behavior cannot pass the gate
-- [planned] investigate calibrated/selective-prediction methods only after the simpler stability signals are characterized
+- [implemented #59] provider-neutral stability assessment separates decision disagreement, operational incompleteness, and no-success conditions; no vote count can become truth
+- [implemented #59] two calibration-only selective candidates are explicit: disagreement-only and complete-unanimity, both of which may only preserve a unanimous soft decision or conservatively escalate to `abstain`
+- [in progress #59] measure cross-seed plus information-equivalent R2 representation stability using decision-note, compact-key decision-note, and nested-decision-note surfaces with counterbalanced execution
+- [implemented #59] report coverage, precision/recall, ambiguous abstention, risk-fixture count, and abstention escalation so always-abstain behavior cannot pass by construction
+- [planned] investigate calibrated/selective-prediction methods only after these simple unanimity signals are characterized
 
 #### R4 — independent successor evaluation
 - [blocked] do not create or consume holdout-v4 until one provider-neutral candidate passes the R1-R3 calibration gates without tuning against holdout-v1/v2/v3

@@ -27,6 +27,7 @@ pub mod resolution_benchmark;
 pub mod schema;
 pub mod semantic_judge;
 pub mod semantic_materialization;
+pub mod semantic_stability;
 pub mod types;
 pub mod validate;
 pub mod verification;
@@ -146,9 +147,17 @@ pub use semantic_judge::{
     validate_calibration_fixtures,
 };
 pub use semantic_materialization::{
-    MaterializationError, MaterializationObservation, MaterializedDecisionOutput,
+    MaterializationError, MaterializationObservation, MaterializationRepresentation,
+    MaterializedDecisionOutput, build_soft_judge_materialization_representation_request,
     build_soft_judge_materialization_request, materialize_soft_judge_output,
-    parse_materialized_decision_output, run_model_backed_soft_judge_materialization,
+    parse_materialized_decision_output, parse_materialized_decision_representation_output,
+    run_model_backed_soft_judge_materialization,
+    run_model_backed_soft_judge_materialization_representation,
+};
+pub use semantic_stability::{
+    SelectiveAbstentionOutcome, SelectiveAbstentionPolicy, SoftDecisionProbe,
+    SoftDecisionStabilityAssessment, StabilityRiskSignal, apply_selective_abstention,
+    assess_soft_decision_stability,
 };
 pub use types::{
     AdversarialFinding, AdversarialFindingKind, ApplicabilityScope, CandidateClaim,
