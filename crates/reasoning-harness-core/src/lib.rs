@@ -14,6 +14,7 @@ pub mod eval;
 pub mod evidence_qualification;
 pub mod evidence_qualification_benchmark;
 pub mod finalization;
+pub mod format_invariance;
 pub mod frameworks;
 pub mod generation;
 pub mod harness;
@@ -83,6 +84,12 @@ pub use evidence_qualification_benchmark::{
 pub use finalization::{
     CanonicalFinalAnswerRenderer, FinalAnswerCandidate, FinalAnswerClaim, FinalAnswerRenderer,
     FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus, finalize_answer,
+};
+pub use format_invariance::{
+    FormatComparisonError, FormatDecisionTransition, FormatFlipReport, FormatJudgeError,
+    FormatJudgeObservation, MatchedFormatDecision, SoftJudgeRepresentation,
+    build_soft_judge_representation_request, compare_soft_judge_formats,
+    parse_soft_judge_representation_decision, run_model_backed_soft_judge_representation,
 };
 pub use generation::{build_candidate_json_fallback_request, build_candidate_request};
 pub use harness::{HarnessError, HarnessOutcome, Pass, run_harness, run_passes};

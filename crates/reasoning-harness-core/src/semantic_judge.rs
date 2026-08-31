@@ -117,7 +117,7 @@ pub async fn run_soft_judge(
     })
 }
 
-fn validate_output(
+pub(crate) fn validate_output(
     request: &SoftJudgeRequest,
     output: &SoftJudgeOutput,
 ) -> Result<(), SoftJudgeError> {
@@ -427,7 +427,7 @@ pub fn parse_soft_judge_output(text: &str) -> Result<SoftJudgeOutput, serde_json
     }
 }
 
-fn parse_and_validate_soft_output(
+pub(crate) fn parse_and_validate_soft_output(
     request: &SoftJudgeRequest,
     text: &str,
 ) -> Result<SoftJudgeOutput, ModelBackedSoftJudgeError> {

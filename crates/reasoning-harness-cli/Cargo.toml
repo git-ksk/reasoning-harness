@@ -7,10 +7,15 @@ rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 publish = false
+default-run = "reason"
 
 [[bin]]
 name = "reason"
 path = "src/main.rs"
+
+[[bin]]
+name = "reason-format-study"
+path = "src/bin/format_invariance.rs"
 
 [dependencies]
 clap.workspace = true
