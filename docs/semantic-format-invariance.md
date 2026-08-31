@@ -53,6 +53,8 @@ Operationally incomplete pairs are counted separately and excluded from the sema
 
 Per representation, the study reports protocol completion, precision, recall, decision coverage, ambiguous abstention, token usage, and latency. Semantic metrics are emitted only for operationally complete trials. R1a reports fallback as disabled/not applicable rather than silently treating the absence of fallback as a zero-rate runtime observation. Provider responses that fail representation parsing still retain returned token usage for the operational report.
 
+The R1a runner defaults to a 512-token output budget. The first bounded 256-token Mistral probe hit exactly 256 output tokens and EOF parse failure on the positive causal fixture in both baseline and nested forms, so that incomplete probe is treated as operational truncation evidence rather than semantic format evidence. `finish_reason` is preserved so future truncation can be separated from malformed complete output.
+
 ## Calibration-only execution
 
 The research binary canonicalizes the requested path and accepts only this checkout's exact `fixtures/semantic-judges` directory. A renamed/copy/symlinked holdout cannot be substituted as tuning data.

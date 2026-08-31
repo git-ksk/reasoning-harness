@@ -176,7 +176,7 @@ impl ModelAdapter for StaticAdapter {
                     output_tokens: Some(4),
                     total_tokens: Some(14),
                 },
-                finish_reason: Some("stop".into()),
+                finish_reason: Some("length".into()),
             })
         })
     }
@@ -194,6 +194,8 @@ async fn protocol_failure_retains_provider_usage_for_operational_measurement() {
     .await
     .unwrap_err();
 
+    // The caller can distinguish truncation from a malformed complete response.
+    assert_eq!(error.finish_reason(), Some("length"));
     let FormatJudgeError::InvalidRepresentation { model, usage, .. } = error else {
         panic!("expected representation protocol failure")
     };

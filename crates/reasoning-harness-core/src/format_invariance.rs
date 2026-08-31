@@ -54,6 +54,7 @@ pub struct FormatJudgeObservation {
     pub decision: SoftJudgeDecision,
     pub model: String,
     pub usage: ModelUsage,
+    pub finish_reason: Option<String>,
 }
 
 #[derive(Debug, Error)]
@@ -67,6 +68,7 @@ pub enum FormatJudgeError {
         message: String,
         model: String,
         usage: ModelUsage,
+        finish_reason: Option<String>,
     },
 }
 
@@ -91,6 +93,13 @@ impl FormatJudgeError {
             Self::InvalidRepresentation { model, .. } => Some(model),
         }
     }
+
+    pub fn finish_reason(&self) -> Option<&str> {
+        match self {
+            Self::Setup(_) | Self::Model(_) => None,
+            Self::InvalidRepresentation { finish_reason, .. } => finish_reason.as_deref(),
+        }
+    }
 }
 
 pub async fn run_model_backed_soft_judge_representation(
@@ -110,6 +119,7 @@ pub async fn run_model_backed_soft_judge_representation(
                 message: error.to_string(),
                 model: response.model.clone(),
                 usage: response.usage.clone(),
+                finish_reason: response.finish_reason.clone(),
             },
         )?;
     Ok(FormatJudgeObservation {
@@ -117,6 +127,7 @@ pub async fn run_model_backed_soft_judge_representation(
         decision,
         model: response.model,
         usage: response.usage,
+        finish_reason: response.finish_reason,
     })
 }
 

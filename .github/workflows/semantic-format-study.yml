@@ -48,7 +48,7 @@ on:
         options:
           - '256'
           - '512'
-        default: '256'
+        default: '512'
 
 permissions:
   contents: read
@@ -118,7 +118,7 @@ jobs:
             --max-tokens "$MAX_TOKENS" \
             "${FIXTURE_ARGS[@]}" \
             > "$OUTPUT"
-          jq '{configuration_id, semantic_baseline, provider, model, fixture_count, representations: [.representations[] | {representation, requested_output_format, effective_enforcement_class, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, fallback_enabled, fallback_rate, input_tokens, output_tokens, total_tokens, total_latency_ms, mean_latency_ms, trials}], comparisons}' "$OUTPUT"
+          jq '{configuration_id, semantic_baseline, provider, model, fixture_count, representations: [.representations[] | {representation, requested_output_format, effective_enforcement_class, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, fallback_enabled, fallback_rate, input_tokens, output_tokens, total_tokens, total_latency_ms, mean_latency_ms, trials}], comparisons, failures: [.representations[] as $r | $r.cases[] | select(.failure_class != null) | {representation: $r.representation, fixture_id, trial, finish_reason, failure_class, latency_ms, usage}]}' "$OUTPUT"
       - name: Preserve format-study JSON
         if: always() && steps.credential.outputs.available == 'true'
         uses: actions/upload-artifact@v4
