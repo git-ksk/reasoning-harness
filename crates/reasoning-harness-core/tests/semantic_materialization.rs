@@ -291,3 +291,121 @@ fn compact_representation_preserves_note_and_rejects_model_owned_binding_fields(
         );
     }
 }
+
+struct PreflightAdapter {
+    text: &'static str,
+    finish_reason: &'static str,
+}
+
+impl ModelAdapter for PreflightAdapter {
+    fn generate<'a>(
+        &'a self,
+        _request: ModelRequest,
+    ) -> Pin<
+        Box<
+            dyn std::future::Future<
+                    Output = Result<ModelResponse, reasoning_harness_core::ModelError>,
+                > + Send
+                + 'a,
+        >,
+    > {
+        let text = self.text.to_string();
+        let finish_reason = self.finish_reason.to_string();
+        Box::pin(async move {
+            Ok(ModelResponse {
+                text,
+                model: "preflight-model".into(),
+                usage: ModelUsage::default(),
+                finish_reason: Some(finish_reason),
+            })
+        })
+    }
+}
+
+#[tokio::test]
+async fn r2_capability_preflight_checks_protocol_not_semantic_correctness() {
+    use reasoning_harness_core::run_materialization_capability_preflight;
+
+    for decision in ["finding", "no_finding", "abstain"] {
+        let text = format!(r#"{{"decision":"{decision}"}}"#);
+        struct OwnedAdapter(String);
+        impl ModelAdapter for OwnedAdapter {
+            fn generate<'a>(
+                &'a self,
+                _request: ModelRequest,
+            ) -> Pin<
+                Box<
+                    dyn std::future::Future<
+                            Output = Result<ModelResponse, reasoning_harness_core::ModelError>,
+                        > + Send
+                        + 'a,
+                >,
+            > {
+                let text = self.0.clone();
+                Box::pin(async move {
+                    Ok(ModelResponse {
+                        text,
+                        model: "preflight-model".into(),
+                        usage: ModelUsage::default(),
+                        finish_reason: Some("stop".into()),
+                    })
+                })
+            }
+        }
+        let result = run_materialization_capability_preflight(&OwnedAdapter(text), 128, Some(0))
+            .await
+            .unwrap();
+        assert!(result.protocol_compatible);
+        assert_eq!(result.materialization_contract, "materialization-r2-v1");
+    }
+}
+
+#[tokio::test]
+async fn r2_capability_preflight_rejects_model_owned_binding_fields() {
+    use reasoning_harness_core::{
+        MaterializationFailureClass, classify_materialization_failure,
+        run_materialization_capability_preflight,
+    };
+
+    let adapter = PreflightAdapter {
+        text: r#"{"decision":"finding","finding":{"kind":"contradiction"}}"#,
+        finish_reason: "stop",
+    };
+    let error = run_materialization_capability_preflight(&adapter, 128, Some(0))
+        .await
+        .unwrap_err();
+    assert_eq!(
+        classify_materialization_failure(&error),
+        MaterializationFailureClass::MaterializationProtocol
+    );
+}
+
+#[test]
+fn materialization_failure_classification_is_typed() {
+    use reasoning_harness_core::{
+        MaterializationFailureClass, ModelError, ModelErrorKind, classify_materialization_failure,
+    };
+
+    let quota = MaterializationError::Model(ModelError::new(ModelErrorKind::Quota, "quota"));
+    assert_eq!(
+        classify_materialization_failure(&quota),
+        MaterializationFailureClass::Quota
+    );
+
+    let timeout = MaterializationError::Model(ModelError::new(ModelErrorKind::Timeout, "timeout"));
+    assert_eq!(
+        classify_materialization_failure(&timeout),
+        MaterializationFailureClass::Timeout
+    );
+
+    let truncated = MaterializationError::InvalidOutput {
+        message: "invalid".into(),
+        model: "m".into(),
+        usage: ModelUsage::default(),
+        finish_reason: Some("max_tokens".into()),
+    };
+    assert_eq!(
+        classify_materialization_failure(&truncated),
+        MaterializationFailureClass::TruncationProtocol
+    );
+}

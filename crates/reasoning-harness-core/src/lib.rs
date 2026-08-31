@@ -28,6 +28,7 @@ pub mod schema;
 pub mod semantic_decidability;
 pub mod semantic_judge;
 pub mod semantic_materialization;
+pub mod semantic_runtime;
 pub mod semantic_stability;
 pub mod types;
 pub mod validate;
@@ -154,12 +155,21 @@ pub use semantic_judge::{
     validate_calibration_fixtures,
 };
 pub use semantic_materialization::{
-    MaterializationError, MaterializationObservation, MaterializationRepresentation,
-    MaterializedDecisionOutput, build_soft_judge_materialization_representation_request,
-    build_soft_judge_materialization_request, materialize_soft_judge_output,
-    parse_materialized_decision_output, parse_materialized_decision_representation_output,
+    MaterializationCapabilityPreflight, MaterializationError, MaterializationFailureClass,
+    MaterializationObservation, MaterializationRepresentation, MaterializedDecisionOutput,
+    R2_MATERIALIZATION_CAPABILITY_ID, build_soft_judge_materialization_representation_request,
+    build_soft_judge_materialization_request, classify_materialization_failure,
+    materialize_soft_judge_output, parse_materialized_decision_output,
+    parse_materialized_decision_representation_output, run_materialization_capability_preflight,
     run_model_backed_soft_judge_materialization,
     run_model_backed_soft_judge_materialization_representation,
+};
+pub use semantic_runtime::{
+    D3_DECIDABILITY_CONTRACT_ID, DEFAULT_SEMANTIC_RUNTIME_PROFILE, MATERIALIZATION_R2_CONTRACT_ID,
+    SEMANTIC_DECIDABILITY_D3_CONFIGURATION_ID, SEMANTIC_RUNTIME_IDENTITY_VERSION,
+    SOFT_SEMANTIC_V3_CONFIGURATION_ID, SemanticRuntimeError, SemanticRuntimeIdentity,
+    SemanticRuntimeObservation, SemanticRuntimeProfile, default_semantic_runtime_profile,
+    run_default_semantic_runtime, run_semantic_runtime,
 };
 pub use semantic_stability::{
     SelectiveAbstentionOutcome, SelectiveAbstentionPolicy, SoftDecisionProbe,

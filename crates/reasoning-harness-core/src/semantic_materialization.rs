@@ -4,9 +4,68 @@ use thiserror::Error;
 
 use crate::{
     ModelAdapter, ModelBackedSoftJudgeError, ModelError, ModelErrorKind, ModelOutputFormat,
-    ModelReasoningPreference, ModelRequest, ModelUsage, SoftJudgeDecision, SoftJudgeOutput,
-    SoftJudgeRequest, SoftSemanticFinding,
+    ModelReasoningPreference, ModelRequest, ModelUsage, Proposition, SemanticDiagnosticKind,
+    SemanticDiagnosticTarget, SoftJudgeDecision, SoftJudgeOutput, SoftJudgeRequest,
+    SoftSemanticFinding,
 };
+
+pub const R2_MATERIALIZATION_CAPABILITY_ID: &str = "materialization-r2-capability-v1";
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MaterializationFailureClass {
+    StudySetup,
+    Credentials,
+    Transport,
+    ProviderError,
+    RateLimit,
+    Quota,
+    ProviderUnavailable,
+    Timeout,
+    ProviderProtocol,
+    UnsupportedCapability,
+    MaterializationProtocol,
+    TruncationProtocol,
+    ProviderGenerationError,
+}
+
+impl MaterializationFailureClass {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::StudySetup => "study_setup",
+            Self::Credentials => "credentials",
+            Self::Transport => "transport",
+            Self::ProviderError => "provider_error",
+            Self::RateLimit => "rate_limit",
+            Self::Quota => "quota",
+            Self::ProviderUnavailable => "provider_unavailable",
+            Self::Timeout => "timeout",
+            Self::ProviderProtocol => "provider_protocol",
+            Self::UnsupportedCapability => "unsupported_capability",
+            Self::MaterializationProtocol => "materialization_protocol",
+            Self::TruncationProtocol => "truncation_protocol",
+            Self::ProviderGenerationError => "provider_generation_error",
+        }
+    }
+}
+
+impl std::fmt::Display for MaterializationFailureClass {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(self.as_str())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct MaterializationCapabilityPreflight {
+    pub capability_id: &'static str,
+    pub materialization_contract: &'static str,
+    pub protocol_compatible: bool,
+    pub observed_decision: SoftJudgeDecision,
+    pub model: String,
+    pub usage: ModelUsage,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub finish_reason: Option<String>,
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -112,6 +171,96 @@ impl MaterializationError {
             Self::InvalidOutput { finish_reason, .. } => finish_reason.as_deref(),
         }
     }
+}
+
+pub fn classify_materialization_failure(
+    error: &MaterializationError,
+) -> MaterializationFailureClass {
+    match error {
+        MaterializationError::Setup(_) => MaterializationFailureClass::StudySetup,
+        MaterializationError::Model(error) => match error.kind {
+            ModelErrorKind::Credentials => MaterializationFailureClass::Credentials,
+            ModelErrorKind::Transport => MaterializationFailureClass::Transport,
+            ModelErrorKind::Provider => MaterializationFailureClass::ProviderError,
+            ModelErrorKind::RateLimit => MaterializationFailureClass::RateLimit,
+            ModelErrorKind::Quota => MaterializationFailureClass::Quota,
+            ModelErrorKind::ProviderUnavailable => MaterializationFailureClass::ProviderUnavailable,
+            ModelErrorKind::Timeout => MaterializationFailureClass::Timeout,
+            ModelErrorKind::Protocol => MaterializationFailureClass::ProviderProtocol,
+            ModelErrorKind::UnsupportedCapability => {
+                MaterializationFailureClass::UnsupportedCapability
+            }
+        },
+        MaterializationError::InvalidOutput { finish_reason, .. }
+            if finish_reason
+                .as_deref()
+                .is_some_and(is_truncation_finish_reason) =>
+        {
+            MaterializationFailureClass::TruncationProtocol
+        }
+        MaterializationError::InvalidOutput { finish_reason, .. }
+            if finish_reason
+                .as_deref()
+                .is_some_and(is_provider_generation_error_finish_reason) =>
+        {
+            MaterializationFailureClass::ProviderGenerationError
+        }
+        MaterializationError::InvalidOutput { .. } => {
+            MaterializationFailureClass::MaterializationProtocol
+        }
+    }
+}
+
+/// Performs one protocol-only R2 capability probe. The observed semantic decision is deliberately
+/// not scored: compatibility means only that the provider returned a payload that satisfies the
+/// frozen decision-only materialization contract. This probe is independent of all calibration and
+/// holdout corpora.
+pub async fn run_materialization_capability_preflight(
+    adapter: &dyn ModelAdapter,
+    max_tokens: u32,
+    random_seed: Option<u64>,
+) -> Result<MaterializationCapabilityPreflight, MaterializationError> {
+    let request = materialization_capability_preflight_request();
+    let observation =
+        run_model_backed_soft_judge_materialization(adapter, &request, max_tokens, random_seed)
+            .await?;
+    Ok(MaterializationCapabilityPreflight {
+        capability_id: R2_MATERIALIZATION_CAPABILITY_ID,
+        materialization_contract: crate::MATERIALIZATION_R2_CONTRACT_ID,
+        protocol_compatible: true,
+        observed_decision: observation.decision,
+        model: observation.model,
+        usage: observation.usage,
+        finish_reason: observation.finish_reason,
+    })
+}
+
+fn materialization_capability_preflight_request() -> SoftJudgeRequest {
+    SoftJudgeRequest {
+        id: "materialization-r2-capability-preflight-v1".into(),
+        task: "Does the supplied context contradict the target proposition?".into(),
+        kind: SemanticDiagnosticKind::Contradiction,
+        target: SemanticDiagnosticTarget::Proposition {
+            proposition: Proposition {
+                key: "protocol.preflight".into(),
+                value: "compatible".into(),
+            },
+        },
+        context: vec![
+            "For this protocol-only compatibility probe, protocol.preflight is compatible.".into(),
+        ],
+    }
+}
+
+fn is_truncation_finish_reason(reason: &str) -> bool {
+    matches!(
+        reason.trim().to_ascii_lowercase().as_str(),
+        "length" | "max_tokens" | "max_output_tokens"
+    )
+}
+
+fn is_provider_generation_error_finish_reason(reason: &str) -> bool {
+    reason.trim().eq_ignore_ascii_case("error")
 }
 
 pub async fn run_model_backed_soft_judge_materialization(
