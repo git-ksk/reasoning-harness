@@ -1,4 +1,5 @@
 use std::{
+    collections::BTreeMap,
     fs,
     path::{Path, PathBuf},
     process::ExitCode,
@@ -95,6 +96,7 @@ struct StudyCase {
     seed: Option<u64>,
     label: CalibrationLabel,
     representation: SoftJudgeRepresentation,
+    execution_position: usize,
     #[serde(skip_serializing_if = "Option::is_none")]
     decision: Option<SoftJudgeDecision>,
     latency_ms: u128,
@@ -150,6 +152,7 @@ struct RepresentationReport {
 #[derive(Debug, Serialize)]
 struct StudyOutput {
     configuration_id: &'static str,
+    execution_design: &'static str,
     semantic_baseline: &'static str,
     provider: &'static str,
     model: String,
@@ -206,27 +209,16 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
         }
     }
 
-    let mut reports = Vec::new();
-    for representation in representations {
-        eprintln!(
-            "[format-study] representation={} fixtures={} trials={}",
-            representation.id(),
-            fixtures.len(),
-            args.trials
-        );
-        reports.push(
-            run_representation(
-                generator.adapter(),
-                &fixtures,
-                representation,
-                args.max_tokens,
-                args.seed,
-                args.trials,
-                effective_enforcement_class(args.provider),
-            )
-            .await,
-        );
-    }
+    let reports = run_counterbalanced_representations(
+        generator.adapter(),
+        &fixtures,
+        &representations,
+        args.max_tokens,
+        args.seed,
+        args.trials,
+        effective_enforcement_class(args.provider),
+    )
+    .await;
 
     let baseline_cases = matched_cases(&reports[0].cases);
     let mut comparisons = Vec::new();
@@ -243,7 +235,8 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
     }
 
     Ok(StudyOutput {
-        configuration_id: "format-invariance-r1a-v1",
+        configuration_id: "format-invariance-r1a-v2",
+        execution_design: "fixture_trial_rotating_representation_order_v1",
         semantic_baseline: "soft-semantic-v3",
         provider: provider_name(args.provider),
         model: args.model,
@@ -253,81 +246,119 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
     })
 }
 
-async fn run_representation(
+async fn run_counterbalanced_representations(
     adapter: &dyn ModelAdapter,
     fixtures: &[SoftJudgeCalibrationFixture],
-    representation: SoftJudgeRepresentation,
+    representations: &[SoftJudgeRepresentation],
     max_tokens: u32,
     seed: Option<u64>,
     trials: usize,
     effective_enforcement_class: &'static str,
-) -> RepresentationReport {
-    let mut cases = Vec::with_capacity(fixtures.len() * trials);
+) -> Vec<RepresentationReport> {
+    let case_capacity = fixtures.len() * trials;
+    let mut cases_by_representation = representations
+        .iter()
+        .copied()
+        .map(|representation| (representation, Vec::with_capacity(case_capacity)))
+        .collect::<BTreeMap<_, _>>();
+
     for trial in 0..trials {
         let trial_seed = seed.and_then(|base| base.checked_add(trial as u64));
-        for fixture in fixtures {
-            let started = Instant::now();
-            let result = run_model_backed_soft_judge_representation(
-                adapter,
-                &fixture.request,
-                representation,
-                max_tokens,
-                trial_seed,
-            )
-            .await;
-            let latency_ms = started.elapsed().as_millis();
-            let case = match result {
-                Ok(result) => StudyCase {
-                    fixture_id: fixture.id.clone(),
-                    trial,
-                    seed: trial_seed,
-                    label: fixture.label,
+        for (fixture_index, fixture) in fixtures.iter().enumerate() {
+            let ordered =
+                counterbalanced_representation_order(representations, fixture_index, trial);
+            for (execution_position, representation) in ordered.into_iter().enumerate() {
+                let started = Instant::now();
+                let result = run_model_backed_soft_judge_representation(
+                    adapter,
+                    &fixture.request,
                     representation,
-                    decision: Some(result.decision),
-                    latency_ms,
-                    usage: Some(result.usage),
-                    provider_model: Some(result.model),
-                    finish_reason: result.finish_reason,
-                    failure_class: None,
-                    failure: None,
-                },
-                Err(error) => StudyCase {
-                    fixture_id: fixture.id.clone(),
-                    trial,
-                    seed: trial_seed,
-                    label: fixture.label,
-                    representation,
-                    decision: None,
-                    latency_ms,
-                    usage: error.usage().cloned(),
-                    provider_model: error.provider_model().map(str::to_string),
-                    finish_reason: error.finish_reason().map(str::to_string),
-                    failure_class: Some(failure_class(&error)),
-                    failure: Some(error.to_string()),
-                },
-            };
-            eprintln!(
-                "[format-study] representation={} fixture={} trial={} status={}",
-                representation.id(),
-                fixture.id,
-                trial + 1,
-                if case.decision.is_some() {
-                    "ok"
-                } else {
-                    "failed"
-                }
-            );
-            cases.push(case);
+                    max_tokens,
+                    trial_seed,
+                )
+                .await;
+                let latency_ms = started.elapsed().as_millis();
+                let case = match result {
+                    Ok(result) => StudyCase {
+                        fixture_id: fixture.id.clone(),
+                        trial,
+                        seed: trial_seed,
+                        label: fixture.label,
+                        representation,
+                        execution_position,
+                        decision: Some(result.decision),
+                        latency_ms,
+                        usage: Some(result.usage),
+                        provider_model: Some(result.model),
+                        finish_reason: result.finish_reason,
+                        failure_class: None,
+                        failure: None,
+                    },
+                    Err(error) => StudyCase {
+                        fixture_id: fixture.id.clone(),
+                        trial,
+                        seed: trial_seed,
+                        label: fixture.label,
+                        representation,
+                        execution_position,
+                        decision: None,
+                        latency_ms,
+                        usage: error.usage().cloned(),
+                        provider_model: error.provider_model().map(str::to_string),
+                        finish_reason: error.finish_reason().map(str::to_string),
+                        failure_class: Some(failure_class(&error)),
+                        failure: Some(error.to_string()),
+                    },
+                };
+                eprintln!(
+                    "[format-study] fixture={} trial={} position={} representation={} status={}",
+                    fixture.id,
+                    trial + 1,
+                    execution_position,
+                    representation.id(),
+                    if case.decision.is_some() {
+                        "ok"
+                    } else {
+                        "failed"
+                    }
+                );
+                cases_by_representation
+                    .get_mut(&representation)
+                    .expect("every requested representation has a case bucket")
+                    .push(case);
+            }
         }
     }
 
-    summarize_representation(
-        representation,
-        cases,
-        fixtures.len(),
-        trials,
-        effective_enforcement_class,
-    )
+    representations
+        .iter()
+        .copied()
+        .map(|representation| {
+            summarize_representation(
+                representation,
+                cases_by_representation
+                    .remove(&representation)
+                    .expect("every requested representation has recorded cases"),
+                fixtures.len(),
+                trials,
+                effective_enforcement_class,
+            )
+        })
+        .collect()
+}
+
+fn counterbalanced_representation_order(
+    representations: &[SoftJudgeRepresentation],
+    fixture_index: usize,
+    trial: usize,
+) -> Vec<SoftJudgeRepresentation> {
+    debug_assert!(!representations.is_empty());
+    let offset = (fixture_index + trial) % representations.len();
+    representations[offset..]
+        .iter()
+        .chain(&representations[..offset])
+        .copied()
+        .collect()
 }
 
 fn summarize_representation(
@@ -563,6 +594,33 @@ mod format_study_failure_tests {
             usage: ModelUsage::default(),
             finish_reason: Some(reason.into()),
         }
+    }
+
+    #[test]
+    fn representation_order_rotates_across_fixtures_and_trials() {
+        let representations = [
+            SoftJudgeRepresentation::V3FullJson,
+            SoftJudgeRepresentation::NestedResultObject,
+            SoftJudgeRepresentation::DecisionFindingTuple,
+            SoftJudgeRepresentation::CompactKeyObject,
+        ];
+        assert_eq!(
+            counterbalanced_representation_order(&representations, 0, 0),
+            representations
+        );
+        assert_eq!(
+            counterbalanced_representation_order(&representations, 1, 0),
+            vec![
+                SoftJudgeRepresentation::NestedResultObject,
+                SoftJudgeRepresentation::DecisionFindingTuple,
+                SoftJudgeRepresentation::CompactKeyObject,
+                SoftJudgeRepresentation::V3FullJson,
+            ]
+        );
+        assert_eq!(
+            counterbalanced_representation_order(&representations, 0, 1),
+            counterbalanced_representation_order(&representations, 1, 0)
+        );
     }
 
     #[test]
