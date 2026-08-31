@@ -347,7 +347,7 @@ async fn run_counterbalanced_arms(
                     },
                 };
                 eprintln!(
-                    "[materialization-study] fixture={} trial={} position={} arm={:?} status={}",
+                    "[materialization-study] fixture={} trial={} position={} arm={:?} status={} failure_class={}",
                     fixture.id,
                     trial + 1,
                     execution_position,
@@ -356,7 +356,8 @@ async fn run_counterbalanced_arms(
                         "ok"
                     } else {
                         "failed"
-                    }
+                    },
+                    case.failure_class.unwrap_or("none")
                 );
                 cases_by_arm
                     .get_mut(&arm)
