@@ -184,34 +184,63 @@ Before any provider-backed D2 run:
 
 These are contract gates, not model-quality claims.
 
-## Provider-backed D2 metrics
+## D2 label axes and provider-backed metrics
 
-Run the existing R2 materialized semantic decision as the baseline arm, then compose the same base
-decision with the deterministic D1 gate. Any optional model-backed residual decidability gate is a
-separate later arm and must not be mixed into D1 results.
+D2 must not collapse semantic polarity and permission to assert into one label. A fixture therefore
+needs two independent pre-observation labels:
+
+```text
+semantic_label     = positive | negative | ambiguous
+assertive_eligibility = permit | force_abstain
+```
+
+`semantic_label` describes the diagnostic concern in the supplied semantic content. The eligibility
+label describes whether the harness-owned typed preconditions allow an assertive soft decision.
+Neither label is derived from provider output.
+
+This separation avoids a metric bug: a positive or negative case whose explicit evidence requirement
+is unsatisfied should be conservatively forced to `abstain`. Counting that expected abstention as a
+false negative would make correct gating lower semantic recall by construction.
+
+For a matched D2 case, run the unchanged R2 materialized semantic request once per provider/seed.
+Apply the deterministic gate to the paired harness-owned artifact variants afterward. If two variants
+have identical semantic request content and differ only in harness-owned qualification metadata,
+they must reuse the same provider observation rather than sampling the model twice. That isolates the
+gate intervention from model-sampling noise and reduces provider calls.
+
+Any optional model-backed residual decidability gate is a separate later arm and must not be mixed
+into D1 results.
 
 Report per provider/model and per trial:
 
-- provider/protocol completion;
-- labelled precision and recall for assertive semantic decisions;
-- ambiguous/insufficient abstention rate;
-- overall decision coverage;
-- clear-case decision coverage;
-- gate escalation count/rate and reason distribution;
-- cross-seed stability;
-- token and latency cost.
+- provider/protocol completion for the unchanged R2 semantic calls;
+- semantic precision/recall on **eligible positive/negative** cases only;
+- eligible clear-case decision coverage;
+- eligible ambiguous abstention, reported separately from typed insufficiency;
+- typed-insufficiency abstention rate on `force_abstain` variants;
+- unsafe assertive rate on `force_abstain` variants before and after composition;
+- gate escalation count/rate and deterministic reason distribution;
+- overall decision coverage as descriptive only, because its maximum depends on the predeclared
+  proportion of ineligible variants;
+- cross-seed stability of the base semantic decision and composed result;
+- token and latency cost, with deterministic gate overhead reported separately.
 
-Never pool multiple models into a truth label.
+Never pool multiple models into a truth label. Never score a `force_abstain` case as an ordinary
+positive/negative recall failure.
 
 A deterministic-gate calibration candidate is worth freezing only if the same provider-neutral rule:
 
-- improves insufficiency/ambiguous abstention on the new calibration surface for each evaluated
-  provider that exhibits over-assertion;
-- retains clear-case decision coverage >= 0.90 per provider;
-- retains overall decision coverage >= 0.50 per provider;
-- retains assertive precision and recall >= 0.95 where defined;
+- has 1.0 typed-insufficiency abstention and 0 unsafe assertive decisions after composition;
+- reduces a non-zero base unsafe-assertion rate on the typed-insufficiency subset for at least one
+  evaluated provider, otherwise its empirical benefit remains unproven;
+- retains eligible clear-case decision coverage >= 0.90 per provider;
+- retains eligible assertive precision and recall >= 0.95 where defined;
+- introduces zero gate escalations on predeclared `permit` controls;
 - does not add provider/model-specific semantic branches;
 - preserves the hard authority and operational-failure invariants.
+
+An always-abstain mechanism fails through eligible clear-case coverage and permit-control preservation;
+it cannot hide behind a high insufficiency-abstention score.
 
 If the deterministic gate only catches tautological metadata failures and provides no meaningful
 provider-backed reduction in over-assertion, D1 should be recorded as insufficient rather than

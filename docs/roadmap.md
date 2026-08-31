@@ -242,7 +242,8 @@ R4 established that cross-model disagreement can expose uncertainty but agreemen
 - [designed #73] composition is monotone: a gate may preserve a base soft decision or force `abstain`, never create/repair an assertive decision or operational failure
 - [implemented #73] 14 deterministic calibration-only fixtures form seven control/mutation pairs covering binding, evidence presence, authority, scope, temporal validity, required metadata, and evidence conflict across all four semantic diagnostic kinds
 - [implemented #73] deterministic tests enforce 100% mutation monotonicity/control preservation, monotone decision composition, invalid-artifact separation, missing-target fail-closed behavior, and the rule that causal targets without explicit evidence requirements are not blocked by default
-- [next #73] author/review provider-backed D2 semantic labels and runner separately before any provider observation; provider-backed calibration retains explicit precision/recall and decision-coverage floors
+- [designed #73] D2 keeps `semantic_label` and `assertive_eligibility` as separate pre-observation axes so expected forced abstention cannot be miscounted as a semantic recall failure; eligible precision/recall/coverage and typed-insufficiency abstention are separate denominators
+- [next #73] author/review the provider-backed D2 semantic cases and runner separately before any provider observation; matched metadata variants reuse one base R2 provider observation per case/seed
 - [constraint #73] holdout-v4 remains immutable diagnostic history and no holdout-v5 is created until a calibration candidate is frozen
 
 See [semantic decidability and evidence-sufficiency research](semantic-decidability.md).
