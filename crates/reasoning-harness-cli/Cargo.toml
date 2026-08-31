@@ -33,6 +33,10 @@ path = "src/bin/cross_model.rs"
 name = "reason-decidability-study"
 path = "src/bin/decidability.rs"
 
+[[bin]]
+name = "reason-semantic-preflight"
+path = "src/bin/semantic_preflight.rs"
+
 [dependencies]
 clap.workspace = true
 reasoning-harness-core = { path = "../reasoning-harness-core" }

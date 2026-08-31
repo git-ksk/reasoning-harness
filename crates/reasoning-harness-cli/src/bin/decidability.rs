@@ -8,11 +8,13 @@ use std::{
 
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
-    CalibrationLabel, MaterializationError, ModelAdapter, ModelErrorKind, ModelUsage,
-    SemanticDecidabilityAssessment, SemanticDecidabilityDisposition,
-    SemanticDecidabilityStudyFixture, SoftDecisionProbe, SoftDecisionStabilityAssessment,
-    SoftJudgeCalibrationFixture, SoftJudgeDecision, assess_semantic_decidability,
-    assess_soft_decision_stability, compose_semantic_decidability,
+    CalibrationLabel, D3_DECIDABILITY_CONTRACT_ID, MATERIALIZATION_R2_CONTRACT_ID,
+    MaterializationError, MaterializationFailureClass, ModelAdapter, ModelUsage,
+    SOFT_SEMANTIC_V3_CONFIGURATION_ID, SemanticDecidabilityAssessment,
+    SemanticDecidabilityDisposition, SemanticDecidabilityStudyFixture, SemanticRuntimeProfile,
+    SoftDecisionProbe, SoftDecisionStabilityAssessment, SoftJudgeCalibrationFixture,
+    SoftJudgeDecision, assess_semantic_decidability, assess_soft_decision_stability,
+    classify_materialization_failure, compose_semantic_decidability,
     run_model_backed_soft_judge_materialization,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
@@ -41,6 +43,9 @@ struct Args {
     seed: Option<u64>,
     #[arg(long, default_value_t = 1)]
     trials: usize,
+    /// Optional atomic progress checkpoint. Partial checkpoints are explicitly non-scorable.
+    #[arg(long)]
+    checkpoint: Option<PathBuf>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
@@ -174,7 +179,7 @@ struct StudyCase {
     #[serde(skip_serializing_if = "Option::is_none")]
     finish_reason: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    failure_class: Option<&'static str>,
+    failure_class: Option<MaterializationFailureClass>,
     #[serde(skip_serializing_if = "Option::is_none")]
     failure: Option<String>,
     variants: Vec<VariantOutcome>,
@@ -244,6 +249,8 @@ struct StudyOutput {
     source_corpus: &'static str,
     #[serde(skip_serializing_if = "Option::is_none")]
     candidate_id: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    runtime_candidate_identity: Option<reasoning_harness_core::SemanticRuntimeIdentity>,
     semantic_baseline: &'static str,
     materialization_contract: &'static str,
     decidability_contract: &'static str,
@@ -255,6 +262,7 @@ struct StudyOutput {
     attempted_provider_calls: usize,
     successful_provider_calls: usize,
     failed_provider_calls: usize,
+    failure_counts: BTreeMap<MaterializationFailureClass, usize>,
     protocol_completion_rate: f64,
     input_tokens: u64,
     output_tokens: u64,
@@ -267,12 +275,74 @@ struct StudyOutput {
     cases: Vec<StudyCase>,
 }
 
+#[derive(Debug, Clone, Copy, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum CheckpointRunStatus {
+    InProgress,
+    Completed,
+}
+
+#[derive(Debug, Clone, Copy, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum CheckpointSemanticStatus {
+    PartialDoNotScore,
+    OperationallyIncompleteDoNotScore,
+    FullStudyComplete,
+}
+
+#[derive(Debug)]
+struct CheckpointMetadata {
+    configuration_id: &'static str,
+    study_surface: &'static str,
+    source_corpus: &'static str,
+    candidate_id: Option<&'static str>,
+    provider: &'static str,
+    model: String,
+    fixture_count: usize,
+    variant_count: usize,
+    expected_provider_calls: usize,
+}
+
+#[derive(Debug, Serialize)]
+struct CheckpointActiveAttempt<'a> {
+    fixture_id: &'a str,
+    source_fixture_id: &'a str,
+    trial: usize,
+    seed: Option<u64>,
+}
+
+#[derive(Serialize)]
+struct StudyCheckpoint<'a> {
+    checkpoint_version: &'static str,
+    run_status: CheckpointRunStatus,
+    semantic_status: CheckpointSemanticStatus,
+    configuration_id: &'static str,
+    study_surface: &'static str,
+    source_corpus: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    candidate_id: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    runtime_candidate_identity: Option<reasoning_harness_core::SemanticRuntimeIdentity>,
+    provider: &'static str,
+    model: &'a str,
+    fixture_count: usize,
+    variant_count: usize,
+    expected_provider_calls: usize,
+    started_provider_calls: usize,
+    completed_provider_calls: usize,
+    successful_provider_calls: usize,
+    failed_provider_calls: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    active_attempt: Option<CheckpointActiveAttempt<'a>>,
+    cases: &'a [StudyCase],
+}
+
 #[derive(Debug)]
 struct FailureInfo {
     usage: Option<ModelUsage>,
     provider_model: Option<String>,
     finish_reason: Option<String>,
-    class: &'static str,
+    class: MaterializationFailureClass,
     message: String,
 }
 
@@ -323,6 +393,31 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
         return Err(format!("no {} fixtures selected", args.surface.name()));
     }
 
+    let expected_provider_calls = fixtures
+        .len()
+        .checked_mul(args.trials)
+        .ok_or("decidability fixture/trial count overflowed usize")?;
+    let checkpoint_metadata = CheckpointMetadata {
+        configuration_id: args.surface.configuration_id(),
+        study_surface: args.surface.name(),
+        source_corpus: args.surface.source_corpus_id(),
+        candidate_id: args.surface.candidate_id(),
+        provider: provider_name(args.provider),
+        model: args.model.clone(),
+        fixture_count: fixtures.len(),
+        variant_count: fixtures.iter().map(|fixture| fixture.variants.len()).sum(),
+        expected_provider_calls,
+    };
+    if let Some(path) = args.checkpoint.as_deref() {
+        write_study_checkpoint(
+            path,
+            &checkpoint_metadata,
+            &[],
+            CheckpointRunStatus::InProgress,
+            None,
+        )?;
+    }
+
     let generator = Generator::from_provider(args.provider, &args.model)?;
     let cases = run_trials(
         generator.adapter(),
@@ -330,8 +425,19 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
         args.max_tokens,
         args.seed,
         args.trials,
+        args.checkpoint.as_deref(),
+        &checkpoint_metadata,
     )
-    .await;
+    .await?;
+    if let Some(path) = args.checkpoint.as_deref() {
+        write_study_checkpoint(
+            path,
+            &checkpoint_metadata,
+            &cases,
+            CheckpointRunStatus::Completed,
+            None,
+        )?;
+    }
 
     let attempted_provider_calls = cases.len();
     let successful_provider_calls = cases
@@ -351,15 +457,18 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
     let trials = summarize_trials(&cases, fixtures.len(), args.trials);
     let aggregate = summarize_aggregate(&cases, &trials);
     let stability = summarize_stability(&cases);
+    let failure_counts = failure_counts(&cases);
 
     Ok(StudyOutput {
         configuration_id: args.surface.configuration_id(),
         study_surface: args.surface.name(),
         source_corpus: args.surface.source_corpus_id(),
         candidate_id: args.surface.candidate_id(),
-        semantic_baseline: "soft-semantic-v3",
-        materialization_contract: "materialization-r2-v1",
-        decidability_contract: "deterministic-explicit-typed-preconditions-v1",
+        runtime_candidate_identity: (args.surface == StudySurface::HoldoutV5)
+            .then(|| SemanticRuntimeProfile::SemanticDecidabilityD3V1.identity()),
+        semantic_baseline: SOFT_SEMANTIC_V3_CONFIGURATION_ID,
+        materialization_contract: MATERIALIZATION_R2_CONTRACT_ID,
+        decidability_contract: D3_DECIDABILITY_CONTRACT_ID,
         execution_design: "one_r2_observation_per_semantic_case_then_matched_typed_variants_v1",
         provider: provider_name(args.provider),
         model: args.model,
@@ -368,6 +477,7 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
         attempted_provider_calls,
         successful_provider_calls,
         failed_provider_calls: attempted_provider_calls - successful_provider_calls,
+        failure_counts,
         protocol_completion_rate: successful_provider_calls as f64
             / attempted_provider_calls as f64,
         input_tokens,
@@ -388,11 +498,27 @@ async fn run_trials(
     max_tokens: u32,
     seed: Option<u64>,
     trials: usize,
-) -> Vec<StudyCase> {
+    checkpoint: Option<&Path>,
+    checkpoint_metadata: &CheckpointMetadata,
+) -> Result<Vec<StudyCase>, String> {
     let mut cases = Vec::with_capacity(fixtures.len() * trials);
     for trial in 0..trials {
         let trial_seed = seed.and_then(|base| base.checked_add(trial as u64));
         for fixture in fixtures {
+            if let Some(path) = checkpoint {
+                write_study_checkpoint(
+                    path,
+                    checkpoint_metadata,
+                    &cases,
+                    CheckpointRunStatus::InProgress,
+                    Some(CheckpointActiveAttempt {
+                        fixture_id: &fixture.id,
+                        source_fixture_id: &fixture.source_fixture_id,
+                        trial,
+                        seed: trial_seed,
+                    }),
+                )?;
+            }
             let started = Instant::now();
             let result = run_model_backed_soft_judge_materialization(
                 adapter,
@@ -452,12 +578,23 @@ async fn run_trials(
                 } else {
                     "failed"
                 },
-                case.failure_class.unwrap_or("none")
+                case.failure_class
+                    .map(MaterializationFailureClass::as_str)
+                    .unwrap_or("none")
             );
             cases.push(case);
+            if let Some(path) = checkpoint {
+                write_study_checkpoint(
+                    path,
+                    checkpoint_metadata,
+                    &cases,
+                    CheckpointRunStatus::InProgress,
+                    None,
+                )?;
+            }
         }
     }
-    cases
+    Ok(cases)
 }
 
 fn variant_outcomes(
@@ -889,22 +1026,16 @@ fn provider_name(provider: Provider) -> &'static str {
     }
 }
 
+fn failure_counts(cases: &[StudyCase]) -> BTreeMap<MaterializationFailureClass, usize> {
+    let mut counts = BTreeMap::new();
+    for failure_class in cases.iter().filter_map(|case| case.failure_class) {
+        *counts.entry(failure_class).or_insert(0) += 1;
+    }
+    counts
+}
+
 fn materialization_failure_info(error: MaterializationError) -> FailureInfo {
-    let class = if matches!(error, MaterializationError::Setup(_)) {
-        "study_setup"
-    } else if error
-        .finish_reason()
-        .is_some_and(is_truncation_finish_reason)
-    {
-        "truncation_protocol"
-    } else if error
-        .finish_reason()
-        .is_some_and(is_provider_generation_error_finish_reason)
-    {
-        "provider_generation_error"
-    } else {
-        model_failure_class(error.model_error_kind(), "materialization_protocol")
-    };
+    let class = classify_materialization_failure(&error);
     FailureInfo {
         usage: error.usage().cloned(),
         provider_model: error.provider_model().map(str::to_string),
@@ -914,33 +1045,69 @@ fn materialization_failure_info(error: MaterializationError) -> FailureInfo {
     }
 }
 
-fn model_failure_class(
-    kind: Option<ModelErrorKind>,
-    protocol_default: &'static str,
-) -> &'static str {
-    match kind {
-        Some(ModelErrorKind::Credentials) => "credentials",
-        Some(ModelErrorKind::Transport) => "transport",
-        Some(ModelErrorKind::Provider) => "provider_error",
-        Some(ModelErrorKind::RateLimit) => "rate_limit",
-        Some(ModelErrorKind::Quota) => "quota",
-        Some(ModelErrorKind::ProviderUnavailable) => "provider_unavailable",
-        Some(ModelErrorKind::Timeout) => "timeout",
-        Some(ModelErrorKind::Protocol) => "provider_protocol",
-        Some(ModelErrorKind::UnsupportedCapability) => "unsupported_capability",
-        None => protocol_default,
+fn write_study_checkpoint(
+    path: &Path,
+    metadata: &CheckpointMetadata,
+    cases: &[StudyCase],
+    run_status: CheckpointRunStatus,
+    active_attempt: Option<CheckpointActiveAttempt<'_>>,
+) -> Result<(), String> {
+    let successful_provider_calls = cases
+        .iter()
+        .filter(|case| case.base_decision.is_some())
+        .count();
+    let semantic_status = match run_status {
+        CheckpointRunStatus::InProgress => CheckpointSemanticStatus::PartialDoNotScore,
+        CheckpointRunStatus::Completed
+            if cases.len() == metadata.expected_provider_calls
+                && successful_provider_calls == metadata.expected_provider_calls =>
+        {
+            CheckpointSemanticStatus::FullStudyComplete
+        }
+        CheckpointRunStatus::Completed => {
+            CheckpointSemanticStatus::OperationallyIncompleteDoNotScore
+        }
+    };
+    let checkpoint = StudyCheckpoint {
+        checkpoint_version: "semantic-decidability-checkpoint-v1",
+        run_status,
+        semantic_status,
+        configuration_id: metadata.configuration_id,
+        study_surface: metadata.study_surface,
+        source_corpus: metadata.source_corpus,
+        candidate_id: metadata.candidate_id,
+        runtime_candidate_identity: (metadata.candidate_id.is_some())
+            .then(|| SemanticRuntimeProfile::SemanticDecidabilityD3V1.identity()),
+        provider: metadata.provider,
+        model: &metadata.model,
+        fixture_count: metadata.fixture_count,
+        variant_count: metadata.variant_count,
+        expected_provider_calls: metadata.expected_provider_calls,
+        started_provider_calls: cases.len() + usize::from(active_attempt.is_some()),
+        completed_provider_calls: cases.len(),
+        successful_provider_calls,
+        failed_provider_calls: cases.len() - successful_provider_calls,
+        active_attempt,
+        cases,
+    };
+    if let Some(parent) = path
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+    {
+        fs::create_dir_all(parent)
+            .map_err(|error| format!("checkpoint directory {}: {error}", parent.display()))?;
     }
-}
-
-fn is_truncation_finish_reason(reason: &str) -> bool {
-    matches!(
-        reason.trim().to_ascii_lowercase().as_str(),
-        "length" | "max_tokens" | "max_output_tokens"
-    )
-}
-
-fn is_provider_generation_error_finish_reason(reason: &str) -> bool {
-    reason.trim().eq_ignore_ascii_case("error")
+    let bytes = serde_json::to_vec_pretty(&checkpoint)
+        .map_err(|error| format!("serialize decidability checkpoint: {error}"))?;
+    let file_name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or_else(|| format!("invalid checkpoint path: {}", path.display()))?;
+    let temporary = path.with_file_name(format!(".{file_name}.tmp"));
+    fs::write(&temporary, bytes)
+        .map_err(|error| format!("write checkpoint {}: {error}", temporary.display()))?;
+    fs::rename(&temporary, path)
+        .map_err(|error| format!("commit checkpoint {}: {error}", path.display()))
 }
 
 #[cfg(test)]
@@ -1085,5 +1252,72 @@ mod tests {
                 finding: None,
             });
         assert!(validate_source_surface(StudySurface::HoldoutV5, &sources).is_err());
+    }
+
+    #[test]
+    fn checkpoint_preserves_partial_cases_without_semantic_scoring() {
+        let case = synthetic_case(
+            "partial",
+            CalibrationLabel::Positive,
+            SoftJudgeDecision::Finding,
+            false,
+        );
+        let metadata = CheckpointMetadata {
+            configuration_id: StudySurface::HoldoutV5.configuration_id(),
+            study_surface: StudySurface::HoldoutV5.name(),
+            source_corpus: StudySurface::HoldoutV5.source_corpus_id(),
+            candidate_id: StudySurface::HoldoutV5.candidate_id(),
+            provider: "mistral",
+            model: "test-model".into(),
+            fixture_count: 2,
+            variant_count: 2,
+            expected_provider_calls: 2,
+        };
+        let path = std::env::temp_dir().join(format!(
+            "reasoning-harness-decidability-checkpoint-{}.json",
+            std::process::id()
+        ));
+        let _ = fs::remove_file(&path);
+
+        write_study_checkpoint(
+            &path,
+            &metadata,
+            std::slice::from_ref(&case),
+            CheckpointRunStatus::InProgress,
+            Some(CheckpointActiveAttempt {
+                fixture_id: "next",
+                source_fixture_id: "next-source",
+                trial: 0,
+                seed: Some(1),
+            }),
+        )
+        .unwrap();
+        let partial: serde_json::Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+        assert_eq!(partial["run_status"], "in_progress");
+        assert_eq!(partial["semantic_status"], "partial_do_not_score");
+        assert_eq!(partial["started_provider_calls"], 2);
+        assert_eq!(partial["completed_provider_calls"], 1);
+        assert_eq!(partial["active_attempt"]["fixture_id"], "next");
+        assert_eq!(partial["cases"].as_array().unwrap().len(), 1);
+        assert_eq!(
+            partial["runtime_candidate_identity"]["configuration_id"],
+            "semantic-decidability-d3-v1"
+        );
+
+        write_study_checkpoint(
+            &path,
+            &metadata,
+            &[case],
+            CheckpointRunStatus::Completed,
+            None,
+        )
+        .unwrap();
+        let incomplete: serde_json::Value =
+            serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+        assert_eq!(
+            incomplete["semantic_status"],
+            "operationally_incomplete_do_not_score"
+        );
+        fs::remove_file(path).unwrap();
     }
 }

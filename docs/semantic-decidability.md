@@ -401,13 +401,14 @@ The original D3 freeze and predeclared gates above remain historical protocol. S
 
 These observations justify treating `semantic-decidability-d3-v1` as the current stabilization/adoption candidate for models that satisfy the R2 protocol capability boundary. They do **not** establish universal model compatibility and do not justify provider-specific semantic tuning.
 
-Near-term stabilization should prioritize:
+The operational stabilization layer now implements the first four hardening requirements without changing the semantic contract:
 
-1. explicit capability/preflight reporting for the R2 materialized-decision protocol;
-2. immediate typed operational telemetry for quota, rate-limit, timeout, provider, and protocol failures;
-3. partial-result preservation that cannot be mistaken for a complete semantic denominator;
-4. immutable runtime/config identity and reproducible compatibility metadata;
-5. reversible runtime adoption with a clear rollback to the characterized `soft-semantic-v3` baseline.
+1. corpus-independent capability/preflight reporting for the R2 materialized-decision protocol;
+2. typed operational telemetry for quota, rate-limit, timeout, provider, and protocol failures;
+3. atomic partial-result preservation whose status explicitly forbids semantic scoring while incomplete;
+4. immutable runtime/config identity plus an explicit rollback profile to `soft-semantic-v3`.
+
+The compiled runtime default intentionally remains `soft-semantic-v3` in the stabilization change. Runtime adoption is requirement 5 and must be a separate reversible PR that switches the default to `semantic-decidability-d3-v1`. See [semantic runtime stabilization](semantic-runtime-stabilization.md).
 
 Model-matrix expansion is secondary once two independent model families reproduce the same v5 safety pattern. Additional models should be added when they test a specific capability boundary, not merely to increase model count.
 

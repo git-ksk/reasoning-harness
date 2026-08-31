@@ -1,0 +1,80 @@
+name: semantic-d3-capability-preflight
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: Provider to probe against the frozen R2 materialization protocol
+        required: true
+        type: choice
+        options:
+          - mistral
+          - google
+          - nvidia
+        default: mistral
+      model:
+        description: Provider model identifier
+        required: true
+        type: string
+        default: ministral-8b-latest
+      max_tokens:
+        description: Bounded output budget for each protocol-only probe
+        required: true
+        type: choice
+        options:
+          - '128'
+          - '256'
+        default: '128'
+      probes:
+        description: Bounded protocol probes; every probe must pass
+        required: true
+        type: choice
+        options:
+          - '3'
+          - '5'
+        default: '3'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Run protocol-only D3 capability preflight
+        env:
+          PROVIDER: ${{ inputs.provider }}
+          MODEL: ${{ inputs.model }}
+          MAX_TOKENS: ${{ inputs.max_tokens }}
+          PROBES: ${{ inputs.probes }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: |
+          OUTPUT=/tmp/reason-semantic-d3-preflight.json
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-semantic-preflight -- \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --max-tokens "$MAX_TOKENS" \
+            --probes "$PROBES" \
+            --seed 0 \
+            > "$OUTPUT"
+          STATUS=$?
+          set -e
+          jq '{runtime, capability_id, materialization_contract, provider, requested_model, status, protocol_compatible, requested_probes, attempted_probes, successful_probes, failure_counts, probes: [.probes[] | {probe, seed, status, observed_model, observed_decision, finish_reason, failure_class}]}' "$OUTPUT"
+          exit "$STATUS"
+      - name: Preserve D3 capability preflight JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-d3-capability-preflight-${{ inputs.provider }}
+          path: /tmp/reason-semantic-d3-preflight.json
+          if-no-files-found: error
+          retention-days: 30
