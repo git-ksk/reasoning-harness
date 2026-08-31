@@ -15,7 +15,7 @@ use reasoning_harness_core::{
     assess_soft_decision_stability, compose_semantic_decidability,
     run_model_backed_soft_judge_materialization,
 };
-use reasoning_harness_providers::{GoogleAdapter, MistralAdapter};
+use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::Serialize;
 
 #[derive(Debug, Parser)]
@@ -97,11 +97,13 @@ impl StudySurface {
 enum Provider {
     Mistral,
     Google,
+    Nvidia,
 }
 
 enum Generator {
     Mistral(MistralAdapter),
     Google(GoogleAdapter),
+    Nvidia(NvidiaAdapter),
 }
 
 impl Generator {
@@ -113,6 +115,9 @@ impl Generator {
             Provider::Google => GoogleAdapter::from_env(model)
                 .map(Self::Google)
                 .map_err(|error| error.to_string()),
+            Provider::Nvidia => NvidiaAdapter::from_env(model)
+                .map(Self::Nvidia)
+                .map_err(|error| error.to_string()),
         }
     }
 
@@ -120,6 +125,7 @@ impl Generator {
         match self {
             Self::Mistral(adapter) => adapter,
             Self::Google(adapter) => adapter,
+            Self::Nvidia(adapter) => adapter,
         }
     }
 }
@@ -879,6 +885,7 @@ fn provider_name(provider: Provider) -> &'static str {
     match provider {
         Provider::Mistral => "mistral",
         Provider::Google => "google",
+        Provider::Nvidia => "nvidia",
     }
 }
 
