@@ -132,3 +132,18 @@ D3 does not alter permit-only semantic ambiguity.
 An operationally incomplete arm may be repeated only with this exact frozen corpus/configuration.
 A semantic gate failure rejects D3; it cannot be rescued by relabelling, editing the corpus,
 changing thresholds, selecting seeds, or adding another model after observation.
+
+## Observed pilot status
+
+The frozen holdout-v5 surface has now been observed without changing its payloads or adoption gates.
+
+| provider/model | operational result | clear coverage / precision / recall | typed insufficiency | base unsafe -> composed unsafe | ambiguous abstention | interpretation |
+| --- | --- | --- | --- | --- | --- | --- |
+| Mistral `ministral-8b-latest` | 120/120, 5/5 complete | 1.000 / 1.000 / 1.000 | 50/50 abstain | 50 -> 0 | 0.500 | pilot pass |
+| Google `gemini-3.5-flash-lite` | operationally incomplete | not scored | not scored | not scored | not scored | AI Studio requests-per-day quota exhausted; exact frozen rerun only |
+| Google-hosted `gemma-4-31b-it` replication | 120/120, 5/5 complete | 1.000 / 1.000 / 1.000 | 50/50 abstain | 50 -> 0 | 0.500 | cross-family replication pass; not retroactively added to the original provider matrix |
+| NVIDIA `nvidia/nemotron-3.5-lightning-30b-a3b` bounded probe | D2 7/15 success; v5 timed out after fixture 18/24 | not scored | not scored | not scored | not scored | protocol-capability negative control; repeated forbidden `finding` fields under R2 materialization |
+
+Ministral 8B and Gemma 4 31B produced identical base decisions for all 120 matched holdout-v5 case/seed observations. This supports stabilization of `semantic-decidability-d3-v1` for models satisfying the R2 materialized-decision protocol boundary, but it is not evidence of universal model compatibility.
+
+The next repository phase is D3 stabilization and reversible runtime adoption, not further model-matrix expansion by default. Additional model runs should target a specific compatibility or capability hypothesis. Residual soft decidability is the first successor research hypothesis after stabilization if a fresh calibration corpus demonstrates insufficiency not representable by the deterministic typed gate.
