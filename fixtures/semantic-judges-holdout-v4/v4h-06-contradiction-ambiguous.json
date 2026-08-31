@@ -1,0 +1,21 @@
+{
+  "id": "v4h-06-contradiction-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-06-contradiction-ambiguous",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "cache.policy",
+        "value": "strict"
+      }
+    },
+    "context": [
+      "One approved operations record says the cache policy is strict.",
+      "A second record with unclear supersession status says the cache policy is permissive."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

@@ -1,0 +1,20 @@
+{
+  "id": "v4h-07-contradiction-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-07-contradiction-ambiguous",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "worker.limit",
+        "value": "20"
+      }
+    },
+    "context": [
+      "A note says \u201cthe worker limit is 10,\u201d but the system contains separate batch and realtime worker pools and the note does not identify which pool it describes."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "v4h-02-contradiction-positive",
+  "request": {
+    "id": "holdout-v4-soft-v4h-02-contradiction-positive",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "retention.days",
+        "value": "30"
+      }
+    },
+    "context": [
+      "The target and the policy record refer to the same archive class.",
+      "The authoritative archive policy sets retention to 7 days, not 30 days."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

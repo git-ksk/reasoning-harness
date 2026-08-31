@@ -1,0 +1,18 @@
+{
+  "id": "v4h-25-counterexample-negative",
+  "request": {
+    "id": "holdout-v4-soft-v4h-25-counterexample-negative",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-paid-invoices-have-receipt"
+    },
+    "context": [
+      "Target generalization: every paid invoice has a receipt.",
+      "Invoice I-4 has no receipt, but its status is unpaid."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

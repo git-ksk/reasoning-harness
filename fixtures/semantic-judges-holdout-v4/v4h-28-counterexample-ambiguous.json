@@ -1,0 +1,18 @@
+{
+  "id": "v4h-28-counterexample-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-28-counterexample-ambiguous",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-2026-exports-signed"
+    },
+    "context": [
+      "Target generalization: every export produced in 2026 is signed.",
+      "One unsigned export is present, but its creation timestamp is unavailable and the surrounding directory contains both 2025 and 2026 exports."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

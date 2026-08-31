@@ -1,0 +1,21 @@
+{
+  "id": "v4h-13-unsupported-premise-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-13-unsupported-premise-ambiguous",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "backup.frequency",
+        "value": "daily"
+      }
+    },
+    "context": [
+      "The requirements state that backups must be enabled.",
+      "They do not state how often backups must run."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

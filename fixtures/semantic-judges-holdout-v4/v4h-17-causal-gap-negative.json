@@ -1,0 +1,29 @@
+{
+  "id": "v4h-17-causal-gap-negative",
+  "request": {
+    "id": "holdout-v4-soft-v4h-17-causal-gap-negative",
+    "task": "Determine whether the proposed causal relation lacks adequate directional support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "rate.limit",
+            "value": "enabled"
+          }
+        ],
+        "effect": {
+          "key": "downstream.overload",
+          "value": "reduced"
+        }
+      }
+    },
+    "context": [
+      "A randomized controlled rollout enabled the rate limit for matched traffic partitions while leaving controls unchanged.",
+      "Only treated partitions showed a reproducible reduction in downstream overload."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

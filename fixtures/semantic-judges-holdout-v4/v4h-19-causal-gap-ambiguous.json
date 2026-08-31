@@ -1,0 +1,29 @@
+{
+  "id": "v4h-19-causal-gap-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-19-causal-gap-ambiguous",
+    "task": "Determine whether the proposed causal relation lacks adequate directional support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "prefetch",
+            "value": "enabled"
+          }
+        ],
+        "effect": {
+          "key": "read.latency",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "A controlled prefetch experiment reduced latency in one storage tier.",
+      "The target relation is stated for all tiers, but no evidence is supplied for the remaining tiers."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

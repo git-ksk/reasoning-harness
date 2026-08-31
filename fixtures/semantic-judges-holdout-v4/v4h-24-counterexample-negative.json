@@ -1,0 +1,18 @@
+{
+  "id": "v4h-24-counterexample-negative",
+  "request": {
+    "id": "holdout-v4-soft-v4h-24-counterexample-negative",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-prod-requests-authenticated"
+    },
+    "context": [
+      "Target generalization: every production request to service P is authenticated.",
+      "An unauthenticated request is recorded against the developer sandbox endpoint, which is outside production."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

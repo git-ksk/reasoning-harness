@@ -1,0 +1,29 @@
+{
+  "id": "v4h-16-causal-gap-positive",
+  "request": {
+    "id": "holdout-v4-soft-v4h-16-causal-gap-positive",
+    "task": "Determine whether the proposed causal relation lacks adequate directional support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "config.rollout",
+            "value": "enabled"
+          }
+        ],
+        "effect": {
+          "key": "error.rate",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Errors increased near the rollout.",
+      "Traffic mix changed at the same time, and rollback was triggered only after errors were already elevated, leaving confounding and reverse timing unresolved."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

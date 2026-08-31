@@ -1,0 +1,29 @@
+{
+  "id": "v4h-21-causal-gap-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-21-causal-gap-ambiguous",
+    "task": "Determine whether the proposed causal relation lacks adequate directional support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "compression",
+            "value": "enabled"
+          }
+        ],
+        "effect": {
+          "key": "network.cost",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "Compression clearly reduces transferred bytes for text responses.",
+      "The target claim covers total network cost across mixed payload types, but evidence for binary payloads and CPU/network tradeoffs is not supplied."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

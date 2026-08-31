@@ -1,0 +1,29 @@
+{
+  "id": "v4h-18-causal-gap-negative",
+  "request": {
+    "id": "holdout-v4-soft-v4h-18-causal-gap-negative",
+    "task": "Determine whether the proposed causal relation lacks adequate directional support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "queue.backpressure",
+            "value": "enabled"
+          }
+        ],
+        "effect": {
+          "key": "memory.pressure",
+          "value": "reduced"
+        }
+      }
+    },
+    "context": [
+      "A controlled load test toggled backpressure while holding input load constant.",
+      "Enabling backpressure reduced queue growth and memory pressure; disabling it restored both effects across repeated runs."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

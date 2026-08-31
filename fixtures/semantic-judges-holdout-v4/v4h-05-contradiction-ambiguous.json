@@ -1,0 +1,21 @@
+{
+  "id": "v4h-05-contradiction-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-05-contradiction-ambiguous",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "feature.audit",
+        "value": "enabled"
+      }
+    },
+    "context": [
+      "The target applies to production.",
+      "A staging configuration explicitly disables audit logging, but no production configuration is supplied."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

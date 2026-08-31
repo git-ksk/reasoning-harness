@@ -1,0 +1,21 @@
+{
+  "id": "v4h-08-unsupported-premise-positive",
+  "request": {
+    "id": "holdout-v4-soft-v4h-08-unsupported-premise-positive",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "storage.encrypted",
+        "value": "true"
+      }
+    },
+    "context": [
+      "The proposal introduces encryption-at-rest as an assumption.",
+      "The supplied inventory and requirements do not state whether this storage is encrypted."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

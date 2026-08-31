@@ -1,0 +1,20 @@
+{
+  "id": "v4h-04-contradiction-negative",
+  "request": {
+    "id": "holdout-v4-soft-v4h-04-contradiction-negative",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "deploy.strategy",
+        "value": "blue_green"
+      }
+    },
+    "context": [
+      "The deployment uses two complete environments; traffic is switched from the old environment to the new one after validation."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

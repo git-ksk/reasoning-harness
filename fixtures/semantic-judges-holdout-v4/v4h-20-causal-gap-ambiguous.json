@@ -1,0 +1,29 @@
+{
+  "id": "v4h-20-causal-gap-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-20-causal-gap-ambiguous",
+    "task": "Determine whether the proposed causal relation lacks adequate directional support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "connection.pool",
+            "value": "larger"
+          }
+        ],
+        "effect": {
+          "key": "timeout.rate",
+          "value": "low"
+        }
+      }
+    },
+    "context": [
+      "After the pool was enlarged, timeouts fell and connection wait time also fell.",
+      "A garbage-collector change was deployed in the same window, and the experiment did not isolate the two changes."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

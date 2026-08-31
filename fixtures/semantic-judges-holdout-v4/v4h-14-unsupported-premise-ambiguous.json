@@ -1,0 +1,21 @@
+{
+  "id": "v4h-14-unsupported-premise-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-14-unsupported-premise-ambiguous",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "pool.concurrency",
+        "value": "8"
+      }
+    },
+    "context": [
+      "An operations note states \u201cconcurrency is 8.\u201d",
+      "Two independently configured pools exist, and the note does not bind that value to the target pool."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

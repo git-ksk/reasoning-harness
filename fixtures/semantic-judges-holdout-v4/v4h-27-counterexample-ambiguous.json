@@ -1,0 +1,18 @@
+{
+  "id": "v4h-27-counterexample-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-27-counterexample-ambiguous",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-primary-workers-heartbeat"
+    },
+    "context": [
+      "Target generalization: every primary worker emits a heartbeat each minute.",
+      "Worker W-X missed two heartbeats, but the record does not establish whether W-X was primary or a standby at that time."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

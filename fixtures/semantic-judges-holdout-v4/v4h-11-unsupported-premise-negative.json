@@ -1,0 +1,20 @@
+{
+  "id": "v4h-11-unsupported-premise-negative",
+  "request": {
+    "id": "holdout-v4-soft-v4h-11-unsupported-premise-negative",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "retry.max",
+        "value": "5"
+      }
+    },
+    "context": [
+      "The service policy states that the retry limit for this operation is five retries."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}
