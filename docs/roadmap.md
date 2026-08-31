@@ -255,8 +255,13 @@ R4 established that cross-model disagreement can expose uncertainty but agreemen
 - [frozen #73] D3 candidate `semantic-decidability-d3-v1` = `soft-semantic-v3` + `materialization-r2-v1` + `deterministic-explicit-typed-preconditions-v1`, composed only by preserving or forcing abstain; it is not a runtime version
 - [frozen #73] observation-free holdout-v5 now contains 24 fresh cases balanced across four diagnostic kinds and positive/negative/ambiguous labels, with 10 clear typed-insufficiency variants, no causal force variants, one inference-binding case, and SHA-256-frozen source/manifest payloads; `v5h05` and `v5h11` were clarified during static label/spec review before any provider observation
 - [frozen #73] holdout-v5 execution is fixed to Gemini 3.5 Flash-Lite and Ministral 8B separately, seeds 7000-7004, five trials, 512 output tokens, exact full-corpus execution, and the predeclared D3 adoption gates; the workflow exposes no study-shaping inputs
-- [next #73] merge the frozen holdout-v5 surface after CI, then run the independent adoption workflow once from merged main without post-observation rescue
-- [constraint #73] holdout-v4 remains immutable diagnostic history and no holdout-v5 is created until a calibration candidate is frozen
+- [pilot result #73] Ministral 8B completed the frozen holdout-v5 arm with 120/120 calls, 5/5 complete trials, eligible clear coverage/precision/recall 1.000, typed-insufficiency abstention 50/50, base unsafe assertions 50 -> 0, and zero clear-case seed disagreement
+- [cross-family replication #73] Google-hosted Gemma 4 31B independently replayed R2, D2, and holdout-v5 without changing fixtures, labels, seeds, thresholds, or semantic contracts; its v5 arm also completed 120/120 with clear coverage/precision/recall 1.000 and unsafe assertions 50 -> 0, and its 120 base decisions matched Ministral 8B exactly
+- [negative control #73] NVIDIA Nemotron 3.5 Lightning remains operationally/protocol incompatible with the current R2 materialized-decision contract: the bounded D2 probe succeeded on 7/15 calls and failed 8/15 with repeated forbidden `finding` fields, while the dependent v5 probe timed out after 18/24 attempted fixtures; this is compatibility evidence, not a semantic rejection of D3
+- [operationally incomplete #73] Gemini 3.5 Flash-Lite holdout-v5 was interrupted by AI Studio request-per-day quota exhaustion; this arm remains semantically unscored and may be repeated only under the exact frozen configuration after quota reset
+- [current #73] treat `semantic-decidability-d3-v1` as the stabilization/adoption candidate. Near-term work should harden capability preflight, operational-failure telemetry, partial-result preservation, config identity, rollback, and runtime integration rather than expanding the model matrix for its own sake
+- [next research #73] after D3 stabilization, the first successor hypothesis is residual soft decidability for insufficiency not represented by current typed metadata; selective/conformal abstention is a later calibrated option, and causal relation-level sufficiency waits for explicit typed directional evidence binding
+- [constraint #73] holdout-v4 remains immutable diagnostic history; holdout-v5 remains immutable after observation and must not be repaired, relabelled, or reused as calibration data
 
 See [semantic decidability and evidence-sufficiency research](semantic-decidability.md).
 
@@ -269,7 +274,7 @@ Research anchors for this phase are evidence, not normative designs:
 - Hamilton and Mimno, [*Lost in Space: Finding the Right Tokens for Structured Output*](https://aclanthology.org/2026.gem-main.18/) (GEM 2026): semantically similar output grammars/tokens can yield materially different downstream performance, especially for smaller models.
 - Wang et al., [*SConU: Selective Conformal Uncertainty in Large Language Models*](https://aclanthology.org/2025.acl-long.934/) (ACL 2025): selective/conformal uncertainty is a later-stage candidate for risk-controlled abstention after simpler format/seed stability signals are characterized.
 
-With #13, #27, and #28 complete, the deterministic authority/control-plane roadmap is implemented through durable replay. The next phase should be selected from the representation-robust semantic research above or concrete consumer integration pressure rather than adding generic agent orchestration by default.
+With #13, #27, #28, and the D3 pilot/replication evidence complete, the deterministic authority/control-plane roadmap is implemented through durable replay and the semantic-decidability line has a concrete stabilization candidate. The near-term phase is therefore D3 hardening and runtime adoption work; new semantic successors should wait for a measured residual gap or concrete consumer pressure rather than adding model breadth or generic agent orchestration by default.
 
 ## Decision gates for future features
 

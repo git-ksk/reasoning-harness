@@ -389,6 +389,30 @@ If a provider arm is operationally incomplete, the exact frozen run may be repea
 operational failure; partial semantic denominators do not count as an adoption result. If the frozen
 semantic gates fail, D3 is rejected rather than repaired against holdout-v5.
 
+
+## Post-freeze pilot status and stabilization direction
+
+The original D3 freeze and predeclared gates above remain historical protocol. Subsequent observation does not rewrite that plan. The current evidence is:
+
+- Mistral `ministral-8b-latest`: holdout-v5 120/120 calls, 5/5 complete trials, eligible clear coverage/precision/recall `1.000`, typed-insufficiency abstention `50/50`, base unsafe assertions `50 -> 0`, zero clear-case seed disagreement.
+- Google-hosted `gemma-4-31b-it`: independent cross-family replication of R2, D2, and holdout-v5; v5 completed 120/120 and 5/5 with the same clear metrics and `50 -> 0` unsafe reduction. Its 120 base decisions exactly matched Ministral 8B across matched case/seed observations.
+- Google `gemini-3.5-flash-lite`: the frozen v5 arm is operationally incomplete because the AI Studio requests-per-day quota was exhausted. It remains semantically unscored; only an exact frozen rerun after quota reset is admissible.
+- NVIDIA `nvidia/nemotron-3.5-lightning-30b-a3b`: bounded negative-control probing exposed a protocol-capability boundary. D2 produced 7/15 successful observations and eight materialization-protocol failures caused by forbidden model-owned `finding` fields; the dependent v5 probe reached 18/24 fixtures before the 40-minute job timeout. No partial semantic score is used for adoption.
+
+These observations justify treating `semantic-decidability-d3-v1` as the current stabilization/adoption candidate for models that satisfy the R2 protocol capability boundary. They do **not** establish universal model compatibility and do not justify provider-specific semantic tuning.
+
+Near-term stabilization should prioritize:
+
+1. explicit capability/preflight reporting for the R2 materialized-decision protocol;
+2. immediate typed operational telemetry for quota, rate-limit, timeout, provider, and protocol failures;
+3. partial-result preservation that cannot be mistaken for a complete semantic denominator;
+4. immutable runtime/config identity and reproducible compatibility metadata;
+5. reversible runtime adoption with a clear rollback to the characterized `soft-semantic-v3` baseline.
+
+Model-matrix expansion is secondary once two independent model families reproduce the same v5 safety pattern. Additional models should be added when they test a specific capability boundary, not merely to increase model count.
+
+After D3 stabilization, the first successor research hypothesis is the residual soft-decidability arm below. It should be opened only when a calibration corpus demonstrates insufficiency that the deterministic typed gate cannot represent. Selective/conformal uncertainty remains a later risk-control candidate, and causal relation-level sufficiency remains deferred until directional relation evidence has an explicit typed binding.
+
 ## Residual soft decidability is a separate hypothesis
 
 D1 intentionally does not claim to detect every form of missing decisive distinction. Some
@@ -415,13 +439,15 @@ they do not define harness authority semantics.
 - Xin et al., [*The Art of Abstention: Selective Prediction and Error Regularization for Natural Language Processing*](https://aclanthology.org/2021.acl-long.84/) (ACL 2021): abstention should be evaluated as a risk/coverage trade-off rather than accuracy alone.
 - Gu et al., [*Bridging the Detection-to-Abstention Gap in Reasoning Models under Insufficient Information*](https://arxiv.org/abs/2605.28070) (2026 preprint): an explicit answerability control decision before solving targets cases where a model detects missing information but still answers assertively.
 
-## Adoption sequence
+## Adoption and successor sequence
 
-1. D1 deterministic contract and metamorphic calibration fixtures;
-2. D2 provider-backed calibration against unchanged R2 semantic decision semantics;
-3. optional residual soft-decidability arm only if D1 leaves a measurable gap;
-4. freeze one provider-neutral successor configuration and thresholds;
-5. create a new observation-free holdout-v5;
-6. run the independent adoption test once, without post-observation rescue.
+The D1 -> D2 -> D3 freeze -> holdout-v5 sequence has now produced a successful two-family pilot/replication result, while Gemini remains operationally incomplete and Nemotron documents a protocol-capability boundary. The next order of work is:
 
-Until step 6 passes, `soft-semantic-v3` remains the runtime baseline.
+1. stabilize the frozen D3 contract and runtime/config identity without semantic retuning;
+2. harden capability preflight, failure telemetry, partial-result preservation, and rollback;
+3. perform runtime adoption as a separate reversible change while retaining `soft-semantic-v3` as the rollback baseline;
+4. rerun the exact frozen Gemini v5 arm after quota reset for completeness, without changing the candidate;
+5. only after D3 is stable, open residual soft decidability if a new calibration corpus demonstrates a measurable gap not represented by typed metadata;
+6. evaluate selective/conformal uncertainty or causal relation-level sufficiency later, each under a new calibration identity and fresh independent holdout if it becomes an adoption candidate.
+
+No successor may use observed holdout-v5 content for tuning, relabelling, threshold selection, or corpus repair.
