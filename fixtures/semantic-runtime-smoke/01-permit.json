@@ -1,0 +1,37 @@
+{
+  "id": "runtime-smoke-permit",
+  "request": {
+    "id": "runtime-smoke-permit",
+    "task": "Check whether the supplied context provides a counterexample to the target claim.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-limit"
+    },
+    "context": [
+      "The harness owns a complete typed proposition binding for the target claim."
+    ]
+  },
+  "artifact": {
+    "task": "Synthetic operational runtime smoke fixture.",
+    "evidence": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "claims": [
+      {
+        "id": "claim-limit",
+        "statement": "The limit is 100.",
+        "state": "unknown",
+        "proposition": {
+          "key": "runtime.limit",
+          "value": "100"
+        },
+        "evidence_ids": []
+      }
+    ],
+    "inferences": []
+  },
+  "expected_disposition": "permit"
+}
