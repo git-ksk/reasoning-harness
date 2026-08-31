@@ -250,7 +250,8 @@ R4 established that cross-model disagreement can expose uncertainty but agreemen
 - [designed #73] D2 keeps `semantic_label` and `assertive_eligibility` as separate pre-observation axes so expected forced abstention cannot be miscounted as a semantic recall failure; eligible precision/recall/coverage and typed-insufficiency abstention are separate denominators
 - [implemented #73] D2 v1 manifest has 15 calibration semantic cases across all four diagnostic kinds, 7 paired typed-insufficiency variants across three kinds, and four separate eligible ambiguity controls; causal-gap is deliberately permit-only, and checked-in semantic labels must match the existing calibration source fixtures before credentials are read
 - [implemented #73] `reason-decidability-study` performs one unchanged R2 provider observation per semantic case/seed and applies all typed variants afterward; operational failure remains separate and exact-path guards reject non-D2 corpora before provider initialization
-- [next #73] perform a final static pre-observation D2 spec audit, freeze the calibration configuration/thresholds, and only then run live provider calibration
+- [frozen #73] D2 v1 first-observation plan: full 15-case calibration corpus, Gemini 3.5 Flash-Lite and Ministral 8B reported separately, seeds 6000-6004, five trials, 512 output tokens, and predeclared operational/coverage/precision/recall/typed-insufficiency/stability gates; the workflow exposes no study-shaping inputs
+- [next #73] run the frozen D2 v1 provider calibration without changing the checked-in plan, then record pass/fail evidence before considering D3
 - [constraint #73] holdout-v4 remains immutable diagnostic history and no holdout-v5 is created until a calibration candidate is frozen
 
 See [semantic decidability and evidence-sufficiency research](semantic-decidability.md).
