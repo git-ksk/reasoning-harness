@@ -112,12 +112,17 @@ impl GoogleAdapter {
                 .send()
                 .await
                 .map_err(|error| {
+                    let kind = if error.is_timeout() {
+                        ModelErrorKind::Timeout
+                    } else {
+                        ModelErrorKind::Transport
+                    };
                     let detail = if error.is_timeout() {
                         "Gemini API request timed out".to_string()
                     } else {
                         format!("Gemini API request failed: {error}")
                     };
-                    ModelError::new(ModelErrorKind::Transport, detail)
+                    ModelError::new(kind, detail)
                 })?;
 
             if response.status() != StatusCode::TOO_MANY_REQUESTS
@@ -136,7 +141,7 @@ impl GoogleAdapter {
             let body = response.text().await.unwrap_or_default();
             let detail = google_error_detail(&body);
             return Err(ModelError::new(
-                ModelErrorKind::Provider,
+                classify_http_error(status, &body),
                 format!(
                     "Gemini API returned HTTP {status} after {rate_limit_retries} rate-limit retries{detail}"
                 ),
@@ -203,6 +208,36 @@ struct ResponseFormat {
     mime_type: &'static str,
     #[serde(skip_serializing_if = "Option::is_none")]
     schema: Option<Value>,
+}
+
+fn classify_http_error(status: StatusCode, body: &str) -> ModelErrorKind {
+    if status == StatusCode::TOO_MANY_REQUESTS {
+        let normalized = body.to_ascii_lowercase();
+        if [
+            "quota",
+            "billing",
+            "credit",
+            "resource_exhausted",
+            "free_tier_requests",
+        ]
+        .iter()
+        .any(|needle| normalized.contains(needle))
+        {
+            ModelErrorKind::Quota
+        } else {
+            ModelErrorKind::RateLimit
+        }
+    } else if status == StatusCode::PAYMENT_REQUIRED {
+        ModelErrorKind::Quota
+    } else if status == StatusCode::REQUEST_TIMEOUT || status == StatusCode::GATEWAY_TIMEOUT {
+        ModelErrorKind::Timeout
+    } else if matches!(status.as_u16(), 502 | 503) || status.is_server_error() {
+        ModelErrorKind::ProviderUnavailable
+    } else if status == StatusCode::UNAUTHORIZED {
+        ModelErrorKind::Credentials
+    } else {
+        ModelErrorKind::Provider
+    }
 }
 
 fn google_error_detail(body: &str) -> String {
@@ -395,6 +430,33 @@ mod tests {
         assert!(detail.contains("provider_status=INVALID_ARGUMENT"));
         assert!(detail.contains("message=bad request without secrets"));
         assert!(!detail.contains('\n'));
+    }
+
+    #[test]
+    fn classifies_google_quota_rate_limit_and_availability_errors() {
+        assert_eq!(
+            classify_http_error(
+                StatusCode::TOO_MANY_REQUESTS,
+                r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"Quota exceeded for free_tier_requests"}}"#,
+            ),
+            ModelErrorKind::Quota
+        );
+        assert_eq!(
+            classify_http_error(StatusCode::TOO_MANY_REQUESTS, "slow down"),
+            ModelErrorKind::RateLimit
+        );
+        assert_eq!(
+            classify_http_error(StatusCode::SERVICE_UNAVAILABLE, "temporary"),
+            ModelErrorKind::ProviderUnavailable
+        );
+        assert_eq!(
+            classify_http_error(StatusCode::GATEWAY_TIMEOUT, "timeout"),
+            ModelErrorKind::Timeout
+        );
+        assert_eq!(
+            classify_http_error(StatusCode::UNAUTHORIZED, "bad key"),
+            ModelErrorKind::Credentials
+        );
     }
 
     #[test]
