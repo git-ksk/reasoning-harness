@@ -15,20 +15,24 @@ The R4 measurement uses five matched seeds (`5000` through `5004`) and a 512-tok
 
 ## Frozen adoption gate
 
+The canonical gate is the strict conjunction of the two pre-observation Issue #59 declarations. It was reconciled before any R4 provider run and cannot be weakened after observation.
+
 The candidate passes R4 only if every condition below is met without changing the contract, source set, thresholds, corpus, or labels after provider observation:
 
-- both sources complete all 140 calls (28 fixtures x 5 trials) with 100% protocol completion;
-- all five combined trials are operationally complete;
+- both sources complete all 140 calls (28 fixtures x 5 trials) with 100% protocol completion and all five combined trials complete;
 - aggregate combined precision >= 0.95 and aggregate combined recall >= 0.95;
 - every trial has precision >= 0.90 and recall >= 0.90;
 - aggregate ambiguous abstention >= 0.85 and every trial ambiguous abstention >= 0.80;
-- aggregate decision coverage >= 0.50 and every trial decision coverage >= 0.45, preventing trivial always-abstain success;
-- no labelled fixture directly oscillates between `finding` and `no_finding` across combined trial decisions;
-- no provider/model-specific semantic branch is introduced and all deterministic hard/resolution safety tests remain green.
+- aggregate overall decision coverage >= 0.50 and every trial decision coverage >= 0.45;
+- aggregate clear-case coverage over positive+negative fixtures >= 0.90 and every trial clear-case coverage >= 0.85;
+- no positive/negative fixture produces both assertive polarities (`finding` and `no_finding`) across successful source/seed probes, and combined trial decisions do not oscillate between those polarities;
+- disagreement may only preserve a unanimous soft decision or escalate to `abstain`; agreement or vote count cannot create truth, trusted evidence, verification receipts, hard findings, epistemic promotion, or verdict authority;
+- every source receives the same semantic decision guidance, R2 ownership contract, and canonical representation; provider/model-specific semantic prompt branches are forbidden;
+- all deterministic hard-verifier, resolution, validation, and authority regressions remain green.
 
-External provider unavailability or quota exhaustion leaves R4 operationally incomplete; it must not be converted into a semantic pass or failure score. A failed semantic gate rejects the candidate rather than tuning it against holdout-v4.
+`disagreement_only` is the frozen primary policy. `complete_unanimity` is sensitivity analysis only and cannot replace it after observation. External provider unavailability or quota exhaustion leaves R4 operationally incomplete; it must not be converted into a semantic pass or failure score. A failed gate rejects the candidate rather than tuning it against holdout-v4.
 
-Passing this gate makes R3b eligible as an independently supported research successor. It does not by itself require a mandatory dual-provider production default: runtime cost, latency, provider availability, and conditional-escalation policy remain separate product/runtime decisions.
+Passing this gate validates R3b only as an independently supported **optional configuration for the frozen two-source set**. It does not automatically replace the single-model `soft-semantic-v3` default and does not establish arbitrary N-source equivalence.
 
 ## Independent holdout-v4 freeze
 
