@@ -1,0 +1,38 @@
+{
+  "id": "04_evidence_missing",
+  "pair_id": "evidence_presence",
+  "mutation_family": "evidence_presence",
+  "request": {
+    "id": "dec-evidence-control",
+    "task": "Evaluate the same semantic concern under harness-owned sufficiency metadata.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "feature.enabled",
+        "value": "true"
+      }
+    },
+    "context": [
+      "Semantic context is held constant within this metamorphic pair."
+    ]
+  },
+  "artifact": {
+    "task": "Calibration artifact for semantic decidability research.",
+    "evidence": [],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        }
+      }
+    ],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "claims": [],
+    "inferences": []
+  },
+  "expected_disposition": "force_abstain"
+}

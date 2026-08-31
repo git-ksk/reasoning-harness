@@ -1,0 +1,65 @@
+{
+  "id": "14_conflict_present",
+  "pair_id": "qualified_conflict",
+  "mutation_family": "qualified_conflict",
+  "request": {
+    "id": "dec-conflict-control",
+    "task": "Evaluate the same semantic concern under harness-owned sufficiency metadata.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "gc.changed",
+            "value": "true"
+          }
+        ],
+        "effect": {
+          "key": "latency.high",
+          "value": "true"
+        }
+      }
+    },
+    "context": [
+      "Semantic context is held constant within this metamorphic pair."
+    ]
+  },
+  "artifact": {
+    "task": "Calibration artifact for semantic decidability research.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "calibration",
+        "observation": "typed calibration evidence",
+        "facts": {
+          "latency.high": "true"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "calibration",
+        "observation": "typed calibration evidence",
+        "facts": {
+          "latency.high": "false"
+        },
+        "metadata": {}
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "latency.high",
+          "value": "true"
+        }
+      }
+    ],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "claims": [],
+    "inferences": []
+  },
+  "expected_disposition": "force_abstain"
+}

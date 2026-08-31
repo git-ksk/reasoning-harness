@@ -1,0 +1,53 @@
+{
+  "id": "11_metadata_control",
+  "pair_id": "required_metadata",
+  "mutation_family": "required_metadata",
+  "request": {
+    "id": "dec-metadata-control",
+    "task": "Evaluate the same semantic concern under harness-owned sufficiency metadata.",
+    "kind": "counterexample",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "source.confirmed",
+        "value": "true"
+      }
+    },
+    "context": [
+      "Semantic context is held constant within this metamorphic pair."
+    ]
+  },
+  "artifact": {
+    "task": "Calibration artifact for semantic decidability research.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "calibration",
+        "observation": "typed calibration evidence",
+        "facts": {
+          "source.confirmed": "false"
+        },
+        "metadata": {
+          "provenance_class": "primary"
+        }
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "source.confirmed",
+          "value": "true"
+        },
+        "minimum_authority_class": "primary"
+      }
+    ],
+    "authority_policy": {
+      "ranks": {
+        "primary": 1
+      }
+    },
+    "claims": [],
+    "inferences": []
+  },
+  "expected_disposition": "permit"
+}

@@ -1,0 +1,39 @@
+{
+  "id": "01_binding_control",
+  "pair_id": "binding",
+  "mutation_family": "proposition_binding",
+  "request": {
+    "id": "dec-binding-control",
+    "task": "Evaluate the same semantic concern under harness-owned sufficiency metadata.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-quota"
+    },
+    "context": [
+      "Semantic context is held constant within this metamorphic pair."
+    ]
+  },
+  "artifact": {
+    "task": "Calibration artifact for semantic decidability research.",
+    "evidence": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "claims": [
+      {
+        "id": "claim-quota",
+        "statement": "Quota is 100.",
+        "state": "unknown",
+        "proposition": {
+          "key": "quota.limit",
+          "value": "100"
+        },
+        "evidence_ids": []
+      }
+    ],
+    "inferences": []
+  },
+  "expected_disposition": "permit"
+}

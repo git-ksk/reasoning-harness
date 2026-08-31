@@ -1,0 +1,65 @@
+{
+  "id": "08_scope_mismatch",
+  "pair_id": "scope",
+  "mutation_family": "scope",
+  "request": {
+    "id": "dec-scope-control",
+    "task": "Evaluate the same semantic concern under harness-owned sufficiency metadata.",
+    "kind": "counterexample",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "service.available",
+        "value": "true"
+      }
+    },
+    "context": [
+      "Semantic context is held constant within this metamorphic pair."
+    ]
+  },
+  "artifact": {
+    "task": "Calibration artifact for semantic decidability research.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "calibration",
+        "observation": "typed calibration evidence",
+        "facts": {
+          "service.available": "false"
+        },
+        "metadata": {
+          "scope": {
+            "region": {
+              "kind": "values",
+              "values": [
+                "eu"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "service.available",
+          "value": "true"
+        },
+        "scope": {
+          "region": {
+            "kind": "values",
+            "values": [
+              "us"
+            ]
+          }
+        }
+      }
+    ],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "claims": [],
+    "inferences": []
+  },
+  "expected_disposition": "force_abstain"
+}
