@@ -57,6 +57,8 @@ The R1a runner defaults to a 512-token output budget. The first bounded 256-toke
 
 A matched 512-token rerun did **not** reproduce a token-limit finish: failed Mistral generations returned `finish_reason=error` after roughly 310 output tokens, including the positive fixture in both baseline and nested forms and the ambiguous baseline fixture. These are classified as `provider_generation_error`, remain outside semantic denominators, and block expansion to a full Mistral R1a matrix until the provider-side structured-generation behavior is characterized. A `stop` response that still fails parsing remains `representation_protocol`; token-limit finish reasons remain `truncation_protocol`.
 
+The first Gemini 3.1 Flash-Lite causal-triad probes completed for `nested_result_object` and `decision_finding_tuple`, with all three matched decisions unchanged from v3 in each comparison (`format_flip_rate=0`). The ambiguous causal fixture was `finding` under both baseline and variants, so this is format stability, not evidence of good uncertainty calibration. A subsequent `compact_key_object` probe is **not** semantic evidence: all three variant calls exhausted the model's free-tier request quota after retries. That sample is retained as operational history and the Google adapter now distinguishes quota/rate-limit failures from generic provider failures.
+
 ## Calibration-only execution
 
 The research binary canonicalizes the requested path and accepts only this checkout's exact `fixtures/semantic-judges` directory. A renamed/copy/symlinked holdout cannot be substituted as tuning data.
