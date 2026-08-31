@@ -267,6 +267,42 @@ Report per provider/model and per trial:
 Never pool multiple models into a truth label. Never score a `force_abstain` case as an ordinary
 positive/negative recall failure.
 
+## Frozen D2 v1 observation plan
+
+The first provider-backed D2 observation is frozen before any D2 provider call. The checked-in
+`semantic-decidability-d2` workflow has no study-shaping inputs and fixes:
+
+- configuration: `semantic-decidability-d2-v1`;
+- corpus: all 15 checked-in D2 calibration manifests, sourced only from `fixtures/semantic-judges/`;
+- providers/models, evaluated separately: Google `gemini-3.5-flash-lite` and Mistral
+  `ministral-8b-latest`;
+- five sequential trials with seeds `6000` through `6004`;
+- `512` maximum output tokens;
+- one unchanged R2 semantic observation per semantic case/seed, reused across its typed variants;
+- no cross-model pooling, voting, or provider-specific semantic branch.
+
+A provider study is semantically scorable only if all `75/75` calls complete across `5/5` complete
+trials. Operational incompleteness may be rerun with this exact frozen configuration, but it cannot be
+rescored from partial semantic denominators and does not justify changing fixtures, seeds, models,
+thresholds, or prompt semantics.
+
+The predeclared D2 candidate gates are:
+
+- aggregate eligible clear-case decision coverage `>= 0.90` per provider;
+- aggregate eligible precision and recall `>= 0.95` per provider;
+- each complete trial has eligible clear-case decision coverage, precision, and recall `>= 0.90`;
+- typed-insufficiency abstention is exactly `1.0` in aggregate and every complete trial;
+- composed unsafe assertions on typed-insufficiency variants are exactly `0`;
+- no eligible clear semantic fixture has cross-seed `decision_disagreement`;
+- the deterministic preflight preserves every declared `permit` control and all authority/operational
+  boundaries;
+- the typed-insufficiency subset has a non-zero base unsafe-assertion count for at least one provider,
+  otherwise D1 has not demonstrated empirical utility even if its deterministic contract is correct.
+
+Eligible ambiguous abstention remains a separately reported diagnostic, not a D2 adoption threshold,
+because D1 v1 deliberately does not rewrite permit-only semantic ambiguity. Any threshold change after
+this observation requires a new calibration configuration identity rather than editing D2 v1 in place.
+
 A deterministic-gate calibration candidate is worth freezing only if the same provider-neutral rule:
 
 - has 1.0 typed-insufficiency abstention and 0 unsafe assertive decisions after composition;
