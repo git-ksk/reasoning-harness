@@ -512,6 +512,12 @@ fn failure_class(error: &FormatJudgeError) -> &'static str {
     {
         return "truncation_protocol";
     }
+    if error
+        .finish_reason()
+        .is_some_and(is_provider_generation_error_finish_reason)
+    {
+        return "provider_generation_error";
+    }
     match error.model_error_kind() {
         Some(reasoning_harness_core::ModelErrorKind::Credentials) => "credentials",
         Some(reasoning_harness_core::ModelErrorKind::Transport) => "transport",
@@ -535,9 +541,43 @@ fn is_truncation_finish_reason(reason: &str) -> bool {
     )
 }
 
+fn is_provider_generation_error_finish_reason(reason: &str) -> bool {
+    reason.trim().eq_ignore_ascii_case("error")
+}
+
 fn provider_name(provider: Provider) -> &'static str {
     match provider {
         Provider::Mistral => "mistral",
         Provider::Google => "google",
+    }
+}
+
+#[cfg(test)]
+mod format_study_failure_tests {
+    use super::*;
+
+    fn invalid_with_finish_reason(reason: &str) -> FormatJudgeError {
+        FormatJudgeError::InvalidRepresentation {
+            message: "incomplete structured output".into(),
+            model: "provider-model".into(),
+            usage: ModelUsage::default(),
+            finish_reason: Some(reason.into()),
+        }
+    }
+
+    #[test]
+    fn finish_reason_classification_separates_provider_error_from_protocol_and_truncation() {
+        assert_eq!(
+            failure_class(&invalid_with_finish_reason("length")),
+            "truncation_protocol"
+        );
+        assert_eq!(
+            failure_class(&invalid_with_finish_reason("error")),
+            "provider_generation_error"
+        );
+        assert_eq!(
+            failure_class(&invalid_with_finish_reason("stop")),
+            "representation_protocol"
+        );
     }
 }
