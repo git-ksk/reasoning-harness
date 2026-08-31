@@ -1,0 +1,20 @@
+{
+  "id": "v4h-03-contradiction-negative",
+  "request": {
+    "id": "holdout-v4-soft-v4h-03-contradiction-negative",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "endpoint.tls",
+        "value": "required"
+      }
+    },
+    "context": [
+      "For this endpoint, encrypted transport is mandatory and plaintext connections are rejected."
+    ]
+  },
+  "label": "negative",
+  "recorded_observations": []
+}

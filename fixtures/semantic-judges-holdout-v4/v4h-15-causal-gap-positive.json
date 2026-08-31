@@ -1,0 +1,29 @@
+{
+  "id": "v4h-15-causal-gap-positive",
+  "request": {
+    "id": "holdout-v4-soft-v4h-15-causal-gap-positive",
+    "task": "Determine whether the proposed causal relation lacks adequate directional support.",
+    "kind": "causal_gap",
+    "target": {
+      "type": "causal_relation",
+      "relation": {
+        "causes": [
+          {
+            "key": "cpu.utilization",
+            "value": "high"
+          }
+        ],
+        "effect": {
+          "key": "request.latency",
+          "value": "high"
+        }
+      }
+    },
+    "context": [
+      "Across the observed interval, CPU utilization and latency rise together.",
+      "No intervention, directional mechanism, or evidence distinguishing cause from common load is supplied."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

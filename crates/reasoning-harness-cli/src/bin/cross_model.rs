@@ -6,7 +6,7 @@ use std::{
     time::Instant,
 };
 
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
     CalibrationLabel, MaterializationError, MaterializationRepresentation, ModelAdapter,
     ModelErrorKind, ModelUsage, SelectiveAbstentionOutcome, SelectiveAbstentionPolicy,
@@ -23,8 +23,10 @@ use serde::Serialize;
     about = "Calibration-only R3b cross-model semantic-judge stability study"
 )]
 struct Args {
-    /// Calibration fixture directory. Historical holdouts are rejected.
+    /// Study corpus directory. Must exactly match the selected corpus identity.
     target: PathBuf,
+    #[arg(long, value_enum, default_value_t = Corpus::Calibration)]
+    corpus: Corpus,
     /// Provider/model source in `provider:model` form. Repeat at least twice.
     #[arg(long = "source", required = true)]
     source_specs: Vec<String>,
@@ -36,6 +38,12 @@ struct Args {
     seed: Option<u64>,
     #[arg(long, default_value_t = 1)]
     trials: usize,
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum)]
+enum Corpus {
+    Calibration,
+    HoldoutV4,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -139,6 +147,8 @@ struct TrialMetrics {
     #[serde(skip_serializing_if = "Option::is_none")]
     decision_coverage: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    clear_case_coverage: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ambiguous_abstention: Option<f64>,
 }
 
@@ -191,6 +201,8 @@ struct SelectivePolicyMetrics {
     #[serde(skip_serializing_if = "Option::is_none")]
     decision_coverage: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    clear_case_coverage: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ambiguous_abstention: Option<f64>,
 }
 
@@ -206,6 +218,7 @@ struct CrossModelStabilityReport {
 #[derive(Debug, Serialize)]
 struct StudyOutput {
     configuration_id: &'static str,
+    corpus: &'static str,
     execution_design: &'static str,
     materialization_contract: &'static str,
     representation: MaterializationRepresentation,
@@ -220,6 +233,7 @@ struct DecisionMetrics {
     precision: Option<f64>,
     recall: Option<f64>,
     decision_coverage: Option<f64>,
+    clear_case_coverage: Option<f64>,
     ambiguous_abstention: Option<f64>,
 }
 
@@ -247,7 +261,7 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
     }
 
     // Corpus identity is checked before adapters touch credentials.
-    let target = require_calibration_corpus(&args.target)?;
+    let target = require_study_corpus(&args.target, args.corpus)?;
     let specs = parse_source_specs(&args.source_specs)?;
     let mut fixtures = load_fixtures(&target)?;
     select_fixtures(&mut fixtures, &args.fixture_ids)?;
@@ -264,7 +278,9 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
     let combined_cross_model_stability = summarize_cross_model_stability(&reports, args.trials)?;
 
     Ok(StudyOutput {
+        // Corpus identity changes the evaluation surface, not the frozen semantic candidate.
         configuration_id: "cross-model-selective-abstention-r3b-v1",
+        corpus: corpus_name(args.corpus),
         execution_design: "fixture_trial_rotating_source_order_v1",
         materialization_contract: "decision_owned_by_model_binding_owned_by_harness_v1",
         representation: MaterializationRepresentation::DecisionNoteObject,
@@ -455,6 +471,7 @@ fn summarize_source(
                 precision: None,
                 recall: None,
                 decision_coverage: None,
+                clear_case_coverage: None,
                 ambiguous_abstention: None,
             }
         });
@@ -491,6 +508,7 @@ fn semantic_trial_metrics(trial: usize, cases: &[&StudyCase]) -> TrialMetrics {
         precision: metrics.precision,
         recall: metrics.recall,
         decision_coverage: metrics.decision_coverage,
+        clear_case_coverage: metrics.clear_case_coverage,
         ambiguous_abstention: metrics.ambiguous_abstention,
     }
 }
@@ -633,6 +651,7 @@ fn selective_policy_metrics(
         precision: metrics.precision,
         recall: metrics.recall,
         decision_coverage: metrics.decision_coverage,
+        clear_case_coverage: metrics.clear_case_coverage,
         ambiguous_abstention: metrics.ambiguous_abstention,
     }
 }
@@ -655,11 +674,19 @@ fn metrics_from_decisions(
     let mut fp = 0usize;
     let mut fn_ = 0usize;
     let mut decided = 0usize;
+    let mut clear_cases = 0usize;
+    let mut clear_decided = 0usize;
     let mut ambiguous = 0usize;
     let mut ambiguous_abstain = 0usize;
     for (label, decision) in decisions {
         if decision != SoftJudgeDecision::Abstain {
             decided += 1;
+        }
+        if label != CalibrationLabel::Ambiguous {
+            clear_cases += 1;
+            if decision != SoftJudgeDecision::Abstain {
+                clear_decided += 1;
+            }
         }
         match label {
             CalibrationLabel::Positive => {
@@ -686,26 +713,38 @@ fn metrics_from_decisions(
         precision: ratio(tp, tp + fp),
         recall: ratio(tp, tp + fn_),
         decision_coverage: ratio(decided, total),
+        clear_case_coverage: ratio(clear_decided, clear_cases),
         ambiguous_abstention: ratio(ambiguous_abstain, ambiguous),
     }
 }
 
-fn require_calibration_corpus(target: &Path) -> Result<PathBuf, String> {
+fn require_study_corpus(target: &Path, corpus: Corpus) -> Result<PathBuf, String> {
     let target = target
         .canonicalize()
         .map_err(|error| format!("{}: {error}", target.display()))?;
+    let relative = match corpus {
+        Corpus::Calibration => "fixtures/semantic-judges",
+        Corpus::HoldoutV4 => "fixtures/semantic-judges-holdout-v4",
+    };
     let expected = std::env::current_dir()
         .map_err(|error| error.to_string())?
-        .join("fixtures/semantic-judges")
+        .join(relative)
         .canonicalize()
-        .map_err(|error| format!("calibration corpus unavailable: {error}"))?;
+        .map_err(|error| format!("{relative} corpus unavailable: {error}"))?;
     if target != expected {
-        return Err(
-            "R3b cross-model study accepts only this checkout's fixtures/semantic-judges calibration corpus"
-                .into(),
-        );
+        return Err(format!(
+            "cross-model study corpus mismatch: --corpus {} requires this checkout's {relative}",
+            corpus_name(corpus)
+        ));
     }
     Ok(target)
+}
+
+fn corpus_name(corpus: Corpus) -> &'static str {
+    match corpus {
+        Corpus::Calibration => "calibration",
+        Corpus::HoldoutV4 => "holdout_v4",
+    }
 }
 
 fn load_fixtures(directory: &Path) -> Result<Vec<SoftJudgeCalibrationFixture>, String> {
@@ -804,5 +843,21 @@ mod tests {
         assert_eq!(counterbalanced_source_order(3, 0, 0), vec![0, 1, 2]);
         assert_eq!(counterbalanced_source_order(3, 1, 0), vec![1, 2, 0]);
         assert_eq!(counterbalanced_source_order(3, 0, 2), vec![2, 0, 1]);
+    }
+
+    #[test]
+    fn clear_case_coverage_counts_only_positive_and_negative_cases() {
+        let metrics = metrics_from_decisions(
+            [
+                (CalibrationLabel::Positive, SoftJudgeDecision::Finding),
+                (CalibrationLabel::Negative, SoftJudgeDecision::Abstain),
+                (CalibrationLabel::Ambiguous, SoftJudgeDecision::Abstain),
+            ]
+            .into_iter(),
+            3,
+        );
+        assert_eq!(metrics.decision_coverage, Some(1.0 / 3.0));
+        assert_eq!(metrics.clear_case_coverage, Some(0.5));
+        assert_eq!(metrics.ambiguous_abstention, Some(1.0));
     }
 }

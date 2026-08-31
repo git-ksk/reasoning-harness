@@ -1,0 +1,18 @@
+{
+  "id": "v4h-23-counterexample-positive",
+  "request": {
+    "id": "holdout-v4-soft-v4h-23-counterexample-positive",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-versioned-objects-immutable"
+    },
+    "context": [
+      "Target generalization: every object in bucket B with immutable-version status remains byte-identical.",
+      "Object O-7 in bucket B had immutable-version status and its recorded content hash changed after an overwrite operation."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

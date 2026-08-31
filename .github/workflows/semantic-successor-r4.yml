@@ -1,0 +1,59 @@
+name: semantic-successor-r4
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  study:
+    name: frozen-holdout-v4-cross-model
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    concurrency:
+      group: reasoning-harness-semantic-r4
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check frozen source credentials
+        id: credential
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -n "$MISTRAL_API_KEY" ] && [ -n "$GEMINI_API_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::both frozen R4 source credentials are required; skipping independent study."
+          fi
+      - name: Run frozen independent holdout-v4 study
+        if: steps.credential.outputs.available == 'true'
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          OUTPUT=/tmp/reason-semantic-successor-r4.json
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-cross-model-study -- \
+            fixtures/semantic-judges-holdout-v4 \
+            --corpus holdout-v4 \
+            --source google:gemini-3.5-flash-lite \
+            --source mistral:ministral-8b-latest \
+            --seed 5000 \
+            --trials 5 \
+            --max-tokens 512 \
+            > "$OUTPUT"
+          jq '{configuration_id, corpus, execution_design, materialization_contract, representation, fixture_count, source_count, sources: [.sources[] | {source_id, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, total_tokens, total_latency_ms, mean_latency_ms, trials}], combined_cross_model_stability: {source_count: .combined_cross_model_stability.source_count, trials: .combined_cross_model_stability.trials, expected_probes_per_fixture: .combined_cross_model_stability.expected_probes_per_fixture, policies: .combined_cross_model_stability.policies, risky_fixtures: [.combined_cross_model_stability.fixtures[] | select(.combined_assessment.risk_signals | length > 0) | {fixture_id, label, per_trial, combined_assessment, disagreement_only, complete_unanimity}]}, failures: [.sources[] as $s | $s.cases[] | select(.failure_class != null) | {source_id: $s.source_id, fixture_id, trial, seed, finish_reason, failure_class, latency_ms, usage}]}' "$OUTPUT"
+      - name: Preserve frozen R4 JSON
+        if: always() && steps.credential.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-successor-r4-holdout-v4
+          path: /tmp/reason-semantic-successor-r4.json
+          if-no-files-found: ignore
+          retention-days: 30

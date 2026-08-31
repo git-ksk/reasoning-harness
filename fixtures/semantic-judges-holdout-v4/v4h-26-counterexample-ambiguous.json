@@ -1,0 +1,18 @@
+{
+  "id": "v4h-26-counterexample-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-26-counterexample-ambiguous",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-v5-clients-support-resume"
+    },
+    "context": [
+      "Target generalization: every version-5 client supports session resume.",
+      "A client failed to resume a session, but its version metadata is missing and could be version 4 or version 5."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

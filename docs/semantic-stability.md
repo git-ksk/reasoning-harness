@@ -68,3 +68,9 @@ R3b adds a separate optional risk axis for deployments that have more than one m
 Cross-model outputs are probes, never votes. If successful sources disagree, the existing unanimity evaluator conservatively returns `abstain`. If all sources agree, the soft decision may be preserved but gains no additional authority. Operationally missing sources remain a separate risk signal and can be handled by the stricter complete-unanimity candidate.
 
 The CLI accepts N distinct `provider:model` sources. The initial GitHub Actions surface is intentionally bounded to two sources for the first calibration study. This direction is motivated by Tan et al., *Too Consistent to Detect: A Study of Self-Consistent Errors in LLMs* (EMNLP 2025, DOI 10.18653/v1/2025.emnlp-main.238), which shows that self-consistent errors are difficult for same-model consistency detectors and that cross-model evidence can provide an orthogonal signal.
+
+## R3b repeated calibration and R4 handoff
+
+The five-seed all-calibration R3b run (`33368618724`) completed 180/180 provider calls. Cross-model disagreement was limited to four ambiguous fixtures: three causal ambiguity cases disagreed on every seed, while one contradiction-binding ambiguity case disagreed on three of five seeds. No positive or negative fixture disagreed on any seed. The combined `disagreement_only` result retained precision/recall 1.0, ambiguous abstention 1.0, decision coverage 0.6111, and clear-case coverage 1.0.
+
+This is sufficient to advance to an independent test, not to claim general correctness. The R4 thresholds and candidate identity were frozen before the first holdout-v4 provider observation; see `semantic-successor-r4.md`.

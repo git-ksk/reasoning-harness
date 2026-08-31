@@ -1,0 +1,18 @@
+{
+  "id": "v4h-22-counterexample-positive",
+  "request": {
+    "id": "holdout-v4-soft-v4h-22-counterexample-positive",
+    "task": "Determine whether the supplied context contains an applicable counterexample to the target generalization.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-all-scheduled-jobs-complete"
+    },
+    "context": [
+      "Target generalization: every job accepted by scheduler S during the maintenance window completes successfully.",
+      "Job J-19 was accepted by scheduler S during that window and entered a terminal failed state without completing."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

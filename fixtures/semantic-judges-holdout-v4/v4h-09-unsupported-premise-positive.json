@@ -1,0 +1,21 @@
+{
+  "id": "v4h-09-unsupported-premise-positive",
+  "request": {
+    "id": "holdout-v4-soft-v4h-09-unsupported-premise-positive",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "replica.count",
+        "value": "3"
+      }
+    },
+    "context": [
+      "The source material specifies autoscaling between one and six replicas.",
+      "No fixed replica count is supplied for the target deployment."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}

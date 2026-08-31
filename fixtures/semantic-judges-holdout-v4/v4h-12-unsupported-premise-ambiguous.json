@@ -1,0 +1,21 @@
+{
+  "id": "v4h-12-unsupported-premise-ambiguous",
+  "request": {
+    "id": "holdout-v4-soft-v4h-12-unsupported-premise-ambiguous",
+    "task": "Determine whether the target premise is supported by the supplied context.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "runtime.version",
+        "value": "4.2"
+      }
+    },
+    "context": [
+      "A draft migration note names runtime 4.2.",
+      "The note is marked obsolete, and no current runtime declaration is provided."
+    ]
+  },
+  "label": "ambiguous",
+  "recorded_observations": []
+}

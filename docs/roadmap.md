@@ -221,15 +221,15 @@ The next semantic-judge research sequence is deliberately staged:
 - [calibration result #59] cross-seed plus information-equivalent R2 representation stability is measured with decision-note, compact-key decision-note, and nested-decision-note surfaces under counterbalanced execution
 - [implemented #59] report coverage, precision/recall, ambiguous abstention, risk-fixture count, and abstention escalation so always-abstain behavior cannot pass by construction
 - [calibration result #59] R3 cross-representation stability detects two ambiguous Gemini 3.5 fixtures and safely escalates them to abstain, but Ministral 8B remains 18/18 protocol-complete and representation-stable while ambiguous abstention stays 0.5714; consistency alone is therefore insufficient
-- [in progress #59] R3b adds optional N-source cross-model unanimity as an orthogonal risk signal for self-consistent errors; model/provider disagreement can only escalate to abstain and never becomes majority-vote truth
+- [calibration result #59] R3b Gemini 3.5 Flash-Lite + Ministral 8B completed 180/180 calls across five seeds; cross-model risk remained confined to four ambiguous fixtures, positive/negative disagreement stayed at zero, and the combined policy held precision/recall and ambiguous abstention at 1.0 with 0.6111 decision coverage
 - [planned] investigate calibrated/selective-prediction methods only after these simple unanimity signals are characterized
 
 #### R4 — independent successor evaluation
-- [blocked] do not create or consume holdout-v4 until one provider-neutral candidate passes the R1-R3 calibration gates without tuning against holdout-v1/v2/v3
-- [planned] freeze holdout-v4 before the first provider observation of that candidate
-- [planned] assign a new configuration identity for any materially changed semantic/protocol contract
-- [planned] require repeated cross-provider measurement with operational completeness separated from semantic denominators
-- [planned] preserve `soft-semantic-v3` as the production/research baseline unless the predeclared independent adoption gate is met
+- [gate frozen #59] R3b passed the calibration gate; the independent acceptance criteria are predeclared in `docs/semantic-successor-r4.md` before the first holdout-v4 provider observation
+- [next #59] freeze a new observation-free 28-case holdout-v4 with 7 cases per semantic kind and 8/8/12 positive/negative/ambiguous balance
+- [planned] measure the exact `cross-model-selective-abstention-r3b-v1` Gemini 3.5 Flash-Lite + Ministral 8B source set for five matched trials without tuning after observation
+- [planned] require 100% operational completion, precision/recall and uncertainty gates, explicit clear-case coverage, polarity stability, provider-neutral semantics, and green deterministic authority regressions
+- [planned] preserve `soft-semantic-v3` as the default unless the independent gate is met; passing R4 validates R3b only as an optional frozen-source cross-model configuration, not as a universal source-set claim
 
 This sequence changes the research question from “which schema makes models obey JSON?” to “how much semantic behavior survives representation changes, and how can the harness minimize representation-induced risk without granting the model more authority?”
 

@@ -1,0 +1,21 @@
+{
+  "id": "v4h-01-contradiction-positive",
+  "request": {
+    "id": "holdout-v4-soft-v4h-01-contradiction-positive",
+    "task": "Determine whether the target proposition conflicts with the supplied context.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "service.mode",
+        "value": "active"
+      }
+    },
+    "context": [
+      "The target refers to service api-gateway in production.",
+      "The production control-plane record for api-gateway states that its mode is inactive."
+    ]
+  },
+  "label": "positive",
+  "recorded_observations": []
+}
