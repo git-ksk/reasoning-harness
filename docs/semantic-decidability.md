@@ -321,6 +321,71 @@ If the deterministic gate only catches tautological metadata failures and provid
 provider-backed reduction in over-assertion, D1 should be recorded as insufficient rather than
 expanded post hoc against historical holdouts.
 
+## D2 v1 observed result
+
+Frozen GitHub Actions run `33377619803` measured the exact checked-in D2 v1 plan from merge commit
+`f7d99d80336c7854195dbd0f826dd9bcca3e3457`. No fixture, model, seed, token budget, or threshold was
+changed after observation. Both provider arms were operationally complete.
+
+| provider/model | calls | complete trials | clear coverage | clear precision | clear recall | typed insufficiency abstention | base unsafe -> composed unsafe | ambiguous abstention | clear seed disagreement |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Google `gemini-3.5-flash-lite` | 75/75 | 5/5 | 1.000 | 1.000 | 1.000 | 35/35 = 1.000 | 35 -> 0 | 1.000 | 0 |
+| Mistral `ministral-8b-latest` | 75/75 | 5/5 | 1.000 | 1.000 | 1.000 | 35/35 = 1.000 | 35 -> 0 | 0.750 | 0 |
+
+Every complete trial on both providers individually had clear coverage/precision/recall `1.000`,
+typed-insufficiency abstention `1.000`, and zero composed unsafe assertions. The deterministic gate
+therefore passed every predeclared D2 candidate gate, while demonstrating non-zero empirical utility
+on both providers: the unchanged R2 semantic decision was assertive on every one of the 35 typed
+insufficiency variants per provider, and D1 moved all 35 to `abstain`.
+
+The Mistral ambiguity diagnostic remains intentionally visible rather than tuned away.
+`14_causal_partial_intervention_ambiguous` returned `finding` for seeds `6000` through `6004`; the
+other three eligible ambiguous controls abstained. This is outside D1 v1's typed force surface and is
+not evidence for extending endpoint requirements into causal-relation requirements.
+
+Operational cost for the frozen run was 31,820 tokens / 43,231 ms aggregate fixture latency on
+Ministral 8B and 35,267 tokens / 291,945 ms on Gemini 3.5 Flash-Lite. The deterministic composition
+itself requires no additional provider call.
+
+## D3 frozen candidate
+
+D2 is sufficient to freeze, but not adopt, one provider-neutral successor candidate:
+
+```text
+candidate_id              semantic-decidability-d3-v1
+semantic_baseline         soft-semantic-v3
+materialization_contract  materialization-r2-v1
+decidability_contract     deterministic-explicit-typed-preconditions-v1
+composition               permit_preserves__force_abstain_only
+```
+
+The candidate scope is exactly the checked-in D1 contract. It may force abstention for missing typed
+target/proposition binding and unsatisfied explicit proposition evidence requirements only where the
+semantic question is directly bound to that proposition. It does not infer counterexample
+applicability requirements, does not promote cause/effect endpoint requirements into a directional
+causal requirement, does not use model confidence/agreement, and never repairs operational failure.
+
+This D3 candidate is not a runtime version and does not change `soft-semantic-v3`. Its independent
+adoption test must use a newly authored, observation-free holdout-v5 that is created only after this
+candidate freeze. Provider results remain separate; there is no majority/pooled rescue.
+
+Predeclared holdout-v5 adoption gates for each provider are:
+
+- `5/5` operationally complete trials and 100% provider/protocol completion;
+- aggregate eligible clear decision coverage `>= 0.90`;
+- aggregate eligible precision and recall `>= 0.95`;
+- each complete trial eligible clear coverage, precision, and recall `>= 0.90`;
+- typed-insufficiency abstention exactly `1.0` and composed unsafe assertions exactly `0`;
+- zero deterministic escalation on declared `permit` controls;
+- zero cross-seed `decision_disagreement` on eligible clear semantic fixtures;
+- non-zero base unsafe assertions on the typed-insufficiency subset for at least one provider;
+- no provider-specific prompt/config branch and no post-observation relabelling, threshold change,
+  corpus repair, or selective rerun.
+
+If a provider arm is operationally incomplete, the exact frozen run may be repeated only for the
+operational failure; partial semantic denominators do not count as an adoption result. If the frozen
+semantic gates fail, D3 is rejected rather than repaired against holdout-v5.
+
 ## Residual soft decidability is a separate hypothesis
 
 D1 intentionally does not claim to detect every form of missing decisive distinction. Some
