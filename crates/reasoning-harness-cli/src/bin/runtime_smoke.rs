@@ -464,3 +464,38 @@ const fn provider_name(provider: Provider) -> &'static str {
         Provider::Google => "google",
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn smoke_pair_keeps_model_visible_semantics_matched_and_gate_dispositions_distinct() {
+        let fixture_root =
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../fixtures/semantic-runtime-smoke");
+        let fixtures = load_fixtures(&fixture_root).unwrap();
+        assert_eq!(fixtures.len(), 2);
+
+        let permit = &fixtures[0];
+        let force = &fixtures[1];
+        assert_eq!(
+            permit.expected_disposition,
+            SemanticDecidabilityDisposition::Permit
+        );
+        assert_eq!(
+            force.expected_disposition,
+            SemanticDecidabilityDisposition::ForceAbstain
+        );
+
+        assert_eq!(permit.request.task, force.request.task);
+        assert_eq!(permit.request.kind, force.request.kind);
+        assert_eq!(permit.request.target, force.request.target);
+        assert_eq!(permit.request.context, force.request.context);
+
+        for fixture in fixtures {
+            let assessment =
+                assess_semantic_decidability(&fixture.request, &fixture.artifact).unwrap();
+            assert_eq!(assessment.disposition, fixture.expected_disposition);
+        }
+    }
+}

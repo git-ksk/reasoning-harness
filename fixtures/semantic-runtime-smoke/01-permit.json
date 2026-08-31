@@ -2,14 +2,15 @@
   "id": "runtime-smoke-permit",
   "request": {
     "id": "runtime-smoke-permit",
-    "task": "Check whether the supplied context provides a counterexample to the target claim.",
+    "task": "Check whether the supplied observation is a counterexample to the target claim.",
     "kind": "counterexample",
     "target": {
       "type": "claim",
       "claim_id": "claim-limit"
     },
     "context": [
-      "The harness owns a complete typed proposition binding for the target claim."
+      "The target claim states that runtime.limit is 100.",
+      "An independent observation states that runtime.limit is 200."
     ]
   },
   "artifact": {

@@ -105,9 +105,11 @@ The adopted runtime has a separate synthetic smoke surface that is deliberately 
 holdout-v5 research corpora. `reason-semantic-runtime-smoke` executes two bounded operational cases
 against a selected provider/model:
 
-- a deterministic `permit` case, where D3 must preserve the R2 base decision; and
-- a deterministic `force_abstain` case, where D3 must return `abstain` regardless of the R2 base
-  decision.
+- a deterministic `permit` case with a clear counterexample, where D3 must preserve the R2 base
+  decision; and
+- a matched deterministic `force_abstain` case with the same model-visible semantic context but a
+  missing harness-owned proposition binding, where D3 must return `abstain` regardless of the R2
+  base decision.
 
 The same cases also execute the explicit `soft-semantic-v3` rollback profile and require it to
 remain operationally executable. Fixture dispositions are recomputed before provider initialization,
