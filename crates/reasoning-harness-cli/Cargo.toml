@@ -17,6 +17,10 @@ path = "src/main.rs"
 name = "reason-format-study"
 path = "src/bin/format_invariance.rs"
 
+[[bin]]
+name = "reason-materialization-study"
+path = "src/bin/materialization.rs"
+
 [dependencies]
 clap.workspace = true
 reasoning-harness-core = { path = "../reasoning-harness-core" }
