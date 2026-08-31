@@ -131,10 +131,12 @@ pub use semantic_judge::{
     ModelBackedSoftJudgeObservation, SemanticDiagnosticKind, SemanticDiagnosticTarget,
     SoftDiagnosticJudge, SoftJudgeAgreement, SoftJudgeCalibrationError,
     SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeError,
-    SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeMetrics, SoftJudgeObservation,
-    SoftJudgeOutput, SoftJudgeRequest, SoftSemanticFinding, aggregate_soft_judge_calibration,
-    build_soft_judge_json_fallback_request, build_soft_judge_model_request,
-    parse_soft_judge_output, run_model_backed_soft_judge, run_soft_judge,
+    SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeMetrics, SoftJudgeModelProtocol,
+    SoftJudgeObservation, SoftJudgeOutput, SoftJudgeRequest, SoftSemanticFinding,
+    aggregate_soft_judge_calibration, build_soft_judge_json_fallback_request,
+    build_soft_judge_json_fallback_request_with_protocol, build_soft_judge_model_request,
+    build_soft_judge_model_request_with_protocol, parse_soft_judge_output,
+    run_model_backed_soft_judge, run_model_backed_soft_judge_with_protocol, run_soft_judge,
     validate_calibration_fixtures,
 };
 pub use types::{

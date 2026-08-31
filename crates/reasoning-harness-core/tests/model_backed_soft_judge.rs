@@ -4,8 +4,9 @@ use reasoning_harness_core::{
     CausalRelation, ModelAdapter, ModelBackedSoftJudgeError, ModelError, ModelErrorKind,
     ModelOutputFormat, ModelReasoningPreference, ModelRequest, ModelResponse, ModelUsage,
     Proposition, SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftJudgeDecision,
-    SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeRequest,
-    build_soft_judge_json_fallback_request, build_soft_judge_model_request,
+    SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeModelProtocol, SoftJudgeRequest,
+    build_soft_judge_json_fallback_request, build_soft_judge_json_fallback_request_with_protocol,
+    build_soft_judge_model_request, build_soft_judge_model_request_with_protocol,
     parse_soft_judge_output, run_model_backed_soft_judge,
 };
 
@@ -92,6 +93,71 @@ fn valid_finding_json() -> &'static str {
         "note":"context states the opposite value"
       }
     }"#
+}
+
+#[test]
+fn strict_protocol_changes_representation_without_changing_v3_semantic_guidance() {
+    let request = request();
+    let baseline = build_soft_judge_model_request(&request, 256, Some(7)).unwrap();
+    let strict = build_soft_judge_model_request_with_protocol(
+        &request,
+        256,
+        Some(7),
+        SoftJudgeModelProtocol::StrictDiscriminated,
+    )
+    .unwrap();
+
+    assert_eq!(baseline.task, strict.task);
+    assert_eq!(baseline.system, strict.system);
+    assert_eq!(baseline.max_tokens, strict.max_tokens);
+    assert_eq!(baseline.random_seed, strict.random_seed);
+    assert_eq!(baseline.reasoning_preference, strict.reasoning_preference);
+
+    let ModelOutputFormat::JsonSchema {
+        schema: baseline_schema,
+        ..
+    } = baseline.output_format
+    else {
+        panic!("expected baseline JSON Schema output")
+    };
+    let ModelOutputFormat::JsonSchema {
+        schema: strict_schema,
+        ..
+    } = strict.output_format
+    else {
+        panic!("expected strict JSON Schema output")
+    };
+    assert_ne!(baseline_schema, strict_schema);
+    let serialized = serde_json::to_string(&strict_schema).unwrap();
+    assert!(serialized.contains("decision"));
+    assert!(serialized.contains("finding"));
+    assert!(serialized.contains("anyOf") || serialized.contains("oneOf"));
+    assert!(serialized.contains("additionalProperties"));
+
+    let baseline_fallback = build_soft_judge_json_fallback_request(&request, 256, Some(7)).unwrap();
+    let strict_fallback = build_soft_judge_json_fallback_request_with_protocol(
+        &request,
+        256,
+        Some(7),
+        SoftJudgeModelProtocol::StrictDiscriminated,
+    )
+    .unwrap();
+    assert_eq!(baseline_fallback.system, strict_fallback.system);
+    assert_eq!(
+        baseline_fallback.reasoning_preference,
+        strict_fallback.reasoning_preference
+    );
+    let baseline_semantic_suffix = baseline_fallback
+        .task
+        .split_once("\n\nSemantic diagnostic request:")
+        .expect("baseline fallback contains semantic request delimiter")
+        .1;
+    let strict_semantic_suffix = strict_fallback
+        .task
+        .split_once("\n\nSemantic diagnostic request:")
+        .expect("strict fallback contains semantic request delimiter")
+        .1;
+    assert_eq!(baseline_semantic_suffix, strict_semantic_suffix);
 }
 
 #[test]

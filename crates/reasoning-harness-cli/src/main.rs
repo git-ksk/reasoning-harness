@@ -16,14 +16,15 @@ use reasoning_harness_core::{
     ReasoningCandidate, RepeatedDiagnosticReport, ResolutionBenchmarkAggregate,
     ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, SemanticDiagnosticKind,
     SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport, SoftJudgeDecision,
-    SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeObservation, StrictAcceptancePolicy,
-    StructuredFactConflictDetector, TrustedVerificationPass, VerificationPass, VerificationReceipt,
-    aggregate_benchmark, aggregate_claim_corpus, aggregate_repeated_diagnostics,
-    aggregate_resolution_benchmark, aggregate_soft_judge_calibration,
-    build_candidate_json_fallback_request, build_candidate_request, evaluate,
-    evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture,
-    frameworks::five_whys::FiveWhysRestatementPass, run_harness, run_model_backed_soft_judge,
-    structured_fact_verifier_for_input, validate_artifact,
+    SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeModelProtocol, SoftJudgeObservation,
+    StrictAcceptancePolicy, StructuredFactConflictDetector, TrustedVerificationPass,
+    VerificationPass, VerificationReceipt, aggregate_benchmark, aggregate_claim_corpus,
+    aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
+    aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
+    build_candidate_request, evaluate, evaluate_benchmark_fixture_with_diagnostics,
+    evaluate_resolution_fixture, frameworks::five_whys::FiveWhysRestatementPass, run_harness,
+    run_model_backed_soft_judge_with_protocol, structured_fact_verifier_for_input,
+    validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Serialize, de::DeserializeOwned};
@@ -53,6 +54,36 @@ enum Provider {
     Nvidia,
     #[value(hide = true)]
     Gemma,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, ValueEnum)]
+enum JudgeProtocolProfile {
+    #[default]
+    Baseline,
+    StrictDiscriminated,
+}
+
+impl JudgeProtocolProfile {
+    fn core(self) -> SoftJudgeModelProtocol {
+        match self {
+            Self::Baseline => SoftJudgeModelProtocol::Baseline,
+            Self::StrictDiscriminated => SoftJudgeModelProtocol::StrictDiscriminated,
+        }
+    }
+
+    fn configuration_id(self) -> &'static str {
+        match self {
+            Self::Baseline => "soft-semantic-v3",
+            Self::StrictDiscriminated => "soft-semantic-v3-strict-schema-v1",
+        }
+    }
+
+    fn label(self) -> &'static str {
+        match self {
+            Self::Baseline => "baseline",
+            Self::StrictDiscriminated => "strict-discriminated",
+        }
+    }
 }
 
 enum LiveGenerator {
@@ -363,6 +394,9 @@ enum Command {
         /// Maximum number of live semantic-judge fixture calls in flight within one trial.
         #[arg(long, default_value_t = 1)]
         concurrency: usize,
+        /// Model-facing structured-output protocol. Experimental profiles require a live provider.
+        #[arg(long, value_enum, default_value_t)]
+        protocol: JudgeProtocolProfile,
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
@@ -615,11 +649,21 @@ struct LiveSoftJudgeOutput {
     provider: &'static str,
     model: String,
     corpus: String,
+    protocol_profile: &'static str,
     operational: LiveSoftJudgeOperationalSummary,
     stability: LiveSoftJudgeStability,
     families: Vec<LiveSoftJudgeFamilySummary>,
     per_trial: Vec<LiveSoftJudgeTrialSummary>,
     cases: Vec<LiveSoftJudgeCase>,
+}
+
+#[derive(Debug, Clone, Copy)]
+struct LiveSoftJudgeRunConfig {
+    max_tokens: u32,
+    seed: Option<u64>,
+    trials: usize,
+    concurrency: usize,
+    protocol: JudgeProtocolProfile,
 }
 
 #[derive(Debug, Clone)]
@@ -752,6 +796,7 @@ async fn run(cli: Cli) -> Result<(), String> {
             seed,
             trials,
             concurrency,
+            protocol,
             format,
         } => {
             if !target.is_dir() {
@@ -771,6 +816,9 @@ async fn run(cli: Cli) -> Result<(), String> {
                     if concurrency != 1 {
                         return Err("--concurrency requires a live eval-judges provider".into());
                     }
+                    if protocol != JudgeProtocolProfile::Baseline {
+                        return Err("--protocol requires a live eval-judges provider".into());
+                    }
                     let report = run_soft_judge_calibration_suite(&target)?;
                     match format {
                         OutputFormat::Human => print_soft_judge_calibration_human(&report),
@@ -782,10 +830,13 @@ async fn run(cli: Cli) -> Result<(), String> {
                         &target,
                         provider,
                         &model,
-                        max_tokens,
-                        seed,
-                        trials,
-                        concurrency,
+                        LiveSoftJudgeRunConfig {
+                            max_tokens,
+                            seed,
+                            trials,
+                            concurrency,
+                            protocol,
+                        },
                     )
                     .await?;
                     match format {
@@ -1160,17 +1211,21 @@ async fn run_live_soft_judge_calibration_suite(
     directory: &PathBuf,
     provider: Provider,
     model: &str,
-    max_tokens: u32,
-    seed: Option<u64>,
-    trials: usize,
-    concurrency: usize,
+    config: LiveSoftJudgeRunConfig,
 ) -> Result<LiveSoftJudgeOutput, String> {
+    let LiveSoftJudgeRunConfig {
+        max_tokens,
+        seed,
+        trials,
+        concurrency,
+        protocol,
+    } = config;
     let fixtures = load_soft_judge_fixtures(directory)?;
     let generator = Arc::new(LiveGenerator::from_provider(provider, model)?);
     let identity = SoftJudgeIdentity {
         judge_id: format!("live:{}:{model}", provider_name(provider)),
         model_id: model.to_string(),
-        configuration_id: "soft-semantic-v3".into(),
+        configuration_id: protocol.configuration_id().into(),
     };
     let total_runs = fixtures
         .len()
@@ -1229,12 +1284,13 @@ async fn run_live_soft_judge_calibration_suite(
                 );
                 tasks.spawn(async move {
                     let started = Instant::now();
-                    let result = run_model_backed_soft_judge(
+                    let result = run_model_backed_soft_judge_with_protocol(
                         generator.adapter(),
                         identity,
                         &fixture.request,
                         max_tokens,
                         trial_seed,
+                        protocol.core(),
                     )
                     .await;
                     let latency_ms = started.elapsed().as_millis();
@@ -1371,6 +1427,7 @@ async fn run_live_soft_judge_calibration_suite(
         provider: provider_name(provider),
         model: model.to_string(),
         corpus,
+        protocol_profile: protocol.label(),
         operational,
         stability,
         families,
@@ -2160,6 +2217,41 @@ mod candidate_json_tests {
         match cli.command {
             Command::Eval { concurrency, .. } => assert_eq!(concurrency, 3),
             _ => panic!("expected eval command"),
+        }
+    }
+
+    #[test]
+    fn parses_live_soft_judge_protocol_profiles() {
+        let baseline = Cli::try_parse_from([
+            "reason",
+            "eval-judges",
+            "fixtures/semantic-judges",
+            "--provider",
+            "mistral",
+        ])
+        .unwrap();
+        match baseline.command {
+            Command::EvalJudges { protocol, .. } => {
+                assert_eq!(protocol, JudgeProtocolProfile::Baseline)
+            }
+            _ => panic!("expected eval-judges command"),
+        }
+
+        let strict = Cli::try_parse_from([
+            "reason",
+            "eval-judges",
+            "fixtures/semantic-judges",
+            "--provider",
+            "mistral",
+            "--protocol",
+            "strict-discriminated",
+        ])
+        .unwrap();
+        match strict.command {
+            Command::EvalJudges { protocol, .. } => {
+                assert_eq!(protocol, JudgeProtocolProfile::StrictDiscriminated)
+            }
+            _ => panic!("expected eval-judges command"),
         }
     }
 

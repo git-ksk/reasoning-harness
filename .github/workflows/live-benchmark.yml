@@ -113,6 +113,14 @@ on:
           - holdout-v2
           - holdout-v3
         default: calibration
+      judge_protocol:
+        description: Model-facing semantic-judge protocol profile
+        required: false
+        type: choice
+        options:
+          - baseline
+          - strict-discriminated
+        default: baseline
 
 permissions:
   contents: read
@@ -216,7 +224,7 @@ jobs:
           retention-days: 14
   semantic-judge:
     if: inputs.judge_provider != 'none'
-    name: semantic-judge-${{ inputs.judge_provider }}-${{ inputs.judge_corpus }}
+    name: semantic-judge-${{ inputs.judge_provider }}-${{ inputs.judge_corpus }}-${{ inputs.judge_protocol }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     concurrency:
@@ -280,14 +288,15 @@ jobs:
             --seed 1000 \
             --trials "${{ inputs.judge_trials }}" \
             --concurrency "$JUDGE_CONCURRENCY" \
+            --protocol "${{ inputs.judge_protocol }}" \
             --format json \
             > "$OUTPUT"
-          jq '{provider, model, corpus, operational, stability, families, per_trial: [.per_trial[] | {trial_index, operationally_complete, successful_cases, report: (.report | if . == null then null else {judges: [.judges[] | {judge: .judge.judge_id, precision, recall, decision_coverage, ambiguous_abstention_rate, abstentions}]} end)}], failures: [.cases[] | select(.failure != null) | {fixture_id, trial, kind, label, failure: .failure}]}' "$OUTPUT"
+          jq '{provider, model, corpus, protocol_profile, operational, stability, families, per_trial: [.per_trial[] | {trial_index, operationally_complete, successful_cases, report: (.report | if . == null then null else {judges: [.judges[] | {judge: .judge.judge_id, precision, recall, decision_coverage, ambiguous_abstention_rate, abstentions}]} end)}], failures: [.cases[] | select(.failure != null) | {fixture_id, trial, kind, label, failure: .failure}]}' "$OUTPUT"
       - name: Preserve live semantic-judge JSON
         if: always() && steps.credential.outputs.available == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: live-semantic-judge-${{ inputs.judge_provider }}-${{ inputs.judge_corpus }}
+          name: live-semantic-judge-${{ inputs.judge_provider }}-${{ inputs.judge_corpus }}-${{ inputs.judge_protocol }}
           path: /tmp/reason-live-semantic-judge.json
           if-no-files-found: ignore
           retention-days: 14

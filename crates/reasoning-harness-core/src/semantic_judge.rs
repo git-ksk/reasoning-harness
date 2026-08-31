@@ -71,6 +71,94 @@ pub struct SoftJudgeOutput {
     pub finding: Option<SoftSemanticFinding>,
 }
 
+/// Model-facing structured-output representation used for live semantic-judge research.
+///
+/// `Baseline` preserves the characterized soft-semantic-v3 representation. The strict profile
+/// changes only the JSON representation presented to/parsing output from the model; semantic
+/// guidance, internal `SoftJudgeOutput`, validation, and authority boundaries remain unchanged.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum SoftJudgeModelProtocol {
+    #[default]
+    Baseline,
+    StrictDiscriminated,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+enum ModelFindingDecision {
+    #[serde(rename = "finding")]
+    Finding,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+enum ModelNoFindingDecision {
+    #[serde(rename = "no_finding")]
+    NoFinding,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+enum ModelAbstainDecision {
+    #[serde(rename = "abstain")]
+    Abstain,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ModelFindingOutput {
+    decision: ModelFindingDecision,
+    finding: SoftSemanticFinding,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ModelNoFindingOutput {
+    decision: ModelNoFindingDecision,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ModelAbstainOutput {
+    decision: ModelAbstainDecision,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(untagged)]
+enum ModelSoftJudgeOutput {
+    Finding(ModelFindingOutput),
+    NoFinding(ModelNoFindingOutput),
+    Abstain(ModelAbstainOutput),
+}
+
+impl From<ModelSoftJudgeOutput> for SoftJudgeOutput {
+    fn from(output: ModelSoftJudgeOutput) -> Self {
+        match output {
+            ModelSoftJudgeOutput::Finding(output) => Self {
+                decision: SoftJudgeDecision::Finding,
+                finding: Some(output.finding),
+            },
+            ModelSoftJudgeOutput::NoFinding(_) => Self {
+                decision: SoftJudgeDecision::NoFinding,
+                finding: None,
+            },
+            ModelSoftJudgeOutput::Abstain(_) => Self {
+                decision: SoftJudgeDecision::Abstain,
+                finding: None,
+            },
+        }
+    }
+}
+
+fn model_soft_judge_output_schema() -> serde_json::Value {
+    serde_json::to_value(schemars::schema_for!(ModelSoftJudgeOutput))
+        .expect("model soft-judge JSON Schema must be serializable")
+}
+
+fn soft_judge_model_schema(protocol: SoftJudgeModelProtocol) -> serde_json::Value {
+    match protocol {
+        SoftJudgeModelProtocol::Baseline => soft_judge_output_schema(),
+        SoftJudgeModelProtocol::StrictDiscriminated => model_soft_judge_output_schema(),
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SoftJudgeObservation {
     pub judge: SoftJudgeIdentity,
@@ -232,8 +320,28 @@ pub async fn run_model_backed_soft_judge(
     max_tokens: u32,
     random_seed: Option<u64>,
 ) -> Result<ModelBackedSoftJudgeObservation, ModelBackedSoftJudgeError> {
+    run_model_backed_soft_judge_with_protocol(
+        adapter,
+        identity,
+        request,
+        max_tokens,
+        random_seed,
+        SoftJudgeModelProtocol::Baseline,
+    )
+    .await
+}
+
+pub async fn run_model_backed_soft_judge_with_protocol(
+    adapter: &dyn ModelAdapter,
+    identity: SoftJudgeIdentity,
+    request: &SoftJudgeRequest,
+    max_tokens: u32,
+    random_seed: Option<u64>,
+    protocol: SoftJudgeModelProtocol,
+) -> Result<ModelBackedSoftJudgeObservation, ModelBackedSoftJudgeError> {
     validate_identity(&identity)?;
-    let primary_request = build_soft_judge_model_request(request, max_tokens, random_seed)?;
+    let primary_request =
+        build_soft_judge_model_request_with_protocol(request, max_tokens, random_seed, protocol)?;
     let primary = match adapter.generate(primary_request).await {
         Ok(response) => Some(response),
         Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => None,
@@ -241,7 +349,7 @@ pub async fn run_model_backed_soft_judge(
     };
 
     if let Some(response) = primary.as_ref() {
-        if let Ok(output) = parse_and_validate_soft_output(request, &response.text) {
+        if let Ok(output) = parse_and_validate_soft_output(request, &response.text, protocol) {
             return Ok(ModelBackedSoftJudgeObservation {
                 observation: SoftJudgeObservation {
                     judge: identity,
@@ -263,28 +371,33 @@ pub async fn run_model_backed_soft_judge(
         SoftJudgeFallbackReason::PrimaryJsonSchemaUnsupported
     };
 
-    let fallback_request =
-        build_soft_judge_json_fallback_request(request, max_tokens, random_seed)?;
+    let fallback_request = build_soft_judge_json_fallback_request_with_protocol(
+        request,
+        max_tokens,
+        random_seed,
+        protocol,
+    )?;
     let fallback = adapter.generate(fallback_request).await?;
-    let output = parse_and_validate_soft_output(request, &fallback.text).map_err(|error| {
-        let first = primary.as_ref().map_or_else(
-            || "primary schema mode unsupported".to_string(),
-            |response| {
-                format!(
-                    "primary_bytes={} primary_shape={} primary_finish={}",
-                    response.text.len(),
-                    structured_output_shape(&response.text),
-                    finish_reason_class(response.finish_reason.as_deref())
-                )
-            },
-        );
-        ModelBackedSoftJudgeError::InvalidStructuredOutput(format!(
-            "{first}; fallback_bytes={} fallback_shape={} fallback_finish={}; {error}",
-            fallback.text.len(),
-            structured_output_shape(&fallback.text),
-            finish_reason_class(fallback.finish_reason.as_deref())
-        ))
-    })?;
+    let output =
+        parse_and_validate_soft_output(request, &fallback.text, protocol).map_err(|error| {
+            let first = primary.as_ref().map_or_else(
+                || "primary schema mode unsupported".to_string(),
+                |response| {
+                    format!(
+                        "primary_bytes={} primary_shape={} primary_finish={}",
+                        response.text.len(),
+                        structured_output_shape(&response.text),
+                        finish_reason_class(response.finish_reason.as_deref())
+                    )
+                },
+            );
+            ModelBackedSoftJudgeError::InvalidStructuredOutput(format!(
+                "{first}; fallback_bytes={} fallback_shape={} fallback_finish={}; {error}",
+                fallback.text.len(),
+                structured_output_shape(&fallback.text),
+                finish_reason_class(fallback.finish_reason.as_deref())
+            ))
+        })?;
     let usage = primary.as_ref().map_or_else(
         || fallback.usage.clone(),
         |primary| add_model_usage(&primary.usage, &fallback.usage),
@@ -308,6 +421,20 @@ pub fn build_soft_judge_model_request(
     max_tokens: u32,
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
+    build_soft_judge_model_request_with_protocol(
+        request,
+        max_tokens,
+        random_seed,
+        SoftJudgeModelProtocol::Baseline,
+    )
+}
+
+pub fn build_soft_judge_model_request_with_protocol(
+    request: &SoftJudgeRequest,
+    max_tokens: u32,
+    random_seed: Option<u64>,
+    protocol: SoftJudgeModelProtocol,
+) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
     let request_json = serde_json::to_string_pretty(request)
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
     let decision_guidance = soft_judge_decision_guidance(request.kind);
@@ -321,7 +448,7 @@ pub fn build_soft_judge_model_request(
         ),
         output_format: ModelOutputFormat::JsonSchema {
             name: "soft_judge_output".into(),
-            schema: soft_judge_output_schema(),
+            schema: soft_judge_model_schema(protocol),
         },
         max_tokens: Some(max_tokens),
         random_seed,
@@ -334,9 +461,23 @@ pub fn build_soft_judge_json_fallback_request(
     max_tokens: u32,
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
+    build_soft_judge_json_fallback_request_with_protocol(
+        request,
+        max_tokens,
+        random_seed,
+        SoftJudgeModelProtocol::Baseline,
+    )
+}
+
+pub fn build_soft_judge_json_fallback_request_with_protocol(
+    request: &SoftJudgeRequest,
+    max_tokens: u32,
+    random_seed: Option<u64>,
+    protocol: SoftJudgeModelProtocol,
+) -> Result<ModelRequest, ModelBackedSoftJudgeError> {
     let request_json = serde_json::to_string_pretty(request)
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
-    let schema = serde_json::to_string_pretty(&soft_judge_output_schema())
+    let schema = serde_json::to_string_pretty(&soft_judge_model_schema(protocol))
         .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
     let decision_guidance = soft_judge_decision_guidance(request.kind);
     Ok(ModelRequest {
@@ -427,12 +568,37 @@ pub fn parse_soft_judge_output(text: &str) -> Result<SoftJudgeOutput, serde_json
     }
 }
 
+fn parse_model_soft_judge_output(text: &str) -> Result<SoftJudgeOutput, serde_json::Error> {
+    match serde_json::from_str::<ModelSoftJudgeOutput>(text) {
+        Ok(output) => Ok(output.into()),
+        Err(strict_error) => {
+            let mut stream =
+                serde_json::Deserializer::from_str(text).into_iter::<ModelSoftJudgeOutput>();
+            let Some(Ok(output)) = stream.next() else {
+                return Err(strict_error);
+            };
+            let remainder = &text[stream.byte_offset()..];
+            let mut trailing_values =
+                serde_json::Deserializer::from_str(remainder).into_iter::<serde_json::Value>();
+            match trailing_values.next() {
+                Some(Ok(_)) => Err(strict_error),
+                Some(Err(_)) => Ok(output.into()),
+                None => Err(strict_error),
+            }
+        }
+    }
+}
+
 fn parse_and_validate_soft_output(
     request: &SoftJudgeRequest,
     text: &str,
+    protocol: SoftJudgeModelProtocol,
 ) -> Result<SoftJudgeOutput, ModelBackedSoftJudgeError> {
-    let output = parse_soft_judge_output(text)
-        .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
+    let output = match protocol {
+        SoftJudgeModelProtocol::Baseline => parse_soft_judge_output(text),
+        SoftJudgeModelProtocol::StrictDiscriminated => parse_model_soft_judge_output(text),
+    }
+    .map_err(|error| ModelBackedSoftJudgeError::InvalidStructuredOutput(error.to_string()))?;
     validate_output(request, &output)?;
     Ok(output)
 }
