@@ -5,7 +5,7 @@
   "request": {
     "id": "dec-scope-control",
     "task": "Evaluate the same semantic concern under harness-owned sufficiency metadata.",
-    "kind": "counterexample",
+    "kind": "contradiction",
     "target": {
       "type": "proposition",
       "proposition": {

@@ -1,0 +1,101 @@
+{
+  "id": "d2-02-02_contradiction_negative",
+  "source_fixture_id": "02_contradiction_negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-scope-match",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "feature.enabled": "true"
+            },
+            "metadata": {
+              "scope": {
+                "deployment": {
+                  "kind": "values",
+                  "values": [
+                    "primary"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "feature.enabled",
+              "value": "true"
+            },
+            "scope": {
+              "deployment": {
+                "kind": "values",
+                "values": [
+                  "primary"
+                ]
+              }
+            }
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-scope-mismatch",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "feature.enabled": "true"
+            },
+            "metadata": {
+              "scope": {
+                "deployment": {
+                  "kind": "values",
+                  "values": [
+                    "secondary"
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "feature.enabled",
+              "value": "true"
+            },
+            "scope": {
+              "deployment": {
+                "kind": "values",
+                "values": [
+                  "primary"
+                ]
+              }
+            }
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

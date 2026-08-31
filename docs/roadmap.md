@@ -234,16 +234,23 @@ The next semantic-judge research sequence is deliberately staged:
 
 ### #73 Decidability/evidence-sufficiency gate — calibration research
 
+Phase naming is issue-scoped: `R1`–`R4` are #59 semantic-successor research stages (`R4` = frozen
+independent successor evaluation), while `D1`–`D3` are #73 decidability stages (`D1` = deterministic
+contract, `D2` = provider calibration, `D3` = candidate freeze/adoption preparation). These are not
+runtime version numbers.
+
 R4 established that cross-model disagreement can expose uncertainty but agreement cannot certify correctness. The next calibration-only phase therefore separates a narrower harness-owned question from the semantic decision: whether explicit typed binding/evidence preconditions permit an assertive soft decision at all.
 
 - [designed #73] deterministic `permit | force_abstain` gate; `permit` is only absence of a known blocker and never correctness evidence
 - [designed #73] reuse claim/inference proposition binding, `EvidenceRequirement`, `EvidenceMetadata`, `EvidenceAuthorityPolicy`, and `EvidenceQualificationInspector` rather than asking a model to recreate owned metadata
 - [designed #73] deterministic blockers are limited to explicit structural/qualification failures; absence of an evidence requirement and ordinary causal `Unknown` do not automatically force abstention
 - [designed #73] composition is monotone: a gate may preserve a base soft decision or force `abstain`, never create/repair an assertive decision or operational failure
-- [implemented #73] 14 deterministic calibration-only fixtures form seven control/mutation pairs covering binding, evidence presence, authority, scope, temporal validity, required metadata, and evidence conflict across all four semantic diagnostic kinds
+- [implemented #73] 14 deterministic calibration-only fixtures form seven control/mutation pairs covering binding, evidence presence, authority, scope, temporal validity, required metadata, and evidence conflict across contradiction/unsupported-premise plus structural counterexample binding; causal-gap remains permit-only until relation-level evidence requirements are typed
 - [implemented #73] deterministic tests enforce 100% mutation monotonicity/control preservation, monotone decision composition, invalid-artifact separation, missing-target fail-closed behavior, and the rule that causal targets without explicit evidence requirements are not blocked by default
 - [designed #73] D2 keeps `semantic_label` and `assertive_eligibility` as separate pre-observation axes so expected forced abstention cannot be miscounted as a semantic recall failure; eligible precision/recall/coverage and typed-insufficiency abstention are separate denominators
-- [next #73] author/review the provider-backed D2 semantic cases and runner separately before any provider observation; matched metadata variants reuse one base R2 provider observation per case/seed
+- [implemented #73] D2 v1 manifest has 15 calibration semantic cases across all four diagnostic kinds, 7 paired typed-insufficiency variants across three kinds, and four separate eligible ambiguity controls; causal-gap is deliberately permit-only, and checked-in semantic labels must match the existing calibration source fixtures before credentials are read
+- [implemented #73] `reason-decidability-study` performs one unchanged R2 provider observation per semantic case/seed and applies all typed variants afterward; operational failure remains separate and exact-path guards reject non-D2 corpora before provider initialization
+- [next #73] perform a final static pre-observation D2 spec audit, freeze the calibration configuration/thresholds, and only then run live provider calibration
 - [constraint #73] holdout-v4 remains immutable diagnostic history and no holdout-v5 is created until a calibration candidate is frozen
 
 See [semantic decidability and evidence-sufficiency research](semantic-decidability.md).

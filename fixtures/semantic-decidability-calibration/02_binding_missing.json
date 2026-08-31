@@ -5,7 +5,7 @@
   "request": {
     "id": "dec-binding-control",
     "task": "Evaluate the same semantic concern under harness-owned sufficiency metadata.",
-    "kind": "unsupported_premise",
+    "kind": "counterexample",
     "target": {
       "type": "claim",
       "claim_id": "claim-quota"

@@ -139,6 +139,7 @@ pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema, soft_jud
 pub use semantic_decidability::{
     SemanticDecidabilityAssessment, SemanticDecidabilityCalibrationFixture,
     SemanticDecidabilityDisposition, SemanticDecidabilityError, SemanticDecidabilityReason,
+    SemanticDecidabilityStudyFixture, SemanticDecidabilityStudyVariant,
     assess_semantic_decidability, compose_semantic_decidability,
 };
 pub use semantic_judge::{

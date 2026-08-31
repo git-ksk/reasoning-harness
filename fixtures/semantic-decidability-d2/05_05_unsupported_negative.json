@@ -1,0 +1,75 @@
+{
+  "id": "d2-05-05_unsupported_negative",
+  "source_fixture_id": "05_unsupported_negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-provenance-present",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "deployment.region": "us-east-1"
+            },
+            "metadata": {
+              "provenance_class": "primary"
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "deployment.region",
+              "value": "us-east-1"
+            },
+            "minimum_authority_class": "primary"
+          }
+        ],
+        "authority_policy": {
+          "ranks": {
+            "primary": 1
+          }
+        },
+        "claims": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-provenance-missing",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "deployment.region": "us-east-1"
+            },
+            "metadata": {}
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "deployment.region",
+              "value": "us-east-1"
+            },
+            "minimum_authority_class": "primary"
+          }
+        ],
+        "authority_policy": {
+          "ranks": {
+            "primary": 1
+          }
+        },
+        "claims": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

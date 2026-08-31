@@ -1,0 +1,57 @@
+{
+  "id": "d2-01-01_contradiction_positive",
+  "source_fixture_id": "01_contradiction_positive",
+  "semantic_label": "positive",
+  "variants": [
+    {
+      "id": "permit-evidence-present",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "feature.enabled": "false"
+            },
+            "metadata": {}
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "feature.enabled",
+              "value": "true"
+            }
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-evidence-missing",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "feature.enabled",
+              "value": "true"
+            }
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

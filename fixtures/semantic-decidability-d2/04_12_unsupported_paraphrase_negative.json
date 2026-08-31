@@ -1,0 +1,79 @@
+{
+  "id": "d2-04-12_unsupported_paraphrase_negative",
+  "source_fixture_id": "12_unsupported_paraphrase_negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-primary-authority",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "cache.mode": "read_only"
+            },
+            "metadata": {
+              "provenance_class": "primary"
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "cache.mode",
+              "value": "read_only"
+            },
+            "minimum_authority_class": "primary"
+          }
+        ],
+        "authority_policy": {
+          "ranks": {
+            "secondary": 1,
+            "primary": 2
+          }
+        },
+        "claims": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-insufficient-authority",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "cache.mode": "read_only"
+            },
+            "metadata": {
+              "provenance_class": "secondary"
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "cache.mode",
+              "value": "read_only"
+            },
+            "minimum_authority_class": "primary"
+          }
+        ],
+        "authority_policy": {
+          "ranks": {
+            "secondary": 1,
+            "primary": 2
+          }
+        },
+        "claims": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "d2-13-06_unsupported_ambiguous",
+  "source_fixture_id": "06_unsupported_ambiguous",
+  "semantic_label": "ambiguous",
+  "variants": [
+    {
+      "id": "permit-control",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": []
+      },
+      "expected_disposition": "permit"
+    }
+  ]
+}

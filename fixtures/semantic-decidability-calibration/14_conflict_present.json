@@ -5,20 +5,12 @@
   "request": {
     "id": "dec-conflict-control",
     "task": "Evaluate the same semantic concern under harness-owned sufficiency metadata.",
-    "kind": "causal_gap",
+    "kind": "contradiction",
     "target": {
-      "type": "causal_relation",
-      "relation": {
-        "causes": [
-          {
-            "key": "gc.changed",
-            "value": "true"
-          }
-        ],
-        "effect": {
-          "key": "latency.high",
-          "value": "true"
-        }
+      "type": "proposition",
+      "proposition": {
+        "key": "latency.high",
+        "value": "true"
       }
     },
     "context": [

@@ -7,6 +7,20 @@ assertive soft semantic decision should not be allowed to proceed.
 `soft-semantic-v3` remains the runtime baseline. This document describes calibration-only
 research and does not change runtime behavior.
 
+## Research phase naming
+
+Phase labels are local to their research issue; they are not runtime or release versions.
+
+- `R1`–`R4` are the Issue #59 semantic-successor **research** stages. `R4` specifically means the
+  fourth stage: the frozen independent successor/holdout-v4 evaluation.
+- `D1`–`D3` are the Issue #73 **decidability** stages. `D1` is the deterministic gate contract and
+  calibration surface, `D2` is provider-backed decidability calibration, and `D3` is candidate
+  freeze/adoption preparation if D2 passes.
+
+The prefixes intentionally prevent a new #73 calibration phase from being confused with the
+historical #59 successor sequence. `D2` does not mean "version 2" and is not newer than `R4` in a
+runtime-version sense.
+
 ## Research question
 
 Can a provider-neutral, harness-owned decidability/evidence-sufficiency gate reduce correlated
@@ -106,7 +120,9 @@ The core already owns:
 - `EvidenceQualificationAssessment { Qualified, Disqualified, Unknown }`;
 - explicit temporal, scope, authority, metadata, and conflict reason codes.
 
-These should be the primary source of deterministic evidence-sufficiency signals.
+These are the primary source of deterministic evidence-sufficiency signals only when the semantic
+question is directly bound to that proposition requirement. Endpoint requirements must not be
+promoted into relation-level or applicability-level requirements by inference.
 
 Absence of an `EvidenceRequirement` is **not** itself evidence of insufficiency. A deterministic
 D1 blocker is allowed only when the harness has made an explicit requirement/binding and can show
@@ -121,7 +137,9 @@ or `MissingCausalEvidence` must not automatically force abstention. Those states
 a soft semantic judge is useful in the first place.
 
 D1 may use structural causal binding failures, but should not reinterpret a deterministic causal
-`Unknown` as proof that semantic inspection is impossible.
+`Unknown` as proof that semantic inspection is impossible. In D1 v1, a generic `EvidenceRequirement`
+on a cause or effect proposition is **not** treated as a requirement for the directional causal
+relation. A future causal sufficiency gate needs an explicit typed relation-level binding first.
 
 ## D1 deterministic algorithm
 
@@ -131,7 +149,8 @@ The first research implementation should be a pure deterministic function over a
 High-level behavior:
 
 1. validate target identity against the artifact when the target is a claim or inference;
-2. derive the propositions whose explicit evidence requirements are relevant to the target;
+2. derive explicit proposition requirements only for diagnostic kinds whose semantic question is
+   directly about proposition conflict/support (`contradiction` and `unsupported_premise`);
 3. if required proposition binding is missing, return `force_abstain`;
 4. run/reuse `EvidenceQualificationInspector` for explicit relevant requirements;
 5. if an explicit requirement has no candidate evidence, return `force_abstain`;
@@ -139,13 +158,15 @@ High-level behavior:
 7. if qualified evidence for an explicit requirement is conflicting, return `force_abstain`;
 8. otherwise return `permit`.
 
-The exact target-to-proposition derivation must remain conservative. A proposition target maps to
-itself. A claim maps only through its explicit proposition binding. An inference maps through the
-explicit proposition bindings of its premises and conclusion. A causal relation maps to its typed
-cause/effect propositions. No free-text semantic binding is invented.
+The exact target-to-proposition derivation must remain conservative. For `contradiction` and
+`unsupported_premise`, a proposition target maps to itself and a claim may map through its explicit
+proposition binding. Claim/inference targets still require structural target/proposition bindings
+where applicable. `counterexample` does not inherit a generic proposition evidence requirement as
+an applicability rule, and `causal_gap` does not inherit cause/effect proposition requirements as a
+relation-level sufficiency rule. No free-text semantic binding is invented.
 
-If a target has no explicit evidence requirement, D1 does not infer a requirement merely because
-one would be useful.
+If a target has no explicit evidence requirement, or the requirement is not explicitly typed as a
+precondition for that semantic question, D1 does not infer one merely because it would be useful.
 
 ## D1/D2 calibration surface
 
@@ -168,8 +189,11 @@ Required mutation families:
 
 Every insufficiency mutation must have a paired control that remains `permit`.
 
-The corpus should cover all four semantic diagnostic kinds, but D1 labels are about gate
-eligibility rather than semantic truth. Provider-backed semantic labels remain separately reported.
+The deterministic D1 mutation corpus covers the three kinds for which v1 has a defensible typed
+blocker: proposition support/conflict (`contradiction`, `unsupported_premise`) and structural claim
+binding (`counterexample`). `causal_gap` is intentionally a permit-only control until the harness
+owns an explicit typed relation-level evidence requirement. D1 labels are gate eligibility, not
+semantic truth. Provider-backed D2 semantic labels remain separately reported across all four kinds.
 
 ## Predeclared deterministic gates
 
@@ -207,6 +231,21 @@ Apply the deterministic gate to the paired harness-owned artifact variants after
 have identical semantic request content and differ only in harness-owned qualification metadata,
 they must reuse the same provider observation rather than sampling the model twice. That isolates the
 gate intervention from model-sampling noise and reduces provider calls.
+
+The checked-in D2 v1 calibration manifest follows this design with 15 semantic cases sourced only
+from `fixtures/semantic-judges/`: 11 eligible positive/negative cases and four eligible ambiguous
+controls. Seven of the clear cases also have one paired `force_abstain` variant covering evidence
+presence, scope, temporal validity, authority, required provenance metadata, claim binding, and
+qualified-evidence conflict. The force subset spans three diagnostic kinds and intentionally
+excludes `causal_gap`; causal cases remain permit controls until relation-level sufficiency is typed.
+Existing semantic labels are copied into the D2 manifest and deterministically checked against their source fixture
+before provider credentials are read.
+
+`reason-decidability-study` validates the exact D2 path, resolves every typed gate expectation, and
+then performs exactly one unchanged R2 materialization call per semantic case/seed. The same returned
+decision is composed with every typed variant. Operational failure leaves all variant decisions
+unset; it is never converted into abstention. No live D2 provider observation is recorded in the
+repository at this stage.
 
 Any optional model-backed residual decidability gate is a separate later arm and must not be mixed
 into D1 results.

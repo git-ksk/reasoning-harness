@@ -6,8 +6,8 @@ use thiserror::Error;
 
 use crate::evidence_qualification::qualification_reasons;
 use crate::{
-    Proposition, ReasoningArtifact, SemanticDiagnosticTarget, SoftJudgeDecision, SoftJudgeRequest,
-    validate_artifact,
+    CalibrationLabel, Proposition, ReasoningArtifact, SemanticDiagnosticTarget, SoftJudgeDecision,
+    SoftJudgeRequest, validate_artifact,
 };
 
 #[derive(
@@ -46,6 +46,21 @@ pub struct SemanticDecidabilityCalibrationFixture {
     pub request: SoftJudgeRequest,
     pub artifact: ReasoningArtifact,
     pub expected_disposition: SemanticDecidabilityDisposition,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SemanticDecidabilityStudyVariant {
+    pub id: String,
+    pub artifact: ReasoningArtifact,
+    pub expected_disposition: SemanticDecidabilityDisposition,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SemanticDecidabilityStudyFixture {
+    pub id: String,
+    pub source_fixture_id: String,
+    pub semantic_label: CalibrationLabel,
+    pub variants: Vec<SemanticDecidabilityStudyVariant>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -142,15 +157,26 @@ fn target_propositions(
     reasons: &mut BTreeSet<SemanticDecidabilityReason>,
 ) -> Vec<Proposition> {
     let mut propositions = Vec::new();
+    // Generic proposition evidence requirements are only treated as semantic-decision
+    // preconditions when the diagnostic directly asks whether that proposition conflicts with or
+    // lacks support from supplied evidence. They are not automatically relation/applicability
+    // requirements for causal-gap or counterexample diagnostics.
+    let qualification_applies = matches!(
+        request.kind,
+        crate::SemanticDiagnosticKind::Contradiction
+            | crate::SemanticDiagnosticKind::UnsupportedPremise
+    );
+
     match &request.target {
         SemanticDiagnosticTarget::Proposition { proposition } => {
-            push_unique(&mut propositions, proposition.clone());
-        }
-        SemanticDiagnosticTarget::CausalRelation { relation } => {
-            for cause in &relation.causes {
-                push_unique(&mut propositions, cause.clone());
+            if qualification_applies {
+                push_unique(&mut propositions, proposition.clone());
             }
-            push_unique(&mut propositions, relation.effect.clone());
+        }
+        SemanticDiagnosticTarget::CausalRelation { .. } => {
+            // A requirement on a cause/effect endpoint does not establish that it is a
+            // requirement for the directional relation itself. D1 therefore leaves causal
+            // evidence sufficiency to a future explicit relation binding.
         }
         SemanticDiagnosticTarget::Claim { claim_id } => {
             let Some(claim) = artifact.claims.iter().find(|claim| claim.id == *claim_id) else {
@@ -158,7 +184,10 @@ fn target_propositions(
                 return propositions;
             };
             match &claim.proposition {
-                Some(proposition) => push_unique(&mut propositions, proposition.clone()),
+                Some(proposition) if qualification_applies => {
+                    push_unique(&mut propositions, proposition.clone());
+                }
+                Some(_) => {}
                 None => {
                     reasons.insert(SemanticDecidabilityReason::MissingPropositionBinding);
                 }
@@ -174,6 +203,9 @@ fn target_propositions(
                 return propositions;
             };
 
+            // Resolve all typed claim bindings so an inference target cannot silently depend on
+            // prose-only identities. Do not infer that every premise/conclusion EvidenceRequirement
+            // is a precondition for the semantic diagnostic; that relation is not encoded today.
             for claim_id in inference
                 .premise_claim_ids
                 .iter()
@@ -183,11 +215,8 @@ fn target_propositions(
                     reasons.insert(SemanticDecidabilityReason::MissingTargetBinding);
                     continue;
                 };
-                match &claim.proposition {
-                    Some(proposition) => push_unique(&mut propositions, proposition.clone()),
-                    None => {
-                        reasons.insert(SemanticDecidabilityReason::MissingPropositionBinding);
-                    }
+                if claim.proposition.is_none() {
+                    reasons.insert(SemanticDecidabilityReason::MissingPropositionBinding);
                 }
             }
         }
