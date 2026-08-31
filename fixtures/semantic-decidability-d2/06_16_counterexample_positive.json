@@ -1,0 +1,51 @@
+{
+  "id": "d2-06-16_counterexample_positive",
+  "source_fixture_id": "16_counterexample_positive",
+  "semantic_label": "positive",
+  "variants": [
+    {
+      "id": "permit-claim-bound",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-all-workers-finish",
+            "statement": "Every worker started by this scheduler reaches the finished state.",
+            "state": "unknown",
+            "proposition": {
+              "key": "scheduler.all_workers_finish",
+              "value": "true"
+            },
+            "evidence_ids": []
+          }
+        ]
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-claim-unbound",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-all-workers-finish",
+            "statement": "Every worker started by this scheduler reaches the finished state.",
+            "state": "unknown",
+            "evidence_ids": []
+          }
+        ]
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}

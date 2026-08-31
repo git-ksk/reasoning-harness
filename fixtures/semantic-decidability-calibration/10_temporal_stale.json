@@ -1,0 +1,54 @@
+{
+  "id": "10_temporal_stale",
+  "pair_id": "temporal",
+  "mutation_family": "temporal",
+  "request": {
+    "id": "dec-temporal-control",
+    "task": "Evaluate the same semantic concern under harness-owned sufficiency metadata.",
+    "kind": "contradiction",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "policy.active",
+        "value": "true"
+      }
+    },
+    "context": [
+      "Semantic context is held constant within this metamorphic pair."
+    ]
+  },
+  "artifact": {
+    "task": "Calibration artifact for semantic decidability research.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "calibration",
+        "observation": "typed calibration evidence",
+        "facts": {
+          "policy.active": "true"
+        },
+        "metadata": {
+          "temporal": {
+            "effective_from_unix_seconds": 100,
+            "effective_until_unix_seconds": 150
+          }
+        }
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "policy.active",
+          "value": "true"
+        },
+        "as_of_unix_seconds": 200
+      }
+    ],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "claims": [],
+    "inferences": []
+  },
+  "expected_disposition": "force_abstain"
+}

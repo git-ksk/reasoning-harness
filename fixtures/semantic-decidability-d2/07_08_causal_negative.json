@@ -1,0 +1,54 @@
+{
+  "id": "d2-07-08_causal_negative",
+  "source_fixture_id": "08_causal_negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-only-one-qualified-value",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "request.latency": "high"
+            },
+            "metadata": {
+              "provenance_class": "primary"
+            }
+          },
+          {
+            "id": "e2",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "request.latency": "low"
+            },
+            "metadata": {
+              "provenance_class": "secondary"
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "request.latency",
+              "value": "high"
+            },
+            "minimum_authority_class": "primary"
+          }
+        ],
+        "authority_policy": {
+          "ranks": {
+            "secondary": 1,
+            "primary": 2
+          }
+        },
+        "claims": []
+      },
+      "expected_disposition": "permit"
+    }
+  ]
+}

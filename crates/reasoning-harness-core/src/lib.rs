@@ -25,6 +25,7 @@ pub mod reasoning_thread;
 pub mod resolution;
 pub mod resolution_benchmark;
 pub mod schema;
+pub mod semantic_decidability;
 pub mod semantic_judge;
 pub mod semantic_materialization;
 pub mod semantic_stability;
@@ -135,6 +136,12 @@ pub use resolution_benchmark::{
     evaluate_resolution_fixture,
 };
 pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema, soft_judge_output_schema};
+pub use semantic_decidability::{
+    SemanticDecidabilityAssessment, SemanticDecidabilityCalibrationFixture,
+    SemanticDecidabilityDisposition, SemanticDecidabilityError, SemanticDecidabilityReason,
+    SemanticDecidabilityStudyFixture, SemanticDecidabilityStudyVariant,
+    assess_semantic_decidability, compose_semantic_decidability,
+};
 pub use semantic_judge::{
     CalibrationLabel, ModelBackedSoftJudge, ModelBackedSoftJudgeError,
     ModelBackedSoftJudgeObservation, SemanticDiagnosticKind, SemanticDiagnosticTarget,

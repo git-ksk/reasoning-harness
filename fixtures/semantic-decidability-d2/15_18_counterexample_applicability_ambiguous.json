@@ -1,0 +1,31 @@
+{
+  "id": "d2-15-18_counterexample_applicability_ambiguous",
+  "source_fixture_id": "18_counterexample_applicability_ambiguous",
+  "semantic_label": "ambiguous",
+  "variants": [
+    {
+      "id": "permit-control",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [],
+        "evidence_requirements": [],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": [
+          {
+            "id": "claim-indexed-items-visible",
+            "statement": "Every item in the active index is visible to queries.",
+            "state": "unknown",
+            "proposition": {
+              "key": "active_index.items_visible",
+              "value": "true"
+            },
+            "evidence_ids": []
+          }
+        ]
+      },
+      "expected_disposition": "permit"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "id": "05_authority_control",
+  "pair_id": "authority",
+  "mutation_family": "authority",
+  "request": {
+    "id": "dec-authority-control",
+    "task": "Evaluate the same semantic concern under harness-owned sufficiency metadata.",
+    "kind": "unsupported_premise",
+    "target": {
+      "type": "proposition",
+      "proposition": {
+        "key": "release.approved",
+        "value": "true"
+      }
+    },
+    "context": [
+      "Semantic context is held constant within this metamorphic pair."
+    ]
+  },
+  "artifact": {
+    "task": "Calibration artifact for semantic decidability research.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "calibration",
+        "observation": "typed calibration evidence",
+        "facts": {
+          "release.approved": "true"
+        },
+        "metadata": {
+          "provenance_class": "primary"
+        }
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "release.approved",
+          "value": "true"
+        },
+        "minimum_authority_class": "primary"
+      }
+    ],
+    "authority_policy": {
+      "ranks": {
+        "secondary": 1,
+        "primary": 2
+      }
+    },
+    "claims": [],
+    "inferences": []
+  },
+  "expected_disposition": "permit"
+}

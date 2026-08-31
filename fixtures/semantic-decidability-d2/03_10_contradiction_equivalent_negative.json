@@ -1,0 +1,79 @@
+{
+  "id": "d2-03-10_contradiction_equivalent_negative",
+  "source_fixture_id": "10_contradiction_equivalent_negative",
+  "semantic_label": "negative",
+  "variants": [
+    {
+      "id": "permit-temporally-valid",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "service.state": "operational"
+            },
+            "metadata": {
+              "temporal": {
+                "effective_from_unix_seconds": 100,
+                "effective_until_unix_seconds": 300
+              }
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "service.state",
+              "value": "operational"
+            },
+            "as_of_unix_seconds": 200
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": []
+      },
+      "expected_disposition": "permit"
+    },
+    {
+      "id": "force-stale-evidence",
+      "artifact": {
+        "task": "D2 semantic decidability calibration artifact.",
+        "evidence": [
+          {
+            "id": "e1",
+            "source": "d2-calibration",
+            "observation": "typed evidence paired with the existing semantic calibration request",
+            "facts": {
+              "service.state": "operational"
+            },
+            "metadata": {
+              "temporal": {
+                "effective_from_unix_seconds": 100,
+                "effective_until_unix_seconds": 150
+              }
+            }
+          }
+        ],
+        "evidence_requirements": [
+          {
+            "proposition": {
+              "key": "service.state",
+              "value": "operational"
+            },
+            "as_of_unix_seconds": 200
+          }
+        ],
+        "authority_policy": {
+          "ranks": {}
+        },
+        "claims": []
+      },
+      "expected_disposition": "force_abstain"
+    }
+  ]
+}
