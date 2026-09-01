@@ -47,15 +47,15 @@ The first product surface is the native `reason` CLI. Product hardening and rese
 
 ## Install the CLI
 
-The supported product binary is `reason`. With Rust 1.88+ installed:
+The supported product binary is `reason`. v0.1.0 is an external preview, not a v1.0 stability claim. With Rust 1.88+ installed, pin the preview tag:
 
 ```bash
-cargo install --git https://github.com/git-ksk/reasoning-harness --locked reasoning-harness-cli --bin reason
+cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.1.0 --locked reasoning-harness-cli --bin reason
 reason --version
 reason schema artifact
 ```
 
-Tagged releases also publish standalone binaries for Linux x64, macOS Apple Silicon/Intel, and Windows x64 with SHA-256 checksums. See the [CLI guide](docs/cli.md) for input, JSON, config, provider, and exit-code contracts.
+Tagged releases also publish standalone binaries for Linux x64, macOS Apple Silicon/Intel, and Windows x64 with SHA-256 checksums. See the [CLI guide](docs/cli.md) for usage and [support policy](docs/support.md) for the v0.x compatibility boundary.
 
 ## Current prototype
 
