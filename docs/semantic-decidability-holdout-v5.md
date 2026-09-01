@@ -140,9 +140,11 @@ The frozen holdout-v5 surface has now been observed without changing its payload
 | provider/model | operational result | clear coverage / precision / recall | typed insufficiency | base unsafe -> composed unsafe | ambiguous abstention | interpretation |
 | --- | --- | --- | --- | --- | --- | --- |
 | Mistral `ministral-8b-latest` | 120/120, 5/5 complete | 1.000 / 1.000 / 1.000 | 50/50 abstain | 50 -> 0 | 0.500 | pilot pass |
-| Google `gemini-3.5-flash-lite` | operationally incomplete | not scored | not scored | not scored | not scored | AI Studio requests-per-day quota exhausted; exact frozen rerun only |
+| Google `gemini-3.5-flash-lite` | 120/120, 5/5 complete | 1.000 / 1.000 / 1.000 | 50/50 abstain | 50 -> 0 | 0.800 | exact frozen rerun pass; run `33380880478` attempt 2, Issue #84 |
 | Google-hosted `gemma-4-31b-it` replication | 120/120, 5/5 complete | 1.000 / 1.000 / 1.000 | 50/50 abstain | 50 -> 0 | 0.500 | cross-family replication pass; not retroactively added to the original provider matrix |
 | NVIDIA `nvidia/nemotron-3.5-lightning-30b-a3b` bounded probe | D2 7/15 success; v5 timed out after fixture 18/24 | not scored | not scored | not scored | not scored | protocol-capability negative control; repeated forbidden `finding` fields under R2 materialization |
+
+The exact Gemini 3.5 Flash-Lite rerun reused the original Google matrix job after the daily quota reset; the frozen workflow and SHA-256 manifest were byte-identical to current main. It completed with zero provider/protocol failures, zero permit-control escalations, and zero clear-case cross-seed disagreement. Three ambiguous fixtures (`v5h11`, `v5h17`, `v5h18`) varied between `finding` and `abstain`; ambiguous stability is diagnostic and remains outside the predeclared D3 adoption threshold.
 
 Ministral 8B and Gemma 4 31B produced identical base decisions for all 120 matched holdout-v5 case/seed observations. This supports stabilization of `semantic-decidability-d3-v1` for models satisfying the R2 materialized-decision protocol boundary, but it is not evidence of universal model compatibility.
 
