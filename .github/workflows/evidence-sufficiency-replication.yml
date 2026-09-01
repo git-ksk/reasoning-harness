@@ -1,0 +1,102 @@
+name: evidence-sufficiency-replication
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: Provider for the frozen sufficiency replication arm
+        required: true
+        type: choice
+        options:
+          - google
+          - mistral
+        default: google
+      model:
+        description: Provider model identifier
+        required: true
+        type: string
+        default: gemma-4-31b-it
+      trials:
+        description: Frozen repeated-seed trials
+        required: true
+        type: choice
+        options:
+          - '5'
+        default: '5'
+      max_tokens:
+        description: Frozen maximum output tokens per sufficiency call
+        required: true
+        type: choice
+        options:
+          - '128'
+        default: '128'
+
+permissions:
+  contents: read
+
+jobs:
+  replication:
+    name: ${{ inputs.provider }}-${{ inputs.model }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    concurrency:
+      group: reasoning-harness-rsd2-replication-${{ inputs.provider }}-${{ inputs.model }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check provider credential availability
+        id: credential
+        env:
+          PROVIDER: ${{ inputs.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          case "$PROVIDER" in
+            mistral) KEY="$MISTRAL_API_KEY" ;;
+            google) KEY="$GEMINI_API_KEY" ;;
+            *) echo "unsupported provider: $PROVIDER" >&2; exit 2 ;;
+          esac
+          test -n "$KEY"
+      - name: Run frozen RSD2 replication
+        env:
+          PROVIDER: ${{ inputs.provider }}
+          MODEL: ${{ inputs.model }}
+          TRIALS: ${{ inputs.trials }}
+          MAX_TOKENS: ${{ inputs.max_tokens }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          OUTPUT=/tmp/evidence-sufficiency-replication.json
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-sufficiency-study -- \
+            fixtures/evidence-sufficiency-rsd0 \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --trials "$TRIALS" \
+            --max-tokens "$MAX_TOKENS" \
+            --seed 5000 \
+            > "$OUTPUT"
+          jq '{study_id, phase, corpus, provider, requested_model, trials, fixture_count, authority_semantics, configuration_id, metrics, stability: {requested_trials: .stability.requested_trials, complete_trials: .stability.complete_trials, incomplete_trials: .stability.incomplete_trials, exact_unanimity_rate: .stability.exact_unanimity_rate, binary_unanimity_rate: .stability.binary_unanimity_rate}}' "$OUTPUT"
+      - name: Enforce frozen RSD2 promotion thresholds
+        run: |
+          set -euo pipefail
+          jq -e '
+            .metrics.operational_completion_rate == 1 and
+            .metrics.conservative_binary_accuracy >= 0.95 and
+            .metrics.false_safe_count == 0 and
+            .metrics.false_abstain_rate <= 0.05 and
+            .metrics.per_label_recall.sufficient >= 0.95 and
+            .stability.binary_unanimity_rate == 1
+          ' /tmp/evidence-sufficiency-replication.json >/dev/null
+      - name: Preserve replication result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-sufficiency-replication-${{ inputs.provider }}-${{ inputs.model }}
+          path: /tmp/evidence-sufficiency-replication.json
+          if-no-files-found: error
+          retention-days: 30
