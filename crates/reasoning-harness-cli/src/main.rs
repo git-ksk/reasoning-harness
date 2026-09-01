@@ -829,18 +829,128 @@ struct BenchmarkRunConfig<'a> {
     output_cost_per_million: Option<f64>,
 }
 
+#[derive(Debug, Clone, Copy)]
+struct ProductErrorContext {
+    command: &'static str,
+    json: bool,
+}
+
+#[derive(Debug)]
+struct CliError {
+    failure_class: &'static str,
+    message: String,
+    emitted: bool,
+}
+
+impl CliError {
+    fn new(failure_class: &'static str, message: impl Into<String>) -> Self {
+        Self {
+            failure_class,
+            message: message.into(),
+            emitted: false,
+        }
+    }
+
+    fn emitted(failure_class: &'static str, message: impl Into<String>) -> Self {
+        Self {
+            failure_class,
+            message: message.into(),
+            emitted: true,
+        }
+    }
+}
+
+impl From<String> for CliError {
+    fn from(message: String) -> Self {
+        Self::new("command_error", message)
+    }
+}
+
+impl From<&str> for CliError {
+    fn from(message: &str) -> Self {
+        Self::new("command_error", message)
+    }
+}
+
+#[derive(Debug, Serialize)]
+struct ProductFailure {
+    failure_class: &'static str,
+    message: String,
+}
+
+#[derive(Debug, Serialize)]
+struct ProductFailureOutput {
+    status: &'static str,
+    failure: ProductFailure,
+}
+
+impl Cli {
+    fn product_error_context(&self) -> Option<ProductErrorContext> {
+        match &self.command {
+            Command::Run {
+                config,
+                no_config,
+                format,
+                ..
+            } => {
+                let json = match format {
+                    Some(format) => *format == OutputFormat::Json,
+                    None if !*no_config => load_cli_config(config.as_ref())
+                        .ok()
+                        .and_then(|loaded| loaded.config.run.format)
+                        .is_some_and(|format| format == OutputFormat::Json),
+                    None => false,
+                };
+                Some(ProductErrorContext {
+                    command: "run",
+                    json,
+                })
+            }
+            Command::SemanticCheck { format, .. } => Some(ProductErrorContext {
+                command: "semantic-check",
+                json: *format == OutputFormat::Json,
+            }),
+            Command::Verify { format, .. } => Some(ProductErrorContext {
+                command: "verify",
+                json: *format == OutputFormat::Json,
+            }),
+            Command::Schema { .. } => Some(ProductErrorContext {
+                command: "schema",
+                json: true,
+            }),
+            Command::Eval { .. } | Command::EvalResolution { .. } | Command::EvalJudges { .. } => {
+                None
+            }
+        }
+    }
+}
+
 #[tokio::main]
 async fn main() -> ExitCode {
-    match run(Cli::parse()).await {
+    let cli = Cli::parse();
+    let error_context = cli.product_error_context();
+    match run(cli).await {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
-            eprintln!("{error}");
+            if !error.emitted {
+                if let Some(context) = error_context.filter(|context| context.json) {
+                    if let Err(serialization_error) = print_product_failure_json(
+                        context.command,
+                        error.failure_class,
+                        &error.message,
+                    ) {
+                        eprintln!("{serialization_error}");
+                    }
+                } else {
+                    eprintln!("{}", error.message);
+                }
+            }
             ExitCode::FAILURE
         }
     }
 }
 
-async fn run(cli: Cli) -> Result<(), String> {
+async fn run(cli: Cli) -> Result<(), CliError> {
     match cli.command {
         Command::Run {
             input,
@@ -858,14 +968,19 @@ async fn run(cli: Cli) -> Result<(), String> {
                 std::iter::once(&input)
                     .chain(candidate.iter())
                     .chain(receipts.iter()),
-            )?;
+            )
+            .map_err(|error| CliError::new("input", error))?;
             if config.as_ref().is_some_and(|path| is_stdin(path)) {
-                return Err("--config must be a file path; stdin config is not supported".into());
+                return Err(CliError::new(
+                    "configuration",
+                    "--config must be a file path; stdin config is not supported",
+                ));
             }
             let loaded_config = if no_config {
                 LoadedCliConfig::default()
             } else {
-                load_cli_config(config.as_ref())?
+                load_cli_config(config.as_ref())
+                    .map_err(|error| CliError::new("configuration", error))?
             };
             let resolved = resolve_run_config(
                 candidate.is_some(),
@@ -874,35 +989,51 @@ async fn run(cli: Cli) -> Result<(), String> {
                 max_tokens,
                 format,
                 loaded_config,
-            )?;
-            let input: HarnessInput = read_json(&input)?;
+            )
+            .map_err(|error| CliError::new("configuration", error))?;
+            let input: HarnessInput =
+                read_json(&input).map_err(|error| CliError::new("input", error))?;
             let (candidate, generation) = match (candidate, resolved.provider) {
-                (Some(path), None) => (read_json(&path)?, None),
+                (Some(path), None) => (
+                    read_json(&path).map_err(|error| CliError::new("input", error))?,
+                    None,
+                ),
                 (None, Some(provider)) => {
                     let model = resolved
                         .model
                         .as_deref()
                         .expect("live run config validates model presence");
-                    let generator = LiveGenerator::from_provider(provider, model)?;
+                    let generator =
+                        LiveGenerator::try_from_provider(provider, model).map_err(|error| {
+                            CliError::new(model_error_class(error.kind), error.to_string())
+                        })?;
                     let (candidate, observation) = generator
                         .generate(&input, resolved.max_tokens, seed, model)
                         .await
-                        .map_err(|failure| format_generation_failure(&failure))?;
+                        .map_err(|failure| {
+                            CliError::new(
+                                failure.failure_class,
+                                format_generation_failure(&failure),
+                            )
+                        })?;
                     (candidate, Some(observation))
                 }
                 (Some(_), Some(_)) => {
-                    return Err("choose either --candidate or --provider, not both".into());
+                    return Err(CliError::new(
+                        "configuration",
+                        "choose either --candidate or --provider, not both",
+                    ));
                 }
                 (None, None) => {
-                    return Err(
-                        "reason run requires either --candidate or a live --provider (CLI/config)"
-                            .into(),
-                    );
+                    return Err(CliError::new(
+                        "configuration",
+                        "reason run requires either --candidate or a live --provider (CLI/config)",
+                    ));
                 }
             };
 
             let receipts: Vec<VerificationReceipt> = match receipts {
-                Some(path) => read_json(&path)?,
+                Some(path) => read_json(&path).map_err(|error| CliError::new("input", error))?,
                 None => Vec::new(),
             };
             let structured_verifier = structured_fact_verifier_for_input(&input);
@@ -917,7 +1048,7 @@ async fn run(cli: Cli) -> Result<(), String> {
                 Box::new(AssumptionDiscoveryPass),
             ];
             let outcome = run_harness(input, candidate.clone(), &passes, &StrictAcceptancePolicy)
-                .map_err(|error| error.to_string())?;
+                .map_err(|error| CliError::new("harness_state", error.to_string()))?;
             let live = generation.is_some();
             let output = RunOutput {
                 configuration: RunConfigurationObservation {
@@ -960,9 +1091,13 @@ async fn run(cli: Cli) -> Result<(), String> {
             format,
         } => {
             if max_tokens == 0 {
-                return Err("--max-tokens must be at least 1".into());
+                return Err(CliError::new(
+                    "configuration",
+                    "--max-tokens must be at least 1",
+                ));
             }
-            let input: SemanticCheckInput = read_json(&input)?;
+            let input: SemanticCheckInput =
+                read_json(&input).map_err(|error| CliError::new("input", error))?;
             let runtime_profile = profile.runtime_profile();
             let runtime_identity = runtime_profile.identity();
             let provider_label = provider_name(provider);
@@ -993,7 +1128,10 @@ async fn run(cli: Cli) -> Result<(), String> {
                         ),
                         OutputFormat::Json => print_product_json("semantic-check", &output)?,
                     }
-                    return Err("semantic-check operational failure".into());
+                    return Err(CliError::emitted(
+                        model_error_class(error.kind),
+                        "semantic-check operational failure",
+                    ));
                 }
             };
             match run_semantic_runtime(
@@ -1049,12 +1187,16 @@ async fn run(cli: Cli) -> Result<(), String> {
                         }
                         OutputFormat::Json => print_product_json("semantic-check", &output)?,
                     }
-                    Err("semantic-check operational failure".into())
+                    Err(CliError::emitted(
+                        failure_class,
+                        "semantic-check operational failure",
+                    ))
                 }
             }
         }
         Command::Verify { artifact, format } => {
-            let artifact: ReasoningArtifact = read_json(&artifact)?;
+            let artifact: ReasoningArtifact =
+                read_json(&artifact).map_err(|error| CliError::new("input", error))?;
             let report = validate_artifact(&artifact);
             match format {
                 OutputFormat::Human if report.is_ok() => println!("valid"),
@@ -1074,7 +1216,10 @@ async fn run(cli: Cli) -> Result<(), String> {
             if report.is_ok() {
                 Ok(())
             } else {
-                Err("artifact validation failed".into())
+                Err(CliError::emitted(
+                    "validation",
+                    "artifact validation failed",
+                ))
             }
         }
         Command::Schema { kind } => {
@@ -1090,15 +1235,15 @@ async fn run(cli: Cli) -> Result<(), String> {
                 SchemaKind::Config => SchemaOutput {
                     contract_id: CLI_CONFIG_CONTRACT_ID,
                     schema: serde_json::to_value(schema_for!(CliFileConfig))
-                        .map_err(|error| error.to_string())?,
+                        .map_err(|error| CliError::new("serialization", error.to_string()))?,
                 },
                 SchemaKind::SemanticCheck => SchemaOutput {
                     contract_id: SEMANTIC_CHECK_INPUT_CONTRACT_ID,
                     schema: serde_json::to_value(schema_for!(SemanticCheckInput))
-                        .map_err(|error| error.to_string())?,
+                        .map_err(|error| CliError::new("serialization", error.to_string()))?,
                 },
             };
-            print_product_json("schema", &output)
+            print_product_json("schema", &output).map_err(CliError::from)
         }
         Command::EvalResolution { target, format } => {
             if !target.is_dir() {
@@ -2617,6 +2762,23 @@ fn read_json<T: DeserializeOwned>(path: &PathBuf) -> Result<T, String> {
     serde_json::from_slice(&bytes).map_err(|error| format!("{label}: {error}"))
 }
 
+fn print_product_failure_json(
+    command: &'static str,
+    failure_class: &'static str,
+    message: &str,
+) -> Result<(), String> {
+    print_product_json(
+        command,
+        &ProductFailureOutput {
+            status: "failed",
+            failure: ProductFailure {
+                failure_class,
+                message: message.to_string(),
+            },
+        },
+    )
+}
+
 fn print_product_json(command: &'static str, result: &impl Serialize) -> Result<(), String> {
     print_json(&CliEnvelope {
         schema_version: CLI_OUTPUT_SCHEMA_VERSION,
@@ -2663,6 +2825,31 @@ mod candidate_json_tests {
     fn rejects_incomplete_candidate_json() {
         let text = r#"{"claims":[{"#;
         assert!(parse_candidate_json(text).is_err());
+    }
+
+    #[test]
+    fn product_failure_envelope_is_machine_readable() {
+        let value = serde_json::to_value(CliEnvelope {
+            schema_version: CLI_OUTPUT_SCHEMA_VERSION,
+            command: "run",
+            cli_version: env!("CARGO_PKG_VERSION"),
+            contracts: CliContractVersions {
+                artifact: REASONING_ARTIFACT_CONTRACT_ID,
+                candidate: REASONING_CANDIDATE_CONTRACT_ID,
+                config: CLI_CONFIG_CONTRACT_ID,
+            },
+            result: ProductFailureOutput {
+                status: "failed",
+                failure: ProductFailure {
+                    failure_class: "input",
+                    message: "bad input".into(),
+                },
+            },
+        })
+        .unwrap();
+        assert_eq!(value["command"], "run");
+        assert_eq!(value["result"]["status"], "failed");
+        assert_eq!(value["result"]["failure"]["failure_class"], "input");
     }
 
     #[test]

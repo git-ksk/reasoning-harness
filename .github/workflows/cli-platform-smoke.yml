@@ -46,6 +46,12 @@ jobs:
           "$REASON_BIN" schema artifact > reason-schema.json
           "$REASON_BIN" schema semantic-check > reason-semantic-schema.json
           "$REASON_BIN" semantic-check --help > reason-semantic-help.txt
+          set +e
+          printf '{}' | "$REASON_BIN" run --input - --candidate examples/candidate.json --no-config --format json > reason-run-error.json 2> reason-run-error.stderr
+          ERROR_STATUS=$?
+          set -e
+          test "$ERROR_STATUS" -eq 1
+          test ! -s reason-run-error.stderr
           python - <<'PY'
           import json
           with open('reason-run.json', encoding='utf-8') as f:
@@ -56,6 +62,8 @@ jobs:
               schema = json.load(f)
           with open('reason-semantic-schema.json', encoding='utf-8') as f:
               semantic_schema = json.load(f)
+          with open('reason-run-error.json', encoding='utf-8') as f:
+              run_error = json.load(f)
           assert run['schema_version'] == 'reason-cli-output-v1'
           assert run['command'] == 'run'
           assert run['result']['outcome']['verdict'] in {'accept', 'reject', 'unknown'}
@@ -63,4 +71,7 @@ jobs:
           assert schema['command'] == 'schema'
           assert schema['result']['contract_id'] == 'reasoning-artifact-v1'
           assert semantic_schema['result']['contract_id'] == 'semantic-check-input-v1'
+          assert run_error['command'] == 'run'
+          assert run_error['result']['status'] == 'failed'
+          assert run_error['result']['failure']['failure_class'] == 'input'
           PY
