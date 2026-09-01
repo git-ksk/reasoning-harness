@@ -17,7 +17,7 @@ validation and operational stabilization; the product surface does not track eve
 
 Already available:
 
-- native `reason` executable with `run`, `verify`, `eval`, `eval-resolution`, and `eval-judges`;
+- external-preview `reason` v0.1.0 executable with supported `run`, `verify`, `semantic-check`, and `schema` product commands; research/evaluation commands remain separate;
 - provider-neutral core runtime and typed `ReasoningArtifact`;
 - provider adapters for Mistral, Google, and NVIDIA outside the correctness authority boundary;
 - bounded resolution/finalization, evidence qualification, policy, checkpoint/replay, and typed
@@ -26,7 +26,7 @@ Already available:
 - explicit `soft-semantic-v3` rollback profile;
 - credential-free deterministic CI plus separate live provider smoke/research workflows.
 
-This is enough to begin product hardening, but not enough to promise a stable external CLI contract.
+v0.1.0 is the first externally consumable preview. Its versioned machine contracts and supported product commands are compatibility-tracked under the v0.x support policy, but this is not yet a v1.0 stability promise.
 
 ## CLI-1 — supported command and data contract
 
@@ -95,6 +95,15 @@ reference workloads to answer:
 Real-workload failures may seed **new calibration corpora**, but they must never be used to repair or
 retune observed frozen holdouts.
 
+CLI-4 also decides whether an interactive session surface is worth productizing. Do not add a chat-like
+REPL merely for parity with general-purpose agent CLIs. First observe whether real users repeatedly need
+to add evidence, revisit an `unknown` result, inspect why the harness abstained, or continue the same
+reasoning state across multiple commands. If that demand is measurable, design a thin `reason shell` /
+`reason repl` layer over the existing runtime and `ReasoningThread` checkpoint/replay model. Interactive
+turns must preserve the same authority boundaries: conversation history is not trusted evidence, prior
+model output cannot self-promote, policy/evidence changes trigger re-validation, and every assertive
+result still crosses the normal harness-owned verification/finalization path.
+
 ## v1.0 readiness gate
 
 Do not present the CLI as stable/v1.0 until all of the following are true:
@@ -136,6 +145,7 @@ corpora.
   boundary.
 - **MCP adapter:** optional integration invoking the full runtime; never evidence that the caller's
   entire agent loop is verified.
+- **Interactive CLI (`reason shell` / `reason repl`):** demand-gated after CLI-4 dogfood. If adopted, it is a thin stateful session over `ReasoningThread`/checkpoint/replay and the same product runtime, not a separate chat authority or evidence shortcut.
 - **Desktop UI:** thin inspection/review client only after artifact and CLI contracts are stable.
 
 See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md),
