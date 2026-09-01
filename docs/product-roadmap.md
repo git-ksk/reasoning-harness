@@ -55,8 +55,8 @@ Make `reason` straightforward to obtain and safe to upgrade:
 - [implemented #97] release tags are required to match the CLI semver and releases include SHA-256 checksums;
 - [implemented #97] credential-free product smoke covers Linux x64, macOS arm64, macOS Intel, and Windows x64;
 - compatibility tests for stable JSON/exit semantics;
-- changelog/migration discipline for intentional breaking changes during v0.x;
-- clear support policy for provider adapters versus the provider-neutral runtime contract.
+- [implemented #102] changelog/migration discipline for intentional breaking changes during v0.x;
+- [implemented #102] explicit product/platform/provider support policy separating provider operations from the provider-neutral correctness boundary.
 
 A package split is not required. The current Cargo workspace remains the default until an actual
 external consumer creates an independent versioning or dependency boundary.

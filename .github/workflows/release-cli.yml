@@ -24,6 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+          fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
@@ -36,6 +37,9 @@ jobs:
           [[ "$TAG" == v* ]] || { echo "release tag must start with v" >&2; exit 1; }
           VERSION="$(cargo metadata --locked --no-deps --format-version 1 | python -c 'import json,sys; data=json.load(sys.stdin); print(next(p["version"] for p in data["packages"] if p["name"]=="reasoning-harness-cli"))')"
           [[ "$TAG" == "v$VERSION" ]] || { echo "tag $TAG does not match reasoning-harness-cli version $VERSION" >&2; exit 1; }
+          git fetch origin main
+          TAG_COMMIT="$(git rev-parse HEAD)"
+          git merge-base --is-ancestor "$TAG_COMMIT" origin/main || { echo "tag $TAG is not reachable from main" >&2; exit 1; }
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
@@ -93,7 +97,7 @@ jobs:
           NAME="reason-${{ needs.prepare.outputs.tag }}-${{ matrix.asset }}"
           mkdir "$NAME"
           cp "${{ matrix.executable }}" "$NAME/reason"
-          cp README.md LICENSE "$NAME/"
+          cp README.md LICENSE CHANGELOG.md "$NAME/"
           tar -czf "$NAME.tar.gz" "$NAME"
       - name: Package Windows release
         if: runner.os == 'Windows'
@@ -102,7 +106,7 @@ jobs:
           $name = "reason-${{ needs.prepare.outputs.tag }}-${{ matrix.asset }}"
           New-Item -ItemType Directory -Path $name | Out-Null
           Copy-Item "${{ matrix.executable }}" "$name/reason.exe"
-          Copy-Item README.md, LICENSE $name
+          Copy-Item README.md, LICENSE, CHANGELOG.md $name
           Compress-Archive -Path $name -DestinationPath "$name.zip"
       - uses: actions/upload-artifact@v4
         with:

@@ -12,11 +12,11 @@ do not define the stable product contract.
 Rust 1.88+ users can install only the supported product binary directly from the repository:
 
 ```bash
-cargo install --git https://github.com/git-ksk/reasoning-harness --locked reasoning-harness-cli --bin reason
+cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.1.0 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-This does not install the research binaries. The package remains unpublished on crates.io during the v0.x contract-hardening phase.
+This does not install the research binaries. The package remains unpublished on crates.io during the v0.x contract-hardening phase. See [product support and compatibility](support.md) for the preview support boundary.
 
 ### Standalone release binaries
 
