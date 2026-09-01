@@ -131,7 +131,7 @@ jobs:
       matrix:
         model: ${{ fromJSON(inputs.mistral_model == 'all' && '["ministral-3b-latest","ministral-8b-latest","ministral-14b-latest","mistral-small-latest"]' || format('["{0}"]', inputs.mistral_model)) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
@@ -174,7 +174,7 @@ jobs:
       matrix:
         model: ${{ fromJSON(inputs.google_model == 'all' && '["gemma-4-26b-a4b-it","gemma-4-31b-it","gemini-3.1-flash-lite","gemini-3.5-flash-lite"]' || format('["{0}"]', inputs.google_model)) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
@@ -223,7 +223,7 @@ jobs:
       group: ${{ inputs.judge_provider == 'mistral' && 'reasoning-harness-mistral-live' || format('reasoning-harness-semantic-{0}', inputs.judge_provider) }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
@@ -305,7 +305,7 @@ jobs:
       matrix:
         model: ${{ fromJSON(inputs.nvidia_model == 'all' && '["nvidia/nemotron-3.5-lightning-30b-a3b"]' || format('["{0}"]', inputs.nvidia_model)) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
