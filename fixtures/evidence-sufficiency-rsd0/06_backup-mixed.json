@@ -1,0 +1,60 @@
+{
+  "id": "backup-mixed",
+  "family": "backup_rpo",
+  "request": {
+    "id": "req-backup-mixed",
+    "task": "Decide whether the system is sufficiently supported as meeting a 30-minute RPO.",
+    "target": {
+      "key": "recovery.rpo_30m_met",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover backup frequency for all state required by the recovery objective.",
+      "Evidence must show that the relevant backups are actually restorable/usable, not merely scheduled."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2"
+    ]
+  },
+  "artifact": {
+    "task": "RSD0 fresh calibration artifact: Decide whether the system is sufficiently supported as meeting a 30-minute RPO.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "rsd0-synthetic",
+        "observation": "Application database snapshots run every 15 minutes and passed restore testing.",
+        "facts": {
+          "app_db.backup_interval_minutes": "15",
+          "app_db.restore": "success"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "rsd0-synthetic",
+        "observation": "Object metadata is included in the recovery objective, but its restore test has not completed.",
+        "facts": {
+          "object_metadata.in_rpo_scope": "true",
+          "object_metadata.restore": "unknown"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "mixed",
+  "rationale": "One required state component is well supported while another required component remains unresolved, creating partial rather than globally sufficient support."
+}

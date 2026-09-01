@@ -30,6 +30,7 @@ pub mod semantic_judge;
 pub mod semantic_materialization;
 pub mod semantic_runtime;
 pub mod semantic_stability;
+pub mod semantic_sufficiency;
 pub mod types;
 pub mod validate;
 pub mod verification;
@@ -183,6 +184,10 @@ pub use semantic_stability::{
     SelectiveAbstentionOutcome, SelectiveAbstentionPolicy, SoftDecisionProbe,
     SoftDecisionStabilityAssessment, StabilityRiskSignal, apply_selective_abstention,
     assess_soft_decision_stability,
+};
+pub use semantic_sufficiency::{
+    EvidenceSufficiencyCalibrationFixture, EvidenceSufficiencyFixtureError,
+    EvidenceSufficiencyLabel, EvidenceSufficiencyRequest, validate_evidence_sufficiency_fixture,
 };
 pub use types::{
     AdversarialFinding, AdversarialFindingKind, ApplicabilityScope, CandidateClaim,

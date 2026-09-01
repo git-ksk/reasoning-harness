@@ -1,0 +1,48 @@
+{
+  "id": "incident-insufficient",
+  "family": "incident_root_cause",
+  "request": {
+    "id": "req-incident-insufficient",
+    "task": "Decide whether the database is sufficiently supported as the incident root cause.",
+    "target": {
+      "key": "incident.root_cause",
+      "value": "database"
+    },
+    "required_information": [
+      "Evidence must connect database degradation to the incident window and affected requests.",
+      "Evidence must materially rule out or separate other live infrastructure/application causes before asserting a single root cause."
+    ],
+    "evidence_ids": [
+      "e1"
+    ]
+  },
+  "artifact": {
+    "task": "RSD0 fresh calibration artifact: Decide whether the database is sufficiently supported as the incident root cause.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "rsd0-synthetic",
+        "observation": "Database latency was elevated during the incident.",
+        "facts": {
+          "db.latency": "high"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "insufficient",
+  "rationale": "A correlated database symptom is relevant but does not establish that it caused the incident or exclude network/application alternatives."
+}
