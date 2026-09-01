@@ -2,9 +2,9 @@
 
 日本語 | [English](README.md)
 
-**LLM・RAG・AIエージェントの出力に「根拠チェック」を追加するCLIです。**
+**AIの回答を「モデル1回呼んで終わり」にせず、根拠付きの推論runtimeを通して作るCLIです。**
 
-Reasoning Harnessは、根拠が足りないときにAIが推測で断言するのではなく、**`unknown`と言えるようにする**ためのネイティブCLIです。
+Reasoning Harnessは、根拠が足りないときにAIが推測で断言するのではなく、**`unknown`と言えるようにする**ためのAI CLI/runtimeです。モデルは候補を出し、根拠からgrounded resultへ進める流れはHarness側が管理します。
 
 ```text
 LLM / Agent / RAG
@@ -45,6 +45,45 @@ Reasoning Harnessあり:
   根拠 -> LLM/Agent -> 候補 -> 検証/診断 -> accept | reject | unknown
 ```
 
+## 今後の主役: 自然文で使えるAI CLI
+
+v0.1.0ではまずstructured runtimeとautomation contractを固めました。次のPrimary UX
+([Issue #107](https://github.com/git-ksk/reasoning-harness/issues/107)) は、Harness自身がAIを使う
+経路を、普通のAI CLIみたいに自然文から使える形へすることです。
+
+目標イメージ:
+
+```bash
+reason "この障害ログから、最も根拠のある原因を分析して"
+reason "この構成をレビューして" --file architecture.md --file template.yaml
+cat error.log | reason "最も根拠のあるroot causeを特定して"
+```
+
+内部では:
+
+```text
+自然文の依頼
+    ↓
+AIがuntrusted candidateを生成
+    ↓
+Reasoning Harness
+  根拠照合 / verification / D3 / sufficiency診断
+    ↓
+根拠不足? -> bounded resolution / 再生成 -> 再verification
+    ↓
+grounded answer | 条件付き回答 | unknown
+```
+
+という流れにします。利用者の目標は**「自然文を入れたら、検証ループを通った自然文が返る」**です。
+
+JSONをなくすわけではありません。`HarnessInput` / `ReasoningCandidate` / `ReasoningArtifact`や
+`--format json`は、内部表現・CI・高度なintegration・debug・再現性のために残します。ただし、
+通常利用者が最初からJSON Schemaを理解しないと使えないプロダクトにはしません。
+
+この方向は研究をそのまま製品へ使います。D3、evidence binding、unsupported premise / causal gap、
+evidence sufficiency・abstention、bounded resolution、verification receipt、final-claim coverageを、
+自然なCLIの裏側で動かします。
+
 ## 何を入力するの？
 
 現在の`reason`は**非対話型・構造化データ優先**のCLIです。自由文をチャットのように投げて、それを自動的に「信用できる根拠」とみなすツールではありません。
@@ -65,9 +104,9 @@ reason schema config
 reason schema semantic-check
 ```
 
-## 使い方は大きく2通り
+## 現在のv0.1.0実行モード
 
-`reason run`には主に2つの使い方があります。どちらも**候補ができた後の検証パイプラインは同じ**で、違うのは「untrusted candidateを誰が作るか」です。
+現在のv0.1.0には`reason run`のstructuredな使い方が2つあります。どちらも**候補ができた後の検証パイプラインは同じ**で、違うのは「untrusted candidateを誰が作るか」です。今後はlive provider側を自然文Primary UXの土台にし、外部candidate持ち込みは高度なintegration用途として残します。
 
 | モード | コマンド | Harness内でAIを呼ぶ？ | 向いているケース |
 | --- | --- | --- | --- |

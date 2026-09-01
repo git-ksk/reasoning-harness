@@ -2,9 +2,9 @@
 
 [日本語](README.ja.md) | English
 
-**Add an evidence-checking layer around LLM, RAG, or agent output.**
+**Build AI answers through an evidence-grounded reasoning runtime, not a single model pass.**
 
-Reasoning Harness is a native CLI for applications that should say **`unknown` instead of guessing** when the available evidence does not justify an answer.
+Reasoning Harness is a native AI CLI/runtime for systems that should say **`unknown` instead of guessing** when the available evidence does not justify an answer. The model proposes; the harness owns the path from evidence to a grounded result.
 
 ```text
 LLM / Agent / RAG
@@ -45,6 +45,41 @@ With the harness:
   evidence -> LLM/agent -> candidate -> verify/diagnose -> accept | reject | unknown
 ```
 
+## Product direction: natural-language-first AI CLI
+
+The v0.1.0 preview proved the structured runtime and automation contracts. The next primary product
+direction ([Issue #107](https://github.com/git-ksk/reasoning-harness/issues/107)) is to make the
+AI-backed path feel like a normal terminal AI tool while keeping the verification loop underneath:
+
+```bash
+reason "Analyze this incident and explain the most supported cause"
+reason "Review this architecture" --file architecture.md --file template.yaml
+cat error.log | reason "Find the most supported root cause"
+```
+
+Conceptually:
+
+```text
+natural-language task
+        ↓
+model candidate
+        ↓
+Reasoning Harness
+  verify / diagnose / check sufficiency
+        ↓
+missing support? -> bounded resolution / regenerate -> re-verify
+        ↓
+grounded answer | qualified answer | unknown
+```
+
+The user-facing goal is **natural language in, grounded natural language out**. Structured JSON remains
+important, but primarily as an advanced integration/debug surface and as the internal representation
+that keeps the runtime inspectable.
+
+This direction deliberately uses the research program rather than bypassing it: D3, evidence binding,
+unsupported-premise/causal diagnostics, evidence sufficiency and abstention, bounded resolution,
+verification receipts, and final-claim coverage become mechanisms behind the simple CLI.
+
 ## What do I give it?
 
 `reason` is currently **non-interactive and structured-data-first**. It is not a chat client where arbitrary prose is treated as trusted evidence.
@@ -65,9 +100,9 @@ reason schema config
 reason schema semantic-check
 ```
 
-## Two ways to run it
+## Current v0.1.0 execution modes
 
-There are two main `reason run` modes. They use the same verification pipeline; the only difference is **who creates the untrusted candidate**.
+The current v0.1.0 structured foundation exposes two `reason run` modes. They use the same verification pipeline; the only difference is **who creates the untrusted candidate**. Going forward, live provider generation is the basis of the primary natural-language UX; bring-your-own-candidate remains an advanced integration path.
 
 | Mode | Command shape | Does Reasoning Harness call an AI model? | Typical use |
 | --- | --- | --- | --- |

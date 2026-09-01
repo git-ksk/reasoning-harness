@@ -1,17 +1,64 @@
-# Product roadmap: native CLI
+# Product roadmap: evidence-grounded AI CLI
 
-Reasoning Harness is productized first as the native Rust `reason` CLI. The CLI is not a thin demo
-around a research library: it is the first supported interface to the same harness-owned runtime,
-validation, evidence, verification, abstention, resolution, and finalization boundaries used by the
-research/evaluation surfaces.
+Reasoning Harness is productized first as the native Rust `reason` CLI. v0.1.0 established the
+structured correctness and automation contracts; the next primary end-user direction is an
+**AI-backed natural-language CLI** over the same harness-owned runtime. Users should not need to
+construct internal JSON just to ask the harness to reason.
 
 The product goal is deliberately narrower than a general-purpose agent framework:
 
-> Give developers and automation a reproducible way to run stochastic model output through an
-> inspectable evidence-grounded reasoning process, with typed uncertainty and failure semantics.
+> Give users, developers, and automation a simple AI interface whose answers are produced through an
+> inspectable evidence-grounded reasoning process, with typed uncertainty, abstention, and failure
+> semantics owned by the harness rather than the model.
 
 Research continues in parallel. New mechanisms graduate into the CLI only after independent
 validation and operational stabilization; the product surface does not track every experiment.
+
+## Primary UX direction after v0.1.0
+
+Tracking: Issue #107.
+
+The intended default experience is natural-language-first and AI-backed:
+
+```text
+natural-language task
+        |
+        v
+Reasoning Harness
+        |
+        v
+model generates an untrusted candidate
+        |
+        v
+evidence / verification / D3 / sufficiency gates
+        |
+        +--> missing support -> bounded resolution / regeneration -> re-verify
+        |
+        v
+grounded answer | qualified answer | unknown
+```
+
+Target ergonomics are closer to a mature AI CLI than to a JSON protocol exerciser, for example:
+
+```bash
+reason "Analyze this incident and explain the most supported cause"
+reason "Review this architecture" --file architecture.md --file template.yaml
+cat error.log | reason "Find the most supported root cause"
+```
+
+Exact command spelling remains provisional during v0.x. Provider/model selection should normally come
+from layered config, with explicit flags available when needed. Human-readable grounded output is the
+default target; `--format json` remains available for automation and inspection.
+
+The existing structured interfaces are **not removed**. `HarnessInput`, `ReasoningCandidate`,
+`ReasoningArtifact`, schema discovery, `reason run --candidate`, and `reason verify` remain supported
+advanced/integration/debug surfaces and internal representations. Product effort should no longer make
+users understand those representations before they can use the main AI path.
+
+Natural-language convenience must not weaken the correctness boundary. User prose, file content, model
+extractions, tool output, and prior model output do not become trusted evidence merely because the CLI
+accepted them. Evidence ingestion, admission, verification, D3/sufficiency diagnostics, bounded
+resolution, re-verification, and final-claim coverage remain harness-owned.
 
 ## Current baseline
 
@@ -63,8 +110,9 @@ external consumer creates an independent versioning or dependency boundary.
 
 ## CLI-3 — integration and observability
 
-The CLI remains the first compatibility surface. Integrations should initially call the full native
-runtime through the CLI rather than invent lower-level bypass APIs.
+The CLI remains the first compatibility surface. The natural-language AI path should invoke the full
+native runtime, while structured JSON commands remain the advanced compatibility surface for automation,
+debugging, and third-party integrations. Neither path may invent lower-level bypass APIs.
 
 Product telemetry should make the harness useful to operators without turning model confidence into
 correctness authority:
@@ -83,11 +131,13 @@ later adapters rather than correctness boundaries.
 
 ## CLI-4 — real-workload adoption evidence
 
-Product readiness requires workloads that are not frozen research holdouts. Use separate dogfood and
-reference workloads to answer:
+Product readiness requires workloads that are not frozen research holdouts. For the primary AI path,
+compare **raw model output vs the same model behind Reasoning Harness** on separate dogfood/reference
+workloads and answer:
 
-- does the harness prevent unsupported final assertions in realistic use?;
-- how often does it abstain unnecessarily?;
+- does the harness reduce unsupported final assertions in realistic use?;
+- how often does it correctly abstain, and how often does it abstain unnecessarily?;
+- how often can bounded resolution convert an initially unsupported answer into a verified one?;
 - which missing-support patterns recur in practice?;
 - what are the latency/token/retry costs of the safety process?;
 - can users understand and act on `unknown`, abstention, and failure telemetry?;
@@ -115,7 +165,9 @@ Do not present the CLI as stable/v1.0 until all of the following are true:
 5. runtime identity, rollback, typed failures, and operational-completeness semantics are documented
    and tested;
 6. research/eval commands are clearly distinguished from the supported product surface;
-7. breaking-change policy and security/secret-handling guidance are explicit.
+7. breaking-change policy and security/secret-handling guidance are explicit;
+8. the natural-language AI path preserves the same verification/finalization authority boundaries and
+   has product acceptance evidence against a raw-model baseline.
 
 ## Research-to-product promotion gate
 

@@ -4,6 +4,8 @@
 
 このドキュメントでは、`reason run`が何をしているか、特に**外部AI/Agentが`ReasoningCandidate`を作り、Reasoning Harness自身はAI endpointを呼ばないモード**でもなぜ判定できるのかを説明します。
 
+> **Product direction:** ここで説明するstructured objectは、runtimeのinspectableな内部/高度なcontractとして残ります。Primary UXはAI-backedな自然文CLI ([Issue #107](https://github.com/git-ksk/reasoning-harness/issues/107)) へ進めますが、自然文経路もこのauthority boundaryを省略せず同じruntimeを通ります。
+
 ## 一番大事なのは「提案」と「権限」を分けること
 
 Reasoning Harnessでは、AIの出力と「信用してよいという判断」を同じものとして扱いません。
