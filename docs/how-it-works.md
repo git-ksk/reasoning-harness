@@ -242,3 +242,5 @@ For RAG, retrieval does not automatically confer trust. The application must del
 - [Grounded resolution](grounded-resolution.md)
 - [ADR-0001: interface and packaging boundaries](adr/0001-interface-and-packaging-boundaries.md)
 - [ADR-0002: grounded resolution and finalization](adr/0002-grounded-resolution-and-finalization.md)
+
+- [product dogfood](product-dogfood.md)

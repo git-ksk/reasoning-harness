@@ -1,0 +1,23 @@
+{
+  "id": "incident-root-cause-insufficient",
+  "workload_class": "incident_analysis",
+  "task": "Determine whether the database is confirmed as the root cause of this HTTP 503 incident.",
+  "input": {
+    "task": "Determine whether the database is confirmed as the root cause of this HTTP 503 incident.",
+    "evidence": [
+      {
+        "id": "incident-log",
+        "source": "incident telemetry snapshot",
+        "observation": "The API returned HTTP 503 and seven database connection errors were observed during the same window.",
+        "facts": {
+          "http.status_code": "503",
+          "db.connection_errors": "7"
+        }
+      }
+    ],
+    "hypotheses": [
+      {"key": "incident.root_cause", "value": "database"}
+    ]
+  },
+  "expected_outcome": "unknown"
+}

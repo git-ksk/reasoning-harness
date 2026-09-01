@@ -45,44 +45,59 @@ Reasoning Harnessあり:
   根拠 -> LLM/Agent -> 候補 -> 検証/診断 -> accept | reject | unknown
 ```
 
-## 今後の主役: 自然文で使えるAI CLI
+## 主役の使い方: 自然文AI CLI
 
-v0.1.0ではまずstructured runtimeとautomation contractを固めました。次のPrimary UX
-([Issue #107](https://github.com/git-ksk/reasoning-harness/issues/107)) は、Harness自身がAIを使う
-経路を、普通のAI CLIみたいに自然文から使える形へすることです。
-
-目標イメージ:
+自然文でAIを使うpathを、primaryな人向けUXとして`main`へ実装しました。公開済み`v0.1.0` tagはこの実装より前のstructured previewなので、次のtagged previewまでは自然文pathを試す場合`main`を使います。
 
 ```bash
-reason "この障害ログから、最も根拠のある原因を分析して"
-reason "この構成をレビューして" --file architecture.md --file template.yaml
-cat error.log | reason "最も根拠のあるroot causeを特定して"
+reason "この障害を分析して" --fact http.status_code=503
+reason "この構成をレビューして" --file architecture.md --hypothesis backup.enabled=true
+cat error.log | reason "最も根拠のあるroot causeを特定して" --hypothesis incident.root_cause=database
 ```
 
-内部では:
+provider/modelは通常layered configから取れます。明示もできます。
+
+```bash
+reason "確認できるdeployment regionを答えて" \
+  --provider mistral \
+  --model ministral-8b-latest \
+  --fact service.region=us-east-1
+```
+
+内部ではこう動きます。
 
 ```text
-自然文の依頼
+自然文task
     ↓
 AIがuntrusted candidateを生成
     ↓
-Reasoning Harness
-  根拠照合 / verification / D3 / sufficiency診断
+Harness validation + evidence verification + diagnostics
     ↓
-根拠不足? -> bounded resolution / 再生成 -> 再verification
+根拠不足? -> bounded resolver -> admission -> 再verification
     ↓
-grounded answer | 条件付き回答 | unknown
+AIが自然文answerをrender
+    ↓
+final-claim coverage gate
+    ↓
+grounded answer | 条件付き回答 | unknown/abstain
 ```
 
-という流れにします。利用者の目標は**「自然文を入れたら、検証ループを通った自然文が返る」**です。
+簡単な入口にしても、自由文を勝手に「事実」にはしません。`--file`とpipeしたstdinは、modelが読める
+**untrusted context**です。文書に書いてあるというだけではhard verification receiptは作りません。
+`--fact KEY=VALUE`はHarness側へ明示するstructured fact、`--resolver-fact KEY=VALUE`はbounded resolution
+経由だけで使う明示local fact、`--hypothesis KEY=VALUE`は「この命題を評価/解決して」というtargetです。
 
-JSONをなくすわけではありません。`HarnessInput` / `ReasoningCandidate` / `ReasoningArtifact`や
-`--format json`は、内部表現・CI・高度なintegration・debug・再現性のために残します。ただし、
-通常利用者が最初からJSON Schemaを理解しないと使えないプロダクトにはしません。
+そのため、trusted evidenceなしで`reason "..."`だけを実行した場合、modelの事前学習をverified evidence
+扱いせず、条件付き/`unknown`になることがあります。今後web/search/DB/test/compiler/MCPなどをresolverへ
+足せば自然文pathを強くできますが、adapter結果もadmissionとverificationを飛ばせません。
 
-この方向は研究をそのまま製品へ使います。D3、evidence binding、unsupported premise / causal gap、
-evidence sufficiency・abstention、bounded resolution、verification receipt、final-claim coverageを、
-自然なCLIの裏側で動かします。
+JSONのstructured pathは消していません。高度なintegration / CI / debug / 再現性のために残しますが、
+通常利用者が最初にJSON Schemaを理解する必要はなくなります。
+
+自然文pathには、evidence binding、assumption/contradiction/evidence-qualification diagnostics、bounded
+resolution、再verification、final-claim coverageを使っています。D3は引き続き`reason semantic-check`の
+採用済みmodel-backed diagnosticです。一方、残余evidence sufficiencyの自動判定はResearch #91の途中で、
+今回のNL sliceで「解決済み」とは扱いません。
 
 ## 何を入力するの？
 
@@ -104,9 +119,9 @@ reason schema config
 reason schema semantic-check
 ```
 
-## 現在のv0.1.0実行モード
+## 高度なstructured実行モード
 
-現在のv0.1.0には`reason run`のstructuredな使い方が2つあります。どちらも**候補ができた後の検証パイプラインは同じ**で、違うのは「untrusted candidateを誰が作るか」です。今後はlive provider側を自然文Primary UXの土台にし、外部candidate持ち込みは高度なintegration用途として残します。
+高度なintegration向けには`reason run`のstructuredな使い方も残っています。どちらも**候補ができた後の検証パイプラインは同じ**で、違うのは「untrusted candidateを誰が作るか」です。
 
 | モード | コマンド | Harness内でAIを呼ぶ？ | 向いているケース |
 | --- | --- | --- | --- |

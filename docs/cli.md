@@ -33,6 +33,40 @@ Each release includes `SHA256SUMS`. Verify the downloaded archive before install
 
 The same four platform classes run credential-free product smoke in pull requests and on `main`.
 
+## Natural-language AI path
+
+The primary human-facing path accepts a task directly:
+
+```bash
+reason "Analyze this incident" --fact http.status_code=503
+```
+
+Provider/model can come from `reason-config-v1` or explicit flags. Human output is the default; use `--format json` for automation. Useful inputs are:
+
+| input | trust semantics |
+| --- | --- |
+| positional `TASK` | user request, not evidence |
+| `--file PATH` | untrusted model-readable context; no hard fact is inferred automatically |
+| piped stdin | same untrusted context semantics as `--file` |
+| `--fact KEY=VALUE` | explicit harness-owned structured fact eligible for deterministic verification |
+| `--hypothesis KEY=VALUE` | harness-owned proposition to evaluate/resolve |
+| `--resolver-fact KEY=VALUE` | explicit local fact available only through bounded resolution/admission/re-verification |
+
+Example with context plus a typed target:
+
+```bash
+cat error.log | reason "Determine whether the database is the root cause" \
+  --hypothesis incident.root_cause=database
+```
+
+If the context does not contain trusted structured support, the safe result may remain qualified/unknown. This is intentional. `--file` is not a shortcut that promotes document prose into verification authority.
+
+The final model-rendered answer is also untrusted until `finalize_answer` checks factual-claim coverage. Any newly introduced factual proposition is blocked; when an explicitly configured resolver can verify it, the proposition may re-enter bounded resolution and then be rendered again.
+
+Natural JSON output declares `output_contract: reason-natural-output-v1` inside the normal `reason-cli-output-v1` envelope.
+
+See [How Reasoning Harness works](how-it-works.md) and [product dogfood](product-dogfood.md).
+
 ## Which command should I use?
 
 | Goal | Command |

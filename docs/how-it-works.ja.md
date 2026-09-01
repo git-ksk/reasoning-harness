@@ -244,3 +244,5 @@ RAGのretrieval結果も、取得しただけでtrustedにはなりません。s
 - [Grounded resolution (English)](grounded-resolution.md)
 - [ADR-0001: interface and packaging boundaries](adr/0001-interface-and-packaging-boundaries.md)
 - [ADR-0002: grounded resolution and finalization](adr/0002-grounded-resolution-and-finalization.md)
+
+- [product dogfood](product-dogfood.ja.md)

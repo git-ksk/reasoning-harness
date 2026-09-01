@@ -6,6 +6,40 @@
 
 `--candidate`と`--provider`の2つの使い方、AIなしでも`accept | reject | unknown`を判定できる原理は[Reasoning Harnessの仕組み](how-it-works.ja.md)で詳しく説明しています。
 
+## 自然文AI path
+
+人が使うprimary pathは、taskをそのまま渡せます。
+
+```bash
+reason "この障害を分析して" --fact http.status_code=503
+```
+
+provider/modelは`reason-config-v1`または明示flagから取ります。defaultはhuman-readable出力で、自動化では`--format json`を使えます。
+
+| input | trust上の意味 |
+| --- | --- |
+| positional `TASK` | ユーザー依頼。evidenceではない |
+| `--file PATH` | modelが読めるuntrusted context。自動でhard factにはしない |
+| piped stdin | `--file`と同じuntrusted context |
+| `--fact KEY=VALUE` | deterministic verification対象にできるHarness-owned structured fact |
+| `--hypothesis KEY=VALUE` | 評価/解決するHarness-owned proposition |
+| `--resolver-fact KEY=VALUE` | bounded resolution → admission → 再verification経由でだけ使う明示local fact |
+
+context + target例:
+
+```bash
+cat error.log | reason "DBがroot causeか確認して" \
+  --hypothesis incident.root_cause=database
+```
+
+trustedなstructured supportがなければ、結果が条件付き/`unknown`のままになることがあります。これは仕様です。`--file`に文章があるだけでverification authorityへ昇格はしません。
+
+最終自然文もmodelがrenderするだけでは信用しません。`finalize_answer`がfactual-claim coverageを確認し、新しい事実を勝手に混ぜた場合はblockします。明示resolverで確認できる場合のみbounded resolutionへ戻し、再verification後に再renderできます。
+
+自然文JSON出力は通常の`reason-cli-output-v1` envelope内で`output_contract: reason-natural-output-v1`を明示します。
+
+詳しくは[仕組みの日本語解説](how-it-works.ja.md)と[product dogfood](product-dogfood.ja.md)を参照してください。
+
 ## まずどのコマンドを使う？
 
 | やりたいこと | コマンド |
