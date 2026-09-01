@@ -107,6 +107,9 @@ struct Metrics {
     false_safe_rate: Option<f64>,
     false_abstain_count: usize,
     false_abstain_rate: Option<f64>,
+    simulated_unsafe_proceed_before_gate: usize,
+    simulated_unsafe_proceed_after_gate: usize,
+    simulated_unsafe_proceed_prevented: usize,
     confusion: BTreeMap<String, BTreeMap<String, usize>>,
     per_label_recall: BTreeMap<String, Option<f64>>,
     failure_classes: BTreeMap<&'static str, usize>,
@@ -116,6 +119,42 @@ struct Metrics {
     provider_attempts: u64,
     fallback_runs: usize,
     total_latency_ms: u128,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct TrialMetrics {
+    trial: usize,
+    successful_runs: usize,
+    failed_runs: usize,
+    exact_3class_accuracy: Option<f64>,
+    conservative_binary_accuracy: Option<f64>,
+    false_safe_count: usize,
+    false_abstain_count: usize,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct FixtureStability {
+    fixture_id: String,
+    family: String,
+    expected: EvidenceSufficiencyLabel,
+    successful_trials: usize,
+    exact_decisions: BTreeMap<String, usize>,
+    binary_decisions: BTreeMap<String, usize>,
+    exact_unanimous: bool,
+    binary_unanimous: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct StabilitySummary {
+    requested_trials: usize,
+    complete_trials: usize,
+    incomplete_trials: usize,
+    exact_unanimous_fixtures: usize,
+    exact_unanimity_rate: f64,
+    binary_unanimous_fixtures: usize,
+    binary_unanimity_rate: f64,
+    per_trial: Vec<TrialMetrics>,
+    fixtures: Vec<FixtureStability>,
 }
 
 #[derive(Debug, Serialize)]
@@ -130,7 +169,9 @@ struct Output {
     base_seed: u64,
     fixture_count: usize,
     authority_semantics: &'static str,
+    configuration_id: &'static str,
     metrics: Metrics,
+    stability: StabilitySummary,
     cases: Vec<StudyCase>,
 }
 
@@ -170,8 +211,12 @@ async fn main() -> Result<(), String> {
     }
 
     let output = Output {
-        study_id: "evidence-sufficiency-rsd1-v1",
-        phase: "RSD1 calibration only; no product authority",
+        study_id: "evidence-sufficiency-study-v1",
+        phase: if args.trials > 1 {
+            "RSD2 repeated stability on frozen RSD1 coordinate; no product authority"
+        } else {
+            "RSD1 calibration only; no product authority"
+        },
         corpus: "evidence-sufficiency-rsd0",
         provider: args.provider.name(),
         requested_model: args.model,
@@ -179,8 +224,10 @@ async fn main() -> Result<(), String> {
         max_tokens: args.max_tokens,
         base_seed: args.seed,
         fixture_count: fixtures.len(),
-        authority_semantics: "sufficient never creates authority; insufficient/mixed are diagnostic-only in RSD1",
+        authority_semantics: "sufficient never creates authority; insufficient/mixed are diagnostic-only until a later promoted runtime",
+        configuration_id: "evidence-sufficiency-coordinate-rsd1-v1",
         metrics: aggregate(&cases),
+        stability: stability(&cases, args.trials),
         cases,
     };
     println!(
@@ -373,6 +420,10 @@ fn aggregate(cases: &[StudyCase]) -> Metrics {
         false_safe_rate: ratio(false_safe_count, expected_non_sufficient),
         false_abstain_count,
         false_abstain_rate: ratio(false_abstain_count, expected_sufficient),
+        simulated_unsafe_proceed_before_gate: expected_non_sufficient,
+        simulated_unsafe_proceed_after_gate: false_safe_count,
+        simulated_unsafe_proceed_prevented: expected_non_sufficient
+            .saturating_sub(false_safe_count),
         confusion,
         per_label_recall,
         failure_classes,
@@ -382,6 +433,97 @@ fn aggregate(cases: &[StudyCase]) -> Metrics {
         provider_attempts,
         fallback_runs,
         total_latency_ms: cases.iter().map(|case| case.latency_ms).sum(),
+    }
+}
+
+fn stability(cases: &[StudyCase], requested_trials: usize) -> StabilitySummary {
+    let mut per_trial = Vec::with_capacity(requested_trials);
+    let mut complete_trials = 0usize;
+    for trial in 0..requested_trials {
+        let trial_cases = cases
+            .iter()
+            .filter(|case| case.trial == trial)
+            .cloned()
+            .collect::<Vec<_>>();
+        let metrics = aggregate(&trial_cases);
+        if metrics.failed_runs == 0 && !trial_cases.is_empty() {
+            complete_trials += 1;
+        }
+        per_trial.push(TrialMetrics {
+            trial,
+            successful_runs: metrics.successful_runs,
+            failed_runs: metrics.failed_runs,
+            exact_3class_accuracy: metrics.exact_3class_accuracy,
+            conservative_binary_accuracy: metrics.conservative_binary_accuracy,
+            false_safe_count: metrics.false_safe_count,
+            false_abstain_count: metrics.false_abstain_count,
+        });
+    }
+
+    let mut grouped = BTreeMap::<String, Vec<&StudyCase>>::new();
+    for case in cases {
+        grouped
+            .entry(case.fixture_id.clone())
+            .or_default()
+            .push(case);
+    }
+    let mut fixtures = Vec::with_capacity(grouped.len());
+    for (fixture_id, fixture_cases) in grouped {
+        let first = fixture_cases[0];
+        let mut exact_decisions = BTreeMap::<String, usize>::new();
+        let mut binary_decisions = BTreeMap::<String, usize>::new();
+        let mut successful_trials = 0usize;
+        for case in fixture_cases {
+            if let Some(observed) = case.observed {
+                successful_trials += 1;
+                *exact_decisions
+                    .entry(label_name(observed).to_string())
+                    .or_default() += 1;
+                *binary_decisions
+                    .entry(binary_label_name(observed).to_string())
+                    .or_default() += 1;
+            }
+        }
+        fixtures.push(FixtureStability {
+            fixture_id,
+            family: first.family.clone(),
+            expected: first.expected,
+            successful_trials,
+            exact_unanimous: successful_trials == requested_trials && exact_decisions.len() == 1,
+            binary_unanimous: successful_trials == requested_trials && binary_decisions.len() == 1,
+            exact_decisions,
+            binary_decisions,
+        });
+    }
+    fixtures.sort_by(|left, right| left.fixture_id.cmp(&right.fixture_id));
+    let fixture_count = fixtures.len();
+    let exact_unanimous_fixtures = fixtures
+        .iter()
+        .filter(|fixture| fixture.exact_unanimous)
+        .count();
+    let binary_unanimous_fixtures = fixtures
+        .iter()
+        .filter(|fixture| fixture.binary_unanimous)
+        .count();
+
+    StabilitySummary {
+        requested_trials,
+        complete_trials,
+        incomplete_trials: requested_trials.saturating_sub(complete_trials),
+        exact_unanimous_fixtures,
+        exact_unanimity_rate: if fixture_count == 0 {
+            0.0
+        } else {
+            exact_unanimous_fixtures as f64 / fixture_count as f64
+        },
+        binary_unanimous_fixtures,
+        binary_unanimity_rate: if fixture_count == 0 {
+            0.0
+        } else {
+            binary_unanimous_fixtures as f64 / fixture_count as f64
+        },
+        per_trial,
+        fixtures,
     }
 }
 
@@ -401,6 +543,14 @@ const fn label_name(label: EvidenceSufficiencyLabel) -> &'static str {
         EvidenceSufficiencyLabel::Sufficient => "sufficient",
         EvidenceSufficiencyLabel::Insufficient => "insufficient",
         EvidenceSufficiencyLabel::Mixed => "mixed",
+    }
+}
+
+const fn binary_label_name(label: EvidenceSufficiencyLabel) -> &'static str {
+    if is_non_sufficient(label) {
+        "non_sufficient"
+    } else {
+        "sufficient"
     }
 }
 
@@ -471,6 +621,46 @@ mod tests {
         assert_eq!(metrics.false_abstain_count, 1);
         assert_eq!(metrics.exact_3class_accuracy, Some(1.0 / 3.0));
         assert_eq!(metrics.conservative_binary_accuracy, Some(1.0 / 3.0));
+    }
+
+    #[test]
+    fn stability_distinguishes_exact_label_drift_from_binary_safety_drift() {
+        let mut mixed = case(
+            EvidenceSufficiencyLabel::Mixed,
+            EvidenceSufficiencyLabel::Mixed,
+        );
+        mixed.fixture_id = "same".into();
+        mixed.trial = 0;
+        let mut insufficient = case(
+            EvidenceSufficiencyLabel::Mixed,
+            EvidenceSufficiencyLabel::Insufficient,
+        );
+        insufficient.fixture_id = "same".into();
+        insufficient.trial = 1;
+        let summary = stability(&[mixed, insufficient], 2);
+        assert_eq!(summary.exact_unanimity_rate, 0.0);
+        assert_eq!(summary.binary_unanimity_rate, 1.0);
+        assert!(!summary.fixtures[0].exact_unanimous);
+        assert!(summary.fixtures[0].binary_unanimous);
+    }
+
+    #[test]
+    fn stability_marks_sufficient_non_sufficient_flip_as_binary_instability() {
+        let mut first = case(
+            EvidenceSufficiencyLabel::Insufficient,
+            EvidenceSufficiencyLabel::Insufficient,
+        );
+        first.fixture_id = "flip".into();
+        first.trial = 0;
+        let mut second = case(
+            EvidenceSufficiencyLabel::Insufficient,
+            EvidenceSufficiencyLabel::Sufficient,
+        );
+        second.fixture_id = "flip".into();
+        second.trial = 1;
+        let summary = stability(&[first, second], 2);
+        assert_eq!(summary.binary_unanimity_rate, 0.0);
+        assert!(!summary.fixtures[0].binary_unanimous);
     }
 
     #[test]

@@ -76,7 +76,7 @@ NL-5 is no longer the immediate next product step. First advance Research #91 fa
 
 1. **RSD0 — completed #116:** fresh 12-case calibration-only corpus demonstrates a measurable residual gap: all 12 cases are D3 `permit`, while 4 are predeclared `insufficient` and 4 are `mixed`; frozen holdout-v4/v5 remain untouched.
 2. **RSD1 — completed #118:** schema-constrained `sufficient | insufficient | mixed` coordinate passed the frozen one-trial calibration progression gate on both Ministral 8B and Gemini 3.5 Flash-Lite with zero false-safe and zero false-abstain decisions; this is calibration evidence only, not product authority.
-3. **RSD2 — risk/coverage characterization:** jointly measure unsafe-assertion reduction, correct abstention, false abstention, seed/model stability, and operational completeness.
+3. **RSD2 — in progress #121:** repeat the frozen RSD1 coordinate across five seeds/model, separating exact 3-class drift from the product-relevant `sufficient` vs `non-sufficient` stability boundary; no majority vote gains authority.
 4. **Fresh independent holdout:** if RSD1/RSD2 justify promotion, freeze a new independent holdout before any product adoption claim.
 5. **Product bridge:** operationally stabilize the successor profile, give it explicit runtime identity + rollback, and integrate it into the natural-language path only as a conservative gate. Missing/insufficient support should route to bounded resolution or abstention, never epistemic promotion.
 6. **Then NL-5:** run the real-workload acceptance comparison on the completed product path.

@@ -132,3 +132,6 @@ both labels map to the same conservative direction (`resolve/abstain`, never pro
 Both arms pass every pre-observation RSD1 -> RSD2 progression threshold. This justifies RSD2 repeated
 seed/model stability work; it does **not** justify a product runtime profile, because this is still the
 same 12-case calibration corpus and no fresh independent holdout exists yet.
+
+
+RSD2 repeated-seed characterization is specified in [evidence-sufficiency-rsd2.md](evidence-sufficiency-rsd2.md).
