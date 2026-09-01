@@ -52,3 +52,16 @@ For each provider arm across five trials:
 
 Passing permits only the next research action: **freeze a fresh independent holdout**. It does not
 permit product adoption or natural-language CLI integration.
+
+## Cross-model replication after Gemini operational incompleteness
+
+The first two unchanged Gemini 3.5 Flash-Lite RSD2 arms each produced 59/60 successful semantic
+observations with zero observed false-safe/false-abstain decisions, but each missed the predeclared
+100% operational-completion gate for a different provider-side failure. The gate is not relaxed and
+the partial runs are not merged.
+
+Before a fresh promotion holdout is frozen, run the exact frozen RSD1/RSD2 contract on an independent
+second model arm. `gemma-4-31b-it` is predeclared as the next Google-hosted replication target because
+it has prior semantic-runtime protocol evidence in this repository. The replication changes only the
+model identifier: corpus, prompt/schema/fallback contract, seeds 5000–5004, max tokens, and RSD2
+thresholds remain unchanged. Passing is cross-model replication evidence, not product authority.
