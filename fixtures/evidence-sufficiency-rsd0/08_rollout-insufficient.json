@@ -1,0 +1,50 @@
+{
+  "id": "rollout-insufficient",
+  "family": "rollout_safety",
+  "request": {
+    "id": "req-rollout-insufficient",
+    "task": "Decide whether available canary evidence is sufficient to expand the rollout.",
+    "target": {
+      "key": "release.safe_to_expand",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover a predeclared decision window long enough to observe the relevant failure modes.",
+      "Evidence must cover both error-rate and latency guardrails on a representative canary before expanding rollout."
+    ],
+    "evidence_ids": [
+      "e1"
+    ]
+  },
+  "artifact": {
+    "task": "RSD0 fresh calibration artifact: Decide whether available canary evidence is sufficient to expand the rollout.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "rsd0-synthetic",
+        "observation": "The 10% canary has been healthy for the first 4 minutes of a required 30-minute window.",
+        "facts": {
+          "canary.traffic_percent": "10",
+          "canary.observed_minutes": "4",
+          "canary.required_minutes": "30"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "insufficient",
+  "rationale": "Early healthy telemetry is relevant but lacks the required observation horizon and does not cover both declared guardrails."
+}

@@ -74,7 +74,7 @@ Tracking: #109 #110 #111 #112 #113 under #107.
 
 NL-5 is no longer the immediate next product step. First advance Research #91 far enough to decide whether a residual evidence-sufficiency gate can safely join the natural-language runtime. The order is:
 
-1. **RSD0 — fresh residual-gap discovery:** build a new calibration-only corpus for cases where evidence exists but may still be insufficient to answer; frozen holdout-v4/v5 remain untouched.
+1. **RSD0 — completed #116:** fresh 12-case calibration-only corpus demonstrates a measurable residual gap: all 12 cases are D3 `permit`, while 4 are predeclared `insufficient` and 4 are `mixed`; frozen holdout-v4/v5 remain untouched.
 2. **RSD1 — narrow sufficiency coordinate:** test a provider-neutral `sufficient | insufficient | mixed`-style signal where only `insufficient`/`mixed` may preserve or force abstention; `sufficient` never creates correctness authority.
 3. **RSD2 — risk/coverage characterization:** jointly measure unsafe-assertion reduction, correct abstention, false abstention, seed/model stability, and operational completeness.
 4. **Fresh independent holdout:** if RSD1/RSD2 justify promotion, freeze a new independent holdout before any product adoption claim.

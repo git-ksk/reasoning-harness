@@ -1,0 +1,59 @@
+{
+  "id": "capacity-mixed",
+  "family": "capacity_planning",
+  "request": {
+    "id": "req-capacity-mixed",
+    "task": "Decide whether the evidence is sufficient to assert adequate service capacity.",
+    "target": {
+      "key": "service.capacity_adequate",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover peak rather than average demand for the relevant planning horizon.",
+      "Evidence must cover each material bottleneck and the required headroom, not only aggregate compute capacity."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2"
+    ]
+  },
+  "artifact": {
+    "task": "RSD0 fresh calibration artifact: Decide whether the evidence is sufficient to assert adequate service capacity.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "rsd0-synthetic",
+        "observation": "Peak request demand leaves 30% compute headroom.",
+        "facts": {
+          "compute.headroom_percent": "30"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "rsd0-synthetic",
+        "observation": "Database connection headroom at the same peak is 7%, below the required 20% threshold.",
+        "facts": {
+          "db.headroom_percent": "7",
+          "required.headroom_percent": "20"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "mixed",
+  "rationale": "One major resource has ample headroom while another material bottleneck violates the requirement; the global capacity assertion has mixed support."
+}

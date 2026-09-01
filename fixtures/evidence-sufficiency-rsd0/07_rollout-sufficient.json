@@ -1,0 +1,61 @@
+{
+  "id": "rollout-sufficient",
+  "family": "rollout_safety",
+  "request": {
+    "id": "req-rollout-sufficient",
+    "task": "Decide whether available canary evidence is sufficient to expand the rollout.",
+    "target": {
+      "key": "release.safe_to_expand",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover a predeclared decision window long enough to observe the relevant failure modes.",
+      "Evidence must cover both error-rate and latency guardrails on a representative canary before expanding rollout."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2"
+    ]
+  },
+  "artifact": {
+    "task": "RSD0 fresh calibration artifact: Decide whether available canary evidence is sufficient to expand the rollout.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "rsd0-synthetic",
+        "observation": "A 10% representative canary ran for the full 30-minute decision window.",
+        "facts": {
+          "canary.traffic_percent": "10",
+          "canary.window_minutes": "30",
+          "canary.representative": "true"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "rsd0-synthetic",
+        "observation": "Canary error rate and p95 latency both stayed within the predeclared guardrails for the full window.",
+        "facts": {
+          "canary.error_guardrail": "pass",
+          "canary.latency_guardrail": "pass"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "sufficient",
+  "rationale": "The observation covers the declared window, representative traffic, and both required safety guardrails."
+}
