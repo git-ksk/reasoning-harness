@@ -34,13 +34,12 @@ Tracking: Issue #90.
 
 The first product milestone makes the existing CLI predictable for humans, shell pipelines, and CI:
 
-- define supported product commands separately from research-only/evaluation commands;
-- stabilize stdin/file/stdout behavior for supported commands;
-- define a versioned machine-readable JSON envelope and artifact/config identity;
-- document exit-code semantics, especially the distinction between epistemic `unknown`/abstention
-  and structural/runtime failure;
+- [implemented #90] define `run`, `verify`, and `schema` as supported product commands separately from research-only/evaluation commands;
+- [implemented #90] stabilize `-` stdin plus file/stdout behavior for supported JSON inputs, with at most one stdin consumer per invocation;
+- [implemented #90] define `reason-cli-output-v1` plus `reasoning-artifact-v1` / `reasoning-candidate-v1` machine-readable contract identities and schema discovery;
+- [implemented #90] document exit-code semantics: successful `accept | reject | unknown` execution is exit 0, command/runtime/validation failure is exit 1, and CLI parse failure is exit 2;
 - normalize typed runtime/provider failures without exposing provider-specific authority semantics;
-- define configuration and environment-variable precedence;
+- define and implement compatibility-tested user/project configuration precedence; provider secrets remain environment-owned by default;
 - keep `--format json` suitable for automation and human output explicitly non-authoritative;
 - add a short install/quickstart path and copy-paste shell/CI examples.
 

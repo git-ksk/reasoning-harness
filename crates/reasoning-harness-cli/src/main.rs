@@ -1,6 +1,7 @@
 use std::{
     collections::{BTreeMap, VecDeque},
     fs,
+    io::{self, Read},
     path::{Path, PathBuf},
     process::ExitCode,
     sync::Arc,
@@ -12,7 +13,8 @@ use reasoning_harness_core::{
     AdversarialDiscoveryPass, AssumptionDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult,
     BenchmarkComparison, BenchmarkFixture, CalibrationLabel, ClaimCorpusSummary, CorpusManifest,
     DiagnosticObservation, DiagnosticTrial, EvidenceQualificationPass, HarnessInput, ModelAdapter,
-    ModelBackedSoftJudgeError, ModelError, ModelErrorKind, ModelUsage, ReasoningArtifact,
+    ModelBackedSoftJudgeError, ModelError, ModelErrorKind, ModelUsage,
+    REASONING_ARTIFACT_CONTRACT_ID, REASONING_CANDIDATE_CONTRACT_ID, ReasoningArtifact,
     ReasoningCandidate, RepeatedDiagnosticReport, ResolutionBenchmarkAggregate,
     ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, SemanticDiagnosticKind,
     SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport, SoftJudgeDecision,
@@ -22,11 +24,14 @@ use reasoning_harness_core::{
     aggregate_resolution_benchmark, aggregate_soft_judge_calibration,
     build_candidate_json_fallback_request, build_candidate_request, evaluate,
     evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture,
-    frameworks::five_whys::FiveWhysRestatementPass, run_harness, run_model_backed_soft_judge,
+    frameworks::five_whys::FiveWhysRestatementPass, reasoning_artifact_schema,
+    reasoning_candidate_schema, run_harness, run_model_backed_soft_judge,
     structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Serialize, de::DeserializeOwned};
+
+const CLI_OUTPUT_SCHEMA_VERSION: &str = "reason-cli-output-v1";
 
 #[derive(Debug, Parser)]
 #[command(
@@ -44,6 +49,12 @@ enum OutputFormat {
     #[default]
     Human,
     Json,
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum)]
+enum SchemaKind {
+    Artifact,
+    Candidate,
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -274,7 +285,7 @@ fn parse_candidate_json(text: &str) -> Result<(ReasoningCandidate, bool), serde_
 
 #[derive(Debug, Subcommand)]
 enum Command {
-    /// Generate or load a candidate, then execute the harness-owned correctness process.
+    /// PRODUCT: Generate or load a candidate, then execute the harness-owned correctness process.
     Run {
         /// Harness-owned task and evidence JSON.
         #[arg(long)]
@@ -300,13 +311,18 @@ enum Command {
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// Deterministically validate a finalized ReasoningArtifact JSON file.
+    /// PRODUCT: Deterministically validate a finalized ReasoningArtifact JSON file.
     Verify {
         artifact: PathBuf,
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// Evaluate one artifact or a directory of benchmark fixtures.
+    /// PRODUCT: Print a versioned JSON Schema for a supported wire contract.
+    Schema {
+        #[arg(value_enum)]
+        kind: SchemaKind,
+    },
+    /// RESEARCH/EVAL: Evaluate one artifact or a directory of benchmark fixtures.
     Eval {
         target: PathBuf,
         /// Optional live provider. Without this, fixture suites use recorded candidates.
@@ -334,14 +350,14 @@ enum Command {
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
-    /// Evaluate the deterministic bounded-resolution research scenarios.
+    /// RESEARCH/EVAL: Evaluate the deterministic bounded-resolution research scenarios.
     EvalResolution {
         /// Directory containing ResolutionBenchmarkFixture JSON scenarios.
         target: PathBuf,
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
-    /// Evaluate recorded or live soft semantic-judge calibration.
+    /// RESEARCH/EVAL: Evaluate recorded or live soft semantic-judge calibration.
     EvalJudges {
         /// Directory containing SoftJudgeCalibrationFixture JSON cases.
         target: PathBuf,
@@ -366,6 +382,27 @@ enum Command {
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
+}
+
+#[derive(Debug, Serialize)]
+struct CliContractVersions {
+    artifact: &'static str,
+    candidate: &'static str,
+}
+
+#[derive(Debug, Serialize)]
+struct CliEnvelope<T> {
+    schema_version: &'static str,
+    command: &'static str,
+    cli_version: &'static str,
+    contracts: CliContractVersions,
+    result: T,
+}
+
+#[derive(Debug, Serialize)]
+struct SchemaOutput {
+    contract_id: &'static str,
+    schema: serde_json::Value,
 }
 
 #[derive(Debug, Serialize)]
@@ -657,6 +694,11 @@ async fn run(cli: Cli) -> Result<(), String> {
             seed,
             format,
         } => {
+            ensure_single_stdin(
+                std::iter::once(&input)
+                    .chain(candidate.iter())
+                    .chain(receipts.iter()),
+            )?;
             let input: HarnessInput = read_json(&input)?;
             let (candidate, generation) = match (candidate, provider) {
                 (Some(path), None) => (read_json(&path)?, None),
@@ -708,7 +750,7 @@ async fn run(cli: Cli) -> Result<(), String> {
                         );
                     }
                 }
-                OutputFormat::Json => print_json(&output)?,
+                OutputFormat::Json => print_product_json("run", &output)?,
             }
             Ok(())
         }
@@ -722,16 +764,32 @@ async fn run(cli: Cli) -> Result<(), String> {
                         eprintln!("{}: {}", diagnostic.code, diagnostic.message);
                     }
                 }
-                OutputFormat::Json => print_json(&VerifyOutput {
-                    valid: report.is_ok(),
-                    diagnostics: &report.diagnostics,
-                })?,
+                OutputFormat::Json => print_product_json(
+                    "verify",
+                    &VerifyOutput {
+                        valid: report.is_ok(),
+                        diagnostics: &report.diagnostics,
+                    },
+                )?,
             }
             if report.is_ok() {
                 Ok(())
             } else {
                 Err("artifact validation failed".into())
             }
+        }
+        Command::Schema { kind } => {
+            let output = match kind {
+                SchemaKind::Artifact => SchemaOutput {
+                    contract_id: REASONING_ARTIFACT_CONTRACT_ID,
+                    schema: reasoning_artifact_schema(),
+                },
+                SchemaKind::Candidate => SchemaOutput {
+                    contract_id: REASONING_CANDIDATE_CONTRACT_ID,
+                    schema: reasoning_candidate_schema(),
+                },
+            };
+            print_product_json("schema", &output)
         }
         Command::EvalResolution { target, format } => {
             if !target.is_dir() {
@@ -2081,9 +2139,46 @@ fn format_optional_metric(value: Option<f64>) -> String {
     value.map_or_else(|| "n/a".into(), |value| format!("{value:.3}"))
 }
 
+fn ensure_single_stdin<'a>(paths: impl IntoIterator<Item = &'a PathBuf>) -> Result<(), String> {
+    let stdin_count = paths.into_iter().filter(|path| is_stdin(path)).count();
+    if stdin_count <= 1 {
+        Ok(())
+    } else {
+        Err("only one input source may use '-' (stdin) per command".into())
+    }
+}
+
+fn is_stdin(path: &Path) -> bool {
+    path == Path::new("-")
+}
+
 fn read_json<T: DeserializeOwned>(path: &PathBuf) -> Result<T, String> {
-    let bytes = fs::read(path).map_err(|error| format!("{}: {error}", path.display()))?;
-    serde_json::from_slice(&bytes).map_err(|error| format!("{}: {error}", path.display()))
+    let (bytes, label) = if is_stdin(path) {
+        let mut bytes = Vec::new();
+        io::stdin()
+            .read_to_end(&mut bytes)
+            .map_err(|error| format!("<stdin>: {error}"))?;
+        (bytes, "<stdin>".to_string())
+    } else {
+        (
+            fs::read(path).map_err(|error| format!("{}: {error}", path.display()))?,
+            path.display().to_string(),
+        )
+    };
+    serde_json::from_slice(&bytes).map_err(|error| format!("{label}: {error}"))
+}
+
+fn print_product_json(command: &'static str, result: &impl Serialize) -> Result<(), String> {
+    print_json(&CliEnvelope {
+        schema_version: CLI_OUTPUT_SCHEMA_VERSION,
+        command,
+        cli_version: env!("CARGO_PKG_VERSION"),
+        contracts: CliContractVersions {
+            artifact: REASONING_ARTIFACT_CONTRACT_ID,
+            candidate: REASONING_CANDIDATE_CONTRACT_ID,
+        },
+        result,
+    })
 }
 
 fn print_json(value: &impl Serialize) -> Result<(), String> {
@@ -2118,6 +2213,54 @@ mod candidate_json_tests {
     fn rejects_incomplete_candidate_json() {
         let text = r#"{"claims":[{"#;
         assert!(parse_candidate_json(text).is_err());
+    }
+
+    #[test]
+    fn product_json_envelope_has_stable_contract_ids() {
+        let value = serde_json::to_value(CliEnvelope {
+            schema_version: CLI_OUTPUT_SCHEMA_VERSION,
+            command: "verify",
+            cli_version: env!("CARGO_PKG_VERSION"),
+            contracts: CliContractVersions {
+                artifact: REASONING_ARTIFACT_CONTRACT_ID,
+                candidate: REASONING_CANDIDATE_CONTRACT_ID,
+            },
+            result: VerifyOutput {
+                valid: true,
+                diagnostics: &[],
+            },
+        })
+        .unwrap();
+        assert_eq!(value["schema_version"], CLI_OUTPUT_SCHEMA_VERSION);
+        assert_eq!(value["command"], "verify");
+        assert_eq!(
+            value["contracts"]["artifact"],
+            REASONING_ARTIFACT_CONTRACT_ID
+        );
+        assert_eq!(
+            value["contracts"]["candidate"],
+            REASONING_CANDIDATE_CONTRACT_ID
+        );
+        assert_eq!(value["result"]["valid"], true);
+    }
+
+    #[test]
+    fn stdin_source_is_limited_to_one_per_command() {
+        let stdin = PathBuf::from("-");
+        let file = PathBuf::from("input.json");
+        assert!(ensure_single_stdin([&stdin, &file]).is_ok());
+        assert!(ensure_single_stdin([&stdin, &stdin]).is_err());
+    }
+
+    #[test]
+    fn parses_schema_product_command() {
+        let cli = Cli::try_parse_from(["reason", "schema", "artifact"]).unwrap();
+        assert!(matches!(
+            cli.command,
+            Command::Schema {
+                kind: SchemaKind::Artifact
+            }
+        ));
     }
 
     #[test]
