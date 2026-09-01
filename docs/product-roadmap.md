@@ -68,7 +68,7 @@ Tracking: #109 #110 #111 #112 #113 under #107.
 - **NL-2 — implemented first boundary:** `--file`/stdin are bounded provenance-bearing untrusted context; `--fact` is explicit structured evidence and `--hypothesis` is an explicit target. Arbitrary prose is not promoted to hard evidence.
 - **NL-3 — implemented adapter slice:** `--resolver-fact` exercises the existing bounded `GroundedResolutionRuntime` through an explicitly trusted local fact-store adapter, admission policy, budgets, and mandatory re-verification. Network/search/database/MCP resolver integrations remain future adapters, not correctness-core shortcuts.
 - **NL-4 — implemented:** the provider renders a typed final-answer candidate, then harness-owned final-claim coverage decides whether the text can be exposed as grounded/qualified; uncovered facts are blocked and can re-enter configured bounded resolution. Renderer failure falls back to a canonical safe renderer.
-- **NL-5 — three-arm runner/workflow implemented; live evaluation next:** raw model, Harness baseline, and Harness+D3+sufficiency now share the intended product path. Live acceptance remains separate from the frozen research holdout and is the next evidence step.
+- **NL-5 — three-arm v2 pilot completed; target-aware v3 measurement in progress #131:** the first raw / Harness / Harness+D3+sufficiency runs exposed a case-level abstention metric ambiguity between unsafe task-target assertion and safe partial facts. The v2 artifacts remain evidence; final acceptance waits for a versioned target-level re-run.
 
 ### D3 / sufficiency bridge before NL-5
 
@@ -80,7 +80,7 @@ NL-5 is no longer the immediate next product step. First advance Research #91 fa
 4. **Fresh independent holdout — completed #125:** a new 24-case / 8-family corpus was frozen before provider observation. Seeds 7000-7004 passed every predeclared promotion gate for Ministral 8B and Gemma 4 31B; false-safe and false-abstain were both zero.
 5. **Product bridge — implemented #129:** `d3-sufficiency-answer-gate-v1` has explicit identity and rollback to `grounded-finalization-v1`; it can only preserve baseline output or force verification. The natural-language path defaults to the successor and can explicitly roll back with `--safety-profile baseline`.
    The product bridge fixes its requirement-selection policy separately as `generic-answer-sufficiency-requirements-v1`; this policy was not smuggled into the frozen holdout and must earn product evidence in NL-5.
-6. **Then NL-5 — next:** run the real-workload three-arm acceptance comparison on the completed product path.
+6. **Then NL-5:** v2 pilot completed on Ministral 8B and Gemma 4 31B. Before the final adoption claim, #131 adds target-level abstention/coverage and safe-partial-retention metrics under a new report identity, then repeats the same non-holdout product workloads.
 
 RSD3 selective/conformal abstention and RSD4 relation-level causal sufficiency remain follow-on research unless RSD0-RSD2 demonstrate that either is required for the first product bridge. They do not block the initial natural-language D3/sufficiency integration by default.
 

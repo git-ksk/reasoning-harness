@@ -17,7 +17,7 @@ The committed `fixtures/product-dogfood-v1` corpus has two workload classes:
 
 Each class contains a directly groundable case, an intentionally insufficient case, and a case that becomes groundable only after bounded resolution. These fixtures are product dogfood, not research calibration or holdout data.
 
-The report contract is `reason-product-dogfood-v2` and records:
+The report contract is `reason-product-dogfood-v3` and records:
 
 - unsupported grounded assertion count/rate;
 - correct abstention and missed insufficiency;
@@ -26,6 +26,8 @@ The report contract is `reason-product-dogfood-v2` and records:
 - bounded-resolution attempts and success rate;
 - total tokens and latency for all three arms, including incremental D3/sufficiency overhead;
 - explicit answer-safety runtime identity and per-target safety observations for the successor arm.
+
+The v3 report retains the v2 case-level abstention metrics unchanged and adds target-level measurements keyed only to each fixture's harness-owned `input.hypotheses`. A safe partial answer may expose supported non-target facts while still correctly abstaining from the task target. v3 therefore reports grounded-target coverage, missed target insufficiency, false target abstention, and safe-partial retention separately. The first v2 three-arm pilot remains historical evidence and is not rewritten under the new metric.
 
 `user_comprehension` is deliberately reported as `not_automated_manual_review_required`; the project does not fabricate a human-comprehension metric from model output.
 
