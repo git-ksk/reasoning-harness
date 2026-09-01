@@ -63,7 +63,9 @@ If the context does not contain trusted structured support, the safe result may 
 
 The final model-rendered answer is also untrusted until `finalize_answer` checks factual-claim coverage. Any newly introduced factual proposition is blocked; when an explicitly configured resolver can verify it, the proposition may re-enter bounded resolution and then be rendered again.
 
-Natural JSON output declares `output_contract: reason-natural-output-v1` inside the normal `reason-cli-output-v1` envelope.
+The natural-language path defaults to `--safety-profile d3-sufficiency`. After normal grounding/finalization would expose a grounded claim, the successor answer gate applies deterministic D3 preconditions and the promoted residual sufficiency coordinate. A `sufficient` classification cannot create receipts, support, or `accept`; it only preserves the baseline result. `insufficient` or `mixed` forces verification and may route through bounded resolution before any answer is exposed. Use `--safety-profile baseline` as the explicit rollback.
+
+Natural JSON output declares `output_contract: reason-natural-output-v2` inside the normal `reason-cli-output-v1` envelope.
 
 See [How Reasoning Harness works](how-it-works.md) and [product dogfood](product-dogfood.md).
 

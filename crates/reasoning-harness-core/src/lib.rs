@@ -1,6 +1,7 @@
 #![cfg_attr(test, allow(clippy::field_reassign_with_default))]
 
 pub mod adversarial;
+pub mod answer_safety;
 pub mod assumption;
 pub mod assumption_benchmark;
 pub mod benchmark;
@@ -38,6 +39,13 @@ pub mod verification;
 pub use adversarial::{
     AdversarialDetector, AdversarialDiscoveryPass, StructuredFactConflictDetector,
     record_soft_finding,
+};
+pub use answer_safety::{
+    ANSWER_SAFETY_IDENTITY_VERSION, AnswerSafetyDisposition, AnswerSafetyError,
+    AnswerSafetyIdentity, AnswerSafetyObservation, AnswerSafetyProfile, AnswerSafetyReason,
+    BASELINE_ANSWER_SAFETY_CONFIGURATION_ID, D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID,
+    EVIDENCE_SUFFICIENCY_RSD1_CONTRACT_ID, GENERIC_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID,
+    build_answer_sufficiency_request, run_answer_safety_gate,
 };
 pub use assumption::{
     AssumptionAssessment, AssumptionDiscoveryPass, AssumptionFinding, AssumptionFindingKind,

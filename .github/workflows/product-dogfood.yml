@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       provider:
-        description: Provider for the same-model raw vs harness comparison
+        description: Provider for the same-model raw vs Harness vs Harness+D3+sufficiency comparison
         required: true
         type: choice
         options:
@@ -79,12 +79,15 @@ jobs:
             --output /tmp/reason-product-dogfood.json \
             > /tmp/reason-product-dogfood.stdout.json
           jq -e '
-            .schema_version == "reason-product-dogfood-v1"
+            .schema_version == "reason-product-dogfood-v2"
             and .cases >= 6
             and (.workload_classes | length) >= 2
             and .harness.arm.unsupported_grounded_claims == 0
+            and .harness_d3_sufficiency.arm.unsupported_grounded_claims == 0
+            and ([.results[].harness.safety_runtime.configuration_id] | all(. == "grounded-finalization-v1"))
+            and ([.results[].harness_d3_sufficiency.safety_runtime.configuration_id] | all(. == "d3-sufficiency-answer-gate-v1"))
           ' /tmp/reason-product-dogfood.json >/dev/null
-          jq '{schema_version, provider, model, workload_classes, cases, raw, harness, overhead, user_comprehension}' /tmp/reason-product-dogfood.json
+          jq '{schema_version, provider, model, workload_classes, cases, raw, harness, harness_d3_sufficiency, overhead, user_comprehension}' /tmp/reason-product-dogfood.json
       - name: Preserve dogfood report
         if: always()
         uses: actions/upload-artifact@v4
