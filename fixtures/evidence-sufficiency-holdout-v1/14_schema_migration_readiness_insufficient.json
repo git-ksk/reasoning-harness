@@ -1,0 +1,50 @@
+{
+  "id": "h1-14-schema-migration-readiness-insufficient",
+  "family": "schema_migration_readiness",
+  "request": {
+    "id": "req-h1-14-schema-migration-readiness-insufficient",
+    "task": "Decide whether the database schema migration is sufficiently supported as safe for rolling deployment.",
+    "target": {
+      "key": "db.migration_safe",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover mixed old/new application versions during the rolling window.",
+      "Evidence must establish backfill completeness and data invariants after migration.",
+      "Evidence must establish a viable recovery/rollback or forward-fix path for the migration state."
+    ],
+    "evidence_ids": [
+      "e1"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the database schema migration is sufficiently supported as safe for rolling deployment.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "The migration SQL executes successfully on a staging copy and the new application version starts.",
+        "facts": {
+          "db.migration_sql": "success",
+          "db.new_app_start": "success"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "insufficient",
+  "rationale": "Executing SQL and starting only the new version do not cover mixed versions, backfill integrity, or recovery."
+}

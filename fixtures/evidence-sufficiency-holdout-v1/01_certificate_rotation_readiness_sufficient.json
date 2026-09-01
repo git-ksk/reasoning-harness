@@ -1,0 +1,71 @@
+{
+  "id": "h1-01-certificate-rotation-readiness-sufficient",
+  "family": "certificate_rotation_readiness",
+  "request": {
+    "id": "req-h1-01-certificate-rotation-readiness-sufficient",
+    "task": "Decide whether the production TLS certificate rotation is sufficiently supported as safe to execute.",
+    "target": {
+      "key": "tls.rotation_safe",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must establish that the replacement certificate is valid for the production identities and chain.",
+      "Evidence must establish a deployment overlap or rollback path that avoids cutting over before validation.",
+      "Evidence must cover representative client trust/handshake behavior rather than certificate issuance alone."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the production TLS certificate rotation is sufficiently supported as safe to execute.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Certificate validation confirms the replacement chain and SAN set match all production endpoints.",
+        "facts": {
+          "tls.chain_valid": "true",
+          "tls.san_coverage": "complete"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "A canary endpoint served the replacement certificate to browser, mobile, and service clients with successful handshakes.",
+        "facts": {
+          "tls.canary_handshake": "all_representative_clients"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "The rollout keeps the old certificate available until canary validation completes and has a tested rollback switch.",
+        "facts": {
+          "tls.overlap": "enabled",
+          "tls.rollback_tested": "true"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "sufficient",
+  "rationale": "Identity/chain validity, representative client behavior, and a reversible overlap rollout are all evidenced."
+}

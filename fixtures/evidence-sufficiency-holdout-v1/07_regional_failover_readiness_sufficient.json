@@ -1,0 +1,71 @@
+{
+  "id": "h1-07-regional-failover-readiness-sufficient",
+  "family": "regional_failover_readiness",
+  "request": {
+    "id": "req-h1-07-regional-failover-readiness-sufficient",
+    "task": "Decide whether the service is sufficiently supported as ready for regional failover within its stated objectives.",
+    "target": {
+      "key": "dr.failover_ready",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must establish that the secondary region has current capacity for the expected failover load.",
+      "Evidence must establish replication freshness within the stated recovery-point objective.",
+      "Evidence must include a recent end-to-end failover exercise or equivalent operational proof."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the service is sufficiently supported as ready for regional failover within its stated objectives.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "The secondary region sustained 115% of projected failover load in a recent load test.",
+        "facts": {
+          "dr.secondary_capacity_ratio": "1.15"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Replication lag stayed below the 60-second RPO throughout the readiness window.",
+        "facts": {
+          "dr.max_replication_lag_seconds": "42",
+          "dr.rpo_seconds": "60"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "A full failover and failback exercise completed within the recovery-time objective with health checks green.",
+        "facts": {
+          "dr.exercise_result": "pass",
+          "dr.rto_met": "true"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "sufficient",
+  "rationale": "Capacity, replication freshness, and end-to-end operational exercise all satisfy the stated objectives."
+}

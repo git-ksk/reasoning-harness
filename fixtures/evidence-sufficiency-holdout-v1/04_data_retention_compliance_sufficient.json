@@ -1,0 +1,72 @@
+{
+  "id": "h1-04-data-retention-compliance-sufficient",
+  "family": "data_retention_compliance",
+  "request": {
+    "id": "req-h1-04-data-retention-compliance-sufficient",
+    "task": "Decide whether the service is sufficiently supported as complying with the 90-day data-retention policy.",
+    "target": {
+      "key": "data.retention_compliant",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover actual retained age, not only configured TTL intent.",
+      "Evidence must cover primary, replica, and backup/archive storage where retained copies can exist.",
+      "Evidence must account for legal-hold exceptions separately from ordinary retention."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the service is sufficiently supported as complying with the 90-day data-retention policy.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Inventory sampling shows no ordinary primary or replica record older than 90 days.",
+        "facts": {
+          "retention.primary_max_days": "89",
+          "retention.replica_max_days": "89"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Backup and archive inventory shows ordinary recoverable copies expire by day 90.",
+        "facts": {
+          "retention.backup_max_days": "90",
+          "retention.archive_max_days": "90"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Records exceeding 90 days are all mapped to active legal holds and excluded from ordinary deletion.",
+        "facts": {
+          "retention.over90_without_hold": "0",
+          "retention.legal_hold_accounted": "true"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "sufficient",
+  "rationale": "Observed age is compliant across all relevant storage classes and legal holds are separated."
+}

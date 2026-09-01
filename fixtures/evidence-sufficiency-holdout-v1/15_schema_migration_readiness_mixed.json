@@ -1,0 +1,69 @@
+{
+  "id": "h1-15-schema-migration-readiness-mixed",
+  "family": "schema_migration_readiness",
+  "request": {
+    "id": "req-h1-15-schema-migration-readiness-mixed",
+    "task": "Decide whether the database schema migration is sufficiently supported as safe for rolling deployment.",
+    "target": {
+      "key": "db.migration_safe",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover mixed old/new application versions during the rolling window.",
+      "Evidence must establish backfill completeness and data invariants after migration.",
+      "Evidence must establish a viable recovery/rollback or forward-fix path for the migration state."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the database schema migration is sufficiently supported as safe for rolling deployment.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Mixed-version compatibility tests pass during rolling deployment simulation.",
+        "facts": {
+          "db.mixed_version_suite": "pass"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Backfill reconciliation finds 0.5% of target rows missing a required derived value.",
+        "facts": {
+          "db.backfill_missing_ratio": "0.005"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "The documented recovery path has been rehearsed successfully.",
+        "facts": {
+          "db.recovery_rehearsal": "pass"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "mixed",
+  "rationale": "Compatibility and recovery are supported, but the measured backfill gap leaves data correctness unresolved."
+}
