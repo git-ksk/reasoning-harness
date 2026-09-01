@@ -45,6 +45,18 @@ See [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md) for the ta
 
 The first product surface is the native `reason` CLI. Product hardening and research now proceed as separate but connected tracks: the CLI follows [the product roadmap](docs/product-roadmap.md), while new reasoning mechanisms remain research-only until they pass independent adoption and runtime-stabilization gates.
 
+## Install the CLI
+
+The supported product binary is `reason`. With Rust 1.88+ installed:
+
+```bash
+cargo install --git https://github.com/git-ksk/reasoning-harness --locked reasoning-harness-cli --bin reason
+reason --version
+reason schema artifact
+```
+
+Tagged releases also publish standalone binaries for Linux x64, macOS Apple Silicon/Intel, and Windows x64 with SHA-256 checksums. See the [CLI guide](docs/cli.md) for input, JSON, config, provider, and exit-code contracts.
+
 ## Current prototype
 
 - Harness-owned `HarnessInput`: task plus immutable supplied evidence, explicit assumptions, and optional evidence-qualification requirements.

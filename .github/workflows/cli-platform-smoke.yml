@@ -1,0 +1,61 @@
+name: cli-platform-smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  product-cli:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            label: linux-x86_64
+          - os: macos-15
+            label: macos-aarch64
+          - os: macos-15-intel
+            label: macos-x86_64
+          - os: windows-2025
+            label: windows-x86_64
+    runs-on: ${{ matrix.os }}
+    name: reason (${{ matrix.label }})
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Build supported CLI
+        run: cargo build --locked -p reasoning-harness-cli --bin reason
+      - name: Product CLI smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "${{ runner.os }}" in
+            Windows) REASON_BIN="target/debug/reason.exe" ;;
+            *) REASON_BIN="target/debug/reason" ;;
+          esac
+          "$REASON_BIN" --version
+          "$REASON_BIN" run --input examples/input.json --candidate examples/candidate.json --no-config --format json > reason-run.json
+          "$REASON_BIN" verify examples/artifact.json --format json > reason-verify.json
+          "$REASON_BIN" schema artifact > reason-schema.json
+          python - <<'PY'
+          import json
+          with open('reason-run.json', encoding='utf-8') as f:
+              run = json.load(f)
+          with open('reason-verify.json', encoding='utf-8') as f:
+              verify = json.load(f)
+          with open('reason-schema.json', encoding='utf-8') as f:
+              schema = json.load(f)
+          assert run['schema_version'] == 'reason-cli-output-v1'
+          assert run['command'] == 'run'
+          assert run['result']['outcome']['verdict'] in {'accept', 'reject', 'unknown'}
+          assert verify['command'] == 'verify' and verify['result']['valid'] is True
+          assert schema['command'] == 'schema'
+          assert schema['result']['contract_id'] == 'reasoning-artifact-v1'
+          PY

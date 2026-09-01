@@ -5,6 +5,32 @@ It invokes the same harness-owned validation, evidence, verification, decision, 
 boundaries used by the core runtime. Research binaries and `eval*` commands remain useful, but they
 do not define the stable product contract.
 
+## Installation
+
+### Cargo from GitHub
+
+Rust 1.88+ users can install only the supported product binary directly from the repository:
+
+```bash
+cargo install --git https://github.com/git-ksk/reasoning-harness --locked reasoning-harness-cli --bin reason
+reason --version
+```
+
+This does not install the research binaries. The package remains unpublished on crates.io during the v0.x contract-hardening phase.
+
+### Standalone release binaries
+
+A `v*` tag whose version matches `reasoning-harness-cli` produces GitHub Release assets for:
+
+- Linux x86_64;
+- macOS arm64 (Apple Silicon);
+- macOS x86_64 (Intel);
+- Windows x86_64.
+
+Each release includes `SHA256SUMS`. Verify the downloaded archive before installation. Release archives contain only the `reason` product executable plus the repository README and license; research binaries are not product artifacts.
+
+The same four platform classes run credential-free product smoke in pull requests and on `main`.
+
 ## Product commands
 
 - `reason run` — execute the harness-owned correctness process from a recorded candidate or live

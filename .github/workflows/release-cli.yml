@@ -1,0 +1,140 @@
+name: release-cli
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing v-prefixed tag to package
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      version: ${{ steps.meta.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - id: meta
+        name: Verify release tag matches CLI version
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}"
+          [[ "$TAG" == v* ]] || { echo "release tag must start with v" >&2; exit 1; }
+          VERSION="$(cargo metadata --locked --no-deps --format-version 1 | python -c 'import json,sys; data=json.load(sys.stdin); print(next(p["version"] for p in data["packages"] if p["name"]=="reasoning-harness-cli"))')"
+          [[ "$TAG" == "v$VERSION" ]] || { echo "tag $TAG does not match reasoning-harness-cli version $VERSION" >&2; exit 1; }
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            asset: linux-x86_64
+            executable: target/release/reason
+          - os: macos-15
+            asset: macos-aarch64
+            executable: target/release/reason
+          - os: macos-15-intel
+            asset: macos-x86_64
+            executable: target/release/reason
+          - os: windows-2025
+            asset: windows-x86_64
+            executable: target/release/reason.exe
+    runs-on: ${{ matrix.os }}
+    name: package (${{ matrix.asset }})
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Build release binary
+        run: cargo build --locked --release -p reasoning-harness-cli --bin reason
+      - name: Smoke release binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          "${{ matrix.executable }}" --version
+          "${{ matrix.executable }}" schema artifact > reason-schema.json
+          python - <<'PY'
+          import json
+          with open('reason-schema.json', encoding='utf-8') as f:
+              data = json.load(f)
+          assert data['result']['contract_id'] == 'reasoning-artifact-v1'
+          PY
+      - name: Package Unix release
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          NAME="reason-${{ needs.prepare.outputs.tag }}-${{ matrix.asset }}"
+          mkdir "$NAME"
+          cp "${{ matrix.executable }}" "$NAME/reason"
+          cp README.md LICENSE "$NAME/"
+          tar -czf "$NAME.tar.gz" "$NAME"
+      - name: Package Windows release
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $name = "reason-${{ needs.prepare.outputs.tag }}-${{ matrix.asset }}"
+          New-Item -ItemType Directory -Path $name | Out-Null
+          Copy-Item "${{ matrix.executable }}" "$name/reason.exe"
+          Copy-Item README.md, LICENSE $name
+          Compress-Archive -Path $name -DestinationPath "$name.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reason-${{ needs.prepare.outputs.tag }}-${{ matrix.asset }}
+          path: reason-${{ needs.prepare.outputs.tag }}-${{ matrix.asset }}.*
+          if-no-files-found: error
+
+  release:
+    needs: [prepare, build]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: reason-${{ needs.prepare.outputs.tag }}-*
+          path: dist
+          merge-multiple: true
+      - name: Generate checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dist
+          sha256sum reason-* > SHA256SUMS
+          cat SHA256SUMS
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release view "${{ needs.prepare.outputs.tag }}" >/dev/null 2>&1 && {
+            gh release upload "${{ needs.prepare.outputs.tag }}" dist/* --clobber
+          } || {
+            gh release create "${{ needs.prepare.outputs.tag }}" dist/* --verify-tag --generate-notes --title "Reasoning Harness CLI ${{ needs.prepare.outputs.tag }}"
+          }

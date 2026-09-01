@@ -50,9 +50,9 @@ finalization invariants.
 
 Make `reason` straightforward to obtain and safe to upgrade:
 
-- reproducible release artifacts and/or `cargo install` path;
-- release/version metadata tied to machine-readable contract versions;
-- cross-platform smoke coverage for supported targets;
+- [implemented #97] reproducible `cargo install --git` path plus tag-driven standalone GitHub Release artifacts containing only the supported `reason` binary;
+- [implemented #97] release tags are required to match the CLI semver and releases include SHA-256 checksums;
+- [implemented #97] credential-free product smoke covers Linux x64, macOS arm64, macOS Intel, and Windows x64;
 - compatibility tests for stable JSON/exit semantics;
 - changelog/migration discipline for intentional breaking changes during v0.x;
 - clear support policy for provider adapters versus the provider-neutral runtime contract.
