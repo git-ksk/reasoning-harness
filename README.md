@@ -79,7 +79,7 @@ Tagged releases also publish standalone binaries for Linux x64, macOS Apple Sili
 - A versioned corpus-v1 manifest covering 41 committed claim, causal, assumption, and evidence-qualification cases with stable IDs and category/difficulty strata.
 - Provider-neutral Rust `ModelAdapter`; model output is always outside the correctness boundary.
 - Provider adapters in a separate Rust crate for Mistral, Google Gemini/AI Studio, and NVIDIA Hosted NIM; all provider output remains outside the verification authority boundary.
-- Native Rust CLI (`reason run`, `reason verify`, `reason eval`, `reason eval-resolution`) sharing the same core correctness contracts.
+- Native Rust CLI with supported `reason run`, `reason verify`, `reason semantic-check`, and `reason schema` product commands; research/eval commands share the same core without defining the product contract.
 - Native runtime is the correctness owner; CLI and eval are the first supported interfaces.
 
 The provider-neutral bounded resolution/finalization core is implemented and covered by deterministic controlled scenarios. Concrete web, database, MCP, and human-review resolvers remain external integrations rather than correctness-core features.

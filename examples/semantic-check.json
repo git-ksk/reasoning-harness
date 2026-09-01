@@ -1,0 +1,36 @@
+{
+  "request": {
+    "id": "example-counterexample-check",
+    "task": "Check whether the supplied observation is a counterexample to the target claim.",
+    "kind": "counterexample",
+    "target": {
+      "type": "claim",
+      "claim_id": "claim-limit"
+    },
+    "context": [
+      "The target claim states that runtime.limit is 100.",
+      "An independent observation states that runtime.limit is 200."
+    ]
+  },
+  "artifact": {
+    "task": "Example semantic runtime input.",
+    "evidence": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "claims": [
+      {
+        "id": "claim-limit",
+        "statement": "The limit is 100.",
+        "state": "unknown",
+        "proposition": {
+          "key": "runtime.limit",
+          "value": "100"
+        },
+        "evidence_ids": []
+      }
+    ],
+    "inferences": []
+  }
+}

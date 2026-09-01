@@ -44,6 +44,8 @@ jobs:
           "$REASON_BIN" run --input examples/input.json --candidate examples/candidate.json --no-config --format json > reason-run.json
           "$REASON_BIN" verify examples/artifact.json --format json > reason-verify.json
           "$REASON_BIN" schema artifact > reason-schema.json
+          "$REASON_BIN" schema semantic-check > reason-semantic-schema.json
+          "$REASON_BIN" semantic-check --help > reason-semantic-help.txt
           python - <<'PY'
           import json
           with open('reason-run.json', encoding='utf-8') as f:
@@ -52,10 +54,13 @@ jobs:
               verify = json.load(f)
           with open('reason-schema.json', encoding='utf-8') as f:
               schema = json.load(f)
+          with open('reason-semantic-schema.json', encoding='utf-8') as f:
+              semantic_schema = json.load(f)
           assert run['schema_version'] == 'reason-cli-output-v1'
           assert run['command'] == 'run'
           assert run['result']['outcome']['verdict'] in {'accept', 'reject', 'unknown'}
           assert verify['command'] == 'verify' and verify['result']['valid'] is True
           assert schema['command'] == 'schema'
           assert schema['result']['contract_id'] == 'reasoning-artifact-v1'
+          assert semantic_schema['result']['contract_id'] == 'semantic-check-input-v1'
           PY

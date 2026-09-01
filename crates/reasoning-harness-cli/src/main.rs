@@ -12,20 +12,22 @@ use clap::{Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
     AdversarialDiscoveryPass, AssumptionDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult,
     BenchmarkComparison, BenchmarkFixture, CalibrationLabel, ClaimCorpusSummary, CorpusManifest,
-    DiagnosticObservation, DiagnosticTrial, EvidenceQualificationPass, HarnessInput, ModelAdapter,
-    ModelBackedSoftJudgeError, ModelError, ModelErrorKind, ModelUsage,
-    REASONING_ARTIFACT_CONTRACT_ID, REASONING_CANDIDATE_CONTRACT_ID, ReasoningArtifact,
-    ReasoningCandidate, RepeatedDiagnosticReport, ResolutionBenchmarkAggregate,
+    DiagnosticObservation, DiagnosticTrial, EvidenceQualificationPass, HarnessInput,
+    MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError, ModelError,
+    ModelErrorKind, ModelUsage, REASONING_ARTIFACT_CONTRACT_ID, REASONING_CANDIDATE_CONTRACT_ID,
+    ReasoningArtifact, ReasoningCandidate, RepeatedDiagnosticReport, ResolutionBenchmarkAggregate,
     ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, SemanticDiagnosticKind,
-    SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport, SoftJudgeDecision,
-    SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeObservation, StrictAcceptancePolicy,
-    StructuredFactConflictDetector, TrustedVerificationPass, VerificationPass, VerificationReceipt,
-    aggregate_benchmark, aggregate_claim_corpus, aggregate_repeated_diagnostics,
-    aggregate_resolution_benchmark, aggregate_soft_judge_calibration,
-    build_candidate_json_fallback_request, build_candidate_request, evaluate,
+    SemanticRuntimeError, SemanticRuntimeIdentity, SemanticRuntimeObservation,
+    SemanticRuntimeProfile, SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport,
+    SoftJudgeDecision, SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeObservation,
+    StrictAcceptancePolicy, StructuredFactConflictDetector, TrustedVerificationPass,
+    VerificationPass, VerificationReceipt, aggregate_benchmark, aggregate_claim_corpus,
+    aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
+    aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
+    build_candidate_request, classify_materialization_failure, evaluate,
     evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture,
     frameworks::five_whys::FiveWhysRestatementPass, reasoning_artifact_schema,
-    reasoning_candidate_schema, run_harness, run_model_backed_soft_judge,
+    reasoning_candidate_schema, run_harness, run_model_backed_soft_judge, run_semantic_runtime,
     structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
@@ -34,6 +36,7 @@ use serde::{Deserialize, Serialize, de::DeserializeOwned};
 
 const CLI_OUTPUT_SCHEMA_VERSION: &str = "reason-cli-output-v1";
 const CLI_CONFIG_CONTRACT_ID: &str = "reason-config-v1";
+const SEMANTIC_CHECK_INPUT_CONTRACT_ID: &str = "semantic-check-input-v1";
 const DEFAULT_MAX_TOKENS: u32 = 1024;
 
 #[derive(Debug, Parser)]
@@ -62,6 +65,7 @@ enum SchemaKind {
     Artifact,
     Candidate,
     Config,
+    SemanticCheck,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum, Serialize, Deserialize, JsonSchema)]
@@ -72,6 +76,21 @@ enum Provider {
     Nvidia,
     #[value(hide = true)]
     Gemma,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+enum SemanticProfileArg {
+    D3,
+    V3,
+}
+
+impl SemanticProfileArg {
+    const fn runtime_profile(self) -> SemanticRuntimeProfile {
+        match self {
+            Self::D3 => SemanticRuntimeProfile::SemanticDecidabilityD3V1,
+            Self::V3 => SemanticRuntimeProfile::SoftSemanticV3,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize, JsonSchema)]
@@ -122,18 +141,16 @@ enum LiveGenerator {
 }
 
 impl LiveGenerator {
-    fn from_provider(provider: Provider, model: &str) -> Result<Self, String> {
+    fn try_from_provider(provider: Provider, model: &str) -> Result<Self, ModelError> {
         match provider {
-            Provider::Mistral => MistralAdapter::from_env(model)
-                .map(Self::Mistral)
-                .map_err(|error| error.to_string()),
-            Provider::Google | Provider::Gemma => GoogleAdapter::from_env(model)
-                .map(Self::Google)
-                .map_err(|error| error.to_string()),
-            Provider::Nvidia => NvidiaAdapter::from_env(model)
-                .map(Self::Nvidia)
-                .map_err(|error| error.to_string()),
+            Provider::Mistral => MistralAdapter::from_env(model).map(Self::Mistral),
+            Provider::Google | Provider::Gemma => GoogleAdapter::from_env(model).map(Self::Google),
+            Provider::Nvidia => NvidiaAdapter::from_env(model).map(Self::Nvidia),
         }
+    }
+
+    fn from_provider(provider: Provider, model: &str) -> Result<Self, String> {
+        Self::try_from_provider(provider, model).map_err(|error| error.to_string())
     }
 
     fn adapter(&self) -> &dyn ModelAdapter {
@@ -304,6 +321,25 @@ fn model_error_class(kind: ModelErrorKind) -> &'static str {
     }
 }
 
+fn semantic_runtime_error_class(error: &SemanticRuntimeError) -> &'static str {
+    match error {
+        SemanticRuntimeError::InvalidRequestedModel | SemanticRuntimeError::Decidability(_) => {
+            "invalid_request"
+        }
+        SemanticRuntimeError::Materialization(error) => {
+            let class: MaterializationFailureClass = classify_materialization_failure(error);
+            match class {
+                MaterializationFailureClass::StudySetup => "invalid_request",
+                _ => class.as_str(),
+            }
+        }
+        SemanticRuntimeError::Baseline(error) => error
+            .model_error_kind()
+            .map(model_error_class)
+            .unwrap_or("materialization_protocol"),
+    }
+}
+
 fn format_generation_failure(failure: &GenerationFailure) -> String {
     format!(
         "provider={} model={} failure_class={} latency_ms={}: {}",
@@ -365,6 +401,25 @@ enum Command {
         no_config: bool,
         #[arg(long, value_enum)]
         format: Option<OutputFormat>,
+    },
+    /// PRODUCT: Run the adopted semantic runtime without granting it final-verdict authority.
+    SemanticCheck {
+        /// Semantic request plus harness-owned artifact JSON. Use '-' for stdin.
+        #[arg(long)]
+        input: PathBuf,
+        #[arg(long, value_enum)]
+        provider: Provider,
+        #[arg(long)]
+        model: String,
+        /// D3 is the adopted default; v3 is the explicit rollback profile.
+        #[arg(long, value_enum, default_value_t = SemanticProfileArg::D3)]
+        profile: SemanticProfileArg,
+        #[arg(long, default_value_t = 256)]
+        max_tokens: u32,
+        #[arg(long)]
+        seed: Option<u64>,
+        #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
+        format: OutputFormat,
     },
     /// PRODUCT: Deterministically validate a finalized ReasoningArtifact JSON file.
     Verify {
@@ -437,6 +492,39 @@ enum Command {
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct SemanticCheckInput {
+    request: reasoning_harness_core::SoftJudgeRequest,
+    artifact: ReasoningArtifact,
+}
+
+#[derive(Debug, Serialize)]
+struct SemanticCheckConfiguration {
+    provider: &'static str,
+    requested_model: String,
+    runtime: SemanticRuntimeIdentity,
+    max_tokens: u32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    seed: Option<u64>,
+}
+
+#[derive(Debug, Serialize)]
+struct SemanticCheckFailure {
+    failure_class: &'static str,
+    message: String,
+}
+
+#[derive(Debug, Serialize)]
+struct SemanticCheckOutput {
+    input_contract: &'static str,
+    configuration: SemanticCheckConfiguration,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    observation: Option<SemanticRuntimeObservation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    operational_failure: Option<SemanticCheckFailure>,
 }
 
 #[derive(Debug, Serialize)]
@@ -862,6 +950,109 @@ async fn run(cli: Cli) -> Result<(), String> {
             }
             Ok(())
         }
+        Command::SemanticCheck {
+            input,
+            provider,
+            model,
+            profile,
+            max_tokens,
+            seed,
+            format,
+        } => {
+            if max_tokens == 0 {
+                return Err("--max-tokens must be at least 1".into());
+            }
+            let input: SemanticCheckInput = read_json(&input)?;
+            let runtime_profile = profile.runtime_profile();
+            let runtime_identity = runtime_profile.identity();
+            let provider_label = provider_name(provider);
+            let configuration = SemanticCheckConfiguration {
+                provider: provider_label,
+                requested_model: model.clone(),
+                runtime: runtime_identity.clone(),
+                max_tokens,
+                seed,
+            };
+            let generator = match LiveGenerator::try_from_provider(provider, &model) {
+                Ok(generator) => generator,
+                Err(error) => {
+                    let output = SemanticCheckOutput {
+                        input_contract: SEMANTIC_CHECK_INPUT_CONTRACT_ID,
+                        configuration,
+                        observation: None,
+                        operational_failure: Some(SemanticCheckFailure {
+                            failure_class: model_error_class(error.kind),
+                            message: error.to_string(),
+                        }),
+                    };
+                    match format {
+                        OutputFormat::Human => eprintln!(
+                            "semantic-check failed: class={} {}",
+                            model_error_class(error.kind),
+                            error
+                        ),
+                        OutputFormat::Json => print_product_json("semantic-check", &output)?,
+                    }
+                    return Err("semantic-check operational failure".into());
+                }
+            };
+            match run_semantic_runtime(
+                runtime_profile,
+                generator.adapter(),
+                &model,
+                &input.request,
+                &input.artifact,
+                max_tokens,
+                seed,
+            )
+            .await
+            {
+                Ok(observation) => {
+                    let output = SemanticCheckOutput {
+                        input_contract: SEMANTIC_CHECK_INPUT_CONTRACT_ID,
+                        configuration,
+                        observation: Some(observation),
+                        operational_failure: None,
+                    };
+                    match format {
+                        OutputFormat::Human => {
+                            let observation =
+                                output.observation.as_ref().expect("successful observation");
+                            println!(
+                                "runtime={} base_decision={:?} final_decision={:?}",
+                                observation.runtime.configuration_id(),
+                                observation.base_decision,
+                                observation.observation.decision
+                            );
+                            if let Some(decidability) = &observation.decidability {
+                                println!("decidability={:?}", decidability.disposition);
+                            }
+                        }
+                        OutputFormat::Json => print_product_json("semantic-check", &output)?,
+                    }
+                    Ok(())
+                }
+                Err(error) => {
+                    let failure_class = semantic_runtime_error_class(&error);
+                    let output = SemanticCheckOutput {
+                        input_contract: SEMANTIC_CHECK_INPUT_CONTRACT_ID,
+                        configuration,
+                        observation: None,
+                        operational_failure: Some(SemanticCheckFailure {
+                            failure_class,
+                            message: error.to_string(),
+                        }),
+                    };
+                    match format {
+                        OutputFormat::Human => {
+                            eprintln!("semantic-check failed: class={failure_class} {error}")
+                        }
+                        OutputFormat::Json => print_product_json("semantic-check", &output)?,
+                    }
+                    Err("semantic-check operational failure".into())
+                }
+            }
+        }
         Command::Verify { artifact, format } => {
             let artifact: ReasoningArtifact = read_json(&artifact)?;
             let report = validate_artifact(&artifact);
@@ -899,6 +1090,11 @@ async fn run(cli: Cli) -> Result<(), String> {
                 SchemaKind::Config => SchemaOutput {
                     contract_id: CLI_CONFIG_CONTRACT_ID,
                     schema: serde_json::to_value(schema_for!(CliFileConfig))
+                        .map_err(|error| error.to_string())?,
+                },
+                SchemaKind::SemanticCheck => SchemaOutput {
+                    contract_id: SEMANTIC_CHECK_INPUT_CONTRACT_ID,
+                    schema: serde_json::to_value(schema_for!(SemanticCheckInput))
                         .map_err(|error| error.to_string())?,
                 },
             };
@@ -2632,6 +2828,63 @@ mod candidate_json_tests {
                 kind: SchemaKind::Config
             }
         ));
+    }
+
+    #[test]
+    fn parses_semantic_check_product_command_with_d3_default() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "semantic-check",
+            "--input",
+            "check.json",
+            "--provider",
+            "google",
+            "--model",
+            "gemini-3.5-flash-lite",
+        ])
+        .unwrap();
+        match cli.command {
+            Command::SemanticCheck { profile, model, .. } => {
+                assert_eq!(profile, SemanticProfileArg::D3);
+                assert_eq!(model, "gemini-3.5-flash-lite");
+            }
+            _ => panic!("expected semantic-check command"),
+        }
+    }
+
+    #[test]
+    fn parses_semantic_check_v3_rollback() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "semantic-check",
+            "--input",
+            "check.json",
+            "--provider",
+            "mistral",
+            "--model",
+            "ministral-8b-latest",
+            "--profile",
+            "v3",
+        ])
+        .unwrap();
+        match cli.command {
+            Command::SemanticCheck { profile, .. } => {
+                assert_eq!(profile, SemanticProfileArg::V3);
+                assert_eq!(
+                    profile.runtime_profile(),
+                    SemanticRuntimeProfile::SoftSemanticV3
+                );
+            }
+            _ => panic!("expected semantic-check command"),
+        }
+    }
+
+    #[test]
+    fn semantic_check_input_schema_is_closed() {
+        let value = serde_json::to_value(schema_for!(SemanticCheckInput)).unwrap();
+        assert_eq!(value["additionalProperties"], false);
+        assert!(value["properties"]["request"].is_object());
+        assert!(value["properties"]["artifact"].is_object());
     }
 
     #[test]
