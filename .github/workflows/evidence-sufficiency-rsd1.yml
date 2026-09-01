@@ -1,0 +1,95 @@
+name: evidence-sufficiency-rsd1
+
+on:
+  workflow_dispatch:
+    inputs:
+      trials:
+        description: Calibration trials per provider/model
+        required: true
+        type: choice
+        options:
+          - '1'
+          - '5'
+        default: '1'
+      max_tokens:
+        description: Maximum output tokens per sufficiency call
+        required: true
+        type: choice
+        options:
+          - '64'
+          - '128'
+          - '256'
+        default: '128'
+
+permissions:
+  contents: read
+
+jobs:
+  calibration:
+    name: ${{ matrix.provider }}-${{ matrix.model }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-latest
+          - provider: google
+            model: gemini-3.5-flash-lite
+    concurrency:
+      group: reasoning-harness-rsd1-${{ matrix.provider }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check provider credential availability
+        id: credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          case "$PROVIDER" in
+            mistral) KEY="$MISTRAL_API_KEY" ;;
+            google) KEY="$GEMINI_API_KEY" ;;
+            *) echo "unsupported provider: $PROVIDER" >&2; exit 2 ;;
+          esac
+          if [ -n "$KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::credential for $PROVIDER is not configured; skipping RSD1 calibration."
+          fi
+      - name: Run fresh calibration-only RSD1 study
+        if: steps.credential.outputs.available == 'true'
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          TRIALS: ${{ inputs.trials }}
+          MAX_TOKENS: ${{ inputs.max_tokens }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          OUTPUT=/tmp/evidence-sufficiency-rsd1.json
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-sufficiency-study -- \
+            fixtures/evidence-sufficiency-rsd0 \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --trials "$TRIALS" \
+            --max-tokens "$MAX_TOKENS" \
+            --seed 5000 \
+            > "$OUTPUT"
+          jq '{study_id, phase, corpus, provider, requested_model, trials, fixture_count, authority_semantics, metrics}' "$OUTPUT"
+      - name: Preserve RSD1 result
+        if: always() && steps.credential.outputs.available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-sufficiency-rsd1-${{ matrix.provider }}
+          path: /tmp/evidence-sufficiency-rsd1.json
+          if-no-files-found: error
+          retention-days: 30
