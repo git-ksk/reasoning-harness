@@ -68,7 +68,7 @@ Tracking: #109 #110 #111 #112 #113 under #107.
 - **NL-2 — implemented first boundary:** `--file`/stdin are bounded provenance-bearing untrusted context; `--fact` is explicit structured evidence and `--hypothesis` is an explicit target. Arbitrary prose is not promoted to hard evidence.
 - **NL-3 — implemented adapter slice:** `--resolver-fact` exercises the existing bounded `GroundedResolutionRuntime` through an explicitly trusted local fact-store adapter, admission policy, budgets, and mandatory re-verification. Network/search/database/MCP resolver integrations remain future adapters, not correctness-core shortcuts.
 - **NL-4 — implemented:** the provider renders a typed final-answer candidate, then harness-owned final-claim coverage decides whether the text can be exposed as grounded/qualified; uncovered facts are blocked and can re-enter configured bounded resolution. Renderer failure falls back to a canonical safe renderer.
-- **NL-5 — runner/workflow implemented; live evaluation intentionally blocked on the D3/sufficiency bridge below:** the current runner provides the product-dogfood substrate, but the acceptance run should happen only after the promoted D3/sufficiency path is integrated into the natural-language runtime.
+- **NL-5 — three-arm runner/workflow implemented; live evaluation next:** raw model, Harness baseline, and Harness+D3+sufficiency now share the intended product path. Live acceptance remains separate from the frozen research holdout and is the next evidence step.
 
 ### D3 / sufficiency bridge before NL-5
 
@@ -76,10 +76,11 @@ NL-5 is no longer the immediate next product step. First advance Research #91 fa
 
 1. **RSD0 — completed #116:** fresh 12-case calibration-only corpus demonstrates a measurable residual gap: all 12 cases are D3 `permit`, while 4 are predeclared `insufficient` and 4 are `mixed`; frozen holdout-v4/v5 remain untouched.
 2. **RSD1 — completed #118:** schema-constrained `sufficient | insufficient | mixed` coordinate passed the frozen one-trial calibration progression gate on both Ministral 8B and Gemini 3.5 Flash-Lite with zero false-safe and zero false-abstain decisions; this is calibration evidence only, not product authority.
-3. **RSD2 — in progress #121:** repeat the frozen RSD1 coordinate across five seeds/model, separating exact 3-class drift from the product-relevant `sufficient` vs `non-sufficient` stability boundary; no majority vote gains authority.
-4. **Fresh independent holdout:** if RSD1/RSD2 justify promotion, freeze a new independent holdout before any product adoption claim.
-5. **Product bridge:** operationally stabilize the successor profile, give it explicit runtime identity + rollback, and integrate it into the natural-language path only as a conservative gate. Missing/insufficient support should route to bounded resolution or abstention, never epistemic promotion.
-6. **Then NL-5:** run the real-workload acceptance comparison on the completed product path.
+3. **RSD2 — completed #121:** five-seed characterization passed for Ministral 8B and Gemma 4 31B on the product-relevant `sufficient` vs `non-sufficient` boundary; Gemini 3.5 Flash-Lite remained an operational-gate failure and was not rescued by relaxing thresholds.
+4. **Fresh independent holdout — completed #125:** a new 24-case / 8-family corpus was frozen before provider observation. Seeds 7000-7004 passed every predeclared promotion gate for Ministral 8B and Gemma 4 31B; false-safe and false-abstain were both zero.
+5. **Product bridge — implemented #129:** `d3-sufficiency-answer-gate-v1` has explicit identity and rollback to `grounded-finalization-v1`; it can only preserve baseline output or force verification. The natural-language path defaults to the successor and can explicitly roll back with `--safety-profile baseline`.
+   The product bridge fixes its requirement-selection policy separately as `generic-answer-sufficiency-requirements-v1`; this policy was not smuggled into the frozen holdout and must earn product evidence in NL-5.
+6. **Then NL-5 — next:** run the real-workload three-arm acceptance comparison on the completed product path.
 
 RSD3 selective/conformal abstention and RSD4 relation-level causal sufficiency remain follow-on research unless RSD0-RSD2 demonstrate that either is required for the first product bridge. They do not block the initial natural-language D3/sufficiency integration by default.
 
@@ -93,7 +94,7 @@ C. same model + Harness + promoted D3/sufficiency gate
 
 This separates the value of the existing harness process from the incremental value of the D3/sufficiency research. Compare unsupported assertions, missed insufficiency, correct/false abstention, grounded final-claim coverage, resolution success, token/latency/retry overhead, and operational failures. Frozen research holdouts are never product-tuning data.
 
-D3 remains the adopted semantic diagnostic runtime today, but it is not silently fused into every natural-language request. Automatic residual evidence-sufficiency gating remains Research #91 until the calibration, fresh-holdout, stabilization, rollback, and product-compatibility promotion gates above are satisfied.
+D3 remains the adopted semantic diagnostic runtime. The residual sufficiency coordinate has now crossed its frozen research promotion gate and is exposed only through the conservative `d3-sufficiency-answer-gate-v1` product bridge; it still cannot create verification authority. Research #91 remains the provenance for the evidence, while NL-5 measures product value on separate workloads.
 
 ## Current baseline
 

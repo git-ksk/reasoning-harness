@@ -65,3 +65,10 @@ second model arm. `gemma-4-31b-it` is predeclared as the next Google-hosted repl
 it has prior semantic-runtime protocol evidence in this repository. The replication changes only the
 model identifier: corpus, prompt/schema/fallback contract, seeds 5000–5004, max tokens, and RSD2
 thresholds remain unchanged. Passing is cross-model replication evidence, not product authority.
+
+
+## Completion and fresh-holdout promotion
+
+RSD2 completed without changing the frozen RSD1 coordinate. Ministral 8B and the independent Gemma 4 31B replication passed the five-seed binary safety gate. Gemini 3.5 Flash-Lite remained semantically clean on completed observations but failed the predeclared 100% operational-completion gate; the threshold was not relaxed.
+
+The successor therefore advanced to a newly authored, independently frozen 24-case holdout under #125. That corpus was checksum-frozen before any provider observation and was executed with seeds 7000-7004, five trials per fixture, and the same authority restrictions. See [the fresh sufficiency holdout record](evidence-sufficiency-holdout-v1.md).

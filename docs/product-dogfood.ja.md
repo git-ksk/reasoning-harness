@@ -2,11 +2,12 @@
 
 NL-5では、凍結済みresearch holdoutとは別のproduct workloadで実利用評価します。
 
-runnerは`reason-product-dogfood`です。同じtask/contextを同じprovider/modelへ渡し、2 armを比較します。
+runnerは`reason-product-dogfood`です。同じtask/contextを同じprovider/modelへ渡し、3 armを比較します。
 
 ```text
-raw arm:      task/context -> model -> structured answer
-harness arm:  task/context -> model candidate -> verify -> bounded resolution -> render -> final-claim coverage
+raw arm:                   task/context -> model -> structured answer
+harness baseline arm:      task/context -> shared model candidate -> verify -> bounded resolution -> render -> final-claim coverage
+harness+D3+sufficiency:    同じshared candidate -> 同じHarness -> D3/sufficiency answer gate -> bounded resolution または abstention
 ```
 
 `fixtures/product-dogfood-v1`には2 workload classがあります。
@@ -16,14 +17,15 @@ harness arm:  task/context -> model candidate -> verify -> bounded resolution ->
 
 それぞれに、最初からground可能なcase、意図的に根拠不足なcase、bounded resolutionで初めてground可能になるcaseがあります。research calibration/holdoutとは混ぜません。
 
-`reason-product-dogfood-v1` reportでは次を測ります。
+`reason-product-dogfood-v2` reportでは次を測ります。
 
 - unsupported grounded assertionの件数/率
 - correct abstention / missed insufficiency
 - 本来groundできるcaseでのfalse abstention
 - final-claim coverage平均
 - bounded resolutionの試行数/成功率
-- rawとHarnessのtoken/latency overhead
+- 3 armそれぞれのtoken/latencyと、D3/sufficiency追加分のoverhead
+- successor armのanswer-safety runtime identityとtargetごとのsafety observation
 
 `user_comprehension`は`not_automated_manual_review_required`と明示します。model出力だけから「人間に分かりやすかった率」を捏造しません。
 
@@ -37,4 +39,6 @@ cargo run -p reasoning-harness-cli --bin reason-product-dogfood -- \
   --output /tmp/reason-product-dogfood.json
 ```
 
-GitHub Actionsのmanual `product-dogfood` workflowはrepository secretを使い、JSON reportをartifactとして保存します。Harness armで外部へ露出するunsupported grounded claimが0であることをgateします。live結果はそのmodel/workload sliceの実測であり、普遍的な正しさの主張ではありません。
+successor runtimeはHarness-owned requirement policyも`generic-answer-sufficiency-requirements-v1`としてidentityに固定します。これはfrozen holdout corpusそのものではなくproduct wiringです。holdoutは「与えられたrequired_informationに対するclassifier」を検証し、NL-5ではこの固定product policyが過剰abstentionを起こさず役立つかを別に測ります。
+
+GitHub Actionsのmanual `product-dogfood` workflowはrepository secretを使い、JSON reportをartifactとして保存します。baseline / D3+sufficiency両Harness armで外部へ露出するunsupported grounded claimが0であることと、runtime identityをgateします。`sufficient`はauthorityを増やさずno-op、`insufficient` / `mixed`だけがverification・bounded resolution・abstention方向へ作用します。live結果はそのmodel/workload sliceの実測であり、普遍的な正しさの主張ではありません。

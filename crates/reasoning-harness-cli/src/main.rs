@@ -10,15 +10,17 @@ use std::{
 
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
-    AcquiredEvidence, AdversarialDiscoveryPass, AssumptionDiscoveryPass, BenchmarkAggregate,
-    BenchmarkCaseResult, BenchmarkComparison, BenchmarkFixture, CalibrationLabel,
-    CanonicalFinalAnswerRenderer, ClaimCorpusSummary, CorpusManifest, DefaultResolutionPlanner,
-    DiagnosticObservation, DiagnosticTrial, Evidence, EvidenceAdmissionPolicy,
-    EvidenceAdmissionRejection, EvidenceMetadata, EvidenceQualificationPass, FinalAnswerCandidate,
-    FinalAnswerRenderer, FinalizationPolicy, FinalizationResult, FinalizationStatus,
-    GroundedResolutionOutcome, GroundedResolutionPolicy, GroundedResolutionRuntime, HarnessInput,
-    HarnessOutcome, MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError,
-    ModelError, ModelErrorKind, ModelUsage, Proposition, REASONING_ARTIFACT_CONTRACT_ID,
+    AcquiredEvidence, AdversarialDiscoveryPass, AnswerSafetyDisposition, AnswerSafetyError,
+    AnswerSafetyIdentity, AnswerSafetyObservation, AnswerSafetyProfile, AssumptionDiscoveryPass,
+    BenchmarkAggregate, BenchmarkCaseResult, BenchmarkComparison, BenchmarkFixture,
+    CalibrationLabel, CanonicalFinalAnswerRenderer, ClaimCorpusSummary, CorpusManifest,
+    DefaultResolutionPlanner, DiagnosticObservation, DiagnosticTrial, Evidence,
+    EvidenceAdmissionPolicy, EvidenceAdmissionRejection, EvidenceMetadata,
+    EvidenceQualificationPass, FinalAnswerCandidate, FinalAnswerRenderer, FinalClaimMode,
+    FinalizationPolicy, FinalizationResult, FinalizationStatus, GroundedResolutionOutcome,
+    GroundedResolutionPolicy, GroundedResolutionRuntime, HarnessInput, HarnessOutcome,
+    MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError, ModelError,
+    ModelErrorKind, ModelUsage, Proposition, REASONING_ARTIFACT_CONTRACT_ID,
     REASONING_CANDIDATE_CONTRACT_ID, ReasoningArtifact, ReasoningCandidate,
     RepeatedDiagnosticReport, ResolutionAdapterError, ResolutionBenchmarkAggregate,
     ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, ResolutionCost, ResolutionRequest,
@@ -34,7 +36,7 @@ use reasoning_harness_core::{
     build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
     classify_materialization_failure, evaluate, evaluate_benchmark_fixture_with_diagnostics,
     evaluate_resolution_fixture, finalize_answer, frameworks::five_whys::FiveWhysRestatementPass,
-    reasoning_artifact_schema, reasoning_candidate_schema, run_harness,
+    reasoning_artifact_schema, reasoning_candidate_schema, run_answer_safety_gate, run_harness,
     run_model_backed_soft_judge, run_semantic_runtime, structured_fact_verifier_for_input,
     validate_artifact,
 };
@@ -45,7 +47,7 @@ use serde::{Deserialize, Serialize, de::DeserializeOwned};
 const CLI_OUTPUT_SCHEMA_VERSION: &str = "reason-cli-output-v1";
 const CLI_CONFIG_CONTRACT_ID: &str = "reason-config-v1";
 const SEMANTIC_CHECK_INPUT_CONTRACT_ID: &str = "semantic-check-input-v1";
-const NATURAL_OUTPUT_CONTRACT_ID: &str = "reason-natural-output-v1";
+const NATURAL_OUTPUT_CONTRACT_ID: &str = "reason-natural-output-v2";
 const DEFAULT_MAX_TOKENS: u32 = 1024;
 const MAX_CONTEXT_FILE_BYTES: u64 = 1024 * 1024;
 const MAX_CONTEXT_TOTAL_BYTES: usize = 4 * 1024 * 1024;
@@ -96,6 +98,9 @@ struct NaturalArgs {
     /// Optional provider random seed.
     #[arg(long)]
     seed: Option<u64>,
+    /// Final-answer safety profile. d3-sufficiency is the promoted conservative gate; baseline is the explicit rollback.
+    #[arg(long, value_enum, default_value_t = AnswerSafetyProfileArg::D3Sufficiency)]
+    safety_profile: AnswerSafetyProfileArg,
     /// Highest-precedence non-secret config file layered over project/user config.
     #[arg(long, value_name = "PATH", conflicts_with = "no_config")]
     config: Option<PathBuf>,
@@ -146,6 +151,22 @@ impl SemanticProfileArg {
         match self {
             Self::D3 => SemanticRuntimeProfile::SemanticDecidabilityD3V1,
             Self::V3 => SemanticRuntimeProfile::SoftSemanticV3,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, ValueEnum)]
+enum AnswerSafetyProfileArg {
+    Baseline,
+    #[default]
+    D3Sufficiency,
+}
+
+impl AnswerSafetyProfileArg {
+    const fn runtime_profile(self) -> AnswerSafetyProfile {
+        match self {
+            Self::Baseline => AnswerSafetyProfile::Baseline,
+            Self::D3Sufficiency => AnswerSafetyProfile::D3SufficiencyV1,
         }
     }
 }
@@ -864,10 +885,19 @@ struct NaturalContextObservation {
 }
 
 #[derive(Debug, Serialize)]
+struct NaturalSafetyObservation {
+    render_round: usize,
+    observation: AnswerSafetyObservation,
+}
+
+#[derive(Debug, Serialize)]
 struct NaturalOutput {
     output_contract: &'static str,
     task: String,
     configuration: RunConfigurationObservation,
+    safety_runtime: AnswerSafetyIdentity,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    safety_observations: Vec<NaturalSafetyObservation>,
     context: NaturalContextObservation,
     candidate: ReasoningCandidate,
     generation: GenerationObservation,
@@ -1227,11 +1257,12 @@ fn print_natural_human(output: &NaturalOutput) {
         })
         .count();
     println!(
-        "\nstatus: {:?} | supported_claims={} | unresolved_claims={} | coverage={:.3}",
+        "\nstatus: {:?} | supported_claims={} | unresolved_claims={} | coverage={:.3} | safety={}",
         output.finalization.status,
         supported,
         unresolved,
-        output.finalization.factual_claim_coverage
+        output.finalization.factual_claim_coverage,
+        output.safety_runtime.configuration_id()
     );
     if let Some(failure) = &output.rendering_failure {
         eprintln!(
@@ -1239,6 +1270,104 @@ fn print_natural_human(output: &NaturalOutput) {
             failure.failure_class, failure.message
         );
     }
+}
+
+fn answer_safety_error_class(error: &AnswerSafetyError) -> &'static str {
+    match error {
+        AnswerSafetyError::InvalidRequestedModel | AnswerSafetyError::Decidability(_) => {
+            "invalid_request"
+        }
+        AnswerSafetyError::Sufficiency(error) => error
+            .model_error_kind()
+            .map(model_error_class)
+            .unwrap_or("sufficiency_protocol"),
+    }
+}
+
+struct NaturalAnswerSafetyCall<'a> {
+    profile: AnswerSafetyProfile,
+    generator: &'a LiveGenerator,
+    model: &'a str,
+    artifact: &'a ReasoningArtifact,
+    rendered: &'a FinalAnswerCandidate,
+    baseline: FinalizationResult,
+    max_tokens: u32,
+    seed: Option<u64>,
+    render_round: usize,
+}
+
+async fn apply_natural_answer_safety(
+    call: NaturalAnswerSafetyCall<'_>,
+) -> Result<(FinalizationResult, Vec<NaturalSafetyObservation>), CliError> {
+    let NaturalAnswerSafetyCall {
+        profile,
+        generator,
+        model,
+        artifact,
+        rendered,
+        mut baseline,
+        max_tokens,
+        seed,
+        render_round,
+    } = call;
+    if profile == AnswerSafetyProfile::Baseline
+        || !matches!(
+            baseline.status,
+            FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
+        )
+    {
+        return Ok((baseline, vec![]));
+    }
+
+    let mut targets = Vec::<Proposition>::new();
+    for claim in &rendered.factual_claims {
+        if claim.mode == FinalClaimMode::Grounded && !targets.contains(&claim.proposition) {
+            targets.push(claim.proposition.clone());
+        }
+    }
+
+    let mut observations = Vec::new();
+    let mut blocked = Vec::new();
+    for (index, target) in targets.iter().enumerate() {
+        let target_seed = seed.and_then(|seed| seed.checked_add(index as u64));
+        let observation = run_answer_safety_gate(
+            profile,
+            generator.adapter(),
+            model,
+            target,
+            artifact,
+            max_tokens.min(128),
+            target_seed,
+        )
+        .await
+        .map_err(|error| {
+            CliError::new(
+                answer_safety_error_class(&error),
+                format!(
+                    "answer safety gate failed for {}={}: {error}",
+                    target.key, target.value
+                ),
+            )
+        })?;
+        if observation.disposition == AnswerSafetyDisposition::ForceVerification {
+            blocked.push(target.clone());
+        }
+        observations.push(NaturalSafetyObservation {
+            render_round,
+            observation,
+        });
+    }
+
+    if !blocked.is_empty() {
+        for target in blocked {
+            if !baseline.uncovered_propositions.contains(&target) {
+                baseline.uncovered_propositions.push(target);
+            }
+        }
+        baseline.status = FinalizationStatus::RequiresVerification;
+        baseline.text = None;
+    }
+    Ok((baseline, observations))
 }
 
 async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
@@ -1287,6 +1416,8 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         .expect("natural live config validates model presence")
         .to_string();
     let built = build_natural_input(&args, &task)?;
+    let safety_profile = args.safety_profile.runtime_profile();
+    let safety_runtime = safety_profile.identity();
     let generator = LiveGenerator::try_from_provider(provider, &model)
         .map_err(|error| CliError::new(model_error_class(error.kind), error.to_string()))?;
     let (candidate, generation) = generator
@@ -1318,6 +1449,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
 
     let mut rendering = Vec::new();
     let mut rendering_failure = None;
+    let mut safety_observations = Vec::new();
     let mut finalization;
     let mut render_round = 0usize;
     loop {
@@ -1342,12 +1474,27 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
                 CanonicalFinalAnswerRenderer.render(&final_artifact, final_verdict)
             }
         };
+        let rendered_for_safety = rendered.clone();
         finalization = finalize_answer(
             &final_artifact,
             final_verdict,
             rendered,
             FinalizationPolicy::default(),
         );
+        let (gated, observations) = apply_natural_answer_safety(NaturalAnswerSafetyCall {
+            profile: safety_profile,
+            generator: &generator,
+            model: &model,
+            artifact: &final_artifact,
+            rendered: &rendered_for_safety,
+            baseline: finalization,
+            max_tokens: resolved.max_tokens,
+            seed: args.seed,
+            render_round,
+        })
+        .await?;
+        finalization = gated;
+        safety_observations.extend(observations);
         if finalization.status != FinalizationStatus::RequiresVerification
             || resolver.facts.is_empty()
             || render_round >= 2
@@ -1387,6 +1534,8 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             output_format: resolved.format,
             config_sources: resolved.config_sources,
         },
+        safety_runtime,
+        safety_observations,
         context: built.context,
         candidate,
         generation,
@@ -3672,7 +3821,7 @@ mod candidate_json_tests {
 
     #[test]
     fn natural_output_contract_is_versioned() {
-        assert_eq!(NATURAL_OUTPUT_CONTRACT_ID, "reason-natural-output-v1");
+        assert_eq!(NATURAL_OUTPUT_CONTRACT_ID, "reason-natural-output-v2");
     }
 
     #[test]
@@ -3977,6 +4126,26 @@ mod candidate_json_tests {
         assert_eq!(cli.natural.task.as_deref(), Some("analyze this incident"));
         assert_eq!(cli.natural.provider, Some(Provider::Mistral));
         assert_eq!(cli.natural.fact, vec!["service.region=us-east-1"]);
+        assert_eq!(
+            cli.natural.safety_profile,
+            AnswerSafetyProfileArg::D3Sufficiency
+        );
+    }
+
+    #[test]
+    fn parses_natural_language_baseline_safety_rollback() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "analyze this incident",
+            "--provider",
+            "mistral",
+            "--model",
+            "ministral-8b-latest",
+            "--safety-profile",
+            "baseline",
+        ])
+        .unwrap();
+        assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Baseline);
     }
 
     #[test]

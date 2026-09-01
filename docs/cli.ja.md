@@ -36,7 +36,9 @@ trustedなstructured supportがなければ、結果が条件付き/`unknown`の
 
 最終自然文もmodelがrenderするだけでは信用しません。`finalize_answer`がfactual-claim coverageを確認し、新しい事実を勝手に混ぜた場合はblockします。明示resolverで確認できる場合のみbounded resolutionへ戻し、再verification後に再renderできます。
 
-自然文JSON出力は通常の`reason-cli-output-v1` envelope内で`output_contract: reason-natural-output-v1`を明示します。
+自然文pathのdefaultは`--safety-profile d3-sufficiency`です。通常のgrounding/finalizationでgrounded claimを外へ出せる状態になった後だけ、D3のdeterministic preconditionとpromoted residual sufficiency gateを追加適用します。`sufficient`でもreceipt・Supported・Acceptなどのauthorityは一切増えずbaseline結果を維持するだけです。`insufficient` / `mixed`はverification必須へ戻し、必要ならbounded resolutionを経てから再判定します。明示rollbackは`--safety-profile baseline`です。
+
+自然文JSON出力は通常の`reason-cli-output-v1` envelope内で`output_contract: reason-natural-output-v2`を明示します。
 
 詳しくは[仕組みの日本語解説](how-it-works.ja.md)と[product dogfood](product-dogfood.ja.md)を参照してください。
 

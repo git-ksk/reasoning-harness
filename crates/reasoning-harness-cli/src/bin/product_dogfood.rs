@@ -7,16 +7,18 @@ use std::{
 
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
-    AcquiredEvidence, CanonicalFinalAnswerRenderer, DefaultResolutionPlanner, Evidence,
+    AcquiredEvidence, AnswerSafetyDisposition, AnswerSafetyIdentity, AnswerSafetyObservation,
+    AnswerSafetyProfile, CanonicalFinalAnswerRenderer, DefaultResolutionPlanner, Evidence,
     EvidenceAdmissionPolicy, EvidenceAdmissionRejection, EvidenceMetadata, FinalAnswerCandidate,
-    FinalClaimMode, FinalizationPolicy, FinalizationStatus, GroundedResolutionPolicy,
-    GroundedResolutionRuntime, GroundingPipeline, HarnessInput, ModelAdapter, ModelError,
-    ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage, Proposition, ReasoningCandidate,
-    ResolutionAdapterError, ResolutionCost, ResolutionRequest, ResolutionResolver,
-    ResolutionResolverContribution, ResolutionResolverOutput, ResolutionTarget, ResolverClass,
-    StandardGroundingPipeline, Verdict, build_candidate_json_fallback_request,
-    build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
-    final_answer_candidate_schema, finalize_answer,
+    FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
+    GroundedResolutionOutcome, GroundedResolutionPolicy, GroundedResolutionRuntime,
+    GroundingPipeline, HarnessInput, ModelAdapter, ModelError, ModelOutputFormat, ModelRequest,
+    ModelResponse, ModelUsage, Proposition, ReasoningCandidate, ResolutionAdapterError,
+    ResolutionCost, ResolutionRequest, ResolutionResolver, ResolutionResolverContribution,
+    ResolutionResolverOutput, ResolutionTarget, ResolverClass, StandardGroundingPipeline, Verdict,
+    build_candidate_json_fallback_request, build_candidate_request,
+    build_final_answer_json_fallback_request, build_final_answer_request,
+    final_answer_candidate_schema, finalize_answer, run_answer_safety_gate,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -127,6 +129,7 @@ struct RawArmResult {
 
 #[derive(Debug, Serialize)]
 struct HarnessArmResult {
+    safety_runtime: AnswerSafetyIdentity,
     initial_verdict: Verdict,
     final_verdict: Verdict,
     finalization_status: FinalizationStatus,
@@ -137,6 +140,8 @@ struct HarnessArmResult {
     resolution_attempts: usize,
     resolution_succeeded: bool,
     calls: Vec<CallObservation>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    safety_observations: Vec<AnswerSafetyObservation>,
     total_usage: ModelUsage,
     total_latency_ms: u128,
 }
@@ -148,6 +153,7 @@ struct CaseResult {
     expected_outcome: ExpectedOutcome,
     raw: RawArmResult,
     harness: HarnessArmResult,
+    harness_d3_sufficiency: HarnessArmResult,
 }
 
 #[derive(Debug, Default, Clone, Serialize)]
@@ -178,10 +184,16 @@ struct HarnessAggregate {
 struct OverheadAggregate {
     raw_total_tokens: u64,
     harness_total_tokens: u64,
+    d3_sufficiency_total_tokens: u64,
     token_ratio: Option<f64>,
+    d3_sufficiency_token_ratio: Option<f64>,
+    d3_sufficiency_incremental_token_ratio: Option<f64>,
     raw_latency_ms: u128,
     harness_latency_ms: u128,
+    d3_sufficiency_latency_ms: u128,
     latency_ratio: Option<f64>,
+    d3_sufficiency_latency_ratio: Option<f64>,
+    d3_sufficiency_incremental_latency_ratio: Option<f64>,
 }
 
 #[derive(Debug, Serialize)]
@@ -193,6 +205,7 @@ struct ProductDogfoodReport {
     cases: usize,
     raw: ArmAggregate,
     harness: HarnessAggregate,
+    harness_d3_sufficiency: HarnessAggregate,
     overhead: OverheadAggregate,
     user_comprehension: &'static str,
     results: Vec<CaseResult>,
@@ -348,64 +361,196 @@ async fn evaluate_case(
         call: raw_call,
     };
 
+    // B and C share the exact same generated candidate so the incremental gate comparison is not
+    // confounded by a second candidate sample. Each arm still accounts for that call in its cost.
     let (candidate, candidate_call) =
         generate_candidate(adapter, model, fixture, max_tokens, seed).await?;
+    let harness = evaluate_harness_arm(HarnessArmCall {
+        fixture,
+        adapter,
+        model,
+        max_tokens,
+        seed,
+        max_resolution_attempts,
+        candidate: candidate.clone(),
+        candidate_call: candidate_call.clone(),
+        safety_profile: AnswerSafetyProfile::Baseline,
+    })
+    .await?;
+    let harness_d3_sufficiency = evaluate_harness_arm(HarnessArmCall {
+        fixture,
+        adapter,
+        model,
+        max_tokens,
+        seed,
+        max_resolution_attempts,
+        candidate,
+        candidate_call,
+        safety_profile: AnswerSafetyProfile::D3SufficiencyV1,
+    })
+    .await?;
+
+    Ok(CaseResult {
+        id: fixture.id.clone(),
+        workload_class: fixture.workload_class.clone(),
+        expected_outcome: fixture.expected_outcome,
+        raw,
+        harness,
+        harness_d3_sufficiency,
+    })
+}
+
+struct HarnessArmCall<'a> {
+    fixture: &'a ProductDogfoodFixture,
+    adapter: &'a dyn ModelAdapter,
+    model: &'a str,
+    max_tokens: u32,
+    seed: Option<u64>,
+    max_resolution_attempts: usize,
+    candidate: ReasoningCandidate,
+    candidate_call: CallObservation,
+    safety_profile: AnswerSafetyProfile,
+}
+
+async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResult, String> {
+    let HarnessArmCall {
+        fixture,
+        adapter,
+        model,
+        max_tokens,
+        seed,
+        max_resolution_attempts,
+        candidate,
+        candidate_call,
+        safety_profile,
+    } = call;
     let pipeline = StandardGroundingPipeline;
     let initial = pipeline
         .run(fixture.input.clone(), candidate.clone(), &[])
         .map_err(|e| e.to_string())?;
     let mut calls = vec![candidate_call];
+    let mut safety_observations = Vec::new();
+    let mut safety_usage = ModelUsage::default();
+    let mut safety_latency_ms = 0u128;
     let mut final_artifact = initial.artifact.clone();
     let mut final_verdict = initial.verdict;
     let mut resolution_attempts = 0usize;
-    let mut resolution_succeeded = false;
 
     if !fixture.resolver_facts.is_empty() && final_verdict != Verdict::Accept {
-        let resolver = LocalFactResolver {
-            facts: fixture.resolver_facts.clone(),
-        };
-        let planner = DefaultResolutionPlanner;
-        let admission = DogfoodAdmission;
-        let renderer = CanonicalFinalAnswerRenderer;
-        let resolver_refs: [&dyn ResolutionResolver; 1] = [&resolver];
-        let trusted: [&dyn reasoning_harness_core::TrustedResolutionVerifier; 0] = [];
-        let runtime = GroundedResolutionRuntime {
-            pipeline: &pipeline,
-            planner: &planner,
-            evidence_admission: &admission,
-            resolvers: &resolver_refs,
-            trusted_verifiers: &trusted,
-            renderer: &renderer,
-        };
-        let mut policy = GroundedResolutionPolicy::default();
-        policy.budget.max_attempts = max_resolution_attempts;
-        let resolution = runtime
-            .run(fixture.input.clone(), candidate.clone(), &policy)
-            .map_err(|e| e.to_string())?;
-        resolution_attempts = resolution.attempts.len();
-        resolution_succeeded =
-            initial.verdict != Verdict::Accept && resolution.final_verdict == Verdict::Accept;
+        let resolution = run_dogfood_resolution(
+            fixture,
+            final_artifact.clone(),
+            candidate.clone(),
+            max_resolution_attempts,
+        )?;
+        resolution_attempts += resolution.attempts.len();
         final_artifact = resolution.final_artifact;
         final_verdict = resolution.final_verdict;
     }
 
-    let (rendered, render_call) = render_answer(
-        adapter,
-        model,
-        &fixture.task,
-        &final_artifact,
-        final_verdict,
-        max_tokens,
-        seed,
-    )
-    .await?;
-    calls.push(render_call);
-    let finalization = finalize_answer(
-        &final_artifact,
-        final_verdict,
-        rendered.clone(),
-        FinalizationPolicy::default(),
-    );
+    let mut finalization = FinalizationResult {
+        status: FinalizationStatus::Unresolved,
+        text: None,
+        factual_claims: 0,
+        covered_claims: 0,
+        factual_claim_coverage: 1.0,
+        uncovered_propositions: vec![],
+    };
+    let mut rendered = FinalAnswerCandidate::default();
+    for render_round in 0..2usize {
+        let (answer, render_call) = render_answer(
+            adapter,
+            model,
+            &fixture.task,
+            &final_artifact,
+            final_verdict,
+            max_tokens,
+            seed,
+        )
+        .await?;
+        calls.push(render_call);
+        rendered = answer;
+        finalization = finalize_answer(
+            &final_artifact,
+            final_verdict,
+            rendered.clone(),
+            FinalizationPolicy::default(),
+        );
+
+        if safety_profile == AnswerSafetyProfile::D3SufficiencyV1
+            && matches!(
+                finalization.status,
+                FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
+            )
+        {
+            let mut targets = Vec::new();
+            for claim in &rendered.factual_claims {
+                if claim.mode == FinalClaimMode::Grounded && !targets.contains(&claim.proposition) {
+                    targets.push(claim.proposition.clone());
+                }
+            }
+            let mut blocked = Vec::new();
+            for (index, target) in targets.iter().enumerate() {
+                let target_seed = seed.and_then(|seed| seed.checked_add(index as u64));
+                let observation = run_answer_safety_gate(
+                    safety_profile,
+                    adapter,
+                    model,
+                    target,
+                    &final_artifact,
+                    max_tokens.min(128),
+                    target_seed,
+                )
+                .await
+                .map_err(|error| format!("answer safety operational failure: {error}"))?;
+                if let Some(sufficiency) = &observation.sufficiency {
+                    safety_usage = add_usage(&safety_usage, &sufficiency.usage);
+                }
+                safety_latency_ms = safety_latency_ms.saturating_add(observation.latency_ms);
+                if observation.disposition == AnswerSafetyDisposition::ForceVerification {
+                    blocked.push(target.clone());
+                }
+                safety_observations.push(observation);
+            }
+            if !blocked.is_empty() {
+                for target in blocked {
+                    if !finalization.uncovered_propositions.contains(&target) {
+                        finalization.uncovered_propositions.push(target);
+                    }
+                }
+                finalization.status = FinalizationStatus::RequiresVerification;
+                finalization.text = None;
+            }
+        }
+
+        if finalization.status != FinalizationStatus::RequiresVerification
+            || fixture.resolver_facts.is_empty()
+            || render_round == 1
+        {
+            break;
+        }
+
+        let mut retry_input = input_from_artifact(&final_artifact);
+        for proposition in &finalization.uncovered_propositions {
+            if !retry_input.hypotheses.contains(proposition) {
+                retry_input.hypotheses.push(proposition.clone());
+            }
+        }
+        let before = final_artifact.clone();
+        let resolution = run_dogfood_resolution_from_input(
+            fixture,
+            retry_input,
+            candidate.clone(),
+            max_resolution_attempts,
+        )?;
+        resolution_attempts += resolution.attempts.len();
+        final_artifact = resolution.final_artifact;
+        final_verdict = resolution.final_verdict;
+        if final_artifact == before {
+            break;
+        }
+    }
+
     let exposed = matches!(
         finalization.status,
         FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
@@ -420,34 +565,89 @@ async fn evaluate_case(
     } else {
         0
     };
-    let total_usage = calls.iter().fold(ModelUsage::default(), |acc, call| {
+    let mut total_usage = calls.iter().fold(ModelUsage::default(), |acc, call| {
         add_usage(&acc, &call.usage)
     });
-    let total_latency_ms = calls.iter().map(|call| call.latency_ms).sum();
-    let harness = HarnessArmResult {
+    total_usage = add_usage(&total_usage, &safety_usage);
+    let total_latency_ms = calls
+        .iter()
+        .map(|call| call.latency_ms)
+        .sum::<u128>()
+        .saturating_add(safety_latency_ms);
+    let resolution_succeeded =
+        initial.verdict != Verdict::Accept && final_verdict == Verdict::Accept;
+
+    Ok(HarnessArmResult {
+        safety_runtime: safety_profile.identity(),
         initial_verdict: initial.verdict,
         final_verdict,
         finalization_status: finalization.status,
         factual_claims: finalization.factual_claims,
         factual_claim_coverage: finalization.factual_claim_coverage,
         unsupported_exposed_grounded_claims,
-        abstained: !matches!(
-            finalization.status,
-            FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
-        ),
+        abstained: !exposed,
         resolution_attempts,
         resolution_succeeded,
         calls,
+        safety_observations,
         total_usage,
         total_latency_ms,
-    };
-    Ok(CaseResult {
-        id: fixture.id.clone(),
-        workload_class: fixture.workload_class.clone(),
-        expected_outcome: fixture.expected_outcome,
-        raw,
-        harness,
     })
+}
+
+fn input_from_artifact(artifact: &reasoning_harness_core::ReasoningArtifact) -> HarnessInput {
+    HarnessInput {
+        task: artifact.task.clone(),
+        evidence: artifact.evidence.clone(),
+        hypotheses: artifact.hypotheses.clone(),
+        assumptions: artifact.assumptions.clone(),
+        evidence_requirements: artifact.evidence_requirements.clone(),
+        authority_policy: artifact.authority_policy.clone(),
+    }
+}
+
+fn run_dogfood_resolution(
+    fixture: &ProductDogfoodFixture,
+    artifact: reasoning_harness_core::ReasoningArtifact,
+    candidate: ReasoningCandidate,
+    max_resolution_attempts: usize,
+) -> Result<GroundedResolutionOutcome, String> {
+    run_dogfood_resolution_from_input(
+        fixture,
+        input_from_artifact(&artifact),
+        candidate,
+        max_resolution_attempts,
+    )
+}
+
+fn run_dogfood_resolution_from_input(
+    fixture: &ProductDogfoodFixture,
+    input: HarnessInput,
+    candidate: ReasoningCandidate,
+    max_resolution_attempts: usize,
+) -> Result<GroundedResolutionOutcome, String> {
+    let pipeline = StandardGroundingPipeline;
+    let resolver = LocalFactResolver {
+        facts: fixture.resolver_facts.clone(),
+    };
+    let planner = DefaultResolutionPlanner;
+    let admission = DogfoodAdmission;
+    let renderer = CanonicalFinalAnswerRenderer;
+    let resolver_refs: [&dyn ResolutionResolver; 1] = [&resolver];
+    let trusted: [&dyn reasoning_harness_core::TrustedResolutionVerifier; 0] = [];
+    let runtime = GroundedResolutionRuntime {
+        pipeline: &pipeline,
+        planner: &planner,
+        evidence_admission: &admission,
+        resolvers: &resolver_refs,
+        trusted_verifiers: &trusted,
+        renderer: &renderer,
+    };
+    let mut policy = GroundedResolutionPolicy::default();
+    policy.budget.max_attempts = max_resolution_attempts;
+    runtime
+        .run(input, candidate, &policy)
+        .map_err(|e| e.to_string())
 }
 
 async fn raw_answer(
@@ -650,7 +850,9 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .into_iter()
         .collect::<Vec<_>>();
     let raw = aggregate_raw(&results);
-    let harness = aggregate_harness(&results);
+    let harness = aggregate_harness(&results, |result| &result.harness);
+    let harness_d3_sufficiency =
+        aggregate_harness(&results, |result| &result.harness_d3_sufficiency);
     let raw_total_tokens = results
         .iter()
         .filter_map(|result| result.raw.call.usage.total_tokens)
@@ -658,6 +860,10 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
     let harness_total_tokens = results
         .iter()
         .filter_map(|result| result.harness.total_usage.total_tokens)
+        .sum();
+    let d3_sufficiency_total_tokens = results
+        .iter()
+        .filter_map(|result| result.harness_d3_sufficiency.total_usage.total_tokens)
         .sum();
     let raw_latency_ms = results
         .iter()
@@ -667,21 +873,44 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .iter()
         .map(|result| result.harness.total_latency_ms)
         .sum();
+    let d3_sufficiency_latency_ms = results
+        .iter()
+        .map(|result| result.harness_d3_sufficiency.total_latency_ms)
+        .sum();
     ProductDogfoodReport {
-        schema_version: "reason-product-dogfood-v1",
+        schema_version: "reason-product-dogfood-v2",
         provider: provider.name(),
         model: model.into(),
         workload_classes: classes,
         cases: results.len(),
         raw,
         harness,
+        harness_d3_sufficiency,
         overhead: OverheadAggregate {
             raw_total_tokens,
             harness_total_tokens,
+            d3_sufficiency_total_tokens,
             token_ratio: ratio(harness_total_tokens as f64, raw_total_tokens as f64),
+            d3_sufficiency_token_ratio: ratio(
+                d3_sufficiency_total_tokens as f64,
+                raw_total_tokens as f64,
+            ),
+            d3_sufficiency_incremental_token_ratio: ratio(
+                d3_sufficiency_total_tokens as f64,
+                harness_total_tokens as f64,
+            ),
             raw_latency_ms,
             harness_latency_ms,
+            d3_sufficiency_latency_ms,
             latency_ratio: ratio(harness_latency_ms as f64, raw_latency_ms as f64),
+            d3_sufficiency_latency_ratio: ratio(
+                d3_sufficiency_latency_ms as f64,
+                raw_latency_ms as f64,
+            ),
+            d3_sufficiency_incremental_latency_ratio: ratio(
+                d3_sufficiency_latency_ms as f64,
+                harness_latency_ms as f64,
+            ),
         },
         user_comprehension: "not_automated_manual_review_required",
         results,
@@ -697,29 +926,32 @@ fn aggregate_raw(results: &[CaseResult]) -> ArmAggregate {
     )
 }
 
-fn aggregate_harness(results: &[CaseResult]) -> HarnessAggregate {
+fn aggregate_harness(
+    results: &[CaseResult],
+    select: fn(&CaseResult) -> &HarnessArmResult,
+) -> HarnessAggregate {
     let arm = aggregate_arm(
         results,
-        |result| result.harness.factual_claims,
-        |result| result.harness.unsupported_exposed_grounded_claims,
-        |result| result.harness.abstained,
+        |result| select(result).factual_claims,
+        |result| select(result).unsupported_exposed_grounded_claims,
+        |result| select(result).abstained,
     );
     let mean_final_claim_coverage = if results.is_empty() {
         0.0
     } else {
         results
             .iter()
-            .map(|result| result.harness.factual_claim_coverage)
+            .map(|result| select(result).factual_claim_coverage)
             .sum::<f64>()
             / results.len() as f64
     };
     let resolution_attempted_cases = results
         .iter()
-        .filter(|result| result.harness.resolution_attempts > 0)
+        .filter(|result| select(result).resolution_attempts > 0)
         .count();
     let resolution_success_cases = results
         .iter()
-        .filter(|result| result.harness.resolution_succeeded)
+        .filter(|result| select(result).resolution_succeeded)
         .count();
     HarnessAggregate {
         arm,
@@ -837,6 +1069,7 @@ mod tests {
                 },
             },
             harness: HarnessArmResult {
+                safety_runtime: AnswerSafetyProfile::Baseline.identity(),
                 initial_verdict: Verdict::Unknown,
                 final_verdict: Verdict::Unknown,
                 finalization_status: FinalizationStatus::Unresolved,
@@ -847,6 +1080,23 @@ mod tests {
                 resolution_attempts: 0,
                 resolution_succeeded: false,
                 calls: vec![],
+                safety_observations: vec![],
+                total_usage: Default::default(),
+                total_latency_ms: 1,
+            },
+            harness_d3_sufficiency: HarnessArmResult {
+                safety_runtime: AnswerSafetyProfile::D3SufficiencyV1.identity(),
+                initial_verdict: Verdict::Unknown,
+                final_verdict: Verdict::Unknown,
+                finalization_status: FinalizationStatus::Unresolved,
+                factual_claims: 0,
+                factual_claim_coverage: 1.0,
+                unsupported_exposed_grounded_claims: 0,
+                abstained: harness_abstained,
+                resolution_attempts: 0,
+                resolution_succeeded: false,
+                calls: vec![],
+                safety_observations: vec![],
                 total_usage: Default::default(),
                 total_latency_ms: 1,
             },
@@ -856,7 +1106,7 @@ mod tests {
             mk("g", ExpectedOutcome::Grounded, true, false),
         ];
         let raw = aggregate_raw(&results);
-        let harness = aggregate_harness(&results);
+        let harness = aggregate_harness(&results, |result| &result.harness);
         assert_eq!(raw.missed_insufficiency, 1);
         assert_eq!(raw.false_abstentions, 1);
         assert_eq!(harness.arm.correct_abstentions, 1);
