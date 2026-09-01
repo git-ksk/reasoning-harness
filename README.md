@@ -65,6 +65,78 @@ reason schema config
 reason schema semantic-check
 ```
 
+## Two ways to run it
+
+There are two main `reason run` modes. They use the same verification pipeline; the only difference is **who creates the untrusted candidate**.
+
+| Mode | Command shape | Does Reasoning Harness call an AI model? | Typical use |
+| --- | --- | --- | --- |
+| **Bring your own candidate** | `reason run --input ... --candidate ...` | **No** | Your app, RAG system, Claude/ChatGPT/Codex-like agent, or another model already produced structured output. |
+| **Live provider candidate generation** | `reason run --input ... --provider ... --model ...` | **Yes** | You want `reason` itself to ask Mistral, Google, or NVIDIA for the candidate before checking it. |
+
+Other product commands have their own AI requirements:
+
+| Command | AI required inside `reason`? | Why |
+| --- | --- | --- |
+| `reason run --candidate ...` | **No** | Deterministic materialization, evidence verification, diagnostics, and acceptance policy can operate on an existing candidate. |
+| `reason verify artifact.json` | **No** | Validates an already materialized artifact and its invariants. |
+| `reason run --provider ...` | **Yes** | The provider is used to generate the untrusted candidate. |
+| `reason semantic-check ...` | **Yes** | D3/v3 is a model-backed soft semantic diagnostic surface. |
+
+So Reasoning Harness is **not inherently an AI endpoint client**. AI is optional for the core candidate-checking path.
+
+## How can it judge a candidate without calling AI?
+
+Because the harness does not ask, "Does this answer sound correct?" It asks narrower questions that can be checked against typed state and harness-owned evidence.
+
+The important boundary is:
+
+```text
+External AI / Agent / RAG
+        |
+        | proposes claims and inference edges
+        v
+ ReasoningCandidate          HarnessInput
+   (untrusted)          (task + owned evidence)
+        |                        |
+        +-----------+------------+
+                    v
+          1. Materialize safely
+                    |
+                    v
+          2. Validate structure
+                    |
+                    v
+          3. Verify against evidence
+                    |
+                    v
+          4. Run diagnostics
+                    |
+                    v
+          5. Apply acceptance policy
+                    |
+        +-----------+-----------+
+        |           |           |
+      accept      reject      unknown
+```
+
+A model cannot certify itself. If a candidate says a claim is `known`, `supported`, `inferred`, or even `contradicted`, the default materialization boundary does **not** trust that label. Those strong model-proposed states enter the artifact as `assumed`; only `unknown` and explicit `assumed` remain conservative as proposed.
+
+For structured propositions, a deterministic verifier can then compare the candidate's typed `key=value` proposition with structured facts in harness-owned evidence. A matching fact can create a harness-owned `VerificationReceipt` with `supported`; a conflicting fact can create `contradicted`; missing or disqualified evidence creates no hard receipt and preserves uncertainty.
+
+The current strict product policy is intentionally conservative:
+
+- any `contradicted` claim -> `reject`;
+- any remaining `assumed` or `unknown` claim -> `unknown`;
+- otherwise, with non-empty adequately established claims -> `accept`;
+- no claims -> `unknown`.
+
+Diagnostics such as contradiction/counterexample discovery, assumption inspection, evidence qualification, and Five Whys checks are inspectable signals. They do not get to invent trusted evidence or silently override the verifier/acceptance boundary.
+
+This is why `reason run --candidate ...` can be useful with **zero API keys**: the model work happened elsewhere, while the harness performs the trust decision with deterministic rules and explicitly trusted verifier inputs.
+
+For a deeper walkthrough, including state transitions, receipts, qualification, and where model-backed D3 fits, see [How Reasoning Harness works](docs/how-it-works.md).
+
 ## 30-second quickstart
 
 Examples below use a POSIX shell. On Windows, save the same JSON documents to files and invoke `reason.exe` with equivalent paths.

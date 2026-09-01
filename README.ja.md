@@ -65,6 +65,118 @@ reason schema config
 reason schema semantic-check
 ```
 
+## 使い方は大きく2通り
+
+`reason run`には主に2つの使い方があります。どちらも**候補ができた後の検証パイプラインは同じ**で、違うのは「untrusted candidateを誰が作るか」です。
+
+| モード | コマンド | Harness内でAIを呼ぶ？ | 向いているケース |
+| --- | --- | --- | --- |
+| **外部AIの候補を持ち込む** | `reason run --input ... --candidate ...` | **呼ばない** | 自作Agent、RAG、ChatGPT/Claude/Codex的な別システムなどが、すでに構造化された候補を作っている。 |
+| **`reason`に候補生成も任せる** | `reason run --input ... --provider ... --model ...` | **呼ぶ** | Mistral / Google / NVIDIAへ`reason`自身が問い合わせて候補を作り、そのまま検証したい。 |
+
+Product commandごとに見るとこうです。
+
+| コマンド | `reason`内でAI必要？ | 理由 |
+| --- | --- | --- |
+| `reason run --candidate ...` | **不要** | 既存candidateを、決定論的なmaterialization・evidence verification・diagnostics・acceptance policyへ通せる。 |
+| `reason verify artifact.json` | **不要** | すでに作られたartifactの構造・invariantを検証する。 |
+| `reason run --provider ...` | **必要** | untrusted candidateそのものをproviderに生成させる。 |
+| `reason semantic-check ...` | **必要** | D3/v3はmodel-backedなsoft semantic diagnosticだから。 |
+
+つまりReasoning Harnessは、**必ずAI endpointへ接続しないと動かないツールではありません**。既存AIの出力をチェックするcore pathは、APIキーなしでも動きます。
+
+## AIなしで、どうやって回答を判定できるの？
+
+Harnessは「この文章、正しそう？」と別のAIへ聞いているわけではありません。もっと狭く、**構造化された主張が、Harness管理の根拠とルールで裏付けられるか**を確認しています。
+
+```text
+外部AI / Agent / RAG
+        |
+        | claimやinferenceを提案
+        v
+ ReasoningCandidate          HarnessInput
+   (信用しない)          (task + 管理された根拠)
+        |                        |
+        +-----------+------------+
+                    v
+          1. 安全にmaterialize
+                    |
+                    v
+          2. 構造・参照をvalidation
+                    |
+                    v
+          3. evidenceとverification
+                    |
+                    v
+          4. diagnosticsを実行
+                    |
+                    v
+          5. acceptance policyで判定
+                    |
+        +-----------+-----------+
+        |           |           |
+      accept      reject      unknown
+```
+
+### 1. まずAIの自己申告を信用しない
+
+外部AIがcandidate内で「これは`known`」「`supported`」「`inferred`」「`contradicted`」と書いても、その強いstateをそのまま採用しません。現在のmaterializationでは、それらは原則いったん`assumed`へ落とされます。`unknown`や明示的な`assumed`は、安全側の状態としてそのまま扱えます。
+
+つまり、AIが自分で「俺の回答は検証済み」と宣言しても、権限はもらえません。
+
+### 2. Harness側のevidenceと照合する
+
+たとえばcandidateが次を主張したとします。
+
+```json
+{
+  "proposition": {
+    "key": "service.region",
+    "value": "us-east-1"
+  }
+}
+```
+
+HarnessInputに、Harness側が管理するstructured factがあるとします。
+
+```json
+{
+  "facts": {
+    "service.region": "us-east-1"
+  }
+}
+```
+
+決定論的なstructured verifierは`key=value`を照合できます。
+
+- 一致する根拠がある -> Harness側が`VerificationReceipt: supported`を作れる
+- 別の値が確認される -> `VerificationReceipt: contradicted`になり得る
+- 根拠がない -> receiptを作らず、不確実性を残す
+- time/scope/authorityなどのqualification条件を満たさない -> hard receiptを出さず、不確実性を残す
+
+**verification receiptを作れるのはtrusted boundary側で、candidateを作ったAIではありません。**
+
+### 3. 最後に保守的なpolicyでまとめる
+
+現在のStrict policyは分かりやすく保守的です。
+
+- `contradicted`が1つでもある -> **`reject`**
+- `assumed` / `unknown`が1つでも残る -> **`unknown`**
+- claimがあり、必要なclaimが十分に確立している -> **`accept`**
+- claim自体がない -> **`unknown`**
+
+contradiction / counterexampleの探索、assumption inspection、evidence qualification、Five Whysなどのdiagnosticも走りますが、diagnosticが勝手にtrusted evidenceを作ったり、model outputだけで最終verdictを支配したりはできません。
+
+だから、
+
+```bash
+reason run --input evidence.json --candidate ai-output.json --no-config --format json
+```
+
+は**APIキーなし**で意味のある判定を返せます。AIによる候補生成はすでに外で終わっていて、Harnessは「その候補を信用してよい部分はどこか」を決定論的な境界で判定しているからです。
+
+さらに詳しいstate遷移、verification receipt、evidence qualification、D3との役割分担は[仕組みの詳細](docs/how-it-works.ja.md)にまとめています。
+
 ## 30秒Quickstart
 
 以下はPOSIX shellの例です。Windowsでは同じJSONをファイルへ保存し、同等のpathを指定して`reason.exe`を実行できます。
