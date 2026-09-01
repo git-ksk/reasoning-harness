@@ -4,6 +4,16 @@ All notable product-facing changes to the `reason` CLI are recorded here. Resear
 
 The project follows semantic versioning for the executable, with the usual v0.x caveat that product interfaces are still being hardened. Machine-readable contract identities provide a stricter compatibility boundary than the executable version alone.
 
+## [Unreleased]
+
+### Natural-language AI CLI
+
+- Added direct `reason "TASK"` AI-backed execution with `reason-natural-output-v1` JSON identity while preserving all v0.1 structured commands.
+- Added provenance-aware `--file` and piped-stdin untrusted context with bounded input size.
+- Added explicit `--fact`, `--hypothesis`, and bounded `--resolver-fact` inputs without allowing arbitrary prose/model output to self-promote into trusted evidence.
+- Added model-backed natural-language final rendering behind final-claim coverage; uncovered renderer facts are blocked and may re-enter bounded verification.
+- Added `reason-product-dogfood` and a manual live workflow for same-model raw-vs-harness product evaluation across incident-analysis and architecture-review workloads.
+
 ## [0.1.0] - 2026-09-01
 
 First external preview of the native Reasoning Harness CLI.

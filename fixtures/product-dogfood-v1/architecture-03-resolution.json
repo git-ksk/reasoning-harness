@@ -1,0 +1,25 @@
+{
+  "id": "architecture-backup-resolved",
+  "workload_class": "architecture_review",
+  "task": "Determine whether backups are enabled, using the configured resolver if the initial architecture snapshot does not contain that control.",
+  "input": {
+    "task": "Determine whether backups are enabled, using the configured resolver if the initial architecture snapshot does not contain that control.",
+    "evidence": [
+      {
+        "id": "architecture-config",
+        "source": "architecture configuration snapshot",
+        "observation": "Storage encryption is enabled.",
+        "facts": {
+          "storage.encryption": "enabled"
+        }
+      }
+    ],
+    "hypotheses": [
+      {"key": "backup.enabled", "value": "true"}
+    ]
+  },
+  "expected_outcome": "grounded_after_resolution",
+  "resolver_facts": {
+    "backup.enabled": "true"
+  }
+}

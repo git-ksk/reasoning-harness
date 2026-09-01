@@ -60,6 +60,18 @@ extractions, tool output, and prior model output do not become trusted evidence 
 accepted them. Evidence ingestion, admission, verification, D3/sufficiency diagnostics, bounded
 resolution, re-verification, and final-claim coverage remain harness-owned.
 
+## NL-1 through NL-5 implementation status
+
+Tracking: #109 #110 #111 #112 #113 under #107.
+
+- **NL-1 — implemented:** direct `reason "TASK"` uses the existing layered provider/model config and the same untrusted candidate/verification path. Existing structured commands remain compatible.
+- **NL-2 — implemented first boundary:** `--file`/stdin are bounded provenance-bearing untrusted context; `--fact` is explicit structured evidence and `--hypothesis` is an explicit target. Arbitrary prose is not promoted to hard evidence.
+- **NL-3 — implemented adapter slice:** `--resolver-fact` exercises the existing bounded `GroundedResolutionRuntime` through an explicitly trusted local fact-store adapter, admission policy, budgets, and mandatory re-verification. Network/search/database/MCP resolver integrations remain future adapters, not correctness-core shortcuts.
+- **NL-4 — implemented:** the provider renders a typed final-answer candidate, then harness-owned final-claim coverage decides whether the text can be exposed as grounded/qualified; uncovered facts are blocked and can re-enter configured bounded resolution. Renderer failure falls back to a canonical safe renderer.
+- **NL-5 — runner/workflow implemented; live result required:** `reason-product-dogfood` compares raw model vs the same model behind the harness on two non-holdout workload classes and reports safety, abstention, coverage, resolution, token, and latency metrics.
+
+D3 remains the adopted semantic diagnostic runtime, but it is not silently fused into every natural-language request. Automatic residual evidence-sufficiency gating remains Research #91 until its calibration/holdout promotion gate is satisfied. The product path therefore uses only mechanisms whose authority semantics are already characterized.
+
 ## Current baseline
 
 Already available:

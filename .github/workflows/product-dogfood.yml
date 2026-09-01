@@ -1,0 +1,95 @@
+name: product-dogfood
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: Provider for the same-model raw vs harness comparison
+        required: true
+        type: choice
+        options:
+          - mistral
+          - google
+          - nvidia
+        default: mistral
+      model:
+        description: Provider model identifier
+        required: true
+        type: string
+        default: ministral-8b-latest
+      max_tokens:
+        description: Maximum output tokens per model call
+        required: true
+        type: choice
+        options:
+          - '512'
+          - '1024'
+          - '2048'
+        default: '1024'
+      seed:
+        description: Base random seed
+        required: true
+        type: string
+        default: '12000'
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Check selected provider credential
+        env:
+          PROVIDER: ${{ inputs.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            nvidia) test -n "$NVIDIA_API_KEY" ;;
+            *) exit 2 ;;
+          esac
+      - name: Run same-model product dogfood
+        env:
+          PROVIDER: ${{ inputs.provider }}
+          MODEL: ${{ inputs.model }}
+          MAX_TOKENS: ${{ inputs.max_tokens }}
+          SEED: ${{ inputs.seed }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-product-dogfood -- \
+            --fixtures fixtures/product-dogfood-v1 \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --max-tokens "$MAX_TOKENS" \
+            --seed "$SEED" \
+            --output /tmp/reason-product-dogfood.json \
+            > /tmp/reason-product-dogfood.stdout.json
+          jq -e '
+            .schema_version == "reason-product-dogfood-v1"
+            and .cases >= 6
+            and (.workload_classes | length) >= 2
+            and .harness.arm.unsupported_grounded_claims == 0
+          ' /tmp/reason-product-dogfood.json >/dev/null
+          jq '{schema_version, provider, model, workload_classes, cases, raw, harness, overhead, user_comprehension}' /tmp/reason-product-dogfood.json
+      - name: Preserve dogfood report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-dogfood-${{ inputs.provider }}-${{ inputs.model }}
+          path: /tmp/reason-product-dogfood.json
+          if-no-files-found: error
+          retention-days: 30

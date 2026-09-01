@@ -45,40 +45,61 @@ With the harness:
   evidence -> LLM/agent -> candidate -> verify/diagnose -> accept | reject | unknown
 ```
 
-## Product direction: natural-language-first AI CLI
+## Primary UX: natural-language AI CLI
 
-The v0.1.0 preview proved the structured runtime and automation contracts. The next primary product
-direction ([Issue #107](https://github.com/git-ksk/reasoning-harness/issues/107)) is to make the
-AI-backed path feel like a normal terminal AI tool while keeping the verification loop underneath:
+The natural-language AI path is now implemented on `main` as the primary human-facing direction. The published `v0.1.0` tag predates this path and remains the structured preview; use `main` for this unreleased slice until the next tagged preview:
 
 ```bash
-reason "Analyze this incident and explain the most supported cause"
-reason "Review this architecture" --file architecture.md --file template.yaml
-cat error.log | reason "Find the most supported root cause"
+reason "Analyze this incident" --fact http.status_code=503
+reason "Review this architecture" --file architecture.md --hypothesis backup.enabled=true
+cat error.log | reason "Find the most supported root cause" --hypothesis incident.root_cause=database
 ```
 
-Conceptually:
+Provider/model normally come from layered config. They can also be explicit:
+
+```bash
+reason "Report the verified deployment region" \
+  --provider mistral \
+  --model ministral-8b-latest \
+  --fact service.region=us-east-1
+```
+
+The runtime path is:
 
 ```text
 natural-language task
         ↓
-model candidate
+model generates an untrusted candidate
         ↓
-Reasoning Harness
-  verify / diagnose / check sufficiency
+Harness validation + evidence verification + diagnostics
         ↓
-missing support? -> bounded resolution / regenerate -> re-verify
+missing support? -> bounded resolver -> admission -> re-verification
         ↓
-grounded answer | qualified answer | unknown
+model renders a natural-language answer
+        ↓
+final-claim coverage gate
+        ↓
+grounded answer | qualified answer | unknown/abstain
 ```
 
-The user-facing goal is **natural language in, grounded natural language out**. Structured JSON remains
-important, but primarily as an advanced integration/debug surface and as the internal representation
-that keeps the runtime inspectable.
+The convenience layer does **not** turn arbitrary text into truth. `--file` and piped stdin are
+provenance-bearing **untrusted context**: the model can read them, but their prose cannot create a hard
+verification receipt by itself. `--fact KEY=VALUE` is an explicit harness-owned structured fact, and
+`--resolver-fact KEY=VALUE` is an explicit local fact exposed only through the bounded resolution
+protocol. `--hypothesis KEY=VALUE` tells the harness which proposition should be evaluated or resolved.
 
-This direction deliberately uses the research program rather than bypassing it: D3, evidence binding,
-unsupported-premise/causal diagnostics, evidence sufficiency and abstention, bounded resolution,
-verification receipts, and final-claim coverage become mechanisms behind the simple CLI.
+This means `reason "..."` with no trusted evidence may correctly end as qualified/unknown rather than
+pretending the model's pretraining is verified evidence. Future retrieval/web/database/test/MCP adapters
+can make the natural path much more capable, but they must cross the same admission and verification
+boundaries.
+
+Structured JSON remains supported as an advanced integration/debug/CI surface. It is no longer the UX
+ordinary users need to understand first.
+
+The shipped natural path already uses evidence binding, assumption/contradiction/evidence-qualification
+diagnostics, bounded resolution, re-verification, and final-claim coverage. D3 remains the adopted
+model-backed semantic diagnostic surface through `reason semantic-check`; automatic residual evidence
+sufficiency is still Research Issue #91 and is **not** claimed as solved by this product slice.
 
 ## What do I give it?
 
@@ -100,9 +121,9 @@ reason schema config
 reason schema semantic-check
 ```
 
-## Current v0.1.0 execution modes
+## Advanced structured execution modes
 
-The current v0.1.0 structured foundation exposes two `reason run` modes. They use the same verification pipeline; the only difference is **who creates the untrusted candidate**. Going forward, live provider generation is the basis of the primary natural-language UX; bring-your-own-candidate remains an advanced integration path.
+The structured foundation still exposes two `reason run` modes for advanced integrations. They use the same verification pipeline; the only difference is **who creates the untrusted candidate**.
 
 | Mode | Command shape | Does Reasoning Harness call an AI model? | Typical use |
 | --- | --- | --- | --- |
@@ -170,7 +191,7 @@ Diagnostics such as contradiction/counterexample discovery, assumption inspectio
 
 This is why `reason run --candidate ...` can be useful with **zero API keys**: the model work happened elsewhere, while the harness performs the trust decision with deterministic rules and explicitly trusted verifier inputs.
 
-For a deeper walkthrough, including state transitions, receipts, qualification, and where model-backed D3 fits, see [How Reasoning Harness works](docs/how-it-works.md).
+For a deeper walkthrough, including state transitions, receipts, qualification, and where model-backed D3 fits, see [How Reasoning Harness works](docs/how-it-works.md). For raw-model-vs-harness evaluation, see [product dogfood](docs/product-dogfood.md).
 
 ## 30-second quickstart
 

@@ -87,7 +87,8 @@ pub use evidence_qualification_benchmark::{
 };
 pub use finalization::{
     CanonicalFinalAnswerRenderer, FinalAnswerCandidate, FinalAnswerClaim, FinalAnswerRenderer,
-    FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus, finalize_answer,
+    FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
+    final_answer_candidate_schema, finalize_answer,
 };
 pub use format_invariance::{
     FormatComparisonError, FormatDecisionTransition, FormatFlipReport, FormatJudgeError,
@@ -95,7 +96,11 @@ pub use format_invariance::{
     build_soft_judge_representation_request, compare_soft_judge_formats,
     parse_soft_judge_representation_decision, run_model_backed_soft_judge_representation,
 };
-pub use generation::{build_candidate_json_fallback_request, build_candidate_request};
+pub use generation::{
+    build_candidate_json_fallback_request, build_candidate_request,
+    build_final_answer_json_fallback_request, build_final_answer_request,
+    parse_final_answer_candidate,
+};
 pub use harness::{HarnessError, HarnessOutcome, Pass, run_harness, run_passes};
 pub use metamorphic::{
     AddIrrelevantEvidence, MetamorphicAggregate, MetamorphicCaseResult, MetamorphicEvaluationError,

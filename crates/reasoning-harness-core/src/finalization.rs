@@ -1,21 +1,23 @@
+use schemars::{JsonSchema, schema_for};
 use serde::{Deserialize, Serialize};
 
 use crate::{EpistemicState, Proposition, ReasoningArtifact, Verdict};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum FinalClaimMode {
     Grounded,
     Uncertain,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 pub struct FinalAnswerClaim {
     pub proposition: Proposition,
     pub mode: FinalClaimMode,
 }
 
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
 pub struct FinalAnswerCandidate {
     pub text: String,
     #[serde(default)]
@@ -55,6 +57,11 @@ impl Default for FinalizationPolicy {
             allow_qualified_partial: true,
         }
     }
+}
+
+pub fn final_answer_candidate_schema() -> serde_json::Value {
+    serde_json::to_value(schema_for!(FinalAnswerCandidate))
+        .expect("FinalAnswerCandidate schema must serialize")
 }
 
 pub trait FinalAnswerRenderer: Send + Sync {
