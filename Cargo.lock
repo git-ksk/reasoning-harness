@@ -692,6 +692,7 @@ dependencies = [
  "clap",
  "reasoning-harness-core",
  "reasoning-harness-providers",
+ "schemars",
  "serde",
  "serde_json",
  "tokio",

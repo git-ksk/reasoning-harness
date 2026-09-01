@@ -1,0 +1,7 @@
+{
+  "schema_version": "reason-config-v1",
+  "run": {
+    "max_tokens": 1024,
+    "format": "json"
+  }
+}

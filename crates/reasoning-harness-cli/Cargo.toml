@@ -45,6 +45,7 @@ path = "src/bin/runtime_smoke.rs"
 clap.workspace = true
 reasoning-harness-core = { path = "../reasoning-harness-core" }
 reasoning-harness-providers = { path = "../reasoning-harness-providers" }
+schemars.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true

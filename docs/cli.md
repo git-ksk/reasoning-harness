@@ -60,7 +60,8 @@ envelope:
   "cli_version": "0.0.1",
   "contracts": {
     "artifact": "reasoning-artifact-v1",
-    "candidate": "reasoning-candidate-v1"
+    "candidate": "reasoning-candidate-v1",
+    "config": "reason-config-v1"
   },
   "result": {}
 }
@@ -75,6 +76,7 @@ Inspect the current wire schemas directly:
 ```bash
 reason schema artifact
 reason schema candidate
+reason schema config
 ```
 
 ## Exit semantics
@@ -92,16 +94,50 @@ must inspect the JSON result when they care about epistemic outcome.
 
 ## Provider credentials and configuration
 
-The current product surface keeps provider secrets out of repository/project configuration:
+Non-secret run configuration is schema-backed and layered. The supported precedence is:
+
+1. explicit CLI flags;
+2. an explicit `--config PATH` file;
+3. project `.reason/config.json` in the current working directory;
+4. user config;
+5. compiled defaults.
+
+User config discovery uses `$REASON_HOME/config.json` when `REASON_HOME` is set, then
+`$XDG_CONFIG_HOME/reason/config.json`, `%APPDATA%/reason/config.json` on Windows, or
+`~/.config/reason/config.json`. Each config file must declare `"schema_version":
+"reason-config-v1"`; unknown fields fail closed instead of being silently ignored.
+
+Example:
+
+```json
+{
+  "schema_version": "reason-config-v1",
+  "run": {
+    "provider": "google",
+    "model": "gemini-3.5-flash-lite",
+    "max_tokens": 1024,
+    "format": "json"
+  }
+}
+```
+
+Use `reason schema config` for the current schema. `--no-config` ignores user/project config for a
+hermetic invocation, which is recommended in reproducible CI unless an explicit config is part of
+the job input. `--config` and `--no-config` are mutually exclusive.
+
+A configured live provider can supply the default provider/model pair. If a CLI `--provider` changes
+the configured provider, `--model` must also be supplied explicitly rather than accidentally reusing
+a model configured for another provider. A live provider with no explicit or configured model fails
+closed.
+
+Provider secrets are deliberately **not fields in `reason-config-v1`**:
 
 - Mistral: `MISTRAL_API_KEY`
 - Google: `GEMINI_API_KEY`
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
 
-Explicit CLI options currently control non-secret run configuration, with compiled defaults used when
-an option is omitted. A layered user/project configuration file is a later CLI-1 hardening step; its
-precedence will be compatibility-tested before it is called supported. Secrets will remain outside
-ordinary checked-in config by default.
+The config parser rejects unknown secret-like fields such as `api_key`. Credentials remain
+environment/provider-adapter inputs and are never serialized into the effective run configuration.
 
 ## D3 runtime note
 
