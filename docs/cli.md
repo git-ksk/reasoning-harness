@@ -31,6 +31,17 @@ Each release includes `SHA256SUMS`. Verify the downloaded archive before install
 
 The same four platform classes run credential-free product smoke in pull requests and on `main`.
 
+## Which command should I use?
+
+| Goal | Command |
+| --- | --- |
+| Check an LLM/agent candidate against harness-owned evidence | `reason run` |
+| Validate an already-materialized artifact | `reason verify` |
+| Run contradiction/counterexample/unsupported-premise/causal-gap semantic diagnostics | `reason semantic-check` |
+| Inspect the exact machine-readable JSON contracts | `reason schema` |
+
+For normal application integration, start with **`reason run`**. The CLI expects structured JSON; it is not a chat client that treats arbitrary conversation text as trusted evidence.
+
 ## Product commands
 
 - `reason run` — execute the harness-owned correctness process from a recorded candidate or live
@@ -83,7 +94,7 @@ envelope:
 {
   "schema_version": "reason-cli-output-v1",
   "command": "run",
-  "cli_version": "0.0.1",
+  "cli_version": "0.1.0",
   "contracts": {
     "artifact": "reasoning-artifact-v1",
     "candidate": "reasoning-candidate-v1",
