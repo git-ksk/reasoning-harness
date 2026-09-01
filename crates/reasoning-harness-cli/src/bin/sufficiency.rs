@@ -25,6 +25,36 @@ struct Args {
     max_tokens: u32,
     #[arg(long, default_value_t = 5000)]
     seed: u64,
+    #[arg(long, value_enum, default_value_t = StudySurface::Calibration)]
+    surface: StudySurface,
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum StudySurface {
+    Calibration,
+    Holdout,
+}
+
+impl StudySurface {
+    const fn corpus(self) -> &'static str {
+        match self {
+            Self::Calibration => "evidence-sufficiency-rsd0",
+            Self::Holdout => "evidence-sufficiency-holdout-v1",
+        }
+    }
+
+    const fn phase(self, repeated: bool) -> &'static str {
+        match (self, repeated) {
+            (Self::Calibration, true) => {
+                "RSD2 repeated stability on frozen RSD1 coordinate; no product authority"
+            }
+            (Self::Calibration, false) => "RSD1 calibration only; no product authority",
+            (Self::Holdout, _) => {
+                "fresh independent holdout v1 on frozen RSD1 coordinate; no product authority"
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum, Serialize)]
@@ -184,7 +214,7 @@ async fn main() -> Result<(), String> {
     if args.max_tokens == 0 {
         return Err("--max-tokens must be at least 1".into());
     }
-    let fixtures = load_fixtures(&args.fixtures)?;
+    let fixtures = load_fixtures(&args.fixtures, args.surface)?;
     if fixtures.is_empty() {
         return Err("sufficiency corpus is empty".into());
     }
@@ -212,12 +242,8 @@ async fn main() -> Result<(), String> {
 
     let output = Output {
         study_id: "evidence-sufficiency-study-v1",
-        phase: if args.trials > 1 {
-            "RSD2 repeated stability on frozen RSD1 coordinate; no product authority"
-        } else {
-            "RSD1 calibration only; no product authority"
-        },
-        corpus: "evidence-sufficiency-rsd0",
+        phase: args.surface.phase(args.trials > 1),
+        corpus: args.surface.corpus(),
         provider: args.provider.name(),
         requested_model: args.model,
         trials: args.trials,
@@ -237,10 +263,22 @@ async fn main() -> Result<(), String> {
     Ok(())
 }
 
-fn load_fixtures(path: &PathBuf) -> Result<Vec<EvidenceSufficiencyCalibrationFixture>, String> {
+fn load_fixtures(
+    path: &PathBuf,
+    surface: StudySurface,
+) -> Result<Vec<EvidenceSufficiencyCalibrationFixture>, String> {
     let text = path.to_string_lossy();
-    if text.contains("holdout-v4") || text.contains("holdout-v5") {
-        return Err("RSD1 refuses frozen semantic holdout paths".into());
+    if text.contains("semantic-decidability-holdout") || text.contains("semantic-judges-holdout") {
+        return Err("sufficiency study refuses semantic holdout paths".into());
+    }
+    match surface {
+        StudySurface::Calibration if text.contains("evidence-sufficiency-holdout") => {
+            return Err("calibration surface refuses evidence-sufficiency holdout paths".into());
+        }
+        StudySurface::Holdout if !text.ends_with("evidence-sufficiency-holdout-v1") => {
+            return Err("holdout surface requires fixtures/evidence-sufficiency-holdout-v1".into());
+        }
+        StudySurface::Calibration | StudySurface::Holdout => {}
     }
     let mut paths = fs::read_dir(path)
         .map_err(|error| format!("{}: {error}", path.display()))?
@@ -664,9 +702,32 @@ mod tests {
     }
 
     #[test]
-    fn loader_refuses_frozen_holdout_paths() {
-        let error =
-            load_fixtures(&PathBuf::from("fixtures/semantic-decidability-holdout-v5")).unwrap_err();
-        assert!(error.contains("refuses frozen semantic holdout"));
+    fn loader_refuses_semantic_holdout_paths() {
+        let error = load_fixtures(
+            &PathBuf::from("fixtures/semantic-decidability-holdout-v5"),
+            StudySurface::Calibration,
+        )
+        .unwrap_err();
+        assert!(error.contains("refuses semantic holdout paths"));
+    }
+
+    #[test]
+    fn calibration_surface_refuses_sufficiency_holdout() {
+        let error = load_fixtures(
+            &PathBuf::from("fixtures/evidence-sufficiency-holdout-v1"),
+            StudySurface::Calibration,
+        )
+        .unwrap_err();
+        assert!(error.contains("calibration surface refuses"));
+    }
+
+    #[test]
+    fn holdout_surface_refuses_calibration_corpus() {
+        let error = load_fixtures(
+            &PathBuf::from("fixtures/evidence-sufficiency-rsd0"),
+            StudySurface::Holdout,
+        )
+        .unwrap_err();
+        assert!(error.contains("holdout surface requires"));
     }
 }

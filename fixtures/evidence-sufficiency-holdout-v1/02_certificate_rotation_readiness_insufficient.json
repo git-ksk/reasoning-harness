@@ -1,0 +1,50 @@
+{
+  "id": "h1-02-certificate-rotation-readiness-insufficient",
+  "family": "certificate_rotation_readiness",
+  "request": {
+    "id": "req-h1-02-certificate-rotation-readiness-insufficient",
+    "task": "Decide whether the production TLS certificate rotation is sufficiently supported as safe to execute.",
+    "target": {
+      "key": "tls.rotation_safe",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must establish that the replacement certificate is valid for the production identities and chain.",
+      "Evidence must establish a deployment overlap or rollback path that avoids cutting over before validation.",
+      "Evidence must cover representative client trust/handshake behavior rather than certificate issuance alone."
+    ],
+    "evidence_ids": [
+      "e1"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the production TLS certificate rotation is sufficiently supported as safe to execute.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "The CA issued a replacement certificate and its expiration date is one year away.",
+        "facts": {
+          "tls.certificate_issued": "true",
+          "tls.expiry_horizon": "1y"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "insufficient",
+  "rationale": "Issuance and expiry alone do not establish client trust behavior or a safe deployment/rollback path."
+}

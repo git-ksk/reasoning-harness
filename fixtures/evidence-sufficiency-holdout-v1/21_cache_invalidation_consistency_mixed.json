@@ -1,0 +1,71 @@
+{
+  "id": "h1-21-cache-invalidation-consistency-mixed",
+  "family": "cache_invalidation_consistency",
+  "request": {
+    "id": "req-h1-21-cache-invalidation-consistency-mixed",
+    "task": "Decide whether the cache-invalidation design is sufficiently supported as meeting the consistency SLO.",
+    "target": {
+      "key": "cache.invalidation_safe",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must bound stale-read duration against the stated SLO after writes/invalidation.",
+      "Evidence must cover propagation across all serving regions or shards relevant to the claim.",
+      "Evidence must cover failure/fallback behavior, not only the nominal invalidation call."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the cache-invalidation design is sufficiently supported as meeting the consistency SLO.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Primary-region read-after-write tests clear stale data within 10 seconds.",
+        "facts": {
+          "cache.primary_max_stale_seconds": "10",
+          "cache.slo_seconds": "30"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Failure-mode fallback tests pass in the primary region.",
+        "facts": {
+          "cache.failure_mode_suite": "pass"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "The secondary region observes stale values for up to 90 seconds after the same invalidation event.",
+        "facts": {
+          "cache.secondary_max_stale_seconds": "90",
+          "cache.slo_seconds": "30"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "mixed",
+  "rationale": "Primary-region behavior is good, but a secondary region violates the same stated consistency SLO."
+}

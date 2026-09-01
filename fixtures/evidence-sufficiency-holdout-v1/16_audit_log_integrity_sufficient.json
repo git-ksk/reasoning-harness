@@ -1,0 +1,70 @@
+{
+  "id": "h1-16-audit-log-integrity-sufficient",
+  "family": "audit_log_integrity",
+  "request": {
+    "id": "req-h1-16-audit-log-integrity-sufficient",
+    "task": "Decide whether privileged-action audit logging is sufficiently supported as complete and tamper-resistant.",
+    "target": {
+      "key": "audit.logging_complete",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover the relevant classes of privileged actions rather than normal application events only.",
+      "Evidence must establish durable/tamper-resistant delivery or storage for the audit records.",
+      "Evidence must establish that delivery gaps can be detected or are absent in the evaluated window."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether privileged-action audit logging is sufficiently supported as complete and tamper-resistant.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Tested admin API, console, role-assumption, and break-glass actions all emit correlated audit records.",
+        "facts": {
+          "audit.privileged_action_coverage": "complete"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Audit records land in append-only storage with retention lock enabled.",
+        "facts": {
+          "audit.append_only": "true",
+          "audit.retention_lock": "enabled"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Sequence and delivery monitoring reports zero unexplained gaps for the evaluated window.",
+        "facts": {
+          "audit.unexplained_gaps": "0"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "sufficient",
+  "rationale": "Privileged-event coverage, tamper resistance, and delivery completeness are all evidenced."
+}

@@ -1,0 +1,71 @@
+{
+  "id": "h1-13-schema-migration-readiness-sufficient",
+  "family": "schema_migration_readiness",
+  "request": {
+    "id": "req-h1-13-schema-migration-readiness-sufficient",
+    "task": "Decide whether the database schema migration is sufficiently supported as safe for rolling deployment.",
+    "target": {
+      "key": "db.migration_safe",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover mixed old/new application versions during the rolling window.",
+      "Evidence must establish backfill completeness and data invariants after migration.",
+      "Evidence must establish a viable recovery/rollback or forward-fix path for the migration state."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the database schema migration is sufficiently supported as safe for rolling deployment.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Mixed-version compatibility tests pass with old and new application versions reading/writing the migrated schema.",
+        "facts": {
+          "db.mixed_version_suite": "pass"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Backfill reconciliation reports zero missing rows and all post-migration invariants hold.",
+        "facts": {
+          "db.backfill_missing_rows": "0",
+          "db.invariants": "pass"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "A recovery rehearsal successfully restores service from the post-migration state without data loss.",
+        "facts": {
+          "db.recovery_rehearsal": "pass",
+          "db.data_loss": "false"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "sufficient",
+  "rationale": "Rolling compatibility, backfill integrity, and recovery behavior are all directly evidenced."
+}

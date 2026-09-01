@@ -1,0 +1,50 @@
+{
+  "id": "h1-17-audit-log-integrity-insufficient",
+  "family": "audit_log_integrity",
+  "request": {
+    "id": "req-h1-17-audit-log-integrity-insufficient",
+    "task": "Decide whether privileged-action audit logging is sufficiently supported as complete and tamper-resistant.",
+    "target": {
+      "key": "audit.logging_complete",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover the relevant classes of privileged actions rather than normal application events only.",
+      "Evidence must establish durable/tamper-resistant delivery or storage for the audit records.",
+      "Evidence must establish that delivery gaps can be detected or are absent in the evaluated window."
+    ],
+    "evidence_ids": [
+      "e1"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether privileged-action audit logging is sufficiently supported as complete and tamper-resistant.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Application request logs are searchable and include authenticated user identifiers.",
+        "facts": {
+          "audit.app_request_logs": "available",
+          "audit.user_id_present": "true"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "insufficient",
+  "rationale": "Ordinary application logs do not establish privileged-action coverage, tamper resistance, or delivery completeness."
+}

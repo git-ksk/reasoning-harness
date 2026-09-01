@@ -1,0 +1,71 @@
+{
+  "id": "h1-09-regional-failover-readiness-mixed",
+  "family": "regional_failover_readiness",
+  "request": {
+    "id": "req-h1-09-regional-failover-readiness-mixed",
+    "task": "Decide whether the service is sufficiently supported as ready for regional failover within its stated objectives.",
+    "target": {
+      "key": "dr.failover_ready",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must establish that the secondary region has current capacity for the expected failover load.",
+      "Evidence must establish replication freshness within the stated recovery-point objective.",
+      "Evidence must include a recent end-to-end failover exercise or equivalent operational proof."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the service is sufficiently supported as ready for regional failover within its stated objectives.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "The secondary region passed the projected failover load test.",
+        "facts": {
+          "dr.secondary_capacity_ratio": "1.10"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "A recent failover exercise completed within RTO.",
+        "facts": {
+          "dr.exercise_result": "pass",
+          "dr.rto_met": "true"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Replication lag intermittently reached 180 seconds against a 60-second RPO during peak write load.",
+        "facts": {
+          "dr.max_replication_lag_seconds": "180",
+          "dr.rpo_seconds": "60"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "mixed",
+  "rationale": "Capacity and failover execution are supported, but observed replication lag violates the RPO under relevant load."
+}

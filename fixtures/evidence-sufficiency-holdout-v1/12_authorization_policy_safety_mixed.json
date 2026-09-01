@@ -1,0 +1,70 @@
+{
+  "id": "h1-12-authorization-policy-safety-mixed",
+  "family": "authorization_policy_safety",
+  "request": {
+    "id": "req-h1-12-authorization-policy-safety-mixed",
+    "task": "Decide whether the proposed authorization-policy change is sufficiently supported as safe to deploy.",
+    "target": {
+      "key": "authz.change_safe",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must establish that intended principals gain the intended permissions and no broader permissions.",
+      "Evidence must exercise negative/deny paths and privilege-escalation boundaries.",
+      "Evidence must cover relevant cross-account or wildcard/resource-scope effects."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the proposed authorization-policy change is sufficiently supported as safe to deploy.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "The intended service role receives only the expected action in direct tests.",
+        "facts": {
+          "authz.intended_delta": "read_only"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Negative write/admin tests remain denied.",
+        "facts": {
+          "authz.negative_suite": "pass"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Static analysis finds a wildcard resource selector that can match an additional production bucket.",
+        "facts": {
+          "authz.wildcard_expansion": "true",
+          "authz.additional_bucket_match": "true"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "mixed",
+  "rationale": "Direct tests look safe, but static scope analysis identifies a real broader-resource expansion."
+}

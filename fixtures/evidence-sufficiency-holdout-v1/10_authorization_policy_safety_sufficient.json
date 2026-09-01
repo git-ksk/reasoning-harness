@@ -1,0 +1,72 @@
+{
+  "id": "h1-10-authorization-policy-safety-sufficient",
+  "family": "authorization_policy_safety",
+  "request": {
+    "id": "req-h1-10-authorization-policy-safety-sufficient",
+    "task": "Decide whether the proposed authorization-policy change is sufficiently supported as safe to deploy.",
+    "target": {
+      "key": "authz.change_safe",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must establish that intended principals gain the intended permissions and no broader permissions.",
+      "Evidence must exercise negative/deny paths and privilege-escalation boundaries.",
+      "Evidence must cover relevant cross-account or wildcard/resource-scope effects."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the proposed authorization-policy change is sufficiently supported as safe to deploy.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "The before/after access matrix grants only the documented read action to the intended service role.",
+        "facts": {
+          "authz.intended_delta": "read_only",
+          "authz.extra_grants": "0"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Negative tests confirm denied write, admin, impersonation, and privilege-escalation paths remain denied.",
+        "facts": {
+          "authz.negative_suite": "pass",
+          "authz.escalation_paths": "denied"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Policy analysis reports no wildcard-resource or cross-account expansion.",
+        "facts": {
+          "authz.wildcard_expansion": "false",
+          "authz.cross_account_expansion": "false"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "sufficient",
+  "rationale": "Positive intent, negative privilege boundaries, and resource/cross-account scope are all covered."
+}

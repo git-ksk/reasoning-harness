@@ -1,0 +1,50 @@
+{
+  "id": "h1-23-dependency-upgrade-compatibility-insufficient",
+  "family": "dependency_upgrade_compatibility",
+  "request": {
+    "id": "req-h1-23-dependency-upgrade-compatibility-insufficient",
+    "task": "Decide whether the dependency upgrade is sufficiently supported as safe for production rollout.",
+    "target": {
+      "key": "dependency.upgrade_safe",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover externally relevant API/behavior compatibility for the application workloads.",
+      "Evidence must cover material performance/resource regressions under representative load.",
+      "Evidence must establish a tested rollback or compatibility recovery path."
+    ],
+    "evidence_ids": [
+      "e1"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the dependency upgrade is sufficiently supported as safe for production rollout.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "The application compiles with the new dependency and its unit test suite passes.",
+        "facts": {
+          "dependency.compile": "pass",
+          "dependency.unit_tests": "pass"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "insufficient",
+  "rationale": "Compilation and unit tests do not cover integration compatibility, representative performance, or rollback."
+}

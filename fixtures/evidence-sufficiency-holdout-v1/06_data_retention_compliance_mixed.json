@@ -1,0 +1,71 @@
+{
+  "id": "h1-06-data-retention-compliance-mixed",
+  "family": "data_retention_compliance",
+  "request": {
+    "id": "req-h1-06-data-retention-compliance-mixed",
+    "task": "Decide whether the service is sufficiently supported as complying with the 90-day data-retention policy.",
+    "target": {
+      "key": "data.retention_compliant",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover actual retained age, not only configured TTL intent.",
+      "Evidence must cover primary, replica, and backup/archive storage where retained copies can exist.",
+      "Evidence must account for legal-hold exceptions separately from ordinary retention."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "Fresh evidence-sufficiency holdout v1: Decide whether the service is sufficiently supported as complying with the 90-day data-retention policy.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Primary and replica inventory is within 90 days.",
+        "facts": {
+          "retention.primary_max_days": "88",
+          "retention.replica_max_days": "89"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "Legal-hold records are separately identified.",
+        "facts": {
+          "retention.legal_hold_accounted": "true"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "sufficiency-holdout-v1-synthetic",
+        "observation": "One ordinary archive tier still contains recoverable objects up to 120 days old.",
+        "facts": {
+          "retention.archive_max_days": "120",
+          "retention.archive_has_ordinary_records": "true"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "mixed",
+  "rationale": "Primary/replica retention and legal-hold handling are compliant, but ordinary archive copies exceed the policy."
+}
