@@ -75,11 +75,15 @@ jobs:
           set -euo pipefail
           "${{ matrix.executable }}" --version
           "${{ matrix.executable }}" schema artifact > reason-schema.json
+          "${{ matrix.executable }}" schema semantic-check > reason-semantic-schema.json
           python - <<'PY'
           import json
           with open('reason-schema.json', encoding='utf-8') as f:
               data = json.load(f)
+          with open('reason-semantic-schema.json', encoding='utf-8') as f:
+              semantic = json.load(f)
           assert data['result']['contract_id'] == 'reasoning-artifact-v1'
+          assert semantic['result']['contract_id'] == 'semantic-check-input-v1'
           PY
       - name: Package Unix release
         if: runner.os != 'Windows'
