@@ -115,7 +115,7 @@ RSD0 passes its predeclared acceptance criteria:
 - frozen holdout paths are outside the loader;
 - the fixture contract contains no model-owned authority.
 
-Therefore **RSD1 is justified**. The next phase may test a narrow model-backed
+Therefore **RSD1 is justified**. Its frozen calibration contract is documented in [evidence-sufficiency-rsd1.md](evidence-sufficiency-rsd1.md). The next phase may test a narrow model-backed
 `sufficient | insufficient | mixed` coordinate, with the monotone product rule unchanged:
 `sufficient` cannot create authority; `insufficient | mixed` may only preserve/force conservative
 resolution or abstention.

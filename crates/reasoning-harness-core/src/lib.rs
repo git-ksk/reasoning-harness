@@ -186,8 +186,12 @@ pub use semantic_stability::{
     assess_soft_decision_stability,
 };
 pub use semantic_sufficiency::{
-    EvidenceSufficiencyCalibrationFixture, EvidenceSufficiencyFixtureError,
-    EvidenceSufficiencyLabel, EvidenceSufficiencyRequest, validate_evidence_sufficiency_fixture,
+    EvidenceSufficiencyCalibrationFixture, EvidenceSufficiencyFallbackReason,
+    EvidenceSufficiencyFixtureError, EvidenceSufficiencyLabel, EvidenceSufficiencyModelError,
+    EvidenceSufficiencyModelOutput, EvidenceSufficiencyObservation, EvidenceSufficiencyRequest,
+    build_evidence_sufficiency_json_fallback_request, build_evidence_sufficiency_model_request,
+    evidence_sufficiency_output_schema, parse_evidence_sufficiency_output,
+    run_model_backed_evidence_sufficiency, validate_evidence_sufficiency_fixture,
 };
 pub use types::{
     AdversarialFinding, AdversarialFindingKind, ApplicabilityScope, CandidateClaim,
