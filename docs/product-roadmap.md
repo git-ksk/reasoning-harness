@@ -39,7 +39,7 @@ The first product milestone makes the existing CLI predictable for humans, shell
 - [implemented #90] define `reason-cli-output-v1` plus `reasoning-artifact-v1` / `reasoning-candidate-v1` machine-readable contract identities and schema discovery;
 - [implemented #90] document exit-code semantics: successful `accept | reject | unknown` execution is exit 0, command/runtime/validation failure is exit 1, and CLI parse failure is exit 2;
 - normalize typed runtime/provider failures without exposing provider-specific authority semantics;
-- define and implement compatibility-tested user/project configuration precedence; provider secrets remain environment-owned by default;
+- [implemented #94] schema-backed `reason-config-v1` layers explicit CLI flags > explicit config > current-project config > user config > defaults; `--no-config` supports hermetic runs, unknown fields fail closed, and provider secrets remain environment-owned by default;
 - keep `--format json` suitable for automation and human output explicitly non-authoritative;
 - add a short install/quickstart path and copy-paste shell/CI examples.
 

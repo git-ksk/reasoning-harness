@@ -1,6 +1,6 @@
 use std::{
     collections::{BTreeMap, VecDeque},
-    fs,
+    env, fs,
     io::{self, Read},
     path::{Path, PathBuf},
     process::ExitCode,
@@ -29,9 +29,12 @@ use reasoning_harness_core::{
     structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
-use serde::{Serialize, de::DeserializeOwned};
+use schemars::{JsonSchema, schema_for};
+use serde::{Deserialize, Serialize, de::DeserializeOwned};
 
 const CLI_OUTPUT_SCHEMA_VERSION: &str = "reason-cli-output-v1";
+const CLI_CONFIG_CONTRACT_ID: &str = "reason-config-v1";
+const DEFAULT_MAX_TOKENS: u32 = 1024;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -44,7 +47,10 @@ struct Cli {
     command: Command,
 }
 
-#[derive(Debug, Clone, Copy, Default, ValueEnum)]
+#[derive(
+    Debug, Clone, Copy, Default, PartialEq, Eq, ValueEnum, Serialize, Deserialize, JsonSchema,
+)]
+#[serde(rename_all = "snake_case")]
 enum OutputFormat {
     #[default]
     Human,
@@ -55,15 +61,58 @@ enum OutputFormat {
 enum SchemaKind {
     Artifact,
     Candidate,
+    Config,
 }
 
-#[derive(Debug, Clone, Copy, ValueEnum)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
 enum Provider {
     Mistral,
     Google,
     Nvidia,
     #[value(hide = true)]
     Gemma,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize, JsonSchema)]
+#[serde(default, deny_unknown_fields)]
+struct RunFileConfig {
+    provider: Option<Provider>,
+    model: Option<String>,
+    max_tokens: Option<u32>,
+    format: Option<OutputFormat>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct CliFileConfig {
+    schema_version: String,
+    #[serde(default)]
+    run: RunFileConfig,
+}
+
+impl Default for CliFileConfig {
+    fn default() -> Self {
+        Self {
+            schema_version: CLI_CONFIG_CONTRACT_ID.into(),
+            run: RunFileConfig::default(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Default)]
+struct LoadedCliConfig {
+    config: CliFileConfig,
+    sources: Vec<&'static str>,
+}
+
+#[derive(Debug)]
+struct ResolvedRunConfig {
+    provider: Option<Provider>,
+    model: Option<String>,
+    max_tokens: u32,
+    format: OutputFormat,
+    config_sources: Vec<&'static str>,
 }
 
 enum LiveGenerator {
@@ -299,17 +348,23 @@ enum Command {
         /// Live candidate generator. Mutually exclusive with --candidate.
         #[arg(long, value_enum)]
         provider: Option<Provider>,
-        /// Provider model identifier used for live candidate generation.
-        #[arg(long, default_value = "ministral-8b-latest")]
-        model: String,
+        /// Provider model identifier used for live candidate generation. Required for live mode unless configured.
+        #[arg(long)]
+        model: Option<String>,
         /// Maximum candidate-generation tokens.
-        #[arg(long, default_value_t = 1024)]
-        max_tokens: u32,
+        #[arg(long)]
+        max_tokens: Option<u32>,
         /// Optional provider random seed for repeatable research runs.
         #[arg(long)]
         seed: Option<u64>,
-        #[arg(long, value_enum, default_value_t)]
-        format: OutputFormat,
+        /// Highest-precedence non-secret config file layered over project/user config.
+        #[arg(long, value_name = "PATH", conflicts_with = "no_config")]
+        config: Option<PathBuf>,
+        /// Ignore user/project config for a hermetic invocation.
+        #[arg(long)]
+        no_config: bool,
+        #[arg(long, value_enum)]
+        format: Option<OutputFormat>,
     },
     /// PRODUCT: Deterministically validate a finalized ReasoningArtifact JSON file.
     Verify {
@@ -388,6 +443,7 @@ enum Command {
 struct CliContractVersions {
     artifact: &'static str,
     candidate: &'static str,
+    config: &'static str,
 }
 
 #[derive(Debug, Serialize)]
@@ -438,7 +494,21 @@ fn add_optional(left: Option<u64>, right: Option<u64>) -> Option<u64> {
 }
 
 #[derive(Debug, Serialize)]
+struct RunConfigurationObservation {
+    mode: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    model: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_tokens: Option<u32>,
+    output_format: OutputFormat,
+    config_sources: Vec<&'static str>,
+}
+
+#[derive(Debug, Serialize)]
 struct RunOutput {
+    configuration: RunConfigurationObservation,
     candidate: ReasoningCandidate,
     outcome: reasoning_harness_core::HarnessOutcome,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -692,6 +762,8 @@ async fn run(cli: Cli) -> Result<(), String> {
             model,
             max_tokens,
             seed,
+            config,
+            no_config,
             format,
         } => {
             ensure_single_stdin(
@@ -699,13 +771,33 @@ async fn run(cli: Cli) -> Result<(), String> {
                     .chain(candidate.iter())
                     .chain(receipts.iter()),
             )?;
+            if config.as_ref().is_some_and(|path| is_stdin(path)) {
+                return Err("--config must be a file path; stdin config is not supported".into());
+            }
+            let loaded_config = if no_config {
+                LoadedCliConfig::default()
+            } else {
+                load_cli_config(config.as_ref())?
+            };
+            let resolved = resolve_run_config(
+                candidate.is_some(),
+                provider,
+                model,
+                max_tokens,
+                format,
+                loaded_config,
+            )?;
             let input: HarnessInput = read_json(&input)?;
-            let (candidate, generation) = match (candidate, provider) {
+            let (candidate, generation) = match (candidate, resolved.provider) {
                 (Some(path), None) => (read_json(&path)?, None),
                 (None, Some(provider)) => {
-                    let generator = LiveGenerator::from_provider(provider, &model)?;
+                    let model = resolved
+                        .model
+                        .as_deref()
+                        .expect("live run config validates model presence");
+                    let generator = LiveGenerator::from_provider(provider, model)?;
                     let (candidate, observation) = generator
-                        .generate(&input, max_tokens, seed, &model)
+                        .generate(&input, resolved.max_tokens, seed, model)
                         .await
                         .map_err(|failure| format_generation_failure(&failure))?;
                     (candidate, Some(observation))
@@ -714,7 +806,10 @@ async fn run(cli: Cli) -> Result<(), String> {
                     return Err("choose either --candidate or --provider, not both".into());
                 }
                 (None, None) => {
-                    return Err("reason run requires either --candidate or --provider".into());
+                    return Err(
+                        "reason run requires either --candidate or a live --provider (CLI/config)"
+                            .into(),
+                    );
                 }
             };
 
@@ -735,12 +830,25 @@ async fn run(cli: Cli) -> Result<(), String> {
             ];
             let outcome = run_harness(input, candidate.clone(), &passes, &StrictAcceptancePolicy)
                 .map_err(|error| error.to_string())?;
+            let live = generation.is_some();
             let output = RunOutput {
+                configuration: RunConfigurationObservation {
+                    mode: if live {
+                        "live_provider"
+                    } else {
+                        "recorded_candidate"
+                    },
+                    provider: resolved.provider.map(provider_name),
+                    model: live.then(|| resolved.model.clone()).flatten(),
+                    max_tokens: live.then_some(resolved.max_tokens),
+                    output_format: resolved.format,
+                    config_sources: resolved.config_sources,
+                },
                 candidate,
                 outcome,
                 generation,
             };
-            match format {
+            match resolved.format {
                 OutputFormat::Human => {
                     println!("verdict: {:?}", output.outcome.verdict);
                     if let Some(generation) = &output.generation {
@@ -787,6 +895,11 @@ async fn run(cli: Cli) -> Result<(), String> {
                 SchemaKind::Candidate => SchemaOutput {
                     contract_id: REASONING_CANDIDATE_CONTRACT_ID,
                     schema: reasoning_candidate_schema(),
+                },
+                SchemaKind::Config => SchemaOutput {
+                    contract_id: CLI_CONFIG_CONTRACT_ID,
+                    schema: serde_json::to_value(schema_for!(CliFileConfig))
+                        .map_err(|error| error.to_string())?,
                 },
             };
             print_product_json("schema", &output)
@@ -2139,6 +2252,146 @@ fn format_optional_metric(value: Option<f64>) -> String {
     value.map_or_else(|| "n/a".into(), |value| format!("{value:.3}"))
 }
 
+fn load_cli_config(explicit: Option<&PathBuf>) -> Result<LoadedCliConfig, String> {
+    let mut loaded = LoadedCliConfig::default();
+
+    if let Some(path) = user_config_path().filter(|path| path.is_file()) {
+        merge_config_file(&mut loaded, &path, "user")?;
+    }
+
+    if let Some(path) = project_config_path().filter(|path| path.is_file()) {
+        merge_config_file(&mut loaded, &path, "project")?;
+    }
+
+    if let Some(path) = explicit {
+        if !path.is_file() {
+            return Err(format!(
+                "{}: explicit config file does not exist",
+                path.display()
+            ));
+        }
+        merge_config_file(&mut loaded, path, "explicit")?;
+    }
+
+    Ok(loaded)
+}
+
+fn merge_config_file(
+    loaded: &mut LoadedCliConfig,
+    path: &Path,
+    source: &'static str,
+) -> Result<(), String> {
+    let bytes = fs::read(path).map_err(|error| format!("{}: {error}", path.display()))?;
+    let overlay: CliFileConfig =
+        serde_json::from_slice(&bytes).map_err(|error| format!("{}: {error}", path.display()))?;
+    if overlay.schema_version != CLI_CONFIG_CONTRACT_ID {
+        return Err(format!(
+            "{}: unsupported config schema_version {:?}; expected {:?}",
+            path.display(),
+            overlay.schema_version,
+            CLI_CONFIG_CONTRACT_ID
+        ));
+    }
+    merge_cli_config(&mut loaded.config, overlay);
+    loaded.sources.push(source);
+    Ok(())
+}
+
+fn merge_cli_config(base: &mut CliFileConfig, overlay: CliFileConfig) {
+    if overlay.run.provider.is_some() {
+        base.run.provider = overlay.run.provider;
+    }
+    if overlay.run.model.is_some() {
+        base.run.model = overlay.run.model;
+    }
+    if overlay.run.max_tokens.is_some() {
+        base.run.max_tokens = overlay.run.max_tokens;
+    }
+    if overlay.run.format.is_some() {
+        base.run.format = overlay.run.format;
+    }
+}
+
+fn resolve_run_config(
+    has_candidate: bool,
+    cli_provider: Option<Provider>,
+    cli_model: Option<String>,
+    cli_max_tokens: Option<u32>,
+    cli_format: Option<OutputFormat>,
+    loaded: LoadedCliConfig,
+) -> Result<ResolvedRunConfig, String> {
+    if has_candidate && cli_provider.is_some() {
+        return Err("choose either --candidate or --provider, not both".into());
+    }
+
+    if let Some(cli_provider) = cli_provider
+        && loaded
+            .config
+            .run
+            .provider
+            .is_some_and(|configured| configured != cli_provider)
+        && cli_model.is_none()
+        && loaded.config.run.model.is_some()
+    {
+        return Err(
+            "--provider overrides the configured provider; supply --model explicitly to avoid reusing a model configured for a different provider"
+                .into(),
+        );
+    }
+
+    let provider = if has_candidate {
+        None
+    } else {
+        cli_provider.or(loaded.config.run.provider)
+    };
+    let model = cli_model.or(loaded.config.run.model);
+    let max_tokens = cli_max_tokens
+        .or(loaded.config.run.max_tokens)
+        .unwrap_or(DEFAULT_MAX_TOKENS);
+    if max_tokens == 0 {
+        return Err("--max-tokens / run.max_tokens must be at least 1".into());
+    }
+    if provider.is_some() && model.as_deref().is_none_or(str::is_empty) {
+        return Err(
+            "live provider mode requires --model or a non-empty configured run.model".into(),
+        );
+    }
+
+    Ok(ResolvedRunConfig {
+        provider,
+        model,
+        max_tokens,
+        format: cli_format.or(loaded.config.run.format).unwrap_or_default(),
+        config_sources: loaded.sources,
+    })
+}
+
+fn user_config_path() -> Option<PathBuf> {
+    if let Some(home) = env::var_os("REASON_HOME") {
+        return Some(PathBuf::from(home).join("config.json"));
+    }
+    if let Some(xdg) = env::var_os("XDG_CONFIG_HOME") {
+        return Some(PathBuf::from(xdg).join("reason").join("config.json"));
+    }
+    if cfg!(windows)
+        && let Some(app_data) = env::var_os("APPDATA")
+    {
+        return Some(PathBuf::from(app_data).join("reason").join("config.json"));
+    }
+    env::var_os("HOME").map(|home| {
+        PathBuf::from(home)
+            .join(".config")
+            .join("reason")
+            .join("config.json")
+    })
+}
+
+fn project_config_path() -> Option<PathBuf> {
+    env::current_dir()
+        .ok()
+        .map(|directory| directory.join(".reason").join("config.json"))
+}
+
 fn ensure_single_stdin<'a>(paths: impl IntoIterator<Item = &'a PathBuf>) -> Result<(), String> {
     let stdin_count = paths.into_iter().filter(|path| is_stdin(path)).count();
     if stdin_count <= 1 {
@@ -2176,6 +2429,7 @@ fn print_product_json(command: &'static str, result: &impl Serialize) -> Result<
         contracts: CliContractVersions {
             artifact: REASONING_ARTIFACT_CONTRACT_ID,
             candidate: REASONING_CANDIDATE_CONTRACT_ID,
+            config: CLI_CONFIG_CONTRACT_ID,
         },
         result,
     })
@@ -2224,6 +2478,7 @@ mod candidate_json_tests {
             contracts: CliContractVersions {
                 artifact: REASONING_ARTIFACT_CONTRACT_ID,
                 candidate: REASONING_CANDIDATE_CONTRACT_ID,
+                config: CLI_CONFIG_CONTRACT_ID,
             },
             result: VerifyOutput {
                 valid: true,
@@ -2241,6 +2496,7 @@ mod candidate_json_tests {
             value["contracts"]["candidate"],
             REASONING_CANDIDATE_CONTRACT_ID
         );
+        assert_eq!(value["contracts"]["config"], CLI_CONFIG_CONTRACT_ID);
         assert_eq!(value["result"]["valid"], true);
     }
 
@@ -2259,6 +2515,121 @@ mod candidate_json_tests {
             cli.command,
             Command::Schema {
                 kind: SchemaKind::Artifact
+            }
+        ));
+    }
+
+    #[test]
+    fn config_merge_is_fieldwise_and_higher_precedence_wins() {
+        let mut base = CliFileConfig {
+            schema_version: CLI_CONFIG_CONTRACT_ID.into(),
+            run: RunFileConfig {
+                provider: Some(Provider::Mistral),
+                model: Some("base-model".into()),
+                max_tokens: Some(128),
+                format: None,
+            },
+        };
+        merge_cli_config(
+            &mut base,
+            CliFileConfig {
+                schema_version: CLI_CONFIG_CONTRACT_ID.into(),
+                run: RunFileConfig {
+                    provider: None,
+                    model: Some("override-model".into()),
+                    max_tokens: None,
+                    format: Some(OutputFormat::Json),
+                },
+            },
+        );
+        assert_eq!(base.run.provider, Some(Provider::Mistral));
+        assert_eq!(base.run.model.as_deref(), Some("override-model"));
+        assert_eq!(base.run.max_tokens, Some(128));
+        assert_eq!(base.run.format, Some(OutputFormat::Json));
+    }
+
+    #[test]
+    fn recorded_candidate_ignores_configured_live_provider() {
+        let resolved = resolve_run_config(
+            true,
+            None,
+            None,
+            None,
+            Some(OutputFormat::Json),
+            LoadedCliConfig {
+                config: CliFileConfig {
+                    schema_version: CLI_CONFIG_CONTRACT_ID.into(),
+                    run: RunFileConfig {
+                        provider: Some(Provider::Google),
+                        model: Some("gemini-test".into()),
+                        max_tokens: Some(256),
+                        format: None,
+                    },
+                },
+                sources: vec!["user"],
+            },
+        )
+        .unwrap();
+        assert_eq!(resolved.provider, None);
+        assert_eq!(resolved.format, OutputFormat::Json);
+        assert_eq!(resolved.config_sources, vec!["user"]);
+    }
+
+    #[test]
+    fn live_provider_requires_explicit_or_configured_model() {
+        let error = resolve_run_config(
+            false,
+            Some(Provider::Google),
+            None,
+            None,
+            None,
+            LoadedCliConfig::default(),
+        )
+        .unwrap_err();
+        assert!(error.contains("requires --model"));
+    }
+
+    #[test]
+    fn provider_override_requires_model_when_config_provider_changes() {
+        let error = resolve_run_config(
+            false,
+            Some(Provider::Google),
+            None,
+            None,
+            None,
+            LoadedCliConfig {
+                config: CliFileConfig {
+                    schema_version: CLI_CONFIG_CONTRACT_ID.into(),
+                    run: RunFileConfig {
+                        provider: Some(Provider::Mistral),
+                        model: Some("ministral-8b-latest".into()),
+                        max_tokens: None,
+                        format: None,
+                    },
+                },
+                sources: vec!["project"],
+            },
+        )
+        .unwrap_err();
+        assert!(error.contains("supply --model explicitly"));
+    }
+
+    #[test]
+    fn config_schema_rejects_secret_like_unknown_fields() {
+        let text = r#"{
+          "schema_version": "reason-config-v1",
+          "run": {"model": "m", "api_key": "secret"}
+        }"#;
+        assert!(serde_json::from_str::<CliFileConfig>(text).is_err());
+    }
+
+    #[test]
+    fn parses_config_schema_product_command() {
+        let cli = Cli::try_parse_from(["reason", "schema", "config"]).unwrap();
+        assert!(matches!(
+            cli.command,
+            Command::Schema {
+                kind: SchemaKind::Config
             }
         ));
     }
