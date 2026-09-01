@@ -27,8 +27,15 @@ jobs:
       - name: CLI smoke
         run: |
           cargo run -q --locked -p reasoning-harness-cli -- run --input examples/input.json --candidate examples/candidate.json --format json >/tmp/reason-run.json
+          jq -e '.schema_version == "reason-cli-output-v1" and .command == "run" and .contracts.artifact == "reasoning-artifact-v1"' /tmp/reason-run.json >/dev/null
           cargo run -q --locked -p reasoning-harness-cli -- run --input examples/input.json --candidate examples/candidate.json --receipts examples/receipts.json --format json >/tmp/reason-run-receipts.json
+          cat examples/input.json | cargo run -q --locked -p reasoning-harness-cli -- run --input - --candidate examples/candidate.json --format json >/tmp/reason-run-stdin.json
+          jq -e '.command == "run" and .result.outcome.verdict != null' /tmp/reason-run-stdin.json >/dev/null
           cargo run -q --locked -p reasoning-harness-cli -- verify examples/artifact.json --format json >/tmp/reason-verify.json
+          jq -e '.schema_version == "reason-cli-output-v1" and .command == "verify" and .result.valid == true' /tmp/reason-verify.json >/dev/null
+          cat examples/artifact.json | cargo run -q --locked -p reasoning-harness-cli -- verify - --format json >/tmp/reason-verify-stdin.json
+          cargo run -q --locked -p reasoning-harness-cli -- schema artifact >/tmp/reason-artifact-schema.json
+          jq -e '.command == "schema" and .result.contract_id == "reasoning-artifact-v1" and .result.schema != null' /tmp/reason-artifact-schema.json >/dev/null
           cargo run -q --locked -p reasoning-harness-cli -- eval examples/artifact.json --format json >/tmp/reason-eval.json
       - name: Fixture regression
         run: cargo run -q --locked -p reasoning-harness-cli -- eval fixtures --format json >/tmp/reason-fixtures.json

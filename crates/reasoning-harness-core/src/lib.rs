@@ -136,7 +136,10 @@ pub use resolution_benchmark::{
     ResolutionFixtureStep, ResolutionFixtureStepResult, aggregate_resolution_benchmark,
     evaluate_resolution_fixture,
 };
-pub use schema::{reasoning_artifact_schema, reasoning_candidate_schema, soft_judge_output_schema};
+pub use schema::{
+    REASONING_ARTIFACT_CONTRACT_ID, REASONING_CANDIDATE_CONTRACT_ID, reasoning_artifact_schema,
+    reasoning_candidate_schema, soft_judge_output_schema,
+};
 pub use semantic_decidability::{
     SemanticDecidabilityAssessment, SemanticDecidabilityCalibrationFixture,
     SemanticDecidabilityDisposition, SemanticDecidabilityError, SemanticDecidabilityReason,
