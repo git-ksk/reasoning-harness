@@ -68,9 +68,32 @@ Tracking: #109 #110 #111 #112 #113 under #107.
 - **NL-2 — implemented first boundary:** `--file`/stdin are bounded provenance-bearing untrusted context; `--fact` is explicit structured evidence and `--hypothesis` is an explicit target. Arbitrary prose is not promoted to hard evidence.
 - **NL-3 — implemented adapter slice:** `--resolver-fact` exercises the existing bounded `GroundedResolutionRuntime` through an explicitly trusted local fact-store adapter, admission policy, budgets, and mandatory re-verification. Network/search/database/MCP resolver integrations remain future adapters, not correctness-core shortcuts.
 - **NL-4 — implemented:** the provider renders a typed final-answer candidate, then harness-owned final-claim coverage decides whether the text can be exposed as grounded/qualified; uncovered facts are blocked and can re-enter configured bounded resolution. Renderer failure falls back to a canonical safe renderer.
-- **NL-5 — runner/workflow implemented; live result required:** `reason-product-dogfood` compares raw model vs the same model behind the harness on two non-holdout workload classes and reports safety, abstention, coverage, resolution, token, and latency metrics.
+- **NL-5 — runner/workflow implemented; live evaluation intentionally blocked on the D3/sufficiency bridge below:** the current runner provides the product-dogfood substrate, but the acceptance run should happen only after the promoted D3/sufficiency path is integrated into the natural-language runtime.
 
-D3 remains the adopted semantic diagnostic runtime, but it is not silently fused into every natural-language request. Automatic residual evidence-sufficiency gating remains Research #91 until its calibration/holdout promotion gate is satisfied. The product path therefore uses only mechanisms whose authority semantics are already characterized.
+### D3 / sufficiency bridge before NL-5
+
+NL-5 is no longer the immediate next product step. First advance Research #91 far enough to decide whether a residual evidence-sufficiency gate can safely join the natural-language runtime. The order is:
+
+1. **RSD0 — fresh residual-gap discovery:** build a new calibration-only corpus for cases where evidence exists but may still be insufficient to answer; frozen holdout-v4/v5 remain untouched.
+2. **RSD1 — narrow sufficiency coordinate:** test a provider-neutral `sufficient | insufficient | mixed`-style signal where only `insufficient`/`mixed` may preserve or force abstention; `sufficient` never creates correctness authority.
+3. **RSD2 — risk/coverage characterization:** jointly measure unsafe-assertion reduction, correct abstention, false abstention, seed/model stability, and operational completeness.
+4. **Fresh independent holdout:** if RSD1/RSD2 justify promotion, freeze a new independent holdout before any product adoption claim.
+5. **Product bridge:** operationally stabilize the successor profile, give it explicit runtime identity + rollback, and integrate it into the natural-language path only as a conservative gate. Missing/insufficient support should route to bounded resolution or abstention, never epistemic promotion.
+6. **Then NL-5:** run the real-workload acceptance comparison on the completed product path.
+
+RSD3 selective/conformal abstention and RSD4 relation-level causal sufficiency remain follow-on research unless RSD0-RSD2 demonstrate that either is required for the first product bridge. They do not block the initial natural-language D3/sufficiency integration by default.
+
+The final NL-5 evaluation should use three arms where practical:
+
+```text
+A. raw model
+B. same model + current deterministic/grounding Harness baseline
+C. same model + Harness + promoted D3/sufficiency gate
+```
+
+This separates the value of the existing harness process from the incremental value of the D3/sufficiency research. Compare unsupported assertions, missed insufficiency, correct/false abstention, grounded final-claim coverage, resolution success, token/latency/retry overhead, and operational failures. Frozen research holdouts are never product-tuning data.
+
+D3 remains the adopted semantic diagnostic runtime today, but it is not silently fused into every natural-language request. Automatic residual evidence-sufficiency gating remains Research #91 until the calibration, fresh-holdout, stabilization, rollback, and product-compatibility promotion gates above are satisfied.
 
 ## Current baseline
 
@@ -143,9 +166,11 @@ later adapters rather than correctness boundaries.
 
 ## CLI-4 — real-workload adoption evidence
 
-Product readiness requires workloads that are not frozen research holdouts. For the primary AI path,
-compare **raw model output vs the same model behind Reasoning Harness** on separate dogfood/reference
-workloads and answer:
+Product readiness requires workloads that are not frozen research holdouts. Execute this acceptance
+phase only after the D3/sufficiency bridge has either been promoted into the natural-language runtime or
+explicitly rejected by the research promotion gate. For the promoted path, prefer a three-arm comparison:
+**raw model vs current Harness baseline vs the same Harness with the promoted D3/sufficiency gate**.
+Use separate dogfood/reference workloads and answer:
 
 - does the harness reduce unsupported final assertions in realistic use?;
 - how often does it correctly abstain, and how often does it abstain unnecessarily?;
