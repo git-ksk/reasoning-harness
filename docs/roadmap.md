@@ -20,6 +20,42 @@ The runtime must also be allowed to stop with `unknown`, a qualified partial ans
 
 See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
+## Two-track roadmap after D3 adoption
+
+D3 is now an adopted, operationally stabilized runtime profile. The project therefore advances on
+two connected tracks instead of treating every research experiment as a product feature:
+
+### Product track — native `reason` CLI (#90)
+
+1. **CLI-1 contract hardening:** supported commands, JSON/exit semantics, configuration identity,
+   quickstart, and shell/CI ergonomics.
+2. **CLI-2 distribution/compatibility:** reproducible install/release flow, supported-target smoke,
+   contract compatibility tests, and migration discipline.
+3. **CLI-3 integration/observability:** typed operational/semantic telemetry and reference
+   integrations that invoke the full harness boundary.
+4. **CLI-4 real-workload evidence:** dogfood/reference workloads separate from frozen research
+   holdouts, measuring unsafe assertions, unnecessary abstention, coverage, latency, and failures.
+5. **v1.0 gate:** stable documented CLI/data contracts plus repeated product acceptance evidence.
+
+The CLI is the product. Public embedding, MCP, and desktop interfaces remain later adapters. See
+[the native CLI product roadmap](product-roadmap.md).
+
+### Research track — deepen D3 without destabilizing it (#91)
+
+1. **RSD0 residual-gap discovery:** fresh calibration-only cases where current typed D3 metadata is
+   insufficient to decide evidence sufficiency.
+2. **RSD1 soft sufficiency coordinate:** test `sufficient | insufficient | mixed`; only
+   `insufficient`/`mixed` may force abstention, while `sufficient` never grants correctness.
+3. **RSD2 risk/coverage characterization:** measure prevented unsafe assertions and unnecessary
+   abstention together across seeds/models.
+4. **RSD3 selective/conformal abstention:** only after a calibrated sufficiency signal exists.
+5. **RSD4 relation-level causal sufficiency:** only after typed directional relation-evidence
+   requirements exist.
+
+A research candidate reaches the product track only through fresh calibration, independent frozen
+holdout, operational stabilization, explicit runtime profile/rollback, CLI compatibility coverage,
+and a separate reversible adoption change. Observed holdout-v4/v5 never become tuning data.
+
 ## v0.1 — trustworthy intermediate state and native CLI
 - stabilize HarnessInput / ReasoningCandidate / ReasoningArtifact schemas
 - JSON Schema export

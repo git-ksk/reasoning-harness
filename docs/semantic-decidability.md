@@ -438,17 +438,21 @@ they do not define harness authority semantics.
 - Rajpurkar, Jia, Liang, [*Know What You Don’t Know: Unanswerable Questions for SQuAD*](https://aclanthology.org/P18-2124/) (ACL 2018): answerability must be detected rather than forcing a guess when the supplied context does not support an answer.
 - Thorne et al., [*FEVER: a Large-scale Dataset for Fact Extraction and VERification*](https://aclanthology.org/N18-1074/) (NAACL 2018): `NotEnoughInfo` is distinct from support/refutation and evidence is part of the verification task.
 - Xin et al., [*The Art of Abstention: Selective Prediction and Error Regularization for Natural Language Processing*](https://aclanthology.org/2021.acl-long.84/) (ACL 2021): abstention should be evaluated as a risk/coverage trade-off rather than accuracy alone.
+- Joren et al., [*Sufficient Context: A New Lens on Retrieval Augmented Generation Systems*](https://research.google/pubs/sufficient-context-a-new-lens-on-retrieval-augmented-generation-systems-2/) (ICLR 2025): context sufficiency is a distinct variable from generation quality, and selective generation can use sufficiency information to improve correctness among answered cases.
+- Wang et al., [*SConU: Selective Conformal Uncertainty in Large Language Models*](https://aclanthology.org/2025.acl-long.934/) (ACL 2025): conformal uncertainty can support risk-controlled selection, but distribution/exchangeability assumptions must be treated explicitly rather than as verification authority.
 - Gu et al., [*Bridging the Detection-to-Abstention Gap in Reasoning Models under Insufficient Information*](https://arxiv.org/abs/2605.28070) (2026 preprint): an explicit answerability control decision before solving targets cases where a model detects missing information but still answers assertively.
 
 ## Adoption and successor sequence
 
-The D1 -> D2 -> D3 freeze -> holdout-v5 sequence has now produced a successful two-family pilot/replication result, while Gemini remains operationally incomplete and Nemotron documents a protocol-capability boundary. The next order of work is:
+The D1 -> D2 -> D3 freeze -> holdout-v5 sequence is complete for the original provider arms: Ministral 8B passed, Gemini 3.5 Flash-Lite completed the exact frozen rerun in Issue #84, Gemma 4 independently replicated the pattern, and Nemotron documents a protocol-capability boundary. The next order of work is:
 
 1. [done] stabilize the frozen D3 contract and runtime/config identity without semantic retuning;
 2. [done] harden capability preflight, failure telemetry, partial-result preservation, and rollback;
 3. [done] perform runtime adoption as a separate reversible change while retaining `soft-semantic-v3` as the rollback baseline;
-4. rerun the exact frozen Gemini v5 arm after quota reset for completeness, without changing the candidate;
-5. only after D3 is stable, open residual soft decidability if a new calibration corpus demonstrates a measurable gap not represented by typed metadata;
-6. evaluate selective/conformal uncertainty or causal relation-level sufficiency later, each under a new calibration identity and fresh independent holdout if it becomes an adoption candidate.
+4. [done #84] complete the exact frozen Gemini v5 rerun without changing the candidate;
+5. [next #91] create a fresh calibration-only residual-gap corpus and first prove that current typed D3 misses a measurable evidence-sufficiency distinction;
+6. if that gap exists, evaluate a monotone soft sufficiency coordinate, then risk/coverage and selective/conformal uncertainty under a new research identity;
+7. evaluate causal relation-level sufficiency only after directional relation evidence has an explicit typed binding;
+8. promote any successor only through a fresh independent frozen holdout, operational stabilization, explicit rollback, and separate CLI/product adoption gate (#90).
 
 No successor may use observed holdout-v5 content for tuning, relabelling, threshold selection, or corpus repair.

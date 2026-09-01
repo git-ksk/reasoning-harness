@@ -8,6 +8,22 @@ The next product-level hypothesis is stronger: when the harness can identify exa
 
 The harness is therefore evaluated both as a diagnostic system and as a future evidence-grounded reasoning runtime. Diagnosis quality is necessary, but the eventual product test is whether verified intermediate state can safely control additional evidence acquisition, repair, and finalization.
 
+## Product/research split
+
+The adopted D3 runtime now creates a stable baseline for two parallel tracks:
+
+- **Product (#90):** harden the native `reason` CLI as the first supported external interface, with
+  versioned machine-readable contracts, installation/release compatibility, observability, and
+  real-workload acceptance evidence.
+- **Research (#91):** deepen D3 through fresh calibration-only residual evidence-sufficiency work,
+  then selective/conformal and relation-level causal sufficiency only if measured gaps justify them.
+
+Research is not shipped directly. A candidate must pass fresh calibration, an independently frozen
+holdout for adoption, operational stabilization, explicit profile/rollback, and CLI compatibility
+coverage before a separate reversible product-adoption change.
+
+See [native CLI product roadmap](product-roadmap.md).
+
 ## Initial experiments
 
 ### E1 — provenance discipline
