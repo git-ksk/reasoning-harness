@@ -36,8 +36,8 @@ The same four platform classes run credential-free product smoke in pull request
 - `reason run` — execute the harness-owned correctness process from a recorded candidate or live
   provider candidate generation.
 - `reason verify` — deterministically validate a `ReasoningArtifact`.
-- `reason schema` — print the versioned JSON Schema for a supported artifact or candidate wire
-  contract.
+- `reason semantic-check` — execute the adopted semantic runtime as a soft diagnostic coordinate; D3 is the default and v3 remains an explicit rollback.
+- `reason schema` — print the versioned JSON Schema for supported product wire contracts.
 
 `reason eval`, `reason eval-resolution`, and `reason eval-judges` are research/evaluation surfaces.
 Their JSON is intentionally not covered by the CLI product-envelope compatibility promise yet.
@@ -165,12 +165,40 @@ Provider secrets are deliberately **not fields in `reason-config-v1`**:
 The config parser rejects unknown secret-like fields such as `api_key`. Credentials remain
 environment/provider-adapter inputs and are never serialized into the effective run configuration.
 
-## D3 runtime note
+## Semantic runtime product surface
 
-`semantic-decidability-d3-v1` is the adopted default **semantic runtime profile**, but the ordinary
-`reason run` command does not yet silently claim that it executes the D3 semantic runtime. Product
-wiring is tracked separately in Issue #93 so the soft semantic runtime cannot accidentally gain
-verification or final-verdict authority during CLI productization.
+`reason semantic-check` is the supported product surface for the adopted semantic runtime. It is intentionally separate from `reason run`: a semantic finding is diagnostic evidence and never gains verification, trusted-evidence, or final-verdict authority merely because it was produced by D3.
+
+The input contract is `semantic-check-input-v1` and contains exactly a `request` plus a harness-owned `artifact`. Inspect it with:
+
+```bash
+reason schema semantic-check
+```
+
+Run the adopted D3 profile:
+
+```bash
+reason semantic-check \
+  --input examples/semantic-check.json \
+  --provider mistral \
+  --model ministral-8b-latest \
+  --format json
+```
+
+D3 executes `materialization-r2-v1` plus the deterministic typed-precondition gate. The JSON result includes the canonical runtime identity, base decision, final semantic decision, decidability disposition, usage, model, and provider-attempt count. `force_abstain` can only make the semantic result more conservative.
+
+The characterized rollback remains explicit:
+
+```bash
+reason semantic-check \
+  --input examples/semantic-check.json \
+  --provider mistral \
+  --model ministral-8b-latest \
+  --profile v3 \
+  --format json
+```
+
+Operational failure is separate from semantic outcome. In JSON mode a provider/runtime failure emits a `semantic-check` product envelope containing `operational_failure.failure_class` and returns exit 1; it is never converted into `finding`, `no_finding`, or `abstain`.
 
 See [product roadmap](product-roadmap.md), [ADR-0001](adr/0001-interface-and-packaging-boundaries.md),
 and [semantic runtime stabilization](semantic-runtime-stabilization.md).

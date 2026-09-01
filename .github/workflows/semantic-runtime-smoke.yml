@@ -45,6 +45,44 @@ jobs:
           set -e
           jq '{surface_id, provider, requested_model, default_configuration_id, rollback_configuration_id, fixture_count, attempted_provider_calls, successful_provider_calls, failure_counts, status, observations: [.observations[] | {fixture_id, expected_disposition, seed, default_d3: {status: .default_d3.status, base_decision: .default_d3.base_decision, final_decision: .default_d3.final_decision, disposition: .default_d3.disposition, observed_model: .default_d3.observed_model, usage: .default_d3.usage, latency_ms: .default_d3.latency_ms, failure_class: .default_d3.failure_class}, rollback_v3: {status: .rollback_v3.status, base_decision: .rollback_v3.base_decision, final_decision: .rollback_v3.final_decision, observed_model: .rollback_v3.observed_model, usage: .rollback_v3.usage, latency_ms: .rollback_v3.latency_ms, failure_class: .rollback_v3.failure_class}}]}' "$OUTPUT"
           exit "$STATUS"
+      - name: Run supported semantic-check product command
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli --bin reason -- semantic-check \
+            --input examples/semantic-check.json \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --profile d3 \
+            --max-tokens 256 \
+            --seed 9100 \
+            --format json \
+            > /tmp/reason-semantic-check-d3.json
+          jq -e '.command == "semantic-check" and .result.operational_failure == null and .result.observation.runtime.configuration_id == "semantic-decidability-d3-v1" and .result.observation.decidability != null' /tmp/reason-semantic-check-d3.json >/dev/null
+          cargo run -q --locked -p reasoning-harness-cli --bin reason -- semantic-check \
+            --input examples/semantic-check.json \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --profile v3 \
+            --max-tokens 256 \
+            --seed 9101 \
+            --format json \
+            > /tmp/reason-semantic-check-v3.json
+          jq -e '.command == "semantic-check" and .result.operational_failure == null and .result.observation.runtime.configuration_id == "soft-semantic-v3" and .result.observation.decidability == null' /tmp/reason-semantic-check-v3.json >/dev/null
+      - name: Preserve supported product semantic-check JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-check-product-${{ matrix.provider }}-${{ matrix.model }}
+          path: |
+            /tmp/reason-semantic-check-d3.json
+            /tmp/reason-semantic-check-v3.json
+          if-no-files-found: warn
+          retention-days: 30
       - name: Preserve runtime smoke JSON
         if: always()
         uses: actions/upload-artifact@v4

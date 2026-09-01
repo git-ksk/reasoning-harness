@@ -38,7 +38,8 @@ The first product milestone makes the existing CLI predictable for humans, shell
 - [implemented #90] stabilize `-` stdin plus file/stdout behavior for supported JSON inputs, with at most one stdin consumer per invocation;
 - [implemented #90] define `reason-cli-output-v1` plus `reasoning-artifact-v1` / `reasoning-candidate-v1` machine-readable contract identities and schema discovery;
 - [implemented #90] document exit-code semantics: successful `accept | reject | unknown` execution is exit 0, command/runtime/validation failure is exit 1, and CLI parse failure is exit 2;
-- normalize typed runtime/provider failures without exposing provider-specific authority semantics;
+- [implemented #93] expose adopted D3 through the separate `reason semantic-check` product command, with canonical runtime identity, explicit v3 rollback, and typed operational failure kept outside semantic/final-verdict authority;
+- normalize typed runtime/provider failures across the remaining product commands without exposing provider-specific authority semantics;
 - [implemented #94] schema-backed `reason-config-v1` layers explicit CLI flags > explicit config > current-project config > user config > defaults; `--no-config` supports hermetic runs, unknown fields fail closed, and provider secrets remain environment-owned by default;
 - keep `--format json` suitable for automation and human output explicitly non-authoritative;
 - add a short install/quickstart path and copy-paste shell/CI examples.
