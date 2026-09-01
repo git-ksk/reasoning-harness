@@ -5,6 +5,8 @@ It invokes the same harness-owned validation, evidence, verification, decision, 
 boundaries used by the core runtime. Research binaries and `eval*` commands remain useful, but they
 do not define the stable product contract.
 
+For the execution/trust model behind `--candidate` versus `--provider`, including how an AI-free run can still produce `accept | reject | unknown`, see [How Reasoning Harness works](how-it-works.md).
+
 ## Installation
 
 ### Cargo from GitHub
