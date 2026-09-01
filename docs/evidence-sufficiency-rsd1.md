@@ -103,3 +103,32 @@ The secret-isolated manual workflow uses:
 
 Provider/model behavior is evidence about protocol/capability and calibration portability, never
 correctness authority.
+
+## Initial live calibration result
+
+GitHub Actions run `33530386635` executed the frozen RSD1 configuration on September 2, 2026 (JST)
+with one trial/seed per provider and all 12 RSD0 calibration fixtures. Both configured credentials
+were available and both arms were operationally complete.
+
+| Metric | Mistral `ministral-8b-latest` | Google `gemini-3.5-flash-lite` |
+| --- | ---: | ---: |
+| successful / attempted | 12 / 12 | 12 / 12 |
+| operational completion | 1.000 | 1.000 |
+| exact 3-class accuracy | 0.917 | 1.000 |
+| conservative binary accuracy | 1.000 | 1.000 |
+| false-safe rate | 0.000 | 0.000 |
+| false-abstain rate | 0.000 | 0.000 |
+| sufficient recall | 1.000 | 1.000 |
+| insufficient recall | 1.000 | 1.000 |
+| mixed recall | 0.750 | 1.000 |
+| fallback runs | 0 | 0 |
+| total tokens | 5,649 | 5,921 |
+| total provider latency | 5,187 ms | 22,549 ms |
+
+The only non-exact Mistral case was one predeclared `mixed` case classified as `insufficient`. That
+changes the three-class confusion matrix but not the first product-bridge safety partition because
+both labels map to the same conservative direction (`resolve/abstain`, never promote).
+
+Both arms pass every pre-observation RSD1 -> RSD2 progression threshold. This justifies RSD2 repeated
+seed/model stability work; it does **not** justify a product runtime profile, because this is still the
+same 12-case calibration corpus and no fresh independent holdout exists yet.
