@@ -43,6 +43,8 @@ Retrieval, web search, databases, tests, compilers, MCP servers, and human revie
 
 See [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md) for the target resolution and finalization loop.
 
+The first product surface is the native `reason` CLI. Product hardening and research now proceed as separate but connected tracks: the CLI follows [the product roadmap](docs/product-roadmap.md), while new reasoning mechanisms remain research-only until they pass independent adoption and runtime-stabilization gates.
+
 ## Current prototype
 
 - Harness-owned `HarnessInput`: task plus immutable supplied evidence, explicit assumptions, and optional evidence-qualification requirements.
