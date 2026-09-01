@@ -4,6 +4,8 @@
 
 The repository is an early research prototype with a maturing evidence-grounded runtime core. The authority boundary, native CLI, deterministic fixture benchmark, live Mistral/Google/NVIDIA candidate adapters, trusted verification receipts, causal/assumption/evidence-qualification diagnostics, metamorphic/repeated stability, corpus versioning, bounded resolution, and grounded finalization coverage are implemented.
 
+Product direction after the v0.1.0 structured preview is tracked in Issue #107: the primary end-user UX should become an **AI-backed natural-language CLI** that hides `HarnessInput` / `ReasoningCandidate` plumbing while preserving the exact same authority boundaries. Structured JSON remains a supported advanced integration/debug/automation surface. Real-workload product evaluation should compare raw model behavior against the same model behind the harness.
+
 The native core now implements the provider-neutral **evidence-grounded reasoning runtime** protocol from ADR-0002: unresolved verified state can produce bounded resolution requests, admitted evidence or revised candidates are re-verified, and final factual claims are coverage-checked. Concrete open-world resolver integrations and live resolution-quality evidence remain separate work.
 
 This is not a claim that open-world reasoning is solved. Current correctness gains depend on deterministic structure and on trusted oracles where a hard answer exists. Future resolution work must preserve that authority boundary rather than turning retrieval or model self-correction into implicit truth.

@@ -4,6 +4,8 @@
 
 This document explains the product execution model behind `reason run`, especially the mode where an external AI/agent produces a `ReasoningCandidate` and Reasoning Harness itself does not call an AI endpoint.
 
+> **Product direction:** the structured objects described here remain the runtime's inspectable internal/advanced contracts. The primary end-user direction is an AI-backed natural-language CLI ([Issue #107](https://github.com/git-ksk/reasoning-harness/issues/107)) that constructs and moves through these same boundaries rather than bypassing them.
+
 ## The central trust boundary
 
 Reasoning Harness separates **proposal** from **authority**.
