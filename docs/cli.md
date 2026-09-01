@@ -118,6 +118,24 @@ Exit status is process state, not epistemic state:
 In particular, `unknown` or semantic abstention is not automatically a process failure. Scripts
 must inspect the JSON result when they care about epistemic outcome.
 
+When a supported product command is explicitly in JSON mode, process failures remain machine-readable. `run` and `verify` emit the same product envelope with a failed result such as:
+
+```json
+{
+  "schema_version": "reason-cli-output-v1",
+  "command": "run",
+  "result": {
+    "status": "failed",
+    "failure": {
+      "failure_class": "input",
+      "message": "<stdin>: missing field `task` at line 1 column 2"
+    }
+  }
+}
+```
+
+Provider failures use normalized classes such as `credentials`, `rate_limit`, `quota`, `timeout`, `provider_unavailable`, and `protocol`. Configuration/input/harness failures use `configuration`, `input`, and `harness_state`. The process still exits 1. For automation, pass `--format json` explicitly (or use a valid config that resolves to JSON) so failures before normal command output can also be serialized rather than rendered as human diagnostics.
+
 ## Provider credentials and configuration
 
 Non-secret run configuration is schema-backed and layered. The supported precedence is:
