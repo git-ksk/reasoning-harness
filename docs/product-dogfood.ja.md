@@ -6,9 +6,11 @@ runnerは`reason-product-dogfood`です。同じtask/contextを同じprovider/mo
 
 ```text
 raw arm:                   task/context -> model -> structured answer
-harness baseline arm:      task/context -> shared model candidate -> verify -> bounded resolution -> render -> final-claim coverage
-harness+D3+sufficiency:    同じshared candidate -> 同じHarness -> D3/sufficiency answer gate -> bounded resolution または abstention
+harness baseline arm:      task/context -> shared candidate -> deterministic pre-render Harness state -> shared initial render -> baseline finalization
+harness+D3+sufficiency:    同じcandidate/state/render -> D3/sufficiency gate -> optional bounded resolution -> state変更時だけsuccessor側rerender
 ```
+
+v4の比較契約は`shared-candidate-initial-render-v1`です。2つのHarness armはuntrusted candidate・deterministicなpre-render state・最初のfinal-answer renderを完全共有します。successor介入でstateが変わった場合だけC側追加rerenderを許し、renderer sampling差をD3/sufficiencyの効果として誤認しません。
 
 `fixtures/product-dogfood-v1`には2 workload classがあります。
 
@@ -17,7 +19,7 @@ harness+D3+sufficiency:    同じshared candidate -> 同じHarness -> D3/suffici
 
 それぞれに、最初からground可能なcase、意図的に根拠不足なcase、bounded resolutionで初めてground可能になるcaseがあります。research calibration/holdoutとは混ぜません。
 
-`reason-product-dogfood-v3` reportでは次を測ります。
+`reason-product-dogfood-v4` reportでは次を測ります。
 
 - unsupported grounded assertionの件数/率
 - correct abstention / missed insufficiency
@@ -27,7 +29,7 @@ harness+D3+sufficiency:    同じshared candidate -> 同じHarness -> D3/suffici
 - 3 armそれぞれのtoken/latencyと、D3/sufficiency追加分のoverhead
 - successor armのanswer-safety runtime identityとtargetごとのsafety observation
 
-v3 reportではv2のcase-level abstention指標をそのまま残したうえで、fixtureのHarness-owned `input.hypotheses`だけをtask targetとしてtarget-level指標を追加します。supportedなnon-target factを返すsafe partial answerは、task targetを断言していなければtarget abstention成功として別集計します。grounded-target coverage / missed target insufficiency / false target abstention / safe-partial retentionを分離し、最初のv2 pilot結果は書き換えません。
+v4 reportではv2のcase-level abstention指標とv3のtarget-level指標をそのまま維持します。target-level指標はfixtureのHarness-owned `input.hypotheses`だけをtask targetとして使います。supportedなnon-target factを返すsafe partial answerは、task targetを断言していなければtarget abstention成功として別集計します。grounded-target coverage / missed target insufficiency / false target abstention / safe-partial retentionを分離し、最初のv2 pilot結果は書き換えません。
 
 `user_comprehension`は`not_automated_manual_review_required`と明示します。model出力だけから「人間に分かりやすかった率」を捏造しません。
 
