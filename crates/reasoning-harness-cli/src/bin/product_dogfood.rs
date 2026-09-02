@@ -14,10 +14,10 @@ use reasoning_harness_core::{
     FinalizationResult, FinalizationStatus, GroundedResolutionOutcome, GroundedResolutionPolicy,
     GroundedResolutionRuntime, GroundingPipeline, HarnessInput, ModelAdapter, ModelError,
     ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage, Proposition, ReasoningCandidate,
-    ResolutionAdapterError, ResolutionCost, ResolutionRequest, ResolutionResolver,
-    ResolutionResolverContribution, ResolutionResolverOutput, ResolutionTarget, ResolverClass,
-    StandardGroundingPipeline, Verdict, VerificationConclusion,
-    build_candidate_json_fallback_request, build_candidate_request,
+    ResolutionAdapterError, ResolutionAttempt, ResolutionAttemptStatus, ResolutionCost,
+    ResolutionRequest, ResolutionResolver, ResolutionResolverContribution,
+    ResolutionResolverOutput, ResolutionTarget, ResolverClass, StandardGroundingPipeline, Verdict,
+    VerificationConclusion, build_candidate_json_fallback_request, build_candidate_request,
     build_final_answer_json_fallback_request, build_final_answer_request,
     final_answer_candidate_schema, finalize_answer, run_answer_safety_gate,
     structured_fact_verifier_for_input,
@@ -171,8 +171,86 @@ struct HarnessArmResult {
     calls: Vec<CallObservation>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     safety_observations: Vec<AnswerSafetyObservation>,
+    failure_provenance: Vec<TargetFailureProvenance>,
     total_usage: ModelUsage,
     total_latency_ms: u128,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum ExpectedGroundedMissClass {
+    CandidateTargetMissing,
+    TargetUnverified,
+    QualificationBlocked,
+    ResolutionNotRequested,
+    ResolutionNotClosed,
+    AcceptRenderClaimOmission,
+    AcceptRenderPropositionDrift,
+    AcceptRenderTargetNotGrounded,
+    FinalizationBlockedByOtherClaim,
+    AcceptanceBlocked,
+    SufficiencyBlocked,
+    Other,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct TargetArtifactObservation {
+    matching_claims: usize,
+    states: Vec<EpistemicState>,
+    supported_verification_receipts: usize,
+    contradicted_verification_receipts: usize,
+    qualification_findings: usize,
+    authorized: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct TargetResolutionObservation {
+    requested: bool,
+    attempts: usize,
+    statuses: Vec<ResolutionAttemptStatus>,
+    admitted_evidence: usize,
+    verification_receipts: usize,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct TargetRendererObservation {
+    exact_target_emitted: bool,
+    exact_grounded_target_emitted: bool,
+    factual_claims_empty: bool,
+    other_factual_claims: usize,
+}
+
+struct MissClassificationInput<'a> {
+    expected_grounded: bool,
+    exposed_exact_grounded_target: bool,
+    candidate_exact_target_present: bool,
+    initial: &'a TargetArtifactObservation,
+    final_artifact: &'a TargetArtifactObservation,
+    resolution: &'a TargetResolutionObservation,
+    final_verdict: Verdict,
+    renderer: &'a TargetRendererObservation,
+    finalization_status: FinalizationStatus,
+    safety_forced_verification: bool,
+    expected_outcome: ExpectedOutcome,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct TargetFailureProvenance {
+    target: Proposition,
+    expected_grounded: bool,
+    candidate_exact_target_present: bool,
+    initial_artifact: TargetArtifactObservation,
+    pre_render_artifact: TargetArtifactObservation,
+    final_artifact: TargetArtifactObservation,
+    resolution: TargetResolutionObservation,
+    final_verdict: Verdict,
+    renderer: TargetRendererObservation,
+    finalization_status: FinalizationStatus,
+    safety_forced_verification: bool,
+    exposed_exact_grounded_target: bool,
+    canonical_recovery_eligible: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    miss_class: Option<ExpectedGroundedMissClass>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -185,9 +263,10 @@ struct SharedHarnessObservation {
 #[derive(Debug, Clone)]
 struct PreparedHarnessState {
     initial_verdict: Verdict,
+    initial_artifact: reasoning_harness_core::ReasoningArtifact,
     final_artifact: reasoning_harness_core::ReasoningArtifact,
     final_verdict: Verdict,
-    resolution_attempts: usize,
+    resolution_attempts: Vec<ResolutionAttempt>,
     candidate: ReasoningCandidate,
     candidate_call: CallObservation,
 }
@@ -237,12 +316,22 @@ struct ArmAggregate {
 }
 
 #[derive(Debug, Default, Clone, Serialize)]
+struct FailureProvenanceAggregate {
+    expected_grounded_targets: usize,
+    missed_grounded_targets: usize,
+    classified_misses: usize,
+    canonical_recovery_eligible: usize,
+    miss_classes: BTreeMap<String, usize>,
+}
+
+#[derive(Debug, Default, Clone, Serialize)]
 struct HarnessAggregate {
     arm: ArmAggregate,
     mean_final_claim_coverage: f64,
     resolution_attempted_cases: usize,
     resolution_success_cases: usize,
     resolution_success_rate: f64,
+    failure_provenance: FailureProvenanceAggregate,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -538,9 +627,10 @@ fn prepare_harness_state(
     let initial = pipeline
         .run(fixture.input.clone(), candidate.clone(), &[])
         .map_err(|e| e.to_string())?;
+    let initial_artifact = initial.artifact.clone();
     let mut final_artifact = initial.artifact.clone();
     let mut final_verdict = initial.verdict;
-    let mut resolution_attempts = 0usize;
+    let mut resolution_attempts = Vec::new();
     if !fixture.resolver_facts.is_empty() && final_verdict != Verdict::Accept {
         let resolution = run_dogfood_resolution(
             fixture,
@@ -548,12 +638,13 @@ fn prepare_harness_state(
             candidate.clone(),
             max_resolution_attempts,
         )?;
-        resolution_attempts += resolution.attempts.len();
+        resolution_attempts.extend(resolution.attempts.iter().cloned());
         final_artifact = resolution.final_artifact;
         final_verdict = resolution.final_verdict;
     }
     Ok(PreparedHarnessState {
         initial_verdict: initial.verdict,
+        initial_artifact,
         final_artifact,
         final_verdict,
         resolution_attempts,
@@ -590,12 +681,14 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
     } = call;
     let PreparedHarnessState {
         initial_verdict,
+        initial_artifact,
         mut final_artifact,
         mut final_verdict,
         mut resolution_attempts,
         candidate,
         candidate_call,
     } = prepared;
+    let pre_render_artifact = final_artifact.clone();
     let mut calls = vec![candidate_call, initial_render_call];
     let mut safety_observations = Vec::new();
     let mut safety_usage = ModelUsage::default();
@@ -697,7 +790,7 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
             candidate.clone(),
             max_resolution_attempts,
         )?;
-        resolution_attempts += resolution.attempts.len();
+        resolution_attempts.extend(resolution.attempts.iter().cloned());
         final_artifact = resolution.final_artifact;
         final_verdict = resolution.final_verdict;
         if final_artifact == before {
@@ -740,6 +833,19 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
         .saturating_add(safety_latency_ms);
     let resolution_succeeded =
         initial_verdict != Verdict::Accept && final_verdict == Verdict::Accept;
+    let failure_provenance = build_failure_provenance(
+        fixture,
+        &candidate,
+        &initial_artifact,
+        &pre_render_artifact,
+        &final_artifact,
+        &resolution_attempts,
+        final_verdict,
+        &rendered,
+        finalization.status,
+        &safety_observations,
+        &target,
+    );
 
     Ok(HarnessArmResult {
         safety_runtime: safety_profile.identity(),
@@ -753,10 +859,11 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
         abstained: !exposed,
         exposed_factual_claims,
         target,
-        resolution_attempts,
+        resolution_attempts: resolution_attempts.len(),
         resolution_succeeded,
         calls,
         safety_observations,
+        failure_provenance,
         total_usage,
         total_latency_ms,
     })
@@ -974,6 +1081,249 @@ fn artifact_supports(
     })
 }
 
+fn target_artifact_observation(
+    artifact: &reasoning_harness_core::ReasoningArtifact,
+    target: &Proposition,
+) -> TargetArtifactObservation {
+    let matching = artifact
+        .claims
+        .iter()
+        .filter(|claim| claim.proposition.as_ref() == Some(target))
+        .collect::<Vec<_>>();
+    let mut states = Vec::new();
+    for claim in &matching {
+        if !states.contains(&claim.state) {
+            states.push(claim.state);
+        }
+    }
+    let supported_verification_receipts = artifact
+        .verification_receipts
+        .iter()
+        .filter(|receipt| {
+            receipt.proposition.as_ref() == Some(target)
+                && receipt.conclusion == VerificationConclusion::Supported
+        })
+        .count();
+    let contradicted_verification_receipts = artifact
+        .verification_receipts
+        .iter()
+        .filter(|receipt| {
+            receipt.proposition.as_ref() == Some(target)
+                && receipt.conclusion == VerificationConclusion::Contradicted
+        })
+        .count();
+    let qualification_findings = artifact
+        .evidence_qualification_findings
+        .iter()
+        .filter(|finding| &finding.proposition == target)
+        .count();
+    TargetArtifactObservation {
+        matching_claims: matching.len(),
+        states,
+        supported_verification_receipts,
+        contradicted_verification_receipts,
+        qualification_findings,
+        authorized: artifact_supports(artifact, target),
+    }
+}
+
+fn resolution_attempt_targets(attempt: &ResolutionAttempt, target: &Proposition) -> bool {
+    match &attempt.request.target {
+        ResolutionTarget::Proposition { proposition } => proposition == target,
+        ResolutionTarget::EvidenceQualification { requirement } => {
+            &requirement.proposition == target
+        }
+        ResolutionTarget::CausalRelation { .. }
+        | ResolutionTarget::ClaimRevision { .. }
+        | ResolutionTarget::HumanReview { .. } => false,
+    }
+}
+
+fn target_resolution_observation(
+    attempts: &[ResolutionAttempt],
+    target: &Proposition,
+) -> TargetResolutionObservation {
+    let matching = attempts
+        .iter()
+        .filter(|attempt| resolution_attempt_targets(attempt, target))
+        .collect::<Vec<_>>();
+    TargetResolutionObservation {
+        requested: !matching.is_empty(),
+        attempts: matching.len(),
+        statuses: matching.iter().map(|attempt| attempt.status).collect(),
+        admitted_evidence: matching
+            .iter()
+            .map(|attempt| attempt.admitted_evidence_ids.len())
+            .sum(),
+        verification_receipts: matching
+            .iter()
+            .map(|attempt| attempt.verification_receipts)
+            .sum(),
+    }
+}
+
+fn target_renderer_observation(
+    rendered: &FinalAnswerCandidate,
+    target: &Proposition,
+) -> TargetRendererObservation {
+    let exact = rendered
+        .factual_claims
+        .iter()
+        .filter(|claim| &claim.proposition == target)
+        .collect::<Vec<_>>();
+    TargetRendererObservation {
+        exact_target_emitted: !exact.is_empty(),
+        exact_grounded_target_emitted: exact
+            .iter()
+            .any(|claim| claim.mode == FinalClaimMode::Grounded),
+        factual_claims_empty: rendered.factual_claims.is_empty(),
+        other_factual_claims: rendered
+            .factual_claims
+            .iter()
+            .filter(|claim| &claim.proposition != target)
+            .count(),
+    }
+}
+
+fn classify_expected_grounded_miss(
+    input: MissClassificationInput<'_>,
+) -> Option<ExpectedGroundedMissClass> {
+    if !input.expected_grounded || input.exposed_exact_grounded_target {
+        return None;
+    }
+    if input.safety_forced_verification {
+        return Some(ExpectedGroundedMissClass::SufficiencyBlocked);
+    }
+    if input.final_verdict == Verdict::Accept && input.final_artifact.authorized {
+        if input.renderer.factual_claims_empty {
+            return Some(ExpectedGroundedMissClass::AcceptRenderClaimOmission);
+        }
+        if !input.renderer.exact_target_emitted {
+            return Some(ExpectedGroundedMissClass::AcceptRenderPropositionDrift);
+        }
+        if !input.renderer.exact_grounded_target_emitted {
+            return Some(ExpectedGroundedMissClass::AcceptRenderTargetNotGrounded);
+        }
+        if input.finalization_status == FinalizationStatus::RequiresVerification {
+            return Some(ExpectedGroundedMissClass::FinalizationBlockedByOtherClaim);
+        }
+    }
+    if input.final_artifact.qualification_findings > 0 && !input.final_artifact.authorized {
+        return Some(ExpectedGroundedMissClass::QualificationBlocked);
+    }
+    if input.expected_outcome == ExpectedOutcome::GroundedAfterResolution {
+        if !input.resolution.requested {
+            return Some(ExpectedGroundedMissClass::ResolutionNotRequested);
+        }
+        if !input.final_artifact.authorized {
+            return Some(ExpectedGroundedMissClass::ResolutionNotClosed);
+        }
+    }
+    if !input.candidate_exact_target_present && input.initial.matching_claims == 0 {
+        return Some(ExpectedGroundedMissClass::CandidateTargetMissing);
+    }
+    if !input.final_artifact.authorized {
+        return Some(ExpectedGroundedMissClass::TargetUnverified);
+    }
+    if input.final_verdict != Verdict::Accept {
+        return Some(ExpectedGroundedMissClass::AcceptanceBlocked);
+    }
+    Some(ExpectedGroundedMissClass::Other)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn build_failure_provenance(
+    fixture: &ProductDogfoodFixture,
+    candidate: &ReasoningCandidate,
+    initial_artifact: &reasoning_harness_core::ReasoningArtifact,
+    pre_render_artifact: &reasoning_harness_core::ReasoningArtifact,
+    final_artifact: &reasoning_harness_core::ReasoningArtifact,
+    resolution_attempts: &[ResolutionAttempt],
+    final_verdict: Verdict,
+    rendered: &FinalAnswerCandidate,
+    finalization_status: FinalizationStatus,
+    safety_observations: &[AnswerSafetyObservation],
+    target_outcome: &TargetOutcomeObservation,
+) -> Vec<TargetFailureProvenance> {
+    fixture
+        .input
+        .hypotheses
+        .iter()
+        .map(|target| {
+            let candidate_exact_target_present = candidate
+                .claims
+                .iter()
+                .any(|claim| claim.proposition.as_ref() == Some(target));
+            let initial = target_artifact_observation(initial_artifact, target);
+            let pre_render = target_artifact_observation(pre_render_artifact, target);
+            let final_observation = target_artifact_observation(final_artifact, target);
+            let resolution = target_resolution_observation(resolution_attempts, target);
+            let renderer = target_renderer_observation(rendered, target);
+            let safety_forced_verification = safety_observations.iter().any(|observation| {
+                observation.target == *target
+                    && observation.disposition == AnswerSafetyDisposition::ForceVerification
+            });
+            let exposed_exact_grounded_target = target_outcome
+                .exposed_grounded_targets
+                .iter()
+                .any(|proposition| proposition == target);
+            let expected_grounded = fixture.expected_outcome.expects_grounded();
+            let canonical_recovery_eligible = expected_grounded
+                && !exposed_exact_grounded_target
+                && final_verdict == Verdict::Accept
+                && final_observation.authorized;
+            let miss_class = classify_expected_grounded_miss(MissClassificationInput {
+                expected_grounded,
+                exposed_exact_grounded_target,
+                candidate_exact_target_present,
+                initial: &initial,
+                final_artifact: &final_observation,
+                resolution: &resolution,
+                final_verdict,
+                renderer: &renderer,
+                finalization_status,
+                safety_forced_verification,
+                expected_outcome: fixture.expected_outcome,
+            });
+            TargetFailureProvenance {
+                target: target.clone(),
+                expected_grounded,
+                candidate_exact_target_present,
+                initial_artifact: initial,
+                pre_render_artifact: pre_render,
+                final_artifact: final_observation,
+                resolution,
+                final_verdict,
+                renderer,
+                finalization_status,
+                safety_forced_verification,
+                exposed_exact_grounded_target,
+                canonical_recovery_eligible,
+                miss_class,
+            }
+        })
+        .collect()
+}
+
+impl ExpectedGroundedMissClass {
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::CandidateTargetMissing => "candidate_target_missing",
+            Self::TargetUnverified => "target_unverified",
+            Self::QualificationBlocked => "qualification_blocked",
+            Self::ResolutionNotRequested => "resolution_not_requested",
+            Self::ResolutionNotClosed => "resolution_not_closed",
+            Self::AcceptRenderClaimOmission => "accept_render_claim_omission",
+            Self::AcceptRenderPropositionDrift => "accept_render_proposition_drift",
+            Self::AcceptRenderTargetNotGrounded => "accept_render_target_not_grounded",
+            Self::FinalizationBlockedByOtherClaim => "finalization_blocked_by_other_claim",
+            Self::AcceptanceBlocked => "acceptance_blocked",
+            Self::SufficiencyBlocked => "sufficiency_blocked",
+            Self::Other => "other",
+        }
+    }
+}
+
 fn add_usage(left: &ModelUsage, right: &ModelUsage) -> ModelUsage {
     ModelUsage {
         input_tokens: add_opt(left.input_tokens, right.input_tokens),
@@ -1054,7 +1404,7 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .map(|result| result.harness_d3_sufficiency.total_latency_ms)
         .sum();
     ProductDogfoodReport {
-        schema_version: "reason-product-dogfood-v5",
+        schema_version: "reason-product-dogfood-v6",
         comparison_contract: PRODUCT_DOGFOOD_COMPARISON_CONTRACT_ID,
         provider: provider.name(),
         model: model.into(),
@@ -1140,6 +1490,47 @@ fn aggregate_harness(
         resolution_attempted_cases,
         resolution_success_cases,
         resolution_success_rate: rate(resolution_success_cases, resolution_attempted_cases),
+        failure_provenance: aggregate_failure_provenance(results, select),
+    }
+}
+
+fn aggregate_failure_provenance(
+    results: &[CaseResult],
+    select: fn(&CaseResult) -> &HarnessArmResult,
+) -> FailureProvenanceAggregate {
+    let traces = results
+        .iter()
+        .flat_map(|result| select(result).failure_provenance.iter())
+        .collect::<Vec<_>>();
+    let expected_grounded_targets = traces
+        .iter()
+        .filter(|trace| trace.expected_grounded)
+        .count();
+    let missed = traces
+        .iter()
+        .filter(|trace| trace.expected_grounded && !trace.exposed_exact_grounded_target)
+        .collect::<Vec<_>>();
+    let missed_grounded_targets = missed.len();
+    let classified_misses = missed
+        .iter()
+        .filter(|trace| trace.miss_class.is_some())
+        .count();
+    let canonical_recovery_eligible = missed
+        .iter()
+        .filter(|trace| trace.canonical_recovery_eligible)
+        .count();
+    let mut miss_classes = BTreeMap::new();
+    for trace in missed {
+        if let Some(class) = trace.miss_class {
+            *miss_classes.entry(class.as_str().to_string()).or_insert(0) += 1;
+        }
+    }
+    FailureProvenanceAggregate {
+        expected_grounded_targets,
+        missed_grounded_targets,
+        classified_misses,
+        canonical_recovery_eligible,
+        miss_classes,
     }
 }
 
@@ -1462,6 +1853,164 @@ mod tests {
         assert!(!proposition_supported(&input, &proposition));
     }
 
+    fn grounded_fixture(
+        target: &Proposition,
+        expected_outcome: ExpectedOutcome,
+    ) -> ProductDogfoodFixture {
+        ProductDogfoodFixture {
+            id: "trace".into(),
+            capability_family: "trace".into(),
+            workload_class: "trace".into(),
+            task: "trace target".into(),
+            input: HarnessInput {
+                task: "trace target".into(),
+                hypotheses: vec![target.clone()],
+                ..Default::default()
+            },
+            expected_outcome,
+            resolver_facts: BTreeMap::new(),
+        }
+    }
+
+    fn artifact_with_target(
+        target: &Proposition,
+        state: EpistemicState,
+    ) -> reasoning_harness_core::ReasoningArtifact {
+        reasoning_harness_core::ReasoningArtifact {
+            task: "trace target".into(),
+            hypotheses: vec![target.clone()],
+            claims: vec![Claim {
+                id: "target".into(),
+                statement: "target".into(),
+                state,
+                proposition: Some(target.clone()),
+                evidence_ids: vec![],
+            }],
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn failure_provenance_marks_accept_render_omission_as_canonical_recovery_eligible() {
+        let target = Proposition {
+            key: "service.region".into(),
+            value: "us-east-1".into(),
+        };
+        let fixture = grounded_fixture(&target, ExpectedOutcome::Grounded);
+        let candidate = ReasoningCandidate {
+            claims: vec![reasoning_harness_core::CandidateClaim {
+                id: "candidate-target".into(),
+                statement: "region".into(),
+                proposed_state: EpistemicState::Supported,
+                proposition: Some(target.clone()),
+                evidence_ids: vec![],
+            }],
+            inferences: vec![],
+        };
+        let artifact = artifact_with_target(&target, EpistemicState::Supported);
+        let rendered = FinalAnswerCandidate {
+            text: "The region is us-east-1.".into(),
+            factual_claims: vec![],
+        };
+        let trace = build_failure_provenance(
+            &fixture,
+            &candidate,
+            &artifact,
+            &artifact,
+            &artifact,
+            &[],
+            Verdict::Accept,
+            &rendered,
+            FinalizationStatus::Unresolved,
+            &[],
+            &empty_target(),
+        );
+        assert_eq!(trace.len(), 1);
+        assert!(trace[0].canonical_recovery_eligible);
+        assert_eq!(
+            trace[0].miss_class,
+            Some(ExpectedGroundedMissClass::AcceptRenderClaimOmission)
+        );
+    }
+
+    #[test]
+    fn failure_provenance_records_exact_proposition_drift_without_fuzzy_matching() {
+        let target = Proposition {
+            key: "http.status_code".into(),
+            value: "503".into(),
+        };
+        let fixture = grounded_fixture(&target, ExpectedOutcome::Grounded);
+        let candidate = ReasoningCandidate::default();
+        let artifact = artifact_with_target(&target, EpistemicState::Known);
+        let rendered = FinalAnswerCandidate {
+            text: "HTTP status is 503.".into(),
+            factual_claims: vec![FinalAnswerClaim {
+                proposition: Proposition {
+                    key: "HTTP status".into(),
+                    value: "503".into(),
+                },
+                mode: FinalClaimMode::Grounded,
+            }],
+        };
+        let trace = build_failure_provenance(
+            &fixture,
+            &candidate,
+            &artifact,
+            &artifact,
+            &artifact,
+            &[],
+            Verdict::Accept,
+            &rendered,
+            FinalizationStatus::RequiresVerification,
+            &[],
+            &empty_target(),
+        );
+        assert!(!trace[0].renderer.exact_target_emitted);
+        assert_eq!(trace[0].renderer.other_factual_claims, 1);
+        assert_eq!(
+            trace[0].miss_class,
+            Some(ExpectedGroundedMissClass::AcceptRenderPropositionDrift)
+        );
+    }
+
+    #[test]
+    fn failure_provenance_distinguishes_resolution_not_requested() {
+        let target = Proposition {
+            key: "backup.enabled".into(),
+            value: "true".into(),
+        };
+        let fixture = grounded_fixture(&target, ExpectedOutcome::GroundedAfterResolution);
+        let candidate = ReasoningCandidate {
+            claims: vec![reasoning_harness_core::CandidateClaim {
+                id: "candidate-target".into(),
+                statement: "backup".into(),
+                proposed_state: EpistemicState::Assumed,
+                proposition: Some(target.clone()),
+                evidence_ids: vec![],
+            }],
+            inferences: vec![],
+        };
+        let artifact = artifact_with_target(&target, EpistemicState::Assumed);
+        let trace = build_failure_provenance(
+            &fixture,
+            &candidate,
+            &artifact,
+            &artifact,
+            &artifact,
+            &[],
+            Verdict::Unknown,
+            &FinalAnswerCandidate::default(),
+            FinalizationStatus::Unresolved,
+            &[],
+            &empty_target(),
+        );
+        assert_eq!(
+            trace[0].miss_class,
+            Some(ExpectedGroundedMissClass::ResolutionNotRequested)
+        );
+        assert!(!trace[0].resolution.requested);
+    }
+
     #[test]
     fn aggregate_counts_false_and_correct_abstention_separately() {
         let mk = |id: &str, expected_outcome, raw_abstained, harness_abstained| CaseResult {
@@ -1515,6 +2064,7 @@ mod tests {
                 resolution_succeeded: false,
                 calls: vec![],
                 safety_observations: vec![],
+                failure_provenance: vec![],
                 total_usage: Default::default(),
                 total_latency_ms: 1,
             },
@@ -1534,6 +2084,7 @@ mod tests {
                 resolution_succeeded: false,
                 calls: vec![],
                 safety_observations: vec![],
+                failure_provenance: vec![],
                 total_usage: Default::default(),
                 total_latency_ms: 1,
             },

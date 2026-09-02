@@ -28,7 +28,7 @@ report、rollback、schema、automationが参照するため、以下のexact ID
 | `d3-sufficiency-answer-gate-v2` | 現在のanswer-safety configuration ID。 |
 | `d3-sufficiency-answer-gate-v1` | rollback/testing用の以前のanswer-safety configuration ID。 |
 | `shared-candidate-initial-render-v1` | product evaluationの比較contract。 |
-| `reason-product-dogfood-v5` | product dogfood report schema version。 |
+| `reason-product-dogfood-v6` | product dogfood report schema version。 |
 
 CLIでは説明的なselectorを使います。
 
