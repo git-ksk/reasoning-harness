@@ -99,7 +99,8 @@ pub use evidence_qualification_benchmark::{
 pub use finalization::{
     CanonicalFinalAnswerRenderer, FinalAnswerCandidate, FinalAnswerClaim, FinalAnswerRenderer,
     FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
-    canonical_verified_target_answer, final_answer_candidate_schema, finalize_answer,
+    canonical_verified_target_answer, canonical_verified_target_partial_answer,
+    final_answer_candidate_schema, finalize_answer,
 };
 pub use format_invariance::{
     FormatComparisonError, FormatDecisionTransition, FormatFlipReport, FormatJudgeError,

@@ -21,7 +21,7 @@ v4の比較契約は`shared-candidate-initial-render-v1`です。2つのHarness 
 
 それぞれに、最初からground可能なcase、意図的に根拠不足なcase、bounded resolutionで初めてground可能になるcaseがあります。research calibration/holdoutとは混ぜません。
 
-`reason-product-dogfood-v7` reportでは次を測ります。
+`reason-product-dogfood-v8` reportでは次を測ります。
 
 - unsupported grounded assertionの件数/率
 - correct abstention / missed insufficiency
@@ -32,7 +32,7 @@ v4の比較契約は`shared-candidate-initial-render-v1`です。2つのHarness 
 - successor armのanswer-safety runtime identityとtargetごとのsafety observation
 - Harness armのtargetごとのfailure provenance（exact candidate/verification/resolution/render/finalization state、deterministic recovery eligibility、expected-grounded miss class）
 
-v7ではv6のfailure provenanceを維持したまま、deterministicなcanonical verified-target recoveryを追加します。model rendererがfinalizeできなくてもartifactがすでに`Accept`で、Harness-owned requested targetがすべてexact `Known`/`Supported`なら、そのtargetだけをHarness自身がcanonical renderします。recovery後も通常のfinalizationとanswer-safety gateを必ず通し、model prose・fuzzy key matching・新しいauthorityは使いません。`canonical_recovery_cases`でfallback利用件数を記録します。 target自体がauthorizedでもartifact全体が`Unknown`/`Reject`になる場合は、exact target以外のunresolved/contradicted claim件数も記録し、renderer missとartifact-level blockerを区別します。
+v8ではv7のcanonical recoveryを維持したまま、artifact-global verdictが`Unknown`でもoriginal requested targetがすべてexact `Known`/`Supported`な場合に限るtarget-scoped qualified finalizationを追加します。global verdict自体は昇格せず、deterministicなtarget-only出力を`QualifiedPartialAnswer`として扱い、通常のanswer-safety gateも必ず通します。`Reject`、target自身のUnknown/Contradicted、qualification finding、fuzzy matching、prose由来authorityは対象外です。`canonical_recovery_cases`と`target_scoped_partial_cases`を分離して記録します。 target自体がauthorizedでもartifact全体が`Unknown`/`Reject`になる場合は、exact target以外のunresolved/contradicted claim件数も記録し、renderer missとartifact-level blockerを区別します。
 
 v5 reportではv2のcase-level abstention指標とv3のtarget-level指標をそのまま維持し、v4のshared-render比較契約も維持したまま、NL-5で必要なqualified/unknown出力のmanual comprehension reviewを行えるよう各armの実際のユーザー表示`exposed_text`を保存します。target-level指標はfixtureのHarness-owned `input.hypotheses`だけをtask targetとして使います。supportedなnon-target factを返すsafe partial answerは、task targetを断言していなければtarget abstention成功として別集計します。grounded-target coverage / missed target insufficiency / false target abstention / safe-partial retentionを分離し、最初のv2 pilot結果は書き換えません。
 
