@@ -20,7 +20,7 @@ jobs:
       group: reasoning-harness-gemma4-replication
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
@@ -64,7 +64,7 @@ jobs:
       group: reasoning-harness-gemma4-replication
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
@@ -108,7 +108,7 @@ jobs:
       group: reasoning-harness-gemma4-replication
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
