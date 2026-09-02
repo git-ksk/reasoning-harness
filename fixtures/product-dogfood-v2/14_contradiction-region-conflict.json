@@ -1,0 +1,34 @@
+{
+  "id": "contradiction-region-conflict",
+  "capability_family": "contradiction",
+  "workload_class": "configuration_review",
+  "task": "Determine the configured service region when the supplied configuration records disagree.",
+  "input": {
+    "task": "Determine the configured service region when the supplied configuration records disagree.",
+    "evidence": [
+      {
+        "id": "cfg-a",
+        "source": "config A",
+        "observation": "Region is us-east-1.",
+        "facts": {
+          "service.region": "us-east-1"
+        }
+      },
+      {
+        "id": "cfg-b",
+        "source": "config B",
+        "observation": "Region is us-west-2.",
+        "facts": {
+          "service.region": "us-west-2"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "service.region",
+        "value": "us-east-1"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

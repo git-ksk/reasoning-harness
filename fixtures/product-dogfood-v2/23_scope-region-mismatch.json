@@ -1,0 +1,52 @@
+{
+  "id": "scope-region-mismatch",
+  "capability_family": "scope_entity_boundary",
+  "workload_class": "configuration_review",
+  "task": "Determine whether public access is disabled for us-east-1 when the only supplied record is scoped to us-west-2.",
+  "input": {
+    "task": "Determine whether public access is disabled for us-east-1 when the only supplied record is scoped to us-west-2.",
+    "evidence": [
+      {
+        "id": "network-record",
+        "source": "regional network configuration",
+        "observation": "public_access=disabled for us-west-2",
+        "facts": {
+          "network.public_access": "disabled"
+        },
+        "metadata": {
+          "scope": {
+            "region": {
+              "kind": "values",
+              "values": [
+                "us-west-2"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "network.public_access",
+        "value": "disabled"
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "network.public_access",
+          "value": "disabled"
+        },
+        "scope": {
+          "region": {
+            "kind": "values",
+            "values": [
+              "us-east-1"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

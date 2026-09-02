@@ -1,0 +1,41 @@
+{
+  "id": "temporal-not-yet-valid",
+  "capability_family": "temporal_validity",
+  "workload_class": "operations_review",
+  "task": "Determine whether maintenance was complete at time 150 when the supplied completion record only becomes effective at time 200.",
+  "input": {
+    "task": "Determine whether maintenance was complete at time 150 when the supplied completion record only becomes effective at time 200.",
+    "evidence": [
+      {
+        "id": "maintenance-record",
+        "source": "operations record",
+        "observation": "maintenance.complete=true",
+        "facts": {
+          "maintenance.complete": "true"
+        },
+        "metadata": {
+          "temporal": {
+            "effective_from_unix_seconds": 200,
+            "effective_until_unix_seconds": 300
+          }
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "maintenance.complete",
+        "value": "true"
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "maintenance.complete",
+          "value": "true"
+        },
+        "as_of_unix_seconds": 150
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

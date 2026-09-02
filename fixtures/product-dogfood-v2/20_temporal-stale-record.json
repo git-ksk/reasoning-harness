@@ -1,0 +1,41 @@
+{
+  "id": "temporal-stale-record",
+  "capability_family": "temporal_validity",
+  "workload_class": "configuration_review",
+  "task": "Determine whether the feature flag was enabled at time 150 when the only record expired at time 120.",
+  "input": {
+    "task": "Determine whether the feature flag was enabled at time 150 when the only record expired at time 120.",
+    "evidence": [
+      {
+        "id": "flag-record",
+        "source": "feature configuration",
+        "observation": "feature.enabled=true",
+        "facts": {
+          "feature.enabled": "true"
+        },
+        "metadata": {
+          "temporal": {
+            "effective_from_unix_seconds": 100,
+            "effective_until_unix_seconds": 120
+          }
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "feature.enabled",
+        "value": "true"
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "as_of_unix_seconds": 150
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

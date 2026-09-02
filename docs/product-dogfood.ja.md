@@ -2,6 +2,8 @@
 
 NL-5では、凍結済みresearch holdoutとは別のproduct workloadで実利用評価します。
 
+従来の`fixtures/product-dogfood-v1`は6-case smoke/seed setとして保持します。Issue #147ではfreeze済み24-case `fixtures/product-dogfood-v2` capability matrixを追加します。詳細は[product dogfood capability matrix](product-dogfood-capability-matrix.ja.md)を参照してください。
+
 runnerは`reason-product-dogfood`です。同じtask/contextを同じprovider/modelへ渡し、3 armを比較します。
 
 ```text

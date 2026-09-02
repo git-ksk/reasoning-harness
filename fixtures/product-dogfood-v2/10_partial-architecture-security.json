@@ -1,0 +1,27 @@
+{
+  "id": "partial-architecture-security",
+  "capability_family": "safe_partial",
+  "workload_class": "architecture_review",
+  "task": "State what is verified and whether the architecture is confirmed secure overall from these controls alone.",
+  "input": {
+    "task": "State what is verified and whether the architecture is confirmed secure overall from these controls alone.",
+    "evidence": [
+      {
+        "id": "architecture-config",
+        "source": "architecture configuration snapshot",
+        "observation": "Storage encryption is enabled and public network access is disabled.",
+        "facts": {
+          "storage.encryption": "enabled",
+          "network.public_access": "disabled"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "system.security_posture",
+        "value": "secure"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

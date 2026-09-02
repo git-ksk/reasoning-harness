@@ -12,6 +12,8 @@ harness+D3+sufficiency:    same candidate/state/render -> D3/sufficiency gate ->
 
 The v4 comparison contract is `shared-candidate-initial-render-v1`. The two Harness arms share the untrusted candidate, deterministic pre-render state, and exact first final-answer render. Only a successor intervention that changes state may trigger a C-only rerender, so renderer sampling is not attributed to the D3/sufficiency gate.
 
+The original `fixtures/product-dogfood-v1` corpus remains the six-case smoke/seed set. Issue #147 adds the frozen 24-case `fixtures/product-dogfood-v2` capability matrix for broader model-fitness evaluation. See [product dogfood capability matrix](product-dogfood-capability-matrix.md) for the 8×3 taxonomy, pre-observation hash freeze, five-run replication plan, and later fresh-holdout protocol.
+
 The committed `fixtures/product-dogfood-v1` corpus has two workload classes:
 
 - incident analysis;

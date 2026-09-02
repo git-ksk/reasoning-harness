@@ -1,0 +1,27 @@
+{
+  "id": "partial-incident-cause",
+  "capability_family": "safe_partial",
+  "workload_class": "incident_analysis",
+  "task": "State the verified incident observations and whether the database is confirmed as the root cause.",
+  "input": {
+    "task": "State the verified incident observations and whether the database is confirmed as the root cause.",
+    "evidence": [
+      {
+        "id": "incident-log",
+        "source": "incident telemetry snapshot",
+        "observation": "HTTP 503 and seven database connection errors occurred in the same window.",
+        "facts": {
+          "http.status_code": "503",
+          "db.connection_errors": "7"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "incident.root_cause",
+        "value": "database"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

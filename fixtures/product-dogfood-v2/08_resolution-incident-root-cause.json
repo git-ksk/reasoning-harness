@@ -1,0 +1,29 @@
+{
+  "id": "resolution-incident-root-cause",
+  "capability_family": "bounded_resolution",
+  "workload_class": "incident_analysis",
+  "task": "Determine the incident root cause, using the configured resolver when the initial telemetry is insufficient.",
+  "input": {
+    "task": "Determine the incident root cause, using the configured resolver when the initial telemetry is insufficient.",
+    "evidence": [
+      {
+        "id": "incident-log",
+        "source": "incident telemetry snapshot",
+        "observation": "The API returned HTTP 503.",
+        "facts": {
+          "http.status_code": "503"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "incident.root_cause",
+        "value": "database"
+      }
+    ]
+  },
+  "expected_outcome": "grounded_after_resolution",
+  "resolver_facts": {
+    "incident.root_cause": "database"
+  }
+}

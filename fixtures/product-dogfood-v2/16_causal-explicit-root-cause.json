@@ -1,0 +1,26 @@
+{
+  "id": "causal-explicit-root-cause",
+  "capability_family": "causal_boundary",
+  "workload_class": "incident_analysis",
+  "task": "Report the verified root cause recorded by the completed incident investigation.",
+  "input": {
+    "task": "Report the verified root cause recorded by the completed incident investigation.",
+    "evidence": [
+      {
+        "id": "postmortem",
+        "source": "verified incident postmortem",
+        "observation": "The verified root cause was database connection exhaustion.",
+        "facts": {
+          "incident.root_cause": "database_connection_exhaustion"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "incident.root_cause",
+        "value": "database_connection_exhaustion"
+      }
+    ]
+  },
+  "expected_outcome": "grounded"
+}

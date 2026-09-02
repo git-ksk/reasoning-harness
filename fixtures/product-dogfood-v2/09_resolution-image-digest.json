@@ -1,0 +1,29 @@
+{
+  "id": "resolution-image-digest",
+  "capability_family": "bounded_resolution",
+  "workload_class": "deployment_review",
+  "task": "Report the production image digest, using the configured resolver because the deployment summary omits it.",
+  "input": {
+    "task": "Report the production image digest, using the configured resolver because the deployment summary omits it.",
+    "evidence": [
+      {
+        "id": "deploy-summary",
+        "source": "deployment summary",
+        "observation": "The production deployment completed.",
+        "facts": {
+          "release.environment": "production"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "container.image_digest",
+        "value": "sha256:abc123"
+      }
+    ]
+  },
+  "expected_outcome": "grounded_after_resolution",
+  "resolver_facts": {
+    "container.image_digest": "sha256:abc123"
+  }
+}

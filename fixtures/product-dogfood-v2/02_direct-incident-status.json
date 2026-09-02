@@ -1,0 +1,31 @@
+{
+  "id": "direct-incident-status",
+  "capability_family": "direct_grounding",
+  "workload_class": "incident_analysis",
+  "task": "Report the verified HTTP status and deployment region from the supplied incident observations.",
+  "input": {
+    "task": "Report the verified HTTP status and deployment region from the supplied incident observations.",
+    "evidence": [
+      {
+        "id": "incident-log",
+        "source": "incident telemetry snapshot",
+        "observation": "The API returned HTTP 503 in us-east-1.",
+        "facts": {
+          "http.status_code": "503",
+          "service.region": "us-east-1"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "http.status_code",
+        "value": "503"
+      },
+      {
+        "key": "service.region",
+        "value": "us-east-1"
+      }
+    ]
+  },
+  "expected_outcome": "grounded"
+}

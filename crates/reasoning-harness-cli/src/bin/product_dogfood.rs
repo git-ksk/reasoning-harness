@@ -8,17 +8,19 @@ use std::{
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
     AcquiredEvidence, AnswerSafetyDisposition, AnswerSafetyIdentity, AnswerSafetyObservation,
-    AnswerSafetyProfile, CanonicalFinalAnswerRenderer, DefaultResolutionPlanner, Evidence,
-    EvidenceAdmissionPolicy, EvidenceAdmissionRejection, EvidenceMetadata, FinalAnswerCandidate,
-    FinalAnswerClaim, FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
-    GroundedResolutionOutcome, GroundedResolutionPolicy, GroundedResolutionRuntime,
-    GroundingPipeline, HarnessInput, ModelAdapter, ModelError, ModelOutputFormat, ModelRequest,
-    ModelResponse, ModelUsage, Proposition, ReasoningCandidate, ResolutionAdapterError,
-    ResolutionCost, ResolutionRequest, ResolutionResolver, ResolutionResolverContribution,
-    ResolutionResolverOutput, ResolutionTarget, ResolverClass, StandardGroundingPipeline, Verdict,
+    AnswerSafetyProfile, CanonicalFinalAnswerRenderer, Claim, DefaultResolutionPlanner,
+    EpistemicState, Evidence, EvidenceAdmissionPolicy, EvidenceAdmissionRejection,
+    EvidenceMetadata, FinalAnswerCandidate, FinalAnswerClaim, FinalClaimMode, FinalizationPolicy,
+    FinalizationResult, FinalizationStatus, GroundedResolutionOutcome, GroundedResolutionPolicy,
+    GroundedResolutionRuntime, GroundingPipeline, HarnessInput, ModelAdapter, ModelError,
+    ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage, Proposition, ReasoningCandidate,
+    ResolutionAdapterError, ResolutionCost, ResolutionRequest, ResolutionResolver,
+    ResolutionResolverContribution, ResolutionResolverOutput, ResolutionTarget, ResolverClass,
+    StandardGroundingPipeline, Verdict, VerificationConclusion,
     build_candidate_json_fallback_request, build_candidate_request,
     build_final_answer_json_fallback_request, build_final_answer_request,
     final_answer_candidate_schema, finalize_answer, run_answer_safety_gate,
+    structured_fact_verifier_for_input,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -42,6 +44,12 @@ struct Args {
     max_resolution_attempts: usize,
     #[arg(long)]
     output: Option<PathBuf>,
+    #[arg(long, default_value_t = false)]
+    validate_only: bool,
+}
+
+fn default_capability_family() -> String {
+    "legacy_smoke".into()
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum, Serialize)]
@@ -104,6 +112,8 @@ impl ExpectedOutcome {
 #[serde(deny_unknown_fields)]
 struct ProductDogfoodFixture {
     id: String,
+    #[serde(default = "default_capability_family")]
+    capability_family: String,
     workload_class: String,
     task: String,
     input: HarnessInput,
@@ -185,6 +195,7 @@ struct PreparedHarnessState {
 #[derive(Debug, Serialize)]
 struct CaseResult {
     id: String,
+    capability_family: String,
     workload_class: String,
     expected_outcome: ExpectedOutcome,
     raw: RawArmResult,
@@ -257,6 +268,8 @@ struct ProductDogfoodReport {
     provider: &'static str,
     model: String,
     workload_classes: Vec<String>,
+    capability_families: Vec<String>,
+    capability_case_counts: BTreeMap<String, usize>,
     cases: usize,
     raw: ArmAggregate,
     harness: HarnessAggregate,
@@ -366,6 +379,28 @@ async fn main() -> Result<(), String> {
             "product dogfood v4 target metrics require at least one harness-owned hypothesis: {}",
             fixture.id
         ));
+    }
+    if args.validate_only {
+        let capability_case_counts =
+            fixtures
+                .iter()
+                .fold(BTreeMap::new(), |mut counts, fixture| {
+                    *counts
+                        .entry(fixture.capability_family.clone())
+                        .or_insert(0usize) += 1;
+                    counts
+                });
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&serde_json::json!({
+                "fixtures": args.fixtures,
+                "cases": fixtures.len(),
+                "capability_families": capability_case_counts.keys().collect::<Vec<_>>(),
+                "capability_case_counts": capability_case_counts,
+            }))
+            .map_err(|e| e.to_string())?
+        );
+        return Ok(());
     }
     let adapter = LiveAdapter::from_env(args.provider, &args.model).map_err(|e| e.to_string())?;
     let mut results = Vec::new();
@@ -483,6 +518,7 @@ async fn evaluate_case(
 
     Ok(CaseResult {
         id: fixture.id.clone(),
+        capability_family: fixture.capability_family.clone(),
         workload_class: fixture.workload_class.clone(),
         expected_outcome: fixture.expected_outcome,
         raw,
@@ -912,12 +948,16 @@ fn call_observation(response: ModelResponse, started: Instant, attempts: u32) ->
 }
 
 fn proposition_supported(input: &HarnessInput, proposition: &Proposition) -> bool {
-    let values = input
-        .evidence
-        .iter()
-        .filter_map(|evidence| evidence.facts.get(&proposition.key))
-        .collect::<Vec<_>>();
-    !values.is_empty() && values.iter().all(|value| *value == &proposition.value)
+    let claim = Claim {
+        id: "product-dogfood-support-probe".into(),
+        statement: format!("{}={}", proposition.key, proposition.value),
+        state: EpistemicState::Unknown,
+        proposition: Some(proposition.clone()),
+        evidence_ids: vec![],
+    };
+    structured_fact_verifier_for_input(input)
+        .verify(&claim, &input.evidence)
+        .is_some_and(|receipt| receipt.conclusion == VerificationConclusion::Supported)
 }
 
 fn artifact_supports(
@@ -980,6 +1020,11 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .collect::<BTreeSet<_>>()
         .into_iter()
         .collect::<Vec<_>>();
+    let capability_case_counts = results.iter().fold(BTreeMap::new(), |mut counts, result| {
+        *counts.entry(result.capability_family.clone()).or_insert(0) += 1;
+        counts
+    });
+    let capability_families = capability_case_counts.keys().cloned().collect::<Vec<_>>();
     let raw = aggregate_raw(&results);
     let harness = aggregate_harness(&results, |result| &result.harness);
     let harness_d3_sufficiency =
@@ -1014,6 +1059,8 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         provider: provider.name(),
         model: model.into(),
         workload_classes: classes,
+        capability_families,
+        capability_case_counts,
         cases: results.len(),
         raw,
         harness,
@@ -1357,9 +1404,69 @@ mod tests {
     }
 
     #[test]
+    fn support_probe_rejects_stale_qualified_evidence() {
+        let proposition = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let input: HarnessInput = serde_json::from_value(serde_json::json!({
+            "task": "test",
+            "evidence": [{
+                "id": "e1", "source": "fixture", "observation": "feature.enabled=true",
+                "facts": {"feature.enabled": "true"},
+                "metadata": {"temporal": {"effective_from_unix_seconds": 100, "effective_until_unix_seconds": 120}}
+            }],
+            "hypotheses": [proposition.clone()],
+            "evidence_requirements": [{"proposition": proposition.clone(), "as_of_unix_seconds": 150}]
+        })).unwrap();
+        assert!(!proposition_supported(&input, &proposition));
+    }
+
+    #[test]
+    fn support_probe_rejects_scope_mismatch() {
+        let proposition = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let input: HarnessInput = serde_json::from_value(serde_json::json!({
+            "task": "test",
+            "evidence": [{
+                "id": "e1", "source": "fixture", "observation": "feature.enabled=true",
+                "facts": {"feature.enabled": "true"},
+                "metadata": {"scope": {"region": {"kind": "values", "values": ["us-west-2"]}}}
+            }],
+            "hypotheses": [proposition.clone()],
+            "evidence_requirements": [{
+                "proposition": proposition.clone(),
+                "scope": {"region": {"kind": "values", "values": ["us-east-1"]}}
+            }]
+        }))
+        .unwrap();
+        assert!(!proposition_supported(&input, &proposition));
+    }
+
+    #[test]
+    fn support_probe_rejects_conflicting_qualified_values() {
+        let proposition = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let input: HarnessInput = serde_json::from_value(serde_json::json!({
+            "task": "test",
+            "evidence": [
+                {"id": "e1", "source": "a", "observation": "true", "facts": {"feature.enabled": "true"}},
+                {"id": "e2", "source": "b", "observation": "false", "facts": {"feature.enabled": "false"}}
+            ],
+            "hypotheses": [proposition.clone()]
+        })).unwrap();
+        assert!(!proposition_supported(&input, &proposition));
+    }
+
+    #[test]
     fn aggregate_counts_false_and_correct_abstention_separately() {
         let mk = |id: &str, expected_outcome, raw_abstained, harness_abstained| CaseResult {
             id: id.into(),
+            capability_family: "test".into(),
             workload_class: "class".into(),
             expected_outcome,
             raw: RawArmResult {

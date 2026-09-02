@@ -1,0 +1,31 @@
+{
+  "id": "direct-release-artifact",
+  "capability_family": "direct_grounding",
+  "workload_class": "deployment_review",
+  "task": "Report the verified release version and target environment from the deployment record.",
+  "input": {
+    "task": "Report the verified release version and target environment from the deployment record.",
+    "evidence": [
+      {
+        "id": "deploy-record",
+        "source": "deployment record",
+        "observation": "Release 2026.09.02.3 was deployed to production.",
+        "facts": {
+          "release.version": "2026.09.02.3",
+          "release.environment": "production"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "release.version",
+        "value": "2026.09.02.3"
+      },
+      {
+        "key": "release.environment",
+        "value": "production"
+      }
+    ]
+  },
+  "expected_outcome": "grounded"
+}

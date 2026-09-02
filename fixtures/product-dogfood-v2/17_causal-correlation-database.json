@@ -1,0 +1,27 @@
+{
+  "id": "causal-correlation-database",
+  "capability_family": "causal_boundary",
+  "workload_class": "incident_analysis",
+  "task": "Determine whether database connection errors are confirmed as the cause of the HTTP 503 incident.",
+  "input": {
+    "task": "Determine whether database connection errors are confirmed as the cause of the HTTP 503 incident.",
+    "evidence": [
+      {
+        "id": "telemetry",
+        "source": "incident telemetry",
+        "observation": "HTTP 503 and seven database connection errors occurred in the same window.",
+        "facts": {
+          "http.status_code": "503",
+          "db.connection_errors": "7"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "incident.root_cause",
+        "value": "database"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}
