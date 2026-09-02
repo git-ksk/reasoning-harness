@@ -1,9 +1,9 @@
 # Product roadmap: evidence-grounded AI CLI
 
 Reasoning Harness is productized first as the native Rust `reason` CLI. v0.1.0 established the
-structured correctness and automation contracts; the next primary end-user direction is an
-**AI-backed natural-language CLI** over the same harness-owned runtime. Users should not need to
-construct internal JSON just to ask the harness to reason.
+structured correctness and automation contracts; the current primary end-user direction on `main` is an
+**AI-backed natural-language CLI** over the same harness-owned runtime. Users do not need to construct
+internal JSON just to ask the harness to reason.
 
 The product goal is deliberately narrower than a general-purpose agent framework:
 
@@ -14,9 +14,9 @@ The product goal is deliberately narrower than a general-purpose agent framework
 Research continues in parallel. New mechanisms graduate into the CLI only after independent
 validation and operational stabilization; the product surface does not track every experiment.
 
-## Primary UX direction after v0.1.0
+## Primary UX after v0.1.0
 
-Tracking: Issue #107.
+Completed under Issue #107; external hardening continues under #90.
 
 The intended default experience is natural-language-first and AI-backed:
 
@@ -70,9 +70,10 @@ Tracking: #109 #110 #111 #112 #113 under #107.
 - **NL-4 — implemented:** the provider renders a typed final-answer candidate, then harness-owned final-claim coverage decides whether the text can be exposed as grounded/qualified; uncovered facts are blocked and can re-enter configured bounded resolution. Renderer failure falls back to a canonical safe renderer.
 - **NL-5 — completed #113:** target-aware metrics, shared candidate/initial render, claim-local sufficiency v2, and exposed-text manual review are complete. Final v5 runs on Ministral 8B and Gemma 4 31B preserve zero unsupported Harness assertions and zero missed task-target insufficiency; Gemma preserves useful qualified partial facts with full target coverage on expected-grounded cases, while Ministral remains a model-specific low-coverage/false-abstention limitation rather than a successor-gate regression; follow-up is #139.
 
-### D3 / sufficiency bridge before NL-5
+### D3 / sufficiency bridge and NL-5 closeout
 
-NL-5 is no longer the immediate next product step. First advance Research #91 far enough to decide whether a residual evidence-sufficiency gate can safely join the natural-language runtime. The order is:
+The initial residual-sufficiency research/product sequence is complete. It progressed without retuning
+D3 or consuming historical holdouts as product-tuning data:
 
 1. **RSD0 — completed #116:** fresh 12-case calibration-only corpus demonstrates a measurable residual gap: all 12 cases are D3 `permit`, while 4 are predeclared `insufficient` and 4 are `mixed`; frozen holdout-v4/v5 remain untouched.
 2. **RSD1 — completed #118:** schema-constrained `sufficient | insufficient | mixed` coordinate passed the frozen one-trial calibration progression gate on both Ministral 8B and Gemini 3.5 Flash-Lite with zero false-safe and zero false-abstain decisions; this is calibration evidence only, not product authority.
@@ -81,9 +82,9 @@ NL-5 is no longer the immediate next product step. First advance Research #91 fa
 5. **Product bridge — v1 implemented #129; v2 refinement #134:** v1 established the monotonic authority boundary. Target-aware/shared-render NL-5 then showed its task-level generic requirement policy could suppress useful supported partial facts without improving task-target safety. v2 keeps the same authority boundary but uses `claim-local-answer-sufficiency-requirements-v1`, rolls back explicitly to v1, and keeps baseline as the next rollback.
 6. **NL-5 — completed #113:** #133 removed renderer confounding, #134 promoted claim-local `d3-sufficiency-answer-gate-v2`, and v5 preserved exposed text for manual review. Final runs: Ministral `33576517724`, Gemma 4 `33576520136`. The successor matched baseline task-target safety/coverage in both model slices; Gemma retained its safe qualified partial answer, while Ministral's 0.75 false-target-abstention rate was already present in baseline and remains a model/product-utility follow-up rather than evidence against the gate.
 
-RSD3 selective/conformal abstention and RSD4 relation-level causal sufficiency remain follow-on research unless RSD0-RSD2 demonstrate that either is required for the first product bridge. They do not block the initial natural-language D3/sufficiency integration by default.
+RSD3 selective/conformal abstention and RSD4 relation-level causal sufficiency remain optional follow-on research. They do not block the adopted natural-language D3/sufficiency integration.
 
-The final NL-5 evaluation should use three arms where practical:
+NL-5 used three arms:
 
 ```text
 A. raw model
@@ -91,7 +92,7 @@ B. same model + current deterministic/grounding Harness baseline
 C. same model + Harness + promoted D3/sufficiency gate
 ```
 
-This separates the value of the existing harness process from the incremental value of the D3/sufficiency research. Compare unsupported assertions, missed insufficiency, correct/false abstention, grounded final-claim coverage, resolution success, token/latency/retry overhead, and operational failures. Frozen research holdouts are never product-tuning data.
+This separated the value of the existing harness process from the incremental value of the D3/sufficiency bridge. The final v5 report records unsupported assertions, target-level insufficiency/abstention, grounded final-claim coverage, resolution success, token/latency overhead, operational failures, safe-partial retention, and the actual exposed text used for manual review. Frozen research holdouts remain immutable and are never product-tuning data.
 
 D3 remains the adopted semantic diagnostic runtime. The residual sufficiency coordinate crossed its frozen research promotion gate, while product wiring is versioned independently. `d3-sufficiency-answer-gate-v2` is the adopted current default and still cannot create verification authority; `d3-sufficiency-answer-gate-v1` and baseline remain explicit rollback points. Research #91 remains the provenance for classifier evidence, while NL-5 measures product-policy value on separate workloads.
 
@@ -224,9 +225,11 @@ fresh calibration-only hypothesis
   -> reversible product adoption
 ```
 
-The currently adopted D3 profile is the product baseline while Issue #91 explores residual evidence
-sufficiency. Frozen holdout-v4/v5 remain immutable research history and are never product-tuning
-corpora.
+The adopted semantic baseline is D3, and the completed #91 residual-sufficiency program produced the
+versioned `d3-sufficiency-answer-gate-v2` product bridge after a separate independent holdout and NL-5.
+D3, the residual classifier, and the product requirement policy retain separate identities and rollback
+boundaries. Frozen holdout-v4/v5 and the sufficiency holdout remain immutable research history and are
+never product-tuning corpora.
 
 ## Deferred product surfaces
 

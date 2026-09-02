@@ -95,20 +95,28 @@ JSONのstructured pathは消していません。高度なintegration / CI / deb
 通常利用者が最初にJSON Schemaを理解する必要はなくなります。
 
 自然文pathには、evidence binding、assumption/contradiction/evidence-qualification diagnostics、bounded
-resolution、再verification、final-claim coverageを使っています。D3は引き続き`reason semantic-check`の
-採用済みmodel-backed diagnosticです。一方、残余evidence sufficiencyの自動判定はResearch #91の途中で、
-今回のNL sliceで「解決済み」とは扱いません。
+resolution、再verification、final-claim coverageに加えて、採用済みD3 + residual sufficiencyのanswer-safety
+bridgeを使っています。defaultの`d3-sufficiency`は`d3-sufficiency-answer-gate-v2`です。baseline結果を
+維持するかverification/resolution側へ制限することだけができ、`sufficient`がevidence、receipt、epistemic
+promotion、verdict authorityを新しく作ることはありません。初期v1 policyとbaseline-only pathは明示rollback
+として残しています。
+
+残余evidence sufficiencyの初期research program #91は完了済みです。calibration、独立frozen holdout、
+operational stabilization、versioned product wiring、NL-5 dogfoodまで完了し、frozen research corpusは
+product tuningに使っていません。selective/conformalやrelation-level sufficiencyは今後のfollow-on researchです。
 
 ## 何を入力するの？
 
-現在の`reason`は**非対話型・構造化データ優先**のCLIです。自由文をチャットのように投げて、それを自動的に「信用できる根拠」とみなすツールではありません。
+primary pathでは、自然文taskと「実際に持っているcontext / authority」だけを渡します。`reason`は非対話型ですが、
+**自然文first**でありstructured-data-firstではありません。
 
-基本の`reason run`では、アプリ側から次を渡します。
+- `--file` / stdin: modelが読めるprovenance付きuntrusted context
+- `--fact KEY=VALUE`: Harness-ownedの明示structured evidence
+- `--hypothesis KEY=VALUE`: 評価したいtyped proposition
+- `--resolver-fact KEY=VALUE`: bounded resolution経由だけで使う明示local fact
 
-1. タスクとHarness管理の根拠を含む`HarnessInput` JSON
-2. LLM/Agentが作った`ReasoningCandidate` JSON、または候補を生成するlive provider
-
-その後、Harnessが`ReasoningArtifact`を作成・検証します。モデル自身がtrusted evidenceやverification receiptを作ることはできません。
+これらを全部指定しなくても実行できますが、trusted supportが足りなければ条件付き回答や`unknown`になるのが
+正しい動作です。`HarnessInput` / `ReasoningCandidate` JSONは高度なintegration / automation / debug用surfaceとして残ります。
 
 正確なJSON SchemaはCLIから確認できます。
 

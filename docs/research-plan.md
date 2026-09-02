@@ -10,17 +10,23 @@ The harness is therefore evaluated both as a diagnostic system and as a future e
 
 ## Product/research split
 
-The adopted D3 runtime now creates a stable baseline for two parallel tracks:
+The adopted D3 runtime remains the stable semantic baseline. The first residual-sufficiency successor
+program (#91) is complete: RSD0/RSD1/RSD2, independent frozen holdout, operational stabilization,
+versioned product wiring, and NL-5 all finished without granting model output authority.
+
+Current work is split between:
 
 - **Product (#90):** harden the native `reason` CLI as the first supported external interface, with
   versioned machine-readable contracts, installation/release compatibility, observability, and
-  real-workload acceptance evidence.
-- **Research (#91):** deepen D3 through fresh calibration-only residual evidence-sufficiency work,
-  then selective/conformal and relation-level causal sufficiency only if measured gaps justify them.
+  repeated real-workload acceptance evidence.
+- **Product utility (#139):** improve low-coverage / over-abstaining model behavior without weakening
+  the authority boundary or tuning against frozen research holdouts.
+- **Follow-on research:** selective/conformal abstention or relation-level causal sufficiency only if a
+  newly specified gap justifies another research identity and fresh evaluation sequence.
 
-Research is not shipped directly. A candidate must pass fresh calibration, an independently frozen
-holdout for adoption, operational stabilization, explicit profile/rollback, and CLI compatibility
-coverage before a separate reversible product-adoption change.
+Research is never shipped directly. Any future candidate must again pass fresh calibration, an
+independently frozen holdout for adoption, operational stabilization, explicit profile/rollback, and
+CLI compatibility coverage before a separate reversible product-adoption change.
 
 See [native CLI product roadmap](product-roadmap.md).
 
