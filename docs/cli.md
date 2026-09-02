@@ -9,20 +9,26 @@ For the execution/trust model behind `--candidate` versus `--provider`, includin
 
 ## Installation
 
-### Cargo from GitHub
+### Current natural-language CLI (`main`)
 
-Rust 1.88+ users can install only the supported product binary directly from the repository:
+The natural-language-first UX documented below is newer than the published `v0.1.0` structured preview. Rust 1.88+ users can install the current `main` product binary with:
 
 ```bash
-cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.1.0 --locked reasoning-harness-cli --bin reason
+cargo install --git https://github.com/git-ksk/reasoning-harness --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-This does not install the research binaries. The package remains unpublished on crates.io during the v0.x contract-hardening phase. See [product support and compatibility](support.md) for the preview support boundary.
+This installs only the supported `reason` product binary, not the research binaries. `main` is an unreleased v0.x surface, so pin a commit in production automation if exact reproducibility is required.
 
-### Standalone release binaries
+### Frozen `v0.1.0` structured preview
 
-A `v*` tag whose version matches `reasoning-harness-cli` produces GitHub Release assets for:
+`v0.1.0` predates the natural-language path. Install it only when you specifically want the frozen structured preview:
+
+```bash
+cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.1.0 --locked reasoning-harness-cli --bin reason
+```
+
+Standalone `v0.1.0` release binaries are also available. A `v*` tag whose version matches `reasoning-harness-cli` produces GitHub Release assets for:
 
 - Linux x86_64;
 - macOS arm64 (Apple Silicon);
@@ -63,7 +69,9 @@ If the context does not contain trusted structured support, the safe result may 
 
 The final model-rendered answer is also untrusted until `finalize_answer` checks factual-claim coverage. Any newly introduced factual proposition is blocked; when an explicitly configured resolver can verify it, the proposition may re-enter bounded resolution and then be rendered again.
 
-The natural-language path defaults to `--safety-profile d3-sufficiency`. After normal grounding/finalization would expose a grounded claim, the successor answer gate applies deterministic D3 preconditions and the promoted residual sufficiency coordinate. A `sufficient` classification cannot create receipts, support, or `accept`; it only preserves the baseline result. `insufficient` or `mixed` forces verification and may route through bounded resolution before any answer is exposed. The default `d3-sufficiency` profile is `d3-sufficiency-answer-gate-v2`, which uses a claim-local requirement policy so an individually supported fact is not required to answer the whole task. Use `--safety-profile d3-sufficiency-v1` to reproduce the first product policy, or `--safety-profile baseline` to bypass the residual gate entirely.
+The natural-language path also runs the adopted D3 + evidence-sufficiency safety checks before exposing grounded factual claims. These checks are **restrictive only**: they may require more verification, bounded resolution, or abstention, but they cannot turn model confidence into trusted evidence or an `accept` verdict. Supported partial facts can still be shown without requiring them to answer the whole task.
+
+The default profile is `--safety-profile d3-sufficiency`. Advanced rollback/testing options are `d3-sufficiency-v1` and `baseline`; see [Semantic runtime product surface](#semantic-runtime-product-surface) for the versioned identities and exact semantics.
 
 Natural JSON output declares `output_contract: reason-natural-output-v2` inside the normal `reason-cli-output-v1` envelope.
 
@@ -73,12 +81,13 @@ See [How Reasoning Harness works](how-it-works.md) and [product dogfood](product
 
 | Goal | Command |
 | --- | --- |
-| Check an LLM/agent candidate against harness-owned evidence | `reason run` |
+| Ask a person-facing natural-language question through the verified runtime | `reason "TASK"` |
+| Integrate an existing LLM/agent candidate with structured evidence | `reason run` |
 | Validate an already-materialized artifact | `reason verify` |
 | Run contradiction/counterexample/unsupported-premise/causal-gap semantic diagnostics | `reason semantic-check` |
 | Inspect the exact machine-readable JSON contracts | `reason schema` |
 
-For normal application integration, start with **`reason run`**. The CLI expects structured JSON; it is not a chat client that treats arbitrary conversation text as trusted evidence.
+For a human using the CLI directly, start with **`reason "TASK"`**. For application/CI integration and externally generated candidates, start with **`reason run`**. Neither path treats arbitrary prose as trusted evidence.
 
 ## Product commands
 

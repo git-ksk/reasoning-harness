@@ -2,38 +2,36 @@
 
 [日本語](README.ja.md) | English
 
-**Build AI answers through an evidence-grounded reasoning runtime, not a single model pass.**
+**Stop AI from turning missing evidence into confident answers.**
 
-Reasoning Harness is a native AI CLI/runtime for systems that should say **`unknown` instead of guessing** when the available evidence does not justify an answer. The model proposes; the harness owns the path from evidence to a grounded result.
+Reasoning Harness is a native AI CLI/runtime that puts an evidence-and-verification layer around model output. You give it a task and the evidence you actually trust; the model proposes an answer, while the harness decides what can be exposed as grounded, qualified, or still unknown.
 
 ```text
-LLM / Agent / RAG
+ task + evidence
        |
        v
- structured candidate
+      model  -> untrusted candidate
        |
        v
  Reasoning Harness
        |
-       +--> accept
-       +--> reject
-       +--> unknown
+       +--> grounded answer
+       +--> qualified answer
+       +--> unknown / abstain
 ```
 
-The model is a **candidate generator, not an authority**. The harness owns evidence binding, deterministic validation, verification, uncertainty, and final decision boundaries.
-
-> Stochastic intelligence, deterministic process.
+The model is a **candidate generator, not an authority**. Evidence admission, verification, uncertainty, and final factual-claim coverage remain harness-owned.
 
 ## When would I use this?
 
-Use Reasoning Harness when your application already uses an LLM or agent, but you do not want its output to become a trusted conclusion just because the model produced it.
+Use Reasoning Harness when an LLM or agent is useful, but **"the model said so" is not enough to trust the result**.
 
-Common examples:
+Typical uses:
 
-- **RAG / research assistants** — detect when retrieved evidence does not support the proposed answer.
-- **AI research pipelines** — prevent a model from turning missing or conflicting evidence into a confident assertion.
-- **Agents and CI workflows** — validate a structured reasoning artifact before another automated step consumes it.
-- **Lower-cost models** — use inexpensive candidate generation while keeping trust decisions in a provider-neutral harness.
+- **RAG / research assistants** — avoid answering beyond what retrieved evidence actually supports.
+- **Incident / architecture analysis** — return the observations that are supported while keeping an unproven root cause or overall conclusion uncertain.
+- **Agents and CI** — validate a model-produced result before another automated step consumes it.
+- **Lower-cost models** — let a cheaper model generate candidates while keeping trust decisions in a provider-neutral runtime.
 
 A useful mental model is:
 
@@ -42,94 +40,143 @@ Without the harness:
   evidence -> LLM -> answer
 
 With the harness:
-  evidence -> LLM/agent -> candidate -> verify/diagnose -> accept | reject | unknown
+  evidence -> LLM -> candidate -> verify / resolve -> grounded | qualified | unknown
 ```
 
-## Primary UX: natural-language AI CLI
+## 30-second quickstart
 
-The natural-language AI path is now implemented on `main` as the primary human-facing direction. The published `v0.1.0` tag predates this path and remains the structured preview; use `main` for this unreleased slice until the next tagged preview:
+### 1. Install the current natural-language CLI
+
+The natural-language-first UX is currently on `main` and is newer than the published `v0.1.0` structured preview. With Rust 1.88+:
 
 ```bash
-reason "Analyze this incident" --fact http.status_code=503
-reason "Review this architecture" --file architecture.md --hypothesis backup.enabled=true
-cat error.log | reason "Find the most supported root cause" --hypothesis incident.root_cause=database
+cargo install --git https://github.com/git-ksk/reasoning-harness \
+  --locked reasoning-harness-cli --bin reason
+
+reason --version
 ```
 
-Provider/model normally come from layered config. They can also be explicit:
+If you specifically need the frozen `v0.1.0` structured preview, install the tag or use the [v0.1.0 standalone release binaries](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.1.0). Until a newer tag is published, use `main` for the natural-language path.
+
+### 2. Give it a task and an explicit fact
 
 ```bash
+export MISTRAL_API_KEY='...'
+
 reason "Report the verified deployment region" \
   --provider mistral \
   --model ministral-8b-latest \
-  --fact service.region=us-east-1
+  --fact service.region=us-east-1 \
+  --hypothesis service.region=us-east-1
 ```
 
-The runtime path is:
+The model generates and renders an answer, but the structured fact is what allows the harness to verify the proposition. Provider/model can normally come from config, so the explicit flags are optional once configured.
 
-```text
-natural-language task
-        ↓
-model generates an untrusted candidate
-        ↓
-Harness validation + evidence verification + diagnostics
-        ↓
-missing support? -> bounded resolver -> admission -> re-verification
-        ↓
-model renders a natural-language answer
-        ↓
-final-claim coverage gate
-        ↓
-grounded answer | qualified answer | unknown/abstain
+### 3. Try an intentionally insufficient case
+
+```bash
+reason "Is the database definitely the root cause?" \
+  --provider mistral \
+  --model ministral-8b-latest \
+  --fact http.status_code=503 \
+  --fact db.connection_errors=7 \
+  --hypothesis incident.root_cause=database
 ```
 
-The convenience layer does **not** turn arbitrary text into truth. `--file` and piped stdin are
-provenance-bearing **untrusted context**: the model can read them, but their prose cannot create a hard
-verification receipt by itself. `--fact KEY=VALUE` is an explicit harness-owned structured fact, and
-`--resolver-fact KEY=VALUE` is an explicit local fact exposed only through the bounded resolution
-protocol. `--hypothesis KEY=VALUE` tells the harness which proposition should be evaluated or resolved.
+The safe result should not promote those observations into a proven causal conclusion. Depending on the candidate and verified state, `reason` can expose a qualified answer or remain `unknown`. That is a successful safety outcome, not automatically a process error.
 
-This means `reason "..."` with no trusted evidence may correctly end as qualified/unknown rather than
-pretending the model's pretraining is verified evidence. Future retrieval/web/database/test/MCP adapters
-can make the natural path much more capable, but they must cross the same admission and verification
-boundaries.
+> **No provider key?** The advanced structured path can verify an externally generated candidate completely offline. See [Advanced structured execution modes](#advanced-structured-execution-modes).
 
-Structured JSON remains supported as an advanced integration/debug/CI surface. It is no longer the UX
-ordinary users need to understand first.
+## What will the answer look like?
 
-The shipped natural path uses evidence binding, assumption/contradiction/evidence-qualification
-diagnostics, bounded resolution, re-verification, final-claim coverage, and the adopted D3 + residual
-sufficiency answer-safety bridge. The default `d3-sufficiency` profile is
-`d3-sufficiency-answer-gate-v2`: it can preserve a baseline result or force verification/resolution,
-but `sufficient` never creates evidence, receipts, epistemic promotion, or verdict authority. The
-original v1 policy and the baseline-only path remain explicit rollbacks.
+The human-facing path is designed around three useful outcomes:
 
-The initial residual-sufficiency research program (#91) is complete: calibration, independent frozen
-holdout, operational stabilization, versioned product wiring, and NL-5 dogfood all finished without
-mutating the frozen research corpora. Further selective/conformal or relation-level sufficiency work is
-follow-on research, not a prerequisite for using the current natural-language path.
+| Situation | User-facing behavior | Meaning |
+| --- | --- | --- |
+| Evidence supports the requested target | **Grounded answer** | The factual claim is covered by harness-owned verified state. |
+| Some observations are supported but the requested conclusion is not | **Qualified answer** | Useful facts can be shown while the unsupported conclusion stays explicitly uncertain. |
+| The harness cannot safely expose an answer | **Unknown / abstain** | More evidence or a configured resolver is required. |
+
+For example, if HTTP 503 and seven database connection errors are verified but no causal evidence establishes the root cause, a useful qualified answer is conceptually:
+
+> The database is not confirmed as the root cause. HTTP 503 and seven connection errors were observed in the same window, but that does not establish causation.
+
+The important part is not the exact wording; it is that supported observations can remain useful without being upgraded into a stronger unsupported conclusion.
 
 ## What do I give it?
 
-For the primary path, give `reason` a natural-language task plus only the context or authority you
-actually have. The CLI is non-interactive, but it is **natural-language-first**, not structured-data-first:
+For normal use, start with a natural-language task and add only the context or authority you actually have:
 
-- `--file` / stdin: provenance-bearing untrusted context the model may read;
-- `--fact KEY=VALUE`: explicit harness-owned structured evidence;
-- `--hypothesis KEY=VALUE`: the proposition you want evaluated;
-- `--resolver-fact KEY=VALUE`: an explicitly configured local fact available only through bounded resolution.
+| Input | What it means to the harness |
+| --- | --- |
+| positional `TASK` | What you want answered. It is **not evidence**. |
+| `--file PATH` / piped stdin | Context the model may read. It stays **untrusted** until separately verified. |
+| `--fact KEY=VALUE` | Explicit structured evidence owned by the harness and eligible for deterministic verification. |
+| `--hypothesis KEY=VALUE` | The proposition you want evaluated or resolved. |
+| `--resolver-fact KEY=VALUE` | A local fact available only through bounded resolution, admission, and re-verification. |
 
-A task can run with less than this, but missing trusted support may correctly produce a qualified answer
-or `unknown`. Structured `HarnessInput` / `ReasoningCandidate` JSON remains the advanced integration,
-automation, and debugging surface.
+If trusted support is missing, a qualified answer or `unknown` is expected behavior. A document merely containing a sentence does not make that sentence verified evidence.
 
-Inspect the exact contracts at any time:
+Structured `HarnessInput` / `ReasoningCandidate` JSON remains available for applications, CI, reproducibility, and offline candidate checking.
+
+## Application and automation patterns
+
+### A. Check an LLM/RAG answer before publishing it
+
+Your application retrieves evidence and asks a model to produce a structured candidate. Feed both into `reason`:
 
 ```bash
-reason schema artifact
-reason schema candidate
-reason schema config
-reason schema semantic-check
+reason run \
+  --input retrieved-evidence.json \
+  --candidate model-candidate.json \
+  --format json > checked-result.json
 ```
+
+Then gate the next step on `result.outcome.verdict` instead of trusting the model response directly.
+
+Today, retrieval documents do **not** automatically become trusted evidence just because they came from a RAG system. Your integration must represent the evidence/provenance in `HarnessInput` (and trusted receipts/oracles where appropriate).
+
+This is the core **integration** pattern when another application already owns retrieval or candidate generation.
+
+### B. Let `reason` generate the candidate with a live provider
+
+For example, with Mistral:
+
+```bash
+export MISTRAL_API_KEY='...'
+
+reason run \
+  --input evidence.json \
+  --provider mistral \
+  --model ministral-8b-latest \
+  --format json
+```
+
+The provider generates an **untrusted candidate**. The same harness-owned correctness process still runs afterward.
+
+Google Gemini/AI Studio and NVIDIA Hosted NIM adapters are also implemented. Provider credentials remain environment variables and are never accepted as trusted evidence.
+
+### C. Use it as a CI / agent safety gate
+
+Validate a previously materialized artifact:
+
+```bash
+reason verify artifact.json --format json
+```
+
+Or use stdin in a pipeline:
+
+```bash
+cat artifact.json | reason verify - --format json
+```
+
+Process-state semantics are stable for automation:
+
+- `0` — command completed; a successful `run` may still be `accept`, `reject`, or `unknown`.
+- `1` — input, provider, runtime, validation, or other operational failure.
+- `2` — CLI argument/usage error.
+
+In JSON mode, product failures are also emitted as machine-readable failure envelopes.
 
 ## Advanced structured execution modes
 
@@ -203,156 +250,6 @@ This is why `reason run --candidate ...` can be useful with **zero API keys**: t
 
 For a deeper walkthrough, including state transitions, receipts, qualification, and where model-backed D3 fits, see [How Reasoning Harness works](docs/how-it-works.md). For raw-model-vs-harness evaluation, see [product dogfood](docs/product-dogfood.md).
 
-## 30-second quickstart
-
-Examples below use a POSIX shell. On Windows, save the same JSON documents to files and invoke `reason.exe` with equivalent paths.
-
-### 1. Install
-
-v0.1.0 is an external preview, not a v1.0 stability claim.
-
-With Rust 1.88+:
-
-```bash
-cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.1.0 --locked reasoning-harness-cli --bin reason
-
-reason --version
-```
-
-Or download the standalone `reason` binary for Linux x64, macOS Apple Silicon/Intel, or Windows x64 from the [v0.1.0 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.1.0). The release includes `SHA256SUMS`.
-
-### 2. Run a self-contained offline example
-
-No API key or repository checkout is required. Create a tiny evidence document and an untrusted candidate:
-
-```bash
-cat > /tmp/reason-input.json <<'JSON'
-{
-  "task": "Determine what can be concluded from the supplied evidence.",
-  "evidence": [{
-    "id": "e1",
-    "source": "demo",
-    "observation": "The source states that service.region is us-east-1.",
-    "facts": {"service.region": "us-east-1"}
-  }]
-}
-JSON
-
-cat > /tmp/reason-candidate.json <<'JSON'
-{
-  "claims": [
-    {
-      "id": "c1",
-      "statement": "The service is in us-east-1.",
-      "proposed_state": "known",
-      "proposition": {"key": "service.region", "value": "us-east-1"},
-      "evidence_ids": ["e1"]
-    },
-    {
-      "id": "c2",
-      "statement": "The service is highly available.",
-      "proposed_state": "unknown",
-      "evidence_ids": []
-    }
-  ],
-  "inferences": []
-}
-JSON
-
-reason run \
-  --input /tmp/reason-input.json \
-  --candidate /tmp/reason-candidate.json \
-  --no-config \
-  --format json
-```
-
-The example contains one evidence-backed claim and one claim with no evidence for the requested conclusion. The harness therefore returns:
-
-```json
-{
-  "result": {
-    "outcome": {
-      "verdict": "unknown"
-    }
-  }
-}
-```
-
-That `unknown` is a successful harness outcome, not a process failure. The command exits `0`; automation should inspect the JSON verdict.
-
-### 3. Look at what the harness changed
-
-In the same output, the evidence-backed candidate claim is promoted through a harness-owned verification receipt to `supported`, while the unsupported claim remains `unknown`.
-
-Useful fields include:
-
-```text
-result.outcome.verdict
-result.outcome.artifact.claims
-result.outcome.artifact.verification_receipts
-result.outcome.artifact.*_findings
-```
-
-## Three practical usage patterns
-
-### A. Check an LLM/RAG answer before publishing it
-
-Your application retrieves evidence and asks a model to produce a structured candidate. Feed both into `reason`:
-
-```bash
-reason run \
-  --input retrieved-evidence.json \
-  --candidate model-candidate.json \
-  --format json > checked-result.json
-```
-
-Then gate the next step on `result.outcome.verdict` instead of trusting the model response directly.
-
-Today, retrieval documents do **not** automatically become trusted evidence just because they came from a RAG system. Your integration must represent the evidence/provenance in `HarnessInput` (and trusted receipts/oracles where appropriate).
-
-This is the core product pattern.
-
-### B. Let `reason` generate the candidate with a live provider
-
-For example, with Mistral:
-
-```bash
-export MISTRAL_API_KEY='...'
-
-reason run \
-  --input evidence.json \
-  --provider mistral \
-  --model ministral-8b-latest \
-  --format json
-```
-
-The provider generates an **untrusted candidate**. The same harness-owned correctness process still runs afterward.
-
-Google Gemini/AI Studio and NVIDIA Hosted NIM adapters are also implemented. Provider credentials remain environment variables and are never accepted as trusted evidence.
-
-### C. Use it as a CI / agent safety gate
-
-Validate a previously materialized artifact:
-
-```bash
-reason verify artifact.json --format json
-```
-
-Or use stdin in a pipeline:
-
-```bash
-cat artifact.json | reason verify - --format json
-```
-
-Process-state semantics are stable for automation:
-
-- `0` — command completed; a successful `run` may still be `accept`, `reject`, or `unknown`.
-- `1` — input, provider, runtime, validation, or other operational failure.
-- `2` — CLI argument/usage error.
-
-In JSON mode, product failures are also emitted as machine-readable failure envelopes.
-
 ## Semantic safety check
 
 The adopted semantic runtime is available separately so a soft diagnostic can never silently become final-verdict authority:
@@ -367,13 +264,14 @@ reason semantic-check \
 
 The default profile is `semantic-decidability-d3-v1`. The characterized `soft-semantic-v3` profile remains available as an explicit rollback with `--profile v3`.
 
-Use this surface when you specifically need a semantic contradiction/counterexample/unsupported-premise/causal-gap diagnostic. For normal application integration, start with `reason run`.
+Use this advanced surface when you specifically need a semantic contradiction/counterexample/unsupported-premise/causal-gap diagnostic. For a normal human task, start with `reason "TASK"`; for structured application/CI integration, start with `reason run`.
 
 ## Supported product commands
 
 | Command | Use it for |
 | --- | --- |
-| `reason run` | Run candidate output through the harness-owned correctness process. |
+| `reason "TASK"` | Primary human-facing natural-language path through the verified runtime. |
+| `reason run` | Structured application/CI path for candidate output and harness-owned evidence. |
 | `reason verify` | Deterministically validate a finalized `ReasoningArtifact`. |
 | `reason semantic-check` | Run the adopted soft semantic runtime without granting it final authority. |
 | `reason schema` | Inspect versioned machine-readable product contracts. |
@@ -394,7 +292,7 @@ Deterministic oracles such as tests, schemas, compilers, databases, policy engin
 
 ## Current capabilities
 
-The v0.1.0 preview includes:
+Current `main` includes the capabilities below. The published `v0.1.0` tag predates the natural-language-first path, so use the tagged release notes when you need the exact frozen preview contents.
 
 - typed `HarnessInput`, `ReasoningCandidate`, and `ReasoningArtifact` contracts;
 - evidence binding and deterministic provenance/reference validation;
