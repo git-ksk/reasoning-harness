@@ -71,7 +71,7 @@ The final model-rendered answer is also untrusted until `finalize_answer` checks
 
 The natural-language path also runs the current semantic + evidence-sufficiency safety checks before exposing grounded factual claims. These checks are **restrictive only**: they may require more verification, bounded resolution, or abstention, but they cannot turn model confidence into trusted evidence or an `accept` verdict. Supported partial facts can still be shown without requiring them to answer the whole task.
 
-The default is `--safety-profile current`. Advanced rollback/testing options are `legacy-v1` and `baseline`. Legacy `d3-sufficiency` / `d3-sufficiency-v1` spellings remain accepted aliases; see [Semantic runtime product surface](#semantic-runtime-product-surface) and the [terminology guide](terminology.md) for exact machine identities.
+The default is `--safety-profile current` (`verified-target-answer-gate-v1`). Use `rollback` to reproduce the previous claim-local gate (`d3-sufficiency-answer-gate-v2`); legacy `d3-sufficiency` / `d3-sufficiency-v2` selectors are aliases for that rollback. `legacy-v1` / `d3-sufficiency-v1` and `baseline` remain older testing/rollback surfaces; see [Semantic runtime product surface](#semantic-runtime-product-surface) and the [terminology guide](terminology.md) for exact machine identities.
 
 Natural JSON output declares `output_contract: reason-natural-output-v2` inside the normal `reason-cli-output-v1` envelope.
 

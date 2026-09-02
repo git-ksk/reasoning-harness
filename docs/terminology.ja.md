@@ -25,17 +25,18 @@ report、rollback、schema、automationが参照するため、以下のexact ID
 | --- | --- |
 | `semantic-decidability-d3-v1` | 現在のsemantic runtime configuration ID。 |
 | `soft-semantic-v3` | rollback用に保持する以前のsemantic runtime configuration ID。 |
-| `d3-sufficiency-answer-gate-v2` | 現在のanswer-safety configuration ID。 |
+| `verified-target-answer-gate-v1` | 現在のanswer-safety configuration ID。exact trusted verification済みtargetでは冗長なmodel sufficiency判定を短絡できます。 |
+| `d3-sufficiency-answer-gate-v2` | 再現性のため保持するanswer-safety rollback configuration。 |
 | `d3-sufficiency-answer-gate-v1` | rollback/testing用の以前のanswer-safety configuration ID。 |
 | `shared-candidate-initial-render-v1` | product evaluationの比較contract。 |
-| `reason-product-dogfood-v8` | product dogfood report schema version。 |
+| `reason-product-dogfood-v9` | product dogfood report schema version。 |
 
 CLIでは説明的なselectorを使います。
 
 - `--profile current` / `--profile rollback`
 - `--safety-profile current` / `--safety-profile legacy-v1` / `--safety-profile baseline`
 
-互換性のため、従来の`d3` / `v3` / `d3-sufficiency` / `d3-sufficiency-v1`もaliasとして受け付けます。
+互換性のため従来selectorも受け付けます。`d3`はcurrent semantic runtime、`v3`はそのrollback、`d3-sufficiency` / `d3-sufficiency-v2`は直前のanswer-safety rollback、`d3-sufficiency-v1`はさらに古いv1 gateを選択します。
 
 ## 過去の研究フェーズ名
 

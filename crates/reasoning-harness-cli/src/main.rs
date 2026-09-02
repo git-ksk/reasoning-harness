@@ -99,7 +99,7 @@ struct NaturalArgs {
     /// Optional provider random seed.
     #[arg(long)]
     seed: Option<u64>,
-    /// Final-answer safety profile. current is the conservative default; baseline is the explicit rollback.
+    /// Final-answer safety profile. current is the default; rollback selects the previous profile, with legacy-v1 and baseline retained for older compatibility/testing.
     #[arg(long, value_enum, default_value_t = AnswerSafetyProfileArg::Current)]
     safety_profile: AnswerSafetyProfileArg,
     /// Highest-precedence non-secret config file layered over project/user config.
@@ -163,8 +163,14 @@ enum AnswerSafetyProfileArg {
     Baseline,
     #[value(name = "legacy-v1", alias = "d3-sufficiency-v1")]
     LegacyV1,
+    #[value(
+        name = "rollback",
+        alias = "d3-sufficiency",
+        alias = "d3-sufficiency-v2"
+    )]
+    Rollback,
     #[default]
-    #[value(name = "current", alias = "d3-sufficiency")]
+    #[value(name = "current")]
     Current,
 }
 
@@ -173,7 +179,8 @@ impl AnswerSafetyProfileArg {
         match self {
             Self::Baseline => AnswerSafetyProfile::Baseline,
             Self::LegacyV1 => AnswerSafetyProfile::D3SufficiencyV1,
-            Self::Current => AnswerSafetyProfile::D3SufficiencyV2,
+            Self::Rollback => AnswerSafetyProfile::D3SufficiencyV2,
+            Self::Current => AnswerSafetyProfile::VerifiedTargetV1,
         }
     }
 }
@@ -4225,8 +4232,24 @@ mod candidate_json_tests {
     }
 
     #[test]
-    fn parses_current_safety_profile_and_legacy_alias() {
-        for selector in ["current", "d3-sufficiency"] {
+    fn parses_current_safety_profile() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "analyze this incident",
+            "--provider",
+            "mistral",
+            "--model",
+            "ministral-8b-latest",
+            "--safety-profile",
+            "current",
+        ])
+        .unwrap();
+        assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Current);
+    }
+
+    #[test]
+    fn parses_rollback_safety_profile_and_legacy_aliases() {
+        for selector in ["rollback", "d3-sufficiency", "d3-sufficiency-v2"] {
             let cli = Cli::try_parse_from([
                 "reason",
                 "analyze this incident",
@@ -4238,7 +4261,7 @@ mod candidate_json_tests {
                 selector,
             ])
             .unwrap();
-            assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Current);
+            assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Rollback);
         }
     }
 
