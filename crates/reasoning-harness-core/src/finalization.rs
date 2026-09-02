@@ -75,12 +75,45 @@ pub trait FinalAnswerRenderer: Send + Sync {
 /// Recovery is intentionally all-or-nothing across the requested target set. Safe partial recovery is
 /// a separate product policy concern: this helper refuses to present an apparently complete grounded
 /// answer when any requested target lacks exact `Known`/`Supported` authority.
-pub fn canonical_verified_target_answer(
+fn exact_target_authorized(artifact: &ReasoningArtifact, target: &Proposition) -> bool {
+    let matching = artifact
+        .claims
+        .iter()
+        .filter(|claim| claim.proposition.as_ref() == Some(target))
+        .collect::<Vec<_>>();
+    if matching.is_empty()
+        || !matching.iter().all(|claim| {
+            matches!(
+                claim.state,
+                EpistemicState::Known | EpistemicState::Supported
+            )
+        })
+    {
+        return false;
+    }
+    if artifact.verification_receipts.iter().any(|receipt| {
+        receipt.proposition.as_ref() == Some(target)
+            && receipt.conclusion == crate::VerificationConclusion::Contradicted
+    }) {
+        return false;
+    }
+    if artifact
+        .evidence_qualification_findings
+        .iter()
+        .any(|finding| finding.proposition == *target)
+    {
+        return false;
+    }
+    !artifact.adversarial_findings.iter().any(|finding| {
+        finding.proposition == *target && finding.strength == crate::FindingStrength::Hard
+    })
+}
+
+fn canonical_verified_target_candidate(
     artifact: &ReasoningArtifact,
-    verdict: Verdict,
     targets: &[Proposition],
 ) -> Option<FinalAnswerCandidate> {
-    if verdict != Verdict::Accept || targets.is_empty() {
+    if targets.is_empty() {
         return None;
     }
 
@@ -92,14 +125,7 @@ pub fn canonical_verified_target_answer(
         {
             continue;
         }
-        let authorized = artifact.claims.iter().any(|claim| {
-            claim.proposition.as_ref() == Some(target)
-                && matches!(
-                    claim.state,
-                    EpistemicState::Known | EpistemicState::Supported
-                )
-        });
-        if !authorized {
+        if !exact_target_authorized(artifact, target) {
             return None;
         }
         factual_claims.push(FinalAnswerClaim {
@@ -120,6 +146,67 @@ pub fn canonical_verified_target_answer(
         text,
         factual_claims,
     })
+}
+
+/// Deterministically render only harness-owned requested targets that are already authorized by the
+/// final artifact after the Harness has reached `Accept`. It never derives authority from model prose
+/// or fuzzy proposition matching.
+pub fn canonical_verified_target_answer(
+    artifact: &ReasoningArtifact,
+    verdict: Verdict,
+    targets: &[Proposition],
+) -> Option<FinalAnswerCandidate> {
+    (verdict == Verdict::Accept)
+        .then(|| canonical_verified_target_candidate(artifact, targets))
+        .flatten()
+}
+
+/// Preserve exact requested targets as a target-only qualified partial answer when the artifact-global
+/// verdict remains `Unknown` solely because other candidate state is unresolved. The global verdict is
+/// not promoted. Every requested target must already be exact `Known`/`Supported`; target-local
+/// qualification/adversarial/contradiction signals fail closed, and `Reject` is never eligible.
+pub fn canonical_verified_target_partial_answer(
+    artifact: &ReasoningArtifact,
+    verdict: Verdict,
+    targets: &[Proposition],
+) -> Option<(FinalAnswerCandidate, FinalizationResult)> {
+    if verdict != Verdict::Unknown
+        || artifact
+            .claims
+            .iter()
+            .any(|claim| claim.state == EpistemicState::Contradicted)
+    {
+        return None;
+    }
+    let has_non_target_unresolved = artifact.claims.iter().any(|claim| {
+        !claim
+            .proposition
+            .as_ref()
+            .is_some_and(|proposition| targets.contains(proposition))
+            && matches!(
+                claim.state,
+                EpistemicState::Inferred | EpistemicState::Assumed | EpistemicState::Unknown
+            )
+    });
+    if !has_non_target_unresolved {
+        return None;
+    }
+
+    let mut candidate = canonical_verified_target_candidate(artifact, targets)?;
+    let grounded = candidate.text.clone();
+    candidate.text = format!(
+        "verified partial: {grounded}; other generated claims remain unresolved and are omitted"
+    );
+    let factual_claims = candidate.factual_claims.len();
+    let finalization = FinalizationResult {
+        status: FinalizationStatus::QualifiedPartialAnswer,
+        text: Some(candidate.text.clone()),
+        factual_claims,
+        covered_claims: factual_claims,
+        factual_claim_coverage: 1.0,
+        uncovered_propositions: vec![],
+    };
+    Some((candidate, finalization))
 }
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -393,6 +480,149 @@ mod tests {
         )
         .expect("known exact target should be recoverable");
         assert_eq!(recovered.factual_claims.len(), 1);
+    }
+
+    #[test]
+    fn target_scoped_partial_preserves_verified_target_without_changing_unknown_verdict() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let mut current = artifact(EpistemicState::Supported);
+        current.claims.push(Claim {
+            id: "extra".into(),
+            statement: "unrelated detail".into(),
+            state: EpistemicState::Unknown,
+            proposition: Some(Proposition {
+                key: "feature.owner".into(),
+                value: "team-a".into(),
+            }),
+            evidence_ids: vec![],
+        });
+        let (candidate, finalization) = canonical_verified_target_partial_answer(
+            &current,
+            Verdict::Unknown,
+            std::slice::from_ref(&target),
+        )
+        .expect("unrelated unresolved claim must not erase an exact authorized target");
+        assert_eq!(candidate.factual_claims.len(), 1);
+        assert_eq!(candidate.factual_claims[0].proposition, target);
+        assert_eq!(
+            finalization.status,
+            FinalizationStatus::QualifiedPartialAnswer
+        );
+        assert_eq!(finalization.factual_claim_coverage, 1.0);
+    }
+
+    #[test]
+    fn target_scoped_partial_fails_closed_when_requested_target_itself_is_unresolved() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        assert!(
+            canonical_verified_target_partial_answer(
+                &artifact(EpistemicState::Unknown),
+                Verdict::Unknown,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn target_scoped_partial_requires_an_actual_non_target_blocker() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        assert!(
+            canonical_verified_target_partial_answer(
+                &artifact(EpistemicState::Supported),
+                Verdict::Unknown,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn target_scoped_partial_fails_closed_on_target_qualification_finding() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let mut current = artifact(EpistemicState::Supported);
+        current.claims.push(Claim {
+            id: "extra".into(),
+            statement: "unrelated detail".into(),
+            state: EpistemicState::Unknown,
+            proposition: Some(Proposition {
+                key: "feature.owner".into(),
+                value: "team-a".into(),
+            }),
+            evidence_ids: vec![],
+        });
+        current
+            .evidence_qualification_findings
+            .push(crate::EvidenceQualificationFinding {
+                id: "qualification".into(),
+                detector: "test".into(),
+                kind: crate::EvidenceQualificationFindingKind::MissingMetadata,
+                reason: crate::EvidenceQualificationFindingReason::MissingTemporalMetadata,
+                strength: crate::FindingStrength::Soft,
+                proposition: target.clone(),
+                evidence_ids: vec![],
+                message: "missing target metadata".into(),
+            });
+        assert!(
+            canonical_verified_target_partial_answer(
+                &current,
+                Verdict::Unknown,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn target_scoped_partial_never_overrides_reject() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        assert!(
+            canonical_verified_target_partial_answer(
+                &artifact(EpistemicState::Supported),
+                Verdict::Reject,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn target_scoped_partial_rejects_mixed_authority_for_the_same_exact_target() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let mut current = artifact(EpistemicState::Supported);
+        current.claims.push(Claim {
+            id: "duplicate".into(),
+            statement: "same target unresolved".into(),
+            state: EpistemicState::Unknown,
+            proposition: Some(target.clone()),
+            evidence_ids: vec![],
+        });
+        assert!(
+            canonical_verified_target_partial_answer(
+                &current,
+                Verdict::Unknown,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
     }
 
     #[test]
