@@ -98,8 +98,8 @@ struct NaturalArgs {
     /// Optional provider random seed.
     #[arg(long)]
     seed: Option<u64>,
-    /// Final-answer safety profile. d3-sufficiency is the promoted conservative gate; baseline is the explicit rollback.
-    #[arg(long, value_enum, default_value_t = AnswerSafetyProfileArg::D3Sufficiency)]
+    /// Final-answer safety profile. current is the conservative default; baseline is the explicit rollback.
+    #[arg(long, value_enum, default_value_t = AnswerSafetyProfileArg::Current)]
     safety_profile: AnswerSafetyProfileArg,
     /// Highest-precedence non-secret config file layered over project/user config.
     #[arg(long, value_name = "PATH", conflicts_with = "no_config")]
@@ -142,15 +142,17 @@ enum Provider {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
 enum SemanticProfileArg {
-    D3,
-    V3,
+    #[value(name = "current", alias = "d3")]
+    Current,
+    #[value(name = "rollback", alias = "v3")]
+    Rollback,
 }
 
 impl SemanticProfileArg {
     const fn runtime_profile(self) -> SemanticRuntimeProfile {
         match self {
-            Self::D3 => SemanticRuntimeProfile::SemanticDecidabilityD3V1,
-            Self::V3 => SemanticRuntimeProfile::SoftSemanticV3,
+            Self::Current => SemanticRuntimeProfile::SemanticDecidabilityD3V1,
+            Self::Rollback => SemanticRuntimeProfile::SoftSemanticV3,
         }
     }
 }
@@ -158,17 +160,19 @@ impl SemanticProfileArg {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, ValueEnum)]
 enum AnswerSafetyProfileArg {
     Baseline,
-    D3SufficiencyV1,
+    #[value(name = "legacy-v1", alias = "d3-sufficiency-v1")]
+    LegacyV1,
     #[default]
-    D3Sufficiency,
+    #[value(name = "current", alias = "d3-sufficiency")]
+    Current,
 }
 
 impl AnswerSafetyProfileArg {
     const fn runtime_profile(self) -> AnswerSafetyProfile {
         match self {
             Self::Baseline => AnswerSafetyProfile::Baseline,
-            Self::D3SufficiencyV1 => AnswerSafetyProfile::D3SufficiencyV1,
-            Self::D3Sufficiency => AnswerSafetyProfile::D3SufficiencyV2,
+            Self::LegacyV1 => AnswerSafetyProfile::D3SufficiencyV1,
+            Self::Current => AnswerSafetyProfile::D3SufficiencyV2,
         }
     }
 }
@@ -676,7 +680,7 @@ enum Command {
         #[arg(long, value_enum)]
         format: Option<OutputFormat>,
     },
-    /// PRODUCT: Run the adopted semantic runtime without granting it final-verdict authority.
+    /// PRODUCT: Run the current semantic runtime without granting it final-verdict authority.
     SemanticCheck {
         /// Semantic request plus harness-owned artifact JSON. Use '-' for stdin.
         #[arg(long)]
@@ -685,8 +689,8 @@ enum Command {
         provider: Provider,
         #[arg(long)]
         model: String,
-        /// D3 is the adopted default; v3 is the explicit rollback profile.
-        #[arg(long, value_enum, default_value_t = SemanticProfileArg::D3)]
+        /// current is the adopted default; rollback selects the characterized previous profile. Legacy d3/v3 spellings remain accepted aliases.
+        #[arg(long, value_enum, default_value_t = SemanticProfileArg::Current)]
         profile: SemanticProfileArg,
         #[arg(long, default_value_t = 256)]
         max_tokens: u32,
@@ -3992,7 +3996,7 @@ mod candidate_json_tests {
     }
 
     #[test]
-    fn parses_semantic_check_product_command_with_d3_default() {
+    fn parses_semantic_check_product_command_with_current_default() {
         let cli = Cli::try_parse_from([
             "reason",
             "semantic-check",
@@ -4006,7 +4010,7 @@ mod candidate_json_tests {
         .unwrap();
         match cli.command {
             Some(Command::SemanticCheck { profile, model, .. }) => {
-                assert_eq!(profile, SemanticProfileArg::D3);
+                assert_eq!(profile, SemanticProfileArg::Current);
                 assert_eq!(model, "gemini-3.5-flash-lite");
             }
             _ => panic!("expected semantic-check command"),
@@ -4014,7 +4018,55 @@ mod candidate_json_tests {
     }
 
     #[test]
-    fn parses_semantic_check_v3_rollback() {
+    fn parses_semantic_check_explicit_current_and_legacy_d3_alias() {
+        for selector in ["current", "d3"] {
+            let cli = Cli::try_parse_from([
+                "reason",
+                "semantic-check",
+                "--input",
+                "check.json",
+                "--provider",
+                "google",
+                "--model",
+                "gemini-3.5-flash-lite",
+                "--profile",
+                selector,
+            ])
+            .unwrap();
+            match cli.command {
+                Some(Command::SemanticCheck { profile, .. }) => {
+                    assert_eq!(profile, SemanticProfileArg::Current);
+                }
+                _ => panic!("expected semantic-check command"),
+            }
+        }
+    }
+
+    #[test]
+    fn parses_semantic_check_explicit_rollback() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "semantic-check",
+            "--input",
+            "check.json",
+            "--provider",
+            "mistral",
+            "--model",
+            "ministral-8b-latest",
+            "--profile",
+            "rollback",
+        ])
+        .unwrap();
+        match cli.command {
+            Some(Command::SemanticCheck { profile, .. }) => {
+                assert_eq!(profile, SemanticProfileArg::Rollback);
+            }
+            _ => panic!("expected semantic-check command"),
+        }
+    }
+
+    #[test]
+    fn parses_semantic_check_legacy_v3_alias() {
         let cli = Cli::try_parse_from([
             "reason",
             "semantic-check",
@@ -4030,7 +4082,7 @@ mod candidate_json_tests {
         .unwrap();
         match cli.command {
             Some(Command::SemanticCheck { profile, .. }) => {
-                assert_eq!(profile, SemanticProfileArg::V3);
+                assert_eq!(profile, SemanticProfileArg::Rollback);
                 assert_eq!(
                     profile.runtime_profile(),
                     SemanticRuntimeProfile::SoftSemanticV3
@@ -4128,10 +4180,43 @@ mod candidate_json_tests {
         assert_eq!(cli.natural.task.as_deref(), Some("analyze this incident"));
         assert_eq!(cli.natural.provider, Some(Provider::Mistral));
         assert_eq!(cli.natural.fact, vec!["service.region=us-east-1"]);
-        assert_eq!(
-            cli.natural.safety_profile,
-            AnswerSafetyProfileArg::D3Sufficiency
-        );
+        assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Current);
+    }
+
+    #[test]
+    fn parses_current_safety_profile_and_legacy_alias() {
+        for selector in ["current", "d3-sufficiency"] {
+            let cli = Cli::try_parse_from([
+                "reason",
+                "analyze this incident",
+                "--provider",
+                "mistral",
+                "--model",
+                "ministral-8b-latest",
+                "--safety-profile",
+                selector,
+            ])
+            .unwrap();
+            assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Current);
+        }
+    }
+
+    #[test]
+    fn parses_legacy_v1_safety_profile_and_alias() {
+        for selector in ["legacy-v1", "d3-sufficiency-v1"] {
+            let cli = Cli::try_parse_from([
+                "reason",
+                "analyze this incident",
+                "--provider",
+                "mistral",
+                "--model",
+                "ministral-8b-latest",
+                "--safety-profile",
+                selector,
+            ])
+            .unwrap();
+            assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::LegacyV1);
+        }
     }
 
     #[test]
@@ -4148,25 +4233,6 @@ mod candidate_json_tests {
         ])
         .unwrap();
         assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Baseline);
-    }
-
-    #[test]
-    fn parses_natural_language_v1_safety_rollback() {
-        let cli = Cli::try_parse_from([
-            "reason",
-            "analyze this incident",
-            "--provider",
-            "mistral",
-            "--model",
-            "ministral-8b-latest",
-            "--safety-profile",
-            "d3-sufficiency-v1",
-        ])
-        .unwrap();
-        assert_eq!(
-            cli.natural.safety_profile,
-            AnswerSafetyProfileArg::D3SufficiencyV1
-        );
     }
 
     #[test]

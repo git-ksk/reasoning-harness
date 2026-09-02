@@ -194,7 +194,7 @@ Product commandごとに見るとこうです。
 | `reason run --candidate ...` | **不要** | 既存candidateを、決定論的なmaterialization・evidence verification・diagnostics・acceptance policyへ通せる。 |
 | `reason verify artifact.json` | **不要** | すでに作られたartifactの構造・invariantを検証する。 |
 | `reason run --provider ...` | **必要** | untrusted candidateそのものをproviderに生成させる。 |
-| `reason semantic-check ...` | **必要** | D3/v3はmodel-backedなsoft semantic diagnosticだから。 |
+| `reason semantic-check ...` | **必要** | semantic runtimeはmodel-backedなsoft diagnostic surfaceだから。 |
 
 つまりReasoning Harnessは、**必ずAI endpointへ接続しないと動かないツールではありません**。既存AIの出力をチェックするcore pathは、APIキーなしでも動きます。
 
@@ -288,7 +288,7 @@ reason run --input evidence.json --candidate ai-output.json --no-config --format
 
 は**APIキーなし**で意味のある判定を返せます。AIによる候補生成はすでに外で終わっていて、Harnessは「その候補を信用してよい部分はどこか」を決定論的な境界で判定しているからです。
 
-さらに詳しいstate遷移、verification receipt、evidence qualification、D3との役割分担は[仕組みの詳細](docs/how-it-works.ja.md)にまとめています。
+さらに詳しいstate遷移、verification receipt、evidence qualification、semantic safety runtimeとの役割分担は[仕組みの詳細](docs/how-it-works.ja.md)にまとめています。[用語ガイド](docs/terminology.ja.md)では製品概念・互換性ID・過去の研究フェーズ名を分けて説明しています。
 
 ## Semantic safety check
 
@@ -302,7 +302,7 @@ reason semantic-check \
   --format json
 ```
 
-defaultは`semantic-decidability-d3-v1`です。characterized済みの`soft-semantic-v3`へ戻す場合は`--profile v3`を使えます。
+CLIでは`--profile current`（default）と`--profile rollback`を使います。再現性のためmachine configuration IDは`semantic-decidability-d3-v1` / `soft-semantic-v3`のまま維持し、従来の`d3` / `v3` selectorもaliasとして利用できます。
 
 contradiction / counterexample / unsupported premise / causal gapなどをsemanticに診断したい場合に使う高度なsurfaceです。人が普通にtaskを依頼するなら**`reason "TASK"`**、structuredなアプリ/CI統合なら**`reason run`**から始めます。
 
@@ -341,7 +341,7 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 - `accept | reject | unknown`とfail-closed runtime
 - bounded resolution/finalization primitivesと`ReasoningPolicy`
 - `ReasoningThread` event/checkpoint replay primitives
-- `semantic-decidability-d3-v1`と明示的v3 rollback
+- current semantic runtimeと明示的rollback profile（exact compatibility IDは再現性のため維持）
 - Mistral / Google / NVIDIA provider adapter
 - versioned JSON envelope、schema-backed config、stdin、typed failure class
 - Linux x64 / macOS Apple Silicon・Intel / Windows x64のproduct smoke

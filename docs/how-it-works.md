@@ -171,7 +171,7 @@ The product pipeline can record signals about contradictions/counterexamples, ev
 
 Those signals are intentionally separated from trusted verification. A diagnostic may explain why more work is needed; it does not, merely by existing, create trusted evidence or a verification receipt.
 
-The model-backed D3 semantic runtime is even more explicitly separated: it is exposed through `reason semantic-check`, can preserve a soft decision or force `abstain`, and cannot create trusted evidence, hard receipts, epistemic promotion, or final verdict authority.
+The model-backed semantic runtime is even more explicitly separated: it is exposed through `reason semantic-check`, can preserve a soft decision or force `abstain`, and cannot create trusted evidence, hard receipts, epistemic promotion, or final verdict authority.
 
 ## Step 6: the acceptance policy decides the aggregate verdict
 

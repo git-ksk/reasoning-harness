@@ -20,38 +20,30 @@ The runtime must also be allowed to stop with `unknown`, a qualified partial ans
 
 See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
-## Product and research roadmap after D3 + first sufficiency adoption
+## Active roadmap
 
-D3 is now an adopted, operationally stabilized runtime profile. The project therefore advances on
-two connected tracks instead of treating every research experiment as a product feature:
+Reasoning Harness now separates the active product/evaluation roadmap from the archived research chronology. Short research labels are retained only for provenance; see [Terminology and naming](terminology.md).
 
-### Product track — native `reason` CLI (#90)
+### Product
 
-1. **CLI-1 contract hardening:** supported commands, JSON/exit semantics, configuration identity,
-   quickstart, and shell/CI ergonomics.
-2. **CLI-2 distribution/compatibility:** reproducible install/release flow, supported-target smoke,
-   contract compatibility tests, and migration discipline.
-3. **CLI-3 integration/observability:** typed operational/semantic telemetry and reference
-   integrations that invoke the full harness boundary; #126 tracks bounded transient-provider retry reliability.
-4. **CLI-4 real-workload evidence:** the first NL-5 slice is complete. Issue #147 now expands product dogfood through a frozen 24-case capability matrix, five-run replication for selected models, and a later separately frozen fresh holdout; #139 continues to track Ministral coverage/unknown UX.
-5. **v1.0 gate:** stable documented CLI/data contracts plus repeated product acceptance evidence.
+1. **External CLI hardening (#90):** supported commands, install/release compatibility, configuration identity, and automation ergonomics.
+2. **Provider reliability (#126):** bounded transient retries with typed operational failure accounting.
+3. **Verified utility recovery (#150):** diagnose where exact verified targets are lost, add deterministic canonical recovery and resolver closure where authority already exists, and preserve safe partial answers without fuzzy matching or prose-to-authority conversion.
+4. **Model-specific utility (#139):** reduce unnecessary withholding after the provider-neutral recovery mechanisms are characterized.
+5. **v1.0 readiness:** stable documented product contracts plus repeated real-workload acceptance evidence.
 
-The CLI is the product. Public embedding, MCP, and desktop interfaces remain later adapters. See
-[the native CLI product roadmap](product-roadmap.md).
+### Evaluation
 
-### Research track — first residual-sufficiency program completed (#91)
+1. **Smoke set:** preserve the historical six-case `product-dogfood-v1` for fast regression and interpretation of earlier runs.
+2. **Capability matrix:** use the SHA-256-frozen 24-case / 8-family `product-dogfood-v2` for development comparisons.
+3. **Replication:** after verified utility recovery is frozen, rerun selected candidates on predeclared fresh seeds and compare paired case × seed outcomes.
+4. **Fresh holdout:** author and freeze 12–16 genuinely new cases only after replication-based selection.
 
-1. **RSD0 residual-gap discovery — done:** fresh calibration-only cases proved a residual sufficiency gap beyond typed D3 metadata.
-2. **RSD1 soft sufficiency coordinate — done:** `sufficient | insufficient | mixed` remained non-authoritative and monotone.
-3. **RSD2 risk/coverage characterization — done:** multi-seed/model characterization preserved the predeclared safety boundary.
-4. **Independent frozen sufficiency holdout — done:** Ministral 8B and Gemma 4 31B passed the predeclared promotion gates without retuning.
-5. **Product bridge + NL-5 — done:** versioned v1/v2 policies, explicit rollback, target-aware/shared-render dogfood, and exposed-text review completed.
-6. **RSD3 selective/conformal abstention — follow-on only:** start under a new identity only if a new product/research gap justifies it.
-7. **RSD4 relation-level causal sufficiency — follow-on only:** requires typed directional relation-evidence requirements first.
+### Research
 
-A future research candidate reaches the product track only through a fresh sequence of calibration,
-independent frozen holdout, operational stabilization, explicit runtime profile/rollback, CLI
-compatibility coverage, and a separate reversible adoption change. Historical holdouts never become tuning data.
+The first semantic-decidability and residual evidence-sufficiency programs are complete. New research starts only from a measured product/research gap and receives a descriptive identity of its own. Historical labels such as `R1`–`R4`, `D1`–`D3`, and `RSD0`–`RSD4` remain in the chronology below because they are issue-scoped provenance, not product versions.
+
+## Historical implementation and research chronology
 
 ## v0.1 — trustworthy intermediate state and native CLI
 - stabilize HarnessInput / ReasoningCandidate / ReasoningArtifact schemas
