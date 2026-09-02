@@ -43,7 +43,7 @@ jobs:
       group: reasoning-harness-rsd2-replication-${{ inputs.provider }}-${{ inputs.model }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.88.0
