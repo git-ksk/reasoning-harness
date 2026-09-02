@@ -25,17 +25,18 @@ Exact identifiers remain stable because reports, rollback behavior, schemas, and
 | --- | --- |
 | `semantic-decidability-d3-v1` | Current semantic runtime configuration ID. |
 | `soft-semantic-v3` | Characterized previous semantic runtime configuration ID retained for rollback. |
-| `d3-sufficiency-answer-gate-v2` | Current answer-safety configuration ID. |
+| `verified-target-answer-gate-v1` | Current answer-safety configuration ID; exact trusted verification may short-circuit redundant model sufficiency. |
+| `d3-sufficiency-answer-gate-v2` | Answer-safety rollback configuration retained for reproducibility. |
 | `d3-sufficiency-answer-gate-v1` | Previous answer-safety configuration ID retained for rollback/testing. |
 | `shared-candidate-initial-render-v1` | Product evaluation comparison contract. |
-| `reason-product-dogfood-v8` | Product dogfood report schema version. |
+| `reason-product-dogfood-v9` | Product dogfood report schema version. |
 
 The CLI uses descriptive selectors:
 
 - `--profile current` and `--profile rollback`;
 - `--safety-profile current`, `--safety-profile legacy-v1`, and `--safety-profile baseline`.
 
-Legacy selectors `d3`, `v3`, `d3-sufficiency`, and `d3-sufficiency-v1` remain accepted aliases for compatibility.
+Legacy selectors remain accepted for compatibility: `d3` selects the current semantic runtime, `v3` its rollback, `d3-sufficiency` / `d3-sufficiency-v2` select the previous answer-safety rollback, and `d3-sufficiency-v1` selects the older v1 gate.
 
 ## Historical research labels
 

@@ -288,7 +288,7 @@ struct CaseResult {
     raw: RawArmResult,
     shared_harness: SharedHarnessObservation,
     harness: HarnessArmResult,
-    harness_d3_sufficiency: HarnessArmResult,
+    harness_current_safety: HarnessArmResult,
 }
 
 #[derive(Debug, Default, Clone, Serialize)]
@@ -350,16 +350,16 @@ struct HarnessAggregate {
 struct OverheadAggregate {
     raw_total_tokens: u64,
     harness_total_tokens: u64,
-    d3_sufficiency_total_tokens: u64,
+    current_safety_total_tokens: u64,
     token_ratio: Option<f64>,
-    d3_sufficiency_token_ratio: Option<f64>,
-    d3_sufficiency_incremental_token_ratio: Option<f64>,
+    current_safety_token_ratio: Option<f64>,
+    current_safety_incremental_token_ratio: Option<f64>,
     raw_latency_ms: u128,
     harness_latency_ms: u128,
-    d3_sufficiency_latency_ms: u128,
+    current_safety_latency_ms: u128,
     latency_ratio: Option<f64>,
-    d3_sufficiency_latency_ratio: Option<f64>,
-    d3_sufficiency_incremental_latency_ratio: Option<f64>,
+    current_safety_latency_ratio: Option<f64>,
+    current_safety_incremental_latency_ratio: Option<f64>,
 }
 
 #[derive(Debug, Serialize)]
@@ -374,7 +374,7 @@ struct ProductDogfoodReport {
     cases: usize,
     raw: ArmAggregate,
     harness: HarnessAggregate,
-    harness_d3_sufficiency: HarnessAggregate,
+    harness_current_safety: HarnessAggregate,
     overhead: OverheadAggregate,
     user_comprehension: &'static str,
     results: Vec<CaseResult>,
@@ -603,7 +603,7 @@ async fn evaluate_case(
         safety_profile: AnswerSafetyProfile::Baseline,
     })
     .await?;
-    let harness_d3_sufficiency = evaluate_harness_arm(HarnessArmCall {
+    let harness_current_safety = evaluate_harness_arm(HarnessArmCall {
         fixture,
         adapter,
         model,
@@ -613,7 +613,7 @@ async fn evaluate_case(
         prepared,
         initial_render: shared_initial_render,
         initial_render_call: shared_initial_render_call,
-        safety_profile: AnswerSafetyProfile::D3SufficiencyV2,
+        safety_profile: AnswerSafetyProfile::VerifiedTargetV1,
     })
     .await?;
 
@@ -625,7 +625,7 @@ async fn evaluate_case(
         raw,
         shared_harness,
         harness,
-        harness_d3_sufficiency,
+        harness_current_safety,
     })
 }
 
@@ -1459,8 +1459,8 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
     let capability_families = capability_case_counts.keys().cloned().collect::<Vec<_>>();
     let raw = aggregate_raw(&results);
     let harness = aggregate_harness(&results, |result| &result.harness);
-    let harness_d3_sufficiency =
-        aggregate_harness(&results, |result| &result.harness_d3_sufficiency);
+    let harness_current_safety =
+        aggregate_harness(&results, |result| &result.harness_current_safety);
     let raw_total_tokens = results
         .iter()
         .filter_map(|result| result.raw.call.usage.total_tokens)
@@ -1469,9 +1469,9 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .iter()
         .filter_map(|result| result.harness.total_usage.total_tokens)
         .sum();
-    let d3_sufficiency_total_tokens = results
+    let current_safety_total_tokens = results
         .iter()
-        .filter_map(|result| result.harness_d3_sufficiency.total_usage.total_tokens)
+        .filter_map(|result| result.harness_current_safety.total_usage.total_tokens)
         .sum();
     let raw_latency_ms = results
         .iter()
@@ -1481,12 +1481,12 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .iter()
         .map(|result| result.harness.total_latency_ms)
         .sum();
-    let d3_sufficiency_latency_ms = results
+    let current_safety_latency_ms = results
         .iter()
-        .map(|result| result.harness_d3_sufficiency.total_latency_ms)
+        .map(|result| result.harness_current_safety.total_latency_ms)
         .sum();
     ProductDogfoodReport {
-        schema_version: "reason-product-dogfood-v8",
+        schema_version: "reason-product-dogfood-v9",
         comparison_contract: PRODUCT_DOGFOOD_COMPARISON_CONTRACT_ID,
         provider: provider.name(),
         model: model.into(),
@@ -1496,30 +1496,30 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         cases: results.len(),
         raw,
         harness,
-        harness_d3_sufficiency,
+        harness_current_safety,
         overhead: OverheadAggregate {
             raw_total_tokens,
             harness_total_tokens,
-            d3_sufficiency_total_tokens,
+            current_safety_total_tokens,
             token_ratio: ratio(harness_total_tokens as f64, raw_total_tokens as f64),
-            d3_sufficiency_token_ratio: ratio(
-                d3_sufficiency_total_tokens as f64,
+            current_safety_token_ratio: ratio(
+                current_safety_total_tokens as f64,
                 raw_total_tokens as f64,
             ),
-            d3_sufficiency_incremental_token_ratio: ratio(
-                d3_sufficiency_total_tokens as f64,
+            current_safety_incremental_token_ratio: ratio(
+                current_safety_total_tokens as f64,
                 harness_total_tokens as f64,
             ),
             raw_latency_ms,
             harness_latency_ms,
-            d3_sufficiency_latency_ms,
+            current_safety_latency_ms,
             latency_ratio: ratio(harness_latency_ms as f64, raw_latency_ms as f64),
-            d3_sufficiency_latency_ratio: ratio(
-                d3_sufficiency_latency_ms as f64,
+            current_safety_latency_ratio: ratio(
+                current_safety_latency_ms as f64,
                 raw_latency_ms as f64,
             ),
-            d3_sufficiency_incremental_latency_ratio: ratio(
-                d3_sufficiency_latency_ms as f64,
+            current_safety_incremental_latency_ratio: ratio(
+                current_safety_latency_ms as f64,
                 harness_latency_ms as f64,
             ),
         },
@@ -2203,8 +2203,8 @@ mod tests {
                 total_usage: Default::default(),
                 total_latency_ms: 1,
             },
-            harness_d3_sufficiency: HarnessArmResult {
-                safety_runtime: AnswerSafetyProfile::D3SufficiencyV2.identity(),
+            harness_current_safety: HarnessArmResult {
+                safety_runtime: AnswerSafetyProfile::VerifiedTargetV1.identity(),
                 exposed_text: None,
                 initial_verdict: Verdict::Unknown,
                 final_verdict: Verdict::Unknown,

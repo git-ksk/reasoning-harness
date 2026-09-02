@@ -15,6 +15,7 @@ use crate::{
 pub const BASELINE_ANSWER_SAFETY_CONFIGURATION_ID: &str = "grounded-finalization-v1";
 pub const D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID: &str = "d3-sufficiency-answer-gate-v1";
 pub const D3_SUFFICIENCY_V2_ANSWER_SAFETY_CONFIGURATION_ID: &str = "d3-sufficiency-answer-gate-v2";
+pub const VERIFIED_TARGET_ANSWER_SAFETY_CONFIGURATION_ID: &str = "verified-target-answer-gate-v1";
 pub const EVIDENCE_SUFFICIENCY_RSD1_CONTRACT_ID: &str = "evidence-sufficiency-coordinate-rsd1-v1";
 pub const GENERIC_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID: &str =
     "generic-answer-sufficiency-requirements-v1";
@@ -33,6 +34,7 @@ pub enum AnswerSafetyProfile {
     Baseline,
     D3SufficiencyV1,
     D3SufficiencyV2,
+    VerifiedTargetV1,
 }
 
 impl AnswerSafetyProfile {
@@ -41,6 +43,7 @@ impl AnswerSafetyProfile {
             Self::Baseline => BASELINE_ANSWER_SAFETY_CONFIGURATION_ID,
             Self::D3SufficiencyV1 => D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID,
             Self::D3SufficiencyV2 => D3_SUFFICIENCY_V2_ANSWER_SAFETY_CONFIGURATION_ID,
+            Self::VerifiedTargetV1 => VERIFIED_TARGET_ANSWER_SAFETY_CONFIGURATION_ID,
         }
     }
 
@@ -49,6 +52,7 @@ impl AnswerSafetyProfile {
             Self::Baseline => None,
             Self::D3SufficiencyV1 => Some(Self::Baseline),
             Self::D3SufficiencyV2 => Some(Self::D3SufficiencyV1),
+            Self::VerifiedTargetV1 => Some(Self::D3SufficiencyV2),
         }
     }
 
@@ -83,6 +87,19 @@ impl AnswerSafetyProfile {
                 ),
                 rollback_configuration_id: Some(
                     D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID.into(),
+                ),
+            },
+            Self::VerifiedTargetV1 => AnswerSafetyIdentity {
+                identity_version: ANSWER_SAFETY_IDENTITY_VERSION.into(),
+                profile: self,
+                configuration_id: VERIFIED_TARGET_ANSWER_SAFETY_CONFIGURATION_ID.into(),
+                decidability_contract: Some(D3_DECIDABILITY_CONTRACT_ID.into()),
+                sufficiency_contract: Some(EVIDENCE_SUFFICIENCY_RSD1_CONTRACT_ID.into()),
+                requirement_policy: Some(
+                    CLAIM_LOCAL_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID.into(),
+                ),
+                rollback_configuration_id: Some(
+                    D3_SUFFICIENCY_V2_ANSWER_SAFETY_CONFIGURATION_ID.into(),
                 ),
             },
         }
@@ -200,6 +217,8 @@ pub struct AnswerSafetyObservation {
     pub decidability: Option<SemanticDecidabilityAssessment>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sufficiency: Option<EvidenceSufficiencyObservation>,
+    #[serde(default)]
+    pub trusted_verification_short_circuit: bool,
     pub latency_ms: u128,
 }
 
@@ -246,19 +265,21 @@ pub fn build_answer_sufficiency_request_for_profile(
                     .collect(),
             }
         }
-        AnswerSafetyProfile::D3SufficiencyV2 => EvidenceSufficiencyRequest {
-            id: format!("answer-sufficiency-v2:{}={}", target.key, target.value),
-            task: format!(
-                "Assess only whether the selected evidence is sufficient to justify the individual typed proposition {}={}. The broader user task is context only and this proposition does not need to answer it completely. Broader task context: {}",
-                target.key, target.value, artifact.task
-            ),
-            target: target.clone(),
-            required_information: vec![
-                CLAIM_LOCAL_REQUIREMENT_DIRECT_SUPPORT.into(),
-                CLAIM_LOCAL_REQUIREMENT_NO_OVERREACH.into(),
-            ],
-            evidence_ids: claim_local_evidence_ids(target, artifact),
-        },
+        AnswerSafetyProfile::D3SufficiencyV2 | AnswerSafetyProfile::VerifiedTargetV1 => {
+            EvidenceSufficiencyRequest {
+                id: format!("answer-sufficiency-v2:{}={}", target.key, target.value),
+                task: format!(
+                    "Assess only whether the selected evidence is sufficient to justify the individual typed proposition {}={}. The broader user task is context only and this proposition does not need to answer it completely. Broader task context: {}",
+                    target.key, target.value, artifact.task
+                ),
+                target: target.clone(),
+                required_information: vec![
+                    CLAIM_LOCAL_REQUIREMENT_DIRECT_SUPPORT.into(),
+                    CLAIM_LOCAL_REQUIREMENT_NO_OVERREACH.into(),
+                ],
+                evidence_ids: claim_local_evidence_ids(target, artifact),
+            }
+        }
     }
 }
 
@@ -294,6 +315,40 @@ fn claim_local_evidence_ids(target: &Proposition, artifact: &ReasoningArtifact) 
     ids.into_iter().collect()
 }
 
+fn has_exact_trusted_target_support(artifact: &ReasoningArtifact, target: &Proposition) -> bool {
+    let matching_claims = artifact
+        .claims
+        .iter()
+        .filter(|claim| claim.proposition.as_ref() == Some(target))
+        .collect::<Vec<_>>();
+    if matching_claims.is_empty()
+        || matching_claims
+            .iter()
+            .any(|claim| claim.state != EpistemicState::Supported)
+    {
+        return false;
+    }
+    if artifact
+        .evidence_qualification_findings
+        .iter()
+        .any(|finding| finding.proposition == *target)
+    {
+        return false;
+    }
+    if artifact.adversarial_findings.iter().any(|finding| {
+        finding.proposition == *target && finding.strength == crate::FindingStrength::Hard
+    }) {
+        return false;
+    }
+    matching_claims.iter().all(|claim| {
+        artifact.verification_receipts.iter().any(|receipt| {
+            receipt.claim_id.as_deref() == Some(claim.id.as_str())
+                && receipt.proposition.as_ref() == Some(target)
+                && receipt.conclusion == VerificationConclusion::Supported
+        })
+    })
+}
+
 pub async fn run_answer_safety_gate(
     profile: AnswerSafetyProfile,
     adapter: &dyn ModelAdapter,
@@ -312,6 +367,7 @@ pub async fn run_answer_safety_gate(
             reasons: vec![],
             decidability: None,
             sufficiency: None,
+            trusted_verification_short_circuit: false,
             latency_ms: 0,
         });
     }
@@ -337,6 +393,22 @@ pub async fn run_answer_safety_gate(
             reasons: vec![AnswerSafetyReason::D3Precondition],
             decidability: Some(decidability),
             sufficiency: None,
+            trusted_verification_short_circuit: false,
+            latency_ms: 0,
+        });
+    }
+
+    if profile == AnswerSafetyProfile::VerifiedTargetV1
+        && has_exact_trusted_target_support(artifact, target)
+    {
+        return Ok(AnswerSafetyObservation {
+            runtime,
+            target: target.clone(),
+            disposition: AnswerSafetyDisposition::PreserveBaseline,
+            reasons: vec![],
+            decidability: Some(decidability),
+            sufficiency: None,
+            trusted_verification_short_circuit: true,
             latency_ms: 0,
         });
     }
@@ -364,6 +436,7 @@ pub async fn run_answer_safety_gate(
         reasons,
         decidability: Some(decidability),
         sufficiency: Some(sufficiency),
+        trusted_verification_short_circuit: false,
         latency_ms: started.elapsed().as_millis(),
     })
 }
@@ -428,6 +501,30 @@ mod tests {
             key: "deployment.safe".into(),
             value: "true".into(),
         }
+    }
+
+    fn verified_artifact() -> ReasoningArtifact {
+        let target = target();
+        let mut artifact = artifact();
+        artifact.claims.push(Claim {
+            id: "c1".into(),
+            statement: "deployment.safe = true".into(),
+            state: EpistemicState::Supported,
+            proposition: Some(target.clone()),
+            evidence_ids: vec!["e1".into()],
+        });
+        artifact
+            .verification_receipts
+            .push(crate::VerificationReceipt {
+                id: "r1".into(),
+                verifier: "structured_fact_equality".into(),
+                claim_statement: None,
+                proposition: Some(target),
+                claim_id: Some("c1".into()),
+                conclusion: VerificationConclusion::Supported,
+                evidence_ids: vec!["e1".into()],
+            });
+        artifact
     }
 
     #[tokio::test]
@@ -514,6 +611,169 @@ mod tests {
         assert_eq!(
             identity.requirement_policy(),
             Some(GENERIC_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID)
+        );
+    }
+
+    #[tokio::test]
+    async fn verified_target_profile_preserves_exact_trusted_support_without_model_sufficiency() {
+        let observation = run_answer_safety_gate(
+            AnswerSafetyProfile::VerifiedTargetV1,
+            &FixedAdapter {
+                decision: "insufficient",
+            },
+            "fixed",
+            &target(),
+            &verified_artifact(),
+            64,
+            Some(1),
+        )
+        .await
+        .unwrap();
+        assert_eq!(
+            observation.disposition,
+            AnswerSafetyDisposition::PreserveBaseline
+        );
+        assert!(observation.trusted_verification_short_circuit);
+        assert!(observation.sufficiency.is_none());
+        assert_eq!(
+            observation
+                .decidability
+                .as_ref()
+                .expect("D3 assessment remains mandatory")
+                .disposition,
+            SemanticDecidabilityDisposition::Permit
+        );
+    }
+
+    #[tokio::test]
+    async fn v2_rollback_still_honors_model_sufficiency_for_same_verified_target() {
+        let observation = run_answer_safety_gate(
+            AnswerSafetyProfile::D3SufficiencyV2,
+            &FixedAdapter {
+                decision: "insufficient",
+            },
+            "fixed",
+            &target(),
+            &verified_artifact(),
+            64,
+            Some(1),
+        )
+        .await
+        .unwrap();
+        assert_eq!(
+            observation.disposition,
+            AnswerSafetyDisposition::ForceVerification
+        );
+        assert!(!observation.trusted_verification_short_circuit);
+        assert!(observation.sufficiency.is_some());
+    }
+
+    #[tokio::test]
+    async fn verified_target_profile_falls_back_to_model_when_hard_receipt_is_missing() {
+        let mut artifact = verified_artifact();
+        artifact.verification_receipts.clear();
+        let observation = run_answer_safety_gate(
+            AnswerSafetyProfile::VerifiedTargetV1,
+            &FixedAdapter {
+                decision: "insufficient",
+            },
+            "fixed",
+            &target(),
+            &artifact,
+            64,
+            Some(1),
+        )
+        .await
+        .unwrap();
+        assert_eq!(
+            observation.disposition,
+            AnswerSafetyDisposition::ForceVerification
+        );
+        assert!(!observation.trusted_verification_short_circuit);
+        assert!(observation.sufficiency.is_some());
+    }
+
+    #[tokio::test]
+    async fn verified_target_profile_does_not_short_circuit_target_qualification_finding() {
+        let mut artifact = verified_artifact();
+        artifact
+            .evidence_qualification_findings
+            .push(crate::EvidenceQualificationFinding {
+                id: "q1".into(),
+                detector: "test".into(),
+                kind: crate::EvidenceQualificationFindingKind::TemporalMismatch,
+                reason: crate::EvidenceQualificationFindingReason::Stale,
+                strength: crate::FindingStrength::Hard,
+                proposition: target(),
+                evidence_ids: vec!["e1".into()],
+                message: "stale".into(),
+            });
+        let observation = run_answer_safety_gate(
+            AnswerSafetyProfile::VerifiedTargetV1,
+            &FixedAdapter {
+                decision: "insufficient",
+            },
+            "fixed",
+            &target(),
+            &artifact,
+            64,
+            Some(1),
+        )
+        .await
+        .unwrap();
+        assert_eq!(
+            observation.disposition,
+            AnswerSafetyDisposition::ForceVerification
+        );
+        assert!(!observation.trusted_verification_short_circuit);
+        assert!(observation.sufficiency.is_some());
+    }
+
+    #[tokio::test]
+    async fn verified_target_profile_does_not_short_circuit_mixed_exact_target_state() {
+        let mut artifact = verified_artifact();
+        artifact.claims.push(Claim {
+            id: "c2".into(),
+            statement: "duplicate unresolved target".into(),
+            state: EpistemicState::Unknown,
+            proposition: Some(target()),
+            evidence_ids: vec![],
+        });
+        let observation = run_answer_safety_gate(
+            AnswerSafetyProfile::VerifiedTargetV1,
+            &FixedAdapter {
+                decision: "insufficient",
+            },
+            "fixed",
+            &target(),
+            &artifact,
+            64,
+            Some(1),
+        )
+        .await
+        .unwrap();
+        assert_eq!(
+            observation.disposition,
+            AnswerSafetyDisposition::ForceVerification
+        );
+        assert!(!observation.trusted_verification_short_circuit);
+        assert!(observation.sufficiency.is_some());
+    }
+
+    #[test]
+    fn verified_target_identity_rolls_back_to_v2() {
+        let identity = AnswerSafetyProfile::VerifiedTargetV1.identity();
+        assert_eq!(
+            identity.configuration_id(),
+            VERIFIED_TARGET_ANSWER_SAFETY_CONFIGURATION_ID
+        );
+        assert_eq!(
+            identity.rollback_configuration_id(),
+            Some(D3_SUFFICIENCY_V2_ANSWER_SAFETY_CONFIGURATION_ID)
+        );
+        assert_eq!(
+            identity.requirement_policy(),
+            Some(CLAIM_LOCAL_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID)
         );
     }
 

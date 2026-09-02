@@ -9,7 +9,7 @@ runnerは`reason-product-dogfood`です。同じtask/contextを同じprovider/mo
 ```text
 raw arm:                   task/context -> model -> structured answer
 harness baseline arm:      task/context -> shared candidate -> deterministic pre-render Harness state -> shared initial render -> baseline finalization
-harness+D3+sufficiency:    同じcandidate/state/render -> D3/sufficiency gate -> optional bounded resolution -> state変更時だけsuccessor側rerender
+harness current safety:    同じcandidate/state/render -> D3/sufficiency gate -> optional bounded resolution -> state変更時だけsuccessor側rerender
 ```
 
 v4の比較契約は`shared-candidate-initial-render-v1`です。2つのHarness armはuntrusted candidate・deterministicなpre-render state・最初のfinal-answer renderを完全共有します。successor介入でstateが変わった場合だけC側追加rerenderを許し、renderer sampling差をD3/sufficiencyの効果として誤認しません。
@@ -21,7 +21,7 @@ v4の比較契約は`shared-candidate-initial-render-v1`です。2つのHarness 
 
 それぞれに、最初からground可能なcase、意図的に根拠不足なcase、bounded resolutionで初めてground可能になるcaseがあります。research calibration/holdoutとは混ぜません。
 
-`reason-product-dogfood-v8` reportでは次を測ります。
+`reason-product-dogfood-v9` reportでは次を測ります。
 
 - unsupported grounded assertionの件数/率
 - correct abstention / missed insufficiency
@@ -32,7 +32,7 @@ v4の比較契約は`shared-candidate-initial-render-v1`です。2つのHarness 
 - successor armのanswer-safety runtime identityとtargetごとのsafety observation
 - Harness armのtargetごとのfailure provenance（exact candidate/verification/resolution/render/finalization state、deterministic recovery eligibility、expected-grounded miss class）
 
-v8ではv7のcanonical recoveryを維持したまま、artifact-global verdictが`Unknown`でもoriginal requested targetがすべてexact `Known`/`Supported`な場合に限るtarget-scoped qualified finalizationを追加します。global verdict自体は昇格せず、deterministicなtarget-only出力を`QualifiedPartialAnswer`として扱い、通常のanswer-safety gateも必ず通します。`Reject`、target自身のUnknown/Contradicted、qualification finding、fuzzy matching、prose由来authorityは対象外です。`canonical_recovery_cases`と`target_scoped_partial_cases`を分離して記録します。 target自体がauthorizedでもartifact全体が`Unknown`/`Reject`になる場合は、exact target以外のunresolved/contradicted claim件数も記録し、renderer missとartifact-level blockerを区別します。
+v9ではv8のtarget-scoped qualified finalizationを維持しつつ、説明的なcurrent answer-safety profileを評価します。global verdict自体は昇格せず、deterministicなtarget-only出力を`QualifiedPartialAnswer`として扱い、通常のanswer-safety gateも必ず通します。`Reject`、target自身のUnknown/Contradicted、qualification finding、fuzzy matching、prose由来authorityは対象外です。`canonical_recovery_cases`と`target_scoped_partial_cases`を分離して記録します。 target自体がauthorizedでもartifact全体が`Unknown`/`Reject`になる場合は、exact target以外のunresolved/contradicted claim件数も記録し、renderer missとartifact-level blockerを区別します。
 
 v5 reportではv2のcase-level abstention指標とv3のtarget-level指標をそのまま維持し、v4のshared-render比較契約も維持したまま、NL-5で必要なqualified/unknown出力のmanual comprehension reviewを行えるよう各armの実際のユーザー表示`exposed_text`を保存します。target-level指標はfixtureのHarness-owned `input.hypotheses`だけをtask targetとして使います。supportedなnon-target factを返すsafe partial answerは、task targetを断言していなければtarget abstention成功として別集計します。grounded-target coverage / missed target insufficiency / false target abstention / safe-partial retentionを分離し、最初のv2 pilot結果は書き換えません。
 
@@ -48,7 +48,7 @@ cargo run -p reasoning-harness-cli --bin reason-product-dogfood -- \
   --output /tmp/reason-product-dogfood.json
 ```
 
-現在のsuccessor runtimeは`d3-sufficiency-answer-gate-v2`で、requirement policyは`claim-local-answer-sufficiency-requirements-v1`です。product sufficiency判定を個別typed propositionへ限定し、Supported/Known claimへ既にbindingされたevidenceを優先します。broader taskはcontextであり、安全なpartial fact一つ一つにtask全体の完答を要求しません。旧`d3-sufficiency-answer-gate-v1` / `generic-answer-sufficiency-requirements-v1`はrollbackとして実行可能です。どちらもfrozen holdout corpusそのものではなく、NL-5でproduct wiringを別評価します。
+現在のanswer-safety runtimeは`verified-target-answer-gate-v1`で、`d3-sufficiency-answer-gate-v2`へ直接rollbackできます。claim-local requirement policyとD3 preconditionは維持し、exact targetがtrusted Supported verification済み・target qualification findingなし・hard target adversarial findingなしなら、冗長なmodel sufficiency呼び出しを行わずbaselineを維持します。product sufficiency判定を個別typed propositionへ限定し、Supported/Known claimへ既にbindingされたevidenceを優先します。broader taskはcontextであり、安全なpartial fact一つ一つにtask全体の完答を要求しません。旧`d3-sufficiency-answer-gate-v1` / `generic-answer-sufficiency-requirements-v1`はrollbackとして実行可能です。どちらもfrozen holdout corpusそのものではなく、NL-5でproduct wiringを別評価します。
 
 ## 最終NL-5 acceptance結果
 

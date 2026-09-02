@@ -38,7 +38,7 @@ trustedなstructured supportがなければ、結果が条件付き/`unknown`の
 
 自然文pathでは、grounded factを外へ出す前にcurrent semantic + evidence-sufficiencyの追加安全チェックも走ります。このチェックは**制限する方向にしか働きません**。追加verification / bounded resolution / abstainを要求できますが、model confidenceをtrusted evidenceや`accept`へ昇格させることはできません。一方、support済みのpartial factへ「task全体を完答できること」は要求しないため、安全な条件付き回答は残せます。
 
-defaultは`--safety-profile current`です。旧policy再現やdebug用に`legacy-v1` / `baseline`もあります。従来の`d3-sufficiency` / `d3-sufficiency-v1`表記は互換aliasとして残ります。exact identityは[semantic-check](#semantic-check)、[仕組みの日本語解説](how-it-works.ja.md)、[用語ガイド](terminology.ja.md)を参照してください。
+defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です。直前のclaim-local gate（`d3-sufficiency-answer-gate-v2`）を再現する場合は`rollback`を使い、従来の`d3-sufficiency` / `d3-sufficiency-v2`はそのaliasとして残します。さらに古い`legacy-v1` / `d3-sufficiency-v1`と`baseline`もtesting/rollback用に維持します。exact identityは[semantic-check](#semantic-check)、[仕組みの日本語解説](how-it-works.ja.md)、[用語ガイド](terminology.ja.md)を参照してください。
 
 自然文JSON出力は通常の`reason-cli-output-v1` envelope内で`output_contract: reason-natural-output-v2`を明示します。
 
