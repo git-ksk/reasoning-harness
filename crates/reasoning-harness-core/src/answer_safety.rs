@@ -4,28 +4,35 @@ use serde::{Deserialize, Deserializer, Serialize, de};
 use thiserror::Error;
 
 use crate::{
-    D3_DECIDABILITY_CONTRACT_ID, EvidenceSufficiencyLabel, EvidenceSufficiencyModelError,
-    EvidenceSufficiencyObservation, EvidenceSufficiencyRequest, ModelAdapter, Proposition,
-    ReasoningArtifact, SemanticDecidabilityAssessment, SemanticDecidabilityDisposition,
-    SemanticDecidabilityError, SemanticDiagnosticKind, SemanticDiagnosticTarget, SoftJudgeRequest,
+    D3_DECIDABILITY_CONTRACT_ID, EpistemicState, EvidenceSufficiencyLabel,
+    EvidenceSufficiencyModelError, EvidenceSufficiencyObservation, EvidenceSufficiencyRequest,
+    ModelAdapter, Proposition, ReasoningArtifact, SemanticDecidabilityAssessment,
+    SemanticDecidabilityDisposition, SemanticDecidabilityError, SemanticDiagnosticKind,
+    SemanticDiagnosticTarget, SoftJudgeRequest, VerificationConclusion,
     assess_semantic_decidability, run_model_backed_evidence_sufficiency,
 };
 
 pub const BASELINE_ANSWER_SAFETY_CONFIGURATION_ID: &str = "grounded-finalization-v1";
 pub const D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID: &str = "d3-sufficiency-answer-gate-v1";
+pub const D3_SUFFICIENCY_V2_ANSWER_SAFETY_CONFIGURATION_ID: &str = "d3-sufficiency-answer-gate-v2";
 pub const EVIDENCE_SUFFICIENCY_RSD1_CONTRACT_ID: &str = "evidence-sufficiency-coordinate-rsd1-v1";
 pub const GENERIC_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID: &str =
     "generic-answer-sufficiency-requirements-v1";
+pub const CLAIM_LOCAL_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID: &str =
+    "claim-local-answer-sufficiency-requirements-v1";
 pub const ANSWER_SAFETY_IDENTITY_VERSION: &str = "answer-safety-identity-v1";
 
 const GENERIC_REQUIREMENT_DECISION_COVERAGE: &str = "The selected evidence must cover the decision-critical information needed by the stated task to justify the typed target, rather than merely being related to it.";
 const GENERIC_REQUIREMENT_NO_OVERREACH: &str = "The target must not rely on missing facts, unresolved conflicting evidence, or a causal or general conclusion stronger than the selected evidence supports.";
+const CLAIM_LOCAL_REQUIREMENT_DIRECT_SUPPORT: &str = "The selected evidence must directly justify this typed target proposition itself. Do not require this individual proposition to answer the broader user task; overall task completeness is handled separately by finalization.";
+const CLAIM_LOCAL_REQUIREMENT_NO_OVERREACH: &str = "Any scope, temporal, causal, comparative, or generalization conditions expressed by the typed target must be supported. Merely related evidence is insufficient, and unresolved conflicting evidence counts against sufficiency.";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum AnswerSafetyProfile {
     Baseline,
     D3SufficiencyV1,
+    D3SufficiencyV2,
 }
 
 impl AnswerSafetyProfile {
@@ -33,6 +40,7 @@ impl AnswerSafetyProfile {
         match self {
             Self::Baseline => BASELINE_ANSWER_SAFETY_CONFIGURATION_ID,
             Self::D3SufficiencyV1 => D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID,
+            Self::D3SufficiencyV2 => D3_SUFFICIENCY_V2_ANSWER_SAFETY_CONFIGURATION_ID,
         }
     }
 
@@ -40,6 +48,7 @@ impl AnswerSafetyProfile {
         match self {
             Self::Baseline => None,
             Self::D3SufficiencyV1 => Some(Self::Baseline),
+            Self::D3SufficiencyV2 => Some(Self::D3SufficiencyV1),
         }
     }
 
@@ -62,6 +71,19 @@ impl AnswerSafetyProfile {
                 sufficiency_contract: Some(EVIDENCE_SUFFICIENCY_RSD1_CONTRACT_ID.into()),
                 requirement_policy: Some(GENERIC_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID.into()),
                 rollback_configuration_id: Some(BASELINE_ANSWER_SAFETY_CONFIGURATION_ID.into()),
+            },
+            Self::D3SufficiencyV2 => AnswerSafetyIdentity {
+                identity_version: ANSWER_SAFETY_IDENTITY_VERSION.into(),
+                profile: self,
+                configuration_id: D3_SUFFICIENCY_V2_ANSWER_SAFETY_CONFIGURATION_ID.into(),
+                decidability_contract: Some(D3_DECIDABILITY_CONTRACT_ID.into()),
+                sufficiency_contract: Some(EVIDENCE_SUFFICIENCY_RSD1_CONTRACT_ID.into()),
+                requirement_policy: Some(
+                    CLAIM_LOCAL_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID.into(),
+                ),
+                rollback_configuration_id: Some(
+                    D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID.into(),
+                ),
             },
         }
     }
@@ -195,20 +217,81 @@ pub fn build_answer_sufficiency_request(
     target: &Proposition,
     artifact: &ReasoningArtifact,
 ) -> EvidenceSufficiencyRequest {
-    EvidenceSufficiencyRequest {
-        id: format!("answer-sufficiency:{}={}", target.key, target.value),
-        task: artifact.task.clone(),
-        target: target.clone(),
-        required_information: vec![
-            GENERIC_REQUIREMENT_DECISION_COVERAGE.into(),
-            GENERIC_REQUIREMENT_NO_OVERREACH.into(),
-        ],
-        evidence_ids: artifact
-            .evidence
-            .iter()
-            .map(|evidence| evidence.id.clone())
-            .collect(),
+    build_answer_sufficiency_request_for_profile(
+        AnswerSafetyProfile::D3SufficiencyV1,
+        target,
+        artifact,
+    )
+}
+
+pub fn build_answer_sufficiency_request_for_profile(
+    profile: AnswerSafetyProfile,
+    target: &Proposition,
+    artifact: &ReasoningArtifact,
+) -> EvidenceSufficiencyRequest {
+    match profile {
+        AnswerSafetyProfile::Baseline | AnswerSafetyProfile::D3SufficiencyV1 => {
+            EvidenceSufficiencyRequest {
+                id: format!("answer-sufficiency:{}={}", target.key, target.value),
+                task: artifact.task.clone(),
+                target: target.clone(),
+                required_information: vec![
+                    GENERIC_REQUIREMENT_DECISION_COVERAGE.into(),
+                    GENERIC_REQUIREMENT_NO_OVERREACH.into(),
+                ],
+                evidence_ids: artifact
+                    .evidence
+                    .iter()
+                    .map(|evidence| evidence.id.clone())
+                    .collect(),
+            }
+        }
+        AnswerSafetyProfile::D3SufficiencyV2 => EvidenceSufficiencyRequest {
+            id: format!("answer-sufficiency-v2:{}={}", target.key, target.value),
+            task: format!(
+                "Assess only whether the selected evidence is sufficient to justify the individual typed proposition {}={}. The broader user task is context only and this proposition does not need to answer it completely. Broader task context: {}",
+                target.key, target.value, artifact.task
+            ),
+            target: target.clone(),
+            required_information: vec![
+                CLAIM_LOCAL_REQUIREMENT_DIRECT_SUPPORT.into(),
+                CLAIM_LOCAL_REQUIREMENT_NO_OVERREACH.into(),
+            ],
+            evidence_ids: claim_local_evidence_ids(target, artifact),
+        },
     }
+}
+
+fn claim_local_evidence_ids(target: &Proposition, artifact: &ReasoningArtifact) -> Vec<String> {
+    let mut ids = std::collections::BTreeSet::new();
+    for claim in &artifact.claims {
+        if claim.proposition.as_ref() == Some(target)
+            && matches!(
+                claim.state,
+                EpistemicState::Known | EpistemicState::Supported
+            )
+        {
+            ids.extend(claim.evidence_ids.iter().cloned());
+        }
+    }
+    for receipt in &artifact.verification_receipts {
+        if receipt.proposition.as_ref() == Some(target)
+            && receipt.conclusion == VerificationConclusion::Supported
+        {
+            ids.extend(receipt.evidence_ids.iter().cloned());
+        }
+    }
+    if ids.is_empty() {
+        for evidence in &artifact.evidence {
+            if evidence.facts.get(&target.key) == Some(&target.value) {
+                ids.insert(evidence.id.clone());
+            }
+        }
+    }
+    if ids.is_empty() {
+        ids.extend(artifact.evidence.iter().map(|evidence| evidence.id.clone()));
+    }
+    ids.into_iter().collect()
 }
 
 pub async fn run_answer_safety_gate(
@@ -258,7 +341,7 @@ pub async fn run_answer_safety_gate(
         });
     }
 
-    let request = build_answer_sufficiency_request(target, artifact);
+    let request = build_answer_sufficiency_request_for_profile(profile, target, artifact);
     let started = Instant::now();
     let sufficiency =
         run_model_backed_evidence_sufficiency(adapter, &request, artifact, max_tokens, random_seed)
@@ -290,7 +373,8 @@ mod tests {
     use std::collections::BTreeMap;
 
     use crate::{
-        Evidence, EvidenceMetadata, ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage,
+        Claim, Evidence, EvidenceMetadata, ModelOutputFormat, ModelRequest, ModelResponse,
+        ModelUsage,
     };
 
     use super::*;
@@ -431,6 +515,57 @@ mod tests {
             identity.requirement_policy(),
             Some(GENERIC_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID)
         );
+    }
+
+    #[test]
+    fn v2_identity_rolls_back_to_v1_and_uses_claim_local_policy() {
+        let identity = AnswerSafetyProfile::D3SufficiencyV2.identity();
+        assert_eq!(
+            identity.rollback_configuration_id(),
+            Some(D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID)
+        );
+        assert_eq!(
+            identity.configuration_id(),
+            D3_SUFFICIENCY_V2_ANSWER_SAFETY_CONFIGURATION_ID
+        );
+        assert_eq!(
+            identity.requirement_policy(),
+            Some(CLAIM_LOCAL_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID)
+        );
+    }
+
+    #[test]
+    fn v2_request_builder_is_claim_local_and_scopes_evidence() {
+        let target = target();
+        let mut artifact = artifact();
+        artifact.evidence.push(Evidence {
+            id: "e2".into(),
+            source: "fixture".into(),
+            observation: "unrelated region fact".into(),
+            facts: BTreeMap::from([("service.region".into(), "us-east-1".into())]),
+            metadata: EvidenceMetadata::default(),
+        });
+        artifact.claims.push(Claim {
+            id: "c1".into(),
+            statement: "deployment is safe".into(),
+            state: EpistemicState::Supported,
+            proposition: Some(target.clone()),
+            evidence_ids: vec!["e1".into()],
+        });
+        let request = build_answer_sufficiency_request_for_profile(
+            AnswerSafetyProfile::D3SufficiencyV2,
+            &target,
+            &artifact,
+        );
+        assert_eq!(request.evidence_ids, vec!["e1"]);
+        assert!(request.task.contains("individual typed proposition"));
+        assert!(
+            request
+                .task
+                .contains("does not need to answer it completely")
+        );
+        assert_eq!(request.required_information.len(), 2);
+        assert!(request.required_information[0].contains("overall task completeness"));
     }
 
     #[test]

@@ -158,6 +158,7 @@ impl SemanticProfileArg {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, ValueEnum)]
 enum AnswerSafetyProfileArg {
     Baseline,
+    D3SufficiencyV1,
     #[default]
     D3Sufficiency,
 }
@@ -166,7 +167,8 @@ impl AnswerSafetyProfileArg {
     const fn runtime_profile(self) -> AnswerSafetyProfile {
         match self {
             Self::Baseline => AnswerSafetyProfile::Baseline,
-            Self::D3Sufficiency => AnswerSafetyProfile::D3SufficiencyV1,
+            Self::D3SufficiencyV1 => AnswerSafetyProfile::D3SufficiencyV1,
+            Self::D3Sufficiency => AnswerSafetyProfile::D3SufficiencyV2,
         }
     }
 }
@@ -4146,6 +4148,25 @@ mod candidate_json_tests {
         ])
         .unwrap();
         assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Baseline);
+    }
+
+    #[test]
+    fn parses_natural_language_v1_safety_rollback() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "analyze this incident",
+            "--provider",
+            "mistral",
+            "--model",
+            "ministral-8b-latest",
+            "--safety-profile",
+            "d3-sufficiency-v1",
+        ])
+        .unwrap();
+        assert_eq!(
+            cli.natural.safety_profile,
+            AnswerSafetyProfileArg::D3SufficiencyV1
+        );
     }
 
     #[test]

@@ -43,9 +43,11 @@ pub use adversarial::{
 pub use answer_safety::{
     ANSWER_SAFETY_IDENTITY_VERSION, AnswerSafetyDisposition, AnswerSafetyError,
     AnswerSafetyIdentity, AnswerSafetyObservation, AnswerSafetyProfile, AnswerSafetyReason,
-    BASELINE_ANSWER_SAFETY_CONFIGURATION_ID, D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID,
-    EVIDENCE_SUFFICIENCY_RSD1_CONTRACT_ID, GENERIC_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID,
-    build_answer_sufficiency_request, run_answer_safety_gate,
+    BASELINE_ANSWER_SAFETY_CONFIGURATION_ID, CLAIM_LOCAL_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID,
+    D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID,
+    D3_SUFFICIENCY_V2_ANSWER_SAFETY_CONFIGURATION_ID, EVIDENCE_SUFFICIENCY_RSD1_CONTRACT_ID,
+    GENERIC_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID, build_answer_sufficiency_request,
+    build_answer_sufficiency_request_for_profile, run_answer_safety_gate,
 };
 pub use assumption::{
     AssumptionAssessment, AssumptionDiscoveryPass, AssumptionFinding, AssumptionFindingKind,
