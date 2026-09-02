@@ -109,7 +109,7 @@ jobs:
             --output /tmp/reason-product-dogfood.json \
             > /tmp/reason-product-dogfood.stdout.json
           jq -e '
-            .schema_version == "reason-product-dogfood-v6"
+            .schema_version == "reason-product-dogfood-v7"
             and .comparison_contract == "shared-candidate-initial-render-v1"
             and ([.results[].raw.exposed_text] | all(type == "string"))
             and ([.results[].harness | ((.finalization_status == "grounded_answer" or .finalization_status == "qualified_partial_answer") == has("exposed_text"))] | all)

@@ -34,11 +34,11 @@ use reasoning_harness_core::{
     aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
     aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
     build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
-    classify_materialization_failure, evaluate, evaluate_benchmark_fixture_with_diagnostics,
-    evaluate_resolution_fixture, finalize_answer, frameworks::five_whys::FiveWhysRestatementPass,
-    reasoning_artifact_schema, reasoning_candidate_schema, run_answer_safety_gate, run_harness,
-    run_model_backed_soft_judge, run_semantic_runtime, structured_fact_verifier_for_input,
-    validate_artifact,
+    canonical_verified_target_answer, classify_materialization_failure, evaluate,
+    evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture, finalize_answer,
+    frameworks::five_whys::FiveWhysRestatementPass, reasoning_artifact_schema,
+    reasoning_candidate_schema, run_answer_safety_gate, run_harness, run_model_backed_soft_judge,
+    run_semantic_runtime, structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use schemars::{JsonSchema, schema_for};
@@ -1460,7 +1460,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
     let mut render_round = 0usize;
     loop {
         render_round += 1;
-        let rendered = match generator
+        let mut rendered = match generator
             .render_final(
                 &task,
                 &final_artifact,
@@ -1477,16 +1477,41 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             }
             Err(failure) => {
                 rendering_failure = Some(failure);
-                CanonicalFinalAnswerRenderer.render(&final_artifact, final_verdict)
+                canonical_verified_target_answer(
+                    &final_artifact,
+                    final_verdict,
+                    &built.input.hypotheses,
+                )
+                .unwrap_or_else(|| {
+                    CanonicalFinalAnswerRenderer.render(&final_artifact, final_verdict)
+                })
             }
         };
-        let rendered_for_safety = rendered.clone();
         finalization = finalize_answer(
             &final_artifact,
             final_verdict,
-            rendered,
+            rendered.clone(),
             FinalizationPolicy::default(),
         );
+        if matches!(
+            finalization.status,
+            FinalizationStatus::Unresolved | FinalizationStatus::RequiresVerification
+        ) {
+            if let Some(recovered) = canonical_verified_target_answer(
+                &final_artifact,
+                final_verdict,
+                &built.input.hypotheses,
+            ) {
+                rendered = recovered;
+                finalization = finalize_answer(
+                    &final_artifact,
+                    final_verdict,
+                    rendered.clone(),
+                    FinalizationPolicy::default(),
+                );
+            }
+        }
+        let rendered_for_safety = rendered.clone();
         let (gated, observations) = apply_natural_answer_safety(NaturalAnswerSafetyCall {
             profile: safety_profile,
             generator: &generator,

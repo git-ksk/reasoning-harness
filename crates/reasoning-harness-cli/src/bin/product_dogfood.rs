@@ -19,8 +19,8 @@ use reasoning_harness_core::{
     ResolutionResolverOutput, ResolutionTarget, ResolverClass, StandardGroundingPipeline, Verdict,
     VerificationConclusion, build_candidate_json_fallback_request, build_candidate_request,
     build_final_answer_json_fallback_request, build_final_answer_request,
-    final_answer_candidate_schema, finalize_answer, run_answer_safety_gate,
-    structured_fact_verifier_for_input,
+    canonical_verified_target_answer, final_answer_candidate_schema, finalize_answer,
+    run_answer_safety_gate, structured_fact_verifier_for_input,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -168,6 +168,7 @@ struct HarnessArmResult {
     target: TargetOutcomeObservation,
     resolution_attempts: usize,
     resolution_succeeded: bool,
+    canonical_recovery_used: bool,
     calls: Vec<CallObservation>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     safety_observations: Vec<AnswerSafetyObservation>,
@@ -336,6 +337,8 @@ struct HarnessAggregate {
     resolution_attempted_cases: usize,
     resolution_success_cases: usize,
     resolution_success_rate: f64,
+    canonical_recovery_cases: usize,
+    canonical_recovery_rate: f64,
     failure_provenance: FailureProvenanceAggregate,
 }
 
@@ -707,6 +710,7 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
         uncovered_propositions: vec![],
     };
     let mut rendered = initial_render;
+    let mut canonical_recovery_used = false;
     for render_round in 0..2usize {
         if render_round > 0 {
             let (answer, render_call) = render_answer(
@@ -728,6 +732,25 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
             rendered.clone(),
             FinalizationPolicy::default(),
         );
+        if matches!(
+            finalization.status,
+            FinalizationStatus::Unresolved | FinalizationStatus::RequiresVerification
+        ) {
+            if let Some(recovered) = canonical_verified_target_answer(
+                &final_artifact,
+                final_verdict,
+                &fixture.input.hypotheses,
+            ) {
+                rendered = recovered;
+                canonical_recovery_used = true;
+                finalization = finalize_answer(
+                    &final_artifact,
+                    final_verdict,
+                    rendered.clone(),
+                    FinalizationPolicy::default(),
+                );
+            }
+        }
 
         if safety_profile != AnswerSafetyProfile::Baseline
             && matches!(
@@ -866,6 +889,7 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
         target,
         resolution_attempts: resolution_attempts.len(),
         resolution_succeeded,
+        canonical_recovery_used,
         calls,
         safety_observations,
         failure_provenance,
@@ -1439,7 +1463,7 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .map(|result| result.harness_d3_sufficiency.total_latency_ms)
         .sum();
     ProductDogfoodReport {
-        schema_version: "reason-product-dogfood-v6",
+        schema_version: "reason-product-dogfood-v7",
         comparison_contract: PRODUCT_DOGFOOD_COMPARISON_CONTRACT_ID,
         provider: provider.name(),
         model: model.into(),
@@ -1519,12 +1543,18 @@ fn aggregate_harness(
         .iter()
         .filter(|result| select(result).resolution_succeeded)
         .count();
+    let canonical_recovery_cases = results
+        .iter()
+        .filter(|result| select(result).canonical_recovery_used)
+        .count();
     HarnessAggregate {
         arm,
         mean_final_claim_coverage,
         resolution_attempted_cases,
         resolution_success_cases,
         resolution_success_rate: rate(resolution_success_cases, resolution_attempted_cases),
+        canonical_recovery_cases,
+        canonical_recovery_rate: rate(canonical_recovery_cases, results.len()),
         failure_provenance: aggregate_failure_provenance(results, select),
     }
 }
@@ -2136,6 +2166,7 @@ mod tests {
                 target: empty_target(),
                 resolution_attempts: 0,
                 resolution_succeeded: false,
+                canonical_recovery_used: false,
                 calls: vec![],
                 safety_observations: vec![],
                 failure_provenance: vec![],
@@ -2156,6 +2187,7 @@ mod tests {
                 target: empty_target(),
                 resolution_attempts: 0,
                 resolution_succeeded: false,
+                canonical_recovery_used: false,
                 calls: vec![],
                 safety_observations: vec![],
                 failure_provenance: vec![],

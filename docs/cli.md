@@ -67,7 +67,7 @@ cat error.log | reason "Determine whether the database is the root cause" \
 
 If the context does not contain trusted structured support, the safe result may remain qualified/unknown. This is intentional. `--file` is not a shortcut that promotes document prose into verification authority.
 
-The final model-rendered answer is also untrusted until `finalize_answer` checks factual-claim coverage. Any newly introduced factual proposition is blocked; when an explicitly configured resolver can verify it, the proposition may re-enter bounded resolution and then be rendered again.
+The final model-rendered answer is also untrusted until `finalize_answer` checks factual-claim coverage. Any newly introduced factual proposition is blocked; when an explicitly configured resolver can verify it, the proposition may re-enter bounded resolution and then be rendered again. If the artifact has already reached `Accept` but the model renderer omits or renames its structured claims, the CLI may deterministically recover only the original requested hypotheses that already exist as exact `Known`/`Supported` propositions in the artifact. This recovery never parses model prose, fuzzy-matches proposition keys, or creates new authority, and the recovered answer still crosses the normal answer-safety gate.
 
 The natural-language path also runs the current semantic + evidence-sufficiency safety checks before exposing grounded factual claims. These checks are **restrictive only**: they may require more verification, bounded resolution, or abstention, but they cannot turn model confidence into trusted evidence or an `accept` verdict. Supported partial facts can still be shown without requiring them to answer the whole task.
 

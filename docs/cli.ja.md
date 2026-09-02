@@ -34,7 +34,7 @@ cat error.log | reason "DBがroot causeか確認して" \
 
 trustedなstructured supportがなければ、結果が条件付き/`unknown`のままになることがあります。これは仕様です。`--file`に文章があるだけでverification authorityへ昇格はしません。
 
-最終自然文もmodelがrenderするだけでは信用しません。`finalize_answer`がfactual-claim coverageを確認し、新しい事実を勝手に混ぜた場合はblockします。明示resolverで確認できる場合のみbounded resolutionへ戻し、再verification後に再renderできます。
+最終自然文もmodelがrenderするだけでは信用しません。`finalize_answer`がfactual-claim coverageを確認し、新しい事実を勝手に混ぜた場合はblockします。明示resolverで確認できる場合のみbounded resolutionへ戻し、再verification後に再renderできます。artifactがすでに`Accept`なのにmodel rendererがstructured claimを落としたりkeyを言い換えたりした場合は、最初からHarness-ownedだったrequested hypothesisのうち、artifact上でexact `Known`/`Supported`になっているものだけをdeterministicにcanonical recoveryできます。このfallbackはmodel proseの解析・fuzzy key matching・新しいauthority生成を行わず、recovery後も通常のanswer-safety gateを通ります。
 
 自然文pathでは、grounded factを外へ出す前にcurrent semantic + evidence-sufficiencyの追加安全チェックも走ります。このチェックは**制限する方向にしか働きません**。追加verification / bounded resolution / abstainを要求できますが、model confidenceをtrusted evidenceや`accept`へ昇格させることはできません。一方、support済みのpartial factへ「task全体を完答できること」は要求しないため、安全な条件付き回答は残せます。
 
