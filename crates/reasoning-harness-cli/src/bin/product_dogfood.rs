@@ -188,6 +188,7 @@ enum ExpectedGroundedMissClass {
     AcceptRenderPropositionDrift,
     AcceptRenderTargetNotGrounded,
     FinalizationBlockedByOtherClaim,
+    ArtifactBlockedByNonTargetClaims,
     AcceptanceBlocked,
     SufficiencyBlocked,
     Other,
@@ -231,6 +232,8 @@ struct MissClassificationInput<'a> {
     renderer: &'a TargetRendererObservation,
     finalization_status: FinalizationStatus,
     safety_forced_verification: bool,
+    non_target_unresolved_claims: usize,
+    non_target_contradicted_claims: usize,
     expected_outcome: ExpectedOutcome,
 }
 
@@ -249,6 +252,8 @@ struct TargetFailureProvenance {
     safety_forced_verification: bool,
     exposed_exact_grounded_target: bool,
     canonical_recovery_eligible: bool,
+    non_target_unresolved_claims: usize,
+    non_target_contradicted_claims: usize,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     miss_class: Option<ExpectedGroundedMissClass>,
 }
@@ -1208,6 +1213,12 @@ fn classify_expected_grounded_miss(
             return Some(ExpectedGroundedMissClass::FinalizationBlockedByOtherClaim);
         }
     }
+    if input.final_artifact.authorized
+        && ((input.final_verdict == Verdict::Unknown && input.non_target_unresolved_claims > 0)
+            || (input.final_verdict == Verdict::Reject && input.non_target_contradicted_claims > 0))
+    {
+        return Some(ExpectedGroundedMissClass::ArtifactBlockedByNonTargetClaims);
+    }
     if input.final_artifact.qualification_findings > 0 && !input.final_artifact.authorized {
         return Some(ExpectedGroundedMissClass::QualificationBlocked);
     }
@@ -1272,6 +1283,25 @@ fn build_failure_provenance(
                 && !exposed_exact_grounded_target
                 && final_verdict == Verdict::Accept
                 && final_observation.authorized;
+            let non_target_unresolved_claims = final_artifact
+                .claims
+                .iter()
+                .filter(|claim| claim.proposition.as_ref() != Some(target))
+                .filter(|claim| {
+                    matches!(
+                        claim.state,
+                        EpistemicState::Assumed
+                            | EpistemicState::Unknown
+                            | EpistemicState::Inferred
+                    )
+                })
+                .count();
+            let non_target_contradicted_claims = final_artifact
+                .claims
+                .iter()
+                .filter(|claim| claim.proposition.as_ref() != Some(target))
+                .filter(|claim| claim.state == EpistemicState::Contradicted)
+                .count();
             let miss_class = classify_expected_grounded_miss(MissClassificationInput {
                 expected_grounded,
                 exposed_exact_grounded_target,
@@ -1283,6 +1313,8 @@ fn build_failure_provenance(
                 renderer: &renderer,
                 finalization_status,
                 safety_forced_verification,
+                non_target_unresolved_claims,
+                non_target_contradicted_claims,
                 expected_outcome: fixture.expected_outcome,
             });
             TargetFailureProvenance {
@@ -1299,6 +1331,8 @@ fn build_failure_provenance(
                 safety_forced_verification,
                 exposed_exact_grounded_target,
                 canonical_recovery_eligible,
+                non_target_unresolved_claims,
+                non_target_contradicted_claims,
                 miss_class,
             }
         })
@@ -1317,6 +1351,7 @@ impl ExpectedGroundedMissClass {
             Self::AcceptRenderPropositionDrift => "accept_render_proposition_drift",
             Self::AcceptRenderTargetNotGrounded => "accept_render_target_not_grounded",
             Self::FinalizationBlockedByOtherClaim => "finalization_blocked_by_other_claim",
+            Self::ArtifactBlockedByNonTargetClaims => "artifact_blocked_by_non_target_claims",
             Self::AcceptanceBlocked => "acceptance_blocked",
             Self::SufficiencyBlocked => "sufficiency_blocked",
             Self::Other => "other",
@@ -1970,6 +2005,45 @@ mod tests {
         assert_eq!(
             trace[0].miss_class,
             Some(ExpectedGroundedMissClass::AcceptRenderPropositionDrift)
+        );
+    }
+
+    #[test]
+    fn failure_provenance_identifies_non_target_claims_blocking_an_authorized_target() {
+        let target = Proposition {
+            key: "service.region".into(),
+            value: "us-east-1".into(),
+        };
+        let fixture = grounded_fixture(&target, ExpectedOutcome::Grounded);
+        let candidate = ReasoningCandidate::default();
+        let mut artifact = artifact_with_target(&target, EpistemicState::Supported);
+        artifact.claims.push(Claim {
+            id: "noise".into(),
+            statement: "unresolved non-target".into(),
+            state: EpistemicState::Assumed,
+            proposition: Some(Proposition {
+                key: "unrelated.detail".into(),
+                value: "maybe".into(),
+            }),
+            evidence_ids: vec![],
+        });
+        let trace = build_failure_provenance(
+            &fixture,
+            &candidate,
+            &artifact,
+            &artifact,
+            &artifact,
+            &[],
+            Verdict::Unknown,
+            &FinalAnswerCandidate::default(),
+            FinalizationStatus::Unresolved,
+            &[],
+            &empty_target(),
+        );
+        assert_eq!(trace[0].non_target_unresolved_claims, 1);
+        assert_eq!(
+            trace[0].miss_class,
+            Some(ExpectedGroundedMissClass::ArtifactBlockedByNonTargetClaims)
         );
     }
 
