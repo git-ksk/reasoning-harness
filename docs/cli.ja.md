@@ -36,7 +36,9 @@ trustedなstructured supportがなければ、結果が条件付き/`unknown`の
 
 最終自然文もmodelがrenderするだけでは信用しません。`finalize_answer`がfactual-claim coverageを確認し、新しい事実を勝手に混ぜた場合はblockします。明示resolverで確認できる場合のみbounded resolutionへ戻し、再verification後に再renderできます。
 
-自然文pathのdefaultは`--safety-profile d3-sufficiency`です。通常のgrounding/finalizationでgrounded claimを外へ出せる状態になった後だけ、D3のdeterministic preconditionとpromoted residual sufficiency gateを追加適用します。`sufficient`でもreceipt・Supported・Acceptなどのauthorityは一切増えずbaseline結果を維持するだけです。`insufficient` / `mixed`はverification必須へ戻し、必要ならbounded resolutionを経てから再判定します。defaultの`d3-sufficiency`は`d3-sufficiency-answer-gate-v2`で、claim-local requirement policyを使います。個別にsupport済みのfactへ「task全体を完答できること」を要求しません。初期product policyを再現するrollbackは`--safety-profile d3-sufficiency-v1`、residual gate自体を外すrollbackは`--safety-profile baseline`です。
+自然文pathでは、grounded factを外へ出す前に採用済みD3 + evidence-sufficiencyの追加安全チェックも走ります。このチェックは**制限する方向にしか働きません**。追加verification / bounded resolution / abstainを要求できますが、model confidenceをtrusted evidenceや`accept`へ昇格させることはできません。一方、support済みのpartial factへ「task全体を完答できること」は要求しないため、安全な条件付き回答は残せます。
+
+defaultは`--safety-profile d3-sufficiency`です。旧policy再現やdebug用のrollbackとして`d3-sufficiency-v1` / `baseline`もあります。versioned identityや厳密な意味は[semantic-check](#semantic-check)および[仕組みの日本語解説](how-it-works.ja.md)を参照してください。
 
 自然文JSON出力は通常の`reason-cli-output-v1` envelope内で`output_contract: reason-natural-output-v2`を明示します。
 
@@ -46,24 +48,31 @@ trustedなstructured supportがなければ、結果が条件付き/`unknown`の
 
 | やりたいこと | コマンド |
 | --- | --- |
-| LLM/Agentの候補回答を根拠付きでチェックしたい | `reason run` |
+| 人が自然文でtaskを依頼したい | `reason "TASK"` |
+| 既存LLM/Agentの候補回答をstructured evidenceでチェックしたい | `reason run` |
 | 完成済みartifactが構造・根拠ルールを満たすか確認したい | `reason verify` |
 | contradiction/counterexampleなどsemantic診断をしたい | `reason semantic-check` |
 | 入出力JSON Schemaを確認したい | `reason schema` |
 
-通常のアプリ統合は**`reason run`から始める**のが基本です。
+人が直接使うなら**`reason "TASK"`**から、アプリ/CI統合や外部candidateを持ち込むなら**`reason run`**から始めます。どちらも自由文をtrusted evidenceとして扱うshortcutではありません。
 
 ## インストール
 
-Rust 1.88+がある場合:
+### 現在の自然文CLI (`main`)
+
+このガイドの自然文first UXは、公開済み`v0.1.0` structured previewより新しい実装です。Rust 1.88+がある場合:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.1.0 --locked reasoning-harness-cli --bin reason
+  --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-Rustなしの場合は[v0.1.0 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.1.0)のstandalone binaryを利用できます。
+research binaryは入らず、product binaryの`reason`だけをinstallします。`main`は未releaseのv0.x surfaceなので、production automationで完全再現性が必要ならcommitをpinしてください。
+
+### 固定済み`v0.1.0` structured preview
+
+`v0.1.0`は自然文path導入前です。固定済みstructured previewが必要な場合だけtagまたは[v0.1.0 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.1.0)のstandalone binaryを使ってください。
 
 ## 最小サンプル
 
