@@ -1,0 +1,52 @@
+{
+  "id": "scope-exact-region",
+  "capability_family": "scope_entity_boundary",
+  "workload_class": "configuration_review",
+  "task": "Determine whether public access is disabled for us-east-1 from the region-scoped record.",
+  "input": {
+    "task": "Determine whether public access is disabled for us-east-1 from the region-scoped record.",
+    "evidence": [
+      {
+        "id": "network-record",
+        "source": "regional network configuration",
+        "observation": "public_access=disabled for us-east-1",
+        "facts": {
+          "network.public_access": "disabled"
+        },
+        "metadata": {
+          "scope": {
+            "region": {
+              "kind": "values",
+              "values": [
+                "us-east-1"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "network.public_access",
+        "value": "disabled"
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "network.public_access",
+          "value": "disabled"
+        },
+        "scope": {
+          "region": {
+            "kind": "values",
+            "values": [
+              "us-east-1"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "expected_outcome": "grounded"
+}

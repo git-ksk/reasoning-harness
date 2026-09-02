@@ -1,0 +1,34 @@
+{
+  "id": "contradiction-release-conflict",
+  "capability_family": "contradiction",
+  "workload_class": "deployment_review",
+  "task": "Determine the deployed release version when two deployment records disagree.",
+  "input": {
+    "task": "Determine the deployed release version when two deployment records disagree.",
+    "evidence": [
+      {
+        "id": "deploy-a",
+        "source": "deployment record A",
+        "observation": "Version 42 is deployed.",
+        "facts": {
+          "release.version": "42"
+        }
+      },
+      {
+        "id": "deploy-b",
+        "source": "deployment record B",
+        "observation": "Version 43 is deployed.",
+        "facts": {
+          "release.version": "43"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "release.version",
+        "value": "43"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

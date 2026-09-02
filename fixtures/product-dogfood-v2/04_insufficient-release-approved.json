@@ -1,0 +1,26 @@
+{
+  "id": "insufficient-release-approved",
+  "capability_family": "insufficient_evidence",
+  "workload_class": "deployment_review",
+  "task": "Determine whether this release is formally approved for production from the supplied build result alone.",
+  "input": {
+    "task": "Determine whether this release is formally approved for production from the supplied build result alone.",
+    "evidence": [
+      {
+        "id": "build-result",
+        "source": "CI build result",
+        "observation": "All automated tests passed.",
+        "facts": {
+          "build.tests": "passed"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "release.approved",
+        "value": "true"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "partial-compliance-status",
+  "capability_family": "safe_partial",
+  "workload_class": "compliance_review",
+  "task": "State the verified controls and whether the system is confirmed fully compliant from them alone.",
+  "input": {
+    "task": "State the verified controls and whether the system is confirmed fully compliant from them alone.",
+    "evidence": [
+      {
+        "id": "control-snapshot",
+        "source": "control snapshot",
+        "observation": "MFA is enabled and audit logging is enabled.",
+        "facts": {
+          "auth.mfa": "enabled",
+          "audit.logging": "enabled"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "system.compliance_status",
+        "value": "compliant"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

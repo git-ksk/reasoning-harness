@@ -17,6 +17,14 @@ on:
         required: true
         type: string
         default: ministral-8b-latest
+      fixture_set:
+        description: Product dogfood corpus
+        required: true
+        type: choice
+        options:
+          - product-dogfood-v2
+          - product-dogfood-v1
+        default: product-dogfood-v2
       max_tokens:
         description: Maximum output tokens per model call
         required: true
@@ -45,6 +53,27 @@ jobs:
         with:
           toolchain: 1.88.0
       - uses: Swatinem/rust-cache@v2
+      - name: Validate selected fixture corpus
+        env:
+          FIXTURE_SET: ${{ inputs.fixture_set }}
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-product-dogfood -- \
+            --fixtures "fixtures/$FIXTURE_SET" \
+            --provider mistral \
+            --model validation-only \
+            --validate-only \
+            > /tmp/reason-product-dogfood-validation.json
+          if [ "$FIXTURE_SET" = "product-dogfood-v2" ]; then
+            (cd fixtures/product-dogfood-v2 && sha256sum -c ../product-dogfood-v2.sha256)
+            jq -e '
+              .cases == 24
+              and (.capability_families | length) == 8
+              and ([.capability_case_counts[]] | all(. == 3))
+            ' /tmp/reason-product-dogfood-validation.json >/dev/null
+          else
+            jq -e '.cases == 6' /tmp/reason-product-dogfood-validation.json >/dev/null
+          fi
       - name: Check selected provider credential
         env:
           PROVIDER: ${{ inputs.provider }}
@@ -65,13 +94,14 @@ jobs:
           MODEL: ${{ inputs.model }}
           MAX_TOKENS: ${{ inputs.max_tokens }}
           SEED: ${{ inputs.seed }}
+          FIXTURE_SET: ${{ inputs.fixture_set }}
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
         run: |
           set -euo pipefail
           cargo run -q --locked -p reasoning-harness-cli --bin reason-product-dogfood -- \
-            --fixtures fixtures/product-dogfood-v1 \
+            --fixtures "fixtures/$FIXTURE_SET" \
             --provider "$PROVIDER" \
             --model "$MODEL" \
             --max-tokens "$MAX_TOKENS" \
@@ -86,6 +116,11 @@ jobs:
             and ([.results[].harness_d3_sufficiency | ((.finalization_status == "grounded_answer" or .finalization_status == "qualified_partial_answer") == has("exposed_text"))] | all)
             and .cases >= 6
             and (.workload_classes | length) >= 2
+            and (if env.FIXTURE_SET == "product-dogfood-v2" then
+              .cases == 24
+              and (.capability_families | length) == 8
+              and ([.capability_case_counts[]] | all(. == 3))
+            else .cases == 6 end)
             and .harness.arm.unsupported_grounded_claims == 0
             and .harness_d3_sufficiency.arm.unsupported_grounded_claims == 0
             and .raw.target.expected_unknown_cases == .raw.expected_unknown_cases
@@ -101,12 +136,12 @@ jobs:
             and ([.results[].harness.safety_runtime.configuration_id] | all(. == "grounded-finalization-v1"))
             and ([.results[].harness_d3_sufficiency.safety_runtime.configuration_id] | all(. == "d3-sufficiency-answer-gate-v2"))
           ' /tmp/reason-product-dogfood.json >/dev/null
-          jq '{schema_version, comparison_contract, provider, model, workload_classes, cases, raw, harness, harness_d3_sufficiency, overhead, user_comprehension}' /tmp/reason-product-dogfood.json
+          jq '{schema_version, comparison_contract, provider, model, workload_classes, capability_families, capability_case_counts, cases, raw, harness, harness_d3_sufficiency, overhead, user_comprehension}' /tmp/reason-product-dogfood.json
       - name: Preserve dogfood report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: product-dogfood-${{ inputs.provider }}-${{ inputs.model }}
+          name: product-dogfood-${{ inputs.fixture_set }}-${{ inputs.provider }}-${{ inputs.model }}
           path: /tmp/reason-product-dogfood.json
           if-no-files-found: error
           retention-days: 30

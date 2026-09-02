@@ -1,0 +1,26 @@
+{
+  "id": "insufficient-least-privilege",
+  "capability_family": "insufficient_evidence",
+  "workload_class": "access_review",
+  "task": "Determine whether the role is confirmed least-privilege from this single observed permission.",
+  "input": {
+    "task": "Determine whether the role is confirmed least-privilege from this single observed permission.",
+    "evidence": [
+      {
+        "id": "iam-snapshot",
+        "source": "IAM permission snapshot",
+        "observation": "The role can read objects from the reports bucket.",
+        "facts": {
+          "iam.permission.observed": "s3:GetObject"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "iam.least_privilege",
+        "value": "true"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

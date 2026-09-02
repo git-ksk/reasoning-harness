@@ -1,0 +1,41 @@
+{
+  "id": "temporal-valid-window",
+  "capability_family": "temporal_validity",
+  "workload_class": "configuration_review",
+  "task": "Determine whether the feature flag was enabled at time 150 from the validity-bounded record.",
+  "input": {
+    "task": "Determine whether the feature flag was enabled at time 150 from the validity-bounded record.",
+    "evidence": [
+      {
+        "id": "flag-record",
+        "source": "feature configuration",
+        "observation": "feature.enabled=true",
+        "facts": {
+          "feature.enabled": "true"
+        },
+        "metadata": {
+          "temporal": {
+            "effective_from_unix_seconds": 100,
+            "effective_until_unix_seconds": 200
+          }
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "feature.enabled",
+        "value": "true"
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "feature.enabled",
+          "value": "true"
+        },
+        "as_of_unix_seconds": 150
+      }
+    ]
+  },
+  "expected_outcome": "grounded"
+}

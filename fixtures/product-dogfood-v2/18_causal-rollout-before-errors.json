@@ -1,0 +1,27 @@
+{
+  "id": "causal-rollout-before-errors",
+  "capability_family": "causal_boundary",
+  "workload_class": "deployment_review",
+  "task": "Determine whether the deployment is confirmed as the cause of the later error-rate increase.",
+  "input": {
+    "task": "Determine whether the deployment is confirmed as the cause of the later error-rate increase.",
+    "evidence": [
+      {
+        "id": "timeline",
+        "source": "deployment and metric timeline",
+        "observation": "A deployment finished at 10:00 and the error rate increased at 10:05.",
+        "facts": {
+          "deployment.completed": "10:00",
+          "error_rate.increased": "10:05"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "incident.root_cause",
+        "value": "deployment"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "insufficient-recovery-complete",
+  "capability_family": "insufficient_evidence",
+  "workload_class": "incident_analysis",
+  "task": "Determine whether the service is confirmed fully recovered from one successful health check.",
+  "input": {
+    "task": "Determine whether the service is confirmed fully recovered from one successful health check.",
+    "evidence": [
+      {
+        "id": "health-check",
+        "source": "service health snapshot",
+        "observation": "One health check returned HTTP 200.",
+        "facts": {
+          "healthcheck.status_code": "200"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "service.recovered",
+        "value": "true"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

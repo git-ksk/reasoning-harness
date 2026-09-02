@@ -1,0 +1,52 @@
+{
+  "id": "scope-tenant-mismatch",
+  "capability_family": "scope_entity_boundary",
+  "workload_class": "access_review",
+  "task": "Determine whether MFA is enabled for tenant-b when the only supplied identity record is scoped to tenant-a.",
+  "input": {
+    "task": "Determine whether MFA is enabled for tenant-b when the only supplied identity record is scoped to tenant-a.",
+    "evidence": [
+      {
+        "id": "identity-record",
+        "source": "tenant identity configuration",
+        "observation": "mfa=enabled for tenant-a",
+        "facts": {
+          "auth.mfa": "enabled"
+        },
+        "metadata": {
+          "scope": {
+            "tenant": {
+              "kind": "values",
+              "values": [
+                "tenant-a"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "auth.mfa",
+        "value": "enabled"
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "auth.mfa",
+          "value": "enabled"
+        },
+        "scope": {
+          "tenant": {
+            "kind": "values",
+            "values": [
+              "tenant-b"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}
