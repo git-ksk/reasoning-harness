@@ -32,9 +32,9 @@ two connected tracks instead of treating every research experiment as a product 
 2. **CLI-2 distribution/compatibility:** reproducible install/release flow, supported-target smoke,
    contract compatibility tests, and migration discipline.
 3. **CLI-3 integration/observability:** typed operational/semantic telemetry and reference
-   integrations that invoke the full harness boundary.
-4. **CLI-4 real-workload evidence:** dogfood/reference workloads separate from frozen research
-   holdouts, measuring unsafe assertions, unnecessary abstention, coverage, latency, and failures.
+   integrations that invoke the full harness boundary; #126 tracks bounded transient-provider retry reliability.
+4. **CLI-4 real-workload evidence:** the first NL-5 slice is complete; continue dogfood/reference
+   workloads separate from frozen research holdouts, with #139 tracking Ministral coverage/unknown UX.
 5. **v1.0 gate:** stable documented CLI/data contracts plus repeated product acceptance evidence.
 
 The CLI is the product. Public embedding, MCP, and desktop interfaces remain later adapters. See
