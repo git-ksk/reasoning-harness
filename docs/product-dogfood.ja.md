@@ -61,4 +61,22 @@ v5の`exposed_text`でmanual comprehension reviewも実施しました。Gemma�
 
 NVIDIA Hosted NIM `nvidia/nemotron-3.5-lightning-30b-a3b`も同条件でActions run `33613607389`を実施しました。1 fixture目を完了し2 fixture目へ入った後、structured candidate生成で`invalid structured output after fallback`（`expected value at line 1 column 1`）となり、aggregate reportは生成されませんでした。これはsemantic scoreではなくoperational/protocol evidenceです。過去に記録したNemotronのstructured-protocol incompatibilityと整合し、provider専用のprompt/schema緩和で救済する根拠にはしません。
 
+### Product model比較マトリクス
+
+同じ6-case v5/shared-render workloadを、既存research benchmarkで使っていた追加Mistral/Google modelにも実行しました。以下は**Harnessのtask-target boundary**の比較で、raw modelの一般性能ランキングではありません。`Target coverage`はexpected-grounded 4 caseのmean grounded-target coverage、`resolution`はconfigured-resolution 2 caseの成功数です。完走したHarness sliceはすべてunsupported grounded claim 0、missed target insufficiency 0を維持しました。
+
+| Model | Run | 完走 | Target coverage | False target abstention | Resolution | Product観測 |
+| --- | ---: | :---: | ---: | ---: | ---: | --- |
+| Gemma 4 31B | `33576520136` | yes | **1.00** | **0.00** | **2/2** | Google-hosted Gemmaで最も強いcomplete slice |
+| Gemini 3.5 Flash-Lite | `33613604519` | yes | **1.00** | **0.00** | **2/2** | utilityは強いがsuccessor overheadは大きめ |
+| Mistral Small | `33618436419` | yes | 0.75 | 0.25 | 1/2 | このworkloadではMinistral 8B/14Bよりcoverageが高い |
+| Gemini 3.1 Flash-Lite | `33618442500` | yes | 0.75 | 0.25 | 1/2 | 安全だがGemini 3.5 Flash-Liteより完答性は低い |
+| Ministral 8B | `33576517724` | yes | 0.25 | 0.75 | 0/2 | 安全だがtarget回答をwithholdしやすい。#139で追跡 |
+| Ministral 14B | `33618430680` | yes | 0.25 | 0.75 | 0/2 | parameter増加がproduct utility改善につながらなかった |
+| Ministral 3B | `33618424552` | yes | 0.00 | 1.00 | 0/2 | expected-grounded targetを全件withholdする非常に保守的な挙動 |
+| Gemma 4 26B A4B | `33618449494` | **no** | n/a | n/a | n/a | 2 fixture目でinvalid structured output after fallback |
+| Nemotron 3.5 Lightning 30B A3B | `33613607389` | **no** | n/a | n/a | n/a | 2 fixture目でinvalid structured output after fallback |
+
+これは対象workload上のcompatibility/utility matrixであり、一般的なmodel leaderboardではありません。少なくとも今回のHarness用途ではparameter数だけで適性は予測できず、strict structured-output adherence、candidate materialization、final rendering、bounded resolutionの規律が大きく効いています。
+
 GitHub Actionsのmanual `product-dogfood` workflowはrepository secretを使い、JSON reportをartifactとして保存します。baseline / D3+sufficiency両Harness armで外部へ露出するunsupported grounded claimが0であることと、runtime identityをgateします。`sufficient`はauthorityを増やさずno-op、`insufficient` / `mixed`だけがverification・bounded resolution・abstention方向へ作用します。live結果はそのmodel/workload sliceの実測であり、普遍的な正しさの主張ではありません。
