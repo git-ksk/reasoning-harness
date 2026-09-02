@@ -1,0 +1,60 @@
+{
+  "id": "backup-sufficient",
+  "family": "backup_rpo",
+  "request": {
+    "id": "req-backup-sufficient",
+    "task": "Decide whether the system is sufficiently supported as meeting a 30-minute RPO.",
+    "target": {
+      "key": "recovery.rpo_30m_met",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover backup frequency for all state required by the recovery objective.",
+      "Evidence must show that the relevant backups are actually restorable/usable, not merely scheduled."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2"
+    ]
+  },
+  "artifact": {
+    "task": "RSD0 fresh calibration artifact: Decide whether the system is sufficiently supported as meeting a 30-minute RPO.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "rsd0-synthetic",
+        "observation": "All persistent stores are snapshotted every 15 minutes.",
+        "facts": {
+          "backup.interval_minutes": "15",
+          "backup.coverage": "all_persistent_stores"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "rsd0-synthetic",
+        "observation": "The latest restore drill restored every persistent store from the 15-minute snapshot set successfully.",
+        "facts": {
+          "restore.coverage": "all_persistent_stores",
+          "restore.result": "success"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "sufficient",
+  "rationale": "Frequency satisfies the 30-minute target and the same recovery set has restore evidence across all required persistent stores."
+}

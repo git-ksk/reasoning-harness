@@ -1,0 +1,72 @@
+{
+  "id": "incident-sufficient",
+  "family": "incident_root_cause",
+  "request": {
+    "id": "req-incident-sufficient",
+    "task": "Decide whether the database is sufficiently supported as the incident root cause.",
+    "target": {
+      "key": "incident.root_cause",
+      "value": "database"
+    },
+    "required_information": [
+      "Evidence must connect database degradation to the incident window and affected requests.",
+      "Evidence must materially rule out or separate other live infrastructure/application causes before asserting a single root cause."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2",
+      "e3"
+    ]
+  },
+  "artifact": {
+    "task": "RSD0 fresh calibration artifact: Decide whether the database is sufficiently supported as the incident root cause.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "rsd0-synthetic",
+        "observation": "Database connection failures began with the incident and affected the failing request path.",
+        "facts": {
+          "db.connection_failure_rate": "0.81",
+          "incident.request_path": "db_backed"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "rsd0-synthetic",
+        "observation": "Network and application health checks remained normal outside database calls during the same window.",
+        "facts": {
+          "network.health": "normal",
+          "app.non_db_health": "normal"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e3",
+        "source": "rsd0-synthetic",
+        "observation": "Database failover immediately restored the failing request path while traffic and application version stayed unchanged.",
+        "facts": {
+          "db.failover_effect": "service_restored",
+          "traffic.changed": "false",
+          "app.version_changed": "false"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "sufficient",
+  "rationale": "The evidence connects the database failure to affected requests, separates the main live alternatives, and includes a targeted recovery intervention consistent with the asserted root cause."
+}

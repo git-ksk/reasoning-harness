@@ -1,0 +1,62 @@
+{
+  "id": "capacity-sufficient",
+  "family": "capacity_planning",
+  "request": {
+    "id": "req-capacity-sufficient",
+    "task": "Decide whether the evidence is sufficient to assert adequate service capacity.",
+    "target": {
+      "key": "service.capacity_adequate",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover peak rather than average demand for the relevant planning horizon.",
+      "Evidence must cover each material bottleneck and the required headroom, not only aggregate compute capacity."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2"
+    ]
+  },
+  "artifact": {
+    "task": "RSD0 fresh calibration artifact: Decide whether the evidence is sufficient to assert adequate service capacity.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "rsd0-synthetic",
+        "observation": "Observed peak request demand is 700 units and compute capacity is 1000 units.",
+        "facts": {
+          "demand.peak": "700",
+          "compute.capacity": "1000"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "rsd0-synthetic",
+        "observation": "Database, queue, and connection-pool bottlenecks each retain at least the required 20% headroom at peak demand.",
+        "facts": {
+          "db.headroom_percent": "28",
+          "queue.headroom_percent": "31",
+          "pool.headroom_percent": "24",
+          "required.headroom_percent": "20"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "sufficient",
+  "rationale": "Peak demand and all declared material bottlenecks exceed the required headroom threshold."
+}

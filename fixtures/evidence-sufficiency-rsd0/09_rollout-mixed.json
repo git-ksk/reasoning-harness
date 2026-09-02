@@ -1,0 +1,60 @@
+{
+  "id": "rollout-mixed",
+  "family": "rollout_safety",
+  "request": {
+    "id": "req-rollout-mixed",
+    "task": "Decide whether available canary evidence is sufficient to expand the rollout.",
+    "target": {
+      "key": "release.safe_to_expand",
+      "value": "true"
+    },
+    "required_information": [
+      "Evidence must cover a predeclared decision window long enough to observe the relevant failure modes.",
+      "Evidence must cover both error-rate and latency guardrails on a representative canary before expanding rollout."
+    ],
+    "evidence_ids": [
+      "e1",
+      "e2"
+    ]
+  },
+  "artifact": {
+    "task": "RSD0 fresh calibration artifact: Decide whether available canary evidence is sufficient to expand the rollout.",
+    "evidence": [
+      {
+        "id": "e1",
+        "source": "rsd0-synthetic",
+        "observation": "The representative canary completed the 30-minute window with error rate inside its guardrail.",
+        "facts": {
+          "canary.window_minutes": "30",
+          "canary.error_guardrail": "pass"
+        },
+        "metadata": {}
+      },
+      {
+        "id": "e2",
+        "source": "rsd0-synthetic",
+        "observation": "p95 latency exceeded its expansion guardrail for 11 minutes of the same window.",
+        "facts": {
+          "canary.latency_guardrail": "fail",
+          "canary.latency_breach_minutes": "11"
+        },
+        "metadata": {}
+      }
+    ],
+    "hypotheses": [],
+    "assumptions": [],
+    "evidence_requirements": [],
+    "authority_policy": {
+      "ranks": {}
+    },
+    "candidate_diagnostics": [],
+    "verification_receipts": [],
+    "adversarial_findings": [],
+    "assumption_findings": [],
+    "evidence_qualification_findings": [],
+    "claims": [],
+    "inferences": []
+  },
+  "label": "mixed",
+  "rationale": "The evidence is complete enough to assess the decision but the required safety indicators disagree; a single positive sufficiency judgment would hide that conflict."
+}

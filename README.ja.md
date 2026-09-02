@@ -1,0 +1,493 @@
+# Reasoning Harness
+
+日本語 | [English](README.md)
+
+**AIの回答を「モデル1回呼んで終わり」にせず、根拠付きの推論runtimeを通して作るCLIです。**
+
+Reasoning Harnessは、根拠が足りないときにAIが推測で断言するのではなく、**`unknown`と言えるようにする**ためのAI CLI/runtimeです。モデルは候補を出し、根拠からgrounded resultへ進める流れはHarness側が管理します。
+
+```text
+LLM / Agent / RAG
+       |
+       v
+ 構造化された候補回答
+       |
+       v
+ Reasoning Harness
+       |
+       +--> accept  採用可能
+       +--> reject  棄却
+       +--> unknown 根拠不足
+```
+
+LLMは**候補を出す役**であり、正しさを決める権限は持ちません。根拠の紐付け、決定論的な検証、verification、不確実性、最終的な判断境界はHarness側が管理します。
+
+> Stochastic intelligence, deterministic process.
+
+## どんなときに使う？
+
+すでにLLMやAIエージェントを使っているけれど、**「モデルがそう言った」だけで結果を信用したくない**ときに使います。
+
+たとえば:
+
+- **RAG / 調査AI** — 取得した資料だけでは回答を裏付けられないときに、断言を防ぐ。
+- **AIリサーチパイプライン** — 根拠不足や矛盾した情報を、モデルが自信満々の結論へ変換するのを防ぐ。
+- **Agent / CI** — 次の自動処理へ渡す前に、構造化された推論成果物を検証する。
+- **安価なLLMの活用** — 候補生成は安いモデルに任せつつ、「信用してよいか」の判断はprovider-neutralなHarness側に残す。
+
+ざっくりいうと、違いはこれです。
+
+```text
+普通:
+  根拠 -> LLM -> 回答
+
+Reasoning Harnessあり:
+  根拠 -> LLM/Agent -> 候補 -> 検証/診断 -> accept | reject | unknown
+```
+
+## 主役の使い方: 自然文AI CLI
+
+自然文でAIを使うpathを、primaryな人向けUXとして`main`へ実装しました。公開済み`v0.1.0` tagはこの実装より前のstructured previewなので、次のtagged previewまでは自然文pathを試す場合`main`を使います。
+
+```bash
+reason "この障害を分析して" --fact http.status_code=503
+reason "この構成をレビューして" --file architecture.md --hypothesis backup.enabled=true
+cat error.log | reason "最も根拠のあるroot causeを特定して" --hypothesis incident.root_cause=database
+```
+
+provider/modelは通常layered configから取れます。明示もできます。
+
+```bash
+reason "確認できるdeployment regionを答えて" \
+  --provider mistral \
+  --model ministral-8b-latest \
+  --fact service.region=us-east-1
+```
+
+内部ではこう動きます。
+
+```text
+自然文task
+    ↓
+AIがuntrusted candidateを生成
+    ↓
+Harness validation + evidence verification + diagnostics
+    ↓
+根拠不足? -> bounded resolver -> admission -> 再verification
+    ↓
+AIが自然文answerをrender
+    ↓
+final-claim coverage gate
+    ↓
+grounded answer | 条件付き回答 | unknown/abstain
+```
+
+簡単な入口にしても、自由文を勝手に「事実」にはしません。`--file`とpipeしたstdinは、modelが読める
+**untrusted context**です。文書に書いてあるというだけではhard verification receiptは作りません。
+`--fact KEY=VALUE`はHarness側へ明示するstructured fact、`--resolver-fact KEY=VALUE`はbounded resolution
+経由だけで使う明示local fact、`--hypothesis KEY=VALUE`は「この命題を評価/解決して」というtargetです。
+
+そのため、trusted evidenceなしで`reason "..."`だけを実行した場合、modelの事前学習をverified evidence
+扱いせず、条件付き/`unknown`になることがあります。今後web/search/DB/test/compiler/MCPなどをresolverへ
+足せば自然文pathを強くできますが、adapter結果もadmissionとverificationを飛ばせません。
+
+JSONのstructured pathは消していません。高度なintegration / CI / debug / 再現性のために残しますが、
+通常利用者が最初にJSON Schemaを理解する必要はなくなります。
+
+自然文pathには、evidence binding、assumption/contradiction/evidence-qualification diagnostics、bounded
+resolution、再verification、final-claim coverageに加えて、採用済みD3 + residual sufficiencyのanswer-safety
+bridgeを使っています。defaultの`d3-sufficiency`は`d3-sufficiency-answer-gate-v2`です。baseline結果を
+維持するかverification/resolution側へ制限することだけができ、`sufficient`がevidence、receipt、epistemic
+promotion、verdict authorityを新しく作ることはありません。初期v1 policyとbaseline-only pathは明示rollback
+として残しています。
+
+残余evidence sufficiencyの初期research program #91は完了済みです。calibration、独立frozen holdout、
+operational stabilization、versioned product wiring、NL-5 dogfoodまで完了し、frozen research corpusは
+product tuningに使っていません。selective/conformalやrelation-level sufficiencyは今後のfollow-on researchです。
+
+## 何を入力するの？
+
+primary pathでは、自然文taskと「実際に持っているcontext / authority」だけを渡します。`reason`は非対話型ですが、
+**自然文first**でありstructured-data-firstではありません。
+
+- `--file` / stdin: modelが読めるprovenance付きuntrusted context
+- `--fact KEY=VALUE`: Harness-ownedの明示structured evidence
+- `--hypothesis KEY=VALUE`: 評価したいtyped proposition
+- `--resolver-fact KEY=VALUE`: bounded resolution経由だけで使う明示local fact
+
+これらを全部指定しなくても実行できますが、trusted supportが足りなければ条件付き回答や`unknown`になるのが
+正しい動作です。`HarnessInput` / `ReasoningCandidate` JSONは高度なintegration / automation / debug用surfaceとして残ります。
+
+正確なJSON SchemaはCLIから確認できます。
+
+```bash
+reason schema artifact
+reason schema candidate
+reason schema config
+reason schema semantic-check
+```
+
+## 高度なstructured実行モード
+
+高度なintegration向けには`reason run`のstructuredな使い方も残っています。どちらも**候補ができた後の検証パイプラインは同じ**で、違うのは「untrusted candidateを誰が作るか」です。
+
+| モード | コマンド | Harness内でAIを呼ぶ？ | 向いているケース |
+| --- | --- | --- | --- |
+| **外部AIの候補を持ち込む** | `reason run --input ... --candidate ...` | **呼ばない** | 自作Agent、RAG、ChatGPT/Claude/Codex的な別システムなどが、すでに構造化された候補を作っている。 |
+| **`reason`に候補生成も任せる** | `reason run --input ... --provider ... --model ...` | **呼ぶ** | Mistral / Google / NVIDIAへ`reason`自身が問い合わせて候補を作り、そのまま検証したい。 |
+
+Product commandごとに見るとこうです。
+
+| コマンド | `reason`内でAI必要？ | 理由 |
+| --- | --- | --- |
+| `reason run --candidate ...` | **不要** | 既存candidateを、決定論的なmaterialization・evidence verification・diagnostics・acceptance policyへ通せる。 |
+| `reason verify artifact.json` | **不要** | すでに作られたartifactの構造・invariantを検証する。 |
+| `reason run --provider ...` | **必要** | untrusted candidateそのものをproviderに生成させる。 |
+| `reason semantic-check ...` | **必要** | D3/v3はmodel-backedなsoft semantic diagnosticだから。 |
+
+つまりReasoning Harnessは、**必ずAI endpointへ接続しないと動かないツールではありません**。既存AIの出力をチェックするcore pathは、APIキーなしでも動きます。
+
+## AIなしで、どうやって回答を判定できるの？
+
+Harnessは「この文章、正しそう？」と別のAIへ聞いているわけではありません。もっと狭く、**構造化された主張が、Harness管理の根拠とルールで裏付けられるか**を確認しています。
+
+```text
+外部AI / Agent / RAG
+        |
+        | claimやinferenceを提案
+        v
+ ReasoningCandidate          HarnessInput
+   (信用しない)          (task + 管理された根拠)
+        |                        |
+        +-----------+------------+
+                    v
+          1. 安全にmaterialize
+                    |
+                    v
+          2. 構造・参照をvalidation
+                    |
+                    v
+          3. evidenceとverification
+                    |
+                    v
+          4. diagnosticsを実行
+                    |
+                    v
+          5. acceptance policyで判定
+                    |
+        +-----------+-----------+
+        |           |           |
+      accept      reject      unknown
+```
+
+### 1. まずAIの自己申告を信用しない
+
+外部AIがcandidate内で「これは`known`」「`supported`」「`inferred`」「`contradicted`」と書いても、その強いstateをそのまま採用しません。現在のmaterializationでは、それらは原則いったん`assumed`へ落とされます。`unknown`や明示的な`assumed`は、安全側の状態としてそのまま扱えます。
+
+つまり、AIが自分で「俺の回答は検証済み」と宣言しても、権限はもらえません。
+
+### 2. Harness側のevidenceと照合する
+
+たとえばcandidateが次を主張したとします。
+
+```json
+{
+  "proposition": {
+    "key": "service.region",
+    "value": "us-east-1"
+  }
+}
+```
+
+HarnessInputに、Harness側が管理するstructured factがあるとします。
+
+```json
+{
+  "facts": {
+    "service.region": "us-east-1"
+  }
+}
+```
+
+決定論的なstructured verifierは`key=value`を照合できます。
+
+- 一致する根拠がある -> Harness側が`VerificationReceipt: supported`を作れる
+- 別の値が確認される -> `VerificationReceipt: contradicted`になり得る
+- 根拠がない -> receiptを作らず、不確実性を残す
+- time/scope/authorityなどのqualification条件を満たさない -> hard receiptを出さず、不確実性を残す
+
+**verification receiptを作れるのはtrusted boundary側で、candidateを作ったAIではありません。**
+
+### 3. 最後に保守的なpolicyでまとめる
+
+現在のStrict policyは分かりやすく保守的です。
+
+- `contradicted`が1つでもある -> **`reject`**
+- `assumed` / `unknown`が1つでも残る -> **`unknown`**
+- claimがあり、必要なclaimが十分に確立している -> **`accept`**
+- claim自体がない -> **`unknown`**
+
+contradiction / counterexampleの探索、assumption inspection、evidence qualification、Five Whysなどのdiagnosticも走りますが、diagnosticが勝手にtrusted evidenceを作ったり、model outputだけで最終verdictを支配したりはできません。
+
+だから、
+
+```bash
+reason run --input evidence.json --candidate ai-output.json --no-config --format json
+```
+
+は**APIキーなし**で意味のある判定を返せます。AIによる候補生成はすでに外で終わっていて、Harnessは「その候補を信用してよい部分はどこか」を決定論的な境界で判定しているからです。
+
+さらに詳しいstate遷移、verification receipt、evidence qualification、D3との役割分担は[仕組みの詳細](docs/how-it-works.ja.md)にまとめています。
+
+## 30秒Quickstart
+
+以下はPOSIX shellの例です。Windowsでは同じJSONをファイルへ保存し、同等のpathを指定して`reason.exe`を実行できます。
+
+### 1. インストール
+
+v0.1.0は外部利用向けpreviewです。まだv1.0の安定性を宣言する段階ではありません。
+
+Rust 1.88+がある場合:
+
+```bash
+cargo install --git https://github.com/git-ksk/reasoning-harness \
+  --tag v0.1.0 --locked reasoning-harness-cli --bin reason
+
+reason --version
+```
+
+Rustを入れたくない場合は、[v0.1.0 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.1.0)からLinux x64 / macOS Apple Silicon / macOS Intel / Windows x64向けの単体バイナリを利用できます。`SHA256SUMS`も同梱しています。
+
+### 2. APIキー不要のサンプルを実行
+
+repoをcloneしていなくても、そのままコピペで試せます。小さなevidenceとuntrusted candidateを作ります。
+
+```bash
+cat > /tmp/reason-input.json <<'JSON'
+{
+  "task": "Determine what can be concluded from the supplied evidence.",
+  "evidence": [{
+    "id": "e1",
+    "source": "demo",
+    "observation": "The source states that service.region is us-east-1.",
+    "facts": {"service.region": "us-east-1"}
+  }]
+}
+JSON
+
+cat > /tmp/reason-candidate.json <<'JSON'
+{
+  "claims": [
+    {
+      "id": "c1",
+      "statement": "The service is in us-east-1.",
+      "proposed_state": "known",
+      "proposition": {"key": "service.region", "value": "us-east-1"},
+      "evidence_ids": ["e1"]
+    },
+    {
+      "id": "c2",
+      "statement": "The service is highly available.",
+      "proposed_state": "unknown",
+      "evidence_ids": []
+    }
+  ],
+  "inferences": []
+}
+JSON
+
+reason run \
+  --input /tmp/reason-input.json \
+  --candidate /tmp/reason-candidate.json \
+  --no-config \
+  --format json
+```
+
+このサンプルには、
+
+- `service.region=us-east-1`という根拠で確認できるclaimが1つ
+- 高可用性については根拠がなく確認できないclaimが1つ
+
+入っています。そのためHarness全体の結果は:
+
+```json
+{
+  "result": {
+    "outcome": {
+      "verdict": "unknown"
+    }
+  }
+}
+```
+
+となります。
+
+`unknown`はエラーではありません。**「今ある根拠だけでは断言できない」ことを正常に判断できた結果**なので、process exit codeは`0`です。
+
+### 3. Harnessが何をしたかを見る
+
+同じJSONの中で、根拠が確認できたclaimはHarness側のverification receiptを通って`supported`へ進み、根拠不足のclaimは`unknown`のまま残ります。
+
+最初はこの辺を見ると分かりやすいです。
+
+```text
+result.outcome.verdict
+result.outcome.artifact.claims
+result.outcome.artifact.verification_receipts
+result.outcome.artifact.*_findings
+```
+
+## 実用パターン3つ
+
+### A. LLM / RAGの回答を公開前にチェックする
+
+アプリ側で根拠を取得し、LLMに構造化された候補回答を作らせたあと、両方を`reason`へ渡します。
+
+```bash
+reason run \
+  --input retrieved-evidence.json \
+  --candidate model-candidate.json \
+  --format json > checked-result.json
+```
+
+その後の処理はLLMの文章そのものではなく、`result.outcome.verdict`を見て判断します。
+
+現時点では、RAGで取得した文書が自動的にtrusted evidenceになるわけではありません。アプリ側でprovenanceを含めて`HarnessInput`のevidenceへ表現し、必要に応じてtrusted receipt/oracleへ接続します。
+
+これがReasoning Harnessの基本的な利用方法です。
+
+### B. 候補生成も`reason`からlive providerへ任せる
+
+たとえばMistralの場合:
+
+```bash
+export MISTRAL_API_KEY='...'
+
+reason run \
+  --input evidence.json \
+  --provider mistral \
+  --model ministral-8b-latest \
+  --format json
+```
+
+providerが生成するのはあくまで**untrusted candidate**です。その後に同じHarness管理の検証プロセスが走ります。
+
+Google Gemini/AI Studio、NVIDIA Hosted NIMのadapterも実装済みです。APIキーは環境変数で扱い、trusted evidenceにはなりません。
+
+### C. Agent / CIの安全ゲートとして使う
+
+すでに作られた`ReasoningArtifact`を決定論的に検証できます。
+
+```bash
+reason verify artifact.json --format json
+```
+
+パイプでも使えます。
+
+```bash
+cat artifact.json | reason verify - --format json
+```
+
+自動化向けのexit codeは:
+
+- `0` — コマンド処理成功。`run`の推論結果は`accept` / `reject` / `unknown`のいずれでもあり得る。
+- `1` — input / provider / runtime / validationなどの処理失敗。
+- `2` — CLI引数・usageエラー。
+
+JSON modeでは失敗時もmachine-readableなfailure envelopeを返します。
+
+## Semantic safety check
+
+soft semantic diagnosticが勝手に最終判断権限を持たないよう、semantic runtimeは`reason run`とは別のproduct surfaceになっています。
+
+```bash
+reason semantic-check \
+  --input examples/semantic-check.json \
+  --provider mistral \
+  --model ministral-8b-latest \
+  --format json
+```
+
+defaultは`semantic-decidability-d3-v1`です。characterized済みの`soft-semantic-v3`へ戻す場合は`--profile v3`を使えます。
+
+contradiction / counterexample / unsupported premise / causal gapなどをsemanticに診断したい場合に使います。**通常のアプリ統合はまず`reason run`から**始めるのがおすすめです。
+
+## Product command一覧
+
+| コマンド | 使いどころ |
+| --- | --- |
+| `reason run` | LLM/Agentの候補をHarness管理の検証プロセスへ通す。 |
+| `reason verify` | 完成済み`ReasoningArtifact`を決定論的に検証する。 |
+| `reason semantic-check` | soft semantic runtimeを、最終判断権限を与えずに実行する。 |
+| `reason schema` | versionedなproduct JSON contractを確認する。 |
+
+`reason eval`、`reason eval-resolution`、`reason eval-judges`、専用study binaryは研究・評価用です。v0.1のproduct compatibility対象ではありません。
+
+## 「別のLLMに採点させる」のと何が違う？
+
+別のLLMも結局は確率的なモデル出力です。Reasoning Harnessでは、モデルの文章そのものへ正しさの権限を渡しません。
+
+- modelはHarness管理のevidenceを作れない
+- modelはtrusted verification receiptを作れない
+- soft semantic findingだけでtrusted final answerを作れない
+- provider障害をsemantic evidenceや`abstain`へ変換しない
+- 根拠不足なら`unknown`を維持できる
+
+テスト、schema、compiler、database、policy engine、信頼されたhuman reviewなどの決定論的oracleは、evidence/verifier sourceとして統合できます。
+
+## 現在できること
+
+v0.1.0 previewでは次を実装しています。
+
+- `HarnessInput` / `ReasoningCandidate` / `ReasoningArtifact`のtyped contract
+- evidence binding、provenance/referenceの決定論的検証
+- structured fact verificationとtrusted verification receipt
+- contradiction、counterexample、assumption、causal、temporal/scope、evidence qualification診断
+- `accept | reject | unknown`とfail-closed runtime
+- bounded resolution/finalization primitivesと`ReasoningPolicy`
+- `ReasoningThread` event/checkpoint replay primitives
+- `semantic-decidability-d3-v1`と明示的v3 rollback
+- Mistral / Google / NVIDIA provider adapter
+- versioned JSON envelope、schema-backed config、stdin、typed failure class
+- Linux x64 / macOS Apple Silicon・Intel / Windows x64のproduct smoke
+
+詳細な使い方は[日本語CLI guide](docs/cli.ja.md)、完全な仕様は[英語CLI guide](docs/cli.md)、v0.xの互換性は[support policy](docs/support.md)を参照してください。
+
+## これは何ではない？
+
+- ChatGPT/Codexのような対話型チャット・汎用coding agentではありません。
+- prompt集ではありません。
+- 特定モデル専用のagent frameworkではありません。
+- LLMが別のLLMを自己認証するpost-hoc judgeではありません。
+- open-worldなLLM推論を数学的に正しくできる、という主張ではありません。
+- compiler / test / schema / policy engine / proof checkerなどの決定論的oracleの代替ではありません。
+- correctness coreに組み込まれた汎用web crawler / RAG frameworkではありません。
+
+## 研究について
+
+このプロジェクトの研究テーマは次です。
+
+> 小型・低コストなモデルでも、typed intermediate state、evidence binding、明示的不確実性、adversarial pass、deterministic acceptance gate、bounded resolution/re-verificationを通すことで、推論の信頼性を実質的に高められるか？
+
+目標は悪い推論を見つけるだけではありません。不足している根拠を特定し、外部adapterから追加のevidence/verificationを得て、同じauthority boundaryを再度通し、それでも根拠が足りなければ無理に完成させないruntimeを目指しています。
+
+研究機能は、calibration → 独立したfrozen evaluation → operational stabilization → runtime identity/rollback → CLI compatibilityという昇格手順を通るまでproduct CLIへ入りません。
+
+[Research plan](docs/research-plan.md) / [Product roadmap](docs/product-roadmap.md) / [Project status](docs/project-status.md)
+
+## 開発者向け
+
+Rust 1.88+を利用します。Node.js/TypeScript runtime dependencyはありません。
+
+```bash
+cargo fmt --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+cargo run -p reasoning-harness-cli -- run \
+  --input examples/input.json \
+  --candidate examples/candidate.json \
+  --no-config \
+  --format json
+```
+
+設計資料: [architecture](docs/architecture.md)、[reasoning policy](docs/reasoning-policy.md)、[evidence qualification](docs/evidence-qualification.md)、[grounded resolution](docs/grounded-resolution.md)、[ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md)、[ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md)

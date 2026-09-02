@@ -41,6 +41,15 @@ path = "src/bin/semantic_preflight.rs"
 name = "reason-semantic-runtime-smoke"
 path = "src/bin/runtime_smoke.rs"
 
+[[bin]]
+name = "reason-product-dogfood"
+path = "src/bin/product_dogfood.rs"
+
+
+[[bin]]
+name = "reason-sufficiency-study"
+path = "src/bin/sufficiency.rs"
+
 [dependencies]
 clap.workspace = true
 reasoning-harness-core = { path = "../reasoning-harness-core" }

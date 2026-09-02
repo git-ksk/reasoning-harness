@@ -1,0 +1,24 @@
+{
+  "id": "architecture-observed-controls",
+  "workload_class": "architecture_review",
+  "task": "Report the verified storage encryption and public-access controls in this architecture snapshot.",
+  "input": {
+    "task": "Report the verified storage encryption and public-access controls in this architecture snapshot.",
+    "evidence": [
+      {
+        "id": "architecture-config",
+        "source": "architecture configuration snapshot",
+        "observation": "Storage encryption is enabled and public network access is disabled.",
+        "facts": {
+          "storage.encryption": "enabled",
+          "network.public_access": "disabled"
+        }
+      }
+    ],
+    "hypotheses": [
+      {"key": "storage.encryption", "value": "enabled"},
+      {"key": "network.public_access", "value": "disabled"}
+    ]
+  },
+  "expected_outcome": "grounded"
+}

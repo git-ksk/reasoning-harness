@@ -77,7 +77,11 @@ Does not own:
 ### CLI
 
 The CLI is the first supported product surface because it is useful interactively,
-in shell pipelines, and in CI without introducing another orchestration layer.
+in shell pipelines, and in CI without introducing another orchestration layer. v0.1.0 first exposed
+structured contracts; the primary human-facing direction after that foundation is an AI-backed
+natural-language command that internally constructs and traverses the same runtime boundaries. The
+structured JSON commands remain supported advanced/integration/debug surfaces rather than being
+removed or bypassed.
 
 Initial command semantics:
 

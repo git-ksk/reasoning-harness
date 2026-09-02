@@ -5,6 +5,8 @@ It invokes the same harness-owned validation, evidence, verification, decision, 
 boundaries used by the core runtime. Research binaries and `eval*` commands remain useful, but they
 do not define the stable product contract.
 
+For the execution/trust model behind `--candidate` versus `--provider`, including how an AI-free run can still produce `accept | reject | unknown`, see [How Reasoning Harness works](how-it-works.md).
+
 ## Installation
 
 ### Cargo from GitHub
@@ -30,6 +32,53 @@ A `v*` tag whose version matches `reasoning-harness-cli` produces GitHub Release
 Each release includes `SHA256SUMS`. Verify the downloaded archive before installation. Release archives contain only the `reason` product executable plus the repository README and license; research binaries are not product artifacts.
 
 The same four platform classes run credential-free product smoke in pull requests and on `main`.
+
+## Natural-language AI path
+
+The primary human-facing path accepts a task directly:
+
+```bash
+reason "Analyze this incident" --fact http.status_code=503
+```
+
+Provider/model can come from `reason-config-v1` or explicit flags. Human output is the default; use `--format json` for automation. Useful inputs are:
+
+| input | trust semantics |
+| --- | --- |
+| positional `TASK` | user request, not evidence |
+| `--file PATH` | untrusted model-readable context; no hard fact is inferred automatically |
+| piped stdin | same untrusted context semantics as `--file` |
+| `--fact KEY=VALUE` | explicit harness-owned structured fact eligible for deterministic verification |
+| `--hypothesis KEY=VALUE` | harness-owned proposition to evaluate/resolve |
+| `--resolver-fact KEY=VALUE` | explicit local fact available only through bounded resolution/admission/re-verification |
+
+Example with context plus a typed target:
+
+```bash
+cat error.log | reason "Determine whether the database is the root cause" \
+  --hypothesis incident.root_cause=database
+```
+
+If the context does not contain trusted structured support, the safe result may remain qualified/unknown. This is intentional. `--file` is not a shortcut that promotes document prose into verification authority.
+
+The final model-rendered answer is also untrusted until `finalize_answer` checks factual-claim coverage. Any newly introduced factual proposition is blocked; when an explicitly configured resolver can verify it, the proposition may re-enter bounded resolution and then be rendered again.
+
+The natural-language path defaults to `--safety-profile d3-sufficiency`. After normal grounding/finalization would expose a grounded claim, the successor answer gate applies deterministic D3 preconditions and the promoted residual sufficiency coordinate. A `sufficient` classification cannot create receipts, support, or `accept`; it only preserves the baseline result. `insufficient` or `mixed` forces verification and may route through bounded resolution before any answer is exposed. The default `d3-sufficiency` profile is `d3-sufficiency-answer-gate-v2`, which uses a claim-local requirement policy so an individually supported fact is not required to answer the whole task. Use `--safety-profile d3-sufficiency-v1` to reproduce the first product policy, or `--safety-profile baseline` to bypass the residual gate entirely.
+
+Natural JSON output declares `output_contract: reason-natural-output-v2` inside the normal `reason-cli-output-v1` envelope.
+
+See [How Reasoning Harness works](how-it-works.md) and [product dogfood](product-dogfood.md).
+
+## Which command should I use?
+
+| Goal | Command |
+| --- | --- |
+| Check an LLM/agent candidate against harness-owned evidence | `reason run` |
+| Validate an already-materialized artifact | `reason verify` |
+| Run contradiction/counterexample/unsupported-premise/causal-gap semantic diagnostics | `reason semantic-check` |
+| Inspect the exact machine-readable JSON contracts | `reason schema` |
+
+For normal application integration, start with **`reason run`**. The CLI expects structured JSON; it is not a chat client that treats arbitrary conversation text as trusted evidence.
 
 ## Product commands
 
@@ -83,7 +132,7 @@ envelope:
 {
   "schema_version": "reason-cli-output-v1",
   "command": "run",
-  "cli_version": "0.0.1",
+  "cli_version": "0.1.0",
   "contracts": {
     "artifact": "reasoning-artifact-v1",
     "candidate": "reasoning-candidate-v1",

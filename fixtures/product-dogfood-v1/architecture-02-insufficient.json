@@ -1,0 +1,23 @@
+{
+  "id": "architecture-overall-security-insufficient",
+  "workload_class": "architecture_review",
+  "task": "Determine whether the architecture is confirmed secure overall from the supplied controls alone.",
+  "input": {
+    "task": "Determine whether the architecture is confirmed secure overall from the supplied controls alone.",
+    "evidence": [
+      {
+        "id": "architecture-config",
+        "source": "architecture configuration snapshot",
+        "observation": "Storage encryption is enabled and public network access is disabled.",
+        "facts": {
+          "storage.encryption": "enabled",
+          "network.public_access": "disabled"
+        }
+      }
+    ],
+    "hypotheses": [
+      {"key": "system.security_posture", "value": "secure"}
+    ]
+  },
+  "expected_outcome": "unknown"
+}

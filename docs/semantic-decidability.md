@@ -1,5 +1,9 @@
 # Semantic decidability and evidence-sufficiency research
 
+> Successor research: RSD0 residual evidence-sufficiency discovery is documented in
+> [evidence-sufficiency-rsd0.md](evidence-sufficiency-rsd0.md). It demonstrates that the adopted D3
+> gate can correctly return `permit` while broader answerability evidence remains insufficient or mixed.
+
 Issue #73 follows the rejected R4 semantic successor study. The goal is not to make model
 agreement more authoritative. The goal is to identify harness-owned conditions under which an
 assertive soft semantic decision should not be allowed to proceed.
@@ -450,9 +454,9 @@ The D1 -> D2 -> D3 freeze -> holdout-v5 sequence is complete for the original pr
 2. [done] harden capability preflight, failure telemetry, partial-result preservation, and rollback;
 3. [done] perform runtime adoption as a separate reversible change while retaining `soft-semantic-v3` as the rollback baseline;
 4. [done #84] complete the exact frozen Gemini v5 rerun without changing the candidate;
-5. [next #91] create a fresh calibration-only residual-gap corpus and first prove that current typed D3 misses a measurable evidence-sufficiency distinction;
-6. if that gap exists, evaluate a monotone soft sufficiency coordinate, then risk/coverage and selective/conformal uncertainty under a new research identity;
-7. evaluate causal relation-level sufficiency only after directional relation evidence has an explicit typed binding;
-8. promote any successor only through a fresh independent frozen holdout, operational stabilization, explicit rollback, and separate CLI/product adoption gate (#90).
+5. [done #91] create a fresh calibration-only residual-gap corpus and prove that current typed D3 misses a measurable evidence-sufficiency distinction;
+6. [done #91] evaluate the monotone `sufficient | insufficient | mixed` coordinate, characterize risk/coverage across seeds/models, and pass a fresh independent frozen holdout without granting authority to `sufficient`;
+7. [done #129/#134/#113] promote the residual coordinate through versioned product wiring, explicit rollback, claim-local requirement policy v2, and target-aware/shared-render NL-5 dogfood;
+8. evaluate selective/conformal abstention or causal relation-level sufficiency only as new follow-on research with its own calibration/holdout identity and typed prerequisites.
 
 No successor may use observed holdout-v5 content for tuning, relabelling, threshold selection, or corpus repair.

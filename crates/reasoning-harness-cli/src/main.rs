@@ -1,34 +1,44 @@
 use std::{
     collections::{BTreeMap, VecDeque},
     env, fs,
-    io::{self, Read},
+    io::{self, IsTerminal, Read},
     path::{Path, PathBuf},
     process::ExitCode,
     sync::Arc,
     time::Instant,
 };
 
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{Args, Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
-    AdversarialDiscoveryPass, AssumptionDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult,
-    BenchmarkComparison, BenchmarkFixture, CalibrationLabel, ClaimCorpusSummary, CorpusManifest,
-    DiagnosticObservation, DiagnosticTrial, EvidenceQualificationPass, HarnessInput,
+    AcquiredEvidence, AdversarialDiscoveryPass, AnswerSafetyDisposition, AnswerSafetyError,
+    AnswerSafetyIdentity, AnswerSafetyObservation, AnswerSafetyProfile, AssumptionDiscoveryPass,
+    BenchmarkAggregate, BenchmarkCaseResult, BenchmarkComparison, BenchmarkFixture,
+    CalibrationLabel, CanonicalFinalAnswerRenderer, ClaimCorpusSummary, CorpusManifest,
+    DefaultResolutionPlanner, DiagnosticObservation, DiagnosticTrial, Evidence,
+    EvidenceAdmissionPolicy, EvidenceAdmissionRejection, EvidenceMetadata,
+    EvidenceQualificationPass, FinalAnswerCandidate, FinalAnswerRenderer, FinalClaimMode,
+    FinalizationPolicy, FinalizationResult, FinalizationStatus, GroundedResolutionOutcome,
+    GroundedResolutionPolicy, GroundedResolutionRuntime, HarnessInput, HarnessOutcome,
     MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError, ModelError,
-    ModelErrorKind, ModelUsage, REASONING_ARTIFACT_CONTRACT_ID, REASONING_CANDIDATE_CONTRACT_ID,
-    ReasoningArtifact, ReasoningCandidate, RepeatedDiagnosticReport, ResolutionBenchmarkAggregate,
-    ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, SemanticDiagnosticKind,
-    SemanticRuntimeError, SemanticRuntimeIdentity, SemanticRuntimeObservation,
-    SemanticRuntimeProfile, SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport,
-    SoftJudgeDecision, SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeObservation,
-    StrictAcceptancePolicy, StructuredFactConflictDetector, TrustedVerificationPass,
-    VerificationPass, VerificationReceipt, aggregate_benchmark, aggregate_claim_corpus,
+    ModelErrorKind, ModelUsage, Proposition, REASONING_ARTIFACT_CONTRACT_ID,
+    REASONING_CANDIDATE_CONTRACT_ID, ReasoningArtifact, ReasoningCandidate,
+    RepeatedDiagnosticReport, ResolutionAdapterError, ResolutionBenchmarkAggregate,
+    ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, ResolutionCost, ResolutionRequest,
+    ResolutionResolver, ResolutionResolverContribution, ResolutionResolverOutput, ResolutionTarget,
+    ResolverClass, SemanticDiagnosticKind, SemanticRuntimeError, SemanticRuntimeIdentity,
+    SemanticRuntimeObservation, SemanticRuntimeProfile, SoftJudgeCalibrationFixture,
+    SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeFallbackReason, SoftJudgeIdentity,
+    SoftJudgeObservation, StandardGroundingPipeline, StrictAcceptancePolicy,
+    StructuredFactConflictDetector, TrustedVerificationPass, Verdict, VerificationPass,
+    VerificationReceipt, aggregate_benchmark, aggregate_claim_corpus,
     aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
     aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
-    build_candidate_request, classify_materialization_failure, evaluate,
-    evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture,
-    frameworks::five_whys::FiveWhysRestatementPass, reasoning_artifact_schema,
-    reasoning_candidate_schema, run_harness, run_model_backed_soft_judge, run_semantic_runtime,
-    structured_fact_verifier_for_input, validate_artifact,
+    build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
+    classify_materialization_failure, evaluate, evaluate_benchmark_fixture_with_diagnostics,
+    evaluate_resolution_fixture, finalize_answer, frameworks::five_whys::FiveWhysRestatementPass,
+    reasoning_artifact_schema, reasoning_candidate_schema, run_answer_safety_gate, run_harness,
+    run_model_backed_soft_judge, run_semantic_runtime, structured_fact_verifier_for_input,
+    validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use schemars::{JsonSchema, schema_for};
@@ -37,17 +47,69 @@ use serde::{Deserialize, Serialize, de::DeserializeOwned};
 const CLI_OUTPUT_SCHEMA_VERSION: &str = "reason-cli-output-v1";
 const CLI_CONFIG_CONTRACT_ID: &str = "reason-config-v1";
 const SEMANTIC_CHECK_INPUT_CONTRACT_ID: &str = "semantic-check-input-v1";
+const NATURAL_OUTPUT_CONTRACT_ID: &str = "reason-natural-output-v2";
 const DEFAULT_MAX_TOKENS: u32 = 1024;
+const MAX_CONTEXT_FILE_BYTES: u64 = 1024 * 1024;
+const MAX_CONTEXT_TOTAL_BYTES: usize = 4 * 1024 * 1024;
 
 #[derive(Debug, Parser)]
 #[command(
     name = "reason",
     version,
-    about = "Native reasoning correctness harness CLI"
+    about = "Evidence-grounded AI reasoning CLI",
+    subcommand_precedence_over_arg = true
 )]
 struct Cli {
+    #[command(flatten)]
+    natural: NaturalArgs,
     #[command(subcommand)]
-    command: Command,
+    command: Option<Command>,
+}
+
+#[derive(Debug, Clone, Default, Args)]
+struct NaturalArgs {
+    /// Natural-language task. When no subcommand is used, this starts the AI-backed verified path.
+    #[arg(value_name = "TASK")]
+    task: Option<String>,
+    /// Untrusted context file. Repeatable. File prose is visible to the model but is not hard evidence by itself.
+    #[arg(long, value_name = "PATH")]
+    file: Vec<PathBuf>,
+    /// Explicit trusted structured fact in KEY=VALUE form. Repeatable.
+    #[arg(long, value_name = "KEY=VALUE")]
+    fact: Vec<String>,
+    /// Harness-owned proposition to evaluate/resolve in KEY=VALUE form. Repeatable.
+    #[arg(long, value_name = "KEY=VALUE")]
+    hypothesis: Vec<String>,
+    /// Explicit local resolver fact in KEY=VALUE form. Used only through bounded resolution. Repeatable.
+    #[arg(long, value_name = "KEY=VALUE")]
+    resolver_fact: Vec<String>,
+    /// Maximum bounded-resolution attempts for the natural-language path.
+    #[arg(long, default_value_t = 3)]
+    max_resolution_attempts: usize,
+    /// Live candidate/renderer provider. If omitted, layered config is used.
+    #[arg(long, value_enum)]
+    provider: Option<Provider>,
+    /// Provider model identifier. If omitted, layered config is used.
+    #[arg(long)]
+    model: Option<String>,
+    /// Maximum tokens for candidate generation and final rendering.
+    #[arg(long)]
+    max_tokens: Option<u32>,
+    /// Optional provider random seed.
+    #[arg(long)]
+    seed: Option<u64>,
+    /// Final-answer safety profile. d3-sufficiency is the promoted conservative gate; baseline is the explicit rollback.
+    #[arg(long, value_enum, default_value_t = AnswerSafetyProfileArg::D3Sufficiency)]
+    safety_profile: AnswerSafetyProfileArg,
+    /// Highest-precedence non-secret config file layered over project/user config.
+    #[arg(long, value_name = "PATH", conflicts_with = "no_config")]
+    config: Option<PathBuf>,
+    /// Ignore user/project config for a hermetic invocation.
+    #[arg(long)]
+    no_config: bool,
+    /// Human-readable output by default; JSON is available for automation/inspection.
+    #[arg(long, value_enum)]
+    format: Option<OutputFormat>,
 }
 
 #[derive(
@@ -89,6 +151,24 @@ impl SemanticProfileArg {
         match self {
             Self::D3 => SemanticRuntimeProfile::SemanticDecidabilityD3V1,
             Self::V3 => SemanticRuntimeProfile::SoftSemanticV3,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, ValueEnum)]
+enum AnswerSafetyProfileArg {
+    Baseline,
+    D3SufficiencyV1,
+    #[default]
+    D3Sufficiency,
+}
+
+impl AnswerSafetyProfileArg {
+    const fn runtime_profile(self) -> AnswerSafetyProfile {
+        match self {
+            Self::Baseline => AnswerSafetyProfile::Baseline,
+            Self::D3SufficiencyV1 => AnswerSafetyProfile::D3SufficiencyV1,
+            Self::D3Sufficiency => AnswerSafetyProfile::D3SufficiencyV2,
         }
     }
 }
@@ -180,6 +260,64 @@ impl LiveGenerator {
             Self::Nvidia(adapter) => {
                 generate_with_adapter(adapter, "nvidia", requested_model, input, max_tokens, seed)
                     .await
+            }
+        }
+    }
+
+    async fn render_final(
+        &self,
+        task: &str,
+        artifact: &ReasoningArtifact,
+        verdict: Verdict,
+        max_tokens: u32,
+        seed: Option<u64>,
+        requested_model: &str,
+    ) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
+        match self {
+            Self::Mistral(adapter) => {
+                render_final_with_adapter(
+                    adapter,
+                    FinalRenderCall {
+                        provider: "mistral",
+                        requested_model,
+                        task,
+                        artifact,
+                        verdict,
+                        max_tokens,
+                        seed,
+                    },
+                )
+                .await
+            }
+            Self::Google(adapter) => {
+                render_final_with_adapter(
+                    adapter,
+                    FinalRenderCall {
+                        provider: "google",
+                        requested_model,
+                        task,
+                        artifact,
+                        verdict,
+                        max_tokens,
+                        seed,
+                    },
+                )
+                .await
+            }
+            Self::Nvidia(adapter) => {
+                render_final_with_adapter(
+                    adapter,
+                    FinalRenderCall {
+                        provider: "nvidia",
+                        requested_model,
+                        task,
+                        artifact,
+                        verdict,
+                        max_tokens,
+                        seed,
+                    },
+                )
+                .await
             }
         }
     }
@@ -281,6 +419,142 @@ async fn generate_with_adapter<A: ModelAdapter>(
             cost_usd: None,
         },
     ))
+}
+
+struct FinalRenderCall<'a> {
+    provider: &'static str,
+    requested_model: &'a str,
+    task: &'a str,
+    artifact: &'a ReasoningArtifact,
+    verdict: Verdict,
+    max_tokens: u32,
+    seed: Option<u64>,
+}
+
+async fn render_final_with_adapter<A: ModelAdapter>(
+    adapter: &A,
+    call: FinalRenderCall<'_>,
+) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
+    let FinalRenderCall {
+        provider,
+        requested_model,
+        task,
+        artifact,
+        verdict,
+        max_tokens,
+        seed,
+    } = call;
+    let started = Instant::now();
+    let request = build_final_answer_request(task, artifact, verdict, Some(max_tokens), seed)
+        .map_err(|error| {
+            generation_failure(
+                provider,
+                requested_model,
+                started,
+                ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+            )
+        })?;
+    let first = adapter
+        .generate(request)
+        .await
+        .map_err(|error| generation_failure(provider, requested_model, started, error))?;
+    let (answer, response, provider_attempts, usage) = match parse_final_answer_json(&first.text) {
+        Ok((answer, ignored_trailing_text)) => {
+            if ignored_trailing_text {
+                eprintln!(
+                    "{provider} final-answer normalization: ignored non-JSON trailing text after one complete object"
+                );
+            }
+            let usage = first.usage.clone();
+            (answer, first, 1, usage)
+        }
+        Err(first_error) => {
+            let fallback = build_final_answer_json_fallback_request(
+                task,
+                artifact,
+                verdict,
+                Some(max_tokens),
+                seed,
+            )
+            .map_err(|error| {
+                generation_failure(
+                    provider,
+                    requested_model,
+                    started,
+                    ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+                )
+            })?;
+            let second = adapter.generate(fallback).await.map_err(|error| {
+                generation_failure(
+                    provider,
+                    requested_model,
+                    started,
+                    ModelError::new(
+                        error.kind,
+                        format!(
+                            "{provider} final-answer fallback failed after invalid first response (finish_reason={}, bytes={}): {error}",
+                            first.finish_reason.as_deref().unwrap_or("unknown"),
+                            first.text.len(),
+                        ),
+                    ),
+                )
+            })?;
+            let (answer, ignored_trailing_text) = parse_final_answer_json(&second.text).map_err(
+                |second_error| {
+                    generation_failure(
+                        provider,
+                        requested_model,
+                        started,
+                        ModelError::new(
+                            ModelErrorKind::Protocol,
+                            format!(
+                                "provider returned invalid final-answer JSON after fallback: first_error={first_error}; second_error={second_error}"
+                            ),
+                        ),
+                    )
+                },
+            )?;
+            if ignored_trailing_text {
+                eprintln!(
+                    "{provider} fallback final-answer normalization: ignored non-JSON trailing text after one complete object"
+                );
+            }
+            let usage = add_usage(&first.usage, &second.usage);
+            (answer, second, 2, usage)
+        }
+    };
+    Ok((
+        answer,
+        GenerationObservation {
+            provider,
+            model: response.model,
+            usage,
+            latency_ms: started.elapsed().as_millis(),
+            provider_attempts,
+            cost_usd: None,
+        },
+    ))
+}
+
+fn parse_final_answer_json(text: &str) -> Result<(FinalAnswerCandidate, bool), serde_json::Error> {
+    match serde_json::from_str::<FinalAnswerCandidate>(text) {
+        Ok(answer) => Ok((answer, false)),
+        Err(strict_error) => {
+            let mut stream =
+                serde_json::Deserializer::from_str(text).into_iter::<FinalAnswerCandidate>();
+            let Some(Ok(answer)) = stream.next() else {
+                return Err(strict_error);
+            };
+            let remainder = &text[stream.byte_offset()..];
+            let mut trailing_values =
+                serde_json::Deserializer::from_str(remainder).into_iter::<serde_json::Value>();
+            match trailing_values.next() {
+                Some(Ok(_)) => Err(strict_error),
+                Some(Err(_)) => Ok((answer, true)),
+                None => Err(strict_error),
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -604,6 +878,683 @@ struct RunOutput {
 }
 
 #[derive(Debug, Clone, Serialize)]
+struct NaturalContextObservation {
+    files: Vec<String>,
+    stdin_context_bytes: usize,
+    trusted_facts: usize,
+    hypotheses: usize,
+    resolver_facts: usize,
+}
+
+#[derive(Debug, Serialize)]
+struct NaturalSafetyObservation {
+    render_round: usize,
+    observation: AnswerSafetyObservation,
+}
+
+#[derive(Debug, Serialize)]
+struct NaturalOutput {
+    output_contract: &'static str,
+    task: String,
+    configuration: RunConfigurationObservation,
+    safety_runtime: AnswerSafetyIdentity,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    safety_observations: Vec<NaturalSafetyObservation>,
+    context: NaturalContextObservation,
+    candidate: ReasoningCandidate,
+    generation: GenerationObservation,
+    initial_outcome: HarnessOutcome,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    resolution_rounds: Vec<GroundedResolutionOutcome>,
+    finalization: FinalizationResult,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    rendering: Vec<GenerationObservation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    rendering_failure: Option<GenerationFailure>,
+}
+
+#[derive(Debug)]
+struct NaturalInputBuild {
+    input: HarnessInput,
+    context: NaturalContextObservation,
+    resolver_facts: BTreeMap<String, String>,
+}
+
+#[derive(Debug)]
+struct LocalFactStoreResolver {
+    facts: BTreeMap<String, String>,
+}
+
+impl ResolutionResolver for LocalFactStoreResolver {
+    fn name(&self) -> &'static str {
+        "cli_local_fact_store"
+    }
+
+    fn class(&self) -> ResolverClass {
+        ResolverClass::EvidenceAcquisition
+    }
+
+    fn resolve(
+        &self,
+        request: &ResolutionRequest,
+        attempt_index: usize,
+    ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
+        let proposition = match &request.target {
+            ResolutionTarget::Proposition { proposition } => Some(proposition),
+            ResolutionTarget::EvidenceQualification { requirement } => {
+                Some(&requirement.proposition)
+            }
+            ResolutionTarget::CausalRelation { .. }
+            | ResolutionTarget::ClaimRevision { .. }
+            | ResolutionTarget::HumanReview { .. } => None,
+        };
+        let Some(proposition) = proposition else {
+            return Ok(ResolutionResolverOutput {
+                contribution: ResolutionResolverContribution::NoResult,
+                cost: ResolutionCost::default(),
+            });
+        };
+        let Some(observed_value) = self.facts.get(&proposition.key) else {
+            return Ok(ResolutionResolverOutput {
+                contribution: ResolutionResolverContribution::NoResult,
+                cost: ResolutionCost::default(),
+            });
+        };
+        let evidence = AcquiredEvidence {
+            id: format!("cli-resolver-{attempt_index}-{}", proposition.key),
+            source: "cli-local-fact-store".into(),
+            observation: format!("{}={observed_value}", proposition.key),
+            facts: BTreeMap::from([(proposition.key.clone(), observed_value.clone())]),
+        };
+        Ok(ResolutionResolverOutput {
+            contribution: ResolutionResolverContribution::AcquiredEvidence {
+                evidence: vec![evidence],
+            },
+            cost: ResolutionCost::default(),
+        })
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+struct ExplicitLocalFactAdmission;
+
+impl EvidenceAdmissionPolicy for ExplicitLocalFactAdmission {
+    fn admit(
+        &self,
+        resolver_name: &str,
+        _request: &ResolutionRequest,
+        acquired: &AcquiredEvidence,
+    ) -> Result<Evidence, EvidenceAdmissionRejection> {
+        if resolver_name != "cli_local_fact_store" || acquired.source != "cli-local-fact-store" {
+            return Err(EvidenceAdmissionRejection::UntrustedSource);
+        }
+        Ok(Evidence {
+            id: acquired.id.clone(),
+            source: acquired.source.clone(),
+            observation: acquired.observation.clone(),
+            facts: acquired.facts.clone(),
+            metadata: EvidenceMetadata {
+                temporal: None,
+                scope: None,
+                provenance_class: Some("explicit_local_resolver".into()),
+            },
+        })
+    }
+}
+
+fn parse_proposition_arg(value: &str, flag: &str) -> Result<Proposition, CliError> {
+    let Some((key, value)) = value.split_once('=') else {
+        return Err(CliError::new(
+            "input",
+            format!("{flag} expects KEY=VALUE, got {value:?}"),
+        ));
+    };
+    let key = key.trim();
+    let value = value.trim();
+    if key.is_empty() || value.is_empty() {
+        return Err(CliError::new(
+            "input",
+            format!("{flag} requires non-empty KEY and VALUE"),
+        ));
+    }
+    Ok(Proposition {
+        key: key.into(),
+        value: value.into(),
+    })
+}
+
+fn build_natural_input(args: &NaturalArgs, task: &str) -> Result<NaturalInputBuild, CliError> {
+    let mut evidence = Vec::new();
+    let mut files = Vec::new();
+    let mut total_context_bytes = 0usize;
+
+    for (index, path) in args.file.iter().enumerate() {
+        let metadata = fs::metadata(path)
+            .map_err(|error| CliError::new("input", format!("{}: {error}", path.display())))?;
+        if !metadata.is_file() {
+            return Err(CliError::new(
+                "input",
+                format!("{}: --file requires a regular file", path.display()),
+            ));
+        }
+        if metadata.len() > MAX_CONTEXT_FILE_BYTES {
+            return Err(CliError::new(
+                "input",
+                format!(
+                    "{}: context file exceeds {} bytes",
+                    path.display(),
+                    MAX_CONTEXT_FILE_BYTES
+                ),
+            ));
+        }
+        let text = fs::read_to_string(path)
+            .map_err(|error| CliError::new("input", format!("{}: {error}", path.display())))?;
+        total_context_bytes = total_context_bytes
+            .checked_add(text.len())
+            .ok_or_else(|| CliError::new("input", "context byte count overflow"))?;
+        if total_context_bytes > MAX_CONTEXT_TOTAL_BYTES {
+            return Err(CliError::new(
+                "input",
+                format!("total --file/stdin context exceeds {MAX_CONTEXT_TOTAL_BYTES} bytes"),
+            ));
+        }
+        files.push(path.display().to_string());
+        evidence.push(Evidence {
+            id: format!("context-file-{index}"),
+            source: path.display().to_string(),
+            observation: text,
+            facts: BTreeMap::new(),
+            metadata: EvidenceMetadata {
+                temporal: None,
+                scope: None,
+                provenance_class: Some("untrusted_context".into()),
+            },
+        });
+    }
+
+    let mut stdin_context_bytes = 0usize;
+    if !io::stdin().is_terminal() {
+        let remaining = MAX_CONTEXT_TOTAL_BYTES.saturating_sub(total_context_bytes);
+        let mut stdin = io::stdin()
+            .lock()
+            .take((remaining as u64).saturating_add(1));
+        let mut text = String::new();
+        stdin
+            .read_to_string(&mut text)
+            .map_err(|error| CliError::new("input", format!("stdin context: {error}")))?;
+        if text.len() > remaining {
+            return Err(CliError::new(
+                "input",
+                format!("total --file/stdin context exceeds {MAX_CONTEXT_TOTAL_BYTES} bytes"),
+            ));
+        }
+        if !text.trim().is_empty() {
+            stdin_context_bytes = text.len();
+            evidence.push(Evidence {
+                id: "context-stdin".into(),
+                source: "stdin".into(),
+                observation: text,
+                facts: BTreeMap::new(),
+                metadata: EvidenceMetadata {
+                    temporal: None,
+                    scope: None,
+                    provenance_class: Some("untrusted_context".into()),
+                },
+            });
+        }
+    }
+
+    for (index, raw) in args.fact.iter().enumerate() {
+        let proposition = parse_proposition_arg(raw, "--fact")?;
+        evidence.push(Evidence {
+            id: format!("cli-fact-{index}"),
+            source: "cli:--fact".into(),
+            observation: format!("{}={}", proposition.key, proposition.value),
+            facts: BTreeMap::from([(proposition.key.clone(), proposition.value.clone())]),
+            metadata: EvidenceMetadata {
+                temporal: None,
+                scope: None,
+                provenance_class: Some("explicit_user_fact".into()),
+            },
+        });
+    }
+
+    let hypotheses = args
+        .hypothesis
+        .iter()
+        .map(|raw| parse_proposition_arg(raw, "--hypothesis"))
+        .collect::<Result<Vec<_>, _>>()?;
+    let resolver_facts = args
+        .resolver_fact
+        .iter()
+        .map(|raw| parse_proposition_arg(raw, "--resolver-fact"))
+        .collect::<Result<Vec<_>, _>>()?
+        .into_iter()
+        .map(|proposition| (proposition.key, proposition.value))
+        .collect::<BTreeMap<_, _>>();
+
+    Ok(NaturalInputBuild {
+        input: HarnessInput {
+            task: task.into(),
+            evidence,
+            hypotheses,
+            assumptions: vec![],
+            evidence_requirements: vec![],
+            authority_policy: Default::default(),
+        },
+        context: NaturalContextObservation {
+            files,
+            stdin_context_bytes,
+            trusted_facts: args.fact.len(),
+            hypotheses: args.hypothesis.len(),
+            resolver_facts: resolver_facts.len(),
+        },
+        resolver_facts,
+    })
+}
+
+fn run_standard_grounding(
+    input: HarnessInput,
+    candidate: ReasoningCandidate,
+) -> Result<HarnessOutcome, CliError> {
+    let structured_verifier = structured_fact_verifier_for_input(&input);
+    let passes: Vec<Box<dyn reasoning_harness_core::Pass>> = vec![
+        Box::new(AdversarialDiscoveryPass::new(vec![Box::new(
+            StructuredFactConflictDetector,
+        )])),
+        Box::new(EvidenceQualificationPass),
+        Box::new(VerificationPass::new(vec![structured_verifier])),
+        Box::new(TrustedVerificationPass::new(vec![])),
+        Box::new(FiveWhysRestatementPass),
+        Box::new(AssumptionDiscoveryPass),
+    ];
+    run_harness(input, candidate, &passes, &StrictAcceptancePolicy)
+        .map_err(|error| CliError::new("harness_state", error.to_string()))
+}
+
+fn run_local_resolution(
+    input: HarnessInput,
+    candidate: ReasoningCandidate,
+    resolver: &LocalFactStoreResolver,
+    max_attempts: usize,
+) -> Result<GroundedResolutionOutcome, CliError> {
+    if max_attempts == 0 {
+        return Err(CliError::new(
+            "configuration",
+            "--max-resolution-attempts must be at least 1",
+        ));
+    }
+    let pipeline = StandardGroundingPipeline;
+    let planner = DefaultResolutionPlanner;
+    let admission = ExplicitLocalFactAdmission;
+    let renderer = CanonicalFinalAnswerRenderer;
+    let resolver_refs: [&dyn ResolutionResolver; 1] = [resolver];
+    let trusted_verifiers: [&dyn reasoning_harness_core::TrustedResolutionVerifier; 0] = [];
+    let runtime = GroundedResolutionRuntime {
+        pipeline: &pipeline,
+        planner: &planner,
+        evidence_admission: &admission,
+        resolvers: &resolver_refs,
+        trusted_verifiers: &trusted_verifiers,
+        renderer: &renderer,
+    };
+    let mut policy = GroundedResolutionPolicy::default();
+    policy.budget.max_attempts = max_attempts;
+    runtime
+        .run(input, candidate, &policy)
+        .map_err(|error| CliError::new("harness_state", error.to_string()))
+}
+
+fn input_from_artifact(artifact: &ReasoningArtifact) -> HarnessInput {
+    HarnessInput {
+        task: artifact.task.clone(),
+        evidence: artifact.evidence.clone(),
+        hypotheses: artifact.hypotheses.clone(),
+        assumptions: artifact.assumptions.clone(),
+        evidence_requirements: artifact.evidence_requirements.clone(),
+        authority_policy: artifact.authority_policy.clone(),
+    }
+}
+
+fn print_natural_human(output: &NaturalOutput) {
+    match output.finalization.status {
+        FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer => {
+            if let Some(text) = &output.finalization.text {
+                println!("{text}");
+            }
+        }
+        FinalizationStatus::Abstain => {
+            println!("I cannot provide a grounded answer because verified state is contradictory.");
+        }
+        FinalizationStatus::Unresolved | FinalizationStatus::RequiresVerification => {
+            println!("I cannot support a complete answer from the currently verified evidence.");
+        }
+    }
+    let artifact = output
+        .resolution_rounds
+        .last()
+        .map(|round| &round.final_artifact)
+        .unwrap_or(&output.initial_outcome.artifact);
+    let supported = artifact
+        .claims
+        .iter()
+        .filter(|claim| {
+            matches!(
+                claim.state,
+                reasoning_harness_core::EpistemicState::Known
+                    | reasoning_harness_core::EpistemicState::Supported
+            )
+        })
+        .count();
+    let unresolved = artifact
+        .claims
+        .iter()
+        .filter(|claim| {
+            matches!(
+                claim.state,
+                reasoning_harness_core::EpistemicState::Assumed
+                    | reasoning_harness_core::EpistemicState::Unknown
+                    | reasoning_harness_core::EpistemicState::Inferred
+            )
+        })
+        .count();
+    println!(
+        "\nstatus: {:?} | supported_claims={} | unresolved_claims={} | coverage={:.3} | safety={}",
+        output.finalization.status,
+        supported,
+        unresolved,
+        output.finalization.factual_claim_coverage,
+        output.safety_runtime.configuration_id()
+    );
+    if let Some(failure) = &output.rendering_failure {
+        eprintln!(
+            "[reason] natural renderer fallback: class={} {}",
+            failure.failure_class, failure.message
+        );
+    }
+}
+
+fn answer_safety_error_class(error: &AnswerSafetyError) -> &'static str {
+    match error {
+        AnswerSafetyError::InvalidRequestedModel | AnswerSafetyError::Decidability(_) => {
+            "invalid_request"
+        }
+        AnswerSafetyError::Sufficiency(error) => error
+            .model_error_kind()
+            .map(model_error_class)
+            .unwrap_or("sufficiency_protocol"),
+    }
+}
+
+struct NaturalAnswerSafetyCall<'a> {
+    profile: AnswerSafetyProfile,
+    generator: &'a LiveGenerator,
+    model: &'a str,
+    artifact: &'a ReasoningArtifact,
+    rendered: &'a FinalAnswerCandidate,
+    baseline: FinalizationResult,
+    max_tokens: u32,
+    seed: Option<u64>,
+    render_round: usize,
+}
+
+async fn apply_natural_answer_safety(
+    call: NaturalAnswerSafetyCall<'_>,
+) -> Result<(FinalizationResult, Vec<NaturalSafetyObservation>), CliError> {
+    let NaturalAnswerSafetyCall {
+        profile,
+        generator,
+        model,
+        artifact,
+        rendered,
+        mut baseline,
+        max_tokens,
+        seed,
+        render_round,
+    } = call;
+    if profile == AnswerSafetyProfile::Baseline
+        || !matches!(
+            baseline.status,
+            FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
+        )
+    {
+        return Ok((baseline, vec![]));
+    }
+
+    let mut targets = Vec::<Proposition>::new();
+    for claim in &rendered.factual_claims {
+        if claim.mode == FinalClaimMode::Grounded && !targets.contains(&claim.proposition) {
+            targets.push(claim.proposition.clone());
+        }
+    }
+
+    let mut observations = Vec::new();
+    let mut blocked = Vec::new();
+    for (index, target) in targets.iter().enumerate() {
+        let target_seed = seed.and_then(|seed| seed.checked_add(index as u64));
+        let observation = run_answer_safety_gate(
+            profile,
+            generator.adapter(),
+            model,
+            target,
+            artifact,
+            max_tokens.min(128),
+            target_seed,
+        )
+        .await
+        .map_err(|error| {
+            CliError::new(
+                answer_safety_error_class(&error),
+                format!(
+                    "answer safety gate failed for {}={}: {error}",
+                    target.key, target.value
+                ),
+            )
+        })?;
+        if observation.disposition == AnswerSafetyDisposition::ForceVerification {
+            blocked.push(target.clone());
+        }
+        observations.push(NaturalSafetyObservation {
+            render_round,
+            observation,
+        });
+    }
+
+    if !blocked.is_empty() {
+        for target in blocked {
+            if !baseline.uncovered_propositions.contains(&target) {
+                baseline.uncovered_propositions.push(target);
+            }
+        }
+        baseline.status = FinalizationStatus::RequiresVerification;
+        baseline.text = None;
+    }
+    Ok((baseline, observations))
+}
+
+async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
+    let task = args
+        .task
+        .as_deref()
+        .map(str::trim)
+        .filter(|task| !task.is_empty())
+        .ok_or_else(|| {
+            CliError::new(
+                "input",
+                "provide a natural-language TASK or use a structured subcommand such as `reason run`",
+            )
+        })?
+        .to_string();
+    if args.config.as_ref().is_some_and(|path| is_stdin(path)) {
+        return Err(CliError::new(
+            "configuration",
+            "--config must be a file path; stdin config is not supported",
+        ));
+    }
+    let loaded_config = if args.no_config {
+        LoadedCliConfig::default()
+    } else {
+        load_cli_config(args.config.as_ref())
+            .map_err(|error| CliError::new("configuration", error))?
+    };
+    let resolved = resolve_run_config(
+        false,
+        args.provider,
+        args.model.clone(),
+        args.max_tokens,
+        args.format,
+        loaded_config,
+    )
+    .map_err(|error| CliError::new("configuration", error))?;
+    let provider = resolved.provider.ok_or_else(|| {
+        CliError::new(
+            "configuration",
+            "natural-language mode requires a live provider in config or --provider",
+        )
+    })?;
+    let model = resolved
+        .model
+        .as_deref()
+        .expect("natural live config validates model presence")
+        .to_string();
+    let built = build_natural_input(&args, &task)?;
+    let safety_profile = args.safety_profile.runtime_profile();
+    let safety_runtime = safety_profile.identity();
+    let generator = LiveGenerator::try_from_provider(provider, &model)
+        .map_err(|error| CliError::new(model_error_class(error.kind), error.to_string()))?;
+    let (candidate, generation) = generator
+        .generate(&built.input, resolved.max_tokens, args.seed, &model)
+        .await
+        .map_err(|failure| {
+            CliError::new(failure.failure_class, format_generation_failure(&failure))
+        })?;
+
+    let initial_outcome = run_standard_grounding(built.input.clone(), candidate.clone())?;
+    let resolver = LocalFactStoreResolver {
+        facts: built.resolver_facts.clone(),
+    };
+    let mut resolution_rounds = Vec::new();
+    let mut final_artifact = initial_outcome.artifact.clone();
+    let mut final_verdict = initial_outcome.verdict;
+
+    if !resolver.facts.is_empty() && final_verdict != Verdict::Accept {
+        let round = run_local_resolution(
+            built.input.clone(),
+            candidate.clone(),
+            &resolver,
+            args.max_resolution_attempts,
+        )?;
+        final_artifact = round.final_artifact.clone();
+        final_verdict = round.final_verdict;
+        resolution_rounds.push(round);
+    }
+
+    let mut rendering = Vec::new();
+    let mut rendering_failure = None;
+    let mut safety_observations = Vec::new();
+    let mut finalization;
+    let mut render_round = 0usize;
+    loop {
+        render_round += 1;
+        let rendered = match generator
+            .render_final(
+                &task,
+                &final_artifact,
+                final_verdict,
+                resolved.max_tokens,
+                args.seed,
+                &model,
+            )
+            .await
+        {
+            Ok((answer, observation)) => {
+                rendering.push(observation);
+                answer
+            }
+            Err(failure) => {
+                rendering_failure = Some(failure);
+                CanonicalFinalAnswerRenderer.render(&final_artifact, final_verdict)
+            }
+        };
+        let rendered_for_safety = rendered.clone();
+        finalization = finalize_answer(
+            &final_artifact,
+            final_verdict,
+            rendered,
+            FinalizationPolicy::default(),
+        );
+        let (gated, observations) = apply_natural_answer_safety(NaturalAnswerSafetyCall {
+            profile: safety_profile,
+            generator: &generator,
+            model: &model,
+            artifact: &final_artifact,
+            rendered: &rendered_for_safety,
+            baseline: finalization,
+            max_tokens: resolved.max_tokens,
+            seed: args.seed,
+            render_round,
+        })
+        .await?;
+        finalization = gated;
+        safety_observations.extend(observations);
+        if finalization.status != FinalizationStatus::RequiresVerification
+            || resolver.facts.is_empty()
+            || render_round >= 2
+        {
+            break;
+        }
+
+        let mut retry_input = input_from_artifact(&final_artifact);
+        for proposition in &finalization.uncovered_propositions {
+            if !retry_input.hypotheses.contains(proposition) {
+                retry_input.hypotheses.push(proposition.clone());
+            }
+        }
+        let before = final_artifact.clone();
+        let round = run_local_resolution(
+            retry_input,
+            candidate.clone(),
+            &resolver,
+            args.max_resolution_attempts,
+        )?;
+        final_artifact = round.final_artifact.clone();
+        final_verdict = round.final_verdict;
+        resolution_rounds.push(round);
+        if final_artifact == before {
+            break;
+        }
+    }
+
+    let output = NaturalOutput {
+        output_contract: NATURAL_OUTPUT_CONTRACT_ID,
+        task,
+        configuration: RunConfigurationObservation {
+            mode: "natural_language_provider",
+            provider: Some(provider_name(provider)),
+            model: Some(model),
+            max_tokens: Some(resolved.max_tokens),
+            output_format: resolved.format,
+            config_sources: resolved.config_sources,
+        },
+        safety_runtime,
+        safety_observations,
+        context: built.context,
+        candidate,
+        generation,
+        initial_outcome,
+        resolution_rounds,
+        finalization,
+        rendering,
+        rendering_failure,
+    };
+    match resolved.format {
+        OutputFormat::Human => print_natural_human(&output),
+        OutputFormat::Json => print_product_json("ask", &output).map_err(CliError::from)?,
+    }
+    Ok(())
+}
+
+#[derive(Debug, Clone, Serialize)]
 struct ObservedBenchmarkCase {
     fixture_id: String,
     trial: usize,
@@ -887,12 +1838,12 @@ struct ProductFailureOutput {
 impl Cli {
     fn product_error_context(&self) -> Option<ProductErrorContext> {
         match &self.command {
-            Command::Run {
+            Some(Command::Run {
                 config,
                 no_config,
                 format,
                 ..
-            } => {
+            }) => {
                 let json = match format {
                     Some(format) => *format == OutputFormat::Json,
                     None if !*no_config => load_cli_config(config.as_ref())
@@ -906,20 +1857,36 @@ impl Cli {
                     json,
                 })
             }
-            Command::SemanticCheck { format, .. } => Some(ProductErrorContext {
+            Some(Command::SemanticCheck { format, .. }) => Some(ProductErrorContext {
                 command: "semantic-check",
                 json: *format == OutputFormat::Json,
             }),
-            Command::Verify { format, .. } => Some(ProductErrorContext {
+            Some(Command::Verify { format, .. }) => Some(ProductErrorContext {
                 command: "verify",
                 json: *format == OutputFormat::Json,
             }),
-            Command::Schema { .. } => Some(ProductErrorContext {
+            Some(Command::Schema { .. }) => Some(ProductErrorContext {
                 command: "schema",
                 json: true,
             }),
-            Command::Eval { .. } | Command::EvalResolution { .. } | Command::EvalJudges { .. } => {
-                None
+            Some(Command::Eval { .. })
+            | Some(Command::EvalResolution { .. })
+            | Some(Command::EvalJudges { .. }) => None,
+            None => {
+                let json = match self.natural.format {
+                    Some(format) => format == OutputFormat::Json,
+                    None if !self.natural.no_config => {
+                        load_cli_config(self.natural.config.as_ref())
+                            .ok()
+                            .and_then(|loaded| loaded.config.run.format)
+                            .is_some_and(|format| format == OutputFormat::Json)
+                    }
+                    None => false,
+                };
+                Some(ProductErrorContext {
+                    command: "ask",
+                    json,
+                })
             }
         }
     }
@@ -951,8 +1918,9 @@ async fn main() -> ExitCode {
 }
 
 async fn run(cli: Cli) -> Result<(), CliError> {
-    match cli.command {
-        Command::Run {
+    let Cli { natural, command } = cli;
+    match command {
+        Some(Command::Run {
             input,
             candidate,
             receipts,
@@ -963,7 +1931,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             config,
             no_config,
             format,
-        } => {
+        }) => {
             ensure_single_stdin(
                 std::iter::once(&input)
                     .chain(candidate.iter())
@@ -1081,7 +2049,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             }
             Ok(())
         }
-        Command::SemanticCheck {
+        Some(Command::SemanticCheck {
             input,
             provider,
             model,
@@ -1089,7 +2057,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             max_tokens,
             seed,
             format,
-        } => {
+        }) => {
             if max_tokens == 0 {
                 return Err(CliError::new(
                     "configuration",
@@ -1194,7 +2162,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                 }
             }
         }
-        Command::Verify { artifact, format } => {
+        Some(Command::Verify { artifact, format }) => {
             let artifact: ReasoningArtifact =
                 read_json(&artifact).map_err(|error| CliError::new("input", error))?;
             let report = validate_artifact(&artifact);
@@ -1222,7 +2190,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                 ))
             }
         }
-        Command::Schema { kind } => {
+        Some(Command::Schema { kind }) => {
             let output = match kind {
                 SchemaKind::Artifact => SchemaOutput {
                     contract_id: REASONING_ARTIFACT_CONTRACT_ID,
@@ -1245,7 +2213,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             };
             print_product_json("schema", &output).map_err(CliError::from)
         }
-        Command::EvalResolution { target, format } => {
+        Some(Command::EvalResolution { target, format }) => {
             if !target.is_dir() {
                 return Err("eval-resolution requires a fixture directory".into());
             }
@@ -1256,7 +2224,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             }
             Ok(())
         }
-        Command::EvalJudges {
+        Some(Command::EvalJudges {
             target,
             provider,
             model,
@@ -1265,7 +2233,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             trials,
             concurrency,
             format,
-        } => {
+        }) => {
             if !target.is_dir() {
                 return Err("eval-judges requires a fixture directory".into());
             }
@@ -1308,7 +2276,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             }
             Ok(())
         }
-        Command::Eval {
+        Some(Command::Eval {
             target,
             provider,
             model,
@@ -1319,7 +2287,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             input_cost_per_million,
             output_cost_per_million,
             format,
-        } => {
+        }) => {
             if target.is_dir() {
                 let config = BenchmarkRunConfig {
                     provider,
@@ -1362,6 +2330,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                 }
             }
         }
+        None => run_natural(natural).await,
     }
 }
 
@@ -2853,6 +3822,11 @@ mod candidate_json_tests {
     }
 
     #[test]
+    fn natural_output_contract_is_versioned() {
+        assert_eq!(NATURAL_OUTPUT_CONTRACT_ID, "reason-natural-output-v2");
+    }
+
+    #[test]
     fn product_json_envelope_has_stable_contract_ids() {
         let value = serde_json::to_value(CliEnvelope {
             schema_version: CLI_OUTPUT_SCHEMA_VERSION,
@@ -2896,9 +3870,9 @@ mod candidate_json_tests {
         let cli = Cli::try_parse_from(["reason", "schema", "artifact"]).unwrap();
         assert!(matches!(
             cli.command,
-            Command::Schema {
+            Some(Command::Schema {
                 kind: SchemaKind::Artifact
-            }
+            })
         ));
     }
 
@@ -3011,9 +3985,9 @@ mod candidate_json_tests {
         let cli = Cli::try_parse_from(["reason", "schema", "config"]).unwrap();
         assert!(matches!(
             cli.command,
-            Command::Schema {
+            Some(Command::Schema {
                 kind: SchemaKind::Config
-            }
+            })
         ));
     }
 
@@ -3031,7 +4005,7 @@ mod candidate_json_tests {
         ])
         .unwrap();
         match cli.command {
-            Command::SemanticCheck { profile, model, .. } => {
+            Some(Command::SemanticCheck { profile, model, .. }) => {
                 assert_eq!(profile, SemanticProfileArg::D3);
                 assert_eq!(model, "gemini-3.5-flash-lite");
             }
@@ -3055,7 +4029,7 @@ mod candidate_json_tests {
         ])
         .unwrap();
         match cli.command {
-            Command::SemanticCheck { profile, .. } => {
+            Some(Command::SemanticCheck { profile, .. }) => {
                 assert_eq!(profile, SemanticProfileArg::V3);
                 assert_eq!(
                     profile.runtime_profile(),
@@ -3087,9 +4061,9 @@ mod candidate_json_tests {
         ])
         .unwrap();
         match cli.command {
-            Command::Eval {
+            Some(Command::Eval {
                 provider, model, ..
-            } => {
+            }) => {
                 assert!(matches!(provider, Some(Provider::Nvidia)));
                 assert_eq!(model, "google/gemma-4-31b-it");
             }
@@ -3112,7 +4086,7 @@ mod candidate_json_tests {
         ])
         .unwrap();
         match cli.command {
-            Command::Eval { concurrency, .. } => assert_eq!(concurrency, 3),
+            Some(Command::Eval { concurrency, .. }) => assert_eq!(concurrency, 3),
             _ => panic!("expected eval command"),
         }
     }
@@ -3132,9 +4106,171 @@ mod candidate_json_tests {
         ])
         .unwrap();
         match cli.command {
-            Command::EvalJudges { concurrency, .. } => assert_eq!(concurrency, 4),
+            Some(Command::EvalJudges { concurrency, .. }) => assert_eq!(concurrency, 4),
             _ => panic!("expected eval-judges command"),
         }
+    }
+
+    #[test]
+    fn parses_direct_natural_language_task_and_flags() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "analyze this incident",
+            "--provider",
+            "mistral",
+            "--model",
+            "ministral-8b-latest",
+            "--fact",
+            "service.region=us-east-1",
+        ])
+        .unwrap();
+        assert!(cli.command.is_none());
+        assert_eq!(cli.natural.task.as_deref(), Some("analyze this incident"));
+        assert_eq!(cli.natural.provider, Some(Provider::Mistral));
+        assert_eq!(cli.natural.fact, vec!["service.region=us-east-1"]);
+        assert_eq!(
+            cli.natural.safety_profile,
+            AnswerSafetyProfileArg::D3Sufficiency
+        );
+    }
+
+    #[test]
+    fn parses_natural_language_baseline_safety_rollback() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "analyze this incident",
+            "--provider",
+            "mistral",
+            "--model",
+            "ministral-8b-latest",
+            "--safety-profile",
+            "baseline",
+        ])
+        .unwrap();
+        assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Baseline);
+    }
+
+    #[test]
+    fn parses_natural_language_v1_safety_rollback() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "analyze this incident",
+            "--provider",
+            "mistral",
+            "--model",
+            "ministral-8b-latest",
+            "--safety-profile",
+            "d3-sufficiency-v1",
+        ])
+        .unwrap();
+        assert_eq!(
+            cli.natural.safety_profile,
+            AnswerSafetyProfileArg::D3SufficiencyV1
+        );
+    }
+
+    #[test]
+    fn existing_subcommand_takes_precedence_over_natural_task() {
+        let cli = Cli::try_parse_from(["reason", "schema", "artifact"]).unwrap();
+        assert!(cli.natural.task.is_none());
+        assert!(matches!(
+            cli.command,
+            Some(Command::Schema {
+                kind: SchemaKind::Artifact
+            })
+        ));
+    }
+
+    #[test]
+    fn explicit_local_fact_admission_rejects_other_resolvers() {
+        let raw = AcquiredEvidence {
+            id: "e1".into(),
+            source: "other".into(),
+            observation: "k=v".into(),
+            facts: BTreeMap::from([("k".into(), "v".into())]),
+        };
+        let request = ResolutionRequest {
+            id: "r1".into(),
+            reason: reasoning_harness_core::ResolutionReason::MissingSupport,
+            target: ResolutionTarget::Proposition {
+                proposition: Proposition {
+                    key: "k".into(),
+                    value: "v".into(),
+                },
+            },
+            resolver_class: ResolverClass::EvidenceAcquisition,
+            budget: Default::default(),
+        };
+        assert_eq!(
+            ExplicitLocalFactAdmission.admit("other", &request, &raw),
+            Err(EvidenceAdmissionRejection::UntrustedSource)
+        );
+    }
+
+    #[test]
+    fn local_fact_resolver_returns_observed_value_for_reverification() {
+        let resolver = LocalFactStoreResolver {
+            facts: BTreeMap::from([("service.region".into(), "us-east-1".into())]),
+        };
+        let request = ResolutionRequest {
+            id: "r1".into(),
+            reason: reasoning_harness_core::ResolutionReason::MissingSupport,
+            target: ResolutionTarget::Proposition {
+                proposition: Proposition {
+                    key: "service.region".into(),
+                    value: "us-east-1".into(),
+                },
+            },
+            resolver_class: ResolverClass::EvidenceAcquisition,
+            budget: Default::default(),
+        };
+        let output = resolver.resolve(&request, 0).unwrap();
+        match output.contribution {
+            ResolutionResolverContribution::AcquiredEvidence { evidence } => {
+                assert_eq!(evidence.len(), 1);
+                assert_eq!(evidence[0].facts["service.region"], "us-east-1");
+            }
+            other => panic!("expected acquired evidence, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn bounded_local_resolution_reverifies_before_accepting() {
+        let proposition = Proposition {
+            key: "service.region".into(),
+            value: "us-east-1".into(),
+        };
+        let input = HarnessInput {
+            task: "determine region".into(),
+            evidence: vec![],
+            hypotheses: vec![proposition.clone()],
+            assumptions: vec![],
+            evidence_requirements: vec![],
+            authority_policy: Default::default(),
+        };
+        let candidate = ReasoningCandidate::default();
+        let resolver = LocalFactStoreResolver {
+            facts: BTreeMap::from([("service.region".into(), "us-east-1".into())]),
+        };
+        let result = run_local_resolution(input, candidate, &resolver, 3).unwrap();
+        assert_eq!(result.initial_verdict, Verdict::Unknown);
+        assert_eq!(result.final_verdict, Verdict::Accept);
+        assert_eq!(result.attempts.len(), 1);
+        assert!(
+            result
+                .final_artifact
+                .verification_receipts
+                .iter()
+                .any(|receipt| {
+                    receipt.proposition.as_ref() == Some(&proposition)
+                        && receipt.conclusion
+                            == reasoning_harness_core::VerificationConclusion::Supported
+                })
+        );
+        assert_eq!(
+            result.finalization.status,
+            FinalizationStatus::GroundedAnswer
+        );
     }
 
     #[test]

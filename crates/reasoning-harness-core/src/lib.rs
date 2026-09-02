@@ -1,6 +1,7 @@
 #![cfg_attr(test, allow(clippy::field_reassign_with_default))]
 
 pub mod adversarial;
+pub mod answer_safety;
 pub mod assumption;
 pub mod assumption_benchmark;
 pub mod benchmark;
@@ -30,6 +31,7 @@ pub mod semantic_judge;
 pub mod semantic_materialization;
 pub mod semantic_runtime;
 pub mod semantic_stability;
+pub mod semantic_sufficiency;
 pub mod types;
 pub mod validate;
 pub mod verification;
@@ -37,6 +39,15 @@ pub mod verification;
 pub use adversarial::{
     AdversarialDetector, AdversarialDiscoveryPass, StructuredFactConflictDetector,
     record_soft_finding,
+};
+pub use answer_safety::{
+    ANSWER_SAFETY_IDENTITY_VERSION, AnswerSafetyDisposition, AnswerSafetyError,
+    AnswerSafetyIdentity, AnswerSafetyObservation, AnswerSafetyProfile, AnswerSafetyReason,
+    BASELINE_ANSWER_SAFETY_CONFIGURATION_ID, CLAIM_LOCAL_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID,
+    D3_SUFFICIENCY_ANSWER_SAFETY_CONFIGURATION_ID,
+    D3_SUFFICIENCY_V2_ANSWER_SAFETY_CONFIGURATION_ID, EVIDENCE_SUFFICIENCY_RSD1_CONTRACT_ID,
+    GENERIC_ANSWER_SUFFICIENCY_REQUIREMENT_POLICY_ID, build_answer_sufficiency_request,
+    build_answer_sufficiency_request_for_profile, run_answer_safety_gate,
 };
 pub use assumption::{
     AssumptionAssessment, AssumptionDiscoveryPass, AssumptionFinding, AssumptionFindingKind,
@@ -87,7 +98,8 @@ pub use evidence_qualification_benchmark::{
 };
 pub use finalization::{
     CanonicalFinalAnswerRenderer, FinalAnswerCandidate, FinalAnswerClaim, FinalAnswerRenderer,
-    FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus, finalize_answer,
+    FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
+    final_answer_candidate_schema, finalize_answer,
 };
 pub use format_invariance::{
     FormatComparisonError, FormatDecisionTransition, FormatFlipReport, FormatJudgeError,
@@ -95,7 +107,11 @@ pub use format_invariance::{
     build_soft_judge_representation_request, compare_soft_judge_formats,
     parse_soft_judge_representation_decision, run_model_backed_soft_judge_representation,
 };
-pub use generation::{build_candidate_json_fallback_request, build_candidate_request};
+pub use generation::{
+    build_candidate_json_fallback_request, build_candidate_request,
+    build_final_answer_json_fallback_request, build_final_answer_request,
+    parse_final_answer_candidate,
+};
 pub use harness::{HarnessError, HarnessOutcome, Pass, run_harness, run_passes};
 pub use metamorphic::{
     AddIrrelevantEvidence, MetamorphicAggregate, MetamorphicCaseResult, MetamorphicEvaluationError,
@@ -178,6 +194,14 @@ pub use semantic_stability::{
     SelectiveAbstentionOutcome, SelectiveAbstentionPolicy, SoftDecisionProbe,
     SoftDecisionStabilityAssessment, StabilityRiskSignal, apply_selective_abstention,
     assess_soft_decision_stability,
+};
+pub use semantic_sufficiency::{
+    EvidenceSufficiencyCalibrationFixture, EvidenceSufficiencyFallbackReason,
+    EvidenceSufficiencyFixtureError, EvidenceSufficiencyLabel, EvidenceSufficiencyModelError,
+    EvidenceSufficiencyModelOutput, EvidenceSufficiencyObservation, EvidenceSufficiencyRequest,
+    build_evidence_sufficiency_json_fallback_request, build_evidence_sufficiency_model_request,
+    evidence_sufficiency_output_schema, parse_evidence_sufficiency_output,
+    run_model_backed_evidence_sufficiency, validate_evidence_sufficiency_fixture,
 };
 pub use types::{
     AdversarialFinding, AdversarialFindingKind, ApplicabilityScope, CandidateClaim,
