@@ -132,6 +132,7 @@ struct TargetOutcomeObservation {
 
 #[derive(Debug, Serialize)]
 struct RawArmResult {
+    exposed_text: String,
     factual_claims: usize,
     grounded_claims: usize,
     unsupported_grounded_claims: usize,
@@ -144,6 +145,8 @@ struct RawArmResult {
 #[derive(Debug, Serialize)]
 struct HarnessArmResult {
     safety_runtime: AnswerSafetyIdentity,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    exposed_text: Option<String>,
     initial_verdict: Verdict,
     final_verdict: Verdict,
     finalization_status: FinalizationStatus,
@@ -420,6 +423,7 @@ async fn evaluate_case(
         |proposition| proposition_supported(&fixture.input, proposition),
     );
     let raw = RawArmResult {
+        exposed_text: raw_answer.text.clone(),
         factual_claims: raw_answer.factual_claims.len(),
         grounded_claims: raw_grounded.len(),
         unsupported_grounded_claims: raw_unsupported,
@@ -703,6 +707,7 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
 
     Ok(HarnessArmResult {
         safety_runtime: safety_profile.identity(),
+        exposed_text: finalization.text.clone(),
         initial_verdict,
         final_verdict,
         finalization_status: finalization.status,
@@ -1004,7 +1009,7 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .map(|result| result.harness_d3_sufficiency.total_latency_ms)
         .sum();
     ProductDogfoodReport {
-        schema_version: "reason-product-dogfood-v4",
+        schema_version: "reason-product-dogfood-v5",
         comparison_contract: PRODUCT_DOGFOOD_COMPARISON_CONTRACT_ID,
         provider: provider.name(),
         model: model.into(),
@@ -1358,6 +1363,7 @@ mod tests {
             workload_class: "class".into(),
             expected_outcome,
             raw: RawArmResult {
+                exposed_text: "raw".into(),
                 factual_claims: 0,
                 grounded_claims: 0,
                 unsupported_grounded_claims: 0,
@@ -1388,6 +1394,7 @@ mod tests {
             },
             harness: HarnessArmResult {
                 safety_runtime: AnswerSafetyProfile::Baseline.identity(),
+                exposed_text: None,
                 initial_verdict: Verdict::Unknown,
                 final_verdict: Verdict::Unknown,
                 finalization_status: FinalizationStatus::Unresolved,
@@ -1406,6 +1413,7 @@ mod tests {
             },
             harness_d3_sufficiency: HarnessArmResult {
                 safety_runtime: AnswerSafetyProfile::D3SufficiencyV2.identity(),
+                exposed_text: None,
                 initial_verdict: Verdict::Unknown,
                 final_verdict: Verdict::Unknown,
                 finalization_status: FinalizationStatus::Unresolved,

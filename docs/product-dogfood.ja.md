@@ -19,7 +19,7 @@ v4の比較契約は`shared-candidate-initial-render-v1`です。2つのHarness 
 
 それぞれに、最初からground可能なcase、意図的に根拠不足なcase、bounded resolutionで初めてground可能になるcaseがあります。research calibration/holdoutとは混ぜません。
 
-`reason-product-dogfood-v4` reportでは次を測ります。
+`reason-product-dogfood-v5` reportでは次を測ります。
 
 - unsupported grounded assertionの件数/率
 - correct abstention / missed insufficiency
@@ -29,7 +29,7 @@ v4の比較契約は`shared-candidate-initial-render-v1`です。2つのHarness 
 - 3 armそれぞれのtoken/latencyと、D3/sufficiency追加分のoverhead
 - successor armのanswer-safety runtime identityとtargetごとのsafety observation
 
-v4 reportではv2のcase-level abstention指標とv3のtarget-level指標をそのまま維持します。target-level指標はfixtureのHarness-owned `input.hypotheses`だけをtask targetとして使います。supportedなnon-target factを返すsafe partial answerは、task targetを断言していなければtarget abstention成功として別集計します。grounded-target coverage / missed target insufficiency / false target abstention / safe-partial retentionを分離し、最初のv2 pilot結果は書き換えません。
+v5 reportではv2のcase-level abstention指標とv3のtarget-level指標をそのまま維持し、v4のshared-render比較契約も維持したまま、NL-5で必要なqualified/unknown出力のmanual comprehension reviewを行えるよう各armの実際のユーザー表示`exposed_text`を保存します。target-level指標はfixtureのHarness-owned `input.hypotheses`だけをtask targetとして使います。supportedなnon-target factを返すsafe partial answerは、task targetを断言していなければtarget abstention成功として別集計します。grounded-target coverage / missed target insufficiency / false target abstention / safe-partial retentionを分離し、最初のv2 pilot結果は書き換えません。
 
 `user_comprehension`は`not_automated_manual_review_required`と明示します。model出力だけから「人間に分かりやすかった率」を捏造しません。
 
