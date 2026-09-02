@@ -19,6 +19,8 @@ Current work is split between:
 - **Product (#90):** harden the native `reason` CLI as the first supported external interface, with
   versioned machine-readable contracts, installation/release compatibility, observability, and
   repeated real-workload acceptance evidence.
+- **Product reliability (#126):** add narrow bounded retries for clearly transient provider failures
+  while preserving typed operational failure and historical research outcomes.
 - **Product utility (#139):** improve low-coverage / over-abstaining model behavior without weakening
   the authority boundary or tuning against frozen research holdouts.
 - **Follow-on research:** selective/conformal abstention or relation-level causal sufficiency only if a

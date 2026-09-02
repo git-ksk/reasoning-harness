@@ -18,7 +18,7 @@ validation and operational stabilization; the product surface does not track eve
 
 Completed under Issue #107; external hardening continues under #90.
 
-The intended default experience is natural-language-first and AI-backed:
+The current default experience on `main` is natural-language-first and AI-backed:
 
 ```text
 natural-language task
@@ -146,12 +146,13 @@ external consumer creates an independent versioning or dependency boundary.
 
 ## CLI-3 — integration and observability
 
-The CLI remains the first compatibility surface. The natural-language AI path should invoke the full
+The CLI remains the first compatibility surface. The natural-language AI path invokes the full
 native runtime, while structured JSON commands remain the advanced compatibility surface for automation,
 debugging, and third-party integrations. Neither path may invent lower-level bypass APIs.
 
 Product telemetry should make the harness useful to operators without turning model confidence into
-correctness authority:
+correctness authority. Active provider-reliability work is tracked in #126: retries must remain bounded,
+typed, observable, and strictly operational rather than becoming semantic `unknown` or abstention.
 
 - runtime/profile/config identity;
 - `accept | reject | unknown` and abstention/unknown reasons;
@@ -167,10 +168,11 @@ later adapters rather than correctness boundaries.
 
 ## CLI-4 — real-workload adoption evidence
 
-Product readiness requires workloads that are not frozen research holdouts. Execute this acceptance
-phase only after the D3/sufficiency bridge has either been promoted into the natural-language runtime or
-explicitly rejected by the research promotion gate. For the promoted path, prefer a three-arm comparison:
+Product readiness requires workloads that are not frozen research holdouts. The first NL-5 acceptance
+slice is complete after promotion of the D3/sufficiency bridge, using the three-arm comparison
 **raw model vs current Harness baseline vs the same Harness with the promoted D3/sufficiency gate**.
+CLI-4 now means repeating that discipline on additional real workloads rather than treating one pilot as
+a universal product-quality claim. Ministral-specific low coverage/withheld-answer UX is tracked in #139.
 Use separate dogfood/reference workloads and answer:
 
 - does the harness reduce unsupported final assertions in realistic use?;
