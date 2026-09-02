@@ -23,6 +23,8 @@ use reasoning_harness_core::{
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 
+const PRODUCT_DOGFOOD_COMPARISON_CONTRACT_ID: &str = "shared-candidate-initial-render-v1";
+
 #[derive(Debug, Parser)]
 #[command(name = "reason-product-dogfood")]
 struct Args {
@@ -160,12 +162,30 @@ struct HarnessArmResult {
     total_latency_ms: u128,
 }
 
+#[derive(Debug, Clone, Serialize)]
+struct SharedHarnessObservation {
+    candidate_call: CallObservation,
+    initial_render: FinalAnswerCandidate,
+    initial_render_call: CallObservation,
+}
+
+#[derive(Debug, Clone)]
+struct PreparedHarnessState {
+    initial_verdict: Verdict,
+    final_artifact: reasoning_harness_core::ReasoningArtifact,
+    final_verdict: Verdict,
+    resolution_attempts: usize,
+    candidate: ReasoningCandidate,
+    candidate_call: CallObservation,
+}
+
 #[derive(Debug, Serialize)]
 struct CaseResult {
     id: String,
     workload_class: String,
     expected_outcome: ExpectedOutcome,
     raw: RawArmResult,
+    shared_harness: SharedHarnessObservation,
     harness: HarnessArmResult,
     harness_d3_sufficiency: HarnessArmResult,
 }
@@ -230,6 +250,7 @@ struct OverheadAggregate {
 #[derive(Debug, Serialize)]
 struct ProductDogfoodReport {
     schema_version: &'static str,
+    comparison_contract: &'static str,
     provider: &'static str,
     model: String,
     workload_classes: Vec<String>,
@@ -339,7 +360,7 @@ async fn main() -> Result<(), String> {
         .find(|fixture| fixture.input.hypotheses.is_empty())
     {
         return Err(format!(
-            "product dogfood v3 target metrics require at least one harness-owned hypothesis: {}",
+            "product dogfood v4 target metrics require at least one harness-owned hypothesis: {}",
             fixture.id
         ));
     }
@@ -408,10 +429,27 @@ async fn evaluate_case(
         call: raw_call,
     };
 
-    // B and C share the exact same generated candidate so the incremental gate comparison is not
-    // confounded by a second candidate sample. Each arm still accounts for that call in its cost.
+    // B and C share the exact same generated candidate, deterministic pre-render state, and first
+    // final-answer render. Only successor-induced verification/resolution may trigger a C-only rerender.
     let (candidate, candidate_call) =
         generate_candidate(adapter, model, fixture, max_tokens, seed).await?;
+    let prepared =
+        prepare_harness_state(fixture, candidate, candidate_call, max_resolution_attempts)?;
+    let (shared_initial_render, shared_initial_render_call) = render_answer(
+        adapter,
+        model,
+        &fixture.task,
+        &prepared.final_artifact,
+        prepared.final_verdict,
+        max_tokens,
+        seed,
+    )
+    .await?;
+    let shared_harness = SharedHarnessObservation {
+        candidate_call: prepared.candidate_call.clone(),
+        initial_render: shared_initial_render.clone(),
+        initial_render_call: shared_initial_render_call.clone(),
+    };
     let harness = evaluate_harness_arm(HarnessArmCall {
         fixture,
         adapter,
@@ -419,8 +457,9 @@ async fn evaluate_case(
         max_tokens,
         seed,
         max_resolution_attempts,
-        candidate: candidate.clone(),
-        candidate_call: candidate_call.clone(),
+        prepared: prepared.clone(),
+        initial_render: shared_initial_render.clone(),
+        initial_render_call: shared_initial_render_call.clone(),
         safety_profile: AnswerSafetyProfile::Baseline,
     })
     .await?;
@@ -431,8 +470,9 @@ async fn evaluate_case(
         max_tokens,
         seed,
         max_resolution_attempts,
-        candidate,
-        candidate_call,
+        prepared,
+        initial_render: shared_initial_render,
+        initial_render_call: shared_initial_render_call,
         safety_profile: AnswerSafetyProfile::D3SufficiencyV1,
     })
     .await?;
@@ -442,47 +482,25 @@ async fn evaluate_case(
         workload_class: fixture.workload_class.clone(),
         expected_outcome: fixture.expected_outcome,
         raw,
+        shared_harness,
         harness,
         harness_d3_sufficiency,
     })
 }
 
-struct HarnessArmCall<'a> {
-    fixture: &'a ProductDogfoodFixture,
-    adapter: &'a dyn ModelAdapter,
-    model: &'a str,
-    max_tokens: u32,
-    seed: Option<u64>,
-    max_resolution_attempts: usize,
+fn prepare_harness_state(
+    fixture: &ProductDogfoodFixture,
     candidate: ReasoningCandidate,
     candidate_call: CallObservation,
-    safety_profile: AnswerSafetyProfile,
-}
-
-async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResult, String> {
-    let HarnessArmCall {
-        fixture,
-        adapter,
-        model,
-        max_tokens,
-        seed,
-        max_resolution_attempts,
-        candidate,
-        candidate_call,
-        safety_profile,
-    } = call;
+    max_resolution_attempts: usize,
+) -> Result<PreparedHarnessState, String> {
     let pipeline = StandardGroundingPipeline;
     let initial = pipeline
         .run(fixture.input.clone(), candidate.clone(), &[])
         .map_err(|e| e.to_string())?;
-    let mut calls = vec![candidate_call];
-    let mut safety_observations = Vec::new();
-    let mut safety_usage = ModelUsage::default();
-    let mut safety_latency_ms = 0u128;
     let mut final_artifact = initial.artifact.clone();
     let mut final_verdict = initial.verdict;
     let mut resolution_attempts = 0usize;
-
     if !fixture.resolver_facts.is_empty() && final_verdict != Verdict::Accept {
         let resolution = run_dogfood_resolution(
             fixture,
@@ -494,7 +512,54 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
         final_artifact = resolution.final_artifact;
         final_verdict = resolution.final_verdict;
     }
+    Ok(PreparedHarnessState {
+        initial_verdict: initial.verdict,
+        final_artifact,
+        final_verdict,
+        resolution_attempts,
+        candidate,
+        candidate_call,
+    })
+}
 
+struct HarnessArmCall<'a> {
+    fixture: &'a ProductDogfoodFixture,
+    adapter: &'a dyn ModelAdapter,
+    model: &'a str,
+    max_tokens: u32,
+    seed: Option<u64>,
+    max_resolution_attempts: usize,
+    prepared: PreparedHarnessState,
+    initial_render: FinalAnswerCandidate,
+    initial_render_call: CallObservation,
+    safety_profile: AnswerSafetyProfile,
+}
+
+async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResult, String> {
+    let HarnessArmCall {
+        fixture,
+        adapter,
+        model,
+        max_tokens,
+        seed,
+        max_resolution_attempts,
+        prepared,
+        initial_render,
+        initial_render_call,
+        safety_profile,
+    } = call;
+    let PreparedHarnessState {
+        initial_verdict,
+        mut final_artifact,
+        mut final_verdict,
+        mut resolution_attempts,
+        candidate,
+        candidate_call,
+    } = prepared;
+    let mut calls = vec![candidate_call, initial_render_call];
+    let mut safety_observations = Vec::new();
+    let mut safety_usage = ModelUsage::default();
+    let mut safety_latency_ms = 0u128;
     let mut finalization = FinalizationResult {
         status: FinalizationStatus::Unresolved,
         text: None,
@@ -503,20 +568,22 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
         factual_claim_coverage: 1.0,
         uncovered_propositions: vec![],
     };
-    let mut rendered = FinalAnswerCandidate::default();
+    let mut rendered = initial_render;
     for render_round in 0..2usize {
-        let (answer, render_call) = render_answer(
-            adapter,
-            model,
-            &fixture.task,
-            &final_artifact,
-            final_verdict,
-            max_tokens,
-            seed,
-        )
-        .await?;
-        calls.push(render_call);
-        rendered = answer;
+        if render_round > 0 {
+            let (answer, render_call) = render_answer(
+                adapter,
+                model,
+                &fixture.task,
+                &final_artifact,
+                final_verdict,
+                max_tokens,
+                seed,
+            )
+            .await?;
+            calls.push(render_call);
+            rendered = answer;
+        }
         finalization = finalize_answer(
             &final_artifact,
             final_verdict,
@@ -632,11 +699,11 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
         .sum::<u128>()
         .saturating_add(safety_latency_ms);
     let resolution_succeeded =
-        initial.verdict != Verdict::Accept && final_verdict == Verdict::Accept;
+        initial_verdict != Verdict::Accept && final_verdict == Verdict::Accept;
 
     Ok(HarnessArmResult {
         safety_runtime: safety_profile.identity(),
-        initial_verdict: initial.verdict,
+        initial_verdict,
         final_verdict,
         finalization_status: finalization.status,
         factual_claims: finalization.factual_claims,
@@ -937,7 +1004,8 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .map(|result| result.harness_d3_sufficiency.total_latency_ms)
         .sum();
     ProductDogfoodReport {
-        schema_version: "reason-product-dogfood-v3",
+        schema_version: "reason-product-dogfood-v4",
+        comparison_contract: PRODUCT_DOGFOOD_COMPARISON_CONTRACT_ID,
         provider: provider.name(),
         model: model.into(),
         workload_classes: classes,
@@ -1297,6 +1365,21 @@ mod tests {
                 exposed_factual_claims: vec![],
                 target: empty_target(),
                 call: CallObservation {
+                    model: "m".into(),
+                    usage: Default::default(),
+                    latency_ms: 1,
+                    attempts: 1,
+                },
+            },
+            shared_harness: SharedHarnessObservation {
+                candidate_call: CallObservation {
+                    model: "m".into(),
+                    usage: Default::default(),
+                    latency_ms: 1,
+                    attempts: 1,
+                },
+                initial_render: FinalAnswerCandidate::default(),
+                initial_render_call: CallObservation {
                     model: "m".into(),
                     usage: Default::default(),
                     latency_ms: 1,

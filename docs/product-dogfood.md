@@ -6,9 +6,11 @@ The runner is `reason-product-dogfood`. It sends the same task/context to the sa
 
 ```text
 raw arm:                   task/context -> model -> structured answer
-harness baseline arm:      task/context -> shared model candidate -> verify -> bounded resolution -> render -> final-claim coverage
-harness+D3+sufficiency:    same shared candidate -> same harness -> D3/sufficiency answer gate -> bounded resolution or abstention
+harness baseline arm:      task/context -> shared candidate -> deterministic pre-render Harness state -> shared initial render -> baseline finalization
+harness+D3+sufficiency:    same candidate/state/render -> D3/sufficiency gate -> optional bounded resolution -> successor-only rerender if state changes
 ```
+
+The v4 comparison contract is `shared-candidate-initial-render-v1`. The two Harness arms share the untrusted candidate, deterministic pre-render state, and exact first final-answer render. Only a successor intervention that changes state may trigger a C-only rerender, so renderer sampling is not attributed to the D3/sufficiency gate.
 
 The committed `fixtures/product-dogfood-v1` corpus has two workload classes:
 
@@ -17,7 +19,7 @@ The committed `fixtures/product-dogfood-v1` corpus has two workload classes:
 
 Each class contains a directly groundable case, an intentionally insufficient case, and a case that becomes groundable only after bounded resolution. These fixtures are product dogfood, not research calibration or holdout data.
 
-The report contract is `reason-product-dogfood-v3` and records:
+The report contract is `reason-product-dogfood-v4` and records:
 
 - unsupported grounded assertion count/rate;
 - correct abstention and missed insufficiency;
@@ -27,7 +29,7 @@ The report contract is `reason-product-dogfood-v3` and records:
 - total tokens and latency for all three arms, including incremental D3/sufficiency overhead;
 - explicit answer-safety runtime identity and per-target safety observations for the successor arm.
 
-The v3 report retains the v2 case-level abstention metrics unchanged and adds target-level measurements keyed only to each fixture's harness-owned `input.hypotheses`. A safe partial answer may expose supported non-target facts while still correctly abstaining from the task target. v3 therefore reports grounded-target coverage, missed target insufficiency, false target abstention, and safe-partial retention separately. The first v2 three-arm pilot remains historical evidence and is not rewritten under the new metric.
+The v4 report retains the v2 case-level abstention metrics and the v3 target-level measurements unchanged. The target-level measurements are keyed only to each fixture's harness-owned `input.hypotheses`. A safe partial answer may expose supported non-target facts while still correctly abstaining from the task target. They report grounded-target coverage, missed target insufficiency, false target abstention, and safe-partial retention separately. The first v2 three-arm pilot remains historical evidence and is not rewritten under the new metric.
 
 `user_comprehension` is deliberately reported as `not_automated_manual_review_required`; the project does not fabricate a human-comprehension metric from model output.
 

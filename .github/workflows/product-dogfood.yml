@@ -79,7 +79,8 @@ jobs:
             --output /tmp/reason-product-dogfood.json \
             > /tmp/reason-product-dogfood.stdout.json
           jq -e '
-            .schema_version == "reason-product-dogfood-v3"
+            .schema_version == "reason-product-dogfood-v4"
+            and .comparison_contract == "shared-candidate-initial-render-v1"
             and .cases >= 6
             and (.workload_classes | length) >= 2
             and .harness.arm.unsupported_grounded_claims == 0
@@ -90,10 +91,14 @@ jobs:
             and .raw.target.expected_grounded_cases == .raw.expected_grounded_cases
             and .harness.arm.target.expected_grounded_cases == .harness.arm.expected_grounded_cases
             and .harness_d3_sufficiency.arm.target.expected_grounded_cases == .harness_d3_sufficiency.arm.expected_grounded_cases
+            and ([.results[] | (.harness.calls[0] == .shared_harness.candidate_call)] | all)
+            and ([.results[] | (.harness_d3_sufficiency.calls[0] == .shared_harness.candidate_call)] | all)
+            and ([.results[] | (.harness.calls[1] == .shared_harness.initial_render_call)] | all)
+            and ([.results[] | (.harness_d3_sufficiency.calls[1] == .shared_harness.initial_render_call)] | all)
             and ([.results[].harness.safety_runtime.configuration_id] | all(. == "grounded-finalization-v1"))
             and ([.results[].harness_d3_sufficiency.safety_runtime.configuration_id] | all(. == "d3-sufficiency-answer-gate-v1"))
           ' /tmp/reason-product-dogfood.json >/dev/null
-          jq '{schema_version, provider, model, workload_classes, cases, raw, harness, harness_d3_sufficiency, overhead, user_comprehension}' /tmp/reason-product-dogfood.json
+          jq '{schema_version, comparison_contract, provider, model, workload_classes, cases, raw, harness, harness_d3_sufficiency, overhead, user_comprehension}' /tmp/reason-product-dogfood.json
       - name: Preserve dogfood report
         if: always()
         uses: actions/upload-artifact@v4
