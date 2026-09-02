@@ -1477,7 +1477,14 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             }
             Err(failure) => {
                 rendering_failure = Some(failure);
-                CanonicalFinalAnswerRenderer.render(&final_artifact, final_verdict)
+                canonical_verified_target_answer(
+                    &final_artifact,
+                    final_verdict,
+                    &built.input.hypotheses,
+                )
+                .unwrap_or_else(|| {
+                    CanonicalFinalAnswerRenderer.render(&final_artifact, final_verdict)
+                })
             }
         };
         finalization = finalize_answer(
