@@ -21,7 +21,7 @@ The committed `fixtures/product-dogfood-v1` corpus has two workload classes:
 
 Each class contains a directly groundable case, an intentionally insufficient case, and a case that becomes groundable only after bounded resolution. These fixtures are product dogfood, not research calibration or holdout data.
 
-The report contract is `reason-product-dogfood-v5` and records:
+The report contract is `reason-product-dogfood-v6` and records:
 
 - unsupported grounded assertion count/rate;
 - correct abstention and missed insufficiency;
@@ -29,7 +29,10 @@ The report contract is `reason-product-dogfood-v5` and records:
 - mean final-claim coverage;
 - bounded-resolution attempts and success rate;
 - total tokens and latency for all three arms, including incremental D3/sufficiency overhead;
-- explicit answer-safety runtime identity and per-target safety observations for the successor arm.
+- explicit answer-safety runtime identity and per-target safety observations for the successor arm;
+- per-target failure provenance for Harness arms, including exact candidate/verification/resolution/render/finalization state, deterministic recovery eligibility, and a classified expected-grounded miss reason.
+
+The v6 report adds behavior-neutral failure provenance to the v5 output. It does not change candidate generation, verification, resolution, safety decisions, finalization, or exposed text. The workflow requires every expected-grounded miss to receive a non-`other` classification before the report is accepted.
 
 The v5 report retains the v2 case-level abstention metrics and the v3 target-level measurements unchanged, preserves the v4 shared-render comparison contract, and adds the actual user-visible `exposed_text` for each arm so qualified/unknown outputs can receive the manual comprehension review required by NL-5. The target-level measurements are keyed only to each fixture's harness-owned `input.hypotheses`. A safe partial answer may expose supported non-target facts while still correctly abstaining from the task target. They report grounded-target coverage, missed target insufficiency, false target abstention, and safe-partial retention separately. The first v2 three-arm pilot remains historical evidence and is not rewritten under the new metric.
 

@@ -109,7 +109,7 @@ jobs:
             --output /tmp/reason-product-dogfood.json \
             > /tmp/reason-product-dogfood.stdout.json
           jq -e '
-            .schema_version == "reason-product-dogfood-v5"
+            .schema_version == "reason-product-dogfood-v6"
             and .comparison_contract == "shared-candidate-initial-render-v1"
             and ([.results[].raw.exposed_text] | all(type == "string"))
             and ([.results[].harness | ((.finalization_status == "grounded_answer" or .finalization_status == "qualified_partial_answer") == has("exposed_text"))] | all)
@@ -123,6 +123,10 @@ jobs:
             else .cases == 6 end)
             and .harness.arm.unsupported_grounded_claims == 0
             and .harness_d3_sufficiency.arm.unsupported_grounded_claims == 0
+            and .harness.failure_provenance.classified_misses == .harness.failure_provenance.missed_grounded_targets
+            and .harness_d3_sufficiency.failure_provenance.classified_misses == .harness_d3_sufficiency.failure_provenance.missed_grounded_targets
+            and ((.harness.failure_provenance.miss_classes.other // 0) == 0)
+            and ((.harness_d3_sufficiency.failure_provenance.miss_classes.other // 0) == 0)
             and .raw.target.expected_unknown_cases == .raw.expected_unknown_cases
             and .harness.arm.target.expected_unknown_cases == .harness.arm.expected_unknown_cases
             and .harness_d3_sufficiency.arm.target.expected_unknown_cases == .harness_d3_sufficiency.arm.expected_unknown_cases
