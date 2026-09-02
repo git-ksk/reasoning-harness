@@ -305,6 +305,7 @@ Current `main` includes the capabilities below. The published `v0.1.0` tag preda
 - Mistral, Google, and NVIDIA provider adapters outside the correctness authority boundary;
 - versioned JSON product envelopes, schema-backed layered config, stdin support, and typed failure classes;
 - credential-free product smoke on Linux x64, macOS Apple Silicon/Intel, and Windows x64.
+- recorded product dogfood on Ministral 8B, Gemma 4 31B, and Gemini 3.5 Flash-Lite; Nemotron 3.5 Lightning remains protocol-incomplete on this product workload.
 
 See the [CLI guide](docs/cli.md) for the full invocation contract, the [Japanese CLI guide](docs/cli.ja.md), and [support policy](docs/support.md) for v0.x compatibility boundaries.
 
