@@ -45,4 +45,15 @@ cargo run -p reasoning-harness-cli --bin reason-product-dogfood -- \
 
 The current successor runtime is `d3-sufficiency-answer-gate-v2` with requirement policy `claim-local-answer-sufficiency-requirements-v1`. It scopes the product sufficiency question to the individual typed proposition and preferentially selects evidence already bound to that supported/known proposition. The broader task is context, not an extra requirement that every safe partial fact must answer completely. Historical `d3-sufficiency-answer-gate-v1` / `generic-answer-sufficiency-requirements-v1` remains executable as a rollback. Neither product policy is part of the frozen holdout corpus; NL-5 evaluates this wiring independently.
 
+## Final NL-5 acceptance result
+
+The final v5 acceptance runs use the `shared-candidate-initial-render-v1` comparison contract and the claim-local `d3-sufficiency-answer-gate-v2` successor:
+
+- Ministral 8B: Actions run `33576517724`;
+- Gemma 4 31B: Actions run `33576520136`.
+
+Both Harness arms exposed zero unsupported grounded claims and zero missed task-target insufficiency in both model slices. On Gemma, baseline and successor both reached 1.0 mean grounded-target coverage across expected-grounded cases, zero false target abstentions, 2/2 resolution success, and retained one useful safe-partial unknown case with two supported non-target grounded facts. The successor added about 45.3% tokens and 12.2% latency over the baseline Harness in that run. On Ministral, baseline and successor were behaviorally identical at the target boundary, but both had a 0.75 false-target-abstention rate and 0/2 resolution success; this is retained as a model-specific utility limitation rather than attributed to the successor gate and is tracked in #139.
+
+Manual comprehension review used the v5 `exposed_text` field. Gemma's qualified root-cause answer clearly states that the database cause is unconfirmed, preserves the verified HTTP 503 and seven connection-error observations, and does not turn correlation into causation; baseline and successor text are identical. Ministral's raw unknown answers clearly explain missing evidence, while its Harness arms frequently withhold final text entirely. That is safe but less informative and matches the measured false-abstention limitation. These observations are product-slice evidence, not universal model-quality claims.
+
 The manual `product-dogfood` GitHub Actions workflow uses repository secrets and preserves the JSON report as an artifact. The workflow gates on zero exposed unsupported grounded claims from both harness arms and verifies the baseline/successor runtime identities. `sufficient` is a no-op with respect to authority; only `insufficient`/`mixed` may force verification, bounded resolution, or abstention. A live result is evidence for the tested model/workload slice only; it is not a universal model or correctness claim.
