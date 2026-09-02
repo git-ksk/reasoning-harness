@@ -96,7 +96,7 @@ jobs:
             and ([.results[] | (.harness.calls[1] == .shared_harness.initial_render_call)] | all)
             and ([.results[] | (.harness_d3_sufficiency.calls[1] == .shared_harness.initial_render_call)] | all)
             and ([.results[].harness.safety_runtime.configuration_id] | all(. == "grounded-finalization-v1"))
-            and ([.results[].harness_d3_sufficiency.safety_runtime.configuration_id] | all(. == "d3-sufficiency-answer-gate-v1"))
+            and ([.results[].harness_d3_sufficiency.safety_runtime.configuration_id] | all(. == "d3-sufficiency-answer-gate-v2"))
           ' /tmp/reason-product-dogfood.json >/dev/null
           jq '{schema_version, comparison_contract, provider, model, workload_classes, cases, raw, harness, harness_d3_sufficiency, overhead, user_comprehension}' /tmp/reason-product-dogfood.json
       - name: Preserve dogfood report

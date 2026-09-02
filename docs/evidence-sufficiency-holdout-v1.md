@@ -39,7 +39,7 @@ GitHub Actions run `33568061693` on main commit `c59790891911f9e75b85ac9cd30eb07
 
 Ministral's 14 exact-label errors were all `mixed -> insufficient`. They therefore remained on the predeclared `non_sufficient` side of the safety boundary; no case crossed from non-sufficient to sufficient or vice versa. This is reported as diagnostic drift, not hidden by majority voting or threshold changes.
 
-The frozen holdout supplies predeclared task-specific `required_information`; it does not validate any later product mechanism for generating or selecting those requirements. The product bridge therefore records its separate fixed requirement policy identity (`generic-answer-sufficiency-requirements-v1`) and NL-5 evaluates that wiring independently.
+The frozen holdout supplies predeclared task-specific `required_information`; it does not validate any later product mechanism for generating or selecting those requirements. The first product bridge used `generic-answer-sufficiency-requirements-v1`; NL-5 later showed that policy could over-suppress safe partial facts, so the product successor now versions a separate claim-local policy (`claim-local-answer-sufficiency-requirements-v1`) under `d3-sufficiency-answer-gate-v2`. Neither product policy is retroactively treated as holdout-validated.
 
 ## Authority interpretation
 

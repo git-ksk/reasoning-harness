@@ -473,7 +473,7 @@ async fn evaluate_case(
         prepared,
         initial_render: shared_initial_render,
         initial_render_call: shared_initial_render_call,
-        safety_profile: AnswerSafetyProfile::D3SufficiencyV1,
+        safety_profile: AnswerSafetyProfile::D3SufficiencyV2,
     })
     .await?;
 
@@ -591,7 +591,7 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
             FinalizationPolicy::default(),
         );
 
-        if safety_profile == AnswerSafetyProfile::D3SufficiencyV1
+        if safety_profile != AnswerSafetyProfile::Baseline
             && matches!(
                 finalization.status,
                 FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
@@ -1405,7 +1405,7 @@ mod tests {
                 total_latency_ms: 1,
             },
             harness_d3_sufficiency: HarnessArmResult {
-                safety_runtime: AnswerSafetyProfile::D3SufficiencyV1.identity(),
+                safety_runtime: AnswerSafetyProfile::D3SufficiencyV2.identity(),
                 initial_verdict: Verdict::Unknown,
                 final_verdict: Verdict::Unknown,
                 finalization_status: FinalizationStatus::Unresolved,

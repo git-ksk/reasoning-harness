@@ -43,6 +43,6 @@ cargo run -p reasoning-harness-cli --bin reason-product-dogfood -- \
   --output /tmp/reason-product-dogfood.json
 ```
 
-successor runtimeはHarness-owned requirement policyも`generic-answer-sufficiency-requirements-v1`としてidentityに固定します。これはfrozen holdout corpusそのものではなくproduct wiringです。holdoutは「与えられたrequired_informationに対するclassifier」を検証し、NL-5ではこの固定product policyが過剰abstentionを起こさず役立つかを別に測ります。
+現在のsuccessor runtimeは`d3-sufficiency-answer-gate-v2`で、requirement policyは`claim-local-answer-sufficiency-requirements-v1`です。product sufficiency判定を個別typed propositionへ限定し、Supported/Known claimへ既にbindingされたevidenceを優先します。broader taskはcontextであり、安全なpartial fact一つ一つにtask全体の完答を要求しません。旧`d3-sufficiency-answer-gate-v1` / `generic-answer-sufficiency-requirements-v1`はrollbackとして実行可能です。どちらもfrozen holdout corpusそのものではなく、NL-5でproduct wiringを別評価します。
 
 GitHub Actionsのmanual `product-dogfood` workflowはrepository secretを使い、JSON reportをartifactとして保存します。baseline / D3+sufficiency両Harness armで外部へ露出するunsupported grounded claimが0であることと、runtime identityをgateします。`sufficient`はauthorityを増やさずno-op、`insufficient` / `mixed`だけがverification・bounded resolution・abstention方向へ作用します。live結果はそのmodel/workload sliceの実測であり、普遍的な正しさの主張ではありません。
