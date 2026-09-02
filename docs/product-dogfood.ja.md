@@ -17,7 +17,7 @@ harness+D3+sufficiency:    同じshared candidate -> 同じHarness -> D3/suffici
 
 それぞれに、最初からground可能なcase、意図的に根拠不足なcase、bounded resolutionで初めてground可能になるcaseがあります。research calibration/holdoutとは混ぜません。
 
-`reason-product-dogfood-v2` reportでは次を測ります。
+`reason-product-dogfood-v3` reportでは次を測ります。
 
 - unsupported grounded assertionの件数/率
 - correct abstention / missed insufficiency
@@ -26,6 +26,8 @@ harness+D3+sufficiency:    同じshared candidate -> 同じHarness -> D3/suffici
 - bounded resolutionの試行数/成功率
 - 3 armそれぞれのtoken/latencyと、D3/sufficiency追加分のoverhead
 - successor armのanswer-safety runtime identityとtargetごとのsafety observation
+
+v3 reportではv2のcase-level abstention指標をそのまま残したうえで、fixtureのHarness-owned `input.hypotheses`だけをtask targetとしてtarget-level指標を追加します。supportedなnon-target factを返すsafe partial answerは、task targetを断言していなければtarget abstention成功として別集計します。grounded-target coverage / missed target insufficiency / false target abstention / safe-partial retentionを分離し、最初のv2 pilot結果は書き換えません。
 
 `user_comprehension`は`not_automated_manual_review_required`と明示します。model出力だけから「人間に分かりやすかった率」を捏造しません。
 

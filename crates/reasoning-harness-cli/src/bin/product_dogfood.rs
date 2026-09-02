@@ -10,7 +10,7 @@ use reasoning_harness_core::{
     AcquiredEvidence, AnswerSafetyDisposition, AnswerSafetyIdentity, AnswerSafetyObservation,
     AnswerSafetyProfile, CanonicalFinalAnswerRenderer, DefaultResolutionPlanner, Evidence,
     EvidenceAdmissionPolicy, EvidenceAdmissionRejection, EvidenceMetadata, FinalAnswerCandidate,
-    FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
+    FinalAnswerClaim, FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
     GroundedResolutionOutcome, GroundedResolutionPolicy, GroundedResolutionRuntime,
     GroundingPipeline, HarnessInput, ModelAdapter, ModelError, ModelOutputFormat, ModelRequest,
     ModelResponse, ModelUsage, Proposition, ReasoningCandidate, ResolutionAdapterError,
@@ -118,12 +118,24 @@ struct CallObservation {
     attempts: u32,
 }
 
+#[derive(Debug, Clone, Serialize)]
+struct TargetOutcomeObservation {
+    expected_targets: usize,
+    exposed_grounded_targets: Vec<Proposition>,
+    exposed_grounded_non_targets: Vec<Proposition>,
+    supported_grounded_non_targets: Vec<Proposition>,
+    grounded_target_coverage: f64,
+    all_targets_grounded: bool,
+}
+
 #[derive(Debug, Serialize)]
 struct RawArmResult {
     factual_claims: usize,
     grounded_claims: usize,
     unsupported_grounded_claims: usize,
     abstained: bool,
+    exposed_factual_claims: Vec<FinalAnswerClaim>,
+    target: TargetOutcomeObservation,
     call: CallObservation,
 }
 
@@ -137,6 +149,8 @@ struct HarnessArmResult {
     factual_claim_coverage: f64,
     unsupported_exposed_grounded_claims: usize,
     abstained: bool,
+    exposed_factual_claims: Vec<FinalAnswerClaim>,
+    target: TargetOutcomeObservation,
     resolution_attempts: usize,
     resolution_succeeded: bool,
     calls: Vec<CallObservation>,
@@ -157,6 +171,22 @@ struct CaseResult {
 }
 
 #[derive(Debug, Default, Clone, Serialize)]
+struct TargetAggregate {
+    expected_unknown_cases: usize,
+    correct_target_abstentions: usize,
+    missed_target_insufficiency: usize,
+    correct_target_abstention_rate: f64,
+    grounded_targets_on_unknown: usize,
+    safe_partial_unknown_cases: usize,
+    supported_non_target_grounded_claims_on_unknown: usize,
+    expected_grounded_cases: usize,
+    fully_grounded_target_cases: usize,
+    false_target_abstentions: usize,
+    false_target_abstention_rate: f64,
+    mean_grounded_target_coverage: f64,
+}
+
+#[derive(Debug, Default, Clone, Serialize)]
 struct ArmAggregate {
     cases: usize,
     grounded_claims: usize,
@@ -169,6 +199,7 @@ struct ArmAggregate {
     false_abstentions: usize,
     correct_abstention_rate: f64,
     false_abstention_rate: f64,
+    target: TargetAggregate,
 }
 
 #[derive(Debug, Default, Clone, Serialize)]
@@ -303,6 +334,15 @@ async fn main() -> Result<(), String> {
     if fixtures.is_empty() {
         return Err("product dogfood fixture directory is empty".into());
     }
+    if let Some(fixture) = fixtures
+        .iter()
+        .find(|fixture| fixture.input.hypotheses.is_empty())
+    {
+        return Err(format!(
+            "product dogfood v3 target metrics require at least one harness-owned hypothesis: {}",
+            fixture.id
+        ));
+    }
     let adapter = LiveAdapter::from_env(args.provider, &args.model).map_err(|e| e.to_string())?;
     let mut results = Vec::new();
     for (index, fixture) in fixtures.iter().enumerate() {
@@ -353,11 +393,18 @@ async fn evaluate_case(
         .iter()
         .filter(|claim| !proposition_supported(&fixture.input, &claim.proposition))
         .count();
+    let raw_target = target_outcome(
+        &fixture.input.hypotheses,
+        &raw_answer.factual_claims,
+        |proposition| proposition_supported(&fixture.input, proposition),
+    );
     let raw = RawArmResult {
         factual_claims: raw_answer.factual_claims.len(),
         grounded_claims: raw_grounded.len(),
         unsupported_grounded_claims: raw_unsupported,
         abstained: raw_grounded.is_empty(),
+        exposed_factual_claims: raw_answer.factual_claims,
+        target: raw_target,
         call: raw_call,
     };
 
@@ -565,6 +612,16 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
     } else {
         0
     };
+    let exposed_factual_claims = if exposed {
+        rendered.factual_claims.clone()
+    } else {
+        vec![]
+    };
+    let target = target_outcome(
+        &fixture.input.hypotheses,
+        &exposed_factual_claims,
+        |proposition| artifact_supports(&final_artifact, proposition),
+    );
     let mut total_usage = calls.iter().fold(ModelUsage::default(), |acc, call| {
         add_usage(&acc, &call.usage)
     });
@@ -586,6 +643,8 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
         factual_claim_coverage: finalization.factual_claim_coverage,
         unsupported_exposed_grounded_claims,
         abstained: !exposed,
+        exposed_factual_claims,
+        target,
         resolution_attempts,
         resolution_succeeded,
         calls,
@@ -878,7 +937,7 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .map(|result| result.harness_d3_sufficiency.total_latency_ms)
         .sum();
     ProductDogfoodReport {
-        schema_version: "reason-product-dogfood-v2",
+        schema_version: "reason-product-dogfood-v3",
         provider: provider.name(),
         model: model.into(),
         workload_classes: classes,
@@ -923,6 +982,7 @@ fn aggregate_raw(results: &[CaseResult]) -> ArmAggregate {
         |result| result.raw.grounded_claims,
         |result| result.raw.unsupported_grounded_claims,
         |result| result.raw.abstained,
+        |result| &result.raw.target,
     )
 }
 
@@ -935,6 +995,7 @@ fn aggregate_harness(
         |result| select(result).factual_claims,
         |result| select(result).unsupported_exposed_grounded_claims,
         |result| select(result).abstained,
+        |result| &select(result).target,
     );
     let mean_final_claim_coverage = if results.is_empty() {
         0.0
@@ -967,6 +1028,7 @@ fn aggregate_arm(
     grounded: impl Fn(&CaseResult) -> usize,
     unsupported: impl Fn(&CaseResult) -> usize,
     abstained: impl Fn(&CaseResult) -> bool,
+    target: impl Fn(&CaseResult) -> &TargetOutcomeObservation,
 ) -> ArmAggregate {
     let grounded_claims = results.iter().map(&grounded).sum();
     let unsupported_grounded_claims = results.iter().map(&unsupported).sum();
@@ -999,6 +1061,117 @@ fn aggregate_arm(
         false_abstentions,
         correct_abstention_rate: rate(correct_abstentions, expected_unknown_cases),
         false_abstention_rate: rate(false_abstentions, expected_grounded_cases),
+        target: aggregate_target(results, target),
+    }
+}
+
+fn aggregate_target(
+    results: &[CaseResult],
+    target: impl Fn(&CaseResult) -> &TargetOutcomeObservation,
+) -> TargetAggregate {
+    let expected_unknown_cases = results
+        .iter()
+        .filter(|result| result.expected_outcome == ExpectedOutcome::Unknown)
+        .count();
+    let correct_target_abstentions = results
+        .iter()
+        .filter(|result| {
+            result.expected_outcome == ExpectedOutcome::Unknown
+                && target(result).exposed_grounded_targets.is_empty()
+        })
+        .count();
+    let missed_target_insufficiency =
+        expected_unknown_cases.saturating_sub(correct_target_abstentions);
+    let grounded_targets_on_unknown = results
+        .iter()
+        .filter(|result| result.expected_outcome == ExpectedOutcome::Unknown)
+        .map(|result| target(result).exposed_grounded_targets.len())
+        .sum();
+    let safe_partial_unknown_cases = results
+        .iter()
+        .filter(|result| {
+            result.expected_outcome == ExpectedOutcome::Unknown
+                && target(result).exposed_grounded_targets.is_empty()
+                && !target(result).supported_grounded_non_targets.is_empty()
+        })
+        .count();
+    let supported_non_target_grounded_claims_on_unknown = results
+        .iter()
+        .filter(|result| result.expected_outcome == ExpectedOutcome::Unknown)
+        .map(|result| target(result).supported_grounded_non_targets.len())
+        .sum();
+    let expected_grounded = results
+        .iter()
+        .filter(|result| result.expected_outcome.expects_grounded())
+        .collect::<Vec<_>>();
+    let expected_grounded_cases = expected_grounded.len();
+    let fully_grounded_target_cases = expected_grounded
+        .iter()
+        .filter(|result| target(result).all_targets_grounded)
+        .count();
+    let false_target_abstentions =
+        expected_grounded_cases.saturating_sub(fully_grounded_target_cases);
+    let mean_grounded_target_coverage = if expected_grounded_cases == 0 {
+        0.0
+    } else {
+        expected_grounded
+            .iter()
+            .map(|result| target(result).grounded_target_coverage)
+            .sum::<f64>()
+            / expected_grounded_cases as f64
+    };
+    TargetAggregate {
+        expected_unknown_cases,
+        correct_target_abstentions,
+        missed_target_insufficiency,
+        correct_target_abstention_rate: rate(correct_target_abstentions, expected_unknown_cases),
+        grounded_targets_on_unknown,
+        safe_partial_unknown_cases,
+        supported_non_target_grounded_claims_on_unknown,
+        expected_grounded_cases,
+        fully_grounded_target_cases,
+        false_target_abstentions,
+        false_target_abstention_rate: rate(false_target_abstentions, expected_grounded_cases),
+        mean_grounded_target_coverage,
+    }
+}
+
+fn target_outcome(
+    expected_targets: &[Proposition],
+    claims: &[FinalAnswerClaim],
+    supported: impl Fn(&Proposition) -> bool,
+) -> TargetOutcomeObservation {
+    let grounded = claims
+        .iter()
+        .filter(|claim| claim.mode == FinalClaimMode::Grounded)
+        .collect::<Vec<_>>();
+    let mut exposed_grounded_targets = Vec::new();
+    let mut exposed_grounded_non_targets = Vec::new();
+    for claim in grounded {
+        let destination = if expected_targets.contains(&claim.proposition) {
+            &mut exposed_grounded_targets
+        } else {
+            &mut exposed_grounded_non_targets
+        };
+        if !destination.contains(&claim.proposition) {
+            destination.push(claim.proposition.clone());
+        }
+    }
+    let supported_grounded_non_targets = exposed_grounded_non_targets
+        .iter()
+        .filter(|proposition| supported(proposition))
+        .cloned()
+        .collect::<Vec<_>>();
+    let grounded_target_coverage = rate(exposed_grounded_targets.len(), expected_targets.len());
+    let all_targets_grounded =
+        !expected_targets.is_empty() && exposed_grounded_targets.len() == expected_targets.len();
+    TargetOutcomeObservation {
+        expected_targets: expected_targets.len(),
+        exposed_grounded_targets,
+        exposed_grounded_non_targets,
+        supported_grounded_non_targets,
+        grounded_target_coverage,
+        all_targets_grounded,
     }
 }
 
@@ -1017,6 +1190,17 @@ fn ratio(numerator: f64, denominator: f64) -> Option<f64> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn empty_target() -> TargetOutcomeObservation {
+        TargetOutcomeObservation {
+            expected_targets: 1,
+            exposed_grounded_targets: vec![],
+            exposed_grounded_non_targets: vec![],
+            supported_grounded_non_targets: vec![],
+            grounded_target_coverage: 0.0,
+            all_targets_grounded: false,
+        }
+    }
 
     #[test]
     fn direct_fact_support_requires_observed_value_agreement() {
@@ -1051,6 +1235,55 @@ mod tests {
     }
 
     #[test]
+    fn target_metrics_preserve_safe_partial_facts_without_grounding_the_task_target() {
+        let expected = Proposition {
+            key: "incident.root_cause".into(),
+            value: "database".into(),
+        };
+        let observed = Proposition {
+            key: "http.status_code".into(),
+            value: "503".into(),
+        };
+        let claims = vec![
+            FinalAnswerClaim {
+                proposition: observed.clone(),
+                mode: FinalClaimMode::Grounded,
+            },
+            FinalAnswerClaim {
+                proposition: expected.clone(),
+                mode: FinalClaimMode::Uncertain,
+            },
+        ];
+        let target = target_outcome(std::slice::from_ref(&expected), &claims, |proposition| {
+            proposition == &observed
+        });
+        assert!(target.exposed_grounded_targets.is_empty());
+        assert_eq!(target.supported_grounded_non_targets, vec![observed]);
+        assert_eq!(target.grounded_target_coverage, 0.0);
+        assert!(!target.all_targets_grounded);
+    }
+
+    #[test]
+    fn duplicate_grounded_target_claims_do_not_inflate_target_coverage() {
+        let expected = Proposition {
+            key: "backup.enabled".into(),
+            value: "true".into(),
+        };
+        let claim = FinalAnswerClaim {
+            proposition: expected.clone(),
+            mode: FinalClaimMode::Grounded,
+        };
+        let target = target_outcome(
+            std::slice::from_ref(&expected),
+            &[claim.clone(), claim],
+            |_| true,
+        );
+        assert_eq!(target.exposed_grounded_targets, vec![expected]);
+        assert_eq!(target.grounded_target_coverage, 1.0);
+        assert!(target.all_targets_grounded);
+    }
+
+    #[test]
     fn aggregate_counts_false_and_correct_abstention_separately() {
         let mk = |id: &str, expected_outcome, raw_abstained, harness_abstained| CaseResult {
             id: id.into(),
@@ -1061,6 +1294,8 @@ mod tests {
                 grounded_claims: 0,
                 unsupported_grounded_claims: 0,
                 abstained: raw_abstained,
+                exposed_factual_claims: vec![],
+                target: empty_target(),
                 call: CallObservation {
                     model: "m".into(),
                     usage: Default::default(),
@@ -1077,6 +1312,8 @@ mod tests {
                 factual_claim_coverage: 1.0,
                 unsupported_exposed_grounded_claims: 0,
                 abstained: harness_abstained,
+                exposed_factual_claims: vec![],
+                target: empty_target(),
                 resolution_attempts: 0,
                 resolution_succeeded: false,
                 calls: vec![],
@@ -1093,6 +1330,8 @@ mod tests {
                 factual_claim_coverage: 1.0,
                 unsupported_exposed_grounded_claims: 0,
                 abstained: harness_abstained,
+                exposed_factual_claims: vec![],
+                target: empty_target(),
                 resolution_attempts: 0,
                 resolution_succeeded: false,
                 calls: vec![],
@@ -1101,15 +1340,24 @@ mod tests {
                 total_latency_ms: 1,
             },
         };
-        let results = vec![
+        let mut results = vec![
             mk("u", ExpectedOutcome::Unknown, false, true),
             mk("g", ExpectedOutcome::Grounded, true, false),
         ];
+        let safe_partial = Proposition {
+            key: "http.status_code".into(),
+            value: "503".into(),
+        };
+        results[0].raw.target.exposed_grounded_non_targets = vec![safe_partial.clone()];
+        results[0].raw.target.supported_grounded_non_targets = vec![safe_partial];
         let raw = aggregate_raw(&results);
         let harness = aggregate_harness(&results, |result| &result.harness);
         assert_eq!(raw.missed_insufficiency, 1);
+        assert_eq!(raw.target.missed_target_insufficiency, 0);
+        assert_eq!(raw.target.safe_partial_unknown_cases, 1);
         assert_eq!(raw.false_abstentions, 1);
         assert_eq!(harness.arm.correct_abstentions, 1);
         assert_eq!(harness.arm.false_abstentions, 0);
+        assert_eq!(harness.arm.target.false_target_abstentions, 1);
     }
 }
