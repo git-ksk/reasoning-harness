@@ -21,7 +21,7 @@ The committed `fixtures/product-dogfood-v1` corpus has two workload classes:
 
 Each class contains a directly groundable case, an intentionally insufficient case, and a case that becomes groundable only after bounded resolution. These fixtures are product dogfood, not research calibration or holdout data.
 
-The report contract is `reason-product-dogfood-v6` and records:
+The report contract is `reason-product-dogfood-v7` and records:
 
 - unsupported grounded assertion count/rate;
 - correct abstention and missed insufficiency;
@@ -32,7 +32,7 @@ The report contract is `reason-product-dogfood-v6` and records:
 - explicit answer-safety runtime identity and per-target safety observations for the successor arm;
 - per-target failure provenance for Harness arms, including exact candidate/verification/resolution/render/finalization state, deterministic recovery eligibility, and a classified expected-grounded miss reason.
 
-The v6 report adds behavior-neutral failure provenance to the v5 output. It does not change candidate generation, verification, resolution, safety decisions, finalization, or exposed text. The workflow requires every expected-grounded miss to receive a non-`other` classification before the report is accepted. When an exact target is already authorized but the overall artifact remains `Unknown`/`Reject`, the trace also counts unresolved or contradicted non-target claims so renderer misses remain distinct from artifact-level blockers.
+The v7 report retains v6 failure provenance and adds deterministic canonical verified-target recovery. If normal model rendering cannot finalize after the artifact has already reached `Accept`, the Harness may replace that render with the exact Harness-owned requested propositions only when every requested target is already `Known`/`Supported`. The recovered candidate still passes ordinary finalization and the configured answer-safety gate. No model prose, fuzzy key matching, or new authority is used. `canonical_recovery_cases` records how often this fallback was used. When an exact target is already authorized but the overall artifact remains `Unknown`/`Reject`, the trace also counts unresolved or contradicted non-target claims so renderer misses remain distinct from artifact-level blockers.
 
 The v5 report retains the v2 case-level abstention metrics and the v3 target-level measurements unchanged, preserves the v4 shared-render comparison contract, and adds the actual user-visible `exposed_text` for each arm so qualified/unknown outputs can receive the manual comprehension review required by NL-5. The target-level measurements are keyed only to each fixture's harness-owned `input.hypotheses`. A safe partial answer may expose supported non-target facts while still correctly abstaining from the task target. They report grounded-target coverage, missed target insufficiency, false target abstention, and safe-partial retention separately. The first v2 three-arm pilot remains historical evidence and is not rewritten under the new metric.
 

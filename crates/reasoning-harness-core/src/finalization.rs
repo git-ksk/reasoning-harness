@@ -68,6 +68,60 @@ pub trait FinalAnswerRenderer: Send + Sync {
     fn render(&self, artifact: &ReasoningArtifact, verdict: Verdict) -> FinalAnswerCandidate;
 }
 
+/// Deterministically render only harness-owned requested targets that are already authorized by the
+/// final artifact. This is a recovery primitive for model renderers that omit or rename structured
+/// claims after the harness has reached `Accept`; it never derives authority from model prose.
+///
+/// Recovery is intentionally all-or-nothing across the requested target set. Safe partial recovery is
+/// a separate product policy concern: this helper refuses to present an apparently complete grounded
+/// answer when any requested target lacks exact `Known`/`Supported` authority.
+pub fn canonical_verified_target_answer(
+    artifact: &ReasoningArtifact,
+    verdict: Verdict,
+    targets: &[Proposition],
+) -> Option<FinalAnswerCandidate> {
+    if verdict != Verdict::Accept || targets.is_empty() {
+        return None;
+    }
+
+    let mut factual_claims = Vec::new();
+    for target in targets {
+        if factual_claims
+            .iter()
+            .any(|claim: &FinalAnswerClaim| claim.proposition == *target)
+        {
+            continue;
+        }
+        let authorized = artifact.claims.iter().any(|claim| {
+            claim.proposition.as_ref() == Some(target)
+                && matches!(
+                    claim.state,
+                    EpistemicState::Known | EpistemicState::Supported
+                )
+        });
+        if !authorized {
+            return None;
+        }
+        factual_claims.push(FinalAnswerClaim {
+            proposition: target.clone(),
+            mode: FinalClaimMode::Grounded,
+        });
+    }
+
+    if factual_claims.is_empty() {
+        return None;
+    }
+    let text = factual_claims
+        .iter()
+        .map(|claim| format!("{} = {}", claim.proposition.key, claim.proposition.value))
+        .collect::<Vec<_>>()
+        .join("; ");
+    Some(FinalAnswerCandidate {
+        text,
+        factual_claims,
+    })
+}
+
 #[derive(Debug, Clone, Copy, Default)]
 pub struct CanonicalFinalAnswerRenderer;
 
@@ -253,6 +307,92 @@ mod tests {
             }],
             ..Default::default()
         }
+    }
+
+    #[test]
+    fn canonical_verified_target_recovery_uses_exact_authorized_targets() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let recovered = canonical_verified_target_answer(
+            &artifact(EpistemicState::Supported),
+            Verdict::Accept,
+            std::slice::from_ref(&target),
+        )
+        .expect("supported exact target should be recoverable");
+        assert_eq!(recovered.text, "feature.enabled = true");
+        assert_eq!(
+            recovered.factual_claims,
+            vec![FinalAnswerClaim {
+                proposition: target,
+                mode: FinalClaimMode::Grounded,
+            }]
+        );
+    }
+
+    #[test]
+    fn canonical_verified_target_recovery_rejects_key_drift_and_unknown_verdict() {
+        let exact = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let drifted = Proposition {
+            key: "feature enabled".into(),
+            value: "true".into(),
+        };
+        let current = artifact(EpistemicState::Supported);
+        assert!(
+            canonical_verified_target_answer(
+                &current,
+                Verdict::Accept,
+                std::slice::from_ref(&drifted),
+            )
+            .is_none()
+        );
+        assert!(
+            canonical_verified_target_answer(
+                &current,
+                Verdict::Unknown,
+                std::slice::from_ref(&exact),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn canonical_verified_target_recovery_requires_every_requested_target() {
+        let exact = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let missing = Proposition {
+            key: "feature.region".into(),
+            value: "us-east-1".into(),
+        };
+        assert!(
+            canonical_verified_target_answer(
+                &artifact(EpistemicState::Supported),
+                Verdict::Accept,
+                &[exact, missing],
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn canonical_verified_target_recovery_deduplicates_exact_targets() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let recovered = canonical_verified_target_answer(
+            &artifact(EpistemicState::Known),
+            Verdict::Accept,
+            &[target.clone(), target],
+        )
+        .expect("known exact target should be recoverable");
+        assert_eq!(recovered.factual_claims.len(), 1);
     }
 
     #[test]
