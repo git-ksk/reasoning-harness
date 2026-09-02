@@ -61,4 +61,22 @@ Gemini 3.5 Flash-Lite was then run on the same v5/shared-render product workload
 
 NVIDIA Hosted NIM `nvidia/nemotron-3.5-lightning-30b-a3b` was also attempted under the same product workload in Actions run `33613607389`. It completed the first fixture, entered the second, then failed during structured candidate generation with `invalid structured output after fallback` (`expected value at line 1 column 1`). No aggregate report was produced. This is operational/protocol evidence only, not a semantic score; it is consistent with the previously recorded Nemotron structured-protocol incompatibility and does not justify provider-specific prompt/schema relaxation.
 
+### Expanded product-model matrix
+
+The same six-case v5/shared-render workload was subsequently run across the additional Mistral/Google models already used by the research benchmark. The table below reports the **Harness task-target boundary**, not raw-model quality. `Target coverage` is mean grounded-target coverage over the four expected-grounded cases; `resolution` is success on the two configured-resolution cases. Every completed Harness slice still exposed zero unsupported grounded claims and zero missed target insufficiency.
+
+| Model | Run | Completed | Target coverage | False target abstention | Resolution | Product observation |
+| --- | ---: | :---: | ---: | ---: | ---: | --- |
+| Gemma 4 31B | `33576520136` | yes | **1.00** | **0.00** | **2/2** | strongest complete Google-hosted Gemma slice |
+| Gemini 3.5 Flash-Lite | `33613604519` | yes | **1.00** | **0.00** | **2/2** | strong utility; successor overhead was comparatively high |
+| Mistral Small | `33618436419` | yes | 0.75 | 0.25 | 1/2 | materially better coverage than the Ministral 8B/14B slices on this workload |
+| Gemini 3.1 Flash-Lite | `33618442500` | yes | 0.75 | 0.25 | 1/2 | safe but less complete than Gemini 3.5 Flash-Lite |
+| Ministral 8B | `33576517724` | yes | 0.25 | 0.75 | 0/2 | safe but frequently withholds useful target answers; tracked in #139 |
+| Ministral 14B | `33618430680` | yes | 0.25 | 0.75 | 0/2 | larger parameter count did not improve product utility here |
+| Ministral 3B | `33618424552` | yes | 0.00 | 1.00 | 0/2 | maximally conservative/withholding on all expected-grounded target cases |
+| Gemma 4 26B A4B | `33618449494` | **no** | n/a | n/a | n/a | second fixture failed with invalid structured output after fallback |
+| Nemotron 3.5 Lightning 30B A3B | `33613607389` | **no** | n/a | n/a | n/a | second fixture failed with invalid structured output after fallback |
+
+This is a workload-specific compatibility/utility matrix, not a general model leaderboard. In particular, parameter count does not predict product fitness here: strict structured-output adherence, candidate materialization, final rendering, and bounded-resolution behavior all matter.
+
 The manual `product-dogfood` GitHub Actions workflow uses repository secrets and preserves the JSON report as an artifact. The workflow gates on zero exposed unsupported grounded claims from both harness arms and verifies the baseline/successor runtime identities. `sufficient` is a no-op with respect to authority; only `insufficient`/`mixed` may force verification, bounded resolution, or abstention. A live result is evidence for the tested model/workload slice only; it is not a universal model or correctness claim.

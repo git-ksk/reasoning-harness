@@ -55,8 +55,8 @@ Before v1.0, command flags or product schemas may still evolve. Intentional inco
 The provider-neutral runtime is the product boundary. Provider adapters normalize transport/API behavior but never become verification authority.
 
 - Mistral, Google Gemini/AI Studio, and NVIDIA Hosted NIM adapters are implemented for live candidate generation.
-- Mistral and Google-hosted Gemma are live-smoked for the supported D3/v3 `semantic-check` product path. Product dogfood has completed on Ministral 8B, Gemma 4 31B, and Gemini 3.5 Flash-Lite on the recorded workloads.
-- A model/provider can still be incompatible with a specific structured-output protocol. Nemotron 3.5 Lightning remains a recorded example: the product dogfood run failed on invalid structured output after fallback and is treated as operational/protocol evidence, not a semantic score or fabricated abstention.
+- Mistral and Google-hosted Gemma are live-smoked for the supported D3/v3 `semantic-check` product path. Product dogfood has completed on Ministral 3B/8B/14B, Mistral Small, Gemma 4 31B, and Gemini 3.1/3.5 Flash-Lite on the recorded workload. Completion does not imply equal utility; the recorded target-coverage matrix ranges from 0.00 to 1.00.
+- A model/provider can still be incompatible with a specific structured-output protocol. Gemma 4 26B A4B and Nemotron 3.5 Lightning are recorded examples: each product dogfood run failed on invalid structured output after fallback and is treated as operational/protocol evidence, not a semantic score or fabricated abstention.
 - Provider quotas, service availability, rate limits, model retirement, and model-specific output quality are external operational dependencies and are reported separately from harness correctness.
 
 Provider credentials remain environment variables and are not accepted in `reason-config-v1`.
