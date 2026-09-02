@@ -20,7 +20,7 @@ The runtime must also be allowed to stop with `unknown`, a qualified partial ans
 
 See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
-## Two-track roadmap after D3 adoption
+## Product and research roadmap after D3 + first sufficiency adoption
 
 D3 is now an adopted, operationally stabilized runtime profile. The project therefore advances on
 two connected tracks instead of treating every research experiment as a product feature:
@@ -40,21 +40,19 @@ two connected tracks instead of treating every research experiment as a product 
 The CLI is the product. Public embedding, MCP, and desktop interfaces remain later adapters. See
 [the native CLI product roadmap](product-roadmap.md).
 
-### Research track — deepen D3 without destabilizing it (#91)
+### Research track — first residual-sufficiency program completed (#91)
 
-1. **RSD0 residual-gap discovery:** fresh calibration-only cases where current typed D3 metadata is
-   insufficient to decide evidence sufficiency.
-2. **RSD1 soft sufficiency coordinate:** test `sufficient | insufficient | mixed`; only
-   `insufficient`/`mixed` may force abstention, while `sufficient` never grants correctness.
-3. **RSD2 risk/coverage characterization:** measure prevented unsafe assertions and unnecessary
-   abstention together across seeds/models.
-4. **RSD3 selective/conformal abstention:** only after a calibrated sufficiency signal exists.
-5. **RSD4 relation-level causal sufficiency:** only after typed directional relation-evidence
-   requirements exist.
+1. **RSD0 residual-gap discovery — done:** fresh calibration-only cases proved a residual sufficiency gap beyond typed D3 metadata.
+2. **RSD1 soft sufficiency coordinate — done:** `sufficient | insufficient | mixed` remained non-authoritative and monotone.
+3. **RSD2 risk/coverage characterization — done:** multi-seed/model characterization preserved the predeclared safety boundary.
+4. **Independent frozen sufficiency holdout — done:** Ministral 8B and Gemma 4 31B passed the predeclared promotion gates without retuning.
+5. **Product bridge + NL-5 — done:** versioned v1/v2 policies, explicit rollback, target-aware/shared-render dogfood, and exposed-text review completed.
+6. **RSD3 selective/conformal abstention — follow-on only:** start under a new identity only if a new product/research gap justifies it.
+7. **RSD4 relation-level causal sufficiency — follow-on only:** requires typed directional relation-evidence requirements first.
 
-A research candidate reaches the product track only through fresh calibration, independent frozen
-holdout, operational stabilization, explicit runtime profile/rollback, CLI compatibility coverage,
-and a separate reversible adoption change. Observed holdout-v4/v5 never become tuning data.
+A future research candidate reaches the product track only through a fresh sequence of calibration,
+independent frozen holdout, operational stabilization, explicit runtime profile/rollback, CLI
+compatibility coverage, and a separate reversible adoption change. Historical holdouts never become tuning data.
 
 ## v0.1 — trustworthy intermediate state and native CLI
 - stabilize HarnessInput / ReasoningCandidate / ReasoningArtifact schemas

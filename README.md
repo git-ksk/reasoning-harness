@@ -96,21 +96,31 @@ boundaries.
 Structured JSON remains supported as an advanced integration/debug/CI surface. It is no longer the UX
 ordinary users need to understand first.
 
-The shipped natural path already uses evidence binding, assumption/contradiction/evidence-qualification
-diagnostics, bounded resolution, re-verification, and final-claim coverage. D3 remains the adopted
-model-backed semantic diagnostic surface through `reason semantic-check`; automatic residual evidence
-sufficiency is still Research Issue #91 and is **not** claimed as solved by this product slice.
+The shipped natural path uses evidence binding, assumption/contradiction/evidence-qualification
+diagnostics, bounded resolution, re-verification, final-claim coverage, and the adopted D3 + residual
+sufficiency answer-safety bridge. The default `d3-sufficiency` profile is
+`d3-sufficiency-answer-gate-v2`: it can preserve a baseline result or force verification/resolution,
+but `sufficient` never creates evidence, receipts, epistemic promotion, or verdict authority. The
+original v1 policy and the baseline-only path remain explicit rollbacks.
+
+The initial residual-sufficiency research program (#91) is complete: calibration, independent frozen
+holdout, operational stabilization, versioned product wiring, and NL-5 dogfood all finished without
+mutating the frozen research corpora. Further selective/conformal or relation-level sufficiency work is
+follow-on research, not a prerequisite for using the current natural-language path.
 
 ## What do I give it?
 
-`reason` is currently **non-interactive and structured-data-first**. It is not a chat client where arbitrary prose is treated as trusted evidence.
+For the primary path, give `reason` a natural-language task plus only the context or authority you
+actually have. The CLI is non-interactive, but it is **natural-language-first**, not structured-data-first:
 
-For the main `reason run` path, your application provides:
+- `--file` / stdin: provenance-bearing untrusted context the model may read;
+- `--fact KEY=VALUE`: explicit harness-owned structured evidence;
+- `--hypothesis KEY=VALUE`: the proposition you want evaluated;
+- `--resolver-fact KEY=VALUE`: an explicitly configured local fact available only through bounded resolution.
 
-1. a `HarnessInput` JSON document containing the task and harness-owned evidence; and
-2. a `ReasoningCandidate` JSON document proposed by your model/agent, or a configured live provider that generates the candidate.
-
-The CLI then materializes and checks a `ReasoningArtifact` without allowing the model to create trusted evidence or verification receipts.
+A task can run with less than this, but missing trusted support may correctly produce a qualified answer
+or `unknown`. Structured `HarnessInput` / `ReasoningCandidate` JSON remains the advanced integration,
+automation, and debugging surface.
 
 Inspect the exact contracts at any time:
 
