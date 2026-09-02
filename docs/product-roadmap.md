@@ -173,6 +173,8 @@ slice is complete after promotion of the D3/sufficiency bridge, using the three-
 **raw model vs current Harness baseline vs the same Harness with the promoted D3/sufficiency gate**.
 CLI-4 now means repeating that discipline on additional real workloads rather than treating one pilot as
 a universal product-quality claim. Ministral-specific low coverage/withheld-answer UX is tracked in #139.
+
+The frozen 24-case capability matrix under #147 has now completed Stage A and exposed a broader cross-model utility-recovery opportunity. Issue #150 is the planned interlude before five-seed Stage-B replication: first localize whether misses occur at candidate materialization, verification/qualification, bounded resolution, renderer structure, or finalization; then recover only exact already-authorized artifact state through deterministic harness-owned mechanisms. Exact proposition identity, authority, insufficiency, temporal/scope qualification, and contradiction gates must not be relaxed to improve coverage.
 Use separate dogfood/reference workloads and answer:
 
 - does the harness reduce unsupported final assertions in realistic use?;

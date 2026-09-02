@@ -54,3 +54,13 @@ manual `product-dogfood` workflowで`product-dogfood-v1` / `product-dogfood-v2`�
 3. 24 cases、8 capability families、各3 casesを要求
 
 6-case v1は高速smoke/regressionと過去NL-5結果の解釈用に残します。
+
+## Stage A結果とutility recoveryの中間フェーズ
+
+Stage Aは、freeze済み`product-dogfood-v2`、base seed `12000`、max tokens `1024`で完了した。6モデルが24ケースを完走し、Harness armではunsupported exposed grounded claimとmissed task-target insufficiencyはいずれも0だった。successor target coverageは、Gemini 3.5 Flash-Lite `1.00`、Mistral Small `0.70`、Gemma 4 31B `0.60`、Ministral 8B `0.20`、Ministral 14B `0.20`、Ministral 3B `0.10`。Gemma 4 26BとNemotron 3.5 Lightningはprotocol-incomplete。Gemini 3.1 Flash-Liteはcase 18まで進んだ後、Google側HTTP 500 high-demandでoperationally incompleteとなったためStage A semantic scoreは付けない。
+
+24ケース化により、6ケースでは見えなかったproduct portability上の問題が局在化した。複数のMinistral expected-grounded missでは`final_verdict=accept`まで到達しているのにstructured final claimを露出できず、Gemma 4 31Bでは人間には意味が通るrenderer claimでもharness-owned exact keyからずれたためfinalizationが正しくblockしていた。これはexact proposition identityを緩める理由ではなく、すでにverify済みのartifact stateからHarness自身が安全に回収する余地を示す。
+
+そのためStage Bの前にIssue #150を明示的な中間フェーズとして挟む。対象は、(1) behavior-neutralなfailure provenance、(2) exact `Known` / `Supported` task targetのdeterministic canonical recovery、(3) harness-owned unresolved targetだけを起点にしたbounded resolver closureとmandatory admission/re-verification、(4) conservative safe-partial recovery、(5) provider-neutral structured-output resilienceの別lane、(6) before/after development comparisonの後にfresh Stage-B seeds `13000`, `13100`, `13200`, `13300`, `13400`でreplication、の6点。
+
+v2 fixtureとhash manifestはこの間もfreezeしたまま変更しない。Stage Bは#150のcandidate behaviorがfreezeされるまで意図的に保留し、fresh 12〜16ケースholdoutはStage B selection後まで作成しない。
