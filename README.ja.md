@@ -345,6 +345,7 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 - Mistral / Google / NVIDIA provider adapter
 - versioned JSON envelope、schema-backed config、stdin、typed failure class
 - Linux x64 / macOS Apple Silicon・Intel / Windows x64のproduct smoke
+- Ministral 8B / Gemma 4 31B / Gemini 3.5 Flash-Liteでproduct dogfood実測済み。Nemotron 3.5 Lightningはこのproduct workloadではprotocol-incomplete
 
 詳細な使い方は[日本語CLI guide](docs/cli.ja.md)、完全な仕様は[英語CLI guide](docs/cli.md)、v0.xの互換性は[support policy](docs/support.md)を参照してください。
 

@@ -51,9 +51,14 @@ cargo run -p reasoning-harness-cli --bin reason-product-dogfood -- \
 
 - Ministral 8B: Actions run `33576517724`
 - Gemma 4 31B: Actions run `33576520136`
+- Gemini 3.5 Flash-Lite follow-up: Actions run `33613604519`
 
 両model sliceとも、2つのHarness armはunsupported grounded claim 0、missed task-target insufficiency 0でした。Gemmaではbaseline/successorともexpected-grounded caseのmean target coverage 1.0、false target abstention 0、resolution 2/2成功で、unknown caseでもsupported non-target fact 2件を含むsafe qualified partial answerを1件保持しました。このrunでsuccessorのbaseline比overheadはtoken約+45.3%、latency約+12.2%です。Ministralはbaseline/successorのtask-target挙動が完全同値でしたが、両方ともfalse target abstention 0.75、resolution 0/2でした。これはsuccessor gateによる回帰ではなくmodel固有のproduct utility制約として#139で追跡します。
 
 v5の`exposed_text`でmanual comprehension reviewも実施しました。Gemmaのroot-cause qualified answerは「database原因は未確定」と明示しつつ、HTTP 503とDB connection error 7件というverified observationだけを残し、correlationをcausationへ昇格していません。baseline/successor文面も完全一致です。Ministralのraw unknown文は不足根拠を分かりやすく説明しますが、Harness armはfinal textをwithholdするcaseが多く、安全ではあるものの説明性が弱いです。これらは対象model/workload sliceのproduct evidenceであり、普遍的なmodel品質主張ではありません。
+
+その後、現在の`main`から同じv5/shared-render product workloadでGemini 3.5 Flash-Liteも追加実測しました。baseline/successor両Harness armともunsupported grounded claim 0、missed task-target insufficiency 0、expected-grounded 4 caseのmean target coverage 1.0、false target abstention 0、configured resolution 2/2成功でした。expected-unknown 2 caseもtargetを断言せず正しくabstainしながら、safe partial stateを保持し、report上はsafe-partial unknown 2 case / supported non-target grounded claim 4件でした。exposed textのmanual reviewでも、root-cause caseはHTTP 503とDB connection error 7件を残しつつdatabase causationは未確認と明示しており、理解しやすさと保守性を維持しています。一方、このrunのsuccessor overheadはbaseline比でtoken約+58.4%、latency約+156.4%と大きめでした。
+
+NVIDIA Hosted NIM `nvidia/nemotron-3.5-lightning-30b-a3b`も同条件でActions run `33613607389`を実施しました。1 fixture目を完了し2 fixture目へ入った後、structured candidate生成で`invalid structured output after fallback`（`expected value at line 1 column 1`）となり、aggregate reportは生成されませんでした。これはsemantic scoreではなくoperational/protocol evidenceです。過去に記録したNemotronのstructured-protocol incompatibilityと整合し、provider専用のprompt/schema緩和で救済する根拠にはしません。
 
 GitHub Actionsのmanual `product-dogfood` workflowはrepository secretを使い、JSON reportをartifactとして保存します。baseline / D3+sufficiency両Harness armで外部へ露出するunsupported grounded claimが0であることと、runtime identityをgateします。`sufficient`はauthorityを増やさずno-op、`insufficient` / `mixed`だけがverification・bounded resolution・abstention方向へ作用します。live結果はそのmodel/workload sliceの実測であり、普遍的な正しさの主張ではありません。
