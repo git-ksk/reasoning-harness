@@ -55,7 +55,7 @@ Before v1.0, command flags or product schemas may still evolve. Intentional inco
 The provider-neutral runtime is the product boundary. Provider adapters normalize transport/API behavior but never become verification authority.
 
 - Mistral, Google Gemini/AI Studio, and NVIDIA Hosted NIM adapters are implemented for live candidate generation.
-- Mistral and Google-hosted Gemma are live-smoked for the supported D3/v3 `semantic-check` product path. Product dogfood has completed on Ministral 3B/8B/14B, Mistral Small, Gemma 4 31B, and Gemini 3.1/3.5 Flash-Lite on the recorded workload. Completion does not imply equal utility; the recorded target-coverage matrix ranges from 0.00 to 1.00.
+- Mistral and Google-hosted Gemma are live-smoked for the supported current/rollback `semantic-check` product path. Product dogfood has completed on Ministral 3B/8B/14B, Mistral Small, Gemma 4 31B, and Gemini 3.1/3.5 Flash-Lite on the recorded workload. Completion does not imply equal utility; the recorded target-coverage matrix ranges from 0.00 to 1.00.
 - A model/provider can still be incompatible with a specific structured-output protocol. Gemma 4 26B A4B and Nemotron 3.5 Lightning are recorded examples: each product dogfood run failed on invalid structured output after fallback and is treated as operational/protocol evidence, not a semantic score or fabricated abstention.
 - Provider quotas, service availability, rate limits, model retirement, and model-specific output quality are external operational dependencies and are reported separately from harness correctness.
 
@@ -64,3 +64,6 @@ Provider credentials remain environment variables and are not accepted in `reaso
 ## Stability status
 
 v0.1.0 is a preview, not a v1.0 stability claim. The v1.0 readiness gate additionally requires repeated real-workload product evidence, stable install/upgrade practice, documented security/secret handling, and completed compatibility gates described in `docs/product-roadmap.md`.
+
+
+For the distinction between product terms, machine/runtime identifiers, and historical research labels, see [Terminology and naming](terminology.md).

@@ -173,7 +173,7 @@ product pipelineはcontradiction/counterexample、evidence qualification、assum
 
 ただしdiagnosticはtrusted verificationと分離されています。diagnosticが「怪しい」と言っただけでtrusted evidenceやverification receiptが発生するわけではありません。
 
-D3 semantic runtimeはさらに明示的に別surfaceです。`reason semantic-check`として提供され、soft decisionを維持するか`abstain`へ保守化できますが、trusted evidence、hard receipt、epistemic promotion、final verdict authorityは作れません。
+model-backed semantic runtimeはさらに明示的に別surfaceです。`reason semantic-check`として提供され、soft decisionを維持するか`abstain`へ保守化できますが、trusted evidence、hard receipt、epistemic promotion、final verdict authorityは作れません。
 
 ## Step 6: 最後にacceptance policyが全体verdictを決める
 

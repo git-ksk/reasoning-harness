@@ -194,7 +194,7 @@ Other product commands have their own AI requirements:
 | `reason run --candidate ...` | **No** | Deterministic materialization, evidence verification, diagnostics, and acceptance policy can operate on an existing candidate. |
 | `reason verify artifact.json` | **No** | Validates an already materialized artifact and its invariants. |
 | `reason run --provider ...` | **Yes** | The provider is used to generate the untrusted candidate. |
-| `reason semantic-check ...` | **Yes** | D3/v3 is a model-backed soft semantic diagnostic surface. |
+| `reason semantic-check ...` | **Yes** | The semantic runtime is a model-backed soft diagnostic surface. |
 
 So Reasoning Harness is **not inherently an AI endpoint client**. AI is optional for the core candidate-checking path.
 
@@ -248,7 +248,7 @@ Diagnostics such as contradiction/counterexample discovery, assumption inspectio
 
 This is why `reason run --candidate ...` can be useful with **zero API keys**: the model work happened elsewhere, while the harness performs the trust decision with deterministic rules and explicitly trusted verifier inputs.
 
-For a deeper walkthrough, including state transitions, receipts, qualification, and where model-backed D3 fits, see [How Reasoning Harness works](docs/how-it-works.md). For raw-model-vs-harness evaluation, see [product dogfood](docs/product-dogfood.md).
+For a deeper walkthrough, including state transitions, receipts, qualification, and where the semantic safety runtime fits, see [How Reasoning Harness works](docs/how-it-works.md). For raw-model-vs-harness evaluation, see [product dogfood](docs/product-dogfood.md). The [terminology guide](docs/terminology.md) separates product concepts from compatibility IDs and historical research phase names.
 
 ## Semantic safety check
 
@@ -262,7 +262,7 @@ reason semantic-check \
   --format json
 ```
 
-The default profile is `semantic-decidability-d3-v1`. The characterized `soft-semantic-v3` profile remains available as an explicit rollback with `--profile v3`.
+Use the descriptive CLI selectors `--profile current` (default) and `--profile rollback`. The exact machine configuration IDs remain `semantic-decidability-d3-v1` and `soft-semantic-v3` for reproducibility; legacy `d3` / `v3` selectors remain accepted aliases.
 
 Use this advanced surface when you specifically need a semantic contradiction/counterexample/unsupported-premise/causal-gap diagnostic. For a normal human task, start with `reason "TASK"`; for structured application/CI integration, start with `reason run`.
 
@@ -301,13 +301,13 @@ Current `main` includes the capabilities below. The published `v0.1.0` tag preda
 - `accept | reject | unknown` outcomes with fail-closed runtime behavior;
 - bounded resolution/finalization primitives and `ReasoningPolicy` constraints;
 - durable `ReasoningThread` event/checkpoint replay primitives;
-- adopted `semantic-decidability-d3-v1` semantic runtime with explicit v3 rollback;
+- current semantic runtime with an explicit rollback profile; exact compatibility IDs remain documented for reproducibility;
 - Mistral, Google, and NVIDIA provider adapters outside the correctness authority boundary;
 - versioned JSON product envelopes, schema-backed layered config, stdin support, and typed failure classes;
 - credential-free product smoke on Linux x64, macOS Apple Silicon/Intel, and Windows x64.
 - recorded product dogfood across Ministral 3B/8B/14B, Mistral Small, Gemma 4 31B, and Gemini 3.1/3.5 Flash-Lite; Gemma 4 26B A4B and Nemotron 3.5 Lightning remain protocol-incomplete on this product workload.
 
-See the [CLI guide](docs/cli.md) for the full invocation contract, the [Japanese CLI guide](docs/cli.ja.md), and [support policy](docs/support.md) for v0.x compatibility boundaries.
+See the [CLI guide](docs/cli.md) for the full invocation contract, the [Japanese CLI guide](docs/cli.ja.md), the [terminology guide](docs/terminology.md), and [support policy](docs/support.md) for v0.x compatibility boundaries.
 
 ## What this is not
 

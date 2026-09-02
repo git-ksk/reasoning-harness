@@ -36,9 +36,9 @@ trustedなstructured supportがなければ、結果が条件付き/`unknown`の
 
 最終自然文もmodelがrenderするだけでは信用しません。`finalize_answer`がfactual-claim coverageを確認し、新しい事実を勝手に混ぜた場合はblockします。明示resolverで確認できる場合のみbounded resolutionへ戻し、再verification後に再renderできます。
 
-自然文pathでは、grounded factを外へ出す前に採用済みD3 + evidence-sufficiencyの追加安全チェックも走ります。このチェックは**制限する方向にしか働きません**。追加verification / bounded resolution / abstainを要求できますが、model confidenceをtrusted evidenceや`accept`へ昇格させることはできません。一方、support済みのpartial factへ「task全体を完答できること」は要求しないため、安全な条件付き回答は残せます。
+自然文pathでは、grounded factを外へ出す前にcurrent semantic + evidence-sufficiencyの追加安全チェックも走ります。このチェックは**制限する方向にしか働きません**。追加verification / bounded resolution / abstainを要求できますが、model confidenceをtrusted evidenceや`accept`へ昇格させることはできません。一方、support済みのpartial factへ「task全体を完答できること」は要求しないため、安全な条件付き回答は残せます。
 
-defaultは`--safety-profile d3-sufficiency`です。旧policy再現やdebug用のrollbackとして`d3-sufficiency-v1` / `baseline`もあります。versioned identityや厳密な意味は[semantic-check](#semantic-check)および[仕組みの日本語解説](how-it-works.ja.md)を参照してください。
+defaultは`--safety-profile current`です。旧policy再現やdebug用に`legacy-v1` / `baseline`もあります。従来の`d3-sufficiency` / `d3-sufficiency-v1`表記は互換aliasとして残ります。exact identityは[semantic-check](#semantic-check)、[仕組みの日本語解説](how-it-works.ja.md)、[用語ガイド](terminology.ja.md)を参照してください。
 
 自然文JSON出力は通常の`reason-cli-output-v1` envelope内で`output_contract: reason-natural-output-v2`を明示します。
 
@@ -165,7 +165,7 @@ reason schema config
 
 ## semantic-check
 
-D3 semantic runtimeを明示的に使うproduct commandです。
+current semantic runtimeを明示的に使うproduct commandです。
 
 ```bash
 reason semantic-check \
@@ -175,14 +175,14 @@ reason semantic-check \
   --format json
 ```
 
-defaultは`semantic-decidability-d3-v1`。v3 rollback:
+通常は`--profile current`を使います。machine identityは`semantic-decidability-d3-v1`のままです。rollback:
 
 ```bash
 reason semantic-check \
   --input examples/semantic-check.json \
   --provider mistral \
   --model ministral-8b-latest \
-  --profile v3 \
+  --profile rollback \
   --format json
 ```
 

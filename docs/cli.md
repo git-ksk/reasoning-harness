@@ -69,9 +69,9 @@ If the context does not contain trusted structured support, the safe result may 
 
 The final model-rendered answer is also untrusted until `finalize_answer` checks factual-claim coverage. Any newly introduced factual proposition is blocked; when an explicitly configured resolver can verify it, the proposition may re-enter bounded resolution and then be rendered again.
 
-The natural-language path also runs the adopted D3 + evidence-sufficiency safety checks before exposing grounded factual claims. These checks are **restrictive only**: they may require more verification, bounded resolution, or abstention, but they cannot turn model confidence into trusted evidence or an `accept` verdict. Supported partial facts can still be shown without requiring them to answer the whole task.
+The natural-language path also runs the current semantic + evidence-sufficiency safety checks before exposing grounded factual claims. These checks are **restrictive only**: they may require more verification, bounded resolution, or abstention, but they cannot turn model confidence into trusted evidence or an `accept` verdict. Supported partial facts can still be shown without requiring them to answer the whole task.
 
-The default profile is `--safety-profile d3-sufficiency`. Advanced rollback/testing options are `d3-sufficiency-v1` and `baseline`; see [Semantic runtime product surface](#semantic-runtime-product-surface) for the versioned identities and exact semantics.
+The default is `--safety-profile current`. Advanced rollback/testing options are `legacy-v1` and `baseline`. Legacy `d3-sufficiency` / `d3-sufficiency-v1` spellings remain accepted aliases; see [Semantic runtime product surface](#semantic-runtime-product-surface) and the [terminology guide](terminology.md) for exact machine identities.
 
 Natural JSON output declares `output_contract: reason-natural-output-v2` inside the normal `reason-cli-output-v1` envelope.
 
@@ -94,7 +94,7 @@ For a human using the CLI directly, start with **`reason "TASK"`**. For applicat
 - `reason run` — execute the harness-owned correctness process from a recorded candidate or live
   provider candidate generation.
 - `reason verify` — deterministically validate a `ReasoningArtifact`.
-- `reason semantic-check` — execute the adopted semantic runtime as a soft diagnostic coordinate; D3 is the default and v3 remains an explicit rollback.
+- `reason semantic-check` — execute the current semantic runtime as a soft diagnostic coordinate, with an explicit rollback profile.
 - `reason schema` — print the versioned JSON Schema for supported product wire contracts.
 
 `reason eval`, `reason eval-resolution`, and `reason eval-judges` are research/evaluation surfaces.
@@ -243,7 +243,7 @@ environment/provider-adapter inputs and are never serialized into the effective 
 
 ## Semantic runtime product surface
 
-`reason semantic-check` is the supported product surface for the adopted semantic runtime. It is intentionally separate from `reason run`: a semantic finding is diagnostic evidence and never gains verification, trusted-evidence, or final-verdict authority merely because it was produced by D3.
+`reason semantic-check` is the supported product surface for the current semantic runtime. It is intentionally separate from `reason run`: a semantic finding is diagnostic evidence and never gains verification, trusted-evidence, or final-verdict authority merely because it was produced by the model-backed semantic runtime.
 
 The input contract is `semantic-check-input-v1` and contains exactly a `request` plus a harness-owned `artifact`. Inspect it with:
 
@@ -251,7 +251,7 @@ The input contract is `semantic-check-input-v1` and contains exactly a `request`
 reason schema semantic-check
 ```
 
-Run the adopted D3 profile:
+Run the current profile:
 
 ```bash
 reason semantic-check \
@@ -261,16 +261,16 @@ reason semantic-check \
   --format json
 ```
 
-D3 executes `materialization-r2-v1` plus the deterministic typed-precondition gate. The JSON result includes the canonical runtime identity, base decision, final semantic decision, decidability disposition, usage, model, and provider-attempt count. `force_abstain` can only make the semantic result more conservative.
+The current profile executes the stabilized materialization and deterministic typed-precondition path. The JSON result still exposes the exact machine runtime identity (`semantic-decidability-d3-v1`) for reproducibility. It includes the base decision, final semantic decision, decidability disposition, usage, model, and provider-attempt count. `force_abstain` can only make the semantic result more conservative.
 
-The characterized rollback remains explicit:
+The characterized rollback remains explicit. Legacy `--profile v3` is still accepted as an alias:
 
 ```bash
 reason semantic-check \
   --input examples/semantic-check.json \
   --provider mistral \
   --model ministral-8b-latest \
-  --profile v3 \
+  --profile rollback \
   --format json
 ```
 
