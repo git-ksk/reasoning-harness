@@ -1,0 +1,34 @@
+{
+  "id": "fresh-runtime-version-consistent",
+  "capability_family": "contradiction",
+  "workload_class": "runtime_review",
+  "task": "Determine the active database engine version from two independent records that agree.",
+  "input": {
+    "task": "Determine the active database engine version from two independent records that agree.",
+    "evidence": [
+      {
+        "id": "runtime-api",
+        "source": "runtime API",
+        "observation": "Engine version 16.4 is active.",
+        "facts": {
+          "database.engine_version": "16.4"
+        }
+      },
+      {
+        "id": "inventory-export",
+        "source": "inventory export",
+        "observation": "The database engine version is 16.4.",
+        "facts": {
+          "database.engine_version": "16.4"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "database.engine_version",
+        "value": "16.4"
+      }
+    ]
+  },
+  "expected_outcome": "grounded"
+}

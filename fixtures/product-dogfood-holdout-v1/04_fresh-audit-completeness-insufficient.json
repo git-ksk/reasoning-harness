@@ -1,0 +1,26 @@
+{
+  "id": "fresh-audit-completeness-insufficient",
+  "capability_family": "insufficient_evidence",
+  "workload_class": "audit_review",
+  "task": "Decide whether audit coverage is complete from the presence of one captured administrative event.",
+  "input": {
+    "task": "Decide whether audit coverage is complete from the presence of one captured administrative event.",
+    "evidence": [
+      {
+        "id": "audit-sample",
+        "source": "audit event sample",
+        "observation": "A single administrative login event was captured.",
+        "facts": {
+          "audit.sample_event": "captured"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "audit.coverage_complete",
+        "value": "true"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

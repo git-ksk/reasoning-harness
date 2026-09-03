@@ -1,0 +1,26 @@
+{
+  "id": "fresh-dns-cause-explicit",
+  "capability_family": "causal_boundary",
+  "workload_class": "incident_review",
+  "task": "Report the incident cause established by the completed postmortem.",
+  "input": {
+    "task": "Report the incident cause established by the completed postmortem.",
+    "evidence": [
+      {
+        "id": "postmortem",
+        "source": "approved incident postmortem",
+        "observation": "The investigation concluded that an incorrect DNS TTL caused the outage.",
+        "facts": {
+          "outage.primary_cause": "dns_ttl_misconfiguration"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "outage.primary_cause",
+        "value": "dns_ttl_misconfiguration"
+      }
+    ]
+  },
+  "expected_outcome": "grounded"
+}

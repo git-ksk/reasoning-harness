@@ -1,0 +1,27 @@
+{
+  "id": "fresh-queue-partial-incident",
+  "capability_family": "safe_partial",
+  "workload_class": "operations_review",
+  "task": "State the verified queue observations and whether a network fault is established as the incident cause.",
+  "input": {
+    "task": "State the verified queue observations and whether a network fault is established as the incident cause.",
+    "evidence": [
+      {
+        "id": "queue-telemetry",
+        "source": "queue telemetry",
+        "observation": "Queue depth is 18 and the consumer health check is passing.",
+        "facts": {
+          "queue.depth": "18",
+          "consumer.health": "passing"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "service.degradation_cause",
+        "value": "network_fault"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "fresh-failover-region-resolution",
+  "capability_family": "bounded_resolution",
+  "workload_class": "resilience_review",
+  "task": "Identify the service failover region, using the configured resolver when the topology summary does not state it.",
+  "input": {
+    "task": "Identify the service failover region, using the configured resolver when the topology summary does not state it.",
+    "evidence": [
+      {
+        "id": "topology-summary",
+        "source": "service topology summary",
+        "observation": "Cross-region failover is configured.",
+        "facts": {
+          "service.failover": "configured"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "service.failover_region",
+        "value": "eu-west-1"
+      }
+    ]
+  },
+  "expected_outcome": "grounded_after_resolution",
+  "resolver_facts": {
+    "service.failover_region": "eu-west-1"
+  }
+}

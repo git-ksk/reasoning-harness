@@ -37,7 +37,18 @@ provider/protocol failureはoperational evidenceのままで、semantic denomina
 
 ### Stage C — fresh holdout
 
-Stage Bのmodel/runtime選定後にのみ、新しい12〜16 case holdoutを作成します。fixture payload、model list、seed、acceptance gateをprovider観測前にfreezeします。development matrix結果を見てfresh holdoutを後から書き換えません。
+freeze済みevaluation candidate `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352`についてStage-Bのmodel/runtime選定を完了し、fresh holdoutを`fixtures/product-dogfood-holdout-v1`として作成します。16 case、8 capability family ×2 caseで、`product-dogfood-v2`のtarget keyとの完全一致は0件です。live providerを一度も観測する前に`fixtures/product-dogfood-holdout-v1.sha256`でpayloadをfreezeします。
+
+観測前に固定するStage-C評価条件は次のとおりです。
+
+- base seed: `15000`
+- max tokens: `1024`
+- comparison contract: `shared-candidate-initial-render-v1`
+- current answer-safety configuration: `verified-target-answer-gate-v1`
+- 選定model: `ministral-8b-latest`、`ministral-14b-latest`、`mistral-small-latest`、`gemma-4-31b-it`、`gemini-3.1-flash-lite`
+- Gemini 3.5 Flash-LiteはStage-Bの4本がsemantic completion / coverage 1.00だった一方、5本目がprovider free-tier quotaでoperationally incompleteのためStage-C panelから外します。semantic failure扱いでもgate変更でもありません。
+
+acceptanceは観測前に固定します。semantic score対象の各modelでunsupported exposed grounded claims=`0`、missed target insufficiency=`0`、contradiction/temporal/scope protection維持、mean grounded target coverage >= `0.90`を要求します。provider/protocol failureはoperational evidenceとしてのみ扱い、fixture・gate・model-facing contractを変更せず同じmodel/seedで再試行できます。semantic missが出てもこのversionの結果として記録し、holdoutやruntimeをその場で書き換えません。
 
 ## v2で必要になったevaluator hardening
 
@@ -47,11 +58,7 @@ Stage Bのmodel/runtime選定後にのみ、新しい12〜16 case holdoutを作�
 
 ## Workflow
 
-manual `product-dogfood` workflowで`product-dogfood-v1` / `product-dogfood-v2`を明示選択できます。新しいcapability matrix観測ではv2をdefaultにします。provider credentialを読む前に、workflowは次を検証します。
-
-1. `reason-product-dogfood --validate-only`でfixture corpusをparse
-2. v2 SHA-256 manifestを検証
-3. 24 cases、8 capability families、各3 casesを要求
+manual `product-dogfood` workflowで`product-dogfood-v1` / `product-dogfood-v2` / `product-dogfood-holdout-v1`を明示選択できます。v2はdevelopment matrix、holdout-v1はStage-C専用surfaceです。provider credentialを読む前に選択corpusをparseし、v1=6 cases、v2=24 cases / 8 families ×3 + SHA-256 manifest、holdout-v1=16 cases / 8 families ×2 + SHA-256 manifestというfreeze済み構造を検証します。live holdout実行後は、同じworkflowが観測前に固定したsemantic gate（current-safety unsupported grounded claims=0、missed target insufficiency=0、mean grounded target coverage >=0.90）も強制します。
 
 6-case v1は高速smoke/regressionと過去NL-5結果の解釈用に残します。
 

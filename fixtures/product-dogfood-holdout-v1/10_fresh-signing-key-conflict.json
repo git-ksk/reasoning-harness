@@ -1,0 +1,34 @@
+{
+  "id": "fresh-signing-key-conflict",
+  "capability_family": "contradiction",
+  "workload_class": "supply_chain_review",
+  "task": "Determine which KMS key signed the release when the attestation records disagree.",
+  "input": {
+    "task": "Determine which KMS key signed the release when the attestation records disagree.",
+    "evidence": [
+      {
+        "id": "attestation-a",
+        "source": "artifact attestation A",
+        "observation": "The artifact was signed with kms-key-a.",
+        "facts": {
+          "artifact.signing_key": "kms-key-a"
+        }
+      },
+      {
+        "id": "attestation-b",
+        "source": "artifact attestation B",
+        "observation": "The artifact was signed with kms-key-b.",
+        "facts": {
+          "artifact.signing_key": "kms-key-b"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "artifact.signing_key",
+        "value": "kms-key-a"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

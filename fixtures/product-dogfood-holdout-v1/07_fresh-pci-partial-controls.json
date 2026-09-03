@@ -1,0 +1,27 @@
+{
+  "id": "fresh-pci-partial-controls",
+  "capability_family": "safe_partial",
+  "workload_class": "compliance_review",
+  "task": "State the verified transport and firewall controls, and whether PCI compliance is established from those controls alone.",
+  "input": {
+    "task": "State the verified transport and firewall controls, and whether PCI compliance is established from those controls alone.",
+    "evidence": [
+      {
+        "id": "control-snapshot",
+        "source": "security control snapshot",
+        "observation": "TLS 1.3 is enforced and the web application firewall is enabled.",
+        "facts": {
+          "tls.minimum_version": "1.3",
+          "waf.enabled": "true"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "compliance.pci_status",
+        "value": "compliant"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}
