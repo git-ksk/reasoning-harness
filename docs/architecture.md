@@ -151,6 +151,8 @@ The finalizer receives verified artifact state and produces a grounded answer, q
 
 The required target invariant is **final claim coverage**: factual propositions that appear in the final answer must map to supported artifact propositions or be explicitly represented as unresolved/assumed according to policy. If a renderer introduces a new factual proposition, that proposition must re-enter the ordinary candidate/verification loop before it may appear as grounded output.
 
+A narrow target-local recovery also exists for artifact-global `Reject`. It does **not** promote or rewrite the global verdict. An exact requested target may be exposed only as `QualifiedPartialAnswer` when every matching target claim has direct evidence-bound trusted `Supported` verification and the typed artifact demonstrates structural isolation from the rejected non-target state: no target-local contradiction/qualification/hard adversarial finding, no same-key blocker, no untyped problematic claim, no shared evidence, and no inference/dependency path to any unresolved or contradicted blocker. Contradicted blockers must themselves have direct evidence-bound trusted contradiction receipts. Any uncertainty about those typed dependencies fails closed.
+
 This makes `ReasoningArtifact` the source of truth and prevents a fluent final-generation step from undoing the correctness work performed earlier in the run.
 
 ## Narrow deterministic framework checks

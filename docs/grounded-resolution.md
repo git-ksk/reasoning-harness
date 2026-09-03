@@ -70,6 +70,8 @@ Finalization operates on `ReasoningArtifact`, never raw provider prose. A final 
 
 If a renderer introduces a new factual proposition, finalization returns `requires_verification` and withholds its text. The bounded runtime converts that proposition into a new harness-owned hypothesis and routes it through resolution and ordinary verification before it may appear as grounded output.
 
+The successor target-local finalizer may preserve an exact requested target even when the artifact-global verdict is `Reject`, but only as an explicitly qualified target-only result. Eligibility is intentionally stricter than ordinary target recovery: every target claim must be directly `Supported` by an evidence-bound trusted receipt; rejected/unresolved non-target claims must be typed; any same-key blocker, target qualification/hard adversarial signal, target contradiction, shared evidence, malformed dependency edge, or typed inference/dependency path between target and problematic non-target state disables recovery. Every contradicted blocker must itself be backed by an evidence-bound trusted contradiction receipt. The global `Reject` and full artifact history remain unchanged.
+
 The deterministic `CanonicalFinalAnswerRenderer` is the current default. Model-backed renderers can implement the same interface later without gaining authority.
 
 ## Controlled resolution benchmark

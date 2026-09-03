@@ -50,8 +50,8 @@ resolution, re-verification, and final-claim coverage remain harness-owned.
 
 1. **Bounded resolver target closure (#159):** implemented in the successor candidate line: exact Harness-owned unresolved hypotheses/evidence requirements are prioritized ahead of candidate-owned unresolved claims, while resolver class, budget, admission, qualification, and mandatory re-verification remain unchanged.
 2. **Renderer downgrade recovery (#160):** implemented in successor candidate `a020b5925497ff3fdf200a9622270fa1889a6aa1`: if the renderer emits the same exact requested authorized target as `uncertain`, deterministically recover from artifact authority while preserving `Unknown`/`Reject`, qualification, adversarial, and answer-safety boundaries.
-3. **Dependency-aware target-local recovery (#164):** next: determine when an exact verified requested target may be exposed even though unrelated non-target claims make the artifact-global verdict `Reject`; fail closed whenever target dependency or relevance is uncertain.
-4. **Provider reliability and resumable evaluation (#126):** bounded provider-specific transient retries plus case-level checkpoint/resume for long live evaluations, with operational failures kept outside semantic scoring.
+3. **Dependency-aware target-local recovery (#164):** implemented in successor candidate `993874fa0051d06a02c8db8f7a220a2ac7773c17`: artifact-global `Reject` remains unchanged, while an exact directly verified target may be emitted only as target-only `QualifiedPartialAnswer` when typed blocker/dependency/evidence isolation is demonstrable; ambiguous coupling fails closed.
+4. **Provider reliability and resumable evaluation (#126):** next: bounded provider-specific transient retries plus case-level checkpoint/resume for long live evaluations, with operational failures kept outside semantic scoring.
 5. **External CLI hardening (#90) and real-workload UX (#139):** keep release/install/automation contracts stable while applying the successor runtime to realistic workloads.
 
 The current answer-safety behavior and semantic runtime have exact machine configuration IDs for rollback and reproducibility, but those IDs are not product phase names. See [Terminology and naming](terminology.md).
@@ -149,7 +149,9 @@ The current semantic generation remains frozen at candidate `1f27bef9e5e7d1b8d2e
 
 The #159 semantic behavior change starts a distinct successor candidate at commit `79ec3b44971c32f9a8847d8173672675947c7288`. That identity records exact Harness-owned bounded-target priority only; it does not replace or reinterpret the frozen `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352` Stage-C candidate, and the observed Stage-C holdout is not rerun as a tuning surface. Any later semantic change for #160 or #164 receives its own successor identity before fresh evaluation.
 
-The #160 renderer-downgrade change advances the successor candidate to `a020b5925497ff3fdf200a9622270fa1889a6aa1`. It reuses only exact Harness-owned target identity and already-existing artifact authority; renderer `uncertain` mode is a trigger, never evidence. `Reject` remains non-recoverable and `Unknown` remains a target-only qualified result. The frozen Stage-C corpus/results are unchanged and were not rerun for tuning. #164 remains a separate later semantic boundary.
+The #160 renderer-downgrade change advances the successor candidate to `a020b5925497ff3fdf200a9622270fa1889a6aa1`. It reuses only exact Harness-owned target identity and already-existing artifact authority; renderer `uncertain` mode is a trigger, never evidence. Its own recovery helper does not override `Reject`, and `Unknown` remains a target-only qualified result.
+
+The #164 dependency-aware target-local change advances the successor candidate to `993874fa0051d06a02c8db8f7a220a2ac7773c17`. It adds a separate `Reject`-scoped qualified lane rather than relaxing the global decision: exact targets require direct evidence-bound trusted `Supported` receipts; contradicted blockers require their own evidence-bound trusted contradiction receipts; same-key, untyped, shared-evidence, target-local qualification/adversarial/contradiction, and inference/dependency coupling all fail closed. The frozen Stage-C corpus/results are unchanged and were not rerun for tuning.
 
 Use separate dogfood/reference workloads and answer:
 
