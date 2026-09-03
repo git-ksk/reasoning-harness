@@ -35,12 +35,12 @@ use reasoning_harness_core::{
     aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
     build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
     canonical_verified_target_answer, canonical_verified_target_partial_answer,
-    classify_materialization_failure, evaluate, evaluate_benchmark_fixture_with_diagnostics,
-    evaluate_resolution_fixture, finalize_answer, frameworks::five_whys::FiveWhysRestatementPass,
-    reasoning_artifact_schema, reasoning_candidate_schema,
-    recover_verified_target_renderer_downgrade, run_answer_safety_gate, run_harness,
-    run_model_backed_soft_judge, run_semantic_runtime, structured_fact_verifier_for_input,
-    validate_artifact,
+    canonical_verified_target_reject_partial_answer, classify_materialization_failure, evaluate,
+    evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture, finalize_answer,
+    frameworks::five_whys::FiveWhysRestatementPass, reasoning_artifact_schema,
+    reasoning_candidate_schema, recover_verified_target_renderer_downgrade, run_answer_safety_gate,
+    run_harness, run_model_backed_soft_judge, run_semantic_runtime,
+    structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use schemars::{JsonSchema, schema_for};
@@ -1542,6 +1542,16 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
                 &built.input.hypotheses,
                 &rendered,
                 &finalization,
+            )
+        {
+            rendered = recovered;
+            finalization = recovered_finalization;
+        }
+        if let Some((recovered, recovered_finalization)) =
+            canonical_verified_target_reject_partial_answer(
+                &final_artifact,
+                final_verdict,
+                &built.input.hypotheses,
             )
         {
             rendered = recovered;

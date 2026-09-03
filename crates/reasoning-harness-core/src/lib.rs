@@ -101,7 +101,8 @@ pub use finalization::{
     CanonicalFinalAnswerRenderer, FinalAnswerCandidate, FinalAnswerClaim, FinalAnswerRenderer,
     FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
     canonical_verified_target_answer, canonical_verified_target_partial_answer,
-    final_answer_candidate_schema, finalize_answer, recover_verified_target_renderer_downgrade,
+    canonical_verified_target_reject_partial_answer, final_answer_candidate_schema,
+    finalize_answer, recover_verified_target_renderer_downgrade,
 };
 pub use format_invariance::{
     FormatComparisonError, FormatDecisionTransition, FormatFlipReport, FormatJudgeError,
