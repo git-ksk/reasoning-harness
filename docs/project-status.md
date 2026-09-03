@@ -6,15 +6,15 @@ The repository has a maturing evidence-grounded runtime core and a natural-langu
 
 Current work is organized by descriptive product/evaluation concepts rather than research code names:
 
-- **bounded resolver target closure** — #159;
-- **renderer downgrade recovery** — #160;
+- **bounded resolver target closure** — #159 implemented on the successor candidate line;
+- **renderer downgrade recovery** — #160 next;
 - **dependency-aware target-local recovery** — #164;
 - **provider reliability / resumable evaluation** — #126;
 - **external CLI hardening and real-workload UX** — #90 / #139.
 
 The #147 product-capability evaluation and #150 verified-utility-recovery milestone are closed. The semantic candidate frozen at `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352` completed Stage B and the separately frozen 16-case Stage-C holdout. Final Stage-C target coverage was `1.00` for Ministral 8B, Mistral Small, Gemma 4 31B, and Gemini 3.1 Flash-Lite; Ministral 14B reproducibly scored `0.875`. Every completed Stage-C run kept unsupported grounded claims at `0` and missed target insufficiency at `0`. The 14B residual is therefore carried forward as conservative utility evidence, not repaired by changing the observed holdout or gate.
 
-Successor semantic changes are split across #159, #160, and #164 and require a new candidate/evaluation identity. Provider-only reliability work may land independently when it does not change semantic runtime, fixture, or gate behavior.
+Successor semantic changes are split across #159, #160, and #164 and require a new candidate/evaluation identity. The first successor semantic identity is `79ec3b44971c32f9a8847d8173672675947c7288` for #159 bounded resolver target closure: exact Harness-owned unresolved targets are attempted before unrelated generated unresolved claims, without changing admission or verification authority. The frozen Stage-C candidate/holdout remains historical evidence and was not used to tune this change. Provider-only reliability work may land independently when it does not change semantic runtime, fixture, or gate behavior.
 
 The current semantic runtime and answer-safety gate keep their exact machine configuration IDs for reproducibility and rollback. Those IDs, and older labels such as `D3`, `R4`, `RSD2`, or `NL-5`, are not a common product version sequence. See [Terminology and naming](terminology.md).
 

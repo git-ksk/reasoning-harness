@@ -48,8 +48,8 @@ resolution, re-verification, and final-claim coverage remain harness-owned.
 
 ## Active priorities
 
-1. **Bounded resolver target closure (#159):** request resolution for exact harness-owned unresolved targets without relying on model omission/selection behavior, then admit and re-verify acquired evidence through the existing authority boundary.
-2. **Renderer downgrade recovery (#160):** recover an exact already-authorized target when a stochastic renderer weakens it to uncertainty, without using model prose as authority.
+1. **Bounded resolver target closure (#159):** implemented in the successor candidate line: exact Harness-owned unresolved hypotheses/evidence requirements are prioritized ahead of candidate-owned unresolved claims, while resolver class, budget, admission, qualification, and mandatory re-verification remain unchanged.
+2. **Renderer downgrade recovery (#160):** next: recover an exact already-authorized target when a stochastic renderer weakens it to uncertainty, without using model prose as authority.
 3. **Dependency-aware target-local recovery (#164):** determine when an exact verified requested target may be exposed even though unrelated non-target claims make the artifact-global verdict `Reject`; fail closed whenever target dependency or relevance is uncertain.
 4. **Provider reliability and resumable evaluation (#126):** bounded provider-specific transient retries plus case-level checkpoint/resume for long live evaluations, with operational failures kept outside semantic scoring.
 5. **External CLI hardening (#90) and real-workload UX (#139):** keep release/install/automation contracts stable while applying the successor runtime to realistic workloads.
@@ -146,6 +146,9 @@ Product readiness requires workloads that are not frozen research holdouts. The 
 The #147 product-evaluation generation is now closed and frozen. Stage B completed on the unchanged 24-case matrix and Stage C used a separately SHA-256-frozen 16-case holdout authored only after selection. The final Stage-C semantic panel recorded target coverage `1.00` for Ministral 8B, Mistral Small, Gemma 4 31B, and Gemini 3.1 Flash-Lite, while Ministral 14B reproducibly recorded `0.875`. Every completed Stage-C run preserved unsupported grounded claims = `0` and missed target insufficiency = `0`; the 14B miss is a conservative utility failure, not an unsafe exposure. Gemini 3.5 Flash-Lite remained outside Stage C because its predeclared Stage-B replication was operationally quota-incomplete, not because of a semantic failure.
 
 The current semantic generation remains frozen at candidate `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352`; current `main` may contain provider-transport reliability changes that do not alter semantic runtime/gate/holdout behavior. #150 is closed as the verified-utility-recovery milestone. Successor semantic work is deliberately split into #159, #160, and #164 and must receive a new runtime/evaluation identity rather than reusing the observed Stage-C holdout as a tuning surface.
+
+The #159 semantic behavior change starts a distinct successor candidate at commit `79ec3b44971c32f9a8847d8173672675947c7288`. That identity records exact Harness-owned bounded-target priority only; it does not replace or reinterpret the frozen `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352` Stage-C candidate, and the observed Stage-C holdout is not rerun as a tuning surface. Any later semantic change for #160 or #164 receives its own successor identity before fresh evaluation.
+
 Use separate dogfood/reference workloads and answer:
 
 - does the harness reduce unsupported final assertions in realistic use?;

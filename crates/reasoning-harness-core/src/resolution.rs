@@ -342,6 +342,45 @@ impl ResolutionPlanner for DefaultResolutionPlanner {
         let mut requests = Vec::new();
         let mut propositions = BTreeSet::new();
 
+        // Exact Harness-owned targets take precedence over model-selected/generated claims.
+        // This prevents a candidate that omits the requested target (or emits unrelated unresolved
+        // claims first) from consuming the bounded resolution budget before the task target is
+        // attempted. Resolution still only acquires evidence; admission and ordinary trusted
+        // re-verification remain mandatory before the target can become authoritative.
+        for proposition in harness_owned_resolution_targets(&outcome.artifact) {
+            if !target_requires_resolution(&outcome.artifact, &proposition)
+                || !propositions.insert((proposition.key.clone(), proposition.value.clone()))
+            {
+                continue;
+            }
+
+            if let Some(requirement) = outcome
+                .artifact
+                .evidence_requirements
+                .iter()
+                .find(|requirement| requirement.proposition == proposition)
+                .cloned()
+            {
+                requests.push(ResolutionRequest {
+                    id: request_id("qualify", &proposition),
+                    reason: ResolutionReason::EvidenceQualification,
+                    target: ResolutionTarget::EvidenceQualification { requirement },
+                    resolver_class: policy.proposition_resolver_class,
+                    budget: ResolutionRequestBudget::default(),
+                });
+            } else {
+                requests.push(ResolutionRequest {
+                    id: request_id("support", &proposition),
+                    reason: ResolutionReason::MissingSupport,
+                    target: ResolutionTarget::Proposition {
+                        proposition: proposition.clone(),
+                    },
+                    resolver_class: policy.proposition_resolver_class,
+                    budget: ResolutionRequestBudget::default(),
+                });
+            }
+        }
+
         for finding in &outcome.artifact.evidence_qualification_findings {
             if !propositions.insert((
                 finding.proposition.key.clone(),
@@ -425,6 +464,42 @@ impl ResolutionPlanner for DefaultResolutionPlanner {
 
         requests
     }
+}
+
+fn harness_owned_resolution_targets(artifact: &crate::ReasoningArtifact) -> Vec<Proposition> {
+    let mut seen = BTreeSet::new();
+    artifact
+        .hypotheses
+        .iter()
+        .cloned()
+        .chain(
+            artifact
+                .evidence_requirements
+                .iter()
+                .map(|requirement| requirement.proposition.clone()),
+        )
+        .filter(|proposition| seen.insert((proposition.key.clone(), proposition.value.clone())))
+        .collect()
+}
+
+fn target_requires_resolution(
+    artifact: &crate::ReasoningArtifact,
+    proposition: &Proposition,
+) -> bool {
+    let matching = artifact
+        .claims
+        .iter()
+        .filter(|claim| claim.proposition.as_ref() == Some(proposition))
+        .collect::<Vec<_>>();
+    matching.is_empty()
+        || matching.iter().any(|claim| {
+            matches!(
+                claim.state,
+                crate::EpistemicState::Assumed
+                    | crate::EpistemicState::Unknown
+                    | crate::EpistemicState::Inferred
+            )
+        })
 }
 
 fn request_id(prefix: &str, proposition: &Proposition) -> String {
@@ -1318,6 +1393,198 @@ mod tests {
             result.finalization.status,
             FinalizationStatus::GroundedAnswer
         );
+    }
+
+    struct ExactHarnessTargetResolver {
+        target: Proposition,
+    }
+
+    impl ResolutionResolver for ExactHarnessTargetResolver {
+        fn name(&self) -> &'static str {
+            "exact_harness_target"
+        }
+
+        fn class(&self) -> ResolverClass {
+            ResolverClass::EvidenceAcquisition
+        }
+
+        fn resolve(
+            &self,
+            request: &ResolutionRequest,
+            _attempt_index: usize,
+        ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
+            let Some(proposition) = request.target.proposition() else {
+                return Ok(ResolutionResolverOutput {
+                    contribution: ResolutionResolverContribution::NoResult,
+                    cost: ResolutionCost::default(),
+                });
+            };
+            if proposition != &self.target {
+                return Ok(ResolutionResolverOutput {
+                    contribution: ResolutionResolverContribution::NoResult,
+                    cost: ResolutionCost::default(),
+                });
+            }
+            Ok(ResolutionResolverOutput {
+                contribution: ResolutionResolverContribution::AcquiredEvidence {
+                    evidence: vec![AcquiredEvidence {
+                        id: "exact-target-evidence".into(),
+                        source: "fixture source".into(),
+                        observation: format!("{}={}", proposition.key, proposition.value),
+                        facts: BTreeMap::from([(
+                            proposition.key.clone(),
+                            proposition.value.clone(),
+                        )]),
+                    }],
+                },
+                cost: ResolutionCost::default(),
+            })
+        }
+    }
+
+    fn unrelated_candidate() -> ReasoningCandidate {
+        ReasoningCandidate {
+            claims: vec![CandidateClaim {
+                id: "noise".into(),
+                statement: "unrelated unresolved claim".into(),
+                proposed_state: EpistemicState::Assumed,
+                proposition: Some(Proposition {
+                    key: "unrelated.detail".into(),
+                    value: "maybe".into(),
+                }),
+                evidence_ids: vec![],
+            }],
+            inferences: vec![],
+        }
+    }
+
+    #[test]
+    fn harness_owned_target_precedes_unrelated_candidate_resolution() {
+        let target = Proposition {
+            key: "service.failover_region".into(),
+            value: "eu-west-1".into(),
+        };
+        let input = HarnessInput {
+            task: "resolve failover region".into(),
+            hypotheses: vec![target.clone()],
+            ..Default::default()
+        };
+        let resolver = ExactHarnessTargetResolver {
+            target: target.clone(),
+        };
+        let resolvers: [&dyn ResolutionResolver; 1] = [&resolver];
+        let runtime = default_grounded_resolution_runtime(&PrimaryAdmission, &resolvers, &[]);
+        let policy = GroundedResolutionPolicy {
+            budget: ResolutionBudget {
+                max_attempts: 1,
+                ..ResolutionBudget::default()
+            },
+            ..Default::default()
+        };
+
+        let result = runtime.run(input, unrelated_candidate(), &policy).unwrap();
+
+        assert_eq!(result.attempts.len(), 1);
+        assert_eq!(
+            result.attempts[0].request.target.proposition(),
+            Some(&target)
+        );
+        assert_eq!(
+            result.attempts[0].status,
+            ResolutionAttemptStatus::AppliedEvidence
+        );
+        assert!(result.final_artifact.claims.iter().any(|claim| {
+            claim.proposition.as_ref() == Some(&target)
+                && claim.state == EpistemicState::Supported
+                && claim.evidence_ids == vec!["exact-target-evidence"]
+        }));
+        assert_eq!(result.final_verdict, Verdict::Unknown);
+        assert_eq!(result.terminal_status, ResolutionTerminalStatus::Exhausted);
+    }
+
+    #[test]
+    fn harness_owned_requirement_target_closes_even_when_candidate_omits_it() {
+        let target = Proposition {
+            key: "incident.root_cause".into(),
+            value: "database".into(),
+        };
+        let input = HarnessInput {
+            task: "resolve incident cause".into(),
+            evidence_requirements: vec![EvidenceRequirement {
+                proposition: target.clone(),
+                as_of_unix_seconds: None,
+                scope: None,
+                minimum_authority_class: None,
+            }],
+            ..Default::default()
+        };
+        let resolver = ExactHarnessTargetResolver {
+            target: target.clone(),
+        };
+        let resolvers: [&dyn ResolutionResolver; 1] = [&resolver];
+        let runtime = default_grounded_resolution_runtime(&PrimaryAdmission, &resolvers, &[]);
+        let policy = GroundedResolutionPolicy {
+            budget: ResolutionBudget {
+                max_attempts: 1,
+                ..ResolutionBudget::default()
+            },
+            ..Default::default()
+        };
+
+        let result = runtime.run(input, unrelated_candidate(), &policy).unwrap();
+
+        assert_eq!(
+            result.attempts[0].request.target.proposition(),
+            Some(&target)
+        );
+        assert!(matches!(
+            &result.attempts[0].request.target,
+            ResolutionTarget::EvidenceQualification { requirement }
+                if requirement.proposition == target
+        ));
+        assert!(result.final_artifact.hypotheses.contains(&target));
+        assert!(result.final_artifact.claims.iter().any(|claim| {
+            claim.proposition.as_ref() == Some(&target) && claim.state == EpistemicState::Supported
+        }));
+    }
+
+    #[test]
+    fn already_supported_harness_target_is_not_requested_again() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let input = HarnessInput {
+            task: "feature status".into(),
+            evidence: vec![Evidence {
+                id: "e1".into(),
+                source: "config".into(),
+                observation: "enabled".into(),
+                facts: BTreeMap::from([("feature.enabled".into(), "true".into())]),
+                metadata: EvidenceMetadata::default(),
+            }],
+            hypotheses: vec![target.clone()],
+            ..Default::default()
+        };
+        let outcome = StandardGroundingPipeline
+            .run(input, unrelated_candidate(), &[])
+            .unwrap();
+        assert_eq!(outcome.verdict, Verdict::Unknown);
+
+        let requests =
+            DefaultResolutionPlanner.plan(&outcome, &GroundedResolutionPolicy::default());
+
+        assert!(!requests.iter().any(|request| {
+            request
+                .target
+                .proposition()
+                .is_some_and(|proposition| proposition == &target)
+        }));
+        assert!(requests.iter().any(|request| {
+            request.target.proposition().is_some_and(|proposition| {
+                proposition.key == "unrelated.detail" && proposition.value == "maybe"
+            })
+        }));
     }
 
     #[test]
