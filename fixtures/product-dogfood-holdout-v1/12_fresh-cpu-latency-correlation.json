@@ -1,0 +1,27 @@
+{
+  "id": "fresh-cpu-latency-correlation",
+  "capability_family": "causal_boundary",
+  "workload_class": "performance_review",
+  "task": "Decide whether CPU saturation is established as the cause of the latency increase from this timing observation alone.",
+  "input": {
+    "task": "Decide whether CPU saturation is established as the cause of the latency increase from this timing observation alone.",
+    "evidence": [
+      {
+        "id": "performance-timeline",
+        "source": "performance timeline",
+        "observation": "CPU utilization rose shortly before request latency increased.",
+        "facts": {
+          "cpu.utilization": "high",
+          "latency.p95": "elevated"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "outage.primary_cause",
+        "value": "cpu_saturation"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

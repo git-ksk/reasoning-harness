@@ -1,0 +1,52 @@
+{
+  "id": "fresh-account-scope-exact",
+  "capability_family": "scope_entity_boundary",
+  "workload_class": "logging_review",
+  "task": "Determine whether immutable audit logging is enabled for account-prod from the account-scoped record.",
+  "input": {
+    "task": "Determine whether immutable audit logging is enabled for account-prod from the account-scoped record.",
+    "evidence": [
+      {
+        "id": "logging-policy",
+        "source": "account logging policy",
+        "observation": "immutable_logging=enabled for account-prod",
+        "facts": {
+          "audit.immutable_logging": "enabled"
+        },
+        "metadata": {
+          "scope": {
+            "account": {
+              "kind": "values",
+              "values": [
+                "account-prod"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "audit.immutable_logging",
+        "value": "enabled"
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "audit.immutable_logging",
+          "value": "enabled"
+        },
+        "scope": {
+          "account": {
+            "kind": "values",
+            "values": [
+              "account-prod"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "expected_outcome": "grounded"
+}

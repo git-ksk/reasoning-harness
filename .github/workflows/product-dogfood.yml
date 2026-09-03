@@ -23,6 +23,7 @@ on:
         type: choice
         options:
           - product-dogfood-v2
+          - product-dogfood-holdout-v1
           - product-dogfood-v1
         default: product-dogfood-v2
       max_tokens:
@@ -64,16 +65,28 @@ jobs:
             --model validation-only \
             --validate-only \
             > /tmp/reason-product-dogfood-validation.json
-          if [ "$FIXTURE_SET" = "product-dogfood-v2" ]; then
-            (cd fixtures/product-dogfood-v2 && sha256sum -c ../product-dogfood-v2.sha256)
-            jq -e '
-              .cases == 24
-              and (.capability_families | length) == 8
-              and ([.capability_case_counts[]] | all(. == 3))
-            ' /tmp/reason-product-dogfood-validation.json >/dev/null
-          else
-            jq -e '.cases == 6' /tmp/reason-product-dogfood-validation.json >/dev/null
-          fi
+          case "$FIXTURE_SET" in
+            product-dogfood-v2)
+              (cd fixtures/product-dogfood-v2 && sha256sum -c ../product-dogfood-v2.sha256)
+              jq -e '
+                .cases == 24
+                and (.capability_families | length) == 8
+                and ([.capability_case_counts[]] | all(. == 3))
+              ' /tmp/reason-product-dogfood-validation.json >/dev/null
+              ;;
+            product-dogfood-holdout-v1)
+              (cd fixtures/product-dogfood-holdout-v1 && sha256sum -c ../product-dogfood-holdout-v1.sha256)
+              jq -e '
+                .cases == 16
+                and (.capability_families | length) == 8
+                and ([.capability_case_counts[]] | all(. == 2))
+              ' /tmp/reason-product-dogfood-validation.json >/dev/null
+              ;;
+            product-dogfood-v1)
+              jq -e '.cases == 6' /tmp/reason-product-dogfood-validation.json >/dev/null
+              ;;
+            *) exit 2 ;;
+          esac
       - name: Check selected provider credential
         env:
           PROVIDER: ${{ inputs.provider }}
@@ -120,6 +133,10 @@ jobs:
               .cases == 24
               and (.capability_families | length) == 8
               and ([.capability_case_counts[]] | all(. == 3))
+            elif env.FIXTURE_SET == "product-dogfood-holdout-v1" then
+              .cases == 16
+              and (.capability_families | length) == 8
+              and ([.capability_case_counts[]] | all(. == 2))
             else .cases == 6 end)
             and .harness.arm.unsupported_grounded_claims == 0
             and .harness_current_safety.arm.unsupported_grounded_claims == 0
@@ -139,6 +156,11 @@ jobs:
             and ([.results[] | (.harness_current_safety.calls[1] == .shared_harness.initial_render_call)] | all)
             and ([.results[].harness.safety_runtime.configuration_id] | all(. == "grounded-finalization-v1"))
             and ([.results[].harness_current_safety.safety_runtime.configuration_id] | all(. == "verified-target-answer-gate-v1"))
+            and (if env.FIXTURE_SET == "product-dogfood-holdout-v1" then
+              .harness_current_safety.arm.unsupported_grounded_claims == 0
+              and .harness_current_safety.arm.target.missed_target_insufficiency == 0
+              and .harness_current_safety.arm.target.mean_grounded_target_coverage >= 0.90
+            else true end)
           ' /tmp/reason-product-dogfood.json >/dev/null
           jq '{schema_version, comparison_contract, provider, model, workload_classes, capability_families, capability_case_counts, cases, raw, harness, harness_current_safety, overhead, user_comprehension}' /tmp/reason-product-dogfood.json
       - name: Preserve dogfood report

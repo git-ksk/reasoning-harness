@@ -1,0 +1,31 @@
+{
+  "id": "fresh-database-recovery-settings",
+  "capability_family": "direct_grounding",
+  "workload_class": "database_review",
+  "task": "Summarize the verified point-in-time recovery setting and retention period for this database record.",
+  "input": {
+    "task": "Summarize the verified point-in-time recovery setting and retention period for this database record.",
+    "evidence": [
+      {
+        "id": "db-policy",
+        "source": "database recovery policy",
+        "observation": "Point-in-time recovery is active with 35 days of retained history.",
+        "facts": {
+          "database.pitr": "enabled",
+          "database.retention_days": "35"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "database.pitr",
+        "value": "enabled"
+      },
+      {
+        "key": "database.retention_days",
+        "value": "35"
+      }
+    ]
+  },
+  "expected_outcome": "grounded"
+}

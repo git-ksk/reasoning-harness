@@ -1,0 +1,26 @@
+{
+  "id": "fresh-canary-stability-insufficient",
+  "capability_family": "insufficient_evidence",
+  "workload_class": "release_review",
+  "task": "Decide whether the release is proven stable from this single successful canary request.",
+  "input": {
+    "task": "Decide whether the release is proven stable from this single successful canary request.",
+    "evidence": [
+      {
+        "id": "canary-sample",
+        "source": "canary request log",
+        "observation": "One canary request completed successfully.",
+        "facts": {
+          "canary.request_status": "success"
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "release.stable",
+        "value": "true"
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

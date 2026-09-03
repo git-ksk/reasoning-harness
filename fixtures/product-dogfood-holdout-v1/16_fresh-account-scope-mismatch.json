@@ -1,0 +1,52 @@
+{
+  "id": "fresh-account-scope-mismatch",
+  "capability_family": "scope_entity_boundary",
+  "workload_class": "logging_review",
+  "task": "Determine whether immutable audit logging is enabled for account-prod when the only record belongs to account-dev.",
+  "input": {
+    "task": "Determine whether immutable audit logging is enabled for account-prod when the only record belongs to account-dev.",
+    "evidence": [
+      {
+        "id": "logging-policy-dev",
+        "source": "account logging policy",
+        "observation": "immutable_logging=enabled for account-dev",
+        "facts": {
+          "audit.immutable_logging": "enabled"
+        },
+        "metadata": {
+          "scope": {
+            "account": {
+              "kind": "values",
+              "values": [
+                "account-dev"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "audit.immutable_logging",
+        "value": "enabled"
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "audit.immutable_logging",
+          "value": "enabled"
+        },
+        "scope": {
+          "account": {
+            "kind": "values",
+            "values": [
+              "account-prod"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

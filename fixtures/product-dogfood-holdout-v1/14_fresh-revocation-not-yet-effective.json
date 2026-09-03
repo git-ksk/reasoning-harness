@@ -1,0 +1,40 @@
+{
+  "id": "fresh-revocation-not-yet-effective",
+  "capability_family": "temporal_validity",
+  "workload_class": "certificate_review",
+  "task": "Determine whether the certificate was revoked at time 500 when the supplied revocation record becomes effective at time 700.",
+  "input": {
+    "task": "Determine whether the certificate was revoked at time 500 when the supplied revocation record becomes effective at time 700.",
+    "evidence": [
+      {
+        "id": "revocation-record",
+        "source": "certificate status history",
+        "observation": "certificate.revoked=true",
+        "facts": {
+          "certificate.revoked": "true"
+        },
+        "metadata": {
+          "temporal": {
+            "effective_from_unix_seconds": 700
+          }
+        }
+      }
+    ],
+    "hypotheses": [
+      {
+        "key": "certificate.revoked",
+        "value": "true"
+      }
+    ],
+    "evidence_requirements": [
+      {
+        "proposition": {
+          "key": "certificate.revoked",
+          "value": "true"
+        },
+        "as_of_unix_seconds": 500
+      }
+    ]
+  },
+  "expected_outcome": "unknown"
+}

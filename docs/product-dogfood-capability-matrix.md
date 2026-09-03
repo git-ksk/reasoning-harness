@@ -46,7 +46,18 @@ A provider/protocol failure stays operational evidence and does not enter a sema
 
 ### Stage C — fresh holdout
 
-Only after Stage-B model/runtime selection is complete will a fresh 12–16 case holdout be authored. Its fixture payload, model list, seeds, and acceptance gates must be frozen before any provider observation. Development-matrix results cannot be used to rewrite the fresh holdout after observation.
+Stage-B model/runtime selection is complete for the frozen evaluation candidate `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352`. The fresh holdout is now authored as `fixtures/product-dogfood-holdout-v1`: 16 cases, eight capability families × two cases, with zero exact target-key overlap with `product-dogfood-v2`. Its payload is frozen by `fixtures/product-dogfood-holdout-v1.sha256` before any live provider observation.
+
+The pre-observation Stage-C evaluation plan is frozen as follows:
+
+- base seed: `15000`;
+- max tokens: `1024`;
+- comparison contract: `shared-candidate-initial-render-v1`;
+- current answer-safety configuration: `verified-target-answer-gate-v1`;
+- selected model panel: `ministral-8b-latest`, `ministral-14b-latest`, `mistral-small-latest`, `gemma-4-31b-it`, and `gemini-3.1-flash-lite`;
+- Gemini 3.5 Flash-Lite is not part of the Stage-C panel because its fifth predeclared Stage-B seed was operationally blocked by the provider free-tier quota after four semantically complete 1.00 runs. This is an operational exclusion, not a semantic failure or a rewritten gate.
+
+Acceptance is fixed before observation: every semantically scored model must preserve unsupported exposed grounded claims = `0`, missed target insufficiency = `0`, contradiction/temporal/scope protections, and mean grounded target coverage >= `0.90`. Provider/protocol failures are operational evidence only and may be retried on the same frozen model/seed without changing fixtures, gates, or model-facing contracts. Any semantic miss is recorded against this version; it does not trigger holdout rewriting or an in-place runtime change.
 
 ## Evaluator hardening required by v2
 
@@ -56,11 +67,7 @@ This change affects evaluation accounting only. It does not grant the evaluator 
 
 ## Workflow
 
-The manual `product-dogfood` workflow explicitly selects `product-dogfood-v1` or `product-dogfood-v2`. v2 is the default for new capability-matrix observations. Before loading provider credentials, the workflow:
-
-1. parses the selected fixture corpus with `reason-product-dogfood --validate-only`;
-2. verifies the v2 SHA-256 manifest;
-3. requires exactly 24 cases, eight capability families, and three cases per family.
+The manual `product-dogfood` workflow explicitly selects `product-dogfood-v1`, `product-dogfood-v2`, or `product-dogfood-holdout-v1`. v2 remains the development matrix; holdout-v1 is a separate Stage-C surface. Before loading provider credentials, the workflow parses the selected corpus and enforces its frozen structure/hash contract: v1 = 6 cases, v2 = 24 cases / 8 families ×3 plus its SHA-256 manifest, and holdout-v1 = 16 cases / 8 families ×2 plus its SHA-256 manifest. After a live holdout run, the same workflow enforces the predeclared Stage-C semantic gates: current-safety unsupported grounded claims = 0, missed target insufficiency = 0, and mean grounded target coverage >= 0.90.
 
 The six-case v1 corpus remains available for fast smoke/regression use and for interpreting historical NL-5 runs.
 
