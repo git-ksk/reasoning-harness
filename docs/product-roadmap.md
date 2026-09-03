@@ -48,11 +48,11 @@ resolution, re-verification, and final-claim coverage remain harness-owned.
 
 ## Active priorities
 
-1. **External CLI hardening (#90):** compatibility, release/install discipline, stable automation semantics, and product documentation.
-2. **Provider reliability (#126):** bounded typed retries for transient operational failures without converting them into semantic outcomes.
-3. **Product capability evaluation (#147):** keep the six-case smoke set, use the frozen 24-case capability matrix for development, then run multi-seed replication and a separately frozen fresh holdout.
-4. **Verified utility recovery (#150):** recover exact already-authorized targets that are lost during rendering/resolution while keeping unsupported grounded claims and missed target insufficiency at zero.
-5. **Model-specific utility follow-up (#139):** explain and reduce unnecessary withholding without relaxing the authority boundary.
+1. **Bounded resolver target closure (#159):** request resolution for exact harness-owned unresolved targets without relying on model omission/selection behavior, then admit and re-verify acquired evidence through the existing authority boundary.
+2. **Renderer downgrade recovery (#160):** recover an exact already-authorized target when a stochastic renderer weakens it to uncertainty, without using model prose as authority.
+3. **Dependency-aware target-local recovery (#164):** determine when an exact verified requested target may be exposed even though unrelated non-target claims make the artifact-global verdict `Reject`; fail closed whenever target dependency or relevance is uncertain.
+4. **Provider reliability and resumable evaluation (#126):** bounded provider-specific transient retries plus case-level checkpoint/resume for long live evaluations, with operational failures kept outside semantic scoring.
+5. **External CLI hardening (#90) and real-workload UX (#139):** keep release/install/automation contracts stable while applying the successor runtime to realistic workloads.
 
 The current answer-safety behavior and semantic runtime have exact machine configuration IDs for rollback and reproducibility, but those IDs are not product phase names. See [Terminology and naming](terminology.md).
 
@@ -143,7 +143,9 @@ later adapters rather than correctness boundaries.
 
 Product readiness requires workloads that are not frozen research holdouts. The first natural-language acceptance slice is complete using a three-arm comparison: **raw model vs current Harness baseline vs the same Harness with the current answer-safety gate**. The active work now repeats that discipline on broader real workloads rather than treating one pilot as a universal product-quality claim. Ministral-specific low coverage/withheld-answer UX is tracked in #139.
 
-The frozen 24-case capability matrix under #147 has now completed Stage A and exposed a broader cross-model utility-recovery opportunity. Issue #150 is the planned interlude before five-seed Stage-B replication: first localize whether misses occur at candidate materialization, verification/qualification, bounded resolution, renderer structure, or finalization; then recover only exact already-authorized artifact state through deterministic harness-owned mechanisms. Exact proposition identity, authority, insufficiency, temporal/scope qualification, and contradiction gates must not be relaxed to improve coverage.
+The #147 product-evaluation generation is now closed and frozen. Stage B completed on the unchanged 24-case matrix and Stage C used a separately SHA-256-frozen 16-case holdout authored only after selection. The final Stage-C semantic panel recorded target coverage `1.00` for Ministral 8B, Mistral Small, Gemma 4 31B, and Gemini 3.1 Flash-Lite, while Ministral 14B reproducibly recorded `0.875`. Every completed Stage-C run preserved unsupported grounded claims = `0` and missed target insufficiency = `0`; the 14B miss is a conservative utility failure, not an unsafe exposure. Gemini 3.5 Flash-Lite remained outside Stage C because its predeclared Stage-B replication was operationally quota-incomplete, not because of a semantic failure.
+
+The current semantic generation remains frozen at candidate `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352`; current `main` may contain provider-transport reliability changes that do not alter semantic runtime/gate/holdout behavior. #150 is closed as the verified-utility-recovery milestone. Successor semantic work is deliberately split into #159, #160, and #164 and must receive a new runtime/evaluation identity rather than reusing the observed Stage-C holdout as a tuning surface.
 Use separate dogfood/reference workloads and answer:
 
 - does the harness reduce unsupported final assertions in realistic use?;
