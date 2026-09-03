@@ -209,6 +209,46 @@ pub fn canonical_verified_target_partial_answer(
     Some((candidate, finalization))
 }
 
+/// Recover an exact requested target when a stochastic renderer downgraded that same exact
+/// proposition to `uncertain` despite existing Harness-owned authority. The renderer output only
+/// selects this recovery path; it never supplies authority. Exact proposition identity, artifact
+/// authority, qualification/adversarial checks, and the existing Accept/Unknown recovery boundaries
+/// remain authoritative. `Reject` is never recovered here.
+pub fn recover_verified_target_renderer_downgrade(
+    artifact: &ReasoningArtifact,
+    verdict: Verdict,
+    targets: &[Proposition],
+    rendered: &FinalAnswerCandidate,
+    finalization: &FinalizationResult,
+) -> Option<(FinalAnswerCandidate, FinalizationResult)> {
+    if finalization.status != FinalizationStatus::QualifiedPartialAnswer {
+        return None;
+    }
+
+    let exact_requested_target_downgraded = rendered.factual_claims.iter().any(|claim| {
+        claim.mode == FinalClaimMode::Uncertain && targets.contains(&claim.proposition)
+    });
+    if !exact_requested_target_downgraded {
+        return None;
+    }
+
+    match verdict {
+        Verdict::Accept => {
+            let recovered = canonical_verified_target_answer(artifact, verdict, targets)?;
+            let recovered_finalization = finalize_answer(
+                artifact,
+                verdict,
+                recovered.clone(),
+                FinalizationPolicy::default(),
+            );
+            (recovered_finalization.status == FinalizationStatus::GroundedAnswer)
+                .then_some((recovered, recovered_finalization))
+        }
+        Verdict::Unknown => canonical_verified_target_partial_answer(artifact, verdict, targets),
+        Verdict::Reject => None,
+    }
+}
+
 #[derive(Debug, Clone, Copy, Default)]
 pub struct CanonicalFinalAnswerRenderer;
 
@@ -512,6 +552,199 @@ mod tests {
             FinalizationStatus::QualifiedPartialAnswer
         );
         assert_eq!(finalization.factual_claim_coverage, 1.0);
+    }
+
+    #[test]
+    fn renderer_downgrade_recovery_grounds_exact_authorized_target_under_unknown() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let mut current = artifact(EpistemicState::Supported);
+        current.claims.push(Claim {
+            id: "extra".into(),
+            statement: "unrelated detail".into(),
+            state: EpistemicState::Unknown,
+            proposition: Some(Proposition {
+                key: "feature.owner".into(),
+                value: "team-a".into(),
+            }),
+            evidence_ids: vec![],
+        });
+        let rendered = FinalAnswerCandidate {
+            text: "The feature may be enabled.".into(),
+            factual_claims: vec![FinalAnswerClaim {
+                proposition: target.clone(),
+                mode: FinalClaimMode::Uncertain,
+            }],
+        };
+        let initial = finalize_answer(
+            &current,
+            Verdict::Unknown,
+            rendered.clone(),
+            FinalizationPolicy::default(),
+        );
+        assert_eq!(initial.status, FinalizationStatus::QualifiedPartialAnswer);
+
+        let (recovered, recovered_finalization) = recover_verified_target_renderer_downgrade(
+            &current,
+            Verdict::Unknown,
+            std::slice::from_ref(&target),
+            &rendered,
+            &initial,
+        )
+        .expect("exact authorized target downgrade should be recoverable");
+
+        assert_eq!(
+            recovered.factual_claims,
+            vec![FinalAnswerClaim {
+                proposition: target,
+                mode: FinalClaimMode::Grounded,
+            }]
+        );
+        assert_eq!(
+            recovered_finalization.status,
+            FinalizationStatus::QualifiedPartialAnswer
+        );
+        assert_eq!(recovered_finalization.factual_claim_coverage, 1.0);
+    }
+
+    #[test]
+    fn renderer_downgrade_recovery_promotes_accept_rendering_only_from_artifact_authority() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let current = artifact(EpistemicState::Supported);
+        let rendered = FinalAnswerCandidate {
+            text: "The feature may be enabled.".into(),
+            factual_claims: vec![FinalAnswerClaim {
+                proposition: target.clone(),
+                mode: FinalClaimMode::Uncertain,
+            }],
+        };
+        let initial = finalize_answer(
+            &current,
+            Verdict::Accept,
+            rendered.clone(),
+            FinalizationPolicy::default(),
+        );
+        let (_, recovered_finalization) = recover_verified_target_renderer_downgrade(
+            &current,
+            Verdict::Accept,
+            std::slice::from_ref(&target),
+            &rendered,
+            &initial,
+        )
+        .expect("Accept target with exact authority should recover");
+        assert_eq!(
+            recovered_finalization.status,
+            FinalizationStatus::GroundedAnswer
+        );
+    }
+
+    #[test]
+    fn renderer_downgrade_recovery_rejects_fuzzy_or_unrequested_renderer_claims() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let current = artifact(EpistemicState::Supported);
+        let rendered = FinalAnswerCandidate {
+            text: "The feature may be enabled.".into(),
+            factual_claims: vec![FinalAnswerClaim {
+                proposition: Proposition {
+                    key: "feature enabled".into(),
+                    value: "true".into(),
+                },
+                mode: FinalClaimMode::Uncertain,
+            }],
+        };
+        let initial = FinalizationResult {
+            status: FinalizationStatus::QualifiedPartialAnswer,
+            text: Some(rendered.text.clone()),
+            factual_claims: 1,
+            covered_claims: 1,
+            factual_claim_coverage: 1.0,
+            uncovered_propositions: vec![],
+        };
+        assert!(
+            recover_verified_target_renderer_downgrade(
+                &current,
+                Verdict::Accept,
+                std::slice::from_ref(&target),
+                &rendered,
+                &initial,
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn renderer_downgrade_recovery_never_overrides_reject_or_target_qualification() {
+        let target = Proposition {
+            key: "feature.enabled".into(),
+            value: "true".into(),
+        };
+        let rendered = FinalAnswerCandidate {
+            text: "The feature may be enabled.".into(),
+            factual_claims: vec![FinalAnswerClaim {
+                proposition: target.clone(),
+                mode: FinalClaimMode::Uncertain,
+            }],
+        };
+        let qualified = FinalizationResult {
+            status: FinalizationStatus::QualifiedPartialAnswer,
+            text: Some(rendered.text.clone()),
+            factual_claims: 1,
+            covered_claims: 1,
+            factual_claim_coverage: 1.0,
+            uncovered_propositions: vec![],
+        };
+        assert!(
+            recover_verified_target_renderer_downgrade(
+                &artifact(EpistemicState::Supported),
+                Verdict::Reject,
+                std::slice::from_ref(&target),
+                &rendered,
+                &qualified,
+            )
+            .is_none()
+        );
+
+        let mut current = artifact(EpistemicState::Supported);
+        current.claims.push(Claim {
+            id: "extra".into(),
+            statement: "unrelated detail".into(),
+            state: EpistemicState::Unknown,
+            proposition: Some(Proposition {
+                key: "feature.owner".into(),
+                value: "team-a".into(),
+            }),
+            evidence_ids: vec![],
+        });
+        current
+            .evidence_qualification_findings
+            .push(crate::EvidenceQualificationFinding {
+                id: "qualification".into(),
+                detector: "test".into(),
+                kind: crate::EvidenceQualificationFindingKind::MissingMetadata,
+                reason: crate::EvidenceQualificationFindingReason::MissingTemporalMetadata,
+                strength: crate::FindingStrength::Soft,
+                proposition: target.clone(),
+                evidence_ids: vec![],
+                message: "missing target metadata".into(),
+            });
+        assert!(
+            recover_verified_target_renderer_downgrade(
+                &current,
+                Verdict::Unknown,
+                std::slice::from_ref(&target),
+                &rendered,
+                &qualified,
+            )
+            .is_none()
+        );
     }
 
     #[test]

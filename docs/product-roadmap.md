@@ -49,8 +49,8 @@ resolution, re-verification, and final-claim coverage remain harness-owned.
 ## Active priorities
 
 1. **Bounded resolver target closure (#159):** implemented in the successor candidate line: exact Harness-owned unresolved hypotheses/evidence requirements are prioritized ahead of candidate-owned unresolved claims, while resolver class, budget, admission, qualification, and mandatory re-verification remain unchanged.
-2. **Renderer downgrade recovery (#160):** next: recover an exact already-authorized target when a stochastic renderer weakens it to uncertainty, without using model prose as authority.
-3. **Dependency-aware target-local recovery (#164):** determine when an exact verified requested target may be exposed even though unrelated non-target claims make the artifact-global verdict `Reject`; fail closed whenever target dependency or relevance is uncertain.
+2. **Renderer downgrade recovery (#160):** implemented in successor candidate `a020b5925497ff3fdf200a9622270fa1889a6aa1`: if the renderer emits the same exact requested authorized target as `uncertain`, deterministically recover from artifact authority while preserving `Unknown`/`Reject`, qualification, adversarial, and answer-safety boundaries.
+3. **Dependency-aware target-local recovery (#164):** next: determine when an exact verified requested target may be exposed even though unrelated non-target claims make the artifact-global verdict `Reject`; fail closed whenever target dependency or relevance is uncertain.
 4. **Provider reliability and resumable evaluation (#126):** bounded provider-specific transient retries plus case-level checkpoint/resume for long live evaluations, with operational failures kept outside semantic scoring.
 5. **External CLI hardening (#90) and real-workload UX (#139):** keep release/install/automation contracts stable while applying the successor runtime to realistic workloads.
 
@@ -148,6 +148,8 @@ The #147 product-evaluation generation is now closed and frozen. Stage B complet
 The current semantic generation remains frozen at candidate `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352`; current `main` may contain provider-transport reliability changes that do not alter semantic runtime/gate/holdout behavior. #150 is closed as the verified-utility-recovery milestone. Successor semantic work is deliberately split into #159, #160, and #164 and must receive a new runtime/evaluation identity rather than reusing the observed Stage-C holdout as a tuning surface.
 
 The #159 semantic behavior change starts a distinct successor candidate at commit `79ec3b44971c32f9a8847d8173672675947c7288`. That identity records exact Harness-owned bounded-target priority only; it does not replace or reinterpret the frozen `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352` Stage-C candidate, and the observed Stage-C holdout is not rerun as a tuning surface. Any later semantic change for #160 or #164 receives its own successor identity before fresh evaluation.
+
+The #160 renderer-downgrade change advances the successor candidate to `a020b5925497ff3fdf200a9622270fa1889a6aa1`. It reuses only exact Harness-owned target identity and already-existing artifact authority; renderer `uncertain` mode is a trigger, never evidence. `Reject` remains non-recoverable and `Unknown` remains a target-only qualified result. The frozen Stage-C corpus/results are unchanged and were not rerun for tuning. #164 remains a separate later semantic boundary.
 
 Use separate dogfood/reference workloads and answer:
 

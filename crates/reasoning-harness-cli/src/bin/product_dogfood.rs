@@ -20,8 +20,8 @@ use reasoning_harness_core::{
     VerificationConclusion, build_candidate_json_fallback_request, build_candidate_request,
     build_final_answer_json_fallback_request, build_final_answer_request,
     canonical_verified_target_answer, canonical_verified_target_partial_answer,
-    final_answer_candidate_schema, finalize_answer, run_answer_safety_gate,
-    structured_fact_verifier_for_input,
+    final_answer_candidate_schema, finalize_answer, recover_verified_target_renderer_downgrade,
+    run_answer_safety_gate, structured_fact_verifier_for_input,
 };
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -772,6 +772,19 @@ async fn evaluate_harness_arm(call: HarnessArmCall<'_>) -> Result<HarnessArmResu
                 target_scoped_partial_used = true;
                 finalization = recovered_finalization;
             }
+        }
+
+        if let Some((recovered, recovered_finalization)) =
+            recover_verified_target_renderer_downgrade(
+                &final_artifact,
+                final_verdict,
+                &fixture.input.hypotheses,
+                &rendered,
+                &finalization,
+            )
+        {
+            rendered = recovered;
+            finalization = recovered_finalization;
         }
 
         if safety_profile != AnswerSafetyProfile::Baseline
