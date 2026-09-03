@@ -6,13 +6,15 @@ The repository has a maturing evidence-grounded runtime core and a natural-langu
 
 Current work is organized by descriptive product/evaluation concepts rather than research code names:
 
-- **external CLI hardening** — #90;
-- **provider reliability** — #126;
-- **product capability evaluation** — #147;
-- **verified utility recovery** — #150;
-- **model-specific withholding/unknown UX** — #139.
+- **bounded resolver target closure** — #159;
+- **renderer downgrade recovery** — #160;
+- **dependency-aware target-local recovery** — #164;
+- **provider reliability / resumable evaluation** — #126;
+- **external CLI hardening and real-workload UX** — #90 / #139.
 
-The frozen 24-case capability matrix has already exposed the next product gap. Gemini 3.5 Flash-Lite completed the development slice with full task-target coverage and 3/3 configured resolution, while several other complete models preserved zero unsupported grounded claims and zero missed target insufficiency but lost useful exact targets during candidate materialization, resolver closure, or final rendering. #150 therefore runs **before** multi-seed replication: the project will first recover utility that is already justified by exact harness-owned state, without fuzzy proposition matching or prose-to-authority parsing.
+The #147 product-capability evaluation and #150 verified-utility-recovery milestone are closed. The semantic candidate frozen at `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352` completed Stage B and the separately frozen 16-case Stage-C holdout. Final Stage-C target coverage was `1.00` for Ministral 8B, Mistral Small, Gemma 4 31B, and Gemini 3.1 Flash-Lite; Ministral 14B reproducibly scored `0.875`. Every completed Stage-C run kept unsupported grounded claims at `0` and missed target insufficiency at `0`. The 14B residual is therefore carried forward as conservative utility evidence, not repaired by changing the observed holdout or gate.
+
+Successor semantic changes are split across #159, #160, and #164 and require a new candidate/evaluation identity. Provider-only reliability work may land independently when it does not change semantic runtime, fixture, or gate behavior.
 
 The current semantic runtime and answer-safety gate keep their exact machine configuration IDs for reproducibility and rollback. Those IDs, and older labels such as `D3`, `R4`, `RSD2`, or `NL-5`, are not a common product version sequence. See [Terminology and naming](terminology.md).
 

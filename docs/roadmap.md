@@ -26,18 +26,18 @@ Reasoning Harness now separates the active product/evaluation roadmap from the a
 
 ### Product
 
-1. **External CLI hardening (#90):** supported commands, install/release compatibility, configuration identity, and automation ergonomics.
-2. **Provider reliability (#126):** bounded transient retries with typed operational failure accounting.
-3. **Verified utility recovery (#150):** diagnose where exact verified targets are lost, add deterministic canonical recovery and resolver closure where authority already exists, and preserve safe partial answers without fuzzy matching or prose-to-authority conversion.
-4. **Model-specific utility (#139):** reduce unnecessary withholding after the provider-neutral recovery mechanisms are characterized.
-5. **v1.0 readiness:** stable documented product contracts plus repeated real-workload acceptance evidence.
+1. **Bounded resolver target closure (#159):** close exact harness-owned unresolved targets through bounded acquisition/admission/re-verification without model-owned authority.
+2. **Renderer downgrade recovery (#160):** recover exact already-authorized requested targets from stochastic uncertainty downgrade while preserving exact proposition identity.
+3. **Dependency-aware target-local recovery (#164):** allow exposure under artifact-global `Reject` only when the requested target is independently verified and rejected non-target state is demonstrably irrelevant; otherwise fail closed.
+4. **Provider reliability / resumable evaluation (#126):** bounded provider-specific retries, rate-limit telemetry/pacing, and case-level checkpoint/resume without converting operational failure into semantic evidence.
+5. **External CLI hardening (#90), model-specific UX (#139), and v1.0 readiness:** keep compatibility and real-workload usability moving after the successor candidate is frozen.
 
 ### Evaluation
 
-1. **Smoke set:** preserve the historical six-case `product-dogfood-v1` for fast regression and interpretation of earlier runs.
-2. **Capability matrix:** use the SHA-256-frozen 24-case / 8-family `product-dogfood-v2` for development comparisons.
-3. **Replication:** after verified utility recovery is frozen, rerun selected candidates on predeclared fresh seeds and compare paired case × seed outcomes.
-4. **Fresh holdout:** author and freeze 12–16 genuinely new cases only after replication-based selection.
+1. **Closed current generation (#147):** preserve the historical six-case smoke set, frozen 24-case development matrix, five-seed Stage-B replication, and separately frozen 16-case Stage-C holdout as immutable evidence.
+2. **Stage-C result:** Ministral 8B, Mistral Small, Gemma 4 31B, and Gemini 3.1 Flash-Lite each reached target coverage `1.00`; Ministral 14B reproduced `0.875` with one conservative `artifact_blocked_by_non_target_claims` miss. All completed arms retained unsupported grounded claims = `0` and missed target insufficiency = `0`.
+3. **Successor evaluation:** #159/#160/#164 are developed under a new candidate identity. The observed Stage-C holdout is not a calibration/tuning surface. After successor behavior is frozen, use fresh development/calibration evidence and a newly authored independent holdout before adoption.
+4. **Operational completeness:** provider 429/5xx/quota/protocol failures remain separate from semantic scores; #126 may improve retry/resume mechanics without changing the semantic gate or historical outcomes.
 
 ### Research
 
