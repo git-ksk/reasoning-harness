@@ -37,7 +37,8 @@ use reasoning_harness_core::{
     canonical_verified_target_answer, canonical_verified_target_partial_answer,
     classify_materialization_failure, evaluate, evaluate_benchmark_fixture_with_diagnostics,
     evaluate_resolution_fixture, finalize_answer, frameworks::five_whys::FiveWhysRestatementPass,
-    reasoning_artifact_schema, reasoning_candidate_schema, run_answer_safety_gate, run_harness,
+    reasoning_artifact_schema, reasoning_candidate_schema,
+    recover_verified_target_renderer_downgrade, run_answer_safety_gate, run_harness,
     run_model_backed_soft_judge, run_semantic_runtime, structured_fact_verifier_for_input,
     validate_artifact,
 };
@@ -1533,6 +1534,18 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
                 rendered = recovered;
                 finalization = recovered_finalization;
             }
+        }
+        if let Some((recovered, recovered_finalization)) =
+            recover_verified_target_renderer_downgrade(
+                &final_artifact,
+                final_verdict,
+                &built.input.hypotheses,
+                &rendered,
+                &finalization,
+            )
+        {
+            rendered = recovered;
+            finalization = recovered_finalization;
         }
         let rendered_for_safety = rendered.clone();
         let (gated, observations) = apply_natural_answer_safety(NaturalAnswerSafetyCall {
