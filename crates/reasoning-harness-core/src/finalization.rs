@@ -1,3 +1,5 @@
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
+
 use schemars::{JsonSchema, schema_for};
 use serde::{Deserialize, Serialize};
 
@@ -196,6 +198,248 @@ pub fn canonical_verified_target_partial_answer(
     let grounded = candidate.text.clone();
     candidate.text = format!(
         "verified partial: {grounded}; other generated claims remain unresolved and are omitted"
+    );
+    let factual_claims = candidate.factual_claims.len();
+    let finalization = FinalizationResult {
+        status: FinalizationStatus::QualifiedPartialAnswer,
+        text: Some(candidate.text.clone()),
+        factual_claims,
+        covered_claims: factual_claims,
+        factual_claim_coverage: 1.0,
+        uncovered_propositions: vec![],
+    };
+    Some((candidate, finalization))
+}
+
+fn receipt_has_existing_evidence(
+    artifact: &ReasoningArtifact,
+    receipt: &crate::VerificationReceipt,
+) -> bool {
+    !receipt.evidence_ids.is_empty()
+        && receipt.evidence_ids.iter().all(|evidence_id| {
+            artifact
+                .evidence
+                .iter()
+                .any(|evidence| evidence.id == *evidence_id)
+        })
+}
+
+fn bound_receipt_evidence_ids(
+    artifact: &ReasoningArtifact,
+    claim: &crate::Claim,
+    conclusion: crate::VerificationConclusion,
+) -> BTreeSet<String> {
+    artifact
+        .verification_receipts
+        .iter()
+        .filter(|receipt| {
+            receipt.conclusion == conclusion && crate::verification::receipt_matches(receipt, claim)
+        })
+        .flat_map(|receipt| receipt.evidence_ids.iter().cloned())
+        .collect()
+}
+
+fn exact_directly_verified_target_claims(
+    artifact: &ReasoningArtifact,
+    target: &Proposition,
+) -> Option<BTreeSet<String>> {
+    if artifact
+        .evidence_qualification_findings
+        .iter()
+        .any(|finding| finding.proposition == *target)
+        || artifact.adversarial_findings.iter().any(|finding| {
+            finding.proposition == *target && finding.strength == crate::FindingStrength::Hard
+        })
+    {
+        return None;
+    }
+
+    let matching = artifact
+        .claims
+        .iter()
+        .filter(|claim| claim.proposition.as_ref() == Some(target))
+        .collect::<Vec<_>>();
+    if matching.is_empty()
+        || matching
+            .iter()
+            .any(|claim| claim.state != EpistemicState::Supported)
+    {
+        return None;
+    }
+
+    let mut ids = BTreeSet::new();
+    for claim in matching {
+        let directly_supported = artifact.verification_receipts.iter().any(|receipt| {
+            receipt.conclusion == crate::VerificationConclusion::Supported
+                && receipt.proposition.as_ref() == Some(target)
+                && crate::verification::receipt_matches(receipt, claim)
+                && receipt_has_existing_evidence(artifact, receipt)
+        });
+        let contradicted = artifact.verification_receipts.iter().any(|receipt| {
+            receipt.conclusion == crate::VerificationConclusion::Contradicted
+                && crate::verification::receipt_matches(receipt, claim)
+                && receipt_has_existing_evidence(artifact, receipt)
+        });
+        if !directly_supported || contradicted {
+            return None;
+        }
+        ids.insert(claim.id.clone());
+    }
+    Some(ids)
+}
+
+fn reject_problem_claims(
+    artifact: &ReasoningArtifact,
+    targets: &[Proposition],
+) -> Option<(BTreeSet<String>, BTreeSet<String>)> {
+    let target_keys = targets
+        .iter()
+        .map(|target| target.key.as_str())
+        .collect::<BTreeSet<_>>();
+    let mut problematic = BTreeSet::new();
+    let mut contradicted = BTreeSet::new();
+
+    for claim in &artifact.claims {
+        if !matches!(
+            claim.state,
+            EpistemicState::Contradicted
+                | EpistemicState::Assumed
+                | EpistemicState::Unknown
+                | EpistemicState::Inferred
+        ) {
+            continue;
+        }
+        let proposition = claim.proposition.as_ref()?;
+        if targets.contains(proposition) || target_keys.contains(proposition.key.as_str()) {
+            return None;
+        }
+        if claim.state == EpistemicState::Contradicted {
+            let has_direct_contradiction = artifact.verification_receipts.iter().any(|receipt| {
+                receipt.conclusion == crate::VerificationConclusion::Contradicted
+                    && receipt.proposition.as_ref() == Some(proposition)
+                    && crate::verification::receipt_matches(receipt, claim)
+                    && receipt_has_existing_evidence(artifact, receipt)
+            });
+            if !has_direct_contradiction {
+                return None;
+            }
+            contradicted.insert(claim.id.clone());
+        }
+        problematic.insert(claim.id.clone());
+    }
+
+    (!contradicted.is_empty()).then_some((problematic, contradicted))
+}
+
+fn inference_component_intersects(
+    artifact: &ReasoningArtifact,
+    starts: &BTreeSet<String>,
+    blocked: &BTreeSet<String>,
+) -> bool {
+    let known_claim_ids = artifact
+        .claims
+        .iter()
+        .map(|claim| claim.id.as_str())
+        .collect::<BTreeSet<_>>();
+    let mut adjacency: BTreeMap<&str, BTreeSet<&str>> = BTreeMap::new();
+    for inference in &artifact.inferences {
+        if !known_claim_ids.contains(inference.conclusion_claim_id.as_str())
+            || inference
+                .premise_claim_ids
+                .iter()
+                .any(|premise| !known_claim_ids.contains(premise.as_str()))
+        {
+            return true;
+        }
+        for premise in &inference.premise_claim_ids {
+            adjacency
+                .entry(premise.as_str())
+                .or_default()
+                .insert(inference.conclusion_claim_id.as_str());
+            adjacency
+                .entry(inference.conclusion_claim_id.as_str())
+                .or_default()
+                .insert(premise.as_str());
+        }
+    }
+
+    let mut visited = BTreeSet::new();
+    let mut queue = starts.iter().map(String::as_str).collect::<VecDeque<_>>();
+    while let Some(current) = queue.pop_front() {
+        if !visited.insert(current) {
+            continue;
+        }
+        if blocked.contains(current) {
+            return true;
+        }
+        if let Some(neighbors) = adjacency.get(current) {
+            queue.extend(neighbors.iter().copied());
+        }
+    }
+    false
+}
+
+fn claim_evidence_footprint(
+    artifact: &ReasoningArtifact,
+    claim_ids: &BTreeSet<String>,
+) -> BTreeSet<String> {
+    let mut evidence = BTreeSet::new();
+    for claim in artifact
+        .claims
+        .iter()
+        .filter(|claim| claim_ids.contains(&claim.id))
+    {
+        evidence.extend(claim.evidence_ids.iter().cloned());
+        evidence.extend(bound_receipt_evidence_ids(
+            artifact,
+            claim,
+            crate::VerificationConclusion::Supported,
+        ));
+        evidence.extend(bound_receipt_evidence_ids(
+            artifact,
+            claim,
+            crate::VerificationConclusion::Contradicted,
+        ));
+    }
+    evidence
+}
+
+/// Expose exact requested targets as a qualified target-only result even when the artifact-global
+/// verdict is `Reject`, but only when the rejection is demonstrably isolated from those targets in
+/// the typed artifact. Each target must have direct trusted `Supported` verification. Every
+/// contradicted blocker must itself be directly verification-bound, use a different proposition key,
+/// share no evidence with the target, and have no typed inference/dependency path to the target.
+/// Unknown/unresolved non-target state is subject to the same structural isolation check. The global
+/// `Reject` is preserved and the returned result is explicitly `QualifiedPartialAnswer`.
+pub fn canonical_verified_target_reject_partial_answer(
+    artifact: &ReasoningArtifact,
+    verdict: Verdict,
+    targets: &[Proposition],
+) -> Option<(FinalAnswerCandidate, FinalizationResult)> {
+    if verdict != Verdict::Reject || targets.is_empty() {
+        return None;
+    }
+
+    let mut target_claim_ids = BTreeSet::new();
+    for target in targets {
+        target_claim_ids.extend(exact_directly_verified_target_claims(artifact, target)?);
+    }
+    let (problematic_claim_ids, _contradicted_claim_ids) =
+        reject_problem_claims(artifact, targets)?;
+
+    if inference_component_intersects(artifact, &target_claim_ids, &problematic_claim_ids) {
+        return None;
+    }
+    let target_evidence = claim_evidence_footprint(artifact, &target_claim_ids);
+    let problem_evidence = claim_evidence_footprint(artifact, &problematic_claim_ids);
+    if !target_evidence.is_disjoint(&problem_evidence) {
+        return None;
+    }
+
+    let mut candidate = canonical_verified_target_candidate(artifact, targets)?;
+    let grounded = candidate.text.clone();
+    candidate.text = format!(
+        "verified target only: {grounded}; full reasoning artifact remains rejected because structurally independent non-target state was contradicted"
     );
     let factual_claims = candidate.factual_claims.len();
     let finalization = FinalizationResult {
@@ -418,7 +662,9 @@ fn coverage(covered: usize, total: usize) -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Claim;
+    use crate::{
+        Claim, Evidence, EvidenceMetadata, Inference, VerificationConclusion, VerificationReceipt,
+    };
 
     fn artifact(state: EpistemicState) -> ReasoningArtifact {
         ReasoningArtifact {
@@ -742,6 +988,314 @@ mod tests {
                 std::slice::from_ref(&target),
                 &rendered,
                 &qualified,
+            )
+            .is_none()
+        );
+    }
+
+    fn verified_reject_artifact() -> (ReasoningArtifact, Proposition) {
+        let target = Proposition {
+            key: "service.failover_region".into(),
+            value: "eu-west-1".into(),
+        };
+        let blocker = Proposition {
+            key: "telemetry.mode".into(),
+            value: "healthy".into(),
+        };
+        let target_evidence = Evidence {
+            id: "target-e".into(),
+            source: "target fixture".into(),
+            observation: "service.failover_region=eu-west-1".into(),
+            facts: BTreeMap::from([("service.failover_region".into(), "eu-west-1".into())]),
+            metadata: EvidenceMetadata::default(),
+        };
+        let blocker_evidence = Evidence {
+            id: "blocker-e".into(),
+            source: "blocker fixture".into(),
+            observation: "telemetry.mode=degraded".into(),
+            facts: BTreeMap::from([("telemetry.mode".into(), "degraded".into())]),
+            metadata: EvidenceMetadata::default(),
+        };
+        let artifact = ReasoningArtifact {
+            task: "resolve failover region".into(),
+            evidence: vec![target_evidence, blocker_evidence],
+            hypotheses: vec![target.clone()],
+            claims: vec![
+                Claim {
+                    id: "target".into(),
+                    statement: "service.failover_region = eu-west-1".into(),
+                    state: EpistemicState::Supported,
+                    proposition: Some(target.clone()),
+                    evidence_ids: vec!["target-e".into()],
+                },
+                Claim {
+                    id: "blocker".into(),
+                    statement: "telemetry.mode = healthy".into(),
+                    state: EpistemicState::Contradicted,
+                    proposition: Some(blocker.clone()),
+                    evidence_ids: vec![],
+                },
+            ],
+            verification_receipts: vec![
+                VerificationReceipt {
+                    id: "target-supported".into(),
+                    verifier: "fixture".into(),
+                    claim_statement: None,
+                    proposition: Some(target.clone()),
+                    claim_id: Some("target".into()),
+                    conclusion: VerificationConclusion::Supported,
+                    evidence_ids: vec!["target-e".into()],
+                },
+                VerificationReceipt {
+                    id: "blocker-contradicted".into(),
+                    verifier: "fixture".into(),
+                    claim_statement: None,
+                    proposition: Some(blocker),
+                    claim_id: Some("blocker".into()),
+                    conclusion: VerificationConclusion::Contradicted,
+                    evidence_ids: vec!["blocker-e".into()],
+                },
+            ],
+            ..Default::default()
+        };
+        (artifact, target)
+    }
+
+    #[test]
+    fn reject_target_partial_exposes_directly_verified_target_when_blocker_is_structurally_unrelated()
+     {
+        let (current, target) = verified_reject_artifact();
+        let (candidate, finalization) = canonical_verified_target_reject_partial_answer(
+            &current,
+            Verdict::Reject,
+            std::slice::from_ref(&target),
+        )
+        .expect("directly verified target should survive an isolated non-target rejection");
+
+        assert_eq!(
+            candidate.factual_claims,
+            vec![FinalAnswerClaim {
+                proposition: target,
+                mode: FinalClaimMode::Grounded,
+            }]
+        );
+        assert_eq!(
+            finalization.status,
+            FinalizationStatus::QualifiedPartialAnswer
+        );
+        assert_eq!(finalization.factual_claim_coverage, 1.0);
+        assert!(
+            finalization
+                .text
+                .as_deref()
+                .is_some_and(|text| text.contains("full reasoning artifact remains rejected"))
+        );
+    }
+
+    #[test]
+    fn reject_target_partial_fails_closed_on_target_contradiction() {
+        let (mut current, target) = verified_reject_artifact();
+        current
+            .claims
+            .iter_mut()
+            .find(|claim| claim.id == "target")
+            .unwrap()
+            .state = EpistemicState::Contradicted;
+        current
+            .verification_receipts
+            .iter_mut()
+            .find(|receipt| receipt.id == "target-supported")
+            .unwrap()
+            .conclusion = VerificationConclusion::Contradicted;
+        assert!(
+            canonical_verified_target_reject_partial_answer(
+                &current,
+                Verdict::Reject,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn reject_target_partial_fails_closed_on_same_key_blocker() {
+        let (mut current, target) = verified_reject_artifact();
+        let blocker = current
+            .claims
+            .iter_mut()
+            .find(|claim| claim.id == "blocker")
+            .unwrap();
+        blocker.proposition = Some(Proposition {
+            key: target.key.clone(),
+            value: "us-east-1".into(),
+        });
+        let receipt = current
+            .verification_receipts
+            .iter_mut()
+            .find(|receipt| receipt.id == "blocker-contradicted")
+            .unwrap();
+        receipt.proposition = blocker.proposition.clone();
+
+        assert!(
+            canonical_verified_target_reject_partial_answer(
+                &current,
+                Verdict::Reject,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn reject_target_partial_fails_closed_on_shared_dependency() {
+        let (mut current, target) = verified_reject_artifact();
+        current.claims.push(Claim {
+            id: "shared".into(),
+            statement: "shared input".into(),
+            state: EpistemicState::Supported,
+            proposition: Some(Proposition {
+                key: "deployment.source".into(),
+                value: "config".into(),
+            }),
+            evidence_ids: vec!["target-e".into()],
+        });
+        current.inferences = vec![
+            Inference {
+                id: "shared-to-target".into(),
+                premise_claim_ids: vec!["shared".into()],
+                conclusion_claim_id: "target".into(),
+                method: "lookup".into(),
+            },
+            Inference {
+                id: "shared-to-blocker".into(),
+                premise_claim_ids: vec!["shared".into()],
+                conclusion_claim_id: "blocker".into(),
+                method: "lookup".into(),
+            },
+        ];
+        assert!(
+            canonical_verified_target_reject_partial_answer(
+                &current,
+                Verdict::Reject,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn reject_target_partial_fails_closed_on_target_qualification_failure() {
+        let (mut current, target) = verified_reject_artifact();
+        current
+            .evidence_qualification_findings
+            .push(crate::EvidenceQualificationFinding {
+                id: "target-qualification".into(),
+                detector: "fixture".into(),
+                kind: crate::EvidenceQualificationFindingKind::ScopeMismatch,
+                reason: crate::EvidenceQualificationFindingReason::ScopeMismatch,
+                strength: crate::FindingStrength::Hard,
+                proposition: target.clone(),
+                evidence_ids: vec!["target-e".into()],
+                message: "target scope mismatch".into(),
+            });
+        assert!(
+            canonical_verified_target_reject_partial_answer(
+                &current,
+                Verdict::Reject,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn reject_target_partial_fails_closed_on_causal_coupling() {
+        let (mut current, target) = verified_reject_artifact();
+        current.inferences.push(Inference {
+            id: "target-causes-blocker".into(),
+            premise_claim_ids: vec!["target".into()],
+            conclusion_claim_id: "blocker".into(),
+            method: "causal".into(),
+        });
+        assert!(
+            canonical_verified_target_reject_partial_answer(
+                &current,
+                Verdict::Reject,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn reject_target_partial_fails_closed_when_target_and_blocker_share_evidence() {
+        let (mut current, target) = verified_reject_artifact();
+        current
+            .verification_receipts
+            .iter_mut()
+            .find(|receipt| receipt.id == "blocker-contradicted")
+            .unwrap()
+            .evidence_ids = vec!["target-e".into()];
+        assert!(
+            canonical_verified_target_reject_partial_answer(
+                &current,
+                Verdict::Reject,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn reject_target_partial_requires_typed_non_target_blockers() {
+        let (mut current, target) = verified_reject_artifact();
+        current.claims.push(Claim {
+            id: "unbound".into(),
+            statement: "unbound unresolved state".into(),
+            state: EpistemicState::Unknown,
+            proposition: None,
+            evidence_ids: vec![],
+        });
+        assert!(
+            canonical_verified_target_reject_partial_answer(
+                &current,
+                Verdict::Reject,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn reject_target_partial_requires_evidence_bound_direct_verification() {
+        let (mut current, target) = verified_reject_artifact();
+        current
+            .verification_receipts
+            .iter_mut()
+            .find(|receipt| receipt.id == "target-supported")
+            .unwrap()
+            .evidence_ids = vec![];
+        assert!(
+            canonical_verified_target_reject_partial_answer(
+                &current,
+                Verdict::Reject,
+                std::slice::from_ref(&target),
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn reject_target_partial_requires_direct_supported_verification() {
+        let (mut current, target) = verified_reject_artifact();
+        current
+            .verification_receipts
+            .retain(|receipt| receipt.id != "target-supported");
+        assert!(
+            canonical_verified_target_reject_partial_answer(
+                &current,
+                Verdict::Reject,
+                std::slice::from_ref(&target),
             )
             .is_none()
         );
