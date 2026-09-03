@@ -25,7 +25,9 @@ The default evidence admission policy is `RejectAllEvidenceAdmission`. Retrieval
 - requested resolver class;
 - optional per-request attempt/token/time budget.
 
-Targets can represent a proposition, causal relation, evidence-qualification requirement, claim revision, or explicit human review. The default planner currently derives requests from unresolved typed propositions, unsupported-premise findings, evidence-qualification findings, or hard refutation when revision is enabled. The causal target is part of the provider-neutral contract, while automatic causal-evidence acquisition remains deferred because `CausalEvidence` is still a separate observational contract.
+Targets can represent a proposition, causal relation, evidence-qualification requirement, claim revision, or explicit human review. The default planner first considers exact Harness-owned unresolved targets from `ReasoningArtifact.hypotheses` and `evidence_requirements`, preserving an exact evidence requirement as an `EvidenceQualification` target when one exists. Only after those task-owned targets does it consider unsupported-premise findings, other evidence-qualification findings, and unresolved generated claims. This ordering prevents unrelated candidate claims from consuming the bounded resolution budget before an exact requested target is attempted; it does not infer targets from model prose or fuzzy proposition matching. Already exact `Known`/`Supported` targets are not re-requested, while contradiction remains governed by the existing reject/revision policy. The causal target is part of the provider-neutral contract, while automatic causal-evidence acquisition remains deferred because `CausalEvidence` is still a separate observational contract.
+
+Target priority does not change authority. Resolver output must still pass the configured admission boundary and the ordinary verification pipeline before it can change epistemic state, and temporal/scope/authority qualification remains attached to the exact Harness-owned requirement.
 
 ## Bounded execution
 

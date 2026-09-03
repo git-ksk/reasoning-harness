@@ -26,8 +26,8 @@ Reasoning Harness now separates the active product/evaluation roadmap from the a
 
 ### Product
 
-1. **Bounded resolver target closure (#159):** close exact harness-owned unresolved targets through bounded acquisition/admission/re-verification without model-owned authority.
-2. **Renderer downgrade recovery (#160):** recover exact already-authorized requested targets from stochastic uncertainty downgrade while preserving exact proposition identity.
+1. **Bounded resolver target closure (#159):** implemented in successor candidate `79ec3b44971c32f9a8847d8173672675947c7288`; exact Harness-owned unresolved targets are prioritized through the existing bounded acquisition/admission/re-verification boundary without model-owned authority.
+2. **Renderer downgrade recovery (#160):** next: recover exact already-authorized requested targets from stochastic uncertainty downgrade while preserving exact proposition identity.
 3. **Dependency-aware target-local recovery (#164):** allow exposure under artifact-global `Reject` only when the requested target is independently verified and rejected non-target state is demonstrably irrelevant; otherwise fail closed.
 4. **Provider reliability / resumable evaluation (#126):** bounded provider-specific retries, rate-limit telemetry/pacing, and case-level checkpoint/resume without converting operational failure into semantic evidence.
 5. **External CLI hardening (#90), model-specific UX (#139), and v1.0 readiness:** keep compatibility and real-workload usability moving after the successor candidate is frozen.
@@ -36,7 +36,7 @@ Reasoning Harness now separates the active product/evaluation roadmap from the a
 
 1. **Closed current generation (#147):** preserve the historical six-case smoke set, frozen 24-case development matrix, five-seed Stage-B replication, and separately frozen 16-case Stage-C holdout as immutable evidence.
 2. **Stage-C result:** Ministral 8B, Mistral Small, Gemma 4 31B, and Gemini 3.1 Flash-Lite each reached target coverage `1.00`; Ministral 14B reproduced `0.875` with one conservative `artifact_blocked_by_non_target_claims` miss. All completed arms retained unsupported grounded claims = `0` and missed target insufficiency = `0`.
-3. **Successor evaluation:** #159/#160/#164 are developed under a new candidate identity. The observed Stage-C holdout is not a calibration/tuning surface. After successor behavior is frozen, use fresh development/calibration evidence and a newly authored independent holdout before adoption.
+3. **Successor evaluation:** #159 begins the successor line at candidate `79ec3b44971c32f9a8847d8173672675947c7288`; #160/#164 receive new identities when they change semantic behavior. The observed Stage-C holdout is not a calibration/tuning surface. After successor behavior is frozen, use fresh development/calibration evidence and a newly authored independent holdout before adoption.
 4. **Operational completeness:** provider 429/5xx/quota/protocol failures remain separate from semantic scores; #126 may improve retry/resume mechanics without changing the semantic gate or historical outcomes.
 
 ### Research
