@@ -1,0 +1,92 @@
+name: mcp-agentic-loop-diagnostics
+
+on:
+  push:
+    branches:
+      - experiment/mcp-knowledge-probe
+    paths:
+      - scripts/knowledge_search_agentic_wrapper.py
+      - scripts/summarize_agentic_search_diagnostics.py
+      - .github/workflows/mcp-agentic-loop-diagnostics.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Compile bounded agentic benchmark
+        run: |
+          set -euo pipefail
+          cargo check --locked -p reasoning-harness-cli --bin reason-mcp-agentic-search-benchmark
+
+      - name: Install metered agentic search wrapper
+        run: |
+          set -euo pipefail
+          cp scripts/knowledge_search_fused_mcp.py /tmp/knowledge_search_fused_mcp_original.py
+          cp scripts/knowledge_search_agentic_wrapper.py scripts/knowledge_search_fused_mcp.py
+
+      - name: Run bounded agentic dev benchmark
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          KNOWLEDGE_SEARCH_ORIGINAL: /tmp/knowledge_search_fused_mcp_original.py
+        run: |
+          set -euo pipefail
+          test -n "$MISTRAL_API_KEY"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-agentic-search-benchmark -- \
+            --suite dev \
+            --trials 5 \
+            --model ministral-8b-latest \
+            | tee /tmp/mcp-agentic-search-dev-target-progress.json
+
+      - name: Summarize request and progress attribution
+        run: |
+          set -euo pipefail
+          python3 scripts/summarize_agentic_search_diagnostics.py \
+            --input /tmp/mcp-agentic-search-dev-target-progress.json \
+            --output /tmp/mcp-agentic-loop-diagnostics.json \
+            | tee /tmp/mcp-agentic-loop-diagnostics.stdout.json
+
+      - name: Evaluate safety and telemetry gate
+        run: |
+          set -euo pipefail
+          jq -e '
+            (.aggregate.false_acceptances == 0) and
+            (.aggregate.tool_failures == 0) and
+            (.aggregate.planner_failures == 0)
+          ' /tmp/mcp-agentic-search-dev-target-progress.json >/dev/null
+          jq -e '
+            (.progress_contract == "target_directed_v1") and
+            (.aggregate.progress_contract_rounds > 0) and
+            (.aggregate.external_requests > 0)
+          ' /tmp/mcp-agentic-loop-diagnostics.json >/dev/null
+
+      - name: Summarize diagnostic result
+        if: always()
+        run: |
+          echo '--- Agentic benchmark aggregate ---'
+          jq '.aggregate' /tmp/mcp-agentic-search-dev-target-progress.json 2>/dev/null || true
+          echo '--- Request/progress diagnostics ---'
+          jq '.aggregate' /tmp/mcp-agentic-loop-diagnostics.json 2>/dev/null || true
+          echo '--- Per-sample diagnostics ---'
+          jq '.sample_diagnostics[] | {id, trial, passed, stop_reason, tool_calls, external_requests, target_progress_items, target_progress_rounds, unique_novelty_items, novelty_only_rounds, zero_external_request_tool_calls}' /tmp/mcp-agentic-loop-diagnostics.json 2>/dev/null || true
+
+      - name: Preserve diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-agentic-loop-diagnostics
+          path: |
+            /tmp/mcp-agentic-search-dev-target-progress.json
+            /tmp/mcp-agentic-loop-diagnostics.json
+          if-no-files-found: warn
+          retention-days: 7
