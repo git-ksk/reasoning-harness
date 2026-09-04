@@ -36,7 +36,7 @@ cat error.log | reason "DBがroot causeか確認して" \
 
 trustedなstructured supportがなければ、結果が条件付き/`unknown`のままになることがあります。これは仕様です。`--file`に文章があるだけでverification authorityへ昇格はしません。
 
-`main`ではv0.3.0 #174/#175のexternal resolver laneが入っています。`--resolver-command PROGRAM`はshell補間なしで明示programを1つ起動し、stdioで`reason-external-resolver-request-v1` / `reason-external-resolver-response-v1` JSONを交換します。返せるのはacquired evidence / candidate revisionなど既存`ResolutionResolver` contributionだけで、trusted metadata・verification receipt・verdict・final proseは返せません。external evidenceは`resolution.external_command.admission`でsource allowlistとHarness-owned freshness/scope/authority policyを明示した場合だけadmission対象になり、resolverが返したacquisition metadataだけでauthorityを昇格できません。reject理由はresolution attempt上でtypedに観測でき、admit後も通常のqualification / verificationを再通過します。#178ではprocess timeout / response-size上限、typed operational terminal、実call数・latency・optional cost telemetry、raw secretを出さないhashed adapter/admission config identityも追加しています。authorization / policy / protocol failureをgeneric retryすることはありません。詳細は[External resolver adapters](external-resolvers.md)を参照してください。別の`resolution.mcp_readonly` laneではallowlist済みMCP 2026-07-28 stdio `tools/call`を同じacquisition-only boundaryとして利用します。詳細は[Read-only MCP resolver](mcp-resolver.ja.md)を参照してください。別の`resolution.trusted_command` laneでは明示trustedなdeterministic verifierを接続できます。詳細は[Trusted verifier](trusted-verifier.ja.md)。
+`v0.3.0`には#174/#175のexternal resolver laneが入っています。`--resolver-command PROGRAM`はshell補間なしで明示programを1つ起動し、stdioで`reason-external-resolver-request-v1` / `reason-external-resolver-response-v1` JSONを交換します。返せるのはacquired evidence / candidate revisionなど既存`ResolutionResolver` contributionだけで、trusted metadata・verification receipt・verdict・final proseは返せません。external evidenceは`resolution.external_command.admission`でsource allowlistとHarness-owned freshness/scope/authority policyを明示した場合だけadmission対象になり、resolverが返したacquisition metadataだけでauthorityを昇格できません。reject理由はresolution attempt上でtypedに観測でき、admit後も通常のqualification / verificationを再通過します。#178ではprocess timeout / response-size上限、typed operational terminal、実call数・latency・optional cost telemetry、raw secretを出さないhashed adapter/admission config identityも追加しています。authorization / policy / protocol failureをgeneric retryすることはありません。詳細は[External resolver adapters](external-resolvers.md)を参照してください。別の`resolution.mcp_readonly` laneではallowlist済みMCP 2026-07-28 stdio `tools/call`を同じacquisition-only boundaryとして利用します。詳細は[Read-only MCP resolver](mcp-resolver.ja.md)を参照してください。別の`resolution.trusted_command` laneでは明示trustedなdeterministic verifierを接続できます。詳細は[Trusted verifier](trusted-verifier.ja.md)。
 
 最終自然文もmodelがrenderするだけでは信用しません。`finalize_answer`がfactual-claim coverageを確認し、新しい事実を勝手に混ぜた場合はblockします。明示resolverで確認できる場合のみbounded resolutionへ戻し、再verification後に再renderできます。最初からHarness-ownedだったrequested hypothesisがartifact上でexact `Known`/`Supported`なら、rendererだけがclaimを落とす・exact keyからずらす・同じexact targetを`grounded`ではなく`uncertain`へ弱めるケースをdeterministicに回収できます。downgrade recoveryはrendererがその**同一exact requested proposition**を`uncertain`で出した場合だけ起動し、authorityはartifact stateからしか取りません。artifact-global `Unknown`ではtarget-onlyの`QualifiedPartialAnswer`のままです。artifact-global `Reject`もglobal verdict自体は絶対に上書きしませんが、targetがevidence-boundなdirect trusted `Supported` receiptを持ち、problematicなnon-target stateとtyped artifact上で構造的に分離できる場合だけtarget-only `QualifiedPartialAnswer`を出せます。same-key blocker、untyped blocker、shared evidence、inference/dependency path、target-local contradiction/qualification/hard adversarial signalのどれかがあればfail-closeし、依存関係が曖昧な場合も出しません。model prose解析・fuzzy key matching・新authority生成は行わず、recovery後も通常のanswer-safety gateを通ります。
 
@@ -64,19 +64,19 @@ defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です
 
 ## インストール
 
-### 現在のexternal preview (`v0.2.0`)
+### 現在のexternal preview (`v0.3.0`)
 
 自然文first pathは現在のtagged previewに含まれています。Rust 1.88+がある場合:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.2.0 --locked reasoning-harness-cli --bin reason
+  --tag v0.3.0 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-research binaryは入らず、supported product binaryの`reason`だけをinstallします。Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64向けstandalone archiveと`SHA256SUMS`もv0.2.0 Releaseで配布します。`main`は未releaseの開発snapshotを意図的に使う場合だけ選んでください。
+research binaryは入らず、supported product binaryの`reason`だけをinstallします。Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64向けstandalone archiveと`SHA256SUMS`もv0.3.0 Releaseで配布します。`main`は未releaseの開発snapshotを意図的に使う場合だけ選んでください。
 
-`v0.2.0`はv1.0 readiness gateを満たした後も、v0.x support policy上はexternal previewのままです。versionはproduct/distributionの座標であり、新しいfrozen research generationを意味しません。
+`v0.3.0`はv1.0 readiness gateを満たした後も、v0.x support policy上はexternal previewのままです。versionはproduct/distributionの座標であり、新しいfrozen research generationを意味しません。
 
 ## 最小サンプル
 

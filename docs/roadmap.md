@@ -22,7 +22,7 @@ See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
 ## Current product milestone
 
-`v0.2.0` remains the current published external preview. The next planned capability milestone is **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173).
+`v0.3.0` is the current published external preview. **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) is complete; follow-on work must start from a newly measured product or research gap rather than silently extending the released milestone.
 
 v0.3.0 does not add another reasoning mechanism by default. It connects the already-implemented bounded control loop to real external acquisition and trusted-verifier adapters through the existing `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary.
 
@@ -40,7 +40,7 @@ The release gate requires at least one safe real external-evidence recovery whil
 
 New reasoning research still starts only from a newly measured gap and receives a fresh research/evaluation identity. v0.3.0 is therefore a product/distribution milestone, not a semantic-generation bump.
 
-## Completed current product line
+## Completed product line through v0.3.0
 
 Reasoning Harness separates the product/evaluation roadmap from the archived research chronology. Short research labels are retained only for provenance; see [Terminology and naming](terminology.md).
 

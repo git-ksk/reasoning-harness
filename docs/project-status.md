@@ -4,9 +4,9 @@
 
 The repository has a maturing evidence-grounded runtime core and a natural-language-first native `reason` CLI. The product boundary is stable in one important sense: the model remains an untrusted candidate/renderer, while evidence admission, qualification, verification, bounded resolution, and final factual-claim exposure remain harness-owned.
 
-Current work is now organized around the **v0.3.0 — External Evidence & Resolution** milestone (#173). v0.2.0 closed the previous product line; v0.3.0 connects the existing bounded-resolution runtime to real external acquisition and trusted verification without changing the correctness boundary. #174 establishes the first supported external acquisition lane without changing semantic runtime `semantic-decidability-d3-v1` or answer-safety `verified-target-answer-gate-v1`.
+The **v0.3.0 — External Evidence & Resolution** milestone (#173) is complete for release. v0.3.0 connects the existing bounded-resolution runtime to real external acquisition and trusted verification without changing the correctness boundary, semantic runtime `semantic-decidability-d3-v1`, or answer-safety `verified-target-answer-gate-v1`.
 
-Active v0.3.0 work is sequenced as:
+The completed v0.3.0 release scope is:
 
 - **external resolver integration — #174 implemented** — `external_command_v1` is wired through the supported natural-language CLI/config path and existing resolver boundary. Its closed stdio response schema cannot carry trusted metadata/receipts/verdict/final prose.
 - **external evidence qualification — #175 implemented** — `external_evidence_admission_v1` uses exact source allowlists and Harness-owned authority ranks, freshness bounds, and scope policy. Resolver-supplied acquisition metadata is untrusted, cannot self-elevate authority, typed admission rejection is observable on resolution attempts, and admitted evidence re-enters ordinary qualification/verification.
@@ -26,7 +26,7 @@ The #90 CLI contract gap is closed at process level: `product_cli_contract` laun
 
 #139 is also closed by fresh product evidence rather than by weakening gates. On Actions run `33822567155` from main `5c5701f77df9dd507c3949294708f8c07a054064`, the same six-case Ministral 8B product workload improved from historical Harness target coverage 0.25 / false target abstention 0.75 to target coverage 1.00 / false target abstention 0.00 in both Harness arms, while unsupported grounded claims and missed target insufficiency remained zero. The raw arm stayed at 0.25 coverage, so the recovery is attributable to the Harness successor path rather than a favorable raw-model rerun. Expected-unknown targets still remain unresolved; the human CLI renders deterministic evidence-insufficiency guidance instead of inventing a final answer.
 
-Together these results satisfy the documented #90 v1.0 **readiness gate**. v0.2.0 packages that product-capability state as the current tagged external preview while deliberately retaining v0.x/prerelease compatibility semantics. v0.3.0 is now the active product roadmap and adds external-evidence/resolver capability without creating a new semantic research generation; v1.0 remains a separate stability/release decision.
+Together these results satisfy the documented #90 v1.0 **readiness gate**. v0.3.0 is the current tagged external preview and adds external-evidence/resolver capability without creating a new semantic research generation, while deliberately retaining v0.x/prerelease compatibility semantics. v1.0 remains a separate stability/release decision.
 
 The current semantic runtime and answer-safety gate keep their exact machine configuration IDs for reproducibility and rollback. Those IDs, and older labels such as `D3`, `R4`, `RSD2`, or `NL-5`, are not a common product version sequence. See [Terminology and naming](terminology.md).
 

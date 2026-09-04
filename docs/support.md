@@ -63,7 +63,7 @@ Provider credentials remain environment variables and are not accepted in `reaso
 
 ## Stability status
 
-v0.2.0 is the current external-preview release. It packages the natural-language-first product path, verified-target recovery, provider retry/resume reliability, and four-platform process compatibility on the existing research/authority foundation. The documented v1.0 readiness gate is satisfied, but v0.2.0 intentionally remains a prerelease/v0.x compatibility promise rather than a stable v1.0 claim. A future v1.0 still requires an explicit version/tag/release decision through the normal provenance workflow.
+v0.3.0 is the current external-preview release. It adds bounded external acquisition, Harness-owned provenance/freshness/scope/authority admission, typed external-resolution budgets/telemetry, read-only MCP acquisition, a separate trusted verifier lane, and optional `reason-mcp` integration on the existing research/authority foundation. The documented v1.0 readiness gate is satisfied, but v0.3.0 intentionally remains a prerelease/v0.x compatibility promise rather than a stable v1.0 claim. A future v1.0 still requires an explicit version/tag/release decision through the normal provenance workflow.
 
 
 For the distinction between product terms, machine/runtime identifiers, and historical research labels, see [Terminology and naming](terminology.md).

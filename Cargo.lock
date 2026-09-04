@@ -735,7 +735,7 @@ dependencies = [
 
 [[package]]
 name = "reasoning-harness-cli"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "clap",
  "reasoning-harness-core",
@@ -749,7 +749,7 @@ dependencies = [
 
 [[package]]
 name = "reasoning-harness-core"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "schemars",
  "serde",
@@ -760,7 +760,7 @@ dependencies = [
 
 [[package]]
 name = "reasoning-harness-providers"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "httpdate",
  "reasoning-harness-core",

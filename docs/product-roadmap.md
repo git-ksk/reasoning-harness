@@ -1,9 +1,9 @@
 # Product roadmap: evidence-grounded AI CLI
 
 Reasoning Harness is productized first as the native Rust `reason` CLI. v0.1.0 established the
-structured correctness and automation contracts; v0.2.0 is the current external-preview product release
-and makes the **AI-backed natural-language CLI** the primary end-user path over the same harness-owned
-runtime. Users do not need to construct internal JSON just to ask the harness to reason.
+structured correctness and automation contracts; v0.2.0 made the **AI-backed natural-language CLI**
+the primary end-user path, and v0.3.0 is the current external-preview product release adding bounded
+external evidence and resolution over the same harness-owned runtime. Users do not need to construct internal JSON just to ask the harness to reason.
 
 The product goal is deliberately narrower than a general-purpose agent framework:
 
@@ -16,7 +16,7 @@ validation and operational stabilization; the product surface does not track eve
 
 ## Current product path
 
-The v0.2.0 default experience is natural-language-first and AI-backed:
+The v0.3.0 default experience remains natural-language-first and AI-backed:
 
 ```text
 natural-language task
@@ -58,7 +58,7 @@ resolution, re-verification, and final-claim coverage remain harness-owned.
 
 Tracking: milestone **v0.3.0 — External Evidence & Resolution**, parent Issue #173.
 
-v0.3.0 is the next product-capability milestone after v0.2.0. The control loop is already implemented in core; this milestone connects it to real external acquisition and hard-verification adapters without moving domain retrieval or trust into core.
+v0.3.0 is the completed product-capability milestone after v0.2.0. The control loop is already implemented in core; this milestone connects it to real external acquisition and hard-verification adapters without moving domain retrieval or trust into core.
 
 The required execution path remains:
 
@@ -73,7 +73,7 @@ unknown / insufficient support
   -> grounded | qualified | unknown
 ```
 
-Planned order:
+Completed order:
 
 1. **#174 external resolver adapter + CLI/config wiring — implemented.** `external_command_v1` uses the existing `ResolutionResolver` boundary, a closed stdio JSON protocol, literal argv, and fail-closed external evidence admission. It cannot return trusted metadata, receipts, verdicts, or final prose.
 2. **#175 external evidence qualification — implemented.** `external_evidence_admission_v1` normalizes source identity, observation/retrieval time, scope, and claimed authority; exact source allowlists plus Harness-owned ranks/max-age/scope policy decide admission. Resolver authority claims cannot self-elevate, rejection reasons are typed telemetry, and admitted evidence is re-qualified/re-verified through the ordinary pipeline.
@@ -118,7 +118,7 @@ Exact historical phase labels, frozen run identities, and machine configuration 
 
 Already available:
 
-- external-preview `reason` v0.2.0 executable with the natural-language-first path plus supported `run`, `verify`, `semantic-check`, and `schema` product commands; research/evaluation commands remain separate;
+- external-preview `reason` v0.3.0 executable with the natural-language-first path plus supported `run`, `verify`, `semantic-check`, and `schema` product commands, bounded external resolution, and the optional `reason-mcp` adapter; research/evaluation commands remain separate;
 - provider-neutral core runtime and typed `ReasoningArtifact`;
 - provider adapters for Mistral, Google, and NVIDIA outside the correctness authority boundary;
 - bounded resolution/finalization, evidence qualification, policy, checkpoint/replay, and typed
@@ -126,7 +126,7 @@ Already available:
 - current semantic runtime plus an explicit characterized rollback profile (exact machine IDs remain stable and documented);
 - credential-free deterministic CI plus separate live provider smoke/research workflows.
 
-v0.1.0 was the first externally consumable structured preview. v0.2.0 is the current external-preview product release: it adds the natural-language-first path, successor verified-target recovery, provider retry/resume reliability, and process-level compatibility tests while keeping the same research/authority provenance. Its versioned machine contracts and supported product commands remain compatibility-tracked under the v0.x support policy; this is not a v1.0 stability promise.
+v0.1.0 was the first externally consumable structured preview. v0.2.0 added the natural-language-first path, successor verified-target recovery, provider retry/resume reliability, and process-level compatibility tests. v0.3.0 is the current external-preview product release: it adds external acquisition/admission, operational hardening, read-only MCP acquisition, trusted deterministic verification, release acceptance, and the optional `reason-mcp` product surface while keeping the same research/authority provenance. Versioned machine contracts and supported product commands remain compatibility-tracked under the v0.x support policy; this is not a v1.0 stability promise.
 
 ## Historical milestone: supported command and data contract
 
