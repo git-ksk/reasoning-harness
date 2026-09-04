@@ -192,27 +192,28 @@ def main():
             ))
             return 0
 
-        wd_id = wd_top.get("id")
         wp_id = wp_top.get("wikibase_item")
-        if not wd_id or not wp_id or wd_id != wp_id:
+        wd_ids = [item.get("id") for item in wd if item.get("id")]
+        if not wp_id or wp_id not in wd_ids:
             respond(request_id, result=result_payload(
-                f"cross-source entity disagreement: query={query!r}; wikidata_top={wd_id}; wikipedia_top={wp_id}; wikipedia_title={wp_top.get('title')!r}",
+                f"cross-source entity disagreement: query={query!r}; wikidata_candidates={wd_ids}; wikipedia_top={wp_id}; wikipedia_title={wp_top.get('title')!r}",
                 {},
             ))
             return 0
 
-        values = wikidata_claim_values(wd_id, property_id, value_kind)
+        wd_rank = wd_ids.index(wp_id) + 1
+        values = wikidata_claim_values(wp_id, property_id, value_kind)
         if len(values) != 1:
             respond(request_id, result=result_payload(
-                f"property unresolved or multi-valued after cross-source entity agreement: entity={wd_id}; property={property_id}; values={values}",
+                f"property unresolved or multi-valued after cross-source entity agreement: entity={wp_id}; property={property_id}; values={values}",
                 {},
             ))
             return 0
 
         value = values[0]
         observation = (
-            f"cross-source search resolved query={query!r} to {wd_id} via Wikidata + Wikipedia; "
-            f"{fact_key}={value}; property={property_id}"
+            f"cross-source search resolved query={query!r} to {wp_id} via Wikipedia top result + Wikidata top-5 corroboration "
+            f"(wikidata_rank={wd_rank}); {fact_key}={value}; property={property_id}"
         )
         respond(request_id, result=result_payload(observation, {fact_key: value}))
         return 0
