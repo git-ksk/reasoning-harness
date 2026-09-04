@@ -2,350 +2,350 @@
 
 ## プロジェクトの方向性
 
-Reasoning Harness is not trying to become a general-purpose model runner or a second Inspect/lm-eval. Its core differentiator is provider-neutral, authority-aware control of intermediate reasoning: deterministic structure and harness-owned evidence may create hard findings, while model-backed semantic discovery remains soft and observational until independently verified.
+Reasoning Harness は汎用モデル runner や第二の Inspect/lm-eval になろうとしているわけではない。その中核となる差別化要因は、provider-neutral かつ authority-aware な中間 reasoning の制御である。deterministic な構造と harness-owned evidence は hard finding を生成し得る一方、model-backed semantic discovery は独立して検証されるまで soft かつ観測的なものに留まる。
 
-That diagnostic layer is a foundation, not the final product boundary.
+この diagnostic layer は基盤であり、最終的な product boundary ではない。
 
-The long-term product direction is an **evidence-grounded reasoning runtime** that owns the loop around stochastic candidate generation:
+長期的な product の方向性は、確率的な candidate generation を取り巻く loop を担う **evidence-grounded reasoning runtime** である：
 
 ```text
-generate
-  -> ground / verify / diagnose
-  -> resolve missing support or revise refuted reasoning
-  -> re-verify under the same authority boundary
-  -> finalize only from sufficiently grounded propositions
+候補を生成
+  -> 根拠付け / 検証 / 診断
+  -> 不足している根拠を解決、または反証された推論を修正
+  -> 同じ authority boundary の下で再検証
+  -> 十分に根拠付けされた proposition だけから最終化
 ```
 
-The runtime must also be allowed to stop with `unknown`, a qualified partial answer, or abstention. Improving answerability must never require silently promoting retrieved data, model repairs, or fluent final prose into correctness authority.
+runtime は `unknown`、qualified partial answer、または abstention で停止できなければならない。answerability の向上は、retrieved data、model repairs、流暢な final prose を、黙って correctness authority に昇格させることを決して必要としてはならない。
 
-See [ADR-0002](adr/0002-grounded-resolution-and-finalization.ja.md).
+[ADR-0002](adr/0002-grounded-resolution-and-finalization.ja.md) を参照。
 
 ## 現在のプロダクトマイルストーン
 
-`v0.3.0` is the current published external preview. **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) is complete; follow-on work must start from a newly measured product or research gap rather than silently extending the released milestone.
+`v0.3.0` は現在公開されている external preview である。**v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) は完了している。後続作業は、リリース済み milestone を暗黙に延長するのではなく、新たに測定された product または research gap から開始しなければならない。
 
-v0.3.0 does not add another reasoning mechanism by default. It connects the already-implemented bounded control loop to real external acquisition and trusted-verifier adapters through the existing `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary.
+v0.3.0 はデフォルトで別の reasoning mechanism を追加しない。既存の `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary を通じて、すでに実装済みの bounded control loop を、実際の external acquisition および trusted-verifier adapters に接続する。
 
-Execution order:
+実行順序：
 
-1. #174 external resolver adapter and supported CLI/config wiring — **implemented** with `external_command_v1`;
-2. #175 provenance/freshness/scope/authority admission hardening — **implemented** with `external_evidence_admission_v1`, exact-source allowlisting, normalized acquisition metadata, typed admission rejection, and mandatory ordinary re-verification;
-3. #178 external-resolution budgets, telemetry, secret handling, and typed operational failures — **implemented** with typed operational terminals, call/latency/cost telemetry, stable hashed config identities, process timeout, and bounded response size;
-4. #176 read-only MCP resolver adapter — **implemented** with `mcp_readonly_v1`, explicit server/tool allowlisting, read-only acquisition-only config, MCP 2026-07-28 stdio calls, typed tool failure, and ordinary admission/re-verification;
-5. #177 reference trusted verifier/oracle integration — **implemented** with `trusted_command_verifier_v1`, Harness-constructed exact receipts, qualification-preserving evidence binding, and typed operational failure;
-6. #179 non-frozen open-world product dogfood and v0.3.0 acceptance — **implemented/passed** with `external-resolution-acceptance-v1`; deterministic CI keeps unsupported grounded claims and missed target insufficiency at zero, plus a recorded live AWS public-feed recovery;
-7. #180 optional full-runtime MCP product surface — **implemented** with Rust-only `reason-mcp`, MCP 2026-07-28 stateless discovery, closed native-operation schemas, and exact native product-output pass-through; still non-blocking for v0.3.0.
+1. #174 external resolver adapter と supported CLI/config wiring — `external_command_v1` により **実装済み**;
+2. #175 provenance/freshness/scope/authority admission hardening — `external_evidence_admission_v1`、exact-source allowlisting、normalized acquisition metadata、typed admission rejection、mandatory ordinary re-verification により **実装済み**;
+3. #178 external-resolution budgets、telemetry、secret handling、typed operational failures — typed operational terminals、call/latency/cost telemetry、stable hashed config identities、process timeout、bounded response size により **実装済み**;
+4. #176 read-only MCP resolver adapter — `mcp_readonly_v1`、explicit server/tool allowlisting、read-only acquisition-only config、MCP 2026-07-28 stdio calls、typed tool failure、ordinary admission/re-verification により **実装済み**;
+5. #177 reference trusted verifier/oracle integration — `trusted_command_verifier_v1`、Harness-constructed exact receipts、qualification-preserving evidence binding、typed operational failure により **実装済み**;
+6. #179 non-frozen open-world product dogfood と v0.3.0 acceptance — `external-resolution-acceptance-v1` により **実装・合格**; deterministic CI は unsupported grounded claims と missed target insufficiency を 0 に保ち、さらに live AWS public-feed recovery を記録済み;
+7. #180 optional full-runtime MCP product surface — Rust-only `reason-mcp`、MCP 2026-07-28 stateless discovery、closed native-operation schemas、exact native product-output pass-through により **実装済み**。v0.3.0 に対しては引き続き non-blocking である。
 
-The release gate requires at least one safe real external-evidence recovery while preserving unsupported grounded claims = `0` and missed target insufficiency = `0` on the declared acceptance set. External acquisition success and hard verification success are separate observations. Frozen Stage-C/RSD2 and other historical holdouts remain immutable and are not used for product tuning.
+release gate では、宣言された acceptance set において unsupported grounded claims = `0` と missed target insufficiency = `0` を維持しながら、少なくとも1件の安全な実際の external-evidence recovery を要求する。external acquisition の成功と hard verification の成功は別々の observation である。凍結済みの Stage-C/RSD2 その他の過去の holdout は immutable のままであり、product tuning には使用しない。
 
-New reasoning research still starts only from a newly measured gap and receives a fresh research/evaluation identity. v0.3.0 is therefore a product/distribution milestone, not a semantic-generation bump.
+新しい reasoning research は、測定し直された gap からのみ開始し、新たな research/evaluation identity を受け取る。したがって v0.3.0 は semantic-generation の bump ではなく、product/distribution milestone である。
 
 ## v0.3.0 までに完了したプロダクト系列
 
-Reasoning Harness separates the product/evaluation roadmap from the archived research chronology. Short research labels are retained only for provenance; see [Terminology and naming](terminology.ja.md).
+Reasoning Harness は product/evaluation roadmap と archived research chronology を分離する。短い research label は provenance のためだけに保持している。[用語と命名](terminology.ja.md) を参照。
 
 ### プロダクト
 
-1. **Bounded resolver target closure (#159):** implemented in successor candidate `79ec3b44971c32f9a8847d8173672675947c7288`; exact Harness-owned unresolved targets are prioritized through the existing bounded acquisition/admission/re-verification boundary without model-owned authority.
-2. **Renderer downgrade recovery (#160):** implemented in successor candidate `a020b5925497ff3fdf200a9622270fa1889a6aa1`; exact requested authorized targets may recover from renderer-only `uncertain` downgrade without treating renderer output as authority.
-3. **Dependency-aware target-local recovery (#164):** implemented in successor candidate `993874fa0051d06a02c8db8f7a220a2ac7773c17`; global `Reject` is preserved and exact directly verified targets receive target-only qualified exposure only under strict typed structural isolation from rejected non-target state.
-4. **Provider reliability / resumable evaluation (#126):** implemented without a semantic identity change: bounded provider-specific retries and actual attempt telemetry remain operational; product dogfood v10 adds exact-identity completed-case checkpoint/resume and preserves interrupted provider/protocol failures separately from semantic evidence.
-5. **External CLI hardening (#90), model-specific UX (#139), and v1.0 readiness:** closeout complete on current main. Four-platform process compatibility, deterministic CI, current live runtime smoke, and two-class real-workload acceptance are green; Ministral 8B Harness target coverage is 1.00 with zero unsupported grounded claims/missed target insufficiency. The readiness gate is complete, while an actual v1.0 tag/release remains a separate explicit decision.
+1. **bounded resolver による target closure（#159）：** successor candidate `79ec3b44971c32f9a8847d8173672675947c7288` で実装済み。exact Harness-owned unresolved targets は、model-owned authority を介さず、既存の bounded acquisition/admission/re-verification boundary を通じて優先付けされる。
+2. **renderer downgrade recovery（#160）：** successor candidate `a020b5925497ff3fdf200a9622270fa1889a6aa1` で実装済み。exact requested authorized targets は、renderer output を authority とみなすことなく、renderer-only `uncertain` downgrade から復旧できる。
+3. **依存関係を考慮した target-local recovery（#164）：** successor candidate `993874fa0051d06a02c8db8f7a220a2ac7773c17` で実装済み。global `Reject` は保持され、exact directly verified targets は、rejected non-target state から厳格に typed structural isolation された場合に限り、target-only qualified exposure を受ける。
+4. **provider reliability / resumable evaluation（#126）：** semantic identity を変更せずに実装済み。bounded provider-specific retries と actual attempt telemetry は operational なまま維持され、product dogfood v10 は exact-identity completed-case checkpoint/resume を追加し、interrupted provider/protocol failures を semantic evidence とは別に保持する。
+5. **external CLI hardening（#90）、model-specific UX（#139）、および v1.0 readiness：** 現行 main で closeout は完了している。four-platform process compatibility、deterministic CI、current live runtime smoke、two-class real-workload acceptance は合格している。Ministral 8B の Harness target coverage は 1.00 で、unsupported grounded claims/missed target insufficiency は 0 である。readiness gate は完了しているが、実際の v1.0 tag/release は別途明示的に判断する。
 
 ### 評価
 
-1. **Closed current generation (#147):** preserve the historical six-case smoke set, frozen 24-case development matrix, five-seed Stage-B replication, and separately frozen 16-case Stage-C holdout as immutable evidence.
-2. **Stage-C result:** Ministral 8B, Mistral Small, Gemma 4 31B, and Gemini 3.1 Flash-Lite each reached target coverage `1.00`; Ministral 14B reproduced `0.875` with one conservative `artifact_blocked_by_non_target_claims` miss. All completed arms retained unsupported grounded claims = `0` and missed target insufficiency = `0`.
-3. **Successor evaluation:** #159 began the successor line at `79ec3b44971c32f9a8847d8173672675947c7288`; #160 advanced it to `a020b5925497ff3fdf200a9622270fa1889a6aa1`; #164 advances it to `993874fa0051d06a02c8db8f7a220a2ac7773c17`. The observed Stage-C holdout is not a calibration/tuning surface. After this successor behavior is frozen, use fresh development/calibration evidence and a newly authored independent holdout before adoption.
-4. **Operational completeness:** #126 keeps provider 429/5xx/quota/protocol failures separate from semantic scores while adding bounded retry/attempt telemetry and exact-identity product-dogfood checkpoint/resume. Historical outcomes and the semantic gate remain unchanged.
+1. **現行 generation の完了（#147）：** 歴史的な6-case smoke set、凍結された24-case development matrix、5-seed Stage-B replication、別途凍結された16-case Stage-C holdout を immutable な evidence として保持する。
+2. **Stage-C結果：** Ministral 8B、Mistral Small、Gemma 4 31B、Gemini 3.1 Flash-Lite はそれぞれ target coverage `1.00` に到達した。Ministral 14B は、保守的な `artifact_blocked_by_non_target_claims` miss が1件ある状態で `0.875` を再現した。完了したすべての arm で unsupported grounded claims = `0` と missed target insufficiency = `0` を維持した。
+3. **successor評価：** #159 は `79ec3b44971c32f9a8847d8173672675947c7288` で successor line を開始し、#160 は `a020b5925497ff3fdf200a9622270fa1889a6aa1` へ進め、#164 は `993874fa0051d06a02c8db8f7a220a2ac7773c17` へ進めた。観測済みの Stage-C holdout は calibration/tuning surface ではない。この successor の挙動を凍結した後、採用前に新しい development/calibration evidence と新規作成した独立 holdout を使用する。
+4. **運用完了性：** #126 は bounded retry/attempt telemetry と exact-identity product-dogfood checkpoint/resume を追加しつつ、provider 429/5xx/quota/protocol failures を semantic scores から分離している。過去の結果と semantic gate は変更されない。
 
 ### 研究
 
-The first semantic-decidability and residual evidence-sufficiency programs are complete. New research starts only from a measured product/research gap and receives a descriptive identity of its own. Historical labels such as `R1`–`R4`, `D1`–`D3`, and `RSD0`–`RSD4` remain in the chronology below because they are issue-scoped provenance, not product versions.
+最初の semantic-decidability と residual evidence-sufficiency の program は完了している。新しい research は、測定された product/research gap からのみ開始し、それ自体の descriptive identity を受け取る。`R1`–`R4`、`D1`–`D3`、`RSD0`–`RSD4` などの過去の label は、product version ではなく issue-scoped provenance であるため、以下の chronology に残す。
 
 ## 過去の実装と研究の時系列
 
 ## v0.1 — 信頼できる中間状態とネイティブCLI
-- stabilize HarnessInput / ReasoningCandidate / ReasoningArtifact schemas
-- JSON Schema export
-- provenance coverage gates
-- harness-owned evidence / untrusted candidate authority boundary
-- verification receipts / oracle-backed promotion for safely upgrading supported claims **implemented**
-- explicit unknown/assumption handling
-- fixture-based eval runner
-- native CLI for run / verify / eval workflows; explain remains deferred until renderer semantics are defined
-- JSON output and CI-safe exit semantics
-- first provider adapter experiment (Mistral HTTP adapter + manual live benchmark implemented)
-- offline fixture regression separated from live provider benchmark runs
-- explicit hard-validator vs soft-judge metric classification
+- HarnessInput / ReasoningCandidate / ReasoningArtifact schemas を安定化
+- JSON Schema を export
+- provenance coverage gates を設定
+- harness-owned evidence と untrusted candidate の authority boundary
+- supported claims を安全に昇格させるための verification receipts / oracle-backed promotion **実装済み**
+- explicit な unknown/assumption handling
+- fixture-based eval runner を実装
+- run / verify / eval workflow 用 native CLI；renderer semantics が定義されるまで explain は deferred
+- JSON output と CI-safe exit semantics
+- 最初の provider adapter 実験（Mistral HTTP adapter + manual live benchmark 実装済み）
+- offline fixture regression と live provider benchmark runs を分離
+- hard-validator と soft-judge の metric classification を明示
 
 ## P0完了 — 構造化検証器バインディング
-- [done] replace brittle exact-prose receipt matching with a typed `Proposition { key, value }` verification target
-- [done] define harness-owned structured facts and provider-neutral verification boundaries
-- [done] bind verifier results to structured propositions plus harness-owned structured facts, never model self-asserted authority
-- [done] restore live accept/reject utility without increasing unsupported accepted claims
-- [done] preserve exact-string receipt binding as a conservative compatibility mode
-- [done] normalize malformed untrusted inference edges with explicit `candidate_diagnostics` rather than failing unrelated claims
+- [完了] brittle exact-prose receipt matching を typed `Proposition { key, value }` verification target に置き換え
+- [完了] harness-owned structured facts と provider-neutral verification boundaries を定義
+- [完了] verifier results を structured propositions と harness-owned structured facts に bind し、model self-asserted authority は決して受け入れない
+- [完了] unsupported accepted claims を増やさずに live accept/reject utility を復旧
+- [完了] exact-string receipt binding を conservative compatibility mode として保持
+- [完了] malformed untrusted inference edges を明示的な `candidate_diagnostics` で normalize し、無関係な claims の失敗を避ける
 
 ## 過去の研究フェーズ v0.2 — 敵対的推論パス（CLI v0.2.0ではない）
-- [done] provider-neutral `AdversarialDetector` contract with typed contradiction/counterexample findings
-- [done] explicit `hard` vs `soft` finding strength; findings never own verdict authority
-- [done] deterministic structured-fact contradiction/counterexample detector
-- [done] counterexample detection metric and adversarial fixture coverage
-- semantic/model-backed discovery remains soft until independently verified
-- assumption pass moved to the research sequence below (#12)
-- semantic-loss checks remain deferred until robustness/calibration foundations exist
+- [完了] typed contradiction/counterexample findings を持つ provider-neutral `AdversarialDetector` contract
+- [完了] `hard` と `soft` の finding strength を明示し、findings は決して verdict authority を持たない
+- [完了] deterministic structured-fact contradiction/counterexample detector を実装
+- [完了] counterexample detection metric と adversarial fixture coverage
+- semantic/model-backed discovery は独立検証されるまで soft のまま維持
+- assumption pass を以下の research sequence（#12）へ移動
+- semantic-loss checks は robustness/calibration foundations が整うまで deferred のまま維持
 
 ## v0.3 — 因果診断とフレームワーク診断
-- [done] extend the lexical Five Whys restatement pass with evidence-aware causal edge diagnostics; exact oracle-backed support/refutation is typed, unresolved semantic cases remain soft/unknown, and causal diagnostics stay outside final-verdict authority (#4 / PR #9)
-- first-principles and Feynman/simplification work is deferred until the diagnostic contracts below demonstrate that another named framework adds measurable signal rather than presentation-only complexity
-- a general framework plugin contract is likewise deferred until at least two independent semantic diagnostic families need the same extension boundary
+- [完了] lexical Five Whys restatement pass を evidence-aware causal edge diagnostics で拡張；exact oracle-backed support/refutation は typed とし、未解決の semantic cases は soft/unknown のまま、causal diagnostics は final-verdict authority の外に置く（#4 / PR #9）
+- first-principles と Feynman/simplification work は、以下の diagnostic contracts が別の named framework に presentation-only complexity ではなく測定可能な signal を追加することを示すまで deferred
+- general framework plugin contract も、少なくとも2つの独立した semantic diagnostic families が同じ extension boundary を必要とするまで deferred
 
 ## v0.4 — 再現可能なライブ研究
-- [done] cross-model benchmark matrix across Mistral, Google, and NVIDIA Hosted NIM
-- [done] token/latency/cost accounting for live provider observations
-- [done] fixture-level live concurrency with provider-owned pacing/retry semantics preserved
-- [done] repeated-trial stability reporting with per-trial operational isolation and mean/min/max/stddev
-- [done] 5-trial Mistral + Google stability matrix plus targeted 10-trial follow-up for tied models
-- deterministic vs soft-verifier reporting remains explicit
-- public benchmark corpus work moves to #14
+- [完了] Mistral、Google、NVIDIA Hosted NIM にまたがる cross-model benchmark matrix
+- [完了] live provider observations の token/latency/cost accounting
+- [完了] provider-owned pacing/retry semantics を保持した fixture-level live concurrency
+- [完了] per-trial operational isolation と mean/min/max/stddev を含む repeated-trial stability reporting
+- [完了] 5-trial Mistral + Google stability matrix と、同率モデルを対象にした targeted 10-trial follow-up
+- deterministic と soft-verifier の reporting を明示的なまま維持
+- public benchmark corpus work を #14 へ移動
 
 ### v0.4研究ポリシー
-- required CI remains deterministic and credential-free; live provider studies remain manual/secret-gated
-- provider/model output remains an untrusted candidate and never owns verification or final-verdict authority
-- operationally incomplete trials are reported explicitly and excluded from cross-trial correctness variance
-- single live runs remain diagnostic observations and must not be presented as stable rankings
-- NVIDIA routine coverage remains `nvidia/nemotron-3.5-lightning-30b-a3b`; other Hosted NIM model IDs are ad-hoc research inputs
+- required CI は deterministic かつ credential-free のまま維持し、live provider studies は manual/secret-gated のまま維持
+- provider/model output は untrusted candidate のままであり、verification や final-verdict authority を決して持たない
+- operationally incomplete trials は明示的に報告し、cross-trial correctness variance から除外
+- single live runs は diagnostic observations のままとし、stable rankings として提示してはならない
+- NVIDIA routine coverage は `nvidia/nemotron-3.5-lightning-30b-a3b` のまま維持し、その他の Hosted NIM model IDs は ad-hoc research inputs とする
 
 ## P0完了 — 堅牢性と診断の安定性
 
 ### #10 メタモルフィック推論の堅牢性 — 実装済み
-- [done] provider-neutral typed transform contract
-- [done] six deterministic transform families covering evidence order, independent inference order, stable-ID remapping, irrelevant evidence, causal cause-set order, and causal evidence order
-- [done] final-verdict, hard-finding, soft-finding, and typed diagnostic-status invariance reporting
-- [done] raw diagnostic-ID/reason delta reporting without treating referential IDs as semantic truth
-- [done] dedicated reproducible metamorphic seed fixtures kept outside the 20-case and eight-case correctness denominators
+- [完了] provider-neutral typed transform contract を定義
+- [完了] evidence order、independent inference order、stable-ID remapping、irrelevant evidence、causal cause-set order、causal evidence order を対象とする6つの deterministic transform families
+- [完了] final-verdict、hard-finding、soft-finding、typed diagnostic-status の invariance reporting
+- [完了] referential IDs を semantic truth とみなさない raw diagnostic-ID/reason delta reporting
+- [完了] 専用の reproducible metamorphic seed fixtures を20-case および8-case の correctness denominators の外に保持
 
-Free-form LLM paraphrase generation remains outside the hard benchmark.
+自由形式の LLM paraphrase generation は hard benchmark の対象外のままである。
 
 ### #11 反復試行における診断の安定性 — 実装済み
-- [done] typed diagnostic signal/report contract independent from final correctness
-- [done] per-fixture complete-trial finding frequencies and count distributions
-- [done] adversarial, candidate-normalization, causal, assumption, and evidence-qualification signal types
-- [done] operationally incomplete trials excluded from diagnostic denominators and reported explicitly
-- [done] 95% Wilson score intervals with exact denominator and minimum-observation policy
-- [done] live CLI JSON exposes `stability.diagnostics` alongside unchanged `stability.correctness`
+- [完了] final correctness から独立した typed diagnostic signal/report contract
+- [完了] per-fixture complete-trial の finding frequencies と count distributions
+- [完了] adversarial、candidate-normalization、causal、assumption、evidence-qualification の signal types
+- [完了] operationally incomplete trials を diagnostic denominators から除外し、明示的に報告
+- [完了] exact denominator と minimum-observation policy を伴う 95% Wilson score intervals
+- [完了] live CLI JSON は変更されない `stability.correctness` と並んで `stability.diagnostics` を公開
 
 ## P1 — グラウンデッド推論シグナルを保守的に拡張
 
 ### #12 仮定と未サポート前提の診断 — 実装済み
-- [done] harness-owned explicit assumptions are a distinct input contract from hypotheses
-- [done] typed premise assessments distinguish supported, explicit input assumption, unsupported, and unbound
-- [done] typed unsupported premises are hard process findings relative to supplied context; missing proposition binding remains soft
-- [done] repeated premise reuse is deduplicated semantically while preserving all claim/inference references
-- [done] candidate-authored `inferred` state is not trusted as support; derived support requires a chain from trusted supported/known claims or explicit input assumptions
-- [done] five-case deterministic assumption corpus and separate detection/recognition metrics remain outside final correctness denominators
-- [done] assumption findings feed the #11 provider-neutral repeated diagnostic report without gaining verdict authority
+- [完了] harness-owned explicit assumptions は hypotheses とは別の input contract
+- [完了] typed premise assessments は supported、explicit input assumption、unsupported、unbound を区別
+- [完了] typed unsupported premises は supplied context に対する hard process findings であり、missing proposition binding は soft のまま
+- [完了] repeated premise reuse は semantic に deduplicate しつつ、すべての claim/inference references を保持
+- [完了] candidate-authored `inferred` state は support として信頼せず、derived support には trusted supported/known claims または explicit input assumptions からの chain を要求
+- [完了] five-case deterministic assumption corpus と分離された detection/recognition metrics を final correctness denominators の外に維持
+- [完了] assumption findings を #11 の provider-neutral repeated diagnostic report に供給し、verdict authority は付与しない
 
 ### #16 時間・スコープ・来歴に関するエビデンス診断 — 実装済み
-- [done] harness-owned `EvidenceMetadata` for validity windows, applicability scope, and opaque provenance classes
-- [done] one provider-neutral `EvidenceRequirement` per proposition key plus harness-owned authority-rank policy
-- [done] hard stale/not-yet-valid/scope-mismatch/scope-expansion/insufficient-authority/conflict findings and soft missing-metadata findings
-- [done] qualification-aware structured-fact verification; unqualified or conflicting qualified evidence cannot create a hard receipt
-- [done] candidate schema cannot create evidence metadata, requirements, authority policy, or qualification findings
-- [done] eight-case deterministic qualification corpus and separate reason-detection metric outside final correctness/causal denominators
-- [done] evidence-qualification findings feed the #11 repeated diagnostic report without gaining verdict authority
+- [完了] validity windows、applicability scope、opaque provenance classes のための harness-owned `EvidenceMetadata`
+- [完了] 各 proposition key に1つの provider-neutral `EvidenceRequirement` と harness-owned authority-rank policy
+- [完了] hard stale/not-yet-valid/scope-mismatch/scope-expansion/insufficient-authority/conflict findings と soft missing-metadata findings
+- [完了] qualification-aware structured-fact verification；unqualified または conflicting な qualified evidence は hard receipt を生成できない
+- [完了] candidate schema は evidence metadata、requirements、authority policy、qualification findings を生成できない
+- [完了] eight-case deterministic qualification corpus と分離された reason-detection metric を final correctness/causal denominators の外に維持
+- [完了] evidence-qualification findings を #11 の repeated diagnostic report に供給し、verdict authority は付与しない
 
-Open-world retrieval, domain-specific source rankings, and generic RAG orchestration remain out of core scope. This work is now an implemented prerequisite for the future resolution loop because newly acquired evidence must be qualified for time, applicability, and authority before it can safely resolve an unknown.
+Open-world retrieval、domain-specific source rankings、generic RAG orchestration は引き続き core scope の対象外である。この work は現在、future resolution loop の実装済み prerequisite となっている。新たに取得した evidence は、unknown を安全に resolve できるようになる前に、time、applicability、authority について qualification されなければならないためである。
 
 ## P2 — エンドツーエンドのプロダクト主張に先立つベンチマーク契約
 
 ### #14 ベンチマークコーパスのバージョン管理と層別化 — 実装済み
-- [done] corpus v1 manifest covers 20 claim, 8 causal, 5 assumption, and 8 evidence-qualification cases with stable suite-prefixed IDs
-- [done] category/difficulty/scoring/provenance/redistribution/contamination/lifecycle metadata is explicit and validated
-- [done] `score_compatibility_id` defines direct score-comparison compatibility instead of inferring it from version strings
-- [done] recorded claim eval reports category and difficulty slices alongside the unchanged historical aggregate
-- [done] live eval records corpus identity but leaves repeated-trial stratification to future complete-trial-aware reporting
-- [done] case add/change/deprecate/supersede discipline, contamination posture, and saturation warning policy are documented
-- [done] public manifest coverage and obvious provider/credential coupling are deterministic CI checks
+- [完了] corpus v1 manifest は stable suite-prefixed IDs を持つ20 claim、8 causal、5 assumption、8 evidence-qualification cases を網羅
+- [完了] category/difficulty/scoring/provenance/redistribution/contamination/lifecycle metadata を明示し、検証
+- [完了] `score_compatibility_id` は version strings から推測せず、direct score-comparison compatibility を定義
+- [完了] recorded claim eval は、変更されない historical aggregate と並んで category と difficulty の slices を報告
+- [完了] live eval は corpus identity を記録するが、repeated-trial stratification は future complete-trial-aware reporting に委ねる
+- [完了] case の add/change/deprecate/supersede discipline、contamination posture、saturation warning policy を文書化
+- [完了] public manifest coverage と明白な provider/credential coupling を deterministic CI checks とする
 
-Corpus v1 now establishes the stable base-case identities needed for direct, diagnose-only, and bounded-resolution comparisons without changing denominators underneath recovery metrics.
+Corpus v1 は現在、recovery metrics の denominators を変更せずに direct、diagnose-only、bounded-resolution comparisons を行うために必要な stable base-case identities を確立している。
 
 ## P3 — グラウンデッドな解決と最終化のランタイム — 実装済み
 
 ### #22 有界グラウンデッド解決と最終化 — 実装済み
-- [done] typed provider-neutral requests for proposition, causal, evidence-qualification, revision, and human-review targets
-- [done] generic resolver output is acquisition/revision only; trusted evidence metadata crosses `EvidenceAdmissionPolicy`, and trusted receipts use a separate `TrustedResolutionVerifier` boundary
-- [done] per-run and per-request attempt/token/time budgets, resolver allowlists, required authority policy, attempt history, and explicit terminal states
-- [done] admitted evidence and repaired/regenerated candidates re-enter the ordinary normalization/validation/verification/diagnostic/decision pipeline
-- [done] grounded finalization consumes verified artifact state and machine-checks typed factual-claim coverage
-- [done] renderer-introduced factual propositions are withheld, converted into new hypotheses, and routed through resolution/verification before grounded output
-- [done] nine deterministic resolution variants cover support, refutation, stale/scope/authority mismatch, conflict, no-result, malformed output, and untrusted output
-- [done] `reason eval-resolution` compares direct one-shot, diagnose-only, and bounded resolution on stable corpus-v1 base identity
-- [done] recovery, unsafe-final-answer, final-claim-coverage, terminal, attempt, token, and elapsed-time metrics remain separate from ordinary correctness and diagnostic stability
+- [完了] proposition、causal、evidence-qualification、revision、human-review targets に対する typed provider-neutral requests
+- [完了] generic resolver output は acquisition/revision のみとし、trusted evidence metadata は `EvidenceAdmissionPolicy` を通過し、trusted receipts は別の `TrustedResolutionVerifier` boundary を使用
+- [完了] per-run および per-request の attempt/token/time budgets、resolver allowlists、required authority policy、attempt history、explicit terminal states
+- [完了] admitted evidence と repaired/regenerated candidates を ordinary normalization/validation/verification/diagnostic/decision pipeline に再投入
+- [完了] grounded finalization は verified artifact state を消費し、typed factual-claim coverage を machine-check
+- [完了] renderer-introduced factual propositions は保留し、新しい hypotheses に変換して、grounded output の前に resolution/verification を通過させる
+- [完了] support、refutation、stale/scope/authority mismatch、conflict、no-result、malformed output、untrusted output を対象とする9つの deterministic resolution variants
+- [完了] `reason eval-resolution` は stable corpus-v1 base identity 上で direct one-shot、diagnose-only、bounded resolution を比較
+- [完了] recovery、unsafe-final-answer、final-claim-coverage、terminal、attempt、token、elapsed-time metrics を ordinary correctness および diagnostic stability から分離したまま維持
 
-The core now owns the bounded control protocol, not domain acquisition. Generic web/RAG/database/MCP/human-review implementations remain external adapters. Live resolution quality is not implied by the deterministic fixture-oracle baseline.
+core が担うのは bounded control protocol であり、domain acquisition ではない。generic web/RAG/database/MCP/human-review implementations は引き続き external adapters である。live resolution quality は deterministic fixture-oracle baseline からは導けない。
 
 ## P3.5 — 推論コントロールプレーンアーキテクチャ — 設計済み
 
 ### #25 成熟したHarness制御パターン — アーキテクチャ完了
-- [done] map execution sandbox to evidence/inference promotion policy rather than a new execution sandbox
-- [done] define `ReasoningPolicy` as promotion/escalation policy that never owns truth authority
-- [done] adopt durable `ReasoningThread`, typed append-oriented events, checkpoint/resume/fork, and explicit policy-change invalidation
-- [done] reuse #22 resolver/admission/verifier boundaries instead of adding a competing evidence-provider abstraction
-- [done] define proposition -> evidence -> edge -> artifact -> final-answer validation ladder and dependency invalidation
-- [done] preserve repair as untrusted replacement + complete re-verification
-- [done] defer skills/subagents and generic workflow orchestration until benchmark evidence justifies them
+- [完了] execution sandbox を新しい execution sandbox ではなく evidence/inference promotion policy に対応付け
+- [完了] `ReasoningPolicy` を、truth authority を決して持たない promotion/escalation policy として定義
+- [完了] durable `ReasoningThread`、typed append-oriented events、checkpoint/resume/fork、explicit policy-change invalidation を採用
+- [完了] 競合する evidence-provider abstraction を追加せず、#22 の resolver/admission/verifier boundaries を再利用
+- [完了] proposition -> evidence -> edge -> artifact -> final-answer validation ladder と dependency invalidation を定義
+- [完了] repair を untrusted replacement + complete re-verification として保持
+- [完了] benchmark evidence が正当化するまで skills/subagents と generic workflow orchestration を deferred
 
-ADR-0003 control-plane implementation is complete across #27 policy/invalidation and #28 durable-thread replay.
+ADR-0003 の control-plane implementation は、#27 policy/invalidation と #28 durable-thread replay にわたって完了している。
 
 ### #27 組み合わせ可能な推論ポリシーと依存関係の無効化 — 実装済み
-- [done] typed global/domain/run `ReasoningPolicyLayer` composition with stable effective policy version identity
-- [done] authority thresholds, scope, derived-support capability, and resolver-class permissions compose restrictively; contextual `as_of` changes force requalification
-- [done] direct/deserialized policy input is validated fail-closed independently of the composition helper
-- [done] policy changes create a new artifact snapshot; historical input is not mutated
-- [done] supported/contradicted state requires reconstructable retained receipt authority, while known state must retain qualified direct evidence
-- [done] invalidation propagates receipt -> claim -> inference edge -> downstream claim -> finalization
-- [done] invalidated edges are removed from the new accepted snapshot and policy-sensitive qualification/assumption findings are recomputed
-- [done] soft semantic findings may request evidence/verifier/human escalation but cannot create hard authority
-- [done] #22 resolution policy can only be tightened by policy resolver/authority constraints
-- [done] four deterministic policy fixtures cover authority, temporal, scope, and dependency invalidation outside existing score denominators
+- [完了] stable effective policy version identity を持つ typed global/domain/run `ReasoningPolicyLayer` composition
+- [完了] authority thresholds、scope、derived-support capability、resolver-class permissions を restrictive に compose；contextual `as_of` の変更は requalification を強制
+- [完了] direct/deserialized policy input を composition helper から独立して fail-closed で検証
+- [完了] policy changes は新しい artifact snapshot を作成し、historical input は変更しない
+- [完了] supported/contradicted state には reconstructable な retained receipt authority が必要であり、known state には qualified direct evidence を保持
+- [完了] invalidation を receipt -> claim -> inference edge -> downstream claim -> finalization へ伝播
+- [完了] invalidated edges を新しい accepted snapshot から削除し、policy-sensitive な qualification/assumption findings を再計算
+- [完了] soft semantic findings は evidence/verifier/human escalation を要求できるが、hard authority は生成できない
+- [完了] #22 resolution policy は policy resolver/authority constraints によってのみ厳格化可能
+- [完了] 4つの deterministic policy fixtures で authority、temporal、scope、dependency invalidation を既存の score denominators の外で対象化
 
-See [reasoning policy and dependency invalidation](reasoning-policy.ja.md).
+[reasoning policy と dependency invalidation](reasoning-policy.ja.md) を参照。
 
 ### #28 永続的な推論スレッドとチェックポイント再生 — 実装済み
-- [done] stable thread, checkpoint, event, candidate, and fork-lineage identities with schema/policy version binding
-- [done] append-oriented task, candidate, artifact, soft-finding, resolution-attempt, policy, invalidation, checkpoint, interrupt/resume/fork, and finalization events
-- [done] deterministic checkpoint/resume reconstruction of explicit harness-owned state
-- [done] interrupted work is frozen and cannot be mistaken for verified/finalized state
-- [done] fork creates a new lineage without rewriting source history; finalized source threads remain immutable
-- [done] policy-change and invalidation events are replayed through deterministic #27 re-evaluation, preventing serialized authority injection
-- [done] active policy is rechecked when accepted artifacts are recorded
-- [done] recorded #22 resolution attempts are observations only; replay never re-executes resolver side effects
-- [done] abstract `ReasoningThreadStore` boundary with no filesystem/database/cloud backend in core
-- [done] credential-free replay/tamper tests and explicit no-hidden-chain-of-thought persistence contract
+- [完了] schema/policy version binding を伴う stable thread、checkpoint、event、candidate、fork-lineage identities
+- [完了] append-oriented task、candidate、artifact、soft-finding、resolution-attempt、policy、invalidation、checkpoint、interrupt/resume/fork、finalization events を定義
+- [完了] explicit harness-owned state の deterministic checkpoint/resume reconstruction
+- [完了] interrupted work を凍結し、verified/finalized state と取り違えられないようにする
+- [完了] fork は source history を書き換えずに新しい lineage を作成し、finalized source threads は immutable のまま維持
+- [完了] policy-change と invalidation events を deterministic #27 re-evaluation で replay し、serialized authority injection を防止
+- [完了] accepted artifacts の記録時に active policy を再チェック
+- [完了] 記録された #22 resolution attempts は observations のみとし、replay では resolver side effects を再実行しない
+- [完了] core に filesystem/database/cloud backend を持たない abstract `ReasoningThreadStore` boundary
+- [完了] credential-free replay/tamper tests と明示的な no-hidden-chain-of-thought persistence contract
 
-See [durable reasoning threads and deterministic replay](reasoning-thread.ja.md). Concrete storage products, retention policy, UI/session surfaces, and content-addressed blob stores remain outside core.
+[durable reasoning threads と deterministic replay](reasoning-thread.ja.md) を参照。具体的な storage products、retention policy、UI/session surfaces、content-addressed blob stores は引き続き core の対象外である。
 
 ## P4 — キャリブレーション済みセマンティック拡張
 
 ### #13 キャリブレーション済みソフトセマンティック診断判定器 — 実装済み
-- [done] provider-neutral async `SoftDiagnosticJudge` contract with harness/adapter-owned stable judge/model/configuration identity
-- [done] typed soft contradiction/counterexample/unsupported-premise/causal-gap request and finding targets
-- [done] `finding | no_finding | abstain` output with no API path to receipts, hard findings, epistemic promotion, or verdict authority
-- [done] nine-case offline calibration corpus with positive, negative, and ambiguous labels and deliberate disagreement/abstention
-- [done] per-judge confusion counts, precision, recall, decision coverage, and abstention metrics
-- [done] pairwise categorical agreement plus nominal Krippendorff alpha with abstention treated as missing data
-- [done] `reason eval-judges` keeps calibration metrics separate from final correctness, diagnostic stability, and resolution denominators
-- [done] required CI remains deterministic and credential-free; recorded identities are synthetic calibration fixtures, not model-quality claims
+- [完了] harness/adapter-owned stable judge/model/configuration identity を伴う provider-neutral async `SoftDiagnosticJudge` contract
+- [完了] typed soft contradiction/counterexample/unsupported-premise/causal-gap request と finding targets
+- [完了] receipts、hard findings、epistemic promotion、verdict authority への API path を持たない `finding | no_finding | abstain` output
+- [完了] positive、negative、ambiguous labels と意図的な disagreement/abstention を含む nine-case offline calibration corpus
+- [完了] per-judge confusion counts、precision、recall、decision coverage、abstention metrics を記録
+- [完了] abstention を missing data として扱う pairwise categorical agreement と nominal Krippendorff alpha
+- [完了] `reason eval-judges` は calibration metrics を final correctness、diagnostic stability、resolution denominators から分離して維持
+- [完了] required CI は deterministic かつ credential-free のまま維持し、記録された identities は synthetic calibration fixtures であって model-quality claims ではない
 
-Live semantic discovery remains soft even when calibration metrics are strong. #46 documents both the v3 holdout-v2 portability matrix and the independent v4/holdout-v3 successor test rather than ranking models. The v4 matrix failed its predeclared adoption gate with zero conformant and zero usable-with-limitations models: simplification weakened uncertainty behavior across Mistral and Google families, while the stricter discriminated schema improved Ministral 14B protocol completion without producing semantic portability and Nemotron remained protocol-incomplete/finding-collapsed. #55 therefore restores the exact previously characterized `soft-semantic-v3` runtime baseline while preserving v4 and holdout-v3 as immutable research history. Hard authority remains deterministic/trusted-verifier owned. See [cross-model semantic judge conformance](semantic-judge-conformance.ja.md).
+Live semantic discovery は calibration metrics が強い場合でも soft のままである。#46 は model を ranking するのではなく、v3 holdout-v2 portability matrix と independent v4/holdout-v3 successor test の両方を記録する。v4 matrix は conformant が 0、usable-with-limitations が 0 のため、事前宣言した adoption gate に失敗した。simplification は Mistral と Google families 全体で uncertainty behavior を弱めた一方、stricter discriminated schema は semantic portability を生み出さないまま Ministral 14B の protocol completion を改善し、Nemotron は protocol-incomplete/finding-collapsed のまま残った。そのため #55 は、v4 と holdout-v3 を immutable な research history として保持しつつ、以前に正確に特性化された `soft-semantic-v3` runtime baseline を復元する。Hard authority は deterministic/trusted-verifier が引き続き所有する。[cross-model semantic judge の適合性](semantic-judge-conformance.ja.md) を参照。
 
 ### #59 次のセマンティック研究 — 次の後継版に先立つ表現の堅牢性
 
-The #57 calibration-only follow-up isolated the strict discriminated output schema from the v3 semantic wording. The result rejects the assumption that a model-facing schema is semantically neutral: Ministral 14B improved from 84/90 successful calls and 0/5 complete trials under the baseline representation to 90/90 and 5/5 under the strict representation, but the strict arm's ambiguous abstention rate was only 0.286. Ministral 8B remained protocol-complete while its ambiguous abstention rate fell from 0.943 to 0.714 when only the representation changed. Gemini 3.1 Flash-Lite was effectively invariant, while Nemotron remained protocol-incomplete. PR #58 was therefore closed without merge and `soft-semantic-v3` remains the runtime baseline.
+Issue #57 の calibration-only follow-up は strict discriminated output schema を v3 semantic wording から切り分けた。その結果は、model-facing schema が semantic に neutral であるという仮定を退ける。baseline representation では Ministral 14B は successful calls 84/90、complete trials 0/5 だったのに対し、strict representation では 90/90 と 5/5 に改善した。ただし strict arm の ambiguous abstention rate は 0.286 にとどまった。Ministral 8B は protocol-complete のままで、representation だけを変更すると ambiguous abstention rate は 0.943 から 0.714 に低下した。Gemini 3.1 Flash-Lite は実質的に invariant であり、Nemotron は protocol-incomplete のままだった。したがって PR #58 は merge なしで close され、`soft-semantic-v3` は runtime baseline のままである。
 
-The next semantic-judge research sequence is deliberately staged:
+次の semantic-judge research sequence は意図的に段階化する：
 
 #### R1 — フォーマット不変性の特性評価
-- [calibration result #59] Gemini 3.5 Flash-Lite completed the counterbalanced five-trial v3-vs-`nested_result_object` study with 90/90 protocol-complete cases per representation and 2/90 matched format flips; both flips were the same ambiguous causal fixture, nested remained `abstain` across all five seeds, and the flips occurred under opposite execution orders
-- [calibration result #59] the 18-fixture single-trial matrix showed protocol robustness is representation-sensitive even when successful pairs are stable: v3 18/18, nested 18/18, compact keys 17/18, tuple 7/18; Mistral full-corpus R1a remains blocked by provider structured-generation errors
-- [implemented #59] regression tests prove the v3 baseline request is byte-for-byte unchanged, every R1a variant differs only in `output_format`, malformed representations fail closed, matched operational failures stay out of the semantic flip denominator, and multi-format execution is counterbalanced
-- [implemented #59] `format_flip_rate`, format-conditioned semantic/operational metrics, provider enforcement fidelity, and calibration-only corpus guards are recorded without majority-vote truth or model-specific semantic branches
+- [calibration結果 #59] Gemini 3.5 Flash-Lite は counterbalanced five-trial v3-vs-`nested_result_object` study を完了し、各 representation で 90/90 protocol-complete cases と 2/90 matched format flips となった。2つの flip は同じ ambiguous causal fixture であり、nested は5つすべての seed で `abstain` のままだった。また flip は opposite execution orders の下で発生した
+- [calibration結果 #59] 18-fixture single-trial matrix は、successful pairs が stable でも protocol robustness が representation-sensitive であることを示した：v3 18/18、nested 18/18、compact keys 17/18、tuple 7/18。Mistral full-corpus R1a は provider structured-generation errors により引き続き blocked である
+- [実装済み #59] regression tests は、v3 baseline request が byte-for-byte unchanged であること、すべての R1a variant が `output_format` だけ異なること、malformed representations が fail closed すること、matched operational failures が semantic flip denominator の外に留まること、multi-format execution が counterbalanced であることを証明する
+- [実装済み #59] `format_flip_rate`、format-conditioned semantic/operational metrics、provider enforcement fidelity、calibration-only corpus guards を、majority-vote truth や model-specific semantic branches なしで記録
 
 #### R2 — Harness所有のセマンティック所見の実体化
-- [implemented infrastructure #59] the research arm exposes only model-owned `decision` plus optional `advisory_note`; when decision=`finding`, the harness copies request-known `kind` and `target` exactly, while non-finding decisions never materialize a finding
-- [implemented #59] v3 kind-specific decision guidance and request controls are regression-locked while the ownership instructions/schema change intentionally under `materialization-r2-v1`
-- [implemented #59] syntax-only normalization fails closed on unknown/authority-like fields or multiple semantic JSON values; advisory-note text is not persisted for research scoring
-- [implemented #59] a counterbalanced calibration-only runner reports protocol completion, semantic metrics, matched decision flips, token/latency cost, and operational failure classes; exact-path guards reject holdout or symlink substitution before credentials
-- [calibration result #59] causal-triad, 18-fixture single-trial, and five-trial R2 matrices are complete for Gemini 3.5 Flash-Lite and Ministral 8B; both R2 arms reached 90/90 protocol completion in repeated trials, while uncertainty behavior remained provider-dependent
+- [基盤実装済み #59] research arm が公開するのは model-owned `decision` と optional `advisory_note` だけである。decision=`finding` の場合、harness は request-known `kind` と `target` を正確にコピーし、non-finding decisions からは finding を materialize しない
+- [実装済み #59] v3 kind-specific decision guidance と request controls は regression-locked のまま維持し、ownership instructions/schema は `materialization-r2-v1` の下で意図的に変更
+- [実装済み #59] syntax-only normalization は unknown/authority-like fields または複数の semantic JSON values に対して fail closed し、advisory-note text は research scoring 用に persist しない
+- [実装済み #59] counterbalanced calibration-only runner は protocol completion、semantic metrics、matched decision flips、token/latency cost、operational failure classes を報告し、exact-path guards は credentials の前に holdout または symlink substitution を拒否
+- [calibration結果 #59] causal-triad、18-fixture single-trial、five-trial R2 matrices は Gemini 3.5 Flash-Lite と Ministral 8B で完了した。両 R2 arm は repeated trials で 90/90 protocol completion に到達したが、uncertainty behavior は provider-dependent のままだった
 
 #### R3 — 不安定性に対する選択的棄権
-- [implemented #59] provider-neutral stability assessment separates decision disagreement, operational incompleteness, and no-success conditions; no vote count can become truth
-- [implemented #59] two calibration-only selective candidates are explicit: disagreement-only and complete-unanimity, both of which may only preserve a unanimous soft decision or conservatively escalate to `abstain`
-- [calibration result #59] cross-seed plus information-equivalent R2 representation stability is measured with decision-note, compact-key decision-note, and nested-decision-note surfaces under counterbalanced execution
-- [implemented #59] report coverage, precision/recall, ambiguous abstention, risk-fixture count, and abstention escalation so always-abstain behavior cannot pass by construction
-- [calibration result #59] R3 cross-representation stability detects two ambiguous Gemini 3.5 fixtures and safely escalates them to abstain, but Ministral 8B remains 18/18 protocol-complete and representation-stable while ambiguous abstention stays 0.5714; consistency alone is therefore insufficient
-- [calibration result #59] R3b Gemini 3.5 Flash-Lite + Ministral 8B completed 180/180 calls across five seeds; cross-model risk remained confined to four ambiguous fixtures, positive/negative disagreement stayed at zero, and the combined policy held precision/recall and ambiguous abstention at 1.0 with 0.6111 decision coverage
-- [planned] investigate calibrated/selective-prediction methods only after these simple unanimity signals are characterized
+- [実装済み #59] provider-neutral stability assessment は decision disagreement、operational incompleteness、no-success conditions を分離し、vote count が truth になることはない
+- [実装済み #59] calibration-only selective candidates を2つ明示：disagreement-only と complete-unanimity。どちらも unanimous soft decision を保持するか、保守的に `abstain` へ escalate することしかできない
+- [calibration結果 #59] cross-seed と information-equivalent R2 representation stability を、counterbalanced execution の下で decision-note、compact-key decision-note、nested-decision-note surfaces により測定
+- [実装済み #59] coverage、precision/recall、ambiguous abstention、risk-fixture count、abstention escalation を報告し、always-abstain behavior が構造上 pass できないようにする
+- [calibration結果 #59] R3 cross-representation stability は2つの ambiguous Gemini 3.5 fixtures を検出して安全に abstain へ escalate したが、Ministral 8B は 18/18 protocol-complete かつ representation-stable のままで、ambiguous abstention は 0.5714 にとどまった。したがって consistency だけでは不十分である
+- [calibration結果 #59] R3b Gemini 3.5 Flash-Lite + Ministral 8B は5つの seed にわたる 180/180 calls を完了した。cross-model risk は4つの ambiguous fixtures に限定され、positive/negative disagreement は zero のままだった。combined policy は precision/recall と ambiguous abstention を 1.0、decision coverage を 0.6111 に維持した
+- [予定] これらの単純な unanimity signals が特性化された後にのみ calibrated/selective-prediction methods を調査
 
 #### R4 — 後継版の独立評価
-- [rejected #59] frozen run `33371523453` completed 280/280 calls with precision/recall 1.0, but fixture-collapsed ambiguous abstention was 0.8333 versus required >=0.85 and four of five per-trial values were below required >=0.80
-- [rejected #59] labelled polarity stability failed on `v4h-03-contradiction-negative`: Gemini was consistently `no_finding`, Ministral consistently `finding`; the combined policy safely abstained but the frozen source/seed gate was violated
-- [frozen diagnostic #59] holdout-v4 is now observed immutable evidence. A post-observation static audit found label/decision-rule conflicts in `v4h-13` and `v4h-20`; they must not be relabelled or used to rescue/re-score the candidate
-- [baseline retained] `soft-semantic-v3` remains the runtime baseline and R3b is not adopted as an independently validated successor
-- [next research] return to fresh calibration-only design for correlated/self-consistent over-assertion, add a pre-observation fixture-label/spec review gate, and require a newly frozen holdout-v5 for any future adoption attempt
+- [棄却 #59] frozen run `33371523453` は precision/recall 1.0 で 280/280 calls を完了したが、fixture-collapsed ambiguous abstention は required >=0.85 に対して 0.8333 であり、per-trial values の5つ中4つが required >=0.80 を下回った
+- [棄却 #59] `v4h-03-contradiction-negative` で labelled polarity stability に失敗：Gemini は一貫して `no_finding`、Ministral は一貫して `finding` だった。combined policy は安全に abstain したが、frozen source/seed gate に違反した
+- [凍結済み診断 #59] holdout-v4 は現在、観測済みの immutable evidence である。post-observation static audit は `v4h-13` と `v4h-20` に label/decision-rule conflicts を発見した。これらを relabel したり、candidate の rescue/re-score に使ったりしてはならない
+- [baseline維持] `soft-semantic-v3` は runtime baseline のままであり、R3b は independently validated successor として採用しない
+- [次の研究] correlated/self-consistent over-assertion に対する fresh calibration-only design に戻り、pre-observation fixture-label/spec review gate を追加し、将来の adoption attempt には newly frozen holdout-v5 を要求
 
 
 ### #73 決定可能性・エビデンス充足性ゲート — キャリブレーション研究
 
-Phase naming is issue-scoped: `R1`–`R4` are #59 semantic-successor research stages (`R4` = frozen
-independent successor evaluation), while `D1`–`D3` are #73 decidability stages (`D1` = deterministic
-contract, `D2` = provider calibration, `D3` = candidate freeze/adoption preparation). These are not
-runtime version numbers.
+Phase の命名は issue-scoped である：`R1`–`R4` は #59 semantic-successor research stages（`R4` = frozen
+independent successor evaluation）であり、`D1`–`D3` は #73 decidability stages（`D1` = deterministic
+contract、`D2` = provider calibration、`D3` = candidate freeze/adoption preparation）である。これらは
+runtime version numbers ではない。
 
-R4 established that cross-model disagreement can expose uncertainty but agreement cannot certify correctness. The next calibration-only phase therefore separates a narrower harness-owned question from the semantic decision: whether explicit typed binding/evidence preconditions permit an assertive soft decision at all.
+R4 は cross-model disagreement が uncertainty を明らかにできる一方、agreement は correctness を certify できないことを確立した。したがって次の calibration-only phase では、より狭い harness-owned question を semantic decision から分離する：explicit typed binding/evidence preconditions によって、assertive soft decision 自体が許可されるかどうかである。
 
-- [designed #73] deterministic `permit | force_abstain` gate; `permit` is only absence of a known blocker and never correctness evidence
-- [designed #73] reuse claim/inference proposition binding, `EvidenceRequirement`, `EvidenceMetadata`, `EvidenceAuthorityPolicy`, and `EvidenceQualificationInspector` rather than asking a model to recreate owned metadata
-- [designed #73] deterministic blockers are limited to explicit structural/qualification failures; absence of an evidence requirement and ordinary causal `Unknown` do not automatically force abstention
-- [designed #73] composition is monotone: a gate may preserve a base soft decision or force `abstain`, never create/repair an assertive decision or operational failure
-- [implemented #73] 14 deterministic calibration-only fixtures form seven control/mutation pairs covering binding, evidence presence, authority, scope, temporal validity, required metadata, and evidence conflict across contradiction/unsupported-premise plus structural counterexample binding; causal-gap remains permit-only until relation-level evidence requirements are typed
-- [implemented #73] deterministic tests enforce 100% mutation monotonicity/control preservation, monotone decision composition, invalid-artifact separation, missing-target fail-closed behavior, and the rule that causal targets without explicit evidence requirements are not blocked by default
-- [designed #73] D2 keeps `semantic_label` and `assertive_eligibility` as separate pre-observation axes so expected forced abstention cannot be miscounted as a semantic recall failure; eligible precision/recall/coverage and typed-insufficiency abstention are separate denominators
-- [implemented #73] D2 v1 manifest has 15 calibration semantic cases across all four diagnostic kinds, 7 paired typed-insufficiency variants across three kinds, and four separate eligible ambiguity controls; causal-gap is deliberately permit-only, and checked-in semantic labels must match the existing calibration source fixtures before credentials are read
-- [implemented #73] `reason-decidability-study` performs one unchanged R2 provider observation per semantic case/seed and applies all typed variants afterward; operational failure remains separate and exact-path guards reject non-D2 corpora before provider initialization
-- [frozen #73] D2 v1 first-observation plan: full 15-case calibration corpus, Gemini 3.5 Flash-Lite and Ministral 8B reported separately, seeds 6000-6004, five trials, 512 output tokens, and predeclared operational/coverage/precision/recall/typed-insufficiency/stability gates; the workflow exposes no study-shaping inputs
-- [calibration result #73] frozen D2 run `33377619803` completed 75/75 calls and 5/5 trials on each of Gemini 3.5 Flash-Lite and Ministral 8B; both retained eligible clear coverage/precision/recall 1.000, escalated all 35/35 typed-insufficiency variants from assertive base decisions to abstain, left zero composed unsafe assertions, and had zero clear-case seed disagreement
-- [frozen #73] D3 candidate `semantic-decidability-d3-v1` = `soft-semantic-v3` + `materialization-r2-v1` + `deterministic-explicit-typed-preconditions-v1`, composed only by preserving or forcing abstain; it is not a runtime version
-- [frozen #73] observation-free holdout-v5 now contains 24 fresh cases balanced across four diagnostic kinds and positive/negative/ambiguous labels, with 10 clear typed-insufficiency variants, no causal force variants, one inference-binding case, and SHA-256-frozen source/manifest payloads; `v5h05` and `v5h11` were clarified during static label/spec review before any provider observation
-- [frozen #73] holdout-v5 execution is fixed to Gemini 3.5 Flash-Lite and Ministral 8B separately, seeds 7000-7004, five trials, 512 output tokens, exact full-corpus execution, and the predeclared D3 adoption gates; the workflow exposes no study-shaping inputs
-- [pilot result #73] Ministral 8B completed the frozen holdout-v5 arm with 120/120 calls, 5/5 complete trials, eligible clear coverage/precision/recall 1.000, typed-insufficiency abstention 50/50, base unsafe assertions 50 -> 0, and zero clear-case seed disagreement
-- [cross-family replication #73] Google-hosted Gemma 4 31B independently replayed R2, D2, and holdout-v5 without changing fixtures, labels, seeds, thresholds, or semantic contracts; its v5 arm also completed 120/120 with clear coverage/precision/recall 1.000 and unsafe assertions 50 -> 0, and its 120 base decisions matched Ministral 8B exactly
-- [negative control #73] NVIDIA Nemotron 3.5 Lightning remains operationally/protocol incompatible with the current R2 materialized-decision contract: the bounded D2 probe succeeded on 7/15 calls and failed 8/15 with repeated forbidden `finding` fields, while the dependent v5 probe timed out after 18/24 attempted fixtures; this is compatibility evidence, not a semantic rejection of D3
-- [completed #84] Gemini 3.5 Flash-Lite exact frozen holdout-v5 rerun passed in Actions run `33380880478` attempt 2 after quota reset: 120/120 calls, 5/5 complete trials, clear coverage/precision/recall 1.000, typed-insufficiency abstention 50/50, unsafe assertions 50 -> 0, zero permit-control escalations, zero clear-case seed disagreement, and zero provider/protocol failures; ambiguous abstention was 0.800 with disagreement confined to three ambiguous fixtures outside the frozen gate
-- [implemented stabilization #73] D3 has a corpus-independent R2 capability preflight, typed materialization failure telemetry, atomic non-scorable partial checkpoints, frozen runtime/config identity, a provider-neutral baseline/D3 runtime API, and an explicit rollback profile to `soft-semantic-v3`
-- [adopted #73] after the stabilization change passed CI, the separate runtime-adoption change switched `DEFAULT_SEMANTIC_RUNTIME_PROFILE` to `semantic-decidability-d3-v1`; `soft-semantic-v3` remains directly selectable as the rollback profile, and frozen D2/v5 semantic contracts/workflow plans remain unchanged
-- [implemented #85] add a bounded synthetic live runtime smoke for Mistral/Gemma that validates the compiled D3 default, monotone permit/force-abstain behavior, explicit `soft-semantic-v3` rollback execution, and typed operational failures without reusing observed holdouts as calibration
-- [runtime smoke result #85] Actions run `33408032079` passed 4/4 live calls on both Ministral 8B and Gemma 4 31B: both preserved base `finding` under `permit`, both produced `finding -> abstain` under the matched missing-binding D3 case, explicit v3 rollback remained executable and assertive, and no operational failures occurred
-- [next research #73] after D3 stabilization/adoption, the first successor hypothesis is residual soft decidability for insufficiency not represented by current typed metadata; selective/conformal abstention is a later calibrated option, and causal relation-level sufficiency waits for explicit typed directional evidence binding
-- [constraint #73] holdout-v4 remains immutable diagnostic history; holdout-v5 remains immutable after observation and must not be repaired, relabelled, or reused as calibration data
+- [設計済み #73] deterministic `permit | force_abstain` gate；`permit` は既知の blocker がないことだけを示し、correctness evidence では決してない
+- [設計済み #73] model に owned metadata の再生成を求めず、claim/inference proposition binding、`EvidenceRequirement`、`EvidenceMetadata`、`EvidenceAuthorityPolicy`、`EvidenceQualificationInspector` を再利用
+- [設計済み #73] deterministic blockers は明示的な structural/qualification failures に限定し、evidence requirement の欠如と通常の causal `Unknown` は自動的には abstention を強制しない
+- [設計済み #73] composition は monotone：gate は base soft decision を保持するか `abstain` を強制できるが、assertive decision や operational failure を生成・修復することはない
+- [実装済み #73] 14 deterministic calibration-only fixtures は7つの control/mutation pairs を形成し、contradiction/unsupported-premise と structural counterexample binding にまたがって binding、evidence presence、authority、scope、temporal validity、required metadata、evidence conflict を対象とする。causal-gap は relation-level evidence requirements が typed になるまで permit-only のままである
+- [実装済み #73] deterministic tests は 100% mutation monotonicity/control preservation、monotone decision composition、invalid-artifact separation、missing-target fail-closed behavior、および explicit evidence requirements のない causal targets は default で blocked にならないという rule を強制
+- [設計済み #73] D2 は `semantic_label` と `assertive_eligibility` を pre-observation の別軸として保持し、expected forced abstention が semantic recall failure と誤って数えられないようにする。eligible precision/recall/coverage と typed-insufficiency abstention は別々の denominators である
+- [実装済み #73] D2 v1 manifest は4つすべての diagnostic kinds にまたがる15 calibration semantic cases、3つの kinds にまたがる7 paired typed-insufficiency variants、4つの separate eligible ambiguity controls を持つ。causal-gap は意図的に permit-only であり、checked-in semantic labels は credentials を読む前に既存の calibration source fixtures と一致しなければならない
+- [実装済み #73] `reason-decidability-study` は semantic case/seed ごとに変更されていない R2 provider observation を1つ実行し、その後にすべての typed variants を適用する。operational failure は分離したままとし、exact-path guards は provider initialization 前に non-D2 corpora を拒否
+- [凍結済み #73] D2 v1 first-observation plan：full 15-case calibration corpus、Gemini 3.5 Flash-Lite と Ministral 8B を別々に報告、seeds 6000-6004、five trials、512 output tokens、predeclared operational/coverage/precision/recall/typed-insufficiency/stability gates。workflow は study-shaping inputs を公開しない
+- [calibration結果 #73] frozen D2 run `33377619803` は Gemini 3.5 Flash-Lite と Ministral 8B のそれぞれで 75/75 calls と 5/5 trials を完了した。両者は eligible clear coverage/precision/recall 1.000 を維持し、35/35 typed-insufficiency variants を assertive base decisions から abstain へ escalate し、composed unsafe assertions は 0、clear-case seed disagreement も 0 だった
+- [凍結済み #73] D3 candidate `semantic-decidability-d3-v1` = `soft-semantic-v3` + `materialization-r2-v1` + `deterministic-explicit-typed-preconditions-v1` は、preserving または forcing abstain のみで compose される。これは runtime version ではない
+- [凍結済み #73] observation-free holdout-v5 は現在、4つの diagnostic kinds と positive/negative/ambiguous labels にわたって balanced な24 fresh cases、10 clear typed-insufficiency variants、causal force variants なし、1 inference-binding case、SHA-256-frozen source/manifest payloads を含む。`v5h05` と `v5h11` は、provider observation の前に行った static label/spec review で明確化された
+- [凍結済み #73] holdout-v5 execution は Gemini 3.5 Flash-Lite と Ministral 8B を別々に実行し、seeds 7000-7004、five trials、512 output tokens、exact full-corpus execution、predeclared D3 adoption gates に固定される。workflow は study-shaping inputs を公開しない
+- [パイロット結果 #73] Ministral 8B は frozen holdout-v5 arm を 120/120 calls、5/5 complete trials、eligible clear coverage/precision/recall 1.000、typed-insufficiency abstention 50/50、base unsafe assertions 50 -> 0、clear-case seed disagreement 0 で完了した
+- [系統横断再現 #73] Google-hosted Gemma 4 31B は fixtures、labels、seeds、thresholds、semantic contracts を変更せずに R2、D2、holdout-v5 を independently replay した。v5 arm も clear coverage/precision/recall 1.000 と unsafe assertions 50 -> 0 で 120/120 を完了し、120 base decisions は Ministral 8B と exact に一致した
+- [negative control #73] NVIDIA Nemotron 3.5 Lightning は現行 R2 materialized-decision contract と operational/protocol incompatible のままである。bounded D2 probe は 7/15 calls に成功し、繰り返し forbidden `finding` fields が出て 8/15 に失敗した。一方、dependent v5 probe は 18/24 attempted fixtures の後に timeout した。これは compatibility evidence であり、D3 の semantic rejection ではない
+- [完了 #84] Gemini 3.5 Flash-Lite exact frozen holdout-v5 rerun は quota reset 後の Actions run `33380880478` attempt 2 で pass した：120/120 calls、5/5 complete trials、clear coverage/precision/recall 1.000、typed-insufficiency abstention 50/50、unsafe assertions 50 -> 0、permit-control escalations 0、clear-case seed disagreement 0、provider/protocol failures 0。ambiguous abstention は 0.800 で、disagreement は frozen gate 外の3つの ambiguous fixtures に限定された
+- [安定化実装済み #73] D3 は corpus-independent R2 capability preflight、typed materialization failure telemetry、atomic non-scorable partial checkpoints、frozen runtime/config identity、provider-neutral baseline/D3 runtime API、`soft-semantic-v3` への明示的な rollback profile を備える
+- [採用済み #73] stabilization change が CI を pass した後、別の runtime-adoption change により `DEFAULT_SEMANTIC_RUNTIME_PROFILE` を `semantic-decidability-d3-v1` に切り替えた。`soft-semantic-v3` は rollback profile として直接選択可能なままであり、frozen D2/v5 semantic contracts/workflow plans は変更されない
+- [実装済み #85] observed holdouts を calibration に再利用せず、compiled D3 default、monotone permit/force-abstain behavior、明示的な `soft-semantic-v3` rollback execution、typed operational failures を検証する bounded synthetic live runtime smoke を Mistral/Gemma 用に追加
+- [runtime smoke結果 #85] Actions run `33408032079` は Ministral 8B と Gemma 4 31B の両方で 4/4 live calls に pass した。両者は `permit` の下で base `finding` を保持し、matched missing-binding D3 case の下で `finding -> abstain` を生成し、explicit v3 rollback は executable かつ assertive のままで、operational failures は発生しなかった
+- [次の研究 #73] D3 stabilization/adoption 後の最初の successor hypothesis は、current typed metadata に表現されていない insufficiency に対する residual soft decidability である。selective/conformal abstention は後段の calibrated option であり、causal relation-level sufficiency は explicit typed directional evidence binding を待つ
+- [制約 #73] holdout-v4 は immutable diagnostic history のままであり、holdout-v5 は observation 後も immutable で、修復・relabel・calibration data としての再利用をしてはならない
 
-See [semantic decidability and evidence-sufficiency research](semantic-decidability.ja.md).
+[semantic decidability と evidence-sufficiency research](semantic-decidability.ja.md) を参照。
 
-This sequence changes the research question from “which schema makes models obey JSON?” to “how much semantic behavior survives representation changes, and how can the harness minimize representation-induced risk without granting the model more authority?”
+この sequence は research question を「どの schema ならモデルが JSON に従うか？」から「representation changes 後もどれだけ semantic behavior が残り、モデルにより多くの authority を与えずに harness は representation-induced risk をどう最小化できるか？」へ変更する。
 
-Research anchors for this phase are evidence, not normative designs:
+この phase の research anchors は evidence であり、normative designs ではない：
 
-- Tam et al., [*Let Me Speak Freely? A Study On The Impact Of Format Restrictions On Large Language Model Performance*](https://aclanthology.org/2024.emnlp-industry.91/) (EMNLP Industry 2024): format restrictions can degrade reasoning performance and stricter restrictions can increase the effect.
-- Schall and de Melo, [*The Hidden Cost of Structure: How Constrained Decoding Affects Language Model Performance*](https://aclanthology.org/2025.ranlp-1.124/) (RANLP 2025): constrained decoding can move instruction-tuned models away from preferred generations and affect task performance.
-- Hamilton and Mimno, [*Lost in Space: Finding the Right Tokens for Structured Output*](https://aclanthology.org/2026.gem-main.18/) (GEM 2026): semantically similar output grammars/tokens can yield materially different downstream performance, especially for smaller models.
-- Wang et al., [*SConU: Selective Conformal Uncertainty in Large Language Models*](https://aclanthology.org/2025.acl-long.934/) (ACL 2025): selective/conformal uncertainty is a later-stage candidate for risk-controlled abstention after simpler format/seed stability signals are characterized.
+- Tam et al., [*Let Me Speak Freely? A Study On The Impact Of Format Restrictions On Large Language Model Performance*](https://aclanthology.org/2024.emnlp-industry.91/) (EMNLP Industry 2024)：format restrictions は reasoning performance を低下させる可能性があり、より stricter な restrictions はその影響を増幅し得る。
+- Schall and de Melo, [*The Hidden Cost of Structure: How Constrained Decoding Affects Language Model Performance*](https://aclanthology.org/2025.ranlp-1.124/) (RANLP 2025)：constrained decoding は instruction-tuned models を preferred generations から遠ざけ、task performance に影響し得る。
+- Hamilton and Mimno, [*Lost in Space: Finding the Right Tokens for Structured Output*](https://aclanthology.org/2026.gem-main.18/) (GEM 2026)：semantic に類似した output grammars/tokens でも downstream performance に実質的な差が生じ得、とくに smaller models で顕著である。
+- Wang et al., [*SConU: Selective Conformal Uncertainty in Large Language Models*](https://aclanthology.org/2025.acl-long.934/) (ACL 2025)：selective/conformal uncertainty は、より単純な format/seed stability signals が特性化された後の、risk-controlled abstention に向けた後段の candidate である。
 
-With #13, #27, #28, and the D3 pilot/replication evidence complete, the deterministic authority/control-plane roadmap is implemented through durable replay and the semantic-decidability line has a concrete stabilization candidate. D3 operational hardening and the separate reversible runtime-adoption step are now implemented; new semantic successors should wait for a measured residual gap or concrete consumer pressure rather than adding model breadth or generic agent orchestration by default.
+Issue #13、#27、#28、および D3 pilot/replication evidence が完了したことで、deterministic authority/control-plane roadmap は durable replay まで実装され、semantic-decidability line には具体的な stabilization candidate がある。D3 operational hardening と、別個の reversible runtime-adoption step は現在実装済みである。新しい semantic successors は、デフォルトで model breadth や generic agent orchestration を追加するのではなく、測定された residual gap または具体的な consumer pressure を待つべきである。
 
 ## 将来機能の判断ゲート
 
-A proposed feature should normally satisfy at least one of these before entering a near-term phase:
+提案された feature は、直近フェーズ に入る前に通常、次の少なくとも1つを満たすべきである：
 
-1. exposes a failure mode that current verdict/diagnostic metrics cannot distinguish;
-2. improves reproducibility, calibration, uncertainty reporting, or benchmark validity;
-3. strengthens the harness-owned authority boundary;
-4. increases grounded answerability without increasing unsafe final output;
-5. is motivated by repeated failures observed in live model runs.
+1. 現在の verdict/diagnostic metrics では区別できない failure mode を明らかにする;
+2. reproducibility、calibration、uncertainty reporting、または benchmark validity を改善する;
+3. harness-owned authority boundary を強化する;
+4. unsafe final output を増やさずに grounded answerability を高める;
+5. live model runs で観測された repeated failures に動機付けられている。
 
-Features that primarily add UI, named reasoning styles, provider breadth, or generic agent orchestration remain deferred unless real consumer/research pressure appears.
+主に UI、named reasoning styles、provider breadth、generic agent orchestration を追加する features は、実際の consumer/research pressure が現れるまで deferred のままである。
 
 ## 保留中のインターフェース
 
-These are intentional non-goals until the native runtime, artifact, resolution, and finalization contracts mature:
+native runtime、artifact、resolution、finalization contracts が成熟するまで、これらは意図的な non-goals である：
 
-- desktop UI: thin visualization/review client after artifact formats stabilize.
-- public embedding API compatibility: after real consumer pressure validates the runtime contract.
-- MCP full-runtime product surface (#180): **implemented** as optional `reason-mcp` agent integration over selected native operations; never a correctness boundary. Read-only MCP acquisition remains separately implemented in #176 as `mcp_readonly_v1`.
+- desktop UI：artifact formats が安定した後の thin visualization/review client。
+- public embedding API compatibility：実際の consumer pressure が runtime contract を検証した後。
+- MCP full-runtime product surface（#180）：選択した native operations 上の optional `reason-mcp` agent integration として **実装済み**。correctness boundary には決してしない。Read-only MCP acquisition は #176 で `mcp_readonly_v1` として別途実装済みのままである。
 
-See [ADR-0001](adr/0001-interface-and-packaging-boundaries.ja.md).
+[ADR-0001](adr/0001-interface-and-packaging-boundaries.ja.md) を参照。
 
 ## 実装上の制約
 
-All first-party components remain Rust-only. A future desktop application must use a Rust-capable native UI stack without requiring a JavaScript application runtime. Any future resolver adapter, MCP adapter, or embedding API must preserve the same core authority boundary rather than owning a competing reasoning loop.
+すべての first-party component は Rust-only のままである。将来の デスクトップアプリケーション は、JavaScript runtime を必要としない Rust対応のnative UI stack を使用しなければならない。将来の resolver adapter、MCP adapter、embedding API はいずれも、競合する reasoning loop を所有するのではなく、同じ core authority boundary を保持しなければならない。
