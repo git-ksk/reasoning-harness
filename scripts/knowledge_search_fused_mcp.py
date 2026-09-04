@@ -5,7 +5,7 @@ import time
 import urllib.parse
 import urllib.request
 
-USER_AGENT = "reasoning-harness-mcp-search-probe/0.3 (https://github.com/git-ksk/reasoning-harness)"
+USER_AGENT = "reasoning-harness-mcp-search-probe/0.4 (https://github.com/git-ksk/reasoning-harness)"
 EMBED_SEARCH_STATE_IN_HARNESS = False
 
 
@@ -173,6 +173,42 @@ def state(query, outcome_kind, wd=None, wp=None, **extra):
     return payload
 
 
+def validate_agentic_query(query, property_id):
+    """Validate the planner action before any external request.
+
+    The tool already receives property_id separately. The query field is only an
+    entity label/title search surface. Returning a typed observation instead of
+    silently repairing the action lets the bounded planner loop learn from the
+    tool contract while keeping the Harness in control of execution.
+    """
+    normalized = " ".join(query.split()).strip()
+    if len(normalized) > 160:
+        return False, "query_too_long", None
+
+    lower = normalized.lower()
+    if "http://" in lower or "https://" in lower or "site:" in lower:
+        return False, "web_operator_or_url_not_allowed", None
+
+    kept = []
+    removed_property_token = False
+    for token in normalized.split():
+        stripped = token.strip(".,;:()[]{}<>'\"")
+        upper = stripped.upper()
+        if upper == property_id.upper() or (upper.startswith("P") and upper[1:].isdigit()):
+            removed_property_token = True
+            continue
+        kept.append(token)
+
+    if removed_property_token:
+        suggested = " ".join(kept).strip() or None
+        return False, "property_id_must_not_be_in_query", suggested
+
+    if not normalized:
+        return False, "empty_query", None
+
+    return True, None, None
+
+
 def main():
     global EMBED_SEARCH_STATE_IN_HARNESS
 
@@ -208,6 +244,33 @@ def main():
         return 0
 
     EMBED_SEARCH_STATE_IN_HARNESS = not allow_title_retry
+
+    # Layer C is intentionally agentic. Reject malformed planner actions before
+    # they can spend external-request budget. Layer B keeps its fixed-policy
+    # behavior unchanged for an apples-to-apples non-agentic baseline.
+    if not allow_title_retry:
+        valid, validation_reason, suggested_query = validate_agentic_query(query, property_id)
+        if not valid:
+            observation = (
+                f"planner search action rejected before external request: reason={validation_reason}; "
+                f"invalid_query={query!r}; property={property_id} is already fixed by the tool; "
+                f"query must be only an entity label/title, with no property IDs, URLs, or web operators; "
+                f"suggested_query={suggested_query!r}; external_requests=0"
+            )
+            respond(request_id, result=result_payload(
+                observation,
+                {},
+                state(
+                    query,
+                    "invalid_query",
+                    validation_reason=validation_reason,
+                    suggested_query=suggested_query,
+                    query_constraint="entity_label_or_title_only",
+                    external_requests=0,
+                    suggested_action="search" if suggested_query else "stop",
+                ),
+            ))
+            return 0
 
     try:
         wd = wikidata_search(query, language)
