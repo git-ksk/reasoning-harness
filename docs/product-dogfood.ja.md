@@ -65,7 +65,7 @@ checkpointにはtyped evaluation/report observationだけを保存し、provider
 - Gemma 4 31B: Actions run `33576520136`
 - Gemini 3.5 Flash-Lite follow-up: Actions run `33613604519`
 
-両model sliceとも、2つのHarness armはunsupported grounded claim 0、missed task-target insufficiency 0でした。Gemmaではbaseline/successorともexpected-grounded caseのmean target coverage 1.0、false target abstention 0、resolution 2/2成功で、unknown caseでもsupported non-target fact 2件を含むsafe qualified partial answerを1件保持しました。このrunでsuccessorのbaseline比overheadはtoken約+45.3%、latency約+12.2%です。Ministralはbaseline/successorのtask-target挙動が完全同値でしたが、両方ともfalse target abstention 0.75、resolution 0/2でした。これはsuccessor gateによる回帰ではなくmodel固有のproduct utility制約として#139で追跡します。
+両model sliceとも、2つのHarness armはunsupported grounded claim 0、missed task-target insufficiency 0でした。Gemmaではbaseline/successorともexpected-grounded caseのmean target coverage 1.0、false target abstention 0、resolution 2/2成功で、unknown caseでもsupported non-target fact 2件を含むsafe qualified partial answerを1件保持しました。このrunでsuccessorのbaseline比overheadはtoken約+45.3%、latency約+12.2%です。Ministralはbaseline/successorのtask-target挙動が完全同値でしたが、両方ともfalse target abstention 0.75、resolution 0/2でした。これはsuccessor gateによる回帰ではなくmodel固有のproduct utility制約として#139で追跡していました。current successor再検証は下記に記録します。
 
 v5の`exposed_text`でmanual comprehension reviewも実施しました。Gemmaのroot-cause qualified answerは「database原因は未確定」と明示しつつ、HTTP 503とDB connection error 7件というverified observationだけを残し、correlationをcausationへ昇格していません。baseline/successor文面も完全一致です。Ministralのraw unknown文は不足根拠を分かりやすく説明しますが、Harness armはfinal textをwithholdするcaseが多く、安全ではあるものの説明性が弱いです。これらは対象model/workload sliceのproduct evidenceであり、普遍的なmodel品質主張ではありません。
 
@@ -83,11 +83,17 @@ NVIDIA Hosted NIM `nvidia/nemotron-3.5-lightning-30b-a3b`も同条件でActions 
 | Gemini 3.5 Flash-Lite | `33613604519` | yes | **1.00** | **0.00** | **2/2** | utilityは強いがsuccessor overheadは大きめ |
 | Mistral Small | `33618436419` | yes | 0.75 | 0.25 | 1/2 | このworkloadではMinistral 8B/14Bよりcoverageが高い |
 | Gemini 3.1 Flash-Lite | `33618442500` | yes | 0.75 | 0.25 | 1/2 | 安全だがGemini 3.5 Flash-Liteより完答性は低い |
-| Ministral 8B | `33576517724` | yes | 0.25 | 0.75 | 0/2 | 安全だがtarget回答をwithholdしやすい。#139で追跡 |
+| Ministral 8B | `33576517724` | yes | 0.25 | 0.75 | 0/2 | historical pre-successor limitation。#139 closeoutは下記に記録 |
 | Ministral 14B | `33618430680` | yes | 0.25 | 0.75 | 0/2 | parameter増加がproduct utility改善につながらなかった |
 | Ministral 3B | `33618424552` | yes | 0.00 | 1.00 | 0/2 | expected-grounded targetを全件withholdする非常に保守的な挙動 |
 | Gemma 4 26B A4B | `33618449494` | **no** | n/a | n/a | n/a | 2 fixture目でinvalid structured output after fallback |
 | Nemotron 3.5 Lightning 30B A3B | `33613607389` | **no** | n/a | n/a | n/a | 2 fixture目でinvalid structured output after fallback |
+
+### Current successor再検証: Ministral 8B（#139 closeout）
+
+上の表はpre-successor runのhistorical provenanceとして書き換えません。#159/#160/#164と#126 operational hardeningの後、current main `5c5701f77df9dd507c3949294708f8c07a054064`から同じ6-case `product-dogfood-v1`をMinistral 8B、max tokens 1024、base seed 12000で再実行しました（Actions run `33822567155`）。raw armは再びmean grounded-target coverage 0.25 / false target abstention 0.75でしたが、2つのHarness armはいずれも **target coverage 1.00**、**false target abstention 0.00**、unsupported grounded claim **0**、missed target insufficiency **0**でした。expected-grounded 4 caseは全件requested targetを露出し、expected-unknown 2 caseは正しくtarget abstentionを維持しました。root-cause resolvedの1 caseはartifact-global `Unknown`のままですが、exact verified targetだけをtarget-scoped `QualifiedPartialAnswer`として安全に露出し、global verdictは変更していません。
+
+これによりadopted semantic/sufficiency boundaryを緩めず#139のgrounded-coverage問題をcloseできます。product reportの`exposed_text`はfinalization text専用なのでunresolved finalizationでは意図的に未設定のままです。一方、human向け`reason` CLIは`Unresolved` / `RequiresVerification`時にdeterministicな根拠不足ガイダンスを表示するため、unsupported factを捏造せずユーザーが空表示だけを見る状態を避けます。
 
 これは対象workload上のcompatibility/utility matrixであり、一般的なmodel leaderboardではありません。少なくとも今回のHarness用途ではparameter数だけで適性は予測できず、strict structured-output adherence、candidate materialization、final rendering、bounded resolutionの規律が大きく効いています。
 

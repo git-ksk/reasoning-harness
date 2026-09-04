@@ -65,7 +65,7 @@ The final v5 acceptance runs use the `shared-candidate-initial-render-v1` compar
 - Gemma 4 31B: Actions run `33576520136`;
 - Gemini 3.5 Flash-Lite follow-up: Actions run `33613604519`.
 
-Both Harness arms exposed zero unsupported grounded claims and zero missed task-target insufficiency in both model slices. On Gemma, baseline and successor both reached 1.0 mean grounded-target coverage across expected-grounded cases, zero false target abstentions, 2/2 resolution success, and retained one useful safe-partial unknown case with two supported non-target grounded facts. The successor added about 45.3% tokens and 12.2% latency over the baseline Harness in that run. On Ministral, baseline and successor were behaviorally identical at the target boundary, but both had a 0.75 false-target-abstention rate and 0/2 resolution success; this is retained as a model-specific utility limitation rather than attributed to the successor gate and is tracked in #139.
+Both Harness arms exposed zero unsupported grounded claims and zero missed task-target insufficiency in both model slices. On Gemma, baseline and successor both reached 1.0 mean grounded-target coverage across expected-grounded cases, zero false target abstentions, 2/2 resolution success, and retained one useful safe-partial unknown case with two supported non-target grounded facts. The successor added about 45.3% tokens and 12.2% latency over the baseline Harness in that run. On Ministral, baseline and successor were behaviorally identical at the target boundary, but both had a 0.75 false-target-abstention rate and 0/2 resolution success; this was retained as a model-specific utility limitation rather than attributed to the successor gate and was tracked in #139; see the current successor revalidation below.
 
 Manual comprehension review used the v5 `exposed_text` field. Gemma's qualified root-cause answer clearly states that the database cause is unconfirmed, preserves the verified HTTP 503 and seven connection-error observations, and does not turn correlation into causation; baseline and successor text are identical. Ministral's raw unknown answers clearly explain missing evidence, while its Harness arms frequently withhold final text entirely. That is safe but less informative and matches the measured false-abstention limitation. These observations are product-slice evidence, not universal model-quality claims.
 
@@ -83,11 +83,17 @@ The same six-case v5/shared-render workload was subsequently run across the addi
 | Gemini 3.5 Flash-Lite | `33613604519` | yes | **1.00** | **0.00** | **2/2** | strong utility; successor overhead was comparatively high |
 | Mistral Small | `33618436419` | yes | 0.75 | 0.25 | 1/2 | materially better coverage than the Ministral 8B/14B slices on this workload |
 | Gemini 3.1 Flash-Lite | `33618442500` | yes | 0.75 | 0.25 | 1/2 | safe but less complete than Gemini 3.5 Flash-Lite |
-| Ministral 8B | `33576517724` | yes | 0.25 | 0.75 | 0/2 | safe but frequently withholds useful target answers; tracked in #139 |
+| Ministral 8B | `33576517724` | yes | 0.25 | 0.75 | 0/2 | historical pre-successor limitation; #139 closeout is recorded below |
 | Ministral 14B | `33618430680` | yes | 0.25 | 0.75 | 0/2 | larger parameter count did not improve product utility here |
 | Ministral 3B | `33618424552` | yes | 0.00 | 1.00 | 0/2 | maximally conservative/withholding on all expected-grounded target cases |
 | Gemma 4 26B A4B | `33618449494` | **no** | n/a | n/a | n/a | second fixture failed with invalid structured output after fallback |
 | Nemotron 3.5 Lightning 30B A3B | `33613607389` | **no** | n/a | n/a | n/a | second fixture failed with invalid structured output after fallback |
+
+### Current successor revalidation: Ministral 8B (#139 closeout)
+
+The historical table above remains unchanged provenance for the pre-successor runs. After #159/#160/#164 and the #126 operational hardening landed, the same six-case `product-dogfood-v1` workload was rerun on current main `5c5701f77df9dd507c3949294708f8c07a054064` with Ministral 8B, max tokens 1024, and base seed 12000 (Actions run `33822567155`). The raw arm again reached only 0.25 mean grounded-target coverage with false target abstention 0.75. Both Harness arms reached **1.00 target coverage**, **0.00 false target abstention**, unsupported grounded claims **0**, and missed target insufficiency **0**. All four expected-grounded cases exposed the requested target; the two expected-unknown cases remained correct target abstentions. One resolved root-cause case remained artifact-global `Unknown` but safely exposed the exact verified target as a target-scoped `QualifiedPartialAnswer`, preserving the global verdict.
+
+This closes the original #139 grounded-coverage failure without relaxing the adopted semantic/sufficiency boundary. The product report intentionally leaves `exposed_text` absent for unresolved finalization because that field represents finalization text, not presentation fallback. The human `reason` CLI separately renders deterministic evidence-insufficiency guidance for `Unresolved` / `RequiresVerification` states, so a user is not left with a blank terminal while no unsupported factual text is invented.
 
 This is a workload-specific compatibility/utility matrix, not a general model leaderboard. In particular, parameter count does not predict product fitness here: strict structured-output adherence, candidate materialization, final rendering, and bounded-resolution behavior all matter.
 

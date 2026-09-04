@@ -10,7 +10,7 @@ Current work is organized by descriptive product/evaluation concepts rather than
 - **renderer downgrade recovery** — #160 implemented on the successor candidate line;
 - **dependency-aware target-local recovery** — #164 implemented on the successor candidate line;
 - **provider reliability / resumable evaluation** — #126 implemented as an operational-only layer;
-- **external CLI hardening and real-workload UX** — #90 process-level compatibility gate implemented; #139 real-workload UX is next before #90 final readiness closure.
+- **external CLI hardening and real-workload UX** — #90 / #139 closeout complete; current main satisfies the documented readiness gate without yet publishing a v1.0 release.
 
 The #147 product-capability evaluation and #150 verified-utility-recovery milestone are closed. The semantic candidate frozen at `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352` completed Stage B and the separately frozen 16-case Stage-C holdout. Final Stage-C target coverage was `1.00` for Ministral 8B, Mistral Small, Gemma 4 31B, and Gemini 3.1 Flash-Lite; Ministral 14B reproducibly scored `0.875`. Every completed Stage-C run kept unsupported grounded claims at `0` and missed target insufficiency at `0`. The 14B residual is therefore carried forward as conservative utility evidence, not repaired by changing the observed holdout or gate.
 
@@ -18,7 +18,11 @@ Successor semantic changes are split across #159, #160, and #164 and require a n
 
 #126 is that independent operational layer: provider attempt counts now include bounded adapter-internal retries; Google gets capped transient-5xx and isolated-empty-output recovery with deterministic failures left fail-fast; and product dogfood v10 adds exact-identity checkpoint/resume plus preserved operational-failure history. It does not change the `993874fa0051d06a02c8db8f7a220a2ac7773c17` semantic candidate, frozen fixtures, answer-safety gate, or historical RSD2/Stage-C scores.
 
-The remaining #90 CLI contract gap is now closed at process level: `product_cli_contract` launches the real `reason` binary and pins versioned JSON envelopes, supported stdin behavior, all schema-discovery IDs, epistemic `unknown` as exit 0, typed JSON operational failure as exit 1, and `clap` usage failure as exit 2. The same test runs in the four-platform product CLI matrix. #90 remains open only for the real-workload/v1.0 closeout coordinated with #139; this compatibility slice does not change semantic/runtime authority.
+The #90 CLI contract gap is closed at process level: `product_cli_contract` launches the real `reason` binary and pins versioned JSON envelopes, supported stdin behavior, all schema-discovery IDs, epistemic `unknown` as exit 0, typed JSON operational failure as exit 1, and `clap` usage failure as exit 2. The same test is green in the four-platform product CLI matrix on main run `33822514005`; deterministic CI is green in `33822514022`. Current live semantic runtime/current+rollback product smoke is green for Ministral 8B and Gemma 4 31B in run `33822794171`.
+
+#139 is also closed by fresh product evidence rather than by weakening gates. On Actions run `33822567155` from main `5c5701f77df9dd507c3949294708f8c07a054064`, the same six-case Ministral 8B product workload improved from historical Harness target coverage 0.25 / false target abstention 0.75 to target coverage 1.00 / false target abstention 0.00 in both Harness arms, while unsupported grounded claims and missed target insufficiency remained zero. The raw arm stayed at 0.25 coverage, so the recovery is attributable to the Harness successor path rather than a favorable raw-model rerun. Expected-unknown targets still remain unresolved; the human CLI renders deterministic evidence-insufficiency guidance instead of inventing a final answer.
+
+Together these results satisfy the documented #90 v1.0 **readiness gate** on current main. The repository still publishes v0.1.0 as the latest tagged preview; no v1.0 stability promise or release is made until an explicit version/tag/release step occurs.
 
 The current semantic runtime and answer-safety gate keep their exact machine configuration IDs for reproducibility and rollback. Those IDs, and older labels such as `D3`, `R4`, `RSD2`, or `NL-5`, are not a common product version sequence. See [Terminology and naming](terminology.md).
 
