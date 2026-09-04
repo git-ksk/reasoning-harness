@@ -5,7 +5,8 @@ import time
 import urllib.parse
 import urllib.request
 
-USER_AGENT = "reasoning-harness-mcp-search-probe/0.2 (https://github.com/git-ksk/reasoning-harness)"
+USER_AGENT = "reasoning-harness-mcp-search-probe/0.3 (https://github.com/git-ksk/reasoning-harness)"
+EMBED_SEARCH_STATE_IN_HARNESS = False
 
 
 def respond(request_id, result=None, error=None):
@@ -132,14 +133,20 @@ def result_payload(observation, facts, search_state, metadata_extra=None):
     }
     if metadata_extra:
         metadata.update(metadata_extra)
+    harness_payload = {
+        "observation": observation,
+        "facts": facts,
+        "acquisition_metadata": metadata,
+    }
+    # The standard mcp_readonly_v1 protocol intentionally rejects unknown fields.
+    # Layer C calls this probe directly, so only that experimental path receives
+    # the extra telemetry inside the harness payload expected by its raw parser.
+    if EMBED_SEARCH_STATE_IN_HARNESS:
+        harness_payload["search_state"] = search_state
     return {
         "content": [{"type": "text", "text": observation}],
         "structuredContent": {
-            "reasoning_harness": {
-                "observation": observation,
-                "facts": facts,
-                "acquisition_metadata": metadata,
-            },
+            "reasoning_harness": harness_payload,
             "search_state": search_state,
         },
         "isError": False,
@@ -167,6 +174,8 @@ def state(query, outcome_kind, wd=None, wp=None, **extra):
 
 
 def main():
+    global EMBED_SEARCH_STATE_IN_HARNESS
+
     line = sys.stdin.readline()
     if not line:
         return 1
@@ -198,11 +207,16 @@ def main():
         respond(request_id, error={"code": -32602, "message": "allow_title_retry must be boolean"})
         return 0
 
+    EMBED_SEARCH_STATE_IN_HARNESS = not allow_title_retry
+
     try:
         wd = wikidata_search(query, language)
         wp = wikipedia_search(query, language)
         if not wd or not wp:
-            observation = f"search unresolved: query={query!r}; wikidata_candidates={len(wd)}; wikipedia_candidates={len(wp)}"
+            observation = (
+                f"search unresolved: query={query!r}; wikidata_candidates={len(wd)}; "
+                f"wikipedia_candidates={len(wp)}; tool_query_semantics=entity_label_or_title_only_no_urls_no_site_operator_no_property_id"
+            )
             respond(request_id, result=result_payload(
                 observation,
                 {},
@@ -213,11 +227,15 @@ def main():
         wd_top = wd[0]
         wp_top = wp[0]
         if wp_top.get("disambiguation"):
-            observation = f"search ambiguous: Wikipedia top result {wp_top.get('title')!r} is a disambiguation page; wikidata_top={wd_top.get('id')}"
+            observation = (
+                f"search ambiguous: Wikipedia top result {wp_top.get('title')!r} is a disambiguation page; "
+                f"wikidata_top={wd_top.get('id')}; ambiguity_requires_user_or_evidence_context=true; "
+                f"do_not_invent_disambiguation=true; suggested_action=stop"
+            )
             respond(request_id, result=result_payload(
                 observation,
                 {},
-                state(query, "ambiguous", wd, wp, disambiguation=True),
+                state(query, "ambiguous", wd, wp, disambiguation=True, suggested_action="stop"),
             ))
             return 0
 
@@ -257,7 +275,8 @@ def main():
         elif wp_id and isinstance(wp_title, str) and wp_title:
             observation = (
                 f"cross-source entity disagreement: query={query!r}; wikidata_candidates={wd_ids}; "
-                f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}; fixed_title_retry_disabled=true"
+                f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}; fixed_title_retry_disabled=true; "
+                f"suggested_query={wp_title!r}; tool_query_semantics=entity_label_or_title_only_no_urls_no_site_operator_no_property_id"
             )
             respond(request_id, result=result_payload(
                 observation,
@@ -270,13 +289,15 @@ def main():
                     wikipedia_top_entity=wp_id,
                     wikipedia_top_title=wp_title,
                     suggested_query=wp_title,
+                    query_constraint="entity_label_or_title_only",
                 ),
             ))
             return 0
         else:
             observation = (
                 f"cross-source entity unresolved: query={query!r}; wikidata_candidates={wd_ids}; "
-                f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}"
+                f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}; "
+                f"tool_query_semantics=entity_label_or_title_only_no_urls_no_site_operator_no_property_id"
             )
             respond(request_id, result=result_payload(
                 observation,
