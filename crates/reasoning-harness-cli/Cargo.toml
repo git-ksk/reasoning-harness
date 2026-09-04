@@ -45,7 +45,6 @@ path = "src/bin/runtime_smoke.rs"
 name = "reason-product-dogfood"
 path = "src/bin/product_dogfood.rs"
 
-
 [[bin]]
 name = "reason-external-resolution-acceptance"
 path = "src/bin/external_resolution_acceptance.rs"
@@ -54,6 +53,9 @@ path = "src/bin/external_resolution_acceptance.rs"
 name = "reason-mcp"
 path = "src/bin/mcp_product.rs"
 
+[[bin]]
+name = "reason-mcp-knowledge-benchmark"
+path = "src/bin/mcp_knowledge_benchmark.rs"
 
 [[bin]]
 name = "reason-sufficiency-study"
