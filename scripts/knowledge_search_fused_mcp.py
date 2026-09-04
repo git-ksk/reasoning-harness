@@ -5,7 +5,7 @@ import time
 import urllib.parse
 import urllib.request
 
-USER_AGENT = "reasoning-harness-mcp-search-probe/0.1 (https://github.com/git-ksk/reasoning-harness)"
+USER_AGENT = "reasoning-harness-mcp-search-probe/0.2 (https://github.com/git-ksk/reasoning-harness)"
 
 
 def respond(request_id, result=None, error=None):
@@ -123,7 +123,7 @@ def wikidata_claim_values(entity_id, property_id, value_kind):
     return values
 
 
-def result_payload(observation, facts, metadata_extra=None):
+def result_payload(observation, facts, search_state, metadata_extra=None):
     now = int(time.time())
     metadata = {
         "observed_at_unix_seconds": now,
@@ -138,11 +138,32 @@ def result_payload(observation, facts, metadata_extra=None):
             "reasoning_harness": {
                 "observation": observation,
                 "facts": facts,
+                "search_state": search_state,
                 "acquisition_metadata": metadata,
             }
         },
         "isError": False,
     }
+
+
+def state(query, outcome_kind, wd=None, wp=None, **extra):
+    wd = wd or []
+    wp = wp or []
+    payload = {
+        "query": query,
+        "outcome_kind": outcome_kind,
+        "wikidata_candidate_ids": [item.get("id") for item in wd if item.get("id")],
+        "wikipedia_candidates": [
+            {
+                "title": item.get("title"),
+                "wikibase_item": item.get("wikibase_item"),
+                "disambiguation": bool(item.get("disambiguation")),
+            }
+            for item in wp
+        ],
+    }
+    payload.update(extra)
+    return payload
 
 
 def main():
@@ -177,18 +198,22 @@ def main():
         wd = wikidata_search(query, language)
         wp = wikipedia_search(query, language)
         if not wd or not wp:
+            observation = f"search unresolved: query={query!r}; wikidata_candidates={len(wd)}; wikipedia_candidates={len(wp)}"
             respond(request_id, result=result_payload(
-                f"search unresolved: query={query!r}; wikidata_candidates={len(wd)}; wikipedia_candidates={len(wp)}",
+                observation,
                 {},
+                state(query, "search_unresolved", wd, wp),
             ))
             return 0
 
         wd_top = wd[0]
         wp_top = wp[0]
         if wp_top.get("disambiguation"):
+            observation = f"search ambiguous: Wikipedia top result {wp_top.get('title')!r} is a disambiguation page; wikidata_top={wd_top.get('id')}"
             respond(request_id, result=result_payload(
-                f"search ambiguous: Wikipedia top result {wp_top.get('title')!r} is a disambiguation page; wikidata_top={wd_top.get('id')}",
+                observation,
                 {},
+                state(query, "ambiguous", wd, wp, disambiguation=True),
             ))
             return 0
 
@@ -197,6 +222,7 @@ def main():
         wd_ids = [item.get("id") for item in wd if item.get("id")]
         corroboration = "original_query"
         corroboration_rank = None
+        title_wd_ids = []
 
         if wp_id and wp_id in wd_ids:
             corroboration_rank = wd_ids.index(wp_id) + 1
@@ -207,25 +233,60 @@ def main():
                 corroboration = "wikipedia_title_retry"
                 corroboration_rank = title_wd_ids.index(wp_id) + 1
             else:
-                respond(request_id, result=result_payload(
+                observation = (
                     f"cross-source entity disagreement after title retry: query={query!r}; original_wikidata_candidates={wd_ids}; "
-                    f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}; title_retry_candidates={title_wd_ids}",
+                    f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}; title_retry_candidates={title_wd_ids}"
+                )
+                respond(request_id, result=result_payload(
+                    observation,
                     {},
+                    state(
+                        query,
+                        "entity_disagreement",
+                        wd,
+                        wp,
+                        wikipedia_top_entity=wp_id,
+                        wikipedia_top_title=wp_title,
+                        title_retry_candidate_ids=title_wd_ids,
+                    ),
                 ))
                 return 0
         else:
-            respond(request_id, result=result_payload(
+            observation = (
                 f"cross-source entity unresolved: query={query!r}; wikidata_candidates={wd_ids}; "
-                f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}",
+                f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}"
+            )
+            respond(request_id, result=result_payload(
+                observation,
                 {},
+                state(
+                    query,
+                    "entity_unresolved",
+                    wd,
+                    wp,
+                    wikipedia_top_entity=wp_id,
+                    wikipedia_top_title=wp_title,
+                ),
             ))
             return 0
 
         values = wikidata_claim_values(wp_id, property_id, value_kind)
         if len(values) != 1:
+            observation = f"property unresolved or multi-valued after cross-source entity agreement: entity={wp_id}; property={property_id}; values={values}"
             respond(request_id, result=result_payload(
-                f"property unresolved or multi-valued after cross-source entity agreement: entity={wp_id}; property={property_id}; values={values}",
+                observation,
                 {},
+                state(
+                    query,
+                    "property_unresolved",
+                    wd,
+                    wp,
+                    resolved_entity=wp_id,
+                    corroboration_mode=corroboration,
+                    corroboration_rank=corroboration_rank,
+                    property_id=property_id,
+                    property_values=values,
+                ),
             ))
             return 0
 
@@ -234,7 +295,21 @@ def main():
             f"cross-source search resolved query={query!r} to {wp_id} via Wikipedia top result + Wikidata corroboration "
             f"(mode={corroboration}, rank={corroboration_rank}); {fact_key}={value}; property={property_id}"
         )
-        respond(request_id, result=result_payload(observation, {fact_key: value}))
+        respond(request_id, result=result_payload(
+            observation,
+            {fact_key: value},
+            state(
+                query,
+                "fact_resolved",
+                wd,
+                wp,
+                resolved_entity=wp_id,
+                corroboration_mode=corroboration,
+                corroboration_rank=corroboration_rank,
+                property_id=property_id,
+                property_values=values,
+            ),
+        ))
         return 0
     except Exception as exc:
         respond(
