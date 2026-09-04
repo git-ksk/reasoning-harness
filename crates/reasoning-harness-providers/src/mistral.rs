@@ -151,7 +151,8 @@ impl MistralAdapter {
                 format!(
                     "Mistral returned HTTP {status} after {rate_limit_retries} rate-limit retries{detail}{limit_detail}"
                 ),
-            ));
+            )
+            .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX)));
         }
 
         let pacing_delay = success_pacing_delay(response.headers());
@@ -160,16 +161,22 @@ impl MistralAdapter {
                 ModelErrorKind::Protocol,
                 format!("invalid Mistral response: {error}"),
             )
+            .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX))
         })?;
         let choice = response.choices.into_iter().next().ok_or_else(|| {
             ModelError::new(
                 ModelErrorKind::Protocol,
                 "Mistral response contained no choices",
             )
+            .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX))
         })?;
 
         let model_response = ModelResponse {
-            text: choice.message.content.into_text()?,
+            text: choice.message.content.into_text().map_err(|error| {
+                error.with_provider_attempts(
+                    u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
+                )
+            })?,
             model: response.model,
             usage: ModelUsage {
                 input_tokens: response
@@ -182,6 +189,7 @@ impl MistralAdapter {
                     .and_then(|usage| usage.completion_tokens),
                 total_tokens: response.usage.and_then(|usage| usage.total_tokens),
             },
+            provider_attempts: u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
             finish_reason: choice.finish_reason,
         };
 
@@ -804,6 +812,7 @@ mod tests {
             .unwrap();
         assert_eq!(response.text, "ok");
         assert_eq!(response.model, "test-model");
+        assert_eq!(response.provider_attempts, 2);
         server.join().unwrap();
     }
 }

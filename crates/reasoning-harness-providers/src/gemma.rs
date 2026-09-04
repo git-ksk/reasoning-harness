@@ -11,7 +11,11 @@ use serde_json::{Value, json};
 const DEFAULT_BASE_URL: &str = "https://generativelanguage.googleapis.com/v1beta/";
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(180);
 const MAX_RATE_LIMIT_RETRIES: usize = 3;
+const MAX_PROVIDER_ATTEMPTS: u32 = 4;
+const MAX_TRANSIENT_RETRIES: usize = 2;
+const MAX_EMPTY_TEXT_RETRIES: usize = 1;
 const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(10);
+const INITIAL_TRANSIENT_BACKOFF: Duration = Duration::from_millis(500);
 const GOOGLE_RECOMMENDED_TEMPERATURE: f32 = 1.0;
 
 /// Google Gemini API / AI Studio adapter for Google-hosted text models.
@@ -102,8 +106,13 @@ impl GoogleAdapter {
             store: false,
         };
 
+        let mut provider_attempts = 0u32;
         let mut rate_limit_retries = 0usize;
-        let response = loop {
+        let mut transient_retries = 0usize;
+        let mut empty_text_retries = 0usize;
+
+        loop {
+            provider_attempts = provider_attempts.saturating_add(1);
             let response = self
                 .client
                 .post(endpoint.clone())
@@ -122,51 +131,79 @@ impl GoogleAdapter {
                     } else {
                         format!("Gemini API request failed: {error}")
                     };
-                    ModelError::new(kind, detail)
+                    ModelError::new(kind, detail).with_provider_attempts(provider_attempts)
                 })?;
 
-            if response.status() != StatusCode::TOO_MANY_REQUESTS
-                || rate_limit_retries >= MAX_RATE_LIMIT_RETRIES
-            {
-                break response;
+            let status = response.status();
+            if !status.is_success() {
+                let rate_limit_delay = rate_limit_delay(response.headers(), rate_limit_retries);
+                let body = response.text().await.unwrap_or_default();
+                let kind = classify_http_error(status, &body);
+
+                if status == StatusCode::TOO_MANY_REQUESTS
+                    && kind == ModelErrorKind::RateLimit
+                    && rate_limit_retries < MAX_RATE_LIMIT_RETRIES
+                    && provider_attempts < MAX_PROVIDER_ATTEMPTS
+                {
+                    rate_limit_retries += 1;
+                    tokio::time::sleep(rate_limit_delay).await;
+                    continue;
+                }
+
+                if is_transient_http_status(status)
+                    && transient_retries < MAX_TRANSIENT_RETRIES
+                    && provider_attempts < MAX_PROVIDER_ATTEMPTS
+                {
+                    let delay = transient_retry_delay(transient_retries);
+                    transient_retries += 1;
+                    tokio::time::sleep(delay).await;
+                    continue;
+                }
+
+                let detail = google_error_detail(&body);
+                return Err(ModelError::new(
+                    kind,
+                    format!(
+                        "Gemini API returned HTTP {status} after {provider_attempts} provider attempts{detail}"
+                    ),
+                )
+                .with_provider_attempts(provider_attempts));
             }
 
-            let delay = rate_limit_delay(response.headers(), rate_limit_retries);
-            rate_limit_retries += 1;
-            tokio::time::sleep(delay).await;
-        };
+            let response: InteractionResponse = response.json().await.map_err(|error| {
+                ModelError::new(
+                    ModelErrorKind::Protocol,
+                    format!("invalid Gemini Interactions response: {error}"),
+                )
+                .with_provider_attempts(provider_attempts)
+            })?;
+            let text = match response.text() {
+                Ok(text) => text,
+                Err(error)
+                    if error.kind == ModelErrorKind::Protocol
+                        && empty_text_retries < MAX_EMPTY_TEXT_RETRIES
+                        && provider_attempts < MAX_PROVIDER_ATTEMPTS =>
+                {
+                    empty_text_retries += 1;
+                    tokio::time::sleep(transient_retry_delay(0)).await;
+                    continue;
+                }
+                Err(error) => return Err(error.with_provider_attempts(provider_attempts)),
+            };
+            let usage = response.usage.unwrap_or_default();
 
-        let status = response.status();
-        if !status.is_success() {
-            let body = response.text().await.unwrap_or_default();
-            let detail = google_error_detail(&body);
-            return Err(ModelError::new(
-                classify_http_error(status, &body),
-                format!(
-                    "Gemini API returned HTTP {status} after {rate_limit_retries} rate-limit retries{detail}"
-                ),
-            ));
+            return Ok(ModelResponse {
+                text,
+                model: response.model.unwrap_or_else(|| self.model.clone()),
+                usage: ModelUsage {
+                    input_tokens: usage.total_input_tokens,
+                    output_tokens: usage.total_output_tokens,
+                    total_tokens: usage.total_tokens,
+                },
+                provider_attempts,
+                finish_reason: response.status,
+            });
         }
-
-        let response: InteractionResponse = response.json().await.map_err(|error| {
-            ModelError::new(
-                ModelErrorKind::Protocol,
-                format!("invalid Gemini Interactions response: {error}"),
-            )
-        })?;
-        let text = response.text()?;
-        let usage = response.usage.unwrap_or_default();
-
-        Ok(ModelResponse {
-            text,
-            model: response.model.unwrap_or_else(|| self.model.clone()),
-            usage: ModelUsage {
-                input_tokens: usage.total_input_tokens,
-                output_tokens: usage.total_output_tokens,
-                total_tokens: usage.total_tokens,
-            },
-            finish_reason: response.status,
-        })
     }
 }
 
@@ -238,6 +275,18 @@ fn classify_http_error(status: StatusCode, body: &str) -> ModelErrorKind {
     } else {
         ModelErrorKind::Provider
     }
+}
+
+fn is_transient_http_status(status: StatusCode) -> bool {
+    matches!(status.as_u16(), 500 | 502 | 503 | 504)
+}
+
+fn transient_retry_delay(retry_index: usize) -> Duration {
+    let multiplier = 1u32.checked_shl(retry_index as u32).unwrap_or(u32::MAX);
+    INITIAL_TRANSIENT_BACKOFF
+        .checked_mul(multiplier)
+        .unwrap_or(Duration::from_secs(2))
+        .min(Duration::from_secs(2))
 }
 
 fn google_error_detail(body: &str) -> String {
@@ -464,5 +513,178 @@ mod tests {
         let error = GoogleAdapter::new("", "gemma-4-26b-a4b-it").err().unwrap();
         assert_eq!(error.kind, ModelErrorKind::Credentials);
         assert!(!error.to_string().contains("x-goog-api-key"));
+    }
+
+    fn test_request() -> ModelRequest {
+        ModelRequest {
+            task: "test".into(),
+            system: None,
+            output_format: ModelOutputFormat::Text,
+            max_tokens: Some(8),
+            random_seed: None,
+            reasoning_preference: None,
+        }
+    }
+
+    fn success_body(text: &str) -> String {
+        serde_json::json!({
+            "model": "test-model",
+            "status": "completed",
+            "steps": [{
+                "type": "model_output",
+                "content": [{"type": "text", "text": text}]
+            }],
+            "usage": {
+                "total_input_tokens": 2,
+                "total_output_tokens": 1,
+                "total_tokens": 3
+            }
+        })
+        .to_string()
+    }
+
+    fn empty_text_body() -> String {
+        serde_json::json!({
+            "model": "test-model",
+            "status": "completed",
+            "steps": [],
+            "usage": {
+                "total_input_tokens": 2,
+                "total_output_tokens": 0,
+                "total_tokens": 2
+            }
+        })
+        .to_string()
+    }
+
+    fn spawn_sequence_server(
+        responses: Vec<(&'static str, String, &'static str)>,
+    ) -> (String, std::thread::JoinHandle<()>) {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            for (status, body, extra_headers) in responses {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = [0u8; 8192];
+                let _ = stream.read(&mut buffer);
+                write!(
+                    stream,
+                    "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n{extra_headers}\r\n{body}",
+                    body.len()
+                )
+                .unwrap();
+            }
+        });
+        (format!("http://{address}/v1beta/"), server)
+    }
+
+    #[tokio::test]
+    async fn retries_http_500_then_returns_success_with_attempt_count() {
+        let (base_url, server) = spawn_sequence_server(vec![
+            (
+                "500 Internal Server Error",
+                r#"{"error":{"message":"high demand"}}"#.into(),
+                "",
+            ),
+            ("200 OK", success_body("ok"), ""),
+        ]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let response = adapter.generate(test_request()).await.unwrap();
+        assert_eq!(response.text, "ok");
+        assert_eq!(response.provider_attempts, 2);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn repeated_transient_5xx_fails_after_bounded_retries() {
+        let busy = r#"{"error":{"message":"high demand"}}"#.to_string();
+        let (base_url, server) = spawn_sequence_server(vec![
+            ("503 Service Unavailable", busy.clone(), ""),
+            ("503 Service Unavailable", busy.clone(), ""),
+            ("503 Service Unavailable", busy, ""),
+        ]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let error = adapter.generate(test_request()).await.unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::ProviderUnavailable);
+        assert_eq!(error.provider_attempts, 3);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn retries_one_empty_model_text_then_returns_success() {
+        let (base_url, server) = spawn_sequence_server(vec![
+            ("200 OK", empty_text_body(), ""),
+            ("200 OK", success_body("ok"), ""),
+        ]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let response = adapter.generate(test_request()).await.unwrap();
+        assert_eq!(response.text, "ok");
+        assert_eq!(response.provider_attempts, 2);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn repeated_empty_model_text_remains_protocol_failure() {
+        let (base_url, server) = spawn_sequence_server(vec![
+            ("200 OK", empty_text_body(), ""),
+            ("200 OK", empty_text_body(), ""),
+        ]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let error = adapter.generate(test_request()).await.unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::Protocol);
+        assert_eq!(error.provider_attempts, 2);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn deterministic_http_failures_and_quota_do_not_retry() {
+        for (status, body, expected) in [
+            (
+                "400 Bad Request",
+                r#"{"error":{"status":"INVALID_ARGUMENT","message":"bad request"}}"#,
+                ModelErrorKind::Provider,
+            ),
+            (
+                "401 Unauthorized",
+                r#"{"error":{"status":"UNAUTHENTICATED","message":"bad key"}}"#,
+                ModelErrorKind::Credentials,
+            ),
+            (
+                "429 Too Many Requests",
+                r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"Quota exceeded for free_tier_requests"}}"#,
+                ModelErrorKind::Quota,
+            ),
+        ] {
+            let (base_url, server) = spawn_sequence_server(vec![(status, body.to_string(), "")]);
+            let adapter =
+                GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+            let error = adapter.generate(test_request()).await.unwrap_err();
+            assert_eq!(error.kind, expected);
+            assert_eq!(error.provider_attempts, 1);
+            server.join().unwrap();
+        }
+    }
+
+    #[tokio::test]
+    async fn rate_limit_retry_remains_compatible_and_observable() {
+        let (base_url, server) = spawn_sequence_server(vec![
+            (
+                "429 Too Many Requests",
+                r#"{"error":{"message":"slow down"}}"#.into(),
+                "Retry-After: 1\r\n",
+            ),
+            ("200 OK", success_body("ok"), ""),
+        ]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let response = adapter.generate(test_request()).await.unwrap();
+        assert_eq!(response.text, "ok");
+        assert_eq!(response.provider_attempts, 2);
+        server.join().unwrap();
     }
 }

@@ -194,7 +194,8 @@ impl NvidiaAdapter {
                 format!(
                     "NVIDIA API returned HTTP {status} after {rate_limit_retries} rate-limit retries{detail}"
                 ),
-            ));
+            )
+            .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX)));
         }
 
         let response: ChatResponse = response.json().await.map_err(|error| {
@@ -202,14 +203,18 @@ impl NvidiaAdapter {
                 ModelErrorKind::Protocol,
                 format!("invalid NVIDIA Chat Completions response: {error}"),
             )
+            .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX))
         })?;
         let choice = response.choices.into_iter().next().ok_or_else(|| {
             ModelError::new(
                 ModelErrorKind::Protocol,
                 "NVIDIA response contained no choices",
             )
+            .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX))
         })?;
-        let text = choice.message.content.into_text()?;
+        let text = choice.message.content.into_text().map_err(|error| {
+            error.with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX))
+        })?;
         let usage = response.usage.unwrap_or_default();
 
         Ok(ModelResponse {
@@ -220,6 +225,7 @@ impl NvidiaAdapter {
                 output_tokens: usage.completion_tokens,
                 total_tokens: usage.total_tokens,
             },
+            provider_attempts: u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
             finish_reason: choice.finish_reason,
         })
     }
@@ -631,6 +637,7 @@ mod tests {
             .unwrap();
         assert_eq!(response.text, "ok");
         assert_eq!(response.model, "test-model");
+        assert_eq!(response.provider_attempts, 2);
         server.join().unwrap();
     }
 

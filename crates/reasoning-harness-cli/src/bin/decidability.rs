@@ -172,6 +172,7 @@ struct StudyCase {
     base_decision: Option<SoftJudgeDecision>,
     advisory_note_present: bool,
     latency_ms: u128,
+    provider_attempts: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     usage: Option<ModelUsage>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -260,6 +261,7 @@ struct StudyOutput {
     fixture_count: usize,
     variant_count: usize,
     attempted_provider_calls: usize,
+    provider_attempts: u64,
     successful_provider_calls: usize,
     failed_provider_calls: usize,
     failure_counts: BTreeMap<MaterializationFailureClass, usize>,
@@ -340,6 +342,7 @@ struct StudyCheckpoint<'a> {
 #[derive(Debug)]
 struct FailureInfo {
     usage: Option<ModelUsage>,
+    provider_attempts: u32,
     provider_model: Option<String>,
     finish_reason: Option<String>,
     class: MaterializationFailureClass,
@@ -440,6 +443,10 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
     }
 
     let attempted_provider_calls = cases.len();
+    let provider_attempts = cases
+        .iter()
+        .map(|case| u64::from(case.provider_attempts))
+        .sum();
     let successful_provider_calls = cases
         .iter()
         .filter(|case| case.base_decision.is_some())
@@ -475,6 +482,7 @@ async fn run(args: Args) -> Result<StudyOutput, String> {
         fixture_count: fixtures.len(),
         variant_count: fixtures.iter().map(|fixture| fixture.variants.len()).sum(),
         attempted_provider_calls,
+        provider_attempts,
         successful_provider_calls,
         failed_provider_calls: attempted_provider_calls - successful_provider_calls,
         failure_counts,
@@ -541,6 +549,7 @@ async fn run_trials(
                         base_decision: Some(base_decision),
                         advisory_note_present: observation.advisory_note.is_some(),
                         latency_ms,
+                        provider_attempts: observation.provider_attempts,
                         usage: Some(observation.usage),
                         provider_model: Some(observation.model),
                         finish_reason: observation.finish_reason,
@@ -560,6 +569,7 @@ async fn run_trials(
                         base_decision: None,
                         advisory_note_present: false,
                         latency_ms,
+                        provider_attempts: failure.provider_attempts,
                         usage: failure.usage,
                         provider_model: failure.provider_model,
                         finish_reason: failure.finish_reason,
@@ -1038,6 +1048,7 @@ fn materialization_failure_info(error: MaterializationError) -> FailureInfo {
     let class = classify_materialization_failure(&error);
     FailureInfo {
         usage: error.usage().cloned(),
+        provider_attempts: error.provider_attempts(),
         provider_model: error.provider_model().map(str::to_string),
         finish_reason: error.finish_reason().map(str::to_string),
         class,
@@ -1154,6 +1165,7 @@ mod tests {
             base_decision: Some(base),
             advisory_note_present: false,
             latency_ms: 1,
+            provider_attempts: 1,
             usage: None,
             provider_model: None,
             finish_reason: None,

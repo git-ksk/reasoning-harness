@@ -63,6 +63,8 @@ pub struct MaterializationCapabilityPreflight {
     pub observed_decision: SoftJudgeDecision,
     pub model: String,
     pub usage: ModelUsage,
+    #[serde(default = "default_provider_attempts")]
+    pub provider_attempts: u32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finish_reason: Option<String>,
 }
@@ -124,8 +126,14 @@ pub struct MaterializationObservation {
     pub materialized_output: SoftJudgeOutput,
     pub model: String,
     pub usage: ModelUsage,
+    #[serde(default = "default_provider_attempts")]
+    pub provider_attempts: u32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finish_reason: Option<String>,
+}
+
+fn default_provider_attempts() -> u32 {
+    1
 }
 
 #[derive(Debug, Error)]
@@ -139,6 +147,7 @@ pub enum MaterializationError {
         message: String,
         model: String,
         usage: ModelUsage,
+        provider_attempts: u32,
         finish_reason: Option<String>,
     },
 }
@@ -148,6 +157,16 @@ impl MaterializationError {
         match self {
             Self::Model(error) => Some(error.kind),
             Self::Setup(_) | Self::InvalidOutput { .. } => None,
+        }
+    }
+
+    pub fn provider_attempts(&self) -> u32 {
+        match self {
+            Self::Setup(_) => 0,
+            Self::Model(error) => error.provider_attempts,
+            Self::InvalidOutput {
+                provider_attempts, ..
+            } => *provider_attempts,
         }
     }
 
@@ -231,6 +250,7 @@ pub async fn run_materialization_capability_preflight(
         observed_decision: observation.decision,
         model: observation.model,
         usage: observation.usage,
+        provider_attempts: observation.provider_attempts,
         finish_reason: observation.finish_reason,
     })
 }
@@ -299,6 +319,7 @@ pub async fn run_model_backed_soft_judge_materialization_representation(
             message: error.to_string(),
             model: response.model.clone(),
             usage: response.usage.clone(),
+            provider_attempts: response.provider_attempts,
             finish_reason: response.finish_reason.clone(),
         })?;
     let materialized_output = materialize_soft_judge_output(request, &output);
@@ -307,6 +328,7 @@ pub async fn run_model_backed_soft_judge_materialization_representation(
             message: error.to_string(),
             model: response.model.clone(),
             usage: response.usage.clone(),
+            provider_attempts: response.provider_attempts,
             finish_reason: response.finish_reason.clone(),
         }
     })?;
@@ -318,6 +340,7 @@ pub async fn run_model_backed_soft_judge_materialization_representation(
         materialized_output,
         model: response.model,
         usage: response.usage,
+        provider_attempts: response.provider_attempts,
         finish_reason: response.finish_reason,
     })
 }

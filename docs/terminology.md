@@ -29,7 +29,7 @@ Exact identifiers remain stable because reports, rollback behavior, schemas, and
 | `d3-sufficiency-answer-gate-v2` | Answer-safety rollback configuration retained for reproducibility. |
 | `d3-sufficiency-answer-gate-v1` | Previous answer-safety configuration ID retained for rollback/testing. |
 | `shared-candidate-initial-render-v1` | Product evaluation comparison contract. |
-| `reason-product-dogfood-v9` | Product dogfood report schema version. |
+| `reason-product-dogfood-v10` | Product dogfood report schema version; v10 adds retry/checkpoint execution telemetry without changing semantic gates. |
 
 The CLI uses descriptive selectors:
 

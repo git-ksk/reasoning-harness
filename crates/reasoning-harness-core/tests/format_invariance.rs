@@ -176,6 +176,7 @@ impl ModelAdapter for StaticAdapter {
                     output_tokens: Some(4),
                     total_tokens: Some(14),
                 },
+                provider_attempts: 1,
                 finish_reason: Some("length".into()),
             })
         })

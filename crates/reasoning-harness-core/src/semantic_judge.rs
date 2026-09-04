@@ -234,9 +234,14 @@ pub async fn run_model_backed_soft_judge(
 ) -> Result<ModelBackedSoftJudgeObservation, ModelBackedSoftJudgeError> {
     validate_identity(&identity)?;
     let primary_request = build_soft_judge_model_request(request, max_tokens, random_seed)?;
-    let primary = match adapter.generate(primary_request).await {
-        Ok(response) => Some(response),
-        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => None,
+    let (primary, primary_provider_attempts) = match adapter.generate(primary_request).await {
+        Ok(response) => {
+            let attempts = response.provider_attempts;
+            (Some(response), attempts)
+        }
+        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => {
+            (None, error.provider_attempts)
+        }
         Err(error) => return Err(error.into()),
     };
 
@@ -251,7 +256,7 @@ pub async fn run_model_backed_soft_judge(
                 },
                 model: response.model.clone(),
                 usage: response.usage.clone(),
-                provider_attempts: 1,
+                provider_attempts: response.provider_attempts,
                 fallback_reason: SoftJudgeFallbackReason::NotNeeded,
             });
         }
@@ -298,7 +303,7 @@ pub async fn run_model_backed_soft_judge(
         },
         model: fallback.model,
         usage,
-        provider_attempts: 2,
+        provider_attempts: primary_provider_attempts.saturating_add(fallback.provider_attempts),
         fallback_reason,
     })
 }

@@ -1,7 +1,7 @@
 use std::{
     collections::{BTreeMap, BTreeSet},
     fs,
-    path::PathBuf,
+    path::{Path, PathBuf},
     time::Instant,
 };
 
@@ -28,6 +28,9 @@ use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 
 const PRODUCT_DOGFOOD_COMPARISON_CONTRACT_ID: &str = "shared-candidate-initial-render-v1";
+const PRODUCT_DOGFOOD_REPORT_SCHEMA: &str = "reason-product-dogfood-v10";
+const PRODUCT_DOGFOOD_CHECKPOINT_VERSION: &str = "product-dogfood-checkpoint-v1";
+const PRODUCT_DOGFOOD_SUCCESSOR_CANDIDATE_ID: &str = "993874fa0051d06a02c8db8f7a220a2ac7773c17";
 
 #[derive(Debug, Parser)]
 #[command(name = "reason-product-dogfood")]
@@ -46,6 +49,12 @@ struct Args {
     max_resolution_attempts: usize,
     #[arg(long)]
     output: Option<PathBuf>,
+    /// Atomic case-level progress checkpoint. A clean run overwrites it unless --resume is set.
+    #[arg(long)]
+    checkpoint: Option<PathBuf>,
+    /// Reuse only fully completed cases from an exactly matching checkpoint.
+    #[arg(long, default_value_t = false)]
+    resume: bool,
     #[arg(long, default_value_t = false)]
     validate_only: bool,
 }
@@ -124,7 +133,7 @@ struct ProductDogfoodFixture {
     resolver_facts: BTreeMap<String, String>,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 struct CallObservation {
     model: String,
     usage: ModelUsage,
@@ -132,7 +141,7 @@ struct CallObservation {
     attempts: u32,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 struct TargetOutcomeObservation {
     expected_targets: usize,
     exposed_grounded_targets: Vec<Proposition>,
@@ -142,7 +151,7 @@ struct TargetOutcomeObservation {
     all_targets_grounded: bool,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 struct RawArmResult {
     exposed_text: String,
     factual_claims: usize,
@@ -154,7 +163,7 @@ struct RawArmResult {
     call: CallObservation,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 struct HarnessArmResult {
     safety_runtime: AnswerSafetyIdentity,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -180,7 +189,7 @@ struct HarnessArmResult {
     total_latency_ms: u128,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
 enum ExpectedGroundedMissClass {
     CandidateTargetMissing,
@@ -198,7 +207,7 @@ enum ExpectedGroundedMissClass {
     Other,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 struct TargetArtifactObservation {
     matching_claims: usize,
     states: Vec<EpistemicState>,
@@ -208,7 +217,7 @@ struct TargetArtifactObservation {
     authorized: bool,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 struct TargetResolutionObservation {
     requested: bool,
     attempts: usize,
@@ -217,7 +226,7 @@ struct TargetResolutionObservation {
     verification_receipts: usize,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 struct TargetRendererObservation {
     exact_target_emitted: bool,
     exact_grounded_target_emitted: bool,
@@ -241,7 +250,7 @@ struct MissClassificationInput<'a> {
     expected_outcome: ExpectedOutcome,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 struct TargetFailureProvenance {
     target: Proposition,
     expected_grounded: bool,
@@ -262,7 +271,7 @@ struct TargetFailureProvenance {
     miss_class: Option<ExpectedGroundedMissClass>,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 struct SharedHarnessObservation {
     candidate_call: CallObservation,
     initial_render: FinalAnswerCandidate,
@@ -280,7 +289,7 @@ struct PreparedHarnessState {
     candidate_call: CallObservation,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 struct CaseResult {
     id: String,
     capability_family: String,
@@ -290,6 +299,74 @@ struct CaseResult {
     shared_harness: SharedHarnessObservation,
     harness: HarnessArmResult,
     harness_current_safety: HarnessArmResult,
+}
+
+#[derive(Debug, Clone, Deserialize, PartialEq, Eq, Serialize)]
+struct ProductDogfoodCheckpointIdentity {
+    fixture_set: String,
+    fixture_fingerprint: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    sha256_manifest: Option<String>,
+    provider: String,
+    model: String,
+    seed: Option<u64>,
+    max_tokens: u32,
+    max_resolution_attempts: usize,
+    comparison_contract: String,
+    answer_safety_identity: String,
+    semantic_candidate_id: String,
+    report_schema: String,
+    executable_fingerprint: String,
+}
+
+#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+enum ProductDogfoodCheckpointStatus {
+    InProgress,
+    Completed,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct ProductDogfoodActiveCase {
+    index: usize,
+    fixture_id: String,
+    seed: Option<u64>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct ProductDogfoodOperationalFailure {
+    fixture_index: usize,
+    fixture_id: String,
+    seed: Option<u64>,
+    failure_class: String,
+    message: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+struct ProductDogfoodCheckpoint {
+    checkpoint_version: String,
+    status: ProductDogfoodCheckpointStatus,
+    identity: ProductDogfoodCheckpointIdentity,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    active_case: Option<ProductDogfoodActiveCase>,
+    completed_cases: Vec<CaseResult>,
+    #[serde(default)]
+    operational_failures: Vec<ProductDogfoodOperationalFailure>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ProductDogfoodExecutionObservation {
+    checkpoint_enabled: bool,
+    resume_requested: bool,
+    reused_completed_cases: usize,
+    newly_executed_cases: usize,
+    operational_failures: Vec<ProductDogfoodOperationalFailure>,
+}
+
+#[derive(Debug)]
+struct LoadedProductDogfoodCheckpoint {
+    completed_cases: Vec<CaseResult>,
+    operational_failures: Vec<ProductDogfoodOperationalFailure>,
 }
 
 #[derive(Debug, Default, Clone, Serialize)]
@@ -377,6 +454,7 @@ struct ProductDogfoodReport {
     harness: HarnessAggregate,
     harness_current_safety: HarnessAggregate,
     overhead: OverheadAggregate,
+    execution: ProductDogfoodExecutionObservation,
     user_comprehension: &'static str,
     results: Vec<CaseResult>,
 }
@@ -469,6 +547,13 @@ async fn main() -> Result<(), String> {
     if args.max_tokens == 0 || args.max_resolution_attempts == 0 {
         return Err("max token/resolution limits must be greater than zero".into());
     }
+    if args.resume && args.checkpoint.is_none() {
+        return Err("--resume requires --checkpoint PATH".into());
+    }
+    if args.validate_only && (args.checkpoint.is_some() || args.resume) {
+        return Err("--checkpoint/--resume are not valid with --validate-only".into());
+    }
+
     let fixtures = load_fixtures(&args.fixtures)?;
     if fixtures.is_empty() {
         return Err("product dogfood fixture directory is empty".into());
@@ -504,9 +589,59 @@ async fn main() -> Result<(), String> {
         );
         return Ok(());
     }
-    let adapter = LiveAdapter::from_env(args.provider, &args.model).map_err(|e| e.to_string())?;
-    let mut results = Vec::new();
-    for (index, fixture) in fixtures.iter().enumerate() {
+
+    let checkpoint_identity = args
+        .checkpoint
+        .as_ref()
+        .map(|_| build_checkpoint_identity(&args))
+        .transpose()?;
+    let loaded_checkpoint = if args.resume {
+        Some(load_product_dogfood_checkpoint(
+            args.checkpoint
+                .as_deref()
+                .expect("--resume validation requires checkpoint"),
+            checkpoint_identity
+                .as_ref()
+                .expect("checkpoint identity exists for resume"),
+            &fixtures,
+        )?)
+    } else {
+        None
+    };
+    let mut results = loaded_checkpoint
+        .as_ref()
+        .map_or_else(Vec::new, |checkpoint| checkpoint.completed_cases.clone());
+    let mut operational_failures =
+        loaded_checkpoint.map_or_else(Vec::new, |checkpoint| checkpoint.operational_failures);
+    let reused_completed_cases = results.len();
+
+    if let (Some(path), Some(identity)) = (args.checkpoint.as_deref(), checkpoint_identity.as_ref())
+        && !args.resume
+    {
+        write_product_dogfood_checkpoint(
+            path,
+            identity,
+            &results,
+            &operational_failures,
+            ProductDogfoodCheckpointStatus::InProgress,
+            None,
+        )?;
+    }
+
+    if reused_completed_cases > 0 {
+        eprintln!(
+            "[product-dogfood] resume reused_completed_cases={} remaining_cases={}",
+            reused_completed_cases,
+            fixtures.len().saturating_sub(reused_completed_cases)
+        );
+    }
+
+    let adapter = if reused_completed_cases < fixtures.len() {
+        Some(LiveAdapter::from_env(args.provider, &args.model).map_err(|e| e.to_string())?)
+    } else {
+        None
+    };
+    for (index, fixture) in fixtures.iter().enumerate().skip(reused_completed_cases) {
         eprintln!(
             "[product-dogfood] {}/{} class={} id={}",
             index + 1,
@@ -515,19 +650,103 @@ async fn main() -> Result<(), String> {
             fixture.id
         );
         let seed = args.seed.and_then(|seed| seed.checked_add(index as u64));
-        results.push(
-            evaluate_case(
-                fixture,
-                adapter.adapter(),
-                &args.model,
-                args.max_tokens,
-                seed,
-                args.max_resolution_attempts,
-            )
-            .await?,
-        );
+        if let (Some(path), Some(identity)) =
+            (args.checkpoint.as_deref(), checkpoint_identity.as_ref())
+        {
+            write_product_dogfood_checkpoint(
+                path,
+                identity,
+                &results,
+                &operational_failures,
+                ProductDogfoodCheckpointStatus::InProgress,
+                Some(ProductDogfoodActiveCase {
+                    index,
+                    fixture_id: fixture.id.clone(),
+                    seed,
+                }),
+            )?;
+        }
+        let case = match evaluate_case(
+            fixture,
+            adapter
+                .as_ref()
+                .expect("remaining cases require live adapter")
+                .adapter(),
+            &args.model,
+            args.max_tokens,
+            seed,
+            args.max_resolution_attempts,
+        )
+        .await
+        {
+            Ok(case) => case,
+            Err(error) => {
+                operational_failures.push(ProductDogfoodOperationalFailure {
+                    fixture_index: index,
+                    fixture_id: fixture.id.clone(),
+                    seed,
+                    failure_class: "case_execution_error".into(),
+                    message: error.clone(),
+                });
+                if let (Some(path), Some(identity)) =
+                    (args.checkpoint.as_deref(), checkpoint_identity.as_ref())
+                {
+                    write_product_dogfood_checkpoint(
+                        path,
+                        identity,
+                        &results,
+                        &operational_failures,
+                        ProductDogfoodCheckpointStatus::InProgress,
+                        Some(ProductDogfoodActiveCase {
+                            index,
+                            fixture_id: fixture.id.clone(),
+                            seed,
+                        }),
+                    )?;
+                }
+                return Err(error);
+            }
+        };
+        results.push(case);
+        if let (Some(path), Some(identity)) =
+            (args.checkpoint.as_deref(), checkpoint_identity.as_ref())
+        {
+            write_product_dogfood_checkpoint(
+                path,
+                identity,
+                &results,
+                &operational_failures,
+                ProductDogfoodCheckpointStatus::InProgress,
+                None,
+            )?;
+        }
     }
-    let report = aggregate(args.provider, &args.model, results);
+
+    if let (Some(path), Some(identity)) = (args.checkpoint.as_deref(), checkpoint_identity.as_ref())
+    {
+        write_product_dogfood_checkpoint(
+            path,
+            identity,
+            &results,
+            &operational_failures,
+            ProductDogfoodCheckpointStatus::Completed,
+            None,
+        )?;
+    }
+
+    let newly_executed_cases = results.len().saturating_sub(reused_completed_cases);
+    let execution = ProductDogfoodExecutionObservation {
+        checkpoint_enabled: args.checkpoint.is_some(),
+        resume_requested: args.resume,
+        reused_completed_cases,
+        newly_executed_cases,
+        operational_failures,
+    };
+    eprintln!(
+        "[product-dogfood] execution reused_completed_cases={} newly_executed_cases={}",
+        execution.reused_completed_cases, execution.newly_executed_cases
+    );
+    let report = aggregate(args.provider, &args.model, results, execution);
     let json = serde_json::to_string_pretty(&report).map_err(|e| e.to_string())?;
     if let Some(path) = args.output {
         fs::write(&path, format!("{json}\n")).map_err(|e| format!("{}: {e}", path.display()))?;
@@ -1083,7 +1302,7 @@ async fn generate_json<T: DeserializeOwned>(
     let started = Instant::now();
     let first = adapter.generate(request).await.map_err(|e| e.to_string())?;
     match parse_one::<T>(&first.text) {
-        Ok(value) => Ok((value, call_observation(first, started, 1))),
+        Ok(value) => Ok((value, call_observation(first, started))),
         Err(first_error) => {
             let Some(fallback) = fallback else {
                 return Err(format!("{model}: invalid structured output: {first_error}"));
@@ -1098,13 +1317,16 @@ async fn generate_json<T: DeserializeOwned>(
                 )
             })?;
             let usage = add_usage(&first.usage, &second.usage);
+            let attempts = first
+                .provider_attempts
+                .saturating_add(second.provider_attempts);
             Ok((
                 value,
                 CallObservation {
                     model: second.model,
                     usage,
                     latency_ms: started.elapsed().as_millis(),
-                    attempts: 2,
+                    attempts,
                 },
             ))
         }
@@ -1122,12 +1344,12 @@ fn parse_one<T: DeserializeOwned>(text: &str) -> Result<T, serde_json::Error> {
     Ok(value)
 }
 
-fn call_observation(response: ModelResponse, started: Instant, attempts: u32) -> CallObservation {
+fn call_observation(response: ModelResponse, started: Instant) -> CallObservation {
     CallObservation {
         model: response.model,
         usage: response.usage,
         latency_ms: started.elapsed().as_millis(),
-        attempts,
+        attempts: response.provider_attempts,
     }
 }
 
@@ -1447,6 +1669,183 @@ fn add_opt(left: Option<u64>, right: Option<u64>) -> Option<u64> {
     }
 }
 
+fn fnv1a64_update(mut hash: u64, bytes: &[u8]) -> u64 {
+    for byte in bytes {
+        hash ^= u64::from(*byte);
+        hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
+    }
+    hash
+}
+
+fn fingerprint_bytes(chunks: impl IntoIterator<Item = Vec<u8>>) -> String {
+    let mut hash = 0xcbf2_9ce4_8422_2325u64;
+    for chunk in chunks {
+        hash = fnv1a64_update(hash, &(chunk.len() as u64).to_le_bytes());
+        hash = fnv1a64_update(hash, &chunk);
+    }
+    format!("fnv1a64:{hash:016x}")
+}
+
+fn fixture_set_fingerprint(directory: &Path) -> Result<String, String> {
+    let mut paths = fs::read_dir(directory)
+        .map_err(|error| format!("{}: {error}", directory.display()))?
+        .filter_map(Result::ok)
+        .map(|entry| entry.path())
+        .filter(|path| path.extension().and_then(|ext| ext.to_str()) == Some("json"))
+        .collect::<Vec<_>>();
+    paths.sort();
+    let mut chunks = Vec::with_capacity(paths.len() * 2);
+    for path in paths {
+        let name = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .ok_or_else(|| format!("non-UTF8 fixture name: {}", path.display()))?;
+        chunks.push(name.as_bytes().to_vec());
+        chunks.push(fs::read(&path).map_err(|error| format!("{}: {error}", path.display()))?);
+    }
+    Ok(fingerprint_bytes(chunks))
+}
+
+fn fixture_sha256_manifest(directory: &Path) -> Result<Option<String>, String> {
+    let manifest = PathBuf::from(format!("{}.sha256", directory.display()));
+    if !manifest.exists() {
+        return Ok(None);
+    }
+    let content = fs::read_to_string(&manifest)
+        .map_err(|error| format!("{}: {error}", manifest.display()))?;
+    Ok(Some(content.trim().to_string()))
+}
+
+fn executable_fingerprint() -> Result<String, String> {
+    let executable =
+        std::env::current_exe().map_err(|error| format!("current executable: {error}"))?;
+    let bytes =
+        fs::read(&executable).map_err(|error| format!("{}: {error}", executable.display()))?;
+    Ok(fingerprint_bytes([bytes]))
+}
+
+fn build_checkpoint_identity(args: &Args) -> Result<ProductDogfoodCheckpointIdentity, String> {
+    Ok(ProductDogfoodCheckpointIdentity {
+        fixture_set: args.fixtures.display().to_string(),
+        fixture_fingerprint: fixture_set_fingerprint(&args.fixtures)?,
+        sha256_manifest: fixture_sha256_manifest(&args.fixtures)?,
+        provider: args.provider.name().to_string(),
+        model: args.model.clone(),
+        seed: args.seed,
+        max_tokens: args.max_tokens,
+        max_resolution_attempts: args.max_resolution_attempts,
+        comparison_contract: PRODUCT_DOGFOOD_COMPARISON_CONTRACT_ID.to_string(),
+        answer_safety_identity: serde_json::to_string(
+            &AnswerSafetyProfile::VerifiedTargetV1.identity(),
+        )
+        .map_err(|error| format!("serialize answer-safety identity: {error}"))?,
+        semantic_candidate_id: PRODUCT_DOGFOOD_SUCCESSOR_CANDIDATE_ID.to_string(),
+        report_schema: PRODUCT_DOGFOOD_REPORT_SCHEMA.to_string(),
+        executable_fingerprint: executable_fingerprint()?,
+    })
+}
+
+fn load_product_dogfood_checkpoint(
+    path: &Path,
+    expected_identity: &ProductDogfoodCheckpointIdentity,
+    fixtures: &[ProductDogfoodFixture],
+) -> Result<LoadedProductDogfoodCheckpoint, String> {
+    let bytes = fs::read(path).map_err(|error| format!("{}: {error}", path.display()))?;
+    let checkpoint: ProductDogfoodCheckpoint = serde_json::from_slice(&bytes)
+        .map_err(|error| format!("invalid checkpoint {}: {error}", path.display()))?;
+    if checkpoint.checkpoint_version != PRODUCT_DOGFOOD_CHECKPOINT_VERSION {
+        return Err(format!(
+            "checkpoint version mismatch: expected {}, got {}",
+            PRODUCT_DOGFOOD_CHECKPOINT_VERSION, checkpoint.checkpoint_version
+        ));
+    }
+    if &checkpoint.identity != expected_identity {
+        return Err("checkpoint identity mismatch; refusing to reuse provider observations".into());
+    }
+    if checkpoint.completed_cases.len() > fixtures.len() {
+        return Err(
+            "checkpoint contains more completed cases than the selected fixture set".into(),
+        );
+    }
+    for (index, case) in checkpoint.completed_cases.iter().enumerate() {
+        if fixtures.get(index).map(|fixture| fixture.id.as_str()) != Some(case.id.as_str()) {
+            return Err(format!(
+                "checkpoint completed-case sequence mismatch at index {index}; refusing resume"
+            ));
+        }
+    }
+    if let Some(active) = checkpoint.active_case.as_ref() {
+        let expected_index = checkpoint.completed_cases.len();
+        let expected_fixture = fixtures
+            .get(expected_index)
+            .map(|fixture| fixture.id.as_str());
+        if active.index != expected_index || expected_fixture != Some(active.fixture_id.as_str()) {
+            return Err("checkpoint active case does not follow completed-case prefix".into());
+        }
+        eprintln!(
+            "[product-dogfood] checkpoint active case {} was incomplete and will be re-executed",
+            active.fixture_id
+        );
+    }
+    if checkpoint.status == ProductDogfoodCheckpointStatus::Completed
+        && checkpoint.completed_cases.len() != fixtures.len()
+    {
+        return Err("completed checkpoint does not contain the full fixture set".into());
+    }
+    Ok(LoadedProductDogfoodCheckpoint {
+        completed_cases: checkpoint.completed_cases,
+        operational_failures: checkpoint.operational_failures,
+    })
+}
+
+fn write_product_dogfood_checkpoint(
+    path: &Path,
+    identity: &ProductDogfoodCheckpointIdentity,
+    completed_cases: &[CaseResult],
+    operational_failures: &[ProductDogfoodOperationalFailure],
+    status: ProductDogfoodCheckpointStatus,
+    active_case: Option<ProductDogfoodActiveCase>,
+) -> Result<(), String> {
+    if let Some(parent) = path
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+    {
+        fs::create_dir_all(parent)
+            .map_err(|error| format!("checkpoint directory {}: {error}", parent.display()))?;
+    }
+    let checkpoint = ProductDogfoodCheckpoint {
+        checkpoint_version: PRODUCT_DOGFOOD_CHECKPOINT_VERSION.to_string(),
+        status,
+        identity: identity.clone(),
+        active_case,
+        completed_cases: completed_cases.to_vec(),
+        operational_failures: operational_failures.to_vec(),
+    };
+    let bytes = serde_json::to_vec_pretty(&checkpoint)
+        .map_err(|error| format!("serialize checkpoint: {error}"))?;
+    let file_name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or_else(|| format!("invalid checkpoint path: {}", path.display()))?;
+    let temporary = path.with_file_name(format!(".{file_name}.tmp"));
+    fs::write(&temporary, bytes)
+        .map_err(|error| format!("write checkpoint {}: {error}", temporary.display()))?;
+    match fs::rename(&temporary, path) {
+        Ok(()) => Ok(()),
+        Err(error) if path.exists() => {
+            fs::remove_file(path).map_err(|remove| {
+                format!(
+                    "replace checkpoint {}: {error}; remove failed: {remove}",
+                    path.display()
+                )
+            })?;
+            fs::rename(&temporary, path)
+                .map_err(|rename| format!("commit checkpoint {}: {rename}", path.display()))
+        }
+        Err(error) => Err(format!("commit checkpoint {}: {error}", path.display())),
+    }
+}
+
 fn load_fixtures(directory: &PathBuf) -> Result<Vec<ProductDogfoodFixture>, String> {
     if !directory.is_dir() {
         return Err(format!(
@@ -1470,7 +1869,12 @@ fn load_fixtures(directory: &PathBuf) -> Result<Vec<ProductDogfoodFixture>, Stri
         .collect()
 }
 
-fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> ProductDogfoodReport {
+fn aggregate(
+    provider: Provider,
+    model: &str,
+    results: Vec<CaseResult>,
+    execution: ProductDogfoodExecutionObservation,
+) -> ProductDogfoodReport {
     let classes = results
         .iter()
         .map(|result| result.workload_class.clone())
@@ -1511,7 +1915,7 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
         .map(|result| result.harness_current_safety.total_latency_ms)
         .sum();
     ProductDogfoodReport {
-        schema_version: "reason-product-dogfood-v9",
+        schema_version: PRODUCT_DOGFOOD_REPORT_SCHEMA,
         comparison_contract: PRODUCT_DOGFOOD_COMPARISON_CONTRACT_ID,
         provider: provider.name(),
         model: model.into(),
@@ -1548,6 +1952,7 @@ fn aggregate(provider: Provider, model: &str, results: Vec<CaseResult>) -> Produ
                 harness_latency_ms as f64,
             ),
         },
+        execution,
         user_comprehension: "not_automated_manual_review_required",
         results,
     }
@@ -2270,5 +2675,343 @@ mod tests {
         assert_eq!(harness.arm.correct_abstentions, 1);
         assert_eq!(harness.arm.false_abstentions, 0);
         assert_eq!(harness.arm.target.false_target_abstentions, 1);
+    }
+
+    fn synthetic_checkpoint_fixture(id: &str) -> ProductDogfoodFixture {
+        ProductDogfoodFixture {
+            id: id.into(),
+            capability_family: "checkpoint".into(),
+            workload_class: "checkpoint".into(),
+            task: "checkpoint".into(),
+            input: HarnessInput {
+                task: "checkpoint".into(),
+                hypotheses: vec![Proposition {
+                    key: format!("target.{id}"),
+                    value: "true".into(),
+                }],
+                ..Default::default()
+            },
+            expected_outcome: ExpectedOutcome::Unknown,
+            resolver_facts: BTreeMap::new(),
+        }
+    }
+
+    fn synthetic_checkpoint_harness() -> HarnessArmResult {
+        HarnessArmResult {
+            safety_runtime: AnswerSafetyProfile::VerifiedTargetV1.identity(),
+            exposed_text: None,
+            initial_verdict: Verdict::Unknown,
+            final_verdict: Verdict::Unknown,
+            finalization_status: FinalizationStatus::Unresolved,
+            factual_claims: 0,
+            factual_claim_coverage: 1.0,
+            unsupported_exposed_grounded_claims: 0,
+            abstained: true,
+            exposed_factual_claims: vec![],
+            target: empty_target(),
+            resolution_attempts: 0,
+            resolution_succeeded: false,
+            canonical_recovery_used: false,
+            target_scoped_partial_used: false,
+            calls: vec![],
+            safety_observations: vec![],
+            failure_provenance: vec![],
+            total_usage: ModelUsage::default(),
+            total_latency_ms: 0,
+        }
+    }
+
+    fn synthetic_checkpoint_case(id: &str) -> CaseResult {
+        CaseResult {
+            id: id.into(),
+            capability_family: "checkpoint".into(),
+            workload_class: "checkpoint".into(),
+            expected_outcome: ExpectedOutcome::Unknown,
+            raw: RawArmResult {
+                exposed_text: "unknown".into(),
+                factual_claims: 0,
+                grounded_claims: 0,
+                unsupported_grounded_claims: 0,
+                abstained: true,
+                exposed_factual_claims: vec![],
+                target: empty_target(),
+                call: CallObservation {
+                    model: "test-model".into(),
+                    usage: ModelUsage::default(),
+                    latency_ms: 0,
+                    attempts: 1,
+                },
+            },
+            shared_harness: SharedHarnessObservation {
+                candidate_call: CallObservation {
+                    model: "test-model".into(),
+                    usage: ModelUsage::default(),
+                    latency_ms: 0,
+                    attempts: 1,
+                },
+                initial_render: FinalAnswerCandidate::default(),
+                initial_render_call: CallObservation {
+                    model: "test-model".into(),
+                    usage: ModelUsage::default(),
+                    latency_ms: 0,
+                    attempts: 1,
+                },
+            },
+            harness: synthetic_checkpoint_harness(),
+            harness_current_safety: synthetic_checkpoint_harness(),
+        }
+    }
+
+    fn synthetic_checkpoint_identity(tag: &str) -> ProductDogfoodCheckpointIdentity {
+        ProductDogfoodCheckpointIdentity {
+            fixture_set: "fixtures/test".into(),
+            fixture_fingerprint: format!("fnv1a64:{tag}"),
+            sha256_manifest: Some(format!("sha256-{tag}")),
+            provider: "google".into(),
+            model: "test-model".into(),
+            seed: Some(10),
+            max_tokens: 128,
+            max_resolution_attempts: 3,
+            comparison_contract: PRODUCT_DOGFOOD_COMPARISON_CONTRACT_ID.into(),
+            answer_safety_identity: "safety".into(),
+            semantic_candidate_id: PRODUCT_DOGFOOD_SUCCESSOR_CANDIDATE_ID.into(),
+            report_schema: PRODUCT_DOGFOOD_REPORT_SCHEMA.into(),
+            executable_fingerprint: "fnv1a64:binary".into(),
+        }
+    }
+
+    fn temporary_checkpoint_path(name: &str) -> PathBuf {
+        let nonce = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        std::env::temp_dir().join(format!(
+            "reasoning-harness-{name}-{}-{nonce}.json",
+            std::process::id()
+        ))
+    }
+
+    #[test]
+    fn checkpoint_resume_reuses_only_completed_prefix_and_reexecutes_active_case() {
+        let path = temporary_checkpoint_path("resume-prefix");
+        let identity = synthetic_checkpoint_identity("same");
+        let fixtures = vec![
+            synthetic_checkpoint_fixture("a"),
+            synthetic_checkpoint_fixture("b"),
+        ];
+        write_product_dogfood_checkpoint(
+            &path,
+            &identity,
+            &[synthetic_checkpoint_case("a")],
+            &[],
+            ProductDogfoodCheckpointStatus::InProgress,
+            Some(ProductDogfoodActiveCase {
+                index: 1,
+                fixture_id: "b".into(),
+                seed: Some(11),
+            }),
+        )
+        .unwrap();
+
+        let resumed = load_product_dogfood_checkpoint(&path, &identity, &fixtures).unwrap();
+        assert_eq!(resumed.completed_cases.len(), 1);
+        assert_eq!(resumed.completed_cases[0].id, "a");
+        fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn checkpoint_identity_mismatch_refuses_observation_reuse() {
+        let path = temporary_checkpoint_path("identity-mismatch");
+        let stored = synthetic_checkpoint_identity("stored");
+        write_product_dogfood_checkpoint(
+            &path,
+            &stored,
+            &[],
+            &[],
+            ProductDogfoodCheckpointStatus::InProgress,
+            None,
+        )
+        .unwrap();
+        let expected = synthetic_checkpoint_identity("different");
+        let error =
+            load_product_dogfood_checkpoint(&path, &expected, &[synthetic_checkpoint_fixture("a")])
+                .unwrap_err();
+        assert!(error.contains("identity mismatch"));
+        fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn fixture_fingerprint_changes_when_fixture_bytes_change() {
+        let directory = std::env::temp_dir().join(format!(
+            "reasoning-harness-fixture-fingerprint-{}",
+            std::process::id()
+        ));
+        let _ = fs::remove_dir_all(&directory);
+        fs::create_dir_all(&directory).unwrap();
+        let fixture = directory.join("a.json");
+        fs::write(&fixture, br#"{"id":"a","value":1}"#).unwrap();
+        let first = fixture_set_fingerprint(&directory).unwrap();
+        fs::write(&fixture, br#"{"id":"a","value":2}"#).unwrap();
+        let second = fixture_set_fingerprint(&directory).unwrap();
+        assert_ne!(first, second);
+        fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn sixteen_case_resume_starts_at_n_plus_one_and_preserves_semantic_aggregate() {
+        let path = temporary_checkpoint_path("resume-sixteen");
+        let identity = synthetic_checkpoint_identity("sixteen");
+        let fixtures = (0..16)
+            .map(|index| synthetic_checkpoint_fixture(&format!("case-{index:02}")))
+            .collect::<Vec<_>>();
+        let completed = (0..10)
+            .map(|index| synthetic_checkpoint_case(&format!("case-{index:02}")))
+            .collect::<Vec<_>>();
+        write_product_dogfood_checkpoint(
+            &path,
+            &identity,
+            &completed,
+            &[],
+            ProductDogfoodCheckpointStatus::InProgress,
+            Some(ProductDogfoodActiveCase {
+                index: 10,
+                fixture_id: "case-10".into(),
+                seed: Some(20),
+            }),
+        )
+        .unwrap();
+
+        let loaded = load_product_dogfood_checkpoint(&path, &identity, &fixtures).unwrap();
+        assert_eq!(loaded.completed_cases.len(), 10);
+        assert_eq!(loaded.completed_cases.last().unwrap().id, "case-09");
+
+        let uninterrupted = (0..16)
+            .map(|index| synthetic_checkpoint_case(&format!("case-{index:02}")))
+            .collect::<Vec<_>>();
+        let mut resumed = loaded.completed_cases;
+        resumed
+            .extend((10..16).map(|index| synthetic_checkpoint_case(&format!("case-{index:02}"))));
+        assert_eq!(
+            resumed.iter().map(|case| &case.id).collect::<Vec<_>>(),
+            uninterrupted
+                .iter()
+                .map(|case| &case.id)
+                .collect::<Vec<_>>()
+        );
+
+        let clean = serde_json::to_value(aggregate(
+            Provider::Google,
+            "test-model",
+            uninterrupted,
+            ProductDogfoodExecutionObservation {
+                checkpoint_enabled: false,
+                resume_requested: false,
+                reused_completed_cases: 0,
+                newly_executed_cases: 16,
+                operational_failures: vec![],
+            },
+        ))
+        .unwrap();
+        let resumed = serde_json::to_value(aggregate(
+            Provider::Google,
+            "test-model",
+            resumed,
+            ProductDogfoodExecutionObservation {
+                checkpoint_enabled: true,
+                resume_requested: true,
+                reused_completed_cases: 10,
+                newly_executed_cases: 6,
+                operational_failures: vec![],
+            },
+        ))
+        .unwrap();
+        for field in [
+            "raw",
+            "harness",
+            "harness_current_safety",
+            "overhead",
+            "results",
+        ] {
+            assert_eq!(
+                clean[field], resumed[field],
+                "semantic field differs: {field}"
+            );
+        }
+        fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn checkpoint_rejects_model_seed_runtime_and_executable_identity_changes() {
+        let path = temporary_checkpoint_path("identity-fields");
+        let stored = synthetic_checkpoint_identity("identity-fields");
+        let fixtures = vec![synthetic_checkpoint_fixture("a")];
+        write_product_dogfood_checkpoint(
+            &path,
+            &stored,
+            &[],
+            &[],
+            ProductDogfoodCheckpointStatus::InProgress,
+            None,
+        )
+        .unwrap();
+
+        let mut mismatches = Vec::new();
+        let mut model = stored.clone();
+        model.model = "other-model".into();
+        mismatches.push(model);
+        let mut seed = stored.clone();
+        seed.seed = Some(11);
+        mismatches.push(seed);
+        let mut runtime = stored.clone();
+        runtime.answer_safety_identity = "other-safety".into();
+        mismatches.push(runtime);
+        let mut candidate = stored.clone();
+        candidate.semantic_candidate_id = "other-candidate".into();
+        mismatches.push(candidate);
+        let mut executable = stored.clone();
+        executable.executable_fingerprint = "fnv1a64:other-binary".into();
+        mismatches.push(executable);
+
+        for expected in mismatches {
+            let error = load_product_dogfood_checkpoint(&path, &expected, &fixtures).unwrap_err();
+            assert!(error.contains("identity mismatch"));
+        }
+        fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn checkpoint_preserves_operational_failure_history_across_resume() {
+        let path = temporary_checkpoint_path("failure-history");
+        let identity = synthetic_checkpoint_identity("history");
+        let fixtures = vec![synthetic_checkpoint_fixture("a")];
+        let failures = vec![ProductDogfoodOperationalFailure {
+            fixture_index: 0,
+            fixture_id: "a".into(),
+            seed: Some(10),
+            failure_class: "case_execution_error".into(),
+            message: "provider_unavailable: high demand".into(),
+        }];
+        write_product_dogfood_checkpoint(
+            &path,
+            &identity,
+            &[],
+            &failures,
+            ProductDogfoodCheckpointStatus::InProgress,
+            Some(ProductDogfoodActiveCase {
+                index: 0,
+                fixture_id: "a".into(),
+                seed: Some(10),
+            }),
+        )
+        .unwrap();
+
+        let resumed = load_product_dogfood_checkpoint(&path, &identity, &fixtures).unwrap();
+        assert!(resumed.completed_cases.is_empty());
+        assert_eq!(resumed.operational_failures.len(), 1);
+        assert_eq!(
+            resumed.operational_failures[0].message,
+            "provider_unavailable: high demand"
+        );
+        fs::remove_file(path).unwrap();
     }
 }

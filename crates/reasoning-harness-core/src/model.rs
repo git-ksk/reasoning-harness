@@ -43,8 +43,17 @@ pub struct ModelResponse {
     pub text: String,
     pub model: String,
     pub usage: ModelUsage,
+    /// Number of actual provider HTTP attempts consumed to produce this response, including bounded
+    /// adapter-internal retries. Structured-output fallback calls are separate ModelAdapter calls and
+    /// their attempt counts must be summed by the caller.
+    #[serde(default = "default_provider_attempts")]
+    pub provider_attempts: u32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finish_reason: Option<String>,
+}
+
+fn default_provider_attempts() -> u32 {
+    1
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -64,6 +73,8 @@ pub enum ModelErrorKind {
 pub struct ModelError {
     pub kind: ModelErrorKind,
     pub message: String,
+    /// Number of actual provider attempts consumed before this terminal failure.
+    pub provider_attempts: u32,
 }
 
 impl ModelError {
@@ -71,7 +82,13 @@ impl ModelError {
         Self {
             kind,
             message: message.into(),
+            provider_attempts: 1,
         }
+    }
+
+    pub fn with_provider_attempts(mut self, provider_attempts: u32) -> Self {
+        self.provider_attempts = provider_attempts.max(1);
+        self
     }
 }
 

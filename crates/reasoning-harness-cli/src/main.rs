@@ -365,7 +365,7 @@ async fn generate_with_adapter<A: ModelAdapter>(
                 );
             }
             let usage = first.usage.clone();
-            (candidate, first, 1, usage)
+            (candidate, first.clone(), first.provider_attempts, usage)
         }
         Err(first_error) => {
             let fallback = build_candidate_json_fallback_request(input, Some(max_tokens), seed)
@@ -390,6 +390,9 @@ async fn generate_with_adapter<A: ModelAdapter>(
                             first.finish_reason.as_deref().unwrap_or("unknown"),
                             first.text.len(),
                         ),
+                    )
+                    .with_provider_attempts(
+                        first.provider_attempts.saturating_add(error.provider_attempts),
                     ),
                 )
             })?;
@@ -417,7 +420,10 @@ async fn generate_with_adapter<A: ModelAdapter>(
                 );
             }
             let usage = add_usage(&first.usage, &second.usage);
-            (candidate, second, 2, usage)
+            let provider_attempts = first
+                .provider_attempts
+                .saturating_add(second.provider_attempts);
+            (candidate, second, provider_attempts, usage)
         }
     };
     let latency_ms = started.elapsed().as_millis();
@@ -479,7 +485,7 @@ async fn render_final_with_adapter<A: ModelAdapter>(
                 );
             }
             let usage = first.usage.clone();
-            (answer, first, 1, usage)
+            (answer, first.clone(), first.provider_attempts, usage)
         }
         Err(first_error) => {
             let fallback = build_final_answer_json_fallback_request(
@@ -509,6 +515,9 @@ async fn render_final_with_adapter<A: ModelAdapter>(
                             first.finish_reason.as_deref().unwrap_or("unknown"),
                             first.text.len(),
                         ),
+                    )
+                    .with_provider_attempts(
+                        first.provider_attempts.saturating_add(error.provider_attempts),
                     ),
                 )
             })?;
@@ -533,7 +542,10 @@ async fn render_final_with_adapter<A: ModelAdapter>(
                 );
             }
             let usage = add_usage(&first.usage, &second.usage);
-            (answer, second, 2, usage)
+            let provider_attempts = first
+                .provider_attempts
+                .saturating_add(second.provider_attempts);
+            (answer, second, provider_attempts, usage)
         }
     };
     Ok((
@@ -575,6 +587,7 @@ struct GenerationFailure {
     provider: &'static str,
     model: String,
     latency_ms: u128,
+    provider_attempts: u32,
     failure_class: &'static str,
     message: String,
 }
@@ -589,6 +602,7 @@ fn generation_failure(
         provider,
         model: requested_model.to_string(),
         latency_ms: started.elapsed().as_millis(),
+        provider_attempts: error.provider_attempts,
         failure_class: model_error_class(error.kind),
         message: error.to_string(),
     }
@@ -4438,6 +4452,7 @@ mod candidate_json_tests {
                 provider: "nvidia",
                 model: "test-model".into(),
                 latency_ms: 12,
+                provider_attempts: 1,
                 failure_class: "rate_limit",
                 message: "NVIDIA API returned HTTP 429".into(),
             }),
@@ -4692,6 +4707,7 @@ mod candidate_json_tests {
                     provider: "test",
                     model: "test-model".into(),
                     latency_ms: 400,
+                    provider_attempts: 1,
                     failure_class: "timeout",
                     message: "timed out".into(),
                 }),
