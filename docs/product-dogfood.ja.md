@@ -21,7 +21,7 @@ v4の比較契約は`shared-candidate-initial-render-v1`です。2つのHarness 
 
 それぞれに、最初からground可能なcase、意図的に根拠不足なcase、bounded resolutionで初めてground可能になるcaseがあります。research calibration/holdoutとは混ぜません。
 
-`reason-product-dogfood-v9` reportでは次を測ります。
+`reason-product-dogfood-v10` reportでは次を測ります。
 
 - unsupported grounded assertionの件数/率
 - correct abstention / missed insufficiency
@@ -31,8 +31,10 @@ v4の比較契約は`shared-candidate-initial-render-v1`です。2つのHarness 
 - 3 armそれぞれのtoken/latencyと、D3/sufficiency追加分のoverhead
 - successor armのanswer-safety runtime identityとtargetごとのsafety observation
 - Harness armのtargetごとのfailure provenance（exact candidate/verification/resolution/render/finalization state、deterministic recovery eligibility、expected-grounded miss class）
+- adapter内部bounded retryとstructured-output fallbackを含む、実際のprovider HTTP attempt数
+- case-level checkpoint/resumeのexecution telemetry（checkpoint有効化、resume要求、再利用済みcase、新規実行case、保持されたoperational failure履歴）
 
-v9ではv8のtarget-scoped qualified finalizationを維持しつつ、説明的なcurrent answer-safety profileを評価します。artifact-global `Unknown`ではglobal verdictを昇格せず、exact authorized targetだけをdeterministicな`QualifiedPartialAnswer`として残せます。#160 successorでは、同じexact requested targetがすでにauthorizedなのにrendererだけが`uncertain`へ弱めた場合も回収します。`Unknown`ならtarget-only `QualifiedPartialAnswer`のまま、`Accept`なら`GroundedAnswer`へ戻せますが、renderer mode自体はauthorityではありません。#164 successorでは別のさらに厳しい`Reject` laneを追加します。targetはevidence-boundなdirect trusted `Supported` receipt必須で、problematic non-target stateがすべてtypedかつ構造的に分離されている場合だけtarget-only `QualifiedPartialAnswer`を許可します。same-key blocker、target-local contradiction/qualification/hard adversarial finding、shared evidence、inference/dependency pathがあれば不可で、contradicted blocker側にもevidence-bound trusted contradiction receiptが必要です。artifact-global `Reject`自体は変更しません。`canonical_recovery_cases`と`target_scoped_partial_cases`は引き続き分離します。
+v10はv9のsemantic/finalization指標を変更せず、operational reliability telemetryだけ追加します。v9の挙動ではv8のtarget-scoped qualified finalizationを維持しつつ、説明的なcurrent answer-safety profileを評価します。artifact-global `Unknown`ではglobal verdictを昇格せず、exact authorized targetだけをdeterministicな`QualifiedPartialAnswer`として残せます。#160 successorでは、同じexact requested targetがすでにauthorizedなのにrendererだけが`uncertain`へ弱めた場合も回収します。`Unknown`ならtarget-only `QualifiedPartialAnswer`のまま、`Accept`なら`GroundedAnswer`へ戻せますが、renderer mode自体はauthorityではありません。#164 successorでは別のさらに厳しい`Reject` laneを追加します。targetはevidence-boundなdirect trusted `Supported` receipt必須で、problematic non-target stateがすべてtypedかつ構造的に分離されている場合だけtarget-only `QualifiedPartialAnswer`を許可します。same-key blocker、target-local contradiction/qualification/hard adversarial finding、shared evidence、inference/dependency pathがあれば不可で、contradicted blocker側にもevidence-bound trusted contradiction receiptが必要です。artifact-global `Reject`自体は変更しません。`canonical_recovery_cases`と`target_scoped_partial_cases`は引き続き分離します。
 
 v5 reportではv2のcase-level abstention指標とv3のtarget-level指標をそのまま維持し、v4のshared-render比較契約も維持したまま、NL-5で必要なqualified/unknown出力のmanual comprehension reviewを行えるよう各armの実際のユーザー表示`exposed_text`を保存します。target-level指標はfixtureのHarness-owned `input.hypotheses`だけをtask targetとして使います。supportedなnon-target factを返すsafe partial answerは、task targetを断言していなければtarget abstention成功として別集計します。grounded-target coverage / missed target insufficiency / false target abstention / safe-partial retentionを分離し、最初のv2 pilot結果は書き換えません。
 
@@ -45,8 +47,13 @@ cargo run -p reasoning-harness-cli --bin reason-product-dogfood -- \
   --provider mistral \
   --model ministral-8b-latest \
   --fixtures fixtures/product-dogfood-v1 \
+  --checkpoint /tmp/reason-product-dogfood.checkpoint.json \
   --output /tmp/reason-product-dogfood.json
 ```
+
+長いprovider-backed runでは`--checkpoint`を使うと、**完全に完了したcaseだけ**をatomicに永続化します。case Nの途中で止まった場合、active case自体は監査用に残しますが再利用せず、まったく同じ引数で`--resume`を付けて再実行するとcase Nを最初からやり直します。resumeはfixture path/byte fingerprint、隣接するSHA-256 freeze manifest、provider/model、seed、max-token/bounded-resolution設定、comparison contract、answer-safety identity、semantic successor candidate identity、report schema、executable fingerprintがすべてexact一致する場合だけ許可し、どれかが違えば観測結果の再利用を拒否します。
+
+checkpointにはtyped evaluation/report observationだけを保存し、provider credentialやhidden model reasoningは保存しません。途中caseを失敗させたprovider/protocol errorは後のresumeが成功しても`execution.operational_failures`へ残り、semantic abstentionへ変換したり履歴から消したりしません。`--resume`なしのclean runは引き続きreplication用に利用できます。
 
 現在のanswer-safety runtimeは`verified-target-answer-gate-v1`で、`d3-sufficiency-answer-gate-v2`へ直接rollbackできます。claim-local requirement policyとD3 preconditionは維持し、exact targetがtrusted Supported verification済み・target qualification findingなし・hard target adversarial findingなしなら、冗長なmodel sufficiency呼び出しを行わずbaselineを維持します。product sufficiency判定を個別typed propositionへ限定し、Supported/Known claimへ既にbindingされたevidenceを優先します。broader taskはcontextであり、安全なpartial fact一つ一つにtask全体の完答を要求しません。旧`d3-sufficiency-answer-gate-v1` / `generic-answer-sufficiency-requirements-v1`はrollbackとして実行可能です。どちらもfrozen holdout corpusそのものではなく、NL-5でproduct wiringを別評価します。
 
@@ -84,4 +91,4 @@ NVIDIA Hosted NIM `nvidia/nemotron-3.5-lightning-30b-a3b`も同条件でActions 
 
 これは対象workload上のcompatibility/utility matrixであり、一般的なmodel leaderboardではありません。少なくとも今回のHarness用途ではparameter数だけで適性は予測できず、strict structured-output adherence、candidate materialization、final rendering、bounded resolutionの規律が大きく効いています。
 
-GitHub Actionsのmanual `product-dogfood` workflowはrepository secretを使い、JSON reportをartifactとして保存します。baseline / D3+sufficiency両Harness armで外部へ露出するunsupported grounded claimが0であることと、runtime identityをgateします。`sufficient`はauthorityを増やさずno-op、`insufficient` / `mixed`だけがverification・bounded resolution・abstention方向へ作用します。live結果はそのmodel/workload sliceの実測であり、普遍的な正しさの主張ではありません。
+GitHub Actionsのmanual `product-dogfood` workflowはrepository secretを使い、v10 JSON reportとatomic checkpointの両方をartifactとして保存します。baseline / D3+sufficiency両Harness armで外部へ露出するunsupported grounded claimが0であることと、runtime identityをgateします。`sufficient`はauthorityを増やさずno-op、`insufficient` / `mixed`だけがverification・bounded resolution・abstention方向へ作用します。live結果はそのmodel/workload sliceの実測であり、普遍的な正しさの主張ではありません。

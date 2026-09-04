@@ -181,6 +181,7 @@ impl ModelAdapter for StaticAdapter {
                     output_tokens: Some(4),
                     total_tokens: Some(14),
                 },
+                provider_attempts: 1,
                 finish_reason: Some("stop".into()),
             })
         })
@@ -316,6 +317,7 @@ impl ModelAdapter for PreflightAdapter {
                 text,
                 model: "preflight-model".into(),
                 usage: ModelUsage::default(),
+                provider_attempts: 1,
                 finish_reason: Some(finish_reason),
             })
         })
@@ -347,6 +349,7 @@ async fn r2_capability_preflight_checks_protocol_not_semantic_correctness() {
                         text,
                         model: "preflight-model".into(),
                         usage: ModelUsage::default(),
+                        provider_attempts: 1,
                         finish_reason: Some("stop".into()),
                     })
                 })
@@ -402,6 +405,7 @@ fn materialization_failure_classification_is_typed() {
         message: "invalid".into(),
         model: "m".into(),
         usage: ModelUsage::default(),
+        provider_attempts: 1,
         finish_reason: Some("max_tokens".into()),
     };
     assert_eq!(

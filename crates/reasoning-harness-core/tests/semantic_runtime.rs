@@ -26,6 +26,7 @@ impl ModelAdapter for DecisionOnlyAdapter {
                 text: r#"{"decision":"finding"}"#.into(),
                 model: "compatible-model".into(),
                 usage: ModelUsage::default(),
+                provider_attempts: 1,
                 finish_reason: Some("stop".into()),
             })
         })
@@ -51,6 +52,7 @@ impl ModelAdapter for BaselineNoFindingAdapter {
                 text: r#"{"decision":"no_finding"}"#.into(),
                 model: "rollback-model".into(),
                 usage: ModelUsage::default(),
+                provider_attempts: 1,
                 finish_reason: Some("stop".into()),
             })
         })
@@ -76,6 +78,7 @@ impl ModelAdapter for ForbiddenBindingAdapter {
                 text: r#"{"decision":"finding","finding":{"kind":"contradiction"}}"#.into(),
                 model: "incompatible-model".into(),
                 usage: ModelUsage::default(),
+                provider_attempts: 1,
                 finish_reason: Some("stop".into()),
             })
         })

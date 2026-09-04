@@ -476,6 +476,7 @@ mod tests {
                     text: format!(r#"{{"decision":"{}"}}"#, self.decision),
                     model: "fixed".into(),
                     usage: ModelUsage::default(),
+                    provider_attempts: 1,
                     finish_reason: Some("stop".into()),
                 })
             })

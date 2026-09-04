@@ -120,11 +120,16 @@ jobs:
             --model "$MODEL" \
             --max-tokens "$MAX_TOKENS" \
             --seed "$SEED" \
+            --checkpoint /tmp/reason-product-dogfood.checkpoint.json \
             --output /tmp/reason-product-dogfood.json \
             > /tmp/reason-product-dogfood.stdout.json
           jq -e '
-            .schema_version == "reason-product-dogfood-v9"
+            .schema_version == "reason-product-dogfood-v10"
             and .comparison_contract == "shared-candidate-initial-render-v1"
+            and .execution.checkpoint_enabled == true
+            and .execution.resume_requested == false
+            and .execution.reused_completed_cases == 0
+            and .execution.newly_executed_cases == .cases
             and ([.results[].raw.exposed_text] | all(type == "string"))
             and ([.results[].harness | ((.finalization_status == "grounded_answer" or .finalization_status == "qualified_partial_answer") == has("exposed_text"))] | all)
             and ([.results[].harness_current_safety | ((.finalization_status == "grounded_answer" or .finalization_status == "qualified_partial_answer") == has("exposed_text"))] | all)
@@ -163,12 +168,14 @@ jobs:
               and .harness_current_safety.arm.target.mean_grounded_target_coverage >= 0.90
             else true end)
           ' /tmp/reason-product-dogfood.json >/dev/null
-          jq '{schema_version, comparison_contract, provider, model, workload_classes, capability_families, capability_case_counts, cases, raw, harness, harness_current_safety, overhead, user_comprehension}' /tmp/reason-product-dogfood.json
+          jq '{schema_version, comparison_contract, provider, model, workload_classes, capability_families, capability_case_counts, cases, raw, harness, harness_current_safety, overhead, execution, user_comprehension}' /tmp/reason-product-dogfood.json
       - name: Preserve dogfood report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: product-dogfood-${{ inputs.fixture_set }}-${{ inputs.provider }}-${{ inputs.model }}
-          path: /tmp/reason-product-dogfood.json
+          path: |
+            /tmp/reason-product-dogfood.json
+            /tmp/reason-product-dogfood.checkpoint.json
           if-no-files-found: error
           retention-days: 30

@@ -313,9 +313,14 @@ pub async fn run_model_backed_evidence_sufficiency(
 ) -> Result<EvidenceSufficiencyObservation, EvidenceSufficiencyModelError> {
     let primary_request =
         build_evidence_sufficiency_model_request(request, artifact, max_tokens, random_seed)?;
-    let primary = match adapter.generate(primary_request).await {
-        Ok(response) => Some(response),
-        Err(error) if error.kind == crate::ModelErrorKind::UnsupportedCapability => None,
+    let (primary, primary_provider_attempts) = match adapter.generate(primary_request).await {
+        Ok(response) => {
+            let attempts = response.provider_attempts;
+            (Some(response), attempts)
+        }
+        Err(error) if error.kind == crate::ModelErrorKind::UnsupportedCapability => {
+            (None, error.provider_attempts)
+        }
         Err(error) => return Err(error.into()),
     };
 
@@ -326,7 +331,7 @@ pub async fn run_model_backed_evidence_sufficiency(
             decision: output.decision,
             model: response.model.clone(),
             usage: response.usage.clone(),
-            provider_attempts: 1,
+            provider_attempts: response.provider_attempts,
             fallback_reason: EvidenceSufficiencyFallbackReason::NotNeeded,
             finish_reason: response.finish_reason.clone(),
         });
@@ -363,7 +368,7 @@ pub async fn run_model_backed_evidence_sufficiency(
         decision: output.decision,
         model: fallback.model,
         usage,
-        provider_attempts: if primary.is_some() { 2 } else { 1 },
+        provider_attempts: primary_provider_attempts.saturating_add(fallback.provider_attempts),
         fallback_reason,
         finish_reason: fallback.finish_reason,
     })

@@ -109,6 +109,7 @@ impl ModelAdapter for SchemaAdapter {
                     output_tokens: Some(3),
                     total_tokens: Some(13),
                 },
+                provider_attempts: 1,
                 finish_reason: Some("stop".into()),
             })
         })
@@ -157,6 +158,7 @@ impl ModelAdapter for FallbackAdapter {
                         output_tokens: Some(3),
                         total_tokens: Some(15),
                     },
+                    provider_attempts: 1,
                     finish_reason: Some("stop".into()),
                 }),
                 ModelOutputFormat::Text => panic!("unexpected text mode"),
@@ -178,7 +180,7 @@ async fn unsupported_schema_mode_falls_back_without_changing_the_contract() {
     .await
     .unwrap();
     assert_eq!(observation.decision, EvidenceSufficiencyLabel::Mixed);
-    assert_eq!(observation.provider_attempts, 1);
+    assert_eq!(observation.provider_attempts, 2);
     assert_eq!(
         observation.fallback_reason,
         EvidenceSufficiencyFallbackReason::PrimaryJsonSchemaUnsupported
@@ -197,6 +199,7 @@ impl ModelAdapter for InvalidAdapter {
                 text: r#"{"decision":"sufficient","verdict":"accept"}"#.into(),
                 model: "invalid-model".into(),
                 usage: ModelUsage::default(),
+                provider_attempts: 1,
                 finish_reason: Some("stop".into()),
             })
         })

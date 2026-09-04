@@ -76,6 +76,7 @@ fn response(text: &str, input: u64, output: u64) -> Result<ModelResponse, ModelE
             output_tokens: Some(output),
             total_tokens: Some(input + output),
         },
+        provider_attempts: 1,
         finish_reason: Some("stop".into()),
     })
 }

@@ -277,7 +277,7 @@ pub async fn run_semantic_runtime(
                 decidability: Some(decidability),
                 model: base.model,
                 usage: base.usage,
-                provider_attempts: 1,
+                provider_attempts: base.provider_attempts,
                 fallback_reason: None,
                 finish_reason: base.finish_reason,
             })
