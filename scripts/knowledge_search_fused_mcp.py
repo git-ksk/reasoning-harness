@@ -190,8 +190,12 @@ def main():
     value_kind = arguments.get("value_kind")
     fact_key = arguments.get("fact_key")
     language = arguments.get("language", "en")
+    allow_title_retry = arguments.get("allow_title_retry", True)
     if not all(isinstance(value, str) and value for value in [query, property_id, value_kind, fact_key, language]):
         respond(request_id, error={"code": -32602, "message": "query/property_id/value_kind/fact_key/language are required"})
+        return 0
+    if not isinstance(allow_title_retry, bool):
+        respond(request_id, error={"code": -32602, "message": "allow_title_retry must be boolean"})
         return 0
 
     try:
@@ -222,11 +226,10 @@ def main():
         wd_ids = [item.get("id") for item in wd if item.get("id")]
         corroboration = "original_query"
         corroboration_rank = None
-        title_wd_ids = []
 
         if wp_id and wp_id in wd_ids:
             corroboration_rank = wd_ids.index(wp_id) + 1
-        elif wp_id and isinstance(wp_title, str) and wp_title:
+        elif wp_id and isinstance(wp_title, str) and wp_title and allow_title_retry:
             title_wd = wikidata_search(wp_title, language)
             title_wd_ids = [item.get("id") for item in title_wd if item.get("id")]
             if wp_id in title_wd_ids:
@@ -251,6 +254,25 @@ def main():
                     ),
                 ))
                 return 0
+        elif wp_id and isinstance(wp_title, str) and wp_title:
+            observation = (
+                f"cross-source entity disagreement: query={query!r}; wikidata_candidates={wd_ids}; "
+                f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}; fixed_title_retry_disabled=true"
+            )
+            respond(request_id, result=result_payload(
+                observation,
+                {},
+                state(
+                    query,
+                    "entity_disagreement",
+                    wd,
+                    wp,
+                    wikipedia_top_entity=wp_id,
+                    wikipedia_top_title=wp_title,
+                    suggested_query=wp_title,
+                ),
+            ))
+            return 0
         else:
             observation = (
                 f"cross-source entity unresolved: query={query!r}; wikidata_candidates={wd_ids}; "
