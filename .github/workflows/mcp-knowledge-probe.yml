@@ -29,7 +29,11 @@ jobs:
 
       - name: Configure read-only MCP resolver
         run: |
-          cat > /tmp/reason-mcp-wikipedia.json <<'JSON'
+          set -euo pipefail
+          # The current admission contract freezes evaluation time before the live tool call.
+          # Give this probe a bounded acquisition window so we can separately verify the MCP path.
+          EVALUATION_TIME="$(( $(date +%s) + 180 ))"
+          cat > /tmp/reason-mcp-wikipedia.json <<JSON
           {
             "schema_version": "reason-config-v1",
             "run": {
@@ -55,6 +59,7 @@ jobs:
                 "timeout_ms": 15000,
                 "max_response_bytes": 262144,
                 "admission": {
+                  "evaluation_time_unix_seconds": ${EVALUATION_TIME},
                   "authority_ranks": {"primary": 20},
                   "minimum_authority_class": "primary",
                   "sources": {
@@ -82,6 +87,8 @@ jobs:
             --max-resolution-attempts 1 \
             --format json \
             | tee /tmp/reason-mcp-wikipedia-result.json
+          jq -e '.result.resolution_rounds[-1].final_verdict == "accept"' /tmp/reason-mcp-wikipedia-result.json >/dev/null
+          jq -e '.result.resolution_rounds[-1].attempts[0].status == "resolved"' /tmp/reason-mcp-wikipedia-result.json >/dev/null
 
       - name: Summarize probe result
         if: always()
