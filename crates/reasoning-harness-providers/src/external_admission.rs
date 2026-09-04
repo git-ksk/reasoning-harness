@@ -1,5 +1,7 @@
 use std::collections::BTreeMap;
 
+use serde::Serialize;
+
 pub const EXTERNAL_EVIDENCE_ADMISSION_ID: &str = "external_evidence_admission_v1";
 
 use reasoning_harness_core::{
@@ -8,7 +10,7 @@ use reasoning_harness_core::{
     ResolutionTarget, ScopeCoverage, TemporalValidity,
 };
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct ExternalEvidenceSourcePolicy {
     /// Harness-owned authority class assigned to this exact source identity.
     pub authority_class: String,
@@ -18,7 +20,7 @@ pub struct ExternalEvidenceSourcePolicy {
     pub scope: Option<ApplicabilityScope>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct ExternalEvidenceAdmissionConfig {
     pub resolver_name: &'static str,
     pub evaluation_time_unix_seconds: i64,
@@ -31,11 +33,14 @@ pub struct ExternalEvidenceAdmissionConfig {
 #[derive(Debug, Clone)]
 pub struct ExternalEvidenceAdmissionPolicy {
     config: ExternalEvidenceAdmissionConfig,
+    identity: String,
 }
 
 impl ExternalEvidenceAdmissionPolicy {
     pub fn new(config: ExternalEvidenceAdmissionConfig) -> Self {
-        Self { config }
+        let identity =
+            crate::config_identity::stable_config_id(EXTERNAL_EVIDENCE_ADMISSION_ID, &config);
+        Self { config, identity }
     }
 
     pub fn authority_policy(&self) -> &EvidenceAuthorityPolicy {
@@ -56,6 +61,10 @@ impl ExternalEvidenceAdmissionPolicy {
 }
 
 impl EvidenceAdmissionPolicy for ExternalEvidenceAdmissionPolicy {
+    fn identity(&self) -> Option<&str> {
+        Some(&self.identity)
+    }
+
     fn admit(
         &self,
         resolver_name: &str,

@@ -30,7 +30,7 @@ Execution order:
 
 1. #174 external resolver adapter and supported CLI/config wiring — **implemented** with `external_command_v1`;
 2. #175 provenance/freshness/scope/authority admission hardening — **implemented** with `external_evidence_admission_v1`, exact-source allowlisting, normalized acquisition metadata, typed admission rejection, and mandatory ordinary re-verification;
-3. #178 external-resolution budgets, telemetry, secret handling, and typed operational failures — **next**;
+3. #178 external-resolution budgets, telemetry, secret handling, and typed operational failures — **implemented** with typed operational terminals, call/latency/cost telemetry, stable hashed config identities, process timeout, and bounded response size;
 4. #176 read-only MCP resolver adapter;
 5. #177 reference trusted verifier/oracle integration;
 6. #179 non-frozen open-world product dogfood and v0.3.0 acceptance;

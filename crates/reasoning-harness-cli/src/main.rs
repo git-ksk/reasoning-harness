@@ -44,6 +44,7 @@ use reasoning_harness_core::{
     structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{
+    DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS,
     EXTERNAL_COMMAND_RESOLVER_ID, EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver,
     ExternalCommandResolverConfig, ExternalEvidenceAdmissionConfig,
     ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy, GoogleAdapter, MistralAdapter,
@@ -102,6 +103,12 @@ struct NaturalArgs {
         allow_hyphen_values = true
     )]
     resolver_arg: Vec<String>,
+    /// Wall-clock timeout for one external resolver process invocation.
+    #[arg(long, value_name = "MILLISECONDS", requires = "resolver_command")]
+    resolver_timeout_ms: Option<u64>,
+    /// Maximum stdout bytes accepted from one external resolver process.
+    #[arg(long, value_name = "BYTES", requires = "resolver_command")]
+    resolver_max_response_bytes: Option<usize>,
     /// Maximum bounded-resolution attempts for the natural-language path.
     #[arg(long, default_value_t = 3)]
     max_resolution_attempts: usize,
@@ -224,6 +231,10 @@ struct ExternalCommandResolverFileConfig {
     program: String,
     #[serde(default)]
     args: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    timeout_ms: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max_response_bytes: Option<usize>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     admission: Option<ExternalEvidenceAdmissionFileConfig>,
 }
@@ -3883,9 +3894,22 @@ fn resolve_external_command_config(
         if program.as_os_str().is_empty() {
             return Err("--resolver-command requires a non-empty program".into());
         }
+        let timeout_ms = args
+            .resolver_timeout_ms
+            .unwrap_or(DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS);
+        let max_response_bytes = args
+            .resolver_max_response_bytes
+            .unwrap_or(DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES);
+        if timeout_ms == 0 || max_response_bytes == 0 {
+            return Err(
+                "external resolver timeout and max response bytes must be at least 1".into(),
+            );
+        }
         return Ok(Some(ExternalCommandResolverConfig {
             program: program.clone(),
             args: args.resolver_arg.clone(),
+            timeout_ms,
+            max_response_bytes,
         }));
     }
 
@@ -3896,9 +3920,23 @@ fn resolve_external_command_config(
     if program.is_empty() {
         return Err("resolution.external_command.program must be non-empty".into());
     }
+    let timeout_ms = configured
+        .timeout_ms
+        .unwrap_or(DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS);
+    let max_response_bytes = configured
+        .max_response_bytes
+        .unwrap_or(DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES);
+    if timeout_ms == 0 || max_response_bytes == 0 {
+        return Err(
+            "resolution.external_command timeout_ms and max_response_bytes must be at least 1"
+                .into(),
+        );
+    }
     Ok(Some(ExternalCommandResolverConfig {
         program: PathBuf::from(program),
         args: configured.args.clone(),
+        timeout_ms,
+        max_response_bytes,
     }))
 }
 
@@ -4374,6 +4412,8 @@ mod candidate_json_tests {
                     external_command: Some(ExternalCommandResolverFileConfig {
                         program: "resolver-bin".into(),
                         args: vec!["--mode".into(), "safe".into()],
+                        timeout_ms: None,
+                        max_response_bytes: None,
                         admission: None,
                     }),
                 },
@@ -4817,6 +4857,63 @@ mod candidate_json_tests {
             Some(Path::new("resolver-bin"))
         );
         assert_eq!(cli.natural.resolver_arg, vec!["--mode", "safe"]);
+    }
+
+    #[test]
+    fn external_resolver_operational_limits_are_cli_and_config_compatible() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "resolve this target",
+            "--resolver-command",
+            "resolver-bin",
+            "--resolver-timeout-ms",
+            "250",
+            "--resolver-max-response-bytes",
+            "8192",
+        ])
+        .unwrap();
+        let cli_config = resolve_external_command_config(&cli.natural, &LoadedCliConfig::default())
+            .unwrap()
+            .unwrap();
+        assert_eq!(cli_config.timeout_ms, 250);
+        assert_eq!(cli_config.max_response_bytes, 8192);
+
+        let text = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"external_command":{
+            "program":"resolver-bin",
+            "timeout_ms":300,
+            "max_response_bytes":4096
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(text).unwrap(),
+            sources: vec!["explicit"],
+        };
+        let no_cli_override = Cli::try_parse_from(["reason", "resolve this target"]).unwrap();
+        let file_config = resolve_external_command_config(&no_cli_override.natural, &loaded)
+            .unwrap()
+            .unwrap();
+        assert_eq!(file_config.timeout_ms, 300);
+        assert_eq!(file_config.max_response_bytes, 4096);
+    }
+
+    #[test]
+    fn external_resolver_zero_operational_limits_fail_closed() {
+        let text = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"external_command":{
+            "program":"resolver-bin",
+            "timeout_ms":0,
+            "max_response_bytes":4096
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(text).unwrap(),
+            sources: vec!["explicit"],
+        };
+        let cli = Cli::try_parse_from(["reason", "resolve this target"]).unwrap();
+        assert!(resolve_external_command_config(&cli.natural, &loaded).is_err());
     }
 
     #[test]
