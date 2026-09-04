@@ -45,18 +45,18 @@ With the harness:
 
 ## 30-second quickstart
 
-### 1. Install the current v0.2.0 preview
+### 1. Install the current v0.3.0 preview
 
-`v0.2.0` is the current natural-language-first external preview. With Rust 1.88+:
+`v0.3.0` is the current natural-language-first external preview. With Rust 1.88+:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.2.0 --locked reasoning-harness-cli --bin reason
+  --tag v0.3.0 --locked reasoning-harness-cli --bin reason
 
 reason --version
 ```
 
-Standalone archives and `SHA256SUMS` are available from the [v0.2.0 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.2.0). Install from `main` only when you intentionally want unreleased development changes.
+Standalone archives and `SHA256SUMS` are available from the [v0.3.0 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.3.0). Install from `main` only when you intentionally want unreleased development changes.
 
 ### 2. Give it a task and an explicit fact
 
@@ -121,7 +121,7 @@ If trusted support is missing, a qualified answer or `unknown` is expected behav
 
 Structured `HarnessInput` / `ReasoningCandidate` JSON remains available for applications, CI, reproducibility, and offline candidate checking.
 
-For v0.3.0 development on `main`, an external process can also be wired through the existing bounded-resolution boundary with `--resolver-command`. The process cannot mint authority: its wire schema exposes acquisition/revision contributions only. External evidence remains fail-closed unless an explicit source allowlist and Harness-owned freshness/scope/authority policy admits it; admitted evidence still re-enters ordinary qualification and verification. See [External resolver adapters](docs/external-resolvers.md), [Read-only MCP resolver](docs/mcp-resolver.md), and [Trusted verifier](docs/trusted-verifier.md).
+In v0.3.0, an external process can be wired through the existing bounded-resolution boundary with `--resolver-command`. The process cannot mint authority: its wire schema exposes acquisition/revision contributions only. External evidence remains fail-closed unless an explicit source allowlist and Harness-owned freshness/scope/authority policy admits it; admitted evidence still re-enters ordinary qualification and verification. See [External resolver adapters](docs/external-resolvers.md), [Read-only MCP resolver](docs/mcp-resolver.md), and [Trusted verifier](docs/trusted-verifier.md).
 
 External agents can optionally call the Harness through the Rust-only `reason-mcp` product adapter. This is the opposite direction from the read-only MCP resolver: `reason-mcp` delegates selected calls back to the native `reason` runtime and does not create a second correctness implementation. See [MCP product surface](docs/mcp-product-surface.md).
 
@@ -298,7 +298,7 @@ Deterministic oracles such as tests, schemas, compilers, databases, policy engin
 
 ## Current capabilities
 
-The current `v0.2.0` external preview includes the capabilities below. `main` may move ahead of the tagged release; use the tag when you need a reproducible product snapshot.
+The current `v0.3.0` external preview includes the capabilities below. `main` may move ahead of the tagged release; use the tag when you need a reproducible product snapshot.
 
 - typed `HarnessInput`, `ReasoningCandidate`, and `ReasoningArtifact` contracts;
 - evidence binding and deterministic provenance/reference validation;
@@ -310,7 +310,10 @@ The current `v0.2.0` external preview includes the capabilities below. `main` ma
 - current semantic runtime with an explicit rollback profile; exact compatibility IDs remain documented for reproducibility;
 - Mistral, Google, and NVIDIA provider adapters outside the correctness authority boundary;
 - versioned JSON product envelopes, schema-backed layered config, stdin support, and typed failure classes;
-- credential-free product smoke on Linux x64, macOS Apple Silicon/Intel, and Windows x64.
+- credential-free product smoke on Linux x64, macOS Apple Silicon/Intel, and Windows x64;
+- bounded external command resolution with fail-closed provenance/freshness/scope/authority admission, typed operational budgets/telemetry, and replay-safe records;
+- allowlisted read-only MCP acquisition and a separate trusted deterministic command-verifier lane;
+- optional Rust-only `reason-mcp` product adapter that delegates closed operations to the native `reason` runtime without becoming a correctness boundary.
 - recorded product dogfood across Ministral 3B/8B/14B, Mistral Small, Gemma 4 31B, and Gemini 3.1/3.5 Flash-Lite; Gemma 4 26B A4B and Nemotron 3.5 Lightning remain protocol-incomplete on this product workload.
 
 See the [CLI guide](docs/cli.md) for the full invocation contract, the [Japanese CLI guide](docs/cli.ja.md), the [terminology guide](docs/terminology.md), and [support policy](docs/support.md) for v0.x compatibility boundaries.
@@ -331,7 +334,7 @@ The research question behind the project is:
 
 > Can a small or inexpensive model become materially more reliable when its reasoning is forced through typed intermediate state, evidence binding, explicit uncertainty, adversarial passes, deterministic acceptance gates, and bounded resolution/re-verification before finalization?
 
-The active capability milestone is **v0.3.0 — External Evidence & Resolution** (#173). The non-frozen external-resolution acceptance gate is documented in [v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.md).
+The **v0.3.0 — External Evidence & Resolution** capability milestone (#173) is complete and released. The non-frozen external-resolution acceptance gate is documented in [v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.md).
 
 The milestone goal is to identify missing support, acquire or verify additional evidence through real external adapters, re-run the same authority boundaries, and refuse to fabricate completion when sufficient support cannot be established. Read-only MCP acquisition is one adapter path (#176), not a new correctness boundary.
 

@@ -9,18 +9,18 @@ For the execution/trust model behind `--candidate` versus `--provider`, includin
 
 ## Installation
 
-### Current external preview (`v0.2.0`)
+### Current external preview (`v0.3.0`)
 
 The natural-language-first path is included in the current tagged preview. With Rust 1.88+:
 
 ```bash
-cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.2.0 --locked reasoning-harness-cli --bin reason
+cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.3.0 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-This installs only the supported `reason` product binary, not the research binaries. Standalone `v0.2.0` archives are also published for Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64, with `SHA256SUMS`. Use `main` only for intentionally unreleased development snapshots.
+This installs only the supported `reason` product binary, not the research binaries. Standalone `v0.3.0` archives are also published for Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64, with `SHA256SUMS`. Use `main` only for intentionally unreleased development snapshots.
 
-`v0.2.0` remains an external preview under the v0.x support policy even though the documented v1.0 readiness gate has been satisfied. The version number is a product/distribution coordinate; it does not create a new frozen research generation.
+`v0.3.0` remains an external preview under the v0.x support policy even though the documented v1.0 readiness gate has been satisfied. The version number is a product/distribution coordinate; it does not create a new frozen research generation.
 
 ## Natural-language AI path
 
@@ -52,7 +52,7 @@ cat error.log | reason "Determine whether the database is the root cause" \
 
 If the context does not contain trusted structured support, the safe result may remain qualified/unknown. This is intentional. `--file` is not a shortcut that promotes document prose into verification authority.
 
-`main` carries the v0.3.0 external resolver lane from #174/#175. `--resolver-command PROGRAM` launches one explicitly configured executable without shell interpolation and exchanges `reason-external-resolver-request-v1` / `reason-external-resolver-response-v1` JSON over stdio. The response can contain acquired evidence or a candidate revision, but cannot contain trusted metadata, verification receipts, verdicts, or final prose. External evidence remains fail-closed unless `resolution.external_command.admission` explicitly allowlists its source and supplies Harness-owned freshness/scope/authority policy; resolver-reported acquisition metadata cannot self-elevate. Admission rejection reasons are typed on resolution-attempt telemetry, and admitted evidence still re-enters ordinary qualification and verification. #178 also adds process timeout/response-size bounds, typed operational terminal states, actual call/latency/optional cost telemetry, and hashed adapter/admission config identities. The command adapter does not generically retry authorization/policy/protocol failures. See [External resolver adapters](external-resolvers.md). A separately configured `resolution.mcp_readonly` lane uses an allowlisted MCP 2026-07-28 stdio `tools/call` as the same acquisition-only boundary; see [Read-only MCP resolver](mcp-resolver.md). An optional `resolution.trusted_command` lane provides explicitly trusted deterministic verification; see [Trusted verifier](trusted-verifier.md).
+`v0.3.0` includes the external resolver lane from #174/#175. `--resolver-command PROGRAM` launches one explicitly configured executable without shell interpolation and exchanges `reason-external-resolver-request-v1` / `reason-external-resolver-response-v1` JSON over stdio. The response can contain acquired evidence or a candidate revision, but cannot contain trusted metadata, verification receipts, verdicts, or final prose. External evidence remains fail-closed unless `resolution.external_command.admission` explicitly allowlists its source and supplies Harness-owned freshness/scope/authority policy; resolver-reported acquisition metadata cannot self-elevate. Admission rejection reasons are typed on resolution-attempt telemetry, and admitted evidence still re-enters ordinary qualification and verification. #178 also adds process timeout/response-size bounds, typed operational terminal states, actual call/latency/optional cost telemetry, and hashed adapter/admission config identities. The command adapter does not generically retry authorization/policy/protocol failures. See [External resolver adapters](external-resolvers.md). A separately configured `resolution.mcp_readonly` lane uses an allowlisted MCP 2026-07-28 stdio `tools/call` as the same acquisition-only boundary; see [Read-only MCP resolver](mcp-resolver.md). An optional `resolution.trusted_command` lane provides explicitly trusted deterministic verification; see [Trusted verifier](trusted-verifier.md).
 
 The final model-rendered answer is also untrusted until `finalize_answer` checks factual-claim coverage. Any newly introduced factual proposition is blocked; when an explicitly configured resolver can verify it, the proposition may re-enter bounded resolution and then be rendered again. If the artifact already authorizes an original requested hypothesis as exact `Known`/`Supported`, deterministic recovery may correct renderer-only omission, exact-key drift, or an exact-target downgrade from `grounded` to `uncertain`. The downgrade path is entered only when the renderer emitted that same exact requested proposition as `uncertain`; authority still comes exclusively from artifact state. Under artifact-global `Unknown`, recovery remains target-only `QualifiedPartialAnswer`. Under artifact-global `Reject`, the global verdict is never overridden, but the successor may expose a target-only `QualifiedPartialAnswer` if the target has direct evidence-bound trusted `Supported` verification and the typed artifact proves structural isolation from every problematic non-target claim (different key, typed blocker, no shared evidence, no inference/dependency path, and no target-local contradiction/qualification/hard adversarial signal). Any ambiguous dependency fails closed. No recovery parses prose, fuzzy-matches proposition keys, creates new authority, or skips the normal answer-safety gate.
 

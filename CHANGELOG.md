@@ -6,6 +6,22 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-04
+
+Third external-preview capability release. v0.3.0 adds bounded external evidence and resolution without changing the research generation, semantic runtime, or answer-safety identity.
+
+### Added
+
+- `external_command_v1` plus fail-closed `external_evidence_admission_v1` for Harness-owned source, freshness, scope, and authority policy.
+- External-resolution budgets, typed operational failures, telemetry, and replay-safe records.
+- Read-only `mcp_readonly_v1`, separate `trusted_command_verifier_v1`, and optional Rust-only `reason-mcp` native-runtime delegation.
+- `external-resolution-acceptance-v1`; release acceptance kept unsupported grounded claims and missed target insufficiency at `0`, with two safe recoveries and a separate live AWS RSS `Unknown -> Accept` smoke.
+
+### Preserved
+
+- Frozen Stage-C/RSD2/historical holdouts remain unchanged.
+- Semantic runtime remains `semantic-decidability-d3-v1`; answer safety remains `verified-target-answer-gate-v1`; MCP remains outside the correctness boundary.
+
 ## [0.2.0] - 2026-09-04
 
 Second external-preview release of the native Reasoning Harness CLI. This is a **product capability release on the existing research/authority foundation**, not a rewrite of frozen Stage-C/RSD2 evidence.
