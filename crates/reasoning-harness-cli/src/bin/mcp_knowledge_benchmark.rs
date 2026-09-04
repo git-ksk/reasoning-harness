@@ -16,7 +16,7 @@ use reasoning_harness_providers::{
     MCP_READONLY_RESOLVER_ID, McpReadOnlyResolver, McpReadOnlyResolverConfig,
 };
 use serde::Serialize;
-use serde_json::{Value, json};
+use serde_json::Value;
 
 const REPORT_SCHEMA: &str = "reason-mcp-knowledge-benchmark-v1";
 const SOURCE: &str = "mcp:wikidata:typed_fact";
@@ -60,7 +60,7 @@ struct CaseSpec {
     expected: ExpectedOutcome,
 }
 
-fn cases() -> [CaseSpec; 7] {
+fn cases() -> [CaseSpec; 8] {
     [
         CaseSpec {
             id: "tokyo_country",
@@ -103,14 +103,24 @@ fn cases() -> [CaseSpec; 7] {
             expected: ExpectedOutcome::Accept,
         },
         CaseSpec {
-            id: "mount_fuji_elevation",
+            id: "mount_fuji_elevation_source_value",
             workload: "quantity",
             entity_id: "Q39231",
             property_id: "P2044",
             value_kind: "quantity",
             fact_key: "mount_fuji.elevation_m",
-            target_value: "3776",
+            target_value: "3777.24",
             expected: ExpectedOutcome::Accept,
+        },
+        CaseSpec {
+            id: "mount_fuji_elevation_disagreement",
+            workload: "quantity_contradiction",
+            entity_id: "Q39231",
+            property_id: "P2044",
+            value_kind: "quantity",
+            fact_key: "mount_fuji.elevation_m",
+            target_value: "3776",
+            expected: ExpectedOutcome::Reject,
         },
         CaseSpec {
             id: "tokyo_wrong_country",
@@ -406,7 +416,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         source: SOURCE,
         authority: AUTHORITY,
         acquisition_window_seconds: ACQUISITION_WINDOW_SECONDS,
-        note: "Latency includes MCP process spawn, Wikidata HTTP acquisition, response parsing, admission, and resolution runtime. It excludes LLM generation. A bounded future evaluation window isolates the known live-acquisition timestamp boundary.",
+        note: "Latency includes MCP process spawn, Wikidata HTTP acquisition, response parsing, admission, and resolution runtime. It excludes LLM generation. A bounded future evaluation window isolates the known live-acquisition timestamp boundary. Quantity cases deliberately include both the source-native live value and a conflicting commonly cited value so source disagreement is measured separately from adapter success.",
         samples,
         aggregate,
     };
