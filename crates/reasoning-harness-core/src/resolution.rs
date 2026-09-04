@@ -226,6 +226,7 @@ pub enum ResolutionAdapterErrorKind {
     Authentication,
     PermissionDenied,
     Protocol,
+    ToolExecution,
     Timeout,
     PolicyDenied,
 }
@@ -582,6 +583,7 @@ pub enum ResolutionAttemptStatus {
     AuthenticationFailure,
     PermissionDenied,
     ProtocolFailure,
+    ToolFailed,
     TimedOut,
     PolicyDenied,
     HumanReviewRequired,
@@ -1135,6 +1137,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
                 ResolutionAttemptStatus::PermissionDenied
             }
             ResolutionAdapterErrorKind::Protocol => ResolutionAttemptStatus::ProtocolFailure,
+            ResolutionAdapterErrorKind::ToolExecution => ResolutionAttemptStatus::ToolFailed,
             ResolutionAdapterErrorKind::Timeout => ResolutionAttemptStatus::TimedOut,
             ResolutionAdapterErrorKind::PolicyDenied => ResolutionAttemptStatus::PolicyDenied,
         };
@@ -1156,7 +1159,9 @@ impl<'a> GroundedResolutionRuntime<'a> {
             | ResolutionAdapterErrorKind::PermissionDenied
             | ResolutionAdapterErrorKind::PolicyDenied => Some(ResolutionTerminalStatus::Denied),
             ResolutionAdapterErrorKind::Timeout => Some(ResolutionTerminalStatus::TimedOut),
-            ResolutionAdapterErrorKind::Transport | ResolutionAdapterErrorKind::Protocol => {
+            ResolutionAdapterErrorKind::Transport
+            | ResolutionAdapterErrorKind::Protocol
+            | ResolutionAdapterErrorKind::ToolExecution => {
                 Some(ResolutionTerminalStatus::OperationalFailure)
             }
             // Historical deterministic fixture classes retain their prior retry/exhaustion semantics.

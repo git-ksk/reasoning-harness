@@ -1,5 +1,5 @@
 use std::{
-    collections::{BTreeMap, VecDeque},
+    collections::{BTreeMap, BTreeSet, VecDeque},
     env, fs,
     io::{self, IsTerminal, Read},
     path::{Path, PathBuf},
@@ -45,9 +45,11 @@ use reasoning_harness_core::{
 };
 use reasoning_harness_providers::{
     DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS,
+    DEFAULT_MCP_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_MCP_RESOLVER_TIMEOUT_MS,
     EXTERNAL_COMMAND_RESOLVER_ID, EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver,
     ExternalCommandResolverConfig, ExternalEvidenceAdmissionConfig,
-    ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy, GoogleAdapter, MistralAdapter,
+    ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy, GoogleAdapter,
+    MCP_READONLY_RESOLVER_ID, McpReadOnlyResolver, McpReadOnlyResolverConfig, MistralAdapter,
     NvidiaAdapter,
 };
 use schemars::{JsonSchema, schema_for};
@@ -223,6 +225,7 @@ struct RunFileConfig {
 #[serde(default, deny_unknown_fields)]
 struct ResolutionFileConfig {
     external_command: Option<ExternalCommandResolverFileConfig>,
+    mcp_readonly: Option<McpReadOnlyResolverFileConfig>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -231,6 +234,31 @@ struct ExternalCommandResolverFileConfig {
     program: String,
     #[serde(default)]
     args: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    timeout_ms: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max_response_bytes: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    admission: Option<ExternalEvidenceAdmissionFileConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct McpReadOnlyResolverFileConfig {
+    server_id: String,
+    program: String,
+    #[serde(default)]
+    args: Vec<String>,
+    #[serde(default)]
+    allowed_tools: BTreeSet<String>,
+    tool: String,
+    read_only: bool,
+    resolver_class: String,
+    #[serde(default)]
+    fixed_arguments: BTreeMap<String, serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    provenance_argument: Option<String>,
+    source: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     timeout_ms: Option<u64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1329,7 +1357,7 @@ fn run_local_resolution(
 fn run_external_resolution(
     input: HarnessInput,
     candidate: ReasoningCandidate,
-    resolver: &ExternalCommandResolver,
+    resolver: &dyn ResolutionResolver,
     admission: Option<&ExternalEvidenceAdmissionPolicy>,
     max_attempts: usize,
 ) -> Result<GroundedResolutionOutcome, CliError> {
@@ -1550,10 +1578,23 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         .map_err(|error| CliError::new("configuration", error))?;
     let external_admission_config = resolve_external_admission_config(&loaded_config)
         .map_err(|error| CliError::new("configuration", error))?;
-    if external_resolver_config.is_some() && !args.resolver_fact.is_empty() {
+    let mcp_resolver_config = resolve_mcp_readonly_config(&loaded_config)
+        .map_err(|error| CliError::new("configuration", error))?;
+    let mcp_admission_config = resolve_mcp_admission_config(&loaded_config)
+        .map_err(|error| CliError::new("configuration", error))?;
+    let configured_resolver_modes = usize::from(!args.resolver_fact.is_empty())
+        + usize::from(external_resolver_config.is_some())
+        + usize::from(mcp_resolver_config.is_some());
+    if configured_resolver_modes > 1 {
         return Err(CliError::new(
             "configuration",
-            "choose either --resolver-fact or an external resolver command, not both",
+            "choose exactly one resolver lane: --resolver-fact, external_command, or mcp_readonly",
+        ));
+    }
+    if mcp_admission_config.is_some() && mcp_resolver_config.is_none() {
+        return Err(CliError::new(
+            "configuration",
+            "resolution.mcp_readonly.admission requires resolution.mcp_readonly",
         ));
     }
     let resolved = resolve_run_config(
@@ -1594,6 +1635,8 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
     };
     let external_resolver = external_resolver_config.map(ExternalCommandResolver::new);
     let external_admission = external_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
+    let mcp_resolver = mcp_resolver_config.map(McpReadOnlyResolver::new);
+    let mcp_admission = mcp_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
     let mut resolution_rounds = Vec::new();
     let mut final_artifact = initial_outcome.artifact.clone();
     let mut final_verdict = initial_outcome.verdict;
@@ -1612,6 +1655,14 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
                 candidate.clone(),
                 external,
                 external_admission.as_ref(),
+                args.max_resolution_attempts,
+            )?)
+        } else if let Some(mcp) = mcp_resolver.as_ref() {
+            Some(run_external_resolution(
+                built.input.clone(),
+                candidate.clone(),
+                mcp,
+                mcp_admission.as_ref(),
                 args.max_resolution_attempts,
             )?)
         } else {
@@ -1735,7 +1786,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         finalization = gated;
         safety_observations.extend(observations);
         if finalization.status != FinalizationStatus::RequiresVerification
-            || (resolver.facts.is_empty() && external_resolver.is_none())
+            || (resolver.facts.is_empty() && external_resolver.is_none() && mcp_resolver.is_none())
             || render_round >= 2
         {
             break;
@@ -1755,14 +1806,22 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
                 &resolver,
                 args.max_resolution_attempts,
             )?
+        } else if let Some(external) = external_resolver.as_ref() {
+            run_external_resolution(
+                retry_input,
+                candidate.clone(),
+                external,
+                external_admission.as_ref(),
+                args.max_resolution_attempts,
+            )?
         } else {
             run_external_resolution(
                 retry_input,
                 candidate.clone(),
-                external_resolver
+                mcp_resolver
                     .as_ref()
-                    .expect("external resolver availability checked above"),
-                external_admission.as_ref(),
+                    .expect("MCP resolver availability checked above"),
+                mcp_admission.as_ref(),
                 args.max_resolution_attempts,
             )?
         };
@@ -1784,14 +1843,18 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             max_tokens: Some(resolved.max_tokens),
             resolver_adapter: if external_resolver.is_some() {
                 Some(EXTERNAL_COMMAND_RESOLVER_ID)
+            } else if mcp_resolver.is_some() {
+                Some(MCP_READONLY_RESOLVER_ID)
             } else if !resolver.facts.is_empty() {
                 Some("cli_local_fact_store")
             } else {
                 None
             },
-            resolver_admission: external_admission
-                .as_ref()
-                .map(|_| EXTERNAL_EVIDENCE_ADMISSION_ID),
+            resolver_admission: if external_admission.is_some() || mcp_admission.is_some() {
+                Some(EXTERNAL_EVIDENCE_ADMISSION_ID)
+            } else {
+                None
+            },
             output_format: resolved.format,
             config_sources: resolved.config_sources,
         },
@@ -3884,6 +3947,9 @@ fn merge_cli_config(base: &mut CliFileConfig, overlay: CliFileConfig) {
     if overlay.resolution.external_command.is_some() {
         base.resolution.external_command = overlay.resolution.external_command;
     }
+    if overlay.resolution.mcp_readonly.is_some() {
+        base.resolution.mcp_readonly = overlay.resolution.mcp_readonly;
+    }
 }
 
 fn resolve_external_command_config(
@@ -3940,6 +4006,82 @@ fn resolve_external_command_config(
     }))
 }
 
+fn resolve_mcp_readonly_config(
+    loaded: &LoadedCliConfig,
+) -> Result<Option<McpReadOnlyResolverConfig>, String> {
+    let Some(configured) = &loaded.config.resolution.mcp_readonly else {
+        return Ok(None);
+    };
+    let server_id = configured.server_id.trim();
+    let program = configured.program.trim();
+    let tool = configured.tool.trim();
+    let source = configured.source.trim();
+    if server_id.is_empty() || program.is_empty() || tool.is_empty() || source.is_empty() {
+        return Err(
+            "resolution.mcp_readonly server_id, program, tool, and source must be non-empty".into(),
+        );
+    }
+    if !configured.read_only {
+        return Err("resolution.mcp_readonly.read_only must be true for v0.3.0".into());
+    }
+    if configured.resolver_class != "evidence_acquisition" {
+        return Err(
+            "resolution.mcp_readonly.resolver_class must be \"evidence_acquisition\"".into(),
+        );
+    }
+    if configured.allowed_tools.is_empty()
+        || configured
+            .allowed_tools
+            .iter()
+            .any(|tool| tool.trim().is_empty())
+        || !configured.allowed_tools.contains(tool)
+    {
+        return Err(
+            "resolution.mcp_readonly.allowed_tools must explicitly contain the selected tool"
+                .into(),
+        );
+    }
+    if configured
+        .fixed_arguments
+        .keys()
+        .any(|key| key.trim().is_empty())
+    {
+        return Err("resolution.mcp_readonly.fixed_arguments contains an empty key".into());
+    }
+    if let Some(argument) = configured.provenance_argument.as_deref() {
+        if argument.trim().is_empty() || configured.fixed_arguments.contains_key(argument) {
+            return Err(
+                "resolution.mcp_readonly.provenance_argument must be non-empty and must not collide with fixed_arguments"
+                    .into(),
+            );
+        }
+    }
+    let timeout_ms = configured
+        .timeout_ms
+        .unwrap_or(DEFAULT_MCP_RESOLVER_TIMEOUT_MS);
+    let max_response_bytes = configured
+        .max_response_bytes
+        .unwrap_or(DEFAULT_MCP_RESOLVER_MAX_RESPONSE_BYTES);
+    if timeout_ms == 0 || max_response_bytes == 0 {
+        return Err(
+            "resolution.mcp_readonly timeout_ms and max_response_bytes must be at least 1".into(),
+        );
+    }
+    Ok(Some(McpReadOnlyResolverConfig {
+        server_id: server_id.into(),
+        program: PathBuf::from(program),
+        args: configured.args.clone(),
+        allowed_tools: configured.allowed_tools.clone(),
+        tool: tool.into(),
+        resolver_class: ResolverClass::EvidenceAcquisition,
+        fixed_arguments: configured.fixed_arguments.clone(),
+        provenance_argument: configured.provenance_argument.clone(),
+        source: source.into(),
+        timeout_ms,
+        max_response_bytes,
+    }))
+}
+
 fn current_unix_seconds() -> Result<i64, String> {
     let seconds = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -3970,71 +4112,93 @@ fn validate_config_scope(scope: &ApplicabilityScope, owner: &str) -> Result<(), 
 fn resolve_external_admission_config(
     loaded: &LoadedCliConfig,
 ) -> Result<Option<ExternalEvidenceAdmissionConfig>, String> {
-    let Some(external) = &loaded.config.resolution.external_command else {
+    let Some(configured) = loaded
+        .config
+        .resolution
+        .external_command
+        .as_ref()
+        .and_then(|resolver| resolver.admission.as_ref())
+    else {
         return Ok(None);
     };
-    let Some(configured) = &external.admission else {
+    resolve_evidence_admission_config(
+        configured,
+        EXTERNAL_COMMAND_RESOLVER_ID,
+        "resolution.external_command.admission",
+    )
+    .map(Some)
+}
+
+fn resolve_mcp_admission_config(
+    loaded: &LoadedCliConfig,
+) -> Result<Option<ExternalEvidenceAdmissionConfig>, String> {
+    let Some(configured) = loaded
+        .config
+        .resolution
+        .mcp_readonly
+        .as_ref()
+        .and_then(|resolver| resolver.admission.as_ref())
+    else {
         return Ok(None);
     };
+    resolve_evidence_admission_config(
+        configured,
+        MCP_READONLY_RESOLVER_ID,
+        "resolution.mcp_readonly.admission",
+    )
+    .map(Some)
+}
+
+fn resolve_evidence_admission_config(
+    configured: &ExternalEvidenceAdmissionFileConfig,
+    resolver_name: &'static str,
+    owner: &str,
+) -> Result<ExternalEvidenceAdmissionConfig, String> {
     if configured.authority_ranks.is_empty() {
-        return Err(
-            "resolution.external_command.admission.authority_ranks must not be empty".into(),
-        );
+        return Err(format!("{owner}.authority_ranks must not be empty"));
     }
     if configured.sources.is_empty() {
-        return Err("resolution.external_command.admission.sources must not be empty".into());
+        return Err(format!("{owner}.sources must not be empty"));
     }
     for class in configured.authority_ranks.keys() {
         if class.trim().is_empty() {
-            return Err(
-                "resolution.external_command.admission.authority_ranks contains an empty class"
-                    .into(),
-            );
+            return Err(format!("{owner}.authority_ranks contains an empty class"));
         }
     }
     if let Some(minimum) = configured.minimum_authority_class.as_deref() {
         if !configured.authority_ranks.contains_key(minimum) {
             return Err(format!(
-                "resolution.external_command.admission.minimum_authority_class {minimum:?} is not ranked"
+                "{owner}.minimum_authority_class {minimum:?} is not ranked"
             ));
         }
     }
     if let Some(scope) = &configured.required_scope {
-        validate_config_scope(
-            scope,
-            "resolution.external_command.admission.required_scope",
-        )?;
+        validate_config_scope(scope, &format!("{owner}.required_scope"))?;
     }
 
     let mut sources = BTreeMap::new();
     for (source_id, source) in &configured.sources {
         if source_id.trim().is_empty() {
-            return Err(
-                "resolution.external_command.admission.sources contains an empty source identity"
-                    .into(),
-            );
+            return Err(format!("{owner}.sources contains an empty source identity"));
         }
         let authority_class = source.authority_class.trim();
         if authority_class.is_empty() {
             return Err(format!(
-                "resolution.external_command.admission.sources[{source_id:?}].authority_class must not be empty"
+                "{owner}.sources[{source_id:?}].authority_class must not be empty"
             ));
         }
         if !configured.authority_ranks.contains_key(authority_class) {
             return Err(format!(
-                "resolution.external_command.admission.sources[{source_id:?}].authority_class {authority_class:?} is not ranked"
+                "{owner}.sources[{source_id:?}].authority_class {authority_class:?} is not ranked"
             ));
         }
         if source.max_age_seconds == 0 {
             return Err(format!(
-                "resolution.external_command.admission.sources[{source_id:?}].max_age_seconds must be at least 1"
+                "{owner}.sources[{source_id:?}].max_age_seconds must be at least 1"
             ));
         }
         if let Some(scope) = &source.scope {
-            validate_config_scope(
-                scope,
-                &format!("resolution.external_command.admission.sources[{source_id:?}].scope"),
-            )?;
+            validate_config_scope(scope, &format!("{owner}.sources[{source_id:?}].scope"))?;
         }
         sources.insert(
             source_id.clone(),
@@ -4050,8 +4214,8 @@ fn resolve_external_admission_config(
         .evaluation_time_unix_seconds
         .map(Ok)
         .unwrap_or_else(current_unix_seconds)?;
-    Ok(Some(ExternalEvidenceAdmissionConfig {
-        resolver_name: EXTERNAL_COMMAND_RESOLVER_ID,
+    Ok(ExternalEvidenceAdmissionConfig {
+        resolver_name,
         evaluation_time_unix_seconds,
         authority_policy: EvidenceAuthorityPolicy {
             ranks: configured.authority_ranks.clone(),
@@ -4059,7 +4223,7 @@ fn resolve_external_admission_config(
         minimum_authority_class: configured.minimum_authority_class.clone(),
         required_scope: configured.required_scope.clone(),
         sources,
-    }))
+    })
 }
 
 fn stronger_authority_class(
@@ -4416,6 +4580,7 @@ mod candidate_json_tests {
                         max_response_bytes: None,
                         admission: None,
                     }),
+                    mcp_readonly: None,
                 },
             },
         );
@@ -4494,6 +4659,88 @@ mod candidate_json_tests {
         )
         .unwrap_err();
         assert!(error.contains("supply --model explicitly"));
+    }
+
+    #[test]
+    fn mcp_readonly_config_requires_explicit_read_only_allowlist_and_class() {
+        let text = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_readonly":{
+            "server_id":"inventory",
+            "program":"mcp-server",
+            "args":["--stdio"],
+            "allowed_tools":["lookup_item"],
+            "tool":"lookup_item",
+            "read_only":true,
+            "resolver_class":"evidence_acquisition",
+            "fixed_arguments":{"board":"primary"},
+            "provenance_argument":"reason_provenance",
+            "source":"mcp:inventory:lookup_item",
+            "timeout_ms":500,
+            "max_response_bytes":8192
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(text).unwrap(),
+            sources: vec!["explicit"],
+        };
+        let config = resolve_mcp_readonly_config(&loaded).unwrap().unwrap();
+        assert_eq!(config.server_id, "inventory");
+        assert_eq!(config.tool, "lookup_item");
+        assert_eq!(config.allowed_tools, BTreeSet::from(["lookup_item".into()]));
+        assert_eq!(config.resolver_class, ResolverClass::EvidenceAcquisition);
+        assert_eq!(config.timeout_ms, 500);
+        assert_eq!(config.max_response_bytes, 8192);
+        assert_eq!(config.source, "mcp:inventory:lookup_item");
+    }
+
+    #[test]
+    fn mcp_readonly_config_fails_closed_on_write_intent_unlisted_tool_or_secret_field() {
+        for text in [
+            r#"{"schema_version":"reason-config-v1","resolution":{"mcp_readonly":{"server_id":"s","program":"p","allowed_tools":["read"],"tool":"read","read_only":false,"resolver_class":"evidence_acquisition","source":"mcp:s:read"}}}"#,
+            r#"{"schema_version":"reason-config-v1","resolution":{"mcp_readonly":{"server_id":"s","program":"p","allowed_tools":["other"],"tool":"read","read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read"}}}"#,
+            r#"{"schema_version":"reason-config-v1","resolution":{"mcp_readonly":{"server_id":"s","program":"p","allowed_tools":["read"],"tool":"read","read_only":true,"resolver_class":"human_review","source":"mcp:s:read"}}}"#,
+        ] {
+            let loaded = LoadedCliConfig {
+                config: serde_json::from_str(text).unwrap(),
+                sources: vec![],
+            };
+            assert!(resolve_mcp_readonly_config(&loaded).is_err());
+        }
+
+        let secret = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_readonly":{
+            "server_id":"s","program":"p","allowed_tools":["read"],"tool":"read",
+            "read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read",
+            "api_key":"secret"
+          }}
+        }"#;
+        assert!(serde_json::from_str::<CliFileConfig>(secret).is_err());
+    }
+
+    #[test]
+    fn mcp_admission_uses_mcp_resolver_identity() {
+        let text = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_readonly":{
+            "server_id":"s","program":"p","allowed_tools":["read"],"tool":"read",
+            "read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read",
+            "admission":{
+              "evaluation_time_unix_seconds":1000,
+              "authority_ranks":{"primary":10},
+              "minimum_authority_class":"primary",
+              "sources":{"mcp:s:read":{"authority_class":"primary","max_age_seconds":60}}
+            }
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(text).unwrap(),
+            sources: vec![],
+        };
+        let admission = resolve_mcp_admission_config(&loaded).unwrap().unwrap();
+        assert_eq!(admission.resolver_name, MCP_READONLY_RESOLVER_ID);
+        assert_eq!(admission.sources["mcp:s:read"].authority_class, "primary");
     }
 
     #[test]

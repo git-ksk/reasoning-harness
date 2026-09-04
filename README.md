@@ -115,12 +115,13 @@ For normal use, start with a natural-language task and add only the context or a
 | `--hypothesis KEY=VALUE` | The proposition you want evaluated or resolved. |
 | `--resolver-fact KEY=VALUE` | A local fact available only through bounded resolution, admission, and re-verification. |
 | `--resolver-command PROGRAM` | External stdio JSON resolver acquisition on `main`; acquired evidence remains untrusted until Harness-owned admission. |
+| `resolution.mcp_readonly` config | Allowlisted read-only MCP acquisition through `mcp_readonly_v1`; MCP output is never authority by itself. |
 
 If trusted support is missing, a qualified answer or `unknown` is expected behavior. A document merely containing a sentence does not make that sentence verified evidence.
 
 Structured `HarnessInput` / `ReasoningCandidate` JSON remains available for applications, CI, reproducibility, and offline candidate checking.
 
-For v0.3.0 development on `main`, an external process can also be wired through the existing bounded-resolution boundary with `--resolver-command`. The process cannot mint authority: its wire schema exposes acquisition/revision contributions only. External evidence remains fail-closed unless an explicit source allowlist and Harness-owned freshness/scope/authority policy admits it; admitted evidence still re-enters ordinary qualification and verification. See [External resolver adapters](docs/external-resolvers.md).
+For v0.3.0 development on `main`, an external process can also be wired through the existing bounded-resolution boundary with `--resolver-command`. The process cannot mint authority: its wire schema exposes acquisition/revision contributions only. External evidence remains fail-closed unless an explicit source allowlist and Harness-owned freshness/scope/authority policy admits it; admitted evidence still re-enters ordinary qualification and verification. See [External resolver adapters](docs/external-resolvers.md) and [Read-only MCP resolver](docs/mcp-resolver.md).
 
 ## Application and automation patterns
 

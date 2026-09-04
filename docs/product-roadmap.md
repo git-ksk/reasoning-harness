@@ -78,7 +78,7 @@ Planned order:
 1. **#174 external resolver adapter + CLI/config wiring — implemented.** `external_command_v1` uses the existing `ResolutionResolver` boundary, a closed stdio JSON protocol, literal argv, and fail-closed external evidence admission. It cannot return trusted metadata, receipts, verdicts, or final prose.
 2. **#175 external evidence qualification — implemented.** `external_evidence_admission_v1` normalizes source identity, observation/retrieval time, scope, and claimed authority; exact source allowlists plus Harness-owned ranks/max-age/scope policy decide admission. Resolver authority claims cannot self-elevate, rejection reasons are typed telemetry, and admitted evidence is re-qualified/re-verified through the ordinary pipeline.
 3. **#178 operational hardening — implemented.** External calls are bounded by attempt/time/response limits, typed failures remain operational terminals, resolution telemetry records actual calls/latency/optional token/cost data plus hashed adapter/admission config identities, and ReasoningThread replay preserves records without re-invoking tools.
-4. **#176 read-only MCP resolver adapter** — selected MCP tools act only as acquisition sources inside bounded resolution.
+4. **#176 read-only MCP resolver adapter — implemented.** `mcp_readonly_v1` calls explicitly allowlisted read-only MCP tools through `ResolutionResolver`; generic tool output stays opaque, the optional acquisition envelope remains untrusted data, and admitted facts re-enter ordinary verification.
 5. **#177 reference trusted verifier/oracle** — demonstrate a separate deterministic/explicitly trusted authority-bearing integration.
 6. **#179 open-world dogfood and release acceptance** — measure external recovery, abstention, acquisition-vs-verification success, operational cost, and false grounding on non-frozen product workloads.
 7. **#180 optional full-runtime MCP product surface** — expose selected `reason` operations to external MCP clients only after the resolver path is accepted; this is not a v0.3.0 release blocker.
@@ -265,7 +265,7 @@ never product-tuning corpora.
 
 - **Public Rust embedding API:** after real CLI consumers validate the correct compatibility
   boundary.
-- **MCP full-runtime product surface (#180):** optional downstream integration after the v0.3.0 resolver path is accepted; never evidence that the caller's entire agent loop is verified. The read-only MCP resolver role is active v0.3.0 work in #176.
+- **MCP full-runtime product surface (#180):** optional downstream integration after the v0.3.0 resolver path is accepted; never evidence that the caller's entire agent loop is verified. The read-only MCP resolver role is implemented in #176 as `mcp_readonly_v1`.
 - **Interactive CLI (`reason shell` / `reason repl`):** demand-gated after repeated real-workload dogfood. If adopted, it is a thin stateful session over `ReasoningThread`/checkpoint/replay and the same product runtime, not a separate chat authority or evidence shortcut.
 - **Desktop UI:** thin inspection/review client only after artifact and CLI contracts are stable.
 

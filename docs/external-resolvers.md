@@ -156,4 +156,4 @@ The existing `GroundedResolutionPolicy` remains the owner of resolver-class allo
 
 The deterministic adapter test launches a temporary executable, sends a real typed request over stdin, receives acquired evidence over stdout, and separately verifies that attempts to smuggle trusted metadata or receipts fail schema parsing. This smoke path exercises actual process I/O without requiring a network service or changing frozen research fixtures.
 
-For a live integration, the configured executable may itself call a web API, database, compiler/test tool, or other read-only source. Its returned data still enters Reasoning Harness only as the contribution types above. MCP-specific acquisition is intentionally deferred to #176 rather than being special-cased here.
+For a live integration, the configured executable may itself call a web API, database, compiler/test tool, or other read-only source. Its returned data still enters Reasoning Harness only as the contribution types above. MCP-specific acquisition is implemented separately as `mcp_readonly_v1` under #176 rather than being special-cased into `external_command_v1`; see [Read-only MCP resolver](mcp-resolver.md).

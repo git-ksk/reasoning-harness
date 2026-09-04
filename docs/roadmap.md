@@ -31,7 +31,7 @@ Execution order:
 1. #174 external resolver adapter and supported CLI/config wiring — **implemented** with `external_command_v1`;
 2. #175 provenance/freshness/scope/authority admission hardening — **implemented** with `external_evidence_admission_v1`, exact-source allowlisting, normalized acquisition metadata, typed admission rejection, and mandatory ordinary re-verification;
 3. #178 external-resolution budgets, telemetry, secret handling, and typed operational failures — **implemented** with typed operational terminals, call/latency/cost telemetry, stable hashed config identities, process timeout, and bounded response size;
-4. #176 read-only MCP resolver adapter;
+4. #176 read-only MCP resolver adapter — **implemented** with `mcp_readonly_v1`, explicit server/tool allowlisting, read-only acquisition-only config, MCP 2026-07-28 stdio calls, typed tool failure, and ordinary admission/re-verification;
 5. #177 reference trusted verifier/oracle integration;
 6. #179 non-frozen open-world product dogfood and v0.3.0 acceptance;
 7. #180 optional full-runtime MCP product surface, explicitly non-blocking for v0.3.0.
@@ -342,7 +342,7 @@ These are intentional non-goals until the native runtime, artifact, resolution, 
 
 - desktop UI: thin visualization/review client after artifact formats stabilize.
 - public embedding API compatibility: after real consumer pressure validates the runtime contract.
-- MCP full-runtime product surface (#180): optional agent integration after the active v0.3.0 resolver work; never a required correctness boundary. Read-only MCP acquisition is tracked separately in #176.
+- MCP full-runtime product surface (#180): optional agent integration after the active v0.3.0 resolver work; never a required correctness boundary. Read-only MCP acquisition is implemented separately in #176 as `mcp_readonly_v1`.
 
 See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md).
 
