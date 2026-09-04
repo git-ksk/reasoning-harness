@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - experiment/mcp-knowledge-probe
+  workflow_dispatch:
+    inputs:
+      run_holdout:
+        description: "Run the frozen agentic holdout (do not use for tuning)"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -19,6 +26,14 @@ jobs:
           toolchain: 1.88.0
       - uses: Swatinem/rust-cache@v2
 
+      - name: Compile experimental benchmark binaries
+        run: |
+          set -euo pipefail
+          cargo check --locked -p reasoning-harness-cli \
+            --bin reason-mcp-knowledge-benchmark \
+            --bin reason-mcp-search-benchmark \
+            --bin reason-mcp-agentic-search-benchmark
+
       - name: Smoke Wikipedia MCP server directly
         run: |
           set -euo pipefail
@@ -27,7 +42,7 @@ jobs:
             | tee /tmp/wikipedia-mcp-direct.json
           jq -e '.result.structuredContent.reasoning_harness.facts["wikipedia.page_exists"] == "true"' /tmp/wikipedia-mcp-direct.json >/dev/null
 
-      - name: Benchmark live Wikidata typed-fact MCP adapter
+      - name: Layer A - benchmark live Wikidata typed-fact MCP adapter
         run: |
           set -euo pipefail
           cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-knowledge-benchmark -- \
@@ -37,7 +52,7 @@ jobs:
           jq -e '.aggregate.expectation_success_rate >= 0.85' /tmp/mcp-knowledge-benchmark.json >/dev/null
           jq -e '.aggregate.accept_recovery_rate >= 0.80' /tmp/mcp-knowledge-benchmark.json >/dev/null
 
-      - name: Benchmark cross-source search and ambiguity handling
+      - name: Layer B - benchmark fixed cross-source search policy
         run: |
           set -euo pipefail
           cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-search-benchmark -- \
@@ -45,6 +60,34 @@ jobs:
             | tee /tmp/mcp-search-benchmark.json
           jq -e '.aggregate.false_acceptances == 0' /tmp/mcp-search-benchmark.json >/dev/null
           jq -e '.aggregate.expectation_success_rate >= 0.75' /tmp/mcp-search-benchmark.json >/dev/null
+
+      - name: Layer C - benchmark bounded agentic search planner (dev suite)
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$MISTRAL_API_KEY"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-agentic-search-benchmark -- \
+            --suite dev \
+            --trials 2 \
+            --model ministral-8b-latest \
+            | tee /tmp/mcp-agentic-search-dev.json
+          jq -e '.schema_version == "reason-mcp-agentic-search-benchmark-v1"' /tmp/mcp-agentic-search-dev.json >/dev/null
+          jq -e '.aggregate.false_acceptances == 0' /tmp/mcp-agentic-search-dev.json >/dev/null
+
+      - name: Layer C holdout - explicit dispatch only
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_holdout }}
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$MISTRAL_API_KEY"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-agentic-search-benchmark -- \
+            --suite holdout \
+            --trials 2 \
+            --model ministral-8b-latest \
+            | tee /tmp/mcp-agentic-search-holdout.json
+          jq -e '.aggregate.false_acceptances == 0' /tmp/mcp-agentic-search-holdout.json >/dev/null
 
       - name: Configure read-only MCP resolver
         run: |
@@ -112,12 +155,16 @@ jobs:
       - name: Summarize probe result
         if: always()
         run: |
-          echo '--- Wikidata MCP benchmark aggregate ---'
+          echo '--- Layer A: Wikidata MCP benchmark aggregate ---'
           jq '.aggregate' /tmp/mcp-knowledge-benchmark.json 2>/dev/null || true
-          echo '--- Cross-source MCP search benchmark aggregate ---'
+          echo '--- Layer B: fixed cross-source search aggregate ---'
           jq '.aggregate' /tmp/mcp-search-benchmark.json 2>/dev/null || true
-          echo '--- Cross-source MCP search samples ---'
-          jq '.samples[] | {id, workload, query, trial, expected, initial_verdict, final_verdict, observed_value, observation, elapsed_ms, passed}' /tmp/mcp-search-benchmark.json 2>/dev/null || true
+          echo '--- Layer C: agentic planner dev aggregate ---'
+          jq '.aggregate' /tmp/mcp-agentic-search-dev.json 2>/dev/null || true
+          echo '--- Layer C: stop reasons ---'
+          jq '.samples[] | {id, trial, expected, final_outcome, stop_reason, rounds, tool_calls, planner_calls, model_tokens, elapsed_ms, passed}' /tmp/mcp-agentic-search-dev.json 2>/dev/null || true
+          echo '--- Layer C holdout aggregate (when explicitly run) ---'
+          jq '.aggregate' /tmp/mcp-agentic-search-holdout.json 2>/dev/null || true
           echo '--- direct Wikipedia MCP ---'
           cat /tmp/wikipedia-mcp-direct.json 2>/dev/null || true
           echo '--- Harness result: selected fields ---'
@@ -133,6 +180,8 @@ jobs:
           path: |
             /tmp/mcp-knowledge-benchmark.json
             /tmp/mcp-search-benchmark.json
+            /tmp/mcp-agentic-search-dev.json
+            /tmp/mcp-agentic-search-holdout.json
             /tmp/wikipedia-mcp-direct.json
             /tmp/reason-mcp-wikipedia-result.json
             /tmp/reason-mcp-wikipedia.json
