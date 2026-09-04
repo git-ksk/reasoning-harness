@@ -1,0 +1,106 @@
+name: mcp-knowledge-probe
+
+on:
+  push:
+    branches:
+      - experiment/mcp-knowledge-probe
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Smoke Wikipedia MCP server directly
+        run: |
+          set -euo pipefail
+          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"page_exists","arguments":{"title":"東京","language":"ja"},"_meta":{"protocolVersion":"2026-07-28"}}}' \
+            | python3 scripts/wikipedia_knowledge_mcp.py \
+            | tee /tmp/wikipedia-mcp-direct.json
+          jq -e '.result.structuredContent.reasoning_harness.facts["wikipedia.page_exists"] == "true"' /tmp/wikipedia-mcp-direct.json >/dev/null
+
+      - name: Configure read-only MCP resolver
+        run: |
+          cat > /tmp/reason-mcp-wikipedia.json <<'JSON'
+          {
+            "schema_version": "reason-config-v1",
+            "run": {
+              "provider": "mistral",
+              "model": "ministral-8b-latest",
+              "max_tokens": 512,
+              "format": "json"
+            },
+            "resolution": {
+              "mcp_readonly": {
+                "server_id": "wikipedia-ja-probe",
+                "program": "python3",
+                "args": ["scripts/wikipedia_knowledge_mcp.py"],
+                "allowed_tools": ["page_exists"],
+                "tool": "page_exists",
+                "read_only": true,
+                "resolver_class": "evidence_acquisition",
+                "fixed_arguments": {
+                  "title": "東京",
+                  "language": "ja"
+                },
+                "source": "mcp:wikipedia-ja:page_exists",
+                "timeout_ms": 15000,
+                "max_response_bytes": 262144,
+                "admission": {
+                  "authority_ranks": {"primary": 20},
+                  "minimum_authority_class": "primary",
+                  "sources": {
+                    "mcp:wikipedia-ja:page_exists": {
+                      "authority_class": "primary",
+                      "max_age_seconds": 300
+                    }
+                  }
+                }
+              }
+            }
+          }
+          JSON
+
+      - name: Run natural-language Harness with Wikipedia MCP resolution
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$MISTRAL_API_KEY"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason -- \
+            '日本語版Wikipediaに「東京」という記事が存在するか確認して。確認できる根拠だけで答えて。' \
+            --config /tmp/reason-mcp-wikipedia.json \
+            --hypothesis wikipedia.page_exists=true \
+            --max-resolution-attempts 1 \
+            --format json \
+            | tee /tmp/reason-mcp-wikipedia-result.json
+
+      - name: Summarize probe result
+        if: always()
+        run: |
+          echo '--- direct MCP ---'
+          cat /tmp/wikipedia-mcp-direct.json 2>/dev/null || true
+          echo '--- Harness result: selected fields ---'
+          if test -f /tmp/reason-mcp-wikipedia-result.json; then
+            jq '.. | objects | with_entries(select(.key | test("verdict|finalization|resolution|resolver|source|fact|operational|grounded"; "i"))) | select(length > 0)' /tmp/reason-mcp-wikipedia-result.json || cat /tmp/reason-mcp-wikipedia-result.json
+          fi
+
+      - name: Preserve probe outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-knowledge-probe
+          path: |
+            /tmp/wikipedia-mcp-direct.json
+            /tmp/reason-mcp-wikipedia-result.json
+            /tmp/reason-mcp-wikipedia.json
+          if-no-files-found: warn
+          retention-days: 7
