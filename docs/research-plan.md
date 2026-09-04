@@ -20,7 +20,7 @@ The product follow-up line that motivated the previous split is complete, and v0
 - **Completed provider reliability (#126):** bounded transient retries, provider-attempt telemetry, and exact-identity product evaluation resume are complete without rewriting historical research outcomes.
 - **Completed product utility (#139):** the current successor product rerun closes the recorded Ministral 8B coverage/withholding gap on the six-case product workload while preserving the authority boundary.
 - **Current release:** v0.2.0 packages these capabilities on the existing research foundation.
-- **Active product milestone (#173):** v0.3.0 connects real external acquisition and trusted verifier/oracle adapters to the existing bounded-resolution boundary; #174/#175/#178 establish the lane, #176 has added read-only MCP acquisition, #177 now demonstrates hard external verification, and #179 supplies non-frozen open-world acceptance evidence. #180 is an optional downstream MCP product surface.
+- **Active product milestone (#173):** v0.3.0 connects real external acquisition and trusted verifier/oracle adapters to the existing bounded-resolution boundary; #174/#175/#178 establish the lane, #176 has added read-only MCP acquisition, #177 now demonstrates hard external verification, and #179 now supplies non-frozen open-world acceptance evidence. #180 is an optional downstream MCP product surface.
 - **Follow-on research:** selective/conformal abstention, relation-level causal sufficiency, or another mechanism starts only if a newly measured gap justifies a new research identity and fresh evaluation sequence.
 
 Research is never shipped directly. Any future candidate must again pass fresh calibration, an

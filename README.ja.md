@@ -369,7 +369,7 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 
 > 小型・低コストなモデルでも、typed intermediate state、evidence binding、明示的不確実性、adversarial pass、deterministic acceptance gate、bounded resolution/re-verificationを通すことで、推論の信頼性を実質的に高められるか？
 
-次のplanned capability milestoneは **v0.3.0 — External Evidence & Resolution** (#173) です。不足根拠を特定し、実際の外部adapterから追加evidence/verificationを取得して、同じauthority boundaryを再度通し、それでも根拠不足なら無理に完成させません。read-only MCP acquisition (#176) はそのadapter経路の1つであり、新しいcorrectness boundaryではありません。#177では別の`trusted_command_verifier_v1`を実装し、hard receiptを作れる経路を取得adapterから分離しています。
+active capability milestoneは **v0.3.0 — External Evidence & Resolution** (#173) です。non-frozen external-resolution acceptance gateは[v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.ja.md)に記録しています。不足根拠を特定し、実際の外部adapterから追加evidence/verificationを取得して、同じauthority boundaryを再度通し、それでも根拠不足なら無理に完成させません。read-only MCP acquisition (#176) はそのadapter経路の1つであり、新しいcorrectness boundaryではありません。#177では別の`trusted_command_verifier_v1`を実装し、hard receiptを作れる経路を取得adapterから分離しています。
 
 研究機能は、calibration → 独立したfrozen evaluation → operational stabilization → runtime identity/rollback → CLI compatibilityという昇格手順を通るまでproduct CLIへ入りません。
 

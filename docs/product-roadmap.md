@@ -80,7 +80,7 @@ Planned order:
 3. **#178 operational hardening — implemented.** External calls are bounded by attempt/time/response limits, typed failures remain operational terminals, resolution telemetry records actual calls/latency/optional token/cost data plus hashed adapter/admission config identities, and ReasoningThread replay preserves records without re-invoking tools.
 4. **#176 read-only MCP resolver adapter — implemented.** `mcp_readonly_v1` calls explicitly allowlisted read-only MCP tools through `ResolutionResolver`; generic tool output stays opaque, the optional acquisition envelope remains untrusted data, and admitted facts re-enter ordinary verification.
 5. **#177 reference trusted verifier/oracle — implemented.** `trusted_command_verifier_v1` keeps acquisition separate, accepts only conclusion + evidence IDs from the external oracle, and constructs exact authority-bearing receipts inside the Harness.
-6. **#179 open-world dogfood and release acceptance** — measure external recovery, abstention, acquisition-vs-verification success, operational cost, and false grounding on non-frozen product workloads.
+6. **#179 open-world dogfood and release acceptance — implemented/passed.** `external-resolution-acceptance-v1` covers safe recovery, stale/scope/irrelevant/conflict/operational/budget cases in CI and records a separate live AWS public-information smoke.
 7. **#180 optional full-runtime MCP product surface** — expose selected `reason` operations to external MCP clients only after the resolver path is accepted; this is not a v0.3.0 release blocker.
 
 ### v0.3.0 acceptance gate
