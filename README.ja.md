@@ -116,6 +116,8 @@ reason "DBがHTTP 503のroot causeだと断定できる？" \
 | `--resolver-fact KEY=VALUE` | bounded resolution → admission → 再verification経由だけで使うlocal fact。 |
 | `--resolver-command PROGRAM` | `main`のexternal stdio JSON resolver。取得結果はHarness-owned admissionを通るまでuntrusted。 |
 
+`main`の#175では、external evidenceはsource allowlistとHarness-owned freshness/scope/authority policyを明示した場合だけadmitされます。resolverのauthority自己申告だけでは昇格せず、admit後も通常のqualification / verificationを再通過します。
+
 trusted supportが足りなければ、条件付き回答や`unknown`になるのが正しい動作です。文書に文章が書かれているだけではverified evidenceにはなりません。
 
 `HarnessInput` / `ReasoningCandidate` JSONは、アプリ統合、CI、再現性、offline candidate検証用の高度なsurfaceとして残しています。

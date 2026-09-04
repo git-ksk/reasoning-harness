@@ -164,12 +164,29 @@ impl From<FinalizationPolicyConfig> for FinalizationPolicy {
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct AcquiredEvidenceMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub observed_at_unix_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retrieved_at_unix_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scope: Option<crate::ApplicabilityScope>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claimed_authority_class: Option<String>,
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AcquiredEvidence {
     pub id: String,
     pub source: String,
     pub observation: String,
     #[serde(default)]
     pub facts: BTreeMap<String, String>,
+    /// Resolver-supplied acquisition metadata. This is untrusted until admission converts it into
+    /// Harness-owned `EvidenceMetadata` under configured policy.
+    #[serde(default)]
+    pub acquisition_metadata: AcquiredEvidenceMetadata,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -237,6 +254,17 @@ pub enum EvidenceAdmissionRejection {
     UntrustedSource,
     MissingTrustedMetadata,
     InvalidEvidence,
+    MissingObservationTime,
+    MissingRetrievalTime,
+    MissingScopeMetadata,
+    MissingAuthorityClaim,
+    Stale,
+    NotYetValid,
+    ScopeMismatch,
+    ScopeExpansion,
+    UnknownAuthorityClass,
+    InsufficientAuthority,
+    AuthorityClaimMismatch,
 }
 
 pub trait EvidenceAdmissionPolicy: Send + Sync {
@@ -535,6 +563,8 @@ pub struct ResolutionAttempt {
     pub admitted_evidence_ids: Vec<String>,
     #[serde(default)]
     pub verification_receipts: usize,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub admission_rejection: Option<EvidenceAdmissionRejection>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -803,6 +833,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
                         cost: output.cost,
                         admitted_evidence_ids: vec![],
                         verification_receipts: receipt_count,
+                        admission_rejection: None,
                     });
                     *current = self.pipeline.run(
                         current_input.clone(),
@@ -865,6 +896,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
                                     cost: output.cost,
                                     admitted_evidence_ids: vec![],
                                     verification_receipts: 0,
+                                    admission_rejection: None,
                                 });
                                 return Ok(None);
                             }
@@ -882,7 +914,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
                                     }
                                     admitted.push(evidence);
                                 }
-                                Err(_) => {
+                                Err(rejection) => {
                                     attempts.push(ResolutionAttempt {
                                         attempt_index,
                                         request: request.clone(),
@@ -891,6 +923,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
                                         cost: output.cost,
                                         admitted_evidence_ids: vec![],
                                         verification_receipts: 0,
+                                        admission_rejection: Some(rejection),
                                     });
                                     return Ok(None);
                                 }
@@ -910,6 +943,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
                             cost: output.cost,
                             admitted_evidence_ids: ids,
                             verification_receipts: 0,
+                            admission_rejection: None,
                         });
                     }
                     ResolutionResolverContribution::CandidateRevision { candidate } => {
@@ -922,6 +956,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
                             cost: output.cost,
                             admitted_evidence_ids: vec![],
                             verification_receipts: 0,
+                            admission_rejection: None,
                         });
                     }
                     ResolutionResolverContribution::NoResult => {
@@ -933,6 +968,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
                             cost: output.cost,
                             admitted_evidence_ids: vec![],
                             verification_receipts: 0,
+                            admission_rejection: None,
                         });
                     }
                     ResolutionResolverContribution::HumanReviewRequired => {
@@ -944,6 +980,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
                             cost: output.cost,
                             admitted_evidence_ids: vec![],
                             verification_receipts: 0,
+                            admission_rejection: None,
                         });
                         return Ok(Some(ResolutionTerminalStatus::HumanReviewRequired));
                     }
@@ -1005,6 +1042,7 @@ impl<'a> GroundedResolutionRuntime<'a> {
             cost: error.cost,
             admitted_evidence_ids: vec![],
             verification_receipts: 0,
+            admission_rejection: None,
         });
         (error.kind == ResolutionAdapterErrorKind::Unavailable)
             .then_some(ResolutionTerminalStatus::Unavailable)
@@ -1244,6 +1282,7 @@ fn record_budget_exceeded(
         cost,
         admitted_evidence_ids: vec![],
         verification_receipts: 0,
+        admission_rejection: None,
     });
 }
 
@@ -1368,6 +1407,7 @@ mod tests {
                 source: "fixture source".into(),
                 observation: "feature enabled".into(),
                 facts: BTreeMap::from([("feature.enabled".into(), "true".into())]),
+                acquisition_metadata: Default::default(),
             },
         };
         let resolvers: [&dyn ResolutionResolver; 1] = [&resolver];
@@ -1435,6 +1475,7 @@ mod tests {
                             proposition.key.clone(),
                             proposition.value.clone(),
                         )]),
+                        acquisition_metadata: Default::default(),
                     }],
                 },
                 cost: ResolutionCost::default(),
@@ -1595,6 +1636,7 @@ mod tests {
                 source: "fixture source".into(),
                 observation: "feature enabled".into(),
                 facts: BTreeMap::from([("feature.enabled".into(), "true".into())]),
+                acquisition_metadata: Default::default(),
             },
         };
         let resolvers: [&dyn ResolutionResolver; 1] = [&resolver];
@@ -1786,6 +1828,7 @@ mod tests {
                 source: "fixture source".into(),
                 observation: "feature enabled".into(),
                 facts: BTreeMap::from([("feature.enabled".into(), "true".into())]),
+                acquisition_metadata: Default::default(),
             },
         };
         let resolvers: [&dyn ResolutionResolver; 1] = [&resolver];
@@ -1857,6 +1900,7 @@ mod tests {
                             proposition.key.clone(),
                             proposition.value.clone(),
                         )]),
+                        acquisition_metadata: Default::default(),
                     }],
                 },
                 cost: ResolutionCost::default(),
@@ -2026,6 +2070,7 @@ mod tests {
                 source: "fixture source".into(),
                 observation: "feature enabled".into(),
                 facts: BTreeMap::from([("feature.enabled".into(), "true".into())]),
+                acquisition_metadata: Default::default(),
             },
         };
         let resolvers: [&dyn ResolutionResolver; 1] = [&resolver];

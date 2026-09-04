@@ -139,7 +139,7 @@ pub use reasoning_thread::{
     policy_invalidations, replay_thread, validate_thread,
 };
 pub use resolution::{
-    AcquiredEvidence, DefaultResolutionPlanner, EvidenceAdmissionPolicy,
+    AcquiredEvidence, AcquiredEvidenceMetadata, DefaultResolutionPlanner, EvidenceAdmissionPolicy,
     EvidenceAdmissionRejection, FinalizationPolicyConfig, GroundedResolutionOutcome,
     GroundedResolutionPolicy, GroundedResolutionRuntime, GroundingPipeline,
     RejectAllEvidenceAdmission, ResolutionAdapterError, ResolutionAdapterErrorKind,

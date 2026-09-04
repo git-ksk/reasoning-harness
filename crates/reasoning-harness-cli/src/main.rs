@@ -5,33 +5,34 @@ use std::{
     path::{Path, PathBuf},
     process::ExitCode,
     sync::Arc,
-    time::Instant,
+    time::{Instant, SystemTime, UNIX_EPOCH},
 };
 
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use reasoning_harness_core::{
     AcquiredEvidence, AdversarialDiscoveryPass, AnswerSafetyDisposition, AnswerSafetyError,
-    AnswerSafetyIdentity, AnswerSafetyObservation, AnswerSafetyProfile, AssumptionDiscoveryPass,
-    BenchmarkAggregate, BenchmarkCaseResult, BenchmarkComparison, BenchmarkFixture,
-    CalibrationLabel, CanonicalFinalAnswerRenderer, ClaimCorpusSummary, CorpusManifest,
-    DefaultResolutionPlanner, DiagnosticObservation, DiagnosticTrial, Evidence,
-    EvidenceAdmissionPolicy, EvidenceAdmissionRejection, EvidenceMetadata,
-    EvidenceQualificationPass, FinalAnswerCandidate, FinalAnswerRenderer, FinalClaimMode,
-    FinalizationPolicy, FinalizationResult, FinalizationStatus, GroundedResolutionOutcome,
-    GroundedResolutionPolicy, GroundedResolutionRuntime, HarnessInput, HarnessOutcome,
-    MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError, ModelError,
-    ModelErrorKind, ModelUsage, Proposition, REASONING_ARTIFACT_CONTRACT_ID,
+    AnswerSafetyIdentity, AnswerSafetyObservation, AnswerSafetyProfile, ApplicabilityScope,
+    AssumptionDiscoveryPass, BenchmarkAggregate, BenchmarkCaseResult, BenchmarkComparison,
+    BenchmarkFixture, CalibrationLabel, CanonicalFinalAnswerRenderer, ClaimCorpusSummary,
+    CorpusManifest, DefaultResolutionPlanner, DiagnosticObservation, DiagnosticTrial, Evidence,
+    EvidenceAdmissionPolicy, EvidenceAdmissionRejection, EvidenceAuthorityPolicy, EvidenceMetadata,
+    EvidenceQualificationPass, EvidenceRequirement, FinalAnswerCandidate, FinalAnswerRenderer,
+    FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
+    GroundedResolutionOutcome, GroundedResolutionPolicy, GroundedResolutionRuntime, HarnessInput,
+    HarnessOutcome, MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError,
+    ModelError, ModelErrorKind, ModelUsage, Proposition, REASONING_ARTIFACT_CONTRACT_ID,
     REASONING_CANDIDATE_CONTRACT_ID, ReasoningArtifact, ReasoningCandidate,
     RejectAllEvidenceAdmission, RepeatedDiagnosticReport, ResolutionAdapterError,
     ResolutionBenchmarkAggregate, ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture,
     ResolutionCost, ResolutionRequest, ResolutionResolver, ResolutionResolverContribution,
-    ResolutionResolverOutput, ResolutionTarget, ResolverClass, SemanticDiagnosticKind,
-    SemanticRuntimeError, SemanticRuntimeIdentity, SemanticRuntimeObservation,
-    SemanticRuntimeProfile, SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport,
-    SoftJudgeDecision, SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeObservation,
-    StandardGroundingPipeline, StrictAcceptancePolicy, StructuredFactConflictDetector,
-    TrustedVerificationPass, Verdict, VerificationPass, VerificationReceipt, aggregate_benchmark,
-    aggregate_claim_corpus, aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
+    ResolutionResolverOutput, ResolutionTarget, ResolverClass, ScopeCoverage,
+    SemanticDiagnosticKind, SemanticRuntimeError, SemanticRuntimeIdentity,
+    SemanticRuntimeObservation, SemanticRuntimeProfile, SoftJudgeCalibrationFixture,
+    SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeFallbackReason, SoftJudgeIdentity,
+    SoftJudgeObservation, StandardGroundingPipeline, StrictAcceptancePolicy,
+    StructuredFactConflictDetector, TrustedVerificationPass, Verdict, VerificationPass,
+    VerificationReceipt, aggregate_benchmark, aggregate_claim_corpus,
+    aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
     aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
     build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
     canonical_verified_target_answer, canonical_verified_target_partial_answer,
@@ -43,8 +44,10 @@ use reasoning_harness_core::{
     structured_fact_verifier_for_input, validate_artifact,
 };
 use reasoning_harness_providers::{
-    EXTERNAL_COMMAND_RESOLVER_ID, ExternalCommandResolver, ExternalCommandResolverConfig,
-    GoogleAdapter, MistralAdapter, NvidiaAdapter,
+    EXTERNAL_COMMAND_RESOLVER_ID, EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver,
+    ExternalCommandResolverConfig, ExternalEvidenceAdmissionConfig,
+    ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy, GoogleAdapter, MistralAdapter,
+    NvidiaAdapter,
 };
 use schemars::{JsonSchema, schema_for};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -221,6 +224,32 @@ struct ExternalCommandResolverFileConfig {
     program: String,
     #[serde(default)]
     args: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    admission: Option<ExternalEvidenceAdmissionFileConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ExternalEvidenceAdmissionFileConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    evaluation_time_unix_seconds: Option<i64>,
+    #[serde(default)]
+    authority_ranks: BTreeMap<String, u16>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    minimum_authority_class: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    required_scope: Option<ApplicabilityScope>,
+    #[serde(default)]
+    sources: BTreeMap<String, ExternalEvidenceSourceFileConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ExternalEvidenceSourceFileConfig {
+    authority_class: String,
+    max_age_seconds: u64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    scope: Option<ApplicabilityScope>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -924,6 +953,8 @@ struct RunConfigurationObservation {
     max_tokens: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     resolver_adapter: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    resolver_admission: Option<&'static str>,
     output_format: OutputFormat,
     config_sources: Vec<&'static str>,
 }
@@ -1025,6 +1056,7 @@ impl ResolutionResolver for LocalFactStoreResolver {
             source: "cli-local-fact-store".into(),
             observation: format!("{}={observed_value}", proposition.key),
             facts: BTreeMap::from([(proposition.key.clone(), observed_value.clone())]),
+            acquisition_metadata: Default::default(),
         };
         Ok(ResolutionResolverOutput {
             contribution: ResolutionResolverContribution::AcquiredEvidence {
@@ -1238,6 +1270,7 @@ fn run_resolution_with_admission(
     resolver: &dyn ResolutionResolver,
     admission: &dyn EvidenceAdmissionPolicy,
     max_attempts: usize,
+    required_authority_class: Option<&str>,
 ) -> Result<GroundedResolutionOutcome, CliError> {
     if max_attempts == 0 {
         return Err(CliError::new(
@@ -1260,6 +1293,7 @@ fn run_resolution_with_admission(
     };
     let mut policy = GroundedResolutionPolicy::default();
     policy.budget.max_attempts = max_attempts;
+    policy.budget.required_authority_class = required_authority_class.map(str::to_string);
     runtime
         .run(input, candidate, &policy)
         .map_err(|error| CliError::new("harness_state", error.to_string()))
@@ -1277,6 +1311,7 @@ fn run_local_resolution(
         resolver,
         &ExplicitLocalFactAdmission,
         max_attempts,
+        None,
     )
 }
 
@@ -1284,14 +1319,27 @@ fn run_external_resolution(
     input: HarnessInput,
     candidate: ReasoningCandidate,
     resolver: &ExternalCommandResolver,
+    admission: Option<&ExternalEvidenceAdmissionPolicy>,
     max_attempts: usize,
 ) -> Result<GroundedResolutionOutcome, CliError> {
+    if let Some(admission) = admission {
+        let input = prepare_external_resolution_input(input, admission)?;
+        return run_resolution_with_admission(
+            input,
+            candidate,
+            resolver,
+            admission,
+            max_attempts,
+            admission.minimum_authority_class(),
+        );
+    }
     run_resolution_with_admission(
         input,
         candidate,
         resolver,
         &RejectAllEvidenceAdmission,
         max_attempts,
+        None,
     )
 }
 
@@ -1489,6 +1537,8 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
     };
     let external_resolver_config = resolve_external_command_config(&args, &loaded_config)
         .map_err(|error| CliError::new("configuration", error))?;
+    let external_admission_config = resolve_external_admission_config(&loaded_config)
+        .map_err(|error| CliError::new("configuration", error))?;
     if external_resolver_config.is_some() && !args.resolver_fact.is_empty() {
         return Err(CliError::new(
             "configuration",
@@ -1532,6 +1582,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         facts: built.resolver_facts.clone(),
     };
     let external_resolver = external_resolver_config.map(ExternalCommandResolver::new);
+    let external_admission = external_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
     let mut resolution_rounds = Vec::new();
     let mut final_artifact = initial_outcome.artifact.clone();
     let mut final_verdict = initial_outcome.verdict;
@@ -1549,6 +1600,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
                 built.input.clone(),
                 candidate.clone(),
                 external,
+                external_admission.as_ref(),
                 args.max_resolution_attempts,
             )?)
         } else {
@@ -1699,6 +1751,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
                 external_resolver
                     .as_ref()
                     .expect("external resolver availability checked above"),
+                external_admission.as_ref(),
                 args.max_resolution_attempts,
             )?
         };
@@ -1725,6 +1778,9 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             } else {
                 None
             },
+            resolver_admission: external_admission
+                .as_ref()
+                .map(|_| EXTERNAL_EVIDENCE_ADMISSION_ID),
             output_format: resolved.format,
             config_sources: resolved.config_sources,
         },
@@ -2221,6 +2277,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                     model: live.then(|| resolved.model.clone()).flatten(),
                     max_tokens: live.then_some(resolved.max_tokens),
                     resolver_adapter: None,
+                    resolver_admission: None,
                     output_format: resolved.format,
                     config_sources: resolved.config_sources,
                 },
@@ -3845,6 +3902,198 @@ fn resolve_external_command_config(
     }))
 }
 
+fn current_unix_seconds() -> Result<i64, String> {
+    let seconds = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_err(|_| "system clock is before the Unix epoch".to_string())?
+        .as_secs();
+    i64::try_from(seconds).map_err(|_| "system clock exceeds supported Unix timestamp range".into())
+}
+
+fn validate_config_scope(scope: &ApplicabilityScope, owner: &str) -> Result<(), String> {
+    for (dimension, coverage) in scope {
+        if dimension.trim().is_empty() {
+            return Err(format!("{owner} has an empty scope dimension"));
+        }
+        if let ScopeCoverage::Values { values } = coverage {
+            if values.is_empty() {
+                return Err(format!("{owner} scope dimension {dimension} has no values"));
+            }
+            if values.iter().any(|value| value.trim().is_empty()) {
+                return Err(format!(
+                    "{owner} scope dimension {dimension} contains an empty value"
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
+fn resolve_external_admission_config(
+    loaded: &LoadedCliConfig,
+) -> Result<Option<ExternalEvidenceAdmissionConfig>, String> {
+    let Some(external) = &loaded.config.resolution.external_command else {
+        return Ok(None);
+    };
+    let Some(configured) = &external.admission else {
+        return Ok(None);
+    };
+    if configured.authority_ranks.is_empty() {
+        return Err(
+            "resolution.external_command.admission.authority_ranks must not be empty".into(),
+        );
+    }
+    if configured.sources.is_empty() {
+        return Err("resolution.external_command.admission.sources must not be empty".into());
+    }
+    for class in configured.authority_ranks.keys() {
+        if class.trim().is_empty() {
+            return Err(
+                "resolution.external_command.admission.authority_ranks contains an empty class"
+                    .into(),
+            );
+        }
+    }
+    if let Some(minimum) = configured.minimum_authority_class.as_deref() {
+        if !configured.authority_ranks.contains_key(minimum) {
+            return Err(format!(
+                "resolution.external_command.admission.minimum_authority_class {minimum:?} is not ranked"
+            ));
+        }
+    }
+    if let Some(scope) = &configured.required_scope {
+        validate_config_scope(
+            scope,
+            "resolution.external_command.admission.required_scope",
+        )?;
+    }
+
+    let mut sources = BTreeMap::new();
+    for (source_id, source) in &configured.sources {
+        if source_id.trim().is_empty() {
+            return Err(
+                "resolution.external_command.admission.sources contains an empty source identity"
+                    .into(),
+            );
+        }
+        let authority_class = source.authority_class.trim();
+        if authority_class.is_empty() {
+            return Err(format!(
+                "resolution.external_command.admission.sources[{source_id:?}].authority_class must not be empty"
+            ));
+        }
+        if !configured.authority_ranks.contains_key(authority_class) {
+            return Err(format!(
+                "resolution.external_command.admission.sources[{source_id:?}].authority_class {authority_class:?} is not ranked"
+            ));
+        }
+        if source.max_age_seconds == 0 {
+            return Err(format!(
+                "resolution.external_command.admission.sources[{source_id:?}].max_age_seconds must be at least 1"
+            ));
+        }
+        if let Some(scope) = &source.scope {
+            validate_config_scope(
+                scope,
+                &format!("resolution.external_command.admission.sources[{source_id:?}].scope"),
+            )?;
+        }
+        sources.insert(
+            source_id.clone(),
+            ExternalEvidenceSourcePolicy {
+                authority_class: authority_class.into(),
+                max_age_seconds: source.max_age_seconds,
+                scope: source.scope.clone(),
+            },
+        );
+    }
+
+    let evaluation_time_unix_seconds = configured
+        .evaluation_time_unix_seconds
+        .map(Ok)
+        .unwrap_or_else(current_unix_seconds)?;
+    Ok(Some(ExternalEvidenceAdmissionConfig {
+        resolver_name: EXTERNAL_COMMAND_RESOLVER_ID,
+        evaluation_time_unix_seconds,
+        authority_policy: EvidenceAuthorityPolicy {
+            ranks: configured.authority_ranks.clone(),
+        },
+        minimum_authority_class: configured.minimum_authority_class.clone(),
+        required_scope: configured.required_scope.clone(),
+        sources,
+    }))
+}
+
+fn stronger_authority_class(
+    authority_policy: &EvidenceAuthorityPolicy,
+    left: Option<&str>,
+    right: Option<&str>,
+) -> Result<Option<String>, CliError> {
+    let rank = |class: &str| {
+        authority_policy.ranks.get(class).copied().ok_or_else(|| {
+            CliError::new(
+                "configuration",
+                format!("external admission authority class {class:?} is not ranked"),
+            )
+        })
+    };
+    match (left, right) {
+        (None, None) => Ok(None),
+        (Some(class), None) | (None, Some(class)) => {
+            rank(class)?;
+            Ok(Some(class.into()))
+        }
+        (Some(left), Some(right)) => Ok(Some(if rank(left)? >= rank(right)? {
+            left.into()
+        } else {
+            right.into()
+        })),
+    }
+}
+
+fn prepare_external_resolution_input(
+    mut input: HarnessInput,
+    admission: &ExternalEvidenceAdmissionPolicy,
+) -> Result<HarnessInput, CliError> {
+    if !input.authority_policy.ranks.is_empty()
+        && input.authority_policy != *admission.authority_policy()
+    {
+        return Err(CliError::new(
+            "configuration",
+            "external admission authority policy conflicts with the existing HarnessInput policy",
+        ));
+    }
+    input.authority_policy = admission.authority_policy().clone();
+
+    for proposition in input.hypotheses.clone() {
+        if let Some(requirement) = input
+            .evidence_requirements
+            .iter_mut()
+            .find(|requirement| requirement.proposition == proposition)
+        {
+            if requirement.as_of_unix_seconds.is_none() {
+                requirement.as_of_unix_seconds = Some(admission.evaluation_time_unix_seconds());
+            }
+            if requirement.scope.is_none() {
+                requirement.scope = admission.required_scope().cloned();
+            }
+            requirement.minimum_authority_class = stronger_authority_class(
+                &input.authority_policy,
+                requirement.minimum_authority_class.as_deref(),
+                admission.minimum_authority_class(),
+            )?;
+        } else {
+            input.evidence_requirements.push(EvidenceRequirement {
+                proposition,
+                as_of_unix_seconds: Some(admission.evaluation_time_unix_seconds()),
+                scope: admission.required_scope().cloned(),
+                minimum_authority_class: admission.minimum_authority_class().map(str::to_string),
+            });
+        }
+    }
+    Ok(input)
+}
+
 fn resolve_run_config(
     has_candidate: bool,
     cli_provider: Option<Provider>,
@@ -4125,6 +4374,7 @@ mod candidate_json_tests {
                     external_command: Some(ExternalCommandResolverFileConfig {
                         program: "resolver-bin".into(),
                         args: vec!["--mode".into(), "safe".into()],
+                        admission: None,
                     }),
                 },
             },
@@ -4204,6 +4454,126 @@ mod candidate_json_tests {
         )
         .unwrap_err();
         assert!(error.contains("supply --model explicitly"));
+    }
+
+    #[test]
+    fn external_admission_config_resolves_harness_owned_source_policy() {
+        let text = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"external_command":{
+            "program":"resolver-bin",
+            "admission":{
+              "evaluation_time_unix_seconds":1000,
+              "authority_ranks":{"secondary":10,"primary":20},
+              "minimum_authority_class":"primary",
+              "required_scope":{"region":{"kind":"values","values":["eu-west-1"]}},
+              "sources":{"api:trusted":{
+                "authority_class":"primary",
+                "max_age_seconds":60,
+                "scope":{"region":{"kind":"values","values":["eu-west-1","eu-west-2"]}}
+              }}
+            }
+          }}
+        }"#;
+        let config = serde_json::from_str::<CliFileConfig>(text).unwrap();
+        let loaded = LoadedCliConfig {
+            config,
+            sources: vec!["explicit"],
+        };
+        let resolved = resolve_external_admission_config(&loaded).unwrap().unwrap();
+        assert_eq!(resolved.resolver_name, EXTERNAL_COMMAND_RESOLVER_ID);
+        assert_eq!(resolved.evaluation_time_unix_seconds, 1000);
+        assert_eq!(resolved.minimum_authority_class.as_deref(), Some("primary"));
+        assert_eq!(resolved.authority_policy.ranks["primary"], 20);
+        assert_eq!(resolved.sources["api:trusted"].authority_class, "primary");
+        assert_eq!(resolved.sources["api:trusted"].max_age_seconds, 60);
+    }
+
+    #[test]
+    fn external_admission_config_rejects_unranked_authority_and_secret_fields() {
+        let unranked = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"external_command":{
+            "program":"resolver-bin",
+            "admission":{
+              "evaluation_time_unix_seconds":1000,
+              "authority_ranks":{"secondary":10},
+              "sources":{"api:trusted":{"authority_class":"primary","max_age_seconds":60}}
+            }
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(unranked).unwrap(),
+            sources: vec![],
+        };
+        assert!(
+            resolve_external_admission_config(&loaded)
+                .unwrap_err()
+                .contains("is not ranked")
+        );
+
+        let secret = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"external_command":{
+            "program":"resolver-bin",
+            "admission":{
+              "authority_ranks":{"primary":20},
+              "api_key":"secret",
+              "sources":{"api:trusted":{"authority_class":"primary","max_age_seconds":60}}
+            }
+          }}
+        }"#;
+        assert!(serde_json::from_str::<CliFileConfig>(secret).is_err());
+    }
+
+    #[test]
+    fn external_admission_constraints_are_rechecked_by_ordinary_qualification() {
+        let config = ExternalEvidenceAdmissionConfig {
+            resolver_name: EXTERNAL_COMMAND_RESOLVER_ID,
+            evaluation_time_unix_seconds: 1000,
+            authority_policy: EvidenceAuthorityPolicy {
+                ranks: BTreeMap::from([("primary".into(), 20)]),
+            },
+            minimum_authority_class: Some("primary".into()),
+            required_scope: Some(BTreeMap::from([(
+                "region".into(),
+                ScopeCoverage::Values {
+                    values: std::collections::BTreeSet::from(["eu-west-1".into()]),
+                },
+            )])),
+            sources: BTreeMap::from([(
+                "api:trusted".into(),
+                ExternalEvidenceSourcePolicy {
+                    authority_class: "primary".into(),
+                    max_age_seconds: 60,
+                    scope: None,
+                },
+            )]),
+        };
+        let admission = ExternalEvidenceAdmissionPolicy::new(config);
+        let proposition = Proposition {
+            key: "service.region".into(),
+            value: "eu-west-1".into(),
+        };
+        let input = HarnessInput {
+            task: "region".into(),
+            evidence: vec![],
+            hypotheses: vec![proposition.clone()],
+            assumptions: vec![],
+            evidence_requirements: vec![],
+            authority_policy: Default::default(),
+        };
+        let prepared = prepare_external_resolution_input(input, &admission).unwrap();
+        assert_eq!(prepared.authority_policy.ranks["primary"], 20);
+        assert_eq!(prepared.evidence_requirements.len(), 1);
+        let requirement = &prepared.evidence_requirements[0];
+        assert_eq!(requirement.proposition, proposition);
+        assert_eq!(requirement.as_of_unix_seconds, Some(1000));
+        assert_eq!(
+            requirement.minimum_authority_class.as_deref(),
+            Some("primary")
+        );
+        assert!(requirement.scope.is_some());
     }
 
     #[test]
@@ -4536,6 +4906,7 @@ mod candidate_json_tests {
             source: "other".into(),
             observation: "k=v".into(),
             facts: BTreeMap::from([("k".into(), "v".into())]),
+            acquisition_metadata: Default::default(),
         };
         let request = ResolutionRequest {
             id: "r1".into(),

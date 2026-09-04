@@ -8,9 +8,9 @@ Current work is now organized around the **v0.3.0 — External Evidence & Resolu
 
 Active v0.3.0 work is sequenced as:
 
-- **external resolver integration — #174 implemented** — `external_command_v1` is wired through the supported natural-language CLI/config path and existing resolver boundary. Its closed stdio response schema cannot carry trusted metadata/receipts/verdict/final prose, and external acquired evidence currently fails closed at admission.
-- **external evidence qualification — #175 next** — provenance/freshness/scope/authority admission hardening;
-- **external-resolution operations** — #178 bounded calls/retries, typed failures, telemetry, secrets, and replay safety;
+- **external resolver integration — #174 implemented** — `external_command_v1` is wired through the supported natural-language CLI/config path and existing resolver boundary. Its closed stdio response schema cannot carry trusted metadata/receipts/verdict/final prose.
+- **external evidence qualification — #175 implemented** — `external_evidence_admission_v1` uses exact source allowlists and Harness-owned authority ranks, freshness bounds, and scope policy. Resolver-supplied acquisition metadata is untrusted, cannot self-elevate authority, typed admission rejection is observable on resolution attempts, and admitted evidence re-enters ordinary qualification/verification.
+- **external-resolution operations — #178 next** — bounded calls/retries, typed failures, telemetry, secrets, and replay safety;
 - **MCP acquisition** — #176 read-only MCP tools as resolver adapters, never automatic authority;
 - **trusted external verification** — #177 reference deterministic/explicitly trusted verifier-oracle integration;
 - **open-world acceptance** — #179 non-frozen product dogfood and the v0.3.0 release gate;

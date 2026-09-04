@@ -34,7 +34,23 @@ The equivalent `reason-config-v1` fragment is:
   "resolution": {
     "external_command": {
       "program": "/path/to/resolver",
-      "args": ["--json"]
+      "args": ["--json"],
+      "admission": {
+        "authority_ranks": {"secondary": 10, "primary": 20},
+        "minimum_authority_class": "primary",
+        "required_scope": {
+          "region": {"kind": "values", "values": ["eu-west-1"]}
+        },
+        "sources": {
+          "example:external-source": {
+            "authority_class": "primary",
+            "max_age_seconds": 300,
+            "scope": {
+              "region": {"kind": "values", "values": ["eu-west-1", "eu-west-2"]}
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -83,6 +99,14 @@ The resolver writes exactly one JSON response to stdout using schema `reason-ext
         "observation": "service.failover_region=eu-west-1",
         "facts": {
           "service.failover_region": "eu-west-1"
+        },
+        "acquisition_metadata": {
+          "observed_at_unix_seconds": 1788487200,
+          "retrieved_at_unix_seconds": 1788487210,
+          "scope": {
+            "region": {"kind": "values", "values": ["eu-west-1"]}
+          },
+          "claimed_authority_class": "primary"
         }
       }
     ]
@@ -98,13 +122,25 @@ Other allowed contribution kinds are `candidate_revision`, `no_result`, and `hum
 
 The response wire format is deliberately closed. Resolver responses cannot include `EvidenceMetadata`, verification receipts, a verdict, or final prose. Unknown response fields are rejected as malformed output instead of being silently interpreted as authority.
 
-## Trust behavior in #174
+## Trust behavior after #175
 
-External command acquisition is **not trusted by default**. The supported CLI currently pairs `external_command_v1` with `RejectAllEvidenceAdmission`, so raw external evidence is observable as a bounded resolution attempt but cannot by itself turn an unsupported target into `Supported`.
+External command acquisition remains **untrusted by default**. If `resolution.external_command.admission` is absent, the CLI still pairs `external_command_v1` with `RejectAllEvidenceAdmission`; a successful external call therefore cannot turn an unsupported target into `Supported`.
 
-That fail-closed behavior is intentional for #174. #175 adds harness-owned provenance/freshness/scope/authority admission for selected external evidence. Even after admission exists, acquired content must remain byte/field-equivalent across the admission boundary and the resulting artifact must re-enter the ordinary verification and decision pipeline.
+When admission is configured, the resolver may report only normalized **acquisition metadata**: exact `source` identity, observation time, retrieval time, applicability scope, and a claimed authority class. Those fields are not `EvidenceMetadata`. `external_evidence_admission_v1` checks them against Harness-owned configuration before any `Evidence` is created:
 
-Candidate revisions also do not gain authority. A revised candidate is simply re-run through the same normal pipeline against harness-owned evidence and policy.
+- `source` must exactly match an allowlisted source entry;
+- `observed_at_unix_seconds` and `retrieved_at_unix_seconds` are required, retrieval cannot precede observation, and freshness is bounded by the configured per-source `max_age_seconds`;
+- acquired scope cannot exceed the source's configured maximum and must cover any request/config-required scope;
+- the resolver's `claimed_authority_class` must match the authority class assigned to that source by Harness configuration;
+- the assigned source authority must meet the strongest configured/requested minimum under Harness-owned `authority_ranks`.
+
+The resolver's authority claim is therefore only an assertion to check. The trusted `EvidenceMetadata.provenance_class` is copied from the Harness-owned source policy, never promoted from resolver output. Missing, stale, future, wrong-scope, unknown-authority, insufficient-authority, or mismatched-authority data fails closed.
+
+Admission rejection is machine-observable on `ResolutionAttempt.admission_rejection` (for example `stale`, `scope_mismatch`, or `authority_claim_mismatch`). Rejection remains a resolution observation, not semantic evidence.
+
+For admitted evidence, the Harness also installs the configured authority policy and qualification requirements into the ordinary input before re-running validation, evidence qualification, verification, diagnostics, decision, and finalization. A deterministic end-to-end regression proves that fresh/in-scope/allowed external evidence can recover an initially unknown target only after this re-verification, while stale evidence remains `unknown` with no verification receipt.
+
+Candidate revisions still do not gain authority. A revised candidate is simply re-run through the same normal pipeline against harness-owned evidence and policy.
 
 ## Failure and budget behavior
 
