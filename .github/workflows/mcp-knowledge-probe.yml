@@ -67,7 +67,7 @@ jobs:
           test -n "$MISTRAL_API_KEY"
           cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-agentic-search-benchmark -- \
             --suite dev \
-            --trials 2 \
+            --trials 5 \
             --model ministral-8b-latest \
             | tee /tmp/mcp-agentic-search-dev.json
 
