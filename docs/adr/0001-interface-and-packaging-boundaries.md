@@ -145,18 +145,19 @@ low-level shortcuts that allow consumers to skip validation or acceptance policy
 
 ### MCP adapter
 
-MCP is explicitly optional and deferred.
+MCP remains optional and outside the correctness boundary. The original decision to avoid making MCP the primary product remains unchanged, but the v0.3.0 roadmap now distinguishes two adapter roles:
 
-MCP can later expose selected capabilities to other agents, but an MCP caller controls
-whether a tool is invoked. Therefore an MCP server cannot, by itself, enforce this
-project's native correctness process over the caller's entire agent loop.
+1. **MCP as an acquisition transport (#176):** Reasoning Harness may call allowlisted read-only MCP tools through the existing `ResolutionResolver` boundary. Tool results are `AcquiredEvidence` only and still require harness-owned admission and, where hard authority is needed, separate trusted verification.
+2. **Reasoning Harness as an MCP product surface (#180):** an external agent may later invoke selected full-runtime operations. This remains optional/downstream and is not a v0.3.0 blocker.
+
+An MCP caller controls whether a tool is invoked. Therefore an MCP server cannot, by itself, enforce this project's native correctness process over the caller's entire agent loop.
 
 Consequences:
 
-- MCP is an integration adapter, not the core harness.
-- MCP tools may invoke the full native runtime.
-- MCP tools must not claim that the caller's overall reasoning is verified merely
-  because one tool invocation passed.
+- MCP is an integration/acquisition adapter, not the core harness.
+- MCP resolver results cannot self-promote into trusted evidence or receipts.
+- MCP tools may invoke the full native runtime only through the supported product boundary.
+- MCP tools must not claim that the caller's overall reasoning is verified merely because one tool invocation passed.
 - No v0.x core API will be distorted solely to fit MCP tool schemas.
 
 ## Packaging strategy

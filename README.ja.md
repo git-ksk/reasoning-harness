@@ -365,7 +365,7 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 
 > 小型・低コストなモデルでも、typed intermediate state、evidence binding、明示的不確実性、adversarial pass、deterministic acceptance gate、bounded resolution/re-verificationを通すことで、推論の信頼性を実質的に高められるか？
 
-目標は悪い推論を見つけるだけではありません。不足している根拠を特定し、外部adapterから追加のevidence/verificationを得て、同じauthority boundaryを再度通し、それでも根拠が足りなければ無理に完成させないruntimeを目指しています。
+次のplanned capability milestoneは **v0.3.0 — External Evidence & Resolution** (#173) です。不足根拠を特定し、実際の外部adapterから追加evidence/verificationを取得して、同じauthority boundaryを再度通し、それでも根拠不足なら無理に完成させません。read-only MCP acquisition (#176) はそのadapter経路の1つであり、新しいcorrectness boundaryではありません。
 
 研究機能は、calibration → 独立したfrozen evaluation → operational stabilization → runtime identity/rollback → CLI compatibilityという昇格手順を通るまでproduct CLIへ入りません。
 

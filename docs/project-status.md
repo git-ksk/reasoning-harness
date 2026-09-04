@@ -4,13 +4,17 @@
 
 The repository has a maturing evidence-grounded runtime core and a natural-language-first native `reason` CLI. The product boundary is stable in one important sense: the model remains an untrusted candidate/renderer, while evidence admission, qualification, verification, bounded resolution, and final factual-claim exposure remain harness-owned.
 
-Current work is organized by descriptive product/evaluation concepts rather than research code names:
+Current work is now organized around the **v0.3.0 — External Evidence & Resolution** milestone (#173). v0.2.0 closed the previous product line; v0.3.0 connects the existing bounded-resolution runtime to real external acquisition and trusted verification without changing the correctness boundary.
 
-- **bounded resolver target closure** — #159 implemented on the successor candidate line;
-- **renderer downgrade recovery** — #160 implemented on the successor candidate line;
-- **dependency-aware target-local recovery** — #164 implemented on the successor candidate line;
-- **provider reliability / resumable evaluation** — #126 implemented as an operational-only layer;
-- **external CLI hardening and real-workload UX** — #90 / #139 closeout complete; current main satisfies the documented readiness gate without yet publishing a v1.0 release.
+Active v0.3.0 work is sequenced as:
+
+- **external resolver integration** — #174 supported adapter/CLI/config wiring through the existing resolver boundary;
+- **external evidence qualification** — #175 provenance/freshness/scope/authority admission hardening;
+- **external-resolution operations** — #178 bounded calls/retries, typed failures, telemetry, secrets, and replay safety;
+- **MCP acquisition** — #176 read-only MCP tools as resolver adapters, never automatic authority;
+- **trusted external verification** — #177 reference deterministic/explicitly trusted verifier-oracle integration;
+- **open-world acceptance** — #179 non-frozen product dogfood and the v0.3.0 release gate;
+- **optional MCP product surface** — #180 external agents invoking the full runtime, downstream and non-blocking for v0.3.0.
 
 The #147 product-capability evaluation and #150 verified-utility-recovery milestone are closed. The semantic candidate frozen at `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352` completed Stage B and the separately frozen 16-case Stage-C holdout. Final Stage-C target coverage was `1.00` for Ministral 8B, Mistral Small, Gemma 4 31B, and Gemini 3.1 Flash-Lite; Ministral 14B reproducibly scored `0.875`. Every completed Stage-C run kept unsupported grounded claims at `0` and missed target insufficiency at `0`. The 14B residual is therefore carried forward as conservative utility evidence, not repaired by changing the observed holdout or gate.
 
@@ -22,7 +26,7 @@ The #90 CLI contract gap is closed at process level: `product_cli_contract` laun
 
 #139 is also closed by fresh product evidence rather than by weakening gates. On Actions run `33822567155` from main `5c5701f77df9dd507c3949294708f8c07a054064`, the same six-case Ministral 8B product workload improved from historical Harness target coverage 0.25 / false target abstention 0.75 to target coverage 1.00 / false target abstention 0.00 in both Harness arms, while unsupported grounded claims and missed target insufficiency remained zero. The raw arm stayed at 0.25 coverage, so the recovery is attributable to the Harness successor path rather than a favorable raw-model rerun. Expected-unknown targets still remain unresolved; the human CLI renders deterministic evidence-insufficiency guidance instead of inventing a final answer.
 
-Together these results satisfy the documented #90 v1.0 **readiness gate**. v0.2.0 packages this product-capability state as the current tagged external preview while deliberately retaining v0.x/prerelease compatibility semantics; it is not a v1.0 stability promise and does not create a new research generation.
+Together these results satisfy the documented #90 v1.0 **readiness gate**. v0.2.0 packages that product-capability state as the current tagged external preview while deliberately retaining v0.x/prerelease compatibility semantics. v0.3.0 is now the active product roadmap and adds external-evidence/resolver capability without creating a new semantic research generation; v1.0 remains a separate stability/release decision.
 
 The current semantic runtime and answer-safety gate keep their exact machine configuration IDs for reproducibility and rollback. Those IDs, and older labels such as `D3`, `R4`, `RSD2`, or `NL-5`, are not a common product version sequence. See [Terminology and naming](terminology.md).
 
