@@ -81,6 +81,14 @@ pub struct ResolutionCost {
     pub added_tokens: u64,
     #[serde(default)]
     pub elapsed_ms: u64,
+    /// Actual external calls represented by this adapter result. Runtime normalizes zero to one
+    /// for an invoked adapter, preserving legacy adapters while making retries/calls observable.
+    #[serde(default)]
+    pub calls: u32,
+    /// Optional adapter-reported monetary/tool cost in micro-USD. This is operational telemetry,
+    /// never evidence or correctness authority.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cost_microusd: Option<u64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -208,9 +216,18 @@ pub struct ResolutionResolverOutput {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ResolutionAdapterErrorKind {
+    /// Legacy fixture-compatible availability class.
     Unavailable,
+    /// Legacy fixture-compatible malformed-output class.
     MalformedOutput,
+    /// Legacy fixture-compatible generic failure class.
     Failed,
+    Transport,
+    Authentication,
+    PermissionDenied,
+    Protocol,
+    Timeout,
+    PolicyDenied,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -223,6 +240,11 @@ pub struct ResolutionAdapterError {
 pub trait ResolutionResolver: Send + Sync {
     fn name(&self) -> &'static str;
     fn class(&self) -> ResolverClass;
+    /// Stable identity for the Harness-configured adapter settings. Secrets must not be exposed in
+    /// this value. `None` preserves compatibility for internal/legacy resolvers.
+    fn config_id(&self) -> Option<&str> {
+        None
+    }
     fn resolve(
         &self,
         request: &ResolutionRequest,
@@ -240,6 +262,9 @@ pub struct TrustedVerifierResolutionOutput {
 
 pub trait TrustedResolutionVerifier: Send + Sync {
     fn name(&self) -> &'static str;
+    fn config_id(&self) -> Option<&str> {
+        None
+    }
     fn verify(
         &self,
         request: &ResolutionRequest,
@@ -268,6 +293,11 @@ pub enum EvidenceAdmissionRejection {
 }
 
 pub trait EvidenceAdmissionPolicy: Send + Sync {
+    /// Stable Harness-owned policy/config identity for replay/audit telemetry.
+    fn identity(&self) -> Option<&str> {
+        None
+    }
+
     fn admit(
         &self,
         resolver_name: &str,
@@ -548,6 +578,12 @@ pub enum ResolutionAttemptStatus {
     AdapterUnavailable,
     MalformedOutput,
     AdapterFailed,
+    TransportFailure,
+    AuthenticationFailure,
+    PermissionDenied,
+    ProtocolFailure,
+    TimedOut,
+    PolicyDenied,
     HumanReviewRequired,
     BudgetExceeded,
 }
@@ -557,6 +593,10 @@ pub struct ResolutionAttempt {
     pub attempt_index: usize,
     pub request: ResolutionRequest,
     pub adapter_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub adapter_config_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub admission_policy_id: Option<String>,
     pub status: ResolutionAttemptStatus,
     pub cost: ResolutionCost,
     #[serde(default)]
@@ -575,14 +615,21 @@ pub enum ResolutionTerminalStatus {
     ResolvedRefuted,
     Exhausted,
     Unavailable,
+    TimedOut,
+    Denied,
+    OperationalFailure,
     HumanReviewRequired,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ResolutionUsage {
     pub attempts: usize,
+    #[serde(default)]
+    pub calls: u64,
     pub added_tokens: u64,
     pub elapsed_ms: u64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cost_microusd: Option<u64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -804,7 +851,8 @@ impl<'a> GroundedResolutionRuntime<'a> {
                 return Ok(Some(ResolutionTerminalStatus::Unavailable));
             };
             match verifier.verify(request, &current.artifact, attempt_index) {
-                Ok(output) => {
+                Ok(mut output) => {
+                    output.cost = normalized_adapter_cost(output.cost);
                     if !can_consume(&policy.budget, usage, output.cost)
                         || !can_consume_request(&request.budget, attempts, request, output.cost)
                     {
@@ -814,6 +862,8 @@ impl<'a> GroundedResolutionRuntime<'a> {
                             attempt_index,
                             request,
                             verifier.name(),
+                            verifier.config_id(),
+                            None,
                             output.cost,
                         );
                         return Ok(Some(ResolutionTerminalStatus::Exhausted));
@@ -825,6 +875,8 @@ impl<'a> GroundedResolutionRuntime<'a> {
                         attempt_index,
                         request: request.clone(),
                         adapter_name: verifier.name().into(),
+                        adapter_config_id: verifier.config_id().map(str::to_string),
+                        admission_policy_id: None,
                         status: if receipt_count == 0 {
                             ResolutionAttemptStatus::NoResult
                         } else {
@@ -850,6 +902,8 @@ impl<'a> GroundedResolutionRuntime<'a> {
                         attempt_index,
                         request,
                         verifier.name(),
+                        verifier.config_id(),
+                        None,
                         error,
                     ));
                 }
@@ -866,7 +920,8 @@ impl<'a> GroundedResolutionRuntime<'a> {
         };
 
         match resolver.resolve(request, attempt_index) {
-            Ok(output) => {
+            Ok(mut output) => {
+                output.cost = normalized_adapter_cost(output.cost);
                 if !can_consume(&policy.budget, usage, output.cost)
                     || !can_consume_request(&request.budget, attempts, request, output.cost)
                 {
@@ -876,6 +931,8 @@ impl<'a> GroundedResolutionRuntime<'a> {
                         attempt_index,
                         request,
                         resolver.name(),
+                        resolver.config_id(),
+                        self.evidence_admission.identity(),
                         output.cost,
                     );
                     return Ok(Some(ResolutionTerminalStatus::Exhausted));
@@ -892,6 +949,11 @@ impl<'a> GroundedResolutionRuntime<'a> {
                                     attempt_index,
                                     request: request.clone(),
                                     adapter_name: resolver.name().into(),
+                                    adapter_config_id: resolver.config_id().map(str::to_string),
+                                    admission_policy_id: self
+                                        .evidence_admission
+                                        .identity()
+                                        .map(str::to_string),
                                     status: ResolutionAttemptStatus::MalformedOutput,
                                     cost: output.cost,
                                     admitted_evidence_ids: vec![],
@@ -919,6 +981,11 @@ impl<'a> GroundedResolutionRuntime<'a> {
                                         attempt_index,
                                         request: request.clone(),
                                         adapter_name: resolver.name().into(),
+                                        adapter_config_id: resolver.config_id().map(str::to_string),
+                                        admission_policy_id: self
+                                            .evidence_admission
+                                            .identity()
+                                            .map(str::to_string),
                                         status: ResolutionAttemptStatus::RejectedUntrustedEvidence,
                                         cost: output.cost,
                                         admitted_evidence_ids: vec![],
@@ -939,6 +1006,11 @@ impl<'a> GroundedResolutionRuntime<'a> {
                             attempt_index,
                             request: request.clone(),
                             adapter_name: resolver.name().into(),
+                            adapter_config_id: resolver.config_id().map(str::to_string),
+                            admission_policy_id: self
+                                .evidence_admission
+                                .identity()
+                                .map(str::to_string),
                             status: ResolutionAttemptStatus::AppliedEvidence,
                             cost: output.cost,
                             admitted_evidence_ids: ids,
@@ -952,6 +1024,11 @@ impl<'a> GroundedResolutionRuntime<'a> {
                             attempt_index,
                             request: request.clone(),
                             adapter_name: resolver.name().into(),
+                            adapter_config_id: resolver.config_id().map(str::to_string),
+                            admission_policy_id: self
+                                .evidence_admission
+                                .identity()
+                                .map(str::to_string),
                             status: ResolutionAttemptStatus::AppliedCandidateRevision,
                             cost: output.cost,
                             admitted_evidence_ids: vec![],
@@ -964,6 +1041,11 @@ impl<'a> GroundedResolutionRuntime<'a> {
                             attempt_index,
                             request: request.clone(),
                             adapter_name: resolver.name().into(),
+                            adapter_config_id: resolver.config_id().map(str::to_string),
+                            admission_policy_id: self
+                                .evidence_admission
+                                .identity()
+                                .map(str::to_string),
                             status: ResolutionAttemptStatus::NoResult,
                             cost: output.cost,
                             admitted_evidence_ids: vec![],
@@ -976,6 +1058,11 @@ impl<'a> GroundedResolutionRuntime<'a> {
                             attempt_index,
                             request: request.clone(),
                             adapter_name: resolver.name().into(),
+                            adapter_config_id: resolver.config_id().map(str::to_string),
+                            admission_policy_id: self
+                                .evidence_admission
+                                .identity()
+                                .map(str::to_string),
                             status: ResolutionAttemptStatus::HumanReviewRequired,
                             cost: output.cost,
                             admitted_evidence_ids: vec![],
@@ -999,6 +1086,8 @@ impl<'a> GroundedResolutionRuntime<'a> {
                 attempt_index,
                 request,
                 resolver.name(),
+                resolver.config_id(),
+                self.evidence_admission.identity(),
                 error,
             )),
         }
@@ -1013,8 +1102,11 @@ impl<'a> GroundedResolutionRuntime<'a> {
         attempt_index: usize,
         request: &ResolutionRequest,
         adapter_name: &str,
-        error: ResolutionAdapterError,
+        adapter_config_id: Option<&str>,
+        admission_policy_id: Option<&str>,
+        mut error: ResolutionAdapterError,
     ) -> Option<ResolutionTerminalStatus> {
+        error.cost = normalized_adapter_cost(error.cost);
         if !can_consume(&policy.budget, usage, error.cost)
             || !can_consume_request(&request.budget, attempts, request, error.cost)
         {
@@ -1024,6 +1116,8 @@ impl<'a> GroundedResolutionRuntime<'a> {
                 attempt_index,
                 request,
                 adapter_name,
+                adapter_config_id,
+                admission_policy_id,
                 error.cost,
             );
             return Some(ResolutionTerminalStatus::Exhausted);
@@ -1033,19 +1127,43 @@ impl<'a> GroundedResolutionRuntime<'a> {
             ResolutionAdapterErrorKind::Unavailable => ResolutionAttemptStatus::AdapterUnavailable,
             ResolutionAdapterErrorKind::MalformedOutput => ResolutionAttemptStatus::MalformedOutput,
             ResolutionAdapterErrorKind::Failed => ResolutionAttemptStatus::AdapterFailed,
+            ResolutionAdapterErrorKind::Transport => ResolutionAttemptStatus::TransportFailure,
+            ResolutionAdapterErrorKind::Authentication => {
+                ResolutionAttemptStatus::AuthenticationFailure
+            }
+            ResolutionAdapterErrorKind::PermissionDenied => {
+                ResolutionAttemptStatus::PermissionDenied
+            }
+            ResolutionAdapterErrorKind::Protocol => ResolutionAttemptStatus::ProtocolFailure,
+            ResolutionAdapterErrorKind::Timeout => ResolutionAttemptStatus::TimedOut,
+            ResolutionAdapterErrorKind::PolicyDenied => ResolutionAttemptStatus::PolicyDenied,
         };
         attempts.push(ResolutionAttempt {
             attempt_index,
             request: request.clone(),
             adapter_name: adapter_name.into(),
+            adapter_config_id: adapter_config_id.map(str::to_string),
+            admission_policy_id: admission_policy_id.map(str::to_string),
             status,
             cost: error.cost,
             admitted_evidence_ids: vec![],
             verification_receipts: 0,
             admission_rejection: None,
         });
-        (error.kind == ResolutionAdapterErrorKind::Unavailable)
-            .then_some(ResolutionTerminalStatus::Unavailable)
+        match error.kind {
+            ResolutionAdapterErrorKind::Unavailable => Some(ResolutionTerminalStatus::Unavailable),
+            ResolutionAdapterErrorKind::Authentication
+            | ResolutionAdapterErrorKind::PermissionDenied
+            | ResolutionAdapterErrorKind::PolicyDenied => Some(ResolutionTerminalStatus::Denied),
+            ResolutionAdapterErrorKind::Timeout => Some(ResolutionTerminalStatus::TimedOut),
+            ResolutionAdapterErrorKind::Transport | ResolutionAdapterErrorKind::Protocol => {
+                Some(ResolutionTerminalStatus::OperationalFailure)
+            }
+            // Historical deterministic fixture classes retain their prior retry/exhaustion semantics.
+            ResolutionAdapterErrorKind::MalformedOutput | ResolutionAdapterErrorKind::Failed => {
+                None
+            }
+        }
     }
 
     fn finalize_terminal(
@@ -1232,16 +1350,16 @@ fn request_usage_for(attempts: &[ResolutionAttempt], request_id: &str) -> Resolu
         .collect::<Vec<_>>();
     ResolutionUsage {
         attempts: relevant.len(),
+        calls: relevant
+            .iter()
+            .map(|attempt| u64::from(attempt.cost.calls))
+            .sum(),
         added_tokens: relevant
             .iter()
-            .filter(|attempt| attempt.status != ResolutionAttemptStatus::BudgetExceeded)
             .map(|attempt| attempt.cost.added_tokens)
             .sum(),
-        elapsed_ms: relevant
-            .iter()
-            .filter(|attempt| attempt.status != ResolutionAttemptStatus::BudgetExceeded)
-            .map(|attempt| attempt.cost.elapsed_ms)
-            .sum(),
+        elapsed_ms: relevant.iter().map(|attempt| attempt.cost.elapsed_ms).sum(),
+        cost_microusd: sum_optional_cost_microusd(relevant.iter().copied()),
     }
 }
 
@@ -1261,23 +1379,56 @@ fn can_consume(budget: &ResolutionBudget, usage: &ResolutionUsage, cost: Resolut
 
 fn consume(usage: &mut ResolutionUsage, cost: ResolutionCost) {
     usage.attempts += 1;
+    usage.calls = usage.calls.saturating_add(u64::from(cost.calls));
     usage.added_tokens = usage.added_tokens.saturating_add(cost.added_tokens);
     usage.elapsed_ms = usage.elapsed_ms.saturating_add(cost.elapsed_ms);
+    if let Some(cost_microusd) = cost.cost_microusd {
+        usage.cost_microusd = Some(
+            usage
+                .cost_microusd
+                .unwrap_or(0)
+                .saturating_add(cost_microusd),
+        );
+    }
 }
 
+fn normalized_adapter_cost(mut cost: ResolutionCost) -> ResolutionCost {
+    cost.calls = cost.calls.max(1);
+    cost
+}
+
+fn sum_optional_cost_microusd<'a>(
+    attempts: impl Iterator<Item = &'a ResolutionAttempt>,
+) -> Option<u64> {
+    let mut any = false;
+    let mut total = 0u64;
+    for attempt in attempts {
+        if let Some(cost) = attempt.cost.cost_microusd {
+            any = true;
+            total = total.saturating_add(cost);
+        }
+    }
+    any.then_some(total)
+}
+
+#[allow(clippy::too_many_arguments)]
 fn record_budget_exceeded(
     attempts: &mut Vec<ResolutionAttempt>,
     usage: &mut ResolutionUsage,
     attempt_index: usize,
     request: &ResolutionRequest,
     adapter_name: &str,
+    adapter_config_id: Option<&str>,
+    admission_policy_id: Option<&str>,
     cost: ResolutionCost,
 ) {
-    usage.attempts += 1;
+    consume(usage, cost);
     attempts.push(ResolutionAttempt {
         attempt_index,
         request: request.clone(),
         adapter_name: adapter_name.into(),
+        adapter_config_id: adapter_config_id.map(str::to_string),
+        admission_policy_id: admission_policy_id.map(str::to_string),
         status: ResolutionAttemptStatus::BudgetExceeded,
         cost,
         admitted_evidence_ids: vec![],
@@ -1336,6 +1487,7 @@ mod tests {
                 cost: ResolutionCost {
                     added_tokens: 10,
                     elapsed_ms: 5,
+                    ..ResolutionCost::default()
                 },
             })
         }
@@ -1985,6 +2137,7 @@ mod tests {
                     cost: ResolutionCost {
                         added_tokens: 2,
                         elapsed_ms: 3,
+                        ..ResolutionCost::default()
                     },
                 })
             }
@@ -2083,6 +2236,121 @@ mod tests {
             )
             .unwrap_err();
         assert!(matches!(error, ResolutionError::AdmissionChangedContent));
+    }
+
+    struct TypedErrorResolver {
+        kind: ResolutionAdapterErrorKind,
+        cost: ResolutionCost,
+    }
+
+    impl ResolutionResolver for TypedErrorResolver {
+        fn name(&self) -> &'static str {
+            "typed_external"
+        }
+
+        fn class(&self) -> ResolverClass {
+            ResolverClass::EvidenceAcquisition
+        }
+
+        fn config_id(&self) -> Option<&str> {
+            Some("external_command_v1:sha256:test")
+        }
+
+        fn resolve(
+            &self,
+            _request: &ResolutionRequest,
+            _attempt_index: usize,
+        ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
+            Err(ResolutionAdapterError {
+                kind: self.kind,
+                cost: self.cost,
+            })
+        }
+    }
+
+    fn run_typed_error(kind: ResolutionAdapterErrorKind) -> GroundedResolutionOutcome {
+        let resolver = TypedErrorResolver {
+            kind,
+            cost: ResolutionCost {
+                elapsed_ms: 17,
+                calls: 1,
+                cost_microusd: Some(9),
+                ..ResolutionCost::default()
+            },
+        };
+        let resolvers: [&dyn ResolutionResolver; 1] = [&resolver];
+        let runtime =
+            default_grounded_resolution_runtime(&RejectAllEvidenceAdmission, &resolvers, &[]);
+        runtime
+            .run(
+                missing_support_input(),
+                candidate(),
+                &GroundedResolutionPolicy::default(),
+            )
+            .unwrap()
+    }
+
+    #[test]
+    fn typed_external_failures_are_operational_terminals_not_semantic_unknown_classes() {
+        for (kind, terminal, attempt_status) in [
+            (
+                ResolutionAdapterErrorKind::Authentication,
+                ResolutionTerminalStatus::Denied,
+                ResolutionAttemptStatus::AuthenticationFailure,
+            ),
+            (
+                ResolutionAdapterErrorKind::PermissionDenied,
+                ResolutionTerminalStatus::Denied,
+                ResolutionAttemptStatus::PermissionDenied,
+            ),
+            (
+                ResolutionAdapterErrorKind::PolicyDenied,
+                ResolutionTerminalStatus::Denied,
+                ResolutionAttemptStatus::PolicyDenied,
+            ),
+            (
+                ResolutionAdapterErrorKind::Timeout,
+                ResolutionTerminalStatus::TimedOut,
+                ResolutionAttemptStatus::TimedOut,
+            ),
+            (
+                ResolutionAdapterErrorKind::Transport,
+                ResolutionTerminalStatus::OperationalFailure,
+                ResolutionAttemptStatus::TransportFailure,
+            ),
+            (
+                ResolutionAdapterErrorKind::Protocol,
+                ResolutionTerminalStatus::OperationalFailure,
+                ResolutionAttemptStatus::ProtocolFailure,
+            ),
+        ] {
+            let result = run_typed_error(kind);
+            assert_eq!(result.final_verdict, Verdict::Unknown);
+            assert_eq!(result.terminal_status, terminal);
+            assert_eq!(result.attempts.len(), 1);
+            assert_eq!(result.attempts[0].status, attempt_status);
+            assert_eq!(
+                result.attempts[0].adapter_config_id.as_deref(),
+                Some("external_command_v1:sha256:test")
+            );
+            assert_eq!(result.usage.calls, 1);
+            assert_eq!(result.usage.elapsed_ms, 17);
+            assert_eq!(result.usage.cost_microusd, Some(9));
+        }
+    }
+
+    #[test]
+    fn legacy_malformed_error_remains_exhaustible_for_frozen_resolution_fixtures() {
+        let result = run_typed_error(ResolutionAdapterErrorKind::MalformedOutput);
+        assert_eq!(result.final_verdict, Verdict::Unknown);
+        assert_eq!(result.terminal_status, ResolutionTerminalStatus::Exhausted);
+        assert_eq!(result.attempts.len(), 3);
+        assert!(
+            result
+                .attempts
+                .iter()
+                .all(|attempt| attempt.status == ResolutionAttemptStatus::MalformedOutput)
+        );
     }
 
     struct HumanResolver;

@@ -109,10 +109,14 @@ fn resolution_attempt() -> ResolutionAttempt {
             budget: ResolutionRequestBudget::default(),
         },
         adapter_name: "external-resolver-that-must-not-run-on-replay".into(),
+        adapter_config_id: Some("external-resolver:sha256:fixture".into()),
+        admission_policy_id: Some("admission:sha256:fixture".into()),
         status: ResolutionAttemptStatus::AppliedEvidence,
         cost: ResolutionCost {
             added_tokens: 12,
             elapsed_ms: 34,
+            calls: 2,
+            cost_microusd: Some(7),
         },
         admitted_evidence_ids: vec!["e1".into()],
         verification_receipts: 1,
@@ -179,6 +183,23 @@ fn checkpoint_interrupt_resume_reconstructs_equivalent_harness_state_without_rep
     assert_eq!(
         resumed.snapshot.resolution_attempts[0].adapter_name,
         "external-resolver-that-must-not-run-on-replay"
+    );
+    assert_eq!(
+        resumed.snapshot.resolution_attempts[0]
+            .adapter_config_id
+            .as_deref(),
+        Some("external-resolver:sha256:fixture")
+    );
+    assert_eq!(
+        resumed.snapshot.resolution_attempts[0]
+            .admission_policy_id
+            .as_deref(),
+        Some("admission:sha256:fixture")
+    );
+    assert_eq!(resumed.snapshot.resolution_attempts[0].cost.calls, 2);
+    assert_eq!(
+        resumed.snapshot.resolution_attempts[0].cost.cost_microusd,
+        Some(7)
     );
 }
 

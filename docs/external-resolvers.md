@@ -58,7 +58,7 @@ The equivalent `reason-config-v1` fragment is:
 
 `--resolver-command` has CLI precedence over configured `resolution.external_command`. `--resolver-arg` is valid only with an explicit `--resolver-command`. The external command path and `--resolver-fact` are intentionally mutually exclusive for this first product lane because the current bounded runtime selects one resolver per resolver class.
 
-Environment variables are inherited by the child process in the ordinary operating-system sense, so an integration may obtain credentials from its environment. Credentials are not copied into `ResolutionRequest`, acquired evidence, trusted metadata, receipts, or final output by the harness. Explicit secret transport and redaction/telemetry hardening are tracked separately in #178.
+Environment variables are inherited by the child process in the ordinary operating-system sense, so an integration may obtain credentials from its environment. Credentials are not copied into `ResolutionRequest`, acquired evidence, trusted metadata, receipts, or final output by the harness. Adapter/admission configuration is represented in resolution telemetry only by stable SHA-256-derived identities; literal command arguments are not emitted as config identity strings.
 
 ## Stdio protocol
 
@@ -144,9 +144,13 @@ Candidate revisions still do not gain authority. A revised candidate is simply r
 
 ## Failure and budget behavior
 
-The adapter maps executable-not-found to `unavailable`, invalid JSON/schema to `malformed_output`, and other process failures to the existing adapter `failed` class. Those remain operational outcomes, not semantic evidence.
+The adapter enforces a per-process wall-clock timeout and maximum accepted stdout size. The defaults are 30,000 ms and 1 MiB and can be tightened with `--resolver-timeout-ms` / `--resolver-max-response-bytes` or their `resolution.external_command` config fields. Zero-valued operational limits fail closed.
 
-The existing `GroundedResolutionPolicy` still owns resolver-class allowlisting and per-run/per-request attempt/token/time accounting. #174 does not add a second budget system. Stronger timeout/retry enforcement, detailed telemetry, redaction, and replay-safe external-call semantics are the scope of #178.
+Operational failure classes are explicit: `authentication`, `permission_denied`, and `policy_denied` terminate as `denied`; `timeout` terminates as `timed_out`; `transport` and `protocol` terminate as `operational_failure`; executable-not-found remains `unavailable`. Legacy `malformed_output`/`failed` remain retry/exhaustion compatible for frozen historical resolution fixtures. These terminal states accompany the semantic verdict rather than replacing or upgrading it: a semantic `unknown` can therefore be distinguished from an incomplete external operation.
+
+`ResolutionCost` / `ResolutionUsage` record actual call count, elapsed milliseconds, added tokens when supplied, and optional micro-USD cost when supplied. `ResolutionAttempt` also records a stable adapter config identity and admission-policy identity. These identities are hashes of Harness-owned configuration, not raw credentials or argument strings. Generic automatic retries are intentionally absent from `external_command_v1`; deterministic authorization, policy, and protocol failures are not re-invoked.
+
+The existing `GroundedResolutionPolicy` remains the owner of resolver-class allowlisting and per-run/per-request attempt/token/time accounting; #178 does not create a second correctness or budget system. ReasoningThread checkpoints persist typed attempts and identities, and deterministic replay reconstructs those records without calling the external adapter again.
 
 ## Reference smoke path
 

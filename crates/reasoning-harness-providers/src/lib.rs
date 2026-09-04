@@ -1,3 +1,4 @@
+mod config_identity;
 pub mod external_admission;
 pub mod external_command;
 pub mod gemma;
@@ -9,6 +10,7 @@ pub use mistral::MistralAdapter;
 pub use nvidia::NvidiaAdapter;
 
 pub use external_command::{
+    DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS,
     EXTERNAL_COMMAND_RESOLVER_ID, EXTERNAL_RESOLVER_REQUEST_SCHEMA,
     EXTERNAL_RESOLVER_RESPONSE_SCHEMA, ExternalCommandResolver, ExternalCommandResolverConfig,
 };
