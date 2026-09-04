@@ -123,6 +123,8 @@ Structured `HarnessInput` / `ReasoningCandidate` JSON remains available for appl
 
 For v0.3.0 development on `main`, an external process can also be wired through the existing bounded-resolution boundary with `--resolver-command`. The process cannot mint authority: its wire schema exposes acquisition/revision contributions only. External evidence remains fail-closed unless an explicit source allowlist and Harness-owned freshness/scope/authority policy admits it; admitted evidence still re-enters ordinary qualification and verification. See [External resolver adapters](docs/external-resolvers.md), [Read-only MCP resolver](docs/mcp-resolver.md), and [Trusted verifier](docs/trusted-verifier.md).
 
+External agents can optionally call the Harness through the Rust-only `reason-mcp` product adapter. This is the opposite direction from the read-only MCP resolver: `reason-mcp` delegates selected calls back to the native `reason` runtime and does not create a second correctness implementation. See [MCP product surface](docs/mcp-product-surface.md).
+
 ## Application and automation patterns
 
 ### A. Check an LLM/RAG answer before publishing it
