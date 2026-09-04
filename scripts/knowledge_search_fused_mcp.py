@@ -193,15 +193,34 @@ def main():
             return 0
 
         wp_id = wp_top.get("wikibase_item")
+        wp_title = wp_top.get("title")
         wd_ids = [item.get("id") for item in wd if item.get("id")]
-        if not wp_id or wp_id not in wd_ids:
+        corroboration = "original_query"
+        corroboration_rank = None
+
+        if wp_id and wp_id in wd_ids:
+            corroboration_rank = wd_ids.index(wp_id) + 1
+        elif wp_id and isinstance(wp_title, str) and wp_title:
+            title_wd = wikidata_search(wp_title, language)
+            title_wd_ids = [item.get("id") for item in title_wd if item.get("id")]
+            if wp_id in title_wd_ids:
+                corroboration = "wikipedia_title_retry"
+                corroboration_rank = title_wd_ids.index(wp_id) + 1
+            else:
+                respond(request_id, result=result_payload(
+                    f"cross-source entity disagreement after title retry: query={query!r}; original_wikidata_candidates={wd_ids}; "
+                    f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}; title_retry_candidates={title_wd_ids}",
+                    {},
+                ))
+                return 0
+        else:
             respond(request_id, result=result_payload(
-                f"cross-source entity disagreement: query={query!r}; wikidata_candidates={wd_ids}; wikipedia_top={wp_id}; wikipedia_title={wp_top.get('title')!r}",
+                f"cross-source entity unresolved: query={query!r}; wikidata_candidates={wd_ids}; "
+                f"wikipedia_top={wp_id}; wikipedia_title={wp_title!r}",
                 {},
             ))
             return 0
 
-        wd_rank = wd_ids.index(wp_id) + 1
         values = wikidata_claim_values(wp_id, property_id, value_kind)
         if len(values) != 1:
             respond(request_id, result=result_payload(
@@ -212,8 +231,8 @@ def main():
 
         value = values[0]
         observation = (
-            f"cross-source search resolved query={query!r} to {wp_id} via Wikipedia top result + Wikidata top-5 corroboration "
-            f"(wikidata_rank={wd_rank}); {fact_key}={value}; property={property_id}"
+            f"cross-source search resolved query={query!r} to {wp_id} via Wikipedia top result + Wikidata corroboration "
+            f"(mode={corroboration}, rank={corroboration_rank}); {fact_key}={value}; property={property_id}"
         )
         respond(request_id, result=result_payload(observation, {fact_key: value}))
         return 0
