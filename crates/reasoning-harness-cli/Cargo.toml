@@ -58,6 +58,10 @@ name = "reason-mcp-knowledge-benchmark"
 path = "src/bin/mcp_knowledge_benchmark.rs"
 
 [[bin]]
+name = "reason-mcp-search-benchmark"
+path = "src/bin/mcp_search_benchmark.rs"
+
+[[bin]]
 name = "reason-sufficiency-study"
 path = "src/bin/sufficiency.rs"
 
