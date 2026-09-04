@@ -120,7 +120,7 @@ If trusted support is missing, a qualified answer or `unknown` is expected behav
 
 Structured `HarnessInput` / `ReasoningCandidate` JSON remains available for applications, CI, reproducibility, and offline candidate checking.
 
-For v0.3.0 development on `main`, an external process can also be wired through the existing bounded-resolution boundary with `--resolver-command`. The process cannot mint authority: its wire schema exposes acquisition/revision contributions only, and external evidence is fail-closed until Harness-owned admission accepts it. See [External resolver adapters](docs/external-resolvers.md).
+For v0.3.0 development on `main`, an external process can also be wired through the existing bounded-resolution boundary with `--resolver-command`. The process cannot mint authority: its wire schema exposes acquisition/revision contributions only. External evidence remains fail-closed unless an explicit source allowlist and Harness-owned freshness/scope/authority policy admits it; admitted evidence still re-enters ordinary qualification and verification. See [External resolver adapters](docs/external-resolvers.md).
 
 ## Application and automation patterns
 

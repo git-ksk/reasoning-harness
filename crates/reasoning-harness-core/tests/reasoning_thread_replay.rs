@@ -116,6 +116,7 @@ fn resolution_attempt() -> ResolutionAttempt {
         },
         admitted_evidence_ids: vec!["e1".into()],
         verification_receipts: 1,
+        admission_rejection: None,
     }
 }
 

@@ -6,9 +6,9 @@ use std::{
 };
 
 use reasoning_harness_core::{
-    AcquiredEvidence, ReasoningCandidate, ResolutionAdapterError, ResolutionAdapterErrorKind,
-    ResolutionCost, ResolutionRequest, ResolutionResolver, ResolutionResolverContribution,
-    ResolutionResolverOutput, ResolverClass,
+    AcquiredEvidence, AcquiredEvidenceMetadata, ReasoningCandidate, ResolutionAdapterError,
+    ResolutionAdapterErrorKind, ResolutionCost, ResolutionRequest, ResolutionResolver,
+    ResolutionResolverContribution, ResolutionResolverOutput, ResolverClass,
 };
 use serde::{Deserialize, Serialize};
 
@@ -72,6 +72,8 @@ struct ExternalAcquiredEvidence {
     observation: String,
     #[serde(default)]
     facts: BTreeMap<String, String>,
+    #[serde(default)]
+    acquisition_metadata: AcquiredEvidenceMetadata,
 }
 
 impl From<ExternalResolverContribution> for ResolutionResolverContribution {
@@ -86,6 +88,7 @@ impl From<ExternalResolverContribution> for ResolutionResolverContribution {
                             source: item.source,
                             observation: item.observation,
                             facts: item.facts,
+                            acquisition_metadata: item.acquisition_metadata,
                         })
                         .collect(),
                 }

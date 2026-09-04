@@ -76,8 +76,8 @@ unknown / insufficient support
 Planned order:
 
 1. **#174 external resolver adapter + CLI/config wiring — implemented.** `external_command_v1` uses the existing `ResolutionResolver` boundary, a closed stdio JSON protocol, literal argv, and fail-closed external evidence admission. It cannot return trusted metadata, receipts, verdicts, or final prose.
-2. **#175 external evidence qualification — next.** Preserve and enforce provenance, freshness, scope, and configured authority; resolver-supplied metadata cannot self-elevate.
-3. **#178 operational hardening** — bounded calls/retries, typed tool/resolver failures, secret-safe telemetry, and replay semantics that never re-execute external side effects.
+2. **#175 external evidence qualification — implemented.** `external_evidence_admission_v1` normalizes source identity, observation/retrieval time, scope, and claimed authority; exact source allowlists plus Harness-owned ranks/max-age/scope policy decide admission. Resolver authority claims cannot self-elevate, rejection reasons are typed telemetry, and admitted evidence is re-qualified/re-verified through the ordinary pipeline.
+3. **#178 operational hardening — next.** — bounded calls/retries, typed tool/resolver failures, secret-safe telemetry, and replay semantics that never re-execute external side effects.
 4. **#176 read-only MCP resolver adapter** — selected MCP tools act only as acquisition sources inside bounded resolution.
 5. **#177 reference trusted verifier/oracle** — demonstrate a separate deterministic/explicitly trusted authority-bearing integration.
 6. **#179 open-world dogfood and release acceptance** — measure external recovery, abstention, acquisition-vs-verification success, operational cost, and false grounding on non-frozen product workloads.

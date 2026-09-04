@@ -498,6 +498,7 @@ impl ResolutionResolver for LocalFactResolver {
                     source: "dogfood-local-fact-store".into(),
                     observation: format!("{}={value}", proposition.key),
                     facts: BTreeMap::from([(proposition.key.clone(), value.clone())]),
+                    acquisition_metadata: Default::default(),
                 }],
             },
             cost: ResolutionCost::default(),
