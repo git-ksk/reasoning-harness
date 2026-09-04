@@ -1,0 +1,24 @@
+name: mcp-agentic-progress-contract
+
+on:
+  push:
+    branches:
+      - experiment/mcp-knowledge-probe
+    paths:
+      - scripts/assert_target_directed_progress_contract.py
+      - .github/workflows/mcp-agentic-progress-contract.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Assert target-directed no-progress contract
+        run: |
+          set -euo pipefail
+          python3 scripts/assert_target_directed_progress_contract.py
