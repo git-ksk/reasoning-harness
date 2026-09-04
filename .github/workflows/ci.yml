@@ -41,5 +41,9 @@ jobs:
           cargo run -q --locked -p reasoning-harness-cli -- run --input examples/input.json --candidate examples/candidate.json --config examples/reason-config.json >/tmp/reason-config-run.json
           jq -e '.command == "run" and .contracts.config == "reason-config-v1" and .result.configuration.config_sources == ["explicit"]' /tmp/reason-config-run.json >/dev/null
           cargo run -q --locked -p reasoning-harness-cli -- eval examples/artifact.json --format json >/tmp/reason-eval.json
+      - name: External resolution acceptance
+        run: |
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-external-resolution-acceptance -- >/tmp/reason-external-acceptance.json
+          jq -e '.schema_version == "reason-external-resolution-acceptance-v1" and .frozen_research_inputs_used == false and .aggregate.acceptance_passed == true and .aggregate.unsupported_grounded_claims == 0 and .aggregate.missed_target_insufficiency == 0 and .aggregate.verified_recoveries >= 1' /tmp/reason-external-acceptance.json >/dev/null
       - name: Fixture regression
         run: cargo run -q --locked -p reasoning-harness-cli -- eval fixtures --format json >/tmp/reason-fixtures.json

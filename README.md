@@ -329,7 +329,9 @@ The research question behind the project is:
 
 > Can a small or inexpensive model become materially more reliable when its reasoning is forced through typed intermediate state, evidence binding, explicit uncertainty, adversarial passes, deterministic acceptance gates, and bounded resolution/re-verification before finalization?
 
-The next planned capability milestone is **v0.3.0 — External Evidence & Resolution** (#173): identify missing support, acquire or verify additional evidence through real external adapters, re-run the same authority boundaries, and refuse to fabricate completion when sufficient support cannot be established. Read-only MCP acquisition is one adapter path (#176), not a new correctness boundary.
+The active capability milestone is **v0.3.0 — External Evidence & Resolution** (#173). The non-frozen external-resolution acceptance gate is documented in [v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.md).
+
+The milestone goal is to identify missing support, acquire or verify additional evidence through real external adapters, re-run the same authority boundaries, and refuse to fabricate completion when sufficient support cannot be established. Read-only MCP acquisition is one adapter path (#176), not a new correctness boundary.
 
 Research and product development proceed on separate tracks. New reasoning mechanisms enter the supported CLI only after calibration, independent frozen evaluation, operational stabilization, explicit runtime identity/rollback, and compatibility coverage.
 

@@ -33,7 +33,7 @@ Execution order:
 3. #178 external-resolution budgets, telemetry, secret handling, and typed operational failures — **implemented** with typed operational terminals, call/latency/cost telemetry, stable hashed config identities, process timeout, and bounded response size;
 4. #176 read-only MCP resolver adapter — **implemented** with `mcp_readonly_v1`, explicit server/tool allowlisting, read-only acquisition-only config, MCP 2026-07-28 stdio calls, typed tool failure, and ordinary admission/re-verification;
 5. #177 reference trusted verifier/oracle integration — **implemented** with `trusted_command_verifier_v1`, Harness-constructed exact receipts, qualification-preserving evidence binding, and typed operational failure;
-6. #179 non-frozen open-world product dogfood and v0.3.0 acceptance;
+6. #179 non-frozen open-world product dogfood and v0.3.0 acceptance — **implemented/passed** with `external-resolution-acceptance-v1`; deterministic CI keeps unsupported grounded claims and missed target insufficiency at zero, plus a recorded live AWS public-feed recovery;
 7. #180 optional full-runtime MCP product surface, explicitly non-blocking for v0.3.0.
 
 The release gate requires at least one safe real external-evidence recovery while preserving unsupported grounded claims = `0` and missed target insufficiency = `0` on the declared acceptance set. External acquisition success and hard verification success are separate observations. Frozen Stage-C/RSD2 and other historical holdouts remain immutable and are not used for product tuning.

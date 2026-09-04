@@ -47,6 +47,10 @@ path = "src/bin/product_dogfood.rs"
 
 
 [[bin]]
+name = "reason-external-resolution-acceptance"
+path = "src/bin/external_resolution_acceptance.rs"
+
+[[bin]]
 name = "reason-sufficiency-study"
 path = "src/bin/sufficiency.rs"
 
@@ -58,3 +62,4 @@ schemars.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
+reqwest.workspace = true
