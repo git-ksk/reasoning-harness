@@ -65,6 +65,35 @@ def summarize_agentic(report):
     if report is None:
         return None
     aggregate = report.get("aggregate", {})
+    samples = report.get("samples", [])
+
+    invalid_by_sample = []
+    invalid_action_observations = 0
+    invalid_actions_blocked_before_external_request = 0
+    for sample in samples:
+        invalid_traces = [
+            trace for trace in sample.get("traces", [])
+            if (trace.get("search_state") or {}).get("outcome_kind") == "invalid_query"
+        ]
+        if invalid_traces:
+            invalid_by_sample.append((sample, invalid_traces))
+        invalid_action_observations += len(invalid_traces)
+        invalid_actions_blocked_before_external_request += sum(
+            1 for trace in invalid_traces
+            if (trace.get("search_state") or {}).get("external_requests") == 0
+        )
+
+    samples_with_invalid_actions = len(invalid_by_sample)
+    repaired_after_invalid_action = sum(
+        1 for sample, _ in invalid_by_sample if sample.get("passed")
+    )
+    valid_tool_observations = sum(
+        1
+        for sample in samples
+        for trace in sample.get("traces", [])
+        if (trace.get("search_state") or {}).get("outcome_kind") != "invalid_query"
+    )
+
     return {
         "samples": aggregate.get("samples", 0),
         "raw_success_rate": aggregate.get("expectation_success_rate", 0.0),
@@ -76,6 +105,18 @@ def summarize_agentic(report):
         "budget_exhaustions": aggregate.get("budget_exhaustions", 0),
         "no_progress_stops": aggregate.get("no_progress_stops", 0),
         "duplicate_query_stops": aggregate.get("duplicate_query_stops", 0),
+        "invalid_action_observations": invalid_action_observations,
+        "samples_with_invalid_actions": samples_with_invalid_actions,
+        "invalid_action_sample_rate": (
+            samples_with_invalid_actions / len(samples) if samples else 0.0
+        ),
+        "repaired_after_invalid_action": repaired_after_invalid_action,
+        "invalid_action_repair_success_rate": (
+            repaired_after_invalid_action / samples_with_invalid_actions
+            if samples_with_invalid_actions else 0.0
+        ),
+        "invalid_actions_blocked_before_external_request": invalid_actions_blocked_before_external_request,
+        "valid_tool_observations": valid_tool_observations,
         "mean_rounds": aggregate.get("mean_rounds", 0.0),
         "mean_tool_calls": aggregate.get("mean_tool_calls", 0.0),
         "mean_planner_calls": aggregate.get("mean_planner_calls", 0.0),
@@ -93,9 +134,14 @@ def summarize_agentic(report):
                 "rounds": sample.get("rounds"),
                 "tool_calls": sample.get("tool_calls"),
                 "planner_calls": sample.get("planner_calls"),
+                "invalid_actions": sum(
+                    1
+                    for trace in sample.get("traces", [])
+                    if (trace.get("search_state") or {}).get("outcome_kind") == "invalid_query"
+                ),
                 "passed": sample.get("passed"),
             }
-            for sample in report.get("samples", [])
+            for sample in samples
         ],
     }
 
@@ -117,7 +163,8 @@ def main():
         "notes": [
             "Operational failures are excluded from semantic success/failure attribution for Layers A/B.",
             "Expected-unknown cases are only credited as semantic unknowns when the terminal status is non-operational.",
-            "Layer C reports planner, tool, budget, no-progress, and duplicate-stop provenance separately.",
+            "Layer C reports planner, tool, budget, no-progress, duplicate-stop, invalid-action, and repair provenance separately.",
+            "An invalid planner action can be rejected before external acquisition; successful recovery is reported separately from first-action quality.",
             "Holdout results must not be used to retune the planner or budgets after observation.",
         ],
     }
