@@ -4,12 +4,12 @@
 
 The repository has a maturing evidence-grounded runtime core and a natural-language-first native `reason` CLI. The product boundary is stable in one important sense: the model remains an untrusted candidate/renderer, while evidence admission, qualification, verification, bounded resolution, and final factual-claim exposure remain harness-owned.
 
-Current work is now organized around the **v0.3.0 — External Evidence & Resolution** milestone (#173). v0.2.0 closed the previous product line; v0.3.0 connects the existing bounded-resolution runtime to real external acquisition and trusted verification without changing the correctness boundary.
+Current work is now organized around the **v0.3.0 — External Evidence & Resolution** milestone (#173). v0.2.0 closed the previous product line; v0.3.0 connects the existing bounded-resolution runtime to real external acquisition and trusted verification without changing the correctness boundary. #174 establishes the first supported external acquisition lane without changing semantic runtime `semantic-decidability-d3-v1` or answer-safety `verified-target-answer-gate-v1`.
 
 Active v0.3.0 work is sequenced as:
 
-- **external resolver integration** — #174 supported adapter/CLI/config wiring through the existing resolver boundary;
-- **external evidence qualification** — #175 provenance/freshness/scope/authority admission hardening;
+- **external resolver integration — #174 implemented** — `external_command_v1` is wired through the supported natural-language CLI/config path and existing resolver boundary. Its closed stdio response schema cannot carry trusted metadata/receipts/verdict/final prose, and external acquired evidence currently fails closed at admission.
+- **external evidence qualification — #175 next** — provenance/freshness/scope/authority admission hardening;
 - **external-resolution operations** — #178 bounded calls/retries, typed failures, telemetry, secrets, and replay safety;
 - **MCP acquisition** — #176 read-only MCP tools as resolver adapters, never automatic authority;
 - **trusted external verification** — #177 reference deterministic/explicitly trusted verifier-oracle integration;

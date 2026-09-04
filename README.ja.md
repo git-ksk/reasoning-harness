@@ -114,6 +114,7 @@ reason "DBがHTTP 503のroot causeだと断定できる？" \
 | `--fact KEY=VALUE` | Harness-ownedの明示structured evidence。deterministic verification対象にできる。 |
 | `--hypothesis KEY=VALUE` | 評価・resolveしたいproposition。 |
 | `--resolver-fact KEY=VALUE` | bounded resolution → admission → 再verification経由だけで使うlocal fact。 |
+| `--resolver-command PROGRAM` | `main`のexternal stdio JSON resolver。取得結果はHarness-owned admissionを通るまでuntrusted。 |
 
 trusted supportが足りなければ、条件付き回答や`unknown`になるのが正しい動作です。文書に文章が書かれているだけではverified evidenceにはなりません。
 

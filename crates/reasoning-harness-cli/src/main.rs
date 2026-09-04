@@ -22,16 +22,16 @@ use reasoning_harness_core::{
     MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError, ModelError,
     ModelErrorKind, ModelUsage, Proposition, REASONING_ARTIFACT_CONTRACT_ID,
     REASONING_CANDIDATE_CONTRACT_ID, ReasoningArtifact, ReasoningCandidate,
-    RepeatedDiagnosticReport, ResolutionAdapterError, ResolutionBenchmarkAggregate,
-    ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture, ResolutionCost, ResolutionRequest,
-    ResolutionResolver, ResolutionResolverContribution, ResolutionResolverOutput, ResolutionTarget,
-    ResolverClass, SemanticDiagnosticKind, SemanticRuntimeError, SemanticRuntimeIdentity,
-    SemanticRuntimeObservation, SemanticRuntimeProfile, SoftJudgeCalibrationFixture,
-    SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeFallbackReason, SoftJudgeIdentity,
-    SoftJudgeObservation, StandardGroundingPipeline, StrictAcceptancePolicy,
-    StructuredFactConflictDetector, TrustedVerificationPass, Verdict, VerificationPass,
-    VerificationReceipt, aggregate_benchmark, aggregate_claim_corpus,
-    aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
+    RejectAllEvidenceAdmission, RepeatedDiagnosticReport, ResolutionAdapterError,
+    ResolutionBenchmarkAggregate, ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture,
+    ResolutionCost, ResolutionRequest, ResolutionResolver, ResolutionResolverContribution,
+    ResolutionResolverOutput, ResolutionTarget, ResolverClass, SemanticDiagnosticKind,
+    SemanticRuntimeError, SemanticRuntimeIdentity, SemanticRuntimeObservation,
+    SemanticRuntimeProfile, SoftJudgeCalibrationFixture, SoftJudgeCalibrationReport,
+    SoftJudgeDecision, SoftJudgeFallbackReason, SoftJudgeIdentity, SoftJudgeObservation,
+    StandardGroundingPipeline, StrictAcceptancePolicy, StructuredFactConflictDetector,
+    TrustedVerificationPass, Verdict, VerificationPass, VerificationReceipt, aggregate_benchmark,
+    aggregate_claim_corpus, aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
     aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
     build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
     canonical_verified_target_answer, canonical_verified_target_partial_answer,
@@ -42,7 +42,10 @@ use reasoning_harness_core::{
     run_harness, run_model_backed_soft_judge, run_semantic_runtime,
     structured_fact_verifier_for_input, validate_artifact,
 };
-use reasoning_harness_providers::{GoogleAdapter, MistralAdapter, NvidiaAdapter};
+use reasoning_harness_providers::{
+    EXTERNAL_COMMAND_RESOLVER_ID, ExternalCommandResolver, ExternalCommandResolverConfig,
+    GoogleAdapter, MistralAdapter, NvidiaAdapter,
+};
 use schemars::{JsonSchema, schema_for};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
 
@@ -85,6 +88,17 @@ struct NaturalArgs {
     /// Explicit local resolver fact in KEY=VALUE form. Used only through bounded resolution. Repeatable.
     #[arg(long, value_name = "KEY=VALUE")]
     resolver_fact: Vec<String>,
+    /// External resolver program using the reason external-resolver stdio JSON protocol.
+    #[arg(long, value_name = "PROGRAM")]
+    resolver_command: Option<PathBuf>,
+    /// Argument passed literally to --resolver-command. Repeatable; no shell parsing is performed.
+    #[arg(
+        long,
+        value_name = "ARG",
+        requires = "resolver_command",
+        allow_hyphen_values = true
+    )]
+    resolver_arg: Vec<String>,
     /// Maximum bounded-resolution attempts for the natural-language path.
     #[arg(long, default_value_t = 3)]
     max_resolution_attempts: usize,
@@ -195,12 +209,28 @@ struct RunFileConfig {
     format: Option<OutputFormat>,
 }
 
+#[derive(Debug, Clone, Default, Serialize, Deserialize, JsonSchema)]
+#[serde(default, deny_unknown_fields)]
+struct ResolutionFileConfig {
+    external_command: Option<ExternalCommandResolverFileConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct ExternalCommandResolverFileConfig {
+    program: String,
+    #[serde(default)]
+    args: Vec<String>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 struct CliFileConfig {
     schema_version: String,
     #[serde(default)]
     run: RunFileConfig,
+    #[serde(default)]
+    resolution: ResolutionFileConfig,
 }
 
 impl Default for CliFileConfig {
@@ -208,6 +238,7 @@ impl Default for CliFileConfig {
         Self {
             schema_version: CLI_CONFIG_CONTRACT_ID.into(),
             run: RunFileConfig::default(),
+            resolution: ResolutionFileConfig::default(),
         }
     }
 }
@@ -891,6 +922,8 @@ struct RunConfigurationObservation {
     model: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     max_tokens: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    resolver_adapter: Option<&'static str>,
     output_format: OutputFormat,
     config_sources: Vec<&'static str>,
 }
@@ -1199,10 +1232,11 @@ fn run_standard_grounding(
         .map_err(|error| CliError::new("harness_state", error.to_string()))
 }
 
-fn run_local_resolution(
+fn run_resolution_with_admission(
     input: HarnessInput,
     candidate: ReasoningCandidate,
-    resolver: &LocalFactStoreResolver,
+    resolver: &dyn ResolutionResolver,
+    admission: &dyn EvidenceAdmissionPolicy,
     max_attempts: usize,
 ) -> Result<GroundedResolutionOutcome, CliError> {
     if max_attempts == 0 {
@@ -1213,14 +1247,13 @@ fn run_local_resolution(
     }
     let pipeline = StandardGroundingPipeline;
     let planner = DefaultResolutionPlanner;
-    let admission = ExplicitLocalFactAdmission;
     let renderer = CanonicalFinalAnswerRenderer;
     let resolver_refs: [&dyn ResolutionResolver; 1] = [resolver];
     let trusted_verifiers: [&dyn reasoning_harness_core::TrustedResolutionVerifier; 0] = [];
     let runtime = GroundedResolutionRuntime {
         pipeline: &pipeline,
         planner: &planner,
-        evidence_admission: &admission,
+        evidence_admission: admission,
         resolvers: &resolver_refs,
         trusted_verifiers: &trusted_verifiers,
         renderer: &renderer,
@@ -1230,6 +1263,36 @@ fn run_local_resolution(
     runtime
         .run(input, candidate, &policy)
         .map_err(|error| CliError::new("harness_state", error.to_string()))
+}
+
+fn run_local_resolution(
+    input: HarnessInput,
+    candidate: ReasoningCandidate,
+    resolver: &LocalFactStoreResolver,
+    max_attempts: usize,
+) -> Result<GroundedResolutionOutcome, CliError> {
+    run_resolution_with_admission(
+        input,
+        candidate,
+        resolver,
+        &ExplicitLocalFactAdmission,
+        max_attempts,
+    )
+}
+
+fn run_external_resolution(
+    input: HarnessInput,
+    candidate: ReasoningCandidate,
+    resolver: &ExternalCommandResolver,
+    max_attempts: usize,
+) -> Result<GroundedResolutionOutcome, CliError> {
+    run_resolution_with_admission(
+        input,
+        candidate,
+        resolver,
+        &RejectAllEvidenceAdmission,
+        max_attempts,
+    )
 }
 
 fn input_from_artifact(artifact: &ReasoningArtifact) -> HarnessInput {
@@ -1424,6 +1487,14 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         load_cli_config(args.config.as_ref())
             .map_err(|error| CliError::new("configuration", error))?
     };
+    let external_resolver_config = resolve_external_command_config(&args, &loaded_config)
+        .map_err(|error| CliError::new("configuration", error))?;
+    if external_resolver_config.is_some() && !args.resolver_fact.is_empty() {
+        return Err(CliError::new(
+            "configuration",
+            "choose either --resolver-fact or an external resolver command, not both",
+        ));
+    }
     let resolved = resolve_run_config(
         false,
         args.provider,
@@ -1460,20 +1531,34 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
     let resolver = LocalFactStoreResolver {
         facts: built.resolver_facts.clone(),
     };
+    let external_resolver = external_resolver_config.map(ExternalCommandResolver::new);
     let mut resolution_rounds = Vec::new();
     let mut final_artifact = initial_outcome.artifact.clone();
     let mut final_verdict = initial_outcome.verdict;
 
-    if !resolver.facts.is_empty() && final_verdict != Verdict::Accept {
-        let round = run_local_resolution(
-            built.input.clone(),
-            candidate.clone(),
-            &resolver,
-            args.max_resolution_attempts,
-        )?;
-        final_artifact = round.final_artifact.clone();
-        final_verdict = round.final_verdict;
-        resolution_rounds.push(round);
+    if final_verdict != Verdict::Accept {
+        let round = if !resolver.facts.is_empty() {
+            Some(run_local_resolution(
+                built.input.clone(),
+                candidate.clone(),
+                &resolver,
+                args.max_resolution_attempts,
+            )?)
+        } else if let Some(external) = external_resolver.as_ref() {
+            Some(run_external_resolution(
+                built.input.clone(),
+                candidate.clone(),
+                external,
+                args.max_resolution_attempts,
+            )?)
+        } else {
+            None
+        };
+        if let Some(round) = round {
+            final_artifact = round.final_artifact.clone();
+            final_verdict = round.final_verdict;
+            resolution_rounds.push(round);
+        }
     }
 
     let mut rendering = Vec::new();
@@ -1587,7 +1672,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         finalization = gated;
         safety_observations.extend(observations);
         if finalization.status != FinalizationStatus::RequiresVerification
-            || resolver.facts.is_empty()
+            || (resolver.facts.is_empty() && external_resolver.is_none())
             || render_round >= 2
         {
             break;
@@ -1600,12 +1685,23 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             }
         }
         let before = final_artifact.clone();
-        let round = run_local_resolution(
-            retry_input,
-            candidate.clone(),
-            &resolver,
-            args.max_resolution_attempts,
-        )?;
+        let round = if !resolver.facts.is_empty() {
+            run_local_resolution(
+                retry_input,
+                candidate.clone(),
+                &resolver,
+                args.max_resolution_attempts,
+            )?
+        } else {
+            run_external_resolution(
+                retry_input,
+                candidate.clone(),
+                external_resolver
+                    .as_ref()
+                    .expect("external resolver availability checked above"),
+                args.max_resolution_attempts,
+            )?
+        };
         final_artifact = round.final_artifact.clone();
         final_verdict = round.final_verdict;
         resolution_rounds.push(round);
@@ -1622,6 +1718,13 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             provider: Some(provider_name(provider)),
             model: Some(model),
             max_tokens: Some(resolved.max_tokens),
+            resolver_adapter: if external_resolver.is_some() {
+                Some(EXTERNAL_COMMAND_RESOLVER_ID)
+            } else if !resolver.facts.is_empty() {
+                Some("cli_local_fact_store")
+            } else {
+                None
+            },
             output_format: resolved.format,
             config_sources: resolved.config_sources,
         },
@@ -2117,6 +2220,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                     provider: resolved.provider.map(provider_name),
                     model: live.then(|| resolved.model.clone()).flatten(),
                     max_tokens: live.then_some(resolved.max_tokens),
+                    resolver_adapter: None,
                     output_format: resolved.format,
                     config_sources: resolved.config_sources,
                 },
@@ -3709,6 +3813,36 @@ fn merge_cli_config(base: &mut CliFileConfig, overlay: CliFileConfig) {
     if overlay.run.format.is_some() {
         base.run.format = overlay.run.format;
     }
+    if overlay.resolution.external_command.is_some() {
+        base.resolution.external_command = overlay.resolution.external_command;
+    }
+}
+
+fn resolve_external_command_config(
+    args: &NaturalArgs,
+    loaded: &LoadedCliConfig,
+) -> Result<Option<ExternalCommandResolverConfig>, String> {
+    if let Some(program) = &args.resolver_command {
+        if program.as_os_str().is_empty() {
+            return Err("--resolver-command requires a non-empty program".into());
+        }
+        return Ok(Some(ExternalCommandResolverConfig {
+            program: program.clone(),
+            args: args.resolver_arg.clone(),
+        }));
+    }
+
+    let Some(configured) = &loaded.config.resolution.external_command else {
+        return Ok(None);
+    };
+    let program = configured.program.trim();
+    if program.is_empty() {
+        return Err("resolution.external_command.program must be non-empty".into());
+    }
+    Ok(Some(ExternalCommandResolverConfig {
+        program: PathBuf::from(program),
+        args: configured.args.clone(),
+    }))
 }
 
 fn resolve_run_config(
@@ -3975,6 +4109,7 @@ mod candidate_json_tests {
                 max_tokens: Some(128),
                 format: None,
             },
+            resolution: ResolutionFileConfig::default(),
         };
         merge_cli_config(
             &mut base,
@@ -3986,12 +4121,21 @@ mod candidate_json_tests {
                     max_tokens: None,
                     format: Some(OutputFormat::Json),
                 },
+                resolution: ResolutionFileConfig {
+                    external_command: Some(ExternalCommandResolverFileConfig {
+                        program: "resolver-bin".into(),
+                        args: vec!["--mode".into(), "safe".into()],
+                    }),
+                },
             },
         );
         assert_eq!(base.run.provider, Some(Provider::Mistral));
         assert_eq!(base.run.model.as_deref(), Some("override-model"));
         assert_eq!(base.run.max_tokens, Some(128));
         assert_eq!(base.run.format, Some(OutputFormat::Json));
+        let external = base.resolution.external_command.as_ref().unwrap();
+        assert_eq!(external.program, "resolver-bin");
+        assert_eq!(external.args, vec!["--mode", "safe"]);
     }
 
     #[test]
@@ -4011,6 +4155,7 @@ mod candidate_json_tests {
                         max_tokens: Some(256),
                         format: None,
                     },
+                    resolution: ResolutionFileConfig::default(),
                 },
                 sources: vec!["user"],
             },
@@ -4052,6 +4197,7 @@ mod candidate_json_tests {
                         max_tokens: None,
                         format: None,
                     },
+                    resolution: ResolutionFileConfig::default(),
                 },
                 sources: vec!["project"],
             },
@@ -4065,6 +4211,21 @@ mod candidate_json_tests {
         let text = r#"{
           "schema_version": "reason-config-v1",
           "run": {"model": "m", "api_key": "secret"}
+        }"#;
+        assert!(serde_json::from_str::<CliFileConfig>(text).is_err());
+    }
+
+    #[test]
+    fn config_schema_rejects_secret_like_external_resolver_fields() {
+        let text = r#"{
+          "schema_version": "reason-config-v1",
+          "resolution": {
+            "external_command": {
+              "program": "resolver-bin",
+              "args": [],
+              "api_key": "secret"
+            }
+          }
         }"#;
         assert!(serde_json::from_str::<CliFileConfig>(text).is_err());
     }
@@ -4266,6 +4427,26 @@ mod candidate_json_tests {
         assert_eq!(cli.natural.provider, Some(Provider::Mistral));
         assert_eq!(cli.natural.fact, vec!["service.region=us-east-1"]);
         assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Current);
+    }
+
+    #[test]
+    fn parses_external_resolver_command_without_shell_reinterpretation() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "resolve this target",
+            "--resolver-command",
+            "resolver-bin",
+            "--resolver-arg",
+            "--mode",
+            "--resolver-arg",
+            "safe",
+        ])
+        .unwrap();
+        assert_eq!(
+            cli.natural.resolver_command.as_deref(),
+            Some(Path::new("resolver-bin"))
+        );
+        assert_eq!(cli.natural.resolver_arg, vec!["--mode", "safe"]);
     }
 
     #[test]

@@ -28,8 +28,8 @@ v0.3.0 does not add another reasoning mechanism by default. It connects the alre
 
 Execution order:
 
-1. #174 external resolver adapter and supported CLI/config wiring;
-2. #175 provenance/freshness/scope/authority admission hardening;
+1. #174 external resolver adapter and supported CLI/config wiring — **implemented** with `external_command_v1`; external acquired evidence remains fail-closed pending #175;
+2. #175 provenance/freshness/scope/authority admission hardening — **next**;
 3. #178 external-resolution budgets, telemetry, secret handling, and typed operational failures;
 4. #176 read-only MCP resolver adapter;
 5. #177 reference trusted verifier/oracle integration;

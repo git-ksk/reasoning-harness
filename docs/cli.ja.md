@@ -24,6 +24,7 @@ provider/modelは`reason-config-v1`または明示flagから取ります。defau
 | `--fact KEY=VALUE` | deterministic verification対象にできるHarness-owned structured fact |
 | `--hypothesis KEY=VALUE` | 評価/解決するHarness-owned proposition |
 | `--resolver-fact KEY=VALUE` | bounded resolution → admission → 再verification経由でだけ使う明示local fact |
+| `--resolver-command PROGRAM` + `--resolver-arg ARG` | stdio JSONで外部取得するadapter。取得結果はdefaultではuntrusted |
 
 context + target例:
 
@@ -33,6 +34,8 @@ cat error.log | reason "DBがroot causeか確認して" \
 ```
 
 trustedなstructured supportがなければ、結果が条件付き/`unknown`のままになることがあります。これは仕様です。`--file`に文章があるだけでverification authorityへ昇格はしません。
+
+`main`ではv0.3.0 #174のexternal-preview resolver laneも入っています。`--resolver-command PROGRAM`はshell補間なしで明示programを1つ起動し、stdioで`reason-external-resolver-request-v1` / `reason-external-resolver-response-v1` JSONを交換します。返せるのはacquired evidence / candidate revisionなど既存`ResolutionResolver` contributionだけで、trusted metadata・verification receipt・verdict・final proseは返せません。#174時点のexternal evidenceは`RejectAllEvidenceAdmission`でfail-closeし、provenance/freshness/scope/authority admissionは#175で追加します。詳細は[External resolver adapters](external-resolvers.md)を参照してください。
 
 最終自然文もmodelがrenderするだけでは信用しません。`finalize_answer`がfactual-claim coverageを確認し、新しい事実を勝手に混ぜた場合はblockします。明示resolverで確認できる場合のみbounded resolutionへ戻し、再verification後に再renderできます。最初からHarness-ownedだったrequested hypothesisがartifact上でexact `Known`/`Supported`なら、rendererだけがclaimを落とす・exact keyからずらす・同じexact targetを`grounded`ではなく`uncertain`へ弱めるケースをdeterministicに回収できます。downgrade recoveryはrendererがその**同一exact requested proposition**を`uncertain`で出した場合だけ起動し、authorityはartifact stateからしか取りません。artifact-global `Unknown`ではtarget-onlyの`QualifiedPartialAnswer`のままです。artifact-global `Reject`もglobal verdict自体は絶対に上書きしませんが、targetがevidence-boundなdirect trusted `Supported` receiptを持ち、problematicなnon-target stateとtyped artifact上で構造的に分離できる場合だけtarget-only `QualifiedPartialAnswer`を出せます。same-key blocker、untyped blocker、shared evidence、inference/dependency path、target-local contradiction/qualification/hard adversarial signalのどれかがあればfail-closeし、依存関係が曖昧な場合も出しません。model prose解析・fuzzy key matching・新authority生成は行わず、recovery後も通常のanswer-safety gateを通ります。
 
