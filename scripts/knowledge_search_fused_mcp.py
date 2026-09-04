@@ -138,9 +138,9 @@ def result_payload(observation, facts, search_state, metadata_extra=None):
             "reasoning_harness": {
                 "observation": observation,
                 "facts": facts,
-                "search_state": search_state,
                 "acquisition_metadata": metadata,
-            }
+            },
+            "search_state": search_state,
         },
         "isError": False,
     }
