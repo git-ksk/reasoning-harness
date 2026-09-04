@@ -43,9 +43,9 @@ Reasoning Harnessあり:
   evidence -> LLM -> candidate -> verify / resolve -> grounded | qualified | unknown
 ```
 
-## 30秒Quickstart
+## 30秒で始める
 
-### 1. 現在のv0.3.0 previewをインストール
+### 1. 現在のv0.3.0プレビューをインストール
 
 `v0.3.0`が現在の自然文first external previewです。Rust 1.88+がある場合:
 
@@ -58,7 +58,7 @@ reason --version
 
 standalone archiveと`SHA256SUMS`は[v0.3.0 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.3.0)から取得できます。`main`は未releaseの開発変更を意図的に使う場合だけ選んでください。
 
-### 2. 自然文task + 明示factを渡す
+### 2. 自然文タスク + 明示的なファクトを渡す
 
 ```bash
 export MISTRAL_API_KEY='...'
@@ -72,7 +72,7 @@ reason "確認できるdeployment regionを答えて" \
 
 AIはcandidateと最終文章を生成しますが、`service.region=us-east-1`を検証できる根拠は`--fact`です。provider/modelはconfigへ入れておけば毎回指定する必要はありません。
 
-### 3. わざと根拠不足のtaskを試す
+### 3. わざと根拠不足のタスクを試す
 
 ```bash
 reason "DBがHTTP 503のroot causeだと断定できる？" \
@@ -184,7 +184,7 @@ cat artifact.json | reason verify - --format json
 
 JSON modeでは失敗時もmachine-readableなfailure envelopeを返します。
 
-## 高度なstructured実行モード
+## 高度な構造化実行モード
 
 高度なintegration向けには`reason run`のstructuredな使い方も残っています。どちらも**候補ができた後の検証パイプラインは同じ**で、違うのは「untrusted candidateを誰が作るか」です。
 
@@ -243,7 +243,7 @@ Harnessは「この文章、正しそう？」と別のAIへ聞いているわ�
 
 つまり、AIが自分で「俺の回答は検証済み」と宣言しても、権限はもらえません。
 
-### 2. Harness側のevidenceと照合する
+### 2. Harness側のエビデンスと照合する
 
 たとえばcandidateが次を主張したとします。
 
@@ -275,7 +275,7 @@ HarnessInputに、Harness側が管理するstructured factがあるとします�
 
 **verification receiptを作れるのはtrusted boundary側で、candidateを作ったAIではありません。**
 
-### 3. 最後に保守的なpolicyでまとめる
+### 3. 最後に保守的なポリシーでまとめる
 
 現在のStrict policyは分かりやすく保守的です。
 
@@ -296,7 +296,7 @@ reason run --input evidence.json --candidate ai-output.json --no-config --format
 
 さらに詳しいstate遷移、verification receipt、evidence qualification、semantic safety runtimeとの役割分担は[仕組みの詳細](docs/how-it-works.ja.md)にまとめています。[用語ガイド](docs/terminology.ja.md)では製品概念・互換性ID・過去の研究フェーズ名を分けて説明しています。
 
-## Semantic safety check
+## セマンティック安全性チェック
 
 soft semantic diagnosticが勝手に最終判断権限を持たないよう、semantic runtimeは`reason run`とは別のproduct surfaceになっています。
 
@@ -312,7 +312,7 @@ CLIでは`--profile current`（default）と`--profile rollback`を使います�
 
 contradiction / counterexample / unsupported premise / causal gapなどをsemanticに診断したい場合に使う高度なsurfaceです。人が普通にtaskを依頼するなら**`reason "TASK"`**、structuredなアプリ/CI統合なら**`reason run`**から始めます。
 
-## Product command一覧
+## プロダクトコマンド一覧
 
 | コマンド | 使いどころ |
 | --- | --- |
@@ -356,7 +356,7 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 - native `reason` runtimeへclosed operationを委譲し、correctness boundaryにはならないoptional Rust-only `reason-mcp` product adapter
 - Ministral 3B/8B/14B / Mistral Small / Gemma 4 31B / Gemini 3.1/3.5 Flash-Liteでproduct dogfood実測済み。Gemma 4 26B A4B / Nemotron 3.5 Lightningはこのproduct workloadではprotocol-incomplete
 
-詳細な使い方は[日本語CLI guide](docs/cli.ja.md)、完全な仕様は[英語CLI guide](docs/cli.md)、v0.xの互換性は[support policy](docs/support.md)を参照してください。
+詳細な使い方は[日本語CLI guide](docs/cli.ja.md)、完全な仕様は[英語CLI guide](docs/cli.md)、v0.xの互換性は[support policy](docs/support.ja.md)を参照してください。
 
 ## これは何ではない？
 
@@ -378,9 +378,9 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 
 研究機能は、calibration → 独立したfrozen evaluation → operational stabilization → runtime identity/rollback → CLI compatibilityという昇格手順を通るまでproduct CLIへ入りません。
 
-[Research plan](docs/research-plan.md) / [Product roadmap](docs/product-roadmap.md) / [Project status](docs/project-status.md)
+[Research plan](docs/research-plan.ja.md) / [Product roadmap](docs/product-roadmap.ja.md) / [Project status](docs/project-status.ja.md)
 
-## 開発者向け
+## 開発者向け情報
 
 Rust 1.88+を利用します。Node.js/TypeScript runtime dependencyはありません。
 
@@ -395,4 +395,4 @@ cargo run -p reasoning-harness-cli -- run \
   --format json
 ```
 
-設計資料: [architecture](docs/architecture.md)、[reasoning policy](docs/reasoning-policy.md)、[evidence qualification](docs/evidence-qualification.md)、[grounded resolution](docs/grounded-resolution.md)、[ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md)、[ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md)
+設計資料: [architecture](docs/architecture.ja.md)、[reasoning policy](docs/reasoning-policy.ja.md)、[evidence qualification](docs/evidence-qualification.ja.md)、[grounded resolution](docs/grounded-resolution.ja.md)、[ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.ja.md)、[ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.ja.md)
