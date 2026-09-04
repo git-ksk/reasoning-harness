@@ -37,6 +37,15 @@ jobs:
           jq -e '.aggregate.expectation_success_rate >= 0.85' /tmp/mcp-knowledge-benchmark.json >/dev/null
           jq -e '.aggregate.accept_recovery_rate >= 0.80' /tmp/mcp-knowledge-benchmark.json >/dev/null
 
+      - name: Benchmark cross-source search and ambiguity handling
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-search-benchmark -- \
+            --trials 3 \
+            | tee /tmp/mcp-search-benchmark.json
+          jq -e '.aggregate.false_acceptances == 0' /tmp/mcp-search-benchmark.json >/dev/null
+          jq -e '.aggregate.expectation_success_rate >= 0.75' /tmp/mcp-search-benchmark.json >/dev/null
+
       - name: Configure read-only MCP resolver
         run: |
           set -euo pipefail
@@ -105,8 +114,10 @@ jobs:
         run: |
           echo '--- Wikidata MCP benchmark aggregate ---'
           jq '.aggregate' /tmp/mcp-knowledge-benchmark.json 2>/dev/null || true
-          echo '--- Wikidata MCP benchmark samples ---'
-          jq '.samples[] | {id, workload, trial, expected, initial_verdict, final_verdict, observed_value, elapsed_ms, passed}' /tmp/mcp-knowledge-benchmark.json 2>/dev/null || true
+          echo '--- Cross-source MCP search benchmark aggregate ---'
+          jq '.aggregate' /tmp/mcp-search-benchmark.json 2>/dev/null || true
+          echo '--- Cross-source MCP search samples ---'
+          jq '.samples[] | {id, workload, query, trial, expected, initial_verdict, final_verdict, observed_value, observation, elapsed_ms, passed}' /tmp/mcp-search-benchmark.json 2>/dev/null || true
           echo '--- direct Wikipedia MCP ---'
           cat /tmp/wikipedia-mcp-direct.json 2>/dev/null || true
           echo '--- Harness result: selected fields ---'
@@ -121,6 +132,7 @@ jobs:
           name: mcp-knowledge-probe
           path: |
             /tmp/mcp-knowledge-benchmark.json
+            /tmp/mcp-search-benchmark.json
             /tmp/wikipedia-mcp-direct.json
             /tmp/reason-mcp-wikipedia-result.json
             /tmp/reason-mcp-wikipedia.json
