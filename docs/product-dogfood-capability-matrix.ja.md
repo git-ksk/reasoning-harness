@@ -1,10 +1,10 @@
-# Product dogfood capability matrix
+# プロダクトのドッグフード機能マトリクス
 
 Issue #147では、従来の6-case smoke sliceを、観測前に固定する広いmodel-fitness評価へ拡張します。これはproduct評価であり、新しいsemantic authority実験ではありません。採用済みD3 runtime、sufficiency policy、verifier boundary、frozen research holdoutは変更しません。
 
 ## 3段階設計
 
-### Stage A — 24-case development/product matrix
+### Stage A — 24ケースの開発・プロダクトマトリクス
 
 `fixtures/product-dogfood-v1`は従来の6-case smoke/seed setとして保持します。`fixtures/product-dogfood-v2`を広いmodel比較用のdevelopment/product capability matrixとします。
 
@@ -27,7 +27,7 @@ provider観測前に`fixtures/product-dogfood-v2.sha256`でpayloadをfreezeし�
 
 Stage Aは全modelで同じcorpus、base seed、max-token、`shared-candidate-initial-render-v1`比較契約を使います。結果はこのworkloadに対するcompatibility/utility evidenceであり、一般model leaderboardではありません。
 
-### Stage B — 5-run replication
+### Stage B — 5回の再現実行
 
 Stage Aでoperationally completeかつ有用な候補だけを進めます。frozen v2 corpusを事前固定した5 base seedで再実行し、case×seedでpaired比較します。aggregate mean target coverageだけでは採否を決めません。
 
@@ -35,7 +35,7 @@ Stage Aでoperationally completeかつ有用な候補だけを進めます。fro
 
 provider/protocol failureはoperational evidenceのままで、semantic denominatorへ架空のabstainとして入れません。
 
-### Stage C — fresh holdout
+### Stage C — 新規ホールドアウト
 
 freeze済みevaluation candidate `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352`についてStage-Bのmodel/runtime選定を完了し、fresh holdoutを`fixtures/product-dogfood-holdout-v1`として作成します。16 case、8 capability family ×2 caseで、`product-dogfood-v2`のtarget keyとの完全一致は0件です。live providerを一度も観測する前に`fixtures/product-dogfood-holdout-v1.sha256`でpayloadをfreezeします。
 
@@ -50,7 +50,7 @@ freeze済みevaluation candidate `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352`に�
 
 acceptanceは観測前に固定します。semantic score対象の各modelでunsupported exposed grounded claims=`0`、missed target insufficiency=`0`、contradiction/temporal/scope protection維持、mean grounded target coverage >= `0.90`を要求します。provider/protocol failureはoperational evidenceとしてのみ扱い、fixture・gate・model-facing contractを変更せず同じmodel/seedで再試行できます。semantic missが出てもこのversionの結果として記録し、holdoutやruntimeをその場で書き換えません。
 
-#### Stage-C closeout
+#### Stage-Cのクローズアウト
 
 Stage Cは完了し、#147はclose済みです。freeze済み条件でsemantic completionした最終結果は次のとおりです。
 
@@ -66,19 +66,19 @@ Stage Cは完了し、#147はclose済みです。freeze済み条件でsemantic c
 
 operational retryはsemantic tuningではありません。Mistral Smallの初期runは`429`で止まりましたが、live rate-limit headerから`20,000 tokens/minute`と、実際のボトルネックだった`10 requests/minute`を確認しました。request headroomが1になった時点でprovider-only pacingが待機することで、同じfreeze済みStage-Cを16/16完走しcoverage `1.00`を記録しました。Ministral 14Bは`937,500 tokens/minute` / `30 requests/minute`で16/16完走しており、`0.875`はrate-limitではなくsemantic/utility結果です。Gemini 3.1は先行試行でquota/high-demandのoperational failureがありましたが、同じfreeze条件のretryで`1.00`完走しています。失敗したprovider attemptはsemantic scoreに入れません。
 
-## v2で必要になったevaluator hardening
+## v2で必要になった評価器の堅牢化
 
 従来のdogfood helperはraw support判定でstructured key/value一致しか見ておらず、temporal/scope caseではstale/out-of-scope evidenceを誤ってsupported扱いする余地がありました。v2ではruntimeと同じtrusted structured-fact verifier selectionを評価側でも再利用し、evidence qualification requirementを反映します。matching key/valueが入力内にあるだけではsupportedになりません。
 
 これは評価accountingの修正だけで、modelやevaluatorへ新しいauthorityを付与せず、採用済みruntime policyも変更しません。
 
-## Workflow
+## ワークフロー
 
 manual `product-dogfood` workflowで`product-dogfood-v1` / `product-dogfood-v2` / `product-dogfood-holdout-v1`を明示選択できます。v2はdevelopment matrix、holdout-v1はStage-C専用surfaceです。provider credentialを読む前に選択corpusをparseし、v1=6 cases、v2=24 cases / 8 families ×3 + SHA-256 manifest、holdout-v1=16 cases / 8 families ×2 + SHA-256 manifestというfreeze済み構造を検証します。live holdout実行後は、同じworkflowが観測前に固定したsemantic gate（current-safety unsupported grounded claims=0、missed target insufficiency=0、mean grounded target coverage >=0.90）も強制します。
 
 6-case v1は高速smoke/regressionと過去NL-5結果の解釈用に残します。
 
-## Stage A結果と完了済みutility recovery milestone
+## Stage A結果と完了済みユーティリティ回復マイルストーン
 
 Stage Aは、freeze済み`product-dogfood-v2`、base seed `12000`、max tokens `1024`で完了した。6モデルが24ケースを完走し、Harness armではunsupported exposed grounded claimとmissed task-target insufficiencyはいずれも0だった。successor target coverageは、Gemini 3.5 Flash-Lite `1.00`、Mistral Small `0.70`、Gemma 4 31B `0.60`、Ministral 8B `0.20`、Ministral 14B `0.20`、Ministral 3B `0.10`。Gemma 4 26BとNemotron 3.5 Lightningはprotocol-incomplete。Gemini 3.1 Flash-Liteはcase 18まで進んだ後、Google側HTTP 500 high-demandでoperationally incompleteとなったためStage A semantic scoreは付けない。
 

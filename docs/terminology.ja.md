@@ -2,7 +2,7 @@
 
 Reasoning Harnessでは、**プロダクト概念**、**機械向け識別子**、**過去の研究フェーズ名**を分けて扱います。これらは関連していますが、1本の共通バージョン列ではありません。
 
-## Product release version
+## プロダクトのリリースバージョン
 
 `v0.2.0`のようなCLI SemVerは、**product/distributionの互換性座標**です。product minor releaseでCLI/runtime機能が増えても、それだけで新しいresearch generationになるわけではありません。特に`v0.2.0`は、freeze済みStage-C/RSD2 evidence、semantic runtime ID、answer-safety ID、successor candidate identityを書き換えません。
 

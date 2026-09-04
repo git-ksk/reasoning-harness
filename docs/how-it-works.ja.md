@@ -242,7 +242,7 @@ RAGのretrieval結果も、取得しただけでtrustedにはなりません。s
 - [Architecture (English)](architecture.md)
 - [Evidence qualification (English)](evidence-qualification.md)
 - [Grounded resolution (English)](grounded-resolution.md)
-- [ADR-0001: interface and packaging boundaries](adr/0001-interface-and-packaging-boundaries.md)
-- [ADR-0002: grounded resolution and finalization](adr/0002-grounded-resolution-and-finalization.md)
+- [ADR-0001: interface and packaging boundaries](adr/0001-interface-and-packaging-boundaries.ja.md)
+- [ADR-0002: grounded resolution and finalization](adr/0002-grounded-resolution-and-finalization.ja.md)
 
 - [product dogfood](product-dogfood.ja.md)
