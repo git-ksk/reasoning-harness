@@ -30,7 +30,7 @@ Reasoning Harness now separates the active product/evaluation roadmap from the a
 2. **Renderer downgrade recovery (#160):** implemented in successor candidate `a020b5925497ff3fdf200a9622270fa1889a6aa1`; exact requested authorized targets may recover from renderer-only `uncertain` downgrade without treating renderer output as authority.
 3. **Dependency-aware target-local recovery (#164):** implemented in successor candidate `993874fa0051d06a02c8db8f7a220a2ac7773c17`; global `Reject` is preserved and exact directly verified targets receive target-only qualified exposure only under strict typed structural isolation from rejected non-target state.
 4. **Provider reliability / resumable evaluation (#126):** implemented without a semantic identity change: bounded provider-specific retries and actual attempt telemetry remain operational; product dogfood v10 adds exact-identity completed-case checkpoint/resume and preserves interrupted provider/protocol failures separately from semantic evidence.
-5. **External CLI hardening (#90), model-specific UX (#139), and v1.0 readiness:** next: keep compatibility and real-workload usability moving after the successor candidate is frozen.
+5. **External CLI hardening (#90), model-specific UX (#139), and v1.0 readiness:** process-level JSON/stdin/schema/exit compatibility is now pinned across all four release platforms; next is #139 real-workload/withheld-answer UX closeout before #90 final readiness closure.
 
 ### Evaluation
 
