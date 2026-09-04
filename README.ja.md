@@ -115,6 +115,7 @@ reason "DBがHTTP 503のroot causeだと断定できる？" \
 | `--hypothesis KEY=VALUE` | 評価・resolveしたいproposition。 |
 | `--resolver-fact KEY=VALUE` | bounded resolution → admission → 再verification経由だけで使うlocal fact。 |
 | `--resolver-command PROGRAM` | `main`のexternal stdio JSON resolver。取得結果はHarness-owned admissionを通るまでuntrusted。 |
+| `resolution.mcp_readonly` config | `mcp_readonly_v1`でallowlist済みread-only MCP toolを取得adapterとして利用。MCP結果だけではauthorityにならない。 |
 
 `main`の#175では、external evidenceはsource allowlistとHarness-owned freshness/scope/authority policyを明示した場合だけadmitされます。resolverのauthority自己申告だけでは昇格せず、admit後も通常のqualification / verificationを再通過します。
 
