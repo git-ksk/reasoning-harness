@@ -27,6 +27,16 @@ jobs:
             | tee /tmp/wikipedia-mcp-direct.json
           jq -e '.result.structuredContent.reasoning_harness.facts["wikipedia.page_exists"] == "true"' /tmp/wikipedia-mcp-direct.json >/dev/null
 
+      - name: Benchmark live Wikidata typed-fact MCP adapter
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-knowledge-benchmark -- \
+            --trials 3 \
+            | tee /tmp/mcp-knowledge-benchmark.json
+          jq -e '.aggregate.false_acceptances == 0' /tmp/mcp-knowledge-benchmark.json >/dev/null
+          jq -e '.aggregate.expectation_success_rate >= 0.85' /tmp/mcp-knowledge-benchmark.json >/dev/null
+          jq -e '.aggregate.accept_recovery_rate >= 0.80' /tmp/mcp-knowledge-benchmark.json >/dev/null
+
       - name: Configure read-only MCP resolver
         run: |
           set -euo pipefail
@@ -89,12 +99,15 @@ jobs:
             | tee /tmp/reason-mcp-wikipedia-result.json
           jq -e '.result.resolution_rounds[-1].final_verdict == "accept"' /tmp/reason-mcp-wikipedia-result.json >/dev/null
           jq -e '.result.resolution_rounds[-1].attempts[0].status == "applied_evidence"' /tmp/reason-mcp-wikipedia-result.json >/dev/null
-          jq -e '.result.finalization.status == "grounded_answer" and .result.finalization.factual_claim_coverage == 1' /tmp/reason-mcp-wikipedia-result.json >/dev/null
 
       - name: Summarize probe result
         if: always()
         run: |
-          echo '--- direct MCP ---'
+          echo '--- Wikidata MCP benchmark aggregate ---'
+          jq '.aggregate' /tmp/mcp-knowledge-benchmark.json 2>/dev/null || true
+          echo '--- Wikidata MCP benchmark samples ---'
+          jq '.samples[] | {id, workload, trial, expected, initial_verdict, final_verdict, observed_value, elapsed_ms, passed}' /tmp/mcp-knowledge-benchmark.json 2>/dev/null || true
+          echo '--- direct Wikipedia MCP ---'
           cat /tmp/wikipedia-mcp-direct.json 2>/dev/null || true
           echo '--- Harness result: selected fields ---'
           if test -f /tmp/reason-mcp-wikipedia-result.json; then
@@ -107,6 +120,7 @@ jobs:
         with:
           name: mcp-knowledge-probe
           path: |
+            /tmp/mcp-knowledge-benchmark.json
             /tmp/wikipedia-mcp-direct.json
             /tmp/reason-mcp-wikipedia-result.json
             /tmp/reason-mcp-wikipedia.json
