@@ -148,7 +148,7 @@ low-level shortcuts that allow consumers to skip validation or acceptance policy
 MCP remains optional and outside the correctness boundary. The original decision to avoid making MCP the primary product remains unchanged, but the v0.3.0 roadmap now distinguishes two adapter roles:
 
 1. **MCP as an acquisition transport (#176):** Reasoning Harness may call allowlisted read-only MCP tools through the existing `ResolutionResolver` boundary. Tool results are `AcquiredEvidence` only and still require harness-owned admission and, where hard authority is needed, separate trusted verification.
-2. **Reasoning Harness as an MCP product surface (#180):** an external agent may later invoke selected full-runtime operations. This remains optional/downstream and is not a v0.3.0 blocker.
+2. **Reasoning Harness as an MCP product surface (#180):** an external agent may invoke selected full-runtime operations through the Rust-only `reason-mcp` adapter. The adapter delegates to the supported native `reason` executable and returns its versioned product JSON unchanged. This remains optional/downstream and is not a v0.3.0 blocker.
 
 An MCP caller controls whether a tool is invoked. Therefore an MCP server cannot, by itself, enforce this project's native correctness process over the caller's entire agent loop.
 

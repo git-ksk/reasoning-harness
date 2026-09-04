@@ -81,7 +81,7 @@ Planned order:
 4. **#176 read-only MCP resolver adapter — implemented.** `mcp_readonly_v1` calls explicitly allowlisted read-only MCP tools through `ResolutionResolver`; generic tool output stays opaque, the optional acquisition envelope remains untrusted data, and admitted facts re-enter ordinary verification.
 5. **#177 reference trusted verifier/oracle — implemented.** `trusted_command_verifier_v1` keeps acquisition separate, accepts only conclusion + evidence IDs from the external oracle, and constructs exact authority-bearing receipts inside the Harness.
 6. **#179 open-world dogfood and release acceptance — implemented/passed.** `external-resolution-acceptance-v1` covers safe recovery, stale/scope/irrelevant/conflict/operational/budget cases in CI and records a separate live AWS public-information smoke.
-7. **#180 optional full-runtime MCP product surface** — expose selected `reason` operations to external MCP clients only after the resolver path is accepted; this is not a v0.3.0 release blocker.
+7. **#180 optional full-runtime MCP product surface — implemented.** `reason-mcp` exposes `reason_ask`, `reason_run`, `reason_verify`, and `reason_schema` as closed thin wrappers over the supported native runtime; native product JSON is returned unchanged and the MCP invocation scope is explicitly local to that invocation. This remains non-blocking for v0.3.0.
 
 ### v0.3.0 acceptance gate
 
@@ -265,7 +265,7 @@ never product-tuning corpora.
 
 - **Public Rust embedding API:** after real CLI consumers validate the correct compatibility
   boundary.
-- **MCP full-runtime product surface (#180):** optional downstream integration after the v0.3.0 resolver path is accepted; never evidence that the caller's entire agent loop is verified. The read-only MCP resolver role is implemented in #176 as `mcp_readonly_v1`.
+- **MCP full-runtime product surface (#180):** implemented as optional `reason-mcp` downstream integration; a successful tool result applies only to that native Harness invocation and is never evidence that the caller's entire agent loop is verified. The read-only MCP resolver role remains separately implemented in #176 as `mcp_readonly_v1`.
 - **Interactive CLI (`reason shell` / `reason repl`):** demand-gated after repeated real-workload dogfood. If adopted, it is a thin stateful session over `ReasoningThread`/checkpoint/replay and the same product runtime, not a separate chat authority or evidence shortcut.
 - **Desktop UI:** thin inspection/review client only after artifact and CLI contracts are stable.
 

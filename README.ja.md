@@ -123,6 +123,8 @@ trusted supportが足りなければ、条件付き回答や`unknown`になる�
 
 `HarnessInput` / `ReasoningCandidate` JSONは、アプリ統合、CI、再現性、offline candidate検証用の高度なsurfaceとして残しています。
 
+外部agentからHarnessを呼ぶ場合は、Rust-onlyの`reason-mcp`をoptional product adapterとして利用できます。#176のread-only MCP resolverとは向きが逆で、`reason-mcp`はselected callをnative `reason` runtimeへ委譲するだけです。別のcorrectness実装やauthority boundaryは作りません。詳細は[MCP product surface](docs/mcp-product-surface.ja.md)を参照してください。
+
 ## アプリ / 自動化への組み込み例
 
 ### A. LLM / RAGの回答を公開前にチェックする

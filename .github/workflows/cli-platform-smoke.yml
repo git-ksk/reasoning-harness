@@ -30,10 +30,12 @@ jobs:
         with:
           toolchain: 1.88.0
       - uses: Swatinem/rust-cache@v2
-      - name: Build supported CLI
-        run: cargo build --locked -p reasoning-harness-cli --bin reason
+      - name: Build supported CLI and MCP adapter
+        run: cargo build --locked -p reasoning-harness-cli --bin reason --bin reason-mcp
       - name: Product CLI compatibility contract
         run: cargo test --locked -p reasoning-harness-cli --test product_cli_contract
+      - name: MCP product-surface contract
+        run: cargo test --locked -p reasoning-harness-cli --test mcp_product_surface
       - name: Product CLI smoke
         shell: bash
         run: |
