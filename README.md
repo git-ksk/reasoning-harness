@@ -45,18 +45,18 @@ With the harness:
 
 ## 30-second quickstart
 
-### 1. Install the current natural-language CLI
+### 1. Install the current v0.2.0 preview
 
-The natural-language-first UX is currently on `main` and is newer than the published `v0.1.0` structured preview. With Rust 1.88+:
+`v0.2.0` is the current natural-language-first external preview. With Rust 1.88+:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --locked reasoning-harness-cli --bin reason
+  --tag v0.2.0 --locked reasoning-harness-cli --bin reason
 
 reason --version
 ```
 
-If you specifically need the frozen `v0.1.0` structured preview, install the tag or use the [v0.1.0 standalone release binaries](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.1.0). Until a newer tag is published, use `main` for the natural-language path.
+Standalone archives and `SHA256SUMS` are available from the [v0.2.0 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.2.0). Install from `main` only when you intentionally want unreleased development changes.
 
 ### 2. Give it a task and an explicit fact
 
@@ -292,7 +292,7 @@ Deterministic oracles such as tests, schemas, compilers, databases, policy engin
 
 ## Current capabilities
 
-Current `main` includes the capabilities below. The published `v0.1.0` tag predates the natural-language-first path, so use the tagged release notes when you need the exact frozen preview contents.
+The current `v0.2.0` external preview includes the capabilities below. `main` may move ahead of the tagged release; use the tag when you need a reproducible product snapshot.
 
 - typed `HarnessInput`, `ReasoningCandidate`, and `ReasoningArtifact` contracts;
 - evidence binding and deterministic provenance/reference validation;

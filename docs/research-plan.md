@@ -14,17 +14,13 @@ The adopted D3 runtime remains the stable semantic baseline. The first residual-
 program (#91) is complete: RSD0/RSD1/RSD2, independent frozen holdout, operational stabilization,
 versioned product wiring, and NL-5 all finished without granting model output authority.
 
-Current work is split between:
+The product follow-up line that motivated the previous split is complete:
 
-- **Product (#90):** harden the native `reason` CLI as the first supported external interface, with
-  versioned machine-readable contracts, installation/release compatibility, observability, and
-  repeated real-workload acceptance evidence.
-- **Product reliability (#126):** add narrow bounded retries for clearly transient provider failures
-  while preserving typed operational failure and historical research outcomes.
-- **Product utility (#139):** improve low-coverage / over-abstaining model behavior without weakening
-  the authority boundary or tuning against frozen research holdouts.
-- **Follow-on research:** selective/conformal abstention or relation-level causal sufficiency only if a
-  newly specified gap justifies another research identity and fresh evaluation sequence.
+- **Product CLI (#90):** external contract hardening, install/release compatibility, process-level observability, and the documented readiness gate are complete.
+- **Product reliability (#126):** bounded transient retries, provider-attempt telemetry, and exact-identity product evaluation resume are complete without rewriting historical research outcomes.
+- **Product utility (#139):** the current successor product rerun closes the recorded Ministral 8B coverage/withholding gap on the six-case product workload while preserving the authority boundary.
+- **Current release:** v0.2.0 packages these product capabilities on the existing research foundation.
+- **Follow-on research:** selective/conformal abstention, relation-level causal sufficiency, or another mechanism starts only if a newly measured gap justifies a new research identity and fresh evaluation sequence.
 
 Research is never shipped directly. Any future candidate must again pass fresh calibration, an
 independently frozen holdout for adoption, operational stabilization, explicit profile/rollback, and

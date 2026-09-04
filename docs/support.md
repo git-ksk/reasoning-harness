@@ -63,7 +63,7 @@ Provider credentials remain environment variables and are not accepted in `reaso
 
 ## Stability status
 
-v0.1.0 remains the latest published preview and is not retroactively a v1.0 stability claim. Readiness evidence baseline commit `5c5701f77df9dd507c3949294708f8c07a054064` satisfies the documented v1.0 readiness gate: process-level compatibility is pinned across all four supported platforms, current CI/live runtime smoke is green, and the incident-analysis + architecture-review product workload has raw-vs-Harness acceptance evidence including the Ministral 8B #139 closeout. No v1.0 tag or stable-release promise exists until an explicit version/tag/release step is performed through the normal provenance workflow.
+v0.2.0 is the current external-preview release. It packages the natural-language-first product path, verified-target recovery, provider retry/resume reliability, and four-platform process compatibility on the existing research/authority foundation. The documented v1.0 readiness gate is satisfied, but v0.2.0 intentionally remains a prerelease/v0.x compatibility promise rather than a stable v1.0 claim. A future v1.0 still requires an explicit version/tag/release decision through the normal provenance workflow.
 
 
 For the distinction between product terms, machine/runtime identifiers, and historical research labels, see [Terminology and naming](terminology.md).

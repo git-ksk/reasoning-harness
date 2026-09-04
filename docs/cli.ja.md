@@ -60,21 +60,19 @@ defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です
 
 ## インストール
 
-### 現在の自然文CLI (`main`)
+### 現在のexternal preview (`v0.2.0`)
 
-このガイドの自然文first UXは、公開済み`v0.1.0` structured previewより新しい実装です。Rust 1.88+がある場合:
+自然文first pathは現在のtagged previewに含まれています。Rust 1.88+がある場合:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --locked reasoning-harness-cli --bin reason
+  --tag v0.2.0 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-research binaryは入らず、product binaryの`reason`だけをinstallします。`main`は未releaseのv0.x surfaceなので、production automationで完全再現性が必要ならcommitをpinしてください。
+research binaryは入らず、supported product binaryの`reason`だけをinstallします。Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64向けstandalone archiveと`SHA256SUMS`もv0.2.0 Releaseで配布します。`main`は未releaseの開発snapshotを意図的に使う場合だけ選んでください。
 
-### 固定済み`v0.1.0` structured preview
-
-`v0.1.0`は自然文path導入前です。固定済みstructured previewが必要な場合だけtagまたは[v0.1.0 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.1.0)のstandalone binaryを使ってください。
+`v0.2.0`はv1.0 readiness gateを満たした後も、v0.x support policy上はexternal previewのままです。versionはproduct/distributionの座標であり、新しいfrozen research generationを意味しません。
 
 ## 最小サンプル
 

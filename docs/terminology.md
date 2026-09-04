@@ -2,6 +2,10 @@
 
 Reasoning Harness separates **product concepts**, **machine identifiers**, and **historical research labels**. They are related, but they are not one global version sequence.
 
+## Product release version
+
+CLI SemVer such as `v0.2.0` is a **product/distribution compatibility coordinate**. A minor product release may package new CLI/runtime capabilities without creating a new research generation. In particular, `v0.2.0` does not rename or rewrite the frozen Stage-C/RSD2 evidence, semantic runtime ID, answer-safety ID, or successor candidate identity.
+
 ## Product concepts
 
 These are the names used in README, CLI guidance, active roadmap, and current product work.
@@ -11,7 +15,7 @@ These are the names used in README, CLI guidance, active roadmap, and current pr
 | **semantic runtime** | Model-backed soft semantic diagnostics that may preserve a soft decision or make it more conservative, but never create verification authority. |
 | **answer-safety gate** | The current restrictive final-answer check that can require verification, bounded resolution, or abstention before grounded claims are exposed. |
 | **bounded resolution** | Harness-owned acquisition/admission/re-verification loop for missing support. |
-| **verified utility recovery** | Current work to recover already-authorized useful answers without relaxing evidence or authority rules. |
+| **verified utility recovery** | Deterministic recovery of already-authorized useful answers without relaxing evidence or authority rules. |
 | **smoke set** | The historical six-case product dogfood set (`product-dogfood-v1`). |
 | **capability matrix** | The frozen 24-case / 8-family development evaluation (`product-dogfood-v2`). |
 | **replication** | Multi-run evaluation on the frozen capability matrix using predeclared fresh seeds. |

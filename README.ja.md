@@ -45,18 +45,18 @@ Reasoning Harnessあり:
 
 ## 30秒Quickstart
 
-### 1. 現在の自然文CLIをインストール
+### 1. 現在のv0.2.0 previewをインストール
 
-自然文firstのUXは現在`main`にあり、公開済み`v0.1.0` structured previewより新しい実装です。Rust 1.88+がある場合:
+`v0.2.0`が現在の自然文first external previewです。Rust 1.88+がある場合:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --locked reasoning-harness-cli --bin reason
+  --tag v0.2.0 --locked reasoning-harness-cli --bin reason
 
 reason --version
 ```
 
-固定済み`v0.1.0` structured previewが必要な場合だけtagまたは[v0.1.0 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.1.0)のstandalone binaryを使ってください。新しいtagが出るまでは自然文pathは`main`を使います。
+standalone archiveと`SHA256SUMS`は[v0.2.0 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.2.0)から取得できます。`main`は未releaseの開発変更を意図的に使う場合だけ選んでください。
 
 ### 2. 自然文task + 明示factを渡す
 
@@ -332,7 +332,7 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 
 ## 現在できること
 
-現在の`main`では次を実装しています。公開済み`v0.1.0` tagは自然文first pathより前なので、固定済みpreviewの正確な内容が必要な場合はtagged release側を基準にしてください。
+現在の`v0.2.0` external previewでは次を実装しています。`main`はtagより先へ進むことがあるため、再現可能なproduct snapshotが必要ならtagを基準にしてください。
 
 - `HarnessInput` / `ReasoningCandidate` / `ReasoningArtifact`のtyped contract
 - evidence binding、provenance/referenceの決定論的検証
