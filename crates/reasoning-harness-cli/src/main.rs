@@ -46,11 +46,13 @@ use reasoning_harness_core::{
 use reasoning_harness_providers::{
     DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS,
     DEFAULT_MCP_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_MCP_RESOLVER_TIMEOUT_MS,
+    DEFAULT_TRUSTED_COMMAND_MAX_RESPONSE_BYTES, DEFAULT_TRUSTED_COMMAND_TIMEOUT_MS,
     EXTERNAL_COMMAND_RESOLVER_ID, EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver,
     ExternalCommandResolverConfig, ExternalEvidenceAdmissionConfig,
     ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy, GoogleAdapter,
     MCP_READONLY_RESOLVER_ID, McpReadOnlyResolver, McpReadOnlyResolverConfig, MistralAdapter,
-    NvidiaAdapter,
+    NvidiaAdapter, TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier,
+    TrustedCommandVerifierConfig,
 };
 use schemars::{JsonSchema, schema_for};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -226,6 +228,7 @@ struct RunFileConfig {
 struct ResolutionFileConfig {
     external_command: Option<ExternalCommandResolverFileConfig>,
     mcp_readonly: Option<McpReadOnlyResolverFileConfig>,
+    trusted_command: Option<TrustedCommandVerifierFileConfig>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -265,6 +268,20 @@ struct McpReadOnlyResolverFileConfig {
     max_response_bytes: Option<usize>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     admission: Option<ExternalEvidenceAdmissionFileConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct TrustedCommandVerifierFileConfig {
+    trusted: bool,
+    verifier_id: String,
+    program: String,
+    #[serde(default)]
+    args: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    timeout_ms: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max_response_bytes: Option<usize>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -994,6 +1011,8 @@ struct RunConfigurationObservation {
     resolver_adapter: Option<&'static str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     resolver_admission: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    trusted_verifier: Option<&'static str>,
     output_format: OutputFormat,
     config_sources: Vec<&'static str>,
 }
@@ -1382,6 +1401,40 @@ fn run_external_resolution(
     )
 }
 
+fn run_trusted_resolution(
+    input: HarnessInput,
+    candidate: ReasoningCandidate,
+    verifier: &dyn reasoning_harness_core::TrustedResolutionVerifier,
+    max_attempts: usize,
+) -> Result<GroundedResolutionOutcome, CliError> {
+    if max_attempts == 0 {
+        return Err(CliError::new(
+            "configuration",
+            "--max-resolution-attempts must be at least 1",
+        ));
+    }
+    let pipeline = StandardGroundingPipeline;
+    let planner = DefaultResolutionPlanner;
+    let renderer = CanonicalFinalAnswerRenderer;
+    let resolvers: [&dyn ResolutionResolver; 0] = [];
+    let trusted_verifiers: [&dyn reasoning_harness_core::TrustedResolutionVerifier; 1] = [verifier];
+    let runtime = GroundedResolutionRuntime {
+        pipeline: &pipeline,
+        planner: &planner,
+        evidence_admission: &RejectAllEvidenceAdmission,
+        resolvers: &resolvers,
+        trusted_verifiers: &trusted_verifiers,
+        renderer: &renderer,
+    };
+    let mut policy = GroundedResolutionPolicy::default();
+    policy.budget.max_attempts = max_attempts;
+    policy.budget.allowed_resolver_classes = BTreeSet::from([ResolverClass::DeterministicVerifier]);
+    policy.proposition_resolver_class = ResolverClass::DeterministicVerifier;
+    runtime
+        .run(input, candidate, &policy)
+        .map_err(|error| CliError::new("harness_state", error.to_string()))
+}
+
 fn input_from_artifact(artifact: &ReasoningArtifact) -> HarnessInput {
     HarnessInput {
         task: artifact.task.clone(),
@@ -1582,6 +1635,8 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         .map_err(|error| CliError::new("configuration", error))?;
     let mcp_admission_config = resolve_mcp_admission_config(&loaded_config)
         .map_err(|error| CliError::new("configuration", error))?;
+    let trusted_verifier_config = resolve_trusted_command_config(&loaded_config)
+        .map_err(|error| CliError::new("configuration", error))?;
     let configured_resolver_modes = usize::from(!args.resolver_fact.is_empty())
         + usize::from(external_resolver_config.is_some())
         + usize::from(mcp_resolver_config.is_some());
@@ -1637,6 +1692,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
     let external_admission = external_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
     let mcp_resolver = mcp_resolver_config.map(McpReadOnlyResolver::new);
     let mcp_admission = mcp_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
+    let trusted_verifier = trusted_verifier_config.map(TrustedCommandVerifier::new);
     let mut resolution_rounds = Vec::new();
     let mut final_artifact = initial_outcome.artifact.clone();
     let mut final_verdict = initial_outcome.verdict;
@@ -1669,6 +1725,19 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             None
         };
         if let Some(round) = round {
+            final_artifact = round.final_artifact.clone();
+            final_verdict = round.final_verdict;
+            resolution_rounds.push(round);
+        }
+    }
+    if final_verdict != Verdict::Accept {
+        if let Some(verifier) = trusted_verifier.as_ref() {
+            let round = run_trusted_resolution(
+                input_from_artifact(&final_artifact),
+                candidate.clone(),
+                verifier,
+                args.max_resolution_attempts,
+            )?;
             final_artifact = round.final_artifact.clone();
             final_verdict = round.final_verdict;
             resolution_rounds.push(round);
@@ -1786,7 +1855,10 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         finalization = gated;
         safety_observations.extend(observations);
         if finalization.status != FinalizationStatus::RequiresVerification
-            || (resolver.facts.is_empty() && external_resolver.is_none() && mcp_resolver.is_none())
+            || (resolver.facts.is_empty()
+                && external_resolver.is_none()
+                && mcp_resolver.is_none()
+                && trusted_verifier.is_none())
             || render_round >= 2
         {
             break;
@@ -1799,7 +1871,14 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             }
         }
         let before = final_artifact.clone();
-        let round = if !resolver.facts.is_empty() {
+        let round = if let Some(verifier) = trusted_verifier.as_ref() {
+            run_trusted_resolution(
+                retry_input,
+                candidate.clone(),
+                verifier,
+                args.max_resolution_attempts,
+            )?
+        } else if !resolver.facts.is_empty() {
             run_local_resolution(
                 retry_input,
                 candidate.clone(),
@@ -1855,6 +1934,9 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             } else {
                 None
             },
+            trusted_verifier: trusted_verifier
+                .as_ref()
+                .map(|_| TRUSTED_COMMAND_VERIFIER_ID),
             output_format: resolved.format,
             config_sources: resolved.config_sources,
         },
@@ -2352,6 +2434,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                     max_tokens: live.then_some(resolved.max_tokens),
                     resolver_adapter: None,
                     resolver_admission: None,
+                    trusted_verifier: None,
                     output_format: resolved.format,
                     config_sources: resolved.config_sources,
                 },
@@ -3950,6 +4033,9 @@ fn merge_cli_config(base: &mut CliFileConfig, overlay: CliFileConfig) {
     if overlay.resolution.mcp_readonly.is_some() {
         base.resolution.mcp_readonly = overlay.resolution.mcp_readonly;
     }
+    if overlay.resolution.trusted_command.is_some() {
+        base.resolution.trusted_command = overlay.resolution.trusted_command;
+    }
 }
 
 fn resolve_external_command_config(
@@ -4077,6 +4163,44 @@ fn resolve_mcp_readonly_config(
         fixed_arguments: configured.fixed_arguments.clone(),
         provenance_argument: configured.provenance_argument.clone(),
         source: source.into(),
+        timeout_ms,
+        max_response_bytes,
+    }))
+}
+
+fn resolve_trusted_command_config(
+    loaded: &LoadedCliConfig,
+) -> Result<Option<TrustedCommandVerifierConfig>, String> {
+    let Some(configured) = &loaded.config.resolution.trusted_command else {
+        return Ok(None);
+    };
+    if !configured.trusted {
+        return Err(
+            "resolution.trusted_command.trusted must be true because this adapter can create hard verification receipts"
+                .into(),
+        );
+    }
+    let verifier_id = configured.verifier_id.trim();
+    let program = configured.program.trim();
+    if verifier_id.is_empty() || program.is_empty() {
+        return Err("resolution.trusted_command.verifier_id and program must be non-empty".into());
+    }
+    let timeout_ms = configured
+        .timeout_ms
+        .unwrap_or(DEFAULT_TRUSTED_COMMAND_TIMEOUT_MS);
+    let max_response_bytes = configured
+        .max_response_bytes
+        .unwrap_or(DEFAULT_TRUSTED_COMMAND_MAX_RESPONSE_BYTES);
+    if timeout_ms == 0 || max_response_bytes == 0 {
+        return Err(
+            "resolution.trusted_command timeout_ms and max_response_bytes must be at least 1"
+                .into(),
+        );
+    }
+    Ok(Some(TrustedCommandVerifierConfig {
+        verifier_id: verifier_id.into(),
+        program: PathBuf::from(program),
+        args: configured.args.clone(),
         timeout_ms,
         max_response_bytes,
     }))
@@ -4581,6 +4705,7 @@ mod candidate_json_tests {
                         admission: None,
                     }),
                     mcp_readonly: None,
+                    trusted_command: None,
                 },
             },
         );
@@ -4741,6 +4866,39 @@ mod candidate_json_tests {
         let admission = resolve_mcp_admission_config(&loaded).unwrap().unwrap();
         assert_eq!(admission.resolver_name, MCP_READONLY_RESOLVER_ID);
         assert_eq!(admission.sources["mcp:s:read"].authority_class, "primary");
+    }
+
+    #[test]
+    fn trusted_command_config_requires_explicit_trust_and_is_secret_closed() {
+        let text = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"trusted_command":{
+            "trusted":true,
+            "verifier_id":"reference-policy-oracle",
+            "program":"policy-oracle",
+            "args":["--stdio"],
+            "timeout_ms":500,
+            "max_response_bytes":4096
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(text).unwrap(),
+            sources: vec!["explicit"],
+        };
+        let config = resolve_trusted_command_config(&loaded).unwrap().unwrap();
+        assert_eq!(config.verifier_id, "reference-policy-oracle");
+        assert_eq!(config.timeout_ms, 500);
+        assert_eq!(config.max_response_bytes, 4096);
+
+        let untrusted = r#"{"schema_version":"reason-config-v1","resolution":{"trusted_command":{"trusted":false,"verifier_id":"oracle","program":"p"}}}"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(untrusted).unwrap(),
+            sources: vec![],
+        };
+        assert!(resolve_trusted_command_config(&loaded).is_err());
+
+        let secret = r#"{"schema_version":"reason-config-v1","resolution":{"trusted_command":{"trusted":true,"verifier_id":"oracle","program":"p","api_key":"secret"}}}"#;
+        assert!(serde_json::from_str::<CliFileConfig>(secret).is_err());
     }
 
     #[test]

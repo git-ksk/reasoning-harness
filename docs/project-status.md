@@ -12,7 +12,7 @@ Active v0.3.0 work is sequenced as:
 - **external evidence qualification — #175 implemented** — `external_evidence_admission_v1` uses exact source allowlists and Harness-owned authority ranks, freshness bounds, and scope policy. Resolver-supplied acquisition metadata is untrusted, cannot self-elevate authority, typed admission rejection is observable on resolution attempts, and admitted evidence re-enters ordinary qualification/verification.
 - **external-resolution operations — #178 implemented** — external command resolution has wall-clock timeout and response-size caps; authentication/permission/policy/timeout/transport/protocol outcomes are typed operational terminals, actual call/latency/optional cost telemetry is recorded with hashed adapter/admission config identities, and replay remains side-effect-free;
 - **MCP acquisition — #176 implemented** — `mcp_readonly_v1` uses MCP 2026-07-28 stdio `tools/call` with explicit server/tool allowlisting, Harness-owned provenance, acquisition-only resolver class, typed operational failures, and no authority promotion from MCP output;
-- **trusted external verification** — #177 reference deterministic/explicitly trusted verifier-oracle integration;
+- **trusted external verification — #177 implemented** — `trusted_command_verifier_v1` is an explicitly trusted deterministic-oracle lane; external output cannot supply receipt identity/binding, and qualified evidence requirements remain enforced;
 - **open-world acceptance** — #179 non-frozen product dogfood and the v0.3.0 release gate;
 - **optional MCP product surface** — #180 external agents invoking the full runtime, downstream and non-blocking for v0.3.0.
 
