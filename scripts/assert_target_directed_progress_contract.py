@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Deterministic regression for the agentic no-progress contract.
 
-This is intentionally model/network free. It locks the rule that fresh candidate novelty
-alone must not reset the bounded loop's no-progress counter.
+This is intentionally model/network free. It locks the orchestration boundary rule that
+fresh candidate novelty alone must not reset the bounded loop's no-progress counter.
 """
 
 TARGET_ARRAY_KEYS = ("property_values",)
