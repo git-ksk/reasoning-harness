@@ -9,35 +9,18 @@ For the execution/trust model behind `--candidate` versus `--provider`, includin
 
 ## Installation
 
-### Current natural-language CLI (`main`)
+### Current external preview (`v0.2.0`)
 
-The natural-language-first UX documented below is newer than the published `v0.1.0` structured preview. Rust 1.88+ users can install the current `main` product binary with:
+The natural-language-first path is included in the current tagged preview. With Rust 1.88+:
 
 ```bash
-cargo install --git https://github.com/git-ksk/reasoning-harness --locked reasoning-harness-cli --bin reason
+cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.2.0 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-This installs only the supported `reason` product binary, not the research binaries. `main` is an unreleased v0.x surface, so pin a commit in production automation if exact reproducibility is required.
+This installs only the supported `reason` product binary, not the research binaries. Standalone `v0.2.0` archives are also published for Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64, with `SHA256SUMS`. Use `main` only for intentionally unreleased development snapshots.
 
-### Frozen `v0.1.0` structured preview
-
-`v0.1.0` predates the natural-language path. Install it only when you specifically want the frozen structured preview:
-
-```bash
-cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.1.0 --locked reasoning-harness-cli --bin reason
-```
-
-Standalone `v0.1.0` release binaries are also available. A `v*` tag whose version matches `reasoning-harness-cli` produces GitHub Release assets for:
-
-- Linux x86_64;
-- macOS arm64 (Apple Silicon);
-- macOS x86_64 (Intel);
-- Windows x86_64.
-
-Each release includes `SHA256SUMS`. Verify the downloaded archive before installation. Release archives contain only the `reason` product executable plus the repository README and license; research binaries are not product artifacts.
-
-The same four platform classes run credential-free product smoke in pull requests and on `main`.
+`v0.2.0` remains an external preview under the v0.x support policy even though the documented v1.0 readiness gate has been satisfied. The version number is a product/distribution coordinate; it does not create a new frozen research generation.
 
 ## Natural-language AI path
 
@@ -143,7 +126,7 @@ envelope:
 {
   "schema_version": "reason-cli-output-v1",
   "command": "run",
-  "cli_version": "0.1.0",
+  "cli_version": "0.2.0",
   "contracts": {
     "artifact": "reasoning-artifact-v1",
     "candidate": "reasoning-candidate-v1",

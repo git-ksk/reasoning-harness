@@ -6,13 +6,38 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-04
+
+Second external-preview release of the native Reasoning Harness CLI. This is a **product capability release on the existing research/authority foundation**, not a rewrite of frozen Stage-C/RSD2 evidence.
+
 ### Natural-language AI CLI
 
-- Added direct `reason "TASK"` AI-backed execution with `reason-natural-output-v1` JSON identity while preserving all v0.1 structured commands.
+- Added direct `reason "TASK"` AI-backed execution with the current `reason-natural-output-v2` JSON identity while preserving the v0.1 structured product commands.
 - Added provenance-aware `--file` and piped-stdin untrusted context with bounded input size.
 - Added explicit `--fact`, `--hypothesis`, and bounded `--resolver-fact` inputs without allowing arbitrary prose/model output to self-promote into trusted evidence.
-- Added model-backed natural-language final rendering behind final-claim coverage; uncovered renderer facts are blocked and may re-enter bounded verification.
-- Added `reason-product-dogfood` and a manual live workflow for same-model raw-vs-harness product evaluation across incident-analysis and architecture-review workloads.
+- Added model-backed final rendering behind final-claim coverage, plus deterministic recovery for exact already-authorized targets when renderer output omits or weakens them.
+- Added strict target-local qualified recovery for structurally isolated verified targets while preserving artifact-global `Reject`/`Unknown` and all existing authority checks.
+
+### Product evaluation and reliability
+
+- Added `reason-product-dogfood` with same-model raw vs Harness baseline vs current-safety comparison across incident-analysis and architecture-review workloads.
+- Added bounded Google/Gemini transient retry for temporary 429, HTTP 500/502/503/504, and one isolated empty-model-text anomaly; credential, quota, deterministic 4xx/protocol, transport, and timeout failures remain fail-fast under the current policy.
+- Added actual provider HTTP-attempt telemetry across adapters and structured-output fallback calls.
+- Added `reason-product-dogfood-v10` exact-identity checkpoint/resume: only fully completed cases are reused, an interrupted active case restarts from its beginning, and preserved provider/protocol failures remain operational evidence rather than semantic abstention.
+- Current Ministral 8B six-case product revalidation improved Harness target coverage from the historical 0.25 slice to 1.00 while preserving zero unsupported grounded claims and zero missed target insufficiency.
+
+### CLI compatibility and distribution
+
+- Added process-level compatibility tests that execute the real `reason` binary and pin `reason-cli-output-v1`, schema IDs, stdin behavior, epistemic `unknown` as exit 0, typed operational failure as exit 1, and CLI usage failure as exit 2.
+- Run the compatibility contract on Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64.
+- Kept v0.x releases explicitly in external-preview status even though the documented v1.0 readiness gate is now satisfied on current main.
+- Release automation marks 0.x GitHub Releases as prereleases automatically.
+
+### Research and authority provenance
+
+- Preserved the frozen Stage-C candidate/holdout and historical RSD2 outcomes unchanged; v0.2.0 does not reinterpret prior provider failures as semantic success.
+- The current successor semantic candidate remains `993874fa0051d06a02c8db8f7a220a2ac7773c17`; the semantic runtime remains `semantic-decidability-d3-v1` and the current answer-safety configuration remains `verified-target-answer-gate-v1`.
+- Model output, retrieval prose, retry success, and checkpoint reuse remain outside verification authority.
 
 ## [0.1.0] - 2026-09-01
 

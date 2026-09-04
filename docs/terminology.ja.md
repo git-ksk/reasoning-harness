@@ -2,6 +2,10 @@
 
 Reasoning Harnessでは、**プロダクト概念**、**機械向け識別子**、**過去の研究フェーズ名**を分けて扱います。これらは関連していますが、1本の共通バージョン列ではありません。
 
+## Product release version
+
+`v0.2.0`のようなCLI SemVerは、**product/distributionの互換性座標**です。product minor releaseでCLI/runtime機能が増えても、それだけで新しいresearch generationになるわけではありません。特に`v0.2.0`は、freeze済みStage-C/RSD2 evidence、semantic runtime ID、answer-safety ID、successor candidate identityを書き換えません。
+
 ## プロダクトで使う言葉
 
 README、CLIガイド、現行ロードマップ、現在の製品作業では次の名前を使います。
@@ -11,7 +15,7 @@ README、CLIガイド、現行ロードマップ、現在の製品作業では�
 | **semantic runtime** | model-backedなsoft semantic診断。soft decisionを維持または保守化できますが、verification authorityは作れません。 |
 | **answer-safety gate** | grounded claimを外へ出す前に、追加verification / bounded resolution / abstainを要求できる現在の制限的安全チェック。 |
 | **bounded resolution** | 不足根拠を取得し、admissionと再verificationを必須にするHarness所有の解決ループ。 |
-| **verified utility recovery** | evidence/authorityルールを緩めず、すでに検証済みの有用な回答を取りこぼさないための現在の改善作業。 |
+| **verified utility recovery** | evidence/authorityルールを緩めず、すでに検証済みの有用な回答をdeterministicに回収する仕組み。 |
 | **smoke set** | 既存6ケースのproduct dogfood (`product-dogfood-v1`)。 |
 | **capability matrix** | freeze済み24ケース・8 familyの開発評価 (`product-dogfood-v2`)。 |
 | **replication** | freeze済みcapability matrixを、事前宣言したfresh seedで複数回評価する工程。 |

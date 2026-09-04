@@ -144,5 +144,9 @@ jobs:
           gh release view "${{ needs.prepare.outputs.tag }}" >/dev/null 2>&1 && {
             gh release upload "${{ needs.prepare.outputs.tag }}" dist/* --clobber
           } || {
-            gh release create "${{ needs.prepare.outputs.tag }}" dist/* --verify-tag --generate-notes --title "Reasoning Harness CLI ${{ needs.prepare.outputs.tag }}"
+            PRERELEASE_ARGS=()
+            if [[ "${{ needs.prepare.outputs.version }}" == 0.* ]]; then
+              PRERELEASE_ARGS+=(--prerelease)
+            fi
+            gh release create "${{ needs.prepare.outputs.tag }}" dist/* --verify-tag --generate-notes --title "Reasoning Harness CLI ${{ needs.prepare.outputs.tag }}" "${PRERELEASE_ARGS[@]}"
           }

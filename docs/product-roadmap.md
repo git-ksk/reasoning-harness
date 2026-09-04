@@ -1,9 +1,9 @@
 # Product roadmap: evidence-grounded AI CLI
 
 Reasoning Harness is productized first as the native Rust `reason` CLI. v0.1.0 established the
-structured correctness and automation contracts; the current primary end-user direction on `main` is an
-**AI-backed natural-language CLI** over the same harness-owned runtime. Users do not need to construct
-internal JSON just to ask the harness to reason.
+structured correctness and automation contracts; v0.2.0 is the current external-preview product release
+and makes the **AI-backed natural-language CLI** the primary end-user path over the same harness-owned
+runtime. Users do not need to construct internal JSON just to ask the harness to reason.
 
 The product goal is deliberately narrower than a general-purpose agent framework:
 
@@ -16,7 +16,7 @@ validation and operational stabilization; the product surface does not track eve
 
 ## Current product path
 
-The current default experience on `main` is natural-language-first and AI-backed:
+The v0.2.0 default experience is natural-language-first and AI-backed:
 
 ```text
 natural-language task
@@ -46,13 +46,17 @@ extractions, tool output, and prior model output do not become trusted evidence 
 accepted them. Evidence ingestion, admission, verification, semantic/answer-safety diagnostics, bounded
 resolution, re-verification, and final-claim coverage remain harness-owned.
 
-## Active priorities
+## Completed v0.2.0 product line
 
 1. **Bounded resolver target closure (#159):** implemented in the successor candidate line: exact Harness-owned unresolved hypotheses/evidence requirements are prioritized ahead of candidate-owned unresolved claims, while resolver class, budget, admission, qualification, and mandatory re-verification remain unchanged.
 2. **Renderer downgrade recovery (#160):** implemented in successor candidate `a020b5925497ff3fdf200a9622270fa1889a6aa1`: if the renderer emits the same exact requested authorized target as `uncertain`, deterministically recover from artifact authority while preserving `Unknown`/`Reject`, qualification, adversarial, and answer-safety boundaries.
 3. **Dependency-aware target-local recovery (#164):** implemented in successor candidate `993874fa0051d06a02c8db8f7a220a2ac7773c17`: artifact-global `Reject` remains unchanged, while an exact directly verified target may be emitted only as target-only `QualifiedPartialAnswer` when typed blocker/dependency/evidence isolation is demonstrable; ambiguous coupling fails closed.
 4. **Provider reliability and resumable evaluation (#126):** implemented as an operational-only successor layer: Google transient 5xx/isolated-empty-output retries are narrowly bounded, actual provider attempts are propagated through telemetry, and `reason-product-dogfood` supports exact-identity case-level checkpoint/resume while preserving interrupted operational failures outside semantic scoring. The semantic successor candidate remains `993874fa0051d06a02c8db8f7a220a2ac7773c17`.
-5. **External CLI hardening (#90) and real-workload UX (#139):** closeout complete on current `main`: process-level compatibility is pinned across all four supported release platforms, current live semantic/runtime smoke is green, and the successor Ministral 8B product rerun recovered Harness target coverage from 0.25 to 1.00 with zero unsupported grounded claims and zero missed target insufficiency.
+5. **External CLI hardening (#90) and real-workload UX (#139):** closeout complete: process-level compatibility is pinned across all four supported release platforms, current live semantic/runtime smoke is green, and the successor Ministral 8B product rerun recovered Harness target coverage from 0.25 to 1.00 with zero unsupported grounded claims and zero missed target insufficiency.
+
+### Next product decision
+
+After v0.2.0, default to measured external-preview maintenance rather than speculative mechanism growth. Compatibility/operational defects may ship as v0.2.x; a materially new product capability would use a later v0.x minor; and v1.0 remains an explicit stability/release decision. A new reasoning mechanism requires a fresh measured gap and the research-to-product promotion gate below.
 
 The current answer-safety behavior and semantic runtime have exact machine configuration IDs for rollback and reproducibility, but those IDs are not product phase names. See [Terminology and naming](terminology.md).
 
@@ -74,7 +78,7 @@ Exact historical phase labels, frozen run identities, and machine configuration 
 
 Already available:
 
-- external-preview `reason` v0.1.0 executable with supported `run`, `verify`, `semantic-check`, and `schema` product commands; research/evaluation commands remain separate;
+- external-preview `reason` v0.2.0 executable with the natural-language-first path plus supported `run`, `verify`, `semantic-check`, and `schema` product commands; research/evaluation commands remain separate;
 - provider-neutral core runtime and typed `ReasoningArtifact`;
 - provider adapters for Mistral, Google, and NVIDIA outside the correctness authority boundary;
 - bounded resolution/finalization, evidence qualification, policy, checkpoint/replay, and typed
@@ -82,7 +86,7 @@ Already available:
 - current semantic runtime plus an explicit characterized rollback profile (exact machine IDs remain stable and documented);
 - credential-free deterministic CI plus separate live provider smoke/research workflows.
 
-v0.1.0 is the first externally consumable preview. Its versioned machine contracts and supported product commands are compatibility-tracked under the v0.x support policy, but this is not yet a v1.0 stability promise.
+v0.1.0 was the first externally consumable structured preview. v0.2.0 is the current external-preview product release: it adds the natural-language-first path, successor verified-target recovery, provider retry/resume reliability, and process-level compatibility tests while keeping the same research/authority provenance. Its versioned machine contracts and supported product commands remain compatibility-tracked under the v0.x support policy; this is not a v1.0 stability promise.
 
 ## Historical milestone: supported command and data contract
 

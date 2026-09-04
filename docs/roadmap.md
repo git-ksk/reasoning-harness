@@ -20,9 +20,15 @@ The runtime must also be allowed to stop with `unknown`, a qualified partial ans
 
 See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
-## Active roadmap
+## Current product milestone
 
-Reasoning Harness now separates the active product/evaluation roadmap from the archived research chronology. Short research labels are retained only for provenance; see [Terminology and naming](terminology.md).
+`v0.2.0` is the current external-preview product milestone. It packages the natural-language-first CLI, successor verified-target recovery, bounded provider retry/resume, four-platform process compatibility, and the completed two-class real-workload acceptance evidence. The frozen research holdouts and historical Stage-C/RSD2 outcomes are unchanged.
+
+The next product decision is deliberately **not** another reasoning change by default: observe v0.2.0 external use, fix measured compatibility/operational defects under v0.x, and make the v1.0 tag/release decision separately. New reasoning research starts only from a newly measured gap and must receive a fresh research/evaluation identity.
+
+## Completed current product line
+
+Reasoning Harness separates the product/evaluation roadmap from the archived research chronology. Short research labels are retained only for provenance; see [Terminology and naming](terminology.md).
 
 ### Product
 
@@ -67,7 +73,7 @@ The first semantic-decidability and residual evidence-sufficiency programs are c
 - [done] preserve exact-string receipt binding as a conservative compatibility mode
 - [done] normalize malformed untrusted inference edges with explicit `candidate_diagnostics` rather than failing unrelated claims
 
-## v0.2 — adversarial reasoning passes
+## Historical research phase v0.2 — adversarial reasoning passes (not CLI v0.2.0)
 - [done] provider-neutral `AdversarialDetector` contract with typed contradiction/counterexample findings
 - [done] explicit `hard` vs `soft` finding strength; findings never own verdict authority
 - [done] deterministic structured-fact contradiction/counterexample detector
