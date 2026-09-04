@@ -54,9 +54,49 @@ resolution, re-verification, and final-claim coverage remain harness-owned.
 4. **Provider reliability and resumable evaluation (#126):** implemented as an operational-only successor layer: Google transient 5xx/isolated-empty-output retries are narrowly bounded, actual provider attempts are propagated through telemetry, and `reason-product-dogfood` supports exact-identity case-level checkpoint/resume while preserving interrupted operational failures outside semantic scoring. The semantic successor candidate remains `993874fa0051d06a02c8db8f7a220a2ac7773c17`.
 5. **External CLI hardening (#90) and real-workload UX (#139):** closeout complete: process-level compatibility is pinned across all four supported release platforms, current live semantic/runtime smoke is green, and the successor Ministral 8B product rerun recovered Harness target coverage from 0.25 to 1.00 with zero unsupported grounded claims and zero missed target insufficiency.
 
-### Next product decision
+## v0.3.0 — External Evidence & Resolution
 
-After v0.2.0, default to measured external-preview maintenance rather than speculative mechanism growth. Compatibility/operational defects may ship as v0.2.x; a materially new product capability would use a later v0.x minor; and v1.0 remains an explicit stability/release decision. A new reasoning mechanism requires a fresh measured gap and the research-to-product promotion gate below.
+Tracking: milestone **v0.3.0 — External Evidence & Resolution**, parent Issue #173.
+
+v0.3.0 is the next product-capability milestone after v0.2.0. The control loop is already implemented in core; this milestone connects it to real external acquisition and hard-verification adapters without moving domain retrieval or trust into core.
+
+The required execution path remains:
+
+```text
+unknown / insufficient support
+  -> typed ResolutionRequest
+  -> external acquisition adapter
+  -> AcquiredEvidence
+  -> EvidenceAdmissionPolicy
+  -> optional TrustedResolutionVerifier / trusted verifier
+  -> ordinary re-verification + diagnostics + decision
+  -> grounded | qualified | unknown
+```
+
+Planned order:
+
+1. **#174 external resolver adapter + CLI/config wiring** — use the existing resolver/admission/verifier interfaces; do not add a competing evidence-provider abstraction.
+2. **#175 external evidence qualification** — preserve and enforce provenance, freshness, scope, and configured authority; resolver-supplied metadata cannot self-elevate.
+3. **#178 operational hardening** — bounded calls/retries, typed tool/resolver failures, secret-safe telemetry, and replay semantics that never re-execute external side effects.
+4. **#176 read-only MCP resolver adapter** — selected MCP tools act only as acquisition sources inside bounded resolution.
+5. **#177 reference trusted verifier/oracle** — demonstrate a separate deterministic/explicitly trusted authority-bearing integration.
+6. **#179 open-world dogfood and release acceptance** — measure external recovery, abstention, acquisition-vs-verification success, operational cost, and false grounding on non-frozen product workloads.
+7. **#180 optional full-runtime MCP product surface** — expose selected `reason` operations to external MCP clients only after the resolver path is accepted; this is not a v0.3.0 release blocker.
+
+### v0.3.0 acceptance gate
+
+- at least one initially unsupported real-workload target is recovered from a real external source through the ordinary bounded-resolution path;
+- resolver/tool output cannot directly create `Supported`, trusted metadata, verification receipts, verdicts, or grounded final prose;
+- provenance/freshness/scope/authority requirements are machine-observable and fail closed;
+- acquisition success is measured separately from trusted verification success;
+- operational tool/provider failure, policy denial, timeout, and budget exhaustion remain operational states rather than semantic evidence;
+- every admitted-evidence or candidate-revision step re-enters ordinary validation, verification, diagnostics, decision, and finalization;
+- the declared v0.3.0 acceptance set retains unsupported grounded claims = `0` and missed target insufficiency = `0`;
+- historical Stage-C/RSD2 and other observed research holdouts remain untouched and are not product-tuning surfaces.
+
+MCP has two deliberately separate roles. #176 lets Reasoning Harness call allowlisted MCP tools as resolvers; #180 lets an external MCP client call the full Reasoning Harness runtime. Neither role is the correctness boundary, and a successful MCP invocation never certifies the caller's entire agent loop.
+
+v0.3.0 is a product/distribution coordinate, not a new semantic research generation. The current semantic/runtime and answer-safety identities remain unchanged unless a separate measured gap passes the research-to-product promotion gate below.
 
 The current answer-safety behavior and semantic runtime have exact machine configuration IDs for rollback and reproducibility, but those IDs are not product phase names. See [Terminology and naming](terminology.md).
 
@@ -128,8 +168,9 @@ native runtime, while structured JSON commands remain the advanced compatibility
 debugging, and third-party integrations. Neither path may invent lower-level bypass APIs.
 
 Product telemetry should make the harness useful to operators without turning model confidence into
-correctness authority. Active provider-reliability work is tracked in #126: retries must remain bounded,
-typed, observable, and strictly operational rather than becoming semantic `unknown` or abstention.
+correctness authority. The v0.2.0 provider-reliability work in #126 is complete. v0.3.0 extends the same
+operational discipline to external resolvers/tools under #178: calls and retries remain bounded, typed,
+observable, and strictly operational rather than becoming semantic `unknown` or abstention.
 
 - runtime/profile/config identity;
 - `accept | reject | unknown` and abstention/unknown reasons;
@@ -139,9 +180,11 @@ typed, observable, and strictly operational rather than becoming semantic `unkno
 - attempts, retries, tokens, and latency;
 - explicit separation of semantic outcome from operational completeness.
 
-Reference resolver/oracle integrations may be documented when they preserve evidence admission,
-trusted verification, and mandatory re-verification. Public embedding compatibility and MCP remain
-later adapters rather than correctness boundaries.
+v0.3.0 implements reference external resolver/oracle integrations only when they preserve evidence
+admission, trusted verification, and mandatory re-verification. MCP remains an adapter rather than a
+correctness boundary; the read-only resolver role is tracked in #176 and the optional full-runtime
+product surface in #180. Public embedding compatibility remains deferred until real consumer pressure
+validates that boundary.
 
 ## Real-workload adoption evidence
 
@@ -222,8 +265,7 @@ never product-tuning corpora.
 
 - **Public Rust embedding API:** after real CLI consumers validate the correct compatibility
   boundary.
-- **MCP adapter:** optional integration invoking the full runtime; never evidence that the caller's
-  entire agent loop is verified.
+- **MCP full-runtime product surface (#180):** optional downstream integration after the v0.3.0 resolver path is accepted; never evidence that the caller's entire agent loop is verified. The read-only MCP resolver role is active v0.3.0 work in #176.
 - **Interactive CLI (`reason shell` / `reason repl`):** demand-gated after repeated real-workload dogfood. If adopted, it is a thin stateful session over `ReasoningThread`/checkpoint/replay and the same product runtime, not a separate chat authority or evidence shortcut.
 - **Desktop UI:** thin inspection/review client only after artifact and CLI contracts are stable.
 

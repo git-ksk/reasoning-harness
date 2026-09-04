@@ -22,9 +22,23 @@ See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
 ## Current product milestone
 
-`v0.2.0` is the current external-preview product milestone. It packages the natural-language-first CLI, successor verified-target recovery, bounded provider retry/resume, four-platform process compatibility, and the completed two-class real-workload acceptance evidence. The frozen research holdouts and historical Stage-C/RSD2 outcomes are unchanged.
+`v0.2.0` remains the current published external preview. The next planned capability milestone is **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173).
 
-The next product decision is deliberately **not** another reasoning change by default: observe v0.2.0 external use, fix measured compatibility/operational defects under v0.x, and make the v1.0 tag/release decision separately. New reasoning research starts only from a newly measured gap and must receive a fresh research/evaluation identity.
+v0.3.0 does not add another reasoning mechanism by default. It connects the already-implemented bounded control loop to real external acquisition and trusted-verifier adapters through the existing `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary.
+
+Execution order:
+
+1. #174 external resolver adapter and supported CLI/config wiring;
+2. #175 provenance/freshness/scope/authority admission hardening;
+3. #178 external-resolution budgets, telemetry, secret handling, and typed operational failures;
+4. #176 read-only MCP resolver adapter;
+5. #177 reference trusted verifier/oracle integration;
+6. #179 non-frozen open-world product dogfood and v0.3.0 acceptance;
+7. #180 optional full-runtime MCP product surface, explicitly non-blocking for v0.3.0.
+
+The release gate requires at least one safe real external-evidence recovery while preserving unsupported grounded claims = `0` and missed target insufficiency = `0` on the declared acceptance set. External acquisition success and hard verification success are separate observations. Frozen Stage-C/RSD2 and other historical holdouts remain immutable and are not used for product tuning.
+
+New reasoning research still starts only from a newly measured gap and receives a fresh research/evaluation identity. v0.3.0 is therefore a product/distribution milestone, not a semantic-generation bump.
 
 ## Completed current product line
 
@@ -328,7 +342,7 @@ These are intentional non-goals until the native runtime, artifact, resolution, 
 
 - desktop UI: thin visualization/review client after artifact formats stabilize.
 - public embedding API compatibility: after real consumer pressure validates the runtime contract.
-- MCP adapter: optional agent integration; never a required correctness boundary.
+- MCP full-runtime product surface (#180): optional agent integration after the active v0.3.0 resolver work; never a required correctness boundary. Read-only MCP acquisition is tracked separately in #176.
 
 See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md).
 
