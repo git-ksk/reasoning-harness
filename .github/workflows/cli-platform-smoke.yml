@@ -32,6 +32,8 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Build supported CLI
         run: cargo build --locked -p reasoning-harness-cli --bin reason
+      - name: Product CLI compatibility contract
+        run: cargo test --locked -p reasoning-harness-cli --test product_cli_contract
       - name: Product CLI smoke
         shell: bash
         run: |

@@ -110,7 +110,7 @@ Make `reason` straightforward to obtain and safe to upgrade:
 - [implemented #97] reproducible `cargo install --git` path plus tag-driven standalone GitHub Release artifacts containing only the supported `reason` binary;
 - [implemented #97] release tags are required to match the CLI semver and releases include SHA-256 checksums;
 - [implemented #97] credential-free product smoke covers Linux x64, macOS arm64, macOS Intel, and Windows x64;
-- compatibility tests for stable JSON/exit semantics;
+- [implemented #90] cross-platform process-level compatibility tests pin `reason-cli-output-v1`, supported stdin behavior, schema contract IDs, `unknown` as exit 0, typed operational failure as exit 1, and CLI usage failure as exit 2;
 - [implemented #102] changelog/migration discipline for intentional breaking changes during v0.x;
 - [implemented #102] explicit product/platform/provider support policy separating provider operations from the provider-neutral correctness boundary.
 
