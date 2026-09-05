@@ -12,6 +12,7 @@ on:
       - scripts/apply_identity_gate_loop_safety_v4.py
       - scripts/apply_identity_context_grounding_v5.py
       - scripts/apply_identity_context_followup_v6.py
+      - scripts/apply_identity_context_query_shape_v7.py
       - scripts/knowledge_search_fused_mcp.py
       - scripts/test_identity_tool_request_accounting.py
       - crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
@@ -40,6 +41,7 @@ jobs:
             scripts/apply_identity_gate_loop_safety_v4.py \
             scripts/apply_identity_context_grounding_v5.py \
             scripts/apply_identity_context_followup_v6.py \
+            scripts/apply_identity_context_query_shape_v7.py \
             scripts/test_identity_tool_request_accounting.py
 
       - name: Run identity qualification tests
@@ -49,13 +51,14 @@ jobs:
             scripts/test_identity_gate_v2.py \
             scripts/test_identity_tool_request_accounting.py
 
-      - name: Verify exact v6 canonical-follow transformation
+      - name: Verify exact v7 canonical-query transformation
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
           python3 scripts/apply_identity_gate_loop_safety_v4.py
           python3 scripts/apply_identity_context_grounding_v5.py
           python3 scripts/apply_identity_context_followup_v6.py
+          python3 scripts/apply_identity_context_query_shape_v7.py
           git diff --check
           git diff -- crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
 
@@ -101,16 +104,17 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - name: Materialize v6 canonical-follow candidate
+      - name: Materialize v7 canonical-query candidate
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
           python3 scripts/apply_identity_gate_loop_safety_v4.py
           python3 scripts/apply_identity_context_grounding_v5.py
           python3 scripts/apply_identity_context_followup_v6.py
+          python3 scripts/apply_identity_context_query_shape_v7.py
           git diff --check
 
-      - name: Run deterministic v6 failure-injection contracts
+      - name: Run deterministic v7 failure-injection contracts
         run: |
           set -euo pipefail
           cargo test --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
