@@ -1,0 +1,119 @@
+{
+  "schema_version": "product-external-info-case-v2",
+  "id": "temporal-observation-after-evaluation-bun",
+  "capability_family": "stale_fresh_or_source_conflict",
+  "task": "Do not use an external observation whose acquisition time is later than the Harness-owned evaluation time.",
+  "expected_outcome": "unknown",
+  "target_proposition": {
+    "identity": "product-external-info-v2:temporal-observation-after-evaluation-bun:target",
+    "key": "external.v2.temporal.bun.repo",
+    "value": "oven-sh/bun"
+  },
+  "acquisition_profiles": [
+    {
+      "id": "github-bun-not-yet-valid",
+      "adapter": "mcp_readonly_v1",
+      "server_id": "product_external_info_fixture_v2",
+      "program": "python3",
+      "args": [
+        "scripts/product_external_info_mcp.py"
+      ],
+      "protocol_version": "2026-07-28",
+      "transport": "stdio",
+      "stateless_tools_call": true,
+      "tool": "fetch_json_fact",
+      "allowed_tools": [
+        "fetch_json_fact"
+      ],
+      "read_only": true,
+      "resolver_class": "evidence_acquisition",
+      "http_method": "GET",
+      "source_identity": "registry:v2:github:oven-bun",
+      "timeout_ms": 1000,
+      "fixed_arguments": {
+        "url": "https://api.github.com/repos/oven-sh/bun",
+        "value_pointer": "/full_name",
+        "fact_key": "external.v2.temporal.bun.repo",
+        "authority_class": "primary",
+        "identity_assertions": [
+          {
+            "pointer": "/full_name",
+            "equals": "oven-sh/bun"
+          }
+        ],
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      },
+      "argument_ownership": {
+        "url": "harness_fixed",
+        "value_pointer": "harness_fixed",
+        "fact_key": "harness_fixed",
+        "authority_class": "harness_fixed",
+        "identity_assertions": "harness_fixed",
+        "scope": "harness_fixed",
+        "source_identity": "harness_config"
+      }
+    }
+  ],
+  "source_identities": [
+    "registry:v2:github:oven-bun"
+  ],
+  "expected_admission_behavior": "not_yet_valid_rejection",
+  "freshness_requirement": {
+    "max_age_seconds": 300,
+    "evaluation_time_owner": "harness"
+  },
+  "authority_requirement": {
+    "minimum_class": "primary",
+    "policy_owner": "harness"
+  },
+  "scope_requirement": {
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "github"
+        ]
+      }
+    },
+    "policy_owner": "harness"
+  },
+  "expected_operational_class": null,
+  "admission_policy": {
+    "evaluation_time_owner": "harness",
+    "evaluation_time_offset_seconds": -60,
+    "authority_policy": {
+      "secondary": 10,
+      "primary": 20
+    },
+    "minimum_authority_class": "primary",
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "github"
+        ]
+      }
+    },
+    "sources": {
+      "registry:v2:github:oven-bun": {
+        "authority_class": "primary",
+        "max_age_seconds": 300,
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
