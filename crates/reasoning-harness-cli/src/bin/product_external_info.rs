@@ -1038,8 +1038,10 @@ fn validation_comparison(cases: &[ExternalInfoCase]) -> ComparisonAggregate {
 }
 
 fn aggregate(results: &[CaseReport]) -> Aggregate {
-    let mut aggregate = Aggregate::default();
-    aggregate.total_cases = results.len();
+    let mut aggregate = Aggregate {
+        total_cases: results.len(),
+        ..Aggregate::default()
+    };
     for result in results {
         let external = &result.harness_with_mcp_external_acquisition;
         aggregate.external_acquisition_attempts += external.acquisition_attempts;
@@ -1422,7 +1424,7 @@ async fn run(args: &Args) -> Result<Report, String> {
     };
     if let Some(path) = args.output.as_ref() {
         fs::write(
-            &path,
+            path,
             serde_json::to_vec_pretty(&report).map_err(|error| error.to_string())?,
         )
         .map_err(|error| error.to_string())?;
