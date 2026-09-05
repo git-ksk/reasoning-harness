@@ -43,6 +43,23 @@ With the harness:
   evidence -> LLM -> candidate -> verify / resolve -> grounded | qualified | unknown
 ```
 
+## What has this achieved in measurements?
+
+The goal is not to make a model omniscient. It is to **recover useful answers when evidence is sufficient, while refusing to promote unsupported claims when it is not**. Recorded evaluations show that this boundary can materially improve useful target coverage without increasing unsupported grounded output.
+
+| Evaluation | Model(s) | Result with the Harness | Safety result |
+| --- | --- | --- | --- |
+| 6-case real product workload (incident + architecture analysis) | Ministral 8B | target coverage **0.25 raw -> 1.00**; false target abstention **0.75 -> 0.00** | unsupported grounded claims **0**; missed target insufficiency **0** |
+| Independent frozen Stage-C, 16 cases | Ministral 8B / Mistral Small / Gemma 4 31B / Gemini 3.1 Flash-Lite | target coverage **1.00** | unsupported grounded claims **0**; missed target insufficiency **0** on every completed arm |
+| Independent frozen Stage-C, 16 cases | Ministral 14B | target coverage **0.875** | the miss was conservative utility loss, not unsafe exposure; safety counters remained **0** |
+| Frozen D3 semantic holdout-v5 | Ministral 8B / Gemma 4 31B / Gemini 3.5 Flash-Lite | each completed **120/120** calls with clear-case coverage / precision / recall **1.000 / 1.000 / 1.000** | typed-insufficiency cases abstained **50/50** and unsafe assertions were reduced **50 -> 0** |
+
+The most direct product result is the first row: on the same six realistic tasks, the raw Ministral 8B arm exposed only one quarter of the requested grounded targets, while the current Harness path exposed all supported targets and still left expected-unknown targets unresolved. In other words, the Harness improved **verified utility**, not just refusal rate.
+
+A broader repeated live matrix used a different, earlier 20-case correctness metric. Across complete trials, Harness correctness was **1.00** for Ministral 8B, Ministral 14B, and Gemini 3.1 Flash-Lite; **0.99** for Mistral Small; **0.98** for Gemini 3.5 Flash-Lite; **0.95** for Gemma 4 31B; **0.867** for Gemma 4 26B across its three complete trials; and **0.75** for Ministral 3B, which was consistently over-conservative. This matrix is useful for model breadth, but its metric should not be compared directly with Stage-C target coverage.
+
+These are recorded workload/holdout results, not a claim that every open-world task or future model will achieve the same accuracy. Frozen research holdouts are kept immutable and are not reused for tuning. See [product dogfood](docs/product-dogfood.md), [product capability matrix](docs/product-dogfood-capability-matrix.md), and [D3 holdout-v5](docs/semantic-decidability-holdout-v5.md) for provenance and detailed denominators.
+
 ## 30-second quickstart
 
 ### 1. Install the current v0.3.0 preview
