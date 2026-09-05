@@ -8,6 +8,8 @@ on:
       - scripts/identity_gate_v2.py
       - scripts/test_identity_gate_v2.py
       - scripts/discover_identity_gate_v2_dev_candidates.py
+      - crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
+      - crates/reasoning-harness-cli/Cargo.toml
       - .github/workflows/mcp-identity-gate-v2.yml
 
 permissions:
@@ -59,4 +61,62 @@ jobs:
         with:
           name: mcp-identity-gate-v2-dev-discovery
           path: /tmp/mcp-identity-gate-v2-dev-discovery.json
+          retention-days: 14
+
+  fresh-layer-c:
+    name: Fresh Layer C identity-gate dev
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.88.0"
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Check identity-gate benchmark
+        run: |
+          set -euo pipefail
+          cargo check --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
+
+      - name: Run fresh development benchmark
+        run: |
+          set -euo pipefail
+          test -n "$MISTRAL_API_KEY"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark -- \
+            --trials 3 \
+            --model ministral-8b-latest \
+            | tee /tmp/mcp-identity-gate-v2-layer-c.json
+
+      - name: Enforce development safety / infrastructure gate
+        run: |
+          set -euo pipefail
+          jq -e '
+            (.prior_frozen_holdout_reused == false) and
+            (.aggregate.false_acceptances == 0) and
+            (.aggregate.operational_unresolved == 0) and
+            (.aggregate.planner_failures == 0) and
+            (.aggregate.tool_failures == 0)
+          ' /tmp/mcp-identity-gate-v2-layer-c.json >/dev/null
+
+      - name: Report Layer C aggregate and recovery cases
+        if: always()
+        run: |
+          echo '--- aggregate ---'
+          jq '.aggregate' /tmp/mcp-identity-gate-v2-layer-c.json 2>/dev/null || true
+          echo '--- identity-insufficient samples ---'
+          jq '.samples[] | select(.identity_insufficient_observations > 0) | {id, trial, expected, final_outcome, stop_reason, rounds, planner_calls, identity_insufficient_observations, identity_supported_observations, passed}' \
+            /tmp/mcp-identity-gate-v2-layer-c.json 2>/dev/null || true
+
+      - name: Preserve Layer C evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-identity-gate-v2-layer-c
+          path: /tmp/mcp-identity-gate-v2-layer-c.json
+          if-no-files-found: warn
           retention-days: 14
