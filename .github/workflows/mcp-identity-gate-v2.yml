@@ -8,6 +8,7 @@ on:
       - scripts/identity_gate_v2.py
       - scripts/test_identity_gate_v2.py
       - scripts/discover_identity_gate_v2_dev_candidates.py
+      - scripts/apply_identity_gate_action_repair_v3.py
       - crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
       - crates/reasoning-harness-cli/Cargo.toml
       - .github/workflows/mcp-identity-gate-v2.yml
@@ -23,18 +24,26 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Compile Python contract
+      - name: Compile Python contract and candidate transformer
         run: |
           set -euo pipefail
           python3 -m py_compile \
             scripts/identity_gate_v2.py \
             scripts/test_identity_gate_v2.py \
-            scripts/discover_identity_gate_v2_dev_candidates.py
+            scripts/discover_identity_gate_v2_dev_candidates.py \
+            scripts/apply_identity_gate_action_repair_v3.py
 
       - name: Run identity qualification tests
         run: |
           set -euo pipefail
           python3 -m unittest -v scripts/test_identity_gate_v2.py
+
+      - name: Verify exact v3 action-repair transformation
+        run: |
+          set -euo pipefail
+          python3 scripts/apply_identity_gate_action_repair_v3.py
+          git diff --check
+          git diff -- crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
 
   fresh-dev-discovery:
     name: Fresh dev identity candidate discovery
@@ -78,6 +87,12 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
+      - name: Materialize v3 action-repair candidate
+        run: |
+          set -euo pipefail
+          python3 scripts/apply_identity_gate_action_repair_v3.py
+          git diff --check
+
       - name: Check identity-gate benchmark
         run: |
           set -euo pipefail
@@ -109,7 +124,7 @@ jobs:
           echo '--- aggregate ---'
           jq '.aggregate' /tmp/mcp-identity-gate-v2-layer-c.json 2>/dev/null || true
           echo '--- identity-insufficient samples ---'
-          jq '.samples[] | select(.identity_insufficient_observations > 0) | {id, trial, expected, final_outcome, stop_reason, rounds, planner_calls, identity_insufficient_observations, identity_supported_observations, passed}' \
+          jq '.samples[] | select(.identity_insufficient_observations > 0) | {id, trial, expected, final_outcome, stop_reason, rounds, planner_calls, identity_insufficient_observations, identity_supported_observations, invalid_action_observations, follow_suggested_query_actions, recovered_after_invalid_action, passed}' \
             /tmp/mcp-identity-gate-v2-layer-c.json 2>/dev/null || true
 
       - name: Preserve Layer C evidence
