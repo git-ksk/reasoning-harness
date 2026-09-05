@@ -50,6 +50,9 @@ struct Args {
     /// Execute the frozen live MCP acquisition/admission/verification lane without any model calls.
     #[arg(long, default_value_t = false)]
     acquisition_probe: bool,
+    /// Probe the official GitHub MCP server through mcp_readonly_v1 and assert generic output stays opaque.
+    #[arg(long, default_value_t = false)]
+    github_generic_probe: bool,
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum, Serialize)]
@@ -252,6 +255,21 @@ struct AcquisitionProbeCase {
     expected_admission_behavior: String,
     expected_operational_class: Option<String>,
     external: ExternalArm,
+}
+
+#[derive(Debug, Serialize)]
+struct GithubGenericProbeReport {
+    schema_version: &'static str,
+    adapter: &'static str,
+    server: &'static str,
+    tool: &'static str,
+    read_only: bool,
+    acquisition_success: bool,
+    acquired_evidence: usize,
+    acquired_fact_candidates: usize,
+    generic_output_non_promoting: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    operational_error: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -938,6 +956,83 @@ fn aggregate(results: &[CaseReport]) -> Aggregate {
     aggregate
 }
 
+fn run_github_generic_probe() -> GithubGenericProbeReport {
+    let mut config = McpReadOnlyResolverConfig::with_defaults(
+        "github_official_generic_boundary_v1",
+        PathBuf::from("docker"),
+        "get_file_contents",
+        "github:official-mcp:generic-readme",
+    );
+    config.args = vec![
+        "run".into(),
+        "-i".into(),
+        "--rm".into(),
+        "-e".into(),
+        "GITHUB_PERSONAL_ACCESS_TOKEN".into(),
+        "-e".into(),
+        "GITHUB_READ_ONLY=1".into(),
+        "-e".into(),
+        "GITHUB_TOOLS=get_file_contents".into(),
+        "ghcr.io/github/github-mcp-server@sha256:46cdbbd810faf6f7aed1745ea04057443f5cb9fcadc15c7308add18cf9a83e33".into(),
+    ];
+    config.allowed_tools = BTreeSet::from(["get_file_contents".into()]);
+    config.fixed_arguments = BTreeMap::from([
+        ("owner".into(), Value::String("git-ksk".into())),
+        ("repo".into(), Value::String("reasoning-harness".into())),
+        ("path".into(), Value::String("README.md".into())),
+        ("ref".into(), Value::String("refs/heads/main".into())),
+    ]);
+    config.timeout_ms = 30_000;
+    let resolver = McpReadOnlyResolver::new(config);
+    let request = ResolutionRequest {
+        id: "product-external-info:github-generic-boundary".into(),
+        reason: reasoning_harness_core::ResolutionReason::MissingSupport,
+        target: reasoning_harness_core::ResolutionTarget::Proposition {
+            proposition: Proposition {
+                key: "external.github.generic.readme".into(),
+                value: "present".into(),
+            },
+        },
+        resolver_class: ResolverClass::EvidenceAcquisition,
+        budget: reasoning_harness_core::ResolutionRequestBudget::default(),
+    };
+    match resolver.resolve(&request, 0) {
+        Ok(output) => {
+            let (acquired_evidence, acquired_fact_candidates) = match output.contribution {
+                ResolutionResolverContribution::AcquiredEvidence { evidence } => {
+                    let facts = evidence.iter().map(|item| item.facts.len()).sum();
+                    (evidence.len(), facts)
+                }
+                _ => (0, 0),
+            };
+            GithubGenericProbeReport {
+                schema_version: "reason-product-external-info-github-generic-probe-v1",
+                adapter: MCP_READONLY_RESOLVER_ID,
+                server: "github/github-mcp-server",
+                tool: "get_file_contents",
+                read_only: true,
+                acquisition_success: true,
+                acquired_evidence,
+                acquired_fact_candidates,
+                generic_output_non_promoting: acquired_fact_candidates == 0,
+                operational_error: None,
+            }
+        }
+        Err(error) => GithubGenericProbeReport {
+            schema_version: "reason-product-external-info-github-generic-probe-v1",
+            adapter: MCP_READONLY_RESOLVER_ID,
+            server: "github/github-mcp-server",
+            tool: "get_file_contents",
+            read_only: true,
+            acquisition_success: false,
+            acquired_evidence: 0,
+            acquired_fact_candidates: 0,
+            generic_output_non_promoting: true,
+            operational_error: Some(format!("{:?}", error.kind)),
+        },
+    }
+}
+
 fn synthetic_target_candidate(target: &Proposition) -> ReasoningCandidate {
     ReasoningCandidate {
         claims: vec![CandidateClaim {
@@ -1165,7 +1260,9 @@ async fn run(args: &Args) -> Result<Report, String> {
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
-    let result = if args.acquisition_probe {
+    let result = if args.github_generic_probe {
+        serde_json::to_value(run_github_generic_probe()).map_err(|error| error.to_string())
+    } else if args.acquisition_probe {
         let cases = match load_cases(&args.fixtures).and_then(|cases| {
             validate_cases(&cases)?;
             Ok(cases)
