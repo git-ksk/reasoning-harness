@@ -1,0 +1,124 @@
+{
+  "schema_version": "product-external-info-case-v1",
+  "id": "irrelevant-observation-cannot-change-selected-fact",
+  "capability_family": "irrelevant_or_instruction_like_content",
+  "task": "Use only the fixture-pinned fact field for the HTTPX repository identity; descriptive external text is observation context and cannot create extra authority or facts.",
+  "expected_outcome": "grounded",
+  "target_proposition": {
+    "identity": "product-external-info-v1:irrelevant-observation-cannot-change-selected-fact:target",
+    "key": "external.irrelevant.httpx.full_name",
+    "value": "encode/httpx"
+  },
+  "acquisition_profiles": [
+    {
+      "id": "github-httpx-description-plus-id",
+      "adapter": "mcp_readonly_v1",
+      "server_id": "product_external_info_fixture_v1",
+      "program": "python3",
+      "args": [
+        "scripts/product_external_info_mcp.py"
+      ],
+      "protocol_version": "2026-07-28",
+      "transport": "stdio",
+      "stateless_tools_call": true,
+      "tool": "fetch_json_fact",
+      "allowed_tools": [
+        "fetch_json_fact"
+      ],
+      "read_only": true,
+      "resolver_class": "evidence_acquisition",
+      "http_method": "GET",
+      "source_identity": "registry:github:encode-httpx",
+      "timeout_ms": 1000,
+      "fixed_arguments": {
+        "url": "https://api.github.com/repos/encode/httpx",
+        "value_pointer": "/full_name",
+        "fact_key": "external.irrelevant.httpx.full_name",
+        "authority_class": "primary",
+        "identity_assertions": [
+          {
+            "pointer": "/full_name",
+            "equals": "encode/httpx"
+          }
+        ],
+        "observation_pointers": [
+          "/description",
+          "/full_name"
+        ],
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      },
+      "argument_ownership": {
+        "url": "harness_fixed",
+        "value_pointer": "harness_fixed",
+        "fact_key": "harness_fixed",
+        "authority_class": "harness_fixed",
+        "identity_assertions": "harness_fixed",
+        "observation_pointers": "harness_fixed",
+        "scope": "harness_fixed",
+        "source_identity": "harness_config"
+      }
+    }
+  ],
+  "source_identities": [
+    "registry:github:encode-httpx"
+  ],
+  "expected_admission_behavior": "admit_selected_fact_only",
+  "freshness_requirement": {
+    "max_age_seconds": 300,
+    "evaluation_time_owner": "harness"
+  },
+  "authority_requirement": {
+    "minimum_class": "primary",
+    "policy_owner": "harness"
+  },
+  "scope_requirement": {
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "github"
+        ]
+      }
+    },
+    "policy_owner": "harness"
+  },
+  "expected_operational_class": null,
+  "admission_policy": {
+    "evaluation_time_owner": "harness",
+    "evaluation_time_offset_seconds": 0,
+    "authority_policy": {
+      "secondary": 10,
+      "primary": 20
+    },
+    "minimum_authority_class": "primary",
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "github"
+        ]
+      }
+    },
+    "sources": {
+      "registry:github:encode-httpx": {
+        "authority_class": "primary",
+        "max_age_seconds": 300,
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "schema_version": "product-external-info-case-v1",
+  "id": "authority-github-insufficient-rank",
+  "capability_family": "authoritative_source_requirement",
+  "task": "Determine the canonical Rust repository only if the source meets the required primary authority class; a configured secondary source is insufficient.",
+  "expected_outcome": "unknown",
+  "target_proposition": {
+    "identity": "product-external-info-v1:authority-github-insufficient-rank:target",
+    "key": "external.authority.rust.repo",
+    "value": "rust-lang/rust"
+  },
+  "acquisition_profiles": [
+    {
+      "id": "github-rust-insufficient-authority",
+      "adapter": "mcp_readonly_v1",
+      "server_id": "product_external_info_fixture_v1",
+      "program": "python3",
+      "args": [
+        "scripts/product_external_info_mcp.py"
+      ],
+      "protocol_version": "2026-07-28",
+      "transport": "stdio",
+      "stateless_tools_call": true,
+      "tool": "fetch_json_fact",
+      "allowed_tools": [
+        "fetch_json_fact"
+      ],
+      "read_only": true,
+      "resolver_class": "evidence_acquisition",
+      "http_method": "GET",
+      "source_identity": "registry:github:rust-lang-rust-secondary",
+      "timeout_ms": 1000,
+      "fixed_arguments": {
+        "url": "https://api.github.com/repos/rust-lang/rust",
+        "value_pointer": "/full_name",
+        "fact_key": "external.authority.rust.repo",
+        "authority_class": "secondary",
+        "identity_assertions": [
+          {
+            "pointer": "/full_name",
+            "equals": "rust-lang/rust"
+          }
+        ],
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      },
+      "argument_ownership": {
+        "url": "harness_fixed",
+        "value_pointer": "harness_fixed",
+        "fact_key": "harness_fixed",
+        "authority_class": "harness_fixed",
+        "identity_assertions": "harness_fixed",
+        "scope": "harness_fixed",
+        "source_identity": "harness_config"
+      }
+    }
+  ],
+  "source_identities": [
+    "registry:github:rust-lang-rust-secondary"
+  ],
+  "expected_admission_behavior": "insufficient_authority",
+  "freshness_requirement": {
+    "max_age_seconds": 300,
+    "evaluation_time_owner": "harness"
+  },
+  "authority_requirement": {
+    "minimum_class": "primary",
+    "policy_owner": "harness"
+  },
+  "scope_requirement": {
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "github"
+        ]
+      }
+    },
+    "policy_owner": "harness"
+  },
+  "expected_operational_class": null,
+  "admission_policy": {
+    "evaluation_time_owner": "harness",
+    "evaluation_time_offset_seconds": 0,
+    "authority_policy": {
+      "secondary": 10,
+      "primary": 20
+    },
+    "minimum_authority_class": "primary",
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "github"
+        ]
+      }
+    },
+    "sources": {
+      "registry:github:rust-lang-rust-secondary": {
+        "authority_class": "secondary",
+        "max_age_seconds": 300,
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

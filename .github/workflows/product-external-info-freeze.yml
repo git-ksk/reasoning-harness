@@ -1,0 +1,105 @@
+name: product-external-info-freeze
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/product-external-info-v1/**'
+      - 'fixtures/product-external-info-v1.sha256'
+      - 'fixtures/product-dogfood-v1/**'
+      - 'fixtures/product-dogfood-v1.sha256'
+      - 'scripts/product_external_info_mcp.py'
+      - 'scripts/test_product_external_info_mcp.py'
+      - 'scripts/validate_product_external_info.py'
+      - 'scripts/test_validate_product_external_info.py'
+      - 'crates/reasoning-harness-providers/src/mcp_readonly.rs'
+      - 'crates/reasoning-harness-providers/src/external_admission.rs'
+      - 'crates/reasoning-harness-cli/src/bin/external_resolution_acceptance.rs'
+      - '.github/workflows/product-external-info-freeze.yml'
+  push:
+    branches:
+      - main
+      - feat/203-mcp-external-info-freeze
+    paths:
+      - 'fixtures/product-external-info-v1/**'
+      - 'fixtures/product-external-info-v1.sha256'
+      - 'fixtures/product-dogfood-v1/**'
+      - 'fixtures/product-dogfood-v1.sha256'
+      - 'scripts/product_external_info_mcp.py'
+      - 'scripts/test_product_external_info_mcp.py'
+      - 'scripts/validate_product_external_info.py'
+      - 'scripts/test_validate_product_external_info.py'
+      - 'crates/reasoning-harness-providers/src/mcp_readonly.rs'
+      - 'crates/reasoning-harness-providers/src/external_admission.rs'
+      - 'crates/reasoning-harness-cli/src/bin/external_resolution_acceptance.rs'
+      - '.github/workflows/product-external-info-freeze.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deterministic-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Validate frozen corpus contract
+        run: |
+          set -euo pipefail
+          python3 scripts/validate_product_external_info.py | tee /tmp/product-external-info-validation.json
+          jq -e '
+            .valid == true
+            and .live_observation_performed == false
+            and .cases == 21
+            and .capability_families == 7
+            and .legacy_product_dogfood_v1_cases == 6
+          ' /tmp/product-external-info-validation.json >/dev/null
+          (cd fixtures/product-external-info-v1 && sha256sum -c ../product-external-info-v1.sha256)
+          (cd fixtures/product-dogfood-v1 && sha256sum -c ../product-dogfood-v1.sha256)
+
+      - name: Prove original six-case smoke is unchanged from Issue 203 baseline
+        run: |
+          set -euo pipefail
+          git cat-file -e aa0a8325ea4c3b53b38c8fe83cf3aae691a38599^{commit}
+          git diff --exit-code aa0a8325ea4c3b53b38c8fe83cf3aae691a38599 -- fixtures/product-dogfood-v1
+
+      - name: Test fixture MCP and freeze validator
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v \
+            scripts/test_product_external_info_mcp.py \
+            scripts/test_validate_product_external_info.py
+
+      - name: Test MCP read-only and external-admission boundaries
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-providers mcp_readonly -- --nocapture
+          cargo test --locked -p reasoning-harness-providers external_admission -- --nocapture
+
+      - name: Run deterministic external-resolution safety coverage
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-external-resolution-acceptance -- \
+            --output /tmp/external-resolution-acceptance.json \
+            > /tmp/external-resolution-acceptance.stdout
+          jq -e '
+            .schema_version == "reason-external-resolution-acceptance-v1"
+            and .aggregate.acceptance_passed == true
+            and .aggregate.unsupported_grounded_claims == 0
+            and .aggregate.missed_target_insufficiency == 0
+            and .aggregate.false_abstentions == 0
+            and .aggregate.typed_operational_failures == 2
+            and ([.cases[] | select(.id == "stale_external_evidence") | .expected] == ["unknown"])
+            and ([.cases[] | select(.id == "wrong_scope_external_evidence") | .expected] == ["unknown"])
+            and ([.cases[] | select(.id == "irrelevant_external_data") | .expected] == ["unknown"])
+            and ([.cases[] | select(.id == "conflicting_external_evidence") | .expected] == ["reject"])
+            and ([.cases[] | select(.typed_operational_failure == true)] | length) == 2
+          ' /tmp/external-resolution-acceptance.json >/dev/null
+          jq '{schema_version, suite, aggregate}' /tmp/external-resolution-acceptance.json

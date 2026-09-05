@@ -1,0 +1,124 @@
+{
+  "schema_version": "product-external-info-case-v1",
+  "id": "irrelevant-content-cannot-rescue-identity-mismatch",
+  "capability_family": "irrelevant_or_instruction_like_content",
+  "task": "Even if surrounding external text appears relevant or persuasive, an explicit identity assertion mismatch must produce no fact candidate.",
+  "expected_outcome": "unknown",
+  "target_proposition": {
+    "identity": "product-external-info-v1:irrelevant-content-cannot-rescue-identity-mismatch:target",
+    "key": "external.irrelevant.zod.identity",
+    "value": "zod-v1-nonexistent"
+  },
+  "acquisition_profiles": [
+    {
+      "id": "npm-zod-description-identity-mismatch",
+      "adapter": "mcp_readonly_v1",
+      "server_id": "product_external_info_fixture_v1",
+      "program": "python3",
+      "args": [
+        "scripts/product_external_info_mcp.py"
+      ],
+      "protocol_version": "2026-07-28",
+      "transport": "stdio",
+      "stateless_tools_call": true,
+      "tool": "fetch_json_fact",
+      "allowed_tools": [
+        "fetch_json_fact"
+      ],
+      "read_only": true,
+      "resolver_class": "evidence_acquisition",
+      "http_method": "GET",
+      "source_identity": "registry:npm:zod",
+      "timeout_ms": 1000,
+      "fixed_arguments": {
+        "url": "https://registry.npmjs.org/zod",
+        "value_pointer": "/name",
+        "fact_key": "external.irrelevant.zod.identity",
+        "authority_class": "primary",
+        "identity_assertions": [
+          {
+            "pointer": "/name",
+            "equals": "zod-v1-nonexistent"
+          }
+        ],
+        "observation_pointers": [
+          "/description",
+          "/name"
+        ],
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "npm"
+            ]
+          }
+        }
+      },
+      "argument_ownership": {
+        "url": "harness_fixed",
+        "value_pointer": "harness_fixed",
+        "fact_key": "harness_fixed",
+        "authority_class": "harness_fixed",
+        "identity_assertions": "harness_fixed",
+        "observation_pointers": "harness_fixed",
+        "scope": "harness_fixed",
+        "source_identity": "harness_config"
+      }
+    }
+  ],
+  "source_identities": [
+    "registry:npm:zod"
+  ],
+  "expected_admission_behavior": "identity_no_fact",
+  "freshness_requirement": {
+    "max_age_seconds": 300,
+    "evaluation_time_owner": "harness"
+  },
+  "authority_requirement": {
+    "minimum_class": "primary",
+    "policy_owner": "harness"
+  },
+  "scope_requirement": {
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "npm"
+        ]
+      }
+    },
+    "policy_owner": "harness"
+  },
+  "expected_operational_class": null,
+  "admission_policy": {
+    "evaluation_time_owner": "harness",
+    "evaluation_time_offset_seconds": 0,
+    "authority_policy": {
+      "secondary": 10,
+      "primary": 20
+    },
+    "minimum_authority_class": "primary",
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "npm"
+        ]
+      }
+    },
+    "sources": {
+      "registry:npm:zod": {
+        "authority_class": "primary",
+        "max_age_seconds": 300,
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "npm"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

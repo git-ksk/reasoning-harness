@@ -1,0 +1,119 @@
+{
+  "schema_version": "product-external-info-case-v1",
+  "id": "authority-crates-serde-primary",
+  "capability_family": "authoritative_source_requirement",
+  "task": "Determine the canonical serde crate identifier only if the configured registry source satisfies the Harness-owned primary-authority requirement.",
+  "expected_outcome": "grounded",
+  "target_proposition": {
+    "identity": "product-external-info-v1:authority-crates-serde-primary:target",
+    "key": "external.crates.serde.id",
+    "value": "serde"
+  },
+  "acquisition_profiles": [
+    {
+      "id": "crates-serde-id",
+      "adapter": "mcp_readonly_v1",
+      "server_id": "product_external_info_fixture_v1",
+      "program": "python3",
+      "args": [
+        "scripts/product_external_info_mcp.py"
+      ],
+      "protocol_version": "2026-07-28",
+      "transport": "stdio",
+      "stateless_tools_call": true,
+      "tool": "fetch_json_fact",
+      "allowed_tools": [
+        "fetch_json_fact"
+      ],
+      "read_only": true,
+      "resolver_class": "evidence_acquisition",
+      "http_method": "GET",
+      "source_identity": "registry:crates:serde",
+      "timeout_ms": 1000,
+      "fixed_arguments": {
+        "url": "https://crates.io/api/v1/crates/serde",
+        "value_pointer": "/crate/id",
+        "fact_key": "external.crates.serde.id",
+        "authority_class": "primary",
+        "identity_assertions": [
+          {
+            "pointer": "/crate/id",
+            "equals": "serde"
+          }
+        ],
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "crates"
+            ]
+          }
+        }
+      },
+      "argument_ownership": {
+        "url": "harness_fixed",
+        "value_pointer": "harness_fixed",
+        "fact_key": "harness_fixed",
+        "authority_class": "harness_fixed",
+        "identity_assertions": "harness_fixed",
+        "scope": "harness_fixed",
+        "source_identity": "harness_config"
+      }
+    }
+  ],
+  "source_identities": [
+    "registry:crates:serde"
+  ],
+  "expected_admission_behavior": "admit",
+  "freshness_requirement": {
+    "max_age_seconds": 300,
+    "evaluation_time_owner": "harness"
+  },
+  "authority_requirement": {
+    "minimum_class": "primary",
+    "policy_owner": "harness"
+  },
+  "scope_requirement": {
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "crates"
+        ]
+      }
+    },
+    "policy_owner": "harness"
+  },
+  "expected_operational_class": null,
+  "admission_policy": {
+    "evaluation_time_owner": "harness",
+    "evaluation_time_offset_seconds": 0,
+    "authority_policy": {
+      "secondary": 10,
+      "primary": 20
+    },
+    "minimum_authority_class": "primary",
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "crates"
+        ]
+      }
+    },
+    "sources": {
+      "registry:crates:serde": {
+        "authority_class": "primary",
+        "max_age_seconds": 300,
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "crates"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

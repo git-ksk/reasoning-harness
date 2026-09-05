@@ -1,0 +1,119 @@
+{
+  "schema_version": "product-external-info-case-v1",
+  "id": "no-result-github-404",
+  "capability_family": "no_result_or_insufficient_evidence",
+  "task": "If the exact GitHub resource does not exist, preserve unknown rather than manufacturing the requested repository identity.",
+  "expected_outcome": "unknown",
+  "target_proposition": {
+    "identity": "product-external-info-v1:no-result-github-404:target",
+    "key": "external.no_result.github.full_name",
+    "value": "git-ksk/product-external-info-v1-definitely-missing-5f7c2a"
+  },
+  "acquisition_profiles": [
+    {
+      "id": "github-deliberate-404",
+      "adapter": "mcp_readonly_v1",
+      "server_id": "product_external_info_fixture_v1",
+      "program": "python3",
+      "args": [
+        "scripts/product_external_info_mcp.py"
+      ],
+      "protocol_version": "2026-07-28",
+      "transport": "stdio",
+      "stateless_tools_call": true,
+      "tool": "fetch_json_fact",
+      "allowed_tools": [
+        "fetch_json_fact"
+      ],
+      "read_only": true,
+      "resolver_class": "evidence_acquisition",
+      "http_method": "GET",
+      "source_identity": "registry:github:missing-ei-v1",
+      "timeout_ms": 1000,
+      "fixed_arguments": {
+        "url": "https://api.github.com/repos/git-ksk/product-external-info-v1-definitely-missing-5f7c2a",
+        "value_pointer": "/full_name",
+        "fact_key": "external.no_result.github.full_name",
+        "authority_class": "primary",
+        "identity_assertions": [
+          {
+            "pointer": "/full_name",
+            "equals": "git-ksk/product-external-info-v1-definitely-missing-5f7c2a"
+          }
+        ],
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      },
+      "argument_ownership": {
+        "url": "harness_fixed",
+        "value_pointer": "harness_fixed",
+        "fact_key": "harness_fixed",
+        "authority_class": "harness_fixed",
+        "identity_assertions": "harness_fixed",
+        "scope": "harness_fixed",
+        "source_identity": "harness_config"
+      }
+    }
+  ],
+  "source_identities": [
+    "registry:github:missing-ei-v1"
+  ],
+  "expected_admission_behavior": "no_fact",
+  "freshness_requirement": {
+    "max_age_seconds": 300,
+    "evaluation_time_owner": "harness"
+  },
+  "authority_requirement": {
+    "minimum_class": "primary",
+    "policy_owner": "harness"
+  },
+  "scope_requirement": {
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "github"
+        ]
+      }
+    },
+    "policy_owner": "harness"
+  },
+  "expected_operational_class": null,
+  "admission_policy": {
+    "evaluation_time_owner": "harness",
+    "evaluation_time_offset_seconds": 0,
+    "authority_policy": {
+      "secondary": 10,
+      "primary": 20
+    },
+    "minimum_authority_class": "primary",
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "github"
+        ]
+      }
+    },
+    "sources": {
+      "registry:github:missing-ei-v1": {
+        "authority_class": "primary",
+        "max_age_seconds": 300,
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
