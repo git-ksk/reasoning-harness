@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import importlib.util
+import io
 import json
 import subprocess
 import sys
@@ -25,6 +26,63 @@ class IdentityToolRequestAccountingTests(unittest.TestCase):
         self.assertEqual(probe.EXTERNAL_REQUESTS, 2)
         state = probe.state("x", "search_unresolved")
         self.assertEqual(state["external_requests"], 2)
+
+    def test_context_bounded_title_retry_can_recover_when_original_wikidata_search_is_empty(self):
+        request = {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "tools/call",
+            "params": {
+                "name": "search_fact",
+                "arguments": {
+                    "query": "Alpha, Region",
+                    "language": "en",
+                    "property_id": "P17",
+                    "value_kind": "entity",
+                    "fact_key": "alpha.country",
+                    "allow_title_retry": True,
+                },
+                "_meta": {"protocolVersion": "2026-07-28"},
+            },
+        }
+        stdin = io.StringIO(json.dumps(request) + "\n")
+        stdout = io.StringIO()
+        with (
+            patch.object(probe.sys, "stdin", stdin),
+            patch.object(probe.sys, "stdout", stdout),
+            patch.object(
+                probe,
+                "wikidata_search",
+                side_effect=[
+                    [],
+                    [{"id": "Q1", "label": "Alpha", "description": "city in Region"}],
+                ],
+            ),
+            patch.object(
+                probe,
+                "wikipedia_search",
+                return_value=[
+                    {
+                        "title": "Alpha",
+                        "wikibase_item": "Q1",
+                        "disambiguation": False,
+                    }
+                ],
+            ),
+            patch.object(probe, "wikidata_claim_values", return_value=["Q9"]),
+        ):
+            self.assertEqual(probe.main(), 0)
+        response = json.loads(stdout.getvalue())
+        state = response["result"]["structuredContent"]["search_state"]
+        self.assertEqual(state["outcome_kind"], "fact_resolved")
+        self.assertEqual(state["resolved_entity"], "Q1")
+        self.assertEqual(state["corroboration_mode"], "wikipedia_title_retry")
+        self.assertEqual(state["corroboration_rank"], 1)
+        self.assertEqual(state["corroboration_entity_description"], "city in Region")
+        self.assertEqual(
+            response["result"]["structuredContent"]["reasoning_harness"]["facts"]["alpha.country"],
+            "Q9",
+        )
 
     def test_invalid_search_is_rejected_before_any_external_request(self):
         request = {

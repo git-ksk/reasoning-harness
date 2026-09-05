@@ -17,6 +17,7 @@ on:
       - scripts/apply_identity_eval_semantics_v8.py
       - scripts/apply_identity_context_constraint_v9.py
       - scripts/apply_identity_context_dev_split_v10.py
+      - scripts/apply_identity_context_metadata_v11.py
       - scripts/validate_identity_context_v3_dev.py
       - scripts/discover_identity_context_v3_dev.py
       - fixtures/mcp-identity-context-v3-dev.json
@@ -53,6 +54,7 @@ jobs:
             scripts/apply_identity_eval_semantics_v8.py \
             scripts/apply_identity_context_constraint_v9.py \
             scripts/apply_identity_context_dev_split_v10.py \
+            scripts/apply_identity_context_metadata_v11.py \
             scripts/validate_identity_context_v3_dev.py \
             scripts/discover_identity_context_v3_dev.py
 
@@ -74,7 +76,7 @@ jobs:
             scripts/test_identity_gate_v2.py \
             scripts/test_identity_tool_request_accounting.py
 
-      - name: Materialize v10 candidate and run deterministic Rust contracts
+      - name: Materialize v11 candidate and run deterministic Rust contracts
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
@@ -85,6 +87,7 @@ jobs:
           python3 scripts/apply_identity_eval_semantics_v8.py
           python3 scripts/apply_identity_context_constraint_v9.py
           python3 scripts/apply_identity_context_dev_split_v10.py
+          python3 scripts/apply_identity_context_metadata_v11.py
           git diff --check
           cargo test --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
           cargo check --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
@@ -147,7 +150,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - name: Materialize v10 trusted-context candidate
+      - name: Materialize v11 trusted-context candidate
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
@@ -158,6 +161,7 @@ jobs:
           python3 scripts/apply_identity_eval_semantics_v8.py
           python3 scripts/apply_identity_context_constraint_v9.py
           python3 scripts/apply_identity_context_dev_split_v10.py
+          python3 scripts/apply_identity_context_metadata_v11.py
           git diff --check
 
       - name: Re-run deterministic contracts at live coordinate

@@ -279,7 +279,7 @@ def main():
     try:
         wd = wikidata_search(query, language)
         wp = wikipedia_search(query, language)
-        if not wd or not wp:
+        if not wp or (not wd and not allow_title_retry):
             observation = (
                 f"search unresolved: query={query!r}; wikidata_candidates={len(wd)}; "
                 f"wikipedia_candidates={len(wp)}; tool_query_semantics=entity_label_or_title_only_no_urls_no_site_operator_no_property_id"
@@ -291,7 +291,7 @@ def main():
             ))
             return 0
 
-        wd_top = wd[0]
+        wd_top = wd[0] if wd else {}
         wp_top = wp[0]
         if wp_top.get("disambiguation"):
             observation = (
@@ -311,15 +311,18 @@ def main():
         wd_ids = [item.get("id") for item in wd if item.get("id")]
         corroboration = "original_query"
         corroboration_rank = None
+        corroboration_item = None
 
         if wp_id and wp_id in wd_ids:
             corroboration_rank = wd_ids.index(wp_id) + 1
+            corroboration_item = wd[corroboration_rank - 1]
         elif wp_id and isinstance(wp_title, str) and wp_title and allow_title_retry:
             title_wd = wikidata_search(wp_title, language)
             title_wd_ids = [item.get("id") for item in title_wd if item.get("id")]
             if wp_id in title_wd_ids:
                 corroboration = "wikipedia_title_retry"
                 corroboration_rank = title_wd_ids.index(wp_id) + 1
+                corroboration_item = title_wd[corroboration_rank - 1]
             else:
                 observation = (
                     f"cross-source entity disagreement after title retry: query={query!r}; original_wikidata_candidates={wd_ids}; "
@@ -416,6 +419,8 @@ def main():
                 resolved_entity=wp_id,
                 corroboration_mode=corroboration,
                 corroboration_rank=corroboration_rank,
+                corroboration_entity_label=(corroboration_item or {}).get("label"),
+                corroboration_entity_description=(corroboration_item or {}).get("description"),
                 property_id=property_id,
                 property_values=values,
             ),
