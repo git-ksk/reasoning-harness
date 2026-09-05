@@ -6,6 +6,9 @@ on:
       - experiment/mcp-knowledge-probe
     paths:
       - scripts/assert_target_directed_progress_contract.py
+      - scripts/assert_transport_retry_accounting.py
+      - scripts/knowledge_search_agentic_wrapper.py
+      - scripts/knowledge_search_fused_mcp.py
       - .github/workflows/mcp-agentic-progress-contract.yml
   workflow_dispatch:
 
@@ -22,3 +25,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 scripts/assert_target_directed_progress_contract.py
+      - name: Assert transport retry/request accounting contract
+        run: |
+          set -euo pipefail
+          python3 scripts/assert_transport_retry_accounting.py
