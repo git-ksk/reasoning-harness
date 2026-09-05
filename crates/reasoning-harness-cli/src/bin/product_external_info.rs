@@ -1365,18 +1365,37 @@ async fn run(args: &Args) -> Result<Report, String> {
             case.capability_family,
             case.id
         );
-        let wall_time = now_unix()?;
-        let input = harness_input(case, wall_time);
+        let candidate_wall_time = now_unix()?;
+        let candidate_input = harness_input(case, candidate_wall_time);
         let target = proposition(case);
         let case_seed = args.seed.and_then(|seed| seed.checked_add(index as u64));
         let (raw_answer, raw_call) =
             raw_answer(adapter, &model, case, args.max_tokens, case_seed).await?;
         let raw_model = raw_metrics(raw_answer, raw_call, &target);
-        let (candidate, _candidate_call) =
-            generate_candidate(adapter, &model, &input, args.max_tokens, case_seed).await?;
-        let harness_without_external_acquisition = without_external(&input, &candidate, &target)?;
-        let harness_with_mcp_external_acquisition =
-            with_external(case, &input, &candidate, &target, wall_time)?;
+        let (candidate, _candidate_call) = generate_candidate(
+            adapter,
+            &model,
+            &candidate_input,
+            args.max_tokens,
+            case_seed,
+        )
+        .await?;
+
+        // Harness owns freshness. Capture the semantic/evidence clock only after untrusted model
+        // generation finishes, then share that exact evaluation input across arms B and C. This
+        // prevents model latency from consuming the MCP retrieval slack while preserving the same
+        // candidate in both Harness arms.
+        let evaluation_wall_time = now_unix()?;
+        let evaluation_input = harness_input(case, evaluation_wall_time);
+        let harness_without_external_acquisition =
+            without_external(&evaluation_input, &candidate, &target)?;
+        let harness_with_mcp_external_acquisition = with_external(
+            case,
+            &evaluation_input,
+            &candidate,
+            &target,
+            evaluation_wall_time,
+        )?;
         reports.push(CaseReport {
             id: case.id.clone(),
             capability_family: case.capability_family.clone(),
