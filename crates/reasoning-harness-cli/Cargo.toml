@@ -51,6 +51,10 @@ name = "reason-external-resolution-acceptance"
 path = "src/bin/external_resolution_acceptance.rs"
 
 [[bin]]
+name = "reason-product-external-info"
+path = "src/bin/product_external_info.rs"
+
+[[bin]]
 name = "reason-mcp"
 path = "src/bin/mcp_product.rs"
 

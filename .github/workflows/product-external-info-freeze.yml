@@ -10,6 +10,8 @@ on:
       - 'scripts/product_external_info_mcp.py'
       - 'scripts/test_product_external_info_mcp.py'
       - 'scripts/validate_product_external_info.py'
+      - 'crates/reasoning-harness-cli/src/bin/product_external_info.rs'
+      - 'crates/reasoning-harness-cli/Cargo.toml'
       - 'scripts/test_validate_product_external_info.py'
       - 'crates/reasoning-harness-providers/src/mcp_readonly.rs'
       - 'crates/reasoning-harness-providers/src/external_admission.rs'
@@ -27,6 +29,8 @@ on:
       - 'scripts/product_external_info_mcp.py'
       - 'scripts/test_product_external_info_mcp.py'
       - 'scripts/validate_product_external_info.py'
+      - 'crates/reasoning-harness-cli/src/bin/product_external_info.rs'
+      - 'crates/reasoning-harness-cli/Cargo.toml'
       - 'scripts/test_validate_product_external_info.py'
       - 'crates/reasoning-harness-providers/src/mcp_readonly.rs'
       - 'crates/reasoning-harness-providers/src/external_admission.rs'
@@ -76,6 +80,23 @@ jobs:
           python3 -m unittest -v \
             scripts/test_product_external_info_mcp.py \
             scripts/test_validate_product_external_info.py
+
+      - name: Validate product external-info evaluator wiring
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-product-external-info -- --validate-only \
+            > /tmp/product-external-info-evaluator-validation.json
+          jq -e '
+            .schema_version == "reason-product-external-info-v1"
+            and .comparison_contract == "shared-candidate-canonical-finalization-v1"
+            and .corpus_identity == "product-external-info-v1"
+            and .aggregate.total_cases == 21
+            and .aggregate.semantic_cases == 18
+            and .aggregate.operational_cases == 3
+            and .aggregate.expected_grounded_cases == 5
+            and .aggregate.expected_unknown_cases == 13
+            and .semantic_denominator_excludes_operational_failures == true
+          ' /tmp/product-external-info-evaluator-validation.json >/dev/null
 
       - name: Test MCP read-only and external-admission boundaries
         run: |
