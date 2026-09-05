@@ -2,14 +2,14 @@ name: product-external-info-live
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [labeled]
 
 permissions:
   contents: read
 
 jobs:
   ministral-8b-first-observation:
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'product-external-info-live'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
