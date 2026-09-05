@@ -72,7 +72,7 @@ jobs:
           exit "$STATUS"
       - name: Preserve D3 capability preflight JSON
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: semantic-d3-capability-preflight-${{ inputs.provider }}
           path: /tmp/reason-semantic-d3-preflight.json

@@ -75,7 +75,7 @@ jobs:
           jq -e '.command == "semantic-check" and .result.operational_failure == null and .result.observation.runtime.configuration_id == "soft-semantic-v3" and .result.observation.decidability == null' /tmp/reason-semantic-check-v3.json >/dev/null
       - name: Preserve supported product semantic-check JSON
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: semantic-check-product-${{ matrix.provider }}-${{ matrix.model }}
           path: |
@@ -85,7 +85,7 @@ jobs:
           retention-days: 30
       - name: Preserve runtime smoke JSON
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: semantic-runtime-smoke-${{ matrix.provider }}-${{ matrix.model }}
           path: /tmp/reason-semantic-runtime-smoke.json

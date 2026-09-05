@@ -110,7 +110,7 @@ jobs:
           jq '{configuration_id, execution_design, semantic_baseline, materialization_contract, provider, model, fixture_count, effective_enforcement_class, arms: [.arms[] | {arm, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, input_tokens, output_tokens, total_tokens, total_latency_ms, mean_latency_ms, advisory_note_runs, trials}], comparison, stability: [.stability[] | {arm, policies, risky_fixtures: [.fixtures[] | select(.assessment.risk_signals | length > 0) | {fixture_id, label, assessment, disagreement_only, complete_unanimity}]}], failures: [.arms[] as $a | $a.cases[] | select(.failure_class != null) | {arm: $a.arm, fixture_id, trial, seed, finish_reason, failure_class, latency_ms, usage}]}' "$OUTPUT"
       - name: Preserve materialization-study JSON
         if: always() && steps.credential.outputs.available == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: semantic-materialization-${{ inputs.provider }}-${{ inputs.fixture_set }}
           path: /tmp/reason-semantic-materialization-study.json

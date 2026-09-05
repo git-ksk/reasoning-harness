@@ -87,7 +87,7 @@ jobs:
           jq '{study_id, phase, corpus, provider, requested_model, trials, fixture_count, authority_semantics, configuration_id, metrics, stability: {requested_trials: .stability.requested_trials, complete_trials: .stability.complete_trials, incomplete_trials: .stability.incomplete_trials, exact_unanimity_rate: .stability.exact_unanimity_rate, binary_unanimity_rate: .stability.binary_unanimity_rate}}' "$OUTPUT"
       - name: Preserve RSD1 result
         if: always() && steps.credential.outputs.available == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: evidence-sufficiency-rsd1-${{ matrix.provider }}
           path: /tmp/evidence-sufficiency-rsd1.json
