@@ -13,6 +13,7 @@ on:
       - scripts/apply_identity_context_grounding_v5.py
       - scripts/apply_identity_context_followup_v6.py
       - scripts/apply_identity_context_query_shape_v7.py
+      - scripts/apply_identity_eval_semantics_v8.py
       - scripts/knowledge_search_fused_mcp.py
       - scripts/test_identity_tool_request_accounting.py
       - crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
@@ -42,6 +43,7 @@ jobs:
             scripts/apply_identity_context_grounding_v5.py \
             scripts/apply_identity_context_followup_v6.py \
             scripts/apply_identity_context_query_shape_v7.py \
+            scripts/apply_identity_eval_semantics_v8.py \
             scripts/test_identity_tool_request_accounting.py
 
       - name: Run identity qualification tests
@@ -51,7 +53,7 @@ jobs:
             scripts/test_identity_gate_v2.py \
             scripts/test_identity_tool_request_accounting.py
 
-      - name: Verify exact v7 canonical-query transformation
+      - name: Verify exact v8 evaluation-safety transformation
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
@@ -59,6 +61,7 @@ jobs:
           python3 scripts/apply_identity_context_grounding_v5.py
           python3 scripts/apply_identity_context_followup_v6.py
           python3 scripts/apply_identity_context_query_shape_v7.py
+          python3 scripts/apply_identity_eval_semantics_v8.py
           git diff --check
           git diff -- crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
 
@@ -104,7 +107,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - name: Materialize v7 canonical-query candidate
+      - name: Materialize v8 evaluation-safe candidate
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
@@ -112,9 +115,10 @@ jobs:
           python3 scripts/apply_identity_context_grounding_v5.py
           python3 scripts/apply_identity_context_followup_v6.py
           python3 scripts/apply_identity_context_query_shape_v7.py
+          python3 scripts/apply_identity_eval_semantics_v8.py
           git diff --check
 
-      - name: Run deterministic v7 failure-injection contracts
+      - name: Run deterministic v8 contracts
         run: |
           set -euo pipefail
           cargo test --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
