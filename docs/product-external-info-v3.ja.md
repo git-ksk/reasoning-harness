@@ -63,3 +63,13 @@ preflightが失敗した場合、v3をその場で修正しない。provider観�
 - 最初のvalid provider runをcanonicalとする
 
 最初のprovider観測後はv3のcase / expected outcome / target / scoringを編集しない。semantic correctionが必要なら次のsuccessor identityを作る。
+
+## acquisition preflight結果: provider観測前にv3をretire
+
+mandatory acquisition-only preflightはGitHub Actions run `33999853866`で実行した。provider credential stepには到達していないため、**v3のprovider/model観測は0回**である。
+
+preflightではv3の主要修正が正しく機能した。semantic 18ケースはすべてoperationally complete、expected-unknown 13ケースは全件維持、typed operational 3ケースもtyped failureのまま、Harness safety counterはすべて0だった。conflict fixtureも意図どおりで、同じtarget keyに`click`と`pallets`の2つのdistinct valueを取得し、conflicting qualified evidenceを検出し、targetをverify/public exposureしなかった。
+
+停止理由はexpected-grounded fixture 1件の外部drift。`https://api.github.com/repos/encode/starlette`は現在`Kludex/starlette`へresolveするため、freeze済み`/full_name = encode/starlette` identity assertionがfailした。このケースはtarget factを生成せず、synthetic-target grounded coverageは要求5/5ではなく4/5（`0.8`）となった。
+
+freeze済みv3 contractどおり、このfixtureをv3内で修正しない。v3はpre-provider acquisition diagnosticとして保持し、新しいsuccessor identityへ進む。machine-readable preflightは[`observations/product-external-info-v3-acquisition-preflight-33999853866-2026-09-06.json`](observations/product-external-info-v3-acquisition-preflight-33999853866-2026-09-06.json)に保存する。

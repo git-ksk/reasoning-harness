@@ -63,3 +63,13 @@ Frozen before observation:
 - first valid provider run is canonical
 
 After the first provider observation, no v3 case, expected outcome, target, or scoring edit is permitted. Any semantic correction requires another successor identity.
+
+## Acquisition preflight result: v3 retired before provider observation
+
+The mandatory acquisition-only preflight ran in GitHub Actions run `33999853866`. The provider credential step was never reached, so **no v3 provider/model observation was performed**.
+
+The preflight validated the main v3 corrections: all 18 semantic cases were operationally complete, all 13 expected-unknown cases were preserved, the three typed operational cases remained typed failures, and all Harness safety counters were zero. The conflict fixture worked as intended: it acquired two distinct values (`click`, `pallets`) for the same target key, reported conflicting qualified evidence, and did not verify or expose the target.
+
+The preflight stopped because one expected-grounded fixture drifted externally. `https://api.github.com/repos/encode/starlette` currently resolves to `Kludex/starlette`, so the frozen `/full_name = encode/starlette` identity assertion failed. The case produced no target fact, making synthetic-target grounded coverage 4/5 (`0.8`) rather than the required 5/5.
+
+Per the frozen v3 contract, this fixture is not repaired in place. v3 is retained as a pre-provider acquisition diagnostic, and a new successor identity is required. The machine-readable preflight is [`observations/product-external-info-v3-acquisition-preflight-33999853866-2026-09-06.json`](observations/product-external-info-v3-acquisition-preflight-33999853866-2026-09-06.json).
