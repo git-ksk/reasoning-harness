@@ -1,0 +1,33 @@
+name: MCP identity gate v2
+
+on:
+  push:
+    branches:
+      - experiment/mcp-identity-gate-v2
+    paths:
+      - scripts/identity_gate_v2.py
+      - scripts/test_identity_gate_v2.py
+      - .github/workflows/mcp-identity-gate-v2.yml
+
+permissions:
+  contents: read
+
+jobs:
+  identity-gate-contract:
+    name: Deterministic identity gate contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Compile Python contract
+        run: |
+          set -euo pipefail
+          python3 -m py_compile \
+            scripts/identity_gate_v2.py \
+            scripts/test_identity_gate_v2.py
+
+      - name: Run identity qualification tests
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v scripts/test_identity_gate_v2.py
