@@ -11,7 +11,7 @@ use reasoning_harness_providers::MistralAdapter;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
-const REPORT_SCHEMA: &str = "reason-mcp-identity-gate-benchmark-v1";
+const REPORT_SCHEMA: &str = "reason-mcp-identity-gate-benchmark-v2";
 const MAX_ROUNDS: usize = 6;
 const MAX_TOOL_CALLS: usize = 10;
 const MAX_ELAPSED_MS: u64 = 30_000;
@@ -184,6 +184,7 @@ struct RoundTrace {
     new_progress_items: usize,
     planner_action: Option<String>,
     planner_query: Option<String>,
+    followed_suggested_query: bool,
 }
 
 #[derive(Debug, Serialize)]
@@ -204,6 +205,10 @@ struct CaseReport {
     observed_value: Option<String>,
     identity_insufficient_observations: usize,
     identity_supported_observations: usize,
+    invalid_action_observations: usize,
+    invalid_actions_blocked_before_external_request: usize,
+    follow_suggested_query_actions: usize,
+    recovered_after_invalid_action: bool,
     traces: Vec<RoundTrace>,
 }
 
@@ -228,6 +233,12 @@ struct Aggregate {
     recovered_identity_insufficient_accept_cases: usize,
     identity_insufficient_accept_recovery_rate: f64,
     identity_supported_observations: usize,
+    invalid_action_observations: usize,
+    samples_with_invalid_actions: usize,
+    invalid_actions_blocked_before_external_request: usize,
+    recovered_after_invalid_action: usize,
+    invalid_action_recovery_rate: f64,
+    follow_suggested_query_actions: usize,
     mean_rounds: f64,
     mean_tool_calls: f64,
     mean_planner_calls: f64,
@@ -246,6 +257,7 @@ struct Report {
     model: String,
     prior_frozen_holdout_reused: bool,
     identity_policy: &'static str,
+    planner_action_policy: &'static str,
     budgets: BudgetReport,
     cache_policy: &'static str,
     evaluation_policy: &'static str,
@@ -270,13 +282,21 @@ fn normalize_query(value: &str) -> String {
         .to_lowercase()
 }
 
-fn qualify_identity(mut observation: ToolObservation) -> ToolObservation {
-    if observation
-        .search_state
-        .get("outcome_kind")
+fn state_kind(state: &Value) -> Option<&str> {
+    state.get("outcome_kind").and_then(Value::as_str)
+}
+
+fn suggested_query(state: &Value) -> Option<String> {
+    state
+        .get("suggested_query")
         .and_then(Value::as_str)
-        != Some("fact_resolved")
-    {
+        .map(str::trim)
+        .filter(|value| !value.is_empty())
+        .map(ToOwned::to_owned)
+}
+
+fn qualify_identity(mut observation: ToolObservation) -> ToolObservation {
+    if state_kind(&observation.search_state) != Some("fact_resolved") {
         return observation;
     }
 
@@ -394,6 +414,7 @@ fn progress_items(state: &Value) -> BTreeSet<String> {
         "suggested_query",
         "outcome_kind",
         "identity_reason",
+        "validation_reason",
     ] {
         if let Some(value) = state.get(key).and_then(Value::as_str) {
             out.insert(format!("{key}:{value}"));
@@ -506,7 +527,7 @@ fn planner_prompt(
     remaining_calls: usize,
 ) -> String {
     format!(
-        "Task: {}\nProperty to retrieve: {} ({})\nLast qualified tool observation: {}\nCompact search state: {}\nAlready tried normalized queries: {}\nRound: {}. Remaining tool-call budget: {}.\nChoose only the next search query or stop. The Harness may suppress a fact when entity identity is insufficient. If the task itself contains legitimate disambiguating context, use that stated context to reformulate the entity query. Never invent context. Do not decide whether the target fact is true and do not override the identity gate; the Harness owns evidence admission and final correctness.",
+        "Task: {}\nProperty to retrieve: {} ({})\nLast qualified tool observation: {}\nCompact search state: {}\nAlready tried normalized queries: {}\nRound: {}. Remaining tool-call budget: {}.\nChoose one typed action only: search, follow_suggested_query, or stop. If compact search state contains a non-empty suggested_query that has not already been tried, prefer follow_suggested_query instead of regenerating or editing that query. The Harness may suppress a fact when entity identity is insufficient. If the task itself contains legitimate disambiguating context and there is no suggested query, use only that stated context to formulate a search query. Never invent context. Do not decide whether the target fact is true and do not override the identity gate; the Harness owns evidence admission and final correctness.",
         case.task,
         case.property_id,
         case.value_kind,
@@ -531,7 +552,7 @@ async fn plan_next(
         .generate(ModelRequest {
             task: planner_prompt(case, observation, tried_queries, round, remaining_calls),
             system: Some(
-                "You are an evidence-search planner inside a bounded verification harness. Return one JSON object only: {\"action\":\"search\",\"query\":\"...\"} or {\"action\":\"stop\",\"query\":null}. You propose actions only. You do not decide truth, identity sufficiency, evidence admission, or final correctness. If identity is insufficient and the task supplies explicit context, use only that context to reformulate. If no legitimate disambiguation exists, stop."
+                "You are an evidence-search planner inside a bounded verification harness. Return exactly one JSON object using one of these forms: {\"action\":\"search\",\"query\":\"entity label/title\"}, {\"action\":\"follow_suggested_query\",\"query\":null}, or {\"action\":\"stop\",\"query\":null}. You propose actions only. You do not decide truth, identity sufficiency, evidence admission, or final correctness. If search_state has a non-empty suggested_query that has not already been tried, choose follow_suggested_query so the Harness can use that exact validated query without model rewriting. Otherwise, if identity is insufficient and the task supplies explicit context, use only that context to reformulate. If no legitimate disambiguation exists, stop."
                     .into(),
             ),
             output_format: ModelOutputFormat::JsonObject,
@@ -544,14 +565,22 @@ async fn plan_next(
     let tokens = response.usage.total_tokens.unwrap_or(0);
     let action: PlannerAction = serde_json::from_str(&response.text)
         .map_err(|_| StopReason::PlannerProtocolFailure)?;
-    if !matches!(action.action.as_str(), "search" | "stop") {
-        return Err(StopReason::PlannerProtocolFailure);
+
+    match action.action.as_str() {
+        "search" => {
+            if action.query.as_deref().is_none_or(|value| value.trim().is_empty()) {
+                return Err(StopReason::PlannerProtocolFailure);
+            }
+        }
+        "follow_suggested_query" => {
+            if suggested_query(&observation.search_state).is_none() {
+                return Err(StopReason::PlannerProtocolFailure);
+            }
+        }
+        "stop" => {}
+        _ => return Err(StopReason::PlannerProtocolFailure),
     }
-    if action.action == "search"
-        && action.query.as_deref().is_none_or(|value| value.trim().is_empty())
-    {
-        return Err(StopReason::PlannerProtocolFailure);
-    }
+
     Ok((action, tokens, response.provider_attempts))
 }
 
@@ -571,6 +600,9 @@ async fn run_case(adapter: &dyn ModelAdapter, case: CaseSpec, trial: usize) -> C
     let mut final_outcome = ExpectedOutcome::Unknown;
     let mut identity_insufficient_observations = 0usize;
     let mut identity_supported_observations = 0usize;
+    let mut invalid_action_observations = 0usize;
+    let mut invalid_actions_blocked_before_external_request = 0usize;
+    let mut follow_suggested_query_actions = 0usize;
 
     for round in 1..=MAX_ROUNDS {
         if started.elapsed().as_millis() as u64 >= MAX_ELAPSED_MS {
@@ -595,12 +627,8 @@ async fn run_case(adapter: &dyn ModelAdapter, case: CaseSpec, trial: usize) -> C
                 break;
             }
         };
-        if observation
-            .search_state
-            .get("outcome_kind")
-            .and_then(Value::as_str)
-            == Some("identity_insufficient")
-        {
+        let outcome_kind = state_kind(&observation.search_state);
+        if outcome_kind == Some("identity_insufficient") {
             identity_insufficient_observations += 1;
         }
         if observation
@@ -610,6 +638,17 @@ async fn run_case(adapter: &dyn ModelAdapter, case: CaseSpec, trial: usize) -> C
             == Some(true)
         {
             identity_supported_observations += 1;
+        }
+        if outcome_kind == Some("invalid_query") {
+            invalid_action_observations += 1;
+            if observation
+                .search_state
+                .get("external_requests")
+                .and_then(Value::as_u64)
+                == Some(0)
+            {
+                invalid_actions_blocked_before_external_request += 1;
+            }
         }
 
         let new_items = progress_items(&observation.search_state)
@@ -640,6 +679,7 @@ async fn run_case(adapter: &dyn ModelAdapter, case: CaseSpec, trial: usize) -> C
                 new_progress_items: new_items.len(),
                 planner_action: None,
                 planner_query: None,
+                followed_suggested_query: false,
             });
             break;
         }
@@ -654,6 +694,7 @@ async fn run_case(adapter: &dyn ModelAdapter, case: CaseSpec, trial: usize) -> C
                 new_progress_items: 0,
                 planner_action: None,
                 planner_query: None,
+                followed_suggested_query: false,
             });
             break;
         }
@@ -686,7 +727,22 @@ async fn run_case(adapter: &dyn ModelAdapter, case: CaseSpec, trial: usize) -> C
         };
         model_tokens = model_tokens.saturating_add(tokens);
         provider_attempts = provider_attempts.saturating_add(attempts);
-        let next_query = action.query.clone();
+
+        let mut followed_suggested_query = false;
+        let next_query = match action.action.as_str() {
+            "search" => action.query.clone(),
+            "follow_suggested_query" => {
+                let value = suggested_query(&observation.search_state);
+                if value.is_some() {
+                    follow_suggested_query_actions += 1;
+                    followed_suggested_query = true;
+                }
+                value
+            }
+            "stop" => None,
+            _ => None,
+        };
+
         traces.push(RoundTrace {
             round,
             query: query.clone(),
@@ -695,7 +751,9 @@ async fn run_case(adapter: &dyn ModelAdapter, case: CaseSpec, trial: usize) -> C
             new_progress_items: new_items.len(),
             planner_action: Some(action.action.clone()),
             planner_query: next_query.clone(),
+            followed_suggested_query,
         });
+
         if model_tokens > MAX_MODEL_TOKENS {
             stop_reason = StopReason::ModelTokenBudget;
             break;
@@ -704,7 +762,11 @@ async fn run_case(adapter: &dyn ModelAdapter, case: CaseSpec, trial: usize) -> C
             stop_reason = StopReason::PlannerStop;
             break;
         }
-        query = next_query.unwrap_or_default();
+        let Some(next_query) = next_query else {
+            stop_reason = StopReason::PlannerProtocolFailure;
+            break;
+        };
+        query = next_query;
     }
 
     let operational_failure = stop_reason.operational();
@@ -726,6 +788,10 @@ async fn run_case(adapter: &dyn ModelAdapter, case: CaseSpec, trial: usize) -> C
         observed_value,
         identity_insufficient_observations,
         identity_supported_observations,
+        invalid_action_observations,
+        invalid_actions_blocked_before_external_request,
+        follow_suggested_query_actions,
+        recovered_after_invalid_action: invalid_action_observations > 0 && passed,
         traces,
     }
 }
@@ -827,6 +893,26 @@ fn aggregate(samples: &[CaseReport], cases: usize, trials: usize) -> Aggregate {
         .iter()
         .map(|sample| sample.identity_supported_observations)
         .sum();
+    let invalid_action_observations = samples
+        .iter()
+        .map(|sample| sample.invalid_action_observations)
+        .sum();
+    let samples_with_invalid_actions = samples
+        .iter()
+        .filter(|sample| sample.invalid_action_observations > 0)
+        .count();
+    let invalid_actions_blocked_before_external_request = samples
+        .iter()
+        .map(|sample| sample.invalid_actions_blocked_before_external_request)
+        .sum();
+    let recovered_after_invalid_action = samples
+        .iter()
+        .filter(|sample| sample.recovered_after_invalid_action)
+        .count();
+    let follow_suggested_query_actions = samples
+        .iter()
+        .map(|sample| sample.follow_suggested_query_actions)
+        .sum();
     let latencies = samples
         .iter()
         .map(|sample| sample.elapsed_ms)
@@ -862,6 +948,15 @@ fn aggregate(samples: &[CaseReport], cases: usize, trials: usize) -> Aggregate {
             identity_insufficient_accept_cases,
         ),
         identity_supported_observations,
+        invalid_action_observations,
+        samples_with_invalid_actions,
+        invalid_actions_blocked_before_external_request,
+        recovered_after_invalid_action,
+        invalid_action_recovery_rate: rate(
+            recovered_after_invalid_action,
+            samples_with_invalid_actions,
+        ),
+        follow_suggested_query_actions,
         mean_rounds: mean(|sample| sample.rounds as u64),
         mean_tool_calls: mean(|sample| sample.tool_calls as u64),
         mean_planner_calls: mean(|sample| sample.planner_calls as u64),
@@ -895,6 +990,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         model: args.model,
         prior_frozen_holdout_reused: false,
         identity_policy: "candidate-set membership is plausibility only; fact admission requires non-disambiguation Wikipedia top identity == resolved entity and cross-source corroboration rank 1",
+        planner_action_policy: "planner chooses typed search/follow_suggested_query/stop; Harness substitutes exact tool-provided suggested_query only when follow_suggested_query is explicitly selected",
         budgets: BudgetReport {
             max_rounds: MAX_ROUNDS,
             max_tool_calls: MAX_TOOL_CALLS,
