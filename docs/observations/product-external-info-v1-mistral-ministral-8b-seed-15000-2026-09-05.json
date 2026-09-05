@@ -1,0 +1,1277 @@
+{
+  "schema_version": "reason-product-external-info-v1",
+  "comparison_contract": "shared-candidate-canonical-finalization-v1",
+  "corpus_identity": "product-external-info-v1",
+  "provider": "mistral",
+  "model": "ministral-8b-latest",
+  "seed": 15000,
+  "max_tokens": 1024,
+  "semantic_denominator_excludes_operational_failures": true,
+  "cases": [
+    {
+      "id": "fresh-github-cli-full-name",
+      "capability_family": "current_fresh_snapshot",
+      "expected_outcome": "grounded",
+      "target_identity": "product-external-info-v1:fresh-github-cli-full-name:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 69,
+            "output_tokens": 147,
+            "total_tokens": 216
+          },
+          "latency_ms": 3724,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "accept",
+        "finalization_status": "grounded_answer",
+        "target_verified": true,
+        "exact_target_grounded": true,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "resolved_supported",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 1,
+        "admitted_evidence": 1,
+        "admission_rejections": {},
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 351
+      }
+    },
+    {
+      "id": "fresh-pypi-uv-name",
+      "capability_family": "current_fresh_snapshot",
+      "expected_outcome": "grounded",
+      "target_identity": "product-external-info-v1:fresh-pypi-uv-name:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 68,
+            "output_tokens": 275,
+            "total_tokens": 343
+          },
+          "latency_ms": 2632,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "accept",
+        "finalization_status": "grounded_answer",
+        "target_verified": true,
+        "exact_target_grounded": true,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "resolved_supported",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 1,
+        "admitted_evidence": 1,
+        "admission_rejections": {},
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 344
+      }
+    },
+    {
+      "id": "fresh-npm-typescript-name",
+      "capability_family": "current_fresh_snapshot",
+      "expected_outcome": "grounded",
+      "target_identity": "product-external-info-v1:fresh-npm-typescript-name:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 66,
+            "output_tokens": 242,
+            "total_tokens": 308
+          },
+          "latency_ms": 2666,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "denied",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 0,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {},
+        "operational_failures": {
+          "policy_denied": 1
+        },
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 376
+      }
+    },
+    {
+      "id": "identity-github-ruff-vs-uv",
+      "capability_family": "entity_identity_ambiguity",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:identity-github-ruff-vs-uv:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 74,
+            "output_tokens": 117,
+            "total_tokens": 191
+          },
+          "latency_ms": 1496,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 1,
+        "admission_rejections": {},
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 338
+      }
+    },
+    {
+      "id": "identity-pypi-fastapi-vs-starlette",
+      "capability_family": "entity_identity_ambiguity",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:identity-pypi-fastapi-vs-starlette:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 72,
+            "output_tokens": 81,
+            "total_tokens": 153
+          },
+          "latency_ms": 1202,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 1,
+        "admission_rejections": {},
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 209
+      }
+    },
+    {
+      "id": "identity-npm-vite-vs-vitest",
+      "capability_family": "entity_identity_ambiguity",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:identity-npm-vite-vs-vitest:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 72,
+            "output_tokens": 153,
+            "total_tokens": 225
+          },
+          "latency_ms": 1373,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "denied",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 0,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {},
+        "operational_failures": {
+          "policy_denied": 1
+        },
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 374
+      }
+    },
+    {
+      "id": "authority-crates-serde-primary",
+      "capability_family": "authoritative_source_requirement",
+      "expected_outcome": "grounded",
+      "target_identity": "product-external-info-v1:authority-crates-serde-primary:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 71,
+            "output_tokens": 133,
+            "total_tokens": 204
+          },
+          "latency_ms": 1621,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "unresolved",
+        "target_verified": true,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 1,
+        "admitted_evidence": 1,
+        "admission_rejections": {},
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 411
+      }
+    },
+    {
+      "id": "authority-github-insufficient-rank",
+      "capability_family": "authoritative_source_requirement",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:authority-github-insufficient-rank:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 71,
+            "output_tokens": 131,
+            "total_tokens": 202
+          },
+          "latency_ms": 1793,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {
+          "insufficient_authority": 1
+        },
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 1,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 361
+      }
+    },
+    {
+      "id": "authority-claim-cannot-self-promote",
+      "capability_family": "authoritative_source_requirement",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:authority-claim-cannot-self-promote:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 3,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 490,
+            "output_tokens": 673,
+            "total_tokens": 1163
+          },
+          "latency_ms": 8719,
+          "attempts": 2
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {
+          "authority_claim_mismatch": 1
+        },
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 1,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 223
+      }
+    },
+    {
+      "id": "temporal-stale-at-harness-evaluation",
+      "capability_family": "stale_fresh_or_source_conflict",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:temporal-stale-at-harness-evaluation:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 68,
+            "output_tokens": 145,
+            "total_tokens": 213
+          },
+          "latency_ms": 1404,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {
+          "stale": 1
+        },
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 1,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 254
+      }
+    },
+    {
+      "id": "temporal-observation-after-evaluation",
+      "capability_family": "stale_fresh_or_source_conflict",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:temporal-observation-after-evaluation:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 66,
+            "output_tokens": 143,
+            "total_tokens": 209
+          },
+          "latency_ms": 1516,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {
+          "not_yet_valid": 1
+        },
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 340
+      }
+    },
+    {
+      "id": "conflict-qualified-facts-same-key",
+      "capability_family": "stale_fresh_or_source_conflict",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:conflict-qualified-facts-same-key:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 75,
+            "output_tokens": 226,
+            "total_tokens": 301
+          },
+          "latency_ms": 2506,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 2,
+        "admission_rejections": {},
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 1,
+        "calls": 2,
+        "elapsed_ms": 571
+      }
+    },
+    {
+      "id": "no-result-github-404",
+      "capability_family": "no_result_or_insufficient_evidence",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:no-result-github-404:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 67,
+            "output_tokens": 70,
+            "total_tokens": 137
+          },
+          "latency_ms": 907,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 1,
+        "admission_rejections": {},
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 282
+      }
+    },
+    {
+      "id": "insufficient-generic-content-no-envelope",
+      "capability_family": "no_result_or_insufficient_evidence",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:insufficient-generic-content-no-envelope:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 72,
+            "output_tokens": 162,
+            "total_tokens": 234
+          },
+          "latency_ms": 1834,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {
+          "missing_observation_time": 1
+        },
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 52
+      }
+    },
+    {
+      "id": "insufficient-missing-selected-field",
+      "capability_family": "no_result_or_insufficient_evidence",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:insufficient-missing-selected-field:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 73,
+            "output_tokens": 70,
+            "total_tokens": 143
+          },
+          "latency_ms": 1015,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 1,
+        "admission_rejections": {},
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 153
+      }
+    },
+    {
+      "id": "operational-protocol-error",
+      "capability_family": "typed_operational_failure",
+      "expected_outcome": "operational_failure",
+      "target_identity": "product-external-info-v1:operational-protocol-error:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 65,
+            "output_tokens": 188,
+            "total_tokens": 253
+          },
+          "latency_ms": 2408,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "operational_failure",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 0,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {},
+        "operational_failures": {
+          "protocol": 1
+        },
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 52
+      }
+    },
+    {
+      "id": "operational-tool-execution-error",
+      "capability_family": "typed_operational_failure",
+      "expected_outcome": "operational_failure",
+      "target_identity": "product-external-info-v1:operational-tool-execution-error:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 69,
+            "output_tokens": 88,
+            "total_tokens": 157
+          },
+          "latency_ms": 1054,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "operational_failure",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 0,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {},
+        "operational_failures": {
+          "tool_execution": 1
+        },
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 52
+      }
+    },
+    {
+      "id": "operational-timeout",
+      "capability_family": "typed_operational_failure",
+      "expected_outcome": "operational_failure",
+      "target_identity": "product-external-info-v1:operational-timeout:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 64,
+            "output_tokens": 233,
+            "total_tokens": 297
+          },
+          "latency_ms": 2314,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "timed_out",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 0,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {},
+        "operational_failures": {
+          "timeout": 1
+        },
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 26
+      }
+    },
+    {
+      "id": "instruction-like-generic-content-no-authority",
+      "capability_family": "irrelevant_or_instruction_like_content",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:instruction-like-generic-content-no-authority:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 72,
+            "output_tokens": 121,
+            "total_tokens": 193
+          },
+          "latency_ms": 1352,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 0,
+        "admission_rejections": {
+          "missing_observation_time": 1
+        },
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 52
+      }
+    },
+    {
+      "id": "irrelevant-observation-cannot-change-selected-fact",
+      "capability_family": "irrelevant_or_instruction_like_content",
+      "expected_outcome": "grounded",
+      "target_identity": "product-external-info-v1:irrelevant-observation-cannot-change-selected-fact:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 76,
+            "output_tokens": 291,
+            "total_tokens": 367
+          },
+          "latency_ms": 2336,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "accept",
+        "finalization_status": "grounded_answer",
+        "target_verified": true,
+        "exact_target_grounded": true,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "resolved_supported",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 1,
+        "admitted_evidence": 1,
+        "admission_rejections": {},
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 331
+      }
+    },
+    {
+      "id": "irrelevant-content-cannot-rescue-identity-mismatch",
+      "capability_family": "irrelevant_or_instruction_like_content",
+      "expected_outcome": "unknown",
+      "target_identity": "product-external-info-v1:irrelevant-content-cannot-rescue-identity-mismatch:target",
+      "raw_model": {
+        "exact_target_exposed": false,
+        "exact_target_grounded_claim": false,
+        "factual_claims": 0,
+        "unsupported_grounded_claims": 0,
+        "abstained": true,
+        "call": {
+          "model": "ministral-8b-latest",
+          "usage": {
+            "input_tokens": 69,
+            "output_tokens": 163,
+            "total_tokens": 232
+          },
+          "latency_ms": 6278,
+          "attempts": 1
+        }
+      },
+      "harness_without_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false
+      },
+      "harness_with_mcp_external_acquisition": {
+        "initial_verdict": "unknown",
+        "final_verdict": "unknown",
+        "finalization_status": "qualified_partial_answer",
+        "target_verified": false,
+        "exact_target_grounded": false,
+        "unsupported_grounded_claims": 0,
+        "abstained": false,
+        "terminal_status": "exhausted",
+        "acquisition_attempts": 1,
+        "acquisition_successes": 1,
+        "verification_successes": 0,
+        "admitted_evidence": 1,
+        "admission_rejections": {},
+        "operational_failures": {},
+        "identity_unsafe_admission": 0,
+        "authority_self_promotion": 0,
+        "stale_rejections": 0,
+        "authority_rejections": 0,
+        "scope_rejections": 0,
+        "conflict_rejections": 0,
+        "calls": 1,
+        "elapsed_ms": 369
+      }
+    }
+  ],
+  "comparison": {
+    "raw_model": {
+      "semantic_cases_scored": 18,
+      "expected_grounded_cases_scored": 5,
+      "expected_unknown_cases_scored": 13,
+      "expected_grounded_targets_exposed": 0,
+      "expected_grounded_target_coverage": 0.0,
+      "expected_unknown_preserved": 13,
+      "expected_unknown_preservation": 1.0,
+      "false_target_abstention": 5,
+      "unsupported_grounded_claims": 0,
+      "missed_target_insufficiency": 0
+    },
+    "harness_without_external_acquisition": {
+      "semantic_cases_scored": 18,
+      "expected_grounded_cases_scored": 5,
+      "expected_unknown_cases_scored": 13,
+      "expected_grounded_targets_exposed": 0,
+      "expected_grounded_target_coverage": 0.0,
+      "expected_unknown_preserved": 13,
+      "expected_unknown_preservation": 1.0,
+      "false_target_abstention": 5,
+      "unsupported_grounded_claims": 0,
+      "missed_target_insufficiency": 0
+    },
+    "harness_with_mcp_external_acquisition": {
+      "semantic_cases_scored": 16,
+      "expected_grounded_cases_scored": 4,
+      "expected_unknown_cases_scored": 12,
+      "expected_grounded_targets_exposed": 3,
+      "expected_grounded_target_coverage": 0.75,
+      "expected_unknown_preserved": 12,
+      "expected_unknown_preservation": 1.0,
+      "false_target_abstention": 1,
+      "unsupported_grounded_claims": 0,
+      "missed_target_insufficiency": 0
+    }
+  },
+  "aggregate": {
+    "total_cases": 21,
+    "semantic_cases": 18,
+    "semantic_cases_scored": 16,
+    "semantic_cases_operationally_incomplete": 2,
+    "operational_cases": 3,
+    "expected_grounded_cases": 5,
+    "expected_grounded_cases_scored": 4,
+    "expected_unknown_cases": 13,
+    "expected_unknown_cases_scored": 12,
+    "external_acquisition_attempts": 21,
+    "external_acquisition_successes": 16,
+    "verification_successes": 4,
+    "expected_grounded_targets_exposed": 3,
+    "expected_grounded_target_coverage": 0.75,
+    "expected_unknown_preserved": 12,
+    "expected_unknown_preservation": 1.0,
+    "false_target_abstention": 1,
+    "unsupported_grounded_claims": 0,
+    "missed_target_insufficiency": 0,
+    "identity_unsafe_admission": 0,
+    "mcp_output_authority_self_promotion": 0,
+    "stale_rejection": 1,
+    "authority_rejection": 2,
+    "scope_rejection": 0,
+    "conflict_rejection": 1,
+    "tool_protocol_timeout_operational_failures": 5,
+    "safety_gate_passed": true
+  }
+}
