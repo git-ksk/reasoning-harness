@@ -217,6 +217,27 @@ struct CaseReport {
 }
 
 #[derive(Debug, Default, Clone, Serialize)]
+struct SemanticArmAggregate {
+    semantic_cases_scored: usize,
+    expected_grounded_cases_scored: usize,
+    expected_unknown_cases_scored: usize,
+    expected_grounded_targets_exposed: usize,
+    expected_grounded_target_coverage: f64,
+    expected_unknown_preserved: usize,
+    expected_unknown_preservation: f64,
+    false_target_abstention: usize,
+    unsupported_grounded_claims: usize,
+    missed_target_insufficiency: usize,
+}
+
+#[derive(Debug, Default, Clone, Serialize)]
+struct ComparisonAggregate {
+    raw_model: SemanticArmAggregate,
+    harness_without_external_acquisition: SemanticArmAggregate,
+    harness_with_mcp_external_acquisition: SemanticArmAggregate,
+}
+
+#[derive(Debug, Default, Clone, Serialize)]
 struct Aggregate {
     total_cases: usize,
     semantic_cases: usize,
@@ -294,6 +315,7 @@ struct Report {
     max_tokens: u32,
     semantic_denominator_excludes_operational_failures: bool,
     cases: Vec<CaseReport>,
+    comparison: ComparisonAggregate,
     aggregate: Aggregate,
 }
 
@@ -885,6 +907,136 @@ fn raw_metrics(
     }
 }
 
+fn finalize_semantic_arm(mut arm: SemanticArmAggregate) -> SemanticArmAggregate {
+    arm.expected_grounded_target_coverage = if arm.expected_grounded_cases_scored == 0 {
+        1.0
+    } else {
+        arm.expected_grounded_targets_exposed as f64 / arm.expected_grounded_cases_scored as f64
+    };
+    arm.expected_unknown_preservation = if arm.expected_unknown_cases_scored == 0 {
+        1.0
+    } else {
+        arm.expected_unknown_preserved as f64 / arm.expected_unknown_cases_scored as f64
+    };
+    arm
+}
+
+fn comparison_aggregate(results: &[CaseReport]) -> ComparisonAggregate {
+    let mut raw = SemanticArmAggregate::default();
+    let mut without_external = SemanticArmAggregate::default();
+    let mut with_external = SemanticArmAggregate::default();
+
+    for result in results {
+        if result.expected_outcome == ExpectedOutcome::OperationalFailure {
+            continue;
+        }
+
+        let raw_target = result.raw_model.exact_target_grounded_claim;
+        raw.semantic_cases_scored += 1;
+        raw.unsupported_grounded_claims += result.raw_model.unsupported_grounded_claims;
+
+        let without_target = result
+            .harness_without_external_acquisition
+            .exact_target_grounded;
+        without_external.semantic_cases_scored += 1;
+        without_external.unsupported_grounded_claims += result
+            .harness_without_external_acquisition
+            .unsupported_grounded_claims;
+
+        let external = &result.harness_with_mcp_external_acquisition;
+        let external_scorable = external.operational_failures.is_empty();
+        if external_scorable {
+            with_external.semantic_cases_scored += 1;
+            with_external.unsupported_grounded_claims +=
+                external.harness.unsupported_grounded_claims;
+        }
+
+        match result.expected_outcome {
+            ExpectedOutcome::Grounded => {
+                raw.expected_grounded_cases_scored += 1;
+                if raw_target {
+                    raw.expected_grounded_targets_exposed += 1;
+                } else {
+                    raw.false_target_abstention += 1;
+                }
+
+                without_external.expected_grounded_cases_scored += 1;
+                if without_target {
+                    without_external.expected_grounded_targets_exposed += 1;
+                } else {
+                    without_external.false_target_abstention += 1;
+                }
+
+                if external_scorable {
+                    with_external.expected_grounded_cases_scored += 1;
+                    if external.harness.exact_target_grounded {
+                        with_external.expected_grounded_targets_exposed += 1;
+                    } else {
+                        with_external.false_target_abstention += 1;
+                    }
+                }
+            }
+            ExpectedOutcome::Unknown => {
+                raw.expected_unknown_cases_scored += 1;
+                if raw_target {
+                    raw.missed_target_insufficiency += 1;
+                } else {
+                    raw.expected_unknown_preserved += 1;
+                }
+
+                without_external.expected_unknown_cases_scored += 1;
+                if without_target {
+                    without_external.missed_target_insufficiency += 1;
+                } else {
+                    without_external.expected_unknown_preserved += 1;
+                }
+
+                if external_scorable {
+                    with_external.expected_unknown_cases_scored += 1;
+                    if external.harness.exact_target_grounded {
+                        with_external.missed_target_insufficiency += 1;
+                    } else {
+                        with_external.expected_unknown_preserved += 1;
+                    }
+                }
+            }
+            ExpectedOutcome::OperationalFailure => unreachable!(),
+        }
+    }
+
+    ComparisonAggregate {
+        raw_model: finalize_semantic_arm(raw),
+        harness_without_external_acquisition: finalize_semantic_arm(without_external),
+        harness_with_mcp_external_acquisition: finalize_semantic_arm(with_external),
+    }
+}
+
+fn validation_comparison(cases: &[ExternalInfoCase]) -> ComparisonAggregate {
+    let semantic = cases
+        .iter()
+        .filter(|case| case.expected_outcome != ExpectedOutcome::OperationalFailure)
+        .count();
+    let grounded = cases
+        .iter()
+        .filter(|case| case.expected_outcome == ExpectedOutcome::Grounded)
+        .count();
+    let unknown = cases
+        .iter()
+        .filter(|case| case.expected_outcome == ExpectedOutcome::Unknown)
+        .count();
+    let arm = SemanticArmAggregate {
+        semantic_cases_scored: semantic,
+        expected_grounded_cases_scored: grounded,
+        expected_unknown_cases_scored: unknown,
+        ..SemanticArmAggregate::default()
+    };
+    ComparisonAggregate {
+        raw_model: arm.clone(),
+        harness_without_external_acquisition: arm.clone(),
+        harness_with_mcp_external_acquisition: arm,
+    }
+}
+
 fn aggregate(results: &[CaseReport]) -> Aggregate {
     let mut aggregate = Aggregate::default();
     aggregate.total_cases = results.len();
@@ -1167,6 +1319,7 @@ async fn run(args: &Args) -> Result<Report, String> {
             max_tokens: args.max_tokens,
             semantic_denominator_excludes_operational_failures: true,
             cases: vec![],
+            comparison: validation_comparison(&cases),
             aggregate: Aggregate {
                 total_cases: 21,
                 semantic_cases: 18,
@@ -1244,6 +1397,7 @@ async fn run(args: &Args) -> Result<Report, String> {
         seed: args.seed,
         max_tokens: args.max_tokens,
         semantic_denominator_excludes_operational_failures: true,
+        comparison: comparison_aggregate(&reports),
         cases: reports,
         aggregate,
     };
