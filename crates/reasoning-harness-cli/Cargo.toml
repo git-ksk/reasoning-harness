@@ -59,6 +59,10 @@ name = "reason-product-external-info-successor"
 path = "src/bin/product_external_info_successor.rs"
 
 [[bin]]
+name = "reason-product-external-info-v3"
+path = "src/bin/product_external_info_v3.rs"
+
+[[bin]]
 name = "reason-mcp"
 path = "src/bin/mcp_product.rs"
 
