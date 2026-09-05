@@ -477,6 +477,7 @@ fn invalid_planner_action_feedback(
     }
 }
 
+#[allow(dead_code)]
 fn qualify_identity(observation: ToolObservation, case: CaseSpec) -> ToolObservation {
     qualify_identity_for_query(observation, case, case.initial_query)
 }
@@ -813,7 +814,7 @@ fn invoke_tool(case: CaseSpec, query: &str) -> Result<ToolObservation, ToolFailu
             kind: StopReason::ToolProtocolFailure,
             external_requests: 0,
         })?
-        .write_all(format!("{}\n", request).as_bytes())
+        .write_all(format!("{request}\n").as_bytes())
         .map_err(|_| ToolFailure {
             kind: StopReason::ToolProtocolFailure,
             external_requests: 0,
@@ -1277,7 +1278,7 @@ fn percentile(values: &[u64], percentile: usize) -> u64 {
     }
     let mut values = values.to_vec();
     values.sort_unstable();
-    let rank = ((values.len() - 1) * percentile + 99) / 100;
+    let rank = ((values.len() - 1) * percentile).div_ceil(100);
     values[rank.min(values.len() - 1)]
 }
 
@@ -1456,6 +1457,48 @@ fn aggregate(samples: &[CaseReport], cases: usize, trials: usize) -> Aggregate {
         p95_elapsed_ms: percentile(&latencies, 95),
         max_elapsed_ms: latencies.iter().copied().max().unwrap_or(0),
     }
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args = Args::parse();
+    if args.trials == 0 {
+        return Err("--trials must be at least 1".into());
+    }
+    let adapter = MistralAdapter::from_env(&args.model)?;
+    let cases = dev_cases().to_vec();
+    let mut samples = Vec::new();
+    for trial in 1..=args.trials {
+        for case in cases.iter().copied() {
+            samples.push(run_case(&adapter, case, trial).await);
+        }
+    }
+    let aggregate = aggregate(&samples, cases.len(), args.trials);
+    let report = Report {
+        schema_version: REPORT_SCHEMA,
+        layer: "agentic_planner_with_harness_identity_gate",
+        suite: "fresh_dev",
+        provider: "mistral",
+        model: args.model,
+        prior_frozen_holdout_reused: false,
+        historical_frozen_holdouts_reused: false,
+        identity_policy: "candidate-set membership is plausibility only; no-context fact admission keeps the rank1 cross-source gate; trusted-context fact admission requires the Harness-bounded context query plus deterministic context-token compatibility, and may use either rank1 search corroboration or a bounded direct fetch of the exact non-disambiguation Wikipedia Wikibase QID; direct-QID evidence never relaxes bare-surface admission",
+        planner_action_policy: "planner is untrusted; only suggestions marked as Harness-owned trusted-context actions are executable; adapter/candidate suggested queries are observations only; the planner may follow the exact Harness suggestion or stop and never decides identity sufficiency",
+        budgets: BudgetReport {
+            max_rounds: MAX_ROUNDS,
+            max_tool_calls: MAX_TOOL_CALLS,
+            max_elapsed_ms: MAX_ELAPSED_MS,
+            max_model_tokens: MAX_MODEL_TOKENS,
+            no_progress_rounds: NO_PROGRESS_LIMIT,
+            max_action_repairs_per_observation: MAX_ACTION_REPAIRS_PER_OBSERVATION,
+        },
+        cache_policy: "live_uncached_public_endpoints; latency is diagnostic, not an SLA claim",
+        evaluation_policy: "fresh Issue #196 development split only; historical #193 and #195 frozen holdouts are not executed, replayed, or used for tuning; terminal wrong answers are counted symmetrically as semantic_false_decisions; context-unverified fact admission is a hard safety violation",
+        samples,
+        aggregate,
+    };
+    println!("{}", serde_json::to_string_pretty(&report)?);
+    Ok(())
 }
 
 #[cfg(test)]
@@ -1916,46 +1959,4 @@ mod v6_contract_tests {
         assert!(observation.facts.is_empty());
         assert!(!StopReason::PlannerActionRepairExhausted.operational());
     }
-}
-
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Args::parse();
-    if args.trials == 0 {
-        return Err("--trials must be at least 1".into());
-    }
-    let adapter = MistralAdapter::from_env(&args.model)?;
-    let cases = dev_cases().to_vec();
-    let mut samples = Vec::new();
-    for trial in 1..=args.trials {
-        for case in cases.iter().copied() {
-            samples.push(run_case(&adapter, case, trial).await);
-        }
-    }
-    let aggregate = aggregate(&samples, cases.len(), args.trials);
-    let report = Report {
-        schema_version: REPORT_SCHEMA,
-        layer: "agentic_planner_with_harness_identity_gate",
-        suite: "fresh_dev",
-        provider: "mistral",
-        model: args.model,
-        prior_frozen_holdout_reused: false,
-        historical_frozen_holdouts_reused: false,
-        identity_policy: "candidate-set membership is plausibility only; no-context fact admission keeps the rank1 cross-source gate; trusted-context fact admission requires the Harness-bounded context query plus deterministic context-token compatibility, and may use either rank1 search corroboration or a bounded direct fetch of the exact non-disambiguation Wikipedia Wikibase QID; direct-QID evidence never relaxes bare-surface admission",
-        planner_action_policy: "planner is untrusted; only suggestions marked as Harness-owned trusted-context actions are executable; adapter/candidate suggested queries are observations only; the planner may follow the exact Harness suggestion or stop and never decides identity sufficiency",
-        budgets: BudgetReport {
-            max_rounds: MAX_ROUNDS,
-            max_tool_calls: MAX_TOOL_CALLS,
-            max_elapsed_ms: MAX_ELAPSED_MS,
-            max_model_tokens: MAX_MODEL_TOKENS,
-            no_progress_rounds: NO_PROGRESS_LIMIT,
-            max_action_repairs_per_observation: MAX_ACTION_REPAIRS_PER_OBSERVATION,
-        },
-        cache_policy: "live_uncached_public_endpoints; latency is diagnostic, not an SLA claim",
-        evaluation_policy: "fresh Issue #196 development split only; historical #193 and #195 frozen holdouts are not executed, replayed, or used for tuning; terminal wrong answers are counted symmetrically as semantic_false_decisions; context-unverified fact admission is a hard safety violation",
-        samples,
-        aggregate,
-    };
-    println!("{}", serde_json::to_string_pretty(&report)?);
-    Ok(())
 }

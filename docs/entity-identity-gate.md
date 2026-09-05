@@ -28,7 +28,7 @@ Issue #197 materializes v12 once into `crates/reasoning-harness-cli/src/bin/mcp_
 
 - candidate semantics: `d1db067e6efe6033656b8e7c3315a9fe322c015d`
 - research materialization SHA-256 (pre-rustfmt): `d36bc7e0df7e423c96a8a7a3b7aa7846471d985e6dfffca9928b398e5557ff9f`
-- canonical adoption benchmark SHA-256 (post-rustfmt, no semantic change): `bef5fe8722d3b29123a0099fbc6d6d3f896d3cd94ecb30bfc8f2f5a1fe1f5d6f`
+- canonical adoption benchmark SHA-256 (post-rustfmt/Clippy canonicalization; no semantic-critical gate change): `2d448c963cb05d0b37043dd292c31d14d9e39de3770463b2e60f0717a70f86a8`
 - adapter SHA-256: `c8fb8f76a4e4abcd5b89161d98508e0146f9d329e8831073cd0f69530e8e7098`
 
 `fixtures/mcp-identity-context-v12-adoption.sha256` and the adoption CI verify these identities directly. Research transformers remain only for provenance and reproducibility; the adopted source is tested directly.
