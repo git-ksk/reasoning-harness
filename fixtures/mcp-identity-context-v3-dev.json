@@ -1,0 +1,104 @@
+{
+  "schema_version": "reason-mcp-identity-context-v3-dev-v1",
+  "study": "issue-196-trusted-context-constrained-identity",
+  "selection_policy": "assigned before live probing; fresh development only; historical frozen holdouts and prior issue-195 development surfaces excluded by normalized-surface digest",
+  "network_observations_before_assignment": 0,
+  "cases": [
+    {
+      "id": "bratislava_country_direct",
+      "class": "unique_bare_accept",
+      "task": "Determine the country of the city Bratislava using external evidence.",
+      "initial_query": "Bratislava",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "bratislava.country",
+      "target_value": "Q214",
+      "expected": "accept"
+    },
+    {
+      "id": "lisbon_country_context_agreement",
+      "class": "trusted_context_agrees",
+      "task": "Determine the country of the city Lisbon in Portugal. Use the stated identity context as a required identity constraint.",
+      "initial_query": "Lisbon",
+      "identity_context": "Portugal",
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "lisbon.country",
+      "target_value": "Q45",
+      "expected": "accept"
+    },
+    {
+      "id": "newcastle_country_context_conflict",
+      "class": "trusted_context_conflicts_bare_candidate",
+      "task": "Determine the country of the city Newcastle in Australia. Use the stated identity context as a required identity constraint.",
+      "initial_query": "Newcastle",
+      "identity_context": "Australia",
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "newcastle.country",
+      "target_value": "Q408",
+      "expected": "accept"
+    },
+    {
+      "id": "newport_country_ambiguous_context",
+      "class": "ambiguous_with_trusted_context",
+      "task": "Determine the country of Newport in Wales. If the bare surface is ambiguous, use only the stated trusted identity context to resolve it.",
+      "initial_query": "Newport",
+      "identity_context": "Wales",
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "newport.country",
+      "target_value": "Q145",
+      "expected": "accept"
+    },
+    {
+      "id": "lincoln_ambiguity_abstention",
+      "class": "ambiguity_without_context",
+      "task": "Without adding unstated context, determine the country for the place referred to only as 'Lincoln'. If the referent is ambiguous, abstain.",
+      "initial_query": "Lincoln",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "lincoln.country",
+      "target_value": "Q30",
+      "expected": "unknown"
+    },
+    {
+      "id": "hamilton_ambiguity_abstention",
+      "class": "ambiguity_without_context",
+      "task": "Without adding unstated context, determine the country for the place referred to only as 'Hamilton'. If the referent is ambiguous, abstain.",
+      "initial_query": "Hamilton",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "hamilton.country",
+      "target_value": "Q16",
+      "expected": "unknown"
+    },
+    {
+      "id": "hamburg_wrong_country_refutation",
+      "class": "wrong_claim_reject",
+      "task": "Check the claim that Hamburg is in France. Acquire external evidence before deciding whether the claim is supported.",
+      "initial_query": "Hamburg",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "hamburg.country",
+      "target_value": "Q142",
+      "expected": "reject"
+    },
+    {
+      "id": "zagreb_country_direct",
+      "class": "unique_bare_accept",
+      "task": "Determine the country of the city Zagreb using external evidence.",
+      "initial_query": "Zagreb",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "zagreb.country",
+      "target_value": "Q224",
+      "expected": "accept"
+    }
+  ]
+}

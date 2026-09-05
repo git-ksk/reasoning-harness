@@ -1,0 +1,213 @@
+name: MCP identity context gate v3
+
+on:
+  push:
+    branches:
+      - experiment/mcp-identity-context-gate-v3
+    paths:
+      - scripts/identity_gate_v2.py
+      - scripts/test_identity_gate_v2.py
+      - scripts/knowledge_search_fused_mcp.py
+      - scripts/test_identity_tool_request_accounting.py
+      - scripts/apply_identity_gate_action_repair_v3.py
+      - scripts/apply_identity_gate_loop_safety_v4.py
+      - scripts/apply_identity_context_grounding_v5.py
+      - scripts/apply_identity_context_followup_v6.py
+      - scripts/apply_identity_context_query_shape_v7.py
+      - scripts/apply_identity_eval_semantics_v8.py
+      - scripts/apply_identity_context_constraint_v9.py
+      - scripts/apply_identity_context_dev_split_v10.py
+      - scripts/validate_identity_context_v3_dev.py
+      - scripts/discover_identity_context_v3_dev.py
+      - fixtures/mcp-identity-context-v3-dev.json
+      - fixtures/mcp-identity-context-v3-dev-selection.json
+      - fixtures/mcp-identity-context-v3-forbidden-surfaces.sha256
+      - crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
+      - crates/reasoning-harness-cli/Cargo.toml
+      - Cargo.lock
+      - .github/workflows/mcp-identity-context-gate-v3.yml
+
+permissions:
+  contents: read
+
+jobs:
+  identity-context-contract:
+    name: Deterministic trusted-context identity contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Compile experiment scripts
+        run: |
+          set -euo pipefail
+          python3 -m py_compile \
+            scripts/identity_gate_v2.py \
+            scripts/test_identity_gate_v2.py \
+            scripts/test_identity_tool_request_accounting.py \
+            scripts/apply_identity_gate_action_repair_v3.py \
+            scripts/apply_identity_gate_loop_safety_v4.py \
+            scripts/apply_identity_context_grounding_v5.py \
+            scripts/apply_identity_context_followup_v6.py \
+            scripts/apply_identity_context_query_shape_v7.py \
+            scripts/apply_identity_eval_semantics_v8.py \
+            scripts/apply_identity_context_constraint_v9.py \
+            scripts/apply_identity_context_dev_split_v10.py \
+            scripts/validate_identity_context_v3_dev.py \
+            scripts/discover_identity_context_v3_dev.py
+
+      - name: Verify fresh-dev split was assigned before live probing
+        run: |
+          set -euo pipefail
+          python3 scripts/validate_identity_context_v3_dev.py \
+            fixtures/mcp-identity-context-v3-dev.json \
+            --forbidden-digests fixtures/mcp-identity-context-v3-forbidden-surfaces.sha256 \
+            | tee /tmp/mcp-identity-context-v3-dev-preflight.json
+          test "$(jq -r '.network_observations_before_assignment' fixtures/mcp-identity-context-v3-dev-selection.json)" = "0"
+          test "$(jq -r '.historical_holdouts_executed_or_replayed' fixtures/mcp-identity-context-v3-dev-selection.json)" = "false"
+          test "$(jq -r '.normalized_surface_overlap_count' fixtures/mcp-identity-context-v3-dev-selection.json)" = "0"
+
+      - name: Run Python qualification / request-accounting contracts
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v \
+            scripts/test_identity_gate_v2.py \
+            scripts/test_identity_tool_request_accounting.py
+
+      - name: Materialize v10 candidate and run deterministic Rust contracts
+        run: |
+          set -euo pipefail
+          python3 scripts/apply_identity_gate_action_repair_v3.py
+          python3 scripts/apply_identity_gate_loop_safety_v4.py
+          python3 scripts/apply_identity_context_grounding_v5.py
+          python3 scripts/apply_identity_context_followup_v6.py
+          python3 scripts/apply_identity_context_query_shape_v7.py
+          python3 scripts/apply_identity_eval_semantics_v8.py
+          python3 scripts/apply_identity_context_constraint_v9.py
+          python3 scripts/apply_identity_context_dev_split_v10.py
+          git diff --check
+          cargo test --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
+          cargo check --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
+
+  fresh-dev-discovery:
+    name: Assigned fresh-dev discovery
+    needs: identity-context-contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Probe assigned fresh-dev coordinates only
+        run: |
+          set -euo pipefail
+          python3 scripts/discover_identity_context_v3_dev.py \
+            | tee /tmp/mcp-identity-context-v3-dev-discovery.json
+
+      - name: Enforce discovery infrastructure gate
+        run: |
+          set -euo pipefail
+          jq -e '
+            (.historical_holdouts_executed_or_replayed == false) and
+            (.summary.operational_failures == 0)
+          ' /tmp/mcp-identity-context-v3-dev-discovery.json >/dev/null
+
+      - name: Report discovery summary
+        if: always()
+        run: |
+          echo '--- summary ---'
+          jq '.summary' /tmp/mcp-identity-context-v3-dev-discovery.json 2>/dev/null || true
+          echo '--- probes ---'
+          jq '.probes[] | {id,class,coordinate,query,outcome_kind,resolved_entity,corroboration_rank,wikipedia_top,fact,external_requests,operational_failure}' \
+            /tmp/mcp-identity-context-v3-dev-discovery.json 2>/dev/null || true
+
+      - name: Preserve fresh-dev discovery evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-identity-context-v3-dev-discovery
+          path: /tmp/mcp-identity-context-v3-dev-discovery.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  fresh-layer-c:
+    name: Fresh Layer C trusted-context dev
+    needs:
+      - identity-context-contract
+      - fresh-dev-discovery
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.88.0"
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Materialize v10 trusted-context candidate
+        run: |
+          set -euo pipefail
+          python3 scripts/apply_identity_gate_action_repair_v3.py
+          python3 scripts/apply_identity_gate_loop_safety_v4.py
+          python3 scripts/apply_identity_context_grounding_v5.py
+          python3 scripts/apply_identity_context_followup_v6.py
+          python3 scripts/apply_identity_context_query_shape_v7.py
+          python3 scripts/apply_identity_eval_semantics_v8.py
+          python3 scripts/apply_identity_context_constraint_v9.py
+          python3 scripts/apply_identity_context_dev_split_v10.py
+          git diff --check
+
+      - name: Re-run deterministic contracts at live coordinate
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
+          cargo check --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
+
+      - name: Run fresh development benchmark at small trials
+        run: |
+          set -euo pipefail
+          test -n "$MISTRAL_API_KEY"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark -- \
+            --trials 2 \
+            --model ministral-8b-latest \
+            | tee /tmp/mcp-identity-context-v3-layer-c.json
+
+      - name: Enforce semantic safety and infrastructure gate
+        run: |
+          set -euo pipefail
+          jq -e '
+            (.prior_frozen_holdout_reused == false) and
+            (.historical_frozen_holdouts_reused == false) and
+            (.aggregate.false_acceptances == 0) and
+            (.aggregate.semantic_false_decisions == 0) and
+            (.aggregate.context_unverified_fact_admissions == 0) and
+            (.aggregate.operational_unresolved == 0) and
+            (.aggregate.planner_failures == 0) and
+            (.aggregate.tool_failures == 0) and
+            (.aggregate.budget_exhaustions == 0) and
+            (.aggregate.invalid_actions_blocked_before_external_request == .aggregate.invalid_action_observations)
+          ' /tmp/mcp-identity-context-v3-layer-c.json >/dev/null
+
+      - name: Report aggregate and context-constrained cases
+        if: always()
+        run: |
+          echo '--- aggregate ---'
+          jq '.aggregate' /tmp/mcp-identity-context-v3-layer-c.json 2>/dev/null || true
+          echo '--- context cases ---'
+          jq '.samples[] | select(.id | test("context|newport")) | {id,trial,expected,final_outcome,stop_reason,passed,rounds,tool_calls,external_requests,planner_calls,identity_insufficient_observations,identity_supported_observations,invalid_action_observations,follow_suggested_query_actions,context_unverified_fact_admissions,traces}' \
+            /tmp/mcp-identity-context-v3-layer-c.json 2>/dev/null || true
+          echo '--- nonpassing ---'
+          jq '.samples[] | select(.passed == false) | {id,trial,expected,final_outcome,stop_reason,operational_failure,rounds,tool_calls,external_requests,planner_calls,invalid_action_observations,context_unverified_fact_admissions}' \
+            /tmp/mcp-identity-context-v3-layer-c.json 2>/dev/null || true
+
+      - name: Preserve Layer C evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-identity-context-v3-layer-c
+          path: /tmp/mcp-identity-context-v3-layer-c.json
+          if-no-files-found: warn
+          retention-days: 14

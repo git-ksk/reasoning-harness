@@ -1,0 +1,13 @@
+{
+  "schema_version": "reason-mcp-identity-context-v3-dev-selection-v1",
+  "issue": 196,
+  "base_candidate_sha": "64d2dcd9343297bb039e98b5571d5802f3807cf0",
+  "dev_fixture_sha256": "d9214f9dd23d0ebb538be3de38b9f23bd232582d21b7794463c9310662a70b79",
+  "forbidden_surface_digest_manifest_sha256": "35a5fbd16214e6380539bd292a9467d8eed0cce0bbe63a1afe8cd9dc0c8672ca",
+  "cases": 8,
+  "forbidden_surface_digest_count": 22,
+  "normalized_surface_overlap_count": 0,
+  "network_observations_before_assignment": 0,
+  "historical_holdouts_executed_or_replayed": false,
+  "post_assignment_dev_tuning_allowed": true
+}
