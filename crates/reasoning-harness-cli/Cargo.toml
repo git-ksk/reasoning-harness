@@ -66,6 +66,10 @@ name = "reason-mcp-agentic-search-benchmark"
 path = "src/bin/mcp_agentic_search_benchmark.rs"
 
 [[bin]]
+name = "reason-mcp-identity-gate-benchmark"
+path = "src/bin/mcp_identity_gate_benchmark.rs"
+
+[[bin]]
 name = "reason-sufficiency-study"
 path = "src/bin/sufficiency.rs"
 
