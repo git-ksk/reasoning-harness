@@ -17,6 +17,7 @@ on:
       - 'crates/reasoning-harness-providers/src/external_admission.rs'
       - 'crates/reasoning-harness-cli/src/bin/external_resolution_acceptance.rs'
       - '.github/workflows/product-external-info-freeze.yml'
+      - '.github/workflows/product-external-info-live.yml'
   push:
     branches:
       - main
@@ -36,6 +37,7 @@ on:
       - 'crates/reasoning-harness-providers/src/external_admission.rs'
       - 'crates/reasoning-harness-cli/src/bin/external_resolution_acceptance.rs'
       - '.github/workflows/product-external-info-freeze.yml'
+      - '.github/workflows/product-external-info-live.yml'
   workflow_dispatch:
 
 permissions:
