@@ -1,0 +1,78 @@
+{
+  "schema_version": "product-external-info-case-v2",
+  "id": "insufficient-generic-content-no-envelope-v2",
+  "capability_family": "no_result_or_insufficient_evidence",
+  "task": "A successful generic MCP content response without the reasoning_harness acquisition envelope is context only and must not support the target proposition.",
+  "expected_outcome": "unknown",
+  "target_proposition": {
+    "identity": "product-external-info-v2:insufficient-generic-content-no-envelope-v2:target",
+    "key": "external.v2.insufficient.generic.answer",
+    "value": "supported"
+  },
+  "acquisition_profiles": [
+    {
+      "id": "generic-content-no-envelope-v2",
+      "adapter": "mcp_readonly_v1",
+      "server_id": "product_external_info_fixture_v2",
+      "program": "python3",
+      "args": [
+        "scripts/product_external_info_mcp.py"
+      ],
+      "protocol_version": "2026-07-28",
+      "transport": "stdio",
+      "stateless_tools_call": true,
+      "tool": "fetch_json_fact",
+      "allowed_tools": [
+        "fetch_json_fact"
+      ],
+      "read_only": true,
+      "resolver_class": "evidence_acquisition",
+      "http_method": null,
+      "source_identity": "generic:v2:mcp:opaque",
+      "timeout_ms": 1000,
+      "fixed_arguments": {
+        "mode": "generic_content",
+        "generic_text": "opaque v2 generic MCP payload with no reasoning_harness acquisition envelope"
+      },
+      "argument_ownership": {
+        "mode": "harness_fixed",
+        "generic_text": "harness_fixed",
+        "source_identity": "harness_config"
+      }
+    }
+  ],
+  "source_identities": [
+    "generic:v2:mcp:opaque"
+  ],
+  "expected_admission_behavior": "opaque_no_fact",
+  "freshness_requirement": {
+    "max_age_seconds": 300,
+    "evaluation_time_owner": "harness"
+  },
+  "authority_requirement": {
+    "minimum_class": "primary",
+    "policy_owner": "harness"
+  },
+  "scope_requirement": {
+    "required_scope": null,
+    "policy_owner": "harness"
+  },
+  "expected_operational_class": null,
+  "admission_policy": {
+    "evaluation_time_owner": "harness",
+    "evaluation_time_offset_seconds": 0,
+    "authority_policy": {
+      "secondary": 10,
+      "primary": 20
+    },
+    "minimum_authority_class": "primary",
+    "required_scope": null,
+    "sources": {
+      "generic:v2:mcp:opaque": {
+        "authority_class": "primary",
+        "max_age_seconds": 300,
+        "scope": null
+      }
+    }
+  }
+}
