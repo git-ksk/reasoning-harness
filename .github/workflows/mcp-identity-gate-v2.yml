@@ -7,6 +7,7 @@ on:
     paths:
       - scripts/identity_gate_v2.py
       - scripts/test_identity_gate_v2.py
+      - scripts/discover_identity_gate_v2_dev_candidates.py
       - .github/workflows/mcp-identity-gate-v2.yml
 
 permissions:
@@ -25,9 +26,37 @@ jobs:
           set -euo pipefail
           python3 -m py_compile \
             scripts/identity_gate_v2.py \
-            scripts/test_identity_gate_v2.py
+            scripts/test_identity_gate_v2.py \
+            scripts/discover_identity_gate_v2_dev_candidates.py
 
       - name: Run identity qualification tests
         run: |
           set -euo pipefail
           python3 -m unittest -v scripts/test_identity_gate_v2.py
+
+  fresh-dev-discovery:
+    name: Fresh dev identity candidate discovery
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Probe fresh development-only entity surfaces
+        run: |
+          set -euo pipefail
+          python3 scripts/discover_identity_gate_v2_dev_candidates.py \
+            | tee /tmp/mcp-identity-gate-v2-dev-discovery.json
+
+      - name: Report discovery summary
+        run: |
+          set -euo pipefail
+          jq '.summary' /tmp/mcp-identity-gate-v2-dev-discovery.json
+          jq '.queries[] | {query, raw_outcome_kind, qualified_outcome_kind, identity_supported, identity_reasons, resolved_entity, corroboration_rank, wikidata_candidate_ids, wikipedia_top, raw_fact, qualified_fact, operational_failure}' \
+            /tmp/mcp-identity-gate-v2-dev-discovery.json
+
+      - name: Preserve discovery evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-identity-gate-v2-dev-discovery
+          path: /tmp/mcp-identity-gate-v2-dev-discovery.json
+          retention-days: 14
