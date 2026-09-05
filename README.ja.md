@@ -50,6 +50,7 @@ Reasoning Harnessあり:
 | 評価 | モデル | 使える回答をどこまで出せたか | 危険な出力を防げたか |
 | --- | --- | --- | --- |
 | 実ワークロード6ケース（障害分析 + アーキテクチャレビュー） | Ministral 8B | 根拠付きターゲットを出せた割合 **25% -> 100%**。本来答えられるのに保留した割合 **75% -> 0%** | 根拠なしの断言 **0**、根拠不足の見逃し **0** |
+| freeze済みMCP external-information 21ケース / 7 family | Ministral 8B | scoring対象の根拠付きtarget coverage **0%（raw / 外部取得なし）-> 75%（MCPあり）**。根拠不足targetの維持 **100%** | 根拠なしの断言 **0**、根拠不足の見逃し **0**、identity-unsafe admission **0** |
 | 独立して凍結したStage-C 16ケース | Ministral 8B / Mistral Small / Gemma 4 31B / Gemini 3.1 Flash-Lite | target coverage **1.00（100%）** | 完走した全モデルで unsupported grounded claims **0**、missed target insufficiency **0** |
 | 独立して凍結したStage-C 16ケース | Ministral 14B | target coverage **0.875（87.5%）** | 1件は危険な誤答ではなく「答えられるのに出さなかった」保守的なmiss。安全性counterは **0** |
 | 凍結済みD3 semantic holdout-v5 | Ministral 8B / Gemma 4 31B / Gemini 3.5 Flash-Lite | 各モデル **120/120 call** 完走。根拠が明確なケースの coverage / precision / recall はすべて **1.000** | 根拠不足ケースは **50/50でabstain**、unsafe assertion は **50 -> 0** |
@@ -58,7 +59,7 @@ Reasoning Harnessあり:
 
 別の20ケース・反復live評価では、完走trialだけを使ったHarness correctness（この評価での正答率）が、**Ministral 8B / Ministral 14B / Gemini 3.1 Flash-Lite = 1.00**、**Mistral Small = 0.99**、**Gemini 3.5 Flash-Lite = 0.98**、**Gemma 4 31B = 0.95**、**Gemma 4 26B = 0.867（完走3 trial）**、**Ministral 3B = 0.75**でした。Ministral 3Bは一貫して安全側に倒れすぎる傾向でした。この値はStage-Cのtarget coverageとは評価指標が違うため、直接の優劣比較には使いません。
 
-これは「どんなopen-world taskでも同じ精度になる」という主張ではありません。記録済みworkload / holdout上の実測であり、凍結済みresearch holdoutは再利用・再tuningしません。評価条件や分母、provenanceは[product dogfood](docs/product-dogfood.ja.md)、[product capability matrix](docs/product-dogfood-capability-matrix.ja.md)、[D3 holdout-v5](docs/semantic-decidability-holdout-v5.ja.md)に残しています。
+これは「どんなopen-world taskでも同じ精度になる」という主張ではありません。記録済みworkload / holdout上の実測であり、凍結済みresearch holdoutは再利用・再tuningしません。評価条件や分母、provenanceは[product dogfood](docs/product-dogfood.ja.md)、[MCP external-information評価](docs/product-external-info.ja.md)、[product capability matrix](docs/product-dogfood-capability-matrix.ja.md)、[D3 holdout-v5](docs/semantic-decidability-holdout-v5.ja.md)に残しています。
 
 ## 30秒で始める
 

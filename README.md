@@ -50,6 +50,7 @@ The goal is not to make a model omniscient. It is to **recover useful answers wh
 | Evaluation | Model(s) | Result with the Harness | Safety result |
 | --- | --- | --- | --- |
 | 6-case real product workload (incident + architecture analysis) | Ministral 8B | target coverage **0.25 raw -> 1.00**; false target abstention **0.75 -> 0.00** | unsupported grounded claims **0**; missed target insufficiency **0** |
+| Frozen MCP external-information workload, 21 cases / 7 families | Ministral 8B | scored expected-grounded target coverage **0.00 raw/no-external -> 0.75 with MCP**; expected-unknown preservation **1.00** | unsupported grounded claims **0**; missed target insufficiency **0**; identity-unsafe admission **0** |
 | Independent frozen Stage-C, 16 cases | Ministral 8B / Mistral Small / Gemma 4 31B / Gemini 3.1 Flash-Lite | target coverage **1.00** | unsupported grounded claims **0**; missed target insufficiency **0** on every completed arm |
 | Independent frozen Stage-C, 16 cases | Ministral 14B | target coverage **0.875** | the miss was conservative utility loss, not unsafe exposure; safety counters remained **0** |
 | Frozen D3 semantic holdout-v5 | Ministral 8B / Gemma 4 31B / Gemini 3.5 Flash-Lite | each completed **120/120** calls with clear-case coverage / precision / recall **1.000 / 1.000 / 1.000** | typed-insufficiency cases abstained **50/50** and unsafe assertions were reduced **50 -> 0** |
@@ -58,7 +59,7 @@ The most direct product result is the first row: on the same six realistic tasks
 
 A broader repeated live matrix used a different, earlier 20-case correctness metric. Across complete trials, Harness correctness was **1.00** for Ministral 8B, Ministral 14B, and Gemini 3.1 Flash-Lite; **0.99** for Mistral Small; **0.98** for Gemini 3.5 Flash-Lite; **0.95** for Gemma 4 31B; **0.867** for Gemma 4 26B across its three complete trials; and **0.75** for Ministral 3B, which was consistently over-conservative. This matrix is useful for model breadth, but its metric should not be compared directly with Stage-C target coverage.
 
-These are recorded workload/holdout results, not a claim that every open-world task or future model will achieve the same accuracy. Frozen research holdouts are kept immutable and are not reused for tuning. See [product dogfood](docs/product-dogfood.md), [product capability matrix](docs/product-dogfood-capability-matrix.md), and [D3 holdout-v5](docs/semantic-decidability-holdout-v5.md) for provenance and detailed denominators.
+These are recorded workload/holdout results, not a claim that every open-world task or future model will achieve the same accuracy. Frozen research holdouts are kept immutable and are not reused for tuning. See [product dogfood](docs/product-dogfood.md), [MCP external-information evaluation](docs/product-external-info.md), [product capability matrix](docs/product-dogfood-capability-matrix.md), and [D3 holdout-v5](docs/semantic-decidability-holdout-v5.md) for provenance and detailed denominators.
 
 ## 30-second quickstart
 

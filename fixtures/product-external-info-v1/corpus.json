@@ -1,0 +1,108 @@
+{
+  "schema_version": "product-external-info-corpus-v1",
+  "corpus_identity": "product-external-info-v1",
+  "freeze_state": "pre_observation",
+  "baseline_main": "aa0a8325ea4c3b53b38c8fe83cf3aae691a38599",
+  "mcp_contract": {
+    "adapter": "mcp_readonly_v1",
+    "protocol_version": "2026-07-28",
+    "transport": "stdio",
+    "stateless_single_tools_call": true,
+    "generic_content_fact_promotion": false,
+    "structured_envelope": "structuredContent.reasoning_harness",
+    "authority_owner": "harness"
+  },
+  "fixture_server": {
+    "server_id": "product_external_info_fixture_v1",
+    "program": "python3",
+    "args": [
+      "scripts/product_external_info_mcp.py"
+    ],
+    "tool": "fetch_json_fact",
+    "read_only": true,
+    "resolver_class": "evidence_acquisition",
+    "network_method": "GET",
+    "allowed_hosts": [
+      "api.github.com",
+      "raw.githubusercontent.com",
+      "pypi.org",
+      "registry.npmjs.org",
+      "crates.io"
+    ],
+    "model_generated_url": false,
+    "model_generated_field": false,
+    "model_generated_source_identity": false,
+    "model_generated_authority": false,
+    "model_generated_scope": false
+  },
+  "direct_generic_mcp_boundary": {
+    "profile_identity": "github-official-readonly-generic-boundary-v1",
+    "server": "github/github-mcp-server",
+    "read_only_required": true,
+    "expected_fact_promotion_from_generic_output": false,
+    "metrics_separate_acquisition_from_verification": true
+  },
+  "capability_families": [
+    "current_fresh_snapshot",
+    "entity_identity_ambiguity",
+    "authoritative_source_requirement",
+    "stale_fresh_or_source_conflict",
+    "no_result_or_insufficient_evidence",
+    "typed_operational_failure",
+    "irrelevant_or_instruction_like_content"
+  ],
+  "cases": [
+    "fresh-github-cli-full-name",
+    "fresh-pypi-uv-name",
+    "fresh-npm-typescript-name",
+    "identity-github-ruff-vs-uv",
+    "identity-pypi-fastapi-vs-starlette",
+    "identity-npm-vite-vs-vitest",
+    "authority-crates-serde-primary",
+    "authority-github-insufficient-rank",
+    "authority-claim-cannot-self-promote",
+    "temporal-stale-at-harness-evaluation",
+    "temporal-observation-after-evaluation",
+    "conflict-qualified-facts-same-key",
+    "no-result-github-404",
+    "insufficient-generic-content-no-envelope",
+    "insufficient-missing-selected-field",
+    "operational-protocol-error",
+    "operational-tool-execution-error",
+    "operational-timeout",
+    "instruction-like-generic-content-no-authority",
+    "irrelevant-observation-cannot-change-selected-fact",
+    "irrelevant-content-cannot-rescue-identity-mismatch"
+  ],
+  "scoring_contract": {
+    "identity": "product-external-info-scoring-v1",
+    "comparison_arms": [
+      "raw_model",
+      "harness_without_external_acquisition",
+      "harness_with_mcp_external_acquisition"
+    ],
+    "metrics": [
+      "external_acquisition_attempts",
+      "external_acquisition_successes",
+      "verification_successes",
+      "expected_grounded_target_coverage",
+      "expected_unknown_preservation",
+      "false_target_abstention",
+      "unsupported_grounded_claims",
+      "missed_target_insufficiency",
+      "identity_unsafe_admission",
+      "stale_rejection",
+      "authority_rejection",
+      "scope_rejection",
+      "conflict_rejection",
+      "tool_protocol_timeout_operational_failures"
+    ],
+    "semantic_denominator_excludes_operational_failures": true,
+    "safety_gates": {
+      "unsupported_grounded_claims": 0,
+      "missed_target_insufficiency": 0,
+      "identity_unsafe_admission": 0,
+      "mcp_output_authority_self_promotion": 0
+    }
+  }
+}
