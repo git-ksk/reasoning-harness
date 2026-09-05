@@ -92,9 +92,13 @@ jobs:
             and .corpus_identity == "product-external-info-v1"
             and .aggregate.total_cases == 21
             and .aggregate.semantic_cases == 18
+            and .aggregate.semantic_cases_scored == 18
+            and .aggregate.semantic_cases_operationally_incomplete == 0
             and .aggregate.operational_cases == 3
             and .aggregate.expected_grounded_cases == 5
+            and .aggregate.expected_grounded_cases_scored == 5
             and .aggregate.expected_unknown_cases == 13
+            and .aggregate.expected_unknown_cases_scored == 13
             and .semantic_denominator_excludes_operational_failures == true
           ' /tmp/product-external-info-evaluator-validation.json >/dev/null
 

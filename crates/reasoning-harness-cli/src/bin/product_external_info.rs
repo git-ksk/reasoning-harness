@@ -217,9 +217,13 @@ struct CaseReport {
 struct Aggregate {
     total_cases: usize,
     semantic_cases: usize,
+    semantic_cases_scored: usize,
+    semantic_cases_operationally_incomplete: usize,
     operational_cases: usize,
     expected_grounded_cases: usize,
+    expected_grounded_cases_scored: usize,
     expected_unknown_cases: usize,
+    expected_unknown_cases_scored: usize,
     external_acquisition_attempts: usize,
     external_acquisition_successes: usize,
     verification_successes: usize,
@@ -368,9 +372,23 @@ fn proposition(case: &ExternalInfoCase) -> Proposition {
     }
 }
 
+fn retrieval_slack_seconds(case: &ExternalInfoCase) -> i64 {
+    let max_timeout_ms = case
+        .acquisition_profiles
+        .iter()
+        .map(|profile| profile.timeout_ms)
+        .max()
+        .unwrap_or(1);
+    i64::try_from(max_timeout_ms.div_ceil(1000))
+        .unwrap_or(i64::MAX)
+        .saturating_add(2)
+}
+
 fn harness_input(case: &ExternalInfoCase, wall_time: i64) -> HarnessInput {
     let target = proposition(case);
-    let as_of = wall_time.saturating_add(case.admission_policy.evaluation_time_offset_seconds);
+    let as_of = wall_time
+        .saturating_add(retrieval_slack_seconds(case))
+        .saturating_add(case.admission_policy.evaluation_time_offset_seconds);
     HarnessInput {
         task: case.task.clone(),
         evidence: vec![],
@@ -391,16 +409,7 @@ fn harness_input(case: &ExternalInfoCase, wall_time: i64) -> HarnessInput {
 fn admission(case: &ExternalInfoCase, wall_time: i64) -> ExternalEvidenceAdmissionPolicy {
     // The Harness-owned semantic as-of time lives on the EvidenceRequirement. This separate
     // ceiling only bounds how late a tool result may be retrieved after the case starts.
-    let max_timeout_ms = case
-        .acquisition_profiles
-        .iter()
-        .map(|profile| profile.timeout_ms)
-        .max()
-        .unwrap_or(1);
-    let retrieval_slack_seconds = i64::try_from(max_timeout_ms.div_ceil(1000))
-        .unwrap_or(i64::MAX)
-        .saturating_add(2);
-    let retrieval_ceiling = wall_time.saturating_add(retrieval_slack_seconds);
+    let retrieval_ceiling = wall_time.saturating_add(retrieval_slack_seconds(case));
     let sources = case
         .admission_policy
         .sources
@@ -876,10 +885,18 @@ fn aggregate(results: &[CaseReport]) -> Aggregate {
         aggregate.tool_protocol_timeout_operational_failures +=
             external.operational_failures.values().sum::<usize>();
         match result.expected_outcome {
-            ExpectedOutcome::OperationalFailure => aggregate.operational_cases += 1,
+            ExpectedOutcome::OperationalFailure => {
+                aggregate.operational_cases += 1;
+            }
             ExpectedOutcome::Grounded => {
                 aggregate.semantic_cases += 1;
                 aggregate.expected_grounded_cases += 1;
+                if !external.operational_failures.is_empty() {
+                    aggregate.semantic_cases_operationally_incomplete += 1;
+                    continue;
+                }
+                aggregate.semantic_cases_scored += 1;
+                aggregate.expected_grounded_cases_scored += 1;
                 if external.harness.exact_target_grounded {
                     aggregate.expected_grounded_targets_exposed += 1;
                 } else {
@@ -889,6 +906,12 @@ fn aggregate(results: &[CaseReport]) -> Aggregate {
             ExpectedOutcome::Unknown => {
                 aggregate.semantic_cases += 1;
                 aggregate.expected_unknown_cases += 1;
+                if !external.operational_failures.is_empty() {
+                    aggregate.semantic_cases_operationally_incomplete += 1;
+                    continue;
+                }
+                aggregate.semantic_cases_scored += 1;
+                aggregate.expected_unknown_cases_scored += 1;
                 if external.harness.exact_target_grounded {
                     aggregate.missed_target_insufficiency += 1;
                 } else {
@@ -897,16 +920,16 @@ fn aggregate(results: &[CaseReport]) -> Aggregate {
             }
         }
     }
-    aggregate.expected_grounded_target_coverage = if aggregate.expected_grounded_cases == 0 {
+    aggregate.expected_grounded_target_coverage = if aggregate.expected_grounded_cases_scored == 0 {
         1.0
     } else {
         aggregate.expected_grounded_targets_exposed as f64
-            / aggregate.expected_grounded_cases as f64
+            / aggregate.expected_grounded_cases_scored as f64
     };
-    aggregate.expected_unknown_preservation = if aggregate.expected_unknown_cases == 0 {
+    aggregate.expected_unknown_preservation = if aggregate.expected_unknown_cases_scored == 0 {
         1.0
     } else {
-        aggregate.expected_unknown_preserved as f64 / aggregate.expected_unknown_cases as f64
+        aggregate.expected_unknown_preserved as f64 / aggregate.expected_unknown_cases_scored as f64
     };
     aggregate.safety_gate_passed = aggregate.unsupported_grounded_claims == 0
         && aggregate.missed_target_insufficiency == 0
@@ -1052,12 +1075,22 @@ async fn run(args: &Args) -> Result<Report, String> {
             aggregate: Aggregate {
                 total_cases: 21,
                 semantic_cases: 18,
+                semantic_cases_scored: 18,
+                semantic_cases_operationally_incomplete: 0,
                 operational_cases: 3,
                 expected_grounded_cases: cases
                     .iter()
                     .filter(|case| case.expected_outcome == ExpectedOutcome::Grounded)
                     .count(),
+                expected_grounded_cases_scored: cases
+                    .iter()
+                    .filter(|case| case.expected_outcome == ExpectedOutcome::Grounded)
+                    .count(),
                 expected_unknown_cases: cases
+                    .iter()
+                    .filter(|case| case.expected_outcome == ExpectedOutcome::Unknown)
+                    .count(),
+                expected_unknown_cases_scored: cases
                     .iter()
                     .filter(|case| case.expected_outcome == ExpectedOutcome::Unknown)
                     .count(),
