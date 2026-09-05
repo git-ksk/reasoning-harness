@@ -110,7 +110,7 @@ jobs:
           jq '{configuration_id, execution_design, materialization_contract, provider, model, fixture_count, representations: [.representations[] | {representation, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, total_tokens, total_latency_ms, mean_latency_ms, trials}], combined_stability: {expected_probes_per_fixture: .combined_stability.expected_probes_per_fixture, policies: .combined_stability.policies, risky_fixtures: [.combined_stability.fixtures[] | select(.assessment.risk_signals | length > 0) | {fixture_id, label, assessment, disagreement_only, complete_unanimity}]}, failures: [.representations[] as $r | $r.cases[] | select(.failure_class != null) | {representation: $r.representation, fixture_id, trial, seed, finish_reason, failure_class, latency_ms, usage}]}' "$OUTPUT"
       - name: Preserve stability-study JSON
         if: always() && steps.credential.outputs.available == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: semantic-stability-${{ inputs.provider }}-${{ inputs.fixture_set }}
           path: /tmp/reason-semantic-stability-study.json

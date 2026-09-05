@@ -65,7 +65,7 @@ jobs:
           jq '{configuration_id, study_surface, source_corpus, candidate_id, semantic_baseline, materialization_contract, decidability_contract, execution_design, provider, model, fixture_count, variant_count, attempted_provider_calls, successful_provider_calls, failed_provider_calls, protocol_completion_rate, total_tokens, total_latency_ms, mean_latency_ms, trials, aggregate, risky_stability: [.stability[] | select(.base_decision_stability.risk_signals | length > 0)], failures: [.cases[] | select(.failure_class != null) | {fixture_id, source_fixture_id, semantic_label, trial, seed, finish_reason, failure_class}]}' "$OUTPUT"
       - name: Preserve frozen holdout-v5 JSON
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: semantic-decidability-holdout-v5-${{ matrix.provider }}-${{ matrix.model }}
           path: /tmp/reason-semantic-decidability-holdout-v5.json

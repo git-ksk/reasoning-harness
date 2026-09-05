@@ -171,7 +171,7 @@ jobs:
           jq '{schema_version, comparison_contract, provider, model, workload_classes, capability_families, capability_case_counts, cases, raw, harness, harness_current_safety, overhead, execution, user_comprehension}' /tmp/reason-product-dogfood.json
       - name: Preserve dogfood report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: product-dogfood-${{ inputs.fixture_set }}-${{ inputs.provider }}-${{ inputs.model }}
           path: |

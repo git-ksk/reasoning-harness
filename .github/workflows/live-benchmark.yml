@@ -154,7 +154,7 @@ jobs:
           test "$(jq -r '.operational.failed_runs' "/tmp/reason-live-${MODEL}.json")" -eq 0
       - name: Preserve Mistral benchmark JSON
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: live-mistral-${{ matrix.model }}
           path: /tmp/reason-live-${{ matrix.model }}.json
@@ -208,7 +208,7 @@ jobs:
           test "$(jq -r '.operational.failed_runs' "/tmp/reason-live-${MODEL}.json")" -eq 0
       - name: Preserve Google benchmark JSON
         if: always() && steps.credential.outputs.available == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: live-google-${{ matrix.model }}
           path: /tmp/reason-live-${{ matrix.model }}.json
@@ -285,7 +285,7 @@ jobs:
           jq '{provider, model, corpus, operational, stability, families, per_trial: [.per_trial[] | {trial_index, operationally_complete, successful_cases, report: (.report | if . == null then null else {judges: [.judges[] | {judge: .judge.judge_id, precision, recall, decision_coverage, ambiguous_abstention_rate, abstentions}]} end)}], failures: [.cases[] | select(.failure != null) | {fixture_id, trial, kind, label, failure: .failure}]}' "$OUTPUT"
       - name: Preserve live semantic-judge JSON
         if: always() && steps.credential.outputs.available == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: live-semantic-judge-${{ inputs.judge_provider }}-${{ inputs.judge_corpus }}
           path: /tmp/reason-live-semantic-judge.json
@@ -342,7 +342,7 @@ jobs:
           test "$(jq -r '.operational.failed_runs' "$OUTPUT")" -eq 0
       - name: Preserve NVIDIA benchmark JSON
         if: always() && steps.credential.outputs.available == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: live-nvidia-${{ strategy.job-index }}
           path: /tmp/reason-live-nvidia-*.json
