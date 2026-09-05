@@ -16,10 +16,8 @@ use reasoning_harness_core::{
     ResolutionAttemptStatus, ResolutionBudget, ResolutionCost, ResolutionRequest,
     ResolutionResolver, ResolutionResolverContribution, ResolutionResolverOutput,
     ResolutionTerminalStatus, ResolverClass, StandardGroundingPipeline, Verdict,
-    build_candidate_json_fallback_request, build_candidate_request,
-    canonical_verified_target_answer, canonical_verified_target_partial_answer,
-    canonical_verified_target_reject_partial_answer, final_answer_candidate_schema,
-    finalize_answer, recover_verified_target_renderer_downgrade,
+    build_candidate_json_fallback_request, build_candidate_request, final_answer_candidate_schema,
+    finalize_answer,
 };
 use reasoning_harness_providers::{
     ExternalEvidenceAdmissionConfig, ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy,
@@ -184,7 +182,6 @@ struct HarnessArm {
     exact_target_grounded: bool,
     unsupported_grounded_claims: usize,
     abstained: bool,
-    target_scoped_partial_used: bool,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -537,64 +534,13 @@ fn harness_arm_from_outcome(
     final_verdict: Verdict,
     target: &Proposition,
 ) -> HarnessArm {
-    let targets = std::slice::from_ref(target);
-    let mut rendered = CanonicalFinalAnswerRenderer.render(artifact, final_verdict);
-    let mut finalization = finalize_answer(
+    let rendered = CanonicalFinalAnswerRenderer.render(artifact, final_verdict);
+    let finalization = finalize_answer(
         artifact,
         final_verdict,
         rendered.clone(),
         FinalizationPolicy::default(),
     );
-    let mut target_scoped_partial_used = false;
-
-    if matches!(
-        finalization.status,
-        FinalizationStatus::Unresolved | FinalizationStatus::RequiresVerification
-    ) {
-        if let Some(recovered) = canonical_verified_target_answer(artifact, final_verdict, targets)
-        {
-            rendered = recovered;
-            finalization = finalize_answer(
-                artifact,
-                final_verdict,
-                rendered.clone(),
-                FinalizationPolicy::default(),
-            );
-        }
-    }
-
-    if matches!(
-        finalization.status,
-        FinalizationStatus::Unresolved | FinalizationStatus::RequiresVerification
-    ) {
-        if let Some((recovered, recovered_finalization)) =
-            canonical_verified_target_partial_answer(artifact, final_verdict, targets)
-        {
-            rendered = recovered;
-            finalization = recovered_finalization;
-            target_scoped_partial_used = true;
-        }
-    }
-
-    if let Some((recovered, recovered_finalization)) = recover_verified_target_renderer_downgrade(
-        artifact,
-        final_verdict,
-        targets,
-        &rendered,
-        &finalization,
-    ) {
-        rendered = recovered;
-        finalization = recovered_finalization;
-    }
-
-    if let Some((recovered, recovered_finalization)) =
-        canonical_verified_target_reject_partial_answer(artifact, final_verdict, targets)
-    {
-        rendered = recovered;
-        finalization = recovered_finalization;
-        target_scoped_partial_used = true;
-    }
-
     let exposed = matches!(
         finalization.status,
         FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
@@ -622,7 +568,6 @@ fn harness_arm_from_outcome(
         exact_target_grounded,
         unsupported_grounded_claims,
         abstained: !exposed,
-        target_scoped_partial_used,
     }
 }
 
@@ -1284,7 +1229,6 @@ fn aggregate_probe(results: &[AcquisitionProbeCase]) -> Aggregate {
                 exact_target_grounded: false,
                 unsupported_grounded_claims: 0,
                 abstained: true,
-                target_scoped_partial_used: false,
             },
             harness_with_mcp_external_acquisition: result.external.clone(),
         })
