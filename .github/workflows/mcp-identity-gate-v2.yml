@@ -10,6 +10,7 @@ on:
       - scripts/discover_identity_gate_v2_dev_candidates.py
       - scripts/apply_identity_gate_action_repair_v3.py
       - scripts/apply_identity_gate_loop_safety_v4.py
+      - scripts/apply_identity_context_grounding_v5.py
       - scripts/knowledge_search_fused_mcp.py
       - scripts/test_identity_tool_request_accounting.py
       - crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
@@ -36,6 +37,7 @@ jobs:
             scripts/discover_identity_gate_v2_dev_candidates.py \
             scripts/apply_identity_gate_action_repair_v3.py \
             scripts/apply_identity_gate_loop_safety_v4.py \
+            scripts/apply_identity_context_grounding_v5.py \
             scripts/test_identity_tool_request_accounting.py
 
       - name: Run identity qualification tests
@@ -45,11 +47,12 @@ jobs:
             scripts/test_identity_gate_v2.py \
             scripts/test_identity_tool_request_accounting.py
 
-      - name: Verify exact v4 loop-safety transformation
+      - name: Verify exact v5 context-grounding transformation
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
           python3 scripts/apply_identity_gate_loop_safety_v4.py
+          python3 scripts/apply_identity_context_grounding_v5.py
           git diff --check
           git diff -- crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
 
@@ -95,14 +98,15 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - name: Materialize v4 action-repair and loop-safety candidate
+      - name: Materialize v5 grounded action candidate
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
           python3 scripts/apply_identity_gate_loop_safety_v4.py
+          python3 scripts/apply_identity_context_grounding_v5.py
           git diff --check
 
-      - name: Run deterministic v4 failure-injection contracts
+      - name: Run deterministic v5 failure-injection contracts
         run: |
           set -euo pipefail
           cargo test --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
