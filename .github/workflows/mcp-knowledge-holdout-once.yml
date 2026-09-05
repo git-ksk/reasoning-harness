@@ -1,0 +1,134 @@
+name: MCP knowledge frozen holdout one-shot
+
+on:
+  push:
+    branches:
+      - holdout/mcp-knowledge-f179a2e-one-shot
+    paths:
+      - .github/workflows/mcp-knowledge-holdout-once.yml
+
+permissions:
+  contents: read
+
+env:
+  FROZEN_EVALUATOR_SHA: f179a2e3156a9d99248ccab5e12ba7e77010e169
+
+jobs:
+  frozen-holdout:
+    name: Frozen Layer C holdout — one shot
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+    steps:
+      - name: Checkout frozen evaluator
+        uses: actions/checkout@v7
+        with:
+          ref: f179a2e3156a9d99248ccab5e12ba7e77010e169
+          fetch-depth: 1
+
+      - name: Verify frozen evaluator provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          checked_out_sha="$(git rev-parse HEAD)"
+          test "$checked_out_sha" = "$FROZEN_EVALUATOR_SHA"
+          printf 'launcher_event_sha=%s\n' "$GITHUB_SHA"
+          printf 'frozen_evaluator_sha=%s\n' "$FROZEN_EVALUATOR_SHA"
+          printf 'checked_out_sha=%s\n' "$checked_out_sha"
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.88.0"
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run frozen holdout exactly once
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$MISTRAL_API_KEY"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-agentic-search-benchmark -- \
+            --suite holdout \
+            --trials 2 \
+            --model ministral-8b-latest \
+            | tee /tmp/mcp-agentic-search-holdout.json
+
+      - name: Summarize frozen holdout without retuning
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/summarize_layered_mcp_benchmarks.py \
+            --layer-c /tmp/mcp-agentic-search-holdout.json \
+            --output /tmp/mcp-agentic-holdout-summary.json \
+            | tee /tmp/mcp-agentic-holdout-summary.stdout.json
+
+      - name: Record immutable evaluation provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          checked_out_sha="$(git rev-parse HEAD)"
+          benchmark_sha="$(sha256sum crates/reasoning-harness-cli/src/bin/mcp_agentic_search_benchmark.rs | awk '{print $1}')"
+          adapter_sha="$(sha256sum scripts/knowledge_search_fused_mcp.py | awk '{print $1}')"
+          summary_sha="$(sha256sum scripts/summarize_layered_mcp_benchmarks.py | awk '{print $1}')"
+          lock_sha="$(sha256sum Cargo.lock | awk '{print $1}')"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          payload = {
+              "schema_version": "reason-mcp-frozen-holdout-provenance-v1",
+              "execution_transport": "single-use push launcher",
+              "launcher_event_sha": os.environ["GITHUB_SHA"],
+              "frozen_evaluator_sha": os.environ["FROZEN_EVALUATOR_SHA"],
+              "checked_out_sha": os.popen("git rev-parse HEAD").read().strip(),
+              "event_name": os.environ["GITHUB_EVENT_NAME"],
+              "suite": "holdout",
+              "trials": 2,
+              "provider": "mistral",
+              "model": "ministral-8b-latest",
+              "post_observation_retuning_allowed": False,
+              "files": {},
+          }
+          import hashlib
+          for key, rel in {
+              "benchmark": "crates/reasoning-harness-cli/src/bin/mcp_agentic_search_benchmark.rs",
+              "adapter": "scripts/knowledge_search_fused_mcp.py",
+              "summarizer": "scripts/summarize_layered_mcp_benchmarks.py",
+              "cargo_lock": "Cargo.lock",
+          }.items():
+              payload["files"][key] = {
+                  "path": rel,
+                  "sha256": hashlib.sha256(Path(rel).read_bytes()).hexdigest(),
+              }
+          assert payload["checked_out_sha"] == payload["frozen_evaluator_sha"]
+          Path("/tmp/mcp-agentic-holdout-provenance.json").write_text(
+              json.dumps(payload, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+          cat /tmp/mcp-agentic-holdout-provenance.json
+
+      - name: Report first frozen holdout observation
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '--- frozen holdout aggregate ---'
+          jq '.aggregate' /tmp/mcp-agentic-search-holdout.json 2>/dev/null || true
+          echo '--- frozen holdout attribution ---'
+          jq '.layer_c_agentic_planner' /tmp/mcp-agentic-holdout-summary.json 2>/dev/null || true
+          echo '--- provenance ---'
+          cat /tmp/mcp-agentic-holdout-provenance.json 2>/dev/null || true
+
+      - name: Upload frozen holdout evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-knowledge-agentic-holdout-f179a2e-${{ github.run_id }}
+          path: |
+            /tmp/mcp-agentic-search-holdout.json
+            /tmp/mcp-agentic-holdout-summary.json
+            /tmp/mcp-agentic-holdout-provenance.json
+          if-no-files-found: warn
+          retention-days: 30
