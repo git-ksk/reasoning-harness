@@ -137,6 +137,8 @@ runtime は request identity、attempt history、budget、許可された resolv
 
 Web search、retrieval pipeline、database、MCP tool、compiler、test、policy engine、human は resolver adapter として動作できる。その output が authority を得るのは、他と同じ harness-owned evidence または verifier contract に従う場合だけである。retriever が document を返すことは、retrieval の契機となった proposition を verifier が証明することと同じではない。
 
+entity lookup でも同じ境界を使う。candidate list や adapter ranking は plausibility にすぎず、entity identity sufficiency は Harness が決める。no-context では cross-source rank-1 identity gate を維持し、trusted context がある場合は Harness-owned canonical query と deterministic context compatibility を追加で要求する。planner は query suggestion を生成して identity を確定できず、exact Wikibase-QID direct bridge も trusted-context coordinate に限定された observation であって、それ自体は authority ではない。詳細は[エンティティ同一性ゲート](entity-identity-gate.ja.md)を参照。
+
 resolution implementation は、resolver が何かを返したというだけで `unknown` を `supported` に黙って変換してはならない。
 
 `ResolutionResolver` は trusted metadata や receipt を返せない。raw `AcquiredEvidence` は `EvidenceAdmissionPolicy` を通過してから `HarnessInput` に入る。`TrustedResolutionVerifier` は別の authority-bearing interface である。default admission policy は acquired evidence をすべて reject する。run 単位・request 単位の attempt/token/time budget と resolver-class allowlist は runtime が所有する。admitted-evidence または candidate-revision の各 step では、通常の normalization、validation、verification、diagnostic、decision path を再実行する。

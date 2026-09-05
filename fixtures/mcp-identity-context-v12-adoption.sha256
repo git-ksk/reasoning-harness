@@ -1,0 +1,3 @@
+d36bc7e0df7e423c96a8a7a3b7aa7846471d985e6dfffca9928b398e5557ff9f  crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
+c8fb8f76a4e4abcd5b89161d98508e0146f9d329e8831073cd0f69530e8e7098  scripts/knowledge_search_fused_mcp.py
+fb3874cc95a79a34a75cc9d1fb64fb47eae0f30278944947c358a3354dcc122d  Cargo.lock

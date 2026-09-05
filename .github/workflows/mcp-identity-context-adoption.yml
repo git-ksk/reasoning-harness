@@ -1,0 +1,96 @@
+name: MCP identity context v12 adoption
+
+on:
+  push:
+    branches:
+      - adopt/mcp-identity-context-v12
+    paths:
+      - crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
+      - scripts/knowledge_search_fused_mcp.py
+      - scripts/test_identity_gate_v2.py
+      - scripts/test_identity_tool_request_accounting.py
+      - fixtures/mcp-identity-context-v12-adoption.sha256
+      - docs/entity-identity-gate.md
+      - docs/entity-identity-gate.ja.md
+      - docs/project-status.md
+      - docs/project-status.ja.md
+      - docs/roadmap.md
+      - docs/roadmap.ja.md
+      - docs/architecture.md
+      - docs/architecture.ja.md
+      - Cargo.lock
+      - .github/workflows/mcp-identity-context-adoption.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
+      - scripts/knowledge_search_fused_mcp.py
+      - scripts/test_identity_gate_v2.py
+      - scripts/test_identity_tool_request_accounting.py
+      - fixtures/mcp-identity-context-v12-adoption.sha256
+      - docs/entity-identity-gate.md
+      - docs/entity-identity-gate.ja.md
+      - docs/project-status.md
+      - docs/project-status.ja.md
+      - docs/roadmap.md
+      - docs/roadmap.ja.md
+      - docs/architecture.md
+      - docs/architecture.ja.md
+      - Cargo.lock
+      - .github/workflows/mcp-identity-context-adoption.yml
+
+permissions:
+  contents: read
+
+jobs:
+  frozen-equivalence:
+    name: Frozen v12 deterministic equivalence
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Verify frozen materialized source identity
+        run: |
+          set -euo pipefail
+          sha256sum --check fixtures/mcp-identity-context-v12-adoption.sha256
+          grep -Fq 'reason-mcp-identity-context-gate-benchmark-v12' \
+            crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
+
+      - name: Refuse observed holdout material in adoption branch
+        run: |
+          set -euo pipefail
+          test ! -e fixtures/mcp-identity-context-v3-holdout-v1.json
+          test ! -e fixtures/mcp-identity-context-v3-holdout-selection.json
+          test ! -e scripts/apply_identity_context_holdout_v1_v14.py
+          test ! -e .github/workflows/mcp-identity-context-holdout-v1-once.yml
+
+      - name: Run deterministic Python contracts
+        run: |
+          set -euo pipefail
+          python3 -m py_compile \
+            scripts/identity_gate_v2.py \
+            scripts/test_identity_gate_v2.py \
+            scripts/knowledge_search_fused_mcp.py \
+            scripts/test_identity_tool_request_accounting.py
+          python3 -m unittest -v \
+            scripts/test_identity_gate_v2.py \
+            scripts/test_identity_tool_request_accounting.py
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.88.0"
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Test materialized stable benchmark directly
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
+          cargo check --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
+
+      - name: Confirm tests do not rewrite the frozen source
+        run: |
+          set -euo pipefail
+          sha256sum --check fixtures/mcp-identity-context-v12-adoption.sha256

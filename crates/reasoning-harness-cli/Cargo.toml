@@ -54,6 +54,10 @@ path = "src/bin/external_resolution_acceptance.rs"
 name = "reason-mcp"
 path = "src/bin/mcp_product.rs"
 
+[[bin]]
+name = "reason-mcp-identity-gate-benchmark"
+path = "src/bin/mcp_identity_gate_benchmark.rs"
+
 
 [[bin]]
 name = "reason-sufficiency-study"

@@ -137,6 +137,8 @@ The runtime owns request identity, attempt history, budget, allowed resolver cla
 
 Web search, retrieval pipelines, databases, MCP tools, compilers, tests, policy engines, and humans may act as resolver adapters. Their output only gains authority according to the same harness-owned evidence or verifier contract used elsewhere. A retriever returning a document is not equivalent to a verifier proving the proposition that motivated the retrieval.
 
+Entity lookup uses the same boundary. Candidate lists and adapter rankings are plausibility only; the Harness decides entity-identity sufficiency. No-context admission keeps the cross-source rank-1 identity gate, while trusted context additionally requires a Harness-owned canonical query and deterministic context compatibility. The planner cannot establish identity by generating a query suggestion, and the exact Wikibase-QID direct bridge is only a trusted-context-coordinate observation rather than authority by itself. See [Entity identity gate](entity-identity-gate.md).
+
 No resolution implementation may silently convert `unknown` into `supported` merely because a resolver returned something.
 
 `ResolutionResolver` cannot return trusted metadata or receipts. Raw `AcquiredEvidence` crosses `EvidenceAdmissionPolicy` before entering `HarnessInput`, and `TrustedResolutionVerifier` is a separate authority-bearing interface. The default admission policy rejects all acquired evidence. Per-run and per-request attempt/token/time budgets plus resolver-class allowlists are owned by the runtime. Every admitted-evidence or candidate-revision step re-runs the ordinary normalization, validation, verification, diagnostic, and decision path.
