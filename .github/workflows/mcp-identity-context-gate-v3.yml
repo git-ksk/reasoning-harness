@@ -179,7 +179,7 @@ jobs:
           set -euo pipefail
           test -n "$MISTRAL_API_KEY"
           cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark -- \
-            --trials 2 \
+            --trials 5 \
             --model ministral-8b-latest \
             | tee /tmp/mcp-identity-context-v3-layer-c.json
 
