@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Verify frozen materialized source identity
+      - name: Verify canonical materialized source identity
         run: |
           set -euo pipefail
           sha256sum --check fixtures/mcp-identity-context-v12-adoption.sha256

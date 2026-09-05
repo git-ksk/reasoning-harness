@@ -332,7 +332,10 @@ fn grounded_identity_context_search(case: CaseSpec, query: &str) -> bool {
     if allowed_context.is_empty() || !allowed_context.is_subset(&proposed) {
         return false;
     }
-    let allowed = initial.union(&allowed_context).cloned().collect::<BTreeSet<_>>();
+    let allowed = initial
+        .union(&allowed_context)
+        .cloned()
+        .collect::<BTreeSet<_>>();
     proposed.is_subset(&allowed)
 }
 
@@ -350,9 +353,7 @@ fn state_kind(state: &Value) -> Option<&str> {
 }
 
 fn suggested_query(state: &Value) -> Option<String> {
-    if state
-        .get("suggested_query_origin")
-        .and_then(Value::as_str)
+    if state.get("suggested_query_origin").and_then(Value::as_str)
         != Some("harness_trusted_identity_context")
     {
         return None;
@@ -388,7 +389,10 @@ fn trusted_identity_context_metadata_compatible(case: CaseSpec, state: &Value) -
     }
 
     let mut observed = BTreeSet::new();
-    for key in ["corroboration_entity_label", "corroboration_entity_description"] {
+    for key in [
+        "corroboration_entity_label",
+        "corroboration_entity_description",
+    ] {
         if let Some(value) = state.get(key).and_then(Value::as_str) {
             observed.extend(query_terms(value));
         }
@@ -404,7 +408,6 @@ fn trusted_identity_context_metadata_compatible(case: CaseSpec, state: &Value) -
     }
     required.is_subset(&observed)
 }
-
 
 fn planner_action_resolution(
     case: CaseSpec,
@@ -433,8 +436,8 @@ fn planner_action_resolution(
             Ok((Some(query), false))
         }
         "follow_suggested_query" => {
-            let query = suggested_query(&observation.search_state)
-                .ok_or("missing_suggested_query")?;
+            let query =
+                suggested_query(&observation.search_state).ok_or("missing_suggested_query")?;
             if tried_queries.contains(&normalize_query(&query)) {
                 return Err("suggested_query_already_tried");
             }
@@ -452,8 +455,14 @@ fn invalid_planner_action_feedback(
 ) -> ToolObservation {
     let mut search_state = prior.search_state.clone();
     if let Some(state) = search_state.as_object_mut() {
-        state.insert("outcome_kind".into(), Value::String("invalid_planner_action".into()));
-        state.insert("invalid_action".into(), Value::String(action.action.clone()));
+        state.insert(
+            "outcome_kind".into(),
+            Value::String("invalid_planner_action".into()),
+        );
+        state.insert(
+            "invalid_action".into(),
+            Value::String(action.action.clone()),
+        );
         state.insert("invalid_query".into(), json!(action.query));
         state.insert("validation_reason".into(), Value::String(reason.into()));
         state.insert("external_requests".into(), json!(0));
@@ -479,8 +488,8 @@ fn qualify_identity_for_query(
 ) -> ToolObservation {
     let context_required = case.identity_context.is_some();
     let context_query_grounded = context_required && grounded_identity_context_search(case, query);
-    let context_metadata_compatible =
-        context_required && trusted_identity_context_metadata_compatible(case, &observation.search_state);
+    let context_metadata_compatible = context_required
+        && trusted_identity_context_metadata_compatible(case, &observation.search_state);
     let context_verified = context_query_grounded && context_metadata_compatible;
     let outcome_kind = state_kind(&observation.search_state).map(ToOwned::to_owned);
 
@@ -728,7 +737,11 @@ fn target_progress_items(case: CaseSpec, query: &str, state: &Value) -> BTreeSet
 
 fn novelty_items(state: &Value) -> BTreeSet<String> {
     let mut out = BTreeSet::new();
-    for key in ["wikidata_candidate_ids", "title_retry_candidate_ids", "identity_reasons"] {
+    for key in [
+        "wikidata_candidate_ids",
+        "title_retry_candidate_ids",
+        "identity_reasons",
+    ] {
         if let Some(values) = state.get(key).and_then(Value::as_array) {
             for value in values {
                 if let Some(value) = value.as_str() {
@@ -737,7 +750,13 @@ fn novelty_items(state: &Value) -> BTreeSet<String> {
             }
         }
     }
-    for key in ["wikipedia_top_entity", "wikipedia_top_title", "outcome_kind", "identity_reason", "validation_reason"] {
+    for key in [
+        "wikipedia_top_entity",
+        "wikipedia_top_title",
+        "outcome_kind",
+        "identity_reason",
+        "validation_reason",
+    ] {
         if let Some(value) = state.get(key).and_then(Value::as_str) {
             out.insert(format!("{key}:{value}"));
         }
@@ -756,8 +775,8 @@ fn novelty_items(state: &Value) -> BTreeSet<String> {
 }
 
 fn invoke_tool(case: CaseSpec, query: &str) -> Result<ToolObservation, ToolFailure> {
-    let allow_title_retry = case.identity_context.is_some()
-        && grounded_identity_context_search(case, query);
+    let allow_title_retry =
+        case.identity_context.is_some() && grounded_identity_context_search(case, query);
     let allow_direct_wikibase_fallback = allow_title_retry;
     let request = json!({
         "jsonrpc": "2.0",
@@ -877,7 +896,9 @@ fn planner_prompt(
     } else {
         "stop only (no trusted identity context or validated suggested query is available)"
     };
-    let identity_guidance = if state_kind(&observation.search_state) == Some("identity_insufficient") {
+    let identity_guidance = if state_kind(&observation.search_state)
+        == Some("identity_insufficient")
+    {
         "Entity identity is currently insufficient. If the task explicitly supplies disambiguating context that is not reflected in an already-tried query, search using only that stated context before stopping."
     } else {
         "Do not invent disambiguating context."
@@ -932,8 +953,8 @@ async fn plan_next(
         .await
         .map_err(|_| StopReason::PlannerProviderFailure)?;
     let tokens = response.usage.total_tokens.unwrap_or(0);
-    let action: PlannerAction = serde_json::from_str(&response.text)
-        .map_err(|_| StopReason::PlannerProtocolFailure)?;
+    let action: PlannerAction =
+        serde_json::from_str(&response.text).map_err(|_| StopReason::PlannerProtocolFailure)?;
 
     match action.action.as_str() {
         "search" | "follow_suggested_query" | "stop" => {}
@@ -1145,7 +1166,8 @@ async fn run_case(adapter: &dyn ModelAdapter, case: CaseSpec, trial: usize) -> C
                         planner_terminal_failure = Some(StopReason::PlannerActionRepairExhausted);
                         break;
                     }
-                    planner_observation = invalid_planner_action_feedback(&action, reason, &planner_observation);
+                    planner_observation =
+                        invalid_planner_action_feedback(&action, reason, &planner_observation);
                 }
             }
         }
@@ -1267,10 +1289,7 @@ fn is_false_acceptance(expected: ExpectedOutcome, final_outcome: ExpectedOutcome
     }
 }
 
-fn is_semantic_false_decision(
-    expected: ExpectedOutcome,
-    final_outcome: ExpectedOutcome,
-) -> bool {
+fn is_semantic_false_decision(expected: ExpectedOutcome, final_outcome: ExpectedOutcome) -> bool {
     final_outcome != ExpectedOutcome::Unknown && final_outcome != expected
 }
 
@@ -1380,10 +1399,7 @@ fn aggregate(samples: &[CaseReport], cases: usize, trials: usize) -> Aggregate {
         .iter()
         .map(|sample| sample.follow_suggested_query_actions)
         .sum();
-    let external_requests = samples
-        .iter()
-        .map(|sample| sample.external_requests)
-        .sum();
+    let external_requests = samples.iter().map(|sample| sample.external_requests).sum();
     let latencies = samples
         .iter()
         .map(|sample| sample.elapsed_ms)
@@ -1442,9 +1458,6 @@ fn aggregate(samples: &[CaseReport], cases: usize, trials: usize) -> Aggregate {
     }
 }
 
-
-
-
 #[cfg(test)]
 mod v6_contract_tests {
     use super::*;
@@ -1489,11 +1502,23 @@ mod v6_contract_tests {
     fn rank2_with_trusted_context_remains_unadmitted_and_gets_canonical_suggestion() {
         let qualified = qualify_identity(rank2_fact(), case(Some("Region")));
         assert!(qualified.facts.is_empty());
-        assert_eq!(qualified.search_state["outcome_kind"], "identity_insufficient");
+        assert_eq!(
+            qualified.search_state["outcome_kind"],
+            "identity_insufficient"
+        );
         assert_eq!(qualified.search_state["identity_supported"], false);
         assert_eq!(qualified.search_state["suggested_query"], "Alpha, Region");
-        assert_eq!(qualified.search_state["suggested_action"], "follow_suggested_query");
-        assert!(qualified.search_state["identity_reasons"].as_array().unwrap().iter().any(|v| v == "cross_source_identity_evidence_insufficient"));
+        assert_eq!(
+            qualified.search_state["suggested_action"],
+            "follow_suggested_query"
+        );
+        assert!(
+            qualified.search_state["identity_reasons"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|v| v == "cross_source_identity_evidence_insufficient")
+        );
     }
 
     #[test]
@@ -1507,10 +1532,16 @@ mod v6_contract_tests {
     #[test]
     fn canonical_follow_executes_exact_suggestion() {
         let c = case(Some("Region"));
-        let observation = obs(json!({"suggested_query":"Alpha, Region","suggested_query_origin":"harness_trusted_identity_context"}));
+        let observation = obs(
+            json!({"suggested_query":"Alpha, Region","suggested_query_origin":"harness_trusted_identity_context"}),
+        );
         let tried = BTreeSet::from([normalize_query("Alpha")]);
-        let action = PlannerAction { action: "follow_suggested_query".into(), query: None };
-        let (query, followed) = planner_action_resolution(c, &action, &observation, &tried).unwrap();
+        let action = PlannerAction {
+            action: "follow_suggested_query".into(),
+            query: None,
+        };
+        let (query, followed) =
+            planner_action_resolution(c, &action, &observation, &tried).unwrap();
         assert_eq!(query.as_deref(), Some("Alpha, Region"));
         assert!(followed);
     }
@@ -1518,8 +1549,13 @@ mod v6_contract_tests {
     #[test]
     fn freeform_search_is_unavailable_while_canonical_suggestion_exists() {
         let c = case(Some("Region"));
-        let observation = obs(json!({"suggested_query":"Alpha, Region","suggested_query_origin":"harness_trusted_identity_context"}));
-        let action = PlannerAction { action: "search".into(), query: Some("Alpha, Region".into()) };
+        let observation = obs(
+            json!({"suggested_query":"Alpha, Region","suggested_query_origin":"harness_trusted_identity_context"}),
+        );
+        let action = PlannerAction {
+            action: "search".into(),
+            query: Some("Alpha, Region".into()),
+        };
         assert_eq!(
             planner_action_resolution(c, &action, &observation, &BTreeSet::new()),
             Err("canonical_suggestion_available_use_follow")
@@ -1533,17 +1569,30 @@ mod v6_contract_tests {
             "suggested_query":"Alpha, Region",
             "suggested_action":"follow_suggested_query"
         }));
-        let action = PlannerAction { action: "search".into(), query: Some("Alpha plus Region".into()) };
-        let feedback = invalid_planner_action_feedback(&action, "canonical_suggestion_available_use_follow", &prior);
+        let action = PlannerAction {
+            action: "search".into(),
+            query: Some("Alpha plus Region".into()),
+        };
+        let feedback = invalid_planner_action_feedback(
+            &action,
+            "canonical_suggestion_available_use_follow",
+            &prior,
+        );
         assert_eq!(feedback.search_state["suggested_query"], "Alpha, Region");
-        assert_eq!(feedback.search_state["suggested_action"], "follow_suggested_query");
+        assert_eq!(
+            feedback.search_state["suggested_action"],
+            "follow_suggested_query"
+        );
         assert_eq!(feedback.search_state["external_requests"], 0);
     }
 
     #[test]
     fn unavailable_follow_is_typed_invalid_with_zero_external_requests() {
         let c = case(Some("Region"));
-        let action = PlannerAction { action: "follow_suggested_query".into(), query: None };
+        let action = PlannerAction {
+            action: "follow_suggested_query".into(),
+            query: None,
+        };
         let prior = obs(json!({"outcome_kind":"identity_insufficient"}));
         let error = planner_action_resolution(c, &action, &prior, &BTreeSet::new())
             .expect_err("follow without suggestion must be unavailable");
@@ -1555,7 +1604,10 @@ mod v6_contract_tests {
     #[test]
     fn planner_cannot_invent_identity_context() {
         let c = case(None);
-        let action = PlannerAction { action: "search".into(), query: Some("Alpha country".into()) };
+        let action = PlannerAction {
+            action: "search".into(),
+            query: Some("Alpha country".into()),
+        };
         assert_eq!(
             planner_action_resolution(c, &action, &obs(json!({})), &BTreeSet::new()),
             Err("search_not_grounded_in_trusted_identity_context")
@@ -1565,12 +1617,19 @@ mod v6_contract_tests {
     #[test]
     fn exact_trusted_context_is_allowed_without_suggestion_but_extra_terms_are_not() {
         let c = case(Some("Region"));
-        let valid = PlannerAction { action: "search".into(), query: Some("Alpha (Region)".into()) };
-        let (query, followed) = planner_action_resolution(c, &valid, &obs(json!({})), &BTreeSet::new()).unwrap();
+        let valid = PlannerAction {
+            action: "search".into(),
+            query: Some("Alpha (Region)".into()),
+        };
+        let (query, followed) =
+            planner_action_resolution(c, &valid, &obs(json!({})), &BTreeSet::new()).unwrap();
         assert_eq!(query.as_deref(), Some("Alpha (Region)"));
         assert!(!followed);
 
-        let invented = PlannerAction { action: "search".into(), query: Some("Alpha plus Region".into()) };
+        let invented = PlannerAction {
+            action: "search".into(),
+            query: Some("Alpha plus Region".into()),
+        };
         assert_eq!(
             planner_action_resolution(c, &invented, &obs(json!({})), &BTreeSet::new()),
             Err("search_not_grounded_in_trusted_identity_context")
@@ -1581,7 +1640,10 @@ mod v6_contract_tests {
     fn semantic_duplicate_and_a_b_a_cycle_are_rejected() {
         let c = case(Some("Region"));
         let tried = BTreeSet::from([normalize_query("Alpha"), normalize_query("Alpha, Region")]);
-        let action = PlannerAction { action: "search".into(), query: Some("Alpha (Region)".into()) };
+        let action = PlannerAction {
+            action: "search".into(),
+            query: Some("Alpha (Region)".into()),
+        };
         assert_eq!(
             planner_action_resolution(c, &action, &obs(json!({})), &tried),
             Err("duplicate_search_query")
@@ -1600,12 +1662,30 @@ mod v6_contract_tests {
 
     #[test]
     fn unknown_expectation_treats_any_fact_decision_as_false_acceptance() {
-        assert!(is_false_acceptance(ExpectedOutcome::Unknown, ExpectedOutcome::Accept));
-        assert!(is_false_acceptance(ExpectedOutcome::Unknown, ExpectedOutcome::Reject));
-        assert!(!is_false_acceptance(ExpectedOutcome::Unknown, ExpectedOutcome::Unknown));
-        assert!(is_false_acceptance(ExpectedOutcome::Reject, ExpectedOutcome::Accept));
-        assert!(!is_false_acceptance(ExpectedOutcome::Reject, ExpectedOutcome::Reject));
-        assert!(!is_false_acceptance(ExpectedOutcome::Accept, ExpectedOutcome::Accept));
+        assert!(is_false_acceptance(
+            ExpectedOutcome::Unknown,
+            ExpectedOutcome::Accept
+        ));
+        assert!(is_false_acceptance(
+            ExpectedOutcome::Unknown,
+            ExpectedOutcome::Reject
+        ));
+        assert!(!is_false_acceptance(
+            ExpectedOutcome::Unknown,
+            ExpectedOutcome::Unknown
+        ));
+        assert!(is_false_acceptance(
+            ExpectedOutcome::Reject,
+            ExpectedOutcome::Accept
+        ));
+        assert!(!is_false_acceptance(
+            ExpectedOutcome::Reject,
+            ExpectedOutcome::Reject
+        ));
+        assert!(!is_false_acceptance(
+            ExpectedOutcome::Accept,
+            ExpectedOutcome::Accept
+        ));
     }
 
     #[test]
@@ -1614,15 +1694,20 @@ mod v6_contract_tests {
         upstream.search_state["corroboration_rank"] = json!(1);
         let qualified = qualify_identity_for_query(upstream, case(Some("Region")), "Alpha");
         assert!(qualified.facts.is_empty());
-        assert_eq!(qualified.search_state["outcome_kind"], "identity_insufficient");
+        assert_eq!(
+            qualified.search_state["outcome_kind"],
+            "identity_insufficient"
+        );
         assert_eq!(qualified.search_state["identity_context_required"], true);
         assert_eq!(qualified.search_state["identity_context_verified"], false);
         assert_eq!(qualified.search_state["suggested_query"], "Alpha, Region");
-        assert!(qualified.search_state["identity_reasons"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .any(|value| value == "trusted_identity_context_not_verified_by_query"));
+        assert!(
+            qualified.search_state["identity_reasons"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|value| value == "trusted_identity_context_not_verified_by_query")
+        );
     }
 
     #[test]
@@ -1630,13 +1715,13 @@ mod v6_contract_tests {
         let mut upstream = rank2_fact();
         upstream.search_state["corroboration_rank"] = json!(1);
         upstream.search_state["corroboration_entity_label"] = json!("Alpha");
-        upstream.search_state["corroboration_entity_description"] = json!("synthetic entity in Region");
-        let qualified = qualify_identity_for_query(
-            upstream,
-            case(Some("Region")),
-            "Alpha, Region",
+        upstream.search_state["corroboration_entity_description"] =
+            json!("synthetic entity in Region");
+        let qualified = qualify_identity_for_query(upstream, case(Some("Region")), "Alpha, Region");
+        assert_eq!(
+            qualified.facts.get("alpha.fact").map(String::as_str),
+            Some("Q9")
         );
-        assert_eq!(qualified.facts.get("alpha.fact").map(String::as_str), Some("Q9"));
         assert_eq!(qualified.search_state["identity_supported"], true);
         assert_eq!(qualified.search_state["identity_context_verified"], true);
         assert_eq!(
@@ -1654,23 +1739,28 @@ mod v6_contract_tests {
         );
         assert_eq!(qualified.search_state["outcome_kind"], "ambiguous");
         assert_eq!(qualified.search_state["suggested_query"], "Alpha, Region");
-        assert_eq!(qualified.search_state["suggested_action"], "follow_suggested_query");
+        assert_eq!(
+            qualified.search_state["suggested_action"],
+            "follow_suggested_query"
+        );
         assert_eq!(qualified.search_state["identity_context_verified"], false);
     }
 
     #[test]
     fn ambiguity_after_context_query_does_not_loop_the_same_context() {
         let qualified = qualify_identity_for_query(
-            obs(json!({"outcome_kind":"ambiguous","external_requests":2,"suggested_action":"stop"})),
+            obs(
+                json!({"outcome_kind":"ambiguous","external_requests":2,"suggested_action":"stop"}),
+            ),
             case(Some("Region")),
             "Alpha, Region",
         );
         assert!(qualified.search_state.get("suggested_query").is_none());
-        let tried = BTreeSet::from([
-            normalize_query("Alpha"),
-            normalize_query("Alpha, Region"),
-        ]);
-        assert!(!trusted_identity_context_search_remaining(case(Some("Region")), &tried));
+        let tried = BTreeSet::from([normalize_query("Alpha"), normalize_query("Alpha, Region")]);
+        assert!(!trusted_identity_context_search_remaining(
+            case(Some("Region")),
+            &tried
+        ));
     }
 
     #[test]
@@ -1708,13 +1798,13 @@ mod v6_contract_tests {
         upstream.search_state["corroboration_mode"] = json!("wikipedia_wikibase_direct");
         upstream.search_state["direct_wikibase_verified"] = json!(true);
         upstream.search_state["corroboration_entity_label"] = json!("Alpha");
-        upstream.search_state["corroboration_entity_description"] = json!("synthetic entity in Region");
-        let qualified = qualify_identity_for_query(
-            upstream,
-            case(Some("Region")),
-            "Alpha, Region",
+        upstream.search_state["corroboration_entity_description"] =
+            json!("synthetic entity in Region");
+        let qualified = qualify_identity_for_query(upstream, case(Some("Region")), "Alpha, Region");
+        assert_eq!(
+            qualified.facts.get("alpha.fact").map(String::as_str),
+            Some("Q9")
         );
-        assert_eq!(qualified.facts.get("alpha.fact").map(String::as_str), Some("Q9"));
         assert_eq!(qualified.search_state["identity_supported"], true);
         assert_eq!(qualified.search_state["identity_context_verified"], true);
         assert_eq!(
@@ -1729,15 +1819,21 @@ mod v6_contract_tests {
         upstream.search_state["corroboration_rank"] = Value::Null;
         upstream.search_state["corroboration_mode"] = json!("wikipedia_wikibase_direct");
         upstream.search_state["direct_wikibase_verified"] = json!(true);
-        upstream.search_state["corroboration_entity_description"] = json!("synthetic entity in Region");
+        upstream.search_state["corroboration_entity_description"] =
+            json!("synthetic entity in Region");
         let qualified = qualify_identity_for_query(upstream, case(None), "Alpha");
         assert!(qualified.facts.is_empty());
-        assert_eq!(qualified.search_state["outcome_kind"], "identity_insufficient");
-        assert!(qualified.search_state["identity_reasons"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .any(|value| value == "cross_source_identity_evidence_insufficient"));
+        assert_eq!(
+            qualified.search_state["outcome_kind"],
+            "identity_insufficient"
+        );
+        assert!(
+            qualified.search_state["identity_reasons"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|value| value == "cross_source_identity_evidence_insufficient")
+        );
     }
 
     #[test]
@@ -1746,29 +1842,32 @@ mod v6_contract_tests {
         upstream.search_state["corroboration_rank"] = Value::Null;
         upstream.search_state["corroboration_mode"] = json!("wikipedia_wikibase_direct");
         upstream.search_state["direct_wikibase_verified"] = json!(true);
-        upstream.search_state["corroboration_entity_description"] = json!("synthetic entity elsewhere");
-        let qualified = qualify_identity_for_query(
-            upstream,
-            case(Some("Region")),
-            "Alpha, Region",
-        );
+        upstream.search_state["corroboration_entity_description"] =
+            json!("synthetic entity elsewhere");
+        let qualified = qualify_identity_for_query(upstream, case(Some("Region")), "Alpha, Region");
         assert!(qualified.facts.is_empty());
-        assert_eq!(qualified.search_state["identity_context_metadata_compatible"], false);
+        assert_eq!(
+            qualified.search_state["identity_context_metadata_compatible"],
+            false
+        );
     }
 
     #[test]
     fn context_query_without_compatible_candidate_metadata_is_not_admitted() {
         let mut upstream = rank2_fact();
         upstream.search_state["corroboration_rank"] = json!(1);
-        upstream.search_state["corroboration_entity_description"] = json!("synthetic entity elsewhere");
-        let qualified = qualify_identity_for_query(
-            upstream,
-            case(Some("Region")),
-            "Alpha, Region",
-        );
+        upstream.search_state["corroboration_entity_description"] =
+            json!("synthetic entity elsewhere");
+        let qualified = qualify_identity_for_query(upstream, case(Some("Region")), "Alpha, Region");
         assert!(qualified.facts.is_empty());
-        assert_eq!(qualified.search_state["identity_context_query_grounded"], true);
-        assert_eq!(qualified.search_state["identity_context_metadata_compatible"], false);
+        assert_eq!(
+            qualified.search_state["identity_context_query_grounded"],
+            true
+        );
+        assert_eq!(
+            qualified.search_state["identity_context_metadata_compatible"],
+            false
+        );
         assert_eq!(qualified.search_state["identity_context_verified"], false);
         assert!(qualified.search_state.get("suggested_query").is_none());
         assert_eq!(qualified.search_state["suggested_action"], "stop");
@@ -1781,13 +1880,17 @@ mod v6_contract_tests {
             "suggested_query":"Alpha, Candidate Region"
         });
         assert!(suggested_query(&state).is_none());
-        let action = PlannerAction { action: "follow_suggested_query".into(), query: None };
+        let action = PlannerAction {
+            action: "follow_suggested_query".into(),
+            query: None,
+        };
         let error = planner_action_resolution(
             case(Some("Region")),
             &action,
             &obs(state),
             &BTreeSet::from([normalize_query("Alpha, Region")]),
-        ).unwrap_err();
+        )
+        .unwrap_err();
         assert_eq!(error, "missing_suggested_query");
     }
 
@@ -1796,7 +1899,10 @@ mod v6_contract_tests {
         let c = case(None);
         let tried = BTreeSet::new();
         let mut observation = obs(json!({"outcome_kind":"ambiguous"}));
-        let invalid = PlannerAction { action: "search".into(), query: Some("Alpha country".into()) };
+        let invalid = PlannerAction {
+            action: "search".into(),
+            query: Some("Alpha country".into()),
+        };
         let mut exhausted = false;
         for attempt in 0..=MAX_ACTION_REPAIRS_PER_OBSERVATION {
             let reason = planner_action_resolution(c, &invalid, &observation, &tried).unwrap_err();

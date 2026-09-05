@@ -27,7 +27,8 @@ The Harness owns these rules:
 Issue #197 materializes v12 once into `crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs`; the normal adoption test path does not reapply the research transformer chain. The frozen materialized identities are:
 
 - candidate semantics: `d1db067e6efe6033656b8e7c3315a9fe322c015d`
-- materialized benchmark SHA-256: `d36bc7e0df7e423c96a8a7a3b7aa7846471d985e6dfffca9928b398e5557ff9f`
+- research materialization SHA-256 (pre-rustfmt): `d36bc7e0df7e423c96a8a7a3b7aa7846471d985e6dfffca9928b398e5557ff9f`
+- canonical adoption benchmark SHA-256 (post-rustfmt, no semantic change): `bef5fe8722d3b29123a0099fbc6d6d3f896d3cd94ecb30bfc8f2f5a1fe1f5d6f`
 - adapter SHA-256: `c8fb8f76a4e4abcd5b89161d98508e0146f9d329e8831073cd0f69530e8e7098`
 
 `fixtures/mcp-identity-context-v12-adoption.sha256` and the adoption CI verify these identities directly. Research transformers remain only for provenance and reproducibility; the adopted source is tested directly.
