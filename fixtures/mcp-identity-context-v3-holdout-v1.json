@@ -1,0 +1,108 @@
+{
+  "schema_version": "reason-mcp-identity-context-v3-holdout-v1",
+  "study": "issue-196-trusted-context-constrained-identity",
+  "candidate_semantics_sha": "d1db067e6efe6033656b8e7c3315a9fe322c015d",
+  "metric_evaluator_sha": "f654dc827142dd99d20269573d4c2c97450593b5",
+  "model": "ministral-8b-latest",
+  "trials": 2,
+  "network_observations_before_assignment": 0,
+  "post_observation_retuning_allowed": false,
+  "cases": [
+    {
+      "id": "tallinn_country_direct",
+      "class": "unique_bare_accept",
+      "task": "Determine the country of the city Tallinn using external evidence.",
+      "initial_query": "Tallinn",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "tallinn.country",
+      "target_value": "Q191",
+      "expected": "accept"
+    },
+    {
+      "id": "ljubljana_country_direct",
+      "class": "unique_bare_accept",
+      "task": "Determine the country of the city Ljubljana using external evidence.",
+      "initial_query": "Ljubljana",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "ljubljana.country",
+      "target_value": "Q215",
+      "expected": "accept"
+    },
+    {
+      "id": "dublin_country_context_agreement",
+      "class": "trusted_context_agrees",
+      "task": "Determine the country of the city Dublin in Ireland. Use the stated identity context as a required identity constraint.",
+      "initial_query": "Dublin",
+      "identity_context": "Ireland",
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "dublin.country",
+      "target_value": "Q27",
+      "expected": "accept"
+    },
+    {
+      "id": "melbourne_country_context_conflict",
+      "class": "trusted_context_conflicts_bare_candidate",
+      "task": "Determine the country of Melbourne in Derbyshire, England. Use the stated identity context as a required identity constraint.",
+      "initial_query": "Melbourne",
+      "identity_context": "Derbyshire England",
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "melbourne.country",
+      "target_value": "Q145",
+      "expected": "accept"
+    },
+    {
+      "id": "reading_country_ambiguous_context",
+      "class": "ambiguous_with_trusted_context",
+      "task": "Determine the country of Reading in England. If the bare surface is ambiguous, use only the stated trusted identity context to resolve it.",
+      "initial_query": "Reading",
+      "identity_context": "England",
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "reading.country",
+      "target_value": "Q145",
+      "expected": "accept"
+    },
+    {
+      "id": "camden_ambiguity_abstention",
+      "class": "ambiguity_without_context",
+      "task": "Without adding unstated context, determine the country for the place referred to only as 'Camden'. If the referent is ambiguous, abstain.",
+      "initial_query": "Camden",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "camden.country",
+      "target_value": "Q145",
+      "expected": "unknown"
+    },
+    {
+      "id": "rochester_ambiguity_abstention",
+      "class": "ambiguity_without_context",
+      "task": "Without adding unstated context, determine the country for the place referred to only as 'Rochester'. If the referent is ambiguous, abstain.",
+      "initial_query": "Rochester",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "rochester.country",
+      "target_value": "Q30",
+      "expected": "unknown"
+    },
+    {
+      "id": "oslo_wrong_country_refutation",
+      "class": "wrong_claim_reject",
+      "task": "Check the claim that Oslo is in France. Acquire external evidence before deciding whether the claim is supported.",
+      "initial_query": "Oslo",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "oslo.country",
+      "target_value": "Q142",
+      "expected": "reject"
+    }
+  ]
+}

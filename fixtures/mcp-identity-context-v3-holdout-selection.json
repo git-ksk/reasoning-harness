@@ -1,0 +1,14 @@
+{
+  "candidate_semantics_sha": "d1db067e6efe6033656b8e7c3315a9fe322c015d",
+  "cases": 8,
+  "forbidden_surface_digest_count": 30,
+  "forbidden_surface_digest_manifest_sha256": "498cd8463be5a268e08af0891f44f159ee4439683f3584ef07bb2ce28ef81d6d",
+  "historical_holdouts_executed_or_replayed": false,
+  "holdout_fixture_sha256": "5df78cdbcf03701af8fa5c96868b2cdb3f5ee7508aa0f0b21c9fddc84b932374",
+  "issue": 196,
+  "metric_evaluator_sha": "f654dc827142dd99d20269573d4c2c97450593b5",
+  "network_observations_before_assignment": 0,
+  "normalized_surface_overlap_count": 0,
+  "post_observation_retuning_allowed": false,
+  "schema_version": "reason-mcp-identity-context-v3-holdout-selection-v1"
+}
