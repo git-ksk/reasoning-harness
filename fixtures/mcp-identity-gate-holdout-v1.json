@@ -1,0 +1,106 @@
+{
+  "schema_version": "reason-mcp-identity-gate-holdout-v1",
+  "study": "issue-195-entity-identity",
+  "frozen_candidate_sha": "64d2dcd9343297bb039e98b5571d5802f3807cf0",
+  "model": "ministral-8b-latest",
+  "trials": 2,
+  "post_observation_retuning_allowed": false,
+  "cases": [
+    {
+      "id": "salzburg_country_direct",
+      "class": "direct_accept",
+      "task": "Determine the country of the city Salzburg, Austria using external evidence.",
+      "initial_query": "Salzburg",
+      "identity_context": "Austria",
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "salzburg.country",
+      "target_value": "Q40",
+      "expected": "accept"
+    },
+    {
+      "id": "seville_country_direct",
+      "class": "direct_accept",
+      "task": "Determine the country of the city Seville, Spain using external evidence.",
+      "initial_query": "Seville",
+      "identity_context": "Spain",
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "seville.country",
+      "target_value": "Q29",
+      "expected": "accept"
+    },
+    {
+      "id": "perth_country_context_recovery",
+      "class": "context_accept",
+      "task": "Determine the country of the city Perth in Scotland. Use the stated context if more entity evidence is required.",
+      "initial_query": "Perth",
+      "identity_context": "Scotland",
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "perth.country",
+      "target_value": "Q145",
+      "expected": "accept"
+    },
+    {
+      "id": "toledo_country_context_recovery",
+      "class": "context_accept",
+      "task": "Determine the country of the city Toledo in Spain. Use the stated context if more entity evidence is required.",
+      "initial_query": "Toledo",
+      "identity_context": "Spain",
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "toledo.country",
+      "target_value": "Q29",
+      "expected": "accept"
+    },
+    {
+      "id": "springfield_ambiguity_abstention",
+      "class": "ambiguity_unknown",
+      "task": "Without adding unstated context, determine the country for the place referred to only as 'Springfield'. If the referent is ambiguous, abstain.",
+      "initial_query": "Springfield",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "springfield.country",
+      "target_value": "Q30",
+      "expected": "unknown"
+    },
+    {
+      "id": "kingston_ambiguity_abstention",
+      "class": "ambiguity_unknown",
+      "task": "Without adding unstated context, determine the country for the place referred to only as 'Kingston'. If the referent is ambiguous, abstain.",
+      "initial_query": "Kingston",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "kingston.country",
+      "target_value": "Q766",
+      "expected": "unknown"
+    },
+    {
+      "id": "naples_wrong_country_refutation",
+      "class": "wrong_claim_reject",
+      "task": "Check the claim that Naples is in France. Acquire external evidence before deciding whether the claim is supported.",
+      "initial_query": "Naples",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "naples.country",
+      "target_value": "Q142",
+      "expected": "reject"
+    },
+    {
+      "id": "bremen_wrong_country_refutation",
+      "class": "wrong_claim_reject",
+      "task": "Check the claim that Bremen is in France. Acquire external evidence before deciding whether the claim is supported.",
+      "initial_query": "Bremen",
+      "identity_context": null,
+      "property_id": "P17",
+      "value_kind": "entity",
+      "fact_key": "bremen.country",
+      "target_value": "Q142",
+      "expected": "reject"
+    }
+  ]
+}

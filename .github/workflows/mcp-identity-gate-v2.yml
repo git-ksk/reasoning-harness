@@ -14,6 +14,11 @@ on:
       - scripts/apply_identity_context_followup_v6.py
       - scripts/apply_identity_context_query_shape_v7.py
       - scripts/apply_identity_eval_semantics_v8.py
+      - scripts/apply_identity_holdout_v1_v9.py
+      - scripts/validate_identity_holdout_v1.py
+      - fixtures/mcp-identity-gate-holdout-v1.json
+      - fixtures/mcp-identity-gate-holdout-v1-selection.json
+      - fixtures/mcp-identity-gate-holdout-v1.sha256
       - scripts/knowledge_search_fused_mcp.py
       - scripts/test_identity_tool_request_accounting.py
       - crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
@@ -44,6 +49,8 @@ jobs:
             scripts/apply_identity_context_followup_v6.py \
             scripts/apply_identity_context_query_shape_v7.py \
             scripts/apply_identity_eval_semantics_v8.py \
+            scripts/apply_identity_holdout_v1_v9.py \
+            scripts/validate_identity_holdout_v1.py \
             scripts/test_identity_tool_request_accounting.py
 
       - name: Run identity qualification tests
@@ -53,7 +60,7 @@ jobs:
             scripts/test_identity_gate_v2.py \
             scripts/test_identity_tool_request_accounting.py
 
-      - name: Verify exact v8 evaluation-safety transformation
+      - name: Verify frozen holdout payload and v9 evaluation surface
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
@@ -62,6 +69,11 @@ jobs:
           python3 scripts/apply_identity_context_followup_v6.py
           python3 scripts/apply_identity_context_query_shape_v7.py
           python3 scripts/apply_identity_eval_semantics_v8.py
+          sha256sum --check fixtures/mcp-identity-gate-holdout-v1.sha256
+          python3 scripts/validate_identity_holdout_v1.py \
+            fixtures/mcp-identity-gate-holdout-v1.json \
+            --benchmark-source crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
+          python3 scripts/apply_identity_holdout_v1_v9.py
           git diff --check
           git diff -- crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
 
@@ -107,7 +119,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - name: Materialize v8 evaluation-safe candidate
+      - name: Materialize v9 evaluation surface over frozen v8 candidate
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
@@ -116,9 +128,10 @@ jobs:
           python3 scripts/apply_identity_context_followup_v6.py
           python3 scripts/apply_identity_context_query_shape_v7.py
           python3 scripts/apply_identity_eval_semantics_v8.py
+          python3 scripts/apply_identity_holdout_v1_v9.py
           git diff --check
 
-      - name: Run deterministic v8 contracts
+      - name: Run deterministic v9 contracts
         run: |
           set -euo pipefail
           cargo test --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
@@ -133,6 +146,7 @@ jobs:
           set -euo pipefail
           test -n "$MISTRAL_API_KEY"
           cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark -- \
+            --suite fresh-dev \
             --trials 5 \
             --model ministral-8b-latest \
             | tee /tmp/mcp-identity-gate-v2-layer-c.json

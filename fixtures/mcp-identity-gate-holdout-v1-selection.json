@@ -1,0 +1,19 @@
+{
+  "schema_version": "reason-mcp-identity-holdout-selection-v1",
+  "candidate_freeze_sha": "64d2dcd9343297bb039e98b5571d5802f3807cf0",
+  "prior_frozen_holdout_evaluator_sha": "f179a2e3156a9d99248ccab5e12ba7e77010e169",
+  "fixture_sha256": "90e958db9f79993b6f8edb58ab6134dc78276af1433abbc9f6fe95b036701e09",
+  "cases": 8,
+  "class_counts": {
+    "direct_accept": 2,
+    "context_accept": 2,
+    "ambiguity_unknown": 2,
+    "wrong_claim_reject": 2
+  },
+  "dev_surface_overlap_count": 0,
+  "prior_frozen_holdout_surface_overlap_count": 0,
+  "network_observations_during_selection": 0,
+  "model": "ministral-8b-latest",
+  "trials": 2,
+  "post_observation_retuning_allowed": false
+}

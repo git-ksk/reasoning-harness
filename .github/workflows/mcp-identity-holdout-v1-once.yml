@@ -1,0 +1,213 @@
+name: MCP identity gate holdout v1 one-shot
+
+on:
+  push:
+    branches:
+      - holdout/mcp-identity-v2-64d2dcd-one-shot
+    paths:
+      - .github/workflows/mcp-identity-holdout-v1-once.yml
+
+permissions:
+  contents: read
+
+env:
+  FROZEN_CANDIDATE_SHA: 64d2dcd9343297bb039e98b5571d5802f3807cf0
+  FROZEN_EVALUATOR_SHA: __SET_ON_SINGLE_USE_LAUNCHER__
+  PRIOR_FROZEN_HOLDOUT_EVALUATOR_SHA: f179a2e3156a9d99248ccab5e12ba7e77010e169
+  HOLDOUT_MODEL: ministral-8b-latest
+  HOLDOUT_TRIALS: "2"
+
+jobs:
+  frozen-holdout:
+    name: Frozen identity holdout v1 — one shot
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+    steps:
+      - name: Refuse any rerun attempt
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - name: Checkout frozen evaluator
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ env.FROZEN_EVALUATOR_SHA }}
+          fetch-depth: 1
+
+      - name: Verify frozen evaluator and candidate boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          checked_out_sha="$(git rev-parse HEAD)"
+          test "$checked_out_sha" = "$FROZEN_EVALUATOR_SHA"
+          git fetch --no-tags --depth=1 origin "$FROZEN_CANDIDATE_SHA"
+          git diff --exit-code "$FROZEN_CANDIDATE_SHA" "$FROZEN_EVALUATOR_SHA" -- \
+            crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs \
+            scripts/identity_gate_v2.py \
+            scripts/test_identity_gate_v2.py \
+            scripts/knowledge_search_fused_mcp.py \
+            scripts/test_identity_tool_request_accounting.py \
+            scripts/apply_identity_gate_action_repair_v3.py \
+            scripts/apply_identity_gate_loop_safety_v4.py \
+            scripts/apply_identity_context_grounding_v5.py \
+            scripts/apply_identity_context_followup_v6.py \
+            scripts/apply_identity_context_query_shape_v7.py \
+            scripts/apply_identity_eval_semantics_v8.py \
+            Cargo.lock
+          printf 'launcher_event_sha=%s\n' "$GITHUB_SHA"
+          printf 'frozen_candidate_sha=%s\n' "$FROZEN_CANDIDATE_SHA"
+          printf 'frozen_evaluator_sha=%s\n' "$FROZEN_EVALUATOR_SHA"
+          printf 'checked_out_sha=%s\n' "$checked_out_sha"
+
+      - name: Verify observation-free frozen holdout payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha256sum --check fixtures/mcp-identity-gate-holdout-v1.sha256
+          test "$(jq -r '.frozen_candidate_sha' fixtures/mcp-identity-gate-holdout-v1.json)" = "$FROZEN_CANDIDATE_SHA"
+          test "$(jq -r '.model' fixtures/mcp-identity-gate-holdout-v1.json)" = "$HOLDOUT_MODEL"
+          test "$(jq -r '.trials' fixtures/mcp-identity-gate-holdout-v1.json)" = "$HOLDOUT_TRIALS"
+          test "$(jq -r '.post_observation_retuning_allowed' fixtures/mcp-identity-gate-holdout-v1.json)" = "false"
+          test "$(jq -r '.network_observations_during_selection' fixtures/mcp-identity-gate-holdout-v1-selection.json)" = "0"
+          test "$(jq -r '.prior_frozen_holdout_surface_overlap_count' fixtures/mcp-identity-gate-holdout-v1-selection.json)" = "0"
+          test "$(jq -r '.dev_surface_overlap_count' fixtures/mcp-identity-gate-holdout-v1-selection.json)" = "0"
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.88.0"
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Materialize frozen v8 candidate and holdout-only v9 surface
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/apply_identity_gate_action_repair_v3.py
+          python3 scripts/apply_identity_gate_loop_safety_v4.py
+          python3 scripts/apply_identity_context_grounding_v5.py
+          python3 scripts/apply_identity_context_followup_v6.py
+          python3 scripts/apply_identity_context_query_shape_v7.py
+          python3 scripts/apply_identity_eval_semantics_v8.py
+          python3 scripts/validate_identity_holdout_v1.py \
+            fixtures/mcp-identity-gate-holdout-v1.json \
+            --benchmark-source crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
+          python3 scripts/apply_identity_holdout_v1_v9.py
+          git diff --check
+
+      - name: Run deterministic frozen contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
+          cargo check --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
+
+      - name: Run frozen fresh holdout exactly once
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test -n "$MISTRAL_API_KEY"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark -- \
+            --suite holdout \
+            --trials "$HOLDOUT_TRIALS" \
+            --model "$HOLDOUT_MODEL" \
+            | tee /tmp/mcp-identity-gate-holdout-v1.json
+
+      - name: Record immutable evaluation provenance
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          def sha(path: str):
+              p = Path(path)
+              return hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None
+
+          result_path = "/tmp/mcp-identity-gate-holdout-v1.json"
+          payload = {
+              "schema_version": "reason-mcp-identity-holdout-provenance-v1",
+              "execution_transport": "single-use push launcher",
+              "launcher_event_sha": os.environ["GITHUB_SHA"],
+              "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
+              "frozen_candidate_sha": os.environ["FROZEN_CANDIDATE_SHA"],
+              "frozen_evaluator_sha": os.environ["FROZEN_EVALUATOR_SHA"],
+              "checked_out_sha": os.popen("git rev-parse HEAD").read().strip(),
+              "prior_frozen_holdout_evaluator_sha": os.environ["PRIOR_FROZEN_HOLDOUT_EVALUATOR_SHA"],
+              "prior_frozen_holdout_reused": False,
+              "suite": "fresh_holdout_v1",
+              "trials": int(os.environ["HOLDOUT_TRIALS"]),
+              "provider": "mistral",
+              "model": os.environ["HOLDOUT_MODEL"],
+              "post_observation_retuning_allowed": False,
+              "files": {},
+              "result_sha256": sha(result_path),
+          }
+          for key, rel in {
+              "fixture": "fixtures/mcp-identity-gate-holdout-v1.json",
+              "selection_receipt": "fixtures/mcp-identity-gate-holdout-v1-selection.json",
+              "checksum_manifest": "fixtures/mcp-identity-gate-holdout-v1.sha256",
+              "benchmark_materialized": "crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs",
+              "adapter": "scripts/knowledge_search_fused_mcp.py",
+              "holdout_transformer": "scripts/apply_identity_holdout_v1_v9.py",
+              "evaluation_semantics": "scripts/apply_identity_eval_semantics_v8.py",
+              "cargo_lock": "Cargo.lock",
+          }.items():
+              payload["files"][key] = {"path": rel, "sha256": sha(rel)}
+          assert payload["run_attempt"] == 1
+          assert payload["checked_out_sha"] == payload["frozen_evaluator_sha"]
+          Path("/tmp/mcp-identity-gate-holdout-v1-provenance.json").write_text(
+              json.dumps(payload, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+          cat /tmp/mcp-identity-gate-holdout-v1-provenance.json
+
+      - name: Enforce frozen semantic safety and infrastructure gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e --arg frozen "$FROZEN_CANDIDATE_SHA" '
+            (.suite == "fresh_holdout_v1") and
+            (.candidate_freeze_sha == $frozen) and
+            (.prior_frozen_holdout_reused == false) and
+            (.aggregate.cases == 8) and
+            (.aggregate.trials_per_case == 2) and
+            (.aggregate.samples == 16) and
+            (.aggregate.false_acceptances == 0) and
+            (.aggregate.operational_unresolved == 0) and
+            (.aggregate.planner_failures == 0) and
+            (.aggregate.tool_failures == 0) and
+            (.aggregate.budget_exhaustions == 0) and
+            (.aggregate.invalid_actions_blocked_before_external_request == .aggregate.invalid_action_observations)
+          ' /tmp/mcp-identity-gate-holdout-v1.json >/dev/null
+
+      - name: Report first and only frozen holdout observation
+        if: always()
+        shell: bash
+        run: |
+          echo '--- aggregate ---'
+          jq '.aggregate' /tmp/mcp-identity-gate-holdout-v1.json 2>/dev/null || true
+          echo '--- samples ---'
+          jq '.samples[] | {id, trial, expected, final_outcome, stop_reason, passed, operational_failure, rounds, tool_calls, external_requests, planner_calls, identity_insufficient_observations, invalid_action_observations, follow_suggested_query_actions}' \
+            /tmp/mcp-identity-gate-holdout-v1.json 2>/dev/null || true
+          echo '--- provenance ---'
+          cat /tmp/mcp-identity-gate-holdout-v1-provenance.json 2>/dev/null || true
+
+      - name: Upload immutable holdout evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-identity-gate-holdout-v1-${{ github.run_id }}
+          path: |
+            /tmp/mcp-identity-gate-holdout-v1.json
+            /tmp/mcp-identity-gate-holdout-v1-provenance.json
+          if-no-files-found: warn
+          retention-days: 30
