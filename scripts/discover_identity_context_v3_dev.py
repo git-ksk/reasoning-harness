@@ -27,6 +27,8 @@ def probe(case: dict, query: str, coordinate: str) -> dict:
                 "value_kind": case["value_kind"],
                 "fact_key": case["fact_key"],
                 "allow_title_retry": coordinate == "trusted_context",
+                "allow_direct_wikibase_fallback": coordinate == "trusted_context",
+                "allow_direct_wikibase_fallback": coordinate == "trusted_context",
             },
             "_meta": {"protocolVersion": "2026-07-28"},
         },

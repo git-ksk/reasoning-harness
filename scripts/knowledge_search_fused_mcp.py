@@ -88,6 +88,55 @@ def wikipedia_search(query, language, limit=5):
     ]
 
 
+def wikidata_entity_record(entity_id, language, property_id, value_kind):
+    body = get_json(
+        "https://www.wikidata.org/w/api.php",
+        {
+            "action": "wbgetentities",
+            "format": "json",
+            "ids": entity_id,
+            "props": "labels|descriptions|claims",
+            "languages": language,
+        },
+    )
+    entity = (body.get("entities") or {}).get(entity_id) or {}
+    if entity.get("missing") is not None or not entity:
+        return None
+    label = ((entity.get("labels") or {}).get(language) or {}).get("value")
+    description = ((entity.get("descriptions") or {}).get(language) or {}).get("value")
+    statements = (entity.get("claims") or {}).get(property_id) or []
+    preferred = [statement for statement in statements if statement.get("rank") == "preferred"]
+    selected = preferred or [statement for statement in statements if statement.get("rank") != "deprecated"]
+    values = []
+    for statement in selected:
+        datavalue = (((statement.get("mainsnak") or {}).get("datavalue") or {}).get("value"))
+        if datavalue is None:
+            continue
+        value = None
+        if value_kind == "entity" and isinstance(datavalue, dict):
+            numeric_id = datavalue.get("numeric-id")
+            if isinstance(numeric_id, int):
+                value = f"Q{numeric_id}"
+        elif value_kind == "quantity" and isinstance(datavalue, dict):
+            amount = datavalue.get("amount")
+            if isinstance(amount, str):
+                value = amount.lstrip("+")
+        elif value_kind == "time" and isinstance(datavalue, dict):
+            raw = datavalue.get("time")
+            if isinstance(raw, str):
+                value = raw
+        elif value_kind == "string" and isinstance(datavalue, str):
+            value = datavalue
+        if value is not None and value not in values:
+            values.append(value)
+    return {
+        "id": entity_id,
+        "label": label,
+        "description": description,
+        "property_values": values,
+    }
+
+
 def wikidata_claim_values(entity_id, property_id, value_kind):
     body = get_json(
         "https://www.wikidata.org/w/api.php",
@@ -240,11 +289,15 @@ def main():
     fact_key = arguments.get("fact_key")
     language = arguments.get("language", "en")
     allow_title_retry = arguments.get("allow_title_retry", True)
+    allow_direct_wikibase_fallback = arguments.get("allow_direct_wikibase_fallback", False)
     if not all(isinstance(value, str) and value for value in [query, property_id, value_kind, fact_key, language]):
         respond(request_id, error={"code": -32602, "message": "query/property_id/value_kind/fact_key/language are required"})
         return 0
     if not isinstance(allow_title_retry, bool):
         respond(request_id, error={"code": -32602, "message": "allow_title_retry must be boolean"})
+        return 0
+    if not isinstance(allow_direct_wikibase_fallback, bool):
+        respond(request_id, error={"code": -32602, "message": "allow_direct_wikibase_fallback must be boolean"})
         return 0
 
     EMBED_SEARCH_STATE_IN_HARNESS = not allow_title_retry
@@ -312,6 +365,8 @@ def main():
         corroboration = "original_query"
         corroboration_rank = None
         corroboration_item = None
+        direct_wikibase_verified = False
+        direct_property_values = None
 
         if wp_id and wp_id in wd_ids:
             corroboration_rank = wd_ids.index(wp_id) + 1
@@ -323,6 +378,38 @@ def main():
                 corroboration = "wikipedia_title_retry"
                 corroboration_rank = title_wd_ids.index(wp_id) + 1
                 corroboration_item = title_wd[corroboration_rank - 1]
+            elif allow_direct_wikibase_fallback:
+                direct = wikidata_entity_record(wp_id, language, property_id, value_kind)
+                if direct and direct.get("id") == wp_id:
+                    corroboration = "wikipedia_wikibase_direct"
+                    corroboration_item = {
+                        "id": wp_id,
+                        "label": direct.get("label"),
+                        "description": direct.get("description"),
+                    }
+                    direct_property_values = direct.get("property_values") or []
+                    direct_wikibase_verified = True
+                else:
+                    observation = (
+                        f"cross-source entity disagreement after bounded direct Wikibase verification: query={query!r}; "
+                        f"original_wikidata_candidates={wd_ids}; wikipedia_top={wp_id}; wikipedia_title={wp_title!r}; "
+                        f"title_retry_candidates={title_wd_ids}; direct_wikibase_verified=false"
+                    )
+                    respond(request_id, result=result_payload(
+                        observation,
+                        {},
+                        state(
+                            query,
+                            "entity_disagreement",
+                            wd,
+                            wp,
+                            wikipedia_top_entity=wp_id,
+                            wikipedia_top_title=wp_title,
+                            title_retry_candidate_ids=title_wd_ids,
+                            direct_wikibase_verified=False,
+                        ),
+                    ))
+                    return 0
             else:
                 observation = (
                     f"cross-source entity disagreement after title retry: query={query!r}; original_wikidata_candidates={wd_ids}; "
@@ -383,7 +470,11 @@ def main():
             ))
             return 0
 
-        values = wikidata_claim_values(wp_id, property_id, value_kind)
+        values = (
+            direct_property_values
+            if direct_property_values is not None
+            else wikidata_claim_values(wp_id, property_id, value_kind)
+        )
         if len(values) != 1:
             observation = f"property unresolved or multi-valued after cross-source entity agreement: entity={wp_id}; property={property_id}; values={values}"
             respond(request_id, result=result_payload(
@@ -421,6 +512,7 @@ def main():
                 corroboration_rank=corroboration_rank,
                 corroboration_entity_label=(corroboration_item or {}).get("label"),
                 corroboration_entity_description=(corroboration_item or {}).get("description"),
+                direct_wikibase_verified=direct_wikibase_verified,
                 property_id=property_id,
                 property_values=values,
             ),
