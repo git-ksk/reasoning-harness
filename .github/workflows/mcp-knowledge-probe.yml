@@ -16,9 +16,10 @@ permissions:
   contents: read
 
 jobs:
-  probe:
+  deterministic-contracts:
+    name: Deterministic control contracts
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
@@ -34,34 +35,93 @@ jobs:
             --bin reason-mcp-search-benchmark \
             --bin reason-mcp-agentic-search-benchmark
 
-      - name: Smoke Wikipedia MCP server directly
+      - name: Assert target-directed progress contract
         run: |
           set -euo pipefail
-          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"page_exists","arguments":{"title":"東京","language":"ja"},"_meta":{"protocolVersion":"2026-07-28"}}}' \
-            | python3 scripts/wikipedia_knowledge_mcp.py \
-            | tee /tmp/wikipedia-mcp-direct.json
-          jq -e '.result.structuredContent.reasoning_harness.facts["wikipedia.page_exists"] == "true"' /tmp/wikipedia-mcp-direct.json >/dev/null
+          python3 scripts/assert_target_directed_progress_contract.py
 
-      - name: Layer A - benchmark live Wikidata typed-fact MCP adapter
-        continue-on-error: true
+      - name: Assert transport retry accounting contract
+        run: |
+          set -euo pipefail
+          python3 scripts/assert_transport_retry_accounting.py
+
+  live-foundation:
+    name: Live Layers A/B
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Layer A - live Wikidata typed-fact MCP adapter
         run: |
           set -euo pipefail
           cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-knowledge-benchmark -- \
             --trials 3 \
             | tee /tmp/mcp-knowledge-benchmark.json
 
-      - name: Layer B - benchmark fixed cross-source search policy
-        continue-on-error: true
+      - name: Layer B - fixed cross-source search policy
         run: |
           set -euo pipefail
           cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-search-benchmark -- \
             --trials 3 \
             | tee /tmp/mcp-search-benchmark.json
 
-      - name: Layer C - benchmark bounded agentic search planner (dev suite)
-        continue-on-error: true
-        env:
-          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+      - name: Classify semantic and infrastructure signals
+        if: always()
+        run: |
+          set -euo pipefail
+          python3 scripts/summarize_layered_mcp_benchmarks.py \
+            --layer-a /tmp/mcp-knowledge-benchmark.json \
+            --layer-b /tmp/mcp-search-benchmark.json \
+            --output /tmp/mcp-foundation-summary.json \
+            | tee /tmp/mcp-foundation-summary.stdout.json
+
+      - name: Gate live foundation
+        if: always()
+        run: |
+          set -euo pipefail
+          test -s /tmp/mcp-foundation-summary.json
+          jq -e '
+            (.layer_a_adapter.semantic_safety_clean == true) and
+            (.layer_b_fixed_policy.semantic_safety_clean == true) and
+            (.layer_a_adapter.semantic_capability_clean == true) and
+            (.layer_b_fixed_policy.semantic_capability_clean == true) and
+            (.layer_a_adapter.infrastructure_clean == true) and
+            (.layer_b_fixed_policy.infrastructure_clean == true) and
+            (.layer_a_adapter.full_run_clean == true) and
+            (.layer_b_fixed_policy.full_run_clean == true)
+          ' /tmp/mcp-foundation-summary.json >/dev/null
+
+      - name: Preserve live foundation outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-knowledge-foundation
+          path: |
+            /tmp/mcp-knowledge-benchmark.json
+            /tmp/mcp-search-benchmark.json
+            /tmp/mcp-foundation-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  agentic-dev:
+    name: Agentic Layer C dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Layer C - bounded agentic search planner
         run: |
           set -euo pipefail
           test -n "$MISTRAL_API_KEY"
@@ -71,35 +131,72 @@ jobs:
             --model ministral-8b-latest \
             | tee /tmp/mcp-agentic-search-dev.json
 
-      - name: Layer C holdout - explicit dispatch only
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_holdout }}
-        continue-on-error: true
-        env:
-          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-        run: |
-          set -euo pipefail
-          test -n "$MISTRAL_API_KEY"
-          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-agentic-search-benchmark -- \
-            --suite holdout \
-            --trials 2 \
-            --model ministral-8b-latest \
-            | tee /tmp/mcp-agentic-search-holdout.json
-
-      - name: Summarize layered failure provenance
+      - name: Classify agentic capability and infrastructure signals
         if: always()
         run: |
+          set -euo pipefail
           python3 scripts/summarize_layered_mcp_benchmarks.py \
-            --layer-a /tmp/mcp-knowledge-benchmark.json \
-            --layer-b /tmp/mcp-search-benchmark.json \
             --layer-c /tmp/mcp-agentic-search-dev.json \
-            --output /tmp/mcp-layered-summary.json \
-            | tee /tmp/mcp-layered-summary.stdout.json
+            --output /tmp/mcp-agentic-dev-summary.json \
+            | tee /tmp/mcp-agentic-dev-summary.stdout.json
+
+      - name: Gate agentic dev suite
+        if: always()
+        run: |
+          set -euo pipefail
+          test -s /tmp/mcp-agentic-dev-summary.json
+          jq -e '
+            (.layer_c_agentic_planner.semantic_safety_clean == true) and
+            (.layer_c_agentic_planner.agent_capability_clean == true) and
+            (.layer_c_agentic_planner.infrastructure_clean == true) and
+            (.layer_c_agentic_planner.full_run_clean == true)
+          ' /tmp/mcp-agentic-dev-summary.json >/dev/null
+
+      - name: Summarize Layer C traces
+        if: always()
+        run: |
+          echo '--- Layer C aggregate ---'
+          jq '.aggregate' /tmp/mcp-agentic-search-dev.json 2>/dev/null || true
+          echo '--- Layer C stop reasons ---'
+          jq '.samples[] | {id, trial, expected, final_outcome, stop_reason, rounds, tool_calls, planner_calls, provider_attempts, model_tokens, elapsed_ms, passed}' /tmp/mcp-agentic-search-dev.json 2>/dev/null || true
+
+      - name: Preserve agentic dev outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-knowledge-agentic-dev
+          path: |
+            /tmp/mcp-agentic-search-dev.json
+            /tmp/mcp-agentic-dev-summary.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  natural-smoke:
+    name: Natural-language MCP smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Smoke Wikipedia MCP server directly
+        run: |
+          set -euo pipefail
+          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"page_exists","arguments":{"title":"東京","language":"ja"},"_meta":{"protocolVersion":"2026-07-28"}}}' \
+            | python3 scripts/wikipedia_knowledge_mcp.py \
+            | tee /tmp/wikipedia-mcp-direct.json
+          jq -e '.result.structuredContent.reasoning_harness.facts["wikipedia.page_exists"] == "true"' /tmp/wikipedia-mcp-direct.json >/dev/null
 
       - name: Configure read-only MCP resolver
         run: |
           set -euo pipefail
-          # The current admission contract freezes evaluation time before the live tool call.
-          # Give this probe a bounded acquisition window so we can separately verify the MCP path.
+          # Experimental workaround only: acquisition timestamps may occur after the
+          # semantic evaluation time frozen by the current admission contract.
           EVALUATION_TIME="$(( $(date +%s) + 180 ))"
           cat > /tmp/reason-mcp-wikipedia.json <<JSON
           {
@@ -143,8 +240,6 @@ jobs:
           JSON
 
       - name: Run natural-language Harness with Wikipedia MCP resolution
-        env:
-          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
         run: |
           set -euo pipefail
           test -n "$MISTRAL_API_KEY"
@@ -158,55 +253,115 @@ jobs:
           jq -e '.result.resolution_rounds[-1].final_verdict == "accept"' /tmp/reason-mcp-wikipedia-result.json >/dev/null
           jq -e '.result.resolution_rounds[-1].attempts[0].status == "applied_evidence"' /tmp/reason-mcp-wikipedia-result.json >/dev/null
 
-      - name: Evaluate development safety gate
-        if: always()
-        run: |
-          set -euo pipefail
-          test -s /tmp/mcp-layered-summary.json
-          jq -e '
-            (.layer_a_adapter != null) and
-            (.layer_b_fixed_policy != null) and
-            (.layer_c_agentic_planner != null) and
-            (.layer_a_adapter.false_acceptances == 0) and
-            (.layer_b_fixed_policy.false_acceptances == 0) and
-            (.layer_c_agentic_planner.false_acceptances == 0)
-          ' /tmp/mcp-layered-summary.json >/dev/null
-
-      - name: Summarize probe result
-        if: always()
-        run: |
-          echo '--- Layered attribution summary ---'
-          cat /tmp/mcp-layered-summary.json 2>/dev/null || true
-          echo '--- Layer A: Wikidata MCP benchmark aggregate ---'
-          jq '.aggregate' /tmp/mcp-knowledge-benchmark.json 2>/dev/null || true
-          echo '--- Layer B: fixed cross-source search aggregate ---'
-          jq '.aggregate' /tmp/mcp-search-benchmark.json 2>/dev/null || true
-          echo '--- Layer C: agentic planner dev aggregate ---'
-          jq '.aggregate' /tmp/mcp-agentic-search-dev.json 2>/dev/null || true
-          echo '--- Layer C: stop reasons ---'
-          jq '.samples[] | {id, trial, expected, final_outcome, stop_reason, rounds, tool_calls, planner_calls, model_tokens, elapsed_ms, passed}' /tmp/mcp-agentic-search-dev.json 2>/dev/null || true
-          echo '--- Layer C holdout aggregate (when explicitly run) ---'
-          jq '.aggregate' /tmp/mcp-agentic-search-holdout.json 2>/dev/null || true
-          echo '--- direct Wikipedia MCP ---'
-          cat /tmp/wikipedia-mcp-direct.json 2>/dev/null || true
-          echo '--- Harness result: selected fields ---'
-          if test -f /tmp/reason-mcp-wikipedia-result.json; then
-            jq '.. | objects | with_entries(select(.key | test("verdict|finalization|resolution|resolver|source|fact|operational|grounded"; "i"))) | select(length > 0)' /tmp/reason-mcp-wikipedia-result.json || cat /tmp/reason-mcp-wikipedia-result.json
-          fi
-
-      - name: Preserve probe outputs
+      - name: Preserve natural smoke outputs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mcp-knowledge-probe
+          name: mcp-knowledge-natural-smoke
           path: |
-            /tmp/mcp-knowledge-benchmark.json
-            /tmp/mcp-search-benchmark.json
-            /tmp/mcp-agentic-search-dev.json
-            /tmp/mcp-agentic-search-holdout.json
-            /tmp/mcp-layered-summary.json
             /tmp/wikipedia-mcp-direct.json
             /tmp/reason-mcp-wikipedia-result.json
             /tmp/reason-mcp-wikipedia.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  holdout:
+    name: Frozen agentic holdout
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_holdout }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run frozen holdout
+        run: |
+          set -euo pipefail
+          test -n "$MISTRAL_API_KEY"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-mcp-agentic-search-benchmark -- \
+            --suite holdout \
+            --trials 2 \
+            --model ministral-8b-latest \
+            | tee /tmp/mcp-agentic-search-holdout.json
+
+      - name: Classify holdout signals
+        if: always()
+        run: |
+          set -euo pipefail
+          python3 scripts/summarize_layered_mcp_benchmarks.py \
+            --layer-c /tmp/mcp-agentic-search-holdout.json \
+            --output /tmp/mcp-agentic-holdout-summary.json \
+            | tee /tmp/mcp-agentic-holdout-summary.stdout.json
+
+      - name: Gate frozen holdout without retuning
+        if: always()
+        run: |
+          set -euo pipefail
+          test -s /tmp/mcp-agentic-holdout-summary.json
+          jq -e '
+            (.layer_c_agentic_planner.semantic_safety_clean == true) and
+            (.layer_c_agentic_planner.agent_capability_clean == true) and
+            (.layer_c_agentic_planner.infrastructure_clean == true) and
+            (.layer_c_agentic_planner.full_run_clean == true)
+          ' /tmp/mcp-agentic-holdout-summary.json >/dev/null
+
+      - name: Preserve holdout outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-knowledge-agentic-holdout
+          path: |
+            /tmp/mcp-agentic-search-holdout.json
+            /tmp/mcp-agentic-holdout-summary.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  layered-summary:
+    name: Layered attribution summary
+    if: always()
+    needs:
+      - live-foundation
+      - agentic-dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download foundation report
+        uses: actions/download-artifact@v5
+        with:
+          name: mcp-knowledge-foundation
+          path: /tmp/foundation
+        continue-on-error: true
+
+      - name: Download agentic report
+        uses: actions/download-artifact@v5
+        with:
+          name: mcp-knowledge-agentic-dev
+          path: /tmp/agentic
+        continue-on-error: true
+
+      - name: Build combined attribution report
+        run: |
+          set -euo pipefail
+          python3 scripts/summarize_layered_mcp_benchmarks.py \
+            --layer-a /tmp/foundation/mcp-knowledge-benchmark.json \
+            --layer-b /tmp/foundation/mcp-search-benchmark.json \
+            --layer-c /tmp/agentic/mcp-agentic-search-dev.json \
+            --output /tmp/mcp-layered-summary.json \
+            | tee /tmp/mcp-layered-summary.stdout.json
+          cat /tmp/mcp-layered-summary.json
+
+      - name: Preserve combined attribution report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-knowledge-layered-summary
+          path: /tmp/mcp-layered-summary.json
           if-no-files-found: warn
           retention-days: 7
