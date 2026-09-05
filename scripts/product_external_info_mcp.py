@@ -19,7 +19,8 @@ from typing import Any
 PROTOCOL_VERSION = "2026-07-28"
 TOOL_NAME = "fetch_json_fact"
 USER_AGENT = "reasoning-harness-product-eval/1.0"
-MAX_BODY_BYTES = 1_048_576
+MAX_REQUEST_BYTES = 1_048_576
+MAX_HTTP_BODY_BYTES = 8 * 1_048_576
 ALLOWED_HOSTS = frozenset({
     "api.github.com",
     "raw.githubusercontent.com",
@@ -81,8 +82,8 @@ def fetch_json(url: str, timeout_seconds: float = 8.0) -> tuple[Any, str]:
     with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
         final_url = response.geturl()
         validate_url(final_url)
-        body = response.read(MAX_BODY_BYTES + 1)
-        if len(body) > MAX_BODY_BYTES:
+        body = response.read(MAX_HTTP_BODY_BYTES + 1)
+        if len(body) > MAX_HTTP_BODY_BYTES:
             raise ValueError("response body exceeds acquisition bound")
         return json.loads(body), final_url
 
@@ -283,8 +284,8 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any]:
 
 
 def main() -> int:
-    line = sys.stdin.buffer.readline(MAX_BODY_BYTES + 1)
-    if not line or len(line) > MAX_BODY_BYTES:
+    line = sys.stdin.buffer.readline(MAX_REQUEST_BYTES + 1)
+    if not line or len(line) > MAX_REQUEST_BYTES:
         return 2
     try:
         request = json.loads(line)

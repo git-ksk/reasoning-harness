@@ -389,6 +389,18 @@ fn harness_input(case: &ExternalInfoCase, wall_time: i64) -> HarnessInput {
 }
 
 fn admission(case: &ExternalInfoCase, wall_time: i64) -> ExternalEvidenceAdmissionPolicy {
+    // The Harness-owned semantic as-of time lives on the EvidenceRequirement. This separate
+    // ceiling only bounds how late a tool result may be retrieved after the case starts.
+    let max_timeout_ms = case
+        .acquisition_profiles
+        .iter()
+        .map(|profile| profile.timeout_ms)
+        .max()
+        .unwrap_or(1);
+    let retrieval_slack_seconds = i64::try_from(max_timeout_ms.div_ceil(1000))
+        .unwrap_or(i64::MAX)
+        .saturating_add(2);
+    let retrieval_ceiling = wall_time.saturating_add(retrieval_slack_seconds);
     let sources = case
         .admission_policy
         .sources
@@ -406,7 +418,7 @@ fn admission(case: &ExternalInfoCase, wall_time: i64) -> ExternalEvidenceAdmissi
         .collect();
     ExternalEvidenceAdmissionPolicy::new(ExternalEvidenceAdmissionConfig {
         resolver_name: MCP_READONLY_RESOLVER_ID,
-        evaluation_time_unix_seconds: wall_time,
+        evaluation_time_unix_seconds: retrieval_ceiling,
         authority_policy: EvidenceAuthorityPolicy {
             ranks: case.admission_policy.authority_policy.clone(),
         },

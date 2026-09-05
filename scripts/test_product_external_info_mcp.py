@@ -18,6 +18,16 @@ class ProductExternalInfoMcpTests(unittest.TestCase):
         self.assertEqual(mcp.json_pointer(document, "/items/0/name"), "x")
         self.assertEqual(mcp.normalize_scalar(False), "false")
 
+    def test_http_body_bound_remains_finite(self):
+        class Response:
+            def __enter__(self): return self
+            def __exit__(self, *args): return False
+            def geturl(self): return "https://api.github.com/repos/owner/repo"
+            def read(self, n): return b"x" * n
+        with mock.patch.object(mcp.urllib.request, "urlopen", return_value=Response()):
+            with self.assertRaisesRegex(ValueError, "response body exceeds acquisition bound"):
+                mcp.fetch_json("https://api.github.com/repos/owner/repo")
+
     def test_url_policy_is_https_exact_host_only(self):
         mcp.validate_url("https://api.github.com/repos/github/github-mcp-server")
         for url in (
