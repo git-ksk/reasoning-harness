@@ -51,6 +51,7 @@ Reasoning Harness は product/evaluation roadmap と archived research chronolog
 3. **依存関係を考慮した target-local recovery（#164）：** successor candidate `993874fa0051d06a02c8db8f7a220a2ac7773c17` で実装済み。global `Reject` は保持され、exact directly verified targets は、rejected non-target state から厳格に typed structural isolation された場合に限り、target-only qualified exposure を受ける。
 4. **provider reliability / resumable evaluation（#126）：** semantic identity を変更せずに実装済み。bounded provider-specific retries と actual attempt telemetry は operational なまま維持され、product dogfood v10 は exact-identity completed-case checkpoint/resume を追加し、interrupted provider/protocol failures を semantic evidence とは別に保持する。
 5. **external CLI hardening（#90）、model-specific UX（#139）、および v1.0 readiness：** 現行 main で closeout は完了している。four-platform process compatibility、deterministic CI、current live runtime smoke、two-class real-workload acceptance は合格している。Ministral 8B の Harness target coverage は 1.00 で、unsupported grounded claims/missed target insufficiency は 0 である。readiness gate は完了しているが、実際の v1.0 tag/release は別途明示的に判断する。
+6. **trusted-context entity identity adoption（#197）：** #193/#195/#196 の独立研究を経て、candidate v12 `d1db067e6efe6033656b8e7c3315a9fe322c015d` は新規 one-shot holdout 16/16 と safety/infrastructure violation 0 を記録した。#197 では semantic change を行わず materialized stable source と deterministic equivalence CI へ移行する。main merge は review 後の別判断である。
 
 ### 評価
 
