@@ -7,6 +7,7 @@ import urllib.request
 
 USER_AGENT = "reasoning-harness-mcp-search-probe/0.4 (https://github.com/git-ksk/reasoning-harness)"
 EMBED_SEARCH_STATE_IN_HARNESS = False
+EXTERNAL_REQUESTS = 0
 
 
 def respond(request_id, result=None, error=None):
@@ -20,11 +21,13 @@ def respond(request_id, result=None, error=None):
 
 
 def get_json(base, params, timeout=10):
+    global EXTERNAL_REQUESTS
     query = urllib.parse.urlencode(params)
     request = urllib.request.Request(f"{base}?{query}", headers={"User-Agent": USER_AGENT})
     last_error = None
     for attempt in range(2):
         try:
+            EXTERNAL_REQUESTS += 1
             with urllib.request.urlopen(request, timeout=timeout) as response:
                 return json.load(response)
         except Exception as exc:
@@ -156,6 +159,7 @@ def result_payload(observation, facts, search_state, metadata_extra=None):
 def state(query, outcome_kind, wd=None, wp=None, **extra):
     wd = wd or []
     wp = wp or []
+    extra.setdefault("external_requests", EXTERNAL_REQUESTS)
     payload = {
         "query": query,
         "outcome_kind": outcome_kind,
@@ -423,7 +427,7 @@ def main():
             error={
                 "code": -32000,
                 "message": f"knowledge search failed: {exc}",
-                "data": {"reasoning_harness": {"operational_kind": "transport"}},
+                "data": {"reasoning_harness": {"operational_kind": "transport", "external_requests": EXTERNAL_REQUESTS}},
             },
         )
         return 0

@@ -9,6 +9,9 @@ on:
       - scripts/test_identity_gate_v2.py
       - scripts/discover_identity_gate_v2_dev_candidates.py
       - scripts/apply_identity_gate_action_repair_v3.py
+      - scripts/apply_identity_gate_loop_safety_v4.py
+      - scripts/knowledge_search_fused_mcp.py
+      - scripts/test_identity_tool_request_accounting.py
       - crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
       - crates/reasoning-harness-cli/Cargo.toml
       - .github/workflows/mcp-identity-gate-v2.yml
@@ -31,17 +34,22 @@ jobs:
             scripts/identity_gate_v2.py \
             scripts/test_identity_gate_v2.py \
             scripts/discover_identity_gate_v2_dev_candidates.py \
-            scripts/apply_identity_gate_action_repair_v3.py
+            scripts/apply_identity_gate_action_repair_v3.py \
+            scripts/apply_identity_gate_loop_safety_v4.py \
+            scripts/test_identity_tool_request_accounting.py
 
       - name: Run identity qualification tests
         run: |
           set -euo pipefail
-          python3 -m unittest -v scripts/test_identity_gate_v2.py
+          python3 -m unittest -v \
+            scripts/test_identity_gate_v2.py \
+            scripts/test_identity_tool_request_accounting.py
 
-      - name: Verify exact v3 action-repair transformation
+      - name: Verify exact v4 loop-safety transformation
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
+          python3 scripts/apply_identity_gate_loop_safety_v4.py
           git diff --check
           git diff -- crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
 
@@ -87,11 +95,17 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - name: Materialize v3 action-repair candidate
+      - name: Materialize v4 action-repair and loop-safety candidate
         run: |
           set -euo pipefail
           python3 scripts/apply_identity_gate_action_repair_v3.py
+          python3 scripts/apply_identity_gate_loop_safety_v4.py
           git diff --check
+
+      - name: Run deterministic v4 failure-injection contracts
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-cli --bin reason-mcp-identity-gate-benchmark
 
       - name: Check identity-gate benchmark
         run: |
@@ -115,7 +129,8 @@ jobs:
             (.aggregate.false_acceptances == 0) and
             (.aggregate.operational_unresolved == 0) and
             (.aggregate.planner_failures == 0) and
-            (.aggregate.tool_failures == 0)
+            (.aggregate.tool_failures == 0) and
+            (.aggregate.invalid_actions_blocked_before_external_request == .aggregate.invalid_action_observations)
           ' /tmp/mcp-identity-gate-v2-layer-c.json >/dev/null
 
       - name: Report Layer C aggregate and recovery cases
@@ -124,7 +139,7 @@ jobs:
           echo '--- aggregate ---'
           jq '.aggregate' /tmp/mcp-identity-gate-v2-layer-c.json 2>/dev/null || true
           echo '--- identity-insufficient samples ---'
-          jq '.samples[] | select(.identity_insufficient_observations > 0) | {id, trial, expected, final_outcome, stop_reason, rounds, planner_calls, identity_insufficient_observations, identity_supported_observations, invalid_action_observations, follow_suggested_query_actions, recovered_after_invalid_action, passed}' \
+          jq '.samples[] | select(.identity_insufficient_observations > 0) | {id, trial, expected, final_outcome, stop_reason, rounds, tool_calls, external_requests, planner_calls, identity_insufficient_observations, identity_supported_observations, invalid_action_observations, follow_suggested_query_actions, recovered_after_invalid_action, passed}' \
             /tmp/mcp-identity-gate-v2-layer-c.json 2>/dev/null || true
 
       - name: Preserve Layer C evidence
