@@ -31,10 +31,15 @@ def summarize_resolution_layer(report):
     correct_unknown_semantic = [
         s for s in expected_unknown_semantic if s.get("final_verdict") == "unknown"
     ]
+    raw_passes = sum(1 for s in samples if s.get("passed"))
     return {
         "samples": len(samples),
-        "raw_passes": sum(1 for s in samples if s.get("passed")),
-        "raw_success_rate": (sum(1 for s in samples if s.get("passed")) / len(samples)) if samples else 0.0,
+        "raw_passes": raw_passes,
+        "raw_success_rate": (raw_passes / len(samples)) if samples else 0.0,
+        "semantic_safety_clean": len(false_acceptances) == 0,
+        "semantic_capability_clean": len(semantic_passes) == len(semantic),
+        "infrastructure_clean": len(operational) == 0,
+        "full_run_clean": bool(samples) and raw_passes == len(samples),
         "operational_unresolved": len(operational),
         "operational_rate": (len(operational) / len(samples)) if samples else 0.0,
         "semantic_samples": len(semantic),
@@ -94,15 +99,33 @@ def summarize_agentic(report):
         if (trace.get("search_state") or {}).get("outcome_kind") != "invalid_query"
     )
 
+    sample_count = aggregate.get("samples", 0)
+    passed_samples = aggregate.get("passed_samples", 0)
+    false_acceptances = aggregate.get("false_acceptances", 0)
+    operational_unresolved = aggregate.get("operational_unresolved", 0)
+    planner_failures = aggregate.get("planner_failures", 0)
+    tool_failures = aggregate.get("tool_failures", 0)
+    budget_exhaustions = aggregate.get("budget_exhaustions", 0)
+
     return {
-        "samples": aggregate.get("samples", 0),
+        "samples": sample_count,
+        "passed_samples": passed_samples,
         "raw_success_rate": aggregate.get("expectation_success_rate", 0.0),
-        "false_acceptances": aggregate.get("false_acceptances", 0),
+        "semantic_safety_clean": false_acceptances == 0,
+        "agent_capability_clean": (
+            sample_count > 0
+            and passed_samples == sample_count
+            and planner_failures == 0
+            and budget_exhaustions == 0
+        ),
+        "infrastructure_clean": operational_unresolved == 0 and tool_failures == 0,
+        "full_run_clean": sample_count > 0 and passed_samples == sample_count,
+        "false_acceptances": false_acceptances,
         "false_abstentions": aggregate.get("false_abstentions", 0),
-        "operational_unresolved": aggregate.get("operational_unresolved", 0),
-        "planner_failures": aggregate.get("planner_failures", 0),
-        "tool_failures": aggregate.get("tool_failures", 0),
-        "budget_exhaustions": aggregate.get("budget_exhaustions", 0),
+        "operational_unresolved": operational_unresolved,
+        "planner_failures": planner_failures,
+        "tool_failures": tool_failures,
+        "budget_exhaustions": budget_exhaustions,
         "no_progress_stops": aggregate.get("no_progress_stops", 0),
         "duplicate_query_stops": aggregate.get("duplicate_query_stops", 0),
         "invalid_action_observations": invalid_action_observations,
@@ -155,12 +178,18 @@ def main():
     args = parser.parse_args()
 
     result = {
-        "schema_version": "reason-mcp-layered-benchmark-summary-v1",
-        "interpretation_order": ["safety", "resolution_success", "efficiency"],
+        "schema_version": "reason-mcp-layered-benchmark-summary-v2",
+        "interpretation_order": [
+            "semantic_safety",
+            "agent_capability",
+            "infrastructure_health",
+            "efficiency",
+        ],
         "layer_a_adapter": summarize_resolution_layer(load(args.layer_a)),
         "layer_b_fixed_policy": summarize_resolution_layer(load(args.layer_b)),
         "layer_c_agentic_planner": summarize_agentic(load(args.layer_c)),
         "notes": [
+            "Semantic safety, agent capability, and infrastructure health are separate signals; do not collapse them into one score.",
             "Operational failures are excluded from semantic success/failure attribution for Layers A/B.",
             "Expected-unknown cases are only credited as semantic unknowns when the terminal status is non-operational.",
             "Layer C reports planner, tool, budget, no-progress, duplicate-stop, invalid-action, and repair provenance separately.",
