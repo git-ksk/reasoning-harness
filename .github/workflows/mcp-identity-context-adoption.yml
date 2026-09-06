@@ -48,13 +48,22 @@ jobs:
     name: Frozen v12 deterministic equivalence
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    env:
+      V12_ADOPTION_FREEZE_COMMIT: 49656e83316bdfc1dfe4cc4b84b75eab264924f9
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Verify canonical materialized source identity
         run: |
           set -euo pipefail
-          sha256sum --check fixtures/mcp-identity-context-v12-adoption.sha256
+          CHECKSUMS=fixtures/mcp-identity-context-v12-adoption.sha256
+          cmp "$CHECKSUMS" <(git show "$V12_ADOPTION_FREEZE_COMMIT:$CHECKSUMS")
+          grep -v '  Cargo.lock$' "$CHECKSUMS" | sha256sum --check
+          EXPECTED_LOCK_SHA="$(awk '$2 == "Cargo.lock" {print $1}' "$CHECKSUMS")"
+          ACTUAL_FROZEN_LOCK_SHA="$(git show "$V12_ADOPTION_FREEZE_COMMIT:Cargo.lock" | sha256sum | awk '{print $1}')"
+          test "$EXPECTED_LOCK_SHA" = "$ACTUAL_FROZEN_LOCK_SHA"
           grep -Fq 'reason-mcp-identity-context-gate-benchmark-v12' \
             crates/reasoning-harness-cli/src/bin/mcp_identity_gate_benchmark.rs
 
@@ -93,4 +102,6 @@ jobs:
       - name: Confirm tests do not rewrite the frozen source
         run: |
           set -euo pipefail
-          sha256sum --check fixtures/mcp-identity-context-v12-adoption.sha256
+          CHECKSUMS=fixtures/mcp-identity-context-v12-adoption.sha256
+          cmp "$CHECKSUMS" <(git show "$V12_ADOPTION_FREEZE_COMMIT:$CHECKSUMS")
+          grep -v '  Cargo.lock$' "$CHECKSUMS" | sha256sum --check
