@@ -21,6 +21,7 @@ use reasoning_harness_core::{
     canonical_verified_target_partial_answer, canonical_verified_target_reject_partial_answer,
     final_answer_candidate_schema, finalize_answer, recover_verified_target_renderer_downgrade,
 };
+use reasoning_harness_providers::GroqAdapter;
 use reasoning_harness_providers::{
     ExternalEvidenceAdmissionConfig, ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy,
     GoogleAdapter, MCP_READONLY_RESOLVER_ID, McpReadOnlyResolver, McpReadOnlyResolverConfig,
@@ -63,6 +64,7 @@ enum Provider {
     Mistral,
     Google,
     Nvidia,
+    Groq,
 }
 
 impl Provider {
@@ -71,6 +73,7 @@ impl Provider {
             Self::Mistral => "mistral",
             Self::Google => "google",
             Self::Nvidia => "nvidia",
+            Self::Groq => "groq",
         }
     }
 }
@@ -79,6 +82,7 @@ enum LiveAdapter {
     Mistral(MistralAdapter),
     Google(GoogleAdapter),
     Nvidia(NvidiaAdapter),
+    Groq(GroqAdapter),
 }
 
 impl LiveAdapter {
@@ -87,6 +91,7 @@ impl LiveAdapter {
             Provider::Mistral => MistralAdapter::from_env(model).map(Self::Mistral),
             Provider::Google => GoogleAdapter::from_env(model).map(Self::Google),
             Provider::Nvidia => NvidiaAdapter::from_env(model).map(Self::Nvidia),
+            Provider::Groq => GroqAdapter::from_env(model).map(Self::Groq),
         }
     }
 
@@ -95,6 +100,7 @@ impl LiveAdapter {
             Self::Mistral(adapter) => adapter,
             Self::Google(adapter) => adapter,
             Self::Nvidia(adapter) => adapter,
+            Self::Groq(adapter) => adapter,
         }
     }
 }

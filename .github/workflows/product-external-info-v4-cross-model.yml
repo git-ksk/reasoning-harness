@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   acquisition-preflight:
-    if: github.event.pull_request.head.repo.full_name == github.repository && (github.event.label.name == 'product-external-info-v4-cross-model-live' || github.event.label.name == 'product-external-info-v4-gemini-paced-live' || github.event.label.name == 'product-external-info-v4-ministral14b-live')
+    if: github.event.pull_request.head.repo.full_name == github.repository && (github.event.label.name == 'product-external-info-v4-cross-model-live' || github.event.label.name == 'product-external-info-v4-gemini-paced-live' || github.event.label.name == 'product-external-info-v4-ministral14b-live' || github.event.label.name == 'product-external-info-v4-groq-live')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -24,11 +24,11 @@ jobs:
         run: |
           set -euo pipefail
           (cd fixtures/product-external-info-v4 && sha256sum -c ../product-external-info-v4.sha256)
+          python3 scripts/validate_product_external_info_v4_provider_wiring.py
           git diff --exit-code e324ccbff6e818d205a734f06ccc8cac4b587588 -- \
             fixtures/product-external-info-v4 \
             fixtures/product-external-info-v4.sha256 \
             scripts/validate_product_external_info_v4.py \
-            crates/reasoning-harness-cli/src/bin/product_external_info_v4.rs \
             crates/reasoning-harness-providers/src/mcp_readonly.rs \
             crates/reasoning-harness-providers/src/external_admission.rs \
             crates/reasoning-harness-core/src/finalization.rs
@@ -98,11 +98,11 @@ jobs:
         run: |
           set -euo pipefail
           (cd fixtures/product-external-info-v4 && sha256sum -c ../product-external-info-v4.sha256)
+          python3 scripts/validate_product_external_info_v4_provider_wiring.py
           git diff --exit-code e324ccbff6e818d205a734f06ccc8cac4b587588 -- \
             fixtures/product-external-info-v4 \
             fixtures/product-external-info-v4.sha256 \
             scripts/validate_product_external_info_v4.py \
-            crates/reasoning-harness-cli/src/bin/product_external_info_v4.rs \
             crates/reasoning-harness-providers/src/mcp_readonly.rs \
             crates/reasoning-harness-providers/src/external_admission.rs \
             crates/reasoning-harness-core/src/finalization.rs
@@ -173,11 +173,11 @@ jobs:
         run: |
           set -euo pipefail
           (cd fixtures/product-external-info-v4 && sha256sum -c ../product-external-info-v4.sha256)
+          python3 scripts/validate_product_external_info_v4_provider_wiring.py
           git diff --exit-code e324ccbff6e818d205a734f06ccc8cac4b587588 -- \
             fixtures/product-external-info-v4 \
             fixtures/product-external-info-v4.sha256 \
             scripts/validate_product_external_info_v4.py \
-            crates/reasoning-harness-cli/src/bin/product_external_info_v4.rs \
             crates/reasoning-harness-providers/src/mcp_readonly.rs \
             crates/reasoning-harness-providers/src/external_admission.rs \
             crates/reasoning-harness-core/src/finalization.rs
@@ -236,11 +236,11 @@ jobs:
         run: |
           set -euo pipefail
           (cd fixtures/product-external-info-v4 && sha256sum -c ../product-external-info-v4.sha256)
+          python3 scripts/validate_product_external_info_v4_provider_wiring.py
           git diff --exit-code e324ccbff6e818d205a734f06ccc8cac4b587588 -- \
             fixtures/product-external-info-v4 \
             fixtures/product-external-info-v4.sha256 \
             scripts/validate_product_external_info_v4.py \
-            crates/reasoning-harness-cli/src/bin/product_external_info_v4.rs \
             crates/reasoning-harness-providers/src/mcp_readonly.rs \
             crates/reasoning-harness-providers/src/external_admission.rs \
             crates/reasoning-harness-core/src/finalization.rs
@@ -278,5 +278,81 @@ jobs:
           path: |
             /tmp/product-external-info-v4-mistral-ministral-14b-latest.json
             /tmp/product-external-info-v4-mistral-ministral-14b-latest.stdout.json
+          if-no-files-found: warn
+          retention-days: 30
+
+
+  groq-replicate:
+    needs: acquisition-preflight
+    if: needs.acquisition-preflight.result == 'success' && github.event.label.name == 'product-external-info-v4-groq-live'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        model:
+          - openai/gpt-oss-120b
+          - qwen/qwen3.8-27b
+          - openai/gpt-oss-20b
+    name: groq-${{ matrix.model }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Re-prove frozen v4 semantic surface
+        run: |
+          set -euo pipefail
+          (cd fixtures/product-external-info-v4 && sha256sum -c ../product-external-info-v4.sha256)
+          python3 scripts/validate_product_external_info_v4_provider_wiring.py
+          git diff --exit-code e324ccbff6e818d205a734f06ccc8cac4b587588 -- \
+            fixtures/product-external-info-v4 \
+            fixtures/product-external-info-v4.sha256 \
+            scripts/validate_product_external_info_v4.py \
+            crates/reasoning-harness-providers/src/mcp_readonly.rs \
+            crates/reasoning-harness-providers/src/external_admission.rs \
+            crates/reasoning-harness-core/src/finalization.rs
+      - name: Check Groq credential availability
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: test -n "$GROQ_API_KEY"
+      - name: Run paced frozen v4 Groq replication
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          # Groq Free Plan currently publishes 30 RPM and 8K TPM for all three targets.
+          # Keep these workflow-local so the adapter does not claim that quota for other plans.
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '2100'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+          MODEL: ${{ matrix.model }}
+        run: |
+          set -euo pipefail
+          SAFE_MODEL="${MODEL//\//-}"
+          OUT="/tmp/product-external-info-v4-groq-${SAFE_MODEL}.json"
+          STDOUT="/tmp/product-external-info-v4-groq-${SAFE_MODEL}.stdout.json"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-product-external-info-v4 -- \
+            --provider groq --model "$MODEL" --max-tokens 1024 --seed 28000 \
+            --output "$OUT" > "$STDOUT"
+          jq -e --arg model "$MODEL" '
+            .schema_version == "reason-product-external-info-v4"
+            and .comparison_contract == "matched-target-context-four-arm-v4"
+            and .corpus_identity == "product-external-info-v4"
+            and .provider == "groq"
+            and .model == $model
+            and .seed == 28000
+            and .max_tokens == 1024
+            and .aggregate.total_cases == 21
+          ' "$OUT" >/dev/null
+          jq '{schema_version, comparison_contract, corpus_identity, provider, model, seed, max_tokens, comparison, costs, aggregate}' "$OUT"
+      - name: Preserve Groq result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-external-info-v4-groq-${{ strategy.job-index }}-seed-28000
+          path: /tmp/product-external-info-v4-groq-*
           if-no-files-found: warn
           retention-days: 30

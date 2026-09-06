@@ -42,7 +42,7 @@ successor semantic change は #159、#160、#164 に分離し、それぞれ新�
 
 ## 実装済み
 
-- Rust-only の core、CLI、eval、provider adapter crate。Mistral、Google Gemini Interactions、NVIDIA Hosted NIM の candidate-generation adapter を実装済み。
+- Rust-only の core、CLI、eval、provider adapter crate。Mistral、Google Gemini Interactions、NVIDIA Hosted NIM、GroqCloud の candidate-generation adapter を実装済み。
 - Harness-owned evidence と untrusted `ReasoningCandidate` の境界。
 - deterministic な structural／provenance validation。
 - `accept | reject | unknown` policy。
@@ -61,7 +61,7 @@ successor semantic change は #159、#160、#164 に分離し、それぞれ新�
 - policy identity、conservative authority／scope／resolver capability composition、immutable-snapshot invalidation、inference dependency propagation、finalization invalidation、truth authority を持たない soft-finding escalation を備えた composable `ReasoningPolicy` layer。
 - typed factual-claim coverage と、新しく持ち込まれた factual proposition を hypothesis／resolution／verification へ戻す grounded finalization。
 - deterministic controlled resolution scenario 9件と `reason eval-resolution`。corpus correctness、repeated diagnostic stability とは分離して報告する。
-- Mistral、Google-hosted Gemma／Gemini、絞り込んだ routine NVIDIA Nemotron target を対象とする、secret-isolated manual live benchmark workflow。
+- Mistral、Google-hosted Gemma／Gemini、絞り込んだ routine NVIDIA Nemotron target、#216 Groq v4 replication laneを対象とする、secret-isolated manual live benchmark workflow。
 - GitHub CI、Dependabot configuration、contribution／security guidance、issue／PR template。
 
 ## 既知のギャップ

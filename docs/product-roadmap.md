@@ -72,7 +72,7 @@ Implementation order:
 ### Parallel tracks
 
 - **#204 MCP negotiated/session stdio compatibility:** included in the v0.4.0 milestone and required to reuse the common #211 deadline primitive. Preserve `mcp_readonly_v1` replay compatibility and authority boundaries through an explicit successor adapter identity.
-- **#208 / PR #209 v4 cross-model replication:** remains replication over the already frozen v4 evaluation surface, not a tuning gate for v0.4.0 product/semantic implementation. Preserve results as historical comparative evidence.
+- **#208 / PR #209 v4 cross-model replication + #216 Groq operational extension:** remains replication over the already frozen v4 evaluation surface, not a tuning gate for v0.4.0 product/semantic implementation. #216 adds Groq provider wiring and Free-tier pacing/telemetry without changing v4 corpus/scoring/admission/finalization semantics. Preserve results as historical comparative evidence.
 
 ## Completed v0.2.0 product line
 

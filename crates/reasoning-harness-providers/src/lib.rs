@@ -2,12 +2,14 @@ mod config_identity;
 pub mod external_admission;
 pub mod external_command;
 pub mod gemma;
+pub mod groq;
 pub mod mcp_readonly;
 pub mod mistral;
 pub mod nvidia;
 pub mod trusted_command;
 
 pub use gemma::GoogleAdapter;
+pub use groq::GroqAdapter;
 pub use mistral::MistralAdapter;
 pub use nvidia::NvidiaAdapter;
 
