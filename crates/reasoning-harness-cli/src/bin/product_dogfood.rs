@@ -1433,7 +1433,8 @@ fn resolution_attempt_targets(attempt: &ResolutionAttempt, target: &Proposition)
         ResolutionTarget::EvidenceQualification { requirement } => {
             &requirement.proposition == target
         }
-        ResolutionTarget::CausalRelation { .. }
+        ResolutionTarget::InvestigationQuestion { .. }
+        | ResolutionTarget::CausalRelation { .. }
         | ResolutionTarget::ClaimRevision { .. }
         | ResolutionTarget::HumanReview { .. } => false,
     }

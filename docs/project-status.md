@@ -6,6 +6,8 @@ The repository has a maturing evidence-grounded runtime core and a natural-langu
 
 The **v0.3.0 — External Evidence & Resolution** milestone (#173) is complete for release. v0.3.0 connects the existing bounded-resolution runtime to real external acquisition and trusted verification without changing the correctness boundary, semantic runtime `semantic-decidability-d3-v1`, or answer-safety `verified-target-answer-gate-v1`.
 
+The active v0.4.0 line now has #210 exposed-text binding, #211 whole-invocation subprocess deadlines, and #212 bounded investigation planning implemented. #212 adds `bounded-investigation-v1` to the opt-in natural-language path: model-proposed questions/actions remain untrusted, acquisition is restricted to configured read-only capabilities, admitted evidence triggers candidate regeneration and ordinary verification, and repeated/no-progress actions terminate under explicit round/action bounds. See [Bounded investigation planning](investigation.md).
+
 The completed v0.3.0 release scope is:
 
 - **external resolver integration — #174 implemented** — `external_command_v1` is wired through the supported natural-language CLI/config path and existing resolver boundary. Its closed stdio response schema cannot carry trusted metadata/receipts/verdict/final prose.

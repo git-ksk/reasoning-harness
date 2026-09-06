@@ -6,6 +6,8 @@
 
 **v0.3.0 — External Evidence & Resolution** マイルストーン（#173）はリリースまで完了した。v0.3.0 は、既存の bounded-resolution runtime を実際の外部取得と trusted verification に接続する一方で、correctness boundary、semantic runtime `semantic-decidability-d3-v1`、answer-safety `verified-target-answer-gate-v1` は変更していない。
 
+active な v0.4.0 line では #210 exposed-text binding、#211 whole-invocation subprocess deadline に続き、#212 bounded investigation planning まで実装した。#212 は opt-in の自然文 path に `bounded-investigation-v1` を追加し、model が提案する question/action は untrusted のまま、設定済み read-only capability だけを選択できる。admit 済み evidence の後は candidate を再生成して通常 verification へ戻し、repeated/no-progress action は明示 round/action budget で停止する。詳細は[制約付き調査プランニング](investigation.ja.md)を参照。
+
 v0.3.0 で完了した範囲は次のとおり。
 
 - **external resolver integration — #174 実装済み** — `external_command_v1` を、サポート対象の自然言語 CLI／config 経路と既存 resolver boundary に接続した。closed な stdio response schema から trusted metadata、receipt、verdict、final prose を持ち込むことはできない。

@@ -19,22 +19,27 @@ use reasoning_harness_core::{
     EvidenceQualificationPass, EvidenceRequirement, FinalAnswerCandidate, FinalAnswerRenderer,
     FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
     GroundedResolutionOutcome, GroundedResolutionPolicy, GroundedResolutionRuntime, HarnessInput,
-    HarnessOutcome, MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError,
-    ModelError, ModelErrorKind, ModelUsage, Proposition, REASONING_ARTIFACT_CONTRACT_ID,
-    REASONING_CANDIDATE_CONTRACT_ID, ReasoningArtifact, ReasoningCandidate,
-    RejectAllEvidenceAdmission, RepeatedDiagnosticReport, ResolutionAdapterError,
-    ResolutionBenchmarkAggregate, ResolutionBenchmarkCaseResult, ResolutionBenchmarkFixture,
-    ResolutionCost, ResolutionRequest, ResolutionResolver, ResolutionResolverContribution,
+    HarnessOutcome, INVESTIGATION_RUNTIME_ID, InvestigationActionProposal, InvestigationCapability,
+    InvestigationObservationStatus, InvestigationPlanProposal, InvestigationPolicy,
+    InvestigationState, InvestigationStopReason, InvestigationTelemetry,
+    MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError, ModelError,
+    ModelErrorKind, ModelOutputFormat, ModelRequest, ModelUsage, Proposition,
+    REASONING_ARTIFACT_CONTRACT_ID, REASONING_CANDIDATE_CONTRACT_ID, ReasoningArtifact,
+    ReasoningCandidate, RejectAllEvidenceAdmission, RepeatedDiagnosticReport,
+    ResolutionAdapterError, ResolutionBenchmarkAggregate, ResolutionBenchmarkCaseResult,
+    ResolutionBenchmarkFixture, ResolutionCost, ResolutionPlanner, ResolutionReason,
+    ResolutionRequest, ResolutionRequestBudget, ResolutionResolver, ResolutionResolverContribution,
     ResolutionResolverOutput, ResolutionTarget, ResolverClass, ScopeCoverage,
     SemanticDiagnosticKind, SemanticRuntimeError, SemanticRuntimeIdentity,
     SemanticRuntimeObservation, SemanticRuntimeProfile, SoftJudgeCalibrationFixture,
     SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeFallbackReason, SoftJudgeIdentity,
     SoftJudgeObservation, StandardGroundingPipeline, StrictAcceptancePolicy,
     StructuredFactConflictDetector, TrustedVerificationPass, Verdict, VerificationPass,
-    VerificationReceipt, aggregate_benchmark, aggregate_claim_corpus,
+    VerificationReceipt, admit_investigation_plan, aggregate_benchmark, aggregate_claim_corpus,
     aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
     aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
     build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
+    build_investigation_action_request, build_investigation_plan_request,
     canonical_verified_target_answer, canonical_verified_target_partial_answer,
     canonical_verified_target_reject_partial_answer, classify_materialization_failure, evaluate,
     evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture, finalize_answer,
@@ -50,6 +55,7 @@ use reasoning_harness_providers::{
     EXTERNAL_COMMAND_RESOLVER_ID, EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver,
     ExternalCommandResolverConfig, ExternalEvidenceAdmissionConfig,
     ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy, GoogleAdapter,
+    INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID, InvestigationExternalCommandResolver,
     MCP_READONLY_V2_RESOLVER_ID, McpReadOnlyResolverConfig, McpReadOnlyResolverV2, MistralAdapter,
     NvidiaAdapter, TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier,
     TrustedCommandVerifierConfig,
@@ -230,6 +236,87 @@ struct ResolutionFileConfig {
     external_command: Option<ExternalCommandResolverFileConfig>,
     mcp_readonly: Option<McpReadOnlyResolverFileConfig>,
     trusted_command: Option<TrustedCommandVerifierFileConfig>,
+    investigation: Option<InvestigationFileConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct InvestigationFileConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max_targets: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max_rounds: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max_actions: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max_no_progress_rounds: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    planner_max_tokens: Option<u32>,
+    capabilities: Vec<InvestigationCapabilityFileConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
+enum InvestigationCapabilityFileConfig {
+    ExternalCommand {
+        id: String,
+        read_only: bool,
+        #[serde(default)]
+        supported_fact_keys: BTreeSet<String>,
+        program: String,
+        #[serde(default)]
+        args: Vec<String>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        timeout_ms: Option<u64>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        max_response_bytes: Option<usize>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        admission: Option<ExternalEvidenceAdmissionFileConfig>,
+    },
+    McpReadonly {
+        id: String,
+        read_only: bool,
+        #[serde(default)]
+        supported_fact_keys: BTreeSet<String>,
+        server_id: String,
+        program: String,
+        #[serde(default)]
+        args: Vec<String>,
+        #[serde(default)]
+        allowed_tools: BTreeSet<String>,
+        tool: String,
+        #[serde(default)]
+        fixed_arguments: BTreeMap<String, serde_json::Value>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        provenance_argument: Option<String>,
+        source: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        timeout_ms: Option<u64>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        max_response_bytes: Option<usize>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        admission: Option<ExternalEvidenceAdmissionFileConfig>,
+    },
+}
+
+#[derive(Debug, Clone)]
+enum InvestigationResolverConfig {
+    ExternalCommand(ExternalCommandResolverConfig),
+    McpReadonly(McpReadOnlyResolverConfig),
+}
+
+#[derive(Debug, Clone)]
+struct ResolvedInvestigationCapability {
+    descriptor: InvestigationCapability,
+    resolver: InvestigationResolverConfig,
+    admission: Option<ExternalEvidenceAdmissionConfig>,
+}
+
+#[derive(Debug, Clone)]
+struct ResolvedInvestigationConfig {
+    policy: InvestigationPolicy,
+    planner_max_tokens: u32,
+    capabilities: Vec<ResolvedInvestigationCapability>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -394,6 +481,66 @@ impl LiveGenerator {
         }
     }
 
+    async fn plan_investigation(
+        &self,
+        task: &str,
+        capabilities: &[InvestigationCapability],
+        max_tokens: u32,
+        seed: Option<u64>,
+        requested_model: &str,
+    ) -> Result<(InvestigationPlanProposal, GenerationObservation), GenerationFailure> {
+        let request = build_investigation_plan_request(task, capabilities, Some(max_tokens), seed)
+            .map_err(|error| {
+                generation_failure(
+                    self.provider_label(),
+                    requested_model,
+                    Instant::now(),
+                    ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+                )
+            })?;
+        run_structured_json_call(
+            self.adapter(),
+            self.provider_label(),
+            requested_model,
+            request,
+        )
+        .await
+    }
+
+    async fn choose_investigation_action(
+        &self,
+        task: &str,
+        telemetry: &InvestigationTelemetry,
+        max_tokens: u32,
+        seed: Option<u64>,
+        requested_model: &str,
+    ) -> Result<(InvestigationActionProposal, GenerationObservation), GenerationFailure> {
+        let request = build_investigation_action_request(task, telemetry, Some(max_tokens), seed)
+            .map_err(|error| {
+            generation_failure(
+                self.provider_label(),
+                requested_model,
+                Instant::now(),
+                ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+            )
+        })?;
+        run_structured_json_call(
+            self.adapter(),
+            self.provider_label(),
+            requested_model,
+            request,
+        )
+        .await
+    }
+
+    fn provider_label(&self) -> &'static str {
+        match self {
+            Self::Mistral(_) => "mistral",
+            Self::Google(_) => "google",
+            Self::Nvidia(_) => "nvidia",
+        }
+    }
+
     async fn render_final(
         &self,
         task: &str,
@@ -449,6 +596,98 @@ impl LiveGenerator {
                 )
                 .await
             }
+        }
+    }
+}
+
+async fn run_structured_json_call<T: DeserializeOwned>(
+    adapter: &dyn ModelAdapter,
+    provider: &'static str,
+    requested_model: &str,
+    request: ModelRequest,
+) -> Result<(T, GenerationObservation), GenerationFailure> {
+    let started = Instant::now();
+    let schema = match &request.output_format {
+        ModelOutputFormat::JsonSchema { schema, .. } => Some(schema.clone()),
+        _ => None,
+    };
+    let first = adapter
+        .generate(request.clone())
+        .await
+        .map_err(|error| generation_failure(provider, requested_model, started, error))?;
+    match serde_json::from_str::<T>(&first.text) {
+        Ok(value) => Ok((
+            value,
+            GenerationObservation {
+                provider,
+                model: first.model,
+                usage: first.usage,
+                latency_ms: started.elapsed().as_millis(),
+                provider_attempts: first.provider_attempts,
+                cost_usd: None,
+            },
+        )),
+        Err(first_error) => {
+            let Some(schema) = schema else {
+                return Err(generation_failure(
+                    provider,
+                    requested_model,
+                    started,
+                    ModelError::new(ModelErrorKind::Protocol, first_error.to_string())
+                        .with_provider_attempts(first.provider_attempts),
+                ));
+            };
+            let mut fallback = request;
+            fallback.output_format = ModelOutputFormat::JsonObject;
+            fallback.task = format!(
+                "JSON Schema:\n{}\n\n{}\n\nReturn exactly one JSON object conforming to the schema and no prose.",
+                serde_json::to_string_pretty(&schema).unwrap_or_else(|_| "{}".into()),
+                fallback.task
+            );
+            let second = adapter.generate(fallback).await.map_err(|error| {
+                let attempts = first.provider_attempts.saturating_add(error.provider_attempts);
+                generation_failure(
+                    provider,
+                    requested_model,
+                    started,
+                    ModelError::new(
+                        error.kind,
+                        format!(
+                            "structured planner fallback failed after invalid first JSON: first_error={first_error}; {error}"
+                        ),
+                    )
+                    .with_provider_attempts(attempts),
+                )
+            })?;
+            let value = serde_json::from_str::<T>(&second.text).map_err(|second_error| {
+                generation_failure(
+                    provider,
+                    requested_model,
+                    started,
+                    ModelError::new(
+                        ModelErrorKind::Protocol,
+                        format!(
+                            "provider returned invalid structured planner JSON after fallback: first_error={first_error}; second_error={second_error}"
+                        ),
+                    )
+                    .with_provider_attempts(
+                        first.provider_attempts.saturating_add(second.provider_attempts),
+                    ),
+                )
+            })?;
+            Ok((
+                value,
+                GenerationObservation {
+                    provider,
+                    model: second.model,
+                    usage: add_usage(&first.usage, &second.usage),
+                    latency_ms: started.elapsed().as_millis(),
+                    provider_attempts: first
+                        .provider_attempts
+                        .saturating_add(second.provider_attempts),
+                    cost_usd: None,
+                },
+            ))
         }
     }
 }
@@ -1049,6 +1288,30 @@ struct NaturalExposedTextObservation {
 }
 
 #[derive(Debug, Serialize)]
+struct NaturalInvestigationObservation {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    telemetry: Option<InvestigationTelemetry>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    plan_generation: Option<GenerationObservation>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    action_generations: Vec<GenerationObservation>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    candidate_regenerations: Vec<GenerationObservation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    generation_failure: Option<GenerationFailure>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    plan_rejection: Option<String>,
+}
+
+#[derive(Debug)]
+struct NaturalInvestigationRun {
+    candidate: ReasoningCandidate,
+    outcome: HarnessOutcome,
+    resolution_rounds: Vec<GroundedResolutionOutcome>,
+    observation: NaturalInvestigationObservation,
+}
+
+#[derive(Debug, Serialize)]
 struct NaturalOutput {
     output_contract: &'static str,
     task: String,
@@ -1062,6 +1325,8 @@ struct NaturalOutput {
     initial_outcome: HarnessOutcome,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     resolution_rounds: Vec<GroundedResolutionOutcome>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    investigation: Option<NaturalInvestigationObservation>,
     finalization: FinalizationResult,
     exposed_text: NaturalExposedTextObservation,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -1101,7 +1366,8 @@ impl ResolutionResolver for LocalFactStoreResolver {
             ResolutionTarget::EvidenceQualification { requirement } => {
                 Some(&requirement.proposition)
             }
-            ResolutionTarget::CausalRelation { .. }
+            ResolutionTarget::InvestigationQuestion { .. }
+            | ResolutionTarget::CausalRelation { .. }
             | ResolutionTarget::ClaimRevision { .. }
             | ResolutionTarget::HumanReview { .. } => None,
         };
@@ -1327,6 +1593,97 @@ fn run_standard_grounding(
         Box::new(AssumptionDiscoveryPass),
     ];
     run_harness(input, candidate, &passes, &StrictAcceptancePolicy)
+        .map_err(|error| CliError::new("harness_state", error.to_string()))
+}
+
+#[derive(Debug, Clone)]
+struct SingleRequestPlanner {
+    request: ResolutionRequest,
+}
+
+impl ResolutionPlanner for SingleRequestPlanner {
+    fn plan(
+        &self,
+        outcome: &HarnessOutcome,
+        _policy: &GroundedResolutionPolicy,
+    ) -> Vec<ResolutionRequest> {
+        if outcome.verdict == Verdict::Accept {
+            vec![]
+        } else {
+            vec![self.request.clone()]
+        }
+    }
+}
+
+struct AcquisitionOnlyResolver<'a> {
+    inner: &'a dyn ResolutionResolver,
+}
+
+impl ResolutionResolver for AcquisitionOnlyResolver<'_> {
+    fn name(&self) -> &'static str {
+        self.inner.name()
+    }
+
+    fn class(&self) -> ResolverClass {
+        ResolverClass::EvidenceAcquisition
+    }
+
+    fn config_id(&self) -> Option<&str> {
+        self.inner.config_id()
+    }
+
+    fn resolve(
+        &self,
+        request: &ResolutionRequest,
+        attempt_index: usize,
+    ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
+        let output = self.inner.resolve(request, attempt_index)?;
+        match output.contribution {
+            ResolutionResolverContribution::AcquiredEvidence { .. }
+            | ResolutionResolverContribution::NoResult => Ok(output),
+            ResolutionResolverContribution::CandidateRevision { .. }
+            | ResolutionResolverContribution::HumanReviewRequired => Err(ResolutionAdapterError {
+                kind: reasoning_harness_core::ResolutionAdapterErrorKind::PolicyDenied,
+                cost: output.cost,
+            }),
+        }
+    }
+}
+
+fn run_investigation_resolution(
+    mut input: HarnessInput,
+    candidate: ReasoningCandidate,
+    resolver: &dyn ResolutionResolver,
+    admission: Option<&ExternalEvidenceAdmissionPolicy>,
+    request: ResolutionRequest,
+) -> Result<GroundedResolutionOutcome, CliError> {
+    if let Some(admission) = admission {
+        input = prepare_external_resolution_input(input, admission)?;
+    }
+    let pipeline = StandardGroundingPipeline;
+    let planner = SingleRequestPlanner { request };
+    let renderer = CanonicalFinalAnswerRenderer;
+    let acquisition = AcquisitionOnlyResolver { inner: resolver };
+    let resolver_refs: [&dyn ResolutionResolver; 1] = [&acquisition];
+    let trusted_verifiers: [&dyn reasoning_harness_core::TrustedResolutionVerifier; 0] = [];
+    let reject_all = RejectAllEvidenceAdmission;
+    let evidence_admission: &dyn EvidenceAdmissionPolicy = admission
+        .map(|value| value as &dyn EvidenceAdmissionPolicy)
+        .unwrap_or(&reject_all);
+    let runtime = GroundedResolutionRuntime {
+        pipeline: &pipeline,
+        planner: &planner,
+        evidence_admission,
+        resolvers: &resolver_refs,
+        trusted_verifiers: &trusted_verifiers,
+        renderer: &renderer,
+    };
+    let mut policy = GroundedResolutionPolicy::default();
+    policy.budget.max_attempts = 1;
+    policy.budget.required_authority_class =
+        admission.and_then(|admission| admission.minimum_authority_class().map(str::to_string));
+    runtime
+        .run(input, candidate, &policy)
         .map_err(|error| CliError::new("harness_state", error.to_string()))
 }
 
@@ -1610,6 +1967,305 @@ async fn apply_natural_answer_safety(
     Ok((baseline, observations))
 }
 
+fn investigation_attempt_status(
+    round: &GroundedResolutionOutcome,
+) -> (InvestigationObservationStatus, usize) {
+    let Some(attempt) = round.attempts.last() else {
+        return (InvestigationObservationStatus::NoResult, 0);
+    };
+    let admitted = attempt.admitted_evidence_ids.len();
+    let status = match attempt.status {
+        reasoning_harness_core::ResolutionAttemptStatus::AppliedEvidence => {
+            InvestigationObservationStatus::AppliedEvidence
+        }
+        reasoning_harness_core::ResolutionAttemptStatus::RejectedUntrustedEvidence => {
+            InvestigationObservationStatus::RejectedEvidence
+        }
+        reasoning_harness_core::ResolutionAttemptStatus::NoResult => {
+            InvestigationObservationStatus::NoResult
+        }
+        reasoning_harness_core::ResolutionAttemptStatus::AppliedVerification => {
+            InvestigationObservationStatus::VerificationProgress
+        }
+        reasoning_harness_core::ResolutionAttemptStatus::AppliedCandidateRevision
+        | reasoning_harness_core::ResolutionAttemptStatus::HumanReviewRequired
+        | reasoning_harness_core::ResolutionAttemptStatus::AdapterUnavailable
+        | reasoning_harness_core::ResolutionAttemptStatus::MalformedOutput
+        | reasoning_harness_core::ResolutionAttemptStatus::AdapterFailed
+        | reasoning_harness_core::ResolutionAttemptStatus::TransportFailure
+        | reasoning_harness_core::ResolutionAttemptStatus::AuthenticationFailure
+        | reasoning_harness_core::ResolutionAttemptStatus::PermissionDenied
+        | reasoning_harness_core::ResolutionAttemptStatus::ProtocolFailure
+        | reasoning_harness_core::ResolutionAttemptStatus::ToolFailed
+        | reasoning_harness_core::ResolutionAttemptStatus::TimedOut
+        | reasoning_harness_core::ResolutionAttemptStatus::PolicyDenied
+        | reasoning_harness_core::ResolutionAttemptStatus::BudgetExceeded => {
+            InvestigationObservationStatus::OperationalFailure
+        }
+    };
+    (status, admitted)
+}
+
+fn supported_claim_count(outcome: &HarnessOutcome) -> usize {
+    outcome
+        .artifact
+        .claims
+        .iter()
+        .filter(|claim| {
+            matches!(
+                claim.state,
+                reasoning_harness_core::EpistemicState::Known
+                    | reasoning_harness_core::EpistemicState::Supported
+            )
+        })
+        .count()
+}
+
+fn run_configured_investigation_capability(
+    capability: &ResolvedInvestigationCapability,
+    input: HarnessInput,
+    candidate: ReasoningCandidate,
+    request: ResolutionRequest,
+) -> Result<GroundedResolutionOutcome, CliError> {
+    let admission = capability
+        .admission
+        .clone()
+        .map(ExternalEvidenceAdmissionPolicy::new);
+    match &capability.resolver {
+        InvestigationResolverConfig::ExternalCommand(config) => {
+            let resolver = InvestigationExternalCommandResolver::new(config.clone());
+            run_investigation_resolution(input, candidate, &resolver, admission.as_ref(), request)
+        }
+        InvestigationResolverConfig::McpReadonly(config) => {
+            let resolver = McpReadOnlyResolverV2::new(config.clone());
+            run_investigation_resolution(input, candidate, &resolver, admission.as_ref(), request)
+        }
+    }
+}
+
+struct NaturalInvestigationCall<'a> {
+    task: &'a str,
+    input: HarnessInput,
+    candidate: ReasoningCandidate,
+    initial_outcome: HarnessOutcome,
+    generator: &'a LiveGenerator,
+    config: &'a ResolvedInvestigationConfig,
+    model: &'a str,
+    max_tokens: u32,
+    seed: Option<u64>,
+}
+
+async fn run_natural_investigation(
+    call: NaturalInvestigationCall<'_>,
+) -> Result<NaturalInvestigationRun, CliError> {
+    let NaturalInvestigationCall {
+        task,
+        input,
+        candidate,
+        initial_outcome,
+        generator,
+        config,
+        model,
+        max_tokens,
+        seed,
+    } = call;
+    let descriptors = config
+        .capabilities
+        .iter()
+        .map(|capability| capability.descriptor.clone())
+        .collect::<Vec<_>>();
+    let mut observation = NaturalInvestigationObservation {
+        telemetry: None,
+        plan_generation: None,
+        action_generations: vec![],
+        candidate_regenerations: vec![],
+        generation_failure: None,
+        plan_rejection: None,
+    };
+
+    let (proposal, plan_generation) = match generator
+        .plan_investigation(
+            task,
+            &descriptors,
+            config.planner_max_tokens.min(max_tokens),
+            seed,
+            model,
+        )
+        .await
+    {
+        Ok(result) => result,
+        Err(failure) => {
+            observation.generation_failure = Some(failure);
+            return Ok(NaturalInvestigationRun {
+                candidate,
+                outcome: initial_outcome,
+                resolution_rounds: vec![],
+                observation,
+            });
+        }
+    };
+    observation.plan_generation = Some(plan_generation);
+    let targets = match admit_investigation_plan(proposal, &config.policy) {
+        Ok(targets) => targets,
+        Err(reason) => {
+            observation.plan_rejection = Some(reason.into());
+            return Ok(NaturalInvestigationRun {
+                candidate,
+                outcome: initial_outcome,
+                resolution_rounds: vec![],
+                observation,
+            });
+        }
+    };
+    let mut state = InvestigationState::new(targets, descriptors, config.policy.clone())
+        .map_err(|reason| CliError::new("configuration", reason))?;
+    let mut current_input = input;
+    let mut current_candidate = candidate;
+    let mut current_outcome = initial_outcome;
+    let mut resolution_rounds = Vec::new();
+
+    loop {
+        if current_outcome.verdict == Verdict::Accept {
+            state.stop(InvestigationStopReason::Resolved);
+            break;
+        }
+        if state.remaining_action_count() == 0 {
+            state.stop(InvestigationStopReason::TargetsExhausted);
+            break;
+        }
+        let round_index = match state.begin_round() {
+            Ok(round) => round,
+            Err(_) => break,
+        };
+        state.note_planner_call();
+        let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
+        let (proposal, action_generation) = match generator
+            .choose_investigation_action(
+                task,
+                state.telemetry(),
+                config.planner_max_tokens.min(max_tokens),
+                action_seed,
+                model,
+            )
+            .await
+        {
+            Ok(result) => result,
+            Err(failure) => {
+                state.stop(InvestigationStopReason::OperationalTerminal);
+                observation.generation_failure = Some(failure);
+                break;
+            }
+        };
+        observation.action_generations.push(action_generation);
+        let action = match state.validate_action(proposal) {
+            Ok(Some(action)) => action,
+            Ok(None) => break,
+            Err(_) => continue,
+        };
+        let target = state.target(&action.target_id).cloned().ok_or_else(|| {
+            CliError::new("harness_state", "validated investigation target missing")
+        })?;
+        let capability = config
+            .capabilities
+            .iter()
+            .find(|capability| capability.descriptor.id == action.capability_id)
+            .ok_or_else(|| {
+                CliError::new(
+                    "harness_state",
+                    "validated investigation capability missing",
+                )
+            })?;
+        let request = ResolutionRequest {
+            id: format!(
+                "investigation:{}:{}",
+                action.target_id, action.capability_id
+            ),
+            reason: ResolutionReason::Investigation,
+            target: ResolutionTarget::InvestigationQuestion {
+                target_id: target.id,
+                question: target.question,
+                expected_fact_key: target.expected_fact_key,
+            },
+            resolver_class: ResolverClass::EvidenceAcquisition,
+            budget: ResolutionRequestBudget {
+                max_attempts: Some(1),
+                ..ResolutionRequestBudget::default()
+            },
+        };
+        let before_supported = supported_claim_count(&current_outcome);
+        let before_verdict = current_outcome.verdict;
+        let acquisition = run_configured_investigation_capability(
+            capability,
+            current_input.clone(),
+            current_candidate.clone(),
+            request,
+        )?;
+        let (mut status, admitted_evidence) = investigation_attempt_status(&acquisition);
+        current_input = input_from_artifact(&acquisition.final_artifact);
+        resolution_rounds.push(acquisition);
+        let mut verification_progress = false;
+
+        if admitted_evidence > 0 {
+            let regeneration_seed = seed
+                .and_then(|seed| seed.checked_add(10_000_u64.saturating_add(round_index as u64)));
+            match generator
+                .generate(&current_input, max_tokens, regeneration_seed, model)
+                .await
+            {
+                Ok((regenerated, generation)) => {
+                    observation.candidate_regenerations.push(generation);
+                    current_candidate = regenerated;
+                    current_outcome =
+                        run_standard_grounding(current_input.clone(), current_candidate.clone())?;
+                    verification_progress = supported_claim_count(&current_outcome)
+                        > before_supported
+                        || (before_verdict != Verdict::Accept
+                            && current_outcome.verdict == Verdict::Accept);
+                    status = if verification_progress {
+                        InvestigationObservationStatus::VerificationProgress
+                    } else {
+                        InvestigationObservationStatus::Ambiguous
+                    };
+                }
+                Err(failure) => {
+                    state.stop(InvestigationStopReason::OperationalTerminal);
+                    observation.generation_failure = Some(failure);
+                }
+            }
+        } else {
+            current_outcome =
+                run_standard_grounding(current_input.clone(), current_candidate.clone())?;
+        }
+
+        state.record_observation(
+            round_index,
+            action,
+            status,
+            admitted_evidence,
+            verification_progress,
+        );
+        if current_outcome.verdict == Verdict::Accept {
+            state.stop(InvestigationStopReason::Resolved);
+            break;
+        }
+        if state.telemetry().stop_reason.is_some() {
+            break;
+        }
+        if state.remaining_action_count() == 0 {
+            state.stop(InvestigationStopReason::TargetsExhausted);
+            break;
+        }
+    }
+
+    observation.telemetry = Some(state.into_telemetry());
+    Ok(NaturalInvestigationRun {
+        candidate: current_candidate,
+        outcome: current_outcome,
+        resolution_rounds,
+        observation,
+    })
+}
+
 async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
     let task = args
         .task
@@ -1645,13 +2301,22 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         .map_err(|error| CliError::new("configuration", error))?;
     let trusted_verifier_config = resolve_trusted_command_config(&loaded_config)
         .map_err(|error| CliError::new("configuration", error))?;
+    let investigation_config = resolve_investigation_config(&loaded_config)
+        .map_err(|error| CliError::new("configuration", error))?;
+    let investigation_has_admission = investigation_config.as_ref().is_some_and(|config| {
+        config
+            .capabilities
+            .iter()
+            .any(|capability| capability.admission.is_some())
+    });
     let configured_resolver_modes = usize::from(!args.resolver_fact.is_empty())
         + usize::from(external_resolver_config.is_some())
-        + usize::from(mcp_resolver_config.is_some());
+        + usize::from(mcp_resolver_config.is_some())
+        + usize::from(investigation_config.is_some());
     if configured_resolver_modes > 1 {
         return Err(CliError::new(
             "configuration",
-            "choose exactly one resolver lane: --resolver-fact, external_command, or mcp_readonly",
+            "choose exactly one acquisition lane: --resolver-fact, external_command, mcp_readonly, or investigation",
         ));
     }
     if mcp_admission_config.is_some() && mcp_resolver_config.is_none() {
@@ -1685,7 +2350,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
     let safety_runtime = safety_profile.identity();
     let generator = LiveGenerator::try_from_provider(provider, &model)
         .map_err(|error| CliError::new(model_error_class(error.kind), error.to_string()))?;
-    let (candidate, generation) = generator
+    let (mut candidate, generation) = generator
         .generate(&built.input, resolved.max_tokens, args.seed, &model)
         .await
         .map_err(|failure| {
@@ -1702,40 +2367,61 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
     let mcp_admission = mcp_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
     let trusted_verifier = trusted_verifier_config.map(TrustedCommandVerifier::new);
     let mut resolution_rounds = Vec::new();
+    let mut investigation_observation = None;
     let mut final_artifact = initial_outcome.artifact.clone();
     let mut final_verdict = initial_outcome.verdict;
 
     if final_verdict != Verdict::Accept {
-        let round = if !resolver.facts.is_empty() {
-            Some(run_local_resolution(
-                built.input.clone(),
-                candidate.clone(),
-                &resolver,
-                args.max_resolution_attempts,
-            )?)
-        } else if let Some(external) = external_resolver.as_ref() {
-            Some(run_external_resolution(
-                built.input.clone(),
-                candidate.clone(),
-                external,
-                external_admission.as_ref(),
-                args.max_resolution_attempts,
-            )?)
-        } else if let Some(mcp) = mcp_resolver.as_ref() {
-            Some(run_external_resolution(
-                built.input.clone(),
-                candidate.clone(),
-                mcp,
-                mcp_admission.as_ref(),
-                args.max_resolution_attempts,
-            )?)
+        if let Some(config) = investigation_config.as_ref() {
+            let run = run_natural_investigation(NaturalInvestigationCall {
+                task: &task,
+                input: built.input.clone(),
+                candidate: candidate.clone(),
+                initial_outcome: initial_outcome.clone(),
+                generator: &generator,
+                config,
+                model: &model,
+                max_tokens: resolved.max_tokens,
+                seed: args.seed,
+            })
+            .await?;
+            candidate = run.candidate;
+            final_artifact = run.outcome.artifact.clone();
+            final_verdict = run.outcome.verdict;
+            resolution_rounds.extend(run.resolution_rounds);
+            investigation_observation = Some(run.observation);
         } else {
-            None
-        };
-        if let Some(round) = round {
-            final_artifact = round.final_artifact.clone();
-            final_verdict = round.final_verdict;
-            resolution_rounds.push(round);
+            let round = if !resolver.facts.is_empty() {
+                Some(run_local_resolution(
+                    built.input.clone(),
+                    candidate.clone(),
+                    &resolver,
+                    args.max_resolution_attempts,
+                )?)
+            } else if let Some(external) = external_resolver.as_ref() {
+                Some(run_external_resolution(
+                    built.input.clone(),
+                    candidate.clone(),
+                    external,
+                    external_admission.as_ref(),
+                    args.max_resolution_attempts,
+                )?)
+            } else if let Some(mcp) = mcp_resolver.as_ref() {
+                Some(run_external_resolution(
+                    built.input.clone(),
+                    candidate.clone(),
+                    mcp,
+                    mcp_admission.as_ref(),
+                    args.max_resolution_attempts,
+                )?)
+            } else {
+                None
+            };
+            if let Some(round) = round {
+                final_artifact = round.final_artifact.clone();
+                final_verdict = round.final_verdict;
+                resolution_rounds.push(round);
+            }
         }
     }
     if final_verdict != Verdict::Accept {
@@ -1928,7 +2614,9 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             provider: Some(provider_name(provider)),
             model: Some(model),
             max_tokens: Some(resolved.max_tokens),
-            resolver_adapter: if external_resolver.is_some() {
+            resolver_adapter: if investigation_config.is_some() {
+                Some(INVESTIGATION_RUNTIME_ID)
+            } else if external_resolver.is_some() {
                 Some(EXTERNAL_COMMAND_RESOLVER_ID)
             } else if mcp_resolver.is_some() {
                 Some(MCP_READONLY_V2_RESOLVER_ID)
@@ -1937,7 +2625,10 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             } else {
                 None
             },
-            resolver_admission: if external_admission.is_some() || mcp_admission.is_some() {
+            resolver_admission: if investigation_has_admission
+                || external_admission.is_some()
+                || mcp_admission.is_some()
+            {
                 Some(EXTERNAL_EVIDENCE_ADMISSION_ID)
             } else {
                 None
@@ -1955,6 +2646,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         generation,
         initial_outcome,
         resolution_rounds,
+        investigation: investigation_observation,
         finalization,
         exposed_text: NaturalExposedTextObservation {
             policy_id: EXPOSED_TEXT_POLICY_ID,
@@ -4048,6 +4740,9 @@ fn merge_cli_config(base: &mut CliFileConfig, overlay: CliFileConfig) {
     if overlay.resolution.trusted_command.is_some() {
         base.resolution.trusted_command = overlay.resolution.trusted_command;
     }
+    if overlay.resolution.investigation.is_some() {
+        base.resolution.investigation = overlay.resolution.investigation;
+    }
 }
 
 fn resolve_external_command_config(
@@ -4177,6 +4872,239 @@ fn resolve_mcp_readonly_config(
         source: source.into(),
         timeout_ms,
         max_response_bytes,
+    }))
+}
+
+fn resolve_investigation_config(
+    loaded: &LoadedCliConfig,
+) -> Result<Option<ResolvedInvestigationConfig>, String> {
+    let Some(configured) = loaded.config.resolution.investigation.as_ref() else {
+        return Ok(None);
+    };
+    if configured.capabilities.is_empty() || configured.capabilities.len() > 16 {
+        return Err("resolution.investigation.capabilities must contain 1-16 entries".into());
+    }
+    let defaults = InvestigationPolicy::default();
+    let policy = InvestigationPolicy {
+        max_targets: configured.max_targets.unwrap_or(defaults.max_targets),
+        max_rounds: configured.max_rounds.unwrap_or(defaults.max_rounds),
+        max_actions: configured.max_actions.unwrap_or(defaults.max_actions),
+        max_no_progress_rounds: configured
+            .max_no_progress_rounds
+            .unwrap_or(defaults.max_no_progress_rounds),
+    };
+    if policy.max_targets == 0
+        || policy.max_rounds == 0
+        || policy.max_actions == 0
+        || policy.max_no_progress_rounds == 0
+    {
+        return Err("resolution.investigation limits must be at least 1".into());
+    }
+    let planner_max_tokens = configured.planner_max_tokens.unwrap_or(256);
+    if planner_max_tokens == 0 || planner_max_tokens > 2048 {
+        return Err("resolution.investigation.planner_max_tokens must be in 1..=2048".into());
+    }
+
+    let mut ids = BTreeSet::new();
+    let mut capabilities = Vec::with_capacity(configured.capabilities.len());
+    let mut authority_policy: Option<EvidenceAuthorityPolicy> = None;
+    for capability in &configured.capabilities {
+        let (descriptor, resolver, admission) = match capability {
+            InvestigationCapabilityFileConfig::ExternalCommand {
+                id,
+                read_only,
+                supported_fact_keys,
+                program,
+                args,
+                timeout_ms,
+                max_response_bytes,
+                admission,
+            } => {
+                let id = id.trim();
+                if id.is_empty() || !ids.insert(id.to_string()) {
+                    return Err(
+                        "resolution.investigation capability ids must be unique and non-empty"
+                            .into(),
+                    );
+                }
+                if !read_only {
+                    return Err(format!(
+                        "resolution.investigation capability {id} must declare read_only=true"
+                    ));
+                }
+                if program.trim().is_empty() {
+                    return Err(format!(
+                        "resolution.investigation capability {id} program must be non-empty"
+                    ));
+                }
+                if supported_fact_keys.iter().any(|key| key.trim().is_empty()) {
+                    return Err(format!(
+                        "resolution.investigation capability {id} has an empty supported_fact_key"
+                    ));
+                }
+                let timeout_ms = timeout_ms.unwrap_or(DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS);
+                let max_response_bytes =
+                    max_response_bytes.unwrap_or(DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES);
+                if timeout_ms == 0 || max_response_bytes == 0 {
+                    return Err(format!(
+                        "resolution.investigation capability {id} operational limits must be at least 1"
+                    ));
+                }
+                let owner = format!("resolution.investigation.capabilities[{id}].admission");
+                let admission = admission
+                    .as_ref()
+                    .map(|admission| {
+                        resolve_evidence_admission_config(
+                            admission,
+                            INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID,
+                            &owner,
+                        )
+                    })
+                    .transpose()?;
+                (
+                    InvestigationCapability {
+                        id: id.into(),
+                        adapter: INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID.into(),
+                        read_only: true,
+                        supported_fact_keys: supported_fact_keys.clone(),
+                    },
+                    InvestigationResolverConfig::ExternalCommand(ExternalCommandResolverConfig {
+                        program: PathBuf::from(program.trim()),
+                        args: args.clone(),
+                        timeout_ms,
+                        max_response_bytes,
+                    }),
+                    admission,
+                )
+            }
+            InvestigationCapabilityFileConfig::McpReadonly {
+                id,
+                read_only,
+                supported_fact_keys,
+                server_id,
+                program,
+                args,
+                allowed_tools,
+                tool,
+                fixed_arguments,
+                provenance_argument,
+                source,
+                timeout_ms,
+                max_response_bytes,
+                admission,
+            } => {
+                let id = id.trim();
+                if id.is_empty() || !ids.insert(id.to_string()) {
+                    return Err(
+                        "resolution.investigation capability ids must be unique and non-empty"
+                            .into(),
+                    );
+                }
+                if !read_only {
+                    return Err(format!(
+                        "resolution.investigation capability {id} must declare read_only=true"
+                    ));
+                }
+                let server_id = server_id.trim();
+                let program = program.trim();
+                let tool = tool.trim();
+                let source = source.trim();
+                if server_id.is_empty()
+                    || program.is_empty()
+                    || tool.is_empty()
+                    || source.is_empty()
+                {
+                    return Err(format!(
+                        "resolution.investigation MCP capability {id} requires server_id, program, tool, and source"
+                    ));
+                }
+                if allowed_tools.is_empty()
+                    || allowed_tools.iter().any(|tool| tool.trim().is_empty())
+                    || !allowed_tools.contains(tool)
+                {
+                    return Err(format!(
+                        "resolution.investigation MCP capability {id} must explicitly allow the selected tool"
+                    ));
+                }
+                if supported_fact_keys.iter().any(|key| key.trim().is_empty())
+                    || fixed_arguments.keys().any(|key| key.trim().is_empty())
+                {
+                    return Err(format!(
+                        "resolution.investigation MCP capability {id} contains an empty selector/argument key"
+                    ));
+                }
+                if let Some(argument) = provenance_argument.as_deref()
+                    && (argument.trim().is_empty() || fixed_arguments.contains_key(argument))
+                {
+                    return Err(format!(
+                        "resolution.investigation MCP capability {id} provenance_argument is invalid"
+                    ));
+                }
+                let timeout_ms = timeout_ms.unwrap_or(DEFAULT_MCP_RESOLVER_TIMEOUT_MS);
+                let max_response_bytes =
+                    max_response_bytes.unwrap_or(DEFAULT_MCP_RESOLVER_MAX_RESPONSE_BYTES);
+                if timeout_ms == 0 || max_response_bytes == 0 {
+                    return Err(format!(
+                        "resolution.investigation capability {id} operational limits must be at least 1"
+                    ));
+                }
+                let owner = format!("resolution.investigation.capabilities[{id}].admission");
+                let admission = admission
+                    .as_ref()
+                    .map(|admission| {
+                        resolve_evidence_admission_config(
+                            admission,
+                            MCP_READONLY_V2_RESOLVER_ID,
+                            &owner,
+                        )
+                    })
+                    .transpose()?;
+                (
+                    InvestigationCapability {
+                        id: id.into(),
+                        adapter: MCP_READONLY_V2_RESOLVER_ID.into(),
+                        read_only: true,
+                        supported_fact_keys: supported_fact_keys.clone(),
+                    },
+                    InvestigationResolverConfig::McpReadonly(McpReadOnlyResolverConfig {
+                        server_id: server_id.into(),
+                        program: PathBuf::from(program),
+                        args: args.clone(),
+                        allowed_tools: allowed_tools.clone(),
+                        tool: tool.into(),
+                        resolver_class: ResolverClass::EvidenceAcquisition,
+                        fixed_arguments: fixed_arguments.clone(),
+                        provenance_argument: provenance_argument.clone(),
+                        source: source.into(),
+                        timeout_ms,
+                        max_response_bytes,
+                    }),
+                    admission,
+                )
+            }
+        };
+        if let Some(admission) = &admission {
+            if let Some(existing) = &authority_policy {
+                if existing != &admission.authority_policy {
+                    return Err(
+                        "resolution.investigation capability admission authority policies must match"
+                            .into(),
+                    );
+                }
+            } else {
+                authority_policy = Some(admission.authority_policy.clone());
+            }
+        }
+        capabilities.push(ResolvedInvestigationCapability {
+            descriptor,
+            resolver,
+            admission,
+        });
+    }
+    Ok(Some(ResolvedInvestigationConfig {
+        policy,
+        planner_max_tokens,
+        capabilities,
     }))
 }
 
@@ -4726,6 +5654,7 @@ mod candidate_json_tests {
                     }),
                     mcp_readonly: None,
                     trusted_command: None,
+                    investigation: None,
                 },
             },
         );
@@ -4886,6 +5815,154 @@ mod candidate_json_tests {
         let admission = resolve_mcp_admission_config(&loaded).unwrap().unwrap();
         assert_eq!(admission.resolver_name, MCP_READONLY_V2_RESOLVER_ID);
         assert_eq!(admission.sources["mcp:s:read"].authority_class, "primary");
+    }
+
+    #[test]
+    fn investigation_config_accepts_two_read_only_capabilities() {
+        let text = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"investigation":{
+            "max_targets":3,"max_rounds":4,"max_actions":5,"max_no_progress_rounds":2,
+            "planner_max_tokens":192,
+            "capabilities":[
+              {
+                "kind":"external_command","id":"region-api","read_only":true,
+                "supported_fact_keys":["service.region"],"program":"region-resolver",
+                "admission":{
+                  "evaluation_time_unix_seconds":1000,
+                  "authority_ranks":{"primary":20},"minimum_authority_class":"primary",
+                  "sources":{"api:region":{"authority_class":"primary","max_age_seconds":60}}
+                }
+              },
+              {
+                "kind":"mcp_readonly","id":"inventory-mcp","read_only":true,
+                "supported_fact_keys":["inventory.count"],"server_id":"inventory",
+                "program":"inventory-mcp","allowed_tools":["lookup"],"tool":"lookup",
+                "source":"mcp:inventory:lookup",
+                "admission":{
+                  "evaluation_time_unix_seconds":1000,
+                  "authority_ranks":{"primary":20},"minimum_authority_class":"primary",
+                  "sources":{"mcp:inventory:lookup":{"authority_class":"primary","max_age_seconds":60}}
+                }
+              }
+            ]
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(text).unwrap(),
+            sources: vec!["explicit"],
+        };
+        let resolved = resolve_investigation_config(&loaded).unwrap().unwrap();
+        assert_eq!(resolved.policy.max_targets, 3);
+        assert_eq!(resolved.policy.max_actions, 5);
+        assert_eq!(resolved.planner_max_tokens, 192);
+        assert_eq!(resolved.capabilities.len(), 2);
+        assert_eq!(resolved.capabilities[0].descriptor.id, "region-api");
+        assert_eq!(
+            resolved.capabilities[0].descriptor.adapter,
+            INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID
+        );
+        assert_eq!(resolved.capabilities[1].descriptor.id, "inventory-mcp");
+        assert_eq!(
+            resolved.capabilities[1].descriptor.adapter,
+            MCP_READONLY_V2_RESOLVER_ID
+        );
+        assert!(
+            resolved
+                .capabilities
+                .iter()
+                .all(|capability| capability.descriptor.read_only)
+        );
+    }
+
+    #[test]
+    fn investigation_config_rejects_write_capability_and_authority_drift() {
+        let write = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"investigation":{"capabilities":[{
+            "kind":"external_command","id":"writer","read_only":false,"program":"tool"
+          }]}}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(write).unwrap(),
+            sources: vec![],
+        };
+        assert!(
+            resolve_investigation_config(&loaded)
+                .unwrap_err()
+                .contains("read_only=true")
+        );
+
+        let drift = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"investigation":{"capabilities":[
+            {
+              "kind":"external_command","id":"a","read_only":true,"program":"a",
+              "admission":{"authority_ranks":{"primary":20},"sources":{"api:a":{"authority_class":"primary","max_age_seconds":60}}}
+            },
+            {
+              "kind":"external_command","id":"b","read_only":true,"program":"b",
+              "admission":{"authority_ranks":{"secondary":10},"sources":{"api:b":{"authority_class":"secondary","max_age_seconds":60}}}
+            }
+          ]}}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(drift).unwrap(),
+            sources: vec![],
+        };
+        assert!(
+            resolve_investigation_config(&loaded)
+                .unwrap_err()
+                .contains("authority policies must match")
+        );
+    }
+
+    #[test]
+    fn investigation_acquisition_wrapper_blocks_candidate_revision() {
+        struct RevisingResolver;
+        impl ResolutionResolver for RevisingResolver {
+            fn name(&self) -> &'static str {
+                "fixture_reviser"
+            }
+            fn class(&self) -> ResolverClass {
+                ResolverClass::EvidenceAcquisition
+            }
+            fn resolve(
+                &self,
+                _request: &ResolutionRequest,
+                _attempt_index: usize,
+            ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
+                Ok(ResolutionResolverOutput {
+                    contribution: ResolutionResolverContribution::CandidateRevision {
+                        candidate: ReasoningCandidate::default(),
+                    },
+                    cost: ResolutionCost {
+                        calls: 1,
+                        ..ResolutionCost::default()
+                    },
+                })
+            }
+        }
+        let wrapper = AcquisitionOnlyResolver {
+            inner: &RevisingResolver,
+        };
+        let request = ResolutionRequest {
+            id: "investigation:t:c".into(),
+            reason: ResolutionReason::Investigation,
+            target: ResolutionTarget::InvestigationQuestion {
+                target_id: "t".into(),
+                question: "What is the value?".into(),
+                expected_fact_key: None,
+            },
+            resolver_class: ResolverClass::EvidenceAcquisition,
+            budget: ResolutionRequestBudget::default(),
+        };
+        let error = wrapper.resolve(&request, 0).unwrap_err();
+        assert_eq!(
+            error.kind,
+            reasoning_harness_core::ResolutionAdapterErrorKind::PolicyDenied
+        );
+        assert_eq!(error.cost.calls, 1);
     }
 
     #[test]

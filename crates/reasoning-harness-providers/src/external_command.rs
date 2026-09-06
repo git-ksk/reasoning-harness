@@ -15,7 +15,10 @@ use serde::{Deserialize, Serialize};
 use crate::{config_identity::stable_config_id, subprocess_deadline::run_to_exit};
 
 pub const EXTERNAL_COMMAND_RESOLVER_ID: &str = "external_command_v1";
+pub const INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID: &str = "investigation_external_command_v1";
 pub const EXTERNAL_RESOLVER_REQUEST_SCHEMA: &str = "reason-external-resolver-request-v1";
+pub const INVESTIGATION_EXTERNAL_RESOLVER_REQUEST_SCHEMA: &str =
+    "reason-investigation-external-resolver-request-v1";
 pub const EXTERNAL_RESOLVER_RESPONSE_SCHEMA: &str = "reason-external-resolver-response-v1";
 pub const DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS: u64 = 30_000;
 pub const DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES: usize = 1024 * 1024;
@@ -52,9 +55,31 @@ impl ExternalCommandResolver {
     }
 }
 
+#[derive(Debug)]
+pub struct InvestigationExternalCommandResolver {
+    config: ExternalCommandResolverConfig,
+    config_id: String,
+}
+
+impl InvestigationExternalCommandResolver {
+    pub fn new(config: ExternalCommandResolverConfig) -> Self {
+        let config_id = stable_config_id(INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID, &config);
+        Self { config, config_id }
+    }
+}
+
 #[derive(Debug, Serialize)]
 #[serde(deny_unknown_fields)]
 struct ExternalResolverRequestEnvelope<'a> {
+    schema_version: &'static str,
+    adapter_id: &'static str,
+    attempt_index: usize,
+    request: &'a ResolutionRequest,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(deny_unknown_fields)]
+struct InvestigationExternalResolverRequestEnvelope<'a> {
     schema_version: &'static str,
     adapter_id: &'static str,
     attempt_index: usize,
@@ -175,6 +200,51 @@ fn adapter_error(
     }
 }
 
+fn execute_external_payload(
+    config: &ExternalCommandResolverConfig,
+    payload: Vec<u8>,
+    started: Instant,
+) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
+    let mut command = Command::new(&config.program);
+    command.args(&config.args);
+    let output = run_to_exit(
+        &mut command,
+        payload,
+        started,
+        Duration::from_millis(config.timeout_ms),
+        config.max_response_bytes,
+    )
+    .map_err(|kind| adapter_error(kind, started, ResolutionCost::default()))?;
+
+    let response: ExternalResolverResponseEnvelope =
+        serde_json::from_slice(&output).map_err(|_| {
+            adapter_error(
+                ResolutionAdapterErrorKind::Protocol,
+                started,
+                ResolutionCost::default(),
+            )
+        })?;
+    if response.schema_version != EXTERNAL_RESOLVER_RESPONSE_SCHEMA {
+        return Err(adapter_error(
+            ResolutionAdapterErrorKind::Protocol,
+            started,
+            response.cost,
+        ));
+    }
+    match (response.contribution, response.failure) {
+        (Some(contribution), None) => Ok(ResolutionResolverOutput {
+            contribution: contribution.into(),
+            cost: measured_cost(started, response.cost),
+        }),
+        (None, Some(failure)) => Err(adapter_error(failure.kind.into(), started, response.cost)),
+        _ => Err(adapter_error(
+            ResolutionAdapterErrorKind::Protocol,
+            started,
+            response.cost,
+        )),
+    }
+}
+
 impl ResolutionResolver for ExternalCommandResolver {
     fn name(&self) -> &'static str {
         EXTERNAL_COMMAND_RESOLVER_ID
@@ -215,46 +285,60 @@ impl ResolutionResolver for ExternalCommandResolver {
             )
         })?;
 
-        let mut command = Command::new(&self.config.program);
-        command.args(&self.config.args);
-        let output = run_to_exit(
-            &mut command,
-            payload,
-            started,
-            Duration::from_millis(self.config.timeout_ms),
-            self.config.max_response_bytes,
-        )
-        .map_err(|kind| adapter_error(kind, started, ResolutionCost::default()))?;
+        execute_external_payload(&self.config, payload, started)
+    }
+}
 
-        let response: ExternalResolverResponseEnvelope =
-            serde_json::from_slice(&output).map_err(|_| {
-                adapter_error(
-                    ResolutionAdapterErrorKind::Protocol,
-                    started,
-                    ResolutionCost::default(),
-                )
-            })?;
-        if response.schema_version != EXTERNAL_RESOLVER_RESPONSE_SCHEMA {
+impl ResolutionResolver for InvestigationExternalCommandResolver {
+    fn name(&self) -> &'static str {
+        INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID
+    }
+
+    fn class(&self) -> ResolverClass {
+        ResolverClass::EvidenceAcquisition
+    }
+
+    fn config_id(&self) -> Option<&str> {
+        Some(&self.config_id)
+    }
+
+    fn resolve(
+        &self,
+        request: &ResolutionRequest,
+        attempt_index: usize,
+    ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
+        let started = Instant::now();
+        if self.config.timeout_ms == 0 || self.config.max_response_bytes == 0 {
             return Err(adapter_error(
-                ResolutionAdapterErrorKind::Protocol,
+                ResolutionAdapterErrorKind::PolicyDenied,
                 started,
-                response.cost,
+                ResolutionCost::default(),
             ));
         }
-        match (response.contribution, response.failure) {
-            (Some(contribution), None) => Ok(ResolutionResolverOutput {
-                contribution: contribution.into(),
-                cost: measured_cost(started, response.cost),
-            }),
-            (None, Some(failure)) => {
-                Err(adapter_error(failure.kind.into(), started, response.cost))
-            }
-            _ => Err(adapter_error(
+        if !matches!(
+            request.target,
+            reasoning_harness_core::ResolutionTarget::InvestigationQuestion { .. }
+        ) {
+            return Err(adapter_error(
+                ResolutionAdapterErrorKind::PolicyDenied,
+                started,
+                ResolutionCost::default(),
+            ));
+        }
+        let payload = serde_json::to_vec(&InvestigationExternalResolverRequestEnvelope {
+            schema_version: INVESTIGATION_EXTERNAL_RESOLVER_REQUEST_SCHEMA,
+            adapter_id: INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID,
+            attempt_index,
+            request,
+        })
+        .map_err(|_| {
+            adapter_error(
                 ResolutionAdapterErrorKind::Protocol,
                 started,
-                response.cost,
-            )),
-        }
+                ResolutionCost::default(),
+            )
+        })?;
+        execute_external_payload(&self.config, payload, started)
     }
 }
 
@@ -400,6 +484,43 @@ printf '%s' '{"schema_version":"reason-external-resolver-response-v1","contribut
 
     #[cfg(unix)]
     #[test]
+    fn investigation_adapter_uses_separate_request_identity() {
+        use reasoning_harness_core::{ResolutionReason, ResolutionRequestBudget, ResolutionTarget};
+        let path = test_script(
+            "investigation-request",
+            r#"request=$(cat)
+printf '%s' "$request" | grep -q '"schema_version":"reason-investigation-external-resolver-request-v1"' || exit 2
+printf '%s' "$request" | grep -q '"adapter_id":"investigation_external_command_v1"' || exit 3
+printf '%s' "$request" | grep -q '"kind":"investigation_question"' || exit 4
+printf '%s' '{"schema_version":"reason-external-resolver-response-v1","contribution":{"kind":"acquired_evidence","evidence":[{"id":"ext-investigation-1","source":"api:test","observation":"service.region=eu-west-1","facts":{"service.region":"eu-west-1"}}]}}'"#,
+        );
+        let resolver = InvestigationExternalCommandResolver::new(
+            ExternalCommandResolverConfig::with_defaults(path.clone(), vec![]),
+        );
+        let request = ResolutionRequest {
+            id: "investigation:region:api".into(),
+            reason: ResolutionReason::Investigation,
+            target: ResolutionTarget::InvestigationQuestion {
+                target_id: "region".into(),
+                question: "Which region serves the deployment?".into(),
+                expected_fact_key: Some("service.region".into()),
+            },
+            resolver_class: ResolverClass::EvidenceAcquisition,
+            budget: ResolutionRequestBudget::default(),
+        };
+        let output = resolver.resolve(&request, 0).unwrap();
+        std::fs::remove_file(path).ok();
+        assert_eq!(resolver.name(), INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID);
+        match output.contribution {
+            ResolutionResolverContribution::AcquiredEvidence { evidence } => {
+                assert_eq!(evidence[0].facts["service.region"], "eu-west-1");
+            }
+            other => panic!("expected acquired evidence, got {other:?}"),
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
     fn typed_failure_envelope_preserves_authentication_class_without_retry() {
         let path = test_script(
             "auth",
@@ -465,7 +586,10 @@ printf '%s' '{"schema_version":"reason-external-resolver-response-v1","failure":
         let resolver = ExternalCommandResolver::new(ExternalCommandResolverConfig {
             program: path.clone(),
             args: vec![],
-            timeout_ms: 1000,
+            // This test verifies response-size classification, not timeout behavior. Keep the
+            // deadline generous enough that full-workspace parallel scheduling cannot turn the
+            // intended Protocol result into a legitimate Timeout.
+            timeout_ms: 10_000,
             max_response_bytes: 64,
         });
         let error = resolver.resolve(&test_request(), 0).unwrap_err();

@@ -31,16 +31,33 @@ pub enum ResolutionReason {
     HardRefutation,
     FinalizationCoverage,
     ExplicitRequest,
+    Investigation,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ResolutionTarget {
-    Proposition { proposition: Proposition },
-    CausalRelation { relation: CausalRelation },
-    EvidenceQualification { requirement: EvidenceRequirement },
-    ClaimRevision { claim_id: String },
-    HumanReview { claim_id: Option<String> },
+    Proposition {
+        proposition: Proposition,
+    },
+    InvestigationQuestion {
+        target_id: String,
+        question: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        expected_fact_key: Option<String>,
+    },
+    CausalRelation {
+        relation: CausalRelation,
+    },
+    EvidenceQualification {
+        requirement: EvidenceRequirement,
+    },
+    ClaimRevision {
+        claim_id: String,
+    },
+    HumanReview {
+        claim_id: Option<String>,
+    },
 }
 
 impl ResolutionTarget {
@@ -48,9 +65,10 @@ impl ResolutionTarget {
         match self {
             Self::Proposition { proposition } => Some(proposition),
             Self::EvidenceQualification { requirement } => Some(&requirement.proposition),
-            Self::CausalRelation { .. } | Self::ClaimRevision { .. } | Self::HumanReview { .. } => {
-                None
-            }
+            Self::InvestigationQuestion { .. }
+            | Self::CausalRelation { .. }
+            | Self::ClaimRevision { .. }
+            | Self::HumanReview { .. } => None,
         }
     }
 }
