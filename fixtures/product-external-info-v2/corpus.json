@@ -1,0 +1,171 @@
+{
+  "schema_version": "product-external-info-corpus-v2",
+  "corpus_identity": "product-external-info-v2",
+  "freeze_state": "pre_observation",
+  "baseline_main": "a365a46d5fa948063e9ac745ad14646c23456ede",
+  "successor_of": "product-external-info-v1",
+  "historical_observation_policy": {
+    "v1_run": "33974104359",
+    "v1_result_is_immutable": true,
+    "v1_cases_reused": false,
+    "v1_target_pairs_reused": false,
+    "historical_identity_holdouts_reused": false,
+    "post_observation_tuning_forbidden": true
+  },
+  "semantic_contract": {
+    "identity": "verified-target-finalization-successor-v2",
+    "production_finalization_helpers": [
+      "canonical_verified_target_answer",
+      "canonical_verified_target_partial_answer",
+      "recover_verified_target_renderer_downgrade",
+      "canonical_verified_target_reject_partial_answer"
+    ],
+    "vendor_or_entity_specific_finalization": false,
+    "global_verdict_promotion": false,
+    "reject_to_accept_promotion": false,
+    "planner_is_untrusted": true,
+    "harness_owns_terminal_factual_exposure": true
+  },
+  "mcp_contract": {
+    "adapter": "mcp_readonly_v1",
+    "protocol_version": "2026-07-28",
+    "transport": "stdio",
+    "stateless_single_tools_call": true,
+    "generic_content_fact_promotion": false,
+    "structured_envelope": "structuredContent.reasoning_harness",
+    "authority_owner": "harness",
+    "session_negotiation_changes_in_scope": false
+  },
+  "fixture_server": {
+    "server_id": "product_external_info_fixture_v2",
+    "program": "python3",
+    "args": [
+      "scripts/product_external_info_mcp.py"
+    ],
+    "tool": "fetch_json_fact",
+    "read_only": true,
+    "resolver_class": "evidence_acquisition",
+    "network_method": "GET",
+    "allowed_hosts": [
+      "api.github.com",
+      "raw.githubusercontent.com",
+      "pypi.org",
+      "registry.npmjs.org",
+      "crates.io"
+    ],
+    "model_generated_url": false,
+    "model_generated_field": false,
+    "model_generated_source_identity": false,
+    "model_generated_authority": false,
+    "model_generated_scope": false
+  },
+  "four_arm_contract": {
+    "identity": "product-external-info-four-arm-v2",
+    "primary_comparison": [
+      "raw_model_with_external",
+      "harness_with_mcp_external"
+    ],
+    "arms": [
+      "raw_model_no_external",
+      "harness_no_external",
+      "raw_model_with_external",
+      "harness_with_mcp_external"
+    ],
+    "shared_external_snapshot_between_arms_3_and_4": true,
+    "single_live_acquisition_per_case": true,
+    "arm_3_harness_admission_or_verification": false,
+    "arm_3_mcp_output_is_authority": false,
+    "matched_conditions": [
+      "case_identity",
+      "external_snapshot",
+      "provider",
+      "model",
+      "seed",
+      "max_tokens",
+      "retrieval_opportunity"
+    ]
+  },
+  "capability_families": [
+    "current_fresh_snapshot",
+    "entity_identity_ambiguity",
+    "authoritative_source_requirement",
+    "stale_fresh_or_source_conflict",
+    "no_result_or_insufficient_evidence",
+    "typed_operational_failure",
+    "irrelevant_or_instruction_like_content"
+  ],
+  "cases": [
+    "fresh-github-rust-full-name",
+    "fresh-pypi-pydantic-name",
+    "fresh-npm-eslint-name",
+    "identity-github-axum-vs-tokio",
+    "identity-pypi-flask-vs-werkzeug",
+    "identity-npm-react-dom-vs-react",
+    "authority-crates-tokio-primary",
+    "authority-github-kubernetes-insufficient-rank",
+    "authority-claim-cannot-self-promote-requests",
+    "temporal-stale-rollup-at-evaluation",
+    "temporal-observation-after-evaluation-bun",
+    "conflict-qualified-facts-flask",
+    "no-result-github-v2-404",
+    "insufficient-generic-content-no-envelope-v2",
+    "scope-pypi-rich-cannot-expand",
+    "operational-protocol-error-v2",
+    "operational-tool-execution-error-v2",
+    "operational-timeout-v2",
+    "instruction-like-generic-content-no-authority-v2",
+    "irrelevant-observation-black-selected-fact",
+    "irrelevant-content-cannot-rescue-zustand-identity"
+  ],
+  "scoring_contract": {
+    "identity": "product-external-info-scoring-v2",
+    "comparison_arms": [
+      "raw_model_no_external",
+      "harness_no_external",
+      "raw_model_with_external",
+      "harness_with_mcp_external"
+    ],
+    "primary_comparison": [
+      "raw_model_with_external",
+      "harness_with_mcp_external"
+    ],
+    "metrics": [
+      "expected_grounded_target_coverage",
+      "false_target_abstention",
+      "expected_unknown_preservation",
+      "unsupported_grounded_claims",
+      "missed_target_insufficiency",
+      "external_acquisition_attempts",
+      "external_acquisition_successes",
+      "verification_successes",
+      "identity_unsafe_admission",
+      "stale_rejection",
+      "authority_rejection",
+      "scope_rejection",
+      "conflict_rejection",
+      "typed_operational_failures",
+      "model_latency_ms",
+      "external_latency_ms",
+      "input_tokens",
+      "output_tokens",
+      "total_tokens"
+    ],
+    "semantic_denominator_excludes_operational_failures": true,
+    "raw_external_support_rule": "only exact frozen target in expected-grounded cases may count as supported; all other raw grounded claims are unsupported",
+    "safety_gates": {
+      "unsupported_grounded_claims": 0,
+      "missed_target_insufficiency": 0,
+      "identity_unsafe_admission": 0,
+      "mcp_output_authority_self_promotion": 0
+    },
+    "expected_unknown_preservation_must_equal": 1.0
+  },
+  "live_observation_contract": {
+    "provider": "mistral",
+    "model": "ministral-8b-latest",
+    "seed": 26000,
+    "max_tokens": 1024,
+    "first_valid_run_is_canonical": true,
+    "case_or_scoring_change_after_observation_requires_new_identity": true
+  }
+}

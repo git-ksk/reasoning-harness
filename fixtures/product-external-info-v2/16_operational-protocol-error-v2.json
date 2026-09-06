@@ -1,0 +1,78 @@
+{
+  "schema_version": "product-external-info-case-v2",
+  "id": "operational-protocol-error-v2",
+  "capability_family": "typed_operational_failure",
+  "task": "A typed MCP protocol failure is operational evidence only and must remain outside the semantic correctness denominator.",
+  "expected_outcome": "operational_failure",
+  "target_proposition": {
+    "identity": "product-external-info-v2:operational-protocol-error-v2:target",
+    "key": "external.v2.operational.protocol.target",
+    "value": "reachable"
+  },
+  "acquisition_profiles": [
+    {
+      "id": "typed-rpc-protocol-error-v2",
+      "adapter": "mcp_readonly_v1",
+      "server_id": "product_external_info_fixture_v2",
+      "program": "python3",
+      "args": [
+        "scripts/product_external_info_mcp.py"
+      ],
+      "protocol_version": "2026-07-28",
+      "transport": "stdio",
+      "stateless_tools_call": true,
+      "tool": "fetch_json_fact",
+      "allowed_tools": [
+        "fetch_json_fact"
+      ],
+      "read_only": true,
+      "resolver_class": "evidence_acquisition",
+      "http_method": null,
+      "source_identity": "operational:v2:mcp:protocol",
+      "timeout_ms": 1000,
+      "fixed_arguments": {
+        "mode": "rpc_error",
+        "operational_kind": "protocol"
+      },
+      "argument_ownership": {
+        "mode": "harness_fixed",
+        "operational_kind": "harness_fixed",
+        "source_identity": "harness_config"
+      }
+    }
+  ],
+  "source_identities": [
+    "operational:v2:mcp:protocol"
+  ],
+  "expected_admission_behavior": "operational_failure",
+  "freshness_requirement": {
+    "max_age_seconds": 300,
+    "evaluation_time_owner": "harness"
+  },
+  "authority_requirement": {
+    "minimum_class": "primary",
+    "policy_owner": "harness"
+  },
+  "scope_requirement": {
+    "required_scope": null,
+    "policy_owner": "harness"
+  },
+  "expected_operational_class": "protocol",
+  "admission_policy": {
+    "evaluation_time_owner": "harness",
+    "evaluation_time_offset_seconds": 0,
+    "authority_policy": {
+      "secondary": 10,
+      "primary": 20
+    },
+    "minimum_authority_class": "primary",
+    "required_scope": null,
+    "sources": {
+      "operational:v2:mcp:protocol": {
+        "authority_class": "primary",
+        "max_age_seconds": 300,
+        "scope": null
+      }
+    }
+  }
+}

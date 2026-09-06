@@ -1,0 +1,182 @@
+{
+  "schema_version": "product-external-info-case-v2",
+  "id": "conflict-qualified-facts-flask",
+  "capability_family": "stale_fresh_or_source_conflict",
+  "task": "When two admitted external observations provide different scalar values for the same target key, do not select one as truth without a trusted conflict resolution step.",
+  "expected_outcome": "unknown",
+  "target_proposition": {
+    "identity": "product-external-info-v2:conflict-qualified-facts-flask:target",
+    "key": "external.v2.conflict.flask.identity_token",
+    "value": "pallets"
+  },
+  "acquisition_profiles": [
+    {
+      "id": "github-flask-owner-token",
+      "adapter": "mcp_readonly_v1",
+      "server_id": "product_external_info_fixture_v2",
+      "program": "python3",
+      "args": [
+        "scripts/product_external_info_mcp.py"
+      ],
+      "protocol_version": "2026-07-28",
+      "transport": "stdio",
+      "stateless_tools_call": true,
+      "tool": "fetch_json_fact",
+      "allowed_tools": [
+        "fetch_json_fact"
+      ],
+      "read_only": true,
+      "resolver_class": "evidence_acquisition",
+      "http_method": "GET",
+      "source_identity": "registry:v2:github:flask-owner-view",
+      "timeout_ms": 1000,
+      "fixed_arguments": {
+        "url": "https://api.github.com/repos/pallets/flask",
+        "value_pointer": "/owner/login",
+        "fact_key": "external.v2.conflict.flask.identity_token",
+        "authority_class": "primary",
+        "identity_assertions": [
+          {
+            "pointer": "/full_name",
+            "equals": "pallets/flask"
+          }
+        ],
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      },
+      "argument_ownership": {
+        "url": "harness_fixed",
+        "value_pointer": "harness_fixed",
+        "fact_key": "harness_fixed",
+        "authority_class": "harness_fixed",
+        "identity_assertions": "harness_fixed",
+        "scope": "harness_fixed",
+        "source_identity": "harness_config"
+      }
+    },
+    {
+      "id": "github-flask-name-token",
+      "adapter": "mcp_readonly_v1",
+      "server_id": "product_external_info_fixture_v2",
+      "program": "python3",
+      "args": [
+        "scripts/product_external_info_mcp.py"
+      ],
+      "protocol_version": "2026-07-28",
+      "transport": "stdio",
+      "stateless_tools_call": true,
+      "tool": "fetch_json_fact",
+      "allowed_tools": [
+        "fetch_json_fact"
+      ],
+      "read_only": true,
+      "resolver_class": "evidence_acquisition",
+      "http_method": "GET",
+      "source_identity": "registry:v2:github:flask-name-view",
+      "timeout_ms": 1000,
+      "fixed_arguments": {
+        "url": "https://api.github.com/repos/pallets/flask",
+        "value_pointer": "/name",
+        "fact_key": "external.v2.conflict.flask.identity_token",
+        "authority_class": "primary",
+        "identity_assertions": [
+          {
+            "pointer": "/name",
+            "equals": "pallets/flask"
+          }
+        ],
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      },
+      "argument_ownership": {
+        "url": "harness_fixed",
+        "value_pointer": "harness_fixed",
+        "fact_key": "harness_fixed",
+        "authority_class": "harness_fixed",
+        "identity_assertions": "harness_fixed",
+        "scope": "harness_fixed",
+        "source_identity": "harness_config"
+      }
+    }
+  ],
+  "source_identities": [
+    "registry:v2:github:flask-owner-view",
+    "registry:v2:github:flask-name-view"
+  ],
+  "expected_admission_behavior": "conflict_rejection",
+  "freshness_requirement": {
+    "max_age_seconds": 300,
+    "evaluation_time_owner": "harness"
+  },
+  "authority_requirement": {
+    "minimum_class": "primary",
+    "policy_owner": "harness"
+  },
+  "scope_requirement": {
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "github"
+        ]
+      }
+    },
+    "policy_owner": "harness"
+  },
+  "expected_operational_class": null,
+  "admission_policy": {
+    "evaluation_time_owner": "harness",
+    "evaluation_time_offset_seconds": 0,
+    "authority_policy": {
+      "secondary": 10,
+      "primary": 20
+    },
+    "minimum_authority_class": "primary",
+    "required_scope": {
+      "ecosystem": {
+        "kind": "values",
+        "values": [
+          "github"
+        ]
+      }
+    },
+    "sources": {
+      "registry:v2:github:flask-owner-view": {
+        "authority_class": "primary",
+        "max_age_seconds": 300,
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      },
+      "registry:v2:github:flask-name-view": {
+        "authority_class": "primary",
+        "max_age_seconds": 300,
+        "scope": {
+          "ecosystem": {
+            "kind": "values",
+            "values": [
+              "github"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
