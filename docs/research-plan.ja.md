@@ -126,7 +126,7 @@ controlled nine-scenario suite は、required evidence が欠けるか qualifica
 
 回答数が増えても unsupported final claim が増えるなら成功とはみなしません。
 
-### E7 — 最終回答に未検証の fact が混ざらないか — コアゲート実装済み
+### E7 — 最終回答に未検証の fact が混ざらないか — structured claim gate実装済み / exposed-text bindingは#210で追跡
 
 **目的:** verified artifact から final prose を生成するとき、renderer が勝手に事実を増やしたり、重要な留保を消したりしないか確認する。
 
@@ -138,6 +138,8 @@ adversarial renderer では、次のような崩し方を試します。
 - uncertainty を certainty に変換
 
 **主指標:** factual final-claim coverage、unsupported addition、uncertainty / qualification preservation、新しい proposition の verification への再 routing
+
+2026-09-06のレビューで、現行ゲートはrendererが申告したstructured `factual_claims` とartifactの一致を確認する一方、独立したfree-form `text` とのsemantic bindingを機械的には保証していないことを再現した。したがって、これまでの `unsupported grounded claims = 0` はstructured claim surfaceの指標として保持し、user-visible exposed proseのunsupported assertion / contradictionは#210とv0.4.0 E2E (#214)で別に閉じる。
 
 ### E8 — 取得できた evidence が「使ってよい evidence」か判定できるか — 決定論的ベースライン実装済み
 

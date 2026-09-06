@@ -75,8 +75,8 @@ Primary metrics:
 
 A higher answer rate is not a success if unsupported final claims increase.
 
-### E7 — grounded finalization coverage — core gate implemented
-The finalization contract gives a renderer a verified artifact and tests whether the final prose remains within the artifact's supported proposition set. Include adversarial renderers that paraphrase correctly, omit important qualifications, introduce plausible new facts, or convert uncertainty into certainty.
+### E7 — grounded finalization coverage — structured claim gate implemented / exposed-text binding tracked by #210
+The finalization contract gives a renderer a verified artifact and gates the renderer-declared structured `factual_claims` against the artifact's supported proposition set. Adversarial coverage includes paraphrase, omitted qualifications, plausible additions, and certainty strengthening, but the current free-form `text` field is a distinct surface.
 
 Primary metrics:
 
@@ -84,6 +84,8 @@ Primary metrics:
 - unsupported additions reaching final output;
 - uncertainty/qualification preservation;
 - correct routing of newly introduced factual propositions back into verification.
+
+A 2026-09-06 review reproduced that a candidate can declare the correct structured `factual_claims` while exposing contradictory or additional free-form `text` and still reach `GroundedAnswer`. Historical `unsupported grounded claims = 0` therefore remains a structured-claim metric; user-visible exposed-prose consistency and unsupported assertions are tracked separately in #210 and the v0.4.0 E2E evaluation (#214).
 
 ### E8 — evidence qualification during resolution — deterministic baseline implemented
 The controlled resolution suite includes resolvers that return evidence which is real but stale, wrong-scope, insufficient-authority, conflicting, or not-yet-valid.

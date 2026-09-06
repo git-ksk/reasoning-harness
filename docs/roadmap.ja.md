@@ -22,6 +22,12 @@ runtime は `unknown`、qualified partial answer、または abstention で停�
 
 ## 現在のプロダクトマイルストーン
 
+公開済みのexternal previewは `v0.3.0` のままだが、**現在の開発マイルストーンは v0.4.0 — Grounded Investigation & Sessions（milestone #2）** である。2026-09-06のレビューで、structured claim coverageと実際のexposed textが乖離できるcorrectness gap、subprocess deadlineのwrite側の抜け、自然文からの調査planning不足、`ReasoningThread`のproduct未接続、これらを測るE2E不足を確認した。
+
+v0.4.0の順序は **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation** とする。#204 MCP negotiated/session successorは並行で進めるが#211のdeadline primitiveを共有する。v4 cross-model replication (#208 / PR #209) は凍結済みv4の追試であり、この新ラインのtuning surfaceではない。
+
+重要な測定上の境界として、現在の `unsupported grounded claims = 0` はstructured `factual_claims` の安全性を示すが、任意のfree-form表示文章まで同じ保証が成立するとは扱わない。v0.4.0では表示文章そのもののverified-proposition consistencyをcorrectness gateへ昇格する。
+
 `v0.3.0` は現在公開されている external preview である。**v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) は完了している。後続作業は、リリース済み milestone を暗黙に延長するのではなく、新たに測定された product または research gap から開始しなければならない。
 
 v0.3.0 はデフォルトで別の reasoning mechanism を追加しない。既存の `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary を通じて、すでに実装済みの bounded control loop を、実際の external acquisition および trusted-verifier adapters に接続する。

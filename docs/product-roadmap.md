@@ -46,6 +46,34 @@ extractions, tool output, and prior model output do not become trusted evidence 
 accepted them. Evidence ingestion, admission, verification, semantic/answer-safety diagnostics, bounded
 resolution, re-verification, and final-claim coverage remain harness-owned.
 
+## v0.4.0 — Grounded Investigation & Sessions
+
+Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2). The published external preview remains v0.3.0; v0.4.0 is the next active development line, opened from product/correctness gaps measured in the 2026-09-06 review. Historical v0.3.0 acceptance is not rewritten.
+
+The milestone moves the product from a Harness that safely manages verified propositions toward a path that can **accept natural-language requests, construct a bounded investigation, acquire needed external evidence, preserve and correct evidence across turns, and bind the actually exposed answer surface to Harness-owned authority**.
+
+Implementation order:
+
+1. **#210 P0 final exposed-text binding.** Because `FinalAnswerCandidate.text` is independent from verified `factual_claims`, current `GroundedAnswer` can accept a candidate whose structured claim is correct while its exposed prose contradicts it or adds facts. The guaranteed answer surface must be rendered deterministically from Harness-owned verified propositions or use an equivalently mechanical fail-closed binding. Existing #160/#164/#206 target-recovery semantics remain authority-preserving; renderer prose never becomes authority.
+2. **#211 full-lifecycle subprocess deadline.** Cover synchronous stdin writes plus spawn -> write -> read -> wait/terminate -> cleanup with one Harness-owned wall-clock deadline across `mcp_readonly`, `external_command`, and `trusted_command`. Close the operational boundedness gap left by #178 while keeping timeout a typed operational failure rather than semantic `unknown`.
+3. **#212 productize bounded investigation planning.** Generalize the Harness-owned suggestion/bounded-planner primitives already present on research/evaluation surfaces so a natural-language task can yield investigation targets, select configured read-only acquisition capabilities, and perform bounded follow-up investigation from typed outcomes. The planner/model cannot self-authorize tool output, identity, evidence sufficiency, or final correctness.
+4. **#213 `ReasoningThread` session surface.** Connect existing checkpoint / interrupt-resume / fork / deterministic replay core semantics to saved/resumed natural-language sessions, added material, and premise corrections. Conversation history and prior model prose remain untrusted, and corrections/new evidence must re-enter ordinary invalidation / qualification / verification / finalization.
+5. **#214 fresh natural-language E2E evaluation.** Only after deterministic contract coverage for #210–#213, run a new pre-observation frozen evaluation measuring investigation-target recall, source/tool selection, useful follow-up, exposed-text consistency, unsupported exposed assertions, qualification preservation, multi-turn correction, resume/fork correctness, operational completeness, and cost.
+
+### v0.4.0 acceptance boundary
+
+- In current v4 evidence, `unsupported grounded claims = 0` primarily covers structured `factual_claims`; it is **not treated as proof that arbitrary free-form exposed prose contains no unsupported assertion**. #210/#214 add explicit exposed-text correctness coverage.
+- The natural-language planner may propose acquisition actions but owns no evidence-admission, identity-sufficiency, verification, or finalization authority.
+- Session history, user-added prose, prior model output, and MCP/tool output never become trusted evidence without explicit admission/verification.
+- Operational failure remains outside semantic denominators; deadline/budget/transport/protocol failure is not converted into `unknown`.
+- #214 requires zero correctness-boundary violations even if utility metrics remain imperfect.
+- Historical `product-external-info-v1/v2/v3/v4`, Stage-C, RSD2, and other observed holdouts remain immutable and are not v0.4.0 tuning surfaces.
+
+### Parallel tracks
+
+- **#204 MCP negotiated/session stdio compatibility:** included in the v0.4.0 milestone and required to reuse the common #211 deadline primitive. Preserve `mcp_readonly_v1` replay compatibility and authority boundaries through an explicit successor adapter identity.
+- **#208 / PR #209 v4 cross-model replication:** remains replication over the already frozen v4 evaluation surface, not a tuning gate for v0.4.0 product/semantic implementation. Preserve results as historical comparative evidence.
+
 ## Completed v0.2.0 product line
 
 1. **Bounded resolver target closure (#159):** implemented in the successor candidate line: exact Harness-owned unresolved hypotheses/evidence requirements are prioritized ahead of candidate-owned unresolved claims, while resolver class, budget, admission, qualification, and mandatory re-verification remain unchanged.

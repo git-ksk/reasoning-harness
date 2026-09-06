@@ -34,6 +34,34 @@ Reasoning Harness
 
 自然言語の利便性によって正確性の境界を弱めてはならない。ユーザーの文章、ファイル内容、モデルによる抽出、ツール出力、過去のモデル出力は、CLIが受け付けたというだけで信頼済みエビデンスにはならない。エビデンスの取り込み、受け入れ、検証、semantic/answer-safety診断、制約付き解決、再検証、最終主張のカバレッジは、引き続きHarnessが所有する。
 
+## v0.4.0 — Grounded Investigation & Sessions
+
+Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。公開済みのexternal previewは引き続きv0.3.0であり、v0.4.0は2026-09-06のレビューで実測されたproduct/correctness gapから開始する次期開発ラインである。v0.3.0のhistorical acceptanceを後から書き換えない。
+
+このマイルストーンの目的は、現在の「検証済み命題を安全に扱うHarness」から、**自然文の依頼を受けて調査を組み立て、必要な外部情報を制約付きで取得し、複数ターンにわたって根拠を保持・訂正しながら、実際に表示する文章までHarness-owned authorityに結び付けるproduct path**へ進めることである。
+
+実装順序は次のとおり。
+
+1. **#210 P0 final exposed-text binding。** `FinalAnswerCandidate.text` と検証済み `factual_claims` が独立しているため、structured claimが正しくても表示文章だけが矛盾・追加factを含めるケースを現行`GroundedAnswer`が通せる。保証対象のanswer surfaceはHarness-owned verified propositionから決定論的に構築するか、同等にmechanicalなfail-closed bindingを要求する。#160/#164/#206のtarget recovery semanticsはauthority sourceとして再利用しても、renderer prose自体にはauthorityを与えない。
+2. **#211 full-lifecycle subprocess deadline。** `mcp_readonly`、`external_command`、`trusted_command` の同期stdin writeを含め、spawn -> write -> read -> wait/terminate -> cleanup全体を1つのHarness-owned wall-clock deadlineで制約する。#178で意図したoperational boundednessの抜けを閉じ、timeoutはsemantic `unknown`ではなくtyped operational failureのまま維持する。
+3. **#212 bounded investigation plannerのproduct昇格。** 既存のresearch/evaluation側にあるHarness-owned suggestion / bounded planner primitiveを一般化し、自然文taskから調査targetを作り、設定済みread-only acquisition capabilityを選択し、typed resultに応じて追加調査する。ただしplanner/modelはtool output、identity、evidence sufficiency、最終correctnessを自己承認できない。
+4. **#213 `ReasoningThread` session surface。** 既存coreのcheckpoint / interrupt-resume / fork / deterministic replayを、自然言語sessionの保存・再開・追加資料・前提訂正へ接続する。conversation historyと過去のmodel proseはuntrustedのままで、訂正やevidence追加は通常のinvalidation / qualification / verification / finalizationを必ず通る。
+5. **#214 fresh natural-language E2E evaluation。** #210–#213のdeterministic contract coverage後にのみcanonical live observationへ進む。自然文のみからの調査target recall、source/tool selection、follow-up調査、exposed-text consistency、unsupported exposed assertion、qualification preservation、multi-turn訂正、resume/fork、operational completeness、costを新しいpre-observation frozen identityで測る。
+
+### v0.4.0 acceptance boundary
+
+- `unsupported grounded claims = 0` は、現行v4では主にstructured `factual_claims` に対する指標であり、**任意のfree-form exposed proseにunsupported assertionがないことまで保証する指標として扱わない**。#210/#214でexposed-text correctnessを独立に測定・保証する。
+- natural-language plannerはacquisition actionを提案できるが、evidence admission / identity sufficiency / verification / finalization authorityを持たない。
+- session history、user-added prose、past model output、MCP/tool outputは、明示的なadmission/verificationなしにtrusted evidenceへ昇格しない。
+- operational failureはsemantic denominatorと分離し、deadline/budget/transport/protocol failureを`unknown`へ変換しない。
+- #214のcorrectness-boundary violationはutilityが高くても0件を必須gateとする。
+- historical `product-external-info-v1/v2/v3/v4`、Stage-C、RSD2その他の観測済みholdoutはimmutableで、v0.4.0 tuning surfaceに使わない。
+
+### 並行トラック
+
+- **#204 MCP negotiated/session stdio compatibility:** v0.4.0 milestoneに含めるが、#211の共通deadline primitiveを再利用する。`mcp_readonly_v1`のreplay compatibilityとauthority boundaryは維持し、successor adapter identityとして扱う。
+- **#208 / PR #209 v4 cross-model replication:** v4の凍結済み評価面のcross-model replicationであり、v0.4.0 semantic/product implementationのtuning gateにはしない。結果はhistorical comparative evidenceとして保持する。
+
 ## 完了済み v0.2.0 プロダクトライン
 
 1. **制約付きresolverのtarget closure（#159）：** 後継候補ラインで実装済み。Harnessが所有する未解決仮説/エビデンス要件を、候補が所有する未解決主張より先に、正確に優先する。一方、resolverクラス、予算、受け入れ、qualification、必須再検証は変更しない。
