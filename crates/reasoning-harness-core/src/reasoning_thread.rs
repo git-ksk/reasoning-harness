@@ -4,9 +4,9 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::{
-    FinalizationResult, FinalizationStatus, PolicyInvalidation, ReasoningArtifact,
-    ReasoningCandidate, ReasoningPolicy, ReasoningPolicyTransition, ResolutionAttempt,
-    SoftJudgeObservation, Verdict, apply_reasoning_policy, validate_artifact,
+    Evidence, FinalizationResult, FinalizationStatus, PolicyInvalidation, Proposition,
+    ReasoningArtifact, ReasoningCandidate, ReasoningPolicy, ReasoningPolicyTransition,
+    ResolutionAttempt, SoftJudgeObservation, Verdict, apply_reasoning_policy, validate_artifact,
 };
 
 pub const REASONING_THREAD_SCHEMA_VERSION: u32 = 1;
@@ -36,6 +36,28 @@ pub struct ThreadCandidateState {
     pub candidate: ReasoningCandidate,
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum ThreadInputChange {
+    ContextAdded {
+        context_id: String,
+        source: String,
+        observation: String,
+    },
+    EvidenceAdded {
+        evidence: Evidence,
+    },
+    HypothesisAdded {
+        proposition: Proposition,
+    },
+    PremiseCorrected {
+        key: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        previous_value: Option<String>,
+        new_value: String,
+    },
+}
+
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ReasoningThreadSnapshot {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -56,6 +78,8 @@ pub struct ReasoningThreadSnapshot {
     pub resolution_attempts: Vec<ResolutionAttempt>,
     #[serde(default)]
     pub soft_observations: Vec<SoftJudgeObservation>,
+    #[serde(default)]
+    pub input_changes: Vec<ThreadInputChange>,
     #[serde(default)]
     pub status: ReasoningThreadStatus,
 }
@@ -112,6 +136,15 @@ pub enum ReasoningThreadEventKind {
     StateInvalidated {
         transition_id: String,
         transition: Box<ReasoningPolicyTransition>,
+    },
+    InputChanged {
+        change_id: String,
+        change: ThreadInputChange,
+    },
+    InputStateInvalidated {
+        change_id: String,
+        #[serde(default)]
+        affected_proposition_keys: Vec<String>,
     },
     CheckpointCreated {
         checkpoint_id: String,
@@ -197,6 +230,12 @@ pub enum ReasoningThreadError {
     PolicyTransitionReevaluationFailed(String),
     #[error("policy transition event does not match deterministic #27 re-evaluation")]
     PolicyTransitionReplayMismatch,
+    #[error("input change id must not be empty")]
+    EmptyInputChangeId,
+    #[error("input change {0} is already pending invalidation")]
+    InputChangeAlreadyPending(String),
+    #[error("input invalidation does not match pending input change {0}")]
+    InputChangeMismatch(String),
     #[error("accepted artifact is not already admissible under the active reasoning policy")]
     ArtifactNotAdmissibleUnderCurrentPolicy,
     #[error("checkpoint id must not be empty")]
@@ -365,6 +404,40 @@ impl ReasoningThread {
             ReasoningThreadEventKind::StateInvalidated {
                 transition_id,
                 transition: Box::new(transition),
+            },
+        ) {
+            *self = before;
+            return Err(error);
+        }
+        Ok(())
+    }
+
+    pub fn record_input_change(
+        &mut self,
+        change_event_id: impl Into<String>,
+        invalidation_event_id: impl Into<String>,
+        change_id: impl Into<String>,
+        change: ThreadInputChange,
+        affected_proposition_keys: Vec<String>,
+    ) -> Result<(), ReasoningThreadError> {
+        let change_event_id = change_event_id.into();
+        let invalidation_event_id = invalidation_event_id.into();
+        let change_id = change_id.into();
+        let before = self.clone();
+        self.push_event(
+            change_event_id.clone(),
+            None,
+            ReasoningThreadEventKind::InputChanged {
+                change_id: change_id.clone(),
+                change,
+            },
+        )?;
+        if let Err(error) = self.push_event(
+            invalidation_event_id,
+            Some(change_event_id),
+            ReasoningThreadEventKind::InputStateInvalidated {
+                change_id,
+                affected_proposition_keys,
             },
         ) {
             *self = before;
@@ -567,6 +640,7 @@ pub fn replay_thread(
     let mut interrupted_checkpoint_id = None;
     let mut pending_policy_transition_id: Option<String> = None;
     let mut pending_previous_policy: Option<ReasoningPolicy> = None;
+    let mut pending_input_change_id: Option<String> = None;
 
     for (index, event) in thread.events.iter().enumerate() {
         let expected = index as u64 + 1;
@@ -598,13 +672,23 @@ pub fn replay_thread(
             {
                 return Err(ReasoningThreadError::InterruptedThreadIsFrozen);
             }
-            ReasoningThreadStatus::NeedsReevaluation
-                if !matches!(
-                    event.kind,
-                    ReasoningThreadEventKind::StateInvalidated { .. }
-                ) =>
-            {
-                return Err(ReasoningThreadError::PolicyReevaluationPending);
+            ReasoningThreadStatus::NeedsReevaluation => {
+                let allowed = if pending_policy_transition_id.is_some() {
+                    matches!(
+                        event.kind,
+                        ReasoningThreadEventKind::StateInvalidated { .. }
+                    )
+                } else if pending_input_change_id.is_some() {
+                    matches!(
+                        event.kind,
+                        ReasoningThreadEventKind::InputStateInvalidated { .. }
+                    )
+                } else {
+                    false
+                };
+                if !allowed {
+                    return Err(ReasoningThreadError::PolicyReevaluationPending);
+                }
             }
             ReasoningThreadStatus::Finalized => {
                 return Err(ReasoningThreadError::FinalizedThreadIsImmutable);
@@ -680,6 +764,7 @@ pub fn replay_thread(
                 snapshot.status = ReasoningThreadStatus::Active;
                 pending_policy_transition_id = None;
                 pending_previous_policy = None;
+                pending_input_change_id = None;
             }
             ReasoningThreadEventKind::SoftFindingRecorded { observation } => {
                 snapshot.soft_observations.push(observation.clone());
@@ -752,6 +837,34 @@ pub fn replay_thread(
                 snapshot.status = ReasoningThreadStatus::Active;
                 pending_policy_transition_id = None;
                 pending_previous_policy = None;
+            }
+            ReasoningThreadEventKind::InputChanged { change_id, change } => {
+                if change_id.trim().is_empty() {
+                    return Err(ReasoningThreadError::EmptyInputChangeId);
+                }
+                if pending_input_change_id.is_some() || pending_policy_transition_id.is_some() {
+                    return Err(ReasoningThreadError::InputChangeAlreadyPending(
+                        change_id.clone(),
+                    ));
+                }
+                snapshot.input_changes.push(change.clone());
+                snapshot.finalization = None;
+                snapshot.status = ReasoningThreadStatus::NeedsReevaluation;
+                pending_input_change_id = Some(change_id.clone());
+            }
+            ReasoningThreadEventKind::InputStateInvalidated {
+                change_id,
+                affected_proposition_keys: _,
+            } => {
+                if pending_input_change_id.as_deref() != Some(change_id.as_str()) {
+                    return Err(ReasoningThreadError::InputChangeMismatch(change_id.clone()));
+                }
+                snapshot.current_candidate = None;
+                snapshot.artifact = None;
+                snapshot.verdict = None;
+                snapshot.finalization = None;
+                snapshot.status = ReasoningThreadStatus::Active;
+                pending_input_change_id = None;
             }
             ReasoningThreadEventKind::CheckpointCreated { checkpoint_id } => {
                 let checkpoint = checkpoint(thread, checkpoint_id)?;

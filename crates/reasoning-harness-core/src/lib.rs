@@ -148,7 +148,7 @@ pub use reasoning_thread::{
     REASONING_THREAD_SCHEMA_VERSION, ReasoningCheckpoint, ReasoningThread, ReasoningThreadError,
     ReasoningThreadEvent, ReasoningThreadEventKind, ReasoningThreadLineage, ReasoningThreadReplay,
     ReasoningThreadSnapshot, ReasoningThreadStatus, ReasoningThreadStore, ThreadCandidateState,
-    policy_invalidations, replay_thread, validate_thread,
+    ThreadInputChange, policy_invalidations, replay_thread, validate_thread,
 };
 pub use resolution::{
     AcquiredEvidence, AcquiredEvidenceMetadata, DefaultResolutionPlanner, EvidenceAdmissionPolicy,

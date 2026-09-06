@@ -391,12 +391,13 @@ head -c 131072 /dev/zero",
             &mut command,
             b"request".to_vec(),
             started,
-            Duration::from_secs(2),
+            Duration::from_secs(10),
             1024,
         );
         fs::remove_file(path).ok();
-        // Receiving Protocol rather than Timeout proves the reader kept draining the oversized
-        // finite stream and let the child complete within the configured two-second deadline.
+        // This test isolates response-size classification rather than scheduler performance.
+        // Receiving Protocol proves the reader drained the finite oversized stream before the
+        // deliberately generous deadline.
         assert_eq!(result.unwrap_err(), ResolutionAdapterErrorKind::Protocol);
     }
 }

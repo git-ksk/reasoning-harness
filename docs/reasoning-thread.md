@@ -28,6 +28,8 @@ Events have monotonic sequence numbers, stable event IDs, and optional causation
 - `resolution_attempt_recorded`;
 - `policy_changed`;
 - `state_invalidated`;
+- `input_changed`;
+- `input_state_invalidated`;
 - `checkpoint_created`;
 - `interrupted`;
 - `resumed`;
@@ -35,6 +37,8 @@ Events have monotonic sequence numbers, stable event IDs, and optional causation
 - `answer_finalized`.
 
 A policy change and its invalidation are deliberately separate events. Between them, replay reports `needs_reevaluation` and refuses checkpoint/finalization. The invalidation event must exactly match a deterministic re-run of #27 `apply_reasoning_policy`; an event log cannot manufacture a different authoritative artifact.
+
+Issue #213 adds the same fail-closed boundary for later user input. `input_changed` records typed context/evidence/hypothesis/premise-correction material; `input_state_invalidated` clears the current candidate/artifact/verdict/finalization before a replacement artifact can be accepted. Prior checkpoints remain immutable historical recovery points.
 
 ## Checkpoints
 
@@ -79,6 +83,8 @@ For policy transitions, replay recomputes the full #27 `ReasoningPolicyTransitio
 
 Core intentionally provides only the serializable contract plus the abstract `ReasoningThreadStore` load/save boundary. It includes no filesystem, database, cloud service, or retention policy.
 
+Issue #213 adds a **product adapter**, not a core backend: `reason session` persists `reason-session-v1` local JSON files atomically and reuses these same events/checkpoints. See [resumable natural-language sessions](session.md). Database/cloud persistence remains a future adapter concern.
+
 Large-payload deduplication/content addressing may be implemented by a future backend or adapter without changing the authority semantics of replay.
 
 ## Replay safety invariants
@@ -91,6 +97,8 @@ Large-payload deduplication/content addressing may be implemented by a future ba
 6. resolver attempt records never call a resolver during replay;
 7. soft findings remain observations and cannot become verification authority;
 8. policy transitions are recomputed rather than trusted from serialized data;
-9. hidden model reasoning is not part of persistent state.
+9. hidden model reasoning is not part of persistent state;
+10. user input changes invalidate current assertive state before a replacement artifact can be accepted;
+11. product replay/inspect/resume/fork never re-invokes recorded external acquisition.
 
 The regression suite is credential-free and exercises checkpoint/resume equivalence, fork lineage, policy/invalidation replay, tamper rejection, interrupted/finalized gates, resolver-side-effect non-replay, and the absence of hidden-chain-of-thought fields.
