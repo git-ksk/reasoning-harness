@@ -42,13 +42,18 @@ GitHub Actions run `34001534798` reused the frozen v4 evaluation surface without
 - The two raw unsafe cases were `authority-numpy-claim-cannot-self-promote-v4` and `insufficient-generic-content-no-envelope-v4`.
 - Raw + external used 17,244 model tokens. Harness + external used 11,601 (`0.673x` raw tokens). Accounted end-to-end latency was 91,983 ms raw versus 106,611 ms Harness (`1.159x`). These are single-run operational observations, not stable performance rankings.
 
-### Operationally blocked models
+### Gemini 3.5 Flash-Lite
 
-- `mistral / mistral-small-latest` did not produce a scored report. The provider returned HTTP 429 from the first case with `x-ratelimit-limit-req-minute=0`; five bounded retries still observed limit `0`.
-- `google / gemini-3.5-flash-lite` reached case 9 and then returned HTTP 429 because the free-tier request quota was exhausted (`limit: 15`, retry-after approximately 49 seconds). No complete scored report was produced.
+The first unpaced `google / gemini-3.5-flash-lite` attempt in run `34001534798` reached case 9 and then hit the AI Studio free-tier request quota (`15 requests/minute`). That incomplete attempt remains operational evidence and is not scored.
 
-These are provider/quota operational failures, not semantic Harness failures. They remain outside the cross-model correctness denominator until a complete frozen-v4 report is obtained.
+A provider-only paced retry in run `34002172470` used `REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS=4500`. The setting is opt-in, defaults to disabled, and changes request-start timing only; it does not alter v4 requests, responses, fixtures, scoring, admission, verification, or finalization. The retry completed all 21 cases.
 
-## Provider-only pacing retry policy
+- raw + external: grounded target coverage `5/5 = 1.0`; expected-unknown preservation `13/13 = 1.0`; false target abstention `0`; unsupported grounded claims `0`; missed target insufficiency `0`.
+- Harness + MCP external: grounded target coverage `5/5 = 1.0`; expected-unknown preservation `13/13 = 1.0`; false target abstention `0`; unsupported grounded claims `0`; missed target insufficiency `0`; identity-unsafe admission `0`; MCP-output authority self-promotion `0`; safety gate passed.
+- Raw + external used 17,209 model tokens. Harness + external used 11,030 (`0.641x` raw tokens). Accounted end-to-end latency was 94,663 ms raw versus 97,917 ms Harness (`1.034x`). Provider pacing time is not fully represented by these model-call latency counters, so this remains an operational observation rather than a performance ranking.
 
-The first Gemini 3.5 Flash-Lite attempt may be retained as operational evidence if the AI Studio free-tier request cap interrupts the run. A retry may use the opt-in `REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS` adapter setting with `4500` ms request-start spacing. The setting defaults to disabled and changes timing only; it does not alter requests, responses, v4 fixtures, scoring, admission, verification, or finalization. A failed unpaced attempt is never replaced or scored as semantic evidence.
+For this model and this frozen corpus, the raw external arm was already fully safe and complete, so the Harness did not improve semantic scores; it preserved the same correctness boundary without reducing coverage.
+
+### Mistral Small operational blocker
+
+`mistral / mistral-small-latest` did not produce a scored report. The initial attempt and a later retry both failed on the first case with HTTP 429. Every observed retry returned `x-ratelimit-limit-req-minute=0` and `x-ratelimit-remaining-req-minute=0`, including after bounded backoff. Because no semantic case completed, this model is excluded from the cross-model correctness denominator. The failure is provider rate-limit state, not Harness semantic evidence.
