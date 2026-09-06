@@ -60,7 +60,7 @@ Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。公�
 ### 並行トラック
 
 - **#204 MCP negotiated/session stdio compatibility:** v0.4.0 milestoneに含めるが、#211の共通deadline primitiveを再利用する。`mcp_readonly_v1`のreplay compatibilityとauthority boundaryは維持し、successor adapter identityとして扱う。
-- **#208 / PR #209 v4 cross-model replication:** v4の凍結済み評価面のcross-model replicationであり、v0.4.0 semantic/product implementationのtuning gateにはしない。結果はhistorical comparative evidenceとして保持する。
+- **#208 / PR #209 v4 cross-model replication + #216 Groq operational extension:** v4の凍結済み評価面のcross-model replicationであり、v0.4.0 semantic/product implementationのtuning gateにはしない。#216はGroq provider wiringとFree Tier pacing/telemetryだけを追加し、v4 corpus/scoring/admission/finalization semanticsは変更しない。結果はhistorical comparative evidenceとして保持する。
 
 ## 完了済み v0.2.0 プロダクトライン
 

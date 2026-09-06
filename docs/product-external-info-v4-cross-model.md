@@ -1,6 +1,6 @@
 # Product external-information v4 cross-model replication
 
-Issue #208 replicates the frozen `product-external-info-v4` matched-context four-arm measurement across additional model families. This is post-observation replication only: the v4 corpus, target propositions, scoring, evaluator semantics, MCP boundary, admission policy, and finalization logic remain byte-for-byte frozen from semantic head `e324ccbff6e818d205a734f06ccc8cac4b587588`.
+Issue #208 established cross-model replication for the frozen `product-external-info-v4` matched-context four-arm measurement, and Issue #216 extends that operational replication surface to Groq. This is post-observation replication only: the v4 corpus, target propositions, scoring, evaluator semantics, MCP boundary, admission policy, and finalization logic remain frozen from semantic head `e324ccbff6e818d205a734f06ccc8cac4b587588`. The only allowed delta inside the v4 executable is provider wiring for `GroqAdapter`; `scripts/validate_product_external_info_v4_provider_wiring.py` mechanically removes exactly that allowlisted wiring and requires the remainder to match the frozen file byte-for-byte.
 
 ## Models
 
@@ -8,6 +8,9 @@ Issue #208 replicates the frozen `product-external-info-v4` matched-context four
 - Mistral `ministral-14b-latest`
 - Google-hosted `gemma-4-31b-it`
 - Google `gemini-3.5-flash-lite`
+- Groq `openai/gpt-oss-120b`
+- Groq `qwen/qwen3.8-27b`
+- Groq `openai/gpt-oss-20b`
 
 The canonical Ministral 8B result from run `34000216929` remains the original v4 observation and is used only as the reference row.
 
@@ -29,6 +32,15 @@ The live external acquisition is repeated per model run because v4 has no post-f
 For each model, report arm 3 (`raw_model_with_external`) versus arm 4 (`harness_with_mcp_external`): expected-grounded target coverage, expected-unknown preservation, false target abstention, unsupported grounded claims, missed target insufficiency, Harness unsafe-admission/authority-promotion counters, typed rejection telemetry, model token usage, model latency, accounted end-to-end latency, and operational failures.
 
 Provider/protocol failures remain separate from semantic scores. No result may be repaired by changing v4 after observation.
+
+
+## Groq Free-tier operational extension — Issue #216
+
+The Groq targets use the same frozen v4 corpus, seed `28000`, max-output budget `1024`, and four-arm scoring contract. Groq is connected through its OpenAI-compatible Chat Completions endpoint and `GROQ_API_KEY`; model IDs remain data rather than adapter-specific semantic branches.
+
+The manual Groq lane targets `openai/gpt-oss-120b`, `qwen/qwen3.8-27b`, and `openai/gpt-oss-20b`. Groq currently publishes Free Plan limits of 30 requests/minute, 8,000 tokens/minute, 1,000 requests/day, and 200,000 tokens/day for each of these three models. The workflow therefore sets provider-local `REASON_GROQ_MIN_REQUEST_INTERVAL_MS=2100` and `REASON_GROQ_TOKENS_PER_MINUTE=8000`. The adapter combines minimum request-start spacing with actual prior-response token usage, honors `Retry-After`/rate-limit reset headers on HTTP 429, performs bounded retry, and can emit only non-secret rate-limit telemetry through `REASON_GROQ_RATE_LIMIT_TELEMETRY=1`.
+
+These pacing settings are workflow-local Free Plan controls, not universal Groq quota claims and not semantic tuning. They do not change prompts, output schemas, fixtures, acquisition, admission, verification, scoring, or finalization. Operational quota/rate-limit failure remains outside semantic denominators.
 
 ## First cross-model observation — 2026-09-06
 

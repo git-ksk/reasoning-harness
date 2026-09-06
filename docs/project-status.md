@@ -42,7 +42,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 
 ## Implemented
 
-- Rust-only core, CLI, eval, and provider adapter crates. Mistral, Google Gemini Interactions, and NVIDIA Hosted NIM candidate-generation adapters are implemented.
+- Rust-only core, CLI, eval, and provider adapter crates. Mistral, Google Gemini Interactions, NVIDIA Hosted NIM, and GroqCloud candidate-generation adapters are implemented.
 - Harness-owned evidence and untrusted `ReasoningCandidate` boundary.
 - Deterministic structural/provenance validation.
 - `accept | reject | unknown` policy.
@@ -61,7 +61,7 @@ This is not a claim that open-world reasoning is solved. Current correctness gai
 - Composable `ReasoningPolicy` layers with policy identity, conservative authority/scope/resolver capability composition, immutable-snapshot invalidation, inference dependency propagation, finalization invalidation, and soft-finding escalation without truth authority.
 - Grounded finalization with typed factual-claim coverage and re-routing of newly introduced factual propositions through hypothesis/resolution/verification.
 - Nine deterministic controlled resolution scenarios plus `reason eval-resolution`, reported separately from corpus correctness and repeated diagnostic stability.
-- Manual, secret-isolated live benchmark workflow spanning Mistral, Google-hosted Gemma/Gemini, and a narrowed routine NVIDIA Nemotron target.
+- Manual, secret-isolated live benchmark workflows spanning Mistral, Google-hosted Gemma/Gemini, a narrowed routine NVIDIA Nemotron target, and the #216 Groq v4 replication lane.
 - GitHub CI, Dependabot configuration, contribution/security guidance, issue and PR templates.
 
 ## Known gaps

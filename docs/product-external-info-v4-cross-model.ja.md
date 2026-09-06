@@ -1,6 +1,6 @@
 # Product external-information v4 モデル横断replication
 
-Issue #208では、freeze済み`product-external-info-v4`のmatched-context 4-arm測定を追加model familyで再現する。これは観測後のreplicationだけを目的とし、v4のcorpus、target proposition、scoring、evaluator semantics、MCP boundary、admission policy、finalization logicはsemantic head `e324ccbff6e818d205a734f06ccc8cac4b587588`から1 byteも変更しない。
+Issue #208でfreeze済み`product-external-info-v4`のmatched-context 4-arm測定を追加model familyへreplicationし、Issue #216でGroqをoperational replication対象へ追加する。これは観測後のreplicationだけを目的とし、v4のcorpus、target proposition、scoring、evaluator semantics、MCP boundary、admission policy、finalization logicはsemantic head `e324ccbff6e818d205a734f06ccc8cac4b587588`から不変とする。v4 executable内で許可する差分は`GroqAdapter`のprovider wiringだけで、`scripts/validate_product_external_info_v4_provider_wiring.py`がその明示allowlistだけを除去した残りをfreeze済みファイルとbyte-for-byte比較する。
 
 ## 対象モデル
 
@@ -8,6 +8,9 @@ Issue #208では、freeze済み`product-external-info-v4`のmatched-context 4-ar
 - Mistral `ministral-14b-latest`
 - Google-hosted `gemma-4-31b-it`
 - Google `gemini-3.5-flash-lite`
+- Groq `openai/gpt-oss-120b`
+- Groq `qwen/qwen3.8-27b`
+- Groq `openai/gpt-oss-20b`
 
 run `34000216929`のMinistral 8B結果はv4のcanonical初回観測のまま保持し、比較表の基準行としてのみ利用する。
 
@@ -29,6 +32,15 @@ v4にはfreeze後のsnapshot injection interfaceを追加しないため、live 
 各modelについてarm 3（`raw_model_with_external`）とarm 4（`harness_with_mcp_external`）のexpected-grounded target coverage、expected-unknown preservation、false target abstention、unsupported grounded claims、missed target insufficiency、Harness unsafe-admission/authority-promotion counter、typed rejection telemetry、model token、model latency、accounted end-to-end latency、operational failureを報告する。
 
 provider/protocol failureはsemantic scoreと分離する。観測結果を理由にv4を変更して修復してはならない。
+
+
+## Groq Free Tier operational extension — Issue #216
+
+Groq対象も同じfreeze済みv4 corpus、seed `28000`、max-output `1024`、4-arm scoring contractを使う。GroqはOpenAI-compatible Chat Completions endpointと`GROQ_API_KEY`で接続し、model IDはadapter内のsemantic branchではなくdataとして扱う。
+
+manual Groq laneの対象は`openai/gpt-oss-120b`、`qwen/qwen3.8-27b`、`openai/gpt-oss-20b`。Groqが現在公開しているFree Plan値は、この3モデルそれぞれ30 requests/minute、8,000 tokens/minute、1,000 requests/day、200,000 tokens/day。workflowではprovider-localに`REASON_GROQ_MIN_REQUEST_INTERVAL_MS=2100`と`REASON_GROQ_TOKENS_PER_MINUTE=8000`を設定する。adapterはrequest-startの最小間隔と直前responseの実token消費量を組み合わせ、HTTP 429では`Retry-After`/rate-limit reset headerを優先したbounded retryを行い、`REASON_GROQ_RATE_LIMIT_TELEMETRY=1`ではsecretを含まないrate-limit headerだけを診断出力できる。
+
+このpacing値はFree Plan用workflow設定であり、Groq全tier共通quotaの主張でもsemantic tuningでもない。prompt、output schema、fixture、acquisition、admission、verification、scoring、finalizationは変更しない。quota/rate-limitによるoperational failureはsemantic denominatorから分離する。
 
 ## 初回cross-model観測 — 2026-09-06
 
