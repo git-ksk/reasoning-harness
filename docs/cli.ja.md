@@ -40,6 +40,8 @@ trustedなstructured supportがなければ、結果が条件付き/`unknown`の
 
 v0.4 developmentでは、exact `--hypothesis`を最初から持たないtask向けに、opt-inの4つ目のacquisition laneとして`resolution.investigation`を追加しています。modelはclosed schemaでinvestigation targetを提案し、その後Harness設定済みread-only capability IDの中からだけactionを選べます。tool argument、authority、receipt、verdictは生成できません。各acquisitionは通常のsource/freshness/scope/authority admissionを通し、evidenceがadmitされた場合はcandidateを再生成して通常verificationへ戻します。target/round/action/no-progressの各上限でboundedに停止し、typed investigation telemetryを出力します。investigation未設定なら既存`--resolver-fact` / `external_command` / `mcp_readonly`の挙動は変わりません。investigation external commandは専用`investigation_external_command_v1` request protocolを使います。詳細は[制約付き調査プランニング](investigation.ja.md)を参照してください。
 
+Issue #213では、同じnative runtimeとtyped `ReasoningThread` checkpoint/replay modelの上に`reason session start|inspect|resume|add|correct|fork|close`を追加しています。session file identityは`reason-session-v1`。inspect/resume/forkではexternal acquisition callを0件のままreplayし、後続file proseはuntrusted、premise correctionは再評価前にtyped invalidationを記録し、finalized historyの継続はforkだけです。continuation turnではstart時resolver/MCP/investigation設定を暗黙replayしません（`session-replay-only-acquisition-v1`）。詳細は[再開可能な自然言語セッション](session.ja.md)を参照してください。
+
 最終自然文もmodelがrenderするだけでは信用しません。`finalize_answer`がfactual-claim coverageを確認し、新しい事実を勝手に混ぜた場合はblockします。明示resolverで確認できる場合のみbounded resolutionへ戻し、再verification後に再renderできます。最初からHarness-ownedだったrequested hypothesisがartifact上でexact `Known`/`Supported`なら、rendererだけがclaimを落とす・exact keyからずらす・同じexact targetを`grounded`ではなく`uncertain`へ弱めるケースをdeterministicに回収できます。downgrade recoveryはrendererがその**同一exact requested proposition**を`uncertain`で出した場合だけ起動し、authorityはartifact stateからしか取りません。artifact-global `Unknown`ではtarget-onlyの`QualifiedPartialAnswer`のままです。artifact-global `Reject`もglobal verdict自体は絶対に上書きしませんが、targetがevidence-boundなdirect trusted `Supported` receiptを持ち、problematicなnon-target stateとtyped artifact上で構造的に分離できる場合だけtarget-only `QualifiedPartialAnswer`を出せます。same-key blocker、untyped blocker、shared evidence、inference/dependency path、target-local contradiction/qualification/hard adversarial signalのどれかがあればfail-closeし、依存関係が曖昧な場合も出しません。model prose解析・fuzzy key matching・新authority生成は行わず、recovery後も通常のanswer-safety gateを通ります。
 
 providerのtransport reliabilityはHarness authorityと分離します。Google/Geminiではtemporary 429を`Retry-After`込みでbounded retryしますが、quota判定された429はfail-fastです。HTTP 500/502/503/504は最大2回retryし、HTTP自体は成功してresponse shapeもvalidなのにmodel textだけ空だった場合は1回だけretryします。Googleの1 requestはretry種別が混ざってもprovider HTTP attemptを合計4回までに固定します。credential、quota、通常の4xx/provider error、malformed success response、unsupported capability、transport interruption、timeoutはこのpolicyではfail-fastのままです。`provider_attempts`はadapter内部を含む実HTTP attempt数で、Harnessが別のstructured-output fallback callを行った場合は両callのattemptを合算します。retry exhaustionはtyped operational failureのままで、semantic `unknown`・evidence・abstentionへ変換しません。
@@ -57,6 +59,7 @@ defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です
 | やりたいこと | コマンド |
 | --- | --- |
 | 人が自然文でtaskを依頼したい | `reason "TASK"` |
+| 自然言語reasoning stateを保存・確認・訂正・再開・forkしたい | `reason session ...` |
 | 既存LLM/Agentの候補回答をstructured evidenceでチェックしたい | `reason run` |
 | 完成済みartifactが構造・根拠ルールを満たすか確認したい | `reason verify` |
 | contradiction/counterexampleなどsemantic診断をしたい | `reason semantic-check` |

@@ -8,9 +8,9 @@ use reasoning_harness_core::{
     ReasoningThreadError, ReasoningThreadEvent, ReasoningThreadEventKind, ReasoningThreadStatus,
     ResolutionAttempt, ResolutionAttemptStatus, ResolutionCost, ResolutionReason,
     ResolutionRequest, ResolutionRequestBudget, ResolutionTarget, ResolverClass, SoftJudgeDecision,
-    SoftJudgeIdentity, SoftJudgeObservation, TemporalValidity, Verdict, VerificationConclusion,
-    VerificationReceipt, apply_reasoning_policy, compose_reasoning_policy, replay_thread,
-    validate_thread,
+    SoftJudgeIdentity, SoftJudgeObservation, TemporalValidity, ThreadInputChange, Verdict,
+    VerificationConclusion, VerificationReceipt, apply_reasoning_policy, compose_reasoning_policy,
+    replay_thread, validate_thread,
 };
 
 fn proposition() -> Proposition {
@@ -461,6 +461,88 @@ fn accepted_artifact_cannot_bypass_active_policy_after_policy_is_recorded() {
     assert!(matches!(
         thread.record_accepted_artifact("event-bypass", artifact(), Verdict::Accept),
         Err(ReasoningThreadError::ArtifactNotAdmissibleUnderCurrentPolicy)
+    ));
+}
+
+#[test]
+fn input_change_records_typed_invalidation_before_new_assertive_state_is_possible() {
+    let mut thread = base_thread();
+    thread
+        .create_checkpoint("event-checkpoint", "checkpoint-before-change")
+        .unwrap();
+    thread
+        .record_input_change(
+            "event-change",
+            "event-input-invalidation",
+            "change-1",
+            ThreadInputChange::PremiseCorrected {
+                key: "feature.enabled".into(),
+                previous_value: Some("true".into()),
+                new_value: "false".into(),
+            },
+            vec!["feature.enabled".into()],
+        )
+        .unwrap();
+
+    let replay = replay_thread(&thread).unwrap();
+    assert_eq!(replay.snapshot.status, ReasoningThreadStatus::Active);
+    assert!(replay.snapshot.artifact.is_none());
+    assert!(replay.snapshot.verdict.is_none());
+    assert!(replay.snapshot.current_candidate.is_none());
+    assert!(replay.snapshot.finalization.is_none());
+    assert_eq!(replay.snapshot.input_changes.len(), 1);
+    assert!(matches!(
+        replay.snapshot.input_changes[0],
+        ThreadInputChange::PremiseCorrected { ref key, ref new_value, .. }
+            if key == "feature.enabled" && new_value == "false"
+    ));
+    assert!(matches!(
+        thread.record_finalization("event-stale-final", finalization()),
+        Err(ReasoningThreadError::FinalizationNotAllowed(_))
+    ));
+    assert!(
+        thread
+            .events
+            .iter()
+            .any(|event| matches!(event.kind, ReasoningThreadEventKind::InputChanged { .. }))
+    );
+    assert!(thread.events.iter().any(|event| matches!(
+        event.kind,
+        ReasoningThreadEventKind::InputStateInvalidated { .. }
+    )));
+}
+
+#[test]
+fn incomplete_input_change_is_fail_closed_until_typed_invalidation_arrives() {
+    let mut thread = base_thread();
+    thread.events.push(ReasoningThreadEvent {
+        sequence: thread.events.len() as u64 + 1,
+        event_id: "event-change-only".into(),
+        causation_event_id: None,
+        kind: ReasoningThreadEventKind::InputChanged {
+            change_id: "change-incomplete".into(),
+            change: ThreadInputChange::ContextAdded {
+                context_id: "context-1".into(),
+                source: "user".into(),
+                observation: "new context".into(),
+            },
+        },
+    });
+    let pending = replay_thread(&thread).unwrap();
+    assert_eq!(
+        pending.snapshot.status,
+        ReasoningThreadStatus::NeedsReevaluation
+    );
+    assert!(pending.snapshot.finalization.is_none());
+    assert!(matches!(
+        thread.record_finalization("event-final", finalization()),
+        Err(ReasoningThreadError::FinalizationNotAllowed(
+            ReasoningThreadStatus::NeedsReevaluation
+        ))
+    ));
+    assert!(matches!(
+        thread.create_checkpoint("event-checkpoint", "checkpoint-pending-input"),
+        Err(ReasoningThreadError::UnsafeCheckpointBoundary)
     ));
 }
 

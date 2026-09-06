@@ -28,6 +28,8 @@ Events は monotonic sequence numbers、stable event IDs、任意の causation I
 - `resolution_attempt_recorded`;
 - `policy_changed`;
 - `state_invalidated`;
+- `input_changed`;
+- `input_state_invalidated`;
 - `checkpoint_created`;
 - `interrupted`;
 - `resumed`;
@@ -35,6 +37,8 @@ Events は monotonic sequence numbers、stable event IDs、任意の causation I
 - `answer_finalized`.
 
 policy change とその invalidation は意図的に別 event である。その間の replay は `needs_reevaluation` を報告し、checkpoint/finalization を拒否する。invalidation event は #27 `apply_reasoning_policy` の deterministic re-run と完全一致しなければならず、event log が別の authoritative artifact を捏造することはできない。
+
+Issue #213では後続user inputにも同じfail-closed boundaryを追加する。`input_changed`はtyped context/evidence/hypothesis/premise correctionを記録し、`input_state_invalidated`はreplacement artifactがacceptされる前にcurrent candidate/artifact/verdict/finalizationを無効化する。以前のcheckpointはimmutableなhistorical recovery pointとして残る。
 
 ## チェックポイント
 
@@ -79,6 +83,8 @@ policy transition では、replay が直前の accepted artifact と以前の po
 
 Core は意図的に、serializable contract と抽象的な `ReasoningThreadStore` load/save boundary だけを提供する。filesystem、database、cloud service、retention policy は含まない。
 
+Issue #213で追加するのはcore backendではなく**product adapter**である。`reason session`は`reason-session-v1` local JSONをatomicに保存し、同じevent/checkpoint semanticsを再利用する。詳細は[再開可能な自然言語セッション](session.ja.md)を参照。database/cloud persistenceは将来のadapter concernのままである。
+
 large-payload deduplication/content addressing は、authority semantics of replay を変えずに将来の backend または adapter で実装できる。
 
 ## リプレイ安全性の不変条件
@@ -91,6 +97,8 @@ large-payload deduplication/content addressing は、authority semantics of repl
 6. resolver attempt records は replay 中に resolver を呼び出さない;
 7. soft findings は observations のままで、verification authority にはなれない;
 8. policy transitions は serialized data を信頼せず再計算される;
-9. hidden model reasoning は persistent state の一部ではない。
+9. hidden model reasoning は persistent state の一部ではない;
+10. user input changeはreplacement artifactをacceptする前にcurrent assertive stateをinvalidにする;
+11. product replay/inspect/resume/forkは記録済みexternal acquisitionを再invokeしない。
 
 regression suite は credential-free であり、checkpoint/resume equivalence、fork lineage、policy/invalidation replay、tamper rejection、interrupted/finalized gates、resolver-side-effect non-replay、hidden-chain-of-thought fields の不在を検証する。

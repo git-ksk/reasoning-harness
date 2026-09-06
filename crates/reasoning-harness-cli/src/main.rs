@@ -1,7 +1,7 @@
 use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
     env, fs,
-    io::{self, IsTerminal, Read},
+    io::{self, IsTerminal, Read, Write},
     path::{Path, PathBuf},
     process::ExitCode,
     sync::Arc,
@@ -24,8 +24,9 @@ use reasoning_harness_core::{
     InvestigationState, InvestigationStopReason, InvestigationTelemetry,
     MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError, ModelError,
     ModelErrorKind, ModelOutputFormat, ModelRequest, ModelUsage, Proposition,
-    REASONING_ARTIFACT_CONTRACT_ID, REASONING_CANDIDATE_CONTRACT_ID, ReasoningArtifact,
-    ReasoningCandidate, RejectAllEvidenceAdmission, RepeatedDiagnosticReport,
+    REASONING_ARTIFACT_CONTRACT_ID, REASONING_CANDIDATE_CONTRACT_ID,
+    REASONING_THREAD_SCHEMA_VERSION, ReasoningArtifact, ReasoningCandidate, ReasoningThread,
+    ReasoningThreadStatus, RejectAllEvidenceAdmission, RepeatedDiagnosticReport,
     ResolutionAdapterError, ResolutionBenchmarkAggregate, ResolutionBenchmarkCaseResult,
     ResolutionBenchmarkFixture, ResolutionCost, ResolutionPlanner, ResolutionReason,
     ResolutionRequest, ResolutionRequestBudget, ResolutionResolver, ResolutionResolverContribution,
@@ -34,9 +35,9 @@ use reasoning_harness_core::{
     SemanticRuntimeObservation, SemanticRuntimeProfile, SoftJudgeCalibrationFixture,
     SoftJudgeCalibrationReport, SoftJudgeDecision, SoftJudgeFallbackReason, SoftJudgeIdentity,
     SoftJudgeObservation, StandardGroundingPipeline, StrictAcceptancePolicy,
-    StructuredFactConflictDetector, TrustedVerificationPass, Verdict, VerificationPass,
-    VerificationReceipt, admit_investigation_plan, aggregate_benchmark, aggregate_claim_corpus,
-    aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
+    StructuredFactConflictDetector, ThreadInputChange, TrustedVerificationPass, Verdict,
+    VerificationPass, VerificationReceipt, admit_investigation_plan, aggregate_benchmark,
+    aggregate_claim_corpus, aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
     aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
     build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
     build_investigation_action_request, build_investigation_plan_request,
@@ -44,9 +45,9 @@ use reasoning_harness_core::{
     canonical_verified_target_reject_partial_answer, classify_materialization_failure, evaluate,
     evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture, finalize_answer,
     frameworks::five_whys::FiveWhysRestatementPass, reasoning_artifact_schema,
-    reasoning_candidate_schema, recover_verified_target_renderer_downgrade, run_answer_safety_gate,
-    run_harness, run_model_backed_soft_judge, run_semantic_runtime,
-    structured_fact_verifier_for_input, validate_artifact,
+    reasoning_candidate_schema, recover_verified_target_renderer_downgrade, replay_thread,
+    run_answer_safety_gate, run_harness, run_model_backed_soft_judge, run_semantic_runtime,
+    structured_fact_verifier_for_input, validate_artifact, validate_thread,
 };
 use reasoning_harness_providers::{
     DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS,
@@ -68,6 +69,8 @@ const CLI_CONFIG_CONTRACT_ID: &str = "reason-config-v1";
 const SEMANTIC_CHECK_INPUT_CONTRACT_ID: &str = "semantic-check-input-v1";
 const NATURAL_OUTPUT_CONTRACT_ID: &str = "reason-natural-output-v3";
 const EXPOSED_TEXT_POLICY_ID: &str = "harness-canonical-exposed-text-v1";
+const SESSION_CONTRACT_ID: &str = "reason-session-v1";
+const SESSION_CONTINUATION_POLICY_ID: &str = "session-replay-only-acquisition-v1";
 const DEFAULT_MAX_TOKENS: u32 = 1024;
 const MAX_CONTEXT_FILE_BYTES: u64 = 1024 * 1024;
 const MAX_CONTEXT_TOTAL_BYTES: usize = 4 * 1024 * 1024;
@@ -194,7 +197,10 @@ impl SemanticProfileArg {
     }
 }
 
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, ValueEnum)]
+#[derive(
+    Debug, Clone, Copy, Default, PartialEq, Eq, ValueEnum, Serialize, Deserialize, JsonSchema,
+)]
+#[serde(rename_all = "snake_case")]
 enum AnswerSafetyProfileArg {
     Baseline,
     #[value(name = "legacy-v1", alias = "d3-sufficiency-v1")]
@@ -1026,7 +1032,146 @@ fn parse_candidate_json(text: &str) -> Result<(ReasoningCandidate, bool), serde_
 }
 
 #[derive(Debug, Subcommand)]
+enum SessionCommand {
+    /// Start a persisted natural-language reasoning session and checkpoint it after the first turn.
+    Start {
+        #[arg(long, value_name = "PATH")]
+        store: PathBuf,
+        #[arg(long, value_name = "THREAD_ID")]
+        id: Option<String>,
+        #[command(flatten)]
+        natural: Box<NaturalArgs>,
+    },
+    /// Inspect persisted Harness-owned state without invoking any provider or external adapter.
+    Inspect {
+        #[arg(long, value_name = "PATH")]
+        store: PathBuf,
+        #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
+        format: OutputFormat,
+    },
+    /// Resume an interrupted session without replaying external acquisition.
+    Resume {
+        #[arg(long, value_name = "PATH")]
+        store: PathBuf,
+        #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
+        format: OutputFormat,
+    },
+    /// Add untrusted files or explicit structured facts, then re-run the native verification path.
+    Add {
+        #[arg(long, value_name = "PATH")]
+        store: PathBuf,
+        #[arg(long, value_name = "PATH")]
+        file: Vec<PathBuf>,
+        #[arg(long, value_name = "KEY=VALUE")]
+        fact: Vec<String>,
+        #[arg(long, value_name = "KEY=VALUE")]
+        hypothesis: Vec<String>,
+        #[arg(long)]
+        seed: Option<u64>,
+        #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
+        format: OutputFormat,
+    },
+    /// Correct one prior explicit premise, invalidate stale state, and re-run verification.
+    Correct {
+        #[arg(long, value_name = "PATH")]
+        store: PathBuf,
+        #[arg(long, value_name = "KEY=VALUE")]
+        premise: String,
+        #[arg(long)]
+        seed: Option<u64>,
+        #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
+        format: OutputFormat,
+    },
+    /// Fork an immutable or active history from a safe checkpoint into a new independent lineage.
+    Fork {
+        #[arg(long, value_name = "PATH")]
+        store: PathBuf,
+        #[arg(long, value_name = "CHECKPOINT_ID")]
+        checkpoint: Option<String>,
+        #[arg(long, value_name = "PATH")]
+        out: PathBuf,
+        #[arg(long, value_name = "THREAD_ID")]
+        new_id: String,
+        #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
+        format: OutputFormat,
+    },
+    /// Finalize the current historical thread; further work must fork a prior checkpoint.
+    Close {
+        #[arg(long, value_name = "PATH")]
+        store: PathBuf,
+        #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
+        format: OutputFormat,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SessionRuntimeIdentity {
+    natural_output_contract: String,
+    exposed_text_policy_id: String,
+    reasoning_thread_schema_version: u32,
+    provider: Provider,
+    model: String,
+    max_tokens: u32,
+    safety_profile: AnswerSafetyProfileArg,
+    safety_configuration_id: String,
+    continuation_policy_id: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    start_resolver_adapter: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    start_resolver_admission: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    start_trusted_verifier: Option<String>,
+    #[serde(default)]
+    config_sources: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SessionTurnRecord {
+    turn_index: usize,
+    checkpoint_id: String,
+    finalization: FinalizationResult,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SessionFile {
+    schema_version: String,
+    runtime: SessionRuntimeIdentity,
+    thread: ReasoningThread,
+    #[serde(default)]
+    turns: Vec<SessionTurnRecord>,
+}
+
+#[derive(Debug, Serialize)]
+struct SessionOperationOutput {
+    session_contract: &'static str,
+    operation: &'static str,
+    runtime: SessionRuntimeIdentity,
+    thread_id: String,
+    root_thread_id: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    parent_thread_id: Option<String>,
+    status: ReasoningThreadStatus,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    checkpoint_id: Option<String>,
+    turns: usize,
+    events: usize,
+    recorded_resolution_attempts: usize,
+    external_calls_replayed: u64,
+    pending_revalidation: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    finalization: Option<FinalizationResult>,
+}
+
+#[derive(Debug, Subcommand)]
 enum Command {
+    /// PRODUCT: Persist and continue typed natural-language reasoning sessions.
+    Session {
+        #[command(subcommand)]
+        command: SessionCommand,
+    },
     /// PRODUCT: Generate or load a candidate, then execute the harness-owned correctness process.
     Run {
         /// Harness-owned task and evidence JSON.
@@ -2266,7 +2411,73 @@ async fn run_natural_investigation(
     })
 }
 
-async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
+#[derive(Debug, Clone)]
+struct NaturalExecutionSeed {
+    input: HarnessInput,
+    new_evidence_prefix: String,
+}
+
+fn merge_natural_execution_seed(
+    mut built: NaturalInputBuild,
+    seed: NaturalExecutionSeed,
+) -> Result<NaturalInputBuild, CliError> {
+    if seed.input.task != built.input.task {
+        return Err(CliError::new(
+            "session",
+            "session task does not match the persisted HarnessInput task",
+        ));
+    }
+    if !seed.input.authority_policy.ranks.is_empty()
+        && !built.input.authority_policy.ranks.is_empty()
+        && seed.input.authority_policy != built.input.authority_policy
+    {
+        return Err(CliError::new(
+            "session_incompatible",
+            "session authority policy conflicts with the current turn input",
+        ));
+    }
+
+    for (index, evidence) in built.input.evidence.iter_mut().enumerate() {
+        evidence.id = format!("{}:{}:{}", seed.new_evidence_prefix, index, evidence.id);
+    }
+
+    let mut evidence = seed.input.evidence;
+    evidence.extend(built.input.evidence);
+    built.input.evidence = evidence;
+
+    let mut hypotheses = seed.input.hypotheses;
+    for hypothesis in built.input.hypotheses {
+        if !hypotheses.contains(&hypothesis) {
+            hypotheses.push(hypothesis);
+        }
+    }
+    built.input.hypotheses = hypotheses;
+
+    let mut assumptions = seed.input.assumptions;
+    for assumption in built.input.assumptions {
+        if !assumptions.contains(&assumption) {
+            assumptions.push(assumption);
+        }
+    }
+    built.input.assumptions = assumptions;
+
+    let mut requirements = seed.input.evidence_requirements;
+    for requirement in built.input.evidence_requirements {
+        if !requirements.contains(&requirement) {
+            requirements.push(requirement);
+        }
+    }
+    built.input.evidence_requirements = requirements;
+    if built.input.authority_policy.ranks.is_empty() {
+        built.input.authority_policy = seed.input.authority_policy;
+    }
+    Ok(built)
+}
+
+async fn execute_natural(
+    args: NaturalArgs,
+    seed: Option<NaturalExecutionSeed>,
+) -> Result<NaturalOutput, CliError> {
     let task = args
         .task
         .as_deref()
@@ -2346,6 +2557,11 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         .expect("natural live config validates model presence")
         .to_string();
     let built = build_natural_input(&args, &task)?;
+    let built = if let Some(seed) = seed {
+        merge_natural_execution_seed(built, seed)?
+    } else {
+        built
+    };
     let safety_profile = args.safety_profile.runtime_profile();
     let safety_runtime = safety_profile.identity();
     let generator = LiveGenerator::try_from_provider(provider, &model)
@@ -2655,7 +2871,12 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         rendering,
         rendering_failure,
     };
-    match resolved.format {
+    Ok(output)
+}
+
+async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
+    let output = execute_natural(args, None).await?;
+    match output.configuration.output_format {
         OutputFormat::Human => print_natural_human(&output),
         OutputFormat::Json => print_product_json("ask", &output).map_err(CliError::from)?,
     }
@@ -2943,9 +3164,890 @@ struct ProductFailureOutput {
     failure: ProductFailure,
 }
 
+fn generated_session_thread_id() -> String {
+    let millis = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|duration| duration.as_millis())
+        .unwrap_or_default();
+    format!("thread-{millis}-{}", std::process::id())
+}
+
+fn session_event_id(turn_index: usize, label: &str, ordinal: usize) -> String {
+    format!("session-turn-{turn_index}:{ordinal}:{label}")
+}
+
+fn session_checkpoint_id(turn_index: usize) -> String {
+    format!("session-checkpoint-{turn_index}")
+}
+
+fn natural_final_artifact(output: &NaturalOutput) -> &ReasoningArtifact {
+    output
+        .resolution_rounds
+        .last()
+        .map(|round| &round.final_artifact)
+        .unwrap_or(&output.initial_outcome.artifact)
+}
+
+fn provider_from_observed_name(name: &str) -> Result<Provider, CliError> {
+    match name {
+        "mistral" => Ok(Provider::Mistral),
+        "google" => Ok(Provider::Google),
+        "nvidia" => Ok(Provider::Nvidia),
+        other => Err(CliError::new(
+            "session_incompatible",
+            format!("unsupported persisted provider identity: {other}"),
+        )),
+    }
+}
+
+fn session_runtime_from_output(
+    output: &NaturalOutput,
+    safety_profile: AnswerSafetyProfileArg,
+) -> Result<SessionRuntimeIdentity, CliError> {
+    let provider = output.configuration.provider.ok_or_else(|| {
+        CliError::new(
+            "session_incompatible",
+            "natural session output is missing provider identity",
+        )
+    })?;
+    let model = output.configuration.model.clone().ok_or_else(|| {
+        CliError::new(
+            "session_incompatible",
+            "natural session output is missing model identity",
+        )
+    })?;
+    let max_tokens = output.configuration.max_tokens.ok_or_else(|| {
+        CliError::new(
+            "session_incompatible",
+            "natural session output is missing max-token identity",
+        )
+    })?;
+    Ok(SessionRuntimeIdentity {
+        natural_output_contract: NATURAL_OUTPUT_CONTRACT_ID.into(),
+        exposed_text_policy_id: EXPOSED_TEXT_POLICY_ID.into(),
+        reasoning_thread_schema_version: REASONING_THREAD_SCHEMA_VERSION,
+        provider: provider_from_observed_name(provider)?,
+        model,
+        max_tokens,
+        safety_profile,
+        safety_configuration_id: output.safety_runtime.configuration_id().into(),
+        continuation_policy_id: SESSION_CONTINUATION_POLICY_ID.into(),
+        start_resolver_adapter: output.configuration.resolver_adapter.map(str::to_string),
+        start_resolver_admission: output.configuration.resolver_admission.map(str::to_string),
+        start_trusted_verifier: output.configuration.trusted_verifier.map(str::to_string),
+        config_sources: output
+            .configuration
+            .config_sources
+            .iter()
+            .map(|source| (*source).to_string())
+            .collect(),
+    })
+}
+
+fn validate_session_runtime(session: &SessionFile) -> Result<(), CliError> {
+    if session.schema_version != SESSION_CONTRACT_ID {
+        return Err(CliError::new(
+            "session_incompatible",
+            format!(
+                "session contract mismatch: expected {SESSION_CONTRACT_ID}, got {}",
+                session.schema_version
+            ),
+        ));
+    }
+    if session.runtime.natural_output_contract != NATURAL_OUTPUT_CONTRACT_ID
+        || session.runtime.exposed_text_policy_id != EXPOSED_TEXT_POLICY_ID
+        || session.runtime.reasoning_thread_schema_version != REASONING_THREAD_SCHEMA_VERSION
+        || session.runtime.continuation_policy_id != SESSION_CONTINUATION_POLICY_ID
+    {
+        return Err(CliError::new(
+            "session_incompatible",
+            "persisted session runtime contract does not match this executable",
+        ));
+    }
+    let expected_safety = session.runtime.safety_profile.runtime_profile().identity();
+    if session.runtime.safety_configuration_id != expected_safety.configuration_id() {
+        return Err(CliError::new(
+            "session_incompatible",
+            "persisted session answer-safety identity does not match this executable",
+        ));
+    }
+    validate_thread(&session.thread)
+        .map_err(|error| CliError::new("session_invalid", error.to_string()))
+}
+
+fn load_session_file(path: &Path) -> Result<SessionFile, CliError> {
+    let bytes = fs::read(path)
+        .map_err(|error| CliError::new("session_io", format!("{}: {error}", path.display())))?;
+    let session: SessionFile = serde_json::from_slice(&bytes).map_err(|error| {
+        CliError::new(
+            "session_invalid",
+            format!("invalid session {}: {error}", path.display()),
+        )
+    })?;
+    validate_session_runtime(&session)?;
+    Ok(session)
+}
+
+fn save_session_file(
+    path: &Path,
+    session: &SessionFile,
+    create_only: bool,
+) -> Result<(), CliError> {
+    validate_session_runtime(session)?;
+    if create_only && path.exists() {
+        return Err(CliError::new(
+            "session_io",
+            format!("refusing to overwrite existing session {}", path.display()),
+        ));
+    }
+    if let Some(parent) = path
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
+    {
+        fs::create_dir_all(parent).map_err(|error| {
+            CliError::new(
+                "session_io",
+                format!("create session directory {}: {error}", parent.display()),
+            )
+        })?;
+    }
+    let bytes = serde_json::to_vec_pretty(session)
+        .map_err(|error| CliError::new("session_invalid", format!("serialize session: {error}")))?;
+    let file_name = path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or_else(|| CliError::new("session_io", "session path must have a file name"))?;
+    let temporary = path.with_file_name(format!(".{file_name}.tmp-{}", std::process::id()));
+    let mut file = fs::File::create(&temporary).map_err(|error| {
+        CliError::new(
+            "session_io",
+            format!("write session temp {}: {error}", temporary.display()),
+        )
+    })?;
+    file.write_all(&bytes).map_err(|error| {
+        CliError::new(
+            "session_io",
+            format!("write session temp {}: {error}", temporary.display()),
+        )
+    })?;
+    file.sync_all().map_err(|error| {
+        CliError::new(
+            "session_io",
+            format!("sync session temp {}: {error}", temporary.display()),
+        )
+    })?;
+    drop(file);
+    match fs::rename(&temporary, path) {
+        Ok(()) => Ok(()),
+        Err(first) if path.exists() && !create_only => {
+            fs::remove_file(path).map_err(|remove| {
+                CliError::new(
+                    "session_io",
+                    format!(
+                        "replace session {}: {first}; remove existing failed: {remove}",
+                        path.display()
+                    ),
+                )
+            })?;
+            fs::rename(&temporary, path).map_err(|error| {
+                CliError::new(
+                    "session_io",
+                    format!("commit session {}: {error}", path.display()),
+                )
+            })
+        }
+        Err(error) => Err(CliError::new(
+            "session_io",
+            format!("commit session {}: {error}", path.display()),
+        )),
+    }
+}
+
+fn session_operation_output(
+    operation: &'static str,
+    session: &SessionFile,
+    checkpoint_id: Option<String>,
+    finalization: Option<FinalizationResult>,
+) -> Result<SessionOperationOutput, CliError> {
+    let replay = replay_thread(&session.thread)
+        .map_err(|error| CliError::new("session_invalid", error.to_string()))?;
+    let pending_revalidation = replay.snapshot.artifact.is_none()
+        || replay.snapshot.current_candidate.is_none()
+        || replay.snapshot.verdict.is_none()
+        || replay.snapshot.status == ReasoningThreadStatus::NeedsReevaluation;
+    Ok(SessionOperationOutput {
+        session_contract: SESSION_CONTRACT_ID,
+        operation,
+        runtime: session.runtime.clone(),
+        thread_id: session.thread.thread_id.clone(),
+        root_thread_id: session.thread.lineage.root_thread_id.clone(),
+        parent_thread_id: session.thread.lineage.parent_thread_id.clone(),
+        status: replay.snapshot.status,
+        checkpoint_id,
+        turns: session.turns.len(),
+        events: session.thread.events.len(),
+        recorded_resolution_attempts: replay.snapshot.resolution_attempts.len(),
+        external_calls_replayed: 0,
+        pending_revalidation,
+        finalization: if pending_revalidation {
+            None
+        } else {
+            finalization
+        },
+    })
+}
+
+fn emit_session_output(
+    output: &SessionOperationOutput,
+    format: OutputFormat,
+) -> Result<(), CliError> {
+    match format {
+        OutputFormat::Json => print_product_json("session", output).map_err(CliError::from),
+        OutputFormat::Human => {
+            if let Some(text) = output
+                .finalization
+                .as_ref()
+                .and_then(|finalization| finalization.text.as_deref())
+            {
+                println!("{text}");
+            }
+            println!(
+                "session: thread={} status={:?} turns={} events={} checkpoint={} replayed_external_calls=0 pending_revalidation={}",
+                output.thread_id,
+                output.status,
+                output.turns,
+                output.events,
+                output.checkpoint_id.as_deref().unwrap_or("none"),
+                output.pending_revalidation
+            );
+            Ok(())
+        }
+    }
+}
+
+fn record_natural_turn(
+    session: &mut SessionFile,
+    output: &NaturalOutput,
+    replaces_candidate_id: Option<String>,
+) -> Result<String, CliError> {
+    let turn_index = session.turns.len() + 1;
+    let mut ordinal = 1usize;
+    session
+        .thread
+        .record_candidate(
+            session_event_id(turn_index, "candidate", ordinal),
+            format!("{}:candidate:{turn_index}", session.thread.thread_id),
+            replaces_candidate_id,
+            output.candidate.clone(),
+        )
+        .map_err(|error| CliError::new("session_state", error.to_string()))?;
+    ordinal += 1;
+    for round in &output.resolution_rounds {
+        for attempt in &round.attempts {
+            session
+                .thread
+                .record_resolution_attempt(
+                    session_event_id(turn_index, "resolution-attempt", ordinal),
+                    attempt.clone(),
+                )
+                .map_err(|error| CliError::new("session_state", error.to_string()))?;
+            ordinal += 1;
+        }
+    }
+    session
+        .thread
+        .record_accepted_artifact(
+            session_event_id(turn_index, "artifact", ordinal),
+            natural_final_artifact(output).clone(),
+            natural_output_final_verdict(output),
+        )
+        .map_err(|error| CliError::new("session_state", error.to_string()))?;
+    ordinal += 1;
+    let checkpoint_id = session_checkpoint_id(turn_index);
+    session
+        .thread
+        .create_checkpoint(
+            session_event_id(turn_index, "checkpoint", ordinal),
+            checkpoint_id.clone(),
+        )
+        .map_err(|error| CliError::new("session_state", error.to_string()))?;
+    ordinal += 1;
+    session
+        .thread
+        .interrupt(
+            session_event_id(turn_index, "interrupt", ordinal),
+            checkpoint_id.clone(),
+        )
+        .map_err(|error| CliError::new("session_state", error.to_string()))?;
+    session.turns.push(SessionTurnRecord {
+        turn_index,
+        checkpoint_id: checkpoint_id.clone(),
+        finalization: output.finalization.clone(),
+    });
+    Ok(checkpoint_id)
+}
+
+fn natural_output_final_verdict(output: &NaturalOutput) -> Verdict {
+    output
+        .resolution_rounds
+        .last()
+        .map(|round| round.final_verdict)
+        .unwrap_or(output.initial_outcome.verdict)
+}
+
+fn continuation_args(
+    session: &SessionFile,
+    task: String,
+    file: Vec<PathBuf>,
+    fact: Vec<String>,
+    hypothesis: Vec<String>,
+    seed: Option<u64>,
+    format: OutputFormat,
+) -> NaturalArgs {
+    NaturalArgs {
+        task: Some(task),
+        file,
+        fact,
+        hypothesis,
+        resolver_fact: vec![],
+        resolver_command: None,
+        resolver_arg: vec![],
+        resolver_timeout_ms: None,
+        resolver_max_response_bytes: None,
+        max_resolution_attempts: 3,
+        provider: Some(session.runtime.provider),
+        model: Some(session.runtime.model.clone()),
+        max_tokens: Some(session.runtime.max_tokens),
+        seed,
+        safety_profile: session.runtime.safety_profile,
+        config: None,
+        no_config: true,
+        format: Some(format),
+    }
+}
+
+fn seed_input_for_session_turn(
+    snapshot: &reasoning_harness_core::ReasoningThreadSnapshot,
+    corrected_key: Option<&str>,
+) -> Result<HarnessInput, CliError> {
+    let artifact = snapshot.artifact.as_ref().ok_or_else(|| {
+        CliError::new(
+            "session_state",
+            "session has no accepted artifact to continue from; fork or repair from a safe checkpoint",
+        )
+    })?;
+    let mut input = input_from_artifact(artifact);
+    if let Some(key) = corrected_key {
+        for evidence in &mut input.evidence {
+            if evidence.metadata.provenance_class.as_deref() == Some("explicit_user_fact") {
+                evidence.facts.remove(key);
+            }
+        }
+        input.evidence.retain(|evidence| {
+            evidence.metadata.provenance_class.as_deref() != Some("explicit_user_fact")
+                || !evidence.facts.is_empty()
+        });
+    }
+    Ok(input)
+}
+
+fn previous_explicit_fact(
+    snapshot: &reasoning_harness_core::ReasoningThreadSnapshot,
+    key: &str,
+) -> Option<String> {
+    snapshot.artifact.as_ref().and_then(|artifact| {
+        artifact
+            .evidence
+            .iter()
+            .filter(|evidence| {
+                evidence.metadata.provenance_class.as_deref() == Some("explicit_user_fact")
+            })
+            .find_map(|evidence| evidence.facts.get(key).cloned())
+    })
+}
+
+fn ensure_session_active_for_change(
+    session: &mut SessionFile,
+) -> Result<reasoning_harness_core::ReasoningThreadSnapshot, CliError> {
+    let replay = replay_thread(&session.thread)
+        .map_err(|error| CliError::new("session_invalid", error.to_string()))?;
+    match replay.snapshot.status {
+        ReasoningThreadStatus::Interrupted => {
+            let checkpoint_id = replay.interrupted_checkpoint_id.ok_or_else(|| {
+                CliError::new(
+                    "session_invalid",
+                    "interrupted session has no checkpoint identity",
+                )
+            })?;
+            let event_id = format!(
+                "session-resume-for-turn-{}",
+                session.thread.events.len() + 1
+            );
+            session
+                .thread
+                .resume(event_id, checkpoint_id)
+                .map_err(|error| CliError::new("session_state", error.to_string()))?;
+            Ok(replay_thread(&session.thread)
+                .map_err(|error| CliError::new("session_invalid", error.to_string()))?
+                .snapshot)
+        }
+        ReasoningThreadStatus::Active => Ok(replay.snapshot),
+        ReasoningThreadStatus::Finalized => Err(CliError::new(
+            "session_finalized",
+            "finalized session is immutable; fork a checkpoint to continue",
+        )),
+        ReasoningThreadStatus::NeedsReevaluation => Err(CliError::new(
+            "session_state",
+            "session has a pending invalidation and cannot start another turn",
+        )),
+    }
+}
+
+fn read_session_context_files(paths: &[PathBuf]) -> Result<Vec<(PathBuf, String)>, CliError> {
+    let mut total = 0usize;
+    let mut result = Vec::with_capacity(paths.len());
+    for path in paths {
+        let metadata = fs::metadata(path)
+            .map_err(|error| CliError::new("input", format!("{}: {error}", path.display())))?;
+        if !metadata.is_file() {
+            return Err(CliError::new(
+                "input",
+                format!("{}: --file requires a regular file", path.display()),
+            ));
+        }
+        if metadata.len() > MAX_CONTEXT_FILE_BYTES {
+            return Err(CliError::new(
+                "input",
+                format!(
+                    "{}: context file exceeds {} bytes",
+                    path.display(),
+                    MAX_CONTEXT_FILE_BYTES
+                ),
+            ));
+        }
+        let observation = fs::read_to_string(path)
+            .map_err(|error| CliError::new("input", format!("{}: {error}", path.display())))?;
+        total = total
+            .checked_add(observation.len())
+            .ok_or_else(|| CliError::new("input", "session context byte count overflow"))?;
+        if total > MAX_CONTEXT_TOTAL_BYTES {
+            return Err(CliError::new(
+                "input",
+                format!("total session --file context exceeds {MAX_CONTEXT_TOTAL_BYTES} bytes"),
+            ));
+        }
+        result.push((path.clone(), observation));
+    }
+    Ok(result)
+}
+
+fn session_fact_evidence(turn_index: usize, index: usize, proposition: &Proposition) -> Evidence {
+    Evidence {
+        id: format!("session-fact-{turn_index}-{index}"),
+        source: "session:--fact".into(),
+        observation: format!("{}={}", proposition.key, proposition.value),
+        facts: BTreeMap::from([(proposition.key.clone(), proposition.value.clone())]),
+        metadata: EvidenceMetadata {
+            temporal: None,
+            scope: None,
+            provenance_class: Some("explicit_user_fact".into()),
+        },
+    }
+}
+
+async fn run_session(command: SessionCommand) -> Result<(), CliError> {
+    match command {
+        SessionCommand::Start { store, id, natural } => {
+            if store.exists() {
+                return Err(CliError::new(
+                    "session_io",
+                    format!("refusing to overwrite existing session {}", store.display()),
+                ));
+            }
+            let natural = *natural;
+            if natural
+                .task
+                .as_deref()
+                .is_none_or(|task| task.trim().is_empty())
+            {
+                return Err(CliError::new("input", "session start requires TASK"));
+            }
+            let safety_profile = natural.safety_profile;
+            let output = execute_natural(natural, None).await?;
+            let format = output.configuration.output_format;
+            let thread_id = id.unwrap_or_else(generated_session_thread_id);
+            let mut thread = ReasoningThread::new(thread_id.clone())
+                .map_err(|error| CliError::new("session_state", error.to_string()))?;
+            thread
+                .record_task(
+                    session_event_id(1, "task", 0),
+                    format!("session-task-{thread_id}"),
+                    output.task.clone(),
+                )
+                .map_err(|error| CliError::new("session_state", error.to_string()))?;
+            let runtime = session_runtime_from_output(&output, safety_profile)?;
+            let mut session = SessionFile {
+                schema_version: SESSION_CONTRACT_ID.into(),
+                runtime,
+                thread,
+                turns: vec![],
+            };
+            let checkpoint_id = record_natural_turn(&mut session, &output, None)?;
+            save_session_file(&store, &session, true)?;
+            let response = session_operation_output(
+                "start",
+                &session,
+                Some(checkpoint_id),
+                Some(output.finalization),
+            )?;
+            emit_session_output(&response, format)
+        }
+        SessionCommand::Inspect { store, format } => {
+            let session = load_session_file(&store)?;
+            let checkpoint = session.turns.last().map(|turn| turn.checkpoint_id.clone());
+            let finalization = session.turns.last().map(|turn| turn.finalization.clone());
+            let output = session_operation_output("inspect", &session, checkpoint, finalization)?;
+            emit_session_output(&output, format)
+        }
+        SessionCommand::Resume { store, format } => {
+            let mut session = load_session_file(&store)?;
+            let replay = replay_thread(&session.thread)
+                .map_err(|error| CliError::new("session_invalid", error.to_string()))?;
+            let checkpoint_id = match replay.snapshot.status {
+                ReasoningThreadStatus::Interrupted => {
+                    let checkpoint_id = replay.interrupted_checkpoint_id.ok_or_else(|| {
+                        CliError::new("session_invalid", "interrupted session has no checkpoint")
+                    })?;
+                    let event_id = format!("session-resume-{}", session.thread.events.len() + 1);
+                    session
+                        .thread
+                        .resume(event_id, checkpoint_id.clone())
+                        .map_err(|error| CliError::new("session_state", error.to_string()))?;
+                    save_session_file(&store, &session, false)?;
+                    Some(checkpoint_id)
+                }
+                ReasoningThreadStatus::Active => {
+                    session.turns.last().map(|turn| turn.checkpoint_id.clone())
+                }
+                ReasoningThreadStatus::Finalized => {
+                    return Err(CliError::new(
+                        "session_finalized",
+                        "finalized session cannot resume; fork a checkpoint",
+                    ));
+                }
+                ReasoningThreadStatus::NeedsReevaluation => {
+                    return Err(CliError::new(
+                        "session_state",
+                        "session has pending invalidation and cannot resume",
+                    ));
+                }
+            };
+            let finalization = session.turns.last().map(|turn| turn.finalization.clone());
+            let output = session_operation_output("resume", &session, checkpoint_id, finalization)?;
+            emit_session_output(&output, format)
+        }
+        SessionCommand::Add {
+            store,
+            file,
+            fact,
+            hypothesis,
+            seed,
+            format,
+        } => {
+            if file.is_empty() && fact.is_empty() && hypothesis.is_empty() {
+                return Err(CliError::new(
+                    "input",
+                    "session add requires --file, --fact, or --hypothesis",
+                ));
+            }
+            if !io::stdin().is_terminal() {
+                return Err(CliError::new(
+                    "input",
+                    "session add does not accept piped stdin; use --file so the added context is persisted explicitly",
+                ));
+            }
+            let persisted_files = read_session_context_files(&file)?;
+            let parsed_facts = fact
+                .iter()
+                .map(|raw| parse_proposition_arg(raw, "--fact"))
+                .collect::<Result<Vec<_>, _>>()?;
+            let parsed_hypotheses = hypothesis
+                .iter()
+                .map(|raw| parse_proposition_arg(raw, "--hypothesis"))
+                .collect::<Result<Vec<_>, _>>()?;
+
+            let mut session = load_session_file(&store)?;
+            let snapshot = ensure_session_active_for_change(&mut session)?;
+            let mut input = seed_input_for_session_turn(&snapshot, None)?;
+            let turn_index = session.turns.len() + 1;
+            let mut change_ordinal = 0usize;
+            for (index, (path, observation)) in persisted_files.into_iter().enumerate() {
+                change_ordinal += 1;
+                let change_id = format!("session-turn-{turn_index}-context-{index}");
+                session
+                    .thread
+                    .record_input_change(
+                        session_event_id(turn_index, "input-change", 100 + change_ordinal * 2),
+                        session_event_id(
+                            turn_index,
+                            "input-invalidation",
+                            101 + change_ordinal * 2,
+                        ),
+                        change_id,
+                        ThreadInputChange::ContextAdded {
+                            context_id: format!("session-context-{turn_index}-{index}"),
+                            source: path.display().to_string(),
+                            observation: observation.clone(),
+                        },
+                        vec![],
+                    )
+                    .map_err(|error| CliError::new("session_state", error.to_string()))?;
+                input.evidence.push(Evidence {
+                    id: format!("session-context-{turn_index}-{index}"),
+                    source: path.display().to_string(),
+                    observation,
+                    facts: BTreeMap::new(),
+                    metadata: EvidenceMetadata {
+                        temporal: None,
+                        scope: None,
+                        provenance_class: Some("untrusted_context".into()),
+                    },
+                });
+            }
+            for (index, proposition) in parsed_facts.iter().enumerate() {
+                change_ordinal += 1;
+                session
+                    .thread
+                    .record_input_change(
+                        session_event_id(turn_index, "input-change", 100 + change_ordinal * 2),
+                        session_event_id(
+                            turn_index,
+                            "input-invalidation",
+                            101 + change_ordinal * 2,
+                        ),
+                        format!("session-turn-{turn_index}-fact-{index}"),
+                        ThreadInputChange::EvidenceAdded {
+                            evidence: session_fact_evidence(turn_index, index, proposition),
+                        },
+                        vec![proposition.key.clone()],
+                    )
+                    .map_err(|error| CliError::new("session_state", error.to_string()))?;
+                input
+                    .evidence
+                    .push(session_fact_evidence(turn_index, index, proposition));
+            }
+            for (index, proposition) in parsed_hypotheses.iter().enumerate() {
+                change_ordinal += 1;
+                session
+                    .thread
+                    .record_input_change(
+                        session_event_id(turn_index, "input-change", 100 + change_ordinal * 2),
+                        session_event_id(
+                            turn_index,
+                            "input-invalidation",
+                            101 + change_ordinal * 2,
+                        ),
+                        format!("session-turn-{turn_index}-hypothesis-{index}"),
+                        ThreadInputChange::HypothesisAdded {
+                            proposition: proposition.clone(),
+                        },
+                        vec![proposition.key.clone()],
+                    )
+                    .map_err(|error| CliError::new("session_state", error.to_string()))?;
+                if !input.hypotheses.contains(proposition) {
+                    input.hypotheses.push(proposition.clone());
+                }
+            }
+            save_session_file(&store, &session, false)?;
+            let args = continuation_args(
+                &session,
+                input.task.clone(),
+                vec![],
+                vec![],
+                vec![],
+                seed,
+                format,
+            );
+            let output = execute_natural(
+                args,
+                Some(NaturalExecutionSeed {
+                    input,
+                    new_evidence_prefix: format!("session-turn-{turn_index}"),
+                }),
+            )
+            .await?;
+            let replaces = snapshot
+                .current_candidate
+                .as_ref()
+                .map(|candidate| candidate.candidate_id.clone());
+            let checkpoint_id = record_natural_turn(&mut session, &output, replaces)?;
+            save_session_file(&store, &session, false)?;
+            let response = session_operation_output(
+                "add",
+                &session,
+                Some(checkpoint_id),
+                Some(output.finalization),
+            )?;
+            emit_session_output(&response, format)
+        }
+        SessionCommand::Correct {
+            store,
+            premise,
+            seed,
+            format,
+        } => {
+            if !io::stdin().is_terminal() {
+                return Err(CliError::new(
+                    "input",
+                    "session correct does not accept piped stdin",
+                ));
+            }
+            let proposition = parse_proposition_arg(&premise, "--premise")?;
+            let mut session = load_session_file(&store)?;
+            let snapshot = ensure_session_active_for_change(&mut session)?;
+            let previous_value = previous_explicit_fact(&snapshot, &proposition.key);
+            let mut input = seed_input_for_session_turn(&snapshot, Some(&proposition.key))?;
+            let turn_index = session.turns.len() + 1;
+            input
+                .evidence
+                .push(session_fact_evidence(turn_index, 0, &proposition));
+            session
+                .thread
+                .record_input_change(
+                    session_event_id(turn_index, "premise-correction", 100),
+                    session_event_id(turn_index, "premise-invalidation", 101),
+                    format!("session-turn-{turn_index}-correction"),
+                    ThreadInputChange::PremiseCorrected {
+                        key: proposition.key.clone(),
+                        previous_value,
+                        new_value: proposition.value.clone(),
+                    },
+                    vec![proposition.key.clone()],
+                )
+                .map_err(|error| CliError::new("session_state", error.to_string()))?;
+            save_session_file(&store, &session, false)?;
+            let args = continuation_args(
+                &session,
+                input.task.clone(),
+                vec![],
+                vec![],
+                vec![],
+                seed,
+                format,
+            );
+            let output = execute_natural(
+                args,
+                Some(NaturalExecutionSeed {
+                    input,
+                    new_evidence_prefix: format!("session-turn-{turn_index}"),
+                }),
+            )
+            .await?;
+            let replaces = snapshot
+                .current_candidate
+                .as_ref()
+                .map(|candidate| candidate.candidate_id.clone());
+            let checkpoint_id = record_natural_turn(&mut session, &output, replaces)?;
+            save_session_file(&store, &session, false)?;
+            let response = session_operation_output(
+                "correct",
+                &session,
+                Some(checkpoint_id),
+                Some(output.finalization),
+            )?;
+            emit_session_output(&response, format)
+        }
+        SessionCommand::Fork {
+            store,
+            checkpoint,
+            out,
+            new_id,
+            format,
+        } => {
+            let source = load_session_file(&store)?;
+            let checkpoint_id = checkpoint
+                .or_else(|| source.turns.last().map(|turn| turn.checkpoint_id.clone()))
+                .ok_or_else(|| {
+                    CliError::new("session_state", "session has no checkpoint to fork")
+                })?;
+            let fork = source
+                .thread
+                .fork_from_checkpoint(
+                    &checkpoint_id,
+                    new_id,
+                    format!("session-fork-{}", source.thread.events.len() + 1),
+                )
+                .map_err(|error| CliError::new("session_state", error.to_string()))?;
+            let forked = SessionFile {
+                schema_version: SESSION_CONTRACT_ID.into(),
+                runtime: source.runtime.clone(),
+                thread: fork,
+                turns: vec![],
+            };
+            save_session_file(&out, &forked, true)?;
+            let response = session_operation_output("fork", &forked, Some(checkpoint_id), None)?;
+            emit_session_output(&response, format)
+        }
+        SessionCommand::Close { store, format } => {
+            let mut session = load_session_file(&store)?;
+            let replay = replay_thread(&session.thread)
+                .map_err(|error| CliError::new("session_invalid", error.to_string()))?;
+            if replay.snapshot.status == ReasoningThreadStatus::Interrupted {
+                let checkpoint_id = replay.interrupted_checkpoint_id.ok_or_else(|| {
+                    CliError::new("session_invalid", "interrupted session has no checkpoint")
+                })?;
+                session
+                    .thread
+                    .resume(
+                        format!("session-close-resume-{}", session.thread.events.len() + 1),
+                        checkpoint_id,
+                    )
+                    .map_err(|error| CliError::new("session_state", error.to_string()))?;
+            }
+            let finalization = session
+                .turns
+                .last()
+                .map(|turn| turn.finalization.clone())
+                .ok_or_else(|| CliError::new("session_state", "session has no completed turn"))?;
+            session
+                .thread
+                .record_finalization(
+                    format!("session-finalize-{}", session.thread.events.len() + 1),
+                    finalization.clone(),
+                )
+                .map_err(|error| CliError::new("session_state", error.to_string()))?;
+            save_session_file(&store, &session, false)?;
+            let output = session_operation_output("close", &session, None, Some(finalization))?;
+            emit_session_output(&output, format)
+        }
+    }
+}
+
 impl Cli {
     fn product_error_context(&self) -> Option<ProductErrorContext> {
         match &self.command {
+            Some(Command::Session { command }) => {
+                let json = match command {
+                    SessionCommand::Start { natural, .. } => match natural.format {
+                        Some(format) => format == OutputFormat::Json,
+                        None if !natural.no_config => load_cli_config(natural.config.as_ref())
+                            .ok()
+                            .and_then(|loaded| loaded.config.run.format)
+                            .is_some_and(|format| format == OutputFormat::Json),
+                        None => false,
+                    },
+                    SessionCommand::Inspect { format, .. }
+                    | SessionCommand::Resume { format, .. }
+                    | SessionCommand::Add { format, .. }
+                    | SessionCommand::Correct { format, .. }
+                    | SessionCommand::Fork { format, .. }
+                    | SessionCommand::Close { format, .. } => *format == OutputFormat::Json,
+                };
+                Some(ProductErrorContext {
+                    command: "session",
+                    json,
+                })
+            }
             Some(Command::Run {
                 config,
                 no_config,
@@ -3028,6 +4130,7 @@ async fn main() -> ExitCode {
 async fn run(cli: Cli) -> Result<(), CliError> {
     let Cli { natural, command } = cli;
     match command {
+        Some(Command::Session { command }) => run_session(command).await,
         Some(Command::Run {
             input,
             candidate,
@@ -6926,5 +8029,280 @@ mod candidate_json_tests {
         );
         assert_eq!(model_error_class(ModelErrorKind::Timeout), "timeout");
         assert_eq!(model_error_class(ModelErrorKind::Protocol), "protocol");
+    }
+
+    fn synthetic_session_path(label: &str) -> PathBuf {
+        std::env::temp_dir().join(format!(
+            "reason-session-{label}-{}-{}.json",
+            std::process::id(),
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ))
+    }
+
+    fn synthetic_session_file() -> SessionFile {
+        let mut thread = ReasoningThread::new("session-test-thread").unwrap();
+        thread
+            .record_task("session-test-task-event", "session-test-task", "test task")
+            .unwrap();
+        thread
+            .record_candidate(
+                "session-test-candidate-event",
+                "session-test-candidate",
+                None,
+                ReasoningCandidate::default(),
+            )
+            .unwrap();
+        thread
+            .record_accepted_artifact(
+                "session-test-artifact-event",
+                ReasoningArtifact {
+                    task: "test task".into(),
+                    ..Default::default()
+                },
+                Verdict::Unknown,
+            )
+            .unwrap();
+        let checkpoint = thread
+            .create_checkpoint("session-test-checkpoint-event", "session-test-checkpoint")
+            .unwrap();
+        thread
+            .interrupt(
+                "session-test-interrupt-event",
+                checkpoint.checkpoint_id.clone(),
+            )
+            .unwrap();
+        SessionFile {
+            schema_version: SESSION_CONTRACT_ID.into(),
+            runtime: SessionRuntimeIdentity {
+                natural_output_contract: NATURAL_OUTPUT_CONTRACT_ID.into(),
+                exposed_text_policy_id: EXPOSED_TEXT_POLICY_ID.into(),
+                reasoning_thread_schema_version: REASONING_THREAD_SCHEMA_VERSION,
+                provider: Provider::Mistral,
+                model: "test-model".into(),
+                max_tokens: 64,
+                safety_profile: AnswerSafetyProfileArg::Current,
+                safety_configuration_id: AnswerSafetyProfileArg::Current
+                    .runtime_profile()
+                    .identity()
+                    .configuration_id()
+                    .into(),
+                continuation_policy_id: SESSION_CONTINUATION_POLICY_ID.into(),
+                start_resolver_adapter: None,
+                start_resolver_admission: None,
+                start_trusted_verifier: None,
+                config_sources: vec![],
+            },
+            thread,
+            turns: vec![SessionTurnRecord {
+                turn_index: 1,
+                checkpoint_id: "session-test-checkpoint".into(),
+                finalization: FinalizationResult {
+                    status: FinalizationStatus::Unresolved,
+                    text: None,
+                    factual_claims: 0,
+                    covered_claims: 0,
+                    factual_claim_coverage: 1.0,
+                    uncovered_propositions: vec![],
+                },
+            }],
+        }
+    }
+
+    #[test]
+    fn session_file_round_trip_resume_preserves_checkpoint_state_without_external_replay() {
+        let path = synthetic_session_path("round-trip");
+        let session = synthetic_session_file();
+        let checkpoint_snapshot = session.thread.checkpoints[0].snapshot.clone();
+        save_session_file(&path, &session, true).unwrap();
+
+        let mut loaded = load_session_file(&path).unwrap();
+        assert_eq!(
+            replay_thread(&loaded.thread).unwrap().snapshot.status,
+            ReasoningThreadStatus::Interrupted
+        );
+        let snapshot = ensure_session_active_for_change(&mut loaded).unwrap();
+        assert_eq!(snapshot, checkpoint_snapshot);
+        save_session_file(&path, &loaded, false).unwrap();
+
+        let reloaded = load_session_file(&path).unwrap();
+        let replay = replay_thread(&reloaded.thread).unwrap();
+        assert_eq!(replay.snapshot, checkpoint_snapshot);
+        let output = session_operation_output(
+            "resume",
+            &reloaded,
+            Some("session-test-checkpoint".into()),
+            None,
+        )
+        .unwrap();
+        assert_eq!(output.external_calls_replayed, 0);
+        fs::remove_file(path).ok();
+    }
+
+    #[test]
+    fn session_correction_persists_typed_invalidation_before_re_evaluation() {
+        let path = synthetic_session_path("correction");
+        let mut session = synthetic_session_file();
+        let snapshot = ensure_session_active_for_change(&mut session).unwrap();
+        assert!(snapshot.artifact.is_some());
+        session
+            .thread
+            .record_input_change(
+                "session-test-change",
+                "session-test-invalidation",
+                "session-test-correction",
+                ThreadInputChange::PremiseCorrected {
+                    key: "feature.enabled".into(),
+                    previous_value: Some("true".into()),
+                    new_value: "false".into(),
+                },
+                vec!["feature.enabled".into()],
+            )
+            .unwrap();
+        save_session_file(&path, &session, true).unwrap();
+
+        let loaded = load_session_file(&path).unwrap();
+        let replay = replay_thread(&loaded.thread).unwrap();
+        assert_eq!(replay.snapshot.status, ReasoningThreadStatus::Active);
+        assert!(replay.snapshot.artifact.is_none());
+        assert!(replay.snapshot.current_candidate.is_none());
+        assert!(replay.snapshot.finalization.is_none());
+        assert!(matches!(
+            replay.snapshot.input_changes.last(),
+            Some(ThreadInputChange::PremiseCorrected { key, new_value, .. })
+                if key == "feature.enabled" && new_value == "false"
+        ));
+        fs::remove_file(path).ok();
+    }
+
+    #[test]
+    fn session_fork_is_non_destructive_and_uses_independent_lineage() {
+        let source = synthetic_session_file();
+        let source_before = source.thread.clone();
+        let fork = source
+            .thread
+            .fork_from_checkpoint(
+                "session-test-checkpoint",
+                "session-fork-thread",
+                "session-fork-event",
+            )
+            .unwrap();
+        assert_eq!(source.thread, source_before);
+        assert_eq!(
+            fork.lineage.parent_thread_id.as_deref(),
+            Some("session-test-thread")
+        );
+        assert_eq!(
+            fork.lineage.forked_from_checkpoint_id.as_deref(),
+            Some("session-test-checkpoint")
+        );
+        assert_eq!(
+            replay_thread(&fork).unwrap().snapshot.status,
+            ReasoningThreadStatus::Active
+        );
+    }
+
+    #[test]
+    fn persisted_session_contract_contains_no_hidden_reasoning_surface() {
+        let json = serde_json::to_string(&synthetic_session_file()).unwrap();
+        assert!(json.contains(SESSION_CONTRACT_ID));
+        assert!(json.contains(SESSION_CONTINUATION_POLICY_ID));
+        assert!(!json.contains("chain_of_thought"));
+        assert!(!json.contains("hidden_reasoning"));
+        assert!(!json.contains("reasoning_text"));
+    }
+
+    #[test]
+    fn session_cli_surface_is_explicit_and_machine_parseable() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "session",
+            "inspect",
+            "--store",
+            "session.json",
+            "--format",
+            "json",
+        ])
+        .unwrap();
+        assert!(matches!(
+            cli.command,
+            Some(Command::Session {
+                command: SessionCommand::Inspect { .. }
+            })
+        ));
+    }
+
+    #[test]
+    fn invalidated_session_never_reexposes_previous_turn_finalization() {
+        let mut session = synthetic_session_file();
+        let _ = ensure_session_active_for_change(&mut session).unwrap();
+        session
+            .thread
+            .record_input_change(
+                "session-stale-change",
+                "session-stale-invalidation",
+                "session-stale-correction",
+                ThreadInputChange::PremiseCorrected {
+                    key: "feature.enabled".into(),
+                    previous_value: Some("true".into()),
+                    new_value: "false".into(),
+                },
+                vec!["feature.enabled".into()],
+            )
+            .unwrap();
+        let previous = session.turns.last().unwrap().finalization.clone();
+        let output = session_operation_output(
+            "inspect",
+            &session,
+            Some("session-test-checkpoint".into()),
+            Some(previous),
+        )
+        .unwrap();
+        assert!(output.pending_revalidation);
+        assert!(output.finalization.is_none());
+        assert_eq!(output.external_calls_replayed, 0);
+    }
+
+    #[test]
+    fn correction_seed_removes_only_prior_user_fact_and_preserves_external_evidence() {
+        let key = "service.region";
+        let artifact = ReasoningArtifact {
+            task: "where".into(),
+            evidence: vec![
+                Evidence {
+                    id: "user".into(),
+                    source: "cli:--fact".into(),
+                    observation: "service.region=us-east-1".into(),
+                    facts: BTreeMap::from([(key.into(), "us-east-1".into())]),
+                    metadata: EvidenceMetadata {
+                        temporal: None,
+                        scope: None,
+                        provenance_class: Some("explicit_user_fact".into()),
+                    },
+                },
+                Evidence {
+                    id: "external".into(),
+                    source: "api:trusted".into(),
+                    observation: "service.region=eu-west-1".into(),
+                    facts: BTreeMap::from([(key.into(), "eu-west-1".into())]),
+                    metadata: EvidenceMetadata {
+                        temporal: None,
+                        scope: None,
+                        provenance_class: Some("primary".into()),
+                    },
+                },
+            ],
+            ..Default::default()
+        };
+        let snapshot = reasoning_harness_core::ReasoningThreadSnapshot {
+            artifact: Some(artifact),
+            ..Default::default()
+        };
+        let seed = seed_input_for_session_turn(&snapshot, Some(key)).unwrap();
+        assert_eq!(seed.evidence.len(), 1);
+        assert_eq!(seed.evidence[0].id, "external");
+        assert_eq!(seed.evidence[0].facts[key], "eu-west-1");
     }
 }

@@ -6,7 +6,7 @@
 
 **v0.3.0 — External Evidence & Resolution** マイルストーン（#173）はリリースまで完了した。v0.3.0 は、既存の bounded-resolution runtime を実際の外部取得と trusted verification に接続する一方で、correctness boundary、semantic runtime `semantic-decidability-d3-v1`、answer-safety `verified-target-answer-gate-v1` は変更していない。
 
-active な v0.4.0 line では #210 exposed-text binding、#211 whole-invocation subprocess deadline に続き、#212 bounded investigation planning まで実装した。#212 は opt-in の自然文 path に `bounded-investigation-v1` を追加し、model が提案する question/action は untrusted のまま、設定済み read-only capability だけを選択できる。admit 済み evidence の後は candidate を再生成して通常 verification へ戻し、repeated/no-progress action は明示 round/action budget で停止する。詳細は[制約付き調査プランニング](investigation.ja.md)を参照。
+active な v0.4.0 line では #210 exposed-text binding、#211 whole-invocation subprocess deadline、#212 bounded investigation planningに続き、#213 resumable `ReasoningThread` sessionまで実装した。#212 は opt-in 自然文pathへ`bounded-investigation-v1`を追加し、#213は`reason-session-v1`のstart/inspect/resume/add/correct/fork/close、typed input invalidation、persisted runtime identity、zero-side-effect checkpoint replayを追加する。詳細は[制約付き調査プランニング](investigation.ja.md)と[再開可能な自然言語セッション](session.ja.md)を参照。
 
 v0.3.0 で完了した範囲は次のとおり。
 
