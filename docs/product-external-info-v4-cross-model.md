@@ -84,7 +84,7 @@ The 14B result is important because larger parameter count did not monotonically
 
 ## First Groq observation — run `34008471577`
 
-After switching Groq Structured Outputs to `strict:false` best-effort mode without changing the Harness-owned v4 schema, `openai/gpt-oss-120b` and `qwen/qwen3.8-27b` completed all 21 cases in the same run. `openai/gpt-oss-20b` remained operationally incomplete because of a provider-side JSON-validation HTTP 400 and is excluded from semantic scoring here; it is re-measured separately after adding bounded structured-output retry.
+After switching Groq Structured Outputs to `strict:false` best-effort mode without changing the Harness-owned v4 schema, `openai/gpt-oss-120b` and `qwen/qwen3.8-27b` completed all 21 cases in run `34008471577`. `openai/gpt-oss-20b` was incomplete in that run because of a provider-side JSON-validation HTTP 400, so the adapter was updated to boundedly retry only that best-effort structured-output validation failure. The 20B model then completed all 21 cases on main in run `34009503385`. The v4 corpus, prompts, output schema, scoring, admission, verification, and finalization semantics were unchanged.
 
 ### GPT-OSS 120B
 
@@ -100,4 +100,11 @@ After switching Groq Structured Outputs to `strict:false` best-effort mode witho
 - Raw + external used 17,660 model tokens; Harness + external used 8,382 (`0.475x` raw tokens). Accounted end-to-end latency was 82,842 ms raw versus 152,932 ms Harness (`1.846x`).
 - All four arms used 45,964 model tokens in total. The Harness lane substantially reduced tokens while increasing latency in this single run, so token efficiency and wall-clock speed must not be conflated.
 
-Across both models, the Harness lane retained full expected-grounded target coverage, restored expected-unknown preservation to 100%, and reduced unsupported grounded claims and missed target insufficiency to zero. In particular, the 120B raw external arm still produced three unsupported grounded claims and Qwen 27B produced one, consistent with the existing v4 evidence that model size or family alone does not guarantee safe external grounding.
+### GPT-OSS 20B — run `34009503385`
+
+- raw + external: grounded target coverage `4/5 = 0.8`; expected-unknown preservation `7/13 = 0.5385`; false target abstention `1`; unsupported grounded claims `6`; missed target insufficiency `6`.
+- Harness + MCP external: grounded target coverage `5/5 = 1.0`; expected-unknown preservation `13/13 = 1.0`; false target abstention `0`; unsupported grounded claims `0`; missed target insufficiency `0`; identity-unsafe admission `0`; MCP-output authority self-promotion `0`; safety gate passed.
+- Raw + external used 25,216 model tokens; Harness + external used 33,019 (`1.309x` raw tokens). Accounted end-to-end latency was 226,687 ms raw versus 170,651 ms Harness (`0.753x`). Safety and coverage improved while token use increased by about 31% and latency decreased by about 25%.
+- All four arms used 109,664 model tokens in total. The Harness arms recorded 25 model attempts versus 21 for Raw, reflecting bounded Groq best-effort structured-output retries as an operational cost rather than semantic evidence.
+
+Across all three Groq models, the Harness lane retained full expected-grounded target coverage, restored expected-unknown preservation to 100%, and reduced unsupported grounded claims and missed target insufficiency to zero. The raw external arms still produced three unsupported grounded claims on 120B, one on Qwen 27B, and six on 20B. This strengthens the existing v4 observation that model scale or family alone does not guarantee safe external grounding, while token and latency effects vary by model.
