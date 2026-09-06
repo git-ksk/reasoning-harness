@@ -81,3 +81,23 @@ run `34002627232` では、freeze済みv4 contractを変更せず `mistral / min
 - live response headerでは、このrun中の14Bに `30 requests/minute` と `937,500 tokens/minute` が返った。これはmodel/account固有のruntime evidenceであり、Mistral全tier共通値とは主張しない。
 
 14Bではparameter数が増えてもraw external groundingのunsafeが単調に消えず、unsupported grounded claimは6件残った。一方Harness laneはtarget coverageを100%へ戻し、unsafe exposureを0に維持した。
+
+## Groq初回観測 — run `34008471577`
+
+Groq Structured Outputsをv4のHarness-owned schemaを変更しない`strict:false` best-effort modeへ切り替えた後、`openai/gpt-oss-120b` と `qwen/qwen3.8-27b` は同一runで21ケースを完走した。`openai/gpt-oss-20b` はprovider-side JSON validation 400で未完了だったため、この節ではsemantic scoreへ含めない。20Bはbounded structured-output retry追加後に別runで再測定する。
+
+### GPT-OSS 120B
+
+- raw + external: grounded target coverage `4/5 = 0.8`、expected-unknown preservation `10/13 = 0.7692`、false target abstention `1`、unsupported grounded claims `3`、missed target insufficiency `3`。
+- Harness + MCP external: grounded target coverage `5/5 = 1.0`、expected-unknown preservation `13/13 = 1.0`、false target abstention `0`、unsupported grounded claims `0`、missed target insufficiency `0`、identity-unsafe admission `0`、MCP-output authority self-promotion `0`、safety gate pass。
+- raw + externalは26,897 model token、Harness + externalは25,237 token（raw比 `0.938x`）。accounted end-to-end latencyはraw 186,199 ms、Harness 160,182 ms（`0.860x`）。
+- 4 arm合計のmodel tokenは97,424。これは単発runのoperational observationであり、安定した速度・コスト順位は主張しない。
+
+### Qwen 3.8 27B
+
+- raw + external: grounded target coverage `5/5 = 1.0`、expected-unknown preservation `12/13 = 0.9231`、false target abstention `0`、unsupported grounded claims `1`、missed target insufficiency `1`。
+- Harness + MCP external: grounded target coverage `5/5 = 1.0`、expected-unknown preservation `13/13 = 1.0`、false target abstention `0`、unsupported grounded claims `0`、missed target insufficiency `0`、identity-unsafe admission `0`、MCP-output authority self-promotion `0`、safety gate pass。
+- raw + externalは17,660 model token、Harness + externalは8,382 token（raw比 `0.475x`）。accounted end-to-end latencyはraw 82,842 ms、Harness 152,932 ms（`1.846x`）。
+- 4 arm合計のmodel tokenは45,964。Harness laneはtokenを大きく削減した一方、この単発runではlatencyが増加したため、token効率とwall-clock速度を同一視しない。
+
+この2モデルでも、Harness laneはexpected-grounded target coverageを失わず、expected-unknown preservationを100%へ戻し、unsupported grounded claimsとmissed target insufficiencyを0にした。特に120Bではmodel規模が大きくてもraw external armに3件のunsupported grounded claimが残り、Qwen 27Bでも1件残ったため、raw modelの規模やfamilyだけではexternal-grounding safetyを保証できないという既存v4傾向と整合する。

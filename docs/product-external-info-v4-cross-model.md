@@ -81,3 +81,23 @@ Run `34002627232` completed all 21 cases with `mistral / ministral-14b-latest` u
 - Live response headers reported `30` requests/minute and `937,500` tokens/minute for this model during the run. This is model/account-specific runtime evidence, not a universal Mistral tier claim.
 
 The 14B result is important because larger parameter count did not monotonically eliminate unsafe raw external grounding: raw 14B still produced six unsupported grounded claims, while the Harness lane again retained full target coverage and zero unsafe exposure.
+
+## First Groq observation — run `34008471577`
+
+After switching Groq Structured Outputs to `strict:false` best-effort mode without changing the Harness-owned v4 schema, `openai/gpt-oss-120b` and `qwen/qwen3.8-27b` completed all 21 cases in the same run. `openai/gpt-oss-20b` remained operationally incomplete because of a provider-side JSON-validation HTTP 400 and is excluded from semantic scoring here; it is re-measured separately after adding bounded structured-output retry.
+
+### GPT-OSS 120B
+
+- raw + external: grounded target coverage `4/5 = 0.8`; expected-unknown preservation `10/13 = 0.7692`; false target abstention `1`; unsupported grounded claims `3`; missed target insufficiency `3`.
+- Harness + MCP external: grounded target coverage `5/5 = 1.0`; expected-unknown preservation `13/13 = 1.0`; false target abstention `0`; unsupported grounded claims `0`; missed target insufficiency `0`; identity-unsafe admission `0`; MCP-output authority self-promotion `0`; safety gate passed.
+- Raw + external used 26,897 model tokens; Harness + external used 25,237 (`0.938x` raw tokens). Accounted end-to-end latency was 186,199 ms raw versus 160,182 ms Harness (`0.860x`).
+- All four arms used 97,424 model tokens in total. This is a single-run operational observation, not a stable speed or cost ranking.
+
+### Qwen 3.8 27B
+
+- raw + external: grounded target coverage `5/5 = 1.0`; expected-unknown preservation `12/13 = 0.9231`; false target abstention `0`; unsupported grounded claims `1`; missed target insufficiency `1`.
+- Harness + MCP external: grounded target coverage `5/5 = 1.0`; expected-unknown preservation `13/13 = 1.0`; false target abstention `0`; unsupported grounded claims `0`; missed target insufficiency `0`; identity-unsafe admission `0`; MCP-output authority self-promotion `0`; safety gate passed.
+- Raw + external used 17,660 model tokens; Harness + external used 8,382 (`0.475x` raw tokens). Accounted end-to-end latency was 82,842 ms raw versus 152,932 ms Harness (`1.846x`).
+- All four arms used 45,964 model tokens in total. The Harness lane substantially reduced tokens while increasing latency in this single run, so token efficiency and wall-clock speed must not be conflated.
+
+Across both models, the Harness lane retained full expected-grounded target coverage, restored expected-unknown preservation to 100%, and reduced unsupported grounded claims and missed target insufficiency to zero. In particular, the 120B raw external arm still produced three unsupported grounded claims and Qwen 27B produced one, consistent with the existing v4 evidence that model size or family alone does not guarantee safe external grounding.
