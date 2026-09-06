@@ -84,7 +84,7 @@ run `34002627232` では、freeze済みv4 contractを変更せず `mistral / min
 
 ## Groq初回観測 — run `34008471577`
 
-Groq Structured Outputsをv4のHarness-owned schemaを変更しない`strict:false` best-effort modeへ切り替えた後、`openai/gpt-oss-120b` と `qwen/qwen3.8-27b` は同一runで21ケースを完走した。`openai/gpt-oss-20b` はprovider-side JSON validation 400で未完了だったため、この節ではsemantic scoreへ含めない。20Bはbounded structured-output retry追加後に別runで再測定する。
+Groq Structured Outputsをv4のHarness-owned schemaを変更しない`strict:false` best-effort modeへ切り替えた後、`openai/gpt-oss-120b` と `qwen/qwen3.8-27b` はrun `34008471577`で21ケースを完走した。`openai/gpt-oss-20b` は同runでprovider-side JSON validation 400により未完了だったため、Groq公式のbest-effort structured-output guidanceに沿って当該validation 400だけをbounded retryするadapter修正を追加した。その後main上のrun `34009503385`で20Bも21ケースを完走した。v4 corpus、prompt、output schema、scoring、admission、verification、finalization semanticsは変更していない。
 
 ### GPT-OSS 120B
 
@@ -100,4 +100,12 @@ Groq Structured Outputsをv4のHarness-owned schemaを変更しない`strict:fal
 - raw + externalは17,660 model token、Harness + externalは8,382 token（raw比 `0.475x`）。accounted end-to-end latencyはraw 82,842 ms、Harness 152,932 ms（`1.846x`）。
 - 4 arm合計のmodel tokenは45,964。Harness laneはtokenを大きく削減した一方、この単発runではlatencyが増加したため、token効率とwall-clock速度を同一視しない。
 
-この2モデルでも、Harness laneはexpected-grounded target coverageを失わず、expected-unknown preservationを100%へ戻し、unsupported grounded claimsとmissed target insufficiencyを0にした。特に120Bではmodel規模が大きくてもraw external armに3件のunsupported grounded claimが残り、Qwen 27Bでも1件残ったため、raw modelの規模やfamilyだけではexternal-grounding safetyを保証できないという既存v4傾向と整合する。
+
+### GPT-OSS 20B — run `34009503385`
+
+- raw + external: grounded target coverage `4/5 = 0.8`、expected-unknown preservation `7/13 = 0.5385`、false target abstention `1`、unsupported grounded claims `6`、missed target insufficiency `6`。
+- Harness + MCP external: grounded target coverage `5/5 = 1.0`、expected-unknown preservation `13/13 = 1.0`、false target abstention `0`、unsupported grounded claims `0`、missed target insufficiency `0`、identity-unsafe admission `0`、MCP-output authority self-promotion `0`、safety gate pass。
+- raw + externalは25,216 model token、Harness + externalは33,019 token（raw比 `1.309x`）。accounted end-to-end latencyはraw 226,687 ms、Harness 170,651 ms（`0.753x`）。安全性とcoverageは改善した一方、token消費は約31%増え、latencyは約25%短縮した。
+- 4 arm合計のmodel tokenは109,664。Harness armのmodel attemptsは25で、Raw armの21より多い。これはGroq best-effort structured-outputのbounded retryを含むoperational costであり、semantic scoreとは分離して扱う。
+
+3モデルすべてで、Harness laneはexpected-grounded target coverageを失わず、expected-unknown preservationを100%へ戻し、unsupported grounded claimsとmissed target insufficiencyを0にした。Raw external armでは120Bに3件、Qwen 27Bに1件、20Bに6件のunsupported grounded claimが残った。model規模やfamilyだけではexternal-grounding safetyを保証できず、token/latency効果もmodelごとに異なるという既存v4傾向を補強する。
