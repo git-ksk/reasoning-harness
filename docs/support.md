@@ -4,12 +4,14 @@
 
 ## Supported product surfaces
 
-The compatibility-tracked product commands are:
+The compatibility-tracked product surfaces are:
 
-- `reason run`
-- `reason verify`
-- `reason semantic-check`
-- `reason schema`
+- direct natural-language `reason "TASK"` execution;
+- `reason session start|inspect|resume|add|correct|fork|close`;
+- `reason run`;
+- `reason verify`;
+- `reason semantic-check`;
+- `reason schema`.
 
 `reason eval`, `reason eval-resolution`, `reason eval-judges`, and the dedicated study binaries are research/evaluation surfaces. They may change more rapidly and are not part of the v0.1 product compatibility promise.
 
@@ -35,6 +37,10 @@ Current product identities include:
 - `reasoning-candidate-v1`
 - `reason-config-v1`
 - `semantic-check-input-v1`
+- `reason-natural-output-v4`
+- `reason-session-v1`
+- exposed-text policy `harness-canonical-exposed-text-v1`
+- bounded-investigation runtime `bounded-investigation-v1`
 - semantic runtime identity `semantic-runtime-identity-v1`
 
 Within an existing output-contract identity, consumers should tolerate additive fields. Removing fields, changing field meaning, or changing authority/exit semantics requires a new relevant contract identity rather than a silent change. Config schemas fail closed on unknown fields by design; a config using a newly added field may therefore require the corresponding newer CLI.
@@ -54,7 +60,7 @@ Before v1.0, command flags or product schemas may still evolve. Intentional inco
 
 The provider-neutral runtime is the product boundary. Provider adapters normalize transport/API behavior but never become verification authority.
 
-- Mistral, Google Gemini/AI Studio, and NVIDIA Hosted NIM adapters are implemented for live candidate generation.
+- Mistral, Google Gemini/AI Studio, NVIDIA Hosted NIM, and GroqCloud adapters are implemented for live candidate generation.
 - Mistral and Google-hosted Gemma are live-smoked for the supported current/rollback `semantic-check` product path. Product dogfood has completed on Ministral 3B/8B/14B, Mistral Small, Gemma 4 31B, and Gemini 3.1/3.5 Flash-Lite on the recorded workload. Completion does not imply equal utility; the recorded target-coverage matrix ranges from 0.00 to 1.00.
 - A model/provider can still be incompatible with a specific structured-output protocol. Gemma 4 26B A4B and Nemotron 3.5 Lightning are recorded examples: each product dogfood run failed on invalid structured output after fallback and is treated as operational/protocol evidence, not a semantic score or fabricated abstention.
 - Provider quotas, service availability, rate limits, model retirement, and model-specific output quality are external operational dependencies and are reported separately from harness correctness.
@@ -63,7 +69,7 @@ Provider credentials remain environment variables and are not accepted in `reaso
 
 ## Stability status
 
-v0.3.0 is the current external-preview release. It adds bounded external acquisition, Harness-owned provenance/freshness/scope/authority admission, typed external-resolution budgets/telemetry, read-only MCP acquisition, a separate trusted verifier lane, and optional `reason-mcp` integration on the existing research/authority foundation. The documented v1.0 readiness gate is satisfied, but v0.3.0 intentionally remains a prerelease/v0.x compatibility promise rather than a stable v1.0 claim. A future v1.0 still requires an explicit version/tag/release decision through the normal provenance workflow.
+v0.4.0 is the current external-preview release. It retains the v0.3 external acquisition/trusted-verifier foundation and adds Harness-canonical exposed factual text, whole-invocation subprocess deadlines, bounded natural-language investigation, resumable `ReasoningThread` sessions, negotiated/session `mcp_readonly_v3`, and the canonical zero-correctness-violation natural-language E2E gate. The documented v1.0 readiness gate is satisfied, but v0.4.0 intentionally remains a prerelease/v0.x compatibility promise rather than a stable v1.0 claim. A future v1.0 still requires an explicit version/tag/release decision through the normal provenance workflow.
 
 
 For the distinction between product terms, machine/runtime identifiers, and historical research labels, see [Terminology and naming](terminology.md).
