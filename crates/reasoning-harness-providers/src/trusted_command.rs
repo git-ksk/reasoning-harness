@@ -157,7 +157,8 @@ fn target_proposition(
         reasoning_harness_core::ResolutionTarget::EvidenceQualification { requirement } => {
             Some(&requirement.proposition)
         }
-        reasoning_harness_core::ResolutionTarget::CausalRelation { .. }
+        reasoning_harness_core::ResolutionTarget::InvestigationQuestion { .. }
+        | reasoning_harness_core::ResolutionTarget::CausalRelation { .. }
         | reasoning_harness_core::ResolutionTarget::ClaimRevision { .. }
         | reasoning_harness_core::ResolutionTarget::HumanReview { .. } => None,
     }

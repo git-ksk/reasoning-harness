@@ -19,6 +19,7 @@ pub mod format_invariance;
 pub mod frameworks;
 pub mod generation;
 pub mod harness;
+pub mod investigation;
 pub mod metamorphic;
 pub mod model;
 pub mod reasoning_policy;
@@ -116,6 +117,17 @@ pub use generation::{
     parse_final_answer_candidate,
 };
 pub use harness::{HarnessError, HarnessOutcome, Pass, run_harness, run_passes};
+pub use investigation::{
+    INVESTIGATION_ACTION_CONTRACT_ID, INVESTIGATION_PLAN_CONTRACT_ID, INVESTIGATION_RUNTIME_ID,
+    InvestigationAction, InvestigationActionKind, InvestigationActionProposal,
+    InvestigationActionRecord, InvestigationActionRejection, InvestigationCapability,
+    InvestigationObservationStatus, InvestigationPlanProposal, InvestigationPolicy,
+    InvestigationState, InvestigationStopReason, InvestigationTarget, InvestigationTargetOrigin,
+    InvestigationTargetProposal, InvestigationTelemetry, admit_investigation_plan,
+    build_investigation_action_request, build_investigation_plan_request,
+    investigation_action_schema, investigation_plan_schema, parse_investigation_action,
+    parse_investigation_plan,
+};
 pub use metamorphic::{
     AddIrrelevantEvidence, MetamorphicAggregate, MetamorphicCaseResult, MetamorphicEvaluationError,
     MetamorphicTransform, MetamorphicTransformFamily, ReverseCausalCauseOrder,
