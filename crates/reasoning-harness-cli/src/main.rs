@@ -60,7 +60,8 @@ use serde::{Deserialize, Serialize, de::DeserializeOwned};
 const CLI_OUTPUT_SCHEMA_VERSION: &str = "reason-cli-output-v1";
 const CLI_CONFIG_CONTRACT_ID: &str = "reason-config-v1";
 const SEMANTIC_CHECK_INPUT_CONTRACT_ID: &str = "semantic-check-input-v1";
-const NATURAL_OUTPUT_CONTRACT_ID: &str = "reason-natural-output-v2";
+const NATURAL_OUTPUT_CONTRACT_ID: &str = "reason-natural-output-v3";
+const EXPOSED_TEXT_POLICY_ID: &str = "harness-canonical-exposed-text-v1";
 const DEFAULT_MAX_TOKENS: u32 = 1024;
 const MAX_CONTEXT_FILE_BYTES: u64 = 1024 * 1024;
 const MAX_CONTEXT_TOTAL_BYTES: usize = 4 * 1024 * 1024;
@@ -1042,6 +1043,12 @@ struct NaturalSafetyObservation {
 }
 
 #[derive(Debug, Serialize)]
+struct NaturalExposedTextObservation {
+    policy_id: &'static str,
+    renderer_text_exposed: bool,
+}
+
+#[derive(Debug, Serialize)]
 struct NaturalOutput {
     output_contract: &'static str,
     task: String,
@@ -1056,6 +1063,7 @@ struct NaturalOutput {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     resolution_rounds: Vec<GroundedResolutionOutcome>,
     finalization: FinalizationResult,
+    exposed_text: NaturalExposedTextObservation,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     rendering: Vec<GenerationObservation>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1948,6 +1956,10 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
         initial_outcome,
         resolution_rounds,
         finalization,
+        exposed_text: NaturalExposedTextObservation {
+            policy_id: EXPOSED_TEXT_POLICY_ID,
+            renderer_text_exposed: false,
+        },
         rendering,
         rendering_failure,
     };
@@ -4621,7 +4633,15 @@ mod candidate_json_tests {
 
     #[test]
     fn natural_output_contract_is_versioned() {
-        assert_eq!(NATURAL_OUTPUT_CONTRACT_ID, "reason-natural-output-v2");
+        assert_eq!(NATURAL_OUTPUT_CONTRACT_ID, "reason-natural-output-v3");
+        assert_eq!(EXPOSED_TEXT_POLICY_ID, "harness-canonical-exposed-text-v1");
+        let exposed = serde_json::to_value(NaturalExposedTextObservation {
+            policy_id: EXPOSED_TEXT_POLICY_ID,
+            renderer_text_exposed: false,
+        })
+        .unwrap();
+        assert_eq!(exposed["policy_id"], EXPOSED_TEXT_POLICY_ID);
+        assert_eq!(exposed["renderer_text_exposed"], false);
     }
 
     #[test]

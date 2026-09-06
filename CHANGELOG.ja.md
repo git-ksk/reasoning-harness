@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### 変更
+
+- Issue #210のexposed-text correctness gapを解消。`GroundedAnswer` / `QualifiedPartialAnswer`ではmodel rendererの`text`を公開せず、`harness-canonical-exposed-text-v1`のもとでaccepted factual claimまたはtyped recovery stateからHarnessが表示文章を構築する。
+- 自然文JSON outputを`reason-natural-output-v2`から`reason-natural-output-v3`へ更新し、`exposed_text` policy telemetryを追加。renderer proseに依存していたconsumerは`finalization.text`を使用する。旧v2挙動はcommit `3a601c8`でhistorical reproduction可能だが、P0 gapを再導入するためsafety rollbackとしては提供しない。
+
 ## [0.3.0] - 2026-09-04
 
 第3の external-preview capability release。v0.3.0 は research generation、semantic runtime、answer-safety identity を変更せず、bounded external evidence と resolution を追加した。
