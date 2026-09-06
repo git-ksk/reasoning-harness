@@ -4,13 +4,17 @@
 
 ## [Unreleased]
 
-- Issue #233: bounded investigationで、expected fact keyとread-only capabilityの明示supported keyが一致する未試行pairが1組だけの場合、Harnessがdeterministicに選択する。複数候補/key不明/wildcardはmodel selectorのまま。authority/admission/verificationは不変で、`harness_unique_selections` telemetryを追加。
+## [0.4.0] - 2026-09-06
 
+第4のexternal-preview capability release。v0.4.0では公開する事実テキストをHarness authorityへbindし、bounded investigation、resumable session、subprocess/MCP hardening、自然文E2E validationを追加した。frozen research generationは変更せず、model/tool outputがcorrectness authorityを自己付与できない境界も維持する。
+
+### 変更
+
+- Issue #233: bounded investigationで、expected fact keyとread-only capabilityの明示supported keyが一致する未試行pairが1組だけの場合、Harnessがdeterministicに選択する。複数候補/key不明/wildcardはmodel selectorのまま。authority/admission/verificationは不変で、`harness_unique_selections` telemetryを追加。historical `natural-language-e2e-v5` utility値はtuning surfaceとして再利用せず、そのまま保持する。
+- Issue #232: release artifact actionsと`sha2`を0.11へ更新。frozen v12 adoption checksum fileはbyte-for-byte不変のまま、CIでfreeze時Cargo.lock provenanceとcurrent build dependencyを分離し、dependency maintenanceがhistorical semantic source identityを書き換えないようにした。
 - Issue #204を`mcp_readonly_v3`で完了。#211共通deadline内でpersistent stdio `initialize`/negotiation/`initialized`/`tools/list`/`tools/call`をboundedに実行し、protocol allowlist fail-closed、選択toolのserver `readOnlyHint`強制、typed negotiation/session failure、negotiation policyと実revisionをbindするconfig/replay provenanceを追加した。generic output非昇格は不変。frozen `mcp_readonly_v1`は変更せず、v2はdeadline-only historical successorとして保持する。pinned公式GitHub MCP server probeもv3で成功しgeneric resultはopaqueのまま。
 - Issue #214をfreeze済み`natural-language-e2e-v5`で完了。canonical Actions `34032191037`は10/10ケース完走、operational failure 0、correctness-boundary violation 0。unsupported exposed assertion / unsupported structured claim / missed insufficiency / session external replayはいずれも0、identity/freshness/scope/authority rejectionは4/4。utility残差（target recall 2/7、tool selection 5/7、false abstention 3）は観測後にtuningせず保持し、v1-v4はimmutable diagnosticとして残す。
 - 自然文JSON outputを`reason-natural-output-v3`から`reason-natural-output-v4`へ更新し、post-investigationの最終Harness artifact/verdictを`final_outcome`として明示。公開finalization、session checkpoint、評価が同じ最終stateを参照するようにし、`resolution_rounds[-1]`がcandidate再生成前のacquisition stateだった曖昧さを解消した。
-### 変更
-
 - Issue #214の観測前`natural-language-e2e-v1`評価面を追加。明示hypothesisなしbounded investigation、identity/freshness/scope/authority rejection、multi-turn session add/correction/resume/fork、exposed-textとstructured claimを分離した安全採点、network非依存deterministic acquisition fixture、correctness violation 0のfreeze済みadoption gateを含む。
 - #214のv1初回live attemptがevaluator `NameError`でnon-scorableとなったため、v1をimmutableに保持したまま`natural-language-e2e-v2` successorをfreeze。10ケースとprovider policyは維持し、successor evaluator pathのみ修正して、live前にscoring実行を直接検証するregression coverageを追加した。
 - Issue #210のexposed-text correctness gapを解消。`GroundedAnswer` / `QualifiedPartialAnswer`ではmodel rendererの`text`を公開せず、`harness-canonical-exposed-text-v1`のもとでaccepted factual claimまたはtyped recovery stateからHarnessが表示文章を構築する。

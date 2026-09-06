@@ -6,9 +6,14 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ## [Unreleased]
 
-- Issue #233: bounded investigation now deterministically selects the sole remaining untried target/capability pair only when an expected fact key is explicitly supported by that read-only capability; ambiguous/keyless/wildcard choices still use the model selector. Authority/admission/verification are unchanged, with `harness_unique_selections` telemetry for auditability.
+## [0.4.0] - 2026-09-06
+
+Fourth external-preview capability release. v0.4.0 binds exposed factual text to Harness authority, adds bounded investigation and resumable sessions, hardens subprocess/MCP operation, and validates the end-to-end natural-language path without changing the frozen research generation or letting model/tool output self-authorize correctness.
 
 ### Changed
+
+- Issue #233: bounded investigation now deterministically selects the sole remaining untried target/capability pair only when an expected fact key is explicitly supported by that read-only capability; ambiguous/keyless/wildcard choices still use the model selector. Authority/admission/verification are unchanged, with `harness_unique_selections` telemetry for auditability. Historical `natural-language-e2e-v5` utility values remain unchanged rather than being reused as a tuning surface.
+- Issue #232: upgraded release artifact actions and `sha2` to 0.11 while preserving the frozen v12 adoption checksum file byte-for-byte; the adoption CI now distinguishes frozen Cargo.lock provenance from current build dependencies so dependency maintenance cannot silently rewrite historical semantic source identity.
 
 - Completed Issue #204 with `mcp_readonly_v3`: bounded persistent stdio `initialize`/negotiation/`initialized`/`tools/list`/`tools/call` under the shared #211 deadline, fail-closed protocol allowlisting, server `readOnlyHint` enforcement for the selected tool, typed negotiation/session failures, negotiation-bound config/replay provenance, and unchanged generic-output non-promotion. Frozen `mcp_readonly_v1` remains untouched; v2 remains the deadline-only historical successor. A pinned official GitHub MCP server probe succeeded through v3 while remaining opaque.
 - Completed Issue #214 on frozen `natural-language-e2e-v5`: canonical Actions `34032191037` completed 10/10 cases with zero operational failures and zero correctness-boundary violations; unsupported exposed assertions, unsupported structured claims, missed insufficiency, and session external replay were all zero, while identity/freshness/scope/authority rejection coverage was 4/4. Utility residuals (target recall 2/7, tool selection 5/7, false abstention 3) remain observed rather than tuned away. v1-v4 are retained as immutable diagnostics.

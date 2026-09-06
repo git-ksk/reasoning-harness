@@ -22,13 +22,13 @@ See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
 ## Current product milestone
 
-The published external preview remains `v0.3.0`, while the **active development milestone is v0.4.0 — Grounded Investigation & Sessions (milestone #2)**. The 2026-09-06 review measured a correctness gap between structured claim coverage and actually exposed text, an unbounded stdin-write portion of subprocess deadlines, missing generalized investigation planning in the natural-language product path, an unconnected `ReasoningThread` product surface, and missing E2E coverage for those behaviors.
+The current external preview is `v0.4.0`. **v0.4.0 — Grounded Investigation & Sessions (milestone #2)** completed the 2026-09-06 line that addressed exposed-text correctness, whole-invocation subprocess deadlines, generalized bounded investigation, a resumable `ReasoningThread` product surface, fresh natural-language E2E coverage, negotiated/session MCP compatibility, dependency freeze hygiene, and narrowly deterministic unique-safe-action selection.
 
-The v0.4.0 order is **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation**. #204 MCP negotiated/session successor is implemented as `mcp_readonly_v3` and reuses the #211 deadline primitive. v4 cross-model replication (#208 / PR #209), including the #216 Groq operational extension closed out on 2026-09-06, remains replication over frozen v4 evidence rather than a tuning surface for this new line.
+The v0.4.0 implementation order was **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation**, with #204 negotiated/session `mcp_readonly_v3`, #232 dependency/freeze hygiene, and #233 unique-safe-action utility hardening completed before release. v4 cross-model replication (#208 / PR #209), including the #216 Groq operational extension, remains replication over frozen v4 evidence rather than a tuning surface for this line.
 
 As an explicit measurement boundary, current `unsupported grounded claims = 0` demonstrates safety of structured `factual_claims`; it is not treated as equivalent proof for arbitrary free-form exposed prose. v0.4.0 promotes exposed-text consistency with verified propositions into an explicit correctness gate.
 
-`v0.3.0` is the current published external preview. **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) is complete; follow-on work must start from a newly measured product or research gap rather than silently extending the released milestone.
+`v0.4.0` is the current published external preview. The preceding **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) remains complete historical provenance; follow-on work must start from a newly measured product or research gap rather than silently rewriting either released milestone.
 
 v0.3.0 does not add another reasoning mechanism by default. It connects the already-implemented bounded control loop to real external acquisition and trusted-verifier adapters through the existing `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary.
 

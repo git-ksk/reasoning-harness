@@ -35,6 +35,10 @@ executableのsemverとmachine contract identityは別々の座標です。
 - `reasoning-candidate-v1`
 - `reason-config-v1`
 - `semantic-check-input-v1`
+- `reason-natural-output-v4`
+- `reason-session-v1`
+- exposed-text policy `harness-canonical-exposed-text-v1`
+- bounded-investigation runtime `bounded-investigation-v1`
 - semantic runtime identity `semantic-runtime-identity-v1`
 
 既存のoutput-contract identityの範囲では、consumerは追加フィールドを許容する必要があります。フィールドの削除、フィールドの意味の変更、authority/exit semanticsの変更には、黙って変更するのではなく、該当する新しいcontract identityが必要です。Config schemaは設計上unknown fieldに対してfail closedするため、新しく追加されたfieldを使うconfigには、それに対応する新しいCLIが必要になる場合があります。
@@ -63,7 +67,7 @@ Provider credentialはenvironment variableのまま保持し、`reason-config-v1
 
 ## 安定性ステータス
 
-`v0.3.0`は現在の外部プレビューリリースです。bounded external acquisition、Harnessが所有するprovenance/freshness/scope/authority admission、typed external-resolution budgets/telemetry、read-only MCP acquisition、独立したtrusted verifier lane、既存のresearch/authority foundation上でのoptionalな`reason-mcp` integrationを追加しています。文書化されたv1.0 readiness gateは満たされていますが、`v0.3.0`は意図的にstable v1.0の主張ではなく、prerelease/v0.x compatibility promiseのままです。将来のv1.0には、通常のprovenance workflowを通じた明示的なversion/tag/release decisionがなお必要です。
+`v0.4.0`は現在の外部プレビューリリースです。v0.3のexternal acquisition/trusted-verifier foundationを維持しつつ、Harness-canonicalな公開事実テキスト、whole-invocation subprocess deadline、bounded natural-language investigation、resumable `ReasoningThread` session、negotiated/session `mcp_readonly_v3`、correctness violation 0を必須にしたcanonical natural-language E2E gateを追加しています。文書化されたv1.0 readiness gateは満たされていますが、`v0.4.0`は意図的にstable v1.0の主張ではなく、prerelease/v0.x compatibility promiseのままです。将来のv1.0には、通常のprovenance workflowを通じた明示的なversion/tag/release decisionがなお必要です。
 
 
 product term、machine/runtime identifier、過去のresearch labelの区別については、[用語と命名ルール](terminology.ja.md)を参照してください。

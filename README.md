@@ -66,18 +66,18 @@ These are recorded workload/holdout results, not a claim that every open-world t
 
 ## 30-second quickstart
 
-### 1. Install the current v0.3.0 preview
+### 1. Install the current v0.4.0 preview
 
-`v0.3.0` is the current natural-language-first external preview. With Rust 1.88+:
+`v0.4.0` is the current natural-language-first external preview. With Rust 1.88+:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.3.0 --locked reasoning-harness-cli --bin reason
+  --tag v0.4.0 --locked reasoning-harness-cli --bin reason
 
 reason --version
 ```
 
-Standalone archives and `SHA256SUMS` are available from the [v0.3.0 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.3.0). Install from `main` only when you intentionally want unreleased development changes.
+Standalone archives and `SHA256SUMS` are available from the [v0.4.0 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.0). Install from `main` only when you intentionally want unreleased development changes.
 
 ### 2. Give it a task and an explicit fact
 
@@ -319,7 +319,7 @@ Deterministic oracles such as tests, schemas, compilers, databases, policy engin
 
 ## Current capabilities
 
-The current `v0.3.0` external preview includes the capabilities below. `main` may move ahead of the tagged release; use the tag when you need a reproducible product snapshot.
+The current `v0.4.0` external preview includes the capabilities below. `main` may move ahead of the tagged release; use the tag when you need a reproducible product snapshot.
 
 - typed `HarnessInput`, `ReasoningCandidate`, and `ReasoningArtifact` contracts;
 - evidence binding and deterministic provenance/reference validation;
@@ -327,13 +327,15 @@ The current `v0.3.0` external preview includes the capabilities below. `main` ma
 - contradiction, counterexample, assumption, causal, temporal/scope, and evidence-qualification diagnostics;
 - `accept | reject | unknown` outcomes with fail-closed runtime behavior;
 - bounded resolution/finalization primitives and `ReasoningPolicy` constraints;
-- durable `ReasoningThread` event/checkpoint replay primitives;
+- bounded natural-language investigation planning with closed plan/action schemas and deterministic selection only for one explicitly key-bound safe read-only action;
+- Harness-canonical exposed factual text under `harness-canonical-exposed-text-v1`;
+- durable `ReasoningThread` event/checkpoint replay primitives plus `reason session start|inspect|resume|add|correct|fork|close`;
 - current semantic runtime with an explicit rollback profile; exact compatibility IDs remain documented for reproducibility;
-- Mistral, Google, and NVIDIA provider adapters outside the correctness authority boundary;
+- Mistral, Google, NVIDIA, and Groq provider adapters outside the correctness authority boundary;
 - versioned JSON product envelopes, schema-backed layered config, stdin support, and typed failure classes;
 - credential-free product smoke on Linux x64, macOS Apple Silicon/Intel, and Windows x64;
 - bounded external command resolution with fail-closed provenance/freshness/scope/authority admission, typed operational budgets/telemetry, and replay-safe records;
-- allowlisted read-only MCP acquisition and a separate trusted deterministic command-verifier lane;
+- allowlisted negotiated/session read-only MCP acquisition (`mcp_readonly_v3`) and a separate trusted deterministic command-verifier lane;
 - optional Rust-only `reason-mcp` product adapter that delegates closed operations to the native `reason` runtime without becoming a correctness boundary.
 - recorded product dogfood across Ministral 3B/8B/14B, Mistral Small, Gemma 4 31B, and Gemini 3.1/3.5 Flash-Lite; Gemma 4 26B A4B and Nemotron 3.5 Lightning remain protocol-incomplete on this product workload.
 
@@ -355,9 +357,9 @@ The research question behind the project is:
 
 > Can a small or inexpensive model become materially more reliable when its reasoning is forced through typed intermediate state, evidence binding, explicit uncertainty, adversarial passes, deterministic acceptance gates, and bounded resolution/re-verification before finalization?
 
-The **v0.3.0 — External Evidence & Resolution** capability milestone (#173) is complete and released. The non-frozen external-resolution acceptance gate is documented in [v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.md).
+The **v0.4.0 — Grounded Investigation & Sessions** milestone (#2) is complete and released. It adds exposed-text binding, whole-invocation subprocess deadlines, bounded investigation planning, resumable `ReasoningThread` sessions, canonical natural-language E2E validation, negotiated/session MCP compatibility, dependency freeze hygiene, and the narrowly deterministic unique-safe-action utility hardening.
 
-The milestone goal is to identify missing support, acquire or verify additional evidence through real external adapters, re-run the same authority boundaries, and refuse to fabricate completion when sufficient support cannot be established. Read-only MCP acquisition is one adapter path (#176), not a new correctness boundary.
+The preceding **v0.3.0 — External Evidence & Resolution** milestone (#173) remains historical provenance. Its non-frozen external-resolution acceptance gate is documented in [v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.md); v0.4.0 does not rewrite those observations.
 
 Research and product development proceed on separate tracks. New reasoning mechanisms enter the supported CLI only after calibration, independent frozen evaluation, operational stabilization, explicit runtime identity/rollback, and compatibility coverage.
 

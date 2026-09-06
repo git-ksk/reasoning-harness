@@ -26,11 +26,12 @@
 
 ## 研究と製品は分けて進める
 
-現在の product follow-up line は完了しています。v0.3.0 は新しい reasoning study ではなく、既存の研究成果を外部 evidence / resolution へ接続した integration / productization release です。
+product follow-up lineは新しいreasoning researchと分離して進める。v0.3.0はexternal evidence/resolution integration releaseであり、現在のv0.4.0は同じresearch foundation上にgrounded investigation/sessionを追加するproductization releaseで、新しいreasoning studyではない。
 
 - **#90 完了:** CLI の外部contract、install / release compatibility、process-level observability、readiness gate を整備
 - **#126 完了:** bounded transient retry、provider-attempt telemetry、exact-identity resume を追加。過去の研究結果は変更していない
 - **#139 完了:** six-case Ministral 8B product workload で coverage / withholding gap を再検証し、authority boundary を保ったまま改善を確認
+- **Current release:** v0.4.0。既存research foundationを変えず、grounded investigation、resumable session、exposed-text binding、full-lifecycle hardening、negotiated MCP sessionをproductへまとめる
 - **#173 完了:** v0.3.0 milestone。#174 / #175 / #178 で external-resolution lane、#176 で read-only MCP acquisition、#177 で trusted external verification、#179 で non-frozen open-world acceptance、#180 で optional `reason-mcp` surface を追加
 
 つまり、**研究の成功 = 即リリース**ではありません。研究は研究 identity のまま凍結し、製品化は別の変更として行います。

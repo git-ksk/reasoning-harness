@@ -1,6 +1,6 @@
 # プロダクトロードマップ：エビデンスに基づくAI CLI
 
-Reasoning Harness は、まずネイティブRust製の `reason` CLI としてプロダクト化される。v0.1.0では構造化された正確性と自動化の契約を確立し、v0.2.0では**AIを利用した自然言語CLI**をエンドユーザー向けの主要経路にした。現在の外部プレビュー製品リリースであるv0.3.0では、同じHarness所有ランタイム上に、制約付きの外部エビデンス取得と解決を追加している。ユーザーは、Harnessに推論させるためだけに内部JSONを組み立てる必要はない。
+Reasoning Harness は、まずネイティブRust製の `reason` CLI としてプロダクト化される。v0.1.0では構造化された正確性と自動化の契約を確立し、v0.2.0では**AIを利用した自然言語CLI**をエンドユーザー向けの主要経路にし、v0.3.0では制約付きexternal evidence/resolutionを追加した。現在の外部プレビュー製品リリースであるv0.4.0では、同じHarness所有ランタイム上にgrounded investigation、resumable session、exposed-text binding、negotiated/session MCPを追加する。ユーザーは、Harnessに推論させるためだけに内部JSONを組み立てる必要はない。
 
 このプロダクトの目標は、汎用エージェントフレームワークより意図的に狭い。
 
@@ -10,7 +10,7 @@ Reasoning Harness は、まずネイティブRust製の `reason` CLI として�
 
 ## 現在のプロダクト経路
 
-v0.3.0のデフォルト体験は、引き続き自然言語優先かつAIを利用する。
+v0.4.0のデフォルト体験は、引き続き自然言語優先かつAIを利用する。
 
 ```text
 自然言語のタスク
@@ -36,7 +36,7 @@ Reasoning Harness
 
 ## v0.4.0 — Grounded Investigation & Sessions
 
-Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。公開済みのexternal previewは引き続きv0.3.0であり、v0.4.0は2026-09-06のレビューで実測されたproduct/correctness gapから開始する次期開発ラインである。v0.3.0のhistorical acceptanceを後から書き換えない。
+Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。v0.4.0が現在のexternal-preview releaseである。2026-09-06のレビューで実測されたproduct/correctness gapから開始し、historical v0.3.0 acceptanceやfrozen research/E2E observationを書き換えずに完了した。
 
 このマイルストーンの目的は、現在の「検証済み命題を安全に扱うHarness」から、**自然文の依頼を受けて調査を組み立て、必要な外部情報を制約付きで取得し、複数ターンにわたって根拠を保持・訂正しながら、実際に表示する文章までHarness-owned authorityに結び付けるproduct path**へ進めることである。
 
@@ -47,6 +47,8 @@ Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。公�
 3. **#212 bounded investigation plannerのproduct昇格 — 実装済み。** 既存のresearch/evaluation側にあるHarness-owned suggestion / bounded planner primitiveを一般化し、自然文taskから調査targetを作り、設定済みread-only acquisition capabilityを選択し、typed resultに応じて追加調査する。planner/modelはtool output、identity、evidence sufficiency、最終correctnessを自己承認できない。closed plan/action schema、read-only capability allowlisting、typed no-progress/rejection、取得後のcandidate再生成と通常verification復帰をproduct pathへ接続した。
 4. **#213 `ReasoningThread` session surface — 実装済み。** `reason-session-v1`としてstart/inspect/resume/add/correct/fork/closeを既存native runtimeと`ReasoningThread`上へ追加した。input changeはtypedに記録し、replacement candidate/artifact accept前にstale current stateをinvalidateする。inspect/resume/forkは記録済みexternal side effectを再実行せず、continuationは`session-replay-only-acquisition-v1`でstart時resolver/MCP/investigation設定を暗黙replayしない。runtime/safety/config identityも保存してcompatibility checkする。
 5. **#214 fresh natural-language E2E evaluation — 完了。** canonical `natural-language-e2e-v5`は`3d3c09c` / `natural-language-e2e-v5-freeze`でfreeze。Actions `34032191037`で10/10ケース完走、operational failure `0`、correctness-boundary violation `0`。unsupported exposed assertion、unsupported structured claim、missed target insufficiency、session external replayはすべて`0`、identity/freshness/scope/authority rejection coverageは`4/4`、adoption gateはpassした。utilityは観測後にtuningせず残し、target recall `2/7`、tool selection `5/7`、false abstention `3`。v1-v4はimmutable diagnosticとして保持する。
+6. **#233 unique-safe-action utility hardening — 実装済み。** 未試行compatible pairが1組だけで、targetの明示`expected_fact_key`をread-only capabilityが`supported_fact_keys`で明示している場合に限り、Harnessがacquisition actionをdeterministicに選択する。複数候補、key不明、wildcardはmodel selectorのまま。admission/authority/verification/finalizationは不変で、historical v5 utility値も書き換えない。
+7. **#232 dependency/freeze hygiene — 完了。** release artifact actionsと`sha2` 0.11を更新しつつ、frozen v12 adoption checksum fileはbyte-for-byte不変を維持。CIではfreeze commit上のsource/checksum identityとhistorical Cargo.lock hashを、current build dependencyから分離して検証する。
 
 ### v0.4.0 acceptance boundary
 
@@ -141,7 +143,7 @@ v0.3.0はproduct/distribution coordinateであり、新しいsemantic research g
 - 現在のsemantic runtimeと、明示的にcharacterizeされたrollback profile（正確なmachine IDは安定して文書化済み）；
 - credential-free deterministic CIと、分離されたlive provider smoke/research workflow。
 
-v0.1.0は、外部から利用できる最初のstructured previewだった。v0.2.0ではnatural-language-first path、successor verified-target recovery、provider retry/resume reliability、process-level compatibility testを追加した。v0.3.0は現在のexternal-preview product releaseであり、同じresearch/authority provenanceを維持しながら、external acquisition/admission、operational hardening、read-only MCP acquisition、trusted deterministic verification、release acceptance、任意の `reason-mcp` product surfaceを追加する。versioned machine contractとサポート対象product commandはv0.x support policyのもとでcompatibility-trackedされるが、これはv1.0のstability promiseではない。
+v0.1.0は、外部から利用できる最初のstructured previewだった。v0.2.0ではnatural-language-first path、successor verified-target recovery、provider retry/resume reliability、process-level compatibility testを追加した。v0.3.0ではexternal acquisition/admission、operational hardening、read-only MCP acquisition、trusted deterministic verification、release acceptance、任意の `reason-mcp` product surfaceを追加した。v0.4.0が現在のexternal-preview product releaseであり、同じresearch/authority provenanceを維持しながら、exposed-text binding、whole-invocation deadline、bounded investigation、resumable session、canonical natural-language E2E、negotiated/session MCP、限定的deterministic utility hardeningを追加する。versioned machine contractとサポート対象product commandはv0.x support policyのもとでcompatibility-trackedされるが、これはv1.0のstability promiseではない。
 
 ## 過去のマイルストーン：サポート対象コマンドとデータ契約
 
