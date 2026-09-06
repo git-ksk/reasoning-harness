@@ -5,6 +5,7 @@ Issue #208では、freeze済み`product-external-info-v4`のmatched-context 4-ar
 ## 対象モデル
 
 - Mistral `mistral-small-latest`
+- Mistral `ministral-14b-latest`
 - Google-hosted `gemma-4-31b-it`
 - Google `gemini-3.5-flash-lite`
 
@@ -57,3 +58,14 @@ run `34002172470` のprovider-only paced retryでは `REASON_GOOGLE_MIN_REQUEST_
 ### Mistral Small operational blocker
 
 `mistral / mistral-small-latest` はscored reportを生成できなかった。初回attemptと時間を空けたretryの両方で最初のcaseからHTTP 429となり、bounded backoff中も `x-ratelimit-limit-req-minute=0` / `x-ratelimit-remaining-req-minute=0` が継続した。semantic caseを1件も完了できていないため、このmodelはcross-model correctness denominatorから除外する。これはprovider rate-limit stateであり、Harness semanticsのevidenceではない。
+
+### Ministral 14B
+
+run `34002627232` では、freeze済みv4 contractを変更せず `mistral / ministral-14b-latest` が21ケースを完走した。
+
+- raw + external: grounded target coverage `4/5 = 0.8`、expected-unknown preservation `9/13 = 0.6923`、false target abstention `1`、unsupported grounded claims `6`、missed target insufficiency `4`。
+- Harness + MCP external: grounded target coverage `5/5 = 1.0`、expected-unknown preservation `13/13 = 1.0`、false target abstention `0`、unsupported grounded claims `0`、missed target insufficiency `0`、identity-unsafe admission `0`、MCP-output authority self-promotion `0`、safety gate pass。
+- raw + externalは47,843 model token、Harness + externalは33,936 token（raw比 `0.709x`）。accounted end-to-end latencyはraw 187,730 ms、Harness 90,557 ms（`0.482x`）。単発runのoperational observationであり、安定した性能順位は主張しない。
+- live response headerでは、このrun中の14Bに `30 requests/minute` と `937,500 tokens/minute` が返った。これはmodel/account固有のruntime evidenceであり、Mistral全tier共通値とは主張しない。
+
+14Bではparameter数が増えてもraw external groundingのunsafeが単調に消えず、unsupported grounded claimは6件残った。一方Harness laneはtarget coverageを100%へ戻し、unsafe exposureを0に維持した。

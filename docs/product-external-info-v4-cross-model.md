@@ -5,6 +5,7 @@ Issue #208 replicates the frozen `product-external-info-v4` matched-context four
 ## Models
 
 - Mistral `mistral-small-latest`
+- Mistral `ministral-14b-latest`
 - Google-hosted `gemma-4-31b-it`
 - Google `gemini-3.5-flash-lite`
 
@@ -57,3 +58,14 @@ For this model and this frozen corpus, the raw external arm was already fully sa
 ### Mistral Small operational blocker
 
 `mistral / mistral-small-latest` did not produce a scored report. The initial attempt and a later retry both failed on the first case with HTTP 429. Every observed retry returned `x-ratelimit-limit-req-minute=0` and `x-ratelimit-remaining-req-minute=0`, including after bounded backoff. Because no semantic case completed, this model is excluded from the cross-model correctness denominator. The failure is provider rate-limit state, not Harness semantic evidence.
+
+### Ministral 14B
+
+Run `34002627232` completed all 21 cases with `mistral / ministral-14b-latest` under the unchanged frozen-v4 contract.
+
+- raw + external: grounded target coverage `4/5 = 0.8`; expected-unknown preservation `9/13 = 0.6923`; false target abstention `1`; unsupported grounded claims `6`; missed target insufficiency `4`.
+- Harness + MCP external: grounded target coverage `5/5 = 1.0`; expected-unknown preservation `13/13 = 1.0`; false target abstention `0`; unsupported grounded claims `0`; missed target insufficiency `0`; identity-unsafe admission `0`; MCP-output authority self-promotion `0`; safety gate passed.
+- raw + external used 47,843 model tokens; Harness + external used 33,936 (`0.709x`). Accounted end-to-end latency was 187,730 ms raw versus 90,557 ms Harness (`0.482x`). These are single-run operational observations, not stable performance rankings.
+- Live response headers reported `30` requests/minute and `937,500` tokens/minute for this model during the run. This is model/account-specific runtime evidence, not a universal Mistral tier claim.
+
+The 14B result is important because larger parameter count did not monotonically eliminate unsafe raw external grounding: raw 14B still produced six unsupported grounded claims, while the Harness lane again retained full target coverage and zero unsafe exposure.
