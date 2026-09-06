@@ -22,6 +22,12 @@ See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
 ## Current product milestone
 
+The published external preview remains `v0.3.0`, while the **active development milestone is v0.4.0 — Grounded Investigation & Sessions (milestone #2)**. The 2026-09-06 review measured a correctness gap between structured claim coverage and actually exposed text, an unbounded stdin-write portion of subprocess deadlines, missing generalized investigation planning in the natural-language product path, an unconnected `ReasoningThread` product surface, and missing E2E coverage for those behaviors.
+
+The v0.4.0 order is **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation**. #204 MCP negotiated/session successor runs in parallel but reuses the #211 deadline primitive. v4 cross-model replication (#208 / PR #209) remains replication over frozen v4 evidence rather than a tuning surface for this new line.
+
+As an explicit measurement boundary, current `unsupported grounded claims = 0` demonstrates safety of structured `factual_claims`; it is not treated as equivalent proof for arbitrary free-form exposed prose. v0.4.0 promotes exposed-text consistency with verified propositions into an explicit correctness gate.
+
 `v0.3.0` is the current published external preview. **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) is complete; follow-on work must start from a newly measured product or research gap rather than silently extending the released milestone.
 
 v0.3.0 does not add another reasoning mechanism by default. It connects the already-implemented bounded control loop to real external acquisition and trusted-verifier adapters through the existing `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary.
