@@ -4,6 +4,17 @@ on:
   pull_request:
     types: [labeled]
   workflow_dispatch:
+    inputs:
+      groq_target:
+        description: Groq model target for manual replication
+        required: true
+        type: choice
+        options:
+          - all
+          - openai/gpt-oss-120b
+          - qwen/qwen3.8-27b
+          - openai/gpt-oss-20b
+        default: all
 
 permissions:
   contents: read
@@ -283,19 +294,36 @@ jobs:
           retention-days: 30
 
 
+  groq-matrix:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.label.name == 'product-external-info-v4-groq-live')
+    runs-on: ubuntu-latest
+    outputs:
+      models: ${{ steps.select.outputs.models }}
+    steps:
+      - id: select
+        env:
+          TARGET: ${{ github.event.inputs.groq_target }}
+        run: |
+          set -euo pipefail
+          case "${TARGET:-all}" in
+            all|'') models='["openai/gpt-oss-120b","qwen/qwen3.8-27b","openai/gpt-oss-20b"]' ;;
+            openai/gpt-oss-120b) models='["openai/gpt-oss-120b"]' ;;
+            qwen/qwen3.8-27b) models='["qwen/qwen3.8-27b"]' ;;
+            openai/gpt-oss-20b) models='["openai/gpt-oss-20b"]' ;;
+            *) echo "unsupported Groq target: $TARGET" >&2; exit 2 ;;
+          esac
+          echo "models=$models" >> "$GITHUB_OUTPUT"
+
   groq-replicate:
-    needs: acquisition-preflight
-    if: needs.acquisition-preflight.result == 'success' && (github.event_name == 'workflow_dispatch' || github.event.label.name == 'product-external-info-v4-groq-live')
+    needs: [acquisition-preflight, groq-matrix]
+    if: needs.acquisition-preflight.result == 'success' && needs.groq-matrix.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
       fail-fast: false
       max-parallel: 3
       matrix:
-        model:
-          - openai/gpt-oss-120b
-          - qwen/qwen3.8-27b
-          - openai/gpt-oss-20b
+        model: ${{ fromJSON(needs.groq-matrix.outputs.models) }}
     name: groq-${{ matrix.model }}
     steps:
       - uses: actions/checkout@v7
