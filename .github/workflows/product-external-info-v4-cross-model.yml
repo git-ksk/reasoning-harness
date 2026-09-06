@@ -3,13 +3,14 @@ name: product-external-info-v4-cross-model
 on:
   pull_request:
     types: [labeled]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
   acquisition-preflight:
-    if: github.event.pull_request.head.repo.full_name == github.repository && (github.event.label.name == 'product-external-info-v4-cross-model-live' || github.event.label.name == 'product-external-info-v4-gemini-paced-live' || github.event.label.name == 'product-external-info-v4-ministral14b-live' || github.event.label.name == 'product-external-info-v4-groq-live')
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && (github.event.label.name == 'product-external-info-v4-cross-model-live' || github.event.label.name == 'product-external-info-v4-gemini-paced-live' || github.event.label.name == 'product-external-info-v4-ministral14b-live' || github.event.label.name == 'product-external-info-v4-groq-live'))
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -284,7 +285,7 @@ jobs:
 
   groq-replicate:
     needs: acquisition-preflight
-    if: needs.acquisition-preflight.result == 'success' && github.event.label.name == 'product-external-info-v4-groq-live'
+    if: needs.acquisition-preflight.result == 'success' && (github.event_name == 'workflow_dispatch' || github.event.label.name == 'product-external-info-v4-groq-live')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
