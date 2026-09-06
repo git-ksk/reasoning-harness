@@ -144,7 +144,7 @@ candidate revision は引き続き権威を得ない。改訂された candidate
 
 ## Failure と budget の扱い
 
-アダプターはプロセス単位の wall-clock timeout と、受け入れる stdout の最大サイズを強制する。デフォルトは 30,000 ms と 1 MiB であり、`--resolver-timeout-ms` / `--resolver-max-response-bytes` または `resolution.external_command` の config field で短縮できる。値が zero の operational limit は fail closed する。
+アダプターはHarness所有の単一の **whole-invocation wall-clock deadline** と、受け入れるstdoutの最大サイズを強制する。deadlineはsubprocess spawn前から開始し、spawn、stdin request write、stdout response read、process completion/termination、non-blocking cleanup handoffまでを含む。response待ちだけのtimeoutではない。デフォルトは30,000 msと1 MiBであり、`--resolver-timeout-ms` / `--resolver-max-response-bytes` または `resolution.external_command` のconfig fieldで短縮できる。値がzeroのoperational limitはfail closedする。deadline超過後はwriter/reader/reaperをjoinしないため、childがstdinを読まない場合やdescendantが継承pipeを保持した場合でもcallerの実行時間を設定budgetより延長しない。
 
 Operational failure class は明示的である。`authentication`、`permission_denied`、`policy_denied` は `denied` として終了し、`timeout` は `timed_out`、`transport` と `protocol` は `operational_failure` として終了する。executable-not-found は `unavailable` のままである。Legacy の `malformed_output`/`failed` は、凍結された過去の resolution fixture に対して retry/exhaustion 互換性を保つために残る。これらの終端状態は semantic verdict に付随するのであり、置き換えたり格上げしたりするものではない。したがって semantic `unknown` と不完全な外部 operation を区別できる。
 
@@ -156,4 +156,4 @@ Operational failure class は明示的である。`authentication`、`permission
 
 決定論的な adapter test は一時 executable を起動し、stdin で実際の型付き request を送り、stdout で acquired evidence を受け取り、trusted metadata や receipt を紛れ込ませようとする試みが schema parsing に失敗することを別途検証する。この smoke path は network service を必要とせず、凍結された research fixture を変更せずに、実際の process I/O を試験する。
 
-ライブ統合では、設定された executable 自体が web API、database、compiler/test tool、その他の read-only source を呼び出してもよい。返された data は依然として、上記の contribution type としてのみ Reasoning Harness に入る。MCP 固有の取得は別途 `mcp_readonly_v1` として #176 の下で実装され、`external_command_v1` に特例として組み込まれない。[Read-only MCP resolver](mcp-resolver.ja.md) を参照。
+ライブ統合では、設定された executable 自体が web API、database、compiler/test tool、その他の read-only source を呼び出してもよい。返された data は依然として、上記の contribution type としてのみ Reasoning Harness に入る。MCP固有の取得は`external_command_v1`へ特例として組み込まず分離を維持する。historical `mcp_readonly_v1`は凍結したまま変更せず、v0.4のnatural-language product pathは#211共通deadlineを使う`mcp_readonly_v2`を利用する。[Read-only MCP resolver](mcp-resolver.ja.md)を参照。

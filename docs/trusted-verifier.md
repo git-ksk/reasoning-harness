@@ -8,7 +8,7 @@ The external command does **not** return a `VerificationReceipt`. It receives th
 
 When a matching `EvidenceRequirement` exists, every evidence ID returned by the trusted command must already be `Qualified` under the current Harness temporal/scope/authority policy. Stale, wrong-scope, unknown-authority, or otherwise non-qualified evidence cannot be used to mint a receipt through this reference adapter. Without an applicable requirement, referenced evidence must still exist in the current artifact and IDs must be unique/non-empty.
 
-The response schema is closed (`reason-trusted-verifier-response-v1`), so it cannot smuggle verifier identity, proposition bindings, receipt IDs, verdicts, or final prose. Operational failures remain typed resolution failures. Timeout and response-size limits are bounded, config identity is hashed, and ReasoningThread replay preserves the recorded attempt without re-executing the verifier.
+The response schema is closed (`reason-trusted-verifier-response-v1`), so it cannot smuggle verifier identity, proposition bindings, receipt IDs, verdicts, or final prose. Operational failures remain typed resolution failures. `timeout_ms` is one whole-invocation wall-clock deadline covering subprocess spawn, stdin write, stdout read, completion/termination, and cleanup handoff; it is not a response-only timeout. Response size remains independently bounded, config identity is hashed, and ReasoningThread replay preserves the recorded attempt without re-executing the verifier.
 
 Example config:
 

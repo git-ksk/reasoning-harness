@@ -1,9 +1,7 @@
 use std::{
     collections::BTreeSet,
-    io::{Read, Write},
     path::PathBuf,
-    process::{Command, Stdio},
-    thread,
+    process::Command,
     time::{Duration, Instant},
 };
 
@@ -15,14 +13,13 @@ use reasoning_harness_core::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::config_identity::stable_config_id;
+use crate::{config_identity::stable_config_id, subprocess_deadline::run_to_exit};
 
 pub const TRUSTED_COMMAND_VERIFIER_ID: &str = "trusted_command_verifier_v1";
 pub const TRUSTED_COMMAND_REQUEST_SCHEMA: &str = "reason-trusted-verifier-request-v1";
 pub const TRUSTED_COMMAND_RESPONSE_SCHEMA: &str = "reason-trusted-verifier-response-v1";
 pub const DEFAULT_TRUSTED_COMMAND_TIMEOUT_MS: u64 = 30_000;
 pub const DEFAULT_TRUSTED_COMMAND_MAX_RESPONSE_BYTES: usize = 1024 * 1024;
-const PROCESS_POLL_INTERVAL: Duration = Duration::from_millis(10);
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct TrustedCommandVerifierConfig {
@@ -152,14 +149,6 @@ fn adapter_error(
     }
 }
 
-fn spawn_error_kind(error: &std::io::Error) -> ResolutionAdapterErrorKind {
-    match error.kind() {
-        std::io::ErrorKind::NotFound => ResolutionAdapterErrorKind::Unavailable,
-        std::io::ErrorKind::PermissionDenied => ResolutionAdapterErrorKind::PermissionDenied,
-        _ => ResolutionAdapterErrorKind::Transport,
-    }
-}
-
 fn target_proposition(
     target: &reasoning_harness_core::ResolutionTarget,
 ) -> Option<&reasoning_harness_core::Proposition> {
@@ -270,112 +259,16 @@ impl TrustedResolutionVerifier for TrustedCommandVerifier {
             )
         })?;
 
-        let mut child = Command::new(&self.config.program)
-            .args(&self.config.args)
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::null())
-            .spawn()
-            .map_err(|error| {
-                adapter_error(spawn_error_kind(&error), started, ResolutionCost::default())
-            })?;
-
-        let write_result = child
-            .stdin
-            .as_mut()
-            .ok_or_else(|| {
-                adapter_error(
-                    ResolutionAdapterErrorKind::Transport,
-                    started,
-                    ResolutionCost::default(),
-                )
-            })?
-            .write_all(&payload);
-        drop(child.stdin.take());
-        if write_result.is_err() {
-            let _ = child.kill();
-            let _ = child.wait();
-            return Err(adapter_error(
-                ResolutionAdapterErrorKind::Transport,
-                started,
-                ResolutionCost::default(),
-            ));
-        }
-
-        let response_limit = self
-            .config
-            .max_response_bytes
-            .checked_add(1)
-            .ok_or_else(|| {
-                adapter_error(
-                    ResolutionAdapterErrorKind::PolicyDenied,
-                    started,
-                    ResolutionCost::default(),
-                )
-            })?;
-        let stdout = child.stdout.take().ok_or_else(|| {
-            adapter_error(
-                ResolutionAdapterErrorKind::Transport,
-                started,
-                ResolutionCost::default(),
-            )
-        })?;
-        let reader = thread::spawn(move || -> std::io::Result<Vec<u8>> {
-            let mut bytes = Vec::new();
-            stdout
-                .take(u64::try_from(response_limit).unwrap_or(u64::MAX))
-                .read_to_end(&mut bytes)?;
-            Ok(bytes)
-        });
-
-        let timeout = Duration::from_millis(self.config.timeout_ms);
-        let status = loop {
-            match child.try_wait() {
-                Ok(Some(status)) => break status,
-                Ok(None) if started.elapsed() < timeout => thread::sleep(PROCESS_POLL_INTERVAL),
-                Ok(None) => {
-                    let _ = child.kill();
-                    let _ = child.wait();
-                    return Err(adapter_error(
-                        ResolutionAdapterErrorKind::Timeout,
-                        started,
-                        ResolutionCost::default(),
-                    ));
-                }
-                Err(_) => {
-                    let _ = child.kill();
-                    let _ = child.wait();
-                    return Err(adapter_error(
-                        ResolutionAdapterErrorKind::Transport,
-                        started,
-                        ResolutionCost::default(),
-                    ));
-                }
-            }
-        };
-        let output = reader
-            .join()
-            .map_err(|_| {
-                adapter_error(
-                    ResolutionAdapterErrorKind::Transport,
-                    started,
-                    ResolutionCost::default(),
-                )
-            })?
-            .map_err(|_| {
-                adapter_error(
-                    ResolutionAdapterErrorKind::Transport,
-                    started,
-                    ResolutionCost::default(),
-                )
-            })?;
-        if output.len() > self.config.max_response_bytes || !status.success() {
-            return Err(adapter_error(
-                ResolutionAdapterErrorKind::Protocol,
-                started,
-                ResolutionCost::default(),
-            ));
-        }
+        let mut command = Command::new(&self.config.program);
+        command.args(&self.config.args);
+        let output = run_to_exit(
+            &mut command,
+            payload,
+            started,
+            Duration::from_millis(self.config.timeout_ms),
+            self.config.max_response_bytes,
+        )
+        .map_err(|kind| adapter_error(kind, started, ResolutionCost::default()))?;
 
         let response: TrustedVerifierResponseEnvelope =
             serde_json::from_slice(&output).map_err(|_| {
@@ -598,6 +491,26 @@ printf '%s' '{"schema_version":"reason-trusted-verifier-response-v1","result":{"
             .unwrap_err();
         fs::remove_file(path).ok();
         assert_eq!(error.kind, ResolutionAdapterErrorKind::PolicyDenied);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn large_request_write_to_non_reader_respects_whole_invocation_timeout() {
+        let path = script("#!/bin/sh\nsleep 1\n", "blocked-write");
+        let verifier = TrustedCommandVerifier::new(TrustedCommandVerifierConfig {
+            verifier_id: "reference-policy-oracle".into(),
+            program: path.clone(),
+            args: vec![],
+            timeout_ms: 40,
+            max_response_bytes: 4096,
+        });
+        let mut current = artifact(true);
+        current.evidence[0].observation = "x".repeat(2 * 1024 * 1024);
+        let wall = Instant::now();
+        let error = verifier.verify(&request(), &current, 0).unwrap_err();
+        fs::remove_file(path).ok();
+        assert_eq!(error.kind, ResolutionAdapterErrorKind::Timeout);
+        assert!(wall.elapsed() < Duration::from_millis(500));
     }
 
     #[cfg(unix)]

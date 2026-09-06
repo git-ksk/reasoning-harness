@@ -8,7 +8,7 @@ Issue #177では、既存の`TrustedResolutionVerifier`境界に、参照用のa
 
 一致する`EvidenceRequirement`がある場合、trusted commandが返すすべてのevidence IDは、現在のHarnessのtemporal/scope/authority policyのもとですでに`Qualified`でなければなりません。stale、scope違い、authority不明、その他のnon-qualified evidenceを、このreference adapter経由でreceiptの発行に利用することはできません。適用可能なrequirementがない場合でも、参照evidenceは現在のartifactに存在し、IDは一意かつ空でない必要があります。
 
-response schemaはclosed（`reason-trusted-verifier-response-v1`）であり、verifier identity、proposition binding、receipt ID、verdict、final proseを忍び込ませることはできません。operational failureはtyped resolution failureとして扱います。timeoutとresponse-size limitには上限があり、config identityはhash化され、ReasoningThread replayでは記録済みのattemptを再実行せずに保持します。
+response schemaはclosed（`reason-trusted-verifier-response-v1`）であり、verifier identity、proposition binding、receipt ID、verdict、final proseを忍び込ませることはできません。operational failureはtyped resolution failureとして扱います。`timeout_ms`はsubprocess spawn、stdin write、stdout read、completion/termination、cleanup handoffまでを覆う単一のwhole-invocation wall-clock deadlineであり、response待ちだけのtimeoutではありません。response-size limitは別に維持し、config identityはhash化され、ReasoningThread replayでは記録済みのattemptを再実行せずに保持します。
 
 設定例:
 

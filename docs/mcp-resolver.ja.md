@@ -1,6 +1,6 @@
 # 読み取り専用MCPリゾルバー
 
-Issue #176では、既存のbounded-resolution loop内の取得adapterとして`mcp_readonly_v1`を追加します。MCPはtransport/integrationに限られ、correctness boundaryではありません。
+Issue #176では、既存のbounded-resolution loop内の取得adapterとして`mcp_readonly_v1`を追加しました。v0.4.0ではhistorical replay/evaluation compatibilityのためこの実装をbyte-for-byte不変で維持し、supported natural-language product pathは明示的なoperational successor `mcp_readonly_v2`を使用します。v2は同じstateless MCP `tools/call`、allowlist、acquisition-only、non-promotion semanticsを維持したまま、#211の共通whole-invocation deadlineを追加します。MCPは引き続きtransport/integrationに限られ、correctness boundaryではありません。
 
 adapterはstdio上のMCP protocol `2026-07-28`を対象とします。各invocationでは、protocol version、client capabilities、client identity、Harness所有のrequest/attempt provenanceを含むJSON-RPC `tools/call` requestを送信し、`_meta`に格納します。initialize/session handshakeには依存しません。
 
@@ -81,8 +81,8 @@ server processは通常のenvironmentを継承しますが、config schemaはcre
 
 ## 運用上の失敗と再実行
 
-transport、authentication、permission、protocol、tool-execution、timeout、policy-denialのfailureには#178のtyped operational resolution classを使用します。tool resultの`isError: true`は`tool_execution`であり、semantic evidenceではありません。これらのoutcomeはsemantic `unknown`とは区別されます。
+transport、authentication、permission、protocol、tool-execution、timeout、policy-denialのfailureにはtyped operational resolution classを使用します。`timeout_ms`は他のsubprocess adapterと共有するwhole-invocation wall-clock deadlineであり、process spawn、JSON-RPC stdin全量write、bounded response-line read、termination、cleanup handoffまでを覆います。そのためserverがstdinを一切読まなくてもdeadlineを回避できません。tool resultの`isError: true`は`tool_execution`であり、semantic evidenceではありません。これらのoutcomeはsemantic `unknown`とは区別されます。#204のnegotiated/session successorも同じdeadline primitiveを再利用します。
 
 各MCP requestはstableなrequest/attempt provenanceを持ち、生成された`ResolutionAttempt`にはadapter/admission identityとcost telemetryを記録します。`ReasoningThread` replayは記録済みattemptを復元するだけで、MCP serverを再invokeしません。
 
-deterministic fake-server testでは、modern request metadata、allowlisting、timeout、typed tool error、opaque resultのnon-promotion、acquisition -> admission -> ordinary re-verificationという完全な経路をカバーします。deterministic CIにlive external MCP serverは必要ありません。
+deterministic fake-server testではfrozen v1 boundaryとv2 successorの両方をカバーし、modern request metadata、allowlisting、multi-megabyte stdin blocked writeを含むwhole-invocation timeout、typed tool error、opaque resultのnon-promotion、acquisition -> admission -> ordinary re-verificationという完全な経路を検証します。deterministic CIにlive external MCP serverは必要ありません。

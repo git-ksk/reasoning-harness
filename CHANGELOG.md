@@ -10,6 +10,7 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 - Closed Issue #210's exposed-text correctness gap: `GroundedAnswer` / `QualifiedPartialAnswer` no longer expose model renderer `text`; Harness constructs the exposed text from accepted factual claims or typed recovery state under `harness-canonical-exposed-text-v1`.
 - Bumped natural-language JSON output from `reason-natural-output-v2` to `reason-natural-output-v3` and added explicit `exposed_text` policy telemetry. Consumers that relied on renderer prose should use `finalization.text`; historical v2 behavior remains reproducible at commit `3a601c8` but is not available as a safety rollback because it would restore the P0 gap.
+- Closed Issue #211's subprocess timeout gap with one shared absolute wall-clock deadline across `external_command`, `trusted_command`, and the v0.4 product successor `mcp_readonly_v2`, while frozen historical `mcp_readonly_v1` remains unchanged. The deadline covers spawn, complete stdin write, stdout read, process termination, and non-blocking cleanup handoff; blocked large writes and inherited descendant pipes cannot extend the caller beyond the configured timeout, and oversized stdout remains a typed protocol failure rather than being misclassified as timeout.
 
 ## [0.3.0] - 2026-09-04
 
