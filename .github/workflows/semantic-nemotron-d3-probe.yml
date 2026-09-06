@@ -41,7 +41,7 @@ jobs:
           jq '{configuration_id, provider, model, attempted_provider_calls, successful_provider_calls, failed_provider_calls, protocol_completion_rate, total_tokens, total_latency_ms, mean_latency_ms, trials, aggregate, risky_stability: [.stability[] | select(.base_decision_stability.risk_signals | length > 0)], failures: [.cases[] | select(.failure_class != null) | {fixture_id, source_fixture_id, semantic_label, trial, seed, finish_reason, failure_class, failure}]}' "$OUTPUT"
       - name: Preserve Nemotron D2 probe JSON
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: semantic-nemotron-d2-probe
           path: /tmp/reason-nemotron-d2-probe.json
@@ -86,7 +86,7 @@ jobs:
           jq '{configuration_id, study_surface, candidate_id, provider, model, attempted_provider_calls, successful_provider_calls, failed_provider_calls, protocol_completion_rate, total_tokens, total_latency_ms, mean_latency_ms, trials, aggregate, risky_stability: [.stability[] | select(.base_decision_stability.risk_signals | length > 0)], failures: [.cases[] | select(.failure_class != null) | {fixture_id, source_fixture_id, semantic_label, trial, seed, finish_reason, failure_class, failure}]}' "$OUTPUT"
       - name: Preserve Nemotron v5 probe JSON
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: semantic-nemotron-v5-probe
           path: /tmp/reason-nemotron-v5-probe.json

@@ -51,7 +51,7 @@ jobs:
           jq '{configuration_id, corpus, execution_design, materialization_contract, representation, fixture_count, source_count, sources: [.sources[] | {source_id, attempted_runs, successful_runs, failed_runs, protocol_completion_rate, total_tokens, total_latency_ms, mean_latency_ms, trials}], combined_cross_model_stability: {source_count: .combined_cross_model_stability.source_count, trials: .combined_cross_model_stability.trials, expected_probes_per_fixture: .combined_cross_model_stability.expected_probes_per_fixture, policies: .combined_cross_model_stability.policies, risky_fixtures: [.combined_cross_model_stability.fixtures[] | select(.combined_assessment.risk_signals | length > 0) | {fixture_id, label, per_trial, combined_assessment, disagreement_only, complete_unanimity}]}, failures: [.sources[] as $s | $s.cases[] | select(.failure_class != null) | {source_id: $s.source_id, fixture_id, trial, seed, finish_reason, failure_class, latency_ms, usage}]}' "$OUTPUT"
       - name: Preserve frozen R4 JSON
         if: always() && steps.credential.outputs.available == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: semantic-successor-r4-holdout-v4
           path: /tmp/reason-semantic-successor-r4.json
