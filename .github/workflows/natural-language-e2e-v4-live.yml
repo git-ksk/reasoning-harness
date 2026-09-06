@@ -1,0 +1,174 @@
+name: natural-language-e2e-v4-live
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-mistral-v4-observation:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'natural-language-e2e-v4-live'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PROVIDER: mistral
+      MODEL: ministral-8b-latest
+      SEED: '41000'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '1500'
+      FREEZE_TAG: natural-language-e2e-v4-freeze
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate v3 pre-observation freeze before credentials
+        run: |
+          set -euo pipefail
+          FREEZE_COMMIT="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test -n "$FREEZE_COMMIT"
+          git diff --exit-code "$FREEZE_COMMIT" -- \
+            fixtures/natural-language-e2e-v4 \
+            fixtures/natural-language-e2e-v4.sha256 \
+            scripts/natural_language_e2e_v4.py \
+            scripts/test_natural_language_e2e_v4.py \
+            scripts/natural_e2e_fixture_resolver.py \
+            docs/natural-language-e2e-v4.md \
+            docs/natural-language-e2e-v4.ja.md \
+            .github/workflows/natural-language-e2e-v4-live.yml
+          (cd fixtures/natural-language-e2e-v4 && sha256sum -c ../natural-language-e2e-v4.sha256)
+          python3 scripts/natural_language_e2e_v4.py --validate-only > /tmp/natural-e2e-v4-freeze.json
+          jq -e '
+            .valid == true
+            and .live_observation_performed == false
+            and .corpus_identity == "natural-language-e2e-v4"
+            and .evaluator_identity == "reason-natural-language-e2e-v4"
+            and .scoring_identity == "natural-language-e2e-scoring-v4"
+            and .cases == 10
+            and .provider_policy.provider == "mistral"
+            and .provider_policy.model == "ministral-8b-latest"
+            and .provider_policy.base_seed == 41000
+            and .provider_policy.max_tokens == 1024
+            and .provider_policy.inter_case_delay_ms == 1500
+          ' /tmp/natural-e2e-v4-freeze.json >/dev/null
+
+      - name: Prove v1/v2/v3 diagnostics and historical observed surfaces remain untouched
+        run: |
+          set -euo pipefail
+          git diff --exit-code natural-language-e2e-v1-freeze -- \
+            fixtures/natural-language-e2e-v1 \
+            fixtures/natural-language-e2e-v1.sha256 \
+            scripts/natural_language_e2e_v1.py \
+            scripts/test_natural_language_e2e_v1.py \
+            docs/natural-language-e2e.md \
+            docs/natural-language-e2e.ja.md \
+            .github/workflows/natural-language-e2e-v1-live.yml
+          git diff --exit-code natural-language-e2e-v2-freeze -- \
+            fixtures/natural-language-e2e-v2 \
+            fixtures/natural-language-e2e-v2.sha256 \
+            scripts/natural_language_e2e_v2.py \
+            scripts/test_natural_language_e2e_v2.py \
+            docs/natural-language-e2e-v2.md \
+            docs/natural-language-e2e-v2.ja.md \
+            .github/workflows/natural-language-e2e-v2-live.yml
+          git diff --exit-code natural-language-e2e-v3-freeze -- \
+            fixtures/natural-language-e2e-v3 \
+            fixtures/natural-language-e2e-v3.sha256 \
+            scripts/natural_language_e2e_v3.py \
+            scripts/test_natural_language_e2e_v3.py \
+            docs/natural-language-e2e-v3.md \
+            docs/natural-language-e2e-v3.ja.md \
+            .github/workflows/natural-language-e2e-v3-live.yml
+          git diff --exit-code f98bc04 -- \
+            fixtures/product-external-info-v1 fixtures/product-external-info-v1.sha256 \
+            fixtures/product-external-info-v2 fixtures/product-external-info-v2.sha256 \
+            fixtures/product-external-info-v3 fixtures/product-external-info-v3.sha256 \
+            fixtures/product-external-info-v4 fixtures/product-external-info-v4.sha256 \
+            fixtures/product-dogfood-v1 fixtures/product-dogfood-v1.sha256 \
+            crates/reasoning-harness-providers/src/mcp_readonly.rs
+
+      - name: Run deterministic v0.4 correctness contracts
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-core finalization::tests::exposed_grounded_text_is_canonicalized_from_verified_claims
+          cargo test --locked -p reasoning-harness-core finalization::tests::exposed_qualified_text_preserves_uncertainty_mode
+          cargo test --locked -p reasoning-harness-core --test reasoning_thread_replay input_change_records_typed_invalidation_before_new_assertive_state_is_possible
+          cargo test --locked -p reasoning-harness-cli --test product_cli_contract session_process_resume_and_fork_replay_no_external_side_effects
+          cargo test --locked -p reasoning-harness-cli --test product_cli_contract session_add_with_empty_nonterminal_stdin_is_not_rejected_as_piped_input
+          python3 -m unittest -v scripts/test_natural_language_e2e_v4.py
+
+      - name: Run v3 acquisition-only fixture preflight
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v4.py --preflight > /tmp/natural-e2e-v4-preflight.json
+          jq -e '
+            .valid == true
+            and .live_observation_performed == false
+            and .model_used == false
+            and .cases == 10
+            and .resolver_capabilities_checked == 9
+          ' /tmp/natural-e2e-v4-preflight.json >/dev/null
+
+      - name: Build exact product CLI under evaluation
+        run: cargo build --locked -p reasoning-harness-cli --bin reason
+
+      - name: Check frozen provider credential only after deterministic preflight
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: test -n "$MISTRAL_API_KEY"
+
+      - name: Run first operationally complete frozen v3 observation candidate
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v4.py \
+            --reason-bin target/debug/reason \
+            --provider "$PROVIDER" --model "$MODEL" \
+            --seed "$SEED" --max-tokens "$MAX_TOKENS" \
+            --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --output /tmp/natural-language-e2e-v4-live.json \
+            > /tmp/natural-language-e2e-v4-live.stdout.json
+          jq -e '
+            .schema_version == "reason-natural-language-e2e-v4"
+            and .corpus_identity == "natural-language-e2e-v4"
+            and .evaluator_identity == "reason-natural-language-e2e-v4"
+            and .scoring_identity == "natural-language-e2e-scoring-v4"
+            and .provider == "mistral"
+            and .model == "ministral-8b-latest"
+            and .seed == 41000
+            and .max_tokens == 1024
+            and .raw_model_comparison_claimed == false
+            and .aggregate.total_cases == 10
+            and .aggregate.completed_cases == 10
+            and .aggregate.operational_failures == 0
+            and .aggregate.unsupported_structured_claims == 0
+            and .aggregate.unsupported_exposed_assertions == 0
+            and .aggregate.exposed_text_contract_violations == 0
+            and .aggregate.missed_target_insufficiency == 0
+            and .aggregate.session_external_calls_replayed == 0
+            and .aggregate.correctness_boundary_violations == 0
+            and .aggregate.token_usage_case_coverage >= 0.7
+            and .adoption_gate_passed == true
+          ' /tmp/natural-language-e2e-v4-live.json >/dev/null
+          jq '{schema_version, corpus_identity, evaluator_identity, scoring_identity, provider, model, seed, max_tokens, aggregate, adoption_gate_passed}' /tmp/natural-language-e2e-v4-live.json
+
+      - name: Preserve v3 candidate, preflight, and freeze validation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: natural-language-e2e-v4-mistral-ministral-8b-seed-41000
+          path: |
+            /tmp/natural-e2e-v4-freeze.json
+            /tmp/natural-e2e-v4-preflight.json
+            /tmp/natural-language-e2e-v4-live.json
+            /tmp/natural-language-e2e-v4-live.stdout.json
+          if-no-files-found: warn
+          retention-days: 30
