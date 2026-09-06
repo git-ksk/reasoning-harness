@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   acquisition-preflight:
-    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'product-external-info-v4-cross-model-live'
+    if: github.event.pull_request.head.repo.full_name == github.repository && (github.event.label.name == 'product-external-info-v4-cross-model-live' || github.event.label.name == 'product-external-info-v4-gemini-paced-live')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -68,7 +68,7 @@ jobs:
 
   replicate:
     needs: acquisition-preflight
-    if: needs.acquisition-preflight.result == 'success'
+    if: needs.acquisition-preflight.result == 'success' && github.event.label.name == 'product-external-info-v4-cross-model-live'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
@@ -152,5 +152,68 @@ jobs:
           path: |
             /tmp/product-external-info-v4-${{ matrix.provider }}-${{ matrix.model }}.json
             /tmp/product-external-info-v4-${{ matrix.provider }}-${{ matrix.model }}.stdout.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  gemini-paced-retry:
+    needs: acquisition-preflight
+    if: needs.acquisition-preflight.result == 'success' && github.event.label.name == 'product-external-info-v4-gemini-paced-live'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    name: google-gemini-3.5-flash-lite-paced-attempt2
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Re-prove frozen v4 semantic surface
+        run: |
+          set -euo pipefail
+          (cd fixtures/product-external-info-v4 && sha256sum -c ../product-external-info-v4.sha256)
+          git diff --exit-code e324ccbff6e818d205a734f06ccc8cac4b587588 -- \
+            fixtures/product-external-info-v4 \
+            fixtures/product-external-info-v4.sha256 \
+            scripts/validate_product_external_info_v4.py \
+            crates/reasoning-harness-cli/src/bin/product_external_info_v4.rs \
+            crates/reasoning-harness-providers/src/mcp_readonly.rs \
+            crates/reasoning-harness-providers/src/external_admission.rs \
+            crates/reasoning-harness-core/src/finalization.rs
+      - name: Check Google credential availability
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: test -n "$GEMINI_API_KEY"
+      - name: Run paced frozen v4 Gemini replication
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '4500'
+        run: |
+          set -euo pipefail
+          OUT=/tmp/product-external-info-v4-google-gemini-3.5-flash-lite-paced-attempt2.json
+          STDOUT=/tmp/product-external-info-v4-google-gemini-3.5-flash-lite-paced-attempt2.stdout.json
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-product-external-info-v4 -- \
+            --provider google --model gemini-3.5-flash-lite --max-tokens 1024 --seed 28000 \
+            --output "$OUT" > "$STDOUT"
+          jq -e '
+            .schema_version == "reason-product-external-info-v4"
+            and .comparison_contract == "matched-target-context-four-arm-v4"
+            and .corpus_identity == "product-external-info-v4"
+            and .provider == "google"
+            and .model == "gemini-3.5-flash-lite"
+            and .seed == 28000
+            and .max_tokens == 1024
+            and .aggregate.total_cases == 21
+          ' "$OUT" >/dev/null
+          jq '{schema_version, comparison_contract, corpus_identity, provider, model, seed, max_tokens, comparison, costs, aggregate}' "$OUT"
+      - name: Preserve paced Gemini result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-external-info-v4-google-gemini-3.5-flash-lite-paced-attempt2-seed-28000
+          path: |
+            /tmp/product-external-info-v4-google-gemini-3.5-flash-lite-paced-attempt2.json
+            /tmp/product-external-info-v4-google-gemini-3.5-flash-lite-paced-attempt2.stdout.json
           if-no-files-found: warn
           retention-days: 30

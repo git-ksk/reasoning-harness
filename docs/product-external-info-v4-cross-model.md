@@ -48,3 +48,7 @@ GitHub Actions run `34001534798` reused the frozen v4 evaluation surface without
 - `google / gemini-3.5-flash-lite` reached case 9 and then returned HTTP 429 because the free-tier request quota was exhausted (`limit: 15`, retry-after approximately 49 seconds). No complete scored report was produced.
 
 These are provider/quota operational failures, not semantic Harness failures. They remain outside the cross-model correctness denominator until a complete frozen-v4 report is obtained.
+
+## Provider-only pacing retry policy
+
+The first Gemini 3.5 Flash-Lite attempt may be retained as operational evidence if the AI Studio free-tier request cap interrupts the run. A retry may use the opt-in `REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS` adapter setting with `4500` ms request-start spacing. The setting defaults to disabled and changes timing only; it does not alter requests, responses, v4 fixtures, scoring, admission, verification, or finalization. A failed unpaced attempt is never replaced or scored as semantic evidence.

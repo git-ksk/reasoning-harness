@@ -48,3 +48,7 @@ GitHub Actions run `34001534798` では、v4のcase、target、scoring、evaluat
 - `google / gemini-3.5-flash-lite` はcase 9到達後にHTTP 429。free-tier request quota（limit 15）を使い切り、約49秒後のretry指示が返ったためcomplete scored reportは生成できなかった。
 
 これらはprovider/quotaのoperational failureであり、Harness semanticsの失敗ではない。complete frozen-v4 reportを取得するまではcross-model correctness denominatorへ含めない。
+
+## provider-only pacing retry policy
+
+Gemini 3.5 Flash-Liteの初回attemptがAI Studio free-tier request capで中断した場合、その失敗はoperational evidenceとして保持する。retryではopt-inの`REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS`を`4500` msに設定し、request start間隔だけを制御してよい。この設定はdefaultでは無効で、request内容、response、v4 fixture、scoring、admission、verification、finalizationは変更しない。未paced attemptの失敗を消したりsemantic scoreへ含めたりしない。
