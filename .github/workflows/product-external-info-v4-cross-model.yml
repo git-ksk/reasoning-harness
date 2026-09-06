@@ -1,0 +1,156 @@
+name: product-external-info-v4-cross-model
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+
+jobs:
+  acquisition-preflight:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'product-external-info-v4-cross-model-live'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Prove frozen v4 evaluation surface is unchanged
+        run: |
+          set -euo pipefail
+          (cd fixtures/product-external-info-v4 && sha256sum -c ../product-external-info-v4.sha256)
+          git diff --exit-code e324ccbff6e818d205a734f06ccc8cac4b587588 -- \
+            fixtures/product-external-info-v4 \
+            fixtures/product-external-info-v4.sha256 \
+            scripts/validate_product_external_info_v4.py \
+            crates/reasoning-harness-cli/src/bin/product_external_info_v4.rs \
+            crates/reasoning-harness-providers/src/mcp_readonly.rs \
+            crates/reasoning-harness-providers/src/external_admission.rs \
+            crates/reasoning-harness-core/src/finalization.rs
+      - name: Run current acquisition-only preflight before provider credentials
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-product-external-info-v4 -- \
+            --acquisition-probe --seed 28000 --max-tokens 1024 \
+            > /tmp/product-external-info-v4-cross-model-preflight.json
+          jq -e '
+            .schema_version == "reason-product-external-info-acquisition-probe-v4"
+            and .corpus_identity == "product-external-info-v4"
+            and .model_used == false
+            and .aggregate.total_cases == 21
+            and .aggregate.semantic_cases_scored == 18
+            and .aggregate.semantic_cases_operationally_incomplete == 0
+            and .aggregate.expected_grounded_target_coverage == 1
+            and .aggregate.expected_unknown_preservation == 1
+            and .aggregate.false_target_abstention == 0
+            and .aggregate.unsupported_grounded_claims == 0
+            and .aggregate.missed_target_insufficiency == 0
+            and .aggregate.identity_unsafe_admission == 0
+            and .aggregate.mcp_output_authority_self_promotion == 0
+            and .aggregate.tool_protocol_timeout_operational_failures == 3
+            and .aggregate.safety_gate_passed == true
+            and ([.cases[] | select(.id == "conflict-qualified-facts-click-v4") | .distinct_target_fact_values] == [["click","pallets"]])
+            and ([.cases[] | select(.id == "irrelevant-pytest-observation-selected-fact-v4") | .distinct_target_fact_values] == [["pytest-dev/pytest"]])
+          ' /tmp/product-external-info-v4-cross-model-preflight.json >/dev/null
+      - name: Preserve cross-model acquisition preflight
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-external-info-v4-cross-model-preflight
+          path: /tmp/product-external-info-v4-cross-model-preflight.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  replicate:
+    needs: acquisition-preflight
+    if: needs.acquisition-preflight.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - provider: mistral
+            model: mistral-small-latest
+            credential: mistral
+          - provider: google
+            model: gemma-4-31b-it
+            credential: google
+          - provider: google
+            model: gemini-3.5-flash-lite
+            credential: google
+    name: ${{ matrix.provider }}-${{ matrix.model }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Re-prove frozen v4 semantic surface
+        run: |
+          set -euo pipefail
+          (cd fixtures/product-external-info-v4 && sha256sum -c ../product-external-info-v4.sha256)
+          git diff --exit-code e324ccbff6e818d205a734f06ccc8cac4b587588 -- \
+            fixtures/product-external-info-v4 \
+            fixtures/product-external-info-v4.sha256 \
+            scripts/validate_product_external_info_v4.py \
+            crates/reasoning-harness-cli/src/bin/product_external_info_v4.rs \
+            crates/reasoning-harness-providers/src/mcp_readonly.rs \
+            crates/reasoning-harness-providers/src/external_admission.rs \
+            crates/reasoning-harness-core/src/finalization.rs
+      - name: Check provider credential availability
+        id: credential
+        env:
+          CREDENTIAL_KIND: ${{ matrix.credential }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ "$CREDENTIAL_KIND" = mistral ]; then
+            test -n "$MISTRAL_API_KEY"
+          else
+            test -n "$GEMINI_API_KEY"
+          fi
+      - name: Run frozen v4 cross-model replication
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+        run: |
+          set -euo pipefail
+          OUT="/tmp/product-external-info-v4-${PROVIDER}-${MODEL}.json"
+          STDOUT="/tmp/product-external-info-v4-${PROVIDER}-${MODEL}.stdout.json"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-product-external-info-v4 -- \
+            --provider "$PROVIDER" --model "$MODEL" --max-tokens 1024 --seed 28000 \
+            --output "$OUT" > "$STDOUT"
+          jq -e --arg provider "$PROVIDER" --arg model "$MODEL" '
+            .schema_version == "reason-product-external-info-v4"
+            and .comparison_contract == "matched-target-context-four-arm-v4"
+            and .corpus_identity == "product-external-info-v4"
+            and .provider == $provider
+            and .model == $model
+            and .seed == 28000
+            and .max_tokens == 1024
+            and .aggregate.total_cases == 21
+          ' "$OUT" >/dev/null
+          jq '{schema_version, comparison_contract, corpus_identity, provider, model, seed, max_tokens, comparison, costs, aggregate}' "$OUT"
+      - name: Preserve cross-model result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: product-external-info-v4-${{ matrix.provider }}-${{ matrix.model }}-seed-28000
+          path: |
+            /tmp/product-external-info-v4-${{ matrix.provider }}-${{ matrix.model }}.json
+            /tmp/product-external-info-v4-${{ matrix.provider }}-${{ matrix.model }}.stdout.json
+          if-no-files-found: warn
+          retention-days: 30
