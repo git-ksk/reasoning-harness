@@ -14,6 +14,7 @@ use serde_json::Value;
 const DEFAULT_BASE_URL: &str = "https://api.groq.com/openai/v1/";
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(180);
 const MAX_RATE_LIMIT_RETRIES: usize = 5;
+const MAX_STRUCTURED_OUTPUT_RETRIES: usize = 2;
 const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(5);
 const MAX_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(60);
 const MAX_RATE_LIMIT_RESET_DELAY: Duration = Duration::from_secs(180);
@@ -213,6 +214,8 @@ impl GroqAdapter {
             content: request.task,
         });
 
+        let best_effort_schema =
+            matches!(&request.output_format, ModelOutputFormat::JsonSchema { .. });
         let body = ChatRequest {
             model: &self.model,
             messages,
@@ -224,6 +227,7 @@ impl GroqAdapter {
         };
 
         let mut rate_limit_retries = 0usize;
+        let mut structured_output_retries = 0usize;
         let response = loop {
             self.wait_for_request_slot().await;
             let response = self
@@ -235,16 +239,38 @@ impl GroqAdapter {
                 .await
                 .map_err(classify_transport_error)?;
 
-            log_rate_limit_telemetry(response.status(), response.headers(), rate_limit_retries);
+            let status = response.status();
+            log_rate_limit_telemetry(status, response.headers(), rate_limit_retries);
 
-            if response.status() != StatusCode::TOO_MANY_REQUESTS
-                || rate_limit_retries >= MAX_RATE_LIMIT_RETRIES
+            if status == StatusCode::TOO_MANY_REQUESTS
+                && rate_limit_retries < MAX_RATE_LIMIT_RETRIES
             {
-                break response;
+                let delay = rate_limit_delay(response.headers(), rate_limit_retries);
+                rate_limit_retries += 1;
+                tokio::time::sleep(delay).await;
+                continue;
             }
-            let delay = rate_limit_delay(response.headers(), rate_limit_retries);
-            rate_limit_retries += 1;
-            tokio::time::sleep(delay).await;
+
+            if status == StatusCode::BAD_REQUEST
+                && best_effort_schema
+                && structured_output_retries < MAX_STRUCTURED_OUTPUT_RETRIES
+            {
+                let error_body = response.text().await.unwrap_or_default();
+                if is_retryable_structured_output_error(&error_body) {
+                    log_structured_output_retry(structured_output_retries);
+                    structured_output_retries += 1;
+                    continue;
+                }
+                return Err(http_error(
+                    status,
+                    &error_body,
+                    rate_limit_retries,
+                    structured_output_retries,
+                    String::new(),
+                ));
+            }
+
+            break response;
         };
 
         let status = response.status();
@@ -254,16 +280,14 @@ impl GroqAdapter {
             String::new()
         };
         if !status.is_success() {
-            let body = response.text().await.unwrap_or_default();
-            let kind = classify_http_error(status, &body);
-            let detail = provider_error_detail(&body);
-            return Err(ModelError::new(
-                kind,
-                format!(
-                    "Groq API returned HTTP {status} after {rate_limit_retries} rate-limit retries{detail}{limit_detail}"
-                ),
-            )
-            .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX)));
+            let error_body = response.text().await.unwrap_or_default();
+            return Err(http_error(
+                status,
+                &error_body,
+                rate_limit_retries,
+                structured_output_retries,
+                limit_detail,
+            ));
         }
 
         let response: ChatResponse = response.json().await.map_err(|error| {
@@ -271,7 +295,10 @@ impl GroqAdapter {
                 ModelErrorKind::Protocol,
                 format!("invalid Groq Chat Completions response: {error}"),
             )
-            .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX))
+            .with_provider_attempts(provider_attempts(
+                rate_limit_retries,
+                structured_output_retries,
+            ))
         })?;
         let total_tokens = response.usage.as_ref().and_then(|usage| usage.total_tokens);
         self.record_token_usage(total_tokens).await;
@@ -280,7 +307,10 @@ impl GroqAdapter {
                 ModelErrorKind::Protocol,
                 "Groq response contained no choices",
             )
-            .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX))
+            .with_provider_attempts(provider_attempts(
+                rate_limit_retries,
+                structured_output_retries,
+            ))
         })?;
         let text = choice
             .message
@@ -291,7 +321,10 @@ impl GroqAdapter {
                     ModelErrorKind::Protocol,
                     "Groq response contained no model text output",
                 )
-                .with_provider_attempts(u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX))
+                .with_provider_attempts(provider_attempts(
+                    rate_limit_retries,
+                    structured_output_retries,
+                ))
             })?;
         let usage = response.usage.unwrap_or_default();
 
@@ -303,7 +336,7 @@ impl GroqAdapter {
                 output_tokens: usage.completion_tokens,
                 total_tokens: usage.total_tokens,
             },
-            provider_attempts: u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
+            provider_attempts: provider_attempts(rate_limit_retries, structured_output_retries),
             finish_reason: choice.finish_reason,
         })
     }
@@ -362,7 +395,11 @@ fn response_format(format: ModelOutputFormat) -> Option<ResponseFormat> {
             json_schema: JsonSchema {
                 name,
                 schema,
-                strict: true,
+                // v4/Harness schemas intentionally permit optional fields and are validated
+                // again by the Harness-owned parser. Groq strict mode requires every object
+                // to be closed and every property required, so use provider best-effort schema
+                // mode without changing the Harness schema or semantic contract.
+                strict: false,
             },
         }),
     }
@@ -404,6 +441,50 @@ fn env_u64(name: &str) -> Result<Option<u64>, ModelError> {
         )
     })?;
     Ok(Some(parsed))
+}
+
+fn provider_attempts(rate_limit_retries: usize, structured_output_retries: usize) -> u32 {
+    u32::try_from(
+        rate_limit_retries
+            .saturating_add(structured_output_retries)
+            .saturating_add(1),
+    )
+    .unwrap_or(u32::MAX)
+}
+
+fn is_retryable_structured_output_error(body: &str) -> bool {
+    let normalized = body.to_ascii_lowercase();
+    normalized.contains("failed to validate json")
+        || normalized.contains("generated json does not match the expected schema")
+}
+
+fn log_structured_output_retry(retry_index: usize) {
+    if rate_limit_telemetry_enabled() {
+        eprintln!(
+            "[groq-structured-output] status=400 retry_index={retry_index} reason=schema_validation"
+        );
+    }
+}
+
+fn http_error(
+    status: StatusCode,
+    body: &str,
+    rate_limit_retries: usize,
+    structured_output_retries: usize,
+    limit_detail: String,
+) -> ModelError {
+    let kind = classify_http_error(status, body);
+    let detail = provider_error_detail(body);
+    ModelError::new(
+        kind,
+        format!(
+            "Groq API returned HTTP {status} after {rate_limit_retries} rate-limit retries and {structured_output_retries} structured-output retries{detail}{limit_detail}"
+        ),
+    )
+    .with_provider_attempts(provider_attempts(
+        rate_limit_retries,
+        structured_output_retries,
+    ))
 }
 
 fn classify_transport_error(error: reqwest::Error) -> ModelError {
@@ -604,7 +685,7 @@ mod tests {
     use serde_json::json;
 
     #[test]
-    fn serializes_strict_json_schema_for_supported_groq_targets() {
+    fn serializes_best_effort_json_schema_without_rewriting_harness_schema() {
         let format = response_format(ModelOutputFormat::JsonSchema {
             name: "candidate".into(),
             schema: json!({"type": "object", "properties": {}}),
@@ -612,7 +693,7 @@ mod tests {
         let value = serde_json::to_value(format).unwrap();
         assert_eq!(value["type"], "json_schema");
         assert_eq!(value["json_schema"]["name"], "candidate");
-        assert_eq!(value["json_schema"]["strict"], true);
+        assert_eq!(value["json_schema"]["strict"], false);
         assert!(value.get("verdict").is_none());
     }
 
@@ -737,6 +818,78 @@ mod tests {
         assert_eq!(response.text, "ok");
         assert_eq!(response.provider_attempts, 2);
         server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn retries_best_effort_schema_validation_failure_then_returns_success() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            for attempt in 0..3 {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = [0u8; 8192];
+                let _ = stream.read(&mut buffer);
+                let (status, body) = if attempt < 2 {
+                    (
+                        "400 Bad Request",
+                        r#"{"error":{"message":"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details."}}"#,
+                    )
+                } else {
+                    (
+                        "200 OK",
+                        r#"{"model":"test-model","choices":[{"finish_reason":"stop","message":{"content":"{}"}}],"usage":{"prompt_tokens":3,"completion_tokens":1,"total_tokens":4}}"#,
+                    )
+                };
+                write!(
+                    stream,
+                    "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                    body.len()
+                )
+                .unwrap();
+            }
+        });
+        let adapter = GroqAdapter::with_base_url_and_timeout(
+            "test-key",
+            "test-model",
+            &format!("http://{address}/v1/"),
+            Duration::from_secs(2),
+        )
+        .unwrap();
+        let response = adapter
+            .generate(ModelRequest {
+                task: "return json".into(),
+                system: None,
+                output_format: ModelOutputFormat::JsonSchema {
+                    name: "test".into(),
+                    schema: json!({"type":"object"}),
+                },
+                max_tokens: Some(8),
+                random_seed: Some(1),
+                reasoning_preference: None,
+            })
+            .await
+            .unwrap();
+        assert_eq!(response.text, "{}");
+        assert_eq!(response.provider_attempts, 3);
+        server.join().unwrap();
+    }
+
+    #[test]
+    fn structured_output_retry_matches_only_validation_errors() {
+        assert!(is_retryable_structured_output_error(
+            r#"{"error":{"message":"Failed to validate JSON. Please adjust your prompt."}}"#
+        ));
+        assert!(is_retryable_structured_output_error(
+            r#"{"error":{"message":"Generated JSON does not match the expected schema."}}"#
+        ));
+        assert!(!is_retryable_structured_output_error(
+            r#"{"error":{"message":"unsupported parameter"}}"#
+        ));
     }
 
     #[tokio::test]
