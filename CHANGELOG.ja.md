@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- Issue #214をfreeze済み`natural-language-e2e-v5`で完了。canonical Actions `34032191037`は10/10ケース完走、operational failure 0、correctness-boundary violation 0。unsupported exposed assertion / unsupported structured claim / missed insufficiency / session external replayはいずれも0、identity/freshness/scope/authority rejectionは4/4。utility残差（target recall 2/7、tool selection 5/7、false abstention 3）は観測後にtuningせず保持し、v1-v4はimmutable diagnosticとして残す。
+- 自然文JSON outputを`reason-natural-output-v3`から`reason-natural-output-v4`へ更新し、post-investigationの最終Harness artifact/verdictを`final_outcome`として明示。公開finalization、session checkpoint、評価が同じ最終stateを参照するようにし、`resolution_rounds[-1]`がcandidate再生成前のacquisition stateだった曖昧さを解消した。
 ### 変更
 
 - Issue #214の観測前`natural-language-e2e-v1`評価面を追加。明示hypothesisなしbounded investigation、identity/freshness/scope/authority rejection、multi-turn session add/correction/resume/fork、exposed-textとstructured claimを分離した安全採点、network非依存deterministic acquisition fixture、correctness violation 0のfreeze済みadoption gateを含む。
