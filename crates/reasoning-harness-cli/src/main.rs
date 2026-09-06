@@ -2325,26 +2325,32 @@ async fn run_natural_investigation(
             Ok(round) => round,
             Err(_) => break,
         };
-        state.note_planner_call();
-        let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
-        let (proposal, action_generation) = match generator
-            .choose_investigation_action(
-                task,
-                state.telemetry(),
-                config.planner_max_tokens.min(max_tokens),
-                action_seed,
-                model,
-            )
-            .await
-        {
-            Ok(result) => result,
-            Err(failure) => {
-                state.stop(InvestigationStopReason::OperationalTerminal);
-                observation.generation_failure = Some(failure);
-                break;
-            }
+        let proposal = if let Some(proposal) = state.unique_compatible_action_proposal() {
+            state.note_harness_unique_selection();
+            proposal
+        } else {
+            state.note_planner_call();
+            let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
+            let (proposal, action_generation) = match generator
+                .choose_investigation_action(
+                    task,
+                    state.telemetry(),
+                    config.planner_max_tokens.min(max_tokens),
+                    action_seed,
+                    model,
+                )
+                .await
+            {
+                Ok(result) => result,
+                Err(failure) => {
+                    state.stop(InvestigationStopReason::OperationalTerminal);
+                    observation.generation_failure = Some(failure);
+                    break;
+                }
+            };
+            observation.action_generations.push(action_generation);
+            proposal
         };
-        observation.action_generations.push(action_generation);
         let action = match state.validate_action(proposal) {
             Ok(Some(action)) => action,
             Ok(None) => break,

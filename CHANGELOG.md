@@ -6,6 +6,8 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ## [Unreleased]
 
+- Issue #233: bounded investigation now deterministically selects the sole remaining untried target/capability pair only when an expected fact key is explicitly supported by that read-only capability; ambiguous/keyless/wildcard choices still use the model selector. Authority/admission/verification are unchanged, with `harness_unique_selections` telemetry for auditability.
+
 ### Changed
 
 - Completed Issue #204 with `mcp_readonly_v3`: bounded persistent stdio `initialize`/negotiation/`initialized`/`tools/list`/`tools/call` under the shared #211 deadline, fail-closed protocol allowlisting, server `readOnlyHint` enforcement for the selected tool, typed negotiation/session failures, negotiation-bound config/replay provenance, and unchanged generic-output non-promotion. Frozen `mcp_readonly_v1` remains untouched; v2 remains the deadline-only historical successor. A pinned official GitHub MCP server probe succeeded through v3 while remaining opaque.

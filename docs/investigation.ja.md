@@ -112,3 +112,7 @@ runtime は `max_targets`、`max_rounds`、`max_actions`、`max_no_progress_roun
 ## static path との互換性
 
 `resolution.investigation` を設定しなければ、従来の natural-language resolver behavior は変わらない。`--resolver-fact`、static `external_command_v1`、static `mcp_readonly_v3`、`trusted_command_verifier_v1` は既存 path を維持する。frozen research/evaluation surface は変更せず、`mcp_readonly_v1` は freeze workflow で byte-for-byte 保護したままである。
+
+### 一意な安全actionのHarness選択
+
+v0.4.0では、未試行のtarget/capability pairのうち、targetが`expected_fact_key`を持ち、read-only capabilityがそのkeyを`supported_fact_keys`で明示宣言し、かつ候補がちょうど1組だけの場合、Harnessがそのpairをdeterministicに選択する。複数候補、key不明、wildcard capabilityでは従来どおりmodel action selectorを使う。この選択は取得先を決めるだけで、evidence admission、authority、verification、finalizationを昇格しない。`harness_unique_selections` telemetryで観測できる。

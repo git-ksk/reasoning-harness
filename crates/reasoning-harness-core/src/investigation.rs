@@ -147,6 +147,10 @@ pub struct InvestigationTelemetry {
     pub capabilities: Vec<InvestigationCapability>,
     pub rounds: usize,
     pub planner_calls: usize,
+    /// Actions selected deterministically by the Harness because exactly one compatible untried
+    /// target/capability pair remained. This is selection only and grants no authority.
+    #[serde(default)]
+    pub harness_unique_selections: usize,
     pub rejected_actions: BTreeMap<InvestigationActionRejection, usize>,
     pub actions: Vec<InvestigationActionRecord>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -253,6 +257,7 @@ impl InvestigationState {
                 capabilities,
                 rounds: 0,
                 planner_calls: 0,
+                harness_unique_selections: 0,
                 rejected_actions: BTreeMap::new(),
                 actions: vec![],
                 stop_reason: None,
@@ -272,22 +277,58 @@ impl InvestigationState {
         self.targets.get(id)
     }
 
+    fn compatible_untried_pairs(&self) -> Vec<(&InvestigationTarget, &InvestigationCapability)> {
+        let mut pairs = Vec::new();
+        for target in self.targets.values() {
+            for capability in self.capabilities.values() {
+                let key_compatible = target.expected_fact_key.as_ref().is_none_or(|key| {
+                    capability.supported_fact_keys.is_empty()
+                        || capability.supported_fact_keys.contains(key)
+                });
+                let untried = !self
+                    .attempted_pairs
+                    .contains(&(target.id.clone(), capability.id.clone()));
+                if capability.read_only && key_compatible && untried {
+                    pairs.push((target, capability));
+                }
+            }
+        }
+        pairs
+    }
+
     pub fn remaining_action_count(&self) -> usize {
-        self.targets
-            .values()
-            .flat_map(|target| {
-                self.capabilities.values().filter(move |capability| {
-                    capability.read_only
-                        && target.expected_fact_key.as_ref().is_none_or(|key| {
-                            capability.supported_fact_keys.is_empty()
-                                || capability.supported_fact_keys.contains(key)
-                        })
-                        && !self
-                            .attempted_pairs
-                            .contains(&(target.id.clone(), capability.id.clone()))
+        self.compatible_untried_pairs().len()
+    }
+
+    /// Returns a Harness-owned action proposal only when selection is mechanically unambiguous.
+    /// The selected target remains untrusted planning state and the capability remains subject to
+    /// the ordinary read-only, acquisition, admission, and verification boundaries.
+    pub fn unique_compatible_action_proposal(&self) -> Option<InvestigationActionProposal> {
+        let pairs = self
+            .compatible_untried_pairs()
+            .into_iter()
+            .filter(|(target, capability)| {
+                target.expected_fact_key.as_ref().is_some_and(|key| {
+                    !capability.supported_fact_keys.is_empty()
+                        && capability.supported_fact_keys.contains(key)
                 })
             })
-            .count()
+            .collect::<Vec<_>>();
+        if pairs.len() != 1 {
+            return None;
+        }
+        let (target, capability) = pairs[0];
+        let key = target.expected_fact_key.as_deref()?;
+        if capability.supported_fact_keys.is_empty()
+            || !capability.supported_fact_keys.contains(key)
+        {
+            return None;
+        }
+        Some(InvestigationActionProposal {
+            action: InvestigationActionKind::Acquire,
+            target_id: Some(target.id.clone()),
+            capability_id: Some(capability.id.clone()),
+        })
     }
 
     pub fn capability(&self, id: &str) -> Option<&InvestigationCapability> {
@@ -308,6 +349,11 @@ impl InvestigationState {
 
     pub fn note_planner_call(&mut self) {
         self.telemetry.planner_calls = self.telemetry.planner_calls.saturating_add(1);
+    }
+
+    pub fn note_harness_unique_selection(&mut self) {
+        self.telemetry.harness_unique_selections =
+            self.telemetry.harness_unique_selections.saturating_add(1);
     }
 
     pub fn validate_action(
@@ -602,6 +648,119 @@ mod tests {
                 false,
             ),
             Some(InvestigationStopReason::NoProgress)
+        );
+    }
+
+    #[test]
+    fn harness_selects_only_a_unique_compatible_untried_pair() {
+        let state = InvestigationState::new(
+            vec![target("region", Some("service.region"))],
+            vec![
+                capability("region-read", &["service.region"]),
+                capability("inventory-read", &["inventory.count"]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(
+            state.unique_compatible_action_proposal(),
+            Some(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("region".into()),
+                capability_id: Some("region-read".into()),
+            })
+        );
+    }
+
+    #[test]
+    fn harness_does_not_auto_select_keyless_or_wildcard_pairs() {
+        let keyless = InvestigationState::new(
+            vec![target("region", None)],
+            vec![capability("region-read", &["service.region"])],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(keyless.remaining_action_count(), 1);
+        assert_eq!(keyless.unique_compatible_action_proposal(), None);
+
+        let wildcard = InvestigationState::new(
+            vec![target("region", Some("service.region"))],
+            vec![capability("generic-read", &[])],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(wildcard.remaining_action_count(), 1);
+        assert_eq!(wildcard.unique_compatible_action_proposal(), None);
+    }
+
+    #[test]
+    fn harness_does_not_override_ambiguous_action_selection() {
+        let state = InvestigationState::new(
+            vec![target("region", Some("service.region"))],
+            vec![
+                capability("a", &["service.region"]),
+                capability("b", &["service.region"]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(state.remaining_action_count(), 2);
+        assert_eq!(state.unique_compatible_action_proposal(), None);
+    }
+
+    #[test]
+    fn harness_unique_selection_requires_explicit_fact_key_binding() {
+        let missing_key = InvestigationState::new(
+            vec![target("region", None)],
+            vec![capability("read", &["service.region"])],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(missing_key.unique_compatible_action_proposal(), None);
+
+        let wildcard = InvestigationState::new(
+            vec![target("region", Some("service.region"))],
+            vec![capability("read", &[])],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(wildcard.unique_compatible_action_proposal(), None);
+    }
+
+    #[test]
+    fn no_result_can_reduce_selection_to_one_safe_follow_up() {
+        let mut state = InvestigationState::new(
+            vec![target("region", Some("service.region"))],
+            vec![
+                capability("a", &["service.region"]),
+                capability("b", &["service.region"]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let round = state.begin_round().unwrap();
+        let first = state
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("region".into()),
+                capability_id: Some("a".into()),
+            })
+            .unwrap()
+            .unwrap();
+        state.record_observation(
+            round,
+            first,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+        assert_eq!(
+            state.unique_compatible_action_proposal(),
+            Some(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("region".into()),
+                capability_id: Some("b".into()),
+            })
         );
     }
 

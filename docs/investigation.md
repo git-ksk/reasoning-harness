@@ -112,3 +112,7 @@ Natural JSON output reports the investigation object separately from ordinary re
 ## Static-path compatibility
 
 If `resolution.investigation` is absent, the existing natural-language resolver behavior is unchanged. `--resolver-fact`, static `external_command_v1`, static `mcp_readonly_v3`, and `trusted_command_verifier_v1` continue to use their existing paths. Frozen research/evaluation surfaces remain untouched and `mcp_readonly_v1` remains byte-for-byte protected by its freeze workflow.
+
+### Harness selection for a unique safe action
+
+v0.4.0 deterministically selects an acquisition pair only when exactly one untried pair remains, the target has an `expected_fact_key`, and the read-only capability explicitly lists that key in `supported_fact_keys`. Ambiguous choices, keyless targets, and wildcard capabilities still use the model action selector. This only chooses where to acquire data; it grants no evidence admission, authority, verification, or finalization rights. The choice is observable through `harness_unique_selections` telemetry.
