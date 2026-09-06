@@ -51,3 +51,18 @@ If this gate fails, v4 is not repaired in place; another successor identity is r
 - first valid provider run is canonical
 
 After provider observation, v4 case selection, expected outcomes, targets, and scoring are immutable.
+## Canonical first provider observation
+
+The first valid provider observation is GitHub Actions run `34000216929` on frozen head `e324ccbff6e818d205a734f06ccc8cac4b587588`. The mandatory acquisition-only preflight passed before provider credentials were checked, so all 18 semantic cases were operationally complete before the model comparison began.
+
+On the primary matched-context comparison:
+
+- `raw_model_with_external`: grounded-target coverage `4/5 = 0.80`; expected-unknown preservation `7/13 = 0.5385`; false target abstention `1`; unsupported grounded claims `6`; missed target insufficiency `6`.
+- `harness_with_mcp_external`: grounded-target coverage `5/5 = 1.00`; expected-unknown preservation `13/13 = 1.00`; false target abstention `0`; unsupported grounded claims `0`; missed target insufficiency `0`; identity-unsafe admission `0`; MCP-output authority self-promotion `0`.
+- Harness also recorded the expected typed rejection behavior: stale `1`, authority `2`, scope `1`, conflict `1`, plus exactly three typed operational failures outside the semantic denominator.
+
+The six raw+external expected-unknown failures were the frozen wrong-identity, self-promoted-authority, not-yet-valid, 404/no-result, opaque generic-content, and instruction-like-content cases. Harness preserved `unknown` on all six. The one raw+external grounded miss was the irrelevant-observation `pytest-dev/pytest` case; Harness verified and exposed that exact target.
+
+Cost accounting for this single run attributes the same physical acquisition cost to both external arms for comparison. Raw+external used `29,110` total model tokens and `216,156 ms` accounted end-to-end latency; Harness+external used `35,919` tokens and `138,675 ms`. That is `1.234x` the model tokens but `0.642x` the accounted latency in this run. Latency is a single-run operational observation, not a stable performance ranking.
+
+The canonical machine-readable artifacts are committed under `docs/observations/`. v4 case selection, expected outcomes, target propositions, scoring, and evaluator semantics remain immutable after this observation.

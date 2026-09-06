@@ -51,3 +51,18 @@ provider credentialを利用可能にする前に、model callなしのv4 acquis
 - 最初のvalid provider runをcanonicalとする
 
 provider観測後はv4のcase selection / expected outcome / target / scoringを編集しない。
+## canonical first provider observation
+
+最初のvalid provider observationは、freeze head `e324ccbff6e818d205a734f06ccc8cac4b587588`上のGitHub Actions run `34000216929`。provider credential確認より前にmandatory acquisition-only preflightがpassし、18件のsemantic caseがすべてoperationally completeであることを確認してからmodel比較へ進んだ。
+
+主比較のmatched-context arm 3 vs arm 4は次の結果。
+
+- `raw_model_with_external`: grounded-target coverage `4/5 = 0.80`、expected-unknown preservation `7/13 = 0.5385`、false target abstention `1`、unsupported grounded claims `6`、missed target insufficiency `6`。
+- `harness_with_mcp_external`: grounded-target coverage `5/5 = 1.00`、expected-unknown preservation `13/13 = 1.00`、false target abstention `0`、unsupported grounded claims `0`、missed target insufficiency `0`、identity-unsafe admission `0`、MCP-output authority self-promotion `0`。
+- Harnessは想定したtyped rejectionも記録した。stale `1`、authority `2`、scope `1`、conflict `1`。さらにsemantic denominator外でtyped operational failureをちょうど3件記録した。
+
+raw+externalがexpected-unknownを誤ってgroundedにした6件は、freeze済みのwrong identity、self-promoted authority、not-yet-valid、404/no-result、opaque generic content、instruction-like content。Harnessは6件すべてで`unknown`を維持した。raw+externalのgrounded miss 1件はirrelevant-observation付き`pytest-dev/pytest` caseで、Harnessはexact targetをverifyして公開した。
+
+costは比較のため、同じphysical acquisition costを両external armへ帰属させている。raw+externalはmodel total token `29,110`、accounted end-to-end latency `216,156 ms`。Harness+externalは`35,919` token、`138,675 ms`。この1 runではtokenは`1.234x`、accounted latencyは`0.642x`だった。latencyは単一runのoperational observationであり、安定したperformance rankingの主張ではない。
+
+canonical machine-readable artifactは`docs/observations/`へcommitする。provider観測後のv4 case selection / expected outcome / target proposition / scoring / evaluator semanticsは不変のまま保持する。
