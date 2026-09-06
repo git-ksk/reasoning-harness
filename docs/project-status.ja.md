@@ -8,6 +8,8 @@
 
 active な v0.4.0 line では #210 exposed-text binding、#211 whole-invocation subprocess deadline、#212 bounded investigation planningに続き、#213 resumable `ReasoningThread` sessionまで実装した。#212 は opt-in 自然文pathへ`bounded-investigation-v1`を追加し、#213は`reason-session-v1`のstart/inspect/resume/add/correct/fork/close、typed input invalidation、persisted runtime identity、zero-side-effect checkpoint replayを追加する。詳細は[制約付き調査プランニング](investigation.ja.md)と[再開可能な自然言語セッション](session.ja.md)を参照。
 
+Issue #214では観測前の`natural-language-e2e-v1` freeze候補を準備した。明示hypothesisなしinvestigation 7件と`reason session` 3件、network非依存のdeterministic acquisition fixture、exposed-textとstructured-claimを分けた安全指標、identity/freshness/scope/authority admission境界、correctness-boundary violation 0 gateを含む。このidentityでのlive provider観測はまだ実施していない。詳細は[自然文 investigation / session E2E v1](natural-language-e2e.ja.md)を参照。
+
 v0.3.0 で完了した範囲は次のとおり。
 
 - **external resolver integration — #174 実装済み** — `external_command_v1` を、サポート対象の自然言語 CLI／config 経路と既存 resolver boundary に接続した。closed な stdio response schema から trusted metadata、receipt、verdict、final prose を持ち込むことはできない。

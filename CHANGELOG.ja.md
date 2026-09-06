@@ -6,6 +6,7 @@
 
 ### 変更
 
+- Issue #214の観測前`natural-language-e2e-v1`評価面を追加。明示hypothesisなしbounded investigation、identity/freshness/scope/authority rejection、multi-turn session add/correction/resume/fork、exposed-textとstructured claimを分離した安全採点、network非依存deterministic acquisition fixture、correctness violation 0のfreeze済みadoption gateを含む。
 - Issue #210のexposed-text correctness gapを解消。`GroundedAnswer` / `QualifiedPartialAnswer`ではmodel rendererの`text`を公開せず、`harness-canonical-exposed-text-v1`のもとでaccepted factual claimまたはtyped recovery stateからHarnessが表示文章を構築する。
 - 自然文JSON outputを`reason-natural-output-v2`から`reason-natural-output-v3`へ更新し、`exposed_text` policy telemetryを追加。renderer proseに依存していたconsumerは`finalization.text`を使用する。旧v2挙動はcommit `3a601c8`でhistorical reproduction可能だが、P0 gapを再導入するためsafety rollbackとしては提供しない。
 - Issue #211のsubprocess timeout gapを解消。`external_command`、`trusted_command`、v0.4 product向け`mcp_readonly_v2`で共通のabsolute wall-clock deadlineを使用し、spawn、stdin全量write、stdout read、process termination、non-blocking cleanup handoffまでを覆う。historical `mcp_readonly_v1`はfreeze contractどおり不変。大きいblocked writeやdescendantの継承pipeでcallerが設定timeoutを超えて待たされず、oversized stdoutもtimeoutへ誤分類せずtyped protocol failureとして維持する。

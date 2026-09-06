@@ -1,0 +1,13 @@
+{
+  "correction": "feature.beta.enabled=false",
+  "expected": "grounded",
+  "id": "session-correct-premise",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v1",
+  "start_fact": "feature.beta.enabled=true",
+  "target": {
+    "key": "feature.beta.enabled",
+    "value": "false"
+  },
+  "task": "Determine whether beta mode is enabled."
+}
