@@ -362,7 +362,11 @@ fn response_format(format: ModelOutputFormat) -> Option<ResponseFormat> {
             json_schema: JsonSchema {
                 name,
                 schema,
-                strict: true,
+                // v4/Harness schemas intentionally permit optional fields and are validated
+                // again by the Harness-owned parser. Groq strict mode requires every object
+                // to be closed and every property required, so use provider best-effort schema
+                // mode without changing the Harness schema or semantic contract.
+                strict: false,
             },
         }),
     }
@@ -604,7 +608,7 @@ mod tests {
     use serde_json::json;
 
     #[test]
-    fn serializes_strict_json_schema_for_supported_groq_targets() {
+    fn serializes_best_effort_json_schema_without_rewriting_harness_schema() {
         let format = response_format(ModelOutputFormat::JsonSchema {
             name: "candidate".into(),
             schema: json!({"type": "object", "properties": {}}),
@@ -612,7 +616,7 @@ mod tests {
         let value = serde_json::to_value(format).unwrap();
         assert_eq!(value["type"], "json_schema");
         assert_eq!(value["json_schema"]["name"], "candidate");
-        assert_eq!(value["json_schema"]["strict"], true);
+        assert_eq!(value["json_schema"]["strict"], false);
         assert!(value.get("verdict").is_none());
     }
 

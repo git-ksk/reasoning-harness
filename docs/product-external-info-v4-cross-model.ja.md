@@ -38,7 +38,7 @@ provider/protocol failureはsemantic scoreと分離する。観測結果を理�
 
 Groq対象も同じfreeze済みv4 corpus、seed `28000`、max-output `1024`、4-arm scoring contractを使う。GroqはOpenAI-compatible Chat Completions endpointと`GROQ_API_KEY`で接続し、model IDはadapter内のsemantic branchではなくdataとして扱う。
 
-manual Groq laneの対象は`openai/gpt-oss-120b`、`qwen/qwen3.8-27b`、`openai/gpt-oss-20b`。Groqが現在公開しているFree Plan値は、この3モデルそれぞれ30 requests/minute、8,000 tokens/minute、1,000 requests/day、200,000 tokens/day。workflowではprovider-localに`REASON_GROQ_MIN_REQUEST_INTERVAL_MS=2100`と`REASON_GROQ_TOKENS_PER_MINUTE=8000`を設定する。adapterはrequest-startの最小間隔と直前responseの実token消費量を組み合わせ、HTTP 429では`Retry-After`/rate-limit reset headerを優先したbounded retryを行い、`REASON_GROQ_RATE_LIMIT_TELEMETRY=1`ではsecretを含まないrate-limit headerだけを診断出力できる。
+manual Groq laneの対象は`openai/gpt-oss-120b`、`qwen/qwen3.8-27b`、`openai/gpt-oss-20b`。Groqが現在公開しているFree Plan値は、この3モデルそれぞれ30 requests/minute、8,000 tokens/minute、1,000 requests/day、200,000 tokens/day。workflowではprovider-localに`REASON_GROQ_MIN_REQUEST_INTERVAL_MS=2100`と`REASON_GROQ_TOKENS_PER_MINUTE=8000`を設定する。adapterはrequest-startの最小間隔と直前responseの実token消費量を組み合わせ、HTTP 429では`Retry-After`/rate-limit reset headerを優先したbounded retryを行い、`REASON_GROQ_RATE_LIMIT_TELEMETRY=1`ではsecretを含まないrate-limit headerだけを診断出力できる。 Groq Structured Outputsはv4のHarness-owned schemaを書き換えず`strict:false`のbest-effort modeを使い、最終的なtyped validation/fallbackは既存Harness側に保持する。3モデルのFree Plan quotaはmodel別なのでworkflow matrixは最大3並列で実行する。
 
 このpacing値はFree Plan用workflow設定であり、Groq全tier共通quotaの主張でもsemantic tuningでもない。prompt、output schema、fixture、acquisition、admission、verification、scoring、finalizationは変更しない。quota/rate-limitによるoperational failureはsemantic denominatorから分離する。
 
