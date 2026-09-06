@@ -8,7 +8,7 @@
 
 active な v0.4.0 line では #210 exposed-text binding、#211 whole-invocation subprocess deadline、#212 bounded investigation planningに続き、#213 resumable `ReasoningThread` sessionまで実装した。#212 は opt-in 自然文pathへ`bounded-investigation-v1`を追加し、#213は`reason-session-v1`のstart/inspect/resume/add/correct/fork/close、typed input invalidation、persisted runtime identity、zero-side-effect checkpoint replayを追加する。詳細は[制約付き調査プランニング](investigation.ja.md)と[再開可能な自然言語セッション](session.ja.md)を参照。
 
-Issue #214では観測前の`natural-language-e2e-v1` freeze候補を準備した。明示hypothesisなしinvestigation 7件と`reason session` 3件、network非依存のdeterministic acquisition fixture、exposed-textとstructured-claimを分けた安全指標、identity/freshness/scope/authority admission境界、correctness-boundary violation 0 gateを含む。観測前surfaceは`80375a6` / tag `natural-language-e2e-v1-freeze`でfreeze済み。このidentityでのlive provider観測はまだ実施していない。詳細は[自然文 investigation / session E2E v1](natural-language-e2e.ja.md)を参照。
+Issue #214にはimmutableなv1 diagnosticとfreeze済みv2 successorがある。`natural-language-e2e-v1`は`80375a6` / `natural-language-e2e-v1-freeze`でfreezeし、初回live attempt（Actions `34029255121`）はpre-providerのfreeze/contract/acquisition gateをすべてpassしたが、provider call後にevaluatorの`NameError`でnon-scorableとなった。v1 surfaceは編集・再利用しない。`natural-language-e2e-v2`は同じ明示hypothesisなしinvestigation 7件、`reason session` 3件、provider/model/seed/token policy、correctness gateを維持し、evaluator実行自体の直接regression coverageを追加して`ccc5104` / `natural-language-e2e-v2-freeze`でfreeze済み。詳細は[v1 diagnostic](natural-language-e2e.ja.md)と[v2 successor](natural-language-e2e-v2.ja.md)。
 
 v0.3.0 で完了した範囲は次のとおり。
 
