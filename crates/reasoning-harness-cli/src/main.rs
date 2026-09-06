@@ -1571,6 +1571,26 @@ impl EvidenceAdmissionPolicy for ExplicitLocalFactAdmission {
     }
 }
 
+fn reject_nonempty_session_stdin(operation: &str) -> Result<(), CliError> {
+    if io::stdin().is_terminal() {
+        return Ok(());
+    }
+    let mut first = [0u8; 1];
+    let read = io::stdin()
+        .read(&mut first)
+        .map_err(|error| CliError::new("input", format!("session {operation} stdin: {error}")))?;
+    if read == 0 {
+        return Ok(());
+    }
+    Err(CliError::new(
+        "input",
+        match operation {
+            "add" => "session add does not accept non-empty piped stdin; use --file so the added context is persisted explicitly".to_string(),
+            _ => format!("session {operation} does not accept non-empty piped stdin"),
+        },
+    ))
+}
+
 fn parse_proposition_arg(value: &str, flag: &str) -> Result<Proposition, CliError> {
     let Some((key, value)) = value.split_once('=') else {
         return Err(CliError::new(
@@ -3760,12 +3780,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                     "session add requires --file, --fact, or --hypothesis",
                 ));
             }
-            if !io::stdin().is_terminal() {
-                return Err(CliError::new(
-                    "input",
-                    "session add does not accept piped stdin; use --file so the added context is persisted explicitly",
-                ));
-            }
+            reject_nonempty_session_stdin("add")?;
             let persisted_files = read_session_context_files(&file)?;
             let parsed_facts = fact
                 .iter()
@@ -3896,12 +3911,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
             seed,
             format,
         } => {
-            if !io::stdin().is_terminal() {
-                return Err(CliError::new(
-                    "input",
-                    "session correct does not accept piped stdin",
-                ));
-            }
+            reject_nonempty_session_stdin("correct")?;
             let proposition = parse_proposition_arg(&premise, "--premise")?;
             let mut session = load_session_file(&store)?;
             let snapshot = ensure_session_active_for_change(&mut session)?;
