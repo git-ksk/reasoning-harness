@@ -156,4 +156,4 @@ Operational failure class は明示的である。`authentication`、`permission
 
 決定論的な adapter test は一時 executable を起動し、stdin で実際の型付き request を送り、stdout で acquired evidence を受け取り、trusted metadata や receipt を紛れ込ませようとする試みが schema parsing に失敗することを別途検証する。この smoke path は network service を必要とせず、凍結された research fixture を変更せずに、実際の process I/O を試験する。
 
-ライブ統合では、設定された executable 自体が web API、database、compiler/test tool、その他の read-only source を呼び出してもよい。返された data は依然として、上記の contribution type としてのみ Reasoning Harness に入る。MCP固有の取得は`external_command_v1`へ特例として組み込まず分離を維持する。historical `mcp_readonly_v1`は凍結したまま変更せず、v0.4のnatural-language product pathは#211共通deadlineを使う`mcp_readonly_v2`を利用する。[Read-only MCP resolver](mcp-resolver.ja.md)を参照。
+ライブ統合では、設定された executable 自体が web API、database、compiler/test tool、その他の read-only source を呼び出してもよい。返された data は依然として、上記の contribution type としてのみ Reasoning Harness に入る。MCP固有の取得は`external_command_v1`へ特例として組み込まず分離を維持する。historical `mcp_readonly_v1`は凍結したまま変更せず、v0.4のnatural-language product pathは#211共通deadlineを使う`mcp_readonly_v3`を利用する。[Read-only MCP resolver](mcp-resolver.ja.md)を参照。

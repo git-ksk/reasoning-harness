@@ -85,8 +85,10 @@ enum LineReadError {
     TooLarge,
 }
 
-fn read_one_bounded_line(stdout: ChildStdout, max_bytes: usize) -> Result<Vec<u8>, LineReadError> {
-    let mut reader = BufReader::new(stdout);
+fn read_one_bounded_line_from_reader<R: BufRead>(
+    reader: &mut R,
+    max_bytes: usize,
+) -> Result<Vec<u8>, LineReadError> {
     let mut bytes = Vec::new();
     loop {
         let available = reader.fill_buf().map_err(|_| LineReadError::Io)?;
@@ -113,6 +115,165 @@ fn read_one_bounded_line(stdout: ChildStdout, max_bytes: usize) -> Result<Vec<u8
             }
             return Ok(bytes);
         }
+    }
+}
+
+fn read_one_bounded_line(stdout: ChildStdout, max_bytes: usize) -> Result<Vec<u8>, LineReadError> {
+    let mut reader = BufReader::new(stdout);
+    read_one_bounded_line_from_reader(&mut reader, max_bytes)
+}
+
+fn spawn_stream_line_reader(
+    stdout: ChildStdout,
+    max_response_bytes: usize,
+) -> Receiver<Result<Vec<u8>, LineReadError>> {
+    let (tx, rx) = mpsc::sync_channel(1);
+    thread::spawn(move || {
+        let mut reader = BufReader::new(stdout);
+        loop {
+            let result = read_one_bounded_line_from_reader(&mut reader, max_response_bytes);
+            let terminal = result.is_err();
+            if tx.send(result).is_err() || terminal {
+                break;
+            }
+        }
+    });
+    rx
+}
+
+fn spawn_session_writer(
+    mut stdin: ChildStdin,
+    payload: Vec<u8>,
+) -> Receiver<(std::io::Result<()>, ChildStdin)> {
+    let (tx, rx) = mpsc::sync_channel(1);
+    thread::spawn(move || {
+        let result = stdin.write_all(&payload).and_then(|_| stdin.flush());
+        let _ = tx.send((result, stdin));
+    });
+    rx
+}
+
+pub(crate) struct DeadlineLineSession {
+    child: Option<Child>,
+    stdin: Option<ChildStdin>,
+    reader: Receiver<Result<Vec<u8>, LineReadError>>,
+    started: Instant,
+    timeout: Duration,
+}
+
+impl DeadlineLineSession {
+    pub(crate) fn spawn(
+        command: &mut Command,
+        started: Instant,
+        timeout: Duration,
+        max_response_bytes: usize,
+    ) -> Result<Self, ResolutionAdapterErrorKind> {
+        if max_response_bytes == 0 {
+            return Err(ResolutionAdapterErrorKind::PolicyDenied);
+        }
+        if remaining(started, timeout).is_none() {
+            return Err(ResolutionAdapterErrorKind::Timeout);
+        }
+        let mut child = command
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .map_err(|error| spawn_error_kind(&error))?;
+        let stdin = match child.stdin.take() {
+            Some(stdin) => stdin,
+            None => {
+                terminate_without_waiting(child);
+                return Err(ResolutionAdapterErrorKind::Transport);
+            }
+        };
+        let stdout = match child.stdout.take() {
+            Some(stdout) => stdout,
+            None => {
+                terminate_without_waiting(child);
+                return Err(ResolutionAdapterErrorKind::Transport);
+            }
+        };
+        Ok(Self {
+            child: Some(child),
+            stdin: Some(stdin),
+            reader: spawn_stream_line_reader(stdout, max_response_bytes),
+            started,
+            timeout,
+        })
+    }
+
+    pub(crate) fn write_line(
+        &mut self,
+        mut payload: Vec<u8>,
+    ) -> Result<(), ResolutionAdapterErrorKind> {
+        if !payload.ends_with(b"\n") {
+            payload.push(b'\n');
+        }
+        if remaining(self.started, self.timeout).is_none() {
+            self.terminate();
+            return Err(ResolutionAdapterErrorKind::Timeout);
+        }
+        let stdin = self
+            .stdin
+            .take()
+            .ok_or(ResolutionAdapterErrorKind::Transport)?;
+        let writer = spawn_session_writer(stdin, payload);
+        let left =
+            remaining(self.started, self.timeout).ok_or(ResolutionAdapterErrorKind::Timeout)?;
+        match writer.recv_timeout(left) {
+            Ok((Ok(()), stdin)) => {
+                self.stdin = Some(stdin);
+                Ok(())
+            }
+            Ok((Err(_), stdin)) => {
+                self.stdin = Some(stdin);
+                self.terminate();
+                Err(ResolutionAdapterErrorKind::Transport)
+            }
+            Err(mpsc::RecvTimeoutError::Timeout) => {
+                self.terminate();
+                Err(ResolutionAdapterErrorKind::Timeout)
+            }
+            Err(mpsc::RecvTimeoutError::Disconnected) => {
+                self.terminate();
+                Err(ResolutionAdapterErrorKind::Transport)
+            }
+        }
+    }
+
+    pub(crate) fn read_line(&mut self) -> Result<Vec<u8>, ResolutionAdapterErrorKind> {
+        let left =
+            remaining(self.started, self.timeout).ok_or(ResolutionAdapterErrorKind::Timeout)?;
+        match self.reader.recv_timeout(left) {
+            Ok(Ok(line)) => Ok(line),
+            Ok(Err(LineReadError::TooLarge)) => {
+                self.terminate();
+                Err(ResolutionAdapterErrorKind::Protocol)
+            }
+            Ok(Err(LineReadError::Io | LineReadError::Eof))
+            | Err(mpsc::RecvTimeoutError::Disconnected) => {
+                self.terminate();
+                Err(ResolutionAdapterErrorKind::Transport)
+            }
+            Err(mpsc::RecvTimeoutError::Timeout) => {
+                self.terminate();
+                Err(ResolutionAdapterErrorKind::Timeout)
+            }
+        }
+    }
+
+    fn terminate(&mut self) {
+        self.stdin.take();
+        if let Some(child) = self.child.take() {
+            terminate_without_waiting(child);
+        }
+    }
+}
+
+impl Drop for DeadlineLineSession {
+    fn drop(&mut self) {
+        self.terminate();
     }
 }
 

@@ -243,6 +243,8 @@ pub enum ResolutionAdapterErrorKind {
     Transport,
     Authentication,
     PermissionDenied,
+    Negotiation,
+    Session,
     Protocol,
     ToolExecution,
     Timeout,
@@ -600,6 +602,8 @@ pub enum ResolutionAttemptStatus {
     TransportFailure,
     AuthenticationFailure,
     PermissionDenied,
+    NegotiationFailure,
+    SessionFailure,
     ProtocolFailure,
     ToolFailed,
     TimedOut,
@@ -1154,6 +1158,8 @@ impl<'a> GroundedResolutionRuntime<'a> {
             ResolutionAdapterErrorKind::PermissionDenied => {
                 ResolutionAttemptStatus::PermissionDenied
             }
+            ResolutionAdapterErrorKind::Negotiation => ResolutionAttemptStatus::NegotiationFailure,
+            ResolutionAdapterErrorKind::Session => ResolutionAttemptStatus::SessionFailure,
             ResolutionAdapterErrorKind::Protocol => ResolutionAttemptStatus::ProtocolFailure,
             ResolutionAdapterErrorKind::ToolExecution => ResolutionAttemptStatus::ToolFailed,
             ResolutionAdapterErrorKind::Timeout => ResolutionAttemptStatus::TimedOut,
@@ -1178,6 +1184,8 @@ impl<'a> GroundedResolutionRuntime<'a> {
             | ResolutionAdapterErrorKind::PolicyDenied => Some(ResolutionTerminalStatus::Denied),
             ResolutionAdapterErrorKind::Timeout => Some(ResolutionTerminalStatus::TimedOut),
             ResolutionAdapterErrorKind::Transport
+            | ResolutionAdapterErrorKind::Negotiation
+            | ResolutionAdapterErrorKind::Session
             | ResolutionAdapterErrorKind::Protocol
             | ResolutionAdapterErrorKind::ToolExecution => {
                 Some(ResolutionTerminalStatus::OperationalFailure)
@@ -2340,6 +2348,16 @@ mod tests {
                 ResolutionAdapterErrorKind::Transport,
                 ResolutionTerminalStatus::OperationalFailure,
                 ResolutionAttemptStatus::TransportFailure,
+            ),
+            (
+                ResolutionAdapterErrorKind::Negotiation,
+                ResolutionTerminalStatus::OperationalFailure,
+                ResolutionAttemptStatus::NegotiationFailure,
+            ),
+            (
+                ResolutionAdapterErrorKind::Session,
+                ResolutionTerminalStatus::OperationalFailure,
+                ResolutionAttemptStatus::SessionFailure,
             ),
             (
                 ResolutionAdapterErrorKind::Protocol,

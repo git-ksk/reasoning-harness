@@ -59,7 +59,7 @@ Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。公�
 
 ### 並行トラック
 
-- **#204 MCP negotiated/session stdio compatibility:** v0.4.0 milestoneに含め、`mcp_readonly_v2`ですでに使う#211共通deadline primitiveを再利用する。frozen `mcp_readonly_v1`のreplay compatibilityと全authority boundaryを維持し、session/negotiationは別versionのsuccessor adapter identityとして扱う。
+- **#204 MCP negotiated/session stdio compatibility — 実装済み。** `mcp_readonly_v3`は1つのstdio childで`initialize` -> allowlist済みprotocol negotiation -> `notifications/initialized` -> bounded `tools/list` read-only declaration検証 -> `tools/call`を実行し、全体を#211共通absolute deadlineで制約する。未知revisionはfail closed、negotiation/session/protocol/tool failureはtypedに分離、generic MCP outputはopaqueのまま、config/replay provenanceはnegotiation policyと実際のnegotiated revisionをbindする。frozen `mcp_readonly_v1`は不変、v2はdeadline-only historical successorとして保持する。deterministic testはgreenで、#204のpinned公式GitHub MCP imageに対するone-off probeもgeneric contentを昇格させず成功した。
 - **#208 / PR #209 v4 cross-model replication + #216 Groq operational extension（完了）:** v4の凍結済み評価面のcross-model replicationであり、v0.4.0 semantic/product implementationのtuning gateにはしない。#216は2026-09-06にcloseoutし、Groq provider wiring、Free Tier pacing/telemetry、best-effort structured-output bounded retry、3モデルのlive replicationを完了した。v4 corpus/scoring/admission/finalization semanticsは変更せず、結果はhistorical comparative evidenceとして保持する。
 
 ## 完了済み v0.2.0 プロダクトライン

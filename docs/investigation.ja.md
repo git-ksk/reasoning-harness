@@ -9,7 +9,7 @@ machine identity:
 - action proposal: `reason-investigation-action-v1`
 - investigation external-command adapter: `investigation_external_command_v1`
 - investigation external-command request: `reason-investigation-external-resolver-request-v1`
-- MCP acquisition: `mcp_readonly_v2`
+- MCP acquisition: `mcp_readonly_v3`
 
 historical freeze 対象の `mcp_readonly_v1` と、既存 static `external_command_v1` の request protocol は変更しない。
 
@@ -21,7 +21,7 @@ historical freeze 対象の `mcp_readonly_v1` と、既存 static `external_comm
 2. Harness が target 数、ID、shape を検証し、通過した proposal を canonical investigation target にする。これは planning object の受け入れであって、提案された答えを真と認定する処理ではない。
 3. 各 round で model が選べるのは、既存 target ID と既存 read-only capability ID の組み合わせ1つ、または stop だけである。action schema には自由な query text、tool argument、authority class、evidence、receipt、verdict の field を持たせない。
 4. Harness は未知 capability、`read_only` でない capability、selector/key の不一致、同じ target/capability pair の再実行、budget 超過を拒否する。
-5. 選ばれた acquisition adapter を1回だけ実行する。investigation external command は `external_command_v1` を暗黙拡張せず専用 request identity を使う。MCP は v0.4 product 向けの `mcp_readonly_v2` と、Harness-owned の fixed argument / tool allowlist を使う。
+5. 選ばれた acquisition adapter を1回だけ実行する。investigation external command は `external_command_v1` を暗黙拡張せず専用 request identity を使う。MCP は v0.4 product 向けの `mcp_readonly_v3` と、Harness-owned の fixed argument / tool allowlist を使う。
 6. 取得データは引き続き untrusted である。admission policy がある場合だけ、通常の source allowlist、freshness、scope、authority policy を適用する。admission がなければ external data は trusted evidence に昇格できない。
 7. evidence が admit された後、更新済み Harness input から natural-language candidate を再生成し、通常の validation、qualification、verification、diagnostics、verdict、finalization、answer-safety をもう一度通す。
 8. `no_result`、`rejected_evidence`、`ambiguous`、`verification_progress`、`operational_failure` などの typed outcome を記録し、次 round の planner はその結果を見て別の未試行 capability を選択できる。
@@ -111,4 +111,4 @@ runtime は `max_targets`、`max_rounds`、`max_actions`、`max_no_progress_roun
 
 ## static path との互換性
 
-`resolution.investigation` を設定しなければ、従来の natural-language resolver behavior は変わらない。`--resolver-fact`、static `external_command_v1`、static `mcp_readonly_v2`、`trusted_command_verifier_v1` は既存 path を維持する。frozen research/evaluation surface は変更せず、`mcp_readonly_v1` は freeze workflow で byte-for-byte 保護したままである。
+`resolution.investigation` を設定しなければ、従来の natural-language resolver behavior は変わらない。`--resolver-fact`、static `external_command_v1`、static `mcp_readonly_v3`、`trusted_command_verifier_v1` は既存 path を維持する。frozen research/evaluation surface は変更せず、`mcp_readonly_v1` は freeze workflow で byte-for-byte 保護したままである。

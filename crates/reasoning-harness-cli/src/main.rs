@@ -51,13 +51,15 @@ use reasoning_harness_core::{
 };
 use reasoning_harness_providers::{
     DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS,
-    DEFAULT_MCP_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_MCP_RESOLVER_TIMEOUT_MS,
-    DEFAULT_TRUSTED_COMMAND_MAX_RESPONSE_BYTES, DEFAULT_TRUSTED_COMMAND_TIMEOUT_MS,
-    EXTERNAL_COMMAND_RESOLVER_ID, EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver,
-    ExternalCommandResolverConfig, ExternalEvidenceAdmissionConfig,
-    ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy, GoogleAdapter,
-    INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID, InvestigationExternalCommandResolver,
-    MCP_READONLY_V2_RESOLVER_ID, McpReadOnlyResolverConfig, McpReadOnlyResolverV2, MistralAdapter,
+    DEFAULT_MCP_READONLY_V3_MAX_TOOL_LIST_PAGES, DEFAULT_MCP_RESOLVER_MAX_RESPONSE_BYTES,
+    DEFAULT_MCP_RESOLVER_TIMEOUT_MS, DEFAULT_TRUSTED_COMMAND_MAX_RESPONSE_BYTES,
+    DEFAULT_TRUSTED_COMMAND_TIMEOUT_MS, EXTERNAL_COMMAND_RESOLVER_ID,
+    EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver, ExternalCommandResolverConfig,
+    ExternalEvidenceAdmissionConfig, ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy,
+    GoogleAdapter, INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID,
+    InvestigationExternalCommandResolver, MCP_PROTOCOL_VERSION,
+    MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION, MCP_READONLY_V3_RESOLVER_ID,
+    McpReadOnlyResolverConfig, McpReadOnlyResolverV3, McpReadOnlyResolverV3Config, MistralAdapter,
     NvidiaAdapter, TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier,
     TrustedCommandVerifierConfig,
 };
@@ -296,6 +298,8 @@ enum InvestigationCapabilityFileConfig {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         provenance_argument: Option<String>,
         source: String,
+        #[serde(flatten)]
+        session_policy: Box<McpSessionPolicyFileConfig>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         timeout_ms: Option<u64>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -305,10 +309,20 @@ enum InvestigationCapabilityFileConfig {
     },
 }
 
+#[derive(Debug, Clone, Default, Serialize, Deserialize, JsonSchema)]
+#[serde(default, deny_unknown_fields)]
+struct McpSessionPolicyFileConfig {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    requested_protocol_version: Option<String>,
+    supported_protocol_versions: BTreeSet<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_tool_list_pages: Option<usize>,
+}
+
 #[derive(Debug, Clone)]
 enum InvestigationResolverConfig {
     ExternalCommand(ExternalCommandResolverConfig),
-    McpReadonly(McpReadOnlyResolverConfig),
+    McpReadonly(Box<McpReadOnlyResolverV3Config>),
 }
 
 #[derive(Debug, Clone)]
@@ -356,6 +370,12 @@ struct McpReadOnlyResolverFileConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     provenance_argument: Option<String>,
     source: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    requested_protocol_version: Option<String>,
+    #[serde(default)]
+    supported_protocol_versions: BTreeSet<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max_tool_list_pages: Option<usize>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     timeout_ms: Option<u64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2161,6 +2181,8 @@ fn investigation_attempt_status(
         | reasoning_harness_core::ResolutionAttemptStatus::TransportFailure
         | reasoning_harness_core::ResolutionAttemptStatus::AuthenticationFailure
         | reasoning_harness_core::ResolutionAttemptStatus::PermissionDenied
+        | reasoning_harness_core::ResolutionAttemptStatus::NegotiationFailure
+        | reasoning_harness_core::ResolutionAttemptStatus::SessionFailure
         | reasoning_harness_core::ResolutionAttemptStatus::ProtocolFailure
         | reasoning_harness_core::ResolutionAttemptStatus::ToolFailed
         | reasoning_harness_core::ResolutionAttemptStatus::TimedOut
@@ -2203,7 +2225,7 @@ fn run_configured_investigation_capability(
             run_investigation_resolution(input, candidate, &resolver, admission.as_ref(), request)
         }
         InvestigationResolverConfig::McpReadonly(config) => {
-            let resolver = McpReadOnlyResolverV2::new(config.clone());
+            let resolver = McpReadOnlyResolverV3::new((**config).clone());
             run_investigation_resolution(input, candidate, &resolver, admission.as_ref(), request)
         }
     }
@@ -2600,7 +2622,7 @@ async fn execute_natural(
     };
     let external_resolver = external_resolver_config.map(ExternalCommandResolver::new);
     let external_admission = external_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
-    let mcp_resolver = mcp_resolver_config.map(McpReadOnlyResolverV2::new);
+    let mcp_resolver = mcp_resolver_config.map(McpReadOnlyResolverV3::new);
     let mcp_admission = mcp_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
     let trusted_verifier = trusted_verifier_config.map(TrustedCommandVerifier::new);
     let mut resolution_rounds = Vec::new();
@@ -2856,7 +2878,7 @@ async fn execute_natural(
             } else if external_resolver.is_some() {
                 Some(EXTERNAL_COMMAND_RESOLVER_ID)
             } else if mcp_resolver.is_some() {
-                Some(MCP_READONLY_V2_RESOLVER_ID)
+                Some(MCP_READONLY_V3_RESOLVER_ID)
             } else if !resolver.facts.is_empty() {
                 Some("cli_local_fact_store")
             } else {
@@ -5909,9 +5931,55 @@ fn resolve_external_command_config(
     }))
 }
 
+fn resolve_mcp_v3_config(
+    base: McpReadOnlyResolverConfig,
+    requested_protocol_version: Option<&str>,
+    supported_protocol_versions: &BTreeSet<String>,
+    max_tool_list_pages: Option<usize>,
+    owner: &str,
+) -> Result<McpReadOnlyResolverV3Config, String> {
+    let harness_supported = BTreeSet::from([
+        MCP_PROTOCOL_VERSION.to_string(),
+        MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION.to_string(),
+    ]);
+    let supported = if supported_protocol_versions.is_empty() {
+        harness_supported.clone()
+    } else {
+        if supported_protocol_versions
+            .iter()
+            .any(|version| version.trim().is_empty() || !harness_supported.contains(version))
+        {
+            return Err(format!(
+                "{owner}.supported_protocol_versions must be a non-empty-value subset of the Harness-supported MCP revisions"
+            ));
+        }
+        supported_protocol_versions.clone()
+    };
+    let requested = requested_protocol_version
+        .map(str::trim)
+        .filter(|version| !version.is_empty())
+        .unwrap_or(MCP_PROTOCOL_VERSION);
+    if !supported.contains(requested) {
+        return Err(format!(
+            "{owner}.requested_protocol_version must be present in supported_protocol_versions"
+        ));
+    }
+    let max_pages = max_tool_list_pages.unwrap_or(DEFAULT_MCP_READONLY_V3_MAX_TOOL_LIST_PAGES);
+    if max_pages == 0 || max_pages > 32 {
+        return Err(format!("{owner}.max_tool_list_pages must be in 1..=32"));
+    }
+    Ok(McpReadOnlyResolverV3Config {
+        base,
+        requested_protocol_version: requested.into(),
+        supported_protocol_versions: supported,
+        require_read_only_hint: true,
+        max_tool_list_pages: max_pages,
+    })
+}
+
 fn resolve_mcp_readonly_config(
     loaded: &LoadedCliConfig,
-) -> Result<Option<McpReadOnlyResolverConfig>, String> {
+) -> Result<Option<McpReadOnlyResolverV3Config>, String> {
     let Some(configured) = &loaded.config.resolution.mcp_readonly else {
         return Ok(None);
     };
@@ -5970,7 +6038,7 @@ fn resolve_mcp_readonly_config(
             "resolution.mcp_readonly timeout_ms and max_response_bytes must be at least 1".into(),
         );
     }
-    Ok(Some(McpReadOnlyResolverConfig {
+    let base = McpReadOnlyResolverConfig {
         server_id: server_id.into(),
         program: PathBuf::from(program),
         args: configured.args.clone(),
@@ -5982,7 +6050,15 @@ fn resolve_mcp_readonly_config(
         source: source.into(),
         timeout_ms,
         max_response_bytes,
-    }))
+    };
+    resolve_mcp_v3_config(
+        base,
+        configured.requested_protocol_version.as_deref(),
+        &configured.supported_protocol_versions,
+        configured.max_tool_list_pages,
+        "resolution.mcp_readonly",
+    )
+    .map(Some)
 }
 
 fn resolve_investigation_config(
@@ -6099,6 +6175,7 @@ fn resolve_investigation_config(
                 fixed_arguments,
                 provenance_argument,
                 source,
+                session_policy,
                 timeout_ms,
                 max_response_bytes,
                 admission,
@@ -6164,7 +6241,7 @@ fn resolve_investigation_config(
                     .map(|admission| {
                         resolve_evidence_admission_config(
                             admission,
-                            MCP_READONLY_V2_RESOLVER_ID,
+                            MCP_READONLY_V3_RESOLVER_ID,
                             &owner,
                         )
                     })
@@ -6172,23 +6249,29 @@ fn resolve_investigation_config(
                 (
                     InvestigationCapability {
                         id: id.into(),
-                        adapter: MCP_READONLY_V2_RESOLVER_ID.into(),
+                        adapter: MCP_READONLY_V3_RESOLVER_ID.into(),
                         read_only: true,
                         supported_fact_keys: supported_fact_keys.clone(),
                     },
-                    InvestigationResolverConfig::McpReadonly(McpReadOnlyResolverConfig {
-                        server_id: server_id.into(),
-                        program: PathBuf::from(program),
-                        args: args.clone(),
-                        allowed_tools: allowed_tools.clone(),
-                        tool: tool.into(),
-                        resolver_class: ResolverClass::EvidenceAcquisition,
-                        fixed_arguments: fixed_arguments.clone(),
-                        provenance_argument: provenance_argument.clone(),
-                        source: source.into(),
-                        timeout_ms,
-                        max_response_bytes,
-                    }),
+                    InvestigationResolverConfig::McpReadonly(Box::new(resolve_mcp_v3_config(
+                        McpReadOnlyResolverConfig {
+                            server_id: server_id.into(),
+                            program: PathBuf::from(program),
+                            args: args.clone(),
+                            allowed_tools: allowed_tools.clone(),
+                            tool: tool.into(),
+                            resolver_class: ResolverClass::EvidenceAcquisition,
+                            fixed_arguments: fixed_arguments.clone(),
+                            provenance_argument: provenance_argument.clone(),
+                            source: source.into(),
+                            timeout_ms,
+                            max_response_bytes,
+                        },
+                        session_policy.requested_protocol_version.as_deref(),
+                        &session_policy.supported_protocol_versions,
+                        session_policy.max_tool_list_pages,
+                        &format!("resolution.investigation.capabilities[{id}]"),
+                    )?)),
                     admission,
                 )
             }
@@ -6317,7 +6400,7 @@ fn resolve_mcp_admission_config(
     };
     resolve_evidence_admission_config(
         configured,
-        MCP_READONLY_V2_RESOLVER_ID,
+        MCP_READONLY_V3_RESOLVER_ID,
         "resolution.mcp_readonly.admission",
     )
     .map(Some)
@@ -6947,13 +7030,77 @@ mod candidate_json_tests {
             sources: vec!["explicit"],
         };
         let config = resolve_mcp_readonly_config(&loaded).unwrap().unwrap();
-        assert_eq!(config.server_id, "inventory");
-        assert_eq!(config.tool, "lookup_item");
-        assert_eq!(config.allowed_tools, BTreeSet::from(["lookup_item".into()]));
-        assert_eq!(config.resolver_class, ResolverClass::EvidenceAcquisition);
-        assert_eq!(config.timeout_ms, 500);
-        assert_eq!(config.max_response_bytes, 8192);
-        assert_eq!(config.source, "mcp:inventory:lookup_item");
+        assert_eq!(config.base.server_id, "inventory");
+        assert_eq!(config.base.tool, "lookup_item");
+        assert_eq!(
+            config.base.allowed_tools,
+            BTreeSet::from(["lookup_item".into()])
+        );
+        assert_eq!(
+            config.base.resolver_class,
+            ResolverClass::EvidenceAcquisition
+        );
+        assert_eq!(config.base.timeout_ms, 500);
+        assert_eq!(config.base.max_response_bytes, 8192);
+        assert_eq!(config.base.source, "mcp:inventory:lookup_item");
+        assert_eq!(config.requested_protocol_version, MCP_PROTOCOL_VERSION);
+        assert!(
+            config
+                .supported_protocol_versions
+                .contains(MCP_PROTOCOL_VERSION)
+        );
+        assert!(
+            config
+                .supported_protocol_versions
+                .contains(MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION)
+        );
+        assert!(config.require_read_only_hint);
+    }
+
+    #[test]
+    fn mcp_readonly_v3_protocol_policy_is_harness_bounded() {
+        let unknown = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_readonly":{
+            "server_id":"s","program":"p","allowed_tools":["read"],"tool":"read",
+            "read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read",
+            "supported_protocol_versions":["2099-01-01"]
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(unknown).unwrap(),
+            sources: vec![],
+        };
+        assert!(resolve_mcp_readonly_config(&loaded).is_err());
+
+        let missing_requested = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_readonly":{
+            "server_id":"s","program":"p","allowed_tools":["read"],"tool":"read",
+            "read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read",
+            "requested_protocol_version":"2026-07-28",
+            "supported_protocol_versions":["2025-11-25"]
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(missing_requested).unwrap(),
+            sources: vec![],
+        };
+        assert!(resolve_mcp_readonly_config(&loaded).is_err());
+
+        let bad_pages = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_readonly":{
+            "server_id":"s","program":"p","allowed_tools":["read"],"tool":"read",
+            "read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read",
+            "max_tool_list_pages":0
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(bad_pages).unwrap(),
+            sources: vec![],
+        };
+        assert!(resolve_mcp_readonly_config(&loaded).is_err());
     }
 
     #[test]
@@ -7001,7 +7148,7 @@ mod candidate_json_tests {
             sources: vec![],
         };
         let admission = resolve_mcp_admission_config(&loaded).unwrap().unwrap();
-        assert_eq!(admission.resolver_name, MCP_READONLY_V2_RESOLVER_ID);
+        assert_eq!(admission.resolver_name, MCP_READONLY_V3_RESOLVER_ID);
         assert_eq!(admission.sources["mcp:s:read"].authority_class, "primary");
     }
 
@@ -7053,7 +7200,7 @@ mod candidate_json_tests {
         assert_eq!(resolved.capabilities[1].descriptor.id, "inventory-mcp");
         assert_eq!(
             resolved.capabilities[1].descriptor.adapter,
-            MCP_READONLY_V2_RESOLVER_ID
+            MCP_READONLY_V3_RESOLVER_ID
         );
         assert!(
             resolved

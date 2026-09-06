@@ -71,7 +71,7 @@ Implementation order:
 
 ### Parallel tracks
 
-- **#204 MCP negotiated/session stdio compatibility:** included in the v0.4.0 milestone and required to reuse the common #211 deadline primitive already used by `mcp_readonly_v2`. Preserve frozen `mcp_readonly_v1` replay compatibility and all authority boundaries through a separately versioned session/negotiation successor identity.
+- **#204 MCP negotiated/session stdio compatibility — implemented.** `mcp_readonly_v3` keeps one stdio child across `initialize` -> allowlisted protocol negotiation -> `notifications/initialized` -> bounded `tools/list` read-only declaration verification -> `tools/call`, all under the shared #211 absolute deadline. Unknown protocol revisions fail closed; negotiation/session/protocol/tool failures are typed separately; generic MCP output remains opaque; config/replay provenance binds the negotiation policy and negotiated revision. Frozen `mcp_readonly_v1` remains unchanged and v2 remains the deadline-only historical successor. Deterministic tests are green and a one-off probe against the pinned official GitHub MCP image from #204 succeeded without promoting generic content.
 - **#208 / PR #209 v4 cross-model replication + #216 Groq operational extension (completed):** remains replication over the already frozen v4 evaluation surface, not a tuning gate for v0.4.0 product/semantic implementation. #216 was closed out on 2026-09-06 after adding Groq provider wiring, Free-tier pacing/telemetry, bounded best-effort structured-output retry, and live replication across all three targets. v4 corpus/scoring/admission/finalization semantics remain unchanged; preserve the results as historical comparative evidence.
 
 ## Completed v0.2.0 product line
