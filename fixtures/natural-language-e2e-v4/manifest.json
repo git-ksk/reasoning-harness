@@ -1,0 +1,37 @@
+{
+  "adoption_gate": {
+    "max_correctness_boundary_violations": 0
+  },
+  "case_files": [
+    "01_investigate-region.json",
+    "02_select-package-source.json",
+    "03_stale-rollout-safe-stop.json",
+    "04_wrong-scope-safe-stop.json",
+    "05_adaptive-owner-followup.json",
+    "06_authority-mismatch-safe-stop.json",
+    "07_identity-source-safe-stop.json",
+    "08_session-add-evidence.json",
+    "09_session-correct-premise.json",
+    "10_session-resume-fork.json"
+  ],
+  "corpus_identity": "natural-language-e2e-v4",
+  "deterministic_contract_probes": [
+    "finalization::tests::exposed_grounded_text_is_canonicalized_from_verified_claims",
+    "finalization::tests::exposed_qualified_text_preserves_uncertainty_mode",
+    "input_change_records_typed_invalidation_before_new_assertive_state_is_possible",
+    "session_process_resume_and_fork_replay_no_external_side_effects"
+  ],
+  "evaluator_identity": "reason-natural-language-e2e-v4",
+  "provider_policy": {
+    "base_seed": 41000,
+    "inter_case_delay_ms": 1500,
+    "max_tokens": 1024,
+    "model": "ministral-8b-latest",
+    "provider": "mistral"
+  },
+  "raw_model_comparison_claimed": false,
+  "schema_version": "natural-language-e2e-manifest-v1",
+  "scoring_identity": "natural-language-e2e-scoring-v4",
+  "successor_of": "natural-language-e2e-v3",
+  "successor_reason": "v3 was operationally complete with zero unsupported exposed/structured claims but mis-scored session add/correct because the evaluator treated the nested ReasoningThreadEvent.kind object as a flat string; v4 fixes only event-shape interpretation"
+}

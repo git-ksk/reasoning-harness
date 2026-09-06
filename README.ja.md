@@ -399,7 +399,7 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 
 研究機能は、calibration → 独立したfrozen evaluation → operational stabilization → runtime identity/rollback → CLI compatibilityという昇格手順を通るまでproduct CLIへ入りません。
 
-[Research plan](docs/research-plan.ja.md) / [Product roadmap](docs/product-roadmap.ja.md) / [Project status](docs/project-status.ja.md) / [再開可能なセッション](docs/session.ja.md) / [制約付き調査プランニング](docs/investigation.ja.md)
+[Research plan](docs/research-plan.ja.md) / [Product roadmap](docs/product-roadmap.ja.md) / [Project status](docs/project-status.ja.md) / [再開可能なセッション](docs/session.ja.md) / [制約付き調査プランニング](docs/investigation.ja.md) / [自然言語E2E v5](docs/natural-language-e2e-v5.ja.md) / [自然文E2E v1 diagnostic](docs/natural-language-e2e.ja.md)
 
 ## 開発者向け情報
 

@@ -66,7 +66,7 @@ The natural-language path also runs the current semantic + evidence-sufficiency 
 
 The default is `--safety-profile current` (`verified-target-answer-gate-v1`). Use `rollback` to reproduce the previous claim-local gate (`d3-sufficiency-answer-gate-v2`); legacy `d3-sufficiency` / `d3-sufficiency-v2` selectors are aliases for that rollback. `legacy-v1` / `d3-sufficiency-v1` and `baseline` remain older testing/rollback surfaces; see [Semantic runtime product surface](#semantic-runtime-product-surface) and the [terminology guide](terminology.md) for exact machine identities.
 
-Natural JSON output declares `output_contract: reason-natural-output-v3` inside the normal `reason-cli-output-v1` envelope. It also reports `exposed_text.policy_id: harness-canonical-exposed-text-v1` and `renderer_text_exposed: false`; see [Exposed-text safety](exposed-text-safety.md).
+Natural JSON output declares `output_contract: reason-natural-output-v4` inside the normal `reason-cli-output-v1` envelope. It also reports `exposed_text.policy_id: harness-canonical-exposed-text-v1` and `renderer_text_exposed: false`; see [Exposed-text safety](exposed-text-safety.md).
 
 See [How Reasoning Harness works](how-it-works.md) and [product dogfood](product-dogfood.md).
 

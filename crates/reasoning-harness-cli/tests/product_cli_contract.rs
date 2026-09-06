@@ -207,7 +207,7 @@ fn synthetic_session_file(path: &Path) {
     let value = serde_json::json!({
         "schema_version": "reason-session-v1",
         "runtime": {
-            "natural_output_contract": "reason-natural-output-v3",
+            "natural_output_contract": "reason-natural-output-v4",
             "exposed_text_policy_id": "harness-canonical-exposed-text-v1",
             "reasoning_thread_schema_version": 1,
             "provider": "mistral",
@@ -226,6 +226,45 @@ fn synthetic_session_file(path: &Path) {
         }]
     });
     std::fs::write(path, serde_json::to_vec_pretty(&value).unwrap()).unwrap();
+}
+
+#[test]
+fn session_add_with_empty_nonterminal_stdin_is_not_rejected_as_piped_input() {
+    let temp = std::env::temp_dir().join(format!(
+        "reason-session-empty-stdin-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    let source = temp.join("source.json");
+    synthetic_session_file(&source);
+
+    let mut command = reason_command();
+    command
+        .args([
+            "session",
+            "add",
+            "--store",
+            source.to_str().unwrap(),
+            "--fact",
+            "feature.enabled=true",
+            "--format",
+            "json",
+        ])
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .env_remove("MISTRAL_API_KEY");
+    let output = command.output().expect("run session add");
+    assert_eq!(output.status.code(), Some(1));
+    let json = json_stdout(&output);
+    assert_ne!(json["result"]["failure_class"], "input");
+    assert!(!String::from_utf8_lossy(&output.stderr).contains("piped stdin"));
+
+    std::fs::remove_dir_all(temp).ok();
 }
 
 #[test]

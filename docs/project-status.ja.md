@@ -8,6 +8,8 @@
 
 active な v0.4.0 line では #210 exposed-text binding、#211 whole-invocation subprocess deadline、#212 bounded investigation planningに続き、#213 resumable `ReasoningThread` sessionまで実装した。#212 は opt-in 自然文pathへ`bounded-investigation-v1`を追加し、#213は`reason-session-v1`のstart/inspect/resume/add/correct/fork/close、typed input invalidation、persisted runtime identity、zero-side-effect checkpoint replayを追加する。詳細は[制約付き調査プランニング](investigation.ja.md)と[再開可能な自然言語セッション](session.ja.md)を参照。
 
+Issue #214はcanonical `natural-language-e2e-v5`で完了した。観測前v5 surfaceは`3d3c09c` / tag `natural-language-e2e-v5-freeze`でfreezeし、最初のcanonical live観測はActions `34032191037`、Mistral `ministral-8b-latest`、seed `41000`、max tokens `1024`。10/10ケース完走、operational failure `0`、correctness-boundary violation `0`、unsupported exposed assertion `0`、unsupported structured claim `0`、missed target insufficiency `0`、identity/freshness/scope/authorityの4 rejection caseすべて観測、session external replay `0`でadoption gateをpassした。utilityは観測値として残し、investigation target recall `2/7`、tool-selection success `5/7`、false abstention `3`。v1-v4はcanonical v5に至るまで発見したevaluator/runtime境界欠陥を示すimmutable diagnosticとして保持する。詳細は[自然文 investigation / session E2E v5](natural-language-e2e-v5.ja.md)。
+
 v0.3.0 で完了した範囲は次のとおり。
 
 - **external resolver integration — #174 実装済み** — `external_command_v1` を、サポート対象の自然言語 CLI／config 経路と既存 resolver boundary に接続した。closed な stdio response schema から trusted metadata、receipt、verdict、final prose を持ち込むことはできない。

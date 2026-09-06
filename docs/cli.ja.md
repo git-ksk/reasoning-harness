@@ -50,7 +50,7 @@ providerのtransport reliabilityはHarness authorityと分離します。Google/
 
 defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です。直前のclaim-local gate（`d3-sufficiency-answer-gate-v2`）を再現する場合は`rollback`を使い、従来の`d3-sufficiency` / `d3-sufficiency-v2`はそのaliasとして残します。さらに古い`legacy-v1` / `d3-sufficiency-v1`と`baseline`もtesting/rollback用に維持します。exact identityは[semantic-check](#semantic-check)、[仕組みの日本語解説](how-it-works.ja.md)、[用語ガイド](terminology.ja.md)を参照してください。
 
-自然文JSON出力は通常の`reason-cli-output-v1` envelope内で`output_contract: reason-natural-output-v3`を明示します。 さらに`exposed_text.policy_id: harness-canonical-exposed-text-v1`と`renderer_text_exposed: false`を報告します。詳細は[表示文章の安全性](exposed-text-safety.ja.md)を参照してください。
+自然文JSON出力は通常の`reason-cli-output-v1` envelope内で`output_contract: reason-natural-output-v4`を明示します。 さらに`exposed_text.policy_id: harness-canonical-exposed-text-v1`と`renderer_text_exposed: false`を報告します。詳細は[表示文章の安全性](exposed-text-safety.ja.md)を参照してください。
 
 詳しくは[仕組みの日本語解説](how-it-works.ja.md)と[product dogfood](product-dogfood.ja.md)を参照してください。
 

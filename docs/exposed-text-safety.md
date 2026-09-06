@@ -18,7 +18,7 @@ This makes an omitted declaration, contradictory renderer sentence, extra render
 
 ## Product telemetry and wire contract
 
-Natural-language JSON output uses `reason-natural-output-v3` and includes:
+Natural-language JSON output uses `reason-natural-output-v4` and includes:
 
 ```json
 "exposed_text": {

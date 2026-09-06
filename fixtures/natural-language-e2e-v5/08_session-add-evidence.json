@@ -1,0 +1,13 @@
+{
+  "add_fact": "feature.x.enabled=true",
+  "add_hypothesis": "feature.x.enabled=true",
+  "expected": "grounded",
+  "id": "session-add-evidence",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v1",
+  "target": {
+    "key": "feature.x.enabled",
+    "value": "true"
+  },
+  "task": "Determine whether feature X is enabled."
+}
