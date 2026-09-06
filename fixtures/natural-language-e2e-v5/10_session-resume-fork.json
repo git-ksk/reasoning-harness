@@ -1,0 +1,13 @@
+{
+  "expected": "grounded",
+  "id": "session-resume-fork",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v1",
+  "start_fact": "feature.audit.enabled=true",
+  "start_hypothesis": "feature.audit.enabled=true",
+  "target": {
+    "key": "feature.audit.enabled",
+    "value": "true"
+  },
+  "task": "Determine whether audit mode is enabled."
+}
