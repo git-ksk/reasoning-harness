@@ -1,12 +1,12 @@
 # Read-only MCP resolver
 
-Issue #176 added the frozen `mcp_readonly_v1` acquisition adapter inside the existing bounded-resolution loop. v0.4.0 keeps that implementation byte-for-byte unchanged for historical replay/evaluation compatibility and routes the supported natural-language product path through the explicit operational successor `mcp_readonly_v2`. v2 preserves the same stateless MCP `tools/call`, allowlist, acquisition-only, and non-promotion semantics while adding #211's shared whole-invocation deadline. MCP remains transport/integration only; it is not a correctness boundary.
+Issue #176 added the frozen `mcp_readonly_v1` acquisition adapter. #211 added the deadline-only stateless successor `mcp_readonly_v2`. Issue #204 now adds the supported product successor `mcp_readonly_v3`, while v1 remains byte-for-byte frozen and v2 remains available as its historical operational successor. MCP remains transport/integration only; it is not a correctness boundary.
 
-The adapter targets MCP protocol `2026-07-28` over stdio. Each invocation sends a JSON-RPC `tools/call` request with the protocol version, client capabilities, client identity, and Harness-owned request/attempt provenance in `_meta`. It does not rely on an initialize/session handshake.
+`mcp_readonly_v3` keeps one stdio child alive for a bounded MCP session: `initialize` -> negotiated protocol validation -> `notifications/initialized` -> bounded `tools/list` read-only declaration check -> `tools/call`. The requested revision defaults to `2026-07-28`; the Harness-supported negotiation allowlist is restricted to `2026-07-28` and the explicitly accepted downlevel revision `2025-11-25`. Configuration may narrow that set but cannot add an unknown revision. The whole lifecycle uses the same absolute #211 deadline, not a fresh timeout per RPC.
 
 ## Safety boundary
 
-The supported v0.3.0 surface is configuration-only and deliberately restrictive:
+The supported v0.4.0 surface is configuration-only and deliberately restrictive:
 
 - `read_only` must be `true`;
 - `resolver_class` must be `evidence_acquisition`;
@@ -15,9 +15,12 @@ The supported v0.3.0 surface is configuration-only and deliberately restrictive:
 - fixed arguments are Harness configuration, not model-generated arguments;
 - an optional provenance argument may be injected only when explicitly configured and cannot overwrite a fixed argument;
 - timeout and response-size limits must be positive;
+- the selected tool must also appear in `tools/list`; v3 requires its server-reported `annotations.readOnlyHint` to be `true`;
+- tool-list pagination is bounded (`max_tool_list_pages`, default 8, allowed 1..=32);
+- protocol negotiation is fail-closed to the Harness-known revision allowlist;
 - `mcp_readonly`, `external_command`, and `--resolver-fact` are mutually exclusive resolver lanes.
 
-The allowlist is an operator policy assertion about which tool may be invoked. MCP tool annotations or a successful tool call do not create authority and do not prove that an arbitrary external server is side-effect-free. Operators must therefore allowlist only tools whose deployment contract is read-only.
+The operator allowlist plus server `readOnlyHint` declaration is a two-sided read-only gate for the selected invocation, but the annotation is still a server claim rather than correctness authority. A successful handshake, annotation, or tool call does not prove arbitrary external output correct and never promotes MCP data by itself.
 
 ## Result handling
 
@@ -60,6 +63,9 @@ Those fields are still resolver-supplied raw acquisition data. The Harness assig
       "fixed_arguments": {"board": "primary"},
       "provenance_argument": "reason_provenance",
       "source": "mcp:inventory-prod:lookup_item",
+      "requested_protocol_version": "2026-07-28",
+      "supported_protocol_versions": ["2026-07-28", "2025-11-25"],
+      "max_tool_list_pages": 8,
       "timeout_ms": 5000,
       "max_response_bytes": 262144,
       "admission": {
@@ -81,8 +87,8 @@ The server process inherits the normal environment, but config schemas reject un
 
 ## Operational failures and replay
 
-Transport, authentication, permission, protocol, tool-execution, timeout, and policy-denial failures use typed operational resolution classes. `timeout_ms` is a whole-invocation wall-clock deadline shared with the other subprocess adapters: it covers process spawn, the complete JSON-RPC stdin write, bounded response-line read, termination, and cleanup handoff. A server that never reads stdin therefore cannot bypass the deadline. Tool result `isError: true` is `tool_execution`, not semantic evidence. These outcomes remain distinct from semantic `unknown`. The negotiated/session successor tracked by #204 must reuse this same deadline primitive.
+Transport, authentication, permission, **negotiation**, **session**, protocol, tool-execution, timeout, and policy-denial failures use typed operational resolution classes. Negotiation failure is used for an MCP handshake that returns an unsupported/missing negotiated revision; session failure is used for a broken initialized lifecycle such as an EOF/repeated pagination cursor. Malformed JSON-RPC remains `protocol`, and `isError: true` remains `tool_execution`. `timeout_ms` is one whole-invocation wall-clock deadline covering process spawn, every handshake/list/call stdin write and bounded response read, termination, and cleanup handoff. These outcomes remain distinct from semantic `unknown`.
 
-Each MCP request carries stable request/attempt provenance and the resulting `ResolutionAttempt` records adapter/admission identities and cost telemetry. `ReasoningThread` replay restores those recorded attempts; it never invokes the MCP server again.
+Each MCP request carries stable request/attempt provenance and the resulting `ResolutionAttempt` records adapter/admission identities and cost telemetry. v3's config identity binds the requested/supported protocol policy and pagination bound; acquired evidence IDs also carry the negotiated revision so persisted replay provenance identifies the actual session revision. `ReasoningThread` replay restores recorded attempts and never invokes the MCP server again.
 
-Deterministic fake-server tests cover both the frozen v1 boundary and v2 successor behavior: modern request metadata, allowlisting, whole-invocation timeout including a blocked multi-megabyte stdin write, typed tool errors, opaque-result non-promotion, and the complete acquisition -> admission -> ordinary re-verification path. A live external MCP server is not required for deterministic CI.
+Deterministic fake-server tests cover allowlisted downlevel negotiation, unsupported-revision rejection, initialized-session breakage, read-only annotation enforcement, protocol/tool failure separation, bounded pagination/deadline behavior, opaque-result non-promotion, and the explicit Harness acquisition envelope. A one-off acceptance probe against the #204 pinned official `ghcr.io/github/github-mcp-server@sha256:46cdbbd810faf6f7aed1745ea04057443f5cb9fcadc15c7308add18cf9a83e33` image also completed the v3 session and `get_file_contents` call successfully; its generic result remained opaque with zero fact candidates.

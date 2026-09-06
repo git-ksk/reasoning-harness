@@ -1,12 +1,12 @@
 # 読み取り専用MCPリゾルバー
 
-Issue #176では、既存のbounded-resolution loop内の取得adapterとして`mcp_readonly_v1`を追加しました。v0.4.0ではhistorical replay/evaluation compatibilityのためこの実装をbyte-for-byte不変で維持し、supported natural-language product pathは明示的なoperational successor `mcp_readonly_v2`を使用します。v2は同じstateless MCP `tools/call`、allowlist、acquisition-only、non-promotion semanticsを維持したまま、#211の共通whole-invocation deadlineを追加します。MCPは引き続きtransport/integrationに限られ、correctness boundaryではありません。
+Issue #176でfrozen `mcp_readonly_v1`を追加し、#211でdeadline-onlyのstateless successor `mcp_readonly_v2`を追加しました。Issue #204ではsupported product successorとして`mcp_readonly_v3`を追加します。v1はbyte-for-byte freezeを維持し、v2もhistorical operational successorとして残します。MCPは引き続きtransport/integrationであり、correctness boundaryではありません。
 
-adapterはstdio上のMCP protocol `2026-07-28`を対象とします。各invocationでは、protocol version、client capabilities、client identity、Harness所有のrequest/attempt provenanceを含むJSON-RPC `tools/call` requestを送信し、`_meta`に格納します。initialize/session handshakeには依存しません。
+`mcp_readonly_v3`は1つのstdio child processをbounded sessionとして維持し、`initialize` -> negotiated protocol検証 -> `notifications/initialized` -> bounded `tools/list` read-only declaration検証 -> `tools/call`の順で実行します。requested revisionのdefaultは`2026-07-28`、Harnessが受け入れるrevisionは`2026-07-28`と明示downlevelの`2025-11-25`だけです。configはこの集合を狭められますが未知revisionを追加できません。全lifecycleはRPCごとの新しいtimeoutではなく、#211と同じ1つのabsolute deadlineを共有します。
 
 ## 安全性の境界
 
-supported v0.3.0 surfaceは設定のみで、意図的に制限されています。
+supported v0.4.0 surfaceは設定のみで、意図的に制限されています。
 
 - `read_only`は`true`でなければならない。
 - `resolver_class`は`evidence_acquisition`でなければならない。
@@ -15,9 +15,12 @@ supported v0.3.0 surfaceは設定のみで、意図的に制限されていま�
 - 固定argumentはHarness configurationであり、modelが生成するargumentではない。
 - 任意のprovenance argumentは明示的に設定した場合だけ注入でき、固定argumentを上書きできない。
 - timeoutとresponse-size limitは正の値でなければならない。
+- 選択toolは`tools/list`にも存在し、v3ではserver側`annotations.readOnlyHint=true`を必須とする。
+- tool-list paginationは`max_tool_list_pages`（default 8、1..=32）でboundedにする。
+- protocol negotiationはHarness既知revision allowlistに対してfail-closedとする。
 - `mcp_readonly`、`external_command`、`--resolver-fact`は相互排他的なresolver laneである。
 
-allowlistは、どのtoolをinvokeしてよいかに関するoperator policyの主張です。MCP tool annotationやtool callの成功はauthorityを作らず、任意のexternal serverがside-effect-freeであることも証明しません。したがってoperatorは、deployment contractがread-onlyであるtoolだけをallowlistに入れる必要があります。
+operator allowlistとserverの`readOnlyHint` declarationを両方要求しますが、annotation自体はserver claimでありcorrectness authorityではありません。handshake成功、annotation、tool call成功のどれも外部outputを正しいものとして昇格させません。
 
 ## 結果の処理
 
@@ -60,6 +63,9 @@ read-only toolが協調する場合、次のstructured payloadを任意で返せ
       "fixed_arguments": {"board": "primary"},
       "provenance_argument": "reason_provenance",
       "source": "mcp:inventory-prod:lookup_item",
+      "requested_protocol_version": "2026-07-28",
+      "supported_protocol_versions": ["2026-07-28", "2025-11-25"],
+      "max_tool_list_pages": 8,
       "timeout_ms": 5000,
       "max_response_bytes": 262144,
       "admission": {
@@ -81,8 +87,8 @@ server processは通常のenvironmentを継承しますが、config schemaはcre
 
 ## 運用上の失敗と再実行
 
-transport、authentication、permission、protocol、tool-execution、timeout、policy-denialのfailureにはtyped operational resolution classを使用します。`timeout_ms`は他のsubprocess adapterと共有するwhole-invocation wall-clock deadlineであり、process spawn、JSON-RPC stdin全量write、bounded response-line read、termination、cleanup handoffまでを覆います。そのためserverがstdinを一切読まなくてもdeadlineを回避できません。tool resultの`isError: true`は`tool_execution`であり、semantic evidenceではありません。これらのoutcomeはsemantic `unknown`とは区別されます。#204のnegotiated/session successorも同じdeadline primitiveを再利用します。
+transport、authentication、permission、**negotiation**、**session**、protocol、tool-execution、timeout、policy-denialをtyped operational classとして区別します。unsupported/missing negotiated revisionは`negotiation`、initialized lifecycleの切断やpagination cycleは`session`、malformed JSON-RPCは`protocol`、tool resultの`isError: true`は`tool_execution`です。`timeout_ms`はprocess spawnからhandshake/list/callの全stdin write・bounded response read、termination、cleanup handoffまでを1つのwhole-invocation deadlineで覆います。semantic `unknown`へ変換しません。
 
-各MCP requestはstableなrequest/attempt provenanceを持ち、生成された`ResolutionAttempt`にはadapter/admission identityとcost telemetryを記録します。`ReasoningThread` replayは記録済みattemptを復元するだけで、MCP serverを再invokeしません。
+各MCP requestはstableなrequest/attempt provenanceを持ち、`ResolutionAttempt`にはadapter/admission identityとcost telemetryを記録します。v3 config identityはrequested/supported protocol policyとpagination boundをbindし、acquired evidence IDには実際のnegotiated revisionも含めます。`ReasoningThread` replayは記録済みattemptを復元するだけで、MCP serverを再invokeしません。
 
-deterministic fake-server testではfrozen v1 boundaryとv2 successorの両方をカバーし、modern request metadata、allowlisting、multi-megabyte stdin blocked writeを含むwhole-invocation timeout、typed tool error、opaque resultのnon-promotion、acquisition -> admission -> ordinary re-verificationという完全な経路を検証します。deterministic CIにlive external MCP serverは必要ありません。
+deterministic fake-server testでallowlisted downlevel negotiation、unsupported revision rejection、initialized session切断、read-only annotation強制、protocol/tool failure分離、deadline、opaque non-promotion、explicit Harness acquisition envelopeを検証します。さらに#204で使ったpinned公式`ghcr.io/github/github-mcp-server@sha256:46cdbbd810faf6f7aed1745ea04057443f5cb9fcadc15c7308add18cf9a83e33`に対するone-off acceptanceでもv3 sessionと`get_file_contents`が成功し、generic resultはfacts 0のopaqueのままでした。

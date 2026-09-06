@@ -9,7 +9,7 @@ Machine identities:
 - action proposal: `reason-investigation-action-v1`
 - investigation external-command adapter: `investigation_external_command_v1`
 - investigation external-command request: `reason-investigation-external-resolver-request-v1`
-- MCP acquisition: `mcp_readonly_v2`
+- MCP acquisition: `mcp_readonly_v3`
 
 The frozen historical `mcp_readonly_v1` implementation and the existing static `external_command_v1` request protocol remain unchanged.
 
@@ -21,7 +21,7 @@ When `resolution.investigation` is configured and the initial natural-language r
 2. The Harness validates target count, identity, and shape and turns accepted proposal objects into canonical investigation targets. This is planning admission only; it does not make any proposed answer true.
 3. For each round, the model may select one existing target ID and one existing configured read-only capability ID, or stop. The action schema contains no arbitrary query text, tool arguments, authority class, evidence, receipt, or verdict fields.
 4. The Harness rejects unknown capabilities, capabilities not declared read-only, selector/key mismatches, duplicate target/capability pairs, and actions beyond the configured budgets.
-5. The selected acquisition adapter runs once. Investigation external commands use their own request identity rather than extending `external_command_v1`. MCP uses the v0.4 `mcp_readonly_v2` operational successor and Harness-owned fixed arguments/tool allowlists.
+5. The selected acquisition adapter runs once. Investigation external commands use their own request identity rather than extending `external_command_v1`. MCP uses the v0.4 `mcp_readonly_v3` operational successor and Harness-owned fixed arguments/tool allowlists.
 6. Acquired evidence is still untrusted. If an admission policy is configured, normal source allowlisting, freshness, scope, and authority rules are applied. Without admission, external data cannot become trusted evidence.
 7. After admitted evidence is added, the natural-language candidate is regenerated against the updated Harness input and passes through the ordinary validation, qualification, verification, diagnostics, verdict, finalization, and answer-safety path again.
 8. Typed outcomes such as `no_result`, `rejected_evidence`, `ambiguous`, `verification_progress`, or `operational_failure` are recorded. A later planner round can select another untried capability based on those outcomes.
@@ -111,4 +111,4 @@ Natural JSON output reports the investigation object separately from ordinary re
 
 ## Static-path compatibility
 
-If `resolution.investigation` is absent, the existing natural-language resolver behavior is unchanged. `--resolver-fact`, static `external_command_v1`, static `mcp_readonly_v2`, and `trusted_command_verifier_v1` continue to use their existing paths. Frozen research/evaluation surfaces remain untouched and `mcp_readonly_v1` remains byte-for-byte protected by its freeze workflow.
+If `resolution.investigation` is absent, the existing natural-language resolver behavior is unchanged. `--resolver-fact`, static `external_command_v1`, static `mcp_readonly_v3`, and `trusted_command_verifier_v1` continue to use their existing paths. Frozen research/evaluation surfaces remain untouched and `mcp_readonly_v1` remains byte-for-byte protected by its freeze workflow.

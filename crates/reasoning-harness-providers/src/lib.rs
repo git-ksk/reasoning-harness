@@ -5,6 +5,7 @@ pub mod gemma;
 pub mod groq;
 pub mod mcp_readonly;
 pub mod mcp_readonly_v2;
+pub mod mcp_readonly_v3;
 pub mod mistral;
 pub mod nvidia;
 mod subprocess_deadline;
@@ -34,6 +35,11 @@ pub use mcp_readonly::{
 };
 
 pub use mcp_readonly_v2::{MCP_READONLY_V2_RESOLVER_ID, McpReadOnlyResolverV2};
+
+pub use mcp_readonly_v3::{
+    DEFAULT_MCP_READONLY_V3_MAX_TOOL_LIST_PAGES, MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION,
+    MCP_READONLY_V3_RESOLVER_ID, McpReadOnlyResolverV3, McpReadOnlyResolverV3Config,
+};
 
 pub use trusted_command::{
     DEFAULT_TRUSTED_COMMAND_MAX_RESPONSE_BYTES, DEFAULT_TRUSTED_COMMAND_TIMEOUT_MS,
