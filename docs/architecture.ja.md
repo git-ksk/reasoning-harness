@@ -151,7 +151,7 @@ finalization は verification や presentation style とは別である。
 
 finalizer は verified artifact state を受け取り、policy に従って grounded answer、qualified partial answer、unresolved result、abstention、または `requires_verification` result を生成する。model を renderer として使ってもよいが、renderer は authority を作れない。
 
-必須の target invariant は **final claim coverage** である。final answer に現れる factual proposition は、supported artifact proposition に対応するか、policy に従って unresolved/assumed として明示されなければならない。renderer が新しい factual proposition を導入した場合、その proposition は grounded output に現れる前に通常の candidate/verification loop に戻さなければならない。
+必須のtarget invariantは現在2つに分けて明示する。**structured final-claim coverage**では、宣言された各factual claimがsupported artifact stateへ対応するか、policyに従って明示的にuncertainであることを要求する。**exposed-text binding**（`harness-canonical-exposed-text-v1`）ではrenderer proseをcorrectness surfaceにせず、`GroundedAnswer` / `QualifiedPartialAnswer`の文章をaccepted claimまたはtyped recovery stateからHarnessが構築する。これによりrenderer本文だけの矛盾、追加fact、certainty強化は公開されない。詳細は[表示文章の安全性](exposed-text-safety.ja.md)を参照。
 
 artifact-global `Reject` に対する target-local の狭い recovery も存在する。これは global verdict を promote も rewrite もしない。exact requested target は、matching target claim のすべてに direct evidence-bound trusted `Supported` verification があり、かつ typed artifact が rejected non-target state から構造的に分離されていることを示す場合に限り `QualifiedPartialAnswer` として公開できる。条件は target-local contradiction/qualification/hard adversarial finding がないこと、same-key blocker がないこと、untyped problematic claim がないこと、unresolved または contradicted blocker への shared evidence や inference/dependency path がないこと。contradicted blocker 自体には direct evidence-bound trusted contradiction receipt が必要である。typed dependency に不確実性があれば fail closed する。
 

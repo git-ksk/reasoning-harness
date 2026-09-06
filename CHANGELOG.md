@@ -6,6 +6,11 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ## [Unreleased]
 
+### Changed
+
+- Closed Issue #210's exposed-text correctness gap: `GroundedAnswer` / `QualifiedPartialAnswer` no longer expose model renderer `text`; Harness constructs the exposed text from accepted factual claims or typed recovery state under `harness-canonical-exposed-text-v1`.
+- Bumped natural-language JSON output from `reason-natural-output-v2` to `reason-natural-output-v3` and added explicit `exposed_text` policy telemetry. Consumers that relied on renderer prose should use `finalization.text`; historical v2 behavior remains reproducible at commit `3a601c8` but is not available as a safety rollback because it would restore the P0 gap.
+
 ## [0.3.0] - 2026-09-04
 
 Third external-preview capability release. v0.3.0 adds bounded external evidence and resolution without changing the research generation, semantic runtime, or answer-safety identity.

@@ -39,7 +39,7 @@ Current product identities include:
 
 Within an existing output-contract identity, consumers should tolerate additive fields. Removing fields, changing field meaning, or changing authority/exit semantics requires a new relevant contract identity rather than a silent change. Config schemas fail closed on unknown fields by design; a config using a newly added field may therefore require the corresponding newer CLI.
 
-Human-readable text is presentation, not a compatibility or correctness contract.
+Human-readable wording remains presentation rather than a byte-stable compatibility contract. However, the natural-language product path now treats the authority of exposed factual text as a correctness boundary: under `harness-canonical-exposed-text-v1`, model renderer text is advisory and the exposed grounded/qualified text is Harness-constructed from accepted claims. See [Exposed-text safety](exposed-text-safety.md).
 
 ## v0.x breaking changes
 

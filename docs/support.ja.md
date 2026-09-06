@@ -39,7 +39,7 @@ executableのsemverとmachine contract identityは別々の座標です。
 
 既存のoutput-contract identityの範囲では、consumerは追加フィールドを許容する必要があります。フィールドの削除、フィールドの意味の変更、authority/exit semanticsの変更には、黙って変更するのではなく、該当する新しいcontract identityが必要です。Config schemaは設計上unknown fieldに対してfail closedするため、新しく追加されたfieldを使うconfigには、それに対応する新しいCLIが必要になる場合があります。
 
-人間向けテキストはpresentationであり、compatibilityやcorrectnessのcontractではありません。
+人間向け文章の具体的な文言はbyte-stableなcompatibility contractではありません。ただし自然言語product pathでは、表示するfactual textのauthorityをcorrectness boundaryとして扱います。`harness-canonical-exposed-text-v1`ではmodel renderer textはadvisoryで、grounded/qualifiedとして表示する文章はaccepted claimからHarnessが構築します。詳細は[表示文章の安全性](exposed-text-safety.ja.md)を参照してください。
 
 ## v0.xの破壊的変更
 

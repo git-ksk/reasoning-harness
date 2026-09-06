@@ -69,11 +69,11 @@ pub fn build_final_answer_request(
     let artifact = serde_json::to_string_pretty(artifact)?;
     Ok(ModelRequest {
         system: Some(
-            "You are the final-answer renderer inside a reasoning harness. Return only the requested structured final-answer candidate. You may summarize verified artifact state, but you do not own truth authority. Every factual proposition in the rendered answer must be listed in factual_claims. Mark a proposition grounded only when the artifact state is known or supported; otherwise mark it uncertain. Do not invent evidence, receipts, facts, or authority. If the artifact cannot support a useful factual answer, say so plainly and return no unsupported grounded claim."
+            "You are the final-answer renderer inside a reasoning harness. Return only the requested structured final-answer candidate. You may summarize verified artifact state, but you do not own truth authority. Every factual proposition you intend to communicate must be listed in factual_claims. Mark a proposition grounded only when the artifact state is known or supported; otherwise mark it uncertain. Do not invent evidence, receipts, facts, or authority. The text field is advisory renderer output and is not the correctness-guaranteed exposed answer; the Harness deterministically constructs that surface from accepted factual_claims. If the artifact cannot support a useful factual answer, say so plainly and return no unsupported grounded claim."
                 .into(),
         ),
         task: format!(
-            "User task:\n{task}\n\nHarness verdict:\n{verdict:?}\n\nVerified reasoning artifact:\n{artifact}\n\nRender a concise natural-language answer. The text and factual_claims must agree. Any new factual proposition will be blocked and sent back through verification before it can be exposed as grounded output."
+            "User task:\n{task}\n\nHarness verdict:\n{verdict:?}\n\nVerified reasoning artifact:\n{artifact}\n\nRender a concise natural-language answer and declare every intended factual proposition in factual_claims. The Harness will expose only its deterministic rendering of accepted factual_claims; renderer text is advisory and cannot add or strengthen exposed assertions."
         ),
         output_format: ModelOutputFormat::JsonSchema {
             name: "final_answer_candidate".into(),
@@ -96,7 +96,7 @@ pub fn build_final_answer_json_fallback_request(
     let schema = serde_json::to_string_pretty(&final_answer_candidate_schema())?;
     Ok(ModelRequest {
         system: Some(
-            "You are the final-answer renderer inside a reasoning harness. Return exactly one JSON object and no prose. The object must conform to the supplied JSON Schema. You do not own truth authority. Every factual proposition in the rendered text must be listed in factual_claims. Mark grounded only when the artifact state is known or supported; otherwise mark uncertain. Do not invent evidence, receipts, facts, or authority."
+            "You are the final-answer renderer inside a reasoning harness. Return exactly one JSON object and no prose. The object must conform to the supplied JSON Schema. You do not own truth authority. Every factual proposition you intend to communicate must be listed in factual_claims. Mark grounded only when the artifact state is known or supported; otherwise mark uncertain. Do not invent evidence, receipts, facts, or authority. The text field is advisory; the Harness deterministically constructs the correctness-guaranteed exposed answer from accepted factual_claims."
                 .into(),
         ),
         task: format!(
@@ -197,11 +197,9 @@ mod tests {
             request.output_format,
             ModelOutputFormat::JsonSchema { .. }
         ));
-        assert!(
-            request
-                .task
-                .contains("Any new factual proposition will be blocked")
-        );
+        assert!(request.task.contains(
+            "The Harness will expose only its deterministic rendering of accepted factual_claims"
+        ));
         assert!(
             request
                 .system

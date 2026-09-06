@@ -496,6 +496,22 @@ pub fn recover_verified_target_renderer_downgrade(
 #[derive(Debug, Clone, Copy, Default)]
 pub struct CanonicalFinalAnswerRenderer;
 
+fn canonical_exposed_text(factual_claims: &[FinalAnswerClaim]) -> String {
+    factual_claims
+        .iter()
+        .map(|claim| match claim.mode {
+            FinalClaimMode::Grounded => {
+                format!("{} = {}", claim.proposition.key, claim.proposition.value)
+            }
+            FinalClaimMode::Uncertain => format!(
+                "uncertain({} = {})",
+                claim.proposition.key, claim.proposition.value
+            ),
+        })
+        .collect::<Vec<_>>()
+        .join("; ")
+}
+
 impl FinalAnswerRenderer for CanonicalFinalAnswerRenderer {
     fn render(&self, artifact: &ReasoningArtifact, verdict: Verdict) -> FinalAnswerCandidate {
         if verdict == Verdict::Reject {
@@ -524,19 +540,7 @@ impl FinalAnswerRenderer for CanonicalFinalAnswerRenderer {
         let text = if factual_claims.is_empty() {
             "unresolved: no grounded factual proposition is available".into()
         } else {
-            factual_claims
-                .iter()
-                .map(|claim| match claim.mode {
-                    FinalClaimMode::Grounded => {
-                        format!("{} = {}", claim.proposition.key, claim.proposition.value)
-                    }
-                    FinalClaimMode::Uncertain => format!(
-                        "uncertain({} = {})",
-                        claim.proposition.key, claim.proposition.value
-                    ),
-                })
-                .collect::<Vec<_>>()
-                .join("; ")
+            canonical_exposed_text(&factual_claims)
         };
 
         FinalAnswerCandidate {
@@ -620,7 +624,8 @@ pub fn finalize_answer(
         };
         return FinalizationResult {
             status,
-            text: (status == FinalizationStatus::QualifiedPartialAnswer).then_some(candidate.text),
+            text: (status == FinalizationStatus::QualifiedPartialAnswer)
+                .then(|| canonical_exposed_text(&candidate.factual_claims)),
             factual_claims,
             covered_claims,
             factual_claim_coverage,
@@ -643,7 +648,7 @@ pub fn finalize_answer(
             status,
             FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer
         )
-        .then_some(candidate.text),
+        .then(|| canonical_exposed_text(&candidate.factual_claims)),
         factual_claims,
         covered_claims,
         factual_claim_coverage,
@@ -1432,6 +1437,65 @@ mod tests {
         );
         assert_eq!(result.status, FinalizationStatus::GroundedAnswer);
         assert_eq!(result.factual_claim_coverage, 1.0);
+    }
+
+    #[test]
+    fn exposed_grounded_text_is_canonicalized_from_verified_claims() {
+        let proposition = Proposition {
+            key: "service.region".into(),
+            value: "us-east-1".into(),
+        };
+        let current = ReasoningArtifact {
+            claims: vec![Claim {
+                id: "region".into(),
+                statement: "service region is us-east-1".into(),
+                state: EpistemicState::Supported,
+                proposition: Some(proposition.clone()),
+                evidence_ids: vec![],
+            }],
+            ..Default::default()
+        };
+        let candidate = FinalAnswerCandidate {
+            text: "Region is eu-west-1. The database is definitely the root cause.".into(),
+            factual_claims: vec![FinalAnswerClaim {
+                proposition,
+                mode: FinalClaimMode::Grounded,
+            }],
+        };
+        let result = finalize_answer(
+            &current,
+            Verdict::Accept,
+            candidate,
+            FinalizationPolicy::default(),
+        );
+        assert_eq!(result.status, FinalizationStatus::GroundedAnswer);
+        assert_eq!(result.text.as_deref(), Some("service.region = us-east-1"));
+        assert_eq!(result.factual_claim_coverage, 1.0);
+    }
+
+    #[test]
+    fn exposed_qualified_text_preserves_uncertainty_mode() {
+        let candidate = FinalAnswerCandidate {
+            text: "The feature is definitely enabled.".into(),
+            factual_claims: vec![FinalAnswerClaim {
+                proposition: Proposition {
+                    key: "feature.enabled".into(),
+                    value: "true".into(),
+                },
+                mode: FinalClaimMode::Uncertain,
+            }],
+        };
+        let result = finalize_answer(
+            &artifact(EpistemicState::Unknown),
+            Verdict::Unknown,
+            candidate,
+            FinalizationPolicy::default(),
+        );
+        assert_eq!(result.status, FinalizationStatus::QualifiedPartialAnswer);
+        assert_eq!(
+            result.text.as_deref(),
+            Some("uncertain(feature.enabled = true)")
+        );
     }
 
     #[test]
