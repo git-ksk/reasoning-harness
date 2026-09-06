@@ -1,9 +1,7 @@
 use std::{
     collections::BTreeMap,
-    io::{Read, Write},
     path::PathBuf,
-    process::{Command, Stdio},
-    thread,
+    process::Command,
     time::{Duration, Instant},
 };
 
@@ -14,14 +12,13 @@ use reasoning_harness_core::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::config_identity::stable_config_id;
+use crate::{config_identity::stable_config_id, subprocess_deadline::run_to_exit};
 
 pub const EXTERNAL_COMMAND_RESOLVER_ID: &str = "external_command_v1";
 pub const EXTERNAL_RESOLVER_REQUEST_SCHEMA: &str = "reason-external-resolver-request-v1";
 pub const EXTERNAL_RESOLVER_RESPONSE_SCHEMA: &str = "reason-external-resolver-response-v1";
 pub const DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS: u64 = 30_000;
 pub const DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES: usize = 1024 * 1024;
-const PROCESS_POLL_INTERVAL: Duration = Duration::from_millis(10);
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct ExternalCommandResolverConfig {
@@ -178,14 +175,6 @@ fn adapter_error(
     }
 }
 
-fn spawn_error_kind(error: &std::io::Error) -> ResolutionAdapterErrorKind {
-    match error.kind() {
-        std::io::ErrorKind::NotFound => ResolutionAdapterErrorKind::Unavailable,
-        std::io::ErrorKind::PermissionDenied => ResolutionAdapterErrorKind::PermissionDenied,
-        _ => ResolutionAdapterErrorKind::Transport,
-    }
-}
-
 impl ResolutionResolver for ExternalCommandResolver {
     fn name(&self) -> &'static str {
         EXTERNAL_COMMAND_RESOLVER_ID
@@ -212,17 +201,6 @@ impl ResolutionResolver for ExternalCommandResolver {
                 ResolutionCost::default(),
             ));
         }
-        let response_limit = self
-            .config
-            .max_response_bytes
-            .checked_add(1)
-            .ok_or_else(|| {
-                adapter_error(
-                    ResolutionAdapterErrorKind::PolicyDenied,
-                    started,
-                    ResolutionCost::default(),
-                )
-            })?;
         let payload = serde_json::to_vec(&ExternalResolverRequestEnvelope {
             schema_version: EXTERNAL_RESOLVER_REQUEST_SCHEMA,
             adapter_id: EXTERNAL_COMMAND_RESOLVER_ID,
@@ -237,106 +215,16 @@ impl ResolutionResolver for ExternalCommandResolver {
             )
         })?;
 
-        let mut child = Command::new(&self.config.program)
-            .args(&self.config.args)
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .stderr(Stdio::null())
-            .spawn()
-            .map_err(|error| {
-                adapter_error(spawn_error_kind(&error), started, ResolutionCost::default())
-            })?;
-
-        let write_result = child
-            .stdin
-            .as_mut()
-            .ok_or_else(|| {
-                adapter_error(
-                    ResolutionAdapterErrorKind::Transport,
-                    started,
-                    ResolutionCost::default(),
-                )
-            })?
-            .write_all(&payload);
-        drop(child.stdin.take());
-        if write_result.is_err() {
-            let _ = child.kill();
-            let _ = child.wait();
-            return Err(adapter_error(
-                ResolutionAdapterErrorKind::Transport,
-                started,
-                ResolutionCost::default(),
-            ));
-        }
-
-        let stdout = child.stdout.take().ok_or_else(|| {
-            adapter_error(
-                ResolutionAdapterErrorKind::Transport,
-                started,
-                ResolutionCost::default(),
-            )
-        })?;
-        let reader = thread::spawn(move || -> std::io::Result<Vec<u8>> {
-            let mut bytes = Vec::new();
-            stdout
-                .take(u64::try_from(response_limit).unwrap_or(u64::MAX))
-                .read_to_end(&mut bytes)?;
-            Ok(bytes)
-        });
-
-        let timeout = Duration::from_millis(self.config.timeout_ms);
-        let status = loop {
-            match child.try_wait() {
-                Ok(Some(status)) => break status,
-                Ok(None) if started.elapsed() < timeout => thread::sleep(PROCESS_POLL_INTERVAL),
-                Ok(None) => {
-                    let _ = child.kill();
-                    let _ = child.wait();
-                    // Do not join the stdout reader on timeout. A resolver may have spawned a
-                    // descendant that inherited stdout; waiting for EOF here would defeat the
-                    // Harness-owned wall-clock timeout even after the direct child is killed.
-                    drop(reader);
-                    return Err(adapter_error(
-                        ResolutionAdapterErrorKind::Timeout,
-                        started,
-                        ResolutionCost::default(),
-                    ));
-                }
-                Err(_) => {
-                    let _ = child.kill();
-                    let _ = child.wait();
-                    drop(reader);
-                    return Err(adapter_error(
-                        ResolutionAdapterErrorKind::Transport,
-                        started,
-                        ResolutionCost::default(),
-                    ));
-                }
-            }
-        };
-        let output = reader
-            .join()
-            .map_err(|_| {
-                adapter_error(
-                    ResolutionAdapterErrorKind::Transport,
-                    started,
-                    ResolutionCost::default(),
-                )
-            })?
-            .map_err(|_| {
-                adapter_error(
-                    ResolutionAdapterErrorKind::Transport,
-                    started,
-                    ResolutionCost::default(),
-                )
-            })?;
-        if output.len() > self.config.max_response_bytes || !status.success() {
-            return Err(adapter_error(
-                ResolutionAdapterErrorKind::Protocol,
-                started,
-                ResolutionCost::default(),
-            ));
-        }
+        let mut command = Command::new(&self.config.program);
+        command.args(&self.config.args);
+        let output = run_to_exit(
+            &mut command,
+            payload,
+            started,
+            Duration::from_millis(self.config.timeout_ms),
+            self.config.max_response_bytes,
+        )
+        .map_err(|kind| adapter_error(kind, started, ResolutionCost::default()))?;
 
         let response: ExternalResolverResponseEnvelope =
             serde_json::from_slice(&output).map_err(|_| {
@@ -545,6 +433,29 @@ printf '%s' '{"schema_version":"reason-external-resolver-response-v1","failure":
         assert_eq!(error.cost.calls, 1);
         assert!(error.cost.elapsed_ms >= 20);
         assert!(error.cost.elapsed_ms < 1000);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn large_request_write_to_non_reader_respects_whole_invocation_timeout() {
+        let path = test_script("blocked-write", "sleep 1");
+        let resolver = ExternalCommandResolver::new(ExternalCommandResolverConfig {
+            program: path.clone(),
+            args: vec![],
+            timeout_ms: 40,
+            max_response_bytes: 4096,
+        });
+        let mut request = test_request();
+        if let reasoning_harness_core::ResolutionTarget::Proposition { proposition } =
+            &mut request.target
+        {
+            proposition.value = "x".repeat(2 * 1024 * 1024);
+        }
+        let wall = Instant::now();
+        let error = resolver.resolve(&request, 0).unwrap_err();
+        std::fs::remove_file(path).ok();
+        assert_eq!(error.kind, ResolutionAdapterErrorKind::Timeout);
+        assert!(wall.elapsed() < Duration::from_millis(500));
     }
 
     #[cfg(unix)]

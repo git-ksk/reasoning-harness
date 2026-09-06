@@ -42,8 +42,8 @@ Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。公�
 
 実装順序は次のとおり。
 
-1. **#210 P0 final exposed-text binding。** `FinalAnswerCandidate.text` と検証済み `factual_claims` が独立しているため、structured claimが正しくても表示文章だけが矛盾・追加factを含めるケースを現行`GroundedAnswer`が通せる。保証対象のanswer surfaceはHarness-owned verified propositionから決定論的に構築するか、同等にmechanicalなfail-closed bindingを要求する。#160/#164/#206のtarget recovery semanticsはauthority sourceとして再利用しても、renderer prose自体にはauthorityを与えない。
-2. **#211 full-lifecycle subprocess deadline。** `mcp_readonly`、`external_command`、`trusted_command` の同期stdin writeを含め、spawn -> write -> read -> wait/terminate -> cleanup全体を1つのHarness-owned wall-clock deadlineで制約する。#178で意図したoperational boundednessの抜けを閉じ、timeoutはsemantic `unknown`ではなくtyped operational failureのまま維持する。
+1. **#210 P0 final exposed-text binding — 実装済み。** `FinalAnswerCandidate.text` と検証済み `factual_claims` が独立しているため、structured claimが正しくても表示文章だけが矛盾・追加factを含めるケースを現行`GroundedAnswer`が通せる。保証対象のanswer surfaceはHarness-owned verified propositionから決定論的に構築するか、同等にmechanicalなfail-closed bindingを要求する。#160/#164/#206のtarget recovery semanticsはauthority sourceとして再利用しても、renderer prose自体にはauthorityを与えない。
+2. **#211 full-lifecycle subprocess deadline — 実装済み。** `external_command`、`trusted_command`、明示的なoperational successor `mcp_readonly_v2`で、spawn -> stdin全量write -> stdout read -> wait/terminate -> cleanup handoff全体を1つのHarness-owned wall-clock deadlineで制約する。historical replay/evaluation向けのfrozen `mcp_readonly_v1`はbyte-for-byte不変で維持する。timeoutはsemantic `unknown`ではなくtyped operational failureのままである。
 3. **#212 bounded investigation plannerのproduct昇格。** 既存のresearch/evaluation側にあるHarness-owned suggestion / bounded planner primitiveを一般化し、自然文taskから調査targetを作り、設定済みread-only acquisition capabilityを選択し、typed resultに応じて追加調査する。ただしplanner/modelはtool output、identity、evidence sufficiency、最終correctnessを自己承認できない。
 4. **#213 `ReasoningThread` session surface。** 既存coreのcheckpoint / interrupt-resume / fork / deterministic replayを、自然言語sessionの保存・再開・追加資料・前提訂正へ接続する。conversation historyと過去のmodel proseはuntrustedのままで、訂正やevidence追加は通常のinvalidation / qualification / verification / finalizationを必ず通る。
 5. **#214 fresh natural-language E2E evaluation。** #210–#213のdeterministic contract coverage後にのみcanonical live observationへ進む。自然文のみからの調査target recall、source/tool selection、follow-up調査、exposed-text consistency、unsupported exposed assertion、qualification preservation、multi-turn訂正、resume/fork、operational completeness、costを新しいpre-observation frozen identityで測る。
@@ -59,7 +59,7 @@ Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。公�
 
 ### 並行トラック
 
-- **#204 MCP negotiated/session stdio compatibility:** v0.4.0 milestoneに含めるが、#211の共通deadline primitiveを再利用する。`mcp_readonly_v1`のreplay compatibilityとauthority boundaryは維持し、successor adapter identityとして扱う。
+- **#204 MCP negotiated/session stdio compatibility:** v0.4.0 milestoneに含め、`mcp_readonly_v2`ですでに使う#211共通deadline primitiveを再利用する。frozen `mcp_readonly_v1`のreplay compatibilityと全authority boundaryを維持し、session/negotiationは別versionのsuccessor adapter identityとして扱う。
 - **#208 / PR #209 v4 cross-model replication + #216 Groq operational extension（完了）:** v4の凍結済み評価面のcross-model replicationであり、v0.4.0 semantic/product implementationのtuning gateにはしない。#216は2026-09-06にcloseoutし、Groq provider wiring、Free Tier pacing/telemetry、best-effort structured-output bounded retry、3モデルのlive replicationを完了した。v4 corpus/scoring/admission/finalization semanticsは変更せず、結果はhistorical comparative evidenceとして保持する。
 
 ## 完了済み v0.2.0 プロダクトライン

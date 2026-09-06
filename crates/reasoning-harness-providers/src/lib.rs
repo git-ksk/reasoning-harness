@@ -4,8 +4,10 @@ pub mod external_command;
 pub mod gemma;
 pub mod groq;
 pub mod mcp_readonly;
+pub mod mcp_readonly_v2;
 pub mod mistral;
 pub mod nvidia;
+mod subprocess_deadline;
 pub mod trusted_command;
 
 pub use gemma::GoogleAdapter;
@@ -28,6 +30,8 @@ pub use mcp_readonly::{
     DEFAULT_MCP_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_MCP_RESOLVER_TIMEOUT_MS, MCP_PROTOCOL_VERSION,
     MCP_READONLY_RESOLVER_ID, McpReadOnlyResolver, McpReadOnlyResolverConfig,
 };
+
+pub use mcp_readonly_v2::{MCP_READONLY_V2_RESOLVER_ID, McpReadOnlyResolverV2};
 
 pub use trusted_command::{
     DEFAULT_TRUSTED_COMMAND_MAX_RESPONSE_BYTES, DEFAULT_TRUSTED_COMMAND_TIMEOUT_MS,

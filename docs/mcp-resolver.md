@@ -1,6 +1,6 @@
 # Read-only MCP resolver
 
-Issue #176 adds `mcp_readonly_v1` as an acquisition adapter inside the existing bounded-resolution loop. MCP is transport/integration only; it is not a correctness boundary.
+Issue #176 added the frozen `mcp_readonly_v1` acquisition adapter inside the existing bounded-resolution loop. v0.4.0 keeps that implementation byte-for-byte unchanged for historical replay/evaluation compatibility and routes the supported natural-language product path through the explicit operational successor `mcp_readonly_v2`. v2 preserves the same stateless MCP `tools/call`, allowlist, acquisition-only, and non-promotion semantics while adding #211's shared whole-invocation deadline. MCP remains transport/integration only; it is not a correctness boundary.
 
 The adapter targets MCP protocol `2026-07-28` over stdio. Each invocation sends a JSON-RPC `tools/call` request with the protocol version, client capabilities, client identity, and Harness-owned request/attempt provenance in `_meta`. It does not rely on an initialize/session handshake.
 
@@ -81,8 +81,8 @@ The server process inherits the normal environment, but config schemas reject un
 
 ## Operational failures and replay
 
-Transport, authentication, permission, protocol, tool-execution, timeout, and policy-denial failures use the typed operational resolution classes from #178. Tool result `isError: true` is `tool_execution`, not semantic evidence. These outcomes remain distinct from semantic `unknown`.
+Transport, authentication, permission, protocol, tool-execution, timeout, and policy-denial failures use typed operational resolution classes. `timeout_ms` is a whole-invocation wall-clock deadline shared with the other subprocess adapters: it covers process spawn, the complete JSON-RPC stdin write, bounded response-line read, termination, and cleanup handoff. A server that never reads stdin therefore cannot bypass the deadline. Tool result `isError: true` is `tool_execution`, not semantic evidence. These outcomes remain distinct from semantic `unknown`. The negotiated/session successor tracked by #204 must reuse this same deadline primitive.
 
 Each MCP request carries stable request/attempt provenance and the resulting `ResolutionAttempt` records adapter/admission identities and cost telemetry. `ReasoningThread` replay restores those recorded attempts; it never invokes the MCP server again.
 
-Deterministic fake-server tests cover modern request metadata, allowlisting, timeout, typed tool errors, opaque-result non-promotion, and the complete acquisition -> admission -> ordinary re-verification path. A live external MCP server is not required for deterministic CI.
+Deterministic fake-server tests cover both the frozen v1 boundary and v2 successor behavior: modern request metadata, allowlisting, whole-invocation timeout including a blocked multi-megabyte stdin write, typed tool errors, opaque-result non-promotion, and the complete acquisition -> admission -> ordinary re-verification path. A live external MCP server is not required for deterministic CI.

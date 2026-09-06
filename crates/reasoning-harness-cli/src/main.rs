@@ -50,7 +50,7 @@ use reasoning_harness_providers::{
     EXTERNAL_COMMAND_RESOLVER_ID, EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver,
     ExternalCommandResolverConfig, ExternalEvidenceAdmissionConfig,
     ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy, GoogleAdapter,
-    MCP_READONLY_RESOLVER_ID, McpReadOnlyResolver, McpReadOnlyResolverConfig, MistralAdapter,
+    MCP_READONLY_V2_RESOLVER_ID, McpReadOnlyResolverConfig, McpReadOnlyResolverV2, MistralAdapter,
     NvidiaAdapter, TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier,
     TrustedCommandVerifierConfig,
 };
@@ -1698,7 +1698,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
     };
     let external_resolver = external_resolver_config.map(ExternalCommandResolver::new);
     let external_admission = external_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
-    let mcp_resolver = mcp_resolver_config.map(McpReadOnlyResolver::new);
+    let mcp_resolver = mcp_resolver_config.map(McpReadOnlyResolverV2::new);
     let mcp_admission = mcp_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
     let trusted_verifier = trusted_verifier_config.map(TrustedCommandVerifier::new);
     let mut resolution_rounds = Vec::new();
@@ -1931,7 +1931,7 @@ async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
             resolver_adapter: if external_resolver.is_some() {
                 Some(EXTERNAL_COMMAND_RESOLVER_ID)
             } else if mcp_resolver.is_some() {
-                Some(MCP_READONLY_RESOLVER_ID)
+                Some(MCP_READONLY_V2_RESOLVER_ID)
             } else if !resolver.facts.is_empty() {
                 Some("cli_local_fact_store")
             } else {
@@ -4120,7 +4120,7 @@ fn resolve_mcp_readonly_config(
         );
     }
     if !configured.read_only {
-        return Err("resolution.mcp_readonly.read_only must be true for v0.3.0".into());
+        return Err("resolution.mcp_readonly.read_only must be true".into());
     }
     if configured.resolver_class != "evidence_acquisition" {
         return Err(
@@ -4279,7 +4279,7 @@ fn resolve_mcp_admission_config(
     };
     resolve_evidence_admission_config(
         configured,
-        MCP_READONLY_RESOLVER_ID,
+        MCP_READONLY_V2_RESOLVER_ID,
         "resolution.mcp_readonly.admission",
     )
     .map(Some)
@@ -4884,7 +4884,7 @@ mod candidate_json_tests {
             sources: vec![],
         };
         let admission = resolve_mcp_admission_config(&loaded).unwrap().unwrap();
-        assert_eq!(admission.resolver_name, MCP_READONLY_RESOLVER_ID);
+        assert_eq!(admission.resolver_name, MCP_READONLY_V2_RESOLVER_ID);
         assert_eq!(admission.sources["mcp:s:read"].authority_class, "primary");
     }
 
