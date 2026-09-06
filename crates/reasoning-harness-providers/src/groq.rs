@@ -303,7 +303,7 @@ impl GroqAdapter {
                 output_tokens: usage.completion_tokens,
                 total_tokens: usage.total_tokens,
             },
-            provider_attempts: u32::try_from(rate_limit_retries + 1).unwrap_or(u32::MAX),
+            provider_attempts: provider_attempts(rate_limit_retries, structured_output_retries),
             finish_reason: choice.finish_reason,
         })
     }
@@ -741,6 +741,78 @@ mod tests {
         assert_eq!(response.text, "ok");
         assert_eq!(response.provider_attempts, 2);
         server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn retries_best_effort_schema_validation_failure_then_returns_success() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            for attempt in 0..3 {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = [0u8; 8192];
+                let _ = stream.read(&mut buffer);
+                let (status, body) = if attempt < 2 {
+                    (
+                        "400 Bad Request",
+                        r#"{"error":{"message":"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details."}}"#,
+                    )
+                } else {
+                    (
+                        "200 OK",
+                        r#"{"model":"test-model","choices":[{"finish_reason":"stop","message":{"content":"{}"}}],"usage":{"prompt_tokens":3,"completion_tokens":1,"total_tokens":4}}"#,
+                    )
+                };
+                write!(
+                    stream,
+                    "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                    body.len()
+                )
+                .unwrap();
+            }
+        });
+        let adapter = GroqAdapter::with_base_url_and_timeout(
+            "test-key",
+            "test-model",
+            &format!("http://{address}/v1/"),
+            Duration::from_secs(2),
+        )
+        .unwrap();
+        let response = adapter
+            .generate(ModelRequest {
+                task: "return json".into(),
+                system: None,
+                output_format: ModelOutputFormat::JsonSchema {
+                    name: "test".into(),
+                    schema: json!({"type":"object"}),
+                },
+                max_tokens: Some(8),
+                random_seed: Some(1),
+                reasoning_preference: None,
+            })
+            .await
+            .unwrap();
+        assert_eq!(response.text, "{}");
+        assert_eq!(response.provider_attempts, 3);
+        server.join().unwrap();
+    }
+
+    #[test]
+    fn structured_output_retry_matches_only_validation_errors() {
+        assert!(is_retryable_structured_output_error(
+            r#"{"error":{"message":"Failed to validate JSON. Please adjust your prompt."}}"#
+        ));
+        assert!(is_retryable_structured_output_error(
+            r#"{"error":{"message":"Generated JSON does not match the expected schema."}}"#
+        ));
+        assert!(!is_retryable_structured_output_error(
+            r#"{"error":{"message":"unsupported parameter"}}"#
+        ));
     }
 
     #[tokio::test]
