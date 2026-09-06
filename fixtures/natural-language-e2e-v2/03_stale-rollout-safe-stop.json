@@ -1,0 +1,20 @@
+{
+  "adaptive": false,
+  "config": "configs/stale.json",
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "id": "stale-rollout-safe-stop",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "rollout-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v1",
+  "target": {
+    "key": "rollout.approved",
+    "value": "true"
+  },
+  "task": "Determine whether the rollout is approved. If the available observation is stale, do not assert approval."
+}
