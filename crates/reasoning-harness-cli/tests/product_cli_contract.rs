@@ -207,7 +207,7 @@ fn synthetic_session_file(path: &Path) {
     let value = serde_json::json!({
         "schema_version": "reason-session-v1",
         "runtime": {
-            "natural_output_contract": "reason-natural-output-v3",
+            "natural_output_contract": "reason-natural-output-v4",
             "exposed_text_policy_id": "harness-canonical-exposed-text-v1",
             "reasoning_thread_schema_version": 1,
             "provider": "mistral",

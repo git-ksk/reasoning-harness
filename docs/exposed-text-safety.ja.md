@@ -18,7 +18,7 @@ renderer互換性のため `FinalAnswerCandidate` は引き続き `text` と `fa
 
 ## Product telemetryとwire contract
 
-自然文JSON出力は `reason-natural-output-v3` を使い、次を含む。
+自然文JSON出力は `reason-natural-output-v4` を使い、次を含む。
 
 ```json
 "exposed_text": {

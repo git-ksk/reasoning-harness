@@ -67,7 +67,7 @@ use serde::{Deserialize, Serialize, de::DeserializeOwned};
 const CLI_OUTPUT_SCHEMA_VERSION: &str = "reason-cli-output-v1";
 const CLI_CONFIG_CONTRACT_ID: &str = "reason-config-v1";
 const SEMANTIC_CHECK_INPUT_CONTRACT_ID: &str = "semantic-check-input-v1";
-const NATURAL_OUTPUT_CONTRACT_ID: &str = "reason-natural-output-v3";
+const NATURAL_OUTPUT_CONTRACT_ID: &str = "reason-natural-output-v4";
 const EXPOSED_TEXT_POLICY_ID: &str = "harness-canonical-exposed-text-v1";
 const SESSION_CONTRACT_ID: &str = "reason-session-v1";
 const SESSION_CONTINUATION_POLICY_ID: &str = "session-replay-only-acquisition-v1";
@@ -1468,6 +1468,7 @@ struct NaturalOutput {
     candidate: ReasoningCandidate,
     generation: GenerationObservation,
     initial_outcome: HarnessOutcome,
+    final_outcome: HarnessOutcome,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     resolution_rounds: Vec<GroundedResolutionOutcome>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2881,6 +2882,10 @@ async fn execute_natural(
         candidate,
         generation,
         initial_outcome,
+        final_outcome: HarnessOutcome {
+            verdict: final_verdict,
+            artifact: final_artifact,
+        },
         resolution_rounds,
         investigation: investigation_observation,
         finalization,
@@ -3201,11 +3206,7 @@ fn session_checkpoint_id(turn_index: usize) -> String {
 }
 
 fn natural_final_artifact(output: &NaturalOutput) -> &ReasoningArtifact {
-    output
-        .resolution_rounds
-        .last()
-        .map(|round| &round.final_artifact)
-        .unwrap_or(&output.initial_outcome.artifact)
+    &output.final_outcome.artifact
 }
 
 fn provider_from_observed_name(name: &str) -> Result<Provider, CliError> {
@@ -3508,11 +3509,7 @@ fn record_natural_turn(
 }
 
 fn natural_output_final_verdict(output: &NaturalOutput) -> Verdict {
-    output
-        .resolution_rounds
-        .last()
-        .map(|round| round.final_verdict)
-        .unwrap_or(output.initial_outcome.verdict)
+    output.final_outcome.verdict
 }
 
 fn continuation_args(
@@ -6674,7 +6671,7 @@ mod candidate_json_tests {
 
     #[test]
     fn natural_output_contract_is_versioned() {
-        assert_eq!(NATURAL_OUTPUT_CONTRACT_ID, "reason-natural-output-v3");
+        assert_eq!(NATURAL_OUTPUT_CONTRACT_ID, "reason-natural-output-v4");
         assert_eq!(EXPOSED_TEXT_POLICY_ID, "harness-canonical-exposed-text-v1");
         let exposed = serde_json::to_value(NaturalExposedTextObservation {
             policy_id: EXPOSED_TEXT_POLICY_ID,
@@ -6683,6 +6680,84 @@ mod candidate_json_tests {
         .unwrap();
         assert_eq!(exposed["policy_id"], EXPOSED_TEXT_POLICY_ID);
         assert_eq!(exposed["renderer_text_exposed"], false);
+
+        let initial = HarnessOutcome {
+            verdict: Verdict::Unknown,
+            artifact: ReasoningArtifact {
+                task: "initial".into(),
+                ..Default::default()
+            },
+        };
+        let final_outcome = HarnessOutcome {
+            verdict: Verdict::Accept,
+            artifact: ReasoningArtifact {
+                task: "post-investigation-final".into(),
+                ..Default::default()
+            },
+        };
+        let output = NaturalOutput {
+            output_contract: NATURAL_OUTPUT_CONTRACT_ID,
+            task: "test".into(),
+            configuration: RunConfigurationObservation {
+                mode: "natural_language_provider",
+                provider: Some("mistral"),
+                model: Some("test-model".into()),
+                max_tokens: Some(64),
+                resolver_adapter: Some(INVESTIGATION_RUNTIME_ID),
+                resolver_admission: None,
+                trusted_verifier: None,
+                output_format: OutputFormat::Json,
+                config_sources: vec![],
+            },
+            safety_runtime: AnswerSafetyProfile::VerifiedTargetV1.identity(),
+            safety_observations: vec![],
+            context: NaturalContextObservation {
+                files: vec![],
+                stdin_context_bytes: 0,
+                trusted_facts: 0,
+                hypotheses: 0,
+                resolver_facts: 0,
+            },
+            candidate: ReasoningCandidate::default(),
+            generation: GenerationObservation {
+                provider: "mistral",
+                model: "test-model".into(),
+                usage: ModelUsage::default(),
+                latency_ms: 0,
+                provider_attempts: 1,
+                cost_usd: None,
+            },
+            initial_outcome: initial,
+            final_outcome,
+            resolution_rounds: vec![],
+            investigation: None,
+            finalization: FinalizationResult {
+                status: FinalizationStatus::Unresolved,
+                text: None,
+                factual_claims: 0,
+                covered_claims: 0,
+                factual_claim_coverage: 1.0,
+                uncovered_propositions: vec![],
+            },
+            exposed_text: NaturalExposedTextObservation {
+                policy_id: EXPOSED_TEXT_POLICY_ID,
+                renderer_text_exposed: false,
+            },
+            rendering: vec![],
+            rendering_failure: None,
+        };
+        assert_eq!(
+            natural_final_artifact(&output).task,
+            "post-investigation-final"
+        );
+        assert_eq!(natural_output_final_verdict(&output), Verdict::Accept);
+        let serialized = serde_json::to_value(&output).unwrap();
+        assert_eq!(serialized["output_contract"], NATURAL_OUTPUT_CONTRACT_ID);
+        assert_eq!(serialized["final_outcome"]["verdict"], "accept");
+        assert_eq!(
+            serialized["final_outcome"]["artifact"]["task"],
+            "post-investigation-final"
+        );
     }
 
     #[test]

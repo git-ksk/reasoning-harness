@@ -8,6 +8,7 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ### Changed
 
+- Bumped natural-language JSON output from `reason-natural-output-v3` to `reason-natural-output-v4` and added explicit `final_outcome` telemetry so the exposed finalization, persisted session checkpoint, and evaluation all bind to the same post-investigation Harness artifact/verdict. This closes the ambiguity where `resolution_rounds[-1]` represented acquisition-before-regeneration rather than the final post-regeneration state.
 - Added the pre-observation `natural-language-e2e-v1` #214 evaluation surface: hypothesis-free bounded investigation, identity/freshness/scope/authority rejection cases, multi-turn session add/correction/resume/fork, exposed-text-vs-structured safety scoring, deterministic no-network acquisition fixtures, and a frozen zero-correctness-violation adoption gate.
 - Froze `natural-language-e2e-v2` as the #214 successor after the v1 first live attempt became non-scorable due to an evaluator `NameError`; v1 remains immutable. v2 preserves the ten cases and provider policy, fixes only the successor evaluator path, and adds direct regression coverage for scoring execution before live observation.
 - Closed Issue #210's exposed-text correctness gap: `GroundedAnswer` / `QualifiedPartialAnswer` no longer expose model renderer `text`; Harness constructs the exposed text from accepted factual claims or typed recovery state under `harness-canonical-exposed-text-v1`.
