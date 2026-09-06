@@ -1,4 +1,4 @@
-use std::{env, time::Duration};
+use std::{env, sync::Arc, time::Duration};
 
 use reasoning_harness_core::{
     ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
@@ -17,6 +17,8 @@ const MAX_EMPTY_TEXT_RETRIES: usize = 1;
 const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(10);
 const INITIAL_TRANSIENT_BACKOFF: Duration = Duration::from_millis(500);
 const GOOGLE_RECOMMENDED_TEMPERATURE: f32 = 1.0;
+const GOOGLE_MIN_REQUEST_INTERVAL_MS_ENV: &str = "REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS";
+const MAX_CONFIGURED_REQUEST_INTERVAL: Duration = Duration::from_secs(60);
 
 /// Google Gemini API / AI Studio adapter for Google-hosted text models.
 ///
@@ -27,6 +29,30 @@ pub struct GoogleAdapter {
     api_key: String,
     base_url: Url,
     model: String,
+    request_pacer: Option<Arc<RequestPacer>>,
+}
+
+struct RequestPacer {
+    min_interval: Duration,
+    next_start: tokio::sync::Mutex<tokio::time::Instant>,
+}
+
+impl RequestPacer {
+    fn new(min_interval: Duration) -> Self {
+        Self {
+            min_interval,
+            next_start: tokio::sync::Mutex::new(tokio::time::Instant::now()),
+        }
+    }
+
+    async fn wait(&self) {
+        let mut next_start = self.next_start.lock().await;
+        let now = tokio::time::Instant::now();
+        if *next_start > now {
+            tokio::time::sleep_until(*next_start).await;
+        }
+        *next_start = tokio::time::Instant::now() + self.min_interval;
+    }
 }
 
 impl GoogleAdapter {
@@ -34,7 +60,11 @@ impl GoogleAdapter {
         let api_key = env::var("GEMINI_API_KEY").map_err(|_| {
             ModelError::new(ModelErrorKind::Credentials, "GEMINI_API_KEY is not set")
         })?;
-        Self::new(api_key, model)
+        let mut adapter = Self::new(api_key, model)?;
+        if let Some(interval) = configured_request_interval_from_env()? {
+            adapter.request_pacer = Some(Arc::new(RequestPacer::new(interval)));
+        }
+        Ok(adapter)
     }
 
     pub fn new(api_key: impl Into<String>, model: impl Into<String>) -> Result<Self, ModelError> {
@@ -82,6 +112,7 @@ impl GoogleAdapter {
             api_key,
             base_url,
             model,
+            request_pacer: None,
         })
     }
 
@@ -112,6 +143,9 @@ impl GoogleAdapter {
         let mut empty_text_retries = 0usize;
 
         loop {
+            if let Some(pacer) = &self.request_pacer {
+                pacer.wait().await;
+            }
             provider_attempts = provider_attempts.saturating_add(1);
             let response = self
                 .client
@@ -245,6 +279,38 @@ struct ResponseFormat {
     mime_type: &'static str,
     #[serde(skip_serializing_if = "Option::is_none")]
     schema: Option<Value>,
+}
+
+fn configured_request_interval_from_env() -> Result<Option<Duration>, ModelError> {
+    let Ok(raw) = env::var(GOOGLE_MIN_REQUEST_INTERVAL_MS_ENV) else {
+        return Ok(None);
+    };
+    parse_request_interval_ms(&raw)
+}
+
+fn parse_request_interval_ms(raw: &str) -> Result<Option<Duration>, ModelError> {
+    let millis = raw.trim().parse::<u64>().map_err(|_| {
+        ModelError::new(
+            ModelErrorKind::Protocol,
+            format!(
+                "{GOOGLE_MIN_REQUEST_INTERVAL_MS_ENV} must be an integer number of milliseconds"
+            ),
+        )
+    })?;
+    if millis == 0 {
+        return Ok(None);
+    }
+    let interval = Duration::from_millis(millis);
+    if interval > MAX_CONFIGURED_REQUEST_INTERVAL {
+        return Err(ModelError::new(
+            ModelErrorKind::Protocol,
+            format!(
+                "{GOOGLE_MIN_REQUEST_INTERVAL_MS_ENV} must not exceed {} ms",
+                MAX_CONFIGURED_REQUEST_INTERVAL.as_millis()
+            ),
+        ));
+    }
+    Ok(Some(interval))
 }
 
 fn classify_http_error(status: StatusCode, body: &str) -> ModelErrorKind {
@@ -454,6 +520,17 @@ mod tests {
         })
         .unwrap();
         assert_eq!(value["temperature"], 1.0);
+    }
+
+    #[test]
+    fn parses_opt_in_google_request_pacing_without_changing_default() {
+        assert_eq!(parse_request_interval_ms("0").unwrap(), None);
+        assert_eq!(
+            parse_request_interval_ms("4500").unwrap(),
+            Some(Duration::from_millis(4500))
+        );
+        assert!(parse_request_interval_ms("not-a-number").is_err());
+        assert!(parse_request_interval_ms("60001").is_err());
     }
 
     #[test]
