@@ -298,7 +298,7 @@ mod tests {
     #[cfg(unix)]
     fn script(body: &str, name: &str) -> PathBuf {
         let path = std::env::temp_dir().join(format!(
-            "reason-mcp-readonly-{}-{name}.sh",
+            "reason-mcp-readonly-v2-{}-{name}.sh",
             std::process::id()
         ));
         fs::write(&path, body).unwrap();
