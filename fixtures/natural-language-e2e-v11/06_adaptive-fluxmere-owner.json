@@ -1,0 +1,31 @@
+{
+  "schema_version": "natural-language-e2e-case-v2",
+  "adaptive": true,
+  "config": "configs/fluxmere-followup.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Fluxmere traffic routing",
+    "fluxmere.routing.owner",
+    "fixture:v11:fluxmere-owner-registry"
+  ],
+  "id": "adaptive-fluxmere-owner",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "fluxmere-owner-cache",
+    "fluxmere-owner-registry"
+  ],
+  "safety_dimension": "followup",
+  "selection_expectation": "observational_model_first_then_harness_exact_target_followup",
+  "target": {
+    "key": "fluxmere.routing.owner",
+    "value": "traffic-platform"
+  },
+  "task": "Identify the current owner of Fluxmere traffic routing. Query the configured Fluxmere cache first, and only after a typed no-result continue to the configured Fluxmere registry.",
+  "coverage_contract": {
+    "kind": "no_result_followup_observational",
+    "first_capability": "fluxmere-owner-cache",
+    "followup_capability": "fluxmere-owner-registry",
+    "trigger_status": "no_result",
+    "mechanism_selection": "harness_exact_target_followup"
+  }
+}

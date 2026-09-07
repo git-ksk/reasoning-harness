@@ -1,0 +1,104 @@
+{
+  "schema_version": "natural-language-e2e-manifest-v3",
+  "corpus_identity": "natural-language-e2e-v11",
+  "evaluator_identity": "reason-natural-language-e2e-v11",
+  "scoring_identity": "natural-language-e2e-scoring-v11",
+  "successor_of": "natural-language-e2e-v10",
+  "successor_reason": "fresh full-product v0.4.1 successor after v10 exposed a planner trigger miss before Issue #249; separates trigger reachability from conditional post-no_result mechanism conformance",
+  "raw_model_comparison_claimed": false,
+  "case_files": [
+    "01_unique-arclume-endpoint.json",
+    "02_ambiguous-brimvale-ledger.json",
+    "03_stale-cyrenox-window.json",
+    "04_scope-deltara-index.json",
+    "05_adaptive-emberquill-owner.json",
+    "06_adaptive-fluxmere-owner.json",
+    "07_adaptive-glyntide-owner.json",
+    "08_authority-heliovar-release.json",
+    "09_identity-ionspire-registry.json",
+    "10_mcp-v11-v041-cargo-nonpromotion.json",
+    "11_session-add-jadewisp.json",
+    "12_session-correct-krysal.json",
+    "13_session-resume-fork-lumera.json"
+  ],
+  "hard_correctness_gate": {
+    "max_correctness_boundary_violations": 0
+  },
+  "measurement_semantics": {
+    "followup_observational_cases": 3,
+    "trigger_exposed_definition": "first executed configured cache action returns typed no_result",
+    "mechanism_denominator": "trigger_exposed_cases_only",
+    "zero_trigger_mechanism_classification": "inconclusive",
+    "mechanism_success_definition": "immediate next action is configured registry and harness_no_result_followup_selections increments for exact-target continuation",
+    "downstream_utility_scored_separately": true,
+    "trigger_miss_is_measurement_data_not_mechanism_failure": true,
+    "measurement_validity_does_not_require_utility_success": true
+  },
+  "historical_disjoint_roots": [
+    "fixtures/evidence-sufficiency-holdout-v1",
+    "fixtures/evidence-sufficiency-rsd0",
+    "fixtures/natural-language-e2e-v1",
+    "fixtures/natural-language-e2e-v2",
+    "fixtures/natural-language-e2e-v3",
+    "fixtures/natural-language-e2e-v4",
+    "fixtures/natural-language-e2e-v5",
+    "fixtures/natural-language-e2e-v6",
+    "fixtures/natural-language-e2e-v7",
+    "fixtures/natural-language-e2e-v8",
+    "fixtures/natural-language-e2e-v9",
+    "fixtures/natural-language-e2e-v10",
+    "fixtures/product-dogfood-holdout-v1",
+    "fixtures/product-external-info-v1",
+    "fixtures/product-external-info-v2",
+    "fixtures/product-external-info-v3",
+    "fixtures/product-external-info-v4",
+    "fixtures/semantic-decidability-holdout-v5"
+  ],
+  "historical_refs": [
+    "natural-language-e2e-v1-freeze",
+    "natural-language-e2e-v2-freeze",
+    "natural-language-e2e-v3-freeze",
+    "natural-language-e2e-v4-freeze",
+    "natural-language-e2e-v5-freeze",
+    "natural-language-e2e-v6-freeze",
+    "natural-language-e2e-v7-freeze",
+    "natural-language-e2e-v8-freeze",
+    "natural-language-e2e-v9-freeze",
+    "natural-language-e2e-v10-freeze",
+    "mcp-identity-gate-holdout-v1-freeze",
+    "mcp-identity-context-holdout-v1-freeze",
+    "f179a2e3156a9d99248ccab5e12ba7e77010e169"
+  ],
+  "live_observation_policy": {
+    "first_live_case_launch_is_canonical": true,
+    "pre_live_infrastructure_retry_allowed": true,
+    "post_observation_surface_changes_forbidden": true,
+    "semantic_tuning_requires_successor_identity": true
+  },
+  "mcp_policy": {
+    "generic_output_authority": "non_promoting",
+    "image": "ghcr.io/github/github-mcp-server@sha256:46cdbbd810faf6f7aed1745ea04057443f5cb9fcadc15c7308add18cf9a83e33",
+    "read_only": true,
+    "ref": "refs/tags/v0.4.1",
+    "repository": "git-ksk/reasoning-harness",
+    "server": "github/github-mcp-server",
+    "server_version_observed_in_prior_acceptance": "v1.12.0",
+    "tool": "get_file_contents"
+  },
+  "product_coordinate": {
+    "commit": "29a9e4be6273dbffeda324e15517dc64930ad315",
+    "mcp_adapter": "mcp_readonly_v3",
+    "natural_output_contract": "reason-natural-output-v4",
+    "tag": "v0.4.1",
+    "version": "0.4.1"
+  },
+  "provider_policy": {
+    "provider": "mistral",
+    "model": "ministral-8b-latest",
+    "base_seed": 57000,
+    "max_tokens": 1024,
+    "inter_case_delay_ms": 1500,
+    "model_identity_note": "provider returns the same API alias as observed_model; backing provider revision is not exposed",
+    "rate_limit_policy": "adapter-bounded-retry-plus-1500ms-inter-case-pacing"
+  }
+}
