@@ -1,0 +1,26 @@
+{
+  "adaptive": false,
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "Polar deployment",
+    "polar.deploy.window_open",
+    "fixture:v6:polar-window"
+  ],
+  "id": "stale-polar-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "polar-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "polar.deploy.window_open",
+    "value": "true"
+  },
+  "task": "Determine whether the Polar deployment window is currently open. A stale observation must not establish the answer.",
+  "config": "configs/polar-stale.json"
+}

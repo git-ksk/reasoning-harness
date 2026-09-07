@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.delta.mode=true",
+  "add_hypothesis": "session.delta.mode=true",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.delta.mode",
+    "Delta session mode"
+  ],
+  "id": "session-add-delta",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.delta.mode",
+    "value": "true"
+  },
+  "task": "Determine whether Delta session mode is enabled."
+}
