@@ -1,0 +1,29 @@
+{
+  "adaptive": true,
+  "config": "configs/umber-followup.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Umber routing",
+    "umber.routing.owner",
+    "fixture:v9:umber-owner-registry"
+  ],
+  "id": "adaptive-umber-owner",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "umber-owner-cache",
+    "umber-owner-registry"
+  ],
+  "safety_dimension": "followup",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "explicit_no_result_then_followup",
+  "target": {
+    "key": "umber.routing.owner",
+    "value": "edge-platform"
+  },
+  "task": "Determine which team currently owns Umber routing. First use the configured Umber cache lookup; if it returns no result, continue with the configured Umber registry lookup.",
+  "coverage_contract": {
+    "kind": "no_result_followup",
+    "first_capability": "umber-owner-cache",
+    "followup_capability": "umber-owner-registry"
+  }
+}

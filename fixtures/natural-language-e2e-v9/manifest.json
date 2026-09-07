@@ -1,0 +1,87 @@
+{
+  "adoption_gate": {
+    "max_correctness_boundary_violations": 0
+  },
+  "case_files": [
+    "01_unique-nereid-endpoint.json",
+    "02_ambiguous-peregrine-ledger.json",
+    "03_stale-rhodium-window.json",
+    "04_scope-sable-index.json",
+    "05_adaptive-umber-owner.json",
+    "06_authority-xenon-release.json",
+    "07_identity-yarrow-registry.json",
+    "08_mcp-v3-changelog-nonpromotion.json",
+    "09_session-add-opal.json",
+    "10_session-correct-quill.json",
+    "11_session-resume-fork-rune.json"
+  ],
+  "corpus_identity": "natural-language-e2e-v9",
+  "evaluator_identity": "reason-natural-language-e2e-v9",
+  "historical_disjoint_roots": [
+    "fixtures/evidence-sufficiency-holdout-v1",
+    "fixtures/evidence-sufficiency-rsd0",
+    "fixtures/natural-language-e2e-v1",
+    "fixtures/natural-language-e2e-v2",
+    "fixtures/natural-language-e2e-v3",
+    "fixtures/natural-language-e2e-v4",
+    "fixtures/natural-language-e2e-v5",
+    "fixtures/product-dogfood-holdout-v1",
+    "fixtures/product-external-info-v1",
+    "fixtures/product-external-info-v2",
+    "fixtures/product-external-info-v3",
+    "fixtures/product-external-info-v4",
+    "fixtures/semantic-decidability-holdout-v5",
+    "fixtures/natural-language-e2e-v6",
+    "fixtures/natural-language-e2e-v7",
+    "fixtures/natural-language-e2e-v8"
+  ],
+  "historical_refs": [
+    "natural-language-e2e-v1-freeze",
+    "natural-language-e2e-v2-freeze",
+    "natural-language-e2e-v3-freeze",
+    "natural-language-e2e-v4-freeze",
+    "natural-language-e2e-v5-freeze",
+    "mcp-identity-gate-holdout-v1-freeze",
+    "mcp-identity-context-holdout-v1-freeze",
+    "f179a2e3156a9d99248ccab5e12ba7e77010e169",
+    "natural-language-e2e-v6-freeze",
+    "natural-language-e2e-v7-freeze",
+    "natural-language-e2e-v8-freeze"
+  ],
+  "live_observation_policy": {
+    "first_operationally_complete_run_is_canonical": true,
+    "post_observation_surface_changes_forbidden": true,
+    "semantic_tuning_requires_successor_identity": true
+  },
+  "mcp_policy": {
+    "generic_output_authority": "non_promoting",
+    "image": "ghcr.io/github/github-mcp-server@sha256:46cdbbd810faf6f7aed1745ea04057443f5cb9fcadc15c7308add18cf9a83e33",
+    "read_only": true,
+    "ref": "refs/tags/v0.4.0",
+    "repository": "git-ksk/reasoning-harness",
+    "server": "github/github-mcp-server",
+    "server_version_observed_in_prior_acceptance": "v1.12.0",
+    "tool": "get_file_contents"
+  },
+  "product_coordinate": {
+    "commit": "50c750d976be63b4e489ba5d7d7f3225bdd839b8",
+    "mcp_adapter": "mcp_readonly_v3",
+    "natural_output_contract": "reason-natural-output-v4",
+    "tag": "v0.4.0",
+    "version": "0.4.0"
+  },
+  "provider_policy": {
+    "base_seed": 49000,
+    "inter_case_delay_ms": 1500,
+    "max_tokens": 1024,
+    "model": "ministral-8b-latest",
+    "model_identity_note": "provider returns the same API alias as observed_model; backing provider revision is not exposed",
+    "provider": "mistral",
+    "rate_limit_policy": "adapter-bounded-retry-plus-1500ms-inter-case-pacing"
+  },
+  "raw_model_comparison_claimed": false,
+  "schema_version": "natural-language-e2e-manifest-v2",
+  "scoring_identity": "natural-language-e2e-scoring-v9",
+  "successor_of": "natural-language-e2e-v8",
+  "successor_reason": "fresh successor after v8 live capability-coverage audit; requires exercised MCP and dedicated no-result follow-up lanes and N/A rejection telemetry"
+}
