@@ -1,0 +1,17 @@
+{
+  "correction": "session.quill.threshold=11",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.quill.threshold",
+    "Quill retry threshold"
+  ],
+  "id": "session-correct-quill",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.quill.threshold=10",
+  "target": {
+    "key": "session.quill.threshold",
+    "value": "11"
+  },
+  "task": "Determine the configured Quill retry threshold."
+}

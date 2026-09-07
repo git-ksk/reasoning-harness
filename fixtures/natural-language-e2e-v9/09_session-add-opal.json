@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.opal.mode=ready",
+  "add_hypothesis": "session.opal.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.opal.mode",
+    "Opal session mode"
+  ],
+  "id": "session-add-opal",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.opal.mode",
+    "value": "ready"
+  },
+  "task": "Determine whether Opal session mode is ready."
+}

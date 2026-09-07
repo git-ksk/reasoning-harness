@@ -1,0 +1,214 @@
+name: natural-language-e2e-v9-live
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+
+jobs:
+  v040-post-release-mistral-observation:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'natural-language-e2e-v9-live'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      PROVIDER: mistral
+      MODEL: ministral-8b-latest
+      SEED: '49000'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '1500'
+      FREEZE_TAG: natural-language-e2e-v9-freeze
+      PRODUCT_COMMIT: 50c750d976be63b4e489ba5d7d7f3225bdd839b8
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate v9 pre-observation freeze before live credentials
+        run: |
+          set -euo pipefail
+          FREEZE_COMMIT="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test -n "$FREEZE_COMMIT"
+          git diff --exit-code "$FREEZE_COMMIT" -- \
+            fixtures/natural-language-e2e-v9 \
+            fixtures/natural-language-e2e-v9.sha256 \
+            scripts/natural_language_e2e_v9.py \
+            scripts/test_natural_language_e2e_v9.py \
+            scripts/natural_e2e_fixture_resolver.py \
+            docs/natural-language-e2e-v9.md \
+            docs/natural-language-e2e-v9.ja.md \
+            .github/workflows/natural-language-e2e-v9-live.yml
+          (cd fixtures/natural-language-e2e-v9 && sha256sum -c ../natural-language-e2e-v9.sha256)
+          python3 scripts/natural_language_e2e_v9.py --validate-only > /tmp/natural-e2e-v9-freeze.json
+          jq -e --arg product "$PRODUCT_COMMIT" '
+            .valid == true
+            and .live_observation_performed == false
+            and .corpus_identity == "natural-language-e2e-v9"
+            and .evaluator_identity == "reason-natural-language-e2e-v9"
+            and .scoring_identity == "natural-language-e2e-scoring-v9"
+            and .cases == 11
+            and .provider_policy.provider == "mistral"
+            and .provider_policy.model == "ministral-8b-latest"
+            and .provider_policy.base_seed == 49000
+            and .provider_policy.max_tokens == 1024
+            and .provider_policy.inter_case_delay_ms == 1500
+          ' /tmp/natural-e2e-v9-freeze.json >/dev/null
+
+      - name: Prove exact released product source coordinate is unchanged
+        run: |
+          set -euo pipefail
+          test "$(git rev-list -n 1 v0.4.0)" = "$PRODUCT_COMMIT"
+          git diff --exit-code "$PRODUCT_COMMIT" -- Cargo.toml Cargo.lock crates
+          test "$(git show "$PRODUCT_COMMIT:Cargo.toml" | sed -n 's/^version = "\([^"]*\)"/\1/p' | head -1)" = '0.4.0'
+          git cat-file -e "$PRODUCT_COMMIT:CHANGELOG.md"
+
+      - name: Prove historical observed surfaces remain untouched
+        run: |
+          set -euo pipefail
+          for v in 1 2 3 4 5 6 7 8; do
+            git diff --exit-code "natural-language-e2e-v${v}-freeze" -- \
+              "fixtures/natural-language-e2e-v${v}" \
+              "fixtures/natural-language-e2e-v${v}.sha256" \
+              "scripts/natural_language_e2e_v${v}.py" \
+              "scripts/test_natural_language_e2e_v${v}.py"
+          done
+          git diff --exit-code f98bc04 -- \
+            fixtures/product-external-info-v1 fixtures/product-external-info-v1.sha256 \
+            fixtures/product-external-info-v2 fixtures/product-external-info-v2.sha256 \
+            fixtures/product-external-info-v3 fixtures/product-external-info-v3.sha256 \
+            fixtures/product-external-info-v4 fixtures/product-external-info-v4.sha256 \
+            fixtures/product-dogfood-holdout-v1 \
+            fixtures/evidence-sufficiency-rsd0
+
+      - name: Run v9 mechanical disjointness and evaluator tests
+        run: |
+          set -euo pipefail
+          python3 -m unittest -v scripts/test_natural_language_e2e_v9.py
+
+      - name: Run deterministic v0.4 correctness contracts
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-core finalization::tests::exposed_grounded_text_is_canonicalized_from_verified_claims
+          cargo test --locked -p reasoning-harness-core finalization::tests::exposed_qualified_text_preserves_uncertainty_mode
+          cargo test --locked -p reasoning-harness-core --test reasoning_thread_replay input_change_records_typed_invalidation_before_new_assertive_state_is_possible
+          cargo test --locked -p reasoning-harness-cli invalidated_session_never_reexposes_previous_turn_finalization
+          cargo test --locked -p reasoning-harness-cli --test product_cli_contract session_process_resume_and_fork_replay_no_external_side_effects
+          cargo test --locked -p reasoning-harness-cli natural_output_contract_is_versioned
+          cargo test --locked -p reasoning-harness-providers mcp_readonly_v3::tests::negotiated_session_accepts_allowlisted_downgrade_and_keeps_generic_content_opaque
+          cargo test --locked -p reasoning-harness-providers mcp_readonly_v3::tests::selected_tool_requires_server_read_only_proof
+
+      - name: Run v9 no-model no-network acquisition preflight
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v9.py --preflight > /tmp/natural-e2e-v9-preflight.json
+          jq -e '
+            .valid == true
+            and .live_observation_performed == false
+            and .model_used == false
+            and .cases == 11
+            and .resolver_capabilities_checked == 10
+            and .admission_contracts.evidence_sources_checked == 7
+            and .admission_contracts.allowlisted_evidence_sources == 6
+            and .admission_contracts.identity_negative_sources == 1
+            and .admission_contracts.positive_admissible_fixture_cases == 3
+            and .admission_contracts.intended_rejection_contracts == 4
+            and .admission_contracts.followup_sequence_contracts_verified == 1
+            and .admission_contracts.mcp_lane_contracts_verified == 1
+          ' /tmp/natural-e2e-v9-preflight.json >/dev/null
+
+      - name: Build released product CLI source under evaluation
+        run: cargo build --locked -p reasoning-harness-cli --bin reason
+
+      - name: Confirm pinned official GitHub MCP image and read-only tool contract
+        env:
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-providers \
+            'mcp_readonly_v3::tests::official_github_mcp_pinned_image_negotiates_and_generic_result_stays_opaque' \
+            -- --ignored --exact
+
+      - name: Check frozen Mistral credential after all pre-observation checks
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: test -n "$MISTRAL_API_KEY"
+
+      - name: Run first operationally complete frozen v9 observation candidate
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v9.py \
+            --reason-bin target/debug/reason \
+            --provider "$PROVIDER" --model "$MODEL" \
+            --seed "$SEED" --max-tokens "$MAX_TOKENS" \
+            --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --output /tmp/natural-language-e2e-v9-live.json \
+            > /tmp/natural-language-e2e-v9-live.stdout.json
+          jq -e --arg product "$PRODUCT_COMMIT" '
+            .schema_version == "reason-natural-language-e2e-v9"
+            and .corpus_identity == "natural-language-e2e-v9"
+            and .evaluator_identity == "reason-natural-language-e2e-v9"
+            and .scoring_identity == "natural-language-e2e-scoring-v9"
+            and .product_coordinate.commit == $product
+            and .product_coordinate.tag == "v0.4.0"
+            and .provider == "mistral"
+            and .model == "ministral-8b-latest"
+            and .seed == 49000
+            and .max_tokens == 1024
+            and .raw_model_comparison_claimed == false
+            and .aggregate.total_cases == 11
+            and .aggregate.completed_cases == 11
+            and .aggregate.operational_failures == 0
+            and .aggregate.process_operational_failures == 0
+            and .aggregate.typed_operational_action_failures == 0
+            and .aggregate.generation_failures == 0
+            and .aggregate.unsupported_structured_claims == 0
+            and .aggregate.unsupported_exposed_assertions == 0
+            and .aggregate.exposed_text_contract_violations == 0
+            and .aggregate.missed_target_insufficiency == 0
+            and .aggregate.identity_unsafe_admission == 0
+            and .aggregate.mcp_output_authority_self_promotion == 0
+            and .aggregate.required_admission_rejection_cases == 4
+            and .aggregate.required_admission_rejection_observed == 4
+            and .aggregate.admission_behavior_coverage == 1.0
+            and .aggregate.session_external_calls_replayed == 0
+            and .aggregate.correctness_boundary_violations == 0
+            and .aggregate.mcp_live_required_cases == 1
+            and .aggregate.mcp_live_exercised_cases == 1
+            and .aggregate.mcp_live_coverage == 1.0
+            and .aggregate.adaptive_followup_required_cases == 1
+            and .aggregate.adaptive_followup_exercised_cases == 1
+            and .aggregate.adaptive_followup_coverage == 1.0
+            and .aggregate.session_persistence_valid == true
+            and .aggregate.session_fork_state_valid == true
+            and .aggregate.token_usage_case_coverage >= 0.70
+            and .hard_correctness_gate_passed == true
+            and .measurement_validity_passed == true
+            and ([.cases[] | select(.coverage_contract_kind == "mcp_exercised") | (.target_recalled == true and .mcp_live_invocations >= 1 and .mcp_lane_exercised == true and .mcp_output_authority_self_promotion == 0)] | all)
+            and ([.cases[] | select(.coverage_contract_kind == "no_result_followup") | (.adaptive_followup_sequence_observed == true and .adaptive_followup_lane_exercised == true and .followup_opportunity == true and .useful_followup == true)] | all)
+            and ([.cases[] | select(.kind == "session_add" or .kind == "session_correct" or .kind == "session_resume_fork") | .persisted_final_state_match] | all)
+            and ([.cases[] | select(.kind == "session_resume_fork") | .fork_checkpoint_state_match] | all)
+            and .adoption_gate_passed == true
+          ' /tmp/natural-language-e2e-v9-live.json >/dev/null
+          jq '{schema_version, corpus_identity, evaluator_identity, scoring_identity, product_coordinate, provider, model, seed, max_tokens, aggregate, hard_correctness_gate_passed, measurement_validity_passed, adoption_gate_passed}' /tmp/natural-language-e2e-v9-live.json
+
+      - name: Preserve v9 candidate and all pre-observation evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v9-v040-mistral-ministral-8b-seed-49000
+          path: |
+            /tmp/natural-e2e-v9-freeze.json
+            /tmp/natural-e2e-v9-preflight.json
+            /tmp/natural-language-e2e-v9-live.json
+            /tmp/natural-language-e2e-v9-live.stdout.json
+          if-no-files-found: warn
+          retention-days: 30
