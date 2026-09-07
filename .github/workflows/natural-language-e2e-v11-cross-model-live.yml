@@ -1,0 +1,253 @@
+name: natural-language-e2e-v11-cross-model-live
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'natural-language-e2e-v11-cross-model-live'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      FREEZE_TAG: natural-language-e2e-v11-cross-model-v1-freeze
+      V11_FREEZE_TAG: natural-language-e2e-v11-freeze
+      V11_FREEZE_COMMIT: a758af17a998493c1005702365b100e05b05f95d
+      PRODUCT_COMMIT: 29a9e4be6273dbffeda324e15517dc64930ad315
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: natural-language-e2e-v11-cross-model-v1-freeze
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Prove frozen replication and reference surfaces
+        run: |
+          set -euo pipefail
+          FREEZE_COMMIT="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test -n "$FREEZE_COMMIT"
+          test "$(git rev-parse HEAD)" = "$FREEZE_COMMIT"
+          test "${{ github.event.pull_request.head.sha }}" = "$FREEZE_COMMIT"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          test "$(git rev-list -n 1 "$V11_FREEZE_TAG")" = "$V11_FREEZE_COMMIT"
+          sha256sum -c fixtures/natural-language-e2e-v11-cross-model-v1-surface.sha256
+          git diff --exit-code "$V11_FREEZE_TAG" -- \
+            fixtures/natural-language-e2e-v11 \
+            fixtures/natural-language-e2e-v11.sha256 \
+            fixtures/natural-language-e2e-v11-surface.sha256 \
+            scripts/natural_language_e2e_v11.py \
+            scripts/test_natural_language_e2e_v11.py \
+            scripts/natural_e2e_fixture_resolver.py \
+            docs/natural-language-e2e-v11.md \
+            docs/natural-language-e2e-v11.ja.md \
+            .github/workflows/natural-language-e2e-v11-live.yml
+          test "$(git rev-list -n 1 v0.4.1)" = "$PRODUCT_COMMIT"
+          git diff --exit-code "$PRODUCT_COMMIT" -- Cargo.toml Cargo.lock crates
+
+      - name: Validate replication contract without model or network
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v11_replication.py --validate-only > /tmp/v11-cross-model-validate.json
+          jq -e '
+            .valid == true
+            and .live_observation_performed == false
+            and .replication_identity == "natural-language-e2e-v11-cross-model-v1"
+            and .reference_evaluator_identity == "reason-natural-language-e2e-v11"
+            and .reference_scoring_identity == "natural-language-e2e-scoring-v11"
+            and .reference_freeze_commit == "a758af17a998493c1005702365b100e05b05f95d"
+            and .reference_product_commit == "29a9e4be6273dbffeda324e15517dc64930ad315"
+            and .cases == 13
+            and (.targets | length) == 5
+          ' /tmp/v11-cross-model-validate.json >/dev/null
+          python3 scripts/natural_language_e2e_v11_replication.py --preflight > /tmp/v11-cross-model-preflight.json
+          jq -e '
+            .valid == true
+            and .model_used == false
+            and .cases == 13
+            and .resolver_capabilities_checked == 14
+            and .admission_contracts.evidence_sources_checked == 9
+            and .admission_contracts.allowlisted_evidence_sources == 8
+            and .admission_contracts.identity_negative_sources == 1
+            and .admission_contracts.positive_admissible_fixture_cases == 5
+            and .admission_contracts.intended_rejection_contracts == 4
+            and .admission_contracts.followup_sequence_contracts_verified == 3
+            and .admission_contracts.mcp_lane_contracts_verified == 1
+          ' /tmp/v11-cross-model-preflight.json >/dev/null
+          python3 -m unittest -v scripts/test_natural_language_e2e_v11_replication.py
+
+      - name: Run deterministic v0.4.1 correctness and no-result contracts
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-core investigation::tests::no_result_can_reduce_selection_to_one_safe_follow_up
+          cargo test --locked -p reasoning-harness-core investigation::tests::no_result_followup_executes_validated_action_without_extra_planner_call
+          cargo test --locked -p reasoning-harness-core investigation::tests::no_result_followup_stays_on_exact_target_despite_same_key_sibling
+          cargo test --locked -p reasoning-harness-cli natural_output_contract_is_versioned
+          cargo test --locked -p reasoning-harness-providers mcp_readonly_v3::tests::selected_tool_requires_server_read_only_proof
+
+      - name: Preserve pre-observation replication evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v11-cross-model-v1-preflight
+          path: |
+            /tmp/v11-cross-model-validate.json
+            /tmp/v11-cross-model-preflight.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  replicate:
+    needs: preflight
+    if: needs.preflight.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - provider: google
+            model: gemma-4-31b-it
+            slug: google-gemma-4-31b-it
+            credential: google
+          - provider: google
+            model: gemini-3.5-flash-lite
+            slug: google-gemini-3.5-flash-lite
+            credential: google
+          - provider: groq
+            model: openai/gpt-oss-120b
+            slug: groq-openai-gpt-oss-120b
+            credential: groq
+          - provider: groq
+            model: qwen/qwen3.8-27b
+            slug: groq-qwen-qwen3.8-27b
+            credential: groq
+          - provider: groq
+            model: openai/gpt-oss-20b
+            slug: groq-openai-gpt-oss-20b
+            credential: groq
+    name: ${{ matrix.slug }}
+    env:
+      FREEZE_TAG: natural-language-e2e-v11-cross-model-v1-freeze
+      V11_FREEZE_TAG: natural-language-e2e-v11-freeze
+      V11_FREEZE_COMMIT: a758af17a998493c1005702365b100e05b05f95d
+      PRODUCT_COMMIT: 29a9e4be6273dbffeda324e15517dc64930ad315
+      SEED: '57000'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '1500'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: natural-language-e2e-v11-cross-model-v1-freeze
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Re-prove exact frozen coordinate before credentials
+        run: |
+          set -euo pipefail
+          FREEZE_COMMIT="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git rev-parse HEAD)" = "$FREEZE_COMMIT"
+          test "${{ github.event.pull_request.head.sha }}" = "$FREEZE_COMMIT"
+          test "$(git rev-list -n 1 "$V11_FREEZE_TAG")" = "$V11_FREEZE_COMMIT"
+          sha256sum -c fixtures/natural-language-e2e-v11-cross-model-v1-surface.sha256
+          git diff --exit-code "$V11_FREEZE_TAG" -- \
+            fixtures/natural-language-e2e-v11 \
+            fixtures/natural-language-e2e-v11.sha256 \
+            fixtures/natural-language-e2e-v11-surface.sha256 \
+            scripts/natural_language_e2e_v11.py \
+            scripts/test_natural_language_e2e_v11.py \
+            scripts/natural_e2e_fixture_resolver.py \
+            docs/natural-language-e2e-v11.md \
+            docs/natural-language-e2e-v11.ja.md \
+            .github/workflows/natural-language-e2e-v11-live.yml
+          test "$(git rev-list -n 1 v0.4.1)" = "$PRODUCT_COMMIT"
+          git diff --exit-code "$PRODUCT_COMMIT" -- Cargo.toml Cargo.lock crates
+          python3 -m unittest -v scripts/test_natural_language_e2e_v11_replication.py
+
+      - name: Build released product CLI source under evaluation
+        run: cargo build --locked -p reasoning-harness-cli --bin reason
+
+      - name: Confirm pinned official GitHub MCP image and read-only contract
+        env:
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-providers \
+            'mcp_readonly_v3::tests::official_github_mcp_pinned_image_negotiates_and_generic_result_stays_opaque' \
+            -- --ignored --exact
+
+      - name: Check provider credential
+        env:
+          CREDENTIAL_KIND: ${{ matrix.credential }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ "$CREDENTIAL_KIND" = google ]; then
+            test -n "$GEMINI_API_KEY"
+          else
+            test -n "$GROQ_API_KEY"
+          fi
+
+      - name: Run first frozen replication observation for target
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '4500'
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '2100'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          SLUG: ${{ matrix.slug }}
+        run: |
+          set -euo pipefail
+          OUT="/tmp/natural-language-e2e-v11-cross-model-${SLUG}.json"
+          STDOUT="/tmp/natural-language-e2e-v11-cross-model-${SLUG}.stdout.json"
+          MARKER="/tmp/natural-language-e2e-v11-cross-model-${SLUG}.attempt.json"
+          python3 scripts/natural_language_e2e_v11_replication.py \
+            --reason-bin target/debug/reason \
+            --provider "$PROVIDER" --model "$MODEL" \
+            --seed "$SEED" --max-tokens "$MAX_TOKENS" \
+            --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --attempt-marker "$MARKER" --output "$OUT" > "$STDOUT"
+          jq -e --arg provider "$PROVIDER" --arg model "$MODEL" --arg product "$PRODUCT_COMMIT" '
+            .schema_version == "reason-natural-language-e2e-v11"
+            and .replication_identity == "natural-language-e2e-v11-cross-model-v1"
+            and .cross_model_replication == true
+            and .corpus_identity == "natural-language-e2e-v11"
+            and .evaluator_identity == "reason-natural-language-e2e-v11"
+            and .scoring_identity == "natural-language-e2e-scoring-v11"
+            and .product_coordinate.commit == $product
+            and .provider == $provider
+            and .model == $model
+            and .seed == 57000
+            and .max_tokens == 1024
+            and .aggregate.total_cases == 13
+            and .aggregate.followup_observational_required_cases == 3
+            and .aggregate.mechanism_denominator == .aggregate.trigger_exposed_cases
+            and .aggregate.correctness_boundary_violations == 0
+            and .aggregate.session_external_calls_replayed == 0
+          ' "$OUT" >/dev/null
+          jq '{provider,model,aggregate,hard_correctness_gate_passed,measurement_observability_passed,operational_completeness_passed,report_gate_passed}' "$OUT"
+
+      - name: Preserve target observation
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v11-cross-model-v1-${{ matrix.slug }}-seed-57000
+          path: |
+            /tmp/natural-language-e2e-v11-cross-model-${{ matrix.slug }}.json
+            /tmp/natural-language-e2e-v11-cross-model-${{ matrix.slug }}.stdout.json
+            /tmp/natural-language-e2e-v11-cross-model-${{ matrix.slug }}.attempt.json
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,38 @@
+{
+  "schema_version": "natural-language-e2e-v11-cross-model-manifest-v1",
+  "replication_identity": "natural-language-e2e-v11-cross-model-v1",
+  "reference": {
+    "corpus_identity": "natural-language-e2e-v11",
+    "freeze_tag": "natural-language-e2e-v11-freeze",
+    "freeze_commit": "a758af17a998493c1005702365b100e05b05f95d",
+    "product_tag": "v0.4.1",
+    "product_commit": "29a9e4be6273dbffeda324e15517dc64930ad315",
+    "canonical_provider": "mistral",
+    "canonical_model": "ministral-8b-latest",
+    "canonical_actions_run": "34129798774",
+    "canonical_artifact_id": "10021729999"
+  },
+  "semantic_policy": {
+    "base_seed": 57000,
+    "max_tokens": 1024,
+    "inter_case_delay_ms": 1500,
+    "reuse_reference_evaluator_and_scoring": true,
+    "trigger_miss_is_not_mechanism_failure": true,
+    "zero_trigger_denominator_is_inconclusive": true,
+    "provider_specific_transport_pacing_allowed": true
+  },
+  "targets": [
+    {"provider": "google", "model": "gemma-4-31b-it"},
+    {"provider": "google", "model": "gemini-3.5-flash-lite"},
+    {"provider": "groq", "model": "openai/gpt-oss-120b"},
+    {"provider": "groq", "model": "qwen/qwen3.8-27b"},
+    {"provider": "groq", "model": "openai/gpt-oss-20b"}
+  ],
+  "live_observation_policy": {
+    "canonical_reference_must_not_be_rerun": true,
+    "first_live_case_launch_per_target_is_canonical": true,
+    "post_launch_rerun_forbidden": true,
+    "operational_failure_is_preserved_as_evidence": true,
+    "semantic_tuning_requires_new_identity": true
+  }
+}
