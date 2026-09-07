@@ -22,15 +22,15 @@ runtime は `unknown`、qualified partial answer、または abstention で停�
 
 ## 現在のプロダクトマイルストーン
 
-現在のexternal previewは `v0.4.0` である。**v0.4.0 — Grounded Investigation & Sessions（milestone #2）** は、2026-09-06に確認したexposed-text correctness、whole-invocation subprocess deadline、bounded investigation、resumable `ReasoningThread` product surface、fresh natural-language E2E、negotiated/session MCP compatibility、dependency freeze hygiene、一意なsafe actionの限定的deterministic選択を完了した。
+現在のexternal previewは `v0.4.1` である。**v0.4.1 — Investigation Utility Hardening（milestone #3）** は完了し、#249のexact-target typed-`no_result` continuationだけを追加する。同じtargetに明示fact-key対応read-only follow-upが1つだけ残る場合に限り継続し、target identity、admission、authority、verification、finalization、answer safety、machine-contract semantics、freeze済みnatural-language E2E v1〜v9 evidenceは維持する。
 
 v0.4.0は **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation** の順で実装し、#204 negotiated/session `mcp_readonly_v3`、#232 dependency/freeze hygiene、#233 unique-safe-action utility hardeningもrelease前に完了した。v4 cross-model replication (#208 / PR #209) と #216 Groq operational extension（2026-09-06 closeout済み）は凍結済みv4の追試であり、このラインのtuning surfaceには使っていない。
 
 重要な測定上の境界として、現在の `unsupported grounded claims = 0` はstructured `factual_claims` の安全性を示すが、任意のfree-form表示文章まで同じ保証が成立するとは扱わない。v0.4.0では表示文章そのもののverified-proposition consistencyをcorrectness gateへ昇格する。
 
-`v0.4.0` は現在公開されている external preview である。直前の **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) はhistorical provenanceとして完了状態を保持する。後続作業は、リリース済みmilestoneの観測を後から書き換えず、新たに測定されたproduct/research gapから開始する。
+`v0.4.1` は現在公開されている external preview である。v0.4.0は直前のGrounded Investigation & Sessions product foundationとして保持する。直前の **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) はhistorical provenanceとして完了状態を保持する。後続作業は、リリース済みmilestoneの観測を後から書き換えず、新たに測定されたproduct/research gapから開始する。
 
-active patch milestoneは **v0.4.1 — Investigation Utility Hardening（milestone #3）** である。Issue #249ではpost-releaseのavoidable-abstentionを1系統だけ扱い、typed `no_result` 後に同じexact targetへ明示fact-key対応read-only capabilityが機械的に1つだけ残る場合だけ継続する。target merge、admission、authority、verification、finalization、answer safety、freeze済みv1〜v9のmeasurement semanticsは変更しない。#248と#247はそれぞれ別のfuture product/evaluation workとして分離する。
+完了したpatch milestoneは **v0.4.1 — Investigation Utility Hardening（milestone #3）** である。Issue #249ではpost-releaseのavoidable-abstentionを1系統だけ扱い、typed `no_result` 後に同じexact targetへ明示fact-key対応read-only capabilityが機械的に1つだけ残る場合だけ継続する。target merge、admission、authority、verification、finalization、answer safety、freeze済みv1〜v9のmeasurement semanticsは変更しない。#248と#247はそれぞれ別のfuture product/evaluation workとして分離する。
 
 v0.3.0 はデフォルトで別の reasoning mechanism を追加しない。既存の `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary を通じて、すでに実装済みの bounded control loop を、実際の external acquisition および trusted-verifier adapters に接続する。
 

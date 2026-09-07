@@ -66,18 +66,18 @@ freeze済みv4のGroq追試でも、モデル規模にかかわらず同じ安�
 
 ## 30秒で始める
 
-### 1. 現在のv0.4.0プレビューをインストール
+### 1. 現在のv0.4.1プレビューをインストール
 
-`v0.4.0`が現在の自然文first external previewです。Rust 1.88+がある場合:
+`v0.4.1`が現在の自然文first external previewです。Rust 1.88+がある場合:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.4.0 --locked reasoning-harness-cli --bin reason
+  --tag v0.4.1 --locked reasoning-harness-cli --bin reason
 
 reason --version
 ```
 
-standalone archiveと`SHA256SUMS`は[v0.4.0 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.0)から取得できます。`main`は未releaseの開発変更を意図的に使う場合だけ選んでください。
+standalone archiveと`SHA256SUMS`は[v0.4.1 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.1)から取得できます。`main`は未releaseの開発変更を意図的に使う場合だけ選んでください。
 
 ### 2. 自然文タスク + 明示的なファクトを渡す
 
@@ -359,7 +359,7 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 
 ## 現在できること
 
-現在の`v0.4.0` external previewでは次を実装しています。`main`はtagより先へ進むことがあるため、再現可能なproduct snapshotが必要ならtagを基準にしてください。
+現在の`v0.4.1` external previewでは次を実装しています。`main`はtagより先へ進むことがあるため、再現可能なproduct snapshotが必要ならtagを基準にしてください。
 
 - `HarnessInput` / `ReasoningCandidate` / `ReasoningArtifact`のtyped contract
 - evidence binding、provenance/referenceの決定論的検証
@@ -397,9 +397,9 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 
 > 小型・低コストなモデルでも、typed intermediate state、evidence binding、明示的不確実性、adversarial pass、deterministic acceptance gate、bounded resolution/re-verificationを通すことで、推論の信頼性を実質的に高められるか？
 
-**v0.4.0 — Grounded Investigation & Sessions** milestone (#2) は完了し、release済みです。exposed-text binding、whole-invocation subprocess deadline、bounded investigation planning、resumable `ReasoningThread` session、canonical natural-language E2E、negotiated/session MCP compatibility、dependency freeze hygiene、一意なsafe actionだけをHarnessが選ぶ限定的utility hardeningを含みます。
+**v0.4.1 — Investigation Utility Hardening** milestone (#3) は完了し、release済みです。#249のexact-target typed-`no_result` continuationだけを追加し、同じtargetに明示fact-key対応read-only follow-upが1つだけ残る場合、追加のstochastic action-selector callなしでHarnessが選択します。target identity、authority、admission、verification、finalization、answer safety、machine contract、freeze済みnatural-language E2E v1〜v9 evidenceは変更しません。
 
-直前の **v0.3.0 — External Evidence & Resolution** milestone (#173) はhistorical provenanceとして保持します。non-frozen external-resolution acceptance gateは[v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.ja.md)に記録済みで、v0.4.0から書き換えません。
+直前の **v0.4.0 — Grounded Investigation & Sessions** milestone (#2) は、exposed-text binding、bounded investigation、resumable session、negotiated/session MCP、既存unique-safe selectorのproduct foundationとしてhistorical provenanceを維持します。さらに前の **v0.3.0 — External Evidence & Resolution** milestone (#173) のacceptanceは[v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.ja.md)に記録済みです。
 
 研究機能は、calibration → 独立したfrozen evaluation → operational stabilization → runtime identity/rollback → CLI compatibilityという昇格手順を通るまでproduct CLIへ入りません。
 

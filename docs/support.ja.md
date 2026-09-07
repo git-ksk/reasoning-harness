@@ -67,7 +67,7 @@ Provider credentialはenvironment variableのまま保持し、`reason-config-v1
 
 ## 安定性ステータス
 
-`v0.4.0`は現在の外部プレビューリリースです。v0.3のexternal acquisition/trusted-verifier foundationを維持しつつ、Harness-canonicalな公開事実テキスト、whole-invocation subprocess deadline、bounded natural-language investigation、resumable `ReasoningThread` session、negotiated/session `mcp_readonly_v3`、correctness violation 0を必須にしたcanonical natural-language E2E gateを追加しています。文書化されたv1.0 readiness gateは満たされていますが、`v0.4.0`は意図的にstable v1.0の主張ではなく、prerelease/v0.x compatibility promiseのままです。将来のv1.0には、通常のprovenance workflowを通じた明示的なversion/tag/release decisionがなお必要です。
+`v0.4.1`は現在の外部プレビューリリースです。v0.4.0のproduct/authority foundationを維持しつつ、typed `no_result` 後に同じexact targetへ明示fact-key対応read-only follow-upが1つだけ残る場合のdeterministic continuationだけを狭く追加しています。同じkeyのsibling targetは分離したままで、admission、authority、verification、finalization、answer safety、machine contract、freeze済みnatural-language E2E v1〜v9 evidenceは変更しません。文書化されたv1.0 readiness gateは満たされていますが、`v0.4.1`は意図的にstable v1.0の主張ではなく、prerelease/v0.x compatibility promiseのままです。将来のv1.0には、通常のprovenance workflowを通じた明示的なversion/tag/release decisionがなお必要です。
 
 
 product term、machine/runtime identifier、過去のresearch labelの区別については、[用語と命名ルール](terminology.ja.md)を参照してください。

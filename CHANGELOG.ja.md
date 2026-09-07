@@ -4,7 +4,11 @@
 
 ## [Unreleased]
 
-### Changed
+## [0.4.1] - 2026-09-07
+
+v0.4.1はexternal-previewのpatch release。freeze済みv9で観測したbounded investigationのutility residualだけを狭くhardeningし、target identity、authority、admission、verification、finalization、answer safety、machine contract semantics、freeze済みnatural-language E2E v1〜v9 evidenceは変更しない。
+
+### 変更
 
 - Issue #249: typed `no_result` の直後、同じexact targetに対して`expected_fact_key`を明示対応する未試行read-only capabilityがちょうど1つだけ残る場合に限り、bounded investigationがdeterministicに継続できる。同じfact keyの別targetは分離したままで、keyless、wildcard-only、複数候補、`no_result`以外、terminal stateではこの継続を使わない。audit用に`harness_no_result_followup_selections`を追加し、admission、authority、verification、finalization、answer safety、freeze済みnatural-language E2E v1〜v9は変更しない。
 
