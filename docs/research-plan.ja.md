@@ -223,9 +223,9 @@ D3 採用後も、typed metadata だけでは説明できない residual evidenc
 
 今後の研究も同じ原則で進めます。既存の frozen result を tuning に使わず、新しい gap には新しい研究 identity と fresh evaluation を用意します。
 
-## Natural-language E2E v10 post-release観測
+## Natural-language E2E v10-v11 post-release観測
 
-frozen v10 / Issue #252 の canonical Mistral run `34125135760` は11/11 complete、correctness-boundary violation `0`、operational failure `0` だったが measurement validity は fail した。Issue #249 の Cobalt lane は target を recall したものの cache action を実行せず（`planner_calls=4`, `actions=0`, `round_budget`）、typed `no_result` に到達しなかった。そのため post-trigger v0.4.1 mechanism は negative result ではなく censored / inconclusive とする。frozen v9/v10 は immutable のまま維持し、Issue #254 で observational trigger reachability と conditional post-trigger mechanism evidence を分離する。詳細は [v10結果](natural-language-e2e-v10-result.ja.md)。
+frozen v10 / Issue #252 canonical Mistral run `34125135760` は11/11 complete、correctness-boundary violation `0`、operational failure `0` だったが、Issue #249 Cobalt laneがtyped `no_result`へ到達せずmeasurement validityはfailし、censored/inconclusive observationとして維持する。続くfrozen v11 / Issue #254 canonical run `34129798774` は13/13 completeでcorrectness / operational / measurement / report gateをすべてpassした。独立にfreezeしたfollow-up 3件のtrigger reachabilityは1/3。exposedした1件ではreleased v0.4.1 exact-target continuationが1/1 conformant（`cache no_result -> registry`、Harness follow-up telemetry 1）で、admitted evidenceとverification progressまで到達した。残り2件はplanner trigger missで、follow-up target groundingは0/3。したがって残差はpost-`no_result` continuationからplanner/action selectionとdownstream groundingへ絞られた。frozen v9/v10/v11はimmutableのまま維持する。詳細は [v10結果](natural-language-e2e-v10-result.ja.md) と [v11結果](natural-language-e2e-v11-result.ja.md)。
 
 ## 評価原則
 

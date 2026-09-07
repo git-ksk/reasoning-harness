@@ -1,0 +1,17 @@
+{
+  "schema_version": "natural-language-e2e-case-v2",
+  "add_fact": "session.jadewisp.mode=ready",
+  "add_hypothesis": "session.jadewisp.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.jadewisp.mode",
+    "Jadewisp session mode"
+  ],
+  "id": "session-add-jadewisp",
+  "kind": "session_add",
+  "target": {
+    "key": "session.jadewisp.mode",
+    "value": "ready"
+  },
+  "task": "Determine whether Jadewisp session mode is ready."
+}

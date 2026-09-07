@@ -1,0 +1,17 @@
+{
+  "schema_version": "natural-language-e2e-case-v2",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.lumera.audit",
+    "Lumera audit mode"
+  ],
+  "id": "session-resume-fork-lumera",
+  "kind": "session_resume_fork",
+  "start_fact": "session.lumera.audit=enabled",
+  "start_hypothesis": "session.lumera.audit=enabled",
+  "target": {
+    "key": "session.lumera.audit",
+    "value": "enabled"
+  },
+  "task": "Determine whether Lumera audit mode is enabled."
+}

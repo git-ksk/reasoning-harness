@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Research / 評価
+
+- Issue #254 の frozen natural-language E2E v11 canonical Mistral observation (`34129798774`) を exact released v0.4.1 上で保存。13/13 full run は correctness / operational / measurement / report gate をすべて pass。fresh no-result trigger reachability は1/3で、trigger-exposedした1件は `cache no_result -> registry` と Harness follow-up telemetry 1を観測し conditional conformance 1/1、verification progressまで到達した。残り2件はplanner utility dataとして保持し、follow-up target groundingは0/3。frozen v9-v11はrerun/tuningしない。
+
 ## [0.4.1] - 2026-09-07
 
 v0.4.1はexternal-previewのpatch release。freeze済みv9で観測したbounded investigationのutility residualだけを狭くhardeningし、target identity、authority、admission、verification、finalization、answer safety、machine contract semantics、freeze済みnatural-language E2E v1〜v9 evidenceは変更しない。

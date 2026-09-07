@@ -336,8 +336,9 @@ With #13, #27, #28, and the D3 pilot/replication evidence complete, the determin
 ### #252/#254 v0.4.1 successor measurement
 
 - [observed #252] frozen v10 canonical Mistral run `34125135760` completed 11/11 with correctness-boundary violations `0` and operational failures `0`, but measurement validity failed.
-- [censored #252] the dedicated #249 lane recalled the exact target but executed no cache action, so typed `no_result` was never reached; v10 is inconclusive for the post-trigger #249 effect and must not be rerun or tuned.
-- [next #254] design a fresh trigger-conditioned successor that separately reports natural-language trigger reachability and conditional post-`no_result` Harness continuation; any controlled intervention must be explicitly separated from ordinary planner behavior.
+- [censored #252] the dedicated #249 lane recalled the exact target but executed no cache action, so typed `no_result` was never reached; v10 remains inconclusive for the post-trigger #249 effect and is not rerun or tuned.
+- [completed #254] frozen v11 canonical Mistral run `34129798774` completed 13/13 with correctness/operations/measurement/report gates passing. Trigger reachability was 1/3. The single trigger-exposed case was conditionally conformant 1/1 (`cache no_result -> registry`, Harness follow-up telemetry 1) and produced verification progress, while the other two cases were planner trigger misses and follow-up target grounding remained 0/3.
+- [residual] future work, if justified, should target planner/action selection and downstream grounding under a new successor identity; do not rerun or tune frozen v9/v10/v11.
 
 ## Decision gates for future features
 

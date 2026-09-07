@@ -8,6 +8,7 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ### Research / evaluation
 
+- Preserved the Issue #254 frozen natural-language E2E v11 canonical Mistral observation (`34129798774`) on exact released v0.4.1. The full 13/13 run passed correctness, operational, measurement, and report gates. Fresh no-result trigger reachability was 1/3; the single trigger-exposed case was conditionally conformant 1/1 (`cache no_result -> registry`, Harness follow-up telemetry 1) and produced verification progress, while the two misses remain planner utility data and follow-up target grounding remained 0/3. Frozen v9-v11 are not rerun or tuned.
 - Preserved the Issue #252 frozen v0.4.1 natural-language E2E v10 canonical Mistral observation (`34125135760`) as an exercised-path validity failure with correctness-boundary violations `0` and operational failures `0`. The dedicated #249 lane did not reach its cache/typed-`no_result` trigger, so the post-trigger effect remains inconclusive and moves to fresh successor Issue #254 rather than rerunning or tuning v10.
 
 ## [0.4.1] - 2026-09-07

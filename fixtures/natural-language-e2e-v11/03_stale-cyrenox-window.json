@@ -1,0 +1,26 @@
+{
+  "schema_version": "natural-language-e2e-case-v2",
+  "adaptive": false,
+  "config": "configs/cyrenox-stale.json",
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "Cyrenox deployment window",
+    "cyrenox.deploy.window_open",
+    "fixture:v11:cyrenox-window"
+  ],
+  "id": "stale-cyrenox-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "cyrenox-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "cyrenox.deploy.window_open",
+    "value": "true"
+  },
+  "task": "Determine whether the Cyrenox deployment window is open now. Reject an observation that is outside the allowed freshness interval instead of promoting its value to current truth."
+}

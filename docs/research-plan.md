@@ -144,9 +144,9 @@ Primary question: does the resolution loop reject false closure and preserve `un
 - generalized oracle adapter interface where concrete consumer needs justify it
 - verification and resolution budget policies
 
-## Natural-language E2E v10 post-release observation
+## Natural-language E2E v10-v11 post-release observation
 
-Frozen v10 / Issue #252 canonical Mistral run `34125135760` completed 11/11 with correctness-boundary violations `0` and operational failures `0`, but failed measurement validity. The Issue #249 Cobalt lane recalled its target yet executed no cache action (`planner_calls=4`, `actions=0`, `round_budget`), so typed `no_result` was never reached and the post-trigger v0.4.1 mechanism is censored/inconclusive rather than negative. Frozen v9/v10 remain immutable; Issue #254 separates observational trigger reachability from conditional post-trigger mechanism evidence. See [v10 result](natural-language-e2e-v10-result.md).
+Frozen v10 / Issue #252 canonical Mistral run `34125135760` completed 11/11 with correctness-boundary violations `0` and operational failures `0`, but failed measurement validity because the Issue #249 Cobalt lane never reached typed `no_result`; that observation remains censored/inconclusive. Frozen v11 / Issue #254 canonical run `34129798774` then completed 13/13 with correctness, operational, measurement, and report gates passing. Across three independently frozen follow-up cases, trigger reachability was 1/3. The single exposed case executed the released v0.4.1 exact-target continuation conformantly 1/1 (`cache no_result -> registry`, Harness follow-up telemetry 1) and produced admitted evidence plus verification progress; the other two were planner trigger misses, and follow-up target grounding remained 0/3. This narrows the residual from post-`no_result` continuation to planner/action selection and downstream grounding. Frozen v9/v10/v11 remain immutable. See [v10 result](natural-language-e2e-v10-result.md) and [v11 result](natural-language-e2e-v11-result.md).
 
 ## Evaluation principle
 

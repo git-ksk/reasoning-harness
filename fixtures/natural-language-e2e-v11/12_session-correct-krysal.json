@@ -1,0 +1,17 @@
+{
+  "schema_version": "natural-language-e2e-case-v2",
+  "correction": "session.krysal.threshold=13",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.krysal.threshold",
+    "Krysal retry threshold"
+  ],
+  "id": "session-correct-krysal",
+  "kind": "session_correct",
+  "start_fact": "session.krysal.threshold=12",
+  "target": {
+    "key": "session.krysal.threshold",
+    "value": "13"
+  },
+  "task": "Determine the configured Krysal retry threshold."
+}

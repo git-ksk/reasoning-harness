@@ -336,8 +336,9 @@ Issue #13、#27、#28、および D3 pilot/replication evidence が完了した�
 ### #252/#254 v0.4.1 successor測定
 
 - [観測済み #252] frozen v10 canonical Mistral run `34125135760` は11/11 complete、correctness-boundary violation `0`、operational failure `0` だったが measurement validity は fail。
-- [censored #252] #249 専用laneは exact target を recall したが cache action を実行せず typed `no_result` に到達しなかった。したがって v10 は post-trigger #249 effect に対して inconclusive であり、rerun / tuning しない。
-- [次 #254] natural-language trigger reachability と conditional post-`no_result` Harness continuation を別々に報告する fresh trigger-conditioned successor を設計する。controlled intervention を使う場合は ordinary planner behavior と明示的に分離する。
+- [censored #252] #249 専用laneは exact target を recall したが cache action を実行せず typed `no_result` に到達しなかった。したがって v10 は post-trigger #249 effect に対して inconclusive のまま維持し、rerun / tuning しない。
+- [完了 #254] frozen v11 canonical Mistral run `34129798774` は13/13 completeで、correctness / operations / measurement / report gateはすべてpass。trigger reachabilityは1/3。trigger-exposedした1件は `cache no_result -> registry` とHarness follow-up telemetry 1を観測しconditional conformance 1/1、verification progressまで到達した。残り2件はplanner trigger missで、follow-up target groundingは0/3。
+- [残差] 今後必要ならplanner/action selectionとdownstream groundingを新しいsuccessor identityで扱う。frozen v9/v10/v11はrerun/tuningしない。
 
 ## 将来機能の判断ゲート
 
