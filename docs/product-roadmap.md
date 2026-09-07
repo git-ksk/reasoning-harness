@@ -45,6 +45,14 @@ extractions, tool output, and prior model output do not become trusted evidence 
 accepted them. Evidence ingestion, admission, verification, semantic/answer-safety diagnostics, bounded
 resolution, re-verification, and final-claim coverage remain harness-owned.
 
+## v0.4.1 — Investigation Utility Hardening
+
+Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3). v0.4.0 remains the current released external preview; v0.4.1 is the active patch line for narrowly measured post-release investigation utility residuals.
+
+- **#249 exact-target `no_result` continuation:** when a typed `no_result` leaves exactly one explicit read-only capability for the same target's `expected_fact_key`, the Harness selects that follow-up without another stochastic action-selector call. Target identity is never merged across same-key siblings, and admission/authority/verification/finalization/answer-safety semantics remain unchanged.
+- Frozen natural-language E2E v1-v9 remain immutable historical evidence. v9 motivates the product gap but is not rerun, rescored, or used as a tuning surface.
+- #248 belongs to the separate v0.5.0 Verified Investigation Utility line because it may connect investigation targets to final-answer targets/authority. #247 remains a separate evaluation-gate semantics issue.
+
 ## v0.4.0 — Grounded Investigation & Sessions
 
 Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2). v0.4.0 is the current external-preview release. The line was opened from product/correctness gaps measured in the 2026-09-06 review and completed without rewriting historical v0.3.0 acceptance or frozen research/E2E observations.

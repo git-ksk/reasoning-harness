@@ -2325,7 +2325,10 @@ async fn run_natural_investigation(
             Ok(round) => round,
             Err(_) => break,
         };
-        let proposal = if let Some(proposal) = state.unique_compatible_action_proposal() {
+        let proposal = if let Some(proposal) = state.unique_no_result_followup_proposal() {
+            state.note_harness_no_result_followup_selection();
+            proposal
+        } else if let Some(proposal) = state.unique_compatible_action_proposal() {
             state.note_harness_unique_selection();
             proposal
         } else {

@@ -151,6 +151,11 @@ pub struct InvestigationTelemetry {
     /// target/capability pair remained. This is selection only and grants no authority.
     #[serde(default)]
     pub harness_unique_selections: usize,
+    /// Follow-up actions selected deterministically after a typed `no_result` when the same exact
+    /// investigation target has exactly one remaining explicitly fact-key-bound read-only
+    /// capability. This does not merge target identities or grant evidence/finalization authority.
+    #[serde(default)]
+    pub harness_no_result_followup_selections: usize,
     pub rejected_actions: BTreeMap<InvestigationActionRejection, usize>,
     pub actions: Vec<InvestigationActionRecord>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -258,6 +263,7 @@ impl InvestigationState {
                 rounds: 0,
                 planner_calls: 0,
                 harness_unique_selections: 0,
+                harness_no_result_followup_selections: 0,
                 rejected_actions: BTreeMap::new(),
                 actions: vec![],
                 stop_reason: None,
@@ -331,6 +337,42 @@ impl InvestigationState {
         })
     }
 
+    /// After a typed `no_result`, continue the same exact target without another stochastic
+    /// selector call only when one explicitly key-bound read-only capability remains for that
+    /// target. Other investigation targets are deliberately ignored for this narrow continuation:
+    /// their identities/questions are neither merged nor treated as equivalent.
+    pub fn unique_no_result_followup_proposal(&self) -> Option<InvestigationActionProposal> {
+        if self.telemetry.stop_reason.is_some() {
+            return None;
+        }
+        let last = self.telemetry.actions.last()?;
+        if last.status != InvestigationObservationStatus::NoResult {
+            return None;
+        }
+        let target = self.targets.get(&last.action.target_id)?;
+        let key = target.expected_fact_key.as_deref()?;
+        let capabilities = self
+            .capabilities
+            .values()
+            .filter(|capability| {
+                capability.read_only
+                    && !capability.supported_fact_keys.is_empty()
+                    && capability.supported_fact_keys.contains(key)
+                    && !self
+                        .attempted_pairs
+                        .contains(&(target.id.clone(), capability.id.clone()))
+            })
+            .collect::<Vec<_>>();
+        if capabilities.len() != 1 {
+            return None;
+        }
+        Some(InvestigationActionProposal {
+            action: InvestigationActionKind::Acquire,
+            target_id: Some(target.id.clone()),
+            capability_id: Some(capabilities[0].id.clone()),
+        })
+    }
+
     pub fn capability(&self, id: &str) -> Option<&InvestigationCapability> {
         self.capabilities.get(id)
     }
@@ -354,6 +396,13 @@ impl InvestigationState {
     pub fn note_harness_unique_selection(&mut self) {
         self.telemetry.harness_unique_selections =
             self.telemetry.harness_unique_selections.saturating_add(1);
+    }
+
+    pub fn note_harness_no_result_followup_selection(&mut self) {
+        self.telemetry.harness_no_result_followup_selections = self
+            .telemetry
+            .harness_no_result_followup_selections
+            .saturating_add(1);
     }
 
     pub fn validate_action(
@@ -762,6 +811,280 @@ mod tests {
                 capability_id: Some("b".into()),
             })
         );
+    }
+
+    #[test]
+    fn no_result_followup_stays_on_exact_target_despite_same_key_sibling() {
+        let mut state = InvestigationState::new(
+            vec![
+                target("owner-primary", Some("routing.owner")),
+                target("owner-secondary", Some("routing.owner")),
+            ],
+            vec![
+                capability("cache", &["routing.owner"]),
+                capability("registry", &["routing.owner"]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(state.unique_compatible_action_proposal(), None);
+        assert_eq!(state.unique_no_result_followup_proposal(), None);
+
+        let round = state.begin_round().unwrap();
+        let first = state
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner-primary".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        state.record_observation(
+            round,
+            first,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+
+        // Multiple global target/capability pairs remain, so the original #233 selector stays
+        // conservative. The narrow follow-up selector continues only the exact target that just
+        // produced no_result and never merges the sibling target identity/question.
+        assert_eq!(state.unique_compatible_action_proposal(), None);
+        assert_eq!(
+            state.unique_no_result_followup_proposal(),
+            Some(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner-primary".into()),
+                capability_id: Some("registry".into()),
+            })
+        );
+    }
+
+    #[test]
+    fn no_result_followup_requires_exactly_one_remaining_explicit_capability() {
+        let mut state = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability("cache", &["routing.owner"]),
+                capability("registry-a", &["routing.owner"]),
+                capability("registry-b", &["routing.owner"]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let round = state.begin_round().unwrap();
+        let first = state
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        state.record_observation(
+            round,
+            first,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+        assert_eq!(state.unique_no_result_followup_proposal(), None);
+    }
+
+    #[test]
+    fn no_result_followup_does_not_trigger_for_other_typed_outcomes() {
+        for status in [
+            InvestigationObservationStatus::AppliedEvidence,
+            InvestigationObservationStatus::RejectedEvidence,
+            InvestigationObservationStatus::Ambiguous,
+            InvestigationObservationStatus::VerificationProgress,
+            InvestigationObservationStatus::OperationalFailure,
+        ] {
+            let mut state = InvestigationState::new(
+                vec![target("owner", Some("routing.owner"))],
+                vec![
+                    capability("cache", &["routing.owner"]),
+                    capability("registry", &["routing.owner"]),
+                ],
+                InvestigationPolicy::default(),
+            )
+            .unwrap();
+            let round = state.begin_round().unwrap();
+            let first = state
+                .validate_action(InvestigationActionProposal {
+                    action: InvestigationActionKind::Acquire,
+                    target_id: Some("owner".into()),
+                    capability_id: Some("cache".into()),
+                })
+                .unwrap()
+                .unwrap();
+            state.record_observation(round, first, status, 0, false);
+            assert_eq!(
+                state.unique_no_result_followup_proposal(),
+                None,
+                "{status:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn no_result_followup_does_not_promote_keyless_or_wildcard_capabilities() {
+        let mut keyless = InvestigationState::new(
+            vec![target("owner", None)],
+            vec![
+                capability("cache", &[]),
+                capability("registry", &["routing.owner"]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let round = keyless.begin_round().unwrap();
+        let first = keyless
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        keyless.record_observation(
+            round,
+            first,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+        assert_eq!(keyless.unique_no_result_followup_proposal(), None);
+
+        let mut wildcard = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability("cache", &["routing.owner"]),
+                capability("generic", &[]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let round = wildcard.begin_round().unwrap();
+        let first = wildcard
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        wildcard.record_observation(
+            round,
+            first,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+        assert_eq!(wildcard.unique_no_result_followup_proposal(), None);
+    }
+
+    #[test]
+    fn no_result_followup_respects_terminal_budgets() {
+        for policy in [
+            InvestigationPolicy {
+                max_actions: 1,
+                ..InvestigationPolicy::default()
+            },
+            InvestigationPolicy {
+                max_no_progress_rounds: 1,
+                ..InvestigationPolicy::default()
+            },
+        ] {
+            let mut state = InvestigationState::new(
+                vec![target("owner", Some("routing.owner"))],
+                vec![
+                    capability("cache", &["routing.owner"]),
+                    capability("registry", &["routing.owner"]),
+                ],
+                policy,
+            )
+            .unwrap();
+            let round = state.begin_round().unwrap();
+            let first = state
+                .validate_action(InvestigationActionProposal {
+                    action: InvestigationActionKind::Acquire,
+                    target_id: Some("owner".into()),
+                    capability_id: Some("cache".into()),
+                })
+                .unwrap()
+                .unwrap();
+            assert!(
+                state
+                    .record_observation(
+                        round,
+                        first,
+                        InvestigationObservationStatus::NoResult,
+                        0,
+                        false,
+                    )
+                    .is_some()
+            );
+            assert_eq!(state.unique_no_result_followup_proposal(), None);
+        }
+    }
+
+    #[test]
+    fn no_result_followup_executes_validated_action_without_extra_planner_call() {
+        let mut state = InvestigationState::new(
+            vec![
+                target("owner-primary", Some("routing.owner")),
+                target("owner-secondary", Some("routing.owner")),
+            ],
+            vec![
+                capability("cache", &["routing.owner"]),
+                capability("registry", &["routing.owner"]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+
+        state.note_planner_call();
+        let first_round = state.begin_round().unwrap();
+        let cache = state
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner-primary".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        state.record_observation(
+            first_round,
+            cache,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+
+        let second_round = state.begin_round().unwrap();
+        let proposal = state.unique_no_result_followup_proposal().unwrap();
+        state.note_harness_no_result_followup_selection();
+        let registry = state.validate_action(proposal).unwrap().unwrap();
+        assert_eq!(registry.target_id, "owner-primary");
+        assert_eq!(registry.capability_id, "registry");
+        state.record_observation(
+            second_round,
+            registry,
+            InvestigationObservationStatus::AppliedEvidence,
+            1,
+            true,
+        );
+
+        let telemetry = state.telemetry();
+        assert_eq!(telemetry.planner_calls, 1);
+        assert_eq!(telemetry.harness_no_result_followup_selections, 1);
+        assert_eq!(telemetry.actions.len(), 2);
+        assert!(telemetry.rejected_actions.is_empty());
+        assert_eq!(telemetry.actions[1].action.capability_id, "registry");
+        assert_eq!(telemetry.actions[1].admitted_evidence, 1);
+        assert!(telemetry.actions[1].verification_progress);
     }
 
     #[test]

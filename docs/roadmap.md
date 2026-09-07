@@ -30,6 +30,8 @@ As an explicit measurement boundary, current `unsupported grounded claims = 0` d
 
 `v0.4.0` is the current published external preview. The preceding **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) remains complete historical provenance; follow-on work must start from a newly measured product or research gap rather than silently rewriting either released milestone.
 
+The active patch milestone is **v0.4.1 — Investigation Utility Hardening (milestone #3)**. Issue #249 addresses one post-release avoidable-abstention shape only: after typed `no_result`, continue the same exact target when one remaining explicit read-only fact-key-bound capability is mechanically unique. The patch does not merge targets or alter admission, authority, verification, finalization, answer safety, or frozen v1-v9 measurement semantics. #248 and #247 remain separate future product/evaluation work.
+
 v0.3.0 does not add another reasoning mechanism by default. It connects the already-implemented bounded control loop to real external acquisition and trusted-verifier adapters through the existing `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary.
 
 Execution order:
