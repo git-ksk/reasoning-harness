@@ -333,6 +333,12 @@ Research anchors for this phase are evidence, not normative designs:
 
 With #13, #27, #28, and the D3 pilot/replication evidence complete, the deterministic authority/control-plane roadmap is implemented through durable replay and the semantic-decidability line has a concrete stabilization candidate. D3 operational hardening and the separate reversible runtime-adoption step are now implemented; new semantic successors should wait for a measured residual gap or concrete consumer pressure rather than adding model breadth or generic agent orchestration by default.
 
+### #252/#254 v0.4.1 successor measurement
+
+- [observed #252] frozen v10 canonical Mistral run `34125135760` completed 11/11 with correctness-boundary violations `0` and operational failures `0`, but measurement validity failed.
+- [censored #252] the dedicated #249 lane recalled the exact target but executed no cache action, so typed `no_result` was never reached; v10 is inconclusive for the post-trigger #249 effect and must not be rerun or tuned.
+- [next #254] design a fresh trigger-conditioned successor that separately reports natural-language trigger reachability and conditional post-`no_result` Harness continuation; any controlled intervention must be explicitly separated from ordinary planner behavior.
+
 ## Decision gates for future features
 
 A proposed feature should normally satisfy at least one of these before entering a near-term phase:
