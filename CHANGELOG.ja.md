@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Issue #249: typed `no_result` の直後、同じexact targetに対して`expected_fact_key`を明示対応する未試行read-only capabilityがちょうど1つだけ残る場合に限り、bounded investigationがdeterministicに継続できる。同じfact keyの別targetは分離したままで、keyless、wildcard-only、複数候補、`no_result`以外、terminal stateではこの継続を使わない。audit用に`harness_no_result_followup_selections`を追加し、admission、authority、verification、finalization、answer safety、freeze済みnatural-language E2E v1〜v9は変更しない。
+
 ## [0.4.0] - 2026-09-06
 
 第4のexternal-preview capability release。v0.4.0では公開する事実テキストをHarness authorityへbindし、bounded investigation、resumable session、subprocess/MCP hardening、自然文E2E validationを追加した。frozen research generationは変更せず、model/tool outputがcorrectness authorityを自己付与できない境界も維持する。

@@ -116,3 +116,11 @@ If `resolution.investigation` is absent, the existing natural-language resolver 
 ### Harness selection for a unique safe action
 
 v0.4.0 deterministically selects an acquisition pair only when exactly one untried pair remains, the target has an `expected_fact_key`, and the read-only capability explicitly lists that key in `supported_fact_keys`. Ambiguous choices, keyless targets, and wildcard capabilities still use the model action selector. This only chooses where to acquire data; it grants no evidence admission, authority, verification, or finalization rights. The choice is observable through `harness_unique_selections` telemetry.
+
+### Exact-target continuation after `no_result` (v0.4.1)
+
+v0.4.1 adds a narrower deterministic continuation before the v0.4.0 unique-pair selector. Immediately after a typed `no_result`, the Harness may continue the **same exact investigation target ID** without another model action-selector call only when that target has an explicit `expected_fact_key` and exactly one untried read-only capability explicitly lists that key in `supported_fact_keys`. The target ID, question, and `model_proposed_untrusted` origin are preserved. Same-key sibling targets are not canonicalized, deduplicated, merged, or treated as interchangeable.
+
+The continuation does not trigger for other typed outcomes, keyless targets, wildcard-only remaining capabilities, multiple remaining explicit capabilities, or a terminal investigation state. The selected action still passes the ordinary duplicate/action-budget validation, acquisition-only adapter boundary, evidence admission, source/freshness/scope/authority qualification, regeneration, verification, finalization, and answer-safety path. It does not infer a fact value or grant target/evidence/final-answer authority. The selection is observable through additive `harness_no_result_followup_selections` telemetry.
+
+This patch hardens investigation utility only. Frozen natural-language E2E v1-v9 remain historical evidence and are not rerun, rescored, or tuned by this change.

@@ -342,6 +342,9 @@ impl InvestigationState {
     /// target. Other investigation targets are deliberately ignored for this narrow continuation:
     /// their identities/questions are neither merged nor treated as equivalent.
     pub fn unique_no_result_followup_proposal(&self) -> Option<InvestigationActionProposal> {
+        if self.telemetry.stop_reason.is_some() {
+            return None;
+        }
         let last = self.telemetry.actions.last()?;
         if last.status != InvestigationObservationStatus::NoResult {
             return None;
@@ -891,17 +894,53 @@ mod tests {
 
     #[test]
     fn no_result_followup_does_not_trigger_for_other_typed_outcomes() {
-        let mut state = InvestigationState::new(
-            vec![target("owner", Some("routing.owner"))],
+        for status in [
+            InvestigationObservationStatus::AppliedEvidence,
+            InvestigationObservationStatus::RejectedEvidence,
+            InvestigationObservationStatus::Ambiguous,
+            InvestigationObservationStatus::VerificationProgress,
+            InvestigationObservationStatus::OperationalFailure,
+        ] {
+            let mut state = InvestigationState::new(
+                vec![target("owner", Some("routing.owner"))],
+                vec![
+                    capability("cache", &["routing.owner"]),
+                    capability("registry", &["routing.owner"]),
+                ],
+                InvestigationPolicy::default(),
+            )
+            .unwrap();
+            let round = state.begin_round().unwrap();
+            let first = state
+                .validate_action(InvestigationActionProposal {
+                    action: InvestigationActionKind::Acquire,
+                    target_id: Some("owner".into()),
+                    capability_id: Some("cache".into()),
+                })
+                .unwrap()
+                .unwrap();
+            state.record_observation(round, first, status, 0, false);
+            assert_eq!(
+                state.unique_no_result_followup_proposal(),
+                None,
+                "{status:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn no_result_followup_does_not_promote_keyless_or_wildcard_capabilities() {
+        let mut keyless = InvestigationState::new(
+            vec![target("owner", None)],
             vec![
-                capability("cache", &["routing.owner"]),
+                capability("cache", &[]),
                 capability("registry", &["routing.owner"]),
             ],
             InvestigationPolicy::default(),
         )
         .unwrap();
-        let round = state.begin_round().unwrap();
-        let first = state
+        let round = keyless.begin_round().unwrap();
+        let first = keyless
             .validate_action(InvestigationActionProposal {
                 action: InvestigationActionKind::Acquire,
                 target_id: Some("owner".into()),
@@ -909,14 +948,143 @@ mod tests {
             })
             .unwrap()
             .unwrap();
-        state.record_observation(
+        keyless.record_observation(
             round,
             first,
-            InvestigationObservationStatus::RejectedEvidence,
+            InvestigationObservationStatus::NoResult,
             0,
             false,
         );
-        assert_eq!(state.unique_no_result_followup_proposal(), None);
+        assert_eq!(keyless.unique_no_result_followup_proposal(), None);
+
+        let mut wildcard = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability("cache", &["routing.owner"]),
+                capability("generic", &[]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let round = wildcard.begin_round().unwrap();
+        let first = wildcard
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        wildcard.record_observation(
+            round,
+            first,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+        assert_eq!(wildcard.unique_no_result_followup_proposal(), None);
+    }
+
+    #[test]
+    fn no_result_followup_respects_terminal_budgets() {
+        for policy in [
+            InvestigationPolicy {
+                max_actions: 1,
+                ..InvestigationPolicy::default()
+            },
+            InvestigationPolicy {
+                max_no_progress_rounds: 1,
+                ..InvestigationPolicy::default()
+            },
+        ] {
+            let mut state = InvestigationState::new(
+                vec![target("owner", Some("routing.owner"))],
+                vec![
+                    capability("cache", &["routing.owner"]),
+                    capability("registry", &["routing.owner"]),
+                ],
+                policy,
+            )
+            .unwrap();
+            let round = state.begin_round().unwrap();
+            let first = state
+                .validate_action(InvestigationActionProposal {
+                    action: InvestigationActionKind::Acquire,
+                    target_id: Some("owner".into()),
+                    capability_id: Some("cache".into()),
+                })
+                .unwrap()
+                .unwrap();
+            assert!(
+                state
+                    .record_observation(
+                        round,
+                        first,
+                        InvestigationObservationStatus::NoResult,
+                        0,
+                        false,
+                    )
+                    .is_some()
+            );
+            assert_eq!(state.unique_no_result_followup_proposal(), None);
+        }
+    }
+
+    #[test]
+    fn no_result_followup_executes_validated_action_without_extra_planner_call() {
+        let mut state = InvestigationState::new(
+            vec![
+                target("owner-primary", Some("routing.owner")),
+                target("owner-secondary", Some("routing.owner")),
+            ],
+            vec![
+                capability("cache", &["routing.owner"]),
+                capability("registry", &["routing.owner"]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+
+        state.note_planner_call();
+        let first_round = state.begin_round().unwrap();
+        let cache = state
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner-primary".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        state.record_observation(
+            first_round,
+            cache,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+
+        let second_round = state.begin_round().unwrap();
+        let proposal = state.unique_no_result_followup_proposal().unwrap();
+        state.note_harness_no_result_followup_selection();
+        let registry = state.validate_action(proposal).unwrap().unwrap();
+        assert_eq!(registry.target_id, "owner-primary");
+        assert_eq!(registry.capability_id, "registry");
+        state.record_observation(
+            second_round,
+            registry,
+            InvestigationObservationStatus::AppliedEvidence,
+            1,
+            true,
+        );
+
+        let telemetry = state.telemetry();
+        assert_eq!(telemetry.planner_calls, 1);
+        assert_eq!(telemetry.harness_no_result_followup_selections, 1);
+        assert_eq!(telemetry.actions.len(), 2);
+        assert!(telemetry.rejected_actions.is_empty());
+        assert_eq!(telemetry.actions[1].action.capability_id, "registry");
+        assert_eq!(telemetry.actions[1].admitted_evidence, 1);
+        assert!(telemetry.actions[1].verification_progress);
     }
 
     #[test]

@@ -6,6 +6,10 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ## [Unreleased]
 
+### Changed
+
+- Issue #249: after a typed `no_result`, bounded investigation can deterministically continue only the same exact target when exactly one untried read-only capability explicitly supports its `expected_fact_key`. Same-key sibling targets remain separate; keyless, wildcard-only, ambiguous, non-`no_result`, and terminal states do not use this continuation. `harness_no_result_followup_selections` adds audit telemetry while admission, authority, verification, finalization, answer safety, and frozen natural-language E2E v1-v9 remain unchanged.
+
 ## [0.4.0] - 2026-09-06
 
 Fourth external-preview capability release. v0.4.0 binds exposed factual text to Harness authority, adds bounded investigation and resumable sessions, hardens subprocess/MCP operation, and validates the end-to-end natural-language path without changing the frozen research generation or letting model/tool output self-authorize correctness.

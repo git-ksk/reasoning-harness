@@ -116,3 +116,11 @@ runtime は `max_targets`、`max_rounds`、`max_actions`、`max_no_progress_roun
 ### 一意な安全actionのHarness選択
 
 v0.4.0では、未試行のtarget/capability pairのうち、targetが`expected_fact_key`を持ち、read-only capabilityがそのkeyを`supported_fact_keys`で明示宣言し、かつ候補がちょうど1組だけの場合、Harnessがそのpairをdeterministicに選択する。複数候補、key不明、wildcard capabilityでは従来どおりmodel action selectorを使う。この選択は取得先を決めるだけで、evidence admission、authority、verification、finalizationを昇格しない。`harness_unique_selections` telemetryで観測できる。
+
+### `no_result` 後の exact-target continuation（v0.4.1）
+
+v0.4.1では、v0.4.0のunique-pair selectorより先に、さらに限定したdeterministic continuationを追加する。typed `no_result` の直後に限り、**同じexact investigation target ID** が明示的な`expected_fact_key`を持ち、そのkeyを`supported_fact_keys`で明示する未試行read-only capabilityがちょうど1つだけ残っている場合、Harnessはmodel action selectorを追加で呼ばずにそのtargetを継続できる。target ID、question、`model_proposed_untrusted` originは維持し、同じfact keyを持つ別targetをcanonicalize、dedup、merge、同一視しない。
+
+他のtyped outcome、keyless target、残りがwildcard capabilityだけの場合、明示candidateが複数残る場合、すでにterminalなinvestigation stateでは発動しない。選ばれたactionは従来どおりduplicate/action-budget validation、acquisition-only adapter、evidence admission、source/freshness/scope/authority qualification、regeneration、verification、finalization、answer-safetyを通る。fact valueを推定せず、target/evidence/final answer authorityを昇格しない。選択回数はadditiveな`harness_no_result_followup_selections` telemetryで観測できる。
+
+このpatchはinvestigation utilityだけをhardeningする。freeze済みnatural-language E2E v1〜v9はhistorical evidenceのまま保持し、この変更のために再実行・再採点・tuningしない。

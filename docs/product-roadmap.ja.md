@@ -34,6 +34,14 @@ Reasoning Harness
 
 自然言語の利便性によって正確性の境界を弱めてはならない。ユーザーの文章、ファイル内容、モデルによる抽出、ツール出力、過去のモデル出力は、CLIが受け付けたというだけで信頼済みエビデンスにはならない。エビデンスの取り込み、受け入れ、検証、semantic/answer-safety診断、制約付き解決、再検証、最終主張のカバレッジは、引き続きHarnessが所有する。
 
+## v0.4.1 — Investigation Utility Hardening
+
+Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3)。v0.4.0は現在のreleased external previewのままで、v0.4.1はpost-releaseで実測したinvestigation utility residualだけを狭く扱うactive patch lineである。
+
+- **#249 exact-target `no_result` continuation:** typed `no_result` 後、同じtargetの`expected_fact_key`に対して明示対応するread-only capabilityが1つだけ残る場合、追加のstochastic action-selector callなしでHarnessがfollow-upを選ぶ。同じkeyの別target identityはmergeせず、admission/authority/verification/finalization/answer-safety semanticsも変更しない。
+- freeze済みnatural-language E2E v1〜v9はimmutable historical evidenceとして維持する。v9はproduct gapの根拠だが、再実行・再採点・tuning surfaceには使わない。
+- #248はinvestigation targetとfinal-answer target/authorityの接続へ踏み込む可能性があるため、別のv0.5.0 Verified Investigation Utility lineで扱う。#247もevaluation-gate semanticsとして分離する。
+
 ## v0.4.0 — Grounded Investigation & Sessions
 
 Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。v0.4.0が現在のexternal-preview releaseである。2026-09-06のレビューで実測されたproduct/correctness gapから開始し、historical v0.3.0 acceptanceやfrozen research/E2E observationを書き換えずに完了した。

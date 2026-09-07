@@ -30,6 +30,8 @@ v0.4.0は **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #2
 
 `v0.4.0` は現在公開されている external preview である。直前の **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) はhistorical provenanceとして完了状態を保持する。後続作業は、リリース済みmilestoneの観測を後から書き換えず、新たに測定されたproduct/research gapから開始する。
 
+active patch milestoneは **v0.4.1 — Investigation Utility Hardening（milestone #3）** である。Issue #249ではpost-releaseのavoidable-abstentionを1系統だけ扱い、typed `no_result` 後に同じexact targetへ明示fact-key対応read-only capabilityが機械的に1つだけ残る場合だけ継続する。target merge、admission、authority、verification、finalization、answer safety、freeze済みv1〜v9のmeasurement semanticsは変更しない。#248と#247はそれぞれ別のfuture product/evaluation workとして分離する。
+
 v0.3.0 はデフォルトで別の reasoning mechanism を追加しない。既存の `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary を通じて、すでに実装済みの bounded control loop を、実際の external acquisition および trusted-verifier adapters に接続する。
 
 実行順序：
