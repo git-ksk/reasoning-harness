@@ -1,0 +1,26 @@
+{
+  "adaptive": false,
+  "config": "configs/tellurium-stale.json",
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "Tellurium deployment window",
+    "tellurium.deploy.window_open",
+    "fixture:v10:tellurium-window"
+  ],
+  "id": "stale-tellurium-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "tellurium-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "tellurium.deploy.window_open",
+    "value": "true"
+  },
+  "task": "Determine whether the Tellurium deployment window is currently open. A stale observation must be rejected without turning its value into current truth."
+}

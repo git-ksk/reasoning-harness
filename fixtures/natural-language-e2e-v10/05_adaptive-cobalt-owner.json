@@ -1,0 +1,31 @@
+{
+  "adaptive": true,
+  "config": "configs/cobalt-followup.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Cobalt routing",
+    "cobalt.routing.owner",
+    "fixture:v10:cobalt-owner-registry"
+  ],
+  "id": "adaptive-cobalt-owner",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "cobalt-owner-cache",
+    "cobalt-owner-registry"
+  ],
+  "safety_dimension": "followup",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "model_first_then_harness_exact_target_followup",
+  "target": {
+    "key": "cobalt.routing.owner",
+    "value": "edge-routing"
+  },
+  "task": "Determine which team currently owns Cobalt routing. First use the configured Cobalt cache lookup; if it returns no result, continue with the configured Cobalt registry lookup.",
+  "coverage_contract": {
+    "kind": "no_result_followup",
+    "first_capability": "cobalt-owner-cache",
+    "followup_capability": "cobalt-owner-registry",
+    "requires_harness_no_result_followup_selection": true,
+    "expected_model_action_planner_calls": 1
+  }
+}
