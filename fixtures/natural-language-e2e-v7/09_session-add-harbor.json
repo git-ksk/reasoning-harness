@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.harbor.mode=active",
+  "add_hypothesis": "session.harbor.mode=active",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.harbor.mode",
+    "Harbor session mode"
+  ],
+  "id": "session-add-harbor",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.harbor.mode",
+    "value": "active"
+  },
+  "task": "Determine whether Harbor session mode is active."
+}

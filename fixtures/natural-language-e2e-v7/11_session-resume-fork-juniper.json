@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.juniper.audit",
+    "Juniper audit mode"
+  ],
+  "id": "session-resume-fork-juniper",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.juniper.audit=enabled",
+  "start_hypothesis": "session.juniper.audit=enabled",
+  "target": {
+    "key": "session.juniper.audit",
+    "value": "enabled"
+  },
+  "task": "Determine whether Juniper audit mode is enabled."
+}
