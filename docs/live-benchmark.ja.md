@@ -1,5 +1,7 @@
 # Live benchmark CI の実行
 
+
+Provider/model job schedulingは[cross-model live concurrency policy](cross-model-concurrency-policy.ja.md)に従う。
 live benchmark workflow は手動の research workflow です。provider availability、trial quota、rate limits、model catalog state、stochastic output が外部変数であるため、required deterministic CI とは意図的に分離されています。
 
 ## 認証情報

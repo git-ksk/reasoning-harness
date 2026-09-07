@@ -1,5 +1,7 @@
 # Live benchmark CI
 
+
+Provider/model job scheduling follows [cross-model live concurrency policy](cross-model-concurrency-policy.md).
 The live benchmark workflow is a manual research workflow. It is intentionally separate from required deterministic CI because provider availability, trial quota, rate limits, model catalog state, and stochastic output are external variables.
 
 ## Credentials

@@ -24,6 +24,8 @@ jobs:
         run: cargo clippy --locked --workspace --all-targets -- -D warnings
       - name: Test
         run: cargo test --locked --workspace
+      - name: Validate cross-model concurrency policy
+        run: python3 scripts/validate_cross_model_concurrency_policy.py
       - name: CLI smoke
         run: |
           cargo run -q --locked -p reasoning-harness-cli -- run --input examples/input.json --candidate examples/candidate.json --no-config --format json >/tmp/reason-run.json
