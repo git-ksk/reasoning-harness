@@ -1,6 +1,6 @@
 # プロダクトロードマップ：エビデンスに基づくAI CLI
 
-Reasoning Harness は、まずネイティブRust製の `reason` CLI としてプロダクト化される。v0.1.0では構造化された正確性と自動化の契約を確立し、v0.2.0では**AIを利用した自然言語CLI**をエンドユーザー向けの主要経路にし、v0.3.0では制約付きexternal evidence/resolutionを追加した。現在の外部プレビュー製品リリースであるv0.4.0では、同じHarness所有ランタイム上にgrounded investigation、resumable session、exposed-text binding、negotiated/session MCPを追加する。ユーザーは、Harnessに推論させるためだけに内部JSONを組み立てる必要はない。
+Reasoning Harness は、まずネイティブRust製の `reason` CLI としてプロダクト化される。v0.1.0では構造化された正確性と自動化の契約を確立し、v0.2.0では**AIを利用した自然言語CLI**をエンドユーザー向けの主要経路にし、v0.3.0では制約付きexternal evidence/resolutionを追加した。v0.4.0では同じHarness所有ランタイム上にgrounded investigation、resumable session、exposed-text binding、negotiated/session MCPを追加し、現在の外部プレビューpatch releaseであるv0.4.1ではauthority semanticsを変えずexact-target `no_result` continuationだけを追加する。ユーザーは、Harnessに推論させるためだけに内部JSONを組み立てる必要はない。
 
 このプロダクトの目標は、汎用エージェントフレームワークより意図的に狭い。
 
@@ -10,7 +10,7 @@ Reasoning Harness は、まずネイティブRust製の `reason` CLI として�
 
 ## 現在のプロダクト経路
 
-v0.4.0のデフォルト体験は、引き続き自然言語優先かつAIを利用する。
+v0.4.1のデフォルト体験は、引き続き自然言語優先かつAIを利用する。
 
 ```text
 自然言語のタスク
@@ -36,7 +36,7 @@ Reasoning Harness
 
 ## v0.4.1 — Investigation Utility Hardening
 
-Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3)。v0.4.0は現在のreleased external previewのままで、v0.4.1はpost-releaseで実測したinvestigation utility residualだけを狭く扱うactive patch lineである。
+Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3)。v0.4.1が現在のreleased external previewで、Issue #249をもってpatch lineは完了した。v0.4.0のauthority/machine-contract boundaryは維持する。
 
 - **#249 exact-target `no_result` continuation:** typed `no_result` 後、同じtargetの`expected_fact_key`に対して明示対応するread-only capabilityが1つだけ残る場合、追加のstochastic action-selector callなしでHarnessがfollow-upを選ぶ。同じkeyの別target identityはmergeせず、admission/authority/verification/finalization/answer-safety semanticsも変更しない。
 - freeze済みnatural-language E2E v1〜v9はimmutable historical evidenceとして維持する。v9はproduct gapの根拠だが、再実行・再採点・tuning surfaceには使わない。
@@ -44,7 +44,7 @@ Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3)。v0.4.0
 
 ## v0.4.0 — Grounded Investigation & Sessions
 
-Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。v0.4.0が現在のexternal-preview releaseである。2026-09-06のレビューで実測されたproduct/correctness gapから開始し、historical v0.3.0 acceptanceやfrozen research/E2E observationを書き換えずに完了した。
+Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2)。v0.4.0は直前のexternal-preview product foundationである。2026-09-06のレビューで実測されたproduct/correctness gapから開始し、historical v0.3.0 acceptanceやfrozen research/E2E observationを書き換えずに完了した。
 
 このマイルストーンの目的は、現在の「検証済み命題を安全に扱うHarness」から、**自然文の依頼を受けて調査を組み立て、必要な外部情報を制約付きで取得し、複数ターンにわたって根拠を保持・訂正しながら、実際に表示する文章までHarness-owned authorityに結び付けるproduct path**へ進めることである。
 
@@ -151,7 +151,7 @@ v0.3.0はproduct/distribution coordinateであり、新しいsemantic research g
 - 現在のsemantic runtimeと、明示的にcharacterizeされたrollback profile（正確なmachine IDは安定して文書化済み）；
 - credential-free deterministic CIと、分離されたlive provider smoke/research workflow。
 
-v0.1.0は、外部から利用できる最初のstructured previewだった。v0.2.0ではnatural-language-first path、successor verified-target recovery、provider retry/resume reliability、process-level compatibility testを追加した。v0.3.0ではexternal acquisition/admission、operational hardening、read-only MCP acquisition、trusted deterministic verification、release acceptance、任意の `reason-mcp` product surfaceを追加した。v0.4.0が現在のexternal-preview product releaseであり、同じresearch/authority provenanceを維持しながら、exposed-text binding、whole-invocation deadline、bounded investigation、resumable session、canonical natural-language E2E、negotiated/session MCP、限定的deterministic utility hardeningを追加する。versioned machine contractとサポート対象product commandはv0.x support policyのもとでcompatibility-trackedされるが、これはv1.0のstability promiseではない。
+v0.1.0は、外部から利用できる最初のstructured previewだった。v0.2.0ではnatural-language-first path、successor verified-target recovery、provider retry/resume reliability、process-level compatibility testを追加した。v0.3.0ではexternal acquisition/admission、operational hardening、read-only MCP acquisition、trusted deterministic verification、release acceptance、任意の `reason-mcp` product surfaceを追加した。v0.4.0では同じresearch/authority provenanceを維持しながら、exposed-text binding、whole-invocation deadline、bounded investigation、resumable session、canonical natural-language E2E、negotiated/session MCP、限定的deterministic utility hardeningを追加した。v0.4.1が現在のexternal-preview patch releaseで、exact-target `no_result` continuationだけを追加する。versioned machine contractとサポート対象product commandはv0.x support policyのもとでcompatibility-trackedされるが、これはv1.0のstability promiseではない。
 
 ## 過去のマイルストーン：サポート対象コマンドとデータ契約
 

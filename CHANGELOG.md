@@ -6,6 +6,10 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-09-07
+
+Patch external-preview release. v0.4.1 hardens bounded-investigation utility after the frozen v9 observation without changing target identity, authority, admission, verification, finalization, answer safety, machine-contract semantics, or frozen natural-language E2E v1-v9 evidence.
+
 ### Changed
 
 - Issue #249: after a typed `no_result`, bounded investigation can deterministically continue only the same exact target when exactly one untried read-only capability explicitly supports its `expected_fact_key`. Same-key sibling targets remain separate; keyless, wildcard-only, ambiguous, non-`no_result`, and terminal states do not use this continuation. `harness_no_result_followup_selections` adds audit telemetry while admission, authority, verification, finalization, answer safety, and frozen natural-language E2E v1-v9 remain unchanged.

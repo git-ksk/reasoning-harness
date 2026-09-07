@@ -66,18 +66,18 @@ These are recorded workload/holdout results, not a claim that every open-world t
 
 ## 30-second quickstart
 
-### 1. Install the current v0.4.0 preview
+### 1. Install the current v0.4.1 preview
 
-`v0.4.0` is the current natural-language-first external preview. With Rust 1.88+:
+`v0.4.1` is the current natural-language-first external preview. With Rust 1.88+:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.4.0 --locked reasoning-harness-cli --bin reason
+  --tag v0.4.1 --locked reasoning-harness-cli --bin reason
 
 reason --version
 ```
 
-Standalone archives and `SHA256SUMS` are available from the [v0.4.0 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.0). Install from `main` only when you intentionally want unreleased development changes.
+Standalone archives and `SHA256SUMS` are available from the [v0.4.1 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.1). Install from `main` only when you intentionally want unreleased development changes.
 
 ### 2. Give it a task and an explicit fact
 
@@ -319,7 +319,7 @@ Deterministic oracles such as tests, schemas, compilers, databases, policy engin
 
 ## Current capabilities
 
-The current `v0.4.0` external preview includes the capabilities below. `main` may move ahead of the tagged release; use the tag when you need a reproducible product snapshot.
+The current `v0.4.1` external preview includes the capabilities below. `main` may move ahead of the tagged release; use the tag when you need a reproducible product snapshot.
 
 - typed `HarnessInput`, `ReasoningCandidate`, and `ReasoningArtifact` contracts;
 - evidence binding and deterministic provenance/reference validation;
@@ -327,7 +327,7 @@ The current `v0.4.0` external preview includes the capabilities below. `main` ma
 - contradiction, counterexample, assumption, causal, temporal/scope, and evidence-qualification diagnostics;
 - `accept | reject | unknown` outcomes with fail-closed runtime behavior;
 - bounded resolution/finalization primitives and `ReasoningPolicy` constraints;
-- bounded natural-language investigation planning with closed plan/action schemas and deterministic selection only for one explicitly key-bound safe read-only action;
+- bounded natural-language investigation planning with closed plan/action schemas, deterministic unique-safe selection, and exact-target `no_result` continuation when one explicit read-only follow-up remains;
 - Harness-canonical exposed factual text under `harness-canonical-exposed-text-v1`;
 - durable `ReasoningThread` event/checkpoint replay primitives plus `reason session start|inspect|resume|add|correct|fork|close`;
 - current semantic runtime with an explicit rollback profile; exact compatibility IDs remain documented for reproducibility;
@@ -357,9 +357,9 @@ The research question behind the project is:
 
 > Can a small or inexpensive model become materially more reliable when its reasoning is forced through typed intermediate state, evidence binding, explicit uncertainty, adversarial passes, deterministic acceptance gates, and bounded resolution/re-verification before finalization?
 
-The **v0.4.0 — Grounded Investigation & Sessions** milestone (#2) is complete and released. It adds exposed-text binding, whole-invocation subprocess deadlines, bounded investigation planning, resumable `ReasoningThread` sessions, canonical natural-language E2E validation, negotiated/session MCP compatibility, dependency freeze hygiene, and the narrowly deterministic unique-safe-action utility hardening.
+The **v0.4.1 — Investigation Utility Hardening** milestone (#3) is complete and released. It adds only the exact-target typed-`no_result` continuation from #249: when one explicit fact-key-bound read-only follow-up remains for the same target, the Harness selects it without another stochastic action-selector call. Target identity, authority, admission, verification, finalization, answer safety, machine contracts, and frozen natural-language E2E v1-v9 evidence remain unchanged.
 
-The preceding **v0.3.0 — External Evidence & Resolution** milestone (#173) remains historical provenance. Its non-frozen external-resolution acceptance gate is documented in [v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.md); v0.4.0 does not rewrite those observations.
+The preceding **v0.4.0 — Grounded Investigation & Sessions** milestone (#2) remains the product foundation for exposed-text binding, bounded investigation, resumable sessions, negotiated/session MCP, and the existing unique-safe selector. The earlier **v0.3.0 — External Evidence & Resolution** milestone (#173) remains historical provenance; its acceptance record is documented in [v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.md).
 
 Research and product development proceed on separate tracks. New reasoning mechanisms enter the supported CLI only after calibration, independent frozen evaluation, operational stabilization, explicit runtime identity/rollback, and compatibility coverage.
 

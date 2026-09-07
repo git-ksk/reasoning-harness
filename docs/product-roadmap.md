@@ -2,7 +2,7 @@
 
 Reasoning Harness is productized first as the native Rust `reason` CLI. v0.1.0 established the
 structured correctness and automation contracts; v0.2.0 made the **AI-backed natural-language CLI**
-the primary end-user path, v0.3.0 added bounded external evidence and resolution, and v0.4.0 is the current external-preview product release adding grounded investigation, resumable sessions, exposed-text binding, and negotiated/session MCP operation over the same harness-owned runtime. Users do not need to construct internal JSON just to ask the harness to reason.
+the primary end-user path, v0.3.0 added bounded external evidence and resolution, v0.4.0 added grounded investigation/sessions and the current authority foundation, and v0.4.1 is the current external-preview patch release adding exact-target `no_result` continuation without changing those semantics. Users do not need to construct internal JSON just to ask the harness to reason.
 
 The product goal is deliberately narrower than a general-purpose agent framework:
 
@@ -15,7 +15,7 @@ validation and operational stabilization; the product surface does not track eve
 
 ## Current product path
 
-The v0.4.0 default experience remains natural-language-first and AI-backed:
+The v0.4.1 default experience remains natural-language-first and AI-backed:
 
 ```text
 natural-language task
@@ -47,7 +47,7 @@ resolution, re-verification, and final-claim coverage remain harness-owned.
 
 ## v0.4.1 — Investigation Utility Hardening
 
-Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3). v0.4.0 remains the current released external preview; v0.4.1 is the active patch line for narrowly measured post-release investigation utility residuals.
+Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3). v0.4.1 is the current released external preview; the patch line is complete with Issue #249 and preserves the v0.4.0 authority/machine-contract boundary.
 
 - **#249 exact-target `no_result` continuation:** when a typed `no_result` leaves exactly one explicit read-only capability for the same target's `expected_fact_key`, the Harness selects that follow-up without another stochastic action-selector call. Target identity is never merged across same-key siblings, and admission/authority/verification/finalization/answer-safety semantics remain unchanged.
 - Frozen natural-language E2E v1-v9 remain immutable historical evidence. v9 motivates the product gap but is not rerun, rescored, or used as a tuning surface.
@@ -55,7 +55,7 @@ Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3). v0.4.0 
 
 ## v0.4.0 — Grounded Investigation & Sessions
 
-Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2). v0.4.0 is the current external-preview release. The line was opened from product/correctness gaps measured in the 2026-09-06 review and completed without rewriting historical v0.3.0 acceptance or frozen research/E2E observations.
+Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2). v0.4.0 is the preceding external-preview product foundation. The line was opened from product/correctness gaps measured in the 2026-09-06 review and completed without rewriting historical v0.3.0 acceptance or frozen research/E2E observations.
 
 The milestone moves the product from a Harness that safely manages verified propositions toward a path that can **accept natural-language requests, construct a bounded investigation, acquire needed external evidence, preserve and correct evidence across turns, and bind the actually exposed answer surface to Harness-owned authority**.
 
@@ -164,7 +164,7 @@ Already available:
 - current semantic runtime plus an explicit characterized rollback profile (exact machine IDs remain stable and documented);
 - credential-free deterministic CI plus separate live provider smoke/research workflows.
 
-v0.1.0 was the first externally consumable structured preview. v0.2.0 added the natural-language-first path, successor verified-target recovery, provider retry/resume reliability, and process-level compatibility tests. v0.3.0 added external acquisition/admission, operational hardening, read-only MCP acquisition, trusted deterministic verification, release acceptance, and the optional `reason-mcp` product surface. v0.4.0 is the current external-preview product release: it adds exposed-text binding, whole-invocation deadlines, bounded investigation, resumable sessions, canonical natural-language E2E validation, negotiated/session MCP compatibility, and narrow deterministic utility hardening while preserving the same research/authority provenance. Versioned machine contracts and supported product commands remain compatibility-tracked under the v0.x support policy; this is not a v1.0 stability promise.
+v0.1.0 was the first externally consumable structured preview. v0.2.0 added the natural-language-first path, successor verified-target recovery, provider retry/resume reliability, and process-level compatibility tests. v0.3.0 added external acquisition/admission, operational hardening, read-only MCP acquisition, trusted deterministic verification, release acceptance, and the optional `reason-mcp` product surface. v0.4.0 established exposed-text binding, whole-invocation deadlines, bounded investigation, resumable sessions, canonical natural-language E2E validation, negotiated/session MCP compatibility, and narrow deterministic utility hardening. v0.4.1 is the current external-preview patch release, adding only exact-target `no_result` continuation while preserving the same research/authority provenance. Versioned machine contracts and supported product commands remain compatibility-tracked under the v0.x support policy; this is not a v1.0 stability promise.
 
 ## Historical milestone: supported command and data contract
 
