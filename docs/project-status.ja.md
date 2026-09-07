@@ -111,6 +111,10 @@ resolver success と verification success は今後も区別しなければな�
 - Issue #59 R2 Harness-owned materialization は独立した calibration-only research surface に配置している。model-facing schema が所有するのは `decision` と optional `advisory_note` だけ。`finding` は request-known の `kind` と `target` を完全一致でコピーして再構築し、`no_finding`／`abstain` では finding を materialize しない。unknown／authority-like field は fail closed、v3 decision guidance は regression-lock、advisory-note text は study artifact に保存せず、direct／symlink holdout path は credential 利用前に拒否する。runtime `soft-semantic-v3` は不変。live R2 calibration は Gemini 3.5 Flash-Lite と Ministral 8B で測定済みで、materialized arm は双方5 trial・90/90 protocol-complete だが uncertainty behavior は大きく異なる。詳細は[semantic materialization](semantic-materialization.ja.md)を参照。
 - stable ranking を主張するには repeated trial が必要。Issue #6 では5-trial Mistral／Google matrix と、primary correctness metric が同率だった model に対する targeted 10-trial follow-up を完了した。operational completeness は correctness variance と分けて報告する。
 
+### Natural-language E2E v10 / v0.4.1
+
+Issue #252 canonical Mistral observation `34125135760` は `natural-language-e2e-v10-freeze`（`6b3c4e1b3aed09ff9af1b5ad12e48c1b88e396de`）で保存済み。hard correctness は boundary violation 0 で pass、operational failure も0だったが、exercised-path measurement validity は fail した。#249 専用caseは最初の cache を一度も呼ばず typed `no_result` に到達しなかったため、v10 から v0.4.1 の post-trigger effect は推定できない。fresh trigger-conditioned successor は Issue #254 が扱い、v9/v10 は rerun / repair しない。詳細は [canonical v10結果](natural-language-e2e-v10-result.ja.md)。
+
 ## リリース方針
 
 現時点では stable API guarantee を出していない。research contract を fixture と live experiment で検証している段階では、breaking schema／runtime change を許容する。

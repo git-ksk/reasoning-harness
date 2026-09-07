@@ -115,6 +115,10 @@ Resolver success must continue to be distinguished from verification success. Th
 - Issue #59 R2 harness-owned materialization is staged on a separate calibration-only research surface. The model-facing schema owns only `decision` plus optional `advisory_note`; a `finding` is reconstructed by copying request-known `kind` and `target` exactly, while `no_finding`/`abstain` never materialize a finding. Unknown/authority-like fields fail closed, v3 decision guidance is regression-locked, advisory-note text is not persisted in study artifacts, and direct/symlinked holdout paths are rejected before credentials. Runtime `soft-semantic-v3` is unchanged. Live R2 calibration is now measured on Gemini 3.5 Flash-Lite and Ministral 8B; both materialized arms were 90/90 protocol-complete across five trials, while their uncertainty behavior remained materially different. See `docs/semantic-materialization.md`.
 - Stable ranking claims require repeated trials. Issue #6 completed the 5-trial Mistral/Google matrix plus a targeted 10-trial follow-up for models tied on all primary correctness metrics; operational completeness is reported separately from correctness variance.
 
+### Natural-language E2E v10 / v0.4.1
+
+Issue #252 canonical Mistral observation `34125135760` is preserved at `natural-language-e2e-v10-freeze` (`6b3c4e1b3aed09ff9af1b5ad12e48c1b88e396de`). It passed hard correctness with zero boundary violations and had zero operational failures, but failed exercised-path measurement validity. The dedicated #249 case never invoked its first cache, so no typed `no_result` occurred and the v0.4.1 post-trigger effect is not estimable from v10. Issue #254 owns the fresh trigger-conditioned successor; v9/v10 are not rerun or repaired. See [canonical v10 result](natural-language-e2e-v10-result.md).
+
 ## Release posture
 
 No stable API guarantee is made yet. Breaking schema/runtime changes are acceptable while the research contracts are still being validated by fixtures and live experiments.

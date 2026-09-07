@@ -333,6 +333,12 @@ R4 は cross-model disagreement が uncertainty を明らかにできる一方�
 
 Issue #13、#27、#28、および D3 pilot/replication evidence が完了したことで、deterministic authority/control-plane roadmap は durable replay まで実装され、semantic-decidability line には具体的な stabilization candidate がある。D3 operational hardening と、別個の reversible runtime-adoption step は現在実装済みである。新しい semantic successors は、デフォルトで model breadth や generic agent orchestration を追加するのではなく、測定された residual gap または具体的な consumer pressure を待つべきである。
 
+### #252/#254 v0.4.1 successor測定
+
+- [観測済み #252] frozen v10 canonical Mistral run `34125135760` は11/11 complete、correctness-boundary violation `0`、operational failure `0` だったが measurement validity は fail。
+- [censored #252] #249 専用laneは exact target を recall したが cache action を実行せず typed `no_result` に到達しなかった。したがって v10 は post-trigger #249 effect に対して inconclusive であり、rerun / tuning しない。
+- [次 #254] natural-language trigger reachability と conditional post-`no_result` Harness continuation を別々に報告する fresh trigger-conditioned successor を設計する。controlled intervention を使う場合は ordinary planner behavior と明示的に分離する。
+
 ## 将来機能の判断ゲート
 
 提案された feature は、直近フェーズ に入る前に通常、次の少なくとも1つを満たすべきである：

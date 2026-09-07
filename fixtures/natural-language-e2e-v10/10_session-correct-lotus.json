@@ -1,0 +1,17 @@
+{
+  "correction": "session.lotus.threshold=11",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.lotus.threshold",
+    "Lotus retry threshold"
+  ],
+  "id": "session-correct-lotus",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.lotus.threshold=10",
+  "target": {
+    "key": "session.lotus.threshold",
+    "value": "11"
+  },
+  "task": "Determine the configured Lotus retry threshold."
+}

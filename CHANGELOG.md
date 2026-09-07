@@ -6,6 +6,10 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ## [Unreleased]
 
+### Research / evaluation
+
+- Preserved the Issue #252 frozen v0.4.1 natural-language E2E v10 canonical Mistral observation (`34125135760`) as an exercised-path validity failure with correctness-boundary violations `0` and operational failures `0`. The dedicated #249 lane did not reach its cache/typed-`no_result` trigger, so the post-trigger effect remains inconclusive and moves to fresh successor Issue #254 rather than rerunning or tuning v10.
+
 ## [0.4.1] - 2026-09-07
 
 Patch external-preview release. v0.4.1 hardens bounded-investigation utility after the frozen v9 observation without changing target identity, authority, admission, verification, finalization, answer safety, machine-contract semantics, or frozen natural-language E2E v1-v9 evidence.

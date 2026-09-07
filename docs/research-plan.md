@@ -144,6 +144,10 @@ Primary question: does the resolution loop reject false closure and preserve `un
 - generalized oracle adapter interface where concrete consumer needs justify it
 - verification and resolution budget policies
 
+## Natural-language E2E v10 post-release observation
+
+Frozen v10 / Issue #252 canonical Mistral run `34125135760` completed 11/11 with correctness-boundary violations `0` and operational failures `0`, but failed measurement validity. The Issue #249 Cobalt lane recalled its target yet executed no cache action (`planner_calls=4`, `actions=0`, `round_budget`), so typed `no_result` was never reached and the post-trigger v0.4.1 mechanism is censored/inconclusive rather than negative. Frozen v9/v10 remain immutable; Issue #254 separates observational trigger reachability from conditional post-trigger mechanism evidence. See [v10 result](natural-language-e2e-v10-result.md).
+
 ## Evaluation principle
 
 Do not optimize for a single judge-model score. Prefer measurable protocol properties, golden fixtures, adversarial fixtures, external oracles, and explicit authority boundaries. Model-judge metrics should be explicitly labeled as soft evidence.
