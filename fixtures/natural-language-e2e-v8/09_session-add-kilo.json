@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.kilo.mode=active",
+  "add_hypothesis": "session.kilo.mode=active",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.kilo.mode",
+    "Kilo session mode"
+  ],
+  "id": "session-add-kilo",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.kilo.mode",
+    "value": "active"
+  },
+  "task": "Determine whether Kilo session mode is active."
+}
