@@ -1,0 +1,24 @@
+{
+  "adaptive": true,
+  "expected": "grounded",
+  "fresh_markers": [
+    "Ember routing",
+    "ember.routing.owner",
+    "fixture:v6:ember-owner-registry"
+  ],
+  "id": "adaptive-ember-owner",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "ember-owner-cache",
+    "ember-owner-registry"
+  ],
+  "safety_dimension": "followup",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "post_no_result_unique_followup",
+  "target": {
+    "key": "ember.routing.owner",
+    "value": "network-team"
+  },
+  "task": "Determine which team currently owns Ember routing. If the cache has no result, continue with the remaining relevant read-only source.",
+  "config": "configs/ember-followup.json"
+}
