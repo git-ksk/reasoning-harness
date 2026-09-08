@@ -5,7 +5,7 @@
     "corpus_identity": "natural-language-e2e-v12",
     "evaluator_identity": "reason-natural-language-e2e-v12",
     "scoring_identity": "natural-language-e2e-scoring-v12",
-    "freeze_tag": "natural-language-e2e-v12-freeze",
+    "freeze_tag": "natural-language-e2e-v12-freeze-r2",
     "product_commit": "2d53a27d5ea0e2eb28bba355496db1f2b513f6a7",
     "canonical_provider": "mistral",
     "canonical_model": "ministral-8b-latest"

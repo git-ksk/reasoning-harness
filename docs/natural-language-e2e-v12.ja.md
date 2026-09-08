@@ -20,7 +20,7 @@ v0.4.1 では、exact fact target を recall できていても model action sel
 - base seed: `61000`
 - max tokens: `1024`
 - inter-case delay: `1500 ms`
-- freeze tag: `natural-language-e2e-v12-freeze`
+- freeze tag: `natural-language-e2e-v12-freeze-r2`
 
 各targetの最初のlive case launchだけを canonical observation とする。live observation 後は corpus / evaluator / threshold / target / seed / token budget / workflow / checksum を変更しない。semantic change が必要なら別 successor identity を作る。
 

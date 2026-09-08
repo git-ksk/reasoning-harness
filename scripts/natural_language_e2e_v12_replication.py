@@ -9,7 +9,7 @@ REPLICATION_ID="natural-language-e2e-v12-cross-model-v1"
 DEFAULT_MANIFEST=Path("fixtures/natural-language-e2e-v12-cross-model-v1/manifest.json")
 DEFAULT_FIXTURES=Path("fixtures/natural-language-e2e-v12")
 PRODUCT_COMMIT="2d53a27d5ea0e2eb28bba355496db1f2b513f6a7"
-FREEZE_TAG="natural-language-e2e-v12-freeze"
+FREEZE_TAG="natural-language-e2e-v12-freeze-r2"
 
 def load_replication_manifest(path:Path)->dict:
     m=json.loads(path.read_text())

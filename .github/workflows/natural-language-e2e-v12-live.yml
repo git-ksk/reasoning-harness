@@ -19,16 +19,17 @@ jobs:
       SEED: '61000'
       MAX_TOKENS: '1024'
       INTER_CASE_DELAY_MS: '1500'
-      FREEZE_TAG: natural-language-e2e-v12-freeze
+      FREEZE_TAG: natural-language-e2e-v12-freeze-r2
       PRODUCT_COMMIT: 2d53a27d5ea0e2eb28bba355496db1f2b513f6a7
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: natural-language-e2e-v12-freeze
+          ref: natural-language-e2e-v12-freeze-r2
           fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: '1.88.0'
+          components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
 
       - name: Prove immutable v12 freeze before any credential

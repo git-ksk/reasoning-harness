@@ -20,7 +20,7 @@ The three fresh adaptive cases freeze the same residual *class* without reusing 
 - base seed: `61000`
 - max tokens: `1024`
 - inter-case delay: `1500 ms`
-- freeze tag: `natural-language-e2e-v12-freeze`
+- freeze tag: `natural-language-e2e-v12-freeze-r2`
 
 The first live case launch for each frozen target is canonical for that target. After any live observation, the corpus, evaluator, thresholds, target set, seed, token budget, workflow, or checksums must not be changed. A semantic change requires a new successor identity.
 

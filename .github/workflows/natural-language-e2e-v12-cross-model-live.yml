@@ -14,11 +14,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
-      FREEZE_TAG: natural-language-e2e-v12-freeze
+      FREEZE_TAG: natural-language-e2e-v12-freeze-r2
       PRODUCT_COMMIT: 2d53a27d5ea0e2eb28bba355496db1f2b513f6a7
     steps:
       - uses: actions/checkout@v7
-        with: {ref: natural-language-e2e-v12-freeze, fetch-depth: 0}
+        with: {ref: natural-language-e2e-v12-freeze-r2, fetch-depth: 0}
       - uses: dtolnay/rust-toolchain@stable
         with: {toolchain: '1.88.0'}
       - uses: Swatinem/rust-cache@v2
@@ -77,14 +77,14 @@ jobs:
           - model: gemini-3.5-flash-lite
             slug: google-gemini-3.5-flash-lite
     env:
-      FREEZE_TAG: natural-language-e2e-v12-freeze
+      FREEZE_TAG: natural-language-e2e-v12-freeze-r2
       PRODUCT_COMMIT: 2d53a27d5ea0e2eb28bba355496db1f2b513f6a7
       SEED: '61000'
       MAX_TOKENS: '1024'
       INTER_CASE_DELAY_MS: '1500'
     steps:
       - uses: actions/checkout@v7
-        with: {ref: natural-language-e2e-v12-freeze, fetch-depth: 0}
+        with: {ref: natural-language-e2e-v12-freeze-r2, fetch-depth: 0}
       - uses: dtolnay/rust-toolchain@stable
         with: {toolchain: '1.88.0'}
       - uses: Swatinem/rust-cache@v2
@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 85
     env:
-      FREEZE_TAG: natural-language-e2e-v12-freeze
+      FREEZE_TAG: natural-language-e2e-v12-freeze-r2
       PRODUCT_COMMIT: 2d53a27d5ea0e2eb28bba355496db1f2b513f6a7
       SEED: '61000'
       MAX_TOKENS: '1024'
@@ -139,7 +139,7 @@ jobs:
       SLUG: groq-openai-gpt-oss-120b
     steps:
       - uses: actions/checkout@v7
-        with: {ref: natural-language-e2e-v12-freeze, fetch-depth: 0}
+        with: {ref: natural-language-e2e-v12-freeze-r2, fetch-depth: 0}
       - uses: dtolnay/rust-toolchain@stable
         with: {toolchain: '1.88.0'}
       - uses: Swatinem/rust-cache@v2
