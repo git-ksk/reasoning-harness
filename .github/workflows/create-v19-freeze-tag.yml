@@ -1,0 +1,33 @@
+name: create-v19-freeze-tag
+
+on:
+  pull_request:
+    types: [ready_for_review]
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'ops/v19-freeze-tag'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Create immutable v19 freeze tag
+        env:
+          FREEZE_SHA: 9a84f69914094564dee402a74d2e5b6f32b74b5f
+          FREEZE_TAG: natural-language-e2e-v19-freeze
+        run: |
+          set -euo pipefail
+          git fetch --tags origin
+          test "$(git rev-parse "$FREEZE_SHA")" = "$FREEZE_SHA"
+          if git rev-parse -q --verify "refs/tags/$FREEZE_TAG" >/dev/null; then
+            test "$(git rev-list -n 1 "$FREEZE_TAG")" = "$FREEZE_SHA"
+            exit 0
+          fi
+          git config user.name git-ksk
+          git config user.email '108925270+git-ksk@users.noreply.github.com'
+          git tag -a "$FREEZE_TAG" "$FREEZE_SHA" -m 'Freeze natural-language E2E v19 paired acceptance'
+          git push origin "refs/tags/$FREEZE_TAG"
