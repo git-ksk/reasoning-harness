@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.yandril.mode=prepared",
+  "add_hypothesis": "session.yandril.mode=prepared",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.yandril.mode",
+    "Yandril session readiness"
+  ],
+  "id": "session-add-yandril",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.yandril.mode",
+    "value": "prepared"
+  },
+  "task": "Determine whether Yandril session mode is ready."
+}

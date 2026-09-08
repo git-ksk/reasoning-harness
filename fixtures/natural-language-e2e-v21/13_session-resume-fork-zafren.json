@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.zafren.audit",
+    "Zafren audit enforcement"
+  ],
+  "id": "session-resume-fork-zafren",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.zafren.audit=strictly-enforced",
+  "start_hypothesis": "session.zafren.audit=strictly-enforced",
+  "target": {
+    "key": "session.zafren.audit",
+    "value": "strictly-enforced"
+  },
+  "task": "Determine whether Zafren audit enforcement is enabled."
+}

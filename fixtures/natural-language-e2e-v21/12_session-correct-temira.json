@@ -1,0 +1,17 @@
+{
+  "correction": "session.temira.threshold=29",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.temira.threshold",
+    "Temira retry threshold"
+  ],
+  "id": "session-correct-temira",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.temira.threshold=28",
+  "target": {
+    "key": "session.temira.threshold",
+    "value": "29"
+  },
+  "task": "Determine the configured Temira retry threshold."
+}
