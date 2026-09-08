@@ -1,0 +1,240 @@
+name: 288-apply-fix-once
+
+on:
+  push:
+    branches: [tmp/288-apply-fix]
+    paths: [.github/workflows/288-apply-fix-once.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-test-push:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/288-keyless-single-key-binding
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Apply narrow exact single-key binding
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('crates/reasoning-harness-core/src/investigation.rs')
+          text = path.read_text()
+
+          validate_marker = '''    pub fn validate_action(
+                  &mut self,
+                  proposal: InvestigationActionProposal,
+              ) -> Result<Option<InvestigationAction>, InvestigationActionRejection> {
+          '''
+          helper = '''    /// After the model explicitly selects an existing target/capability pair, bind a keyless
+              /// model-proposed target only when that selected read-only capability advertises exactly one
+              /// non-empty fact key. This is a mechanical narrowing of the already-selected pair: it never
+              /// infers from target text, merges targets, selects an action, or grants evidence authority.
+              fn bind_keyless_target_from_selected_capability(
+                  &mut self,
+                  target_id: &str,
+                  capability_id: &str,
+              ) {
+                  let Some(target) = self.targets.get(target_id) else {
+                      return;
+                  };
+                  if target.origin != InvestigationTargetOrigin::ModelProposedUntrusted
+                      || target.expected_fact_key.is_some()
+                  {
+                      return;
+                  }
+                  let Some(capability) = self.capabilities.get(capability_id) else {
+                      return;
+                  };
+                  if !capability.read_only || capability.supported_fact_keys.len() != 1 {
+                      return;
+                  }
+                  let Some(key) = capability
+                      .supported_fact_keys
+                      .iter()
+                      .next()
+                      .filter(|key| !key.trim().is_empty())
+                      .cloned()
+                  else {
+                      return;
+                  };
+
+                  if let Some(target) = self.targets.get_mut(target_id) {
+                      target.expected_fact_key = Some(key.clone());
+                  }
+                  if let Some(target) = self
+                      .telemetry
+                      .targets
+                      .iter_mut()
+                      .find(|target| target.id == target_id)
+                  {
+                      target.expected_fact_key = Some(key);
+                  }
+              }
+
+          '''
+          if validate_marker not in text:
+              raise SystemExit('validate_action marker not found')
+          text = text.replace(validate_marker, helper + validate_marker, 1)
+
+          duplicate_marker = '''            return self.reject_action(&proposal, InvestigationActionRejection::DuplicateAction);
+              }
+              Ok(Some(InvestigationAction {
+          '''
+          replacement = '''            return self.reject_action(&proposal, InvestigationActionRejection::DuplicateAction);
+              }
+              self.bind_keyless_target_from_selected_capability(target_id, capability_id);
+              Ok(Some(InvestigationAction {
+          '''
+          if duplicate_marker not in text:
+              raise SystemExit('duplicate-action marker not found')
+          text = text.replace(duplicate_marker, replacement, 1)
+
+          test_marker = '''    #[test]
+              fn precedence_selects_unique_highest_priority_for_one_exact_target() {
+          '''
+          tests = '''    #[test]
+              fn explicit_single_key_acquire_binds_keyless_target_and_enables_exact_followup() {
+                  let mut state = InvestigationState::new(
+                      vec![target("owner", None)],
+                      vec![
+                          capability("cache", &["routing.owner"]),
+                          capability("registry", &["routing.owner"]),
+                      ],
+                      InvestigationPolicy::default(),
+                  )
+                  .unwrap();
+
+                  // #233/#261 remain conservative: a keyless target is never auto-selected.
+                  assert_eq!(state.unique_compatible_action_proposal(), None);
+                  assert_eq!(state.unique_precedence_action_proposal(), None);
+
+                  let round = state.begin_round().unwrap();
+                  let first = state
+                      .validate_action(InvestigationActionProposal {
+                          action: InvestigationActionKind::Acquire,
+                          target_id: Some("owner".into()),
+                          capability_id: Some("cache".into()),
+                      })
+                      .unwrap()
+                      .unwrap();
+
+                  assert_eq!(
+                      state.target("owner").unwrap().expected_fact_key.as_deref(),
+                      Some("routing.owner")
+                  );
+                  assert_eq!(
+                      state
+                          .telemetry()
+                          .targets
+                          .iter()
+                          .find(|target| target.id == "owner")
+                          .unwrap()
+                          .expected_fact_key
+                          .as_deref(),
+                      Some("routing.owner")
+                  );
+
+                  state.record_observation(
+                      round,
+                      first,
+                      InvestigationObservationStatus::NoResult,
+                      0,
+                      false,
+                  );
+                  assert_eq!(
+                      state.unique_no_result_followup_proposal(),
+                      Some(InvestigationActionProposal {
+                          action: InvestigationActionKind::Acquire,
+                          target_id: Some("owner".into()),
+                          capability_id: Some("registry".into()),
+                      })
+                  );
+              }
+
+              #[test]
+              fn keyless_binding_rejects_inference_from_wildcard_multi_key_or_harness_target() {
+                  for capability in [
+                      capability("wildcard", &[]),
+                      capability("multi", &["routing.owner", "routing.region"]),
+                      capability("empty", &[""]),
+                  ] {
+                      let capability_id = capability.id.clone();
+                      let mut state = InvestigationState::new(
+                          vec![target("owner", None)],
+                          vec![capability],
+                          InvestigationPolicy::default(),
+                      )
+                      .unwrap();
+                      state.begin_round().unwrap();
+                      state
+                          .validate_action(InvestigationActionProposal {
+                              action: InvestigationActionKind::Acquire,
+                              target_id: Some("owner".into()),
+                              capability_id: Some(capability_id),
+                          })
+                          .unwrap()
+                          .unwrap();
+                      assert_eq!(state.target("owner").unwrap().expected_fact_key, None);
+                      assert_eq!(state.telemetry().targets[0].expected_fact_key, None);
+                  }
+
+                  let harness_target = InvestigationTarget {
+                      id: "owner".into(),
+                      question: "owner?".into(),
+                      expected_fact_key: None,
+                      origin: InvestigationTargetOrigin::ExplicitHarnessInput,
+                  };
+                  let mut state = InvestigationState::new(
+                      vec![harness_target],
+                      vec![capability("cache", &["routing.owner"])],
+                      InvestigationPolicy::default(),
+                  )
+                  .unwrap();
+                  state.begin_round().unwrap();
+                  state
+                      .validate_action(InvestigationActionProposal {
+                          action: InvestigationActionKind::Acquire,
+                          target_id: Some("owner".into()),
+                          capability_id: Some("cache".into()),
+                      })
+                      .unwrap()
+                      .unwrap();
+                  assert_eq!(state.target("owner").unwrap().expected_fact_key, None);
+                  assert_eq!(state.telemetry().targets[0].expected_fact_key, None);
+              }
+
+          '''
+          if test_marker not in text:
+              raise SystemExit('test insertion marker not found')
+          text = text.replace(test_marker, tests + test_marker, 1)
+          path.write_text(text)
+          PY
+      - name: Format and test full workspace
+        run: |
+          set -euo pipefail
+          cargo fmt --all
+          cargo fmt --all -- --check
+          cargo clippy --locked --workspace --all-targets -- -D warnings
+          cargo test --locked --workspace
+          git diff --check
+      - name: Commit exact product fix
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "1b889d843616ca257ec5e0e98411906e2c7152f6"
+          git status --short
+          test "$(git diff --name-only | wc -l)" -eq 1
+          test "$(git diff --name-only)" = "crates/reasoning-harness-core/src/investigation.rs"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add crates/reasoning-harness-core/src/investigation.rs
+          git commit -m "fix(investigation): bind explicit single-key acquisitions (#288)"
+          git push origin HEAD:fix/288-keyless-single-key-binding
