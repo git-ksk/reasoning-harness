@@ -132,6 +132,41 @@ fn json_operational_failure_is_exit_one_and_stays_machine_readable() {
 }
 
 #[test]
+fn generic_groq_missing_credential_is_typed_operational_failure_not_cli_parse_failure() {
+    let mut command = reason_command();
+    let output = command
+        .args([
+            "investigate this target",
+            "--provider",
+            "groq",
+            "--model",
+            "openai/gpt-oss-120b",
+            "--no-config",
+            "--format",
+            "json",
+        ])
+        .env_remove("GROQ_API_KEY")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("run generic Groq natural path");
+
+    assert_eq!(output.status.code(), Some(1));
+    assert!(output.stderr.is_empty());
+    let value = json_stdout(&output);
+    assert_eq!(value["schema_version"], "reason-cli-output-v1");
+    assert_eq!(value["command"], "ask");
+    assert_eq!(value["result"]["status"], "failed");
+    assert_eq!(value["result"]["failure"]["failure_class"], "credentials");
+    assert!(
+        value["result"]["failure"]["message"]
+            .as_str()
+            .unwrap_or_default()
+            .contains("GROQ_API_KEY")
+    );
+}
+
+#[test]
 fn cli_usage_error_is_exit_two_and_not_an_epistemic_outcome() {
     let output = run_reason(&["run", "--not-a-real-option"], None);
     assert_eq!(output.status.code(), Some(2));

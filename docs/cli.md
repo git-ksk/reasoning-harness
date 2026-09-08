@@ -231,6 +231,7 @@ Provider secrets are deliberately **not fields in `reason-config-v1`**:
 - Mistral: `MISTRAL_API_KEY`
 - Google: `GEMINI_API_KEY`
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
+- GroqCloud: `GROQ_API_KEY`
 
 The config parser rejects unknown secret-like fields such as `api_key`. Credentials remain
 environment/provider-adapter inputs and are never serialized into the effective run configuration.

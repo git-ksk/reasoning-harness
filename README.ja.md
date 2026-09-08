@@ -212,7 +212,7 @@ JSON modeでは失敗時もmachine-readableなfailure envelopeを返します。
 | モード | コマンド | Harness内でAIを呼ぶ？ | 向いているケース |
 | --- | --- | --- | --- |
 | **外部AIの候補を持ち込む** | `reason run --input ... --candidate ...` | **呼ばない** | 自作Agent、RAG、ChatGPT/Claude/Codex的な別システムなどが、すでに構造化された候補を作っている。 |
-| **`reason`に候補生成も任せる** | `reason run --input ... --provider ... --model ...` | **呼ぶ** | Mistral / Google / NVIDIAへ`reason`自身が問い合わせて候補を作り、そのまま検証したい。 |
+| **`reason`に候補生成も任せる** | `reason run --input ... --provider ... --model ...` | **呼ぶ** | Mistral / Google / NVIDIA / Groqへ`reason`自身が問い合わせて候補を作り、そのまま検証したい。 |
 
 Product commandごとに見るとこうです。
 

@@ -212,7 +212,7 @@ The structured foundation still exposes two `reason run` modes for advanced inte
 | Mode | Command shape | Does Reasoning Harness call an AI model? | Typical use |
 | --- | --- | --- | --- |
 | **Bring your own candidate** | `reason run --input ... --candidate ...` | **No** | Your app, RAG system, Claude/ChatGPT/Codex-like agent, or another model already produced structured output. |
-| **Live provider candidate generation** | `reason run --input ... --provider ... --model ...` | **Yes** | You want `reason` itself to ask Mistral, Google, or NVIDIA for the candidate before checking it. |
+| **Live provider candidate generation** | `reason run --input ... --provider ... --model ...` | **Yes** | You want `reason` itself to ask Mistral, Google, NVIDIA, or Groq for the candidate before checking it. |
 
 Other product commands have their own AI requirements:
 
