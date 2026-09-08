@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.garrin.mode=prepared",
+  "add_hypothesis": "session.garrin.mode=prepared",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.garrin.mode",
+    "Garrin session readiness"
+  ],
+  "id": "session-add-garrin",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.garrin.mode",
+    "value": "prepared"
+  },
+  "task": "Determine whether Garrin session mode is ready."
+}

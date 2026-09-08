@@ -1,0 +1,34 @@
+{
+  "adaptive": true,
+  "candidate_diagnostic_expectation": "harness_precedence_then_harness_exact_target_followup",
+  "config_pair": {
+    "candidate": "configs/candidate/breneth-followup.json",
+    "control": "configs/control/breneth-followup.json"
+  },
+  "coverage_contract": {
+    "first_capability": "breneth-owner-cache",
+    "followup_capability": "breneth-owner-registry",
+    "kind": "no_result_followup_observational",
+    "mechanism_selection": "harness_exact_target_followup",
+    "trigger_status": "no_result"
+  },
+  "expected": "grounded",
+  "fresh_markers": [
+    "breneth.traffic.owner",
+    "Breneth traffic routing owner"
+  ],
+  "id": "adaptive-breneth-owner",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "breneth-owner-cache",
+    "breneth-owner-registry"
+  ],
+  "safety_dimension": "followup",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "v11_metric_locked_followup",
+  "target": {
+    "key": "breneth.traffic.owner",
+    "value": "traffic-foundation"
+  },
+  "task": "Identify the current owner of Breneth traffic routing. Query the configured Breneth cache first, and only after a typed no-result continue to the configured Breneth registry."
+}

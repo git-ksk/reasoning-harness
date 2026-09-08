@@ -1,0 +1,17 @@
+{
+  "correction": "session.helvane.threshold=29",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.helvane.threshold",
+    "Helvane retry threshold"
+  ],
+  "id": "session-correct-helvane",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.helvane.threshold=28",
+  "target": {
+    "key": "session.helvane.threshold",
+    "value": "29"
+  },
+  "task": "Determine the configured Helvane retry threshold."
+}
