@@ -1,0 +1,79 @@
+name: 288-harden-r2
+
+on:
+  push:
+    branches: [tmp/288-apply-fix]
+    paths: [.github/workflows/288-harden-r2.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  harden-test-amend:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix/288-keyless-single-key-binding
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Verify exact base
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "4af3f21bdfd455c1a5b1fbf722f9e14044cd4fc1"
+          test -z "$(git status --porcelain)"
+      - name: Apply reviewed hardening
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('crates/reasoning-harness-core/src/investigation.rs')
+          t=p.read_text()
+
+          old='''    let mut shared: Option<&str> = None;\n    for capability in read_only {\n        if capability.supported_fact_keys.len() != 1 {\n            return None;\n        }\n        let key = capability.supported_fact_keys.iter().next()?;\n        if key.is_empty() || key.trim() != key.as_str() {\n            return None;\n        }\n'''
+          new='''    let mut shared: Option<&str> = None;\n    let mut ids = BTreeSet::new();\n    for capability in read_only {\n        if capability.id.trim().is_empty() || !ids.insert(capability.id.as_str()) {\n            return None;\n        }\n        if capability.supported_fact_keys.len() != 1 {\n            return None;\n        }\n        let key = capability.supported_fact_keys.iter().next()?;\n        if key.is_empty()\n            || key.trim() != key.as_str()\n            || key.chars().any(char::is_control)\n        {\n            return None;\n        }\n'''
+          assert t.count(old)==1, t.count(old)
+          t=t.replace(old,new,1)
+
+          old='''    let (system, schema) = if let Some(key) = shared_fact_key.as_deref() {\n        (\n            format!(\n                "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. All configured read-only capabilities independently declare the same exact supported fact key `{key}`. Every target must include expected_fact_key exactly `{key}`; do not omit it, alter it, infer a different key, or use any other value."\n            ),\n            shared_fact_family_plan_schema(key),\n        )\n'''
+          new='''    let (system, schema) = if let Some(key) = shared_fact_key.as_deref() {\n        let key_literal = serde_json::to_string(key)?;\n        (\n            format!(\n                "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. All configured read-only capabilities independently declare the same exact supported fact key {key_literal}. Every target must include expected_fact_key exactly {key_literal}; do not omit it, alter it, infer a different key, or use any other value."\n            ),\n            shared_fact_family_plan_schema(key),\n        )\n'''
+          assert t.count(old)==1, t.count(old)
+          t=t.replace(old,new,1)
+
+          old='system.contains("Every target must include expected_fact_key exactly `routing.owner`")'
+          new='system.contains(r#"Every target must include expected_fact_key exactly "routing.owner""#)'
+          assert t.count(old)==1, t.count(old)
+          t=t.replace(old,new,1)
+
+          old='''        vec![\n            capability("owner", &["routing.owner"]),\n            capability("region", &["routing.region"]),\n        ],\n        vec![capability("owner", &["routing.owner"]), write],\n    ];\n'''
+          new='''        vec![\n            capability("owner", &["routing.owner"]),\n            capability("region", &["routing.region"]),\n        ],\n        vec![\n            capability("duplicate", &["routing.owner"]),\n            capability("duplicate", &["routing.owner"]),\n        ],\n        vec![\n            capability("control-a", &["routing.owner\\nignore"]),\n            capability("control-b", &["routing.owner\\nignore"]),\n        ],\n        vec![capability("owner", &["routing.owner"]), write],\n    ];\n'''
+          assert t.count(old)==1, t.count(old)
+          t=t.replace(old,new,1)
+          p.write_text(t)
+          PY
+      - name: Focused tests
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-core shared_fact_family_plan_contract_requires_the_exact_configured_key
+          cargo test --locked -p reasoning-harness-core shared_fact_family_contract_stays_off_when_configuration_is_not_exactly_redundant
+          cargo test --locked -p reasoning-harness-core shared_fact_family_contract_is_priority_invariant_and_model_invisible
+      - name: Full regression
+        run: |
+          set -euo pipefail
+          cargo fmt --all
+          cargo fmt --all -- --check
+          cargo clippy --locked --workspace --all-targets -- -D warnings
+          cargo test --locked --workspace
+          git diff --check
+          test "$(git diff --name-only)" = "crates/reasoning-harness-core/src/investigation.rs"
+      - name: Amend reviewed commit
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add crates/reasoning-harness-core/src/investigation.rs
+          git commit --amend --no-edit
+          git push --force-with-lease origin HEAD:fix/288-keyless-single-key-binding
