@@ -1,0 +1,17 @@
+{
+  "correction": "session.xandor.threshold=29",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.xandor.threshold",
+    "Xandor retry threshold"
+  ],
+  "id": "session-correct-xandor",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.xandor.threshold=28",
+  "target": {
+    "key": "session.xandor.threshold",
+    "value": "29"
+  },
+  "task": "Determine the configured Xandor retry threshold."
+}

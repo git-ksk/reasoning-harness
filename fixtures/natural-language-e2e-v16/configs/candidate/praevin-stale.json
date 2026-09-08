@@ -1,0 +1,74 @@
+{
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "secondary": 10
+            },
+            "evaluation_time_unix_seconds": 2000003600,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "ecosystem": {
+                "kind": "values",
+                "values": [
+                  "prod"
+                ]
+              }
+            },
+            "sources": {
+              "fixture:v16:praevin-window": {
+                "authority_class": "primary",
+                "max_age_seconds": 300,
+                "scope": {
+                  "ecosystem": {
+                    "kind": "values",
+                    "values": [
+                      "prod"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "args": [
+            "scripts/natural_e2e_fixture_resolver.py",
+            "--mode",
+            "evidence",
+            "--source",
+            "fixture:v16:praevin-window",
+            "--fact-key",
+            "praevin.rollout.gate_open",
+            "--fact-value",
+            "true",
+            "--observed-at",
+            "1999998600",
+            "--retrieved-at",
+            "2000003560",
+            "--authority",
+            "primary",
+            "--scope",
+            "prod"
+          ],
+          "id": "praevin-window-stale",
+          "kind": "external_command",
+          "max_response_bytes": 65536,
+          "program": "python3",
+          "read_only": true,
+          "supported_fact_keys": [
+            "praevin.rollout.gate_open"
+          ],
+          "timeout_ms": 5000
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 4,
+      "max_targets": 3,
+      "planner_max_tokens": 256
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

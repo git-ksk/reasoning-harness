@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.yelric.audit",
+    "Yelric audit enforcement"
+  ],
+  "id": "session-resume-fork-yelric",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.yelric.audit=strictly-enforced",
+  "start_hypothesis": "session.yelric.audit=strictly-enforced",
+  "target": {
+    "key": "session.yelric.audit",
+    "value": "strictly-enforced"
+  },
+  "task": "Determine whether Yelric audit enforcement is enabled."
+}

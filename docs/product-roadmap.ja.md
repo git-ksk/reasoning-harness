@@ -46,6 +46,8 @@ Tracking: milestone **v0.4.2 — Planner Utility & Provider Parity** (#5)、pare
 
 evidence-gated release policy:
 
+現在のcandidate lineage: v15では`c069954...`に対するvalid failed Mistral evidenceを、同じv11固定metricで得た。#272は`3e6d0f5e8501f7eb3c165f95123d4b60ca82aa75`へmerge済みで、Harness-owned `selection_priority`をmodel-visibleなplan/action capability descriptorから除外しつつ、内部deterministic precedenceとcorrectness boundaryは維持する。v15はimmutableのまま、#263はfresh v16だけで継続する。
+
 - 実装完了だけではv0.4.2をtag/releaseしない。
 - #263はv0.4.2 live observation前にv0.4.1比較baselineとutility thresholdをfreezeする。
 - releaseにはpredeclared fresh planner setで `target_recalled=true` / `actions=0` のavoidable planner stallが厳密に減少し、trigger reachabilityが厳密に増加することを実測で要求する。同時にtrigger-exposed全caseで#249 conformanceを維持する。

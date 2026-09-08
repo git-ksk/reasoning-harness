@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.wyrenth.mode=prepared",
+  "add_hypothesis": "session.wyrenth.mode=prepared",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.wyrenth.mode",
+    "Wyrenth session readiness"
+  ],
+  "id": "session-add-wyrenth",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.wyrenth.mode",
+    "value": "prepared"
+  },
+  "task": "Determine whether Wyrenth session mode is ready."
+}

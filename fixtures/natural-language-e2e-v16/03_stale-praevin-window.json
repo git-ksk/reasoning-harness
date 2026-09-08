@@ -1,0 +1,28 @@
+{
+  "adaptive": false,
+  "config_pair": {
+    "candidate": "configs/candidate/praevin-stale.json",
+    "control": "configs/control/praevin-stale.json"
+  },
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "praevin.rollout.gate_open",
+    "Praevin current rollout gate"
+  ],
+  "id": "stale-praevin-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "praevin-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "praevin.rollout.gate_open",
+    "value": "true"
+  },
+  "task": "Determine whether the Praevin rollout gate is open now. Reject an observation outside the allowed freshness interval rather than promoting its value to current truth."
+}

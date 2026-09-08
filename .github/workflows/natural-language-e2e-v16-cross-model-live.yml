@@ -1,0 +1,186 @@
+name: natural-language-e2e-v16-cross-model-live
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  preflight:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'natural-language-e2e-v16-cross-model-live'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      FREEZE_TAG: natural-language-e2e-v16-freeze
+      CONTROL_COMMIT: 29a9e4be6273dbffeda324e15517dc64930ad315
+      CANDIDATE_COMMIT: 3e6d0f5e8501f7eb3c165f95123d4b60ca82aa75
+    steps:
+      - uses: actions/checkout@v7
+        with: {ref: natural-language-e2e-v16-freeze, fetch-depth: 0}
+      - uses: dtolnay/rust-toolchain@stable
+        with: {toolchain: '1.88.0'}
+      - name: Re-prove frozen paired surface
+        run: |
+          set -euo pipefail
+          F="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git rev-parse HEAD)" = "$F"
+          test "${{ github.event.pull_request.head.sha }}" = "$F"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          test "$(git rev-parse "$CONTROL_COMMIT")" = "$CONTROL_COMMIT"
+          test "$(git rev-parse "$CANDIDATE_COMMIT")" = "$CANDIDATE_COMMIT"
+          git diff --exit-code "$CANDIDATE_COMMIT" -- Cargo.toml Cargo.lock crates
+          (cd fixtures/natural-language-e2e-v16 && sha256sum -c ../natural-language-e2e-v16.sha256)
+          sha256sum -c fixtures/natural-language-e2e-v16-surface.sha256
+          python3 scripts/validate_natural_language_e2e_v16_pair.py >/tmp/v16-pair-validation.json
+          python3 scripts/natural_language_e2e_v16_acceptance.py --validate-only >/tmp/v16-acceptance-validate.json
+          python3 -m unittest -v scripts/test_natural_language_e2e_v16.py scripts/test_natural_language_e2e_v16_acceptance.py
+      - name: Require successful paired Mistral canonical for this freeze
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          F="$(git rev-parse HEAD)"
+          gh api "repos/${{ github.repository }}/actions/workflows/natural-language-e2e-v16-paired-live.yml/runs?event=pull_request&per_page=50" \
+            | jq -e --arg sha "$F" '[.workflow_runs[] | select(.head_sha == $sha and .status == "completed" and .conclusion == "success")] | length >= 1' >/dev/null
+      - name: Preserve cross-model preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v16-cross-preflight
+          path: /tmp/v16-*.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  google-paired:
+    needs: preflight
+    if: needs.preflight.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - model: gemini-3.5-flash-lite
+            slug: google-gemini-3.5-flash-lite
+          - model: gemma-4-31b-it
+            slug: google-gemma-4-31b-it
+    env:
+      FREEZE_TAG: natural-language-e2e-v16-freeze
+      CONTROL_COMMIT: 29a9e4be6273dbffeda324e15517dc64930ad315
+      CANDIDATE_COMMIT: 3e6d0f5e8501f7eb3c165f95123d4b60ca82aa75
+      SEED: '73000'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '1500'
+    steps:
+      - uses: actions/checkout@v7
+        with: {ref: natural-language-e2e-v16-freeze, fetch-depth: 0}
+      - uses: dtolnay/rust-toolchain@stable
+        with: {toolchain: '1.88.0'}
+      - uses: Swatinem/rust-cache@v2
+      - name: Build exact paired CLIs before provider secret
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          git diff --exit-code "$CANDIDATE_COMMIT" -- Cargo.toml Cargo.lock crates
+          sha256sum -c fixtures/natural-language-e2e-v16-surface.sha256
+          python3 scripts/validate_natural_language_e2e_v16_pair.py >/dev/null
+          git worktree add --detach /tmp/v16-control "$CONTROL_COMMIT"
+          cargo build --locked -p reasoning-harness-cli --bin reason
+          (cd /tmp/v16-control && cargo build --locked -p reasoning-harness-cli --bin reason)
+      - name: Check Google credential after frozen preflight
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: test -n "$GEMINI_API_KEY"
+      - name: Run paired Google control and candidate observations
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '4500'
+          MODEL: ${{ matrix.model }}
+          SLUG: ${{ matrix.slug }}
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v16.py \
+            --coordinate-role control --reason-bin /tmp/v16-control/target/debug/reason \
+            --provider google --model "$MODEL" --seed "$SEED" --max-tokens "$MAX_TOKENS" \
+            --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --attempt-marker "/tmp/v16-${SLUG}-control.attempt.json" \
+            --output "/tmp/v16-${SLUG}-control.json" >"/tmp/v16-${SLUG}-control.stdout.json"
+          python3 scripts/natural_language_e2e_v16.py \
+            --coordinate-role candidate --reason-bin target/debug/reason \
+            --provider google --model "$MODEL" --seed "$SEED" --max-tokens "$MAX_TOKENS" \
+            --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --attempt-marker "/tmp/v16-${SLUG}-candidate.attempt.json" \
+            --output "/tmp/v16-${SLUG}-candidate.json" >"/tmp/v16-${SLUG}-candidate.stdout.json"
+          python3 scripts/natural_language_e2e_v16_acceptance.py \
+            --pair-control "/tmp/v16-${SLUG}-control.json" \
+            --pair-candidate "/tmp/v16-${SLUG}-candidate.json" \
+            --output "/tmp/v16-${SLUG}-pair-acceptance.json"
+          jq -e '.paired_gate_passed == true' "/tmp/v16-${SLUG}-pair-acceptance.json" >/dev/null
+      - name: Preserve Google paired evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v16-${{ matrix.slug }}-seed-73000
+          path: /tmp/v16-${{ matrix.slug }}-*
+          if-no-files-found: warn
+          retention-days: 30
+
+  groq-candidate:
+    needs: preflight
+    if: needs.preflight.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      FREEZE_TAG: natural-language-e2e-v16-freeze
+      CANDIDATE_COMMIT: 3e6d0f5e8501f7eb3c165f95123d4b60ca82aa75
+      SEED: '73000'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '1500'
+      MODEL: openai/gpt-oss-120b
+    steps:
+      - uses: actions/checkout@v7
+        with: {ref: natural-language-e2e-v16-freeze, fetch-depth: 0}
+      - uses: dtolnay/rust-toolchain@stable
+        with: {toolchain: '1.88.0'}
+      - uses: Swatinem/rust-cache@v2
+      - name: Build exact candidate before provider secret
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          git diff --exit-code "$CANDIDATE_COMMIT" -- Cargo.toml Cargo.lock crates
+          sha256sum -c fixtures/natural-language-e2e-v16-surface.sha256
+          cargo build --locked -p reasoning-harness-cli --bin reason
+          python3 scripts/natural_language_e2e_v16_capability_probe.py --coordinate-role candidate --reason-bin target/debug/reason >/tmp/v16-groq-capability.json
+      - name: Check Groq credential after frozen preflight
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: test -n "$GROQ_API_KEY"
+      - name: Run first candidate generic Groq observation
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '2100'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v16.py \
+            --coordinate-role candidate --reason-bin target/debug/reason \
+            --provider groq --model "$MODEL" --seed "$SEED" --max-tokens "$MAX_TOKENS" \
+            --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --attempt-marker /tmp/v16-groq-candidate.attempt.json \
+            --output /tmp/v16-groq-candidate.json >/tmp/v16-groq-candidate.stdout.json
+          jq -e '.coordinate_role == "candidate" and .provider == "groq" and .model == "openai/gpt-oss-120b" and .aggregate.completed_cases == 13 and .aggregate.operational_failures == 0 and .aggregate.correctness_boundary_violations == 0 and .report_gate_passed == true' /tmp/v16-groq-candidate.json >/dev/null
+      - name: Preserve Groq candidate evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v16-groq-openai-gpt-oss-120b-seed-73000
+          path: /tmp/v16-groq-*
+          if-no-files-found: warn
+          retention-days: 30
