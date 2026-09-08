@@ -53,13 +53,14 @@ Implementation order is fixed:
 
 1. **#261 deterministic safe action precedence.** Reduce the measured `target_recalled=true` / `actions=0` / `round_budget` planner stall only where a Harness-owned read-only acquisition choice is mechanically unique under explicit configuration. Do not infer precedence from free-form task wording or JSON array order, merge same-key target identities, or make a model-selected target/action authoritative. Existing #233 globally-unique selection and #249 exact-target post-`no_result` continuation remain distinct invariants with distinct telemetry.
 2. **#262 generic Groq provider parity.** Expose the already implemented `GroqAdapter` through the generic natural-language `reason` generator/planner/action/regeneration/render/session path. Groq model IDs remain data; provider-specific semantics or authority branches are forbidden. The frozen #256 Groq process failures remain historical measurement-design evidence and are not rewritten.
-3. **#263 fresh v0.4.2 acceptance.** Freeze a new observation-free successor before live credentials, prove exact provider support without network before canonical launch, preserve provider-aware cross-model scheduling (#258), and gate release on zero correctness-boundary regression. Utility, operational completeness, and correctness remain separate report dimensions.
+3. **#281 structurally constrained action contract after v18.** The frozen v18 candidate regressed with repeated `acquire` proposals that carried `target_id` but omitted `capability_id` (`invalid_shape` 13 -> 29 control-to-candidate). Harden the model-facing action schema into a closed acquire/stop discriminated shape so missing executable IDs are structurally invalid before runtime validation, while retaining fail-closed runtime checks and forbidding ID repair, sibling merge, fuzzy matching, or provider-specific semantics.
+4. **#263 fresh v0.4.2 acceptance.** After #281, freeze a new observation-free successor before live credentials, prove exact provider support without network before canonical launch, preserve provider-aware cross-model scheduling (#258), and gate release on zero correctness-boundary regression. Utility, operational completeness, and correctness remain separate report dimensions. v18 remains immutable and is not rerun/rescored.
 
 Evidence-gated release policy:
 
 - implementation completion is **not** sufficient to tag/release v0.4.2;
 - #263 must freeze the v0.4.1 comparison baseline and utility thresholds before any v0.4.2 live observation;
-- release requires a strict measured reduction in avoidable `target_recalled=true` / `actions=0` planner stalls and a strict increase in trigger reachability on the predeclared fresh planner set, while #249 remains fully conformant on every trigger-exposed case;
+- candidate must be non-worse on the locked base utility indicators; unless the paired control row is already at the structural ceiling of `0` avoidable follow-up stalls and `3/3` trigger exposure, candidate must strictly improve at least one of those locked follow-up utility metrics without an offsetting required-metric regression; #249 remains fully conformant on every trigger-exposed case;
 - no scorable model may introduce a correctness/safety regression that is hidden by another model's improvement; the exact cross-model aggregation rule is frozen pre-live;
 - an operationally incomplete model cannot supply positive evidence for the improvement gate;
 - if the canonical successor is flat, mixed outside the predeclared gate, or worse, preserve it as a failed release candidate and **do not release v0.4.2**. Any subsequent attempt requires a new implementation/successor identity; never tune or rerun the failed frozen observation.
@@ -72,6 +73,7 @@ No-regression boundary:
 - unsupported/rejected/operational evidence never becomes fact authority;
 - correctness-boundary violations, unsupported exposed assertions, identity-unsafe admission, MCP authority self-promotion, and session external replay remain zero-gated;
 - #248 finalization/grounding bridge remains in **v0.5.0 — Verified Investigation Utility** because it crosses into target-to-final-answer authority/finalization semantics.
+- **v0.5.0 also owns the broader reliability/control-plane follow-up, not v0.4.2:** #282 adds repeated-trial / `pass^k`-style planner reliability characterization outside the frozen patch release ruler, and #283 evaluates moving mechanically safe executable-action materialization from the stochastic planner into Harness-owned deterministic control flow. These are separate from #248 and must not be pulled into v0.4.2 merely to make a failed patch acceptance pass.
 
 ## v0.4.1 — Investigation Utility Hardening
 

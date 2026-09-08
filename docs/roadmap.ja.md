@@ -24,7 +24,7 @@ runtime は `unknown`、qualified partial answer、または abstention で停�
 
 現在のexternal previewは `v0.4.1` である。**v0.4.1 — Investigation Utility Hardening（milestone #3）** は完了し、#249のexact-target typed-`no_result` continuationだけを追加する。同じtargetに明示fact-key対応read-only follow-upが1つだけ残る場合に限り継続し、target identity、admission、authority、verification、finalization、answer safety、machine-contract semantics、freeze済みnatural-language E2E v1〜v9 evidenceは維持する。
 
-次のpatch milestoneは **v0.4.2 — Planner Utility & Provider Parity（milestone #5 / #260）** とする。scopeは#261 deterministic safe action-precedence utility、#262 generic Groq provider parity、#263 fresh no-regression acceptanceに限定する。v0.4.2はv0.4.1のauthority/finalization boundaryを維持し、#248はv0.5.0のまま扱う。
+次のpatch milestoneは **v0.4.2 — Planner Utility & Provider Parity（milestone #5 / #260）** とする。scopeは#261 deterministic safe action-precedence utility、#262 generic Groq provider parity、freeze済みv18のinvalid-shape regressionを受けた#281 structurally constrained acquire/stop action output、#263 fresh no-regression acceptanceに限定する。v0.4.2はv0.4.1のauthority/finalization boundaryを維持する。より広いreliability/control-plane workはv0.5.0へ分離し、#248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationとして扱う。
 v0.4.2は**evidence-gated**とし、実装完了だけではreleaseしない。#263でv0.4.1比較とimprovement thresholdをlive前にpredeclare/freezeし、fresh canonical successorが実際のplanner utility改善を示し、全zero-regression correctness/safety gateを維持した場合だけtagする。横ばい、gate外mixed、悪化ならreleaseをblockし、観測をrerun/tuningせず保存する。
 
 v0.4.0は **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation** の順で実装し、#204 negotiated/session `mcp_readonly_v3`、#232 dependency/freeze hygiene、#233 unique-safe-action utility hardeningもrelease前に完了した。v4 cross-model replication (#208 / PR #209) と #216 Groq operational extension（2026-09-06 closeout済み）は凍結済みv4の追試であり、このラインのtuning surfaceには使っていない。
@@ -343,6 +343,8 @@ Issue #13、#27、#28、および D3 pilot/replication evidence が完了した�
 - [完了 #254] frozen v11 canonical Mistral run `34129798774` は13/13 completeで、correctness / operations / measurement / report gateはすべてpass。trigger reachabilityは1/3。trigger-exposedした1件は `cache no_result -> registry` とHarness follow-up telemetry 1を観測しconditional conformance 1/1、verification progressまで到達した。残り2件はplanner trigger missで、follow-up target groundingは0/3。
 - [振り分け済み] planner/action-selection残差はv0.4.2 #261で狭いdeterministic read-only selection invariantとして扱い、downstream grounding/finalizationはv0.5.0 #248に残す。frozen v9/v10/v11と#256 observationsはrerun/tuningしない。
 - [provider parity] v0.4.2 #262で既存GroqAdapterをgeneric natural-language `reason` surfaceへ露出する。#263ではlive canonical launch前にexact provider supportをpreflightし、unsupported combinationが再び13 process failureになることを防ぐ。
+- [v18 product residual] #281ではpatch-line fixを狭く保ち、v18で反復観測されたmissing-`capability_id` proposalに対してmodel-facing schema自身がacquire/stop shape requirementを構造的に表現する。runtime validationはauthoritative/fail-closedのままで、missing IDを推測・補完しない。
+- [v0.5.0へ分離] #282はplannerのdistributional reliability（`pass^k` / repeated-trial characterization）、#283は機械的に安全なaction materializationをdeterministic Harness control flowへ戻す設計を所有する。どちらもfreeze済みv0.4.2 rulerを変更せず、v18をretroactiveに救済しない。
 
 ## 将来機能の判断ゲート
 
