@@ -21,7 +21,13 @@ jobs:
           toolchain: '1.88.0'
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
-      - name: Apply narrow exact single-key binding
+      - name: Prove exact untouched product base
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "1b889d843616ca257ec5e0e98411906e2c7152f6"
+          test "$(git hash-object crates/reasoning-harness-core/src/investigation.rs)" = "3b362e885889891ca5ed76705f5568c5d80a1aeb"
+          test -z "$(git status --porcelain)"
+      - name: Apply reviewed shared-fact planning contract
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -29,195 +35,269 @@ jobs:
           path = Path('crates/reasoning-harness-core/src/investigation.rs')
           text = path.read_text()
 
-          validate_marker = '''    pub fn validate_action(
-                  &mut self,
-                  proposal: InvestigationActionProposal,
-              ) -> Result<Option<InvestigationAction>, InvestigationActionRejection> {
+          action_anchor = '''#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+          #[serde(rename_all = "snake_case")]
+          pub enum InvestigationActionKind {
           '''
-          helper = '''    /// After the model explicitly selects an existing target/capability pair, bind a keyless
-              /// model-proposed target only when that selected read-only capability advertises exactly one
-              /// non-empty fact key. This is a mechanical narrowing of the already-selected pair: it never
-              /// infers from target text, merges targets, selects an action, or grants evidence authority.
-              fn bind_keyless_target_from_selected_capability(
-                  &mut self,
-                  target_id: &str,
-                  capability_id: &str,
-              ) {
-                  let Some(target) = self.targets.get(target_id) else {
-                      return;
-                  };
-                  if target.origin != InvestigationTargetOrigin::ModelProposedUntrusted
-                      || target.expected_fact_key.is_some()
-                  {
-                      return;
-                  }
-                  let Some(capability) = self.capabilities.get(capability_id) else {
-                      return;
-                  };
-                  if !capability.read_only || capability.supported_fact_keys.len() != 1 {
-                      return;
-                  }
-                  let Some(key) = capability
-                      .supported_fact_keys
-                      .iter()
-                      .next()
-                      .filter(|key| !key.trim().is_empty())
-                      .cloned()
-                  else {
-                      return;
-                  };
-
-                  if let Some(target) = self.targets.get_mut(target_id) {
-                      target.expected_fact_key = Some(key.clone());
-                  }
-                  if let Some(target) = self
-                      .telemetry
-                      .targets
-                      .iter_mut()
-                      .find(|target| target.id == target_id)
-                  {
-                      target.expected_fact_key = Some(key);
-                  }
+          helper = '''fn shared_exact_read_only_fact_key(
+              capabilities: &[InvestigationCapability],
+          ) -> Option<String> {
+              let read_only = capabilities
+                  .iter()
+                  .filter(|capability| capability.read_only)
+                  .collect::<Vec<_>>();
+              if read_only.len() < 2 {
+                  return None;
               }
 
-          '''
-          if validate_marker not in text:
-              raise SystemExit('validate_action marker not found')
-          text = text.replace(validate_marker, helper + validate_marker, 1)
-
-          duplicate_marker = '''            return self.reject_action(&proposal, InvestigationActionRejection::DuplicateAction);
+              let mut shared: Option<&str> = None;
+              for capability in read_only {
+                  if capability.supported_fact_keys.len() != 1 {
+                      return None;
+                  }
+                  let key = capability.supported_fact_keys.iter().next()?;
+                  if key.is_empty() || key.trim() != key.as_str() {
+                      return None;
+                  }
+                  match shared {
+                      Some(existing) if existing != key.as_str() => return None,
+                      Some(_) => {}
+                      None => shared = Some(key.as_str()),
+                  }
               }
-              Ok(Some(InvestigationAction {
-          '''
-          replacement = '''            return self.reject_action(&proposal, InvestigationActionRejection::DuplicateAction);
-              }
-              self.bind_keyless_target_from_selected_capability(target_id, capability_id);
-              Ok(Some(InvestigationAction {
-          '''
-          if duplicate_marker not in text:
-              raise SystemExit('duplicate-action marker not found')
-          text = text.replace(duplicate_marker, replacement, 1)
+              shared.map(str::to_string)
+          }
 
-          test_marker = '''    #[test]
-              fn precedence_selects_unique_highest_priority_for_one_exact_target() {
+          fn shared_fact_family_plan_schema(key: &str) -> Value {
+              serde_json::json!({
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["targets"],
+                  "properties": {
+                      "targets": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": ["id", "question", "expected_fact_key"],
+                              "properties": {
+                                  "id": { "type": "string" },
+                                  "question": { "type": "string" },
+                                  "expected_fact_key": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "enum": [key]
+                                  }
+                              }
+                          }
+                      }
+                  }
+              })
+          }
+
           '''
-          tests = '''    #[test]
-              fn explicit_single_key_acquire_binds_keyless_target_and_enables_exact_followup() {
-                  let mut state = InvestigationState::new(
-                      vec![target("owner", None)],
-                      vec![
-                          capability("cache", &["routing.owner"]),
-                          capability("registry", &["routing.owner"]),
-                      ],
-                      InvestigationPolicy::default(),
+          if text.count(action_anchor) != 1:
+              raise SystemExit(f'action anchor count={text.count(action_anchor)}')
+          text = text.replace(action_anchor, helper + action_anchor, 1)
+
+          old_build = '''pub fn build_investigation_plan_request(
+              task: &str,
+              capabilities: &[InvestigationCapability],
+              max_tokens: Option<u32>,
+              random_seed: Option<u64>,
+          ) -> Result<ModelRequest, serde_json::Error> {
+              let capabilities = serialize_model_visible_capabilities(capabilities)?;
+              Ok(ModelRequest {
+                  system: Some(
+                      "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. expected_fact_key is only a selector hint when the task clearly names the fact family; omit it when uncertain.".into(),
+                  ),
+                  task: format!(
+                      "User task:\\n{task}\\n\\nHarness-configured read-only capability descriptors:\\n{capabilities}\\n\\nPropose concise investigation targets. Targets are untrusted planning objects, not hypotheses or verified facts. Do not include tool arguments, evidence, identity claims, authority classes, answers, or verdicts."
+                  ),
+                  output_format: ModelOutputFormat::JsonSchema {
+                      name: INVESTIGATION_PLAN_CONTRACT_ID.into(),
+                      schema: investigation_plan_schema(),
+                  },
+                  max_tokens,
+                  random_seed,
+                  reasoning_preference: None,
+              })
+          }
+          '''
+          new_build = '''pub fn build_investigation_plan_request(
+              task: &str,
+              capabilities: &[InvestigationCapability],
+              max_tokens: Option<u32>,
+              random_seed: Option<u64>,
+          ) -> Result<ModelRequest, serde_json::Error> {
+              let shared_fact_key = shared_exact_read_only_fact_key(capabilities);
+              let (system, schema) = if let Some(key) = shared_fact_key.as_deref() {
+                  (
+                      format!(
+                          "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. All configured read-only capabilities independently declare the same exact supported fact key `{key}`. Every target must include expected_fact_key exactly `{key}`; do not omit it, alter it, infer a different key, or use any other value."
+                      ),
+                      shared_fact_family_plan_schema(key),
+                  )
+              } else {
+                  (
+                      "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. expected_fact_key is only a selector hint when the task clearly names the fact family; omit it when uncertain.".into(),
+                      investigation_plan_schema(),
+                  )
+              };
+              let capabilities = serialize_model_visible_capabilities(capabilities)?;
+              Ok(ModelRequest {
+                  system: Some(system),
+                  task: format!(
+                      "User task:\\n{task}\\n\\nHarness-configured read-only capability descriptors:\\n{capabilities}\\n\\nPropose concise investigation targets. Targets are untrusted planning objects, not hypotheses or verified facts. Do not include tool arguments, evidence, identity claims, authority classes, answers, or verdicts."
+                  ),
+                  output_format: ModelOutputFormat::JsonSchema {
+                      name: INVESTIGATION_PLAN_CONTRACT_ID.into(),
+                      schema,
+                  },
+                  max_tokens,
+                  random_seed,
+                  reasoning_preference: None,
+              })
+          }
+          '''
+          if text.count(old_build) != 1:
+              raise SystemExit(f'build function count={text.count(old_build)}')
+          text = text.replace(old_build, new_build, 1)
+
+          test_anchor = '''    #[test]
+              fn plan_schema_is_closed_and_targets_remain_untrusted() {
+          '''
+          tests = r'''    #[test]
+              fn shared_fact_family_plan_contract_requires_the_exact_configured_key() {
+                  let capabilities = vec![
+                      capability("cache", &["routing.owner"]),
+                      capability("registry", &["routing.owner"]),
+                  ];
+                  assert_eq!(
+                      shared_exact_read_only_fact_key(&capabilities).as_deref(),
+                      Some("routing.owner")
+                  );
+
+                  let request = build_investigation_plan_request(
+                      "find the routing owner",
+                      &capabilities,
+                      Some(128),
+                      Some(7),
                   )
                   .unwrap();
-
-                  // #233/#261 remain conservative: a keyless target is never auto-selected.
-                  assert_eq!(state.unique_compatible_action_proposal(), None);
-                  assert_eq!(state.unique_precedence_action_proposal(), None);
-
-                  let round = state.begin_round().unwrap();
-                  let first = state
-                      .validate_action(InvestigationActionProposal {
-                          action: InvestigationActionKind::Acquire,
-                          target_id: Some("owner".into()),
-                          capability_id: Some("cache".into()),
-                      })
-                      .unwrap()
-                      .unwrap();
-
+                  let schema = match &request.output_format {
+                      ModelOutputFormat::JsonSchema { schema, .. } => schema,
+                      _ => panic!("expected JSON schema"),
+                  };
+                  let target_schema = &schema["properties"]["targets"]["items"];
                   assert_eq!(
-                      state.target("owner").unwrap().expected_fact_key.as_deref(),
-                      Some("routing.owner")
+                      target_schema["required"],
+                      serde_json::json!(["id", "question", "expected_fact_key"])
                   );
                   assert_eq!(
-                      state
-                          .telemetry()
-                          .targets
-                          .iter()
-                          .find(|target| target.id == "owner")
-                          .unwrap()
-                          .expected_fact_key
-                          .as_deref(),
-                      Some("routing.owner")
-                  );
-
-                  state.record_observation(
-                      round,
-                      first,
-                      InvestigationObservationStatus::NoResult,
-                      0,
-                      false,
+                      target_schema["properties"]["expected_fact_key"]["enum"],
+                      serde_json::json!(["routing.owner"])
                   );
                   assert_eq!(
-                      state.unique_no_result_followup_proposal(),
-                      Some(InvestigationActionProposal {
-                          action: InvestigationActionKind::Acquire,
-                          target_id: Some("owner".into()),
-                          capability_id: Some("registry".into()),
-                      })
+                      target_schema["properties"]["expected_fact_key"]["minLength"],
+                      1
                   );
+                  let system = request.system.as_deref().unwrap();
+                  assert!(system.contains("Every target must include expected_fact_key exactly `routing.owner`"));
+                  assert!(!system.contains("selection_priority"));
+
+                  let fallback = parse_investigation_plan(
+                      r#"{"targets":[{"id":"owner","question":"Who owns routing?"}]}"#,
+                  )
+                  .expect("runtime parser remains broad for provider fallback observability");
+                  assert_eq!(fallback.targets[0].expected_fact_key, None);
               }
 
               #[test]
-              fn keyless_binding_rejects_inference_from_wildcard_multi_key_or_harness_target() {
-                  for capability in [
-                      capability("wildcard", &[]),
-                      capability("multi", &["routing.owner", "routing.region"]),
-                      capability("empty", &[""]),
-                  ] {
-                      let capability_id = capability.id.clone();
-                      let mut state = InvestigationState::new(
-                          vec![target("owner", None)],
-                          vec![capability],
-                          InvestigationPolicy::default(),
+              fn shared_fact_family_contract_stays_off_when_configuration_is_not_exactly_redundant() {
+                  let mut write = capability("write", &["routing.owner"]);
+                  write.read_only = false;
+                  let cases = vec![
+                      vec![capability("single", &["routing.owner"])],
+                      vec![capability("wildcard", &[]), capability("registry", &["routing.owner"])],
+                      vec![
+                          capability("multi", &["routing.owner", "routing.region"]),
+                          capability("registry", &["routing.owner"]),
+                      ],
+                      vec![
+                          capability("owner", &["routing.owner"]),
+                          capability("region", &["routing.region"]),
+                      ],
+                      vec![capability("owner", &["routing.owner"]), write],
+                  ];
+
+                  for capabilities in cases {
+                      assert_eq!(shared_exact_read_only_fact_key(&capabilities), None);
+                      let request = build_investigation_plan_request(
+                          "investigate routing",
+                          &capabilities,
+                          Some(128),
+                          Some(7),
                       )
                       .unwrap();
-                      state.begin_round().unwrap();
-                      state
-                          .validate_action(InvestigationActionProposal {
-                              action: InvestigationActionKind::Acquire,
-                              target_id: Some("owner".into()),
-                              capability_id: Some(capability_id),
-                          })
-                          .unwrap()
-                          .unwrap();
-                      assert_eq!(state.target("owner").unwrap().expected_fact_key, None);
-                      assert_eq!(state.telemetry().targets[0].expected_fact_key, None);
+                      let schema = match request.output_format {
+                          ModelOutputFormat::JsonSchema { schema, .. } => schema,
+                          _ => panic!("expected JSON schema"),
+                      };
+                      assert_eq!(schema, investigation_plan_schema());
+                      assert!(
+                          request
+                              .system
+                              .as_deref()
+                              .unwrap()
+                              .contains("omit it when uncertain")
+                      );
                   }
+              }
 
-                  let harness_target = InvestigationTarget {
-                      id: "owner".into(),
-                      question: "owner?".into(),
-                      expected_fact_key: None,
-                      origin: InvestigationTargetOrigin::ExplicitHarnessInput,
-                  };
-                  let mut state = InvestigationState::new(
-                      vec![harness_target],
-                      vec![capability("cache", &["routing.owner"])],
-                      InvestigationPolicy::default(),
+              #[test]
+              fn shared_fact_family_contract_is_priority_invariant_and_model_invisible() {
+                  let plain = vec![
+                      capability("cache", &["routing.owner"]),
+                      capability("registry", &["routing.owner"]),
+                  ];
+                  let prioritized = vec![
+                      capability_with_priority("cache", &["routing.owner"], 20),
+                      capability_with_priority("registry", &["routing.owner"], 10),
+                  ];
+                  let plain_request = build_investigation_plan_request(
+                      "find the routing owner",
+                      &plain,
+                      Some(128),
+                      Some(7),
                   )
                   .unwrap();
-                  state.begin_round().unwrap();
-                  state
-                      .validate_action(InvestigationActionProposal {
-                          action: InvestigationActionKind::Acquire,
-                          target_id: Some("owner".into()),
-                          capability_id: Some("cache".into()),
-                      })
-                      .unwrap()
-                      .unwrap();
-                  assert_eq!(state.target("owner").unwrap().expected_fact_key, None);
-                  assert_eq!(state.telemetry().targets[0].expected_fact_key, None);
+                  let prioritized_request = build_investigation_plan_request(
+                      "find the routing owner",
+                      &prioritized,
+                      Some(128),
+                      Some(7),
+                  )
+                  .unwrap();
+                  assert_eq!(plain_request.system, prioritized_request.system);
+                  assert_eq!(plain_request.task, prioritized_request.task);
+                  assert_eq!(plain_request.output_format, prioritized_request.output_format);
+                  assert!(!prioritized_request.task.contains("selection_priority"));
+                  assert!(!prioritized_request.system.unwrap().contains("selection_priority"));
               }
 
           '''
-          if test_marker not in text:
-              raise SystemExit('test insertion marker not found')
-          text = text.replace(test_marker, tests + test_marker, 1)
+          if text.count(test_anchor) != 1:
+              raise SystemExit(f'test anchor count={text.count(test_anchor)}')
+          text = text.replace(test_anchor, tests + test_anchor, 1)
           path.write_text(text)
           PY
+      - name: Run focused #288 contract tests
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-core shared_fact_family_plan_contract_requires_the_exact_configured_key
+          cargo test --locked -p reasoning-harness-core shared_fact_family_contract_stays_off_when_configuration_is_not_exactly_redundant
+          cargo test --locked -p reasoning-harness-core shared_fact_family_contract_is_priority_invariant_and_model_invisible
       - name: Format and test full workspace
         run: |
           set -euo pipefail
@@ -226,15 +306,14 @@ jobs:
           cargo clippy --locked --workspace --all-targets -- -D warnings
           cargo test --locked --workspace
           git diff --check
+          test "$(git diff --name-only | wc -l)" -eq 1
+          test "$(git diff --name-only)" = "crates/reasoning-harness-core/src/investigation.rs"
       - name: Commit exact product fix
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "1b889d843616ca257ec5e0e98411906e2c7152f6"
-          git status --short
-          test "$(git diff --name-only | wc -l)" -eq 1
-          test "$(git diff --name-only)" = "crates/reasoning-harness-core/src/investigation.rs"
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add crates/reasoning-harness-core/src/investigation.rs
-          git commit -m "fix(investigation): bind explicit single-key acquisitions (#288)"
+          git commit -m "fix(investigation): constrain shared-fact plan keys (#288)"
           git push origin HEAD:fix/288-keyless-single-key-binding
