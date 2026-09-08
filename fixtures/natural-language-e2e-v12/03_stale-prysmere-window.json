@@ -1,0 +1,26 @@
+{
+  "schema_version": "natural-language-e2e-case-v2",
+  "adaptive": false,
+  "config": "configs/prysmere-stale.json",
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "Prysmere deployment window",
+    "prysmere.deploy.window_open",
+    "fixture:v12:prysmere-window"
+  ],
+  "id": "stale-prysmere-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "prysmere-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "prysmere.deploy.window_open",
+    "value": "true"
+  },
+  "task": "Determine whether the Prysmere deployment window is open now. Reject an observation that is outside the allowed freshness interval instead of promoting its value to current truth."
+}

@@ -1,0 +1,166 @@
+name: natural-language-e2e-v12-live
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  v042-candidate-mistral-canonical:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'natural-language-e2e-v12-live'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    env:
+      PROVIDER: mistral
+      MODEL: ministral-8b-latest
+      SEED: '61000'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '1500'
+      FREEZE_TAG: natural-language-e2e-v12-freeze
+      PRODUCT_COMMIT: 2d53a27d5ea0e2eb28bba355496db1f2b513f6a7
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: natural-language-e2e-v12-freeze
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Prove immutable v12 freeze before any credential
+        run: |
+          set -euo pipefail
+          FREEZE_COMMIT="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test -n "$FREEZE_COMMIT"
+          test "$(git rev-parse HEAD)" = "$FREEZE_COMMIT"
+          test "${{ github.event.pull_request.head.sha }}" = "$FREEZE_COMMIT"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          (cd fixtures/natural-language-e2e-v12 && sha256sum -c ../natural-language-e2e-v12.sha256)
+          sha256sum -c fixtures/natural-language-e2e-v12-surface.sha256
+          python3 scripts/natural_language_e2e_v12.py --validate-only >/tmp/v12-validate.json
+          python3 scripts/natural_language_e2e_v12_replication.py --validate-only >/tmp/v12-replication-validate.json
+          python3 scripts/natural_language_e2e_v12_acceptance.py --validate-only >/tmp/v12-acceptance-validate.json
+          jq -e '.valid == true and .cases == 13 and .provider_policy.base_seed == 61000' /tmp/v12-validate.json >/dev/null
+          jq -e '.valid == true and (.targets|length) == 3' /tmp/v12-replication-validate.json >/dev/null
+          jq -e '.valid == true and .no_cross_model_averaging == true and (.required_models|length) == 4' /tmp/v12-acceptance-validate.json >/dev/null
+
+      - name: Prove exact unreleased product source coordinate
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse "$PRODUCT_COMMIT")" = "$PRODUCT_COMMIT"
+          git diff --exit-code "$PRODUCT_COMMIT" -- Cargo.toml Cargo.lock crates
+          test "$(git show "$PRODUCT_COMMIT:Cargo.toml" | sed -n 's/^version = "\([^"]*\)"/\1/p' | head -1)" = '0.4.1'
+          test "$(jq -r .product_coordinate.release_target fixtures/natural-language-e2e-v12/manifest.json)" = 'v0.4.2'
+          test "$(jq -r .product_coordinate.coordinate_kind fixtures/natural-language-e2e-v12/manifest.json)" = 'unreleased_v0.4.2_candidate'
+
+      - name: Prove historical frozen surfaces are untouched
+        run: |
+          set -euo pipefail
+          for v in 1 2 3 4 5 6 7 8 9 10 11; do
+            git diff --exit-code "natural-language-e2e-v${v}-freeze" -- \
+              "fixtures/natural-language-e2e-v${v}" \
+              "fixtures/natural-language-e2e-v${v}.sha256" \
+              "scripts/natural_language_e2e_v${v}.py" \
+              "scripts/test_natural_language_e2e_v${v}.py"
+          done
+
+      - name: Run full deterministic candidate regression
+        run: |
+          set -euo pipefail
+          cargo fmt --check
+          cargo clippy --locked --workspace --all-targets -- -D warnings
+          cargo test --locked --workspace
+          python3 scripts/validate_cross_model_concurrency_policy.py
+          python3 -m unittest -v scripts/test_natural_language_e2e_v12.py
+          python3 -m unittest -v scripts/test_natural_language_e2e_v12_replication.py
+          python3 -m unittest -v scripts/test_natural_language_e2e_v12_acceptance.py
+
+      - name: Run no-model no-network resolver admission and MCP-shape preflight
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v12.py --preflight >/tmp/v12-preflight.json
+          jq -e '
+            .valid == true and .model_used == false and .cases == 13
+            and .resolver_capabilities_checked == 14
+            and .admission_contracts.evidence_sources_checked == 9
+            and .admission_contracts.allowlisted_evidence_sources == 8
+            and .admission_contracts.identity_negative_sources == 1
+            and .admission_contracts.positive_admissible_fixture_cases == 5
+            and .admission_contracts.intended_rejection_contracts == 4
+            and .admission_contracts.followup_sequence_contracts_verified == 3
+            and .admission_contracts.mcp_lane_contracts_verified == 1
+          ' /tmp/v12-preflight.json >/dev/null
+
+      - name: Build exact candidate CLI and probe every frozen provider model without network
+        run: |
+          set -euo pipefail
+          cargo build --locked -p reasoning-harness-cli --bin reason
+          python3 scripts/natural_language_e2e_v12_capability_probe.py --reason-bin target/debug/reason --output /tmp/v12-capability-probe.json
+          jq -e '.passed == true and .model_or_network_used == false and (.rows|length) == 4' /tmp/v12-capability-probe.json >/dev/null
+
+      - name: Confirm pinned official GitHub MCP image contract
+        env:
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-providers \
+            'mcp_readonly_v3::tests::official_github_mcp_pinned_image_negotiates_and_generic_result_stays_opaque' \
+            -- --ignored --exact
+
+      - name: Check canonical provider credential only after all no-network gates
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: test -n "$MISTRAL_API_KEY"
+
+      - name: Run first and only canonical Mistral v12 observation
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v12.py \
+            --reason-bin target/debug/reason \
+            --provider "$PROVIDER" --model "$MODEL" \
+            --seed "$SEED" --max-tokens "$MAX_TOKENS" \
+            --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --attempt-marker /tmp/natural-language-e2e-v12-live-attempt.json \
+            --output /tmp/natural-language-e2e-v12-live.json \
+            >/tmp/natural-language-e2e-v12-live.stdout.json
+          jq -e --arg product "$PRODUCT_COMMIT" '
+            .schema_version == "reason-natural-language-e2e-v12"
+            and .product_coordinate.commit == $product
+            and .provider == "mistral" and .model == "ministral-8b-latest"
+            and .seed == 61000 and .max_tokens == 1024
+            and .aggregate.total_cases == 13 and .aggregate.completed_cases == 13
+            and .aggregate.operational_failures == 0
+            and .aggregate.correctness_boundary_violations == 0
+            and .aggregate.unsupported_structured_claims == 0
+            and .aggregate.unsupported_exposed_assertions == 0
+            and .aggregate.exposed_text_contract_violations == 0
+            and .aggregate.identity_unsafe_admission == 0
+            and .aggregate.mcp_output_authority_self_promotion == 0
+            and .aggregate.session_external_calls_replayed == 0
+            and .report_gate_passed == true
+          ' /tmp/natural-language-e2e-v12-live.json >/dev/null
+
+      - name: Preserve canonical observation and all pre-observation evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v12-v042-candidate-mistral-ministral-8b-seed-61000
+          path: |
+            /tmp/v12-validate.json
+            /tmp/v12-replication-validate.json
+            /tmp/v12-acceptance-validate.json
+            /tmp/v12-preflight.json
+            /tmp/v12-capability-probe.json
+            /tmp/natural-language-e2e-v12-live.json
+            /tmp/natural-language-e2e-v12-live.stdout.json
+            /tmp/natural-language-e2e-v12-live-attempt.json
+          if-no-files-found: warn
+          retention-days: 30

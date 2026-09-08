@@ -1,0 +1,180 @@
+name: natural-language-e2e-v12-cross-model-live
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  preflight:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'natural-language-e2e-v12-cross-model-live'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      FREEZE_TAG: natural-language-e2e-v12-freeze
+      PRODUCT_COMMIT: 2d53a27d5ea0e2eb28bba355496db1f2b513f6a7
+    steps:
+      - uses: actions/checkout@v7
+        with: {ref: natural-language-e2e-v12-freeze, fetch-depth: 0}
+      - uses: dtolnay/rust-toolchain@stable
+        with: {toolchain: '1.88.0'}
+      - uses: Swatinem/rust-cache@v2
+      - name: Re-prove frozen surface and exact product coordinate
+        run: |
+          set -euo pipefail
+          F="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git rev-parse HEAD)" = "$F"
+          test "${{ github.event.pull_request.head.sha }}" = "$F"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          git diff --exit-code "$PRODUCT_COMMIT" -- Cargo.toml Cargo.lock crates
+          (cd fixtures/natural-language-e2e-v12 && sha256sum -c ../natural-language-e2e-v12.sha256)
+          sha256sum -c fixtures/natural-language-e2e-v12-surface.sha256
+          python3 scripts/natural_language_e2e_v12_replication.py --validate-only >/tmp/v12-cross-validate.json
+          python3 scripts/natural_language_e2e_v12_replication.py --preflight >/tmp/v12-cross-preflight.json
+          python3 scripts/natural_language_e2e_v12_acceptance.py --validate-only >/tmp/v12-acceptance-validate.json
+          python3 -m unittest -v scripts/test_natural_language_e2e_v12_replication.py scripts/test_natural_language_e2e_v12_acceptance.py
+      - name: Require completed canonical run for the same freeze commit before replication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          F="$(git rev-parse HEAD)"
+          gh api "repos/${{ github.repository }}/actions/workflows/natural-language-e2e-v12-live.yml/runs?event=pull_request&per_page=50" \
+            | jq -e --arg sha "$F" '[.workflow_runs[] | select(.head_sha == $sha and .status == "completed" and .conclusion == "success")] | length >= 1' >/dev/null
+      - name: Build candidate CLI and repeat exact no-network capability probe
+        run: |
+          set -euo pipefail
+          cargo build --locked -p reasoning-harness-cli --bin reason
+          python3 scripts/natural_language_e2e_v12_capability_probe.py --reason-bin target/debug/reason --output /tmp/v12-cross-capability-probe.json
+      - name: Preserve replication preflight evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v12-cross-model-v1-preflight
+          path: |
+            /tmp/v12-cross-validate.json
+            /tmp/v12-cross-preflight.json
+            /tmp/v12-acceptance-validate.json
+            /tmp/v12-cross-capability-probe.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  google:
+    needs: preflight
+    if: needs.preflight.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 85
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - model: gemma-4-31b-it
+            slug: google-gemma-4-31b-it
+          - model: gemini-3.5-flash-lite
+            slug: google-gemini-3.5-flash-lite
+    env:
+      FREEZE_TAG: natural-language-e2e-v12-freeze
+      PRODUCT_COMMIT: 2d53a27d5ea0e2eb28bba355496db1f2b513f6a7
+      SEED: '61000'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '1500'
+    steps:
+      - uses: actions/checkout@v7
+        with: {ref: natural-language-e2e-v12-freeze, fetch-depth: 0}
+      - uses: dtolnay/rust-toolchain@stable
+        with: {toolchain: '1.88.0'}
+      - uses: Swatinem/rust-cache@v2
+      - name: Re-prove exact freeze before provider secret
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          git diff --exit-code "$PRODUCT_COMMIT" -- Cargo.toml Cargo.lock crates
+          sha256sum -c fixtures/natural-language-e2e-v12-surface.sha256
+          python3 scripts/natural_language_e2e_v12_replication.py --validate-only >/dev/null
+          cargo build --locked -p reasoning-harness-cli --bin reason
+      - name: Check Google credential after frozen preflight
+        env: {GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}'}
+        run: test -n "$GEMINI_API_KEY"
+      - name: Run first frozen Google observation for model
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '4500'
+          MODEL: ${{ matrix.model }}
+          SLUG: ${{ matrix.slug }}
+        run: |
+          set -euo pipefail
+          OUT="/tmp/natural-language-e2e-v12-cross-${SLUG}.json"
+          python3 scripts/natural_language_e2e_v12_replication.py \
+            --reason-bin target/debug/reason --provider google --model "$MODEL" \
+            --seed "$SEED" --max-tokens "$MAX_TOKENS" --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --attempt-marker "/tmp/natural-language-e2e-v12-cross-${SLUG}.attempt.json" --output "$OUT" \
+            >"/tmp/natural-language-e2e-v12-cross-${SLUG}.stdout.json"
+          jq -e --arg model "$MODEL" '.provider == "google" and .model == $model and .aggregate.total_cases == 13 and .aggregate.correctness_boundary_violations == 0' "$OUT" >/dev/null
+      - name: Preserve Google target observation
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v12-cross-model-v1-${{ matrix.slug }}-seed-61000
+          path: /tmp/natural-language-e2e-v12-cross-${{ matrix.slug }}*
+          if-no-files-found: warn
+          retention-days: 30
+
+  groq:
+    needs: preflight
+    if: needs.preflight.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 85
+    env:
+      FREEZE_TAG: natural-language-e2e-v12-freeze
+      PRODUCT_COMMIT: 2d53a27d5ea0e2eb28bba355496db1f2b513f6a7
+      SEED: '61000'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '1500'
+      MODEL: openai/gpt-oss-120b
+      SLUG: groq-openai-gpt-oss-120b
+    steps:
+      - uses: actions/checkout@v7
+        with: {ref: natural-language-e2e-v12-freeze, fetch-depth: 0}
+      - uses: dtolnay/rust-toolchain@stable
+        with: {toolchain: '1.88.0'}
+      - uses: Swatinem/rust-cache@v2
+      - name: Re-prove exact freeze before provider secret
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          git diff --exit-code "$PRODUCT_COMMIT" -- Cargo.toml Cargo.lock crates
+          sha256sum -c fixtures/natural-language-e2e-v12-surface.sha256
+          python3 scripts/natural_language_e2e_v12_replication.py --validate-only >/dev/null
+          cargo build --locked -p reasoning-harness-cli --bin reason
+      - name: Check Groq credential after frozen preflight
+        env: {GROQ_API_KEY: '${{ secrets.GROQ_API_KEY }}'}
+        run: test -n "$GROQ_API_KEY"
+      - name: Run first frozen Groq generic-provider observation
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '2100'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -euo pipefail
+          OUT="/tmp/natural-language-e2e-v12-cross-${SLUG}.json"
+          python3 scripts/natural_language_e2e_v12_replication.py \
+            --reason-bin target/debug/reason --provider groq --model "$MODEL" \
+            --seed "$SEED" --max-tokens "$MAX_TOKENS" --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --attempt-marker "/tmp/natural-language-e2e-v12-cross-${SLUG}.attempt.json" --output "$OUT" \
+            >"/tmp/natural-language-e2e-v12-cross-${SLUG}.stdout.json"
+          jq -e '.provider == "groq" and .model == "openai/gpt-oss-120b" and .aggregate.total_cases == 13 and .aggregate.correctness_boundary_violations == 0' "$OUT" >/dev/null
+      - name: Preserve Groq target observation
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v12-cross-model-v1-groq-openai-gpt-oss-120b-seed-61000
+          path: /tmp/natural-language-e2e-v12-cross-groq-openai-gpt-oss-120b*
+          if-no-files-found: warn
+          retention-days: 30

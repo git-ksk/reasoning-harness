@@ -1,0 +1,17 @@
+{
+  "schema_version": "natural-language-e2e-case-v2",
+  "correction": "session.xyrene.threshold=17",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.xyrene.threshold",
+    "Xyrene retry threshold"
+  ],
+  "id": "session-correct-xyrene",
+  "kind": "session_correct",
+  "start_fact": "session.xyrene.threshold=16",
+  "target": {
+    "key": "session.xyrene.threshold",
+    "value": "17"
+  },
+  "task": "Determine the configured Xyrene retry threshold."
+}

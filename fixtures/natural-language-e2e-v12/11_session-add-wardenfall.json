@@ -1,0 +1,17 @@
+{
+  "schema_version": "natural-language-e2e-case-v2",
+  "add_fact": "session.wardenfall.mode=active",
+  "add_hypothesis": "session.wardenfall.mode=active",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.wardenfall.mode",
+    "Wardenfall session mode"
+  ],
+  "id": "session-add-wardenfall",
+  "kind": "session_add",
+  "target": {
+    "key": "session.wardenfall.mode",
+    "value": "active"
+  },
+  "task": "Determine whether Wardenfall session mode is ready."
+}

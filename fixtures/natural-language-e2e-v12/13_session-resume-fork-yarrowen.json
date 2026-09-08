@@ -1,0 +1,17 @@
+{
+  "schema_version": "natural-language-e2e-case-v2",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.yarrowen.audit",
+    "Yarrowen audit mode"
+  ],
+  "id": "session-resume-fork-yarrowen",
+  "kind": "session_resume_fork",
+  "start_fact": "session.yarrowen.audit=strict",
+  "start_hypothesis": "session.yarrowen.audit=strict",
+  "target": {
+    "key": "session.yarrowen.audit",
+    "value": "strict"
+  },
+  "task": "Determine whether Yarrowen audit mode is enabled."
+}
