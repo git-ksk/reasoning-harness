@@ -56,7 +56,7 @@ use reasoning_harness_providers::{
     DEFAULT_TRUSTED_COMMAND_TIMEOUT_MS, EXTERNAL_COMMAND_RESOLVER_ID,
     EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver, ExternalCommandResolverConfig,
     ExternalEvidenceAdmissionConfig, ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy,
-    GoogleAdapter, INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID,
+    GoogleAdapter, GroqAdapter, INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID,
     InvestigationExternalCommandResolver, MCP_PROTOCOL_VERSION,
     MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION, MCP_READONLY_V3_RESOLVER_ID,
     McpReadOnlyResolverConfig, McpReadOnlyResolverV3, McpReadOnlyResolverV3Config, MistralAdapter,
@@ -177,6 +177,7 @@ enum SchemaKind {
 enum Provider {
     Mistral,
     Google,
+    Groq,
     Nvidia,
     #[value(hide = true)]
     Gemma,
@@ -269,6 +270,8 @@ enum InvestigationCapabilityFileConfig {
     ExternalCommand {
         id: String,
         read_only: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        selection_priority: Option<u32>,
         #[serde(default)]
         supported_fact_keys: BTreeSet<String>,
         program: String,
@@ -284,6 +287,8 @@ enum InvestigationCapabilityFileConfig {
     McpReadonly {
         id: String,
         read_only: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        selection_priority: Option<u32>,
         #[serde(default)]
         supported_fact_keys: BTreeSet<String>,
         server_id: String,
@@ -460,6 +465,7 @@ struct ResolvedRunConfig {
 enum LiveGenerator {
     Mistral(MistralAdapter),
     Google(GoogleAdapter),
+    Groq(GroqAdapter),
     Nvidia(NvidiaAdapter),
 }
 
@@ -468,6 +474,7 @@ impl LiveGenerator {
         match provider {
             Provider::Mistral => MistralAdapter::from_env(model).map(Self::Mistral),
             Provider::Google | Provider::Gemma => GoogleAdapter::from_env(model).map(Self::Google),
+            Provider::Groq => GroqAdapter::from_env(model).map(Self::Groq),
             Provider::Nvidia => NvidiaAdapter::from_env(model).map(Self::Nvidia),
         }
     }
@@ -480,6 +487,7 @@ impl LiveGenerator {
         match self {
             Self::Mistral(adapter) => adapter,
             Self::Google(adapter) => adapter,
+            Self::Groq(adapter) => adapter,
             Self::Nvidia(adapter) => adapter,
         }
     }
@@ -498,6 +506,10 @@ impl LiveGenerator {
             }
             Self::Google(adapter) => {
                 generate_with_adapter(adapter, "google", requested_model, input, max_tokens, seed)
+                    .await
+            }
+            Self::Groq(adapter) => {
+                generate_with_adapter(adapter, "groq", requested_model, input, max_tokens, seed)
                     .await
             }
             Self::Nvidia(adapter) => {
@@ -563,6 +575,7 @@ impl LiveGenerator {
         match self {
             Self::Mistral(_) => "mistral",
             Self::Google(_) => "google",
+            Self::Groq(_) => "groq",
             Self::Nvidia(_) => "nvidia",
         }
     }
@@ -597,6 +610,21 @@ impl LiveGenerator {
                     adapter,
                     FinalRenderCall {
                         provider: "google",
+                        requested_model,
+                        task,
+                        artifact,
+                        verdict,
+                        max_tokens,
+                        seed,
+                    },
+                )
+                .await
+            }
+            Self::Groq(adapter) => {
+                render_final_with_adapter(
+                    adapter,
+                    FinalRenderCall {
+                        provider: "groq",
                         requested_model,
                         task,
                         artifact,
@@ -2331,6 +2359,9 @@ async fn run_natural_investigation(
         } else if let Some(proposal) = state.unique_compatible_action_proposal() {
             state.note_harness_unique_selection();
             proposal
+        } else if let Some(proposal) = state.unique_precedence_action_proposal() {
+            state.note_harness_precedence_selection();
+            proposal
         } else {
             state.note_planner_call();
             let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
@@ -3244,6 +3275,7 @@ fn provider_from_observed_name(name: &str) -> Result<Provider, CliError> {
     match name {
         "mistral" => Ok(Provider::Mistral),
         "google" => Ok(Provider::Google),
+        "groq" => Ok(Provider::Groq),
         "nvidia" => Ok(Provider::Nvidia),
         other => Err(CliError::new(
             "session_incompatible",
@@ -5556,6 +5588,7 @@ fn provider_name(provider: Provider) -> &'static str {
     match provider {
         Provider::Mistral => "mistral",
         Provider::Google | Provider::Gemma => "google",
+        Provider::Groq => "groq",
         Provider::Nvidia => "nvidia",
     }
 }
@@ -6108,6 +6141,7 @@ fn resolve_investigation_config(
             InvestigationCapabilityFileConfig::ExternalCommand {
                 id,
                 read_only,
+                selection_priority,
                 supported_fact_keys,
                 program,
                 args,
@@ -6161,6 +6195,7 @@ fn resolve_investigation_config(
                         id: id.into(),
                         adapter: INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID.into(),
                         read_only: true,
+                        selection_priority: *selection_priority,
                         supported_fact_keys: supported_fact_keys.clone(),
                     },
                     InvestigationResolverConfig::ExternalCommand(ExternalCommandResolverConfig {
@@ -6175,6 +6210,7 @@ fn resolve_investigation_config(
             InvestigationCapabilityFileConfig::McpReadonly {
                 id,
                 read_only,
+                selection_priority,
                 supported_fact_keys,
                 server_id,
                 program,
@@ -6260,6 +6296,7 @@ fn resolve_investigation_config(
                         id: id.into(),
                         adapter: MCP_READONLY_V3_RESOLVER_ID.into(),
                         read_only: true,
+                        selection_priority: *selection_priority,
                         supported_fact_keys: supported_fact_keys.clone(),
                     },
                     InvestigationResolverConfig::McpReadonly(Box::new(resolve_mcp_v3_config(
@@ -7170,7 +7207,7 @@ mod candidate_json_tests {
             "planner_max_tokens":192,
             "capabilities":[
               {
-                "kind":"external_command","id":"region-api","read_only":true,
+                "kind":"external_command","id":"region-api","read_only":true,"selection_priority":20,
                 "supported_fact_keys":["service.region"],"program":"region-resolver",
                 "admission":{
                   "evaluation_time_unix_seconds":1000,
@@ -7179,7 +7216,7 @@ mod candidate_json_tests {
                 }
               },
               {
-                "kind":"mcp_readonly","id":"inventory-mcp","read_only":true,
+                "kind":"mcp_readonly","id":"inventory-mcp","read_only":true,"selection_priority":10,
                 "supported_fact_keys":["inventory.count"],"server_id":"inventory",
                 "program":"inventory-mcp","allowed_tools":["lookup"],"tool":"lookup",
                 "source":"mcp:inventory:lookup",
@@ -7203,10 +7240,18 @@ mod candidate_json_tests {
         assert_eq!(resolved.capabilities.len(), 2);
         assert_eq!(resolved.capabilities[0].descriptor.id, "region-api");
         assert_eq!(
+            resolved.capabilities[0].descriptor.selection_priority,
+            Some(20)
+        );
+        assert_eq!(
             resolved.capabilities[0].descriptor.adapter,
             INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID
         );
         assert_eq!(resolved.capabilities[1].descriptor.id, "inventory-mcp");
+        assert_eq!(
+            resolved.capabilities[1].descriptor.selection_priority,
+            Some(10)
+        );
         assert_eq!(
             resolved.capabilities[1].descriptor.adapter,
             MCP_READONLY_V3_RESOLVER_ID
@@ -7623,6 +7668,165 @@ mod candidate_json_tests {
             }
             _ => panic!("expected eval command"),
         }
+    }
+
+    struct ScriptedModelAdapter {
+        responses: std::sync::Mutex<VecDeque<reasoning_harness_core::ModelResponse>>,
+    }
+
+    impl ScriptedModelAdapter {
+        fn new(texts: &[&str]) -> Self {
+            Self {
+                responses: std::sync::Mutex::new(
+                    texts
+                        .iter()
+                        .map(|text| reasoning_harness_core::ModelResponse {
+                            text: (*text).to_string(),
+                            model: "groq-test-model".into(),
+                            usage: ModelUsage::default(),
+                            provider_attempts: 1,
+                            finish_reason: Some("stop".into()),
+                        })
+                        .collect(),
+                ),
+            }
+        }
+    }
+
+    impl ModelAdapter for ScriptedModelAdapter {
+        fn generate<'a>(
+            &'a self,
+            _request: ModelRequest,
+        ) -> std::pin::Pin<
+            Box<
+                dyn std::future::Future<
+                        Output = Result<reasoning_harness_core::ModelResponse, ModelError>,
+                    > + Send
+                    + 'a,
+            >,
+        > {
+            let response = self.responses.lock().unwrap().pop_front().unwrap();
+            Box::pin(async move { Ok(response) })
+        }
+    }
+
+    #[tokio::test]
+    async fn groq_generic_roles_share_provider_neutral_generation_contracts() {
+        let adapter = ScriptedModelAdapter::new(&[
+            r#"{"claims":[],"inferences":[]}"#,
+            r#"{"targets":[{"id":"owner","question":"Who owns this route?","expected_fact_key":"routing.owner"}]}"#,
+            r#"{"action":"acquire","target_id":"owner","capability_id":"cache"}"#,
+            r#"{"claims":[],"inferences":[]}"#,
+            r#"{"text":"No grounded answer yet.","factual_claims":[]}"#,
+        ]);
+        let input = HarnessInput {
+            task: "investigate route ownership".into(),
+            ..HarnessInput::default()
+        };
+        let (_, initial_observation) =
+            generate_with_adapter(&adapter, "groq", "groq-test-model", &input, 128, Some(1))
+                .await
+                .unwrap();
+        assert_eq!(initial_observation.provider, "groq");
+
+        let capability = InvestigationCapability {
+            id: "cache".into(),
+            adapter: "fixture".into(),
+            read_only: true,
+            selection_priority: Some(20),
+            supported_fact_keys: ["routing.owner".to_string()].into_iter().collect(),
+        };
+        let plan_request = build_investigation_plan_request(
+            "investigate route ownership",
+            std::slice::from_ref(&capability),
+            Some(128),
+            Some(2),
+        )
+        .unwrap();
+        let (plan, plan_observation): (InvestigationPlanProposal, _) =
+            run_structured_json_call(&adapter, "groq", "groq-test-model", plan_request)
+                .await
+                .unwrap();
+        assert_eq!(plan_observation.provider, "groq");
+        let targets = admit_investigation_plan(plan, &InvestigationPolicy::default()).unwrap();
+        let state =
+            InvestigationState::new(targets, vec![capability], InvestigationPolicy::default())
+                .unwrap();
+        let action_request = build_investigation_action_request(
+            "investigate route ownership",
+            state.telemetry(),
+            Some(128),
+            Some(3),
+        )
+        .unwrap();
+        let (action, action_observation): (InvestigationActionProposal, _) =
+            run_structured_json_call(&adapter, "groq", "groq-test-model", action_request)
+                .await
+                .unwrap();
+        assert_eq!(action_observation.provider, "groq");
+        assert_eq!(action.capability_id.as_deref(), Some("cache"));
+
+        let (_, regeneration_observation) =
+            generate_with_adapter(&adapter, "groq", "groq-test-model", &input, 128, Some(4))
+                .await
+                .unwrap();
+        assert_eq!(regeneration_observation.provider, "groq");
+
+        let artifact = ReasoningArtifact {
+            task: input.task.clone(),
+            ..ReasoningArtifact::default()
+        };
+        let (_, final_observation) = render_final_with_adapter(
+            &adapter,
+            FinalRenderCall {
+                provider: "groq",
+                requested_model: "groq-test-model",
+                task: &input.task,
+                artifact: &artifact,
+                verdict: Verdict::Unknown,
+                max_tokens: 128,
+                seed: Some(5),
+            },
+        )
+        .await
+        .unwrap();
+        assert_eq!(final_observation.provider, "groq");
+        assert!(adapter.responses.lock().unwrap().is_empty());
+    }
+
+    #[test]
+    fn groq_live_generator_variant_preserves_generic_provider_identity() {
+        let generator =
+            LiveGenerator::Groq(GroqAdapter::new("test-only-key", "openai/gpt-oss-120b").unwrap());
+        assert_eq!(generator.provider_label(), "groq");
+        let _ = generator.adapter();
+    }
+
+    #[test]
+    fn parses_groq_generic_natural_language_provider() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "investigate this target",
+            "--provider",
+            "groq",
+            "--model",
+            "openai/gpt-oss-120b",
+        ])
+        .unwrap();
+        assert!(cli.command.is_none());
+        assert_eq!(cli.natural.provider, Some(Provider::Groq));
+        assert_eq!(cli.natural.model.as_deref(), Some("openai/gpt-oss-120b"));
+        assert_eq!(provider_name(Provider::Groq), "groq");
+        assert_eq!(provider_from_observed_name("groq").unwrap(), Provider::Groq);
+
+        let configured: CliFileConfig = serde_json::from_str(
+            r#"{"schema_version":"reason-config-v1","run":{"provider":"groq","model":"openai/gpt-oss-120b"}}"#,
+        )
+        .unwrap();
+        assert_eq!(configured.run.provider, Some(Provider::Groq));
+        assert_eq!(configured.run.model.as_deref(), Some("openai/gpt-oss-120b"));
+        let schema = serde_json::to_value(schema_for!(CliFileConfig)).unwrap();
+        assert!(schema.to_string().contains("\"groq\""));
     }
 
     #[test]

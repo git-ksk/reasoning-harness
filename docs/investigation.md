@@ -124,3 +124,11 @@ v0.4.1 adds a narrower deterministic continuation before the v0.4.0 unique-pair 
 The continuation does not trigger for other typed outcomes, keyless targets, wildcard-only remaining capabilities, multiple remaining explicit capabilities, or a terminal investigation state. The selected action still passes the ordinary duplicate/action-budget validation, acquisition-only adapter boundary, evidence admission, source/freshness/scope/authority qualification, regeneration, verification, finalization, and answer-safety path. It does not infer a fact value or grant target/evidence/final-answer authority. The selection is observable through additive `harness_no_result_followup_selections` telemetry.
 
 This patch hardens investigation utility only. Frozen natural-language E2E v1-v9 remain historical evidence and are not rerun, rescored, or tuned by this change.
+
+### Explicit safe acquisition precedence (v0.4.2 candidate)
+
+A capability may optionally declare `selection_priority` as a Harness-owned acquisition-selection hint. Higher numeric values have higher precedence. The field does not change capability authority, evidence admission, verification, finalization, or answer safety.
+
+The Harness considers this precedence only after the v0.4.1 exact-target `no_result` continuation and the v0.4.0 globally unique-pair selector have not selected an action. It may select without a model action call only when exactly one investigation target identity has eligible untried read-only capabilities that explicitly list that target's `expected_fact_key`, every eligible capability for that target has an explicit priority, and exactly one capability has the highest priority. Missing priorities, ties, multiple eligible target identities (including same-key siblings), keyless targets, wildcard-only capability matching, attempted pairs, non-read-only capabilities, and terminal/action-budget states all remain on the existing bounded model/fail-closed path.
+
+The selection is observable separately as `harness_precedence_selections`; it does not alias `harness_unique_selections` or `harness_no_result_followup_selections`. A typed `no_result` from a precedence-selected action still uses the existing v0.4.1 exact-target continuation on the next round when that invariant is satisfied.

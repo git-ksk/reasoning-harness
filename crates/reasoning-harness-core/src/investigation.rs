@@ -46,6 +46,10 @@ pub struct InvestigationCapability {
     pub id: String,
     pub adapter: String,
     pub read_only: bool,
+    /// Optional Harness-owned acquisition-selection precedence. Higher values are preferred only
+    /// by the narrow deterministic exact-key selector; this grants no evidence or answer authority.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selection_priority: Option<u32>,
     #[serde(default)]
     pub supported_fact_keys: BTreeSet<String>,
 }
@@ -156,6 +160,10 @@ pub struct InvestigationTelemetry {
     /// capability. This does not merge target identities or grant evidence/finalization authority.
     #[serde(default)]
     pub harness_no_result_followup_selections: usize,
+    /// Actions selected by the Harness from an explicit exact-key capability set only when one
+    /// target identity and one highest configured selection priority are mechanically unique.
+    #[serde(default)]
+    pub harness_precedence_selections: usize,
     pub rejected_actions: BTreeMap<InvestigationActionRejection, usize>,
     pub actions: Vec<InvestigationActionRecord>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -264,6 +272,7 @@ impl InvestigationState {
                 planner_calls: 0,
                 harness_unique_selections: 0,
                 harness_no_result_followup_selections: 0,
+                harness_precedence_selections: 0,
                 rejected_actions: BTreeMap::new(),
                 actions: vec![],
                 stop_reason: None,
@@ -337,6 +346,69 @@ impl InvestigationState {
         })
     }
 
+    /// Selects a read-only acquisition by explicit Harness-owned precedence only when both the
+    /// target identity and the highest priority capability are mechanically unique. This selector
+    /// deliberately excludes keyless/wildcard compatibility, already-attempted pairs, missing
+    /// precedence, ties, and terminal/action-budget states. It is selection-only and cannot admit
+    /// evidence, merge target identities, or promote verification/finalization authority.
+    pub fn unique_precedence_action_proposal(&self) -> Option<InvestigationActionProposal> {
+        if self.telemetry.stop_reason.is_some()
+            || self.telemetry.actions.len() >= self.policy.max_actions
+        {
+            return None;
+        }
+
+        let mut eligible_targets = Vec::new();
+        for target in self.targets.values() {
+            let Some(key) = target.expected_fact_key.as_deref() else {
+                continue;
+            };
+            let capabilities = self
+                .capabilities
+                .values()
+                .filter(|capability| {
+                    capability.read_only
+                        && !capability.supported_fact_keys.is_empty()
+                        && capability.supported_fact_keys.contains(key)
+                        && !self
+                            .attempted_pairs
+                            .contains(&(target.id.clone(), capability.id.clone()))
+                })
+                .collect::<Vec<_>>();
+            if !capabilities.is_empty() {
+                eligible_targets.push((target, capabilities));
+            }
+        }
+
+        if eligible_targets.len() != 1 {
+            return None;
+        }
+        let (target, capabilities) = &eligible_targets[0];
+        if capabilities
+            .iter()
+            .any(|capability| capability.selection_priority.is_none())
+        {
+            return None;
+        }
+        let highest = capabilities
+            .iter()
+            .filter_map(|capability| capability.selection_priority)
+            .max()?;
+        let best = capabilities
+            .iter()
+            .filter(|capability| capability.selection_priority == Some(highest))
+            .collect::<Vec<_>>();
+        if best.len() != 1 {
+            return None;
+        }
+
+        Some(InvestigationActionProposal {
+            action: InvestigationActionKind::Acquire,
+            target_id: Some(target.id.clone()),
+            capability_id: Some(best[0].id.clone()),
+        })
+    }
+
     /// After a typed `no_result`, continue the same exact target without another stochastic
     /// selector call only when one explicitly key-bound read-only capability remains for that
     /// target. Other investigation targets are deliberately ignored for this narrow continuation:
@@ -402,6 +474,13 @@ impl InvestigationState {
         self.telemetry.harness_no_result_followup_selections = self
             .telemetry
             .harness_no_result_followup_selections
+            .saturating_add(1);
+    }
+
+    pub fn note_harness_precedence_selection(&mut self) {
+        self.telemetry.harness_precedence_selections = self
+            .telemetry
+            .harness_precedence_selections
             .saturating_add(1);
     }
 
@@ -585,8 +664,19 @@ mod tests {
             id: id.into(),
             adapter: "fixture_readonly".into(),
             read_only: true,
+            selection_priority: None,
             supported_fact_keys: keys.iter().map(|key| (*key).to_string()).collect(),
         }
+    }
+
+    fn capability_with_priority(
+        id: &str,
+        keys: &[&str],
+        selection_priority: u32,
+    ) -> InvestigationCapability {
+        let mut capability = capability(id, keys);
+        capability.selection_priority = Some(selection_priority);
+        capability
     }
 
     #[test]
@@ -774,6 +864,230 @@ mod tests {
         )
         .unwrap();
         assert_eq!(wildcard.unique_compatible_action_proposal(), None);
+    }
+
+    #[test]
+    fn precedence_selects_unique_highest_priority_for_one_exact_target() {
+        let state = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability_with_priority("cache", &["routing.owner"], 20),
+                capability_with_priority("registry", &["routing.owner"], 10),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(state.unique_compatible_action_proposal(), None);
+        assert_eq!(
+            state.unique_precedence_action_proposal(),
+            Some(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+        );
+    }
+
+    #[test]
+    fn precedence_then_no_result_uses_existing_exact_target_followup() {
+        let mut state = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability_with_priority("cache", &["routing.owner"], 20),
+                capability_with_priority("registry", &["routing.owner"], 10),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let round = state.begin_round().unwrap();
+        let first = state
+            .validate_action(state.unique_precedence_action_proposal().unwrap())
+            .unwrap()
+            .unwrap();
+        state.note_harness_precedence_selection();
+        state.record_observation(
+            round,
+            first,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+        assert_eq!(
+            state.unique_no_result_followup_proposal(),
+            Some(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("registry".into()),
+            })
+        );
+        assert_eq!(state.telemetry().harness_precedence_selections, 1);
+        assert_eq!(state.telemetry().harness_unique_selections, 0);
+        assert_eq!(state.telemetry().harness_no_result_followup_selections, 0);
+    }
+
+    #[test]
+    fn precedence_falls_back_on_tie_or_missing_priority() {
+        let tied = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability_with_priority("cache", &["routing.owner"], 20),
+                capability_with_priority("registry", &["routing.owner"], 20),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(tied.unique_precedence_action_proposal(), None);
+
+        let missing = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability_with_priority("cache", &["routing.owner"], 20),
+                capability("registry", &["routing.owner"]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(missing.unique_precedence_action_proposal(), None);
+    }
+
+    #[test]
+    fn precedence_never_merges_same_key_sibling_targets() {
+        let state = InvestigationState::new(
+            vec![
+                target("owner-primary", Some("routing.owner")),
+                target("owner-secondary", Some("routing.owner")),
+            ],
+            vec![
+                capability_with_priority("cache", &["routing.owner"], 20),
+                capability_with_priority("registry", &["routing.owner"], 10),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(state.unique_precedence_action_proposal(), None);
+    }
+
+    #[test]
+    fn precedence_excludes_keyless_wildcard_non_read_only_and_attempted_pairs() {
+        let keyless = InvestigationState::new(
+            vec![target("owner", None)],
+            vec![capability_with_priority("cache", &["routing.owner"], 20)],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(keyless.unique_precedence_action_proposal(), None);
+
+        let wildcard = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![capability_with_priority("generic", &[], 20)],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(wildcard.unique_precedence_action_proposal(), None);
+
+        let mut write = capability_with_priority("write", &["routing.owner"], 30);
+        write.read_only = false;
+        let non_read_only = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                write,
+                capability_with_priority("cache", &["routing.owner"], 20),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(
+            non_read_only.unique_precedence_action_proposal(),
+            Some(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+        );
+
+        let mut attempted = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability_with_priority("cache", &["routing.owner"], 20),
+                capability_with_priority("registry", &["routing.owner"], 10),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let action = attempted
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        let round = attempted.begin_round().unwrap();
+        attempted.record_observation(
+            round,
+            action,
+            InvestigationObservationStatus::Ambiguous,
+            0,
+            false,
+        );
+        assert_eq!(
+            attempted.unique_precedence_action_proposal(),
+            Some(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("registry".into()),
+            })
+        );
+    }
+
+    #[test]
+    fn precedence_respects_terminal_and_action_budget_states() {
+        let mut terminal = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability_with_priority("cache", &["routing.owner"], 20),
+                capability_with_priority("registry", &["routing.owner"], 10),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        terminal.stop(InvestigationStopReason::RoundBudget);
+        assert_eq!(terminal.unique_precedence_action_proposal(), None);
+
+        let mut budgeted = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability_with_priority("cache", &["routing.owner"], 20),
+                capability_with_priority("registry", &["routing.owner"], 10),
+            ],
+            InvestigationPolicy {
+                max_actions: 1,
+                max_no_progress_rounds: 2,
+                ..InvestigationPolicy::default()
+            },
+        )
+        .unwrap();
+        let round = budgeted.begin_round().unwrap();
+        let action = budgeted
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        budgeted.record_observation(
+            round,
+            action,
+            InvestigationObservationStatus::VerificationProgress,
+            1,
+            true,
+        );
+        assert_eq!(
+            budgeted.telemetry().stop_reason,
+            Some(InvestigationStopReason::ActionBudget)
+        );
+        assert_eq!(budgeted.unique_precedence_action_proposal(), None);
     }
 
     #[test]

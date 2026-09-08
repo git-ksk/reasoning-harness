@@ -151,6 +151,7 @@ live providerは候補を生成するだけです。その出力はtrusted evide
 - Mistral: `MISTRAL_API_KEY`
 - Google Gemini/AI Studio: `GEMINI_API_KEY`
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
+- GroqCloud: `GROQ_API_KEY`
 
 secretは`reason-config-v1`へ保存する設計ではありません。
 
