@@ -55,6 +55,8 @@ Implementation order is fixed:
 2. **#262 generic Groq provider parity.** Expose the already implemented `GroqAdapter` through the generic natural-language `reason` generator/planner/action/regeneration/render/session path. Groq model IDs remain data; provider-specific semantics or authority branches are forbidden. The frozen #256 Groq process failures remain historical measurement-design evidence and are not rewritten.
 3. **#263 fresh v0.4.2 acceptance.** Freeze a new observation-free successor before live credentials, prove exact provider support without network before canonical launch, preserve provider-aware cross-model scheduling (#258), and gate release on zero correctness-boundary regression. Utility, operational completeness, and correctness remain separate report dimensions.
 
+Current candidate lineage: v14 produced valid failed product evidence on candidate `2d53a27d...`: the released v0.4.1 Mistral control stayed clean, while one candidate follow-up case reacquired the same capability chain through a second same-key target identity and failed operationally. #269 is merged in `c069954cca77361b0e8d3e91334a448efdd2acd9`, making #261 precedence fail-closed whenever multiple admitted targets share the same expected fact key, including after one sibling is exhausted. v14 remains immutable; #263 proceeds only with fresh v15 under the same v11-locked metrics.
+
 Evidence-gated release policy:
 
 - implementation completion is **not** sufficient to tag/release v0.4.2;

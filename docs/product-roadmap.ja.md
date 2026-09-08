@@ -44,6 +44,8 @@ Tracking: milestone **v0.4.2 — Planner Utility & Provider Parity** (#5)、pare
 2. **#262 generic Groq provider parity。** 既存の`GroqAdapter`をgeneric natural-language `reason`のgeneration/planning/action/regeneration/render/session経路へ露出する。Groq model IDはdataのままとし、provider固有semantic/authority branchは禁止する。freeze済み#256 Groq process failureはmeasurement-design evidenceとして保持し、書き換えない。
 3. **#263 fresh v0.4.2 acceptance。** live credential使用前に新しいobservation-free successorをfreezeし、canonical launch前にnetworkなしでexact provider supportを証明し、provider-aware cross-model scheduling (#258)を守り、correctness-boundary regressionゼロをrelease gateにする。utility、operational completeness、correctnessは別々に報告する。
 
+現在のcandidate lineage: v14ではcandidate `2d53a27d...` に対するvalid failed product evidenceを得た。released v0.4.1 Mistral controlは正常だったが、candidateのfollow-up 1件で同じfact keyを持つ別target identity経由で同一capability chainを再取得しoperational failureになった。#269は`c069954cca77361b0e8d3e91334a448efdd2acd9`へmerge済みで、複数admitted targetが同じexpected fact keyを共有する場合、片方のsiblingを使い切った後も#261 precedenceをfail-closedにする。v14はimmutableのまま保持し、#263は同じv11固定metricを使うfresh v15だけで継続する。
+
 evidence-gated release policy:
 
 - 実装完了だけではv0.4.2をtag/releaseしない。

@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.junovar.mode=ready",
+  "add_hypothesis": "session.junovar.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.junovar.mode",
+    "Junovar session readiness"
+  ],
+  "id": "session-add-junovar",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.junovar.mode",
+    "value": "ready"
+  },
+  "task": "Determine whether Junovar session mode is ready."
+}

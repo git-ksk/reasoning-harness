@@ -1,0 +1,28 @@
+{
+  "adaptive": false,
+  "config_pair": {
+    "candidate": "configs/candidate/cyvaris-stale.json",
+    "control": "configs/control/cyvaris-stale.json"
+  },
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "cyvaris.rollout.gate_open",
+    "Cyvaris current rollout gate"
+  ],
+  "id": "stale-cyvaris-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "cyvaris-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "cyvaris.rollout.gate_open",
+    "value": "false"
+  },
+  "task": "Determine whether the Cyvaris rollout gate is open now. Reject an observation outside the allowed freshness interval rather than promoting its value to current truth."
+}
