@@ -1,0 +1,43 @@
+{
+  "schema_version": "cross-model-concurrency-policy-v1",
+  "principle": "provider-aware-lanes",
+  "providers": {
+    "mistral": {
+      "model_job_parallelism": 1,
+      "coordination": "repository_concurrency_group",
+      "fixture_concurrency_default": 1,
+      "rationale": "shared account-level live limits"
+    },
+    "google": {
+      "model_job_parallelism": 1,
+      "coordination": "provider_lane",
+      "fixture_concurrency_default": 1,
+      "validated_fixture_concurrency": 2,
+      "rationale": "model jobs serialized; fixture concurrency may increase only on runners where separately validated"
+    },
+    "nvidia": {
+      "model_job_parallelism": 1,
+      "coordination": "provider_lane",
+      "fixture_concurrency_default": 4,
+      "rationale": "routine Nemotron Lightning concurrency 4 is validated; model jobs remain serialized"
+    },
+    "groq": {
+      "model_job_parallelism": 3,
+      "coordination": "per_model_quota_lane",
+      "fixture_concurrency_default": 1,
+      "rationale": "current Free-tier replication targets have per-model quota controls and provider-local pacing"
+    }
+  },
+  "historical_exceptions": [
+    {
+      "workflow": ".github/workflows/product-external-info-v4-cross-model.yml",
+      "anchor": "e324ccbff6e818d205a734f06ccc8cac4b587588",
+      "reason": "Issue #208 predates the standardized provider-aware lane policy and froze Mistral+Google replication in one max-parallel:1 matrix; preserve historical evidence"
+    },
+    {
+      "workflow": ".github/workflows/natural-language-e2e-v11-cross-model-live.yml",
+      "anchor": "natural-language-e2e-v11-cross-model-v1-freeze",
+      "reason": "Issue #256 froze a mixed-provider max-parallel:1 matrix before this policy was standardized; preserve the observation rather than rewrite or rerun it"
+    }
+  ]
+}
