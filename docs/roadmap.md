@@ -24,6 +24,8 @@ See [ADR-0002](adr/0002-grounded-resolution-and-finalization.md).
 
 The current external preview is `v0.4.1`. **v0.4.1 — Investigation Utility Hardening (milestone #3)** is complete and adds only the #249 exact-target typed-`no_result` continuation when one explicit fact-key-bound read-only follow-up remains. It preserves target identity, admission, authority, verification, finalization, answer safety, machine-contract semantics, and frozen natural-language E2E v1-v9 evidence.
 
+The next patch milestone is **v0.4.2 — Planner Utility & Provider Parity (milestone #5 / #260)**. It is intentionally bounded to #261 deterministic safe action-precedence utility, #262 generic Groq provider parity, and #263 fresh no-regression acceptance. v0.4.2 must preserve the v0.4.1 authority/finalization boundary; #248 remains assigned to v0.5.0.
+
 The v0.4.0 implementation order was **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation**, with #204 negotiated/session `mcp_readonly_v3`, #232 dependency/freeze hygiene, and #233 unique-safe-action utility hardening completed before release. v4 cross-model replication (#208 / PR #209), including the #216 Groq operational extension, remains replication over frozen v4 evidence rather than a tuning surface for this line.
 
 As an explicit measurement boundary, current `unsupported grounded claims = 0` demonstrates safety of structured `factual_claims`; it is not treated as equivalent proof for arbitrary free-form exposed prose. v0.4.0 promotes exposed-text consistency with verified propositions into an explicit correctness gate.
@@ -338,7 +340,8 @@ With #13, #27, #28, and the D3 pilot/replication evidence complete, the determin
 - [observed #252] frozen v10 canonical Mistral run `34125135760` completed 11/11 with correctness-boundary violations `0` and operational failures `0`, but measurement validity failed.
 - [censored #252] the dedicated #249 lane recalled the exact target but executed no cache action, so typed `no_result` was never reached; v10 remains inconclusive for the post-trigger #249 effect and is not rerun or tuned.
 - [completed #254] frozen v11 canonical Mistral run `34129798774` completed 13/13 with correctness/operations/measurement/report gates passing. Trigger reachability was 1/3. The single trigger-exposed case was conditionally conformant 1/1 (`cache no_result -> registry`, Harness follow-up telemetry 1) and produced verification progress, while the other two cases were planner trigger misses and follow-up target grounding remained 0/3.
-- [residual] future work, if justified, should target planner/action selection and downstream grounding under a new successor identity; do not rerun or tune frozen v9/v10/v11.
+- [routed] planner/action-selection residual is assigned to v0.4.2 #261 under a narrow deterministic read-only selection invariant; downstream grounding/finalization remains #248 in v0.5.0. Frozen v9/v10/v11 and #256 observations are not rerun or tuned.
+- [provider parity] v0.4.2 #262 exposes the existing GroqAdapter through the generic natural-language `reason` surface; #263 must preflight exact provider support before any live canonical launch so unsupported combinations cannot become 13 process failures again.
 
 ## Decision gates for future features
 
