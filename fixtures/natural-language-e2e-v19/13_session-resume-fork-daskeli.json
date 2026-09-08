@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.daskeli.audit",
+    "Daskeli audit enforcement"
+  ],
+  "id": "session-resume-fork-daskeli",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.daskeli.audit=strictly-enforced",
+  "start_hypothesis": "session.daskeli.audit=strictly-enforced",
+  "target": {
+    "key": "session.daskeli.audit",
+    "value": "strictly-enforced"
+  },
+  "task": "Determine whether Daskeli audit enforcement is enabled."
+}

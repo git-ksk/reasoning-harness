@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.braqira.mode=prepared",
+  "add_hypothesis": "session.braqira.mode=prepared",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.braqira.mode",
+    "Braqira session readiness"
+  ],
+  "id": "session-add-braqira",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.braqira.mode",
+    "value": "prepared"
+  },
+  "task": "Determine whether Braqira session mode is ready."
+}
