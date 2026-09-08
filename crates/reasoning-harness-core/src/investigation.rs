@@ -363,6 +363,11 @@ impl InvestigationState {
             let Some(key) = target.expected_fact_key.as_deref() else {
                 continue;
             };
+            if self.targets.values().any(|sibling| {
+                sibling.id != target.id && sibling.expected_fact_key.as_deref() == Some(key)
+            }) {
+                continue;
+            }
             let capabilities = self
                 .capabilities
                 .values()
@@ -952,7 +957,7 @@ mod tests {
 
     #[test]
     fn precedence_never_merges_same_key_sibling_targets() {
-        let state = InvestigationState::new(
+        let mut state = InvestigationState::new(
             vec![
                 target("owner-primary", Some("routing.owner")),
                 target("owner-secondary", Some("routing.owner")),
@@ -964,6 +969,36 @@ mod tests {
             InvestigationPolicy::default(),
         )
         .unwrap();
+        assert_eq!(state.unique_precedence_action_proposal(), None);
+
+        for (capability_id, status, admitted_evidence, verification_progress) in [
+            ("cache", InvestigationObservationStatus::NoResult, 0, false),
+            (
+                "registry",
+                InvestigationObservationStatus::VerificationProgress,
+                1,
+                true,
+            ),
+        ] {
+            let round = state.begin_round().unwrap();
+            let action = state
+                .validate_action(InvestigationActionProposal {
+                    action: InvestigationActionKind::Acquire,
+                    target_id: Some("owner-primary".into()),
+                    capability_id: Some(capability_id.into()),
+                })
+                .unwrap()
+                .unwrap();
+            state.record_observation(
+                round,
+                action,
+                status,
+                admitted_evidence,
+                verification_progress,
+            );
+        }
+
+        assert_eq!(state.remaining_action_count(), 2);
         assert_eq!(state.unique_precedence_action_proposal(), None);
     }
 
