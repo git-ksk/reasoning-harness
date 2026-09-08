@@ -54,6 +54,29 @@ pub struct InvestigationCapability {
     pub supported_fact_keys: BTreeSet<String>,
 }
 
+#[derive(Serialize)]
+struct ModelVisibleInvestigationCapability<'a> {
+    id: &'a str,
+    adapter: &'a str,
+    read_only: bool,
+    supported_fact_keys: &'a BTreeSet<String>,
+}
+
+fn serialize_model_visible_capabilities(
+    capabilities: &[InvestigationCapability],
+) -> Result<String, serde_json::Error> {
+    let visible = capabilities
+        .iter()
+        .map(|capability| ModelVisibleInvestigationCapability {
+            id: &capability.id,
+            adapter: &capability.adapter,
+            read_only: capability.read_only,
+            supported_fact_keys: &capability.supported_fact_keys,
+        })
+        .collect::<Vec<_>>();
+    serde_json::to_string_pretty(&visible)
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum InvestigationActionKind {
@@ -595,7 +618,7 @@ pub fn build_investigation_plan_request(
     max_tokens: Option<u32>,
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, serde_json::Error> {
-    let capabilities = serde_json::to_string_pretty(capabilities)?;
+    let capabilities = serialize_model_visible_capabilities(capabilities)?;
     Ok(ModelRequest {
         system: Some(
             "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. expected_fact_key is only a selector hint when the task clearly names the fact family; omit it when uncertain.".into(),
@@ -620,7 +643,7 @@ pub fn build_investigation_action_request(
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, serde_json::Error> {
     let targets = serde_json::to_string_pretty(&telemetry.targets)?;
-    let capabilities = serde_json::to_string_pretty(&telemetry.capabilities)?;
+    let capabilities = serialize_model_visible_capabilities(&telemetry.capabilities)?;
     let prior_actions = serde_json::to_string_pretty(&telemetry.actions)?;
     Ok(ModelRequest {
         system: Some(
@@ -1476,6 +1499,55 @@ mod tests {
                 .contains("Never repeat an identical target/capability pair")
         );
         assert!(!investigation_action_schema().to_string().contains("query"));
+    }
+
+    #[test]
+    fn harness_owned_selection_priority_is_model_invisible() {
+        let plain = vec![capability("lookup", &["service.region"])];
+        let prioritized = vec![capability_with_priority("lookup", &["service.region"], 20)];
+
+        let plain_plan =
+            build_investigation_plan_request("find the region", &plain, Some(128), Some(7))
+                .unwrap();
+        let prioritized_plan =
+            build_investigation_plan_request("find the region", &prioritized, Some(128), Some(7))
+                .unwrap();
+        assert_eq!(plain_plan.task, prioritized_plan.task);
+        assert!(!prioritized_plan.task.contains("selection_priority"));
+
+        let plain_state = InvestigationState::new(
+            vec![target("region", Some("service.region"))],
+            plain,
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let prioritized_state = InvestigationState::new(
+            vec![target("region", Some("service.region"))],
+            prioritized,
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(
+            prioritized_state.telemetry().capabilities[0].selection_priority,
+            Some(20)
+        );
+
+        let plain_action = build_investigation_action_request(
+            "find the region",
+            plain_state.telemetry(),
+            Some(128),
+            Some(8),
+        )
+        .unwrap();
+        let prioritized_action = build_investigation_action_request(
+            "find the region",
+            prioritized_state.telemetry(),
+            Some(128),
+            Some(8),
+        )
+        .unwrap();
+        assert_eq!(plain_action.task, prioritized_action.task);
+        assert!(!prioritized_action.task.contains("selection_priority"));
     }
 
     #[test]
