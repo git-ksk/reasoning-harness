@@ -54,7 +54,7 @@ release disciplineはv0.4.0の原則へ戻す。**productは動かしてよい�
 - cross-model averageで個別model regressionを隠さない。v0.4.1にはgeneric GroqがないためGroq parityは別rowで評価する。
 - candidateがfailしたらmetric定義は固定したまま、直接telemetryで原因を診断し、狭いproduct修正後にfresh successor identityを作る。同じfailed candidateを新証拠としてrerunしたり物差しを調整したりしない。
 
-v12 acceptance attemptはtrigger定義を変更していたためv0.4.2 release evidenceには使わない。復元した比較contractは [natural-language E2E v13](natural-language-e2e-v13.ja.md) を参照。
+v12 acceptance attemptはtrigger定義を変更していたためv0.4.2 release evidenceには使わない。v13ではmetric lock自体は復元したが、candidate launch前のreleased canonical qualified-partial textをevaluatorが誤読したためmeasurement-invalidとする。active comparison contractは [natural-language E2E v14](natural-language-e2e-v14.ja.md) を参照。
 
 no-regression boundaryも維持する。unsupported/rejected/operational evidenceをauthorityへ昇格させず、target identityをfuzzy mergeせず、deterministic acquisitionはread-onlyかつexplicit-key-boundのままにする。correctness-boundary violation、unsupported exposed assertion、identity-unsafe admission、MCP self-promotion、session external replayはzero-gateを維持し、#248は **v0.5.0 — Verified Investigation Utility** に残す。
 

@@ -65,7 +65,7 @@ Release discipline follows the v0.4.0 principle: **the product may move; the rul
 - cross-model averaging cannot hide a per-model regression. Groq generic parity is reported separately because v0.4.1 did not expose generic Groq.
 - if a candidate fails, keep the metric definitions fixed, diagnose using direct telemetry, make a narrow product change, and create a fresh successor identity. Do not tune the ruler or relaunch the same failed candidate as new evidence.
 
-The abandoned v12 acceptance attempt is not v0.4.2 release evidence because it changed the trigger definition. See [natural-language E2E v13](natural-language-e2e-v13.md) for the restored comparison contract.
+The abandoned v12 acceptance attempt is not v0.4.2 release evidence because it changed the trigger definition. v13 restored the metric lock but is measurement-invalid because its evaluator misparsed released canonical qualified-partial text before any candidate launch. See [natural-language E2E v14](natural-language-e2e-v14.md) for the active comparison contract.
 
 No-regression boundary remains unchanged: unsupported/rejected/operational evidence never becomes authority; target identities are not fuzzily merged; deterministic acquisition remains read-only and explicit-key-bound; correctness-boundary violations, unsupported exposed assertions, identity-unsafe admission, MCP self-promotion, and session external replay remain zero-gated. #248 stays in **v0.5.0 — Verified Investigation Utility**.
 

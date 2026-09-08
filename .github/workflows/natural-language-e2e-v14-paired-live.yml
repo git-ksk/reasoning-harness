@@ -1,0 +1,152 @@
+name: natural-language-e2e-v14-paired-live
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  mistral-paired-canonical:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'natural-language-e2e-v14-paired-live'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 95
+    env:
+      FREEZE_TAG: natural-language-e2e-v14-freeze
+      CONTROL_COMMIT: 29a9e4be6273dbffeda324e15517dc64930ad315
+      CANDIDATE_COMMIT: 2d53a27d5ea0e2eb28bba355496db1f2b513f6a7
+      PROVIDER: mistral
+      MODEL: ministral-8b-latest
+      SEED: '69000'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '1500'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: natural-language-e2e-v14-freeze
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Prove immutable paired freeze before credentials
+        run: |
+          set -euo pipefail
+          F="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git rev-parse HEAD)" = "$F"
+          test "${{ github.event.pull_request.head.sha }}" = "$F"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          test "$(git rev-parse "$CONTROL_COMMIT")" = "$CONTROL_COMMIT"
+          test "$(git rev-parse "$CANDIDATE_COMMIT")" = "$CANDIDATE_COMMIT"
+          git diff --exit-code "$CANDIDATE_COMMIT" -- Cargo.toml Cargo.lock crates
+          (cd fixtures/natural-language-e2e-v14 && sha256sum -c ../natural-language-e2e-v14.sha256)
+          sha256sum -c fixtures/natural-language-e2e-v14-surface.sha256
+          python3 scripts/validate_natural_language_e2e_v14_pair.py >/tmp/v14-pair-validation.json
+          python3 scripts/natural_language_e2e_v14.py --coordinate-role control --validate-only >/tmp/v14-control-validate.json
+          python3 scripts/natural_language_e2e_v14.py --coordinate-role candidate --validate-only >/tmp/v14-candidate-validate.json
+          python3 scripts/natural_language_e2e_v14_acceptance.py --validate-only >/tmp/v14-acceptance-validate.json
+          jq -e '.valid == true and .metric_semantics_locked_from == "natural-language-e2e-v11"' /tmp/v14-pair-validation.json >/dev/null
+
+      - name: Prove historical evaluator surfaces untouched
+        run: |
+          set -euo pipefail
+          for v in 1 2 3 4 5 6 7 8 9 10 11; do
+            git diff --exit-code "natural-language-e2e-v${v}-freeze" -- \
+              "fixtures/natural-language-e2e-v${v}" \
+              "scripts/natural_language_e2e_v${v}.py" \
+              "scripts/test_natural_language_e2e_v${v}.py"
+          done
+
+      - name: Run deterministic candidate regression and metric-lock tests
+        run: |
+          set -euo pipefail
+          cargo fmt --check
+          cargo clippy --locked --workspace --all-targets -- -D warnings
+          cargo test --locked --workspace
+          python3 scripts/validate_cross_model_concurrency_policy.py
+          python3 -m unittest -v scripts/test_natural_language_e2e_v14.py scripts/test_natural_language_e2e_v14_acceptance.py
+
+      - name: Run paired no-model no-network preflight
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v14.py --coordinate-role control --preflight >/tmp/v14-control-preflight.json
+          python3 scripts/natural_language_e2e_v14.py --coordinate-role candidate --preflight >/tmp/v14-candidate-preflight.json
+          for f in /tmp/v14-control-preflight.json /tmp/v14-candidate-preflight.json; do
+            jq -e '.valid == true and .model_used == false and .cases == 13 and .resolver_capabilities_checked == 14 and .admission_contracts.followup_sequence_contracts_verified == 3 and .admission_contracts.mcp_lane_contracts_verified == 1' "$f" >/dev/null
+          done
+
+      - name: Build exact control and candidate CLIs and probe provider paths without network
+        run: |
+          set -euo pipefail
+          git worktree add --detach /tmp/v14-control "$CONTROL_COMMIT"
+          cargo build --locked -p reasoning-harness-cli --bin reason
+          (cd /tmp/v14-control && cargo build --locked -p reasoning-harness-cli --bin reason)
+          python3 scripts/natural_language_e2e_v14_capability_probe.py --coordinate-role control --reason-bin /tmp/v14-control/target/debug/reason --output /tmp/v14-control-capability.json
+          python3 scripts/natural_language_e2e_v14_capability_probe.py --coordinate-role candidate --reason-bin target/debug/reason --output /tmp/v14-candidate-capability.json
+          jq -e '.passed == true and (.rows|length) == 3' /tmp/v14-control-capability.json >/dev/null
+          jq -e '.passed == true and (.rows|length) == 4' /tmp/v14-candidate-capability.json >/dev/null
+
+      - name: Confirm pinned GitHub MCP contract
+        env:
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-providers \
+            'mcp_readonly_v3::tests::official_github_mcp_pinned_image_negotiates_and_generic_result_stays_opaque' \
+            -- --ignored --exact
+
+      - name: Check Mistral credential only after all frozen gates
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: test -n "$MISTRAL_API_KEY"
+
+      - name: Run first paired Mistral control observation
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v14.py \
+            --coordinate-role control --reason-bin /tmp/v14-control/target/debug/reason \
+            --provider "$PROVIDER" --model "$MODEL" --seed "$SEED" --max-tokens "$MAX_TOKENS" \
+            --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --attempt-marker /tmp/v14-mistral-control.attempt.json \
+            --output /tmp/v14-mistral-control.json >/tmp/v14-mistral-control.stdout.json
+
+      - name: Run first paired Mistral candidate observation
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v14.py \
+            --coordinate-role candidate --reason-bin target/debug/reason \
+            --provider "$PROVIDER" --model "$MODEL" --seed "$SEED" --max-tokens "$MAX_TOKENS" \
+            --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --attempt-marker /tmp/v14-mistral-candidate.attempt.json \
+            --output /tmp/v14-mistral-candidate.json >/tmp/v14-mistral-candidate.stdout.json
+
+      - name: Apply locked paired Mistral improvement gate
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v14_acceptance.py \
+            --pair-control /tmp/v14-mistral-control.json \
+            --pair-candidate /tmp/v14-mistral-candidate.json \
+            --output /tmp/v14-mistral-pair-acceptance.json
+          jq -e '.paired_gate_passed == true' /tmp/v14-mistral-pair-acceptance.json >/dev/null
+
+      - name: Preserve paired canonical evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v14-paired-mistral-seed-69000
+          path: |
+            /tmp/v14-*.json
+          if-no-files-found: warn
+          retention-days: 30

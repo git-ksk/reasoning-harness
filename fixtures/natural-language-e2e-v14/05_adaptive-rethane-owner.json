@@ -1,0 +1,35 @@
+{
+  "adaptive": true,
+  "candidate_diagnostic_expectation": "harness_precedence_then_harness_exact_target_followup",
+  "config_pair": {
+    "candidate": "configs/candidate/rethane-followup.json",
+    "control": "configs/control/rethane-followup.json"
+  },
+  "coverage_contract": {
+    "first_capability": "rethane-owner-cache",
+    "followup_capability": "rethane-owner-registry",
+    "kind": "no_result_followup_observational",
+    "mechanism_selection": "harness_exact_target_followup",
+    "trigger_status": "no_result"
+  },
+  "expected": "grounded",
+  "fresh_markers": [
+    "Rethane routing",
+    "rethane.routing.owner",
+    "fixture:v14:rethane-owner-registry"
+  ],
+  "id": "adaptive-rethane-owner",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "rethane-owner-cache",
+    "rethane-owner-registry"
+  ],
+  "safety_dimension": "followup",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "v11_metric_locked_followup",
+  "target": {
+    "key": "rethane.routing.owner",
+    "value": "route-control"
+  },
+  "task": "Determine which team currently owns Rethane routing. Begin with the configured Rethane cache lookup; if that lookup reports no result, continue with the configured Rethane registry lookup."
+}

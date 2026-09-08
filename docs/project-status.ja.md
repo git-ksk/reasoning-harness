@@ -113,7 +113,7 @@ resolver success と verification success は今後も区別しなければな�
 
 ### v0.4.2 metric固定paired acceptance
 
-Issue #260 / milestone #5ではv0.4.0の測定規律へ戻し、product codeは変更してよいがreleaseの物差しは変更しない。#261 deterministic precedenceと#262 generic Groq parityはcandidate `2d53a27d5ea0e2eb28bba355496db1f2b513f6a7` に入っているが、acceptance完了まではCargo versionを0.4.1のまま維持する。#263はexact released v0.4.1 `29a9e4be6273dbffeda324e15517dc64930ad315` をpaired controlとするfresh v13を使用する。v13はv11 trigger/utility semanticsを継承し、#261 telemetryはdiagnostic-onlyとし、candidate-only `selection_priority`とexact-coordinate MCP ref以外のconfig driftをrejectする。v12 attemptはtrigger定義を変更していたためrelease evidenceには使わない。この文書時点ではv13 live observationはまだ開始していない。
+Issue #260 / milestone #5ではv0.4.0の測定規律へ戻し、product codeは変更してよいがreleaseの物差しは変更しない。#261 deterministic precedenceと#262 generic Groq parityはcandidate `2d53a27d5ea0e2eb28bba355496db1f2b513f6a7` に入っているが、acceptance完了まではCargo versionを0.4.1のまま維持する。v13 paired run `34187434440` はexact released v0.4.1 controlをlaunchしてoperationalには13/13完走したが、released canonical `QualifiedPartialAnswer` wrapper textをevaluatorが誤読し、candidate launch前に停止した。このためv13はmeasurement-invalidで、v0.4.1/candidate utility comparisonの結論は存在しない。#263は現在、同じv11-locked trigger/utility semanticsとexact v0.4.1 control `29a9e4be6273dbffeda324e15517dc64930ad315` を使うfresh v14へ移行している。evaluator側の変更はreleased canonical qualified-partial wrapper 2種を認識してから従来のkey/value exposed-text scoringを適用する修正だけで、#261 telemetryはdiagnostic-only、paired config driftはcandidate-only `selection_priority`とexact-coordinate MCP refだけに限定する。この文書時点ではv14 live observationはまだ開始していない。
 
 ### Natural-language E2E v10-v11 / v0.4.1
 
