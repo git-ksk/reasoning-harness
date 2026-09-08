@@ -77,6 +77,60 @@ fn serialize_model_visible_capabilities(
     serde_json::to_string_pretty(&visible)
 }
 
+fn shared_exact_read_only_fact_key(capabilities: &[InvestigationCapability]) -> Option<String> {
+    let read_only = capabilities
+        .iter()
+        .filter(|capability| capability.read_only)
+        .collect::<Vec<_>>();
+    if read_only.len() < 2 {
+        return None;
+    }
+
+    let mut shared: Option<&str> = None;
+    for capability in read_only {
+        if capability.supported_fact_keys.len() != 1 {
+            return None;
+        }
+        let key = capability.supported_fact_keys.iter().next()?;
+        if key.is_empty() || key.trim() != key.as_str() {
+            return None;
+        }
+        match shared {
+            Some(existing) if existing != key.as_str() => return None,
+            Some(_) => {}
+            None => shared = Some(key.as_str()),
+        }
+    }
+    shared.map(str::to_string)
+}
+
+fn shared_fact_family_plan_schema(key: &str) -> Value {
+    serde_json::json!({
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["targets"],
+        "properties": {
+            "targets": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["id", "question", "expected_fact_key"],
+                    "properties": {
+                        "id": { "type": "string" },
+                        "question": { "type": "string" },
+                        "expected_fact_key": {
+                            "type": "string",
+                            "minLength": 1,
+                            "enum": [key]
+                        }
+                    }
+                }
+            }
+        }
+    })
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum InvestigationActionKind {
@@ -722,17 +776,29 @@ pub fn build_investigation_plan_request(
     max_tokens: Option<u32>,
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, serde_json::Error> {
+    let shared_fact_key = shared_exact_read_only_fact_key(capabilities);
+    let (system, schema) = if let Some(key) = shared_fact_key.as_deref() {
+        (
+            format!(
+                "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. All configured read-only capabilities independently declare the same exact supported fact key `{key}`. Every target must include expected_fact_key exactly `{key}`; do not omit it, alter it, infer a different key, or use any other value."
+            ),
+            shared_fact_family_plan_schema(key),
+        )
+    } else {
+        (
+            "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. expected_fact_key is only a selector hint when the task clearly names the fact family; omit it when uncertain.".into(),
+            investigation_plan_schema(),
+        )
+    };
     let capabilities = serialize_model_visible_capabilities(capabilities)?;
     Ok(ModelRequest {
-        system: Some(
-            "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. expected_fact_key is only a selector hint when the task clearly names the fact family; omit it when uncertain.".into(),
-        ),
+        system: Some(system),
         task: format!(
             "User task:\n{task}\n\nHarness-configured read-only capability descriptors:\n{capabilities}\n\nPropose concise investigation targets. Targets are untrusted planning objects, not hypotheses or verified facts. Do not include tool arguments, evidence, identity claims, authority classes, answers, or verdicts."
         ),
         output_format: ModelOutputFormat::JsonSchema {
             name: INVESTIGATION_PLAN_CONTRACT_ID.into(),
-            schema: investigation_plan_schema(),
+            schema,
         },
         max_tokens,
         random_seed,
@@ -810,6 +876,134 @@ mod tests {
         let mut capability = capability(id, keys);
         capability.selection_priority = Some(selection_priority);
         capability
+    }
+
+    #[test]
+    fn shared_fact_family_plan_contract_requires_the_exact_configured_key() {
+        let capabilities = vec![
+            capability("cache", &["routing.owner"]),
+            capability("registry", &["routing.owner"]),
+        ];
+        assert_eq!(
+            shared_exact_read_only_fact_key(&capabilities).as_deref(),
+            Some("routing.owner")
+        );
+
+        let request = build_investigation_plan_request(
+            "find the routing owner",
+            &capabilities,
+            Some(128),
+            Some(7),
+        )
+        .unwrap();
+        let schema = match &request.output_format {
+            ModelOutputFormat::JsonSchema { schema, .. } => schema,
+            _ => panic!("expected JSON schema"),
+        };
+        let target_schema = &schema["properties"]["targets"]["items"];
+        assert_eq!(
+            target_schema["required"],
+            serde_json::json!(["id", "question", "expected_fact_key"])
+        );
+        assert_eq!(
+            target_schema["properties"]["expected_fact_key"]["enum"],
+            serde_json::json!(["routing.owner"])
+        );
+        assert_eq!(
+            target_schema["properties"]["expected_fact_key"]["minLength"],
+            1
+        );
+        let system = request.system.as_deref().unwrap();
+        assert!(
+            system.contains("Every target must include expected_fact_key exactly `routing.owner`")
+        );
+        assert!(!system.contains("selection_priority"));
+
+        let fallback = parse_investigation_plan(
+            r#"{"targets":[{"id":"owner","question":"Who owns routing?"}]}"#,
+        )
+        .expect("runtime parser remains broad for provider fallback observability");
+        assert_eq!(fallback.targets[0].expected_fact_key, None);
+    }
+
+    #[test]
+    fn shared_fact_family_contract_stays_off_when_configuration_is_not_exactly_redundant() {
+        let mut write = capability("write", &["routing.owner"]);
+        write.read_only = false;
+        let cases = vec![
+            vec![capability("single", &["routing.owner"])],
+            vec![
+                capability("wildcard", &[]),
+                capability("registry", &["routing.owner"]),
+            ],
+            vec![
+                capability("multi", &["routing.owner", "routing.region"]),
+                capability("registry", &["routing.owner"]),
+            ],
+            vec![
+                capability("owner", &["routing.owner"]),
+                capability("region", &["routing.region"]),
+            ],
+            vec![capability("owner", &["routing.owner"]), write],
+        ];
+
+        for capabilities in cases {
+            assert_eq!(shared_exact_read_only_fact_key(&capabilities), None);
+            let request = build_investigation_plan_request(
+                "investigate routing",
+                &capabilities,
+                Some(128),
+                Some(7),
+            )
+            .unwrap();
+            let schema = match request.output_format {
+                ModelOutputFormat::JsonSchema { schema, .. } => schema,
+                _ => panic!("expected JSON schema"),
+            };
+            assert_eq!(schema, investigation_plan_schema());
+            assert!(
+                request
+                    .system
+                    .as_deref()
+                    .unwrap()
+                    .contains("omit it when uncertain")
+            );
+        }
+    }
+
+    #[test]
+    fn shared_fact_family_contract_is_priority_invariant_and_model_invisible() {
+        let plain = vec![
+            capability("cache", &["routing.owner"]),
+            capability("registry", &["routing.owner"]),
+        ];
+        let prioritized = vec![
+            capability_with_priority("cache", &["routing.owner"], 20),
+            capability_with_priority("registry", &["routing.owner"], 10),
+        ];
+        let plain_request =
+            build_investigation_plan_request("find the routing owner", &plain, Some(128), Some(7))
+                .unwrap();
+        let prioritized_request = build_investigation_plan_request(
+            "find the routing owner",
+            &prioritized,
+            Some(128),
+            Some(7),
+        )
+        .unwrap();
+        assert_eq!(plain_request.system, prioritized_request.system);
+        assert_eq!(plain_request.task, prioritized_request.task);
+        assert_eq!(
+            plain_request.output_format,
+            prioritized_request.output_format
+        );
+        assert!(!prioritized_request.task.contains("selection_priority"));
+        assert!(
+            !prioritized_request
+                .system
+                .unwrap()
+                .contains("selection_priority")
+        );
     }
 
     #[test]
