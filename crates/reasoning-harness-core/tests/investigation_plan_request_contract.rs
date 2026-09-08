@@ -114,8 +114,8 @@ fn selection_priority_is_model_invisible_on_both_request_paths() {
     let mut prioritized_non_strict = plain_non_strict.clone();
     prioritized_non_strict[0].selection_priority = Some(20);
 
-    let plain = build_investigation_plan_request("find region", &plain_non_strict, None, Some(9))
-        .unwrap();
+    let plain =
+        build_investigation_plan_request("find region", &plain_non_strict, None, Some(9)).unwrap();
     let prioritized =
         build_investigation_plan_request("find region", &prioritized_non_strict, None, Some(9))
             .unwrap();
@@ -132,7 +132,8 @@ fn selection_priority_is_model_invisible_on_both_request_paths() {
     prioritized_strict[0].selection_priority = Some(10);
     prioritized_strict[1].selection_priority = Some(20);
 
-    let plain = build_investigation_plan_request("find owner", &plain_strict, None, Some(9)).unwrap();
+    let plain =
+        build_investigation_plan_request("find owner", &plain_strict, None, Some(9)).unwrap();
     let prioritized =
         build_investigation_plan_request("find owner", &prioritized_strict, None, Some(9)).unwrap();
     assert_eq!(plain.system, prioritized.system);
