@@ -124,3 +124,11 @@ v0.4.1では、v0.4.0のunique-pair selectorより先に、さらに限定した
 他のtyped outcome、keyless target、残りがwildcard capabilityだけの場合、明示candidateが複数残る場合、すでにterminalなinvestigation stateでは発動しない。選ばれたactionは従来どおりduplicate/action-budget validation、acquisition-only adapter、evidence admission、source/freshness/scope/authority qualification、regeneration、verification、finalization、answer-safetyを通る。fact valueを推定せず、target/evidence/final answer authorityを昇格しない。選択回数はadditiveな`harness_no_result_followup_selections` telemetryで観測できる。
 
 このpatchはinvestigation utilityだけをhardeningする。freeze済みnatural-language E2E v1〜v9はhistorical evidenceのまま保持し、この変更のために再実行・再採点・tuningしない。
+
+### 明示的なsafe acquisition precedence（v0.4.2 candidate）
+
+capabilityはoptionalな`selection_priority`をHarness-owned acquisition-selection hintとして宣言できる。数値が大きいほどprecedenceが高い。このfieldはcapability authority、evidence admission、verification、finalization、answer safetyを変更しない。
+
+Harnessがこのprecedenceを見るのは、v0.4.1 exact-target `no_result` continuationとv0.4.0 globally unique-pair selectorのどちらもactionを選ばなかった場合だけである。model action callなしで選択できるのは、明示的な`expected_fact_key`を持つeligible target identityがちょうど1つ、そのtargetに対する未試行read-only capabilityがkeyを`supported_fact_keys`で明示し、eligible capabilityすべてにpriorityが設定され、最高priorityがちょうど1つに決まる場合だけ。priority欠落、tie、same-key siblingを含む複数eligible target identity、keyless target、wildcard-only matching、attempted pair、non-read-only capability、terminal/action-budget stateでは従来のbounded model/fail-closed pathを維持する。
+
+この選択は`harness_precedence_selections`として独立に観測し、`harness_unique_selections`や`harness_no_result_followup_selections`と混同しない。precedenceで選択したactionがtyped `no_result`になった場合、次roundでは条件を満たせば既存v0.4.1 exact-target continuationをそのまま使う。

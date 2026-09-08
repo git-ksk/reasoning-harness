@@ -269,6 +269,8 @@ enum InvestigationCapabilityFileConfig {
     ExternalCommand {
         id: String,
         read_only: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        selection_priority: Option<u32>,
         #[serde(default)]
         supported_fact_keys: BTreeSet<String>,
         program: String,
@@ -284,6 +286,8 @@ enum InvestigationCapabilityFileConfig {
     McpReadonly {
         id: String,
         read_only: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        selection_priority: Option<u32>,
         #[serde(default)]
         supported_fact_keys: BTreeSet<String>,
         server_id: String,
@@ -2330,6 +2334,9 @@ async fn run_natural_investigation(
             proposal
         } else if let Some(proposal) = state.unique_compatible_action_proposal() {
             state.note_harness_unique_selection();
+            proposal
+        } else if let Some(proposal) = state.unique_precedence_action_proposal() {
+            state.note_harness_precedence_selection();
             proposal
         } else {
             state.note_planner_call();
@@ -6108,6 +6115,7 @@ fn resolve_investigation_config(
             InvestigationCapabilityFileConfig::ExternalCommand {
                 id,
                 read_only,
+                selection_priority,
                 supported_fact_keys,
                 program,
                 args,
@@ -6161,6 +6169,7 @@ fn resolve_investigation_config(
                         id: id.into(),
                         adapter: INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID.into(),
                         read_only: true,
+                        selection_priority: *selection_priority,
                         supported_fact_keys: supported_fact_keys.clone(),
                     },
                     InvestigationResolverConfig::ExternalCommand(ExternalCommandResolverConfig {
@@ -6175,6 +6184,7 @@ fn resolve_investigation_config(
             InvestigationCapabilityFileConfig::McpReadonly {
                 id,
                 read_only,
+                selection_priority,
                 supported_fact_keys,
                 server_id,
                 program,
@@ -6260,6 +6270,7 @@ fn resolve_investigation_config(
                         id: id.into(),
                         adapter: MCP_READONLY_V3_RESOLVER_ID.into(),
                         read_only: true,
+                        selection_priority: *selection_priority,
                         supported_fact_keys: supported_fact_keys.clone(),
                     },
                     InvestigationResolverConfig::McpReadonly(Box::new(resolve_mcp_v3_config(
@@ -7170,7 +7181,7 @@ mod candidate_json_tests {
             "planner_max_tokens":192,
             "capabilities":[
               {
-                "kind":"external_command","id":"region-api","read_only":true,
+                "kind":"external_command","id":"region-api","read_only":true,"selection_priority":20,
                 "supported_fact_keys":["service.region"],"program":"region-resolver",
                 "admission":{
                   "evaluation_time_unix_seconds":1000,
@@ -7179,7 +7190,7 @@ mod candidate_json_tests {
                 }
               },
               {
-                "kind":"mcp_readonly","id":"inventory-mcp","read_only":true,
+                "kind":"mcp_readonly","id":"inventory-mcp","read_only":true,"selection_priority":10,
                 "supported_fact_keys":["inventory.count"],"server_id":"inventory",
                 "program":"inventory-mcp","allowed_tools":["lookup"],"tool":"lookup",
                 "source":"mcp:inventory:lookup",
@@ -7203,10 +7214,18 @@ mod candidate_json_tests {
         assert_eq!(resolved.capabilities.len(), 2);
         assert_eq!(resolved.capabilities[0].descriptor.id, "region-api");
         assert_eq!(
+            resolved.capabilities[0].descriptor.selection_priority,
+            Some(20)
+        );
+        assert_eq!(
             resolved.capabilities[0].descriptor.adapter,
             INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID
         );
         assert_eq!(resolved.capabilities[1].descriptor.id, "inventory-mcp");
+        assert_eq!(
+            resolved.capabilities[1].descriptor.selection_priority,
+            Some(10)
+        );
         assert_eq!(
             resolved.capabilities[1].descriptor.adapter,
             MCP_READONLY_V3_RESOLVER_ID
