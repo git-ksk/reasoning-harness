@@ -45,6 +45,34 @@ extractions, tool output, and prior model output do not become trusted evidence 
 accepted them. Evidence ingestion, admission, verification, semantic/answer-safety diagnostics, bounded
 resolution, re-verification, and final-claim coverage remain harness-owned.
 
+## v0.4.2 — Planner Utility & Provider Parity
+
+Tracking: milestone **v0.4.2 — Planner Utility & Provider Parity** (#5), parent Issue #260. The currently released external preview remains v0.4.1 until this milestone passes fresh acceptance. v0.4.2 is a patch-level utility/provider-parity release: it does not change the v0.4.x authority, admission, verification, finalization, or answer-safety boundary.
+
+Implementation order is fixed:
+
+1. **#261 deterministic safe action precedence.** Reduce the measured `target_recalled=true` / `actions=0` / `round_budget` planner stall only where a Harness-owned read-only acquisition choice is mechanically unique under explicit configuration. Do not infer precedence from free-form task wording or JSON array order, merge same-key target identities, or make a model-selected target/action authoritative. Existing #233 globally-unique selection and #249 exact-target post-`no_result` continuation remain distinct invariants with distinct telemetry.
+2. **#262 generic Groq provider parity.** Expose the already implemented `GroqAdapter` through the generic natural-language `reason` generator/planner/action/regeneration/render/session path. Groq model IDs remain data; provider-specific semantics or authority branches are forbidden. The frozen #256 Groq process failures remain historical measurement-design evidence and are not rewritten.
+3. **#263 fresh v0.4.2 acceptance.** Freeze a new observation-free successor before live credentials, prove exact provider support without network before canonical launch, preserve provider-aware cross-model scheduling (#258), and gate release on zero correctness-boundary regression. Utility, operational completeness, and correctness remain separate report dimensions.
+
+Evidence-gated release policy:
+
+- implementation completion is **not** sufficient to tag/release v0.4.2;
+- #263 must freeze the v0.4.1 comparison baseline and utility thresholds before any v0.4.2 live observation;
+- release requires a strict measured reduction in avoidable `target_recalled=true` / `actions=0` planner stalls and a strict increase in trigger reachability on the predeclared fresh planner set, while #249 remains fully conformant on every trigger-exposed case;
+- no scorable model may introduce a correctness/safety regression that is hidden by another model's improvement; the exact cross-model aggregation rule is frozen pre-live;
+- an operationally incomplete model cannot supply positive evidence for the improvement gate;
+- if the canonical successor is flat, mixed outside the predeclared gate, or worse, preserve it as a failed release candidate and **do not release v0.4.2**. Any subsequent attempt requires a new implementation/successor identity; never tune or rerun the failed frozen observation.
+
+No-regression boundary:
+
+- frozen natural-language E2E v9/v10/v11 and #256 target observations remain immutable;
+- #249 must remain conformant whenever its typed-`no_result` predecessor trigger is exposed;
+- no fuzzy key/value matching, sibling-target merge, implicit tool-order authority, or non-read-only deterministic acquisition;
+- unsupported/rejected/operational evidence never becomes fact authority;
+- correctness-boundary violations, unsupported exposed assertions, identity-unsafe admission, MCP authority self-promotion, and session external replay remain zero-gated;
+- #248 finalization/grounding bridge remains in **v0.5.0 — Verified Investigation Utility** because it crosses into target-to-final-answer authority/finalization semantics.
+
 ## v0.4.1 — Investigation Utility Hardening
 
 Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3). v0.4.1 is the current released external preview; the patch line is complete with Issue #249 and preserves the v0.4.0 authority/machine-contract boundary.

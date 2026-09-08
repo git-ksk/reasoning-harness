@@ -34,6 +34,34 @@ Reasoning Harness
 
 自然言語の利便性によって正確性の境界を弱めてはならない。ユーザーの文章、ファイル内容、モデルによる抽出、ツール出力、過去のモデル出力は、CLIが受け付けたというだけで信頼済みエビデンスにはならない。エビデンスの取り込み、受け入れ、検証、semantic/answer-safety診断、制約付き解決、再検証、最終主張のカバレッジは、引き続きHarnessが所有する。
 
+## v0.4.2 — Planner Utility & Provider Parity
+
+Tracking: milestone **v0.4.2 — Planner Utility & Provider Parity** (#5)、parent Issue #260。現在公開済みのexternal previewはfresh acceptance完了までv0.4.1のままとする。v0.4.2はpatch-levelのutility/provider-parity releaseであり、v0.4.xのauthority、admission、verification、finalization、answer-safety boundaryは変更しない。
+
+実装順は次で固定する。
+
+1. **#261 deterministic safe action precedence。** 観測済みの `target_recalled=true` / `actions=0` / `round_budget` planner stallを、明示設定のもとでHarness-owned read-only acquisition choiceが機械的に一意な場合だけ減らす。free-form task文言やJSON配列順から暗黙のprecedenceを推論せず、same-key target identityをmergeせず、model-selected target/actionへauthorityを与えない。既存#233 global unique selectionと#249 exact-target post-`no_result` continuationは別invariant・別telemetryとして維持する。
+2. **#262 generic Groq provider parity。** 既存の`GroqAdapter`をgeneric natural-language `reason`のgeneration/planning/action/regeneration/render/session経路へ露出する。Groq model IDはdataのままとし、provider固有semantic/authority branchは禁止する。freeze済み#256 Groq process failureはmeasurement-design evidenceとして保持し、書き換えない。
+3. **#263 fresh v0.4.2 acceptance。** live credential使用前に新しいobservation-free successorをfreezeし、canonical launch前にnetworkなしでexact provider supportを証明し、provider-aware cross-model scheduling (#258)を守り、correctness-boundary regressionゼロをrelease gateにする。utility、operational completeness、correctnessは別々に報告する。
+
+evidence-gated release policy:
+
+- 実装完了だけではv0.4.2をtag/releaseしない。
+- #263はv0.4.2 live observation前にv0.4.1比較baselineとutility thresholdをfreezeする。
+- releaseにはpredeclared fresh planner setで `target_recalled=true` / `actions=0` のavoidable planner stallが厳密に減少し、trigger reachabilityが厳密に増加することを実測で要求する。同時にtrigger-exposed全caseで#249 conformanceを維持する。
+- あるmodelの改善で別のscorable modelのcorrectness/safety regressionを隠してはならず、cross-model aggregation ruleはlive前にfreezeする。
+- operationally incompleteなmodelはimprovement gateのpositive evidenceには使わない。
+- canonical successorが横ばい、predeclared gate外のmixed、または悪化ならfailed release candidateとして保存し、**v0.4.2はreleaseしない**。次の試行は新しいimplementation/successor identityでのみ行い、失敗したfreeze済み観測をrerun/tuningしない。
+
+no-regression boundary:
+
+- frozen natural-language E2E v9/v10/v11と#256各target observationはimmutableのまま維持する。
+- #249はtyped `no_result` predecessor triggerがexposedしたすべてのcaseでconformantを維持する。
+- fuzzy key/value matching、sibling-target merge、暗黙のtool-order authority、non-read-only deterministic acquisitionは禁止する。
+- unsupported/rejected/operational evidenceはfact authorityへ昇格させない。
+- correctness-boundary violation、unsupported exposed assertion、identity-unsafe admission、MCP authority self-promotion、session external replayはzero-gateを維持する。
+- #248 finalization/grounding bridgeはtarget-to-final-answer authority/finalization semanticsへ踏み込むため **v0.5.0 — Verified Investigation Utility** に残す。
+
 ## v0.4.1 — Investigation Utility Hardening
 
 Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3)。v0.4.1が現在のreleased external previewで、Issue #249をもってpatch lineは完了した。v0.4.0のauthority/machine-contract boundaryは維持する。
