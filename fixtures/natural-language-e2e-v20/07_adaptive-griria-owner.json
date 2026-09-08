@@ -1,0 +1,34 @@
+{
+  "adaptive": true,
+  "candidate_diagnostic_expectation": "harness_precedence_then_harness_exact_target_followup",
+  "config_pair": {
+    "candidate": "configs/candidate/griria-followup.json",
+    "control": "configs/control/griria-followup.json"
+  },
+  "coverage_contract": {
+    "first_capability": "griria-owner-cache",
+    "followup_capability": "griria-owner-registry",
+    "kind": "no_result_followup_observational",
+    "mechanism_selection": "harness_exact_target_followup",
+    "trigger_status": "no_result"
+  },
+  "expected": "grounded",
+  "fresh_markers": [
+    "griria.gateway.owner",
+    "Griria gateway routing owner"
+  ],
+  "id": "adaptive-griria-owner",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "griria-owner-cache",
+    "griria-owner-registry"
+  ],
+  "safety_dimension": "followup",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "v11_metric_locked_followup",
+  "target": {
+    "key": "griria.gateway.owner",
+    "value": "gateway-runtime"
+  },
+  "task": "Who currently owns Griria gateway routing? Use the configured Griria cache as the first lookup. If it returns no result, use the configured Griria registry next."
+}

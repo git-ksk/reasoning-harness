@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.saesor.mode=prepared",
+  "add_hypothesis": "session.saesor.mode=prepared",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.saesor.mode",
+    "Saesor session readiness"
+  ],
+  "id": "session-add-saesor",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.saesor.mode",
+    "value": "prepared"
+  },
+  "task": "Determine whether Saesor session mode is ready."
+}

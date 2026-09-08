@@ -1,0 +1,28 @@
+{
+  "adaptive": false,
+  "config_pair": {
+    "candidate": "configs/candidate/noketh-stale.json",
+    "control": "configs/control/noketh-stale.json"
+  },
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "noketh.rollout.gate_open",
+    "Noketh current rollout gate"
+  ],
+  "id": "stale-noketh-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "noketh-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "noketh.rollout.gate_open",
+    "value": "true"
+  },
+  "task": "Determine whether the Noketh rollout gate is open now. Reject an observation outside the allowed freshness interval rather than promoting its value to current truth."
+}
