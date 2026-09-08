@@ -1,0 +1,28 @@
+{
+  "adaptive": false,
+  "config_pair": {
+    "candidate": "configs/candidate/luneth-stale.json",
+    "control": "configs/control/luneth-stale.json"
+  },
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "luneth.rollout.gate_open",
+    "Luneth current rollout gate"
+  ],
+  "id": "stale-luneth-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "luneth-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "luneth.rollout.gate_open",
+    "value": "true"
+  },
+  "task": "Determine whether the Luneth rollout gate is open now. Reject an observation outside the allowed freshness interval rather than promoting its value to current truth."
+}

@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.voryn.audit",
+    "Voryn audit enforcement"
+  ],
+  "id": "session-resume-fork-voryn",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.voryn.audit=strictly-enforced",
+  "start_hypothesis": "session.voryn.audit=strictly-enforced",
+  "target": {
+    "key": "session.voryn.audit",
+    "value": "strictly-enforced"
+  },
+  "task": "Determine whether Voryn audit enforcement is enabled."
+}

@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.tavren.mode=prepared",
+  "add_hypothesis": "session.tavren.mode=prepared",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.tavren.mode",
+    "Tavren session readiness"
+  ],
+  "id": "session-add-tavren",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.tavren.mode",
+    "value": "prepared"
+  },
+  "task": "Determine whether Tavren session mode is ready."
+}
