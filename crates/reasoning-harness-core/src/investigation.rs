@@ -97,6 +97,22 @@ pub struct InvestigationActionProposal {
     pub capability_id: Option<String>,
 }
 
+/// Schema-only model-facing contract. Runtime parsing deliberately remains the broader
+/// `InvestigationActionProposal` so unconstrained/provider-fallback output is still retained
+/// exactly and rejected by Harness-owned validation instead of being repaired or inferred.
+#[allow(dead_code)]
+#[derive(JsonSchema)]
+#[serde(tag = "action", rename_all = "snake_case", deny_unknown_fields)]
+enum ModelFacingInvestigationActionProposal {
+    Acquire {
+        #[schemars(length(min = 1))]
+        target_id: String,
+        #[schemars(length(min = 1))]
+        capability_id: String,
+    },
+    Stop {},
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct InvestigationAction {
     pub action_index: usize,
@@ -238,7 +254,7 @@ pub fn investigation_plan_schema() -> Value {
 }
 
 pub fn investigation_action_schema() -> Value {
-    serde_json::to_value(schema_for!(InvestigationActionProposal))
+    serde_json::to_value(schema_for!(ModelFacingInvestigationActionProposal))
         .expect("investigation action schema must serialize")
 }
 
@@ -1640,6 +1656,57 @@ mod tests {
     }
 
     #[test]
+    fn action_schema_structurally_discriminates_acquire_and_stop() {
+        let schema = investigation_action_schema();
+        let branches = schema["oneOf"].as_array().expect("closed union branches");
+        assert_eq!(branches.len(), 2);
+
+        let branch = |action: &str| {
+            branches
+                .iter()
+                .find(|branch| branch["properties"]["action"]["const"] == action)
+                .unwrap_or_else(|| panic!("missing {action} branch"))
+        };
+
+        let acquire = branch("acquire");
+        assert_eq!(acquire["additionalProperties"], false);
+        assert_eq!(
+            acquire["required"],
+            serde_json::json!(["action", "target_id", "capability_id"])
+        );
+        assert_eq!(acquire["properties"]["target_id"]["type"], "string");
+        assert_eq!(acquire["properties"]["target_id"]["minLength"], 1);
+        assert_eq!(acquire["properties"]["capability_id"]["type"], "string");
+        assert_eq!(acquire["properties"]["capability_id"]["minLength"], 1);
+
+        let stop = branch("stop");
+        assert_eq!(stop["additionalProperties"], false);
+        assert_eq!(stop["required"], serde_json::json!(["action"]));
+        assert!(stop["properties"].get("target_id").is_none());
+        assert!(stop["properties"].get("capability_id").is_none());
+    }
+
+    #[test]
+    fn unconstrained_missing_capability_output_is_retained_then_rejected_fail_closed() {
+        let proposal = parse_investigation_action(r#"{"action":"acquire","target_id":"owner"}"#)
+            .expect("broad runtime parser retains exact provider output");
+        assert_eq!(proposal.target_id.as_deref(), Some("owner"));
+        assert_eq!(proposal.capability_id, None);
+
+        let mut state = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![capability("cache", &["routing.owner"])],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        state.begin_round().unwrap();
+        assert_eq!(
+            state.validate_action(proposal),
+            Err(InvestigationActionRejection::InvalidShape)
+        );
+    }
+
+    #[test]
     fn invalid_shape_rejections_retain_exact_proposal_and_round() {
         let mut state = InvestigationState::new(
             vec![target("owner", Some("routing.owner"))],
@@ -1725,11 +1792,6 @@ mod tests {
         );
         assert!(request.task.contains("For stop, omit both IDs"));
         assert!(!request.task.contains("selection_priority"));
-
-        let schema = investigation_action_schema().to_string();
-        assert!(
-            schema.contains("Required and non-empty for `acquire`; must be omitted for `stop`")
-        );
     }
 
     #[test]
