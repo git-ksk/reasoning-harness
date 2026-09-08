@@ -2359,7 +2359,7 @@ async fn run_natural_investigation(
         } else if let Some(proposal) = state.unique_compatible_action_proposal() {
             state.note_harness_unique_selection();
             proposal
-        } else if let Some(proposal) = state.unique_precedence_action_proposal() {
+        } else if let Some(proposal) = state.unique_precedence_action_proposal_with_diagnostic() {
             state.note_harness_precedence_selection();
             proposal
         } else {

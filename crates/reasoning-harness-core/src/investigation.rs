@@ -87,9 +87,12 @@ pub enum InvestigationActionKind {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub struct InvestigationActionProposal {
+    /// `acquire` executes one existing Harness target/capability pair; `stop` ends planning.
     pub action: InvestigationActionKind,
+    /// Required and non-empty for `acquire`; must be omitted for `stop`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target_id: Option<String>,
+    /// Required and non-empty for `acquire`; must be omitted for `stop`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capability_id: Option<String>,
 }
@@ -112,6 +115,24 @@ pub enum InvestigationActionRejection {
     UnsupportedTargetKey,
     DuplicateAction,
     ActionBudgetExhausted,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct InvestigationActionRejectionRecord {
+    pub round: usize,
+    pub proposal: InvestigationActionProposal,
+    pub reason: InvestigationActionRejection,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum InvestigationPrecedenceSkipReason {
+    TerminalOrActionBudget,
+    NoEligibleExactTarget,
+    SameKeySibling,
+    MultipleEligibleTargets,
+    MissingPriority,
+    HighestPriorityTie,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -187,7 +208,15 @@ pub struct InvestigationTelemetry {
     /// target identity and one highest configured selection priority are mechanically unique.
     #[serde(default)]
     pub harness_precedence_selections: usize,
+    /// Diagnostic-only reasons why #261 precedence was not selected when that selector was
+    /// evaluated. These counts never participate in admission, correctness, or release scoring.
+    #[serde(default)]
+    pub precedence_skip_reasons: BTreeMap<InvestigationPrecedenceSkipReason, usize>,
     pub rejected_actions: BTreeMap<InvestigationActionRejection, usize>,
+    /// Diagnostic-only rejected proposals retained so a subsequent planner round can see the
+    /// exact typed validation failure instead of repeating the same invalid shape blindly.
+    #[serde(default)]
+    pub action_rejection_records: Vec<InvestigationActionRejectionRecord>,
     pub actions: Vec<InvestigationActionRecord>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stop_reason: Option<InvestigationStopReason>,
@@ -296,7 +325,9 @@ impl InvestigationState {
                 harness_unique_selections: 0,
                 harness_no_result_followup_selections: 0,
                 harness_precedence_selections: 0,
+                precedence_skip_reasons: BTreeMap::new(),
                 rejected_actions: BTreeMap::new(),
+                action_rejection_records: vec![],
                 actions: vec![],
                 stop_reason: None,
             },
@@ -375,22 +406,42 @@ impl InvestigationState {
     /// precedence, ties, and terminal/action-budget states. It is selection-only and cannot admit
     /// evidence, merge target identities, or promote verification/finalization authority.
     pub fn unique_precedence_action_proposal(&self) -> Option<InvestigationActionProposal> {
+        self.precedence_action_proposal_result().ok()
+    }
+
+    /// Runtime-facing variant that preserves the exact #261 selector semantics while recording a
+    /// diagnostic-only reason when precedence cannot select an action.
+    pub fn unique_precedence_action_proposal_with_diagnostic(
+        &mut self,
+    ) -> Option<InvestigationActionProposal> {
+        match self.precedence_action_proposal_result() {
+            Ok(proposal) => Some(proposal),
+            Err(reason) => {
+                *self
+                    .telemetry
+                    .precedence_skip_reasons
+                    .entry(reason)
+                    .or_default() += 1;
+                None
+            }
+        }
+    }
+
+    fn precedence_action_proposal_result(
+        &self,
+    ) -> Result<InvestigationActionProposal, InvestigationPrecedenceSkipReason> {
         if self.telemetry.stop_reason.is_some()
             || self.telemetry.actions.len() >= self.policy.max_actions
         {
-            return None;
+            return Err(InvestigationPrecedenceSkipReason::TerminalOrActionBudget);
         }
 
         let mut eligible_targets = Vec::new();
+        let mut same_key_sibling_blocked = false;
         for target in self.targets.values() {
             let Some(key) = target.expected_fact_key.as_deref() else {
                 continue;
             };
-            if self.targets.values().any(|sibling| {
-                sibling.id != target.id && sibling.expected_fact_key.as_deref() == Some(key)
-            }) {
-                continue;
-            }
             let capabilities = self
                 .capabilities
                 .values()
@@ -403,34 +454,49 @@ impl InvestigationState {
                             .contains(&(target.id.clone(), capability.id.clone()))
                 })
                 .collect::<Vec<_>>();
-            if !capabilities.is_empty() {
-                eligible_targets.push((target, capabilities));
+            if capabilities.is_empty() {
+                continue;
             }
+            if self.targets.values().any(|sibling| {
+                sibling.id != target.id && sibling.expected_fact_key.as_deref() == Some(key)
+            }) {
+                same_key_sibling_blocked = true;
+                continue;
+            }
+            eligible_targets.push((target, capabilities));
         }
 
+        if eligible_targets.is_empty() {
+            return Err(if same_key_sibling_blocked {
+                InvestigationPrecedenceSkipReason::SameKeySibling
+            } else {
+                InvestigationPrecedenceSkipReason::NoEligibleExactTarget
+            });
+        }
         if eligible_targets.len() != 1 {
-            return None;
+            return Err(InvestigationPrecedenceSkipReason::MultipleEligibleTargets);
         }
         let (target, capabilities) = &eligible_targets[0];
         if capabilities
             .iter()
             .any(|capability| capability.selection_priority.is_none())
         {
-            return None;
+            return Err(InvestigationPrecedenceSkipReason::MissingPriority);
         }
         let highest = capabilities
             .iter()
             .filter_map(|capability| capability.selection_priority)
-            .max()?;
+            .max()
+            .ok_or(InvestigationPrecedenceSkipReason::MissingPriority)?;
         let best = capabilities
             .iter()
             .filter(|capability| capability.selection_priority == Some(highest))
             .collect::<Vec<_>>();
         if best.len() != 1 {
-            return None;
+            return Err(InvestigationPrecedenceSkipReason::HighestPriorityTie);
         }
 
-        Some(InvestigationActionProposal {
+        Ok(InvestigationActionProposal {
             action: InvestigationActionKind::Acquire,
             target_id: Some(target.id.clone()),
             capability_id: Some(best[0].id.clone()),
@@ -517,54 +583,68 @@ impl InvestigationState {
         proposal: InvestigationActionProposal,
     ) -> Result<Option<InvestigationAction>, InvestigationActionRejection> {
         if self.telemetry.stop_reason.is_some() {
-            return self.reject(InvestigationActionRejection::Stopped);
+            return self.reject_action(&proposal, InvestigationActionRejection::Stopped);
         }
         if proposal.action == InvestigationActionKind::Stop {
             if proposal.target_id.is_some() || proposal.capability_id.is_some() {
-                return self.reject(InvestigationActionRejection::InvalidShape);
+                return self.reject_action(&proposal, InvestigationActionRejection::InvalidShape);
             }
             self.stop(InvestigationStopReason::PlannerStop);
             return Ok(None);
         }
         if self.telemetry.actions.len() >= self.policy.max_actions {
             self.stop(InvestigationStopReason::ActionBudget);
-            return self.reject(InvestigationActionRejection::ActionBudgetExhausted);
+            return self.reject_action(
+                &proposal,
+                InvestigationActionRejection::ActionBudgetExhausted,
+            );
         }
-        let Some(target_id) = proposal.target_id.filter(|value| !value.trim().is_empty()) else {
-            return self.reject(InvestigationActionRejection::InvalidShape);
+        let Some(target_id) = proposal
+            .target_id
+            .as_deref()
+            .filter(|value| !value.trim().is_empty())
+        else {
+            return self.reject_action(&proposal, InvestigationActionRejection::InvalidShape);
         };
         let Some(capability_id) = proposal
             .capability_id
+            .as_deref()
             .filter(|value| !value.trim().is_empty())
         else {
-            return self.reject(InvestigationActionRejection::InvalidShape);
+            return self.reject_action(&proposal, InvestigationActionRejection::InvalidShape);
         };
-        let Some(target) = self.targets.get(&target_id) else {
-            return self.reject(InvestigationActionRejection::UnknownTarget);
+        let Some(target) = self.targets.get(target_id) else {
+            return self.reject_action(&proposal, InvestigationActionRejection::UnknownTarget);
         };
-        let Some(capability) = self.capabilities.get(&capability_id) else {
-            return self.reject(InvestigationActionRejection::UnknownCapability);
+        let Some(capability) = self.capabilities.get(capability_id) else {
+            return self.reject_action(&proposal, InvestigationActionRejection::UnknownCapability);
         };
         if !capability.read_only {
-            return self.reject(InvestigationActionRejection::CapabilityNotReadOnly);
+            return self.reject_action(
+                &proposal,
+                InvestigationActionRejection::CapabilityNotReadOnly,
+            );
         }
         if let Some(key) = target.expected_fact_key.as_deref() {
             if !capability.supported_fact_keys.is_empty()
                 && !capability.supported_fact_keys.contains(key)
             {
-                return self.reject(InvestigationActionRejection::UnsupportedTargetKey);
+                return self.reject_action(
+                    &proposal,
+                    InvestigationActionRejection::UnsupportedTargetKey,
+                );
             }
         }
         if !self
             .attempted_pairs
-            .insert((target_id.clone(), capability_id.clone()))
+            .insert((target_id.to_string(), capability_id.to_string()))
         {
-            return self.reject(InvestigationActionRejection::DuplicateAction);
+            return self.reject_action(&proposal, InvestigationActionRejection::DuplicateAction);
         }
         Ok(Some(InvestigationAction {
             action_index: self.telemetry.actions.len(),
-            target_id,
-            capability_id,
+            target_id: target_id.to_string(),
+            capability_id: capability_id.to_string(),
         }))
     }
 
@@ -603,11 +683,19 @@ impl InvestigationState {
         }
     }
 
-    fn reject<T>(
+    fn reject_action<T>(
         &mut self,
+        proposal: &InvestigationActionProposal,
         reason: InvestigationActionRejection,
     ) -> Result<T, InvestigationActionRejection> {
         *self.telemetry.rejected_actions.entry(reason).or_default() += 1;
+        self.telemetry
+            .action_rejection_records
+            .push(InvestigationActionRejectionRecord {
+                round: self.telemetry.rounds,
+                proposal: proposal.clone(),
+                reason,
+            });
         Err(reason)
     }
 }
@@ -645,12 +733,13 @@ pub fn build_investigation_action_request(
     let targets = serde_json::to_string_pretty(&telemetry.targets)?;
     let capabilities = serialize_model_visible_capabilities(&telemetry.capabilities)?;
     let prior_actions = serde_json::to_string_pretty(&telemetry.actions)?;
+    let prior_rejections = serde_json::to_string_pretty(&telemetry.action_rejection_records)?;
     Ok(ModelRequest {
         system: Some(
-            "You are an untrusted action selector inside a bounded investigation harness. Return only the requested structured action. You may select one existing target ID and one existing read-only capability ID, or stop. Never create or edit a query, target, capability, identity context, evidence, authority, or verdict. The Harness validates every action and owns admission, verification, budgets, and correctness.".into(),
+            "You are an untrusted action selector inside a bounded investigation harness. Return only the requested structured action. An acquire action requires a non-empty existing target_id and a non-empty existing read-only capability_id. A stop action must omit both target_id and capability_id. Never create or edit a query, target, capability, identity context, evidence, authority, or verdict. The Harness validates every action and owns admission, verification, budgets, and correctness.".into(),
         ),
         task: format!(
-            "User task:\n{task}\n\nCanonical Harness investigation targets:\n{targets}\n\nConfigured capability descriptors:\n{capabilities}\n\nPrior typed action outcomes:\n{prior_actions}\n\nSelect exactly one acquire action using existing IDs or stop. Prefer an untried capability for an unresolved target after no_result, ambiguous, rejected_evidence, or operational_failure. Never repeat an identical target/capability pair."
+            "User task:\n{task}\n\nCanonical Harness investigation targets:\n{targets}\n\nConfigured capability descriptors:\n{capabilities}\n\nPrior typed action outcomes:\n{prior_actions}\n\nPrior typed action validation rejections:\n{prior_rejections}\n\nSelect exactly one acquire action using existing IDs or stop. For acquire, include both non-empty target_id and capability_id. For stop, omit both IDs. Prefer an untried capability for an unresolved target after no_result, ambiguous, rejected_evidence, or operational_failure. Correct any prior typed validation rejection instead of repeating the same invalid proposal. Never repeat an identical target/capability pair."
         ),
         output_format: ModelOutputFormat::JsonSchema {
             name: INVESTIGATION_ACTION_CONTRACT_ID.into(),
@@ -1548,6 +1637,128 @@ mod tests {
         .unwrap();
         assert_eq!(plain_action.task, prioritized_action.task);
         assert!(!prioritized_action.task.contains("selection_priority"));
+    }
+
+    #[test]
+    fn invalid_shape_rejections_retain_exact_proposal_and_round() {
+        let mut state = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![capability("cache", &["routing.owner"])],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let round = state.begin_round().unwrap();
+        let proposals = [
+            InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: None,
+                capability_id: Some("cache".into()),
+            },
+            InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("   ".into()),
+            },
+            InvestigationActionProposal {
+                action: InvestigationActionKind::Stop,
+                target_id: Some("owner".into()),
+                capability_id: None,
+            },
+        ];
+
+        for proposal in &proposals {
+            assert_eq!(
+                state.validate_action(proposal.clone()),
+                Err(InvestigationActionRejection::InvalidShape)
+            );
+        }
+
+        let telemetry = state.telemetry();
+        assert_eq!(
+            telemetry.rejected_actions[&InvestigationActionRejection::InvalidShape],
+            3
+        );
+        assert_eq!(telemetry.action_rejection_records.len(), 3);
+        for (record, proposal) in telemetry.action_rejection_records.iter().zip(proposals) {
+            assert_eq!(record.round, round);
+            assert_eq!(record.reason, InvestigationActionRejection::InvalidShape);
+            assert_eq!(record.proposal, proposal);
+        }
+    }
+
+    #[test]
+    fn action_request_exposes_typed_rejection_feedback_and_shape_rules() {
+        let mut state = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![capability_with_priority("cache", &["routing.owner"], 20)],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        state.begin_round().unwrap();
+        let invalid = InvestigationActionProposal {
+            action: InvestigationActionKind::Acquire,
+            target_id: Some("owner".into()),
+            capability_id: None,
+        };
+        assert_eq!(
+            state.validate_action(invalid),
+            Err(InvestigationActionRejection::InvalidShape)
+        );
+
+        let request = build_investigation_action_request(
+            "find the owner",
+            state.telemetry(),
+            Some(128),
+            Some(9),
+        )
+        .unwrap();
+        assert!(
+            request
+                .task
+                .contains("Prior typed action validation rejections")
+        );
+        assert!(request.task.contains("invalid_shape"));
+        assert!(
+            request
+                .task
+                .contains("For acquire, include both non-empty target_id and capability_id")
+        );
+        assert!(request.task.contains("For stop, omit both IDs"));
+        assert!(!request.task.contains("selection_priority"));
+
+        let schema = investigation_action_schema().to_string();
+        assert!(
+            schema.contains("Required and non-empty for `acquire`; must be omitted for `stop`")
+        );
+    }
+
+    #[test]
+    fn precedence_skip_diagnostic_reports_same_key_sibling_without_changing_selection() {
+        let mut state = InvestigationState::new(
+            vec![
+                target("owner-primary", Some("routing.owner")),
+                target("owner-sibling", Some("routing.owner")),
+            ],
+            vec![
+                capability_with_priority("cache", &["routing.owner"], 20),
+                capability_with_priority("registry", &["routing.owner"], 10),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+
+        assert_eq!(state.unique_precedence_action_proposal(), None);
+        assert!(state.telemetry().precedence_skip_reasons.is_empty());
+        assert_eq!(
+            state.unique_precedence_action_proposal_with_diagnostic(),
+            None
+        );
+        assert_eq!(
+            state.telemetry().precedence_skip_reasons
+                [&InvestigationPrecedenceSkipReason::SameKeySibling],
+            1
+        );
+        assert_eq!(state.telemetry().harness_precedence_selections, 0);
     }
 
     #[test]
