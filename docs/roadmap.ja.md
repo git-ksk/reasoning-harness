@@ -25,6 +25,7 @@ runtime は `unknown`、qualified partial answer、または abstention で停�
 現在のexternal previewは `v0.4.1` である。**v0.4.1 — Investigation Utility Hardening（milestone #3）** は完了し、#249のexact-target typed-`no_result` continuationだけを追加する。同じtargetに明示fact-key対応read-only follow-upが1つだけ残る場合に限り継続し、target identity、admission、authority、verification、finalization、answer safety、machine-contract semantics、freeze済みnatural-language E2E v1〜v9 evidenceは維持する。
 
 次のpatch milestoneは **v0.4.2 — Planner Utility & Provider Parity（milestone #5 / #260）** とする。scopeは#261 deterministic safe action-precedence utility、#262 generic Groq provider parity、#263 fresh no-regression acceptanceに限定する。v0.4.2はv0.4.1のauthority/finalization boundaryを維持し、#248はv0.5.0のまま扱う。
+v0.4.2は**evidence-gated**とし、実装完了だけではreleaseしない。#263でv0.4.1比較とimprovement thresholdをlive前にpredeclare/freezeし、fresh canonical successorが実際のplanner utility改善を示し、全zero-regression correctness/safety gateを維持した場合だけtagする。横ばい、gate外mixed、悪化ならreleaseをblockし、観測をrerun/tuningせず保存する。
 
 v0.4.0は **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation** の順で実装し、#204 negotiated/session `mcp_readonly_v3`、#232 dependency/freeze hygiene、#233 unique-safe-action utility hardeningもrelease前に完了した。v4 cross-model replication (#208 / PR #209) と #216 Groq operational extension（2026-09-06 closeout済み）は凍結済みv4の追試であり、このラインのtuning surfaceには使っていない。
 
