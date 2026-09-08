@@ -809,19 +809,32 @@ pub fn build_investigation_plan_request(
     let exact_key = shared_exact_read_only_fact_key(capabilities);
     let schema = investigation_plan_schema_for_capabilities(capabilities);
     let capabilities = serialize_model_visible_capabilities(capabilities)?;
-    let key_instruction = exact_key.map_or_else(
-        || "expected_fact_key is only a selector hint when the task clearly names the fact family; omit it when uncertain.".to_string(),
-        |key| format!(
-            "For every target, expected_fact_key is required and must be exactly the Harness-configured key `{key}`. Do not omit, alter, normalize, or substitute this key."
-        ),
+    let (system, task) = exact_key.map_or_else(
+        || {
+            (
+                "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. expected_fact_key is only a selector hint when the task clearly names the fact family; omit it when uncertain.".to_string(),
+                format!(
+                    "User task:\n{task}\n\nHarness-configured read-only capability descriptors:\n{capabilities}\n\nPropose concise investigation targets. Targets are untrusted planning objects, not hypotheses or verified facts. Do not include tool arguments, evidence, identity claims, authority classes, answers, or verdicts."
+                ),
+            )
+        },
+        |key| {
+            let key_instruction = format!(
+                "For every target, expected_fact_key is required and must be exactly the Harness-configured key `{key}`. Do not omit, alter, normalize, or substitute this key."
+            );
+            (
+                format!(
+                    "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. {key_instruction}"
+                ),
+                format!(
+                    "User task:\n{task}\n\nHarness-configured read-only capability descriptors:\n{capabilities}\n\n{key_instruction}\n\nPropose concise investigation targets. Targets are untrusted planning objects, not hypotheses or verified facts. Do not include tool arguments, evidence, identity claims, authority classes, answers, or verdicts."
+                ),
+            )
+        },
     );
     Ok(ModelRequest {
-        system: Some(format!(
-            "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. {key_instruction}"
-        )),
-        task: format!(
-            "User task:\n{task}\n\nHarness-configured read-only capability descriptors:\n{capabilities}\n\n{key_instruction}\n\nPropose concise investigation targets. Targets are untrusted planning objects, not hypotheses or verified facts. Do not include tool arguments, evidence, identity claims, authority classes, answers, or verdicts."
-        ),
+        system: Some(system),
+        task,
         output_format: ModelOutputFormat::JsonSchema {
             name: INVESTIGATION_PLAN_CONTRACT_ID.into(),
             schema,
