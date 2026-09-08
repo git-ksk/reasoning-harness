@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 const DEFAULT_BASE_URL: &str = "https://api.mistral.ai/v1/";
-const DEFAULT_TIMEOUT: Duration = Duration::from_secs(60);
+const DEFAULT_TIMEOUT: Duration = Duration::from_secs(180);
 const MAX_RATE_LIMIT_RETRIES: usize = 5;
 const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(5);
 const MAX_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(60);
@@ -598,6 +598,11 @@ struct Usage {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn default_request_timeout_supports_long_form_reasoning() {
+        assert_eq!(DEFAULT_TIMEOUT, Duration::from_secs(180));
+    }
 
     #[test]
     fn serializes_json_schema_without_provider_authority_fields() {
