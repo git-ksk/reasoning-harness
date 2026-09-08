@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.jandor.mode=active",
+  "add_hypothesis": "session.jandor.mode=active",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.jandor.mode",
+    "Jandor session mode"
+  ],
+  "id": "session-add-jandor",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.jandor.mode",
+    "value": "active"
+  },
+  "task": "Determine whether Jandor session mode is ready."
+}

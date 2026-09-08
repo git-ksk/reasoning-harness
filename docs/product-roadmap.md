@@ -45,33 +45,29 @@ extractions, tool output, and prior model output do not become trusted evidence 
 accepted them. Evidence ingestion, admission, verification, semantic/answer-safety diagnostics, bounded
 resolution, re-verification, and final-claim coverage remain harness-owned.
 
-## v0.4.2 — Planner Utility & Provider Parity
+## v0.4.2 — Investigation Utility & Provider Parity
 
-Tracking: milestone **v0.4.2 — Planner Utility & Provider Parity** (#5), parent Issue #260. The currently released external preview remains v0.4.1 until this milestone passes fresh acceptance. v0.4.2 is a patch-level utility/provider-parity release: it does not change the v0.4.x authority, admission, verification, finalization, or answer-safety boundary.
+Tracking: milestone **v0.4.2 — Investigation Utility & Provider Parity** (#5), parent Issue #260. The currently released external preview remains v0.4.1 until #263 passes the metric-locked paired acceptance. v0.4.2 preserves the v0.4.x authority, admission, verification, finalization, and answer-safety boundary.
 
-Implementation order is fixed:
+Product scope remains narrow:
 
-1. **#261 deterministic safe action precedence.** Reduce the measured `target_recalled=true` / `actions=0` / `round_budget` planner stall only where a Harness-owned read-only acquisition choice is mechanically unique under explicit configuration. Do not infer precedence from free-form task wording or JSON array order, merge same-key target identities, or make a model-selected target/action authoritative. Existing #233 globally-unique selection and #249 exact-target post-`no_result` continuation remain distinct invariants with distinct telemetry.
-2. **#262 generic Groq provider parity.** Expose the already implemented `GroqAdapter` through the generic natural-language `reason` generator/planner/action/regeneration/render/session path. Groq model IDs remain data; provider-specific semantics or authority branches are forbidden. The frozen #256 Groq process failures remain historical measurement-design evidence and are not rewritten.
-3. **#263 fresh v0.4.2 acceptance.** Freeze a new observation-free successor before live credentials, prove exact provider support without network before canonical launch, preserve provider-aware cross-model scheduling (#258), and gate release on zero correctness-boundary regression. Utility, operational completeness, and correctness remain separate report dimensions.
+1. **#261 deterministic safe action precedence.** Where one exact investigation target is mechanically eligible and explicit read-only capabilities have one unique highest configured `selection_priority`, Harness may choose that acquisition before stochastic planner selection. #233 and #249 remain separate invariants.
+2. **#262 generic Groq provider parity.** The existing `GroqAdapter` is exposed through the generic natural-language `reason` generator/planner/action/regeneration/render/session path without provider-specific correctness semantics.
+3. **#263 metric-locked paired acceptance.** A fresh held-out logical corpus is run against exact released v0.4.1 control and the v0.4.2 candidate. The measurement definitions are inherited from v11 and cannot change during the release line.
 
-Evidence-gated release policy:
+Release discipline follows the v0.4.0 principle: **the product may move; the ruler may not**.
 
-- implementation completion is **not** sufficient to tag/release v0.4.2;
-- #263 must freeze the v0.4.1 comparison baseline and utility thresholds before any v0.4.2 live observation;
-- release requires a strict measured reduction in avoidable `target_recalled=true` / `actions=0` planner stalls and a strict increase in trigger reachability on the predeclared fresh planner set, while #249 remains fully conformant on every trigger-exposed case;
-- no scorable model may introduce a correctness/safety regression that is hidden by another model's improvement; the exact cross-model aggregation rule is frozen pre-live;
-- an operationally incomplete model cannot supply positive evidence for the improvement gate;
-- if the canonical successor is flat, mixed outside the predeclared gate, or worse, preserve it as a failed release candidate and **do not release v0.4.2**. Any subsequent attempt requires a new implementation/successor identity; never tune or rerun the failed frozen observation.
+- `trigger_exposed` keeps the v11 definition: the first executed configured cache action returns typed `no_result`. It is not conditioned on #261 precedence.
+- `target_recalled`, tool-selection success, avoidable `target_recalled && action_count==0` stalls, false abstentions, and #249 conditional conformance retain their v11 meanings.
+- `harness_precedence_selections` and action-rejection classes are diagnostic-only additions. New telemetry cannot redefine an existing release metric in the same line.
+- final acceptance pairs v0.4.1 and the candidate on the same fresh task/target/source/provider/model/seed/token coordinates. Candidate-only `selection_priority` and the coordinate-specific MCP Git ref are the only allowlisted config differences.
+- every required paired model must be non-worse on target recall, tool selection, false abstention, stalls, and trigger reachability; unless its control row is already at the 0-stall/3-trigger ceiling, at least one locked follow-up utility metric must improve strictly.
+- cross-model averaging cannot hide a per-model regression. Groq generic parity is reported separately because v0.4.1 did not expose generic Groq.
+- if a candidate fails, keep the metric definitions fixed, diagnose using direct telemetry, make a narrow product change, and create a fresh successor identity. Do not tune the ruler or relaunch the same failed candidate as new evidence.
 
-No-regression boundary:
+The abandoned v12 acceptance attempt is not v0.4.2 release evidence because it changed the trigger definition. See [natural-language E2E v13](natural-language-e2e-v13.md) for the restored comparison contract.
 
-- frozen natural-language E2E v9/v10/v11 and #256 target observations remain immutable;
-- #249 must remain conformant whenever its typed-`no_result` predecessor trigger is exposed;
-- no fuzzy key/value matching, sibling-target merge, implicit tool-order authority, or non-read-only deterministic acquisition;
-- unsupported/rejected/operational evidence never becomes fact authority;
-- correctness-boundary violations, unsupported exposed assertions, identity-unsafe admission, MCP authority self-promotion, and session external replay remain zero-gated;
-- #248 finalization/grounding bridge remains in **v0.5.0 — Verified Investigation Utility** because it crosses into target-to-final-answer authority/finalization semantics.
+No-regression boundary remains unchanged: unsupported/rejected/operational evidence never becomes authority; target identities are not fuzzily merged; deterministic acquisition remains read-only and explicit-key-bound; correctness-boundary violations, unsupported exposed assertions, identity-unsafe admission, MCP self-promotion, and session external replay remain zero-gated. #248 stays in **v0.5.0 — Verified Investigation Utility**.
 
 ## v0.4.1 — Investigation Utility Hardening
 

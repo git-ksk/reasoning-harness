@@ -1,0 +1,29 @@
+{
+  "adaptive": false,
+  "config_pair": {
+    "candidate": "configs/candidate/corthane-stale.json",
+    "control": "configs/control/corthane-stale.json"
+  },
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "Corthane deployment window",
+    "corthane.deploy.window_open",
+    "fixture:v13:corthane-window"
+  ],
+  "id": "stale-corthane-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "corthane-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "corthane.deploy.window_open",
+    "value": "true"
+  },
+  "task": "Determine whether the Corthane deployment window is open now. Reject an observation that is outside the allowed freshness interval instead of promoting its value to current truth."
+}

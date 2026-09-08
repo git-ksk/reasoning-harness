@@ -34,33 +34,29 @@ Reasoning Harness
 
 自然言語の利便性によって正確性の境界を弱めてはならない。ユーザーの文章、ファイル内容、モデルによる抽出、ツール出力、過去のモデル出力は、CLIが受け付けたというだけで信頼済みエビデンスにはならない。エビデンスの取り込み、受け入れ、検証、semantic/answer-safety診断、制約付き解決、再検証、最終主張のカバレッジは、引き続きHarnessが所有する。
 
-## v0.4.2 — Planner Utility & Provider Parity
+## v0.4.2 — Investigation Utility & Provider Parity
 
-Tracking: milestone **v0.4.2 — Planner Utility & Provider Parity** (#5)、parent Issue #260。現在公開済みのexternal previewはfresh acceptance完了までv0.4.1のままとする。v0.4.2はpatch-levelのutility/provider-parity releaseであり、v0.4.xのauthority、admission、verification、finalization、answer-safety boundaryは変更しない。
+Trackingは **v0.4.2 — Investigation Utility & Provider Parity**（milestone #5 / parent #260）。#263のmetric固定paired acceptanceを通過するまではreleased external previewはv0.4.1のままとする。v0.4.2ではv0.4.xのauthority、admission、verification、finalization、answer-safety boundaryを変更しない。
 
-実装順は次で固定する。
+product scopeは狭く維持する。
 
-1. **#261 deterministic safe action precedence。** 観測済みの `target_recalled=true` / `actions=0` / `round_budget` planner stallを、明示設定のもとでHarness-owned read-only acquisition choiceが機械的に一意な場合だけ減らす。free-form task文言やJSON配列順から暗黙のprecedenceを推論せず、same-key target identityをmergeせず、model-selected target/actionへauthorityを与えない。既存#233 global unique selectionと#249 exact-target post-`no_result` continuationは別invariant・別telemetryとして維持する。
-2. **#262 generic Groq provider parity。** 既存の`GroqAdapter`をgeneric natural-language `reason`のgeneration/planning/action/regeneration/render/session経路へ露出する。Groq model IDはdataのままとし、provider固有semantic/authority branchは禁止する。freeze済み#256 Groq process failureはmeasurement-design evidenceとして保持し、書き換えない。
-3. **#263 fresh v0.4.2 acceptance。** live credential使用前に新しいobservation-free successorをfreezeし、canonical launch前にnetworkなしでexact provider supportを証明し、provider-aware cross-model scheduling (#258)を守り、correctness-boundary regressionゼロをrelease gateにする。utility、operational completeness、correctnessは別々に報告する。
+1. **#261 deterministic safe action precedence。** exact investigation targetが機械的に1つへ絞れ、明示read-only capability群に一意な最高`selection_priority`がある場合だけ、stochastic plannerより前にHarnessがacquisitionを選べる。#233 / #249は別invariantのまま維持する。
+2. **#262 generic Groq provider parity。** 既存`GroqAdapter`をgeneric natural-language `reason`のgenerator/planner/action/regeneration/render/session pathへ公開し、provider固有のcorrectness semanticsは追加しない。
+3. **#263 metric固定paired acceptance。** fresh held-out logical corpusをexact released v0.4.1 controlとv0.4.2 candidateへ実行する。測定定義はv11から継承し、このrelease line中は変更しない。
 
-evidence-gated release policy:
+release disciplineはv0.4.0の原則へ戻す。**productは動かしてよいが、物差しは動かさない。**
 
-- 実装完了だけではv0.4.2をtag/releaseしない。
-- #263はv0.4.2 live observation前にv0.4.1比較baselineとutility thresholdをfreezeする。
-- releaseにはpredeclared fresh planner setで `target_recalled=true` / `actions=0` のavoidable planner stallが厳密に減少し、trigger reachabilityが厳密に増加することを実測で要求する。同時にtrigger-exposed全caseで#249 conformanceを維持する。
-- あるmodelの改善で別のscorable modelのcorrectness/safety regressionを隠してはならず、cross-model aggregation ruleはlive前にfreezeする。
-- operationally incompleteなmodelはimprovement gateのpositive evidenceには使わない。
-- canonical successorが横ばい、predeclared gate外のmixed、または悪化ならfailed release candidateとして保存し、**v0.4.2はreleaseしない**。次の試行は新しいimplementation/successor identityでのみ行い、失敗したfreeze済み観測をrerun/tuningしない。
+- `trigger_exposed`はv11定義「最初に実行されたconfigured cache actionがtyped `no_result`を返す」を固定し、#261 precedence発火を条件にしない。
+- `target_recalled`、tool-selection success、avoidable `target_recalled && action_count==0` stall、false abstention、#249 conditional conformanceもv11の意味を維持する。
+- `harness_precedence_selections`とaction-rejection classはdiagnostic-onlyの追加値。新telemetryで同じrelease lineの既存metricを再定義しない。
+- final acceptanceではv0.4.1とcandidateを同じfresh task/target/source/provider/model/seed/token条件でpairにする。candidate-only `selection_priority`とcoordinate固有MCP Git refだけをconfig差分として許可する。
+- required paired modelごとにtarget recall、tool selection、false abstention、stall、trigger reachabilityを悪化させない。controlが0-stall/3-trigger上限でない限り、locked follow-up utility metricの少なくとも1つをstrictに改善する。
+- cross-model averageで個別model regressionを隠さない。v0.4.1にはgeneric GroqがないためGroq parityは別rowで評価する。
+- candidateがfailしたらmetric定義は固定したまま、直接telemetryで原因を診断し、狭いproduct修正後にfresh successor identityを作る。同じfailed candidateを新証拠としてrerunしたり物差しを調整したりしない。
 
-no-regression boundary:
+v12 acceptance attemptはtrigger定義を変更していたためv0.4.2 release evidenceには使わない。復元した比較contractは [natural-language E2E v13](natural-language-e2e-v13.ja.md) を参照。
 
-- frozen natural-language E2E v9/v10/v11と#256各target observationはimmutableのまま維持する。
-- #249はtyped `no_result` predecessor triggerがexposedしたすべてのcaseでconformantを維持する。
-- fuzzy key/value matching、sibling-target merge、暗黙のtool-order authority、non-read-only deterministic acquisitionは禁止する。
-- unsupported/rejected/operational evidenceはfact authorityへ昇格させない。
-- correctness-boundary violation、unsupported exposed assertion、identity-unsafe admission、MCP authority self-promotion、session external replayはzero-gateを維持する。
-- #248 finalization/grounding bridgeはtarget-to-final-answer authority/finalization semanticsへ踏み込むため **v0.5.0 — Verified Investigation Utility** に残す。
+no-regression boundaryも維持する。unsupported/rejected/operational evidenceをauthorityへ昇格させず、target identityをfuzzy mergeせず、deterministic acquisitionはread-onlyかつexplicit-key-boundのままにする。correctness-boundary violation、unsupported exposed assertion、identity-unsafe admission、MCP self-promotion、session external replayはzero-gateを維持し、#248は **v0.5.0 — Verified Investigation Utility** に残す。
 
 ## v0.4.1 — Investigation Utility Hardening
 

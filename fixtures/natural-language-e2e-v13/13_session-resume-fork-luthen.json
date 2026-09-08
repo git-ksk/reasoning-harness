@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.luthen.audit",
+    "Luthen audit mode"
+  ],
+  "id": "session-resume-fork-luthen",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.luthen.audit=strict",
+  "start_hypothesis": "session.luthen.audit=strict",
+  "target": {
+    "key": "session.luthen.audit",
+    "value": "strict"
+  },
+  "task": "Determine whether Luthen audit mode is enabled."
+}
