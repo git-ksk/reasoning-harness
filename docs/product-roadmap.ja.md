@@ -42,13 +42,14 @@ Tracking: milestone **v0.4.2 — Planner Utility & Provider Parity** (#5)、pare
 
 1. **#261 deterministic safe action precedence。** 観測済みの `target_recalled=true` / `actions=0` / `round_budget` planner stallを、明示設定のもとでHarness-owned read-only acquisition choiceが機械的に一意な場合だけ減らす。free-form task文言やJSON配列順から暗黙のprecedenceを推論せず、same-key target identityをmergeせず、model-selected target/actionへauthorityを与えない。既存#233 global unique selectionと#249 exact-target post-`no_result` continuationは別invariant・別telemetryとして維持する。
 2. **#262 generic Groq provider parity。** 既存の`GroqAdapter`をgeneric natural-language `reason`のgeneration/planning/action/regeneration/render/session経路へ露出する。Groq model IDはdataのままとし、provider固有semantic/authority branchは禁止する。freeze済み#256 Groq process failureはmeasurement-design evidenceとして保持し、書き換えない。
-3. **#263 fresh v0.4.2 acceptance。** live credential使用前に新しいobservation-free successorをfreezeし、canonical launch前にnetworkなしでexact provider supportを証明し、provider-aware cross-model scheduling (#258)を守り、correctness-boundary regressionゼロをrelease gateにする。utility、operational completeness、correctnessは別々に報告する。
+3. **#281 v18後のstructurally constrained action contract。** freeze済みv18 candidateでは、`target_id`を持つ一方で`capability_id`を欠く`acquire` proposalが反復し、`invalid_shape`がcontrol→candidateで13→29へ悪化した。model-facing action schemaをclosedなacquire/stop discriminated shapeへ強化し、実行ID欠落をruntime validationより前の構造で不正にする。ただしfail-closed runtime validationは残し、ID補完、sibling merge、fuzzy matching、provider固有semantic branchは禁止する。
+4. **#263 fresh v0.4.2 acceptance。** #281後、live credential使用前に新しいobservation-free successorをfreezeし、canonical launch前にnetworkなしでexact provider supportを証明し、provider-aware cross-model scheduling (#258)を守り、correctness-boundary regressionゼロをrelease gateにする。utility、operational completeness、correctnessは別々に報告する。v18はimmutableのまま再実行・再採点しない。
 
 evidence-gated release policy:
 
 - 実装完了だけではv0.4.2をtag/releaseしない。
 - #263はv0.4.2 live observation前にv0.4.1比較baselineとutility thresholdをfreezeする。
-- releaseにはpredeclared fresh planner setで `target_recalled=true` / `actions=0` のavoidable planner stallが厳密に減少し、trigger reachabilityが厳密に増加することを実測で要求する。同時にtrigger-exposed全caseで#249 conformanceを維持する。
+- candidateはlocked base utility indicatorでcontrolより悪化してはならない。paired control rowがavoidable follow-up stall `0` / trigger exposure `3/3`の構造上限でない限り、これらlocked follow-up utility metricの少なくとも1つをstrictに改善し、他のrequired metricでoffsetting regressionを起こさないことを要求する。同時にtrigger-exposed全caseで#249 conformanceを維持する。
 - あるmodelの改善で別のscorable modelのcorrectness/safety regressionを隠してはならず、cross-model aggregation ruleはlive前にfreezeする。
 - operationally incompleteなmodelはimprovement gateのpositive evidenceには使わない。
 - canonical successorが横ばい、predeclared gate外のmixed、または悪化ならfailed release candidateとして保存し、**v0.4.2はreleaseしない**。次の試行は新しいimplementation/successor identityでのみ行い、失敗したfreeze済み観測をrerun/tuningしない。
@@ -61,6 +62,7 @@ no-regression boundary:
 - unsupported/rejected/operational evidenceはfact authorityへ昇格させない。
 - correctness-boundary violation、unsupported exposed assertion、identity-unsafe admission、MCP authority self-promotion、session external replayはzero-gateを維持する。
 - #248 finalization/grounding bridgeはtarget-to-final-answer authority/finalization semanticsへ踏み込むため **v0.5.0 — Verified Investigation Utility** に残す。
+- **より広いreliability/control-plane follow-upもv0.5.0が所有し、v0.4.2へ持ち込まない。** #282はfreeze済みpatch release rulerとは別にrepeated-trial / `pass^k`型planner reliabilityを特性評価し、#283は機械的に安全なexecutable action materializationをstochastic plannerからHarness-owned deterministic control flowへ戻す設計を評価する。これらは#248とも別責務であり、failed patch acceptanceを通すためだけにv0.4.2へ取り込まない。
 
 ## v0.4.1 — Investigation Utility Hardening
 
