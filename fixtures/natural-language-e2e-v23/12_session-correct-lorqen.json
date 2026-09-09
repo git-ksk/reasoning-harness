@@ -1,0 +1,17 @@
+{
+  "correction": "session.lorqen.threshold=61",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.lorqen.threshold",
+    "Lorqen configured retry threshold"
+  ],
+  "id": "session-correct-lorqen",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.lorqen.threshold=41",
+  "target": {
+    "key": "session.lorqen.threshold",
+    "value": "61"
+  },
+  "task": "Determine the configured Lorqen retry threshold."
+}

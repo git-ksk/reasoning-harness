@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.kelvyn.mode=ready",
+  "add_hypothesis": "session.kelvyn.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.kelvyn.mode",
+    "Kelvyn session readiness mode"
+  ],
+  "id": "session-add-kelvyn",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.kelvyn.mode",
+    "value": "ready"
+  },
+  "task": "Determine the current Kelvyn session readiness mode."
+}
