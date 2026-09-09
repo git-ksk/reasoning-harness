@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.keldor.mode=ready",
+  "add_hypothesis": "session.keldor.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.keldor.mode",
+    "Keldor session readiness mode"
+  ],
+  "id": "session-add-keldor",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.keldor.mode",
+    "value": "ready-verified"
+  },
+  "task": "Determine the current Keldor session readiness mode."
+}
