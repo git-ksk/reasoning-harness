@@ -59,6 +59,18 @@ pub fn build_candidate_json_fallback_request(
     })
 }
 
+fn final_answer_model_schema() -> serde_json::Value {
+    let mut schema = final_answer_candidate_schema();
+    let required = schema
+        .get_mut("required")
+        .and_then(serde_json::Value::as_array_mut)
+        .expect("FinalAnswerCandidate schema must declare required fields");
+    if !required.iter().any(|field| field == "factual_claims") {
+        required.push(serde_json::Value::String("factual_claims".into()));
+    }
+    schema
+}
+
 pub fn build_final_answer_request(
     task: &str,
     artifact: &ReasoningArtifact,
@@ -77,7 +89,7 @@ pub fn build_final_answer_request(
         ),
         output_format: ModelOutputFormat::JsonSchema {
             name: "final_answer_candidate".into(),
-            schema: final_answer_candidate_schema(),
+            schema: final_answer_model_schema(),
         },
         max_tokens,
         random_seed,
@@ -93,7 +105,7 @@ pub fn build_final_answer_json_fallback_request(
     random_seed: Option<u64>,
 ) -> Result<ModelRequest, serde_json::Error> {
     let artifact = serde_json::to_string_pretty(artifact)?;
-    let schema = serde_json::to_string_pretty(&final_answer_candidate_schema())?;
+    let schema = serde_json::to_string_pretty(&final_answer_model_schema())?;
     Ok(ModelRequest {
         system: Some(
             "You are the final-answer renderer inside a reasoning harness. Return exactly one JSON object and no prose. The object must conform to the supplied JSON Schema. You do not own truth authority. Every factual proposition you intend to communicate must be listed in factual_claims. Mark grounded only when the artifact state is known or supported; otherwise mark uncertain. Do not invent evidence, receipts, facts, or authority. The text field is advisory; the Harness deterministically constructs the correctness-guaranteed exposed answer from accepted factual_claims."
@@ -193,10 +205,14 @@ mod tests {
             Some(9),
         )
         .unwrap();
-        assert!(matches!(
-            request.output_format,
-            ModelOutputFormat::JsonSchema { .. }
-        ));
+        let ModelOutputFormat::JsonSchema { schema, .. } = &request.output_format else {
+            panic!("final answer request must use JSON Schema");
+        };
+        let required = schema["required"]
+            .as_array()
+            .expect("final answer schema must declare required fields");
+        assert!(required.iter().any(|field| field == "text"));
+        assert!(required.iter().any(|field| field == "factual_claims"));
         assert!(request.task.contains(
             "The Harness will expose only its deterministic rendering of accepted factual_claims"
         ));
@@ -206,5 +222,18 @@ mod tests {
                 .unwrap()
                 .contains("do not own truth authority")
         );
+    }
+    #[test]
+    fn final_answer_runtime_parser_remains_broad_when_factual_claims_are_omitted() {
+        let parsed = parse_final_answer_candidate(r#"{"text":"No supported factual answer."}"#)
+            .expect("runtime parser must preserve backward-compatible omission");
+        assert_eq!(parsed.text, "No supported factual answer.");
+        assert!(parsed.factual_claims.is_empty());
+
+        let explicit = parse_final_answer_candidate(
+            r#"{"text":"No supported factual answer.","factual_claims":[]}"#,
+        )
+        .expect("explicit empty factual_claims must remain valid");
+        assert!(explicit.factual_claims.is_empty());
     }
 }
