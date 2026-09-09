@@ -1,0 +1,17 @@
+{
+  "correction": "session.belqor.threshold=61",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.belqor.threshold",
+    "Belqor configured retry threshold"
+  ],
+  "id": "session-correct-belqor",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.belqor.threshold=41",
+  "target": {
+    "key": "session.belqor.threshold",
+    "value": "67"
+  },
+  "task": "Determine the configured Belqor retry threshold."
+}
