@@ -792,6 +792,31 @@ impl LiveGenerator {
     }
 }
 
+fn structured_decode_class(error: &serde_json::Error) -> &'static str {
+    match error.classify() {
+        serde_json::error::Category::Io => "io",
+        serde_json::error::Category::Syntax => "syntax",
+        serde_json::error::Category::Data => "data",
+        serde_json::error::Category::Eof => "eof",
+    }
+}
+
+fn terminal_status_class(reason: Option<&str>) -> &'static str {
+    match reason
+        .map(str::trim)
+        .map(str::to_ascii_lowercase)
+        .as_deref()
+    {
+        None | Some("") => "missing",
+        Some("completed" | "stop") => "complete",
+        Some("incomplete") => "incomplete",
+        Some("budget_exceeded") => "budget_exceeded",
+        Some("length" | "max_tokens" | "max_output_tokens") => "token_limit",
+        Some("failed" | "error") => "provider_error",
+        Some(_) => "other",
+    }
+}
+
 async fn run_structured_json_call<T: DeserializeOwned>(
     adapter: &dyn ModelAdapter,
     provider: &'static str,
@@ -862,9 +887,11 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                 ModelError::new(
                     ModelErrorKind::Protocol,
                     format!(
-                        "provider returned invalid strict text JSON after {}: {error}; finish_reason={}; bytes={}",
+                        "provider returned invalid strict text JSON after {}: {error}; parse_class={}; finish_reason={}; status_class={}; bytes={}",
                         context.reason,
+                        structured_decode_class(&error),
                         text_response.finish_reason.as_deref().unwrap_or("unknown"),
+                        terminal_status_class(text_response.finish_reason.as_deref()),
                         text_response.text.len(),
                     ),
                 )
@@ -954,8 +981,10 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                     ModelError::new(
                         ModelErrorKind::Protocol,
                         format!(
-                            "provider returned invalid structured planner JSON after schema capability fallback: {second_error}; second_finish_reason={}; second_bytes={}",
+                            "provider returned invalid structured planner JSON after schema capability fallback: {second_error}; second_parse_class={}; second_finish_reason={}; second_status_class={}; second_bytes={}",
+                            structured_decode_class(&second_error),
                             second.finish_reason.as_deref().unwrap_or("unknown"),
+                            terminal_status_class(second.finish_reason.as_deref()),
                             second.text.len(),
                         ),
                     )
@@ -1006,8 +1035,10 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                     ModelError::new(
                         ModelErrorKind::Protocol,
                         format!(
-                            "{first_error}; finish_reason={}; bytes={}",
+                            "{first_error}; parse_class={}; finish_reason={}; status_class={}; bytes={}",
+                            structured_decode_class(&first_error),
                             first.finish_reason.as_deref().unwrap_or("unknown"),
+                            terminal_status_class(first.finish_reason.as_deref()),
                             first.text.len(),
                         ),
                     )
@@ -1047,8 +1078,10 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                         ModelError::new(
                             error.kind,
                             format!(
-                                "structured planner fallback failed after invalid first JSON: first_error={first_error}; first_finish_reason={}; first_bytes={}; {error}",
+                                "structured planner fallback failed after invalid first JSON: first_error={first_error}; first_parse_class={}; first_finish_reason={}; first_status_class={}; first_bytes={}; {error}",
+                                structured_decode_class(&first_error),
                                 first.finish_reason.as_deref().unwrap_or("unknown"),
+                                terminal_status_class(first.finish_reason.as_deref()),
                                 first.text.len(),
                             ),
                         )
@@ -1064,10 +1097,14 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                     ModelError::new(
                         ModelErrorKind::Protocol,
                         format!(
-                            "provider returned invalid structured planner JSON after fallback: first_error={first_error}; first_finish_reason={}; first_bytes={}; second_error={second_error}; second_finish_reason={}; second_bytes={}",
+                            "provider returned invalid structured planner JSON after fallback: first_error={first_error}; first_parse_class={}; first_finish_reason={}; first_status_class={}; first_bytes={}; second_error={second_error}; second_parse_class={}; second_finish_reason={}; second_status_class={}; second_bytes={}",
+                            structured_decode_class(&first_error),
                             first.finish_reason.as_deref().unwrap_or("unknown"),
+                            terminal_status_class(first.finish_reason.as_deref()),
                             first.text.len(),
+                            structured_decode_class(&second_error),
                             second.finish_reason.as_deref().unwrap_or("unknown"),
+                            terminal_status_class(second.finish_reason.as_deref()),
                             second.text.len(),
                         ),
                     )
@@ -8440,9 +8477,59 @@ mod candidate_json_tests {
         .await
         .unwrap_err();
         assert_eq!(error.failure_class, "protocol");
+        assert!(error.message.contains("first_parse_class=eof"));
         assert!(error.message.contains("first_finish_reason=incomplete"));
+        assert!(error.message.contains("first_status_class=incomplete"));
+        assert!(error.message.contains("second_parse_class=eof"));
         assert!(error.message.contains("second_finish_reason=incomplete"));
+        assert!(error.message.contains("second_status_class=incomplete"));
+        assert!(!error.message.contains("status_class=token_limit"));
         assert_eq!(adapter.calls.lock().unwrap().len(), 2);
+    }
+
+    #[tokio::test]
+    async fn structured_parse_failure_distinguishes_complete_schema_data_error() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::response_with_finish(
+                r#"{"targets":"not-an-array"}"#,
+                1,
+                "completed",
+            ),
+            StructuredCapabilityFallbackAdapter::response_with_finish(
+                r#"{"targets":"still-not-an-array"}"#,
+                1,
+                "completed",
+            ),
+        ]);
+        let request =
+            build_investigation_plan_request("investigate", &[], Some(128), Some(2)).unwrap();
+        let error = run_structured_json_call::<InvestigationPlanProposal>(
+            &adapter,
+            "test",
+            "test-model",
+            request,
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(error.failure_class, "protocol");
+        assert!(error.message.contains("first_parse_class=data"));
+        assert!(error.message.contains("first_status_class=complete"));
+        assert!(error.message.contains("second_parse_class=data"));
+        assert!(error.message.contains("second_status_class=complete"));
+        assert_eq!(adapter.calls.lock().unwrap().len(), 2);
+    }
+
+    #[test]
+    fn terminal_status_diagnostic_keeps_incomplete_distinct_from_token_limit() {
+        assert_eq!(terminal_status_class(Some("completed")), "complete");
+        assert_eq!(terminal_status_class(Some("incomplete")), "incomplete");
+        assert_eq!(
+            terminal_status_class(Some("budget_exceeded")),
+            "budget_exceeded"
+        );
+        assert_eq!(terminal_status_class(Some("max_tokens")), "token_limit");
+        assert_eq!(terminal_status_class(Some("provider-specific")), "other");
+        assert_eq!(terminal_status_class(None), "missing");
     }
 
     #[tokio::test]
