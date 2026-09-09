@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.borvex.mode=ready",
+  "add_hypothesis": "session.borvex.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.borvex.mode",
+    "Borvex session readiness mode"
+  ],
+  "id": "session-add-borvex",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.borvex.mode",
+    "value": "ready-audited"
+  },
+  "task": "Determine the current Borvex session readiness mode."
+}

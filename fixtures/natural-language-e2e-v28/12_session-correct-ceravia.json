@@ -1,0 +1,17 @@
+{
+  "correction": "session.ceravia.threshold=101",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.ceravia.threshold",
+    "Ceravia configured retry threshold"
+  ],
+  "id": "session-correct-ceravia",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.ceravia.threshold=67",
+  "target": {
+    "key": "session.ceravia.threshold",
+    "value": "131"
+  },
+  "task": "Determine the configured Ceravia retry threshold."
+}

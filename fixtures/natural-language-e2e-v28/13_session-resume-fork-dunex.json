@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.dunex.audit",
+    "Dunex audit enforcement mode"
+  ],
+  "id": "session-resume-fork-dunex",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.dunex.audit=guarded-reviewed",
+  "start_hypothesis": "session.dunex.audit=guarded-reviewed",
+  "target": {
+    "key": "session.dunex.audit",
+    "value": "guarded-reviewed"
+  },
+  "task": "Determine the active Dunex audit enforcement mode."
+}
