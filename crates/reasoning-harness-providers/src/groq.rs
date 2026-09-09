@@ -4,8 +4,8 @@ use std::{
 };
 
 use reasoning_harness_core::{
-    ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
-    ModelUsage,
+    ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelReasoningPreference,
+    ModelRequest, ModelResponse, ModelUsage,
 };
 use reqwest::{Client, StatusCode, Url, header::RETRY_AFTER};
 use serde::{Deserialize, Serialize};
@@ -218,12 +218,15 @@ impl GroqAdapter {
             &request.output_format,
             ModelOutputFormat::JsonSchema { .. } | ModelOutputFormat::JsonObject
         );
+        let reasoning = reasoning_controls(&self.model, request.reasoning_preference);
         let body = ChatRequest {
             model: &self.model,
             messages,
             response_format: response_format(request.output_format),
             max_completion_tokens: request.max_tokens,
             seed: request.random_seed,
+            reasoning_effort: reasoning.effort,
+            include_reasoning: reasoning.include_reasoning,
             temperature: 0.0,
             stream: false,
         };
@@ -324,6 +327,13 @@ impl GroqAdapter {
                 structured_output_retries,
             ))
         })?;
+        let usage = response.usage.unwrap_or_default();
+        let finish_reason = choice.finish_reason;
+        let reasoning_present = choice
+            .message
+            .reasoning
+            .as_ref()
+            .is_some_and(|value| !reasoning_value_is_empty(value));
         let text = choice
             .message
             .content
@@ -331,14 +341,18 @@ impl GroqAdapter {
             .ok_or_else(|| {
                 ModelError::new(
                     ModelErrorKind::Protocol,
-                    "Groq response contained no model text output",
+                    format!(
+                        "Groq response contained no model text output; finish_reason={}; completion_tokens={}; total_tokens={}; reasoning_present={reasoning_present}",
+                        bounded_finish_reason(finish_reason.as_deref()),
+                        optional_token_count(usage.completion_tokens),
+                        optional_token_count(usage.total_tokens),
+                    ),
                 )
                 .with_provider_attempts(provider_attempts(
                     rate_limit_retries,
                     structured_output_retries,
                 ))
             })?;
-        let usage = response.usage.unwrap_or_default();
 
         Ok(ModelResponse {
             text,
@@ -349,7 +363,7 @@ impl GroqAdapter {
                 total_tokens: usage.total_tokens,
             },
             provider_attempts: provider_attempts(rate_limit_retries, structured_output_retries),
-            finish_reason: choice.finish_reason,
+            finish_reason,
         })
     }
 }
@@ -375,6 +389,10 @@ struct ChatRequest<'a> {
     max_completion_tokens: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     seed: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reasoning_effort: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    include_reasoning: Option<bool>,
     temperature: f32,
     stream: bool,
 }
@@ -397,6 +415,47 @@ struct JsonSchema {
     name: String,
     schema: Value,
     strict: bool,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+struct ReasoningControls {
+    effort: Option<&'static str>,
+    include_reasoning: Option<bool>,
+}
+
+fn reasoning_controls(
+    model: &str,
+    preference: Option<ModelReasoningPreference>,
+) -> ReasoningControls {
+    if preference == Some(ModelReasoningPreference::Minimize)
+        && matches!(model, "openai/gpt-oss-20b" | "openai/gpt-oss-120b")
+    {
+        return ReasoningControls {
+            effort: Some("low"),
+            include_reasoning: Some(false),
+        };
+    }
+    ReasoningControls::default()
+}
+
+fn reasoning_value_is_empty(value: &Value) -> bool {
+    match value {
+        Value::Null => true,
+        Value::String(text) => text.trim().is_empty(),
+        Value::Array(values) => values.is_empty(),
+        Value::Object(values) => values.is_empty(),
+        _ => false,
+    }
+}
+
+fn bounded_finish_reason(reason: Option<&str>) -> String {
+    reason
+        .map(|reason| truncate_diagnostic(reason, 64))
+        .unwrap_or_else(|| "unknown".into())
+}
+
+fn optional_token_count(value: Option<u64>) -> String {
+    value.map_or_else(|| "unknown".into(), |value| value.to_string())
 }
 
 fn response_format(format: ModelOutputFormat) -> Option<ResponseFormat> {
@@ -433,6 +492,8 @@ struct Choice {
 #[derive(Debug, Deserialize)]
 struct ResponseMessage {
     content: Option<String>,
+    #[serde(default)]
+    reasoning: Option<Value>,
 }
 
 #[derive(Debug, Default, Deserialize)]
@@ -721,6 +782,8 @@ mod tests {
             response_format: response_format(ModelOutputFormat::JsonObject),
             max_completion_tokens: Some(1024),
             seed: Some(42),
+            reasoning_effort: None,
+            include_reasoning: None,
             temperature: 0.0,
             stream: false,
         };
@@ -729,6 +792,72 @@ mod tests {
         assert_eq!(value["seed"], 42);
         assert_eq!(value["max_completion_tokens"], 1024);
         assert!(value.get("reasoning_effort").is_none());
+    }
+
+    #[test]
+    fn minimizes_reasoning_only_for_groq_gpt_oss_models() {
+        for model in ["openai/gpt-oss-20b", "openai/gpt-oss-120b"] {
+            let controls = reasoning_controls(model, Some(ModelReasoningPreference::Minimize));
+            assert_eq!(controls.effort, Some("low"));
+            assert_eq!(controls.include_reasoning, Some(false));
+        }
+        assert_eq!(
+            reasoning_controls("qwen/qwen3.8-27b", Some(ModelReasoningPreference::Minimize)),
+            ReasoningControls::default()
+        );
+        assert_eq!(
+            reasoning_controls("openai/gpt-oss-120b", None),
+            ReasoningControls::default()
+        );
+    }
+
+    #[tokio::test]
+    async fn empty_content_reports_bounded_terminal_metadata_without_reasoning_text() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut buffer = [0u8; 8192];
+            let _ = stream.read(&mut buffer);
+            let body = r#"{"model":"openai/gpt-oss-120b","choices":[{"finish_reason":"length","message":{"content":null,"reasoning":"PRIVATE_REASONING_MUST_NOT_LEAK"}}],"usage":{"prompt_tokens":44,"completion_tokens":256,"total_tokens":300}}"#;
+            write!(
+                stream,
+                "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            )
+            .unwrap();
+        });
+        let adapter = GroqAdapter::with_base_url_and_timeout(
+            "test-key",
+            "openai/gpt-oss-120b",
+            &format!("http://{address}/v1/"),
+            Duration::from_secs(2),
+        )
+        .unwrap();
+        let error = adapter
+            .generate(ModelRequest {
+                task: "return one json object".into(),
+                system: None,
+                output_format: ModelOutputFormat::Text,
+                max_tokens: Some(256),
+                random_seed: Some(7),
+                reasoning_preference: Some(ModelReasoningPreference::Minimize),
+            })
+            .await
+            .unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::Protocol);
+        assert!(error.message.contains("finish_reason=length"));
+        assert!(error.message.contains("completion_tokens=256"));
+        assert!(error.message.contains("total_tokens=300"));
+        assert!(error.message.contains("reasoning_present=true"));
+        assert!(!error.message.contains("PRIVATE_REASONING_MUST_NOT_LEAK"));
+        server.join().unwrap();
     }
 
     #[test]
