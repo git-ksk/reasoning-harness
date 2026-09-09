@@ -803,10 +803,77 @@ async fn run_structured_json_call<T: DeserializeOwned>(
         ModelOutputFormat::JsonSchema { schema, .. } => Some(schema.clone()),
         _ => None,
     };
-    let first = adapter
-        .generate(request.clone())
-        .await
-        .map_err(|error| generation_failure(provider, requested_model, started, error))?;
+    let first = match adapter.generate(request.clone()).await {
+        Ok(response) => response,
+        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => {
+            let Some(schema) = schema.as_ref() else {
+                return Err(generation_failure(
+                    provider,
+                    requested_model,
+                    started,
+                    error,
+                ));
+            };
+            let primary_attempts = error.provider_attempts;
+            let mut fallback = request;
+            fallback.output_format = ModelOutputFormat::JsonObject;
+            fallback.task = format!(
+                "JSON Schema:\n{}\n\n{}\n\nReturn exactly one JSON object conforming to the schema and no prose.",
+                serde_json::to_string_pretty(schema).unwrap_or_else(|_| "{}".into()),
+                fallback.task
+            );
+            let second = adapter.generate(fallback).await.map_err(|fallback_error| {
+                let attempts = primary_attempts.saturating_add(fallback_error.provider_attempts);
+                generation_failure(
+                    provider,
+                    requested_model,
+                    started,
+                    ModelError::new(
+                        fallback_error.kind,
+                        format!(
+                            "structured planner fallback failed after provider schema capability failure: {fallback_error}"
+                        ),
+                    )
+                    .with_provider_attempts(attempts),
+                )
+            })?;
+            let value = serde_json::from_str::<T>(&second.text).map_err(|second_error| {
+                generation_failure(
+                    provider,
+                    requested_model,
+                    started,
+                    ModelError::new(
+                        ModelErrorKind::Protocol,
+                        format!(
+                            "provider returned invalid structured planner JSON after schema capability fallback: {second_error}"
+                        ),
+                    )
+                    .with_provider_attempts(
+                        primary_attempts.saturating_add(second.provider_attempts),
+                    ),
+                )
+            })?;
+            return Ok((
+                value,
+                GenerationObservation {
+                    provider,
+                    model: second.model,
+                    usage: second.usage,
+                    latency_ms: started.elapsed().as_millis(),
+                    provider_attempts: primary_attempts.saturating_add(second.provider_attempts),
+                    cost_usd: None,
+                },
+            ));
+        }
+        Err(error) => {
+            return Err(generation_failure(
+                provider,
+                requested_model,
+                started,
+                error,
+            ));
+        }
+    };
     match serde_json::from_str::<T>(&first.text) {
         Ok(value) => Ok((
             value,
@@ -8054,6 +8121,81 @@ mod candidate_json_tests {
             let response = self.responses.lock().unwrap().pop_front().unwrap();
             Box::pin(async move { Ok(response) })
         }
+    }
+
+    struct StructuredCapabilityFallbackAdapter {
+        calls: std::sync::Mutex<Vec<ModelOutputFormat>>,
+        responses:
+            std::sync::Mutex<VecDeque<Result<reasoning_harness_core::ModelResponse, ModelError>>>,
+    }
+
+    impl StructuredCapabilityFallbackAdapter {
+        fn new(success_json: &str) -> Self {
+            Self {
+                calls: std::sync::Mutex::new(Vec::new()),
+                responses: std::sync::Mutex::new(VecDeque::from([
+                    Err(ModelError::new(
+                        ModelErrorKind::UnsupportedCapability,
+                        "structured schema generation unavailable",
+                    )
+                    .with_provider_attempts(3)),
+                    Ok(reasoning_harness_core::ModelResponse {
+                        text: success_json.to_string(),
+                        model: "test-model".into(),
+                        usage: ModelUsage::default(),
+                        provider_attempts: 1,
+                        finish_reason: Some("stop".into()),
+                    }),
+                ])),
+            }
+        }
+    }
+
+    impl ModelAdapter for StructuredCapabilityFallbackAdapter {
+        fn generate<'a>(
+            &'a self,
+            request: ModelRequest,
+        ) -> std::pin::Pin<
+            Box<
+                dyn std::future::Future<
+                        Output = Result<reasoning_harness_core::ModelResponse, ModelError>,
+                    > + Send
+                    + 'a,
+            >,
+        > {
+            self.calls.lock().unwrap().push(request.output_format);
+            let response = self.responses.lock().unwrap().pop_front().unwrap();
+            Box::pin(async move { response })
+        }
+    }
+
+    #[tokio::test]
+    async fn structured_call_uses_json_object_fallback_after_typed_schema_capability_failure() {
+        let adapter = StructuredCapabilityFallbackAdapter::new(
+            r#"{"targets":[{"id":"owner","question":"Who owns this route?","expected_fact_key":"routing.owner"}]}"#,
+        );
+        let capability = InvestigationCapability {
+            id: "cache".into(),
+            adapter: "fixture".into(),
+            read_only: true,
+            selection_priority: None,
+            supported_fact_keys: ["routing.owner".to_string()].into_iter().collect(),
+        };
+        let request = build_investigation_plan_request(
+            "investigate route ownership",
+            &[capability],
+            Some(128),
+            Some(2),
+        )
+        .unwrap();
+        let (_plan, observation): (InvestigationPlanProposal, _) =
+            run_structured_json_call(&adapter, "test", "test-model", request)
+                .await
+                .unwrap();
+        assert_eq!(observation.provider_attempts, 4);
+        let calls = adapter.calls.lock().unwrap();
+        assert!(matches!(calls[0], ModelOutputFormat::JsonSchema { .. }));
+        assert_eq!(calls[1], ModelOutputFormat::JsonObject);
     }
 
     #[tokio::test]
