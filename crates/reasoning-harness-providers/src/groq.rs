@@ -214,8 +214,10 @@ impl GroqAdapter {
             content: request.task,
         });
 
-        let best_effort_schema =
-            matches!(&request.output_format, ModelOutputFormat::JsonSchema { .. });
+        let best_effort_structured_json = matches!(
+            &request.output_format,
+            ModelOutputFormat::JsonSchema { .. } | ModelOutputFormat::JsonObject
+        );
         let body = ChatRequest {
             model: &self.model,
             messages,
@@ -251,7 +253,7 @@ impl GroqAdapter {
                 continue;
             }
 
-            if status == StatusCode::BAD_REQUEST && best_effort_schema {
+            if status == StatusCode::BAD_REQUEST && best_effort_structured_json {
                 let error_body = response.text().await.unwrap_or_default();
                 if is_retryable_structured_output_error(&error_body) {
                     if structured_output_retries < MAX_STRUCTURED_OUTPUT_RETRIES {
@@ -928,6 +930,52 @@ mod tests {
                     name: "test".into(),
                     schema: json!({"type":"object"}),
                 },
+                max_tokens: Some(8),
+                random_seed: Some(1),
+                reasoning_preference: None,
+            })
+            .await
+            .unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::UnsupportedCapability);
+        assert_eq!(error.provider_attempts, 3);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn exhausted_json_object_generation_retries_surface_typed_capability_failure() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            for _ in 0..3 {
+                let (mut stream, _) = listener.accept().unwrap();
+                let mut buffer = [0u8; 8192];
+                let _ = stream.read(&mut buffer);
+                let body = r#"{"error":{"message":"Failed to generate JSON. Please adjust your prompt."}}"#;
+                write!(
+                    stream,
+                    "HTTP/1.1 400 Bad Request\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                    body.len()
+                )
+                .unwrap();
+            }
+        });
+        let adapter = GroqAdapter::with_base_url_and_timeout(
+            "test-key",
+            "test-model",
+            &format!("http://{address}/v1/"),
+            Duration::from_secs(2),
+        )
+        .unwrap();
+        let error = adapter
+            .generate(ModelRequest {
+                task: "return json".into(),
+                system: None,
+                output_format: ModelOutputFormat::JsonObject,
                 max_tokens: Some(8),
                 random_seed: Some(1),
                 reasoning_preference: None,
