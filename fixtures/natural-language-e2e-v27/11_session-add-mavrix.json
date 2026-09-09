@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.mavrix.mode=amber",
+  "add_hypothesis": "session.mavrix.mode=amber",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.mavrix.mode",
+    "Mavrix session readiness mode"
+  ],
+  "id": "session-add-mavrix",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.mavrix.mode",
+    "value": "amber-verified"
+  },
+  "task": "Determine the current Mavrix session readiness mode."
+}

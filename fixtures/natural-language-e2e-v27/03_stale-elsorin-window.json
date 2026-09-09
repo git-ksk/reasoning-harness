@@ -1,0 +1,28 @@
+{
+  "adaptive": false,
+  "config_pair": {
+    "candidate": "configs/candidate/elsorin-stale.json",
+    "control": "configs/control/elsorin-stale.json"
+  },
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "elsorin.rollout.phase_open",
+    "Elsorin live rollout phase state"
+  ],
+  "id": "stale-elsorin-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "elsorin-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "elsorin.rollout.phase_open",
+    "value": "false"
+  },
+  "task": "Assess whether the Elsorin rollout phase is currently open. An observation older than the configured freshness bound must remain insufficient for the current state."
+}

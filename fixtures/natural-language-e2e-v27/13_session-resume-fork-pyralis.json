@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.pyralis.audit",
+    "Pyralis audit enforcement mode"
+  ],
+  "id": "session-resume-fork-pyralis",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.pyralis.audit=locked-reviewed",
+  "start_hypothesis": "session.pyralis.audit=locked-reviewed",
+  "target": {
+    "key": "session.pyralis.audit",
+    "value": "locked-reviewed"
+  },
+  "task": "Determine the active Pyralis audit enforcement mode."
+}

@@ -1,0 +1,17 @@
+{
+  "correction": "session.norqel.threshold=89",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.norqel.threshold",
+    "Norqel configured retry threshold"
+  ],
+  "id": "session-correct-norqel",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.norqel.threshold=61",
+  "target": {
+    "key": "session.norqel.threshold",
+    "value": "97"
+  },
+  "task": "Determine the configured Norqel retry threshold."
+}
