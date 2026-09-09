@@ -1,3 +1,5 @@
+mod diagnostic_trace;
+
 use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
     env, fs,
@@ -9,6 +11,7 @@ use std::{
 };
 
 use clap::{Args, Parser, Subcommand, ValueEnum};
+use diagnostic_trace::{DiagnosticModelAdapter, DiagnosticPhase, DiagnosticTraceRecorder};
 use reasoning_harness_core::{
     AcquiredEvidence, AdversarialDiscoveryPass, AnswerSafetyDisposition, AnswerSafetyError,
     AnswerSafetyIdentity, AnswerSafetyObservation, AnswerSafetyProfile, ApplicabilityScope,
@@ -152,6 +155,9 @@ struct NaturalArgs {
     /// Human-readable output by default; JSON is available for automation/inspection.
     #[arg(long, value_enum)]
     format: Option<OutputFormat>,
+    /// Write a diagnostic-only natural execution trace to PATH. This never changes model requests, evaluation, or product JSON output.
+    #[arg(long, value_name = "PATH")]
+    diagnostic_trace: Option<PathBuf>,
 }
 
 #[derive(
@@ -462,6 +468,11 @@ struct ResolvedRunConfig {
     config_sources: Vec<&'static str>,
 }
 
+struct DiagnosticTraceCall<'a> {
+    recorder: Option<&'a mut DiagnosticTraceRecorder>,
+    phase: DiagnosticPhase,
+}
+
 enum LiveGenerator {
     Mistral(MistralAdapter),
     Google(GoogleAdapter),
@@ -519,6 +530,37 @@ impl LiveGenerator {
         }
     }
 
+    async fn generate_traced(
+        &self,
+        input: &HarnessInput,
+        max_tokens: u32,
+        seed: Option<u64>,
+        requested_model: &str,
+        trace: DiagnosticTraceCall<'_>,
+    ) -> Result<(ReasoningCandidate, GenerationObservation), GenerationFailure> {
+        if let Some(recorder) = trace.recorder {
+            let adapter = DiagnosticModelAdapter::new(
+                self.adapter(),
+                recorder,
+                trace.phase,
+                self.provider_label(),
+                requested_model,
+            );
+            generate_with_adapter(
+                &adapter,
+                self.provider_label(),
+                requested_model,
+                input,
+                max_tokens,
+                seed,
+            )
+            .await
+        } else {
+            self.generate(input, max_tokens, seed, requested_model)
+                .await
+        }
+    }
+
     async fn plan_investigation(
         &self,
         task: &str,
@@ -545,6 +587,41 @@ impl LiveGenerator {
         .await
     }
 
+    async fn plan_investigation_traced(
+        &self,
+        task: &str,
+        capabilities: &[InvestigationCapability],
+        max_tokens: u32,
+        seed: Option<u64>,
+        requested_model: &str,
+        trace: DiagnosticTraceCall<'_>,
+    ) -> Result<(InvestigationPlanProposal, GenerationObservation), GenerationFailure> {
+        if let Some(recorder) = trace.recorder {
+            let request =
+                build_investigation_plan_request(task, capabilities, Some(max_tokens), seed)
+                    .map_err(|error| {
+                        generation_failure(
+                            self.provider_label(),
+                            requested_model,
+                            Instant::now(),
+                            ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+                        )
+                    })?;
+            let adapter = DiagnosticModelAdapter::new(
+                self.adapter(),
+                recorder,
+                trace.phase,
+                self.provider_label(),
+                requested_model,
+            );
+            run_structured_json_call(&adapter, self.provider_label(), requested_model, request)
+                .await
+        } else {
+            self.plan_investigation(task, capabilities, max_tokens, seed, requested_model)
+                .await
+        }
+    }
+
     async fn choose_investigation_action(
         &self,
         task: &str,
@@ -569,6 +646,41 @@ impl LiveGenerator {
             request,
         )
         .await
+    }
+
+    async fn choose_investigation_action_traced(
+        &self,
+        task: &str,
+        telemetry: &InvestigationTelemetry,
+        max_tokens: u32,
+        seed: Option<u64>,
+        requested_model: &str,
+        trace: DiagnosticTraceCall<'_>,
+    ) -> Result<(InvestigationActionProposal, GenerationObservation), GenerationFailure> {
+        if let Some(recorder) = trace.recorder {
+            let request =
+                build_investigation_action_request(task, telemetry, Some(max_tokens), seed)
+                    .map_err(|error| {
+                        generation_failure(
+                            self.provider_label(),
+                            requested_model,
+                            Instant::now(),
+                            ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+                        )
+                    })?;
+            let adapter = DiagnosticModelAdapter::new(
+                self.adapter(),
+                recorder,
+                trace.phase,
+                self.provider_label(),
+                requested_model,
+            );
+            run_structured_json_call(&adapter, self.provider_label(), requested_model, request)
+                .await
+        } else {
+            self.choose_investigation_action(task, telemetry, max_tokens, seed, requested_model)
+                .await
+        }
     }
 
     fn provider_label(&self) -> &'static str {
@@ -650,6 +762,32 @@ impl LiveGenerator {
                 )
                 .await
             }
+        }
+    }
+    async fn render_final_traced(
+        &self,
+        call: FinalRenderCall<'_>,
+        trace: DiagnosticTraceCall<'_>,
+    ) -> Result<(FinalAnswerCandidate, GenerationObservation), GenerationFailure> {
+        if let Some(recorder) = trace.recorder {
+            let adapter = DiagnosticModelAdapter::new(
+                self.adapter(),
+                recorder,
+                trace.phase,
+                self.provider_label(),
+                call.requested_model,
+            );
+            render_final_with_adapter(&adapter, call).await
+        } else {
+            self.render_final(
+                call.task,
+                call.artifact,
+                call.verdict,
+                call.max_tokens,
+                call.seed,
+                call.requested_model,
+            )
+            .await
         }
     }
 }
@@ -2265,6 +2403,7 @@ struct NaturalInvestigationCall<'a> {
     candidate: ReasoningCandidate,
     initial_outcome: HarnessOutcome,
     generator: &'a LiveGenerator,
+    trace: Option<&'a mut DiagnosticTraceRecorder>,
     config: &'a ResolvedInvestigationConfig,
     model: &'a str,
     max_tokens: u32,
@@ -2280,6 +2419,7 @@ async fn run_natural_investigation(
         candidate,
         initial_outcome,
         generator,
+        mut trace,
         config,
         model,
         max_tokens,
@@ -2300,12 +2440,16 @@ async fn run_natural_investigation(
     };
 
     let (proposal, plan_generation) = match generator
-        .plan_investigation(
+        .plan_investigation_traced(
             task,
             &descriptors,
             config.planner_max_tokens.min(max_tokens),
             seed,
             model,
+            DiagnosticTraceCall {
+                recorder: trace.as_deref_mut(),
+                phase: DiagnosticPhase::new("investigation_plan", None),
+            },
         )
         .await
     {
@@ -2366,12 +2510,16 @@ async fn run_natural_investigation(
             state.note_planner_call();
             let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
             let (proposal, action_generation) = match generator
-                .choose_investigation_action(
+                .choose_investigation_action_traced(
                     task,
                     state.telemetry(),
                     config.planner_max_tokens.min(max_tokens),
                     action_seed,
                     model,
+                    DiagnosticTraceCall {
+                        recorder: trace.as_deref_mut(),
+                        phase: DiagnosticPhase::new("investigation_action", Some(round_index)),
+                    },
                 )
                 .await
             {
@@ -2429,6 +2577,28 @@ async fn run_natural_investigation(
             request,
         )?;
         let (mut status, admitted_evidence) = investigation_attempt_status(&acquisition);
+        if let Some(trace) = trace.as_deref_mut() {
+            let admitted_evidence_ids = acquisition
+                .attempts
+                .last()
+                .map(|attempt| attempt.admitted_evidence_ids.clone())
+                .unwrap_or_default();
+            let fact_keys = acquisition
+                .final_artifact
+                .evidence
+                .iter()
+                .filter(|evidence| admitted_evidence_ids.iter().any(|id| id == &evidence.id))
+                .flat_map(|evidence| evidence.facts.keys().cloned())
+                .collect::<Vec<_>>();
+            trace.record_evidence_admission(
+                DiagnosticPhase::new("evidence_admission", Some(round_index)),
+                round_index,
+                &action.target_id,
+                &action.capability_id,
+                admitted_evidence_ids,
+                fact_keys,
+            );
+        }
         current_input = input_from_artifact(&acquisition.final_artifact);
         resolution_rounds.push(acquisition);
         let mut verification_progress = false;
@@ -2436,15 +2606,35 @@ async fn run_natural_investigation(
         if admitted_evidence > 0 {
             let regeneration_seed = seed
                 .and_then(|seed| seed.checked_add(10_000_u64.saturating_add(round_index as u64)));
+            let regeneration_phase =
+                DiagnosticPhase::new("post_investigation_regeneration", Some(round_index));
             match generator
-                .generate(&current_input, max_tokens, regeneration_seed, model)
+                .generate_traced(
+                    &current_input,
+                    max_tokens,
+                    regeneration_seed,
+                    model,
+                    DiagnosticTraceCall {
+                        recorder: trace.as_deref_mut(),
+                        phase: regeneration_phase,
+                    },
+                )
                 .await
             {
                 Ok((regenerated, generation)) => {
                     observation.candidate_regenerations.push(generation);
                     current_candidate = regenerated;
+                    if let Some(trace) = trace.as_deref_mut() {
+                        trace.record_candidate(regeneration_phase, &current_candidate);
+                    }
                     current_outcome =
                         run_standard_grounding(current_input.clone(), current_candidate.clone())?;
+                    if let Some(trace) = trace.as_deref_mut() {
+                        trace.record_grounding(
+                            DiagnosticPhase::new("post_investigation_grounding", Some(round_index)),
+                            &current_outcome,
+                        );
+                    }
                     verification_progress = supported_claim_count(&current_outcome)
                         > before_supported
                         || (before_verdict != Verdict::Accept
@@ -2463,6 +2653,12 @@ async fn run_natural_investigation(
         } else {
             current_outcome =
                 run_standard_grounding(current_input.clone(), current_candidate.clone())?;
+            if let Some(trace) = trace.as_deref_mut() {
+                trace.record_grounding(
+                    DiagnosticPhase::new("post_investigation_grounding", Some(round_index)),
+                    &current_outcome,
+                );
+            }
         }
 
         state.record_observation(
@@ -2561,6 +2757,7 @@ async fn execute_natural(
     args: NaturalArgs,
     seed: Option<NaturalExecutionSeed>,
 ) -> Result<NaturalOutput, CliError> {
+    let diagnostic_trace_path = args.diagnostic_trace.clone();
     let task = args
         .task
         .as_deref()
@@ -2647,16 +2844,38 @@ async fn execute_natural(
     };
     let safety_profile = args.safety_profile.runtime_profile();
     let safety_runtime = safety_profile.identity();
+    let mut diagnostic_trace = diagnostic_trace_path
+        .as_ref()
+        .map(|_| DiagnosticTraceRecorder::new(provider_name(provider), &model, args.seed));
     let generator = LiveGenerator::try_from_provider(provider, &model)
         .map_err(|error| CliError::new(model_error_class(error.kind), error.to_string()))?;
+    let initial_generation_phase = DiagnosticPhase::new("initial_generation", None);
     let (mut candidate, generation) = generator
-        .generate(&built.input, resolved.max_tokens, args.seed, &model)
+        .generate_traced(
+            &built.input,
+            resolved.max_tokens,
+            args.seed,
+            &model,
+            DiagnosticTraceCall {
+                recorder: diagnostic_trace.as_mut(),
+                phase: initial_generation_phase,
+            },
+        )
         .await
         .map_err(|failure| {
             CliError::new(failure.failure_class, format_generation_failure(&failure))
         })?;
+    if let Some(trace) = diagnostic_trace.as_mut() {
+        trace.record_candidate(initial_generation_phase, &candidate);
+    }
 
     let initial_outcome = run_standard_grounding(built.input.clone(), candidate.clone())?;
+    if let Some(trace) = diagnostic_trace.as_mut() {
+        trace.record_grounding(
+            DiagnosticPhase::new("initial_grounding", None),
+            &initial_outcome,
+        );
+    }
     let resolver = LocalFactStoreResolver {
         facts: built.resolver_facts.clone(),
     };
@@ -2678,6 +2897,7 @@ async fn execute_natural(
                 candidate: candidate.clone(),
                 initial_outcome: initial_outcome.clone(),
                 generator: &generator,
+                trace: diagnostic_trace.as_mut(),
                 config,
                 model: &model,
                 max_tokens: resolved.max_tokens,
@@ -2737,6 +2957,16 @@ async fn execute_natural(
         }
     }
 
+    if let Some(trace) = diagnostic_trace.as_mut() {
+        trace.record_grounding(
+            DiagnosticPhase::new("pre_final_render_artifact", None),
+            &HarnessOutcome {
+                verdict: final_verdict,
+                artifact: final_artifact.clone(),
+            },
+        );
+    }
+
     let mut rendering = Vec::new();
     let mut rendering_failure = None;
     let mut safety_observations = Vec::new();
@@ -2744,31 +2974,51 @@ async fn execute_natural(
     let mut render_round = 0usize;
     loop {
         render_round += 1;
+        let final_render_phase = DiagnosticPhase::new("final_render", Some(render_round));
         let mut rendered = match generator
-            .render_final(
-                &task,
-                &final_artifact,
-                final_verdict,
-                resolved.max_tokens,
-                args.seed,
-                &model,
+            .render_final_traced(
+                FinalRenderCall {
+                    provider: generator.provider_label(),
+                    requested_model: &model,
+                    task: &task,
+                    artifact: &final_artifact,
+                    verdict: final_verdict,
+                    max_tokens: resolved.max_tokens,
+                    seed: args.seed,
+                },
+                DiagnosticTraceCall {
+                    recorder: diagnostic_trace.as_mut(),
+                    phase: final_render_phase,
+                },
             )
             .await
         {
             Ok((answer, observation)) => {
                 rendering.push(observation);
+                if let Some(trace) = diagnostic_trace.as_mut() {
+                    trace.record_final_render(final_render_phase, render_round, "model", &answer);
+                }
                 answer
             }
             Err(failure) => {
                 rendering_failure = Some(failure);
-                canonical_verified_target_answer(
+                let answer = canonical_verified_target_answer(
                     &final_artifact,
                     final_verdict,
                     &built.input.hypotheses,
                 )
                 .unwrap_or_else(|| {
                     CanonicalFinalAnswerRenderer.render(&final_artifact, final_verdict)
-                })
+                });
+                if let Some(trace) = diagnostic_trace.as_mut() {
+                    trace.record_final_render(
+                        final_render_phase,
+                        render_round,
+                        "canonical_fallback",
+                        &answer,
+                    );
+                }
+                answer
             }
         };
         finalization = finalize_answer(
@@ -2777,6 +3027,14 @@ async fn execute_natural(
             rendered.clone(),
             FinalizationPolicy::default(),
         );
+        if let Some(trace) = diagnostic_trace.as_mut() {
+            trace.record_finalization(
+                DiagnosticPhase::new("finalization", Some(render_round)),
+                render_round,
+                "renderer_candidate",
+                &finalization,
+            );
+        }
         if matches!(
             finalization.status,
             FinalizationStatus::Unresolved | FinalizationStatus::RequiresVerification
@@ -2793,6 +3051,20 @@ async fn execute_natural(
                     rendered.clone(),
                     FinalizationPolicy::default(),
                 );
+                if let Some(trace) = diagnostic_trace.as_mut() {
+                    trace.record_final_render(
+                        final_render_phase,
+                        render_round,
+                        "canonical_verified_target",
+                        &rendered,
+                    );
+                    trace.record_finalization(
+                        DiagnosticPhase::new("finalization", Some(render_round)),
+                        render_round,
+                        "canonical_verified_target",
+                        &finalization,
+                    );
+                }
             }
         }
         if matches!(
@@ -2808,6 +3080,20 @@ async fn execute_natural(
             {
                 rendered = recovered;
                 finalization = recovered_finalization;
+                if let Some(trace) = diagnostic_trace.as_mut() {
+                    trace.record_final_render(
+                        final_render_phase,
+                        render_round,
+                        "canonical_verified_target_partial",
+                        &rendered,
+                    );
+                    trace.record_finalization(
+                        DiagnosticPhase::new("finalization", Some(render_round)),
+                        render_round,
+                        "canonical_verified_target_partial",
+                        &finalization,
+                    );
+                }
             }
         }
         if let Some((recovered, recovered_finalization)) =
@@ -2821,6 +3107,20 @@ async fn execute_natural(
         {
             rendered = recovered;
             finalization = recovered_finalization;
+            if let Some(trace) = diagnostic_trace.as_mut() {
+                trace.record_final_render(
+                    final_render_phase,
+                    render_round,
+                    "renderer_downgrade_recovery",
+                    &rendered,
+                );
+                trace.record_finalization(
+                    DiagnosticPhase::new("finalization", Some(render_round)),
+                    render_round,
+                    "renderer_downgrade_recovery",
+                    &finalization,
+                );
+            }
         }
         if let Some((recovered, recovered_finalization)) =
             canonical_verified_target_reject_partial_answer(
@@ -2831,6 +3131,20 @@ async fn execute_natural(
         {
             rendered = recovered;
             finalization = recovered_finalization;
+            if let Some(trace) = diagnostic_trace.as_mut() {
+                trace.record_final_render(
+                    final_render_phase,
+                    render_round,
+                    "canonical_verified_target_reject_partial",
+                    &rendered,
+                );
+                trace.record_finalization(
+                    DiagnosticPhase::new("finalization", Some(render_round)),
+                    render_round,
+                    "canonical_verified_target_reject_partial",
+                    &finalization,
+                );
+            }
         }
         let rendered_for_safety = rendered.clone();
         let (gated, observations) = apply_natural_answer_safety(NaturalAnswerSafetyCall {
@@ -2846,6 +3160,21 @@ async fn execute_natural(
         })
         .await?;
         finalization = gated;
+        if let Some(trace) = diagnostic_trace.as_mut() {
+            for observation in &observations {
+                trace.record_answer_safety(
+                    DiagnosticPhase::new("answer_safety", Some(render_round)),
+                    render_round,
+                    observation,
+                );
+            }
+            trace.record_finalization(
+                DiagnosticPhase::new("finalization", Some(render_round)),
+                render_round,
+                "answer_safety",
+                &finalization,
+            );
+        }
         safety_observations.extend(observations);
         if finalization.status != FinalizationStatus::RequiresVerification
             || (resolver.facts.is_empty()
@@ -2900,6 +3229,15 @@ async fn execute_natural(
         final_artifact = round.final_artifact.clone();
         final_verdict = round.final_verdict;
         resolution_rounds.push(round);
+        if let Some(trace) = diagnostic_trace.as_mut() {
+            trace.record_grounding(
+                DiagnosticPhase::new("finalization_retry_resolution", Some(render_round)),
+                &HarnessOutcome {
+                    verdict: final_verdict,
+                    artifact: final_artifact.clone(),
+                },
+            );
+        }
         if final_artifact == before {
             break;
         }
@@ -2958,6 +3296,12 @@ async fn execute_natural(
         rendering,
         rendering_failure,
     };
+    if let (Some(path), Some(trace)) = (diagnostic_trace_path.as_deref(), diagnostic_trace.as_ref())
+    {
+        if let Err(error) = trace.write_to_path(path) {
+            eprintln!("[reason] diagnostic trace write failed: {error}");
+        }
+    }
     Ok(output)
 }
 
@@ -3603,6 +3947,7 @@ fn continuation_args(
         config: None,
         no_config: true,
         format: Some(format),
+        diagnostic_trace: None,
     }
 }
 
@@ -6887,6 +7232,7 @@ mod candidate_json_tests {
             serialized["final_outcome"]["artifact"]["task"],
             "post-investigation-final"
         );
+        assert!(serialized.get("diagnostic_trace").is_none());
     }
 
     #[test]
@@ -7887,6 +8233,28 @@ mod candidate_json_tests {
         assert_eq!(cli.natural.provider, Some(Provider::Mistral));
         assert_eq!(cli.natural.fact, vec!["service.region=us-east-1"]);
         assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Current);
+    }
+
+    #[test]
+    fn parses_opt_in_natural_diagnostic_trace_without_changing_output_format() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "inspect this target",
+            "--provider",
+            "mistral",
+            "--model",
+            "ministral-8b-latest",
+            "--format",
+            "json",
+            "--diagnostic-trace",
+            "/tmp/trace.json",
+        ])
+        .unwrap();
+        assert_eq!(
+            cli.natural.diagnostic_trace.as_deref(),
+            Some(Path::new("/tmp/trace.json"))
+        );
+        assert_eq!(cli.natural.format, Some(OutputFormat::Json));
     }
 
     #[test]
