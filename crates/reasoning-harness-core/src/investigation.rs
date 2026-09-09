@@ -360,10 +360,9 @@ pub fn admit_investigation_plan(
         if id.is_empty() || question.is_empty() || !ids.insert(id.to_string()) {
             return Err("invalid_target_identity");
         }
-        let expected_fact_key = target
-            .expected_fact_key
-            .map(|key| key.trim().to_string())
-            .filter(|key| !key.is_empty());
+        // Preserve the provider-proposed key exactly. Harness-owned exact-key selectors must not
+        // gain compatibility through trimming or normalization at plan admission.
+        let expected_fact_key = target.expected_fact_key;
         targets.push(InvestigationTarget {
             id: id.to_string(),
             question: question.to_string(),
@@ -1162,6 +1161,74 @@ mod tests {
             ),
             Some(InvestigationStopReason::NoProgress)
         );
+    }
+
+    #[test]
+    fn plan_admission_preserves_noncanonical_expected_fact_key_without_exact_selection() {
+        let targets = admit_investigation_plan(
+            InvestigationPlanProposal {
+                targets: vec![InvestigationTargetProposal {
+                    id: "owner".into(),
+                    question: "Who owns routing?".into(),
+                    expected_fact_key: Some(" routing.owner ".into()),
+                }],
+            },
+            &InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(
+            targets[0].expected_fact_key.as_deref(),
+            Some(" routing.owner ")
+        );
+
+        let mut state = InvestigationState::new(
+            targets,
+            vec![capability("cache", &["routing.owner"])],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(state.unique_compatible_action_proposal(), None);
+        assert_eq!(
+            state.validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            }),
+            Err(InvestigationActionRejection::UnsupportedTargetKey)
+        );
+    }
+
+    #[test]
+    fn plan_admission_keeps_canonical_missing_and_empty_expected_fact_keys_unchanged() {
+        let targets = admit_investigation_plan(
+            InvestigationPlanProposal {
+                targets: vec![
+                    InvestigationTargetProposal {
+                        id: "owner".into(),
+                        question: "Who owns routing?".into(),
+                        expected_fact_key: Some("routing.owner".into()),
+                    },
+                    InvestigationTargetProposal {
+                        id: "region".into(),
+                        question: "Which region?".into(),
+                        expected_fact_key: None,
+                    },
+                    InvestigationTargetProposal {
+                        id: "empty".into(),
+                        question: "Which empty-key target?".into(),
+                        expected_fact_key: Some(String::new()),
+                    },
+                ],
+            },
+            &InvestigationPolicy::default(),
+        )
+        .unwrap();
+        assert_eq!(
+            targets[0].expected_fact_key.as_deref(),
+            Some("routing.owner")
+        );
+        assert_eq!(targets[1].expected_fact_key, None);
+        assert_eq!(targets[2].expected_fact_key.as_deref(), Some(""));
     }
 
     #[test]
