@@ -26,8 +26,11 @@ jobs:
         run: cargo test --locked --workspace
       - name: Validate cross-model concurrency policy
         run: python3 scripts/validate_cross_model_concurrency_policy.py
-      - name: Validate operational-only case retry policy
-        run: python3 -m unittest -v scripts/test_operational_case_retry.py
+      - name: Validate operational-only retry and paired evidence policies
+        run: |
+          python3 -m unittest -v \
+            scripts/test_operational_case_retry.py \
+            scripts/test_paired_canonical_observation.py
       - name: CLI smoke
         run: |
           cargo run -q --locked -p reasoning-harness-cli -- run --input examples/input.json --candidate examples/candidate.json --no-config --format json >/tmp/reason-run.json
