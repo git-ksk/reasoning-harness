@@ -12,8 +12,8 @@ const DEFAULT_BASE_URL: &str = "https://generativelanguage.googleapis.com/v1beta
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(180);
 const MAX_RATE_LIMIT_RETRIES: usize = 3;
 const MAX_PROVIDER_ATTEMPTS: u32 = 4;
-const MAX_TRANSIENT_RETRIES: usize = 2;
-const MAX_EMPTY_TEXT_RETRIES: usize = 1;
+const MAX_TRANSIENT_RETRIES: usize = MAX_PROVIDER_ATTEMPTS as usize - 1;
+const MAX_EMPTY_TEXT_RETRIES: usize = MAX_PROVIDER_ATTEMPTS as usize - 1;
 const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(10);
 const INITIAL_TRANSIENT_BACKOFF: Duration = Duration::from_millis(500);
 const GOOGLE_RECOMMENDED_TEMPERATURE: f32 = 1.0;
@@ -534,6 +534,13 @@ mod tests {
     }
 
     #[test]
+    fn retryable_google_transients_use_full_provider_attempt_budget() {
+        let max_retries = MAX_PROVIDER_ATTEMPTS as usize - 1;
+        assert_eq!(MAX_TRANSIENT_RETRIES, max_retries);
+        assert_eq!(MAX_EMPTY_TEXT_RETRIES, max_retries);
+    }
+
+    #[test]
     fn rate_limit_delay_prefers_retry_after_header() {
         let mut headers = reqwest::header::HeaderMap::new();
         headers.insert(RETRY_AFTER, reqwest::header::HeaderValue::from_static("7"));
@@ -679,9 +686,26 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn transient_5xx_can_recover_on_final_allowed_attempt() {
+        let busy = r#"{\"error\":{\"message\":\"high demand\"}}"#.to_string();
+        let (base_url, server) = spawn_sequence_server(vec![
+            ("503 Service Unavailable", busy.clone(), ""),
+            ("503 Service Unavailable", busy.clone(), ""),
+            ("503 Service Unavailable", busy, ""),
+            ("200 OK", success_body("ok"), ""),
+        ]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let response = adapter.generate(test_request()).await.unwrap();
+        assert_eq!(response.text, "ok");
+        assert_eq!(response.provider_attempts, 4);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
     async fn repeated_transient_5xx_fails_after_bounded_retries() {
         let busy = r#"{"error":{"message":"high demand"}}"#.to_string();
         let (base_url, server) = spawn_sequence_server(vec![
+            ("503 Service Unavailable", busy.clone(), ""),
             ("503 Service Unavailable", busy.clone(), ""),
             ("503 Service Unavailable", busy.clone(), ""),
             ("503 Service Unavailable", busy, ""),
@@ -689,7 +713,7 @@ mod tests {
         let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
         let error = adapter.generate(test_request()).await.unwrap_err();
         assert_eq!(error.kind, ModelErrorKind::ProviderUnavailable);
-        assert_eq!(error.provider_attempts, 3);
+        assert_eq!(error.provider_attempts, 4);
         server.join().unwrap();
     }
 
@@ -707,15 +731,32 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn empty_model_text_can_recover_on_final_allowed_attempt() {
+        let (base_url, server) = spawn_sequence_server(vec![
+            ("200 OK", empty_text_body(), ""),
+            ("200 OK", empty_text_body(), ""),
+            ("200 OK", empty_text_body(), ""),
+            ("200 OK", success_body("ok"), ""),
+        ]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let response = adapter.generate(test_request()).await.unwrap();
+        assert_eq!(response.text, "ok");
+        assert_eq!(response.provider_attempts, 4);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
     async fn repeated_empty_model_text_remains_protocol_failure() {
         let (base_url, server) = spawn_sequence_server(vec![
+            ("200 OK", empty_text_body(), ""),
+            ("200 OK", empty_text_body(), ""),
             ("200 OK", empty_text_body(), ""),
             ("200 OK", empty_text_body(), ""),
         ]);
         let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
         let error = adapter.generate(test_request()).await.unwrap_err();
         assert_eq!(error.kind, ModelErrorKind::Protocol);
-        assert_eq!(error.provider_attempts, 2);
+        assert_eq!(error.provider_attempts, 4);
         server.join().unwrap();
     }
 
