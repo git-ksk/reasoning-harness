@@ -342,6 +342,56 @@ pub fn investigation_action_schema() -> Value {
         .expect("investigation action schema must serialize")
 }
 
+fn investigation_action_schema_for_telemetry(telemetry: &InvestigationTelemetry) -> Value {
+    let mut schema = investigation_action_schema();
+    let branches = schema["oneOf"]
+        .as_array()
+        .expect("investigation action schema must be a closed union")
+        .clone();
+    let acquire_template = branches
+        .iter()
+        .find(|branch| branch["properties"]["action"]["const"] == "acquire")
+        .expect("investigation action schema must expose acquire")
+        .clone();
+    let stop = branches
+        .iter()
+        .find(|branch| branch["properties"]["action"]["const"] == "stop")
+        .expect("investigation action schema must expose stop")
+        .clone();
+    let attempted_pairs = telemetry
+        .actions
+        .iter()
+        .map(|record| {
+            (
+                record.action.target_id.as_str(),
+                record.action.capability_id.as_str(),
+            )
+        })
+        .collect::<BTreeSet<_>>();
+
+    let mut available = Vec::new();
+    for target in &telemetry.targets {
+        for capability in &telemetry.capabilities {
+            let key_compatible = target.expected_fact_key.as_ref().is_none_or(|key| {
+                capability.supported_fact_keys.is_empty()
+                    || capability.supported_fact_keys.contains(key)
+            });
+            let untried = !attempted_pairs.contains(&(target.id.as_str(), capability.id.as_str()));
+            if !capability.read_only || !key_compatible || !untried {
+                continue;
+            }
+
+            let mut branch = acquire_template.clone();
+            branch["properties"]["target_id"]["const"] = Value::String(target.id.clone());
+            branch["properties"]["capability_id"]["const"] = Value::String(capability.id.clone());
+            available.push(branch);
+        }
+    }
+    available.push(stop);
+    schema["oneOf"] = Value::Array(available);
+    schema
+}
+
 pub fn admit_investigation_plan(
     proposal: InvestigationPlanProposal,
     policy: &InvestigationPolicy,
@@ -863,7 +913,7 @@ pub fn build_investigation_action_request(
         ),
         output_format: ModelOutputFormat::JsonSchema {
             name: INVESTIGATION_ACTION_CONTRACT_ID.into(),
-            schema: investigation_action_schema(),
+            schema: investigation_action_schema_for_telemetry(telemetry),
         },
         max_tokens,
         random_seed,
@@ -2059,6 +2109,152 @@ mod tests {
             assert_eq!(record.reason, InvestigationActionRejection::InvalidShape);
             assert_eq!(record.proposal, proposal);
         }
+    }
+
+    #[test]
+    fn action_request_schema_excludes_attempted_pair_but_keeps_untried_pair_and_stop() {
+        let mut state = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability("cache", &["routing.owner"]),
+                capability("registry", &["routing.owner"]),
+            ],
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let round = state.begin_round().unwrap();
+        let action = state
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        state.record_observation(
+            round,
+            action,
+            InvestigationObservationStatus::RejectedEvidence,
+            0,
+            false,
+        );
+
+        let request = build_investigation_action_request(
+            "find the owner",
+            state.telemetry(),
+            Some(128),
+            Some(9),
+        )
+        .unwrap();
+        let ModelOutputFormat::JsonSchema { schema, .. } = request.output_format else {
+            panic!("action request must use JSON Schema");
+        };
+        let branches = schema["oneOf"].as_array().expect("closed union branches");
+        let acquire_pairs = branches
+            .iter()
+            .filter(|branch| branch["properties"]["action"]["const"] == "acquire")
+            .map(|branch| {
+                (
+                    branch["properties"]["target_id"]["const"]
+                        .as_str()
+                        .expect("target const"),
+                    branch["properties"]["capability_id"]["const"]
+                        .as_str()
+                        .expect("capability const"),
+                )
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(acquire_pairs, vec![("owner", "registry")]);
+        assert_eq!(
+            branches
+                .iter()
+                .filter(|branch| branch["properties"]["action"]["const"] == "stop")
+                .count(),
+            1
+        );
+
+        let duplicate = parse_investigation_action(
+            r#"{"action":"acquire","target_id":"owner","capability_id":"cache"}"#,
+        )
+        .expect("runtime parser must remain broad");
+        assert_eq!(
+            state.validate_action(duplicate),
+            Err(InvestigationActionRejection::DuplicateAction)
+        );
+    }
+
+    #[test]
+    fn action_request_schema_matches_current_runtime_pair_compatibility() {
+        let targets = vec![
+            target("bound", Some("routing.owner")),
+            target("keyless", None),
+        ];
+        let mut write = capability("write", &["routing.owner"]);
+        write.read_only = false;
+        let capabilities = vec![
+            capability("exact", &["routing.owner"]),
+            capability("wrong-key", &["service.region"]),
+            capability("wildcard", &[]),
+            write,
+        ];
+        let state = InvestigationState::new(
+            targets.clone(),
+            capabilities.clone(),
+            InvestigationPolicy::default(),
+        )
+        .unwrap();
+        let request = build_investigation_action_request(
+            "inspect routing",
+            state.telemetry(),
+            Some(128),
+            Some(17),
+        )
+        .unwrap();
+        let ModelOutputFormat::JsonSchema { schema, .. } = request.output_format else {
+            panic!("action request must use JSON Schema");
+        };
+        let schema_pairs = schema["oneOf"]
+            .as_array()
+            .expect("closed union branches")
+            .iter()
+            .filter(|branch| branch["properties"]["action"]["const"] == "acquire")
+            .map(|branch| {
+                (
+                    branch["properties"]["target_id"]["const"]
+                        .as_str()
+                        .unwrap()
+                        .to_string(),
+                    branch["properties"]["capability_id"]["const"]
+                        .as_str()
+                        .unwrap()
+                        .to_string(),
+                )
+            })
+            .collect::<BTreeSet<_>>();
+
+        let mut runtime_pairs = BTreeSet::new();
+        for target in &targets {
+            for capability in &capabilities {
+                let mut probe = InvestigationState::new(
+                    targets.clone(),
+                    capabilities.clone(),
+                    InvestigationPolicy::default(),
+                )
+                .unwrap();
+                probe.begin_round().unwrap();
+                if probe
+                    .validate_action(InvestigationActionProposal {
+                        action: InvestigationActionKind::Acquire,
+                        target_id: Some(target.id.clone()),
+                        capability_id: Some(capability.id.clone()),
+                    })
+                    .is_ok()
+                {
+                    runtime_pairs.insert((target.id.clone(), capability.id.clone()));
+                }
+            }
+        }
+        assert_eq!(schema_pairs, runtime_pairs);
     }
 
     #[test]
