@@ -12,7 +12,7 @@ use std::{
 
 use reasoning_harness_core::{
     FinalAnswerCandidate, FinalizationResult, HarnessOutcome, ModelAdapter, ModelError,
-    ModelErrorKind, ModelRequest, ModelResponse, ReasoningCandidate,
+    ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse, ReasoningCandidate,
 };
 use serde::Serialize;
 use serde_json::Value;
@@ -154,6 +154,7 @@ enum DiagnosticEvent {
         attempt: u32,
         provider: String,
         model: String,
+        structured_mode: &'static str,
         request: Value,
     },
     ModelResponse {
@@ -266,6 +267,14 @@ impl DiagnosticTraceRecorder {
         id
     }
 
+    fn structured_mode(format: &ModelOutputFormat) -> &'static str {
+        match format {
+            ModelOutputFormat::JsonSchema { .. } => "json_schema",
+            ModelOutputFormat::JsonObject => "json_object",
+            ModelOutputFormat::Text => "text",
+        }
+    }
+
     pub fn record_model_request(
         &mut self,
         correlation_id: &str,
@@ -275,6 +284,7 @@ impl DiagnosticTraceRecorder {
         model: &str,
         request: &ModelRequest,
     ) {
+        let structured_mode = Self::structured_mode(&request.output_format);
         let request = sanitized_value(request);
         let sequence = self.sequence();
         self.events.push(DiagnosticEvent::ModelRequest {
@@ -285,6 +295,7 @@ impl DiagnosticTraceRecorder {
             attempt,
             provider: provider.to_string(),
             model: model.to_string(),
+            structured_mode,
             request,
         });
     }
@@ -632,6 +643,48 @@ ignored prose"#.into(),
         }
     }
 
+    #[test]
+    fn model_request_diagnostic_records_each_structured_mode() {
+        let mut recorder = DiagnosticTraceRecorder::new("fixture", "model", Some(11));
+        let phase = DiagnosticPhase::new("investigation_plan", Some(1));
+        let formats = [
+            ModelOutputFormat::JsonSchema {
+                name: "schema".into(),
+                schema: serde_json::json!({"type": "object"}),
+            },
+            ModelOutputFormat::JsonObject,
+            ModelOutputFormat::Text,
+        ];
+
+        for (index, output_format) in formats.into_iter().enumerate() {
+            let correlation = recorder.next_correlation_id(phase);
+            recorder.record_model_request(
+                &correlation,
+                phase,
+                (index + 1) as u32,
+                "fixture",
+                "model",
+                &ModelRequest {
+                    task: "task".into(),
+                    system: None,
+                    output_format,
+                    max_tokens: Some(32),
+                    random_seed: Some(11),
+                    reasoning_preference: None,
+                },
+            );
+        }
+
+        let value = serde_json::to_value(&recorder).unwrap();
+        let modes = value["events"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|event| event["structured_mode"].as_str().unwrap())
+            .collect::<Vec<_>>();
+        assert_eq!(modes, vec!["json_schema", "json_object", "text"]);
+    }
+
     #[tokio::test]
     async fn diagnostic_wrapper_forwards_request_without_semantic_mutation() {
         let request = ModelRequest {
@@ -667,6 +720,55 @@ ignored prose"#.into(),
         let forwarded = inner.request.lock().unwrap().clone().unwrap();
         assert_eq!(serde_json::to_vec(&forwarded).unwrap(), expected_bytes);
         assert_eq!(actual_response, expected_response);
+    }
+
+    struct FailingAdapter;
+
+    impl ModelAdapter for FailingAdapter {
+        fn generate<'a>(
+            &'a self,
+            _request: ModelRequest,
+        ) -> Pin<Box<dyn Future<Output = Result<ModelResponse, ModelError>> + Send + 'a>> {
+            Box::pin(async move {
+                Err(
+                    ModelError::new(ModelErrorKind::Protocol, "malformed structured output")
+                        .with_provider_attempts(2),
+                )
+            })
+        }
+    }
+
+    #[tokio::test]
+    async fn diagnostic_wrapper_preserves_failure_classification_and_attempt_count() {
+        let mut recorder = DiagnosticTraceRecorder::new("fixture", "model", Some(19));
+        let wrapped = DiagnosticModelAdapter::new(
+            &FailingAdapter,
+            &mut recorder,
+            DiagnosticPhase::new("investigation_plan", None),
+            "fixture",
+            "model",
+        );
+        let error = wrapped
+            .generate(ModelRequest {
+                task: "task".into(),
+                system: None,
+                output_format: ModelOutputFormat::JsonSchema {
+                    name: "schema".into(),
+                    schema: serde_json::json!({"type": "object"}),
+                },
+                max_tokens: Some(32),
+                random_seed: Some(19),
+                reasoning_preference: None,
+            })
+            .await
+            .unwrap_err();
+
+        assert_eq!(error.kind, ModelErrorKind::Protocol);
+        assert_eq!(error.provider_attempts, 2);
+        assert_eq!(error.message, "malformed structured output");
+        let value = serde_json::to_value(&recorder).unwrap();
+        assert_eq!(value["events"][0]["structured_mode"], "json_schema");
+        assert_eq!(value["events"][1]["failure_class"], "protocol");
     }
 
     #[test]

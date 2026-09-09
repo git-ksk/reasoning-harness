@@ -4,7 +4,7 @@ use schemars::{JsonSchema, schema_for};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::{ModelOutputFormat, ModelRequest};
+use crate::{ModelOutputFormat, ModelReasoningPreference, ModelRequest};
 
 pub const INVESTIGATION_PLAN_CONTRACT_ID: &str = "reason-investigation-plan-v1";
 pub const INVESTIGATION_ACTION_CONTRACT_ID: &str = "reason-investigation-action-v1";
@@ -890,7 +890,7 @@ pub fn build_investigation_plan_request(
         },
         max_tokens,
         random_seed,
-        reasoning_preference: None,
+        reasoning_preference: Some(ModelReasoningPreference::Minimize),
     })
 }
 
@@ -917,7 +917,7 @@ pub fn build_investigation_action_request(
         },
         max_tokens,
         random_seed,
-        reasoning_preference: None,
+        reasoning_preference: Some(ModelReasoningPreference::Minimize),
     })
 }
 
@@ -1932,6 +1932,10 @@ mod tests {
             plan.output_format,
             ModelOutputFormat::JsonSchema { .. }
         ));
+        assert_eq!(
+            plan.reasoning_preference,
+            Some(ModelReasoningPreference::Minimize)
+        );
         assert!(plan.system.as_deref().unwrap().contains("do not answer"));
         assert!(
             !investigation_plan_schema()
@@ -1956,6 +1960,10 @@ mod tests {
             action.output_format,
             ModelOutputFormat::JsonSchema { .. }
         ));
+        assert_eq!(
+            action.reasoning_preference,
+            Some(ModelReasoningPreference::Minimize)
+        );
         assert!(
             action
                 .task

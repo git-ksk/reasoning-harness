@@ -1,8 +1,9 @@
 use std::collections::BTreeSet;
 
 use reasoning_harness_core::{
-    InvestigationCapability, ModelOutputFormat, build_investigation_plan_request,
-    investigation_action_schema, investigation_plan_schema, parse_investigation_plan,
+    InvestigationCapability, ModelOutputFormat, ModelReasoningPreference,
+    build_investigation_plan_request, investigation_action_schema, investigation_plan_schema,
+    parse_investigation_plan,
 };
 use serde::Serialize;
 
@@ -49,7 +50,10 @@ fn assert_legacy_request(task: &str, capabilities: &[InvestigationCapability]) {
     assert_eq!(request.task, expected_task);
     assert_eq!(request.max_tokens, Some(128));
     assert_eq!(request.random_seed, Some(7));
-    assert_eq!(request.reasoning_preference, None);
+    assert_eq!(
+        request.reasoning_preference,
+        Some(ModelReasoningPreference::Minimize)
+    );
     match request.output_format {
         ModelOutputFormat::JsonSchema { name, schema } => {
             assert_eq!(name, "reason-investigation-plan-v1");
@@ -60,7 +64,7 @@ fn assert_legacy_request(task: &str, capabilities: &[InvestigationCapability]) {
 }
 
 #[test]
-fn single_read_only_capability_is_byte_for_byte_legacy_request() {
+fn single_read_only_capability_keeps_legacy_prompt_and_schema_contract() {
     assert_legacy_request(
         "is the rollout gate open?",
         &[capability("gate-read", &["rollout.gate_open"])],

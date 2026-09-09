@@ -862,8 +862,10 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                 ModelError::new(
                     ModelErrorKind::Protocol,
                     format!(
-                        "provider returned invalid strict text JSON after {}: {error}",
-                        context.reason
+                        "provider returned invalid strict text JSON after {}: {error}; finish_reason={}; bytes={}",
+                        context.reason,
+                        text_response.finish_reason.as_deref().unwrap_or("unknown"),
+                        text_response.text.len(),
                     ),
                 )
                 .with_provider_attempts(
@@ -952,7 +954,9 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                     ModelError::new(
                         ModelErrorKind::Protocol,
                         format!(
-                            "provider returned invalid structured planner JSON after schema capability fallback: {second_error}"
+                            "provider returned invalid structured planner JSON after schema capability fallback: {second_error}; second_finish_reason={}; second_bytes={}",
+                            second.finish_reason.as_deref().unwrap_or("unknown"),
+                            second.text.len(),
                         ),
                     )
                     .with_provider_attempts(
@@ -999,8 +1003,15 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                     provider,
                     requested_model,
                     started,
-                    ModelError::new(ModelErrorKind::Protocol, first_error.to_string())
-                        .with_provider_attempts(first.provider_attempts),
+                    ModelError::new(
+                        ModelErrorKind::Protocol,
+                        format!(
+                            "{first_error}; finish_reason={}; bytes={}",
+                            first.finish_reason.as_deref().unwrap_or("unknown"),
+                            first.text.len(),
+                        ),
+                    )
+                    .with_provider_attempts(first.provider_attempts),
                 ));
             };
             let fallback = fallback_request(&request, &schema, ModelOutputFormat::JsonObject);
@@ -1036,7 +1047,9 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                         ModelError::new(
                             error.kind,
                             format!(
-                                "structured planner fallback failed after invalid first JSON: first_error={first_error}; {error}"
+                                "structured planner fallback failed after invalid first JSON: first_error={first_error}; first_finish_reason={}; first_bytes={}; {error}",
+                                first.finish_reason.as_deref().unwrap_or("unknown"),
+                                first.text.len(),
                             ),
                         )
                         .with_provider_attempts(attempts),
@@ -1051,7 +1064,11 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                     ModelError::new(
                         ModelErrorKind::Protocol,
                         format!(
-                            "provider returned invalid structured planner JSON after fallback: first_error={first_error}; second_error={second_error}"
+                            "provider returned invalid structured planner JSON after fallback: first_error={first_error}; first_finish_reason={}; first_bytes={}; second_error={second_error}; second_finish_reason={}; second_bytes={}",
+                            first.finish_reason.as_deref().unwrap_or("unknown"),
+                            first.text.len(),
+                            second.finish_reason.as_deref().unwrap_or("unknown"),
+                            second.text.len(),
                         ),
                     )
                     .with_provider_attempts(
@@ -8280,12 +8297,20 @@ mod candidate_json_tests {
             text: &str,
             attempts: u32,
         ) -> Result<reasoning_harness_core::ModelResponse, ModelError> {
+            Self::response_with_finish(text, attempts, "stop")
+        }
+
+        fn response_with_finish(
+            text: &str,
+            attempts: u32,
+            finish_reason: &str,
+        ) -> Result<reasoning_harness_core::ModelResponse, ModelError> {
             Ok(reasoning_harness_core::ModelResponse {
                 text: text.to_string(),
                 model: "test-model".into(),
                 usage: ModelUsage::default(),
                 provider_attempts: attempts,
-                finish_reason: Some("stop".into()),
+                finish_reason: Some(finish_reason.into()),
             })
         }
 
@@ -8383,6 +8408,36 @@ mod candidate_json_tests {
         assert!(matches!(calls[0], ModelOutputFormat::JsonSchema { .. }));
         assert_eq!(calls[1], ModelOutputFormat::JsonObject);
         assert_eq!(calls[2], ModelOutputFormat::Text);
+    }
+
+    #[tokio::test]
+    async fn structured_parse_failure_preserves_incomplete_finish_metadata() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::response_with_finish(
+                r#"{"targets":[{"id":"owner","question":"Who owns"#,
+                1,
+                "incomplete",
+            ),
+            StructuredCapabilityFallbackAdapter::response_with_finish(
+                r#"{"targets":["#,
+                1,
+                "incomplete",
+            ),
+        ]);
+        let request =
+            build_investigation_plan_request("investigate", &[], Some(128), Some(2)).unwrap();
+        let error = run_structured_json_call::<InvestigationPlanProposal>(
+            &adapter,
+            "test",
+            "test-model",
+            request,
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(error.failure_class, "protocol");
+        assert!(error.message.contains("first_finish_reason=incomplete"));
+        assert!(error.message.contains("second_finish_reason=incomplete"));
+        assert_eq!(adapter.calls.lock().unwrap().len(), 2);
     }
 
     #[tokio::test]
