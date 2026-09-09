@@ -688,6 +688,27 @@ impl InvestigationState {
         })
     }
 
+    /// Selects the narrow #249 exact-target continuation as part of the round that produced the
+    /// typed `no_result`, rather than consuming a fresh investigation selection round. This is bounded
+    /// by the ordinary action/no-progress/terminal guards because the proposal is available only
+    /// while the state is non-terminal and still passes `validate_action` before execution.
+    ///
+    /// Reusing the current round is intentional: `max_rounds` continues to bound opportunities to
+    /// enter a new selection round, while `max_actions` bounds actual acquisitions. The additive
+    /// `harness_no_result_followup_selections` counter distinguishes this deterministic
+    /// continuation from planner-selected or other Harness-selected actions.
+    pub fn select_no_result_followup_continuation(
+        &mut self,
+    ) -> Option<(usize, InvestigationActionProposal)> {
+        let proposal = self.unique_no_result_followup_proposal()?;
+        let round = self.telemetry.rounds;
+        if round == 0 {
+            return None;
+        }
+        self.note_harness_no_result_followup_selection();
+        Some((round, proposal))
+    }
+
     pub fn capability(&self, id: &str) -> Option<&InvestigationCapability> {
         self.capabilities.get(id)
     }
@@ -1725,6 +1746,7 @@ mod tests {
             false,
         );
         assert_eq!(state.unique_no_result_followup_proposal(), None);
+        assert_eq!(state.select_no_result_followup_continuation(), None);
     }
 
     #[test]
@@ -1760,6 +1782,11 @@ mod tests {
                 None,
                 "{status:?}"
             );
+            assert_eq!(
+                state.select_no_result_followup_continuation(),
+                None,
+                "{status:?}"
+            );
         }
     }
 
@@ -1791,6 +1818,7 @@ mod tests {
             false,
         );
         assert_eq!(keyless.unique_no_result_followup_proposal(), None);
+        assert_eq!(keyless.select_no_result_followup_continuation(), None);
 
         let mut wildcard = InvestigationState::new(
             vec![target("owner", Some("routing.owner"))],
@@ -1818,6 +1846,116 @@ mod tests {
             false,
         );
         assert_eq!(wildcard.unique_no_result_followup_proposal(), None);
+        assert_eq!(wildcard.select_no_result_followup_continuation(), None);
+    }
+
+    #[test]
+    fn no_result_followup_is_available_at_round_boundary_before_new_round_terminalizes() {
+        let mut state = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability("cache", &["routing.owner"]),
+                capability("registry", &["routing.owner"]),
+            ],
+            InvestigationPolicy {
+                max_rounds: 1,
+                max_actions: 3,
+                max_no_progress_rounds: 2,
+                ..InvestigationPolicy::default()
+            },
+        )
+        .unwrap();
+
+        state.note_planner_call();
+        let round = state.begin_round().unwrap();
+        let cache = state
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        state.record_observation(
+            round,
+            cache,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+
+        assert_eq!(state.telemetry().stop_reason, None);
+        assert!(state.unique_no_result_followup_proposal().is_some());
+        assert_eq!(
+            state.begin_round(),
+            Err(InvestigationStopReason::RoundBudget)
+        );
+        assert_eq!(
+            state.telemetry().stop_reason,
+            Some(InvestigationStopReason::RoundBudget)
+        );
+        assert_eq!(state.unique_no_result_followup_proposal(), None);
+    }
+
+    #[test]
+    fn no_result_continuation_reuses_trigger_round_without_new_planner_round() {
+        let mut state = InvestigationState::new(
+            vec![target("owner", Some("routing.owner"))],
+            vec![
+                capability("cache", &["routing.owner"]),
+                capability("registry", &["routing.owner"]),
+            ],
+            InvestigationPolicy {
+                max_rounds: 1,
+                max_actions: 3,
+                max_no_progress_rounds: 2,
+                ..InvestigationPolicy::default()
+            },
+        )
+        .unwrap();
+
+        state.note_planner_call();
+        let first_round = state.begin_round().unwrap();
+        let cache = state
+            .validate_action(InvestigationActionProposal {
+                action: InvestigationActionKind::Acquire,
+                target_id: Some("owner".into()),
+                capability_id: Some("cache".into()),
+            })
+            .unwrap()
+            .unwrap();
+        state.record_observation(
+            first_round,
+            cache,
+            InvestigationObservationStatus::NoResult,
+            0,
+            false,
+        );
+
+        let (continuation_round, proposal) =
+            state.select_no_result_followup_continuation().unwrap();
+        assert_eq!(continuation_round, first_round);
+        assert_eq!(state.telemetry().rounds, 1);
+        assert_eq!(state.telemetry().planner_calls, 1);
+        assert_eq!(state.telemetry().harness_no_result_followup_selections, 1);
+
+        let registry = state.validate_action(proposal).unwrap().unwrap();
+        state.record_observation(
+            continuation_round,
+            registry,
+            InvestigationObservationStatus::AppliedEvidence,
+            1,
+            true,
+        );
+
+        let telemetry = state.telemetry();
+        assert_eq!(telemetry.rounds, 1);
+        assert_eq!(telemetry.planner_calls, 1);
+        assert_eq!(telemetry.actions.len(), 2);
+        assert_eq!(telemetry.actions[0].round, 1);
+        assert_eq!(telemetry.actions[1].round, 1);
+        assert_eq!(telemetry.actions[1].action.capability_id, "registry");
+        assert_eq!(telemetry.stop_reason, None);
     }
 
     #[test]
@@ -1862,6 +2000,7 @@ mod tests {
                     .is_some()
             );
             assert_eq!(state.unique_no_result_followup_proposal(), None);
+            assert_eq!(state.select_no_result_followup_continuation(), None);
         }
     }
 
@@ -1898,14 +2037,14 @@ mod tests {
             false,
         );
 
-        let second_round = state.begin_round().unwrap();
-        let proposal = state.unique_no_result_followup_proposal().unwrap();
-        state.note_harness_no_result_followup_selection();
+        let (continuation_round, proposal) =
+            state.select_no_result_followup_continuation().unwrap();
+        assert_eq!(continuation_round, first_round);
         let registry = state.validate_action(proposal).unwrap().unwrap();
         assert_eq!(registry.target_id, "owner-primary");
         assert_eq!(registry.capability_id, "registry");
         state.record_observation(
-            second_round,
+            continuation_round,
             registry,
             InvestigationObservationStatus::AppliedEvidence,
             1,
@@ -1913,6 +2052,7 @@ mod tests {
         );
 
         let telemetry = state.telemetry();
+        assert_eq!(telemetry.rounds, 1);
         assert_eq!(telemetry.planner_calls, 1);
         assert_eq!(telemetry.harness_no_result_followup_selections, 1);
         assert_eq!(telemetry.actions.len(), 2);

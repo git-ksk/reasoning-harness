@@ -2702,45 +2702,50 @@ async fn run_natural_investigation(
             state.stop(InvestigationStopReason::TargetsExhausted);
             break;
         }
-        let round_index = match state.begin_round() {
-            Ok(round) => round,
-            Err(_) => break,
-        };
-        let proposal = if let Some(proposal) = state.unique_no_result_followup_proposal() {
-            state.note_harness_no_result_followup_selection();
-            proposal
-        } else if let Some(proposal) = state.unique_compatible_action_proposal() {
-            state.note_harness_unique_selection();
-            proposal
-        } else if let Some(proposal) = state.unique_precedence_action_proposal_with_diagnostic() {
-            state.note_harness_precedence_selection();
-            proposal
+        let (round_index, proposal) = if let Some((round, proposal)) =
+            state.select_no_result_followup_continuation()
+        {
+            (round, proposal)
         } else {
-            state.note_planner_call();
-            let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
-            let (proposal, action_generation) = match generator
-                .choose_investigation_action_traced(
-                    task,
-                    state.telemetry(),
-                    config.planner_max_tokens.min(max_tokens),
-                    action_seed,
-                    model,
-                    DiagnosticTraceCall {
-                        recorder: trace.as_deref_mut(),
-                        phase: DiagnosticPhase::new("investigation_action", Some(round_index)),
-                    },
-                )
-                .await
-            {
-                Ok(result) => result,
-                Err(failure) => {
-                    state.stop(InvestigationStopReason::OperationalTerminal);
-                    observation.generation_failure = Some(failure);
-                    break;
-                }
+            let round_index = match state.begin_round() {
+                Ok(round) => round,
+                Err(_) => break,
             };
-            observation.action_generations.push(action_generation);
-            proposal
+            let proposal = if let Some(proposal) = state.unique_compatible_action_proposal() {
+                state.note_harness_unique_selection();
+                proposal
+            } else if let Some(proposal) = state.unique_precedence_action_proposal_with_diagnostic()
+            {
+                state.note_harness_precedence_selection();
+                proposal
+            } else {
+                state.note_planner_call();
+                let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
+                let (proposal, action_generation) = match generator
+                    .choose_investigation_action_traced(
+                        task,
+                        state.telemetry(),
+                        config.planner_max_tokens.min(max_tokens),
+                        action_seed,
+                        model,
+                        DiagnosticTraceCall {
+                            recorder: trace.as_deref_mut(),
+                            phase: DiagnosticPhase::new("investigation_action", Some(round_index)),
+                        },
+                    )
+                    .await
+                {
+                    Ok(result) => result,
+                    Err(failure) => {
+                        state.stop(InvestigationStopReason::OperationalTerminal);
+                        observation.generation_failure = Some(failure);
+                        break;
+                    }
+                };
+                observation.action_generations.push(action_generation);
+                proposal
+            };
+            (round_index, proposal)
         };
         let action = match state.validate_action(proposal) {
             Ok(Some(action)) => action,
