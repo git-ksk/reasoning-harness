@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.bryvex.audit",
+    "Bryvex audit enforcement mode"
+  ],
+  "id": "session-resume-fork-bryvex",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.bryvex.audit=sealed-reviewed",
+  "start_hypothesis": "session.bryvex.audit=sealed-reviewed",
+  "target": {
+    "key": "session.bryvex.audit",
+    "value": "sealed-reviewed"
+  },
+  "task": "Determine the active Bryvex audit enforcement mode."
+}

@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.zelqor.mode=green",
+  "add_hypothesis": "session.zelqor.mode=green",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.zelqor.mode",
+    "Zelqor session readiness mode"
+  ],
+  "id": "session-add-zelqor",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.zelqor.mode",
+    "value": "green-verified"
+  },
+  "task": "Determine the current Zelqor session readiness mode."
+}

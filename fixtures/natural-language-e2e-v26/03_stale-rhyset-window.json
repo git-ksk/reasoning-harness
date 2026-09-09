@@ -1,0 +1,28 @@
+{
+  "adaptive": false,
+  "config_pair": {
+    "candidate": "configs/candidate/rhyset-stale.json",
+    "control": "configs/control/rhyset-stale.json"
+  },
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "rhyset.rollout.window_open",
+    "Rhyset live rollout window state"
+  ],
+  "id": "stale-rhyset-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "rhyset-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "rhyset.rollout.window_open",
+    "value": "false"
+  },
+  "task": "Assess whether the Rhyset rollout window is currently open. An observation older than the configured freshness bound must remain insufficient for the current state."
+}
