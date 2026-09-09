@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.pyrden.audit",
+    "Pyrden audit enforcement mode"
+  ],
+  "id": "session-resume-fork-pyrden",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.pyrden.audit=enforced-audited",
+  "start_hypothesis": "session.pyrden.audit=enforced-audited",
+  "target": {
+    "key": "session.pyrden.audit",
+    "value": "enforced-audited"
+  },
+  "task": "Determine the active Pyrden audit enforcement mode."
+}

@@ -1,0 +1,28 @@
+{
+  "adaptive": false,
+  "config_pair": {
+    "candidate": "configs/candidate/esqrin-stale.json",
+    "control": "configs/control/esqrin-stale.json"
+  },
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "esqrin.rollout.gate_open",
+    "Esqrin live rollout gate state"
+  ],
+  "id": "stale-esqrin-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "esqrin-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "esqrin.rollout.gate_open",
+    "value": "false"
+  },
+  "task": "Assess whether the Esqrin rollout gate is currently open. An observation older than the configured freshness bound must remain insufficient for the current state."
+}

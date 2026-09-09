@@ -1,0 +1,189 @@
+{
+  "case_files": [
+    "01_unique-caldris-endpoint.json",
+    "02_ambiguous-dervane-ledger.json",
+    "03_stale-esqrin-window.json",
+    "04_scope-elqora-index.json",
+    "05_adaptive-gireth-owner.json",
+    "06_adaptive-halvora-owner.json",
+    "07_adaptive-irquen-owner.json",
+    "08_authority-jeskari-release.json",
+    "09_identity-korvain-registry.json",
+    "10_mcp-v22-meldrin-coordinate-cargo-nonpromotion.json",
+    "11_session-add-norvex.json",
+    "12_session-correct-orsali.json",
+    "13_session-resume-fork-pyrden.json"
+  ],
+  "corpus_identity": "natural-language-e2e-v22",
+  "evaluator_identity": "reason-natural-language-e2e-v22",
+  "hard_correctness_gate": {
+    "max_correctness_boundary_violations": 0
+  },
+  "historical_disjoint_refs": [
+    "natural-language-e2e-v12-freeze-r2",
+    "natural-language-e2e-v13-freeze",
+    "natural-language-e2e-v14-freeze",
+    "natural-language-e2e-v15-freeze",
+    "natural-language-e2e-v16-freeze",
+    "natural-language-e2e-v17-freeze",
+    "natural-language-e2e-v18-freeze",
+    "natural-language-e2e-v19-freeze",
+    "natural-language-e2e-v20-freeze",
+    "natural-language-e2e-v21-freeze"
+  ],
+  "historical_disjoint_roots": [
+    "fixtures/natural-language-e2e-v1",
+    "fixtures/natural-language-e2e-v2",
+    "fixtures/natural-language-e2e-v3",
+    "fixtures/natural-language-e2e-v4",
+    "fixtures/natural-language-e2e-v5",
+    "fixtures/natural-language-e2e-v6",
+    "fixtures/natural-language-e2e-v7",
+    "fixtures/natural-language-e2e-v8",
+    "fixtures/natural-language-e2e-v9",
+    "fixtures/natural-language-e2e-v10",
+    "fixtures/natural-language-e2e-v11"
+  ],
+  "live_observation_policy": {
+    "failed_candidate_requires_product_change_and_fresh_successor": true,
+    "first_live_case_launch_per_coordinate_provider_model_is_canonical": true,
+    "paired_surface_frozen_before_control_or_candidate_live_launch": true,
+    "post_observation_metric_changes_forbidden": true
+  },
+  "mcp_policy": {
+    "generic_output_authority": "non_promoting",
+    "image": "ghcr.io/github/github-mcp-server@sha256:46cdbbd810faf6f7aed1745ea04057443f5cb9fcadc15c7308add18cf9a83e33",
+    "read_only": true,
+    "repository": "git-ksk/reasoning-harness",
+    "server": "github/github-mcp-server",
+    "tool": "get_file_contents"
+  },
+  "measurement_semantics": {
+    "action_rejection_records_are_diagnostic_only": true,
+    "diagnostic_trace_is_non_scoring_sidecar": true,
+    "downstream_utility_scored_separately": true,
+    "followup_observational_cases": 3,
+    "locked_from": "natural-language-e2e-v11",
+    "measurement_validity_does_not_require_utility_success": true,
+    "mechanism_denominator": "trigger_exposed_cases_only",
+    "mechanism_success_definition": "immediate next action is configured registry and harness_no_result_followup_selections increments for exact-target continuation",
+    "metric_redefinition_during_release_line_forbidden": true,
+    "new_precedence_telemetry_is_diagnostic_only": true,
+    "precedence_skip_reasons_are_diagnostic_only": true,
+    "qualified_partial_wrapper_handling": "strip only the two exact released Harness canonical QualifiedPartialAnswer wrappers before applying the unchanged v11 key/value exposed-text scoring",
+    "trigger_exposed_definition": "first executed configured cache action returns typed no_result",
+    "trigger_miss_is_measurement_data_not_mechanism_failure": true,
+    "zero_trigger_mechanism_classification": "inconclusive"
+  },
+  "paired_coordinates": {
+    "candidate": {
+      "commit": "9051049733a82571acb1ad572769b2c3f7495c50",
+      "coordinate_kind": "unreleased_v0.4.2_candidate",
+      "mcp_adapter": "mcp_readonly_v3",
+      "natural_output_contract": "reason-natural-output-v4",
+      "release_target": "v0.4.2",
+      "version": "0.4.1"
+    },
+    "control": {
+      "commit": "29a9e4be6273dbffeda324e15517dc64930ad315",
+      "coordinate_kind": "released_control",
+      "mcp_adapter": "mcp_readonly_v3",
+      "natural_output_contract": "reason-natural-output-v4",
+      "tag": "v0.4.1",
+      "version": "0.4.1"
+    }
+  },
+  "paired_release_gate": {
+    "candidate_only_provider_parity_model": "groq/openai/gpt-oss-120b",
+    "common_zero_fields": [
+      "correctness_boundary_violations",
+      "unsupported_structured_claims",
+      "unsupported_exposed_assertions",
+      "exposed_text_contract_violations",
+      "missed_target_insufficiency",
+      "identity_unsafe_admission",
+      "mcp_output_authority_self_promotion",
+      "session_external_calls_replayed",
+      "duplicate_action_rejections"
+    ],
+    "mechanism_conformance_rate_when_exposed": 1.0,
+    "no_cross_model_averaging": true,
+    "non_worse_metrics": [
+      "target_recall",
+      "tool_selection_success_rate",
+      "false_abstentions"
+    ],
+    "precedence_metrics_are_diagnostic_only": true,
+    "required_paired_models": [
+      "mistral/ministral-8b-latest",
+      "google/gemini-3.5-flash-lite",
+      "google/gemma-4-31b-it"
+    ],
+    "utility_metrics": {
+      "avoidable_followup_stalls": "lower_is_better",
+      "control_ceiling": {
+        "avoidable_followup_stalls": 0,
+        "trigger_exposed_cases": 3
+      },
+      "rule": "candidate must strictly improve at least one locked utility metric for each required paired model unless that model's control row is already at the two-metric ceiling; ceiling rows require exact non-regression",
+      "trigger_exposed_cases": "higher_is_better"
+    }
+  },
+  "pairing_policy": {
+    "all_other_semantic_config_drift_forbidden": true,
+    "allowed_config_differences": [
+      "candidate-only investigation capability selection_priority",
+      "MCP fixed_arguments.ref equal to the exact coordinate commit"
+    ],
+    "candidate_failure_requires_fresh_successor_identity": true,
+    "control_is_not_a_tuning_surface": true,
+    "same_case_task_target_expected_provider_model_seed_max_tokens": true
+  },
+  "provider_policy": {
+    "base_seed": 79000,
+    "inter_case_delay_ms": 1500,
+    "max_tokens": 1024,
+    "model": "ministral-8b-latest",
+    "provider": "mistral",
+    "rate_limit_policy": "adapter-bounded-retry-plus-1500ms-inter-case-pacing"
+  },
+  "provider_targets": [
+    {
+      "max_tokens": 1024,
+      "model": "ministral-8b-latest",
+      "provider": "mistral",
+      "role": "paired_required",
+      "seed": 79000,
+      "utility_rule": "strict_improvement_unless_control_ceiling"
+    },
+    {
+      "max_tokens": 1024,
+      "model": "gemini-3.5-flash-lite",
+      "provider": "google",
+      "role": "paired_required",
+      "seed": 79000,
+      "utility_rule": "strict_improvement_unless_control_ceiling"
+    },
+    {
+      "max_tokens": 1024,
+      "model": "gemma-4-31b-it",
+      "provider": "google",
+      "role": "paired_required",
+      "seed": 79000,
+      "utility_rule": "strict_improvement_unless_control_ceiling"
+    },
+    {
+      "max_tokens": 1024,
+      "model": "openai/gpt-oss-120b",
+      "provider": "groq",
+      "role": "candidate_generic_provider_parity",
+      "seed": 79000,
+      "utility_rule": "operational_generic_parity_only"
+    }
+  ],
+  "raw_model_comparison_claimed": false,
+  "schema_version": "natural-language-e2e-manifest-v5",
+  "scoring_identity": "natural-language-e2e-scoring-v22-metric-locked-v11",
+  "successor_of": "natural-language-e2e-v21",
+  "successor_reason": "fresh held-out successor after immutable v21 valid failed evidence and independently justified product fix #297; candidate preserves model-proposed expected_fact_key bytes exactly during plan admission so noncanonical keys cannot gain exact Harness selector compatibility through trimming/normalization, while selector ordering, evidence/admission/authority/verification/grounding/finalization/answer-safety/provider-neutral semantics and all v11-locked release metrics remain unchanged; diagnostic tracing is an additive non-scoring sidecar only"
+}

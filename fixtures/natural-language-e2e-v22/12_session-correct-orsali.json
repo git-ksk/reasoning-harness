@@ -1,0 +1,17 @@
+{
+  "correction": "session.orsali.threshold=43",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.orsali.threshold",
+    "Orsali configured retry threshold"
+  ],
+  "id": "session-correct-orsali",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.orsali.threshold=41",
+  "target": {
+    "key": "session.orsali.threshold",
+    "value": "43"
+  },
+  "task": "Determine the configured Orsali retry threshold."
+}

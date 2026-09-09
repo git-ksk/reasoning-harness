@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.norvex.mode=armed",
+  "add_hypothesis": "session.norvex.mode=armed",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.norvex.mode",
+    "Norvex session readiness mode"
+  ],
+  "id": "session-add-norvex",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.norvex.mode",
+    "value": "armed"
+  },
+  "task": "Determine the current Norvex session readiness mode."
+}
