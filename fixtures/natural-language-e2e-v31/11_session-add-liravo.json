@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.liravo.mode=ready",
+  "add_hypothesis": "session.liravo.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.liravo.mode",
+    "Liravo session readiness mode"
+  ],
+  "id": "session-add-liravo",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.liravo.mode",
+    "value": "liravo-ready-signed"
+  },
+  "task": "Determine the current Liravo session readiness mode."
+}

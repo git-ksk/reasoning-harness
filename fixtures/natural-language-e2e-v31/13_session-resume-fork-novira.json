@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.novira.audit",
+    "Novira audit enforcement mode"
+  ],
+  "id": "session-resume-fork-novira",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.novira.audit=novira-enforced-signed",
+  "start_hypothesis": "session.novira.audit=novira-enforced-signed",
+  "target": {
+    "key": "session.novira.audit",
+    "value": "novira-enforced-signed"
+  },
+  "task": "Determine the active Novira audit enforcement mode."
+}

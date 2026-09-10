@@ -1,0 +1,17 @@
+{
+  "correction": "session.murexa.threshold=173",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.murexa.threshold",
+    "Murexa configured recovery threshold"
+  ],
+  "id": "session-correct-murexa",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.murexa.threshold=83",
+  "target": {
+    "key": "session.murexa.threshold",
+    "value": "211"
+  },
+  "task": "Determine the configured Murexa recovery threshold."
+}
