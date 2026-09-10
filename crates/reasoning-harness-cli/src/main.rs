@@ -817,6 +817,40 @@ fn terminal_status_class(reason: Option<&str>) -> &'static str {
     }
 }
 
+// Serialization-only normalization shared by model-facing typed JSON roles. It never repairs
+// fields or selects among JSON values: one complete typed value may be kept only when any suffix
+// is unambiguously non-JSON from its first non-whitespace byte; JSON-like trailing fragments fail.
+fn parse_single_typed_json<T: DeserializeOwned>(
+    text: &str,
+) -> Result<(T, bool), serde_json::Error> {
+    match serde_json::from_str::<T>(text) {
+        Ok(value) => Ok((value, false)),
+        Err(strict_error) => {
+            let mut stream = serde_json::Deserializer::from_str(text).into_iter::<T>();
+            let Some(Ok(value)) = stream.next() else {
+                return Err(strict_error);
+            };
+            let remainder = text[stream.byte_offset()..].trim_start();
+            if remainder.is_empty() {
+                return Err(strict_error);
+            }
+            let mut trailing_values =
+                serde_json::Deserializer::from_str(remainder).into_iter::<serde_json::Value>();
+            match trailing_values.next() {
+                Some(Ok(_)) => Err(strict_error),
+                Some(Err(trailing_error))
+                    if trailing_error.classify() == serde_json::error::Category::Syntax
+                        && trailing_error.line() == 1
+                        && trailing_error.column() == 1 =>
+                {
+                    Ok((value, true))
+                }
+                Some(Err(_)) | None => Err(strict_error),
+            }
+        }
+    }
+}
+
 async fn run_structured_json_call<T: DeserializeOwned>(
     adapter: &dyn ModelAdapter,
     provider: &'static str,
@@ -973,26 +1007,32 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                     ));
                 }
             };
-            let value = serde_json::from_str::<T>(&second.text).map_err(|second_error| {
-                generation_failure(
-                    provider,
-                    requested_model,
-                    started,
-                    ModelError::new(
-                        ModelErrorKind::Protocol,
-                        format!(
-                            "provider returned invalid structured planner JSON after schema capability fallback: {second_error}; second_parse_class={}; second_finish_reason={}; second_status_class={}; second_bytes={}",
-                            structured_decode_class(&second_error),
-                            second.finish_reason.as_deref().unwrap_or("unknown"),
-                            terminal_status_class(second.finish_reason.as_deref()),
-                            second.text.len(),
+            let (value, normalized) =
+                parse_single_typed_json::<T>(&second.text).map_err(|second_error| {
+                    generation_failure(
+                        provider,
+                        requested_model,
+                        started,
+                        ModelError::new(
+                            ModelErrorKind::Protocol,
+                            format!(
+                                "provider returned invalid structured planner JSON after schema capability fallback: {second_error}; second_parse_class={}; second_finish_reason={}; second_status_class={}; second_bytes={}",
+                                structured_decode_class(&second_error),
+                                second.finish_reason.as_deref().unwrap_or("unknown"),
+                                terminal_status_class(second.finish_reason.as_deref()),
+                                second.text.len(),
+                            ),
+                        )
+                        .with_provider_attempts(
+                            primary_attempts.saturating_add(second.provider_attempts),
                         ),
                     )
-                    .with_provider_attempts(
-                        primary_attempts.saturating_add(second.provider_attempts),
-                    ),
-                )
-            })?;
+                })?;
+            if normalized {
+                eprintln!(
+                    "{provider} structured planner normalization: ignored non-JSON trailing text after one complete typed object"
+                );
+            }
             return Ok((
                 value,
                 GenerationObservation {
@@ -1014,18 +1054,25 @@ async fn run_structured_json_call<T: DeserializeOwned>(
             ));
         }
     };
-    match serde_json::from_str::<T>(&first.text) {
-        Ok(value) => Ok((
-            value,
-            GenerationObservation {
-                provider,
-                model: first.model,
-                usage: first.usage,
-                latency_ms: started.elapsed().as_millis(),
-                provider_attempts: first.provider_attempts,
-                cost_usd: None,
-            },
-        )),
+    match parse_single_typed_json::<T>(&first.text) {
+        Ok((value, normalized)) => {
+            if normalized {
+                eprintln!(
+                    "{provider} structured planner normalization: ignored non-JSON trailing text after one complete typed object"
+                );
+            }
+            Ok((
+                value,
+                GenerationObservation {
+                    provider,
+                    model: first.model,
+                    usage: first.usage,
+                    latency_ms: started.elapsed().as_millis(),
+                    provider_attempts: first.provider_attempts,
+                    cost_usd: None,
+                },
+            ))
+        }
         Err(first_error) => {
             let Some(schema) = schema else {
                 return Err(generation_failure(
@@ -1089,30 +1136,36 @@ async fn run_structured_json_call<T: DeserializeOwned>(
                     ));
                 }
             };
-            let value = serde_json::from_str::<T>(&second.text).map_err(|second_error| {
-                generation_failure(
-                    provider,
-                    requested_model,
-                    started,
-                    ModelError::new(
-                        ModelErrorKind::Protocol,
-                        format!(
-                            "provider returned invalid structured planner JSON after fallback: first_error={first_error}; first_parse_class={}; first_finish_reason={}; first_status_class={}; first_bytes={}; second_error={second_error}; second_parse_class={}; second_finish_reason={}; second_status_class={}; second_bytes={}",
-                            structured_decode_class(&first_error),
-                            first.finish_reason.as_deref().unwrap_or("unknown"),
-                            terminal_status_class(first.finish_reason.as_deref()),
-                            first.text.len(),
-                            structured_decode_class(&second_error),
-                            second.finish_reason.as_deref().unwrap_or("unknown"),
-                            terminal_status_class(second.finish_reason.as_deref()),
-                            second.text.len(),
+            let (value, normalized) =
+                parse_single_typed_json::<T>(&second.text).map_err(|second_error| {
+                    generation_failure(
+                        provider,
+                        requested_model,
+                        started,
+                        ModelError::new(
+                            ModelErrorKind::Protocol,
+                            format!(
+                                "provider returned invalid structured planner JSON after fallback: first_error={first_error}; first_parse_class={}; first_finish_reason={}; first_status_class={}; first_bytes={}; second_error={second_error}; second_parse_class={}; second_finish_reason={}; second_status_class={}; second_bytes={}",
+                                structured_decode_class(&first_error),
+                                first.finish_reason.as_deref().unwrap_or("unknown"),
+                                terminal_status_class(first.finish_reason.as_deref()),
+                                first.text.len(),
+                                structured_decode_class(&second_error),
+                                second.finish_reason.as_deref().unwrap_or("unknown"),
+                                terminal_status_class(second.finish_reason.as_deref()),
+                                second.text.len(),
+                            ),
+                        )
+                        .with_provider_attempts(
+                            first.provider_attempts.saturating_add(second.provider_attempts),
                         ),
                     )
-                    .with_provider_attempts(
-                        first.provider_attempts.saturating_add(second.provider_attempts),
-                    ),
-                )
-            })?;
+                })?;
+            if normalized {
+                eprintln!(
+                    "{provider} structured planner normalization: ignored non-JSON trailing text after one complete typed object"
+                );
+            }
             Ok((
                 value,
                 GenerationObservation {
@@ -1356,24 +1409,7 @@ async fn render_final_with_adapter<A: ModelAdapter>(
 }
 
 fn parse_final_answer_json(text: &str) -> Result<(FinalAnswerCandidate, bool), serde_json::Error> {
-    match serde_json::from_str::<FinalAnswerCandidate>(text) {
-        Ok(answer) => Ok((answer, false)),
-        Err(strict_error) => {
-            let mut stream =
-                serde_json::Deserializer::from_str(text).into_iter::<FinalAnswerCandidate>();
-            let Some(Ok(answer)) = stream.next() else {
-                return Err(strict_error);
-            };
-            let remainder = &text[stream.byte_offset()..];
-            let mut trailing_values =
-                serde_json::Deserializer::from_str(remainder).into_iter::<serde_json::Value>();
-            match trailing_values.next() {
-                Some(Ok(_)) => Err(strict_error),
-                Some(Err(_)) => Ok((answer, true)),
-                None => Err(strict_error),
-            }
-        }
-    }
+    parse_single_typed_json(text)
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -1443,24 +1479,7 @@ fn format_generation_failure(failure: &GenerationFailure) -> String {
 }
 
 fn parse_candidate_json(text: &str) -> Result<(ReasoningCandidate, bool), serde_json::Error> {
-    match serde_json::from_str::<ReasoningCandidate>(text) {
-        Ok(candidate) => Ok((candidate, false)),
-        Err(strict_error) => {
-            let mut stream =
-                serde_json::Deserializer::from_str(text).into_iter::<ReasoningCandidate>();
-            let Some(Ok(candidate)) = stream.next() else {
-                return Err(strict_error);
-            };
-            let remainder = &text[stream.byte_offset()..];
-            let mut trailing_values =
-                serde_json::Deserializer::from_str(remainder).into_iter::<serde_json::Value>();
-            match trailing_values.next() {
-                Some(Ok(_)) => Err(strict_error),
-                Some(Err(_)) => Ok((candidate, true)),
-                None => Err(strict_error),
-            }
-        }
-    }
+    parse_single_typed_json(text)
 }
 
 #[derive(Debug, Subcommand)]
@@ -7370,6 +7389,59 @@ mod candidate_json_tests {
     }
 
     #[test]
+    fn typed_json_decoder_accepts_strict_action_without_normalization() {
+        let (action, normalized): (InvestigationActionProposal, _) =
+            parse_single_typed_json(r#"{"action":"stop"}"#).unwrap();
+        assert!(matches!(
+            action.action,
+            reasoning_harness_core::InvestigationActionKind::Stop
+        ));
+        assert!(!normalized);
+    }
+
+    #[test]
+    fn typed_json_decoder_accepts_one_complete_action_with_non_json_suffix() {
+        let text = r#"{"action":"stop"}
+<|channel|>done"#;
+        let (action, normalized): (InvestigationActionProposal, _) =
+            parse_single_typed_json(text).unwrap();
+        assert!(matches!(
+            action.action,
+            reasoning_harness_core::InvestigationActionKind::Stop
+        ));
+        assert!(normalized);
+    }
+
+    #[test]
+    fn typed_json_decoder_rejects_second_json_value() {
+        let text = r#"{"action":"stop"}
+{"action":"stop"}"#;
+        assert!(parse_single_typed_json::<InvestigationActionProposal>(text).is_err());
+    }
+
+    #[test]
+    fn typed_json_decoder_rejects_json_like_trailing_fragment() {
+        let text = r#"{"action":"stop"}
+{"action":"#;
+        assert!(parse_single_typed_json::<InvestigationActionProposal>(text).is_err());
+    }
+
+    #[test]
+    fn typed_json_decoder_rejects_truncated_or_missing_action() {
+        assert!(parse_single_typed_json::<InvestigationActionProposal>(r#"{"action":"#).is_err());
+        assert!(parse_single_typed_json::<InvestigationActionProposal>("{}").is_err());
+    }
+
+    #[test]
+    fn typed_json_decoder_does_not_fill_missing_acquire_identifier() {
+        let (action, normalized): (InvestigationActionProposal, _) =
+            parse_single_typed_json(r#"{"action":"acquire","target_id":"owner"}"#).unwrap();
+        assert!(!normalized);
+        assert_eq!(action.target_id.as_deref(), Some("owner"));
+        assert_eq!(action.capability_id, None);
+    }
+
+    #[test]
     fn product_failure_envelope_is_machine_readable() {
         let value = serde_json::to_value(CliEnvelope {
             schema_version: CLI_OUTPUT_SCHEMA_VERSION,
@@ -8380,6 +8452,103 @@ mod candidate_json_tests {
             let response = self.responses.lock().unwrap().pop_front().unwrap();
             Box::pin(async move { response })
         }
+    }
+
+    #[tokio::test]
+    async fn structured_call_accepts_complete_primary_typed_json_with_non_json_suffix_without_fallback()
+     {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::response(
+                r#"{"targets":[]}
+<|channel|>done"#,
+                1,
+            ),
+        ]);
+        let request =
+            build_investigation_plan_request("investigate", &[], Some(128), Some(2)).unwrap();
+        let (plan, observation): (InvestigationPlanProposal, _) =
+            run_structured_json_call(&adapter, "test", "test-model", request)
+                .await
+                .unwrap();
+        assert!(plan.targets.is_empty());
+        assert_eq!(observation.provider_attempts, 1);
+        let calls = adapter.calls.lock().unwrap();
+        assert_eq!(calls.len(), 1);
+        assert!(matches!(calls[0], ModelOutputFormat::JsonSchema { .. }));
+    }
+
+    #[tokio::test]
+    async fn structured_call_accepts_complete_json_object_fallback_with_non_json_suffix() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::capability_failure("schema unavailable", 1),
+            StructuredCapabilityFallbackAdapter::response(
+                r#"{"targets":[]}
+<|channel|>done"#,
+                1,
+            ),
+        ]);
+        let request =
+            build_investigation_plan_request("investigate", &[], Some(128), Some(2)).unwrap();
+        let (plan, observation): (InvestigationPlanProposal, _) =
+            run_structured_json_call(&adapter, "test", "test-model", request)
+                .await
+                .unwrap();
+        assert!(plan.targets.is_empty());
+        assert_eq!(observation.provider_attempts, 2);
+        let calls = adapter.calls.lock().unwrap();
+        assert_eq!(calls.len(), 2);
+        assert!(matches!(calls[0], ModelOutputFormat::JsonSchema { .. }));
+        assert_eq!(calls[1], ModelOutputFormat::JsonObject);
+    }
+
+    #[tokio::test]
+    async fn structured_call_rejects_second_primary_json_value_and_preserves_fallback() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::response(r#"{"targets":[]} {"targets":[]}"#, 1),
+            StructuredCapabilityFallbackAdapter::response(r#"{"targets":"still-not-an-array"}"#, 1),
+        ]);
+        let request =
+            build_investigation_plan_request("investigate", &[], Some(128), Some(2)).unwrap();
+        let error = run_structured_json_call::<InvestigationPlanProposal>(
+            &adapter,
+            "test",
+            "test-model",
+            request,
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(error.failure_class, "protocol");
+        assert_eq!(adapter.calls.lock().unwrap().len(), 2);
+    }
+
+    #[tokio::test]
+    async fn structured_action_missing_discriminant_remains_protocol_failure() {
+        let adapter = StructuredCapabilityFallbackAdapter::with_responses([
+            StructuredCapabilityFallbackAdapter::response("{}", 1),
+            StructuredCapabilityFallbackAdapter::response("{}", 1),
+        ]);
+        let request = ModelRequest {
+            system: None,
+            task: "select an action".into(),
+            output_format: ModelOutputFormat::JsonSchema {
+                name: "test-action".into(),
+                schema: serde_json::json!({"type":"object"}),
+            },
+            max_tokens: Some(64),
+            random_seed: Some(1),
+            reasoning_preference: None,
+        };
+        let error = run_structured_json_call::<InvestigationActionProposal>(
+            &adapter,
+            "test",
+            "test-model",
+            request,
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(error.failure_class, "protocol");
+        assert!(error.message.contains("missing field `action`"));
+        assert_eq!(adapter.calls.lock().unwrap().len(), 2);
     }
 
     #[tokio::test]
