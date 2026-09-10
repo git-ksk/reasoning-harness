@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.yandrix.mode=ready",
+  "add_hypothesis": "session.yandrix.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.yandrix.mode",
+    "Yandrix session readiness mode"
+  ],
+  "id": "session-add-yandrix",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.yandrix.mode",
+    "value": "yandrix-ready-signed"
+  },
+  "task": "Determine the current Yandrix session readiness mode."
+}

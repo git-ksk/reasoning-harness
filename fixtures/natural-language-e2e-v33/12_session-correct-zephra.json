@@ -1,0 +1,17 @@
+{
+  "correction": "session.zephra.threshold=173",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.zephra.threshold",
+    "Zephra configured recovery threshold"
+  ],
+  "id": "session-correct-zephra",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.zephra.threshold=83",
+  "target": {
+    "key": "session.zephra.threshold",
+    "value": "263"
+  },
+  "task": "Determine the configured Zephra recovery threshold."
+}

@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.brinexa.audit",
+    "Brinexa audit enforcement mode"
+  ],
+  "id": "session-resume-fork-brinexa",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.brinexa.audit=brinexa-enforced-signed",
+  "start_hypothesis": "session.brinexa.audit=brinexa-enforced-signed",
+  "target": {
+    "key": "session.brinexa.audit",
+    "value": "brinexa-enforced-signed"
+  },
+  "task": "Determine the active Brinexa audit enforcement mode."
+}
