@@ -26,6 +26,7 @@ const GOOGLE_RECOMMENDED_TEMPERATURE: f32 = 1.0;
 const GOOGLE_MIN_REQUEST_INTERVAL_MS_ENV: &str = "REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS";
 const GOOGLE_SHARED_PACER_PATH_ENV: &str = "REASON_GOOGLE_SHARED_PACER_PATH";
 const MAX_CONFIGURED_REQUEST_INTERVAL: Duration = Duration::from_secs(60);
+const MAX_STRUCTURED_SHORT_RETRY_DELAY: Duration = Duration::from_secs(120);
 
 /// Google Gemini API / AI Studio adapter for Google-hosted text models.
 ///
@@ -409,18 +410,40 @@ enum GoogleQuotaWindow {
     Ambiguous,
 }
 
+fn parse_google_duration(value: &str) -> Option<Duration> {
+    let seconds = value.strip_suffix('s')?.parse::<f64>().ok()?;
+    if !seconds.is_finite() || seconds < 0.0 {
+        return None;
+    }
+    Some(Duration::from_secs_f64(seconds))
+}
+
 fn structured_google_quota_window(body: &str) -> Option<GoogleQuotaWindow> {
     let value = serde_json::from_str::<Value>(body).ok()?;
-    let details = value
-        .get("error")
-        .and_then(|error| error.get("details"))
-        .and_then(Value::as_array)?;
+    let error = value.get("error")?;
+    let details = error.get("details").and_then(Value::as_array)?;
 
     let mut saw_quota_violation = false;
     let mut saw_short_window = false;
     let mut saw_daily = false;
+    let mut saw_short_retry_info = false;
 
     for detail in details {
+        let item_type = detail
+            .get("@type")
+            .and_then(Value::as_str)
+            .unwrap_or_default();
+        if item_type.ends_with("google.rpc.RetryInfo") {
+            saw_short_retry_info = detail
+                .get("retryDelay")
+                .or_else(|| detail.get("retry_delay"))
+                .and_then(Value::as_str)
+                .and_then(parse_google_duration)
+                .is_some_and(|delay| {
+                    delay > Duration::ZERO && delay <= MAX_STRUCTURED_SHORT_RETRY_DELAY
+                });
+        }
+
         let Some(violations) = detail.get("violations").and_then(Value::as_array) else {
             continue;
         };
@@ -444,9 +467,11 @@ fn structured_google_quota_window(body: &str) -> Option<GoogleQuotaWindow> {
         }
     }
 
+    // Daily evidence always wins. A bounded structured RetryInfo can identify a short
+    // reset only when it is conflict-free; generic quota text remains fail-closed.
     if saw_daily {
         Some(GoogleQuotaWindow::Daily)
-    } else if saw_short_window {
+    } else if saw_short_window || saw_short_retry_info {
         Some(GoogleQuotaWindow::ShortWindow)
     } else if saw_quota_violation {
         Some(GoogleQuotaWindow::Ambiguous)
@@ -819,6 +844,38 @@ mod tests {
         assert_eq!(
             structured_google_quota_window(ambiguous),
             Some(GoogleQuotaWindow::Ambiguous)
+        );
+    }
+
+    #[test]
+    fn structured_retry_info_without_quota_id_is_short_window_only_when_bounded_and_conflict_free()
+    {
+        let retry_only = r#"{"error":{"details":[{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"51.410081504s"}]}}"#;
+        let ambiguous_with_retry = r#"{"error":{"details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests"}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"39.4s"}]}}"#;
+        let daily_with_retry = r#"{"error":{"details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"51s"}]}}"#;
+        let long_retry = r#"{"error":{"details":[{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"3600s"}]}}"#;
+
+        assert_eq!(
+            structured_google_quota_window(retry_only),
+            Some(GoogleQuotaWindow::ShortWindow)
+        );
+        assert_eq!(
+            structured_google_quota_window(ambiguous_with_retry),
+            Some(GoogleQuotaWindow::ShortWindow)
+        );
+        assert_eq!(
+            structured_google_quota_window(daily_with_retry),
+            Some(GoogleQuotaWindow::Daily)
+        );
+        assert_eq!(structured_google_quota_window(long_retry), None);
+    }
+
+    #[test]
+    fn classifies_quota_id_absent_structured_retry_info_as_rate_limit() {
+        let body = r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"You exceeded your current quota","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests"}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"49.751743601s"}]}}"#;
+        assert_eq!(
+            classify_http_error(StatusCode::TOO_MANY_REQUESTS, body),
+            ModelErrorKind::RateLimit
         );
     }
 
