@@ -1,0 +1,88 @@
+name: google-quota-single-probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Send exactly one request to each selected Google model"
+        required: true
+        default: both
+        type: choice
+        options:
+          - both
+          - gemini
+          - gemma
+
+permissions:
+  contents: read
+
+concurrency:
+  group: google-quota-single-probe
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Validate diagnostic classifier without network
+        run: python3 scripts/test_google_quota_single_probe.py
+      - name: Check Google credential
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: test -n "$GEMINI_API_KEY"
+
+      - name: Probe Gemini once
+        if: ${{ inputs.target == 'both' || inputs.target == 'gemini' }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/google-quota-single-probe
+          python3 scripts/google_quota_single_probe.py \
+            --model gemini-3.5-flash-lite \
+            --output /tmp/google-quota-single-probe/gemini-3.5-flash-lite.json
+
+      - name: Probe Gemma once
+        if: ${{ inputs.target == 'both' || inputs.target == 'gemma' }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/google-quota-single-probe
+          python3 scripts/google_quota_single_probe.py \
+            --model gemma-4-31b-it \
+            --output /tmp/google-quota-single-probe/gemma-4-31b-it.json
+
+      - name: Add compact result to job summary
+        if: always()
+        run: |
+          set -euo pipefail
+          for FILE in /tmp/google-quota-single-probe/*.json; do
+            test -f "$FILE" || continue
+            MODEL="$(jq -r '.model' "$FILE")"
+            {
+              echo "### ${MODEL}"
+              echo
+              echo '| field | value |'
+              echo '|---|---|'
+              echo "| classification | $(jq -r '.classification' "$FILE") |"
+              echo "| HTTP | $(jq -r '.http_status // "n/a"' "$FILE") |"
+              echo "| quotaMetric | $(jq -r '[.quota_violations[]?.quotaMetric // empty] | join(", ") | if . == "" then "n/a" else . end' "$FILE") |"
+              echo "| quotaId | $(jq -r '[.quota_violations[]?.quotaId // empty] | join(", ") | if . == "" then "n/a" else . end' "$FILE") |"
+              echo "| quotaValue | $(jq -r '[.quota_violations[]?.quotaValue // empty] | join(", ") | if . == "" then "n/a" else . end' "$FILE") |"
+              echo "| retryDelay | $(jq -r '[.retry_delays[]?] | join(", ") | if . == "" then "n/a" else . end' "$FILE") |"
+              echo "| requests | $(jq -r '.requests_sent' "$FILE") |"
+              echo "| retries | $(jq -r '.retries' "$FILE") |"
+              echo
+            } >> "$GITHUB_STEP_SUMMARY"
+          done
+
+      - name: Preserve diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: google-quota-single-probe-${{ inputs.target }}-${{ github.run_id }}
+          path: /tmp/google-quota-single-probe/*.json
+          if-no-files-found: warn
+          retention-days: 30
