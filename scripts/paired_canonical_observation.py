@@ -1,9 +1,10 @@
 """Run both coordinates of a frozen paired observation exactly once.
 
-This helper is intentionally orchestration-only.  It does not inspect evaluator
-scores, retry provider failures, or reinterpret a coordinate's exit status.  Its
-purpose is to preserve candidate evidence when a control command exits nonzero,
-then fail the overall gate after all available canonical evidence is recorded.
+This helper is intentionally orchestration-only. It does not inspect evaluator
+scores or retry provider failures. By default a nonzero control remains a hard
+failure. A prospective evaluator may explicitly opt in to delegate a nonzero
+control with preserved canonical evidence to its acceptance comparator; candidate
+nonzero remains a hard failure. Optional heartbeat output is stderr-only.
 """
 
 from __future__ import annotations
@@ -14,9 +15,11 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
-from typing import Callable, Sequence
+import sys
+import time
+from typing import Callable, Sequence, TextIO
 
-CONTRACT_ID = "paired-canonical-observation-v1"
+CONTRACT_ID = "paired-canonical-observation-v2"
 HARD_GATE_FAILURE_EXIT = 3
 
 
@@ -37,6 +40,7 @@ class PairedObservationResult:
     candidate: InvocationResult
     acceptance: InvocationResult | None
     acceptance_skip_reason: str | None
+    control_nonzero_with_evidence_allowed: bool
     hard_gate_passed: bool
 
 
@@ -89,12 +93,14 @@ def run_paired_canonical_observation(
     execute_control: Callable[[tuple[str, ...]], int],
     execute_candidate: Callable[[tuple[str, ...]], int],
     execute_acceptance: Callable[[tuple[str, ...]], int],
+    allow_control_nonzero_with_evidence: bool = False,
 ) -> PairedObservationResult:
     """Execute control and candidate once each, regardless of the first exit code.
 
-    Acceptance executes once when both coordinate evidence sets exist.  Overall
-    success still requires both coordinate commands and acceptance to succeed and
-    all required evidence to exist.  There is deliberately no retry loop here.
+    Acceptance executes once when both coordinate evidence sets exist. By default
+    both coordinate commands must exit zero. When the prospective control-delegation
+    option is explicit, control nonzero may be decided by acceptance if its required
+    evidence exists; candidate still must exit zero. There is no retry loop here.
     """
 
     if not control_command or not candidate_command or not acceptance_command:
@@ -129,7 +135,7 @@ def run_paired_canonical_observation(
 
     hard_gate_passed = (
         control.launched
-        and control.returncode == 0
+        and (control.returncode == 0 or allow_control_nonzero_with_evidence)
         and control.required_evidence_present
         and candidate.launched
         and candidate.returncode == 0
@@ -146,6 +152,7 @@ def run_paired_canonical_observation(
         candidate=candidate,
         acceptance=acceptance,
         acceptance_skip_reason=acceptance_skip_reason,
+        control_nonzero_with_evidence_allowed=allow_control_nonzero_with_evidence,
         hard_gate_passed=hard_gate_passed,
     )
 
@@ -162,13 +169,48 @@ def _json_command(raw: str, name: str) -> tuple[str, ...]:
     return tuple(value)
 
 
-def _subprocess_executor(stdout_path: Path | None) -> Callable[[tuple[str, ...]], int]:
+def _subprocess_executor(
+    stdout_path: Path | None,
+    *,
+    label: str | None = None,
+    heartbeat_seconds: int | None = None,
+    progress_stream: TextIO = sys.stderr,
+) -> Callable[[tuple[str, ...]], int]:
     def execute(command: tuple[str, ...]) -> int:
-        if stdout_path is None:
-            return subprocess.run(command, check=False).returncode
-        stdout_path.parent.mkdir(parents=True, exist_ok=True)
-        with stdout_path.open("wb") as stream:
-            return subprocess.run(command, check=False, stdout=stream).returncode
+        stream = None
+        if stdout_path is not None:
+            stdout_path.parent.mkdir(parents=True, exist_ok=True)
+            stream = stdout_path.open("wb")
+        started = time.monotonic()
+        if label is not None:
+            print(f"[paired-canonical] {label} started", file=progress_stream, flush=True)
+        try:
+            process = subprocess.Popen(command, stdout=stream)
+            if heartbeat_seconds is None:
+                returncode = process.wait()
+            else:
+                while True:
+                    try:
+                        returncode = process.wait(timeout=heartbeat_seconds)
+                        break
+                    except subprocess.TimeoutExpired:
+                        elapsed = int(time.monotonic() - started)
+                        print(
+                            f"[paired-canonical] {label} elapsed={elapsed}s",
+                            file=progress_stream,
+                            flush=True,
+                        )
+            if label is not None:
+                elapsed = int(time.monotonic() - started)
+                print(
+                    f"[paired-canonical] {label} completed rc={returncode} elapsed={elapsed}s",
+                    file=progress_stream,
+                    flush=True,
+                )
+            return returncode
+        finally:
+            if stream is not None:
+                stream.close()
 
     return execute
 
@@ -194,6 +236,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--control-stdout")
     parser.add_argument("--candidate-stdout")
     parser.add_argument("--acceptance-stdout")
+    parser.add_argument(
+        "--allow-control-nonzero-with-evidence",
+        action="store_true",
+        help="permit acceptance to decide a nonzero control when canonical control evidence exists",
+    )
+    parser.add_argument(
+        "--heartbeat-seconds",
+        type=int,
+        help="emit orchestration-only progress every 30-60 seconds without changing captured stdout",
+    )
     parser.add_argument("--output", required=True)
     return parser.parse_args()
 
@@ -207,6 +259,9 @@ def main() -> int:
     except ValueError as error:
         raise SystemExit(str(error)) from error
 
+    if args.heartbeat_seconds is not None and not 30 <= args.heartbeat_seconds <= 60:
+        raise SystemExit("--heartbeat-seconds must be between 30 and 60")
+
     result = run_paired_canonical_observation(
         control_command,
         candidate_command,
@@ -214,11 +269,22 @@ def main() -> int:
         control_required_paths=tuple(Path(path) for path in args.control_required),
         candidate_required_paths=tuple(Path(path) for path in args.candidate_required),
         acceptance_required_paths=tuple(Path(path) for path in args.acceptance_required),
-        execute_control=_subprocess_executor(Path(args.control_stdout) if args.control_stdout else None),
-        execute_candidate=_subprocess_executor(Path(args.candidate_stdout) if args.candidate_stdout else None),
-        execute_acceptance=_subprocess_executor(
-            Path(args.acceptance_stdout) if args.acceptance_stdout else None
+        execute_control=_subprocess_executor(
+            Path(args.control_stdout) if args.control_stdout else None,
+            label="control",
+            heartbeat_seconds=args.heartbeat_seconds,
         ),
+        execute_candidate=_subprocess_executor(
+            Path(args.candidate_stdout) if args.candidate_stdout else None,
+            label="candidate",
+            heartbeat_seconds=args.heartbeat_seconds,
+        ),
+        execute_acceptance=_subprocess_executor(
+            Path(args.acceptance_stdout) if args.acceptance_stdout else None,
+            label="acceptance",
+            heartbeat_seconds=args.heartbeat_seconds,
+        ),
+        allow_control_nonzero_with_evidence=args.allow_control_nonzero_with_evidence,
     )
     _write_json(Path(args.output), result)
     return 0 if result.hard_gate_passed else HARD_GATE_FAILURE_EXIT

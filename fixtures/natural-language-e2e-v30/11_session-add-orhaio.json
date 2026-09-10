@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.orhaio.mode=ready",
+  "add_hypothesis": "session.orhaio.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.orhaio.mode",
+    "Orhaio session readiness mode"
+  ],
+  "id": "session-add-orhaio",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.orhaio.mode",
+    "value": "orhaio-ready-signed"
+  },
+  "task": "Determine the current Orhaio session readiness mode."
+}

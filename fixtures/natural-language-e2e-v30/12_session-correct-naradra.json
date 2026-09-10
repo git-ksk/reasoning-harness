@@ -1,0 +1,17 @@
+{
+  "correction": "session.naradra.threshold=173",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.naradra.threshold",
+    "Naradra configured recovery threshold"
+  ],
+  "id": "session-correct-naradra",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.naradra.threshold=83",
+  "target": {
+    "key": "session.naradra.threshold",
+    "value": "211"
+  },
+  "task": "Determine the configured Naradra recovery threshold."
+}
