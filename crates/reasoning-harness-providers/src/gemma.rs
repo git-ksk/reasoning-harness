@@ -1,4 +1,10 @@
-use std::{env, sync::Arc, time::Duration};
+use std::{
+    env, fs,
+    io::ErrorKind,
+    path::{Path, PathBuf},
+    sync::Arc,
+    time::{Duration, SystemTime, UNIX_EPOCH},
+};
 
 use reasoning_harness_core::{
     ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
@@ -18,6 +24,7 @@ const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(10);
 const INITIAL_TRANSIENT_BACKOFF: Duration = Duration::from_millis(500);
 const GOOGLE_RECOMMENDED_TEMPERATURE: f32 = 1.0;
 const GOOGLE_MIN_REQUEST_INTERVAL_MS_ENV: &str = "REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS";
+const GOOGLE_SHARED_PACER_PATH_ENV: &str = "REASON_GOOGLE_SHARED_PACER_PATH";
 const MAX_CONFIGURED_REQUEST_INTERVAL: Duration = Duration::from_secs(60);
 
 /// Google Gemini API / AI Studio adapter for Google-hosted text models.
@@ -35,24 +42,91 @@ pub struct GoogleAdapter {
 struct RequestPacer {
     min_interval: Duration,
     next_start: tokio::sync::Mutex<tokio::time::Instant>,
+    shared_path: Option<PathBuf>,
 }
 
 impl RequestPacer {
-    fn new(min_interval: Duration) -> Self {
+    fn new(min_interval: Duration, shared_path: Option<PathBuf>) -> Self {
         Self {
             min_interval,
             next_start: tokio::sync::Mutex::new(tokio::time::Instant::now()),
+            shared_path,
         }
     }
 
-    async fn wait(&self) {
+    async fn wait(&self) -> Result<(), ModelError> {
+        if let Some(path) = &self.shared_path {
+            return wait_shared_request_slot(path, self.min_interval).await;
+        }
         let mut next_start = self.next_start.lock().await;
         let now = tokio::time::Instant::now();
         if *next_start > now {
             tokio::time::sleep_until(*next_start).await;
         }
         *next_start = tokio::time::Instant::now() + self.min_interval;
+        Ok(())
     }
+}
+
+async fn wait_shared_request_slot(path: &Path, min_interval: Duration) -> Result<(), ModelError> {
+    let lock_dir = path.with_extension("lock");
+    loop {
+        match fs::create_dir(&lock_dir) {
+            Ok(()) => break,
+            Err(error) if error.kind() == ErrorKind::AlreadyExists => {
+                tokio::time::sleep(Duration::from_millis(10)).await;
+            }
+            Err(error) => {
+                return Err(ModelError::new(
+                    ModelErrorKind::Provider,
+                    format!("failed to acquire shared Google request pacer: {error}"),
+                ));
+            }
+        }
+    }
+
+    let result = (|| -> Result<Duration, ModelError> {
+        let now_ms = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map_err(|error| {
+                ModelError::new(
+                    ModelErrorKind::Provider,
+                    format!("system clock before Unix epoch: {error}"),
+                )
+            })?
+            .as_millis() as u64;
+        let next_ms = match fs::read_to_string(path) {
+            Ok(value) => value.trim().parse::<u64>().map_err(|error| {
+                ModelError::new(
+                    ModelErrorKind::Provider,
+                    format!("invalid shared Google pacer state: {error}"),
+                )
+            })?,
+            Err(error) if error.kind() == ErrorKind::NotFound => now_ms,
+            Err(error) => {
+                return Err(ModelError::new(
+                    ModelErrorKind::Provider,
+                    format!("failed to read shared Google pacer state: {error}"),
+                ));
+            }
+        };
+        let wait_ms = next_ms.saturating_sub(now_ms);
+        let base_ms = next_ms.max(now_ms);
+        let updated_ms = base_ms.saturating_add(min_interval.as_millis() as u64);
+        fs::write(path, format!("{updated_ms}\n")).map_err(|error| {
+            ModelError::new(
+                ModelErrorKind::Provider,
+                format!("failed to write shared Google pacer state: {error}"),
+            )
+        })?;
+        Ok(Duration::from_millis(wait_ms))
+    })();
+    let _ = fs::remove_dir(&lock_dir);
+    let wait = result?;
+    if !wait.is_zero() {
+        tokio::time::sleep(wait).await;
+    }
+    Ok(())
 }
 
 impl GoogleAdapter {
@@ -62,7 +136,8 @@ impl GoogleAdapter {
         })?;
         let mut adapter = Self::new(api_key, model)?;
         if let Some(interval) = configured_request_interval_from_env()? {
-            adapter.request_pacer = Some(Arc::new(RequestPacer::new(interval)));
+            let shared_path = configured_shared_pacer_path_from_env()?;
+            adapter.request_pacer = Some(Arc::new(RequestPacer::new(interval, shared_path)));
         }
         Ok(adapter)
     }
@@ -144,7 +219,7 @@ impl GoogleAdapter {
 
         loop {
             if let Some(pacer) = &self.request_pacer {
-                pacer.wait().await;
+                pacer.wait().await?;
             }
             provider_attempts = provider_attempts.saturating_add(1);
             let response = self
@@ -286,6 +361,20 @@ fn configured_request_interval_from_env() -> Result<Option<Duration>, ModelError
         return Ok(None);
     };
     parse_request_interval_ms(&raw)
+}
+
+fn configured_shared_pacer_path_from_env() -> Result<Option<PathBuf>, ModelError> {
+    let Ok(raw) = env::var(GOOGLE_SHARED_PACER_PATH_ENV) else {
+        return Ok(None);
+    };
+    let path = PathBuf::from(raw);
+    if !path.is_absolute() {
+        return Err(ModelError::new(
+            ModelErrorKind::Protocol,
+            format!("{GOOGLE_SHARED_PACER_PATH_ENV} must be an absolute path"),
+        ));
+    }
+    Ok(Some(path))
 }
 
 fn parse_request_interval_ms(raw: &str) -> Result<Option<Duration>, ModelError> {
@@ -633,6 +722,39 @@ mod tests {
         );
         assert!(parse_request_interval_ms("not-a-number").is_err());
         assert!(parse_request_interval_ms("60001").is_err());
+    }
+
+    #[test]
+    fn shared_google_pacer_path_requires_absolute_path() {
+        let key = GOOGLE_SHARED_PACER_PATH_ENV;
+        unsafe { std::env::set_var(key, "relative/pacer") };
+        let error = configured_shared_pacer_path_from_env().unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::Protocol);
+        unsafe { std::env::remove_var(key) };
+    }
+
+    #[tokio::test]
+    async fn shared_google_pacer_serializes_request_slots_across_instances() {
+        let dir = std::env::temp_dir().join(format!(
+            "reason-google-pacer-test-{}-{}",
+            std::process::id(),
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ));
+        fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("shared.state");
+        let interval = Duration::from_millis(80);
+        let a = RequestPacer::new(interval, Some(path.clone()));
+        let b = RequestPacer::new(interval, Some(path.clone()));
+        let start = tokio::time::Instant::now();
+        let (ra, rb) = tokio::join!(a.wait(), b.wait());
+        ra.unwrap();
+        rb.unwrap();
+        assert!(start.elapsed() >= Duration::from_millis(70));
+        let _ = fs::remove_file(path);
+        let _ = fs::remove_dir_all(dir);
     }
 
     #[test]
