@@ -12,6 +12,12 @@ The saved Gemma trace showed a complete typed `{"action":"stop"}` object followe
 
 v31 therefore evaluates a separately justified product change on a new held-out corpus. It is **not** a rerun of v30 and does not change the v13 ruler. The corpus seed is fixed at `98473`; case identities, tasks, fact keys, answers, source identities, and fresh markers were fixed before live provider use and mechanically checked for collisions against frozen predecessors.
 
+### Surface revision r2
+
+The first v31 freeze (`natural-language-e2e-v31-freeze` @ `4542eecc8a656eb2cd2f625f6cfbf4e72045ae78`) exposed an evaluation-infrastructure packaging defect before any canonical arm launched. Run `34442213199` passed every frozen/precredential gate, then the paired step exited from `argparse` because the workflow referenced paired-orchestrator v2 flags while the branch still contained the older v1 helper from `main`. No control/candidate attempt marker, report, acceptance report, or orchestration record was created; no model observation was launched. The r1 tag and failed run remain immutable evidence of that infrastructure defect and are not rerun.
+
+Because no live arm was observed, r2 keeps the already predeclared seed `98473` and the exact same v31 corpus. The only r2 correction is evaluation infrastructure: carry forward the provider-neutral `paired-canonical-observation-v2` helper and tests from immutable v30, add an explicit helper CLI-surface regression, use distinct r2 workflow labels/artifact names, and freeze a new tag `natural-language-e2e-v31-freeze-r2`. No product runtime, scoring, metric, prompt/case semantics, provider coordinate, retry policy, or candidate coordinate changes.
+
 ## Measurement lock
 
 v31 preserves the v11 target/tool/finalization semantics, the v12 continuation-opportunity semantics, and the v13 operational-observability / conservative-bound semantics unchanged. `config/natural-language-e2e-metric-v13.json` remains the policy source of truth, with bound identity `natural-language-e2e-operational-bounds-v13`. Its historical `first_allowed_successor` remains v30 because v30 was the first prospective surface to use v13.
@@ -34,11 +40,11 @@ Provider coordinates are fixed before live use: Mistral `ministral-8b-latest`, G
 
 Before any provider credential is used, v31 must prove exact control/candidate coordinates, immutable v30 predecessor identity, no `Cargo.toml` / `Cargo.lock` / `crates` runtime diff from the candidate, workspace version `0.4.1`, corpus/surface checksums, v13 metric lock, pair validator, validate-only, no-model/no-network preflight, exact CLI capability probes, full deterministic Python tests, full Rust workspace tests, fmt, clippy `-D warnings`, pinned GitHub MCP contract, workflow-policy tests, and ordinary PR CI.
 
-Only after those gates are green may `natural-language-e2e-v31-freeze` be created. The freeze tag and checksums must exist before provider credentials are exposed.
+Only after those gates are green may `natural-language-e2e-v31-freeze-r2` be created. The freeze tag and checksums must exist before provider credentials are exposed.
 
 ## Canonical live order
 
-1. Run Mistral paired canonical once on the immutable v31 freeze.
+1. Run Mistral paired canonical once on the immutable v31 r2 freeze.
 2. Only if the Mistral paired gate is `PASS`, launch the cross-model workflow on the same freeze.
 3. Run Gemini paired canonical once and Gemma paired canonical once. Each row executes control first, then candidate exactly once. A nonzero control with preserved canonical evidence is delegated to the v13 acceptance comparator rather than automatically granting or denying release.
 4. Run Groq candidate-only canonical once.

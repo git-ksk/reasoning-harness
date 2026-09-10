@@ -1,4 +1,4 @@
-name: natural-language-e2e-v31-paired-live
+name: natural-language-e2e-v31-r2-paired-live
 
 on:
   pull_request:
@@ -10,11 +10,11 @@ permissions:
 
 jobs:
   mistral-paired-canonical:
-    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'natural-language-e2e-v31-paired-live'
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'natural-language-e2e-v31-r2-paired-live'
     runs-on: ubuntu-24.04
     timeout-minutes: 95
     env:
-      FREEZE_TAG: natural-language-e2e-v31-freeze
+      FREEZE_TAG: natural-language-e2e-v31-freeze-r2
       CONTROL_COMMIT: 29a9e4be6273dbffeda324e15517dc64930ad315
       CANDIDATE_COMMIT: 6bde9227d56ba237cb305777adf452461a0df864
       PROVIDER: mistral
@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: natural-language-e2e-v31-freeze
+          ref: natural-language-e2e-v31-freeze-r2
           fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -161,7 +161,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: natural-language-e2e-v31-paired-mistral-seed-98473
+          name: natural-language-e2e-v31-r2-paired-mistral-seed-98473
           path: |
             /tmp/v31-*.json
             /tmp/v31-mistral-candidate-traces/

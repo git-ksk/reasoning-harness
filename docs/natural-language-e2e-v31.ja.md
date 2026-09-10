@@ -12,6 +12,12 @@ v30 (`natural-language-e2e-v30-freeze`, commit `cf0cada8f4cf666f75b8dfb6c012a6ca
 
 したがってv31は、別途正当化されたproduct changeを**新しいheld-out corpus**で評価する。v30のrerunではなく、v13のrulerも変更しない。corpus seedは `98473` に固定し、case identity / task / fact key / answer / source identity / fresh marker はlive provider使用前に固定し、frozen predecessorとのcollisionを機械的に確認する。
 
+### Surface revision r2
+
+最初のv31 freeze (`natural-language-e2e-v31-freeze` @ `4542eecc8a656eb2cd2f625f6cfbf4e72045ae78`) は、canonical armを1件もlaunchする前にevaluation-infrastructure packaging defectを露呈した。run `34442213199` はfreeze/precredential gateをすべて通過した後、workflowがpaired orchestrator v2のoptionを指定している一方、branchにはmain由来の旧v1 helperしか無かったため `argparse` で終了した。control/candidate attempt marker、report、acceptance report、orchestration recordは1つも生成されず、model observationも開始されていない。r1 tag/runはinfra defectのimmutable evidenceとして保存し、rerunしない。
+
+live armが未観測なので、r2では事前固定済みseed `98473` とv31 corpusをそのまま維持する。r2の修正はevaluation infrastructureだけで、immutable v30に存在したprovider-neutral `paired-canonical-observation-v2` helper/testsを持ち込み、helper CLI surfaceの明示回帰を追加し、r2専用workflow label/artifact名と新tag `natural-language-e2e-v31-freeze-r2` を使う。product runtime、scoring、metric、prompt/case semantics、provider coordinate、retry policy、candidate coordinateは変更しない。
+
 ## Measurement lock
 
 v31 は v11 の target/tool/finalization semantics、v12 の continuation-opportunity semantics、v13 の operational observability / conservative bounds semanticsをすべて変更せず維持する。`config/natural-language-e2e-metric-v13.json` が引き続きsource of truthで、bound identityは `natural-language-e2e-operational-bounds-v13`。policyの `first_allowed_successor` がv30のままなのは、v30がv13を最初にprospective適用したhistorical factだからである。
@@ -34,11 +40,11 @@ provider coordinateはlive前に固定する。Mistral `ministral-8b-latest`、G
 
 provider credentialを使う前に、exact control/candidate coordinate、immutable v30 predecessor identity、candidateからの `Cargo.toml` / `Cargo.lock` / `crates` runtime diffなし、workspace version `0.4.1`、corpus/surface checksum、v13 metric lock、pair validator、validate-only、no-model/no-network preflight、exact CLI capability probe、full deterministic Python tests、full Rust workspace tests、fmt、clippy `-D warnings`、pinned GitHub MCP contract、workflow-policy tests、通常PR CIをすべて通す。
 
-これらがgreenになるまで `natural-language-e2e-v31-freeze` は作成しない。provider credentialを露出する前にfreeze tagとchecksumを確定させる。
+これらがgreenになるまで `natural-language-e2e-v31-freeze-r2` は作成しない。provider credentialを露出する前にfreeze tagとchecksumを確定させる。
 
 ## Canonical live 順序
 
-1. immutable v31 freezeでMistral paired canonicalを1回だけ実行する。
+1. immutable v31 r2 freezeでMistral paired canonicalを1回だけ実行する。
 2. Mistral paired gateが `PASS` の場合だけ、同一freezeでcross-model workflowを開始する。
 3. Gemini paired canonicalとGemma paired canonicalを各1回実行する。各rowはcontrolを先に、candidateを後に各1回だけ実行する。controlがnonzeroでもcanonical evidenceが保存されていればv13 acceptance comparatorに判定を委譲し、自動的な成功扱い・失敗扱いはしない。
 4. Groq candidate-only canonicalを1回実行する。

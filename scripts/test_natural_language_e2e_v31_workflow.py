@@ -1,4 +1,6 @@
 from pathlib import Path
+import subprocess
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -10,6 +12,8 @@ class V31WorkflowPolicyTests(unittest.TestCase):
     def test_mistral_pair_uses_preserving_orchestrator(self):
         text = PAIRED.read_text(encoding='utf-8')
         self.assertIn('Run paired Mistral canonical observation with evidence preservation', text)
+        self.assertIn('natural-language-e2e-v31-r2-paired-live', text)
+        self.assertIn('natural-language-e2e-v31-freeze-r2', text)
         self.assertIn('python3 scripts/paired_canonical_observation.py', text)
         self.assertIn('--control-required /tmp/v31-mistral-control.json', text)
         self.assertIn('--candidate-required /tmp/v31-mistral-candidate.json', text)
@@ -23,6 +27,8 @@ class V31WorkflowPolicyTests(unittest.TestCase):
     def test_google_pair_uses_preserving_orchestrator(self):
         text = CROSS.read_text(encoding='utf-8')
         self.assertIn('Run paired Google canonical observation with evidence preservation', text)
+        self.assertIn('natural-language-e2e-v31-r2-cross-model-live', text)
+        self.assertIn('natural-language-e2e-v31-freeze-r2', text)
         self.assertIn('python3 scripts/paired_canonical_observation.py', text)
         self.assertIn('--control-required "/tmp/v31-${SLUG}-control.json"', text)
         self.assertIn('--candidate-required "/tmp/v31-${SLUG}-candidate.json"', text)
@@ -42,6 +48,22 @@ class V31WorkflowPolicyTests(unittest.TestCase):
             self.assertIn('cf0cada8f4cf666f75b8dfb6c012a6ca63fb43a3', text)
             self.assertIn("grep -q '^version = \"0.4.1\"$' Cargo.toml", text)
             self.assertIn('git diff --exit-code "$CANDIDATE_COMMIT" -- Cargo.toml Cargo.lock crates', text)
+
+    def test_paired_helper_exposes_v2_cli_contract(self):
+        helper = ROOT / 'scripts/paired_canonical_observation.py'
+        text = helper.read_text(encoding='utf-8')
+        self.assertIn('CONTRACT_ID = "paired-canonical-observation-v2"', text)
+        cp = subprocess.run(
+            [sys.executable, str(helper), '--help'],
+            cwd=ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(cp.returncode, 0, cp.stderr)
+        self.assertIn('--allow-control-nonzero-with-evidence', cp.stdout)
+        self.assertIn('--heartbeat-seconds', cp.stdout)
 
     def test_google_models_use_two_model_specific_quota_lanes(self):
         text = CROSS.read_text(encoding='utf-8')
