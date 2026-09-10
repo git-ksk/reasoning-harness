@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.kelmora.mode=ready",
+  "add_hypothesis": "session.kelmora.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.kelmora.mode",
+    "Kelmora session readiness mode"
+  ],
+  "id": "session-add-kelmora",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.kelmora.mode",
+    "value": "kelmora-ready-signed"
+  },
+  "task": "Determine the current Kelmora session readiness mode."
+}

@@ -1,0 +1,17 @@
+{
+  "correction": "session.loxira.threshold=173",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.loxira.threshold",
+    "Loxira configured recovery threshold"
+  ],
+  "id": "session-correct-loxira",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.loxira.threshold=83",
+  "target": {
+    "key": "session.loxira.threshold",
+    "value": "211"
+  },
+  "task": "Determine the configured Loxira recovery threshold."
+}
