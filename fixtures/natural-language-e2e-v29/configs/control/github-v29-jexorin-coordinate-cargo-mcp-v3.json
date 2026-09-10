@@ -1,0 +1,85 @@
+{
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "secondary": 10
+            },
+            "evaluation_time_unix_seconds": 2000400200,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "ecosystem": {
+                "kind": "values",
+                "values": [
+                  "prod"
+                ]
+              }
+            },
+            "sources": {
+              "mcp:v29:paired-coordinate-cargo": {
+                "authority_class": "primary",
+                "max_age_seconds": 300,
+                "scope": {
+                  "ecosystem": {
+                    "kind": "values",
+                    "values": [
+                      "prod"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "allowed_tools": [
+            "get_file_contents"
+          ],
+          "args": [
+            "run",
+            "-i",
+            "--rm",
+            "-e",
+            "GITHUB_PERSONAL_ACCESS_TOKEN",
+            "-e",
+            "GITHUB_READ_ONLY=1",
+            "-e",
+            "GITHUB_TOOLS=get_file_contents",
+            "ghcr.io/github/github-mcp-server@sha256:46cdbbd810faf6f7aed1745ea04057443f5cb9fcadc15c7308add18cf9a83e33"
+          ],
+          "fixed_arguments": {
+            "owner": "git-ksk",
+            "path": "Cargo.toml",
+            "ref": "29a9e4be6273dbffeda324e15517dc64930ad315",
+            "repo": "reasoning-harness"
+          },
+          "id": "github-coordinate-cargo-manifest",
+          "kind": "mcp_readonly",
+          "max_response_bytes": 262144,
+          "max_tool_list_pages": 2,
+          "program": "docker",
+          "read_only": true,
+          "requested_protocol_version": "2026-07-28",
+          "server_id": "github-official-v1.12.0-pinned",
+          "source": "mcp:v29:paired-coordinate-cargo",
+          "supported_fact_keys": [
+            "release.v29.jexorin.coordinate_manifest.nonpromotion"
+          ],
+          "supported_protocol_versions": [
+            "2026-07-28",
+            "2025-11-25"
+          ],
+          "timeout_ms": 30000,
+          "tool": "get_file_contents"
+        }
+      ],
+      "max_actions": 2,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 256
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

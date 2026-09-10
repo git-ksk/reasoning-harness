@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.meryx.audit",
+    "Meryx audit enforcement mode"
+  ],
+  "id": "session-resume-fork-meryx",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.meryx.audit=guarded-signed",
+  "start_hypothesis": "session.meryx.audit=guarded-signed",
+  "target": {
+    "key": "session.meryx.audit",
+    "value": "guarded-signed"
+  },
+  "task": "Determine the active Meryx audit enforcement mode."
+}

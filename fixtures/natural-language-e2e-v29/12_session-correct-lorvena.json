@@ -1,0 +1,17 @@
+{
+  "correction": "session.lorvena.threshold=109",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.lorvena.threshold",
+    "Lorvena configured recovery threshold"
+  ],
+  "id": "session-correct-lorvena",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.lorvena.threshold=73",
+  "target": {
+    "key": "session.lorvena.threshold",
+    "value": "149"
+  },
+  "task": "Determine the configured Lorvena recovery threshold."
+}

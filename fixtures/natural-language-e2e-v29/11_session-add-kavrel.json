@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.kavrel.mode=ready",
+  "add_hypothesis": "session.kavrel.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.kavrel.mode",
+    "Kavrel session readiness mode"
+  ],
+  "id": "session-add-kavrel",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.kavrel.mode",
+    "value": "ready-verified"
+  },
+  "task": "Determine the current Kavrel session readiness mode."
+}
