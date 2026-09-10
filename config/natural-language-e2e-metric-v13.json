@@ -1,0 +1,76 @@
+{
+  "schema_version": "natural-language-e2e-metric-policy-v1",
+  "metric_revision": "v13",
+  "bound_identity": "natural-language-e2e-operational-bounds-v13",
+  "prospective_only": true,
+  "first_allowed_successor": "natural-language-e2e-v30",
+  "historical_rescore_forbidden": true,
+  "observability_states": [
+    "observed",
+    "censored",
+    "not_applicable"
+  ],
+  "reason_codes": [
+    "observed_pre_terminal_witness",
+    "observed_clean_completion",
+    "censored_operational_terminal_before_witness",
+    "censored_prerequisite_metric",
+    "not_applicable_case_kind",
+    "not_applicable_prerequisite_false"
+  ],
+  "principles": {
+    "complete_case_deletion_forbidden": true,
+    "favorable_imputation_forbidden": true,
+    "operational_failure_is_not_semantic_failure": true,
+    "positive_monotone_witness_survives_later_terminal": true,
+    "candidate_operational_failure_is_hard_gate": true,
+    "candidate_correctness_failure_is_hard_gate": true,
+    "cross_model_averaging_forbidden": true,
+    "asymmetric_diagnostics_scoring_input": false,
+    "single_canonical_attempt": true,
+    "whole_run_retry": false,
+    "semantic_retry_expansion": false,
+    "generic_malformed_json_retry_expansion": false,
+    "operational_terminal_requires_semantic_case_envelope": true
+  },
+  "metric_frontiers": {
+    "target_recalled": "positive target-membership witness is observed; absence before an operational terminal is censored",
+    "tool_selection_success": "positive qualifying execution is observed; absence before an operational terminal is censored",
+    "false_abstention": "grounded output proves false; otherwise operational terminal before semantic finalization censors the value",
+    "avoidable_followup_stall": "any executed action proves false; zero actions before an operational terminal is censored",
+    "trigger_exposed": "typed configured no_result witness is observed; absence before an operational terminal is censored",
+    "continuation_eligible": "defined only after observed trigger exposure and determined at the trigger state",
+    "mechanism_conformant": "defined only when continuation is eligible; positive conformance or concrete wrong immediate follow-up is observed, otherwise an intervening operational terminal censors",
+    "downstream_followup_useful": "defined only after observed mechanism conformance; post-action outcome must be observed",
+    "correctness_boundary_violation": "positive violation witness remains observed; zero before incomplete control terminal is not treated as proof of semantic cleanliness"
+  },
+  "bounds": {
+    "fixed_denominator_binary": "observed values are exact; each censored value ranges over its full admissible binary domain",
+    "conditional_rate": "enumerate all numerator/denominator assignments consistent with observability and semantic prerequisites",
+    "undefined_conditional_denominator": "INCONCLUSIVE"
+  },
+  "comparison": {
+    "higher_non_worse": "PASS iff candidate >= control upper; FAIL iff candidate < control lower; otherwise INCONCLUSIVE",
+    "higher_strict": "PASS iff candidate > control upper; FAIL iff candidate <= control lower; otherwise INCONCLUSIVE",
+    "lower_non_worse": "PASS iff candidate <= control lower; FAIL iff candidate > control upper; otherwise INCONCLUSIVE",
+    "lower_strict": "PASS iff candidate < control lower; FAIL iff candidate >= control upper; otherwise INCONCLUSIVE",
+    "inconclusive_releases": false
+  },
+  "out_of_scope": [
+    "repeated-trial reliability (#282)",
+    "deterministic action materialization (#283)",
+    "authority/admission/verification/finalization changes",
+    "provider-specific scoring rules"
+  ],
+  "hard_zero_fields": [
+    "correctness_boundary_violations",
+    "unsupported_structured_claims",
+    "unsupported_exposed_assertions",
+    "exposed_text_contract_violations",
+    "missed_target_insufficiency",
+    "identity_unsafe_admission",
+    "mcp_output_authority_self_promotion",
+    "session_external_calls_replayed",
+    "duplicate_action_rejections"
+  ]
+}
