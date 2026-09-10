@@ -15,13 +15,17 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 const DEFAULT_BASE_URL: &str = "https://generativelanguage.googleapis.com/v1beta/";
-const DEFAULT_TIMEOUT: Duration = Duration::from_secs(180);
+const DEFAULT_TIMEOUT: Duration = Duration::from_secs(300);
 const MAX_RATE_LIMIT_RETRIES: usize = 3;
 const MAX_PROVIDER_ATTEMPTS: u32 = 4;
 const MAX_TRANSIENT_RETRIES: usize = MAX_PROVIDER_ATTEMPTS as usize - 1;
 const MAX_EMPTY_TEXT_RETRIES: usize = MAX_PROVIDER_ATTEMPTS as usize - 1;
 const INITIAL_RATE_LIMIT_BACKOFF: Duration = Duration::from_secs(10);
-const INITIAL_TRANSIENT_BACKOFF: Duration = Duration::from_millis(500);
+const TRANSIENT_BACKOFF_SCHEDULE: [Duration; 3] = [
+    Duration::from_secs(2),
+    Duration::from_secs(5),
+    Duration::from_secs(10),
+];
 const GOOGLE_RECOMMENDED_TEMPERATURE: f32 = 1.0;
 const GOOGLE_MIN_REQUEST_INTERVAL_MS_ENV: &str = "REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS";
 const GOOGLE_SHARED_PACER_PATH_ENV: &str = "REASON_GOOGLE_SHARED_PACER_PATH";
@@ -523,11 +527,14 @@ fn is_transient_http_status(status: StatusCode) -> bool {
 }
 
 fn transient_retry_delay(retry_index: usize) -> Duration {
-    let multiplier = 1u32.checked_shl(retry_index as u32).unwrap_or(u32::MAX);
-    INITIAL_TRANSIENT_BACKOFF
-        .checked_mul(multiplier)
-        .unwrap_or(Duration::from_secs(2))
-        .min(Duration::from_secs(2))
+    TRANSIENT_BACKOFF_SCHEDULE
+        .get(retry_index)
+        .copied()
+        .unwrap_or_else(|| {
+            *TRANSIENT_BACKOFF_SCHEDULE
+                .last()
+                .expect("non-empty schedule")
+        })
 }
 
 fn google_error_detail(body: &str) -> String {
@@ -787,6 +794,19 @@ mod tests {
         let max_retries = MAX_PROVIDER_ATTEMPTS as usize - 1;
         assert_eq!(MAX_TRANSIENT_RETRIES, max_retries);
         assert_eq!(MAX_EMPTY_TEXT_RETRIES, max_retries);
+    }
+
+    #[test]
+    fn google_request_timeout_allows_slow_provider_responses() {
+        assert_eq!(DEFAULT_TIMEOUT, Duration::from_secs(300));
+    }
+
+    #[test]
+    fn transient_5xx_backoff_spans_the_high_demand_window() {
+        assert_eq!(transient_retry_delay(0), Duration::from_secs(2));
+        assert_eq!(transient_retry_delay(1), Duration::from_secs(5));
+        assert_eq!(transient_retry_delay(2), Duration::from_secs(10));
+        assert_eq!(transient_retry_delay(3), Duration::from_secs(10));
     }
 
     #[test]
