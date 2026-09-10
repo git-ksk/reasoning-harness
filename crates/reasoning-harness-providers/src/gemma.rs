@@ -313,8 +313,69 @@ fn parse_request_interval_ms(raw: &str) -> Result<Option<Duration>, ModelError> 
     Ok(Some(interval))
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum GoogleQuotaWindow {
+    ShortWindow,
+    Daily,
+    Ambiguous,
+}
+
+fn structured_google_quota_window(body: &str) -> Option<GoogleQuotaWindow> {
+    let value = serde_json::from_str::<Value>(body).ok()?;
+    let details = value
+        .get("error")
+        .and_then(|error| error.get("details"))
+        .and_then(Value::as_array)?;
+
+    let mut saw_quota_violation = false;
+    let mut saw_short_window = false;
+    let mut saw_daily = false;
+
+    for detail in details {
+        let Some(violations) = detail.get("violations").and_then(Value::as_array) else {
+            continue;
+        };
+        for violation in violations {
+            saw_quota_violation = true;
+            let quota_id = violation
+                .get("quotaId")
+                .or_else(|| violation.get("quota_id"))
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_ascii_lowercase();
+            if quota_id.contains("perday") || quota_id.contains("daily") {
+                saw_daily = true;
+            } else if quota_id.contains("perminute")
+                || quota_id.contains("persecond")
+                || quota_id.contains("per10minute")
+                || quota_id.contains("per10minutes")
+            {
+                saw_short_window = true;
+            }
+        }
+    }
+
+    if saw_daily {
+        Some(GoogleQuotaWindow::Daily)
+    } else if saw_short_window {
+        Some(GoogleQuotaWindow::ShortWindow)
+    } else if saw_quota_violation {
+        Some(GoogleQuotaWindow::Ambiguous)
+    } else {
+        None
+    }
+}
+
 fn classify_http_error(status: StatusCode, body: &str) -> ModelErrorKind {
     if status == StatusCode::TOO_MANY_REQUESTS {
+        match structured_google_quota_window(body) {
+            Some(GoogleQuotaWindow::ShortWindow) => return ModelErrorKind::RateLimit,
+            Some(GoogleQuotaWindow::Daily | GoogleQuotaWindow::Ambiguous) => {
+                return ModelErrorKind::Quota;
+            }
+            None => {}
+        }
+
         let normalized = body.to_ascii_lowercase();
         if [
             "quota",
@@ -364,7 +425,7 @@ fn google_error_detail(body: &str) -> String {
     };
     let provider_status = error.get("status").and_then(Value::as_str);
     let message = error.get("message").and_then(Value::as_str);
-    match (provider_status, message) {
+    let mut detail = match (provider_status, message) {
         (Some(status), Some(message)) => format!(
             "; provider_status={status}; message={}",
             truncate_diagnostic(message, 512)
@@ -372,7 +433,48 @@ fn google_error_detail(body: &str) -> String {
         (Some(status), None) => format!("; provider_status={status}"),
         (None, Some(message)) => format!("; message={}", truncate_diagnostic(message, 512)),
         (None, None) => String::new(),
+    };
+
+    let mut quota_ids = Vec::new();
+    let mut retry_delay = None;
+    if let Some(details) = error.get("details").and_then(Value::as_array) {
+        for item in details {
+            if let Some(violations) = item.get("violations").and_then(Value::as_array) {
+                for violation in violations {
+                    if let Some(quota_id) = violation
+                        .get("quotaId")
+                        .or_else(|| violation.get("quota_id"))
+                        .and_then(Value::as_str)
+                    {
+                        let quota_id = truncate_diagnostic(quota_id, 128);
+                        if !quota_ids.contains(&quota_id) && quota_ids.len() < 4 {
+                            quota_ids.push(quota_id);
+                        }
+                    }
+                }
+            }
+            let item_type = item
+                .get("@type")
+                .and_then(Value::as_str)
+                .unwrap_or_default();
+            if item_type.ends_with("google.rpc.RetryInfo") {
+                retry_delay = item
+                    .get("retryDelay")
+                    .or_else(|| item.get("retry_delay"))
+                    .and_then(Value::as_str)
+                    .map(|value| truncate_diagnostic(value, 32));
+            }
+        }
     }
+    if !quota_ids.is_empty() {
+        detail.push_str("; quota_ids=");
+        detail.push_str(&quota_ids.join(","));
+    }
+    if let Some(retry_delay) = retry_delay {
+        detail.push_str("; retry_delay=");
+        detail.push_str(&retry_delay);
+    }
+    detail
 }
 
 fn truncate_diagnostic(value: &str, max_chars: usize) -> String {
@@ -563,6 +665,54 @@ mod tests {
         assert!(detail.contains("provider_status=INVALID_ARGUMENT"));
         assert!(detail.contains("message=bad request without secrets"));
         assert!(!detail.contains('\n'));
+
+        let quota_detail = google_error_detail(
+            r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"quota exceeded","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier"}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"10s"}]}}"#,
+        );
+        assert!(
+            quota_detail.contains("quota_ids=GenerateRequestsPerMinutePerProjectPerModel-FreeTier")
+        );
+        assert!(quota_detail.contains("retry_delay=10s"));
+    }
+
+    #[test]
+    fn structured_google_quota_window_distinguishes_short_daily_and_ambiguous() {
+        let per_minute = r#"{"error":{"details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests"}]}]}}"#;
+        let per_day = r#"{"error":{"details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}]}}"#;
+        let mixed = r#"{"error":{"details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier"},{"quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}]}}"#;
+        let ambiguous = r#"{"error":{"details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests"}]}]}}"#;
+
+        assert_eq!(
+            structured_google_quota_window(per_minute),
+            Some(GoogleQuotaWindow::ShortWindow)
+        );
+        assert_eq!(
+            structured_google_quota_window(per_day),
+            Some(GoogleQuotaWindow::Daily)
+        );
+        assert_eq!(
+            structured_google_quota_window(mixed),
+            Some(GoogleQuotaWindow::Daily)
+        );
+        assert_eq!(
+            structured_google_quota_window(ambiguous),
+            Some(GoogleQuotaWindow::Ambiguous)
+        );
+    }
+
+    #[test]
+    fn classifies_structured_short_window_google_quota_as_rate_limit_only() {
+        let per_minute = r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"quota exceeded","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests"}]}]}}"#;
+        let per_day = r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"quota exceeded","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}]}}"#;
+
+        assert_eq!(
+            classify_http_error(StatusCode::TOO_MANY_REQUESTS, per_minute),
+            ModelErrorKind::RateLimit
+        );
+        assert_eq!(
+            classify_http_error(StatusCode::TOO_MANY_REQUESTS, per_day),
+            ModelErrorKind::Quota
+        );
     }
 
     #[test]
@@ -787,6 +937,36 @@ mod tests {
             assert_eq!(error.provider_attempts, 1);
             server.join().unwrap();
         }
+    }
+
+    #[tokio::test]
+    async fn structured_per_minute_quota_uses_existing_bounded_rate_limit_retry() {
+        let short_window = r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"quota exceeded","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier"}]}]}}"#;
+        let (base_url, server) = spawn_sequence_server(vec![
+            (
+                "429 Too Many Requests",
+                short_window.into(),
+                "Retry-After: 1\r\n",
+            ),
+            ("200 OK", success_body("ok"), ""),
+        ]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let response = adapter.generate(test_request()).await.unwrap();
+        assert_eq!(response.text, "ok");
+        assert_eq!(response.provider_attempts, 2);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn structured_per_day_quota_remains_non_retryable() {
+        let daily = r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"quota exceeded","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}]}}"#;
+        let (base_url, server) =
+            spawn_sequence_server(vec![("429 Too Many Requests", daily.into(), "")]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        let error = adapter.generate(test_request()).await.unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::Quota);
+        assert_eq!(error.provider_attempts, 1);
+        server.join().unwrap();
     }
 
     #[tokio::test]
