@@ -1,0 +1,63 @@
+name: installer-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'install.sh'
+      - 'install.ps1'
+      - '.github/workflows/installer-smoke.yml'
+      - '.github/workflows/release-cli.yml'
+      - 'scripts/test_installer_contract.py'
+      - 'crates/reasoning-harness-cli/Cargo.toml'
+  push:
+    branches: [main]
+    paths:
+      - 'install.sh'
+      - 'install.ps1'
+      - '.github/workflows/installer-smoke.yml'
+      - '.github/workflows/release-cli.yml'
+      - 'scripts/test_installer_contract.py'
+      - 'crates/reasoning-harness-cli/Cargo.toml'
+
+permissions:
+  contents: read
+
+jobs:
+  unix:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            expected: linux-x86_64
+          - os: macos-15
+            expected: macos-aarch64
+          - os: macos-15-intel
+            expected: macos-x86_64
+    runs-on: ${{ matrix.os }}
+    name: unix (${{ matrix.expected }})
+    steps:
+      - uses: actions/checkout@v7
+      - name: Deterministic installer contract tests
+        if: runner.os == 'Linux'
+        run: python3 scripts/test_installer_contract.py
+      - name: Install immutable v0.4.2 release without Rust
+        shell: bash
+        run: |
+          set -euo pipefail
+          BIN_DIR="$RUNNER_TEMP/reason-install-bin"
+          ./install.sh --version 0.4.2 --bin-dir "$BIN_DIR"
+          test "$("$BIN_DIR/reason" --version)" = "reason 0.4.2"
+
+  windows:
+    runs-on: windows-2025
+    name: windows (windows-x86_64)
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install immutable v0.4.2 release without Rust
+        shell: pwsh
+        run: |
+          $BinDir = Join-Path $env:RUNNER_TEMP 'reason-install-bin'
+          ./install.ps1 -Version 0.4.2 -BinDir $BinDir
+          $Version = (& (Join-Path $BinDir 'reason.exe') --version | Out-String).Trim()
+          if ($Version -ne 'reason 0.4.2') { throw "unexpected installed version: $Version" }

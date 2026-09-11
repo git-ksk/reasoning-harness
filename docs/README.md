@@ -14,9 +14,10 @@ You do **not** need to read the research record before using the product. Choose
 Start here:
 
 1. [Getting Started](getting-started.md) — install the current preview and run a grounded and intentionally-insufficient example.
-2. [CLI guide](cli.md) — commands, input, provider credentials, config, stdin, JSON output, and exit semantics.
-3. [How Reasoning Harness works](how-it-works.md) — the proposal-vs-authority boundary in practical terms.
-4. [Product support and compatibility](support.md) — supported platforms, contracts, provider posture, and v0.x compatibility.
+2. [Native installers](native-installers.md) — one-command macOS/Linux/Windows distribution contract for Reason CLI 0.5.0.
+3. [CLI guide](cli.md) — commands, input, provider credentials, config, stdin, JSON output, and exit semantics.
+4. [How Reasoning Harness works](how-it-works.md) — the proposal-vs-authority boundary in practical terms.
+5. [Product support and compatibility](support.md) — supported platforms, contracts, provider posture, and v0.x compatibility.
 
 If you only want to understand the project before installing it, read the root [README](../README.md) and then [How it works](how-it-works.md).
 

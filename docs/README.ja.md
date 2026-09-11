@@ -14,9 +14,10 @@
 この順がおすすめです。
 
 1. [Getting Started](getting-started.ja.md) — current previewのinstallと、grounded / 根拠不足ケースを試す。
-2. [CLIガイド](cli.ja.md) — command、input、provider credential、config、stdin、JSON、exit semantics。
-3. [Reasoning Harnessの仕組み](how-it-works.ja.md) — candidateとauthorityを分ける実行モデル。
-4. [Product support / compatibility](support.ja.md) — supported platform、contract、provider、v0.x互換性。
+2. [ネイティブインストーラー](native-installers.ja.md) — Reason CLI 0.5.0向け1コマンド配布の契約。
+3. [CLIガイド](cli.ja.md) — command、input、provider credential、config、stdin、JSON、exit semantics。
+4. [Reasoning Harnessの仕組み](how-it-works.ja.md) — candidateとauthorityを分ける実行モデル。
+5. [Product support / compatibility](support.ja.md) — supported platform、contract、provider、v0.x互換性。
 
 インストール前に考え方だけ知りたい場合は、root [README](../README.ja.md) → [仕組み](how-it-works.ja.md)で十分です。
 
