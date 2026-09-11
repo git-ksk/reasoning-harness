@@ -62,6 +62,10 @@ READMEでは、現行releaseであるv0.4.2の実測だけを載せます。
 
 freeze座標、run ID、control/candidateのaggregate、pacing policy、release provenanceは[v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.ja.md)に固定しています。過去releaseや研究の実測は詳細evidence documentには残しますが、READMEでは**現在公開中のv0.4.2**だけが分かる構成にしています。
 
+## v0.4.2以降のversioning
+
+`v0.4.2`を、product CLIとreasoning engineが同じversion座標を共有する最後のreleaseとして固定します。次のproduct lineからは **Reason CLI** と **Harness Engine** を独立してversioningします。現在の公開releaseはCLI 0.4.2 / Engine 0.4.2、次の一般向けlineはEngine 0.4.2を固定したReason CLI 0.5.0です。新しいCLI release tagは`reason-vX.Y.Z`を使い、machine contract IDは別のcompatibility座標として維持します。詳細は[versioning](docs/versioning.ja.md)を参照してください。
+
 ## 30秒で始める
 
 ### 1. 現在のv0.4.2プレビューをインストール

@@ -56,7 +56,7 @@ v35のeval infrastructure failureは再発しなかった。Google shared reques
 
 cross-model averagingは使っていない。全required rowが独立にPASSし、candidate operational failureはhard gate、`INCONCLUSIVE`はnon-releasableのまま維持した。したがってv0.4.xのcorrectness、authority、admission、verification、finalization、answer-safety、MCP non-promotion、session replay boundaryを維持したままv0.4.2をreleaseできる。
 
-より広いfinalization/grounding bridge（#248）、repeated-trial planner reliability（#282）、Harness-owned deterministic action materialization（#283）はv0.5.0のまま維持し、このpatch releaseには取り込んでいない。
+より広いfinalization/grounding bridge（#248）、repeated-trial planner reliability（#282）、Harness-owned deterministic action materialization（#283）はHarness Engine 0.5.0のまま維持し、このpatch releaseには取り込んでいない。
 ## Release provenance
 
 acceptance済みproduct coordinateはmain commit `d8940b4a98f11ec3e0968444fadc8bc90eae01ff`から`v0.4.2`としてreleaseした。release workflow `34570773900`はSUCCESSで、Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64をbuild・smoke・package公開し、`SHA256SUMS`も生成・公開した。GitHub Releaseはdocumented external-preview support policyどおりv0.x prereleaseとして維持する。

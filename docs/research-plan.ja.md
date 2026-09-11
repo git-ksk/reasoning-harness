@@ -31,7 +31,7 @@ product follow-up lineは新しいreasoning researchと分離して進める。v
 - **#90 完了:** CLI の外部contract、install / release compatibility、process-level observability、readiness gate を整備
 - **#126 完了:** bounded transient retry、provider-attempt telemetry、exact-identity resume を追加。過去の研究結果は変更していない
 - **#139 完了:** six-case Ministral 8B product workload で coverage / withholding gap を再検証し、authority boundary を保ったまま改善を確認
-- **Current release:** v0.4.2。v0.4.x authority foundationを維持し、safe acquisition precedence、generic Groq provider parity、structured planner/action hardening、provider/eval resilienceをimmutable v36 acceptanceで検証した。semantic research generationは変更しない
+- **Current release:** v0.4.2。v0.4.x authority foundationを維持し、safe acquisition precedence、generic Groq provider parity、structured planner/action hardening、provider/eval resilienceをimmutable v36 acceptanceで検証した。semantic research generationは変更しない。これはCLI/Engineの最後のunified versionで、Reason CLI 0.5.0 productizationはHarness Engine 0.4.2を固定して進め、Harness Engine 0.5.0は独立したfresh-evidence lineとする
 - **#173 完了:** v0.3.0 milestone。#174 / #175 / #178 で external-resolution lane、#176 で read-only MCP acquisition、#177 で trusted external verification、#179 で non-frozen open-world acceptance、#180 で optional `reason-mcp` surface を追加
 
 つまり、**研究の成功 = 即リリース**ではありません。研究は研究 identity のまま凍結し、製品化は別の変更として行います。

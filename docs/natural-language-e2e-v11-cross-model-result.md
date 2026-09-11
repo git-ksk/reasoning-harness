@@ -56,7 +56,7 @@ The existing `GroqAdapter` and dedicated external-information evaluation path ar
 
 Across every case where the released v0.4.1 #249 trigger was actually exposed, the exact-target typed-`no_result` continuation was conformant: Mistral `1/1` plus Gemma `3/3`, for `4/4` observed conformant continuations. No correctness-boundary violation, unsupported exposed assertion, unsupported structured claim, identity-unsafe admission, MCP authority self-promotion, or session external side-effect replay was observed in the completed semantic rows.
 
-The product utility gap is therefore not evidence that #249 is malfunctioning. The primary pre-trigger residual is planner/action selection: Mistral exposed one of three follow-up triggers, Gemini exposed none, and Gemma exposed all three. The downstream grounding residual also remains: useful follow-up evidence did not reliably become a grounded final answer. That finalization/grounding boundary remains assigned to #248 / v0.5.0 and is not moved into v0.4.2.
+The product utility gap is therefore not evidence that #249 is malfunctioning. The primary pre-trigger residual is planner/action selection: Mistral exposed one of three follow-up triggers, Gemini exposed none, and Gemma exposed all three. The downstream grounding residual also remains: useful follow-up evidence did not reliably become a grounded final answer. That finalization/grounding boundary remains assigned to #248 / Harness Engine 0.5.0 and is not moved into v0.4.2.
 
 ## Closeout decision
 

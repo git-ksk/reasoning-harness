@@ -20,7 +20,7 @@ reason --version
 
 This installs only the supported `reason` product binary, not the research binaries. Standalone `v0.4.2` archives are also published for Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64, with `SHA256SUMS`. Use `main` only for intentionally unreleased development snapshots.
 
-`v0.4.2` remains an external preview under the v0.x support policy even though the documented v1.0 readiness gate has been satisfied. The version number is a product/distribution coordinate; it does not create a new frozen research generation.
+`v0.4.2` remains an external preview under the v0.x support policy even though the documented v1.0 readiness gate has been satisfied. It is also the final unified historical coordinate for Reason CLI 0.4.2 + Harness Engine 0.4.2. Future CLI releases version independently and use `reason-vX.Y.Z` tags; see [versioning](versioning.md).
 
 ## Natural-language AI path
 

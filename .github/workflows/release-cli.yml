@@ -3,11 +3,11 @@ name: release-cli
 on:
   push:
     tags:
-      - 'v*'
+      - 'reason-v*'
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing v-prefixed tag to package
+        description: Existing Reason CLI tag to package (`reason-v*`; historical unified `v0.1.0`-`v0.4.2` accepted)
         required: true
         type: string
 
@@ -34,9 +34,21 @@ jobs:
         run: |
           set -euo pipefail
           TAG="${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}"
-          [[ "$TAG" == v* ]] || { echo "release tag must start with v" >&2; exit 1; }
           VERSION="$(cargo metadata --locked --no-deps --format-version 1 | python -c 'import json,sys; data=json.load(sys.stdin); print(next(p["version"] for p in data["packages"] if p["name"]=="reasoning-harness-cli"))')"
-          [[ "$TAG" == "v$VERSION" ]] || { echo "tag $TAG does not match reasoning-harness-cli version $VERSION" >&2; exit 1; }
+          case "$TAG" in
+            reason-v*)
+              BASE_VERSION="${VERSION%%-*}"
+              IFS=. read -r VERSION_MAJOR VERSION_MINOR VERSION_PATCH <<< "$BASE_VERSION"
+              if (( VERSION_MAJOR == 0 && VERSION_MINOR < 5 )); then
+                echo "reason-v* namespace starts at Reason CLI 0.5.0; use the immutable historical v* tag for older releases" >&2
+                exit 1
+              fi
+              EXPECTED_TAG="reason-v$VERSION"
+              ;;
+            v0.1.0|v0.2.0|v0.3.0|v0.4.0|v0.4.1|v0.4.2) EXPECTED_TAG="v$VERSION" ;;
+            *) echo "unsupported CLI tag namespace: $TAG (use reason-vX.Y.Z; historical unified v0.1.0-v0.4.2 are manual-only)" >&2; exit 1 ;;
+          esac
+          [[ "$TAG" == "$EXPECTED_TAG" ]] || { echo "tag $TAG does not match reasoning-harness-cli version $VERSION" >&2; exit 1; }
           git fetch origin main
           TAG_COMMIT="$(git rev-parse HEAD)"
           git merge-base --is-ancestor "$TAG_COMMIT" origin/main || { echo "tag $TAG is not reachable from main" >&2; exit 1; }
@@ -94,7 +106,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          NAME="reason-${{ needs.prepare.outputs.tag }}-${{ matrix.asset }}"
+          NAME="reason-v${{ needs.prepare.outputs.version }}-${{ matrix.asset }}"
           mkdir "$NAME"
           cp "${{ matrix.executable }}" "$NAME/reason"
           cp README.md LICENSE CHANGELOG.md "$NAME/"
@@ -103,15 +115,15 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $name = "reason-${{ needs.prepare.outputs.tag }}-${{ matrix.asset }}"
+          $name = "reason-v${{ needs.prepare.outputs.version }}-${{ matrix.asset }}"
           New-Item -ItemType Directory -Path $name | Out-Null
           Copy-Item "${{ matrix.executable }}" "$name/reason.exe"
           Copy-Item README.md, LICENSE, CHANGELOG.md $name
           Compress-Archive -Path $name -DestinationPath "$name.zip"
       - uses: actions/upload-artifact@v7
         with:
-          name: reason-${{ needs.prepare.outputs.tag }}-${{ matrix.asset }}
-          path: reason-${{ needs.prepare.outputs.tag }}-${{ matrix.asset }}.*
+          name: reason-v${{ needs.prepare.outputs.version }}-${{ matrix.asset }}
+          path: reason-v${{ needs.prepare.outputs.version }}-${{ matrix.asset }}.*
           if-no-files-found: error
 
   release:
@@ -125,7 +137,7 @@ jobs:
           ref: ${{ needs.prepare.outputs.tag }}
       - uses: actions/download-artifact@v8
         with:
-          pattern: reason-${{ needs.prepare.outputs.tag }}-*
+          pattern: reason-v${{ needs.prepare.outputs.version }}-*
           path: dist
           merge-multiple: true
       - name: Generate checksums
@@ -148,5 +160,5 @@ jobs:
             if [[ "${{ needs.prepare.outputs.version }}" == 0.* ]]; then
               PRERELEASE_ARGS+=(--prerelease)
             fi
-            gh release create "${{ needs.prepare.outputs.tag }}" dist/* --verify-tag --generate-notes --title "Reasoning Harness CLI ${{ needs.prepare.outputs.tag }}" "${PRERELEASE_ARGS[@]}"
+            gh release create "${{ needs.prepare.outputs.tag }}" dist/* --verify-tag --generate-notes --title "Reason CLI v${{ needs.prepare.outputs.version }}" "${PRERELEASE_ARGS[@]}"
           }

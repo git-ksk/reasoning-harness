@@ -62,6 +62,10 @@ In this table, **target recall** asks whether the investigation identified the r
 
 The exact frozen coordinates, run IDs, control/candidate aggregates, pacing policy, and release provenance are recorded in [v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.md). Historical research and earlier release measurements remain in the detailed evidence documents, but are intentionally omitted here so the README reflects the **current released product**.
 
+## Versioning after v0.4.2
+
+`v0.4.2` is the final release where the product CLI and reasoning engine share one version coordinate. From the next product line onward, **Reason CLI** and **Harness Engine** version independently. The current published release is CLI 0.4.2 / Engine 0.4.2; the planned general-use line is Reason CLI 0.5.0 on the unchanged Engine 0.4.2. New CLI release tags use `reason-vX.Y.Z`. Machine contract IDs remain separate compatibility coordinates. See [versioning](docs/versioning.md).
+
 ## 30-second quickstart
 
 ### 1. Install the current v0.4.2 preview
