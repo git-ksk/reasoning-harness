@@ -1,0 +1,242 @@
+name: natural-language-e2e-v35-cross-model-live
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  preflight:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'natural-language-e2e-v35-cross-model-live'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      FREEZE_TAG: natural-language-e2e-v35-freeze
+      CONTROL_COMMIT: 29a9e4be6273dbffeda324e15517dc64930ad315
+      CANDIDATE_COMMIT: dd66a4372cfb462f876ac3169ba91df8d4a7f436
+    steps:
+      - uses: actions/checkout@v7
+        with: {ref: natural-language-e2e-v35-freeze, fetch-depth: 0}
+      - uses: dtolnay/rust-toolchain@stable
+        with: {toolchain: '1.88.0'}
+      - name: Re-prove frozen paired surface
+        run: |
+          set -euo pipefail
+          test "$(git rev-list -n 1 natural-language-e2e-v21-freeze)" = "cb1fd023778e810d703689c063c68e7be7bc6847"
+          test "$(git rev-list -n 1 natural-language-e2e-v22-freeze)" = "097acaca2ad5a5dcbd1f90759f95ebb0cccca213"
+          test "$(git rev-list -n 1 natural-language-e2e-v23-freeze)" = "4bcd60d873f5a174b4509b1533544cbf918431ba"
+          test "$(git rev-list -n 1 natural-language-e2e-v24-freeze)" = "16c527211a837f5a230b9789abd039c787ae90f1"
+          test "$(git rev-list -n 1 natural-language-e2e-v25-freeze)" = "d1d1ac19dd9e043e13aa1cbf0c3527c8d9b5cdd3"
+          test "$(git rev-list -n 1 natural-language-e2e-v26-freeze)" = "e7bac4705f97cef50a6c9de49b0f251a72cf9ddf"
+          test "$(git rev-list -n 1 natural-language-e2e-v27-freeze)" = "970e98943ac94f1a1f1ac1c2b8dd81f5fe74ef53"
+          test "$(git rev-list -n 1 natural-language-e2e-v28-freeze)" = "ccce3e56b3093746450db05a07ac2dacc473fa1b"
+          test "$(git rev-list -n 1 natural-language-e2e-v29-freeze)" = "a91e16c017efcc14bdd698afab8c588af7e6cbac"
+          test "$(git rev-list -n 1 natural-language-e2e-v30-freeze)" = "cf0cada8f4cf666f75b8dfb6c012a6ca63fb43a3"
+          test "$(git rev-list -n 1 natural-language-e2e-v31-freeze)" = "4542eecc8a656eb2cd2f625f6cfbf4e72045ae78"
+          test "$(git rev-list -n 1 natural-language-e2e-v31-freeze-r2)" = "22a035ae7e3c88de679a950ab4429b391f9ebafa"
+          test "$(git rev-list -n 1 natural-language-e2e-v33-freeze)" = "1a03f1a700766cf0c31672601b45bd15eec2cdc7"
+          test "$(git rev-list -n 1 natural-language-e2e-v34-freeze)" = "0aa45d4bfb72b445ad287e2a4f0c5b3e455a7ee2"
+          F="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git rev-parse HEAD)" = "$F"
+          test "${{ github.event.pull_request.head.sha }}" = "$F"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          test "$(git rev-parse "$CONTROL_COMMIT")" = "$CONTROL_COMMIT"
+          test "$(git rev-parse "$CANDIDATE_COMMIT")" = "$CANDIDATE_COMMIT"
+          git diff --exit-code "$CANDIDATE_COMMIT" -- Cargo.toml Cargo.lock crates
+          grep -q '^version = "0.4.1"$' Cargo.toml
+          (cd fixtures/natural-language-e2e-v35 && sha256sum -c ../natural-language-e2e-v35.sha256)
+          sha256sum -c fixtures/natural-language-e2e-v35-surface.sha256
+          python3 scripts/validate_natural_language_e2e_v35_pair.py >/tmp/v35-pair-validation.json
+          python3 scripts/natural_language_e2e_v35_acceptance.py --validate-only >/tmp/v35-acceptance-validate.json
+          python3 scripts/validate_natural_language_e2e_v35_metric_lock.py
+          python3 scripts/validate_cross_model_concurrency_policy.py
+          python3 scripts/validate_google_canonical_pacing.py --workflow .github/workflows/natural-language-e2e-v35-cross-model-live.yml --manifest fixtures/natural-language-e2e-v35/manifest.json
+          cargo test --locked -p reasoning-harness-providers structured_retry_info_without_quota_id_is_short_window_only_when_bounded_and_conflict_free
+          cargo test --locked -p reasoning-harness-providers classifies_quota_id_absent_structured_retry_info_as_rate_limit
+          printf '%s\n' '{"schema_version":"v35-google-quota-classification-preflight-v1","candidate_commit":"dd66a4372cfb462f876ac3169ba91df8d4a7f436","bounded_retry_info_without_quota_id":"RateLimit","explicit_daily_with_retry":"Quota","generic_ambiguous_without_structured_short_window":"Quota","max_structured_short_retry_delay_seconds":120,"live_request_performed":false}' > /tmp/v35-google-quota-classification-preflight.json
+          python3 -m unittest -v scripts/test_natural_language_e2e_v35.py scripts/test_natural_language_e2e_v35_acceptance.py scripts/test_operational_case_retry.py scripts/test_paired_canonical_observation.py scripts/test_natural_language_e2e_v35_workflow.py scripts/test_natural_language_e2e_v35_diagnostics.py
+      - name: Require successful paired Mistral canonical for this freeze
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          F="$(git rev-parse HEAD)"
+          gh api "repos/${{ github.repository }}/actions/workflows/natural-language-e2e-v35-paired-live.yml/runs?event=pull_request&per_page=50" \
+            | jq -e --arg sha "$F" '[.workflow_runs[] | select(.head_sha == $sha and .status == "completed" and .conclusion == "success")] | length >= 1' >/dev/null
+      - name: Preserve cross-model preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v35-cross-preflight
+          path: /tmp/v35-*.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  google-paired:
+    needs: preflight
+    if: needs.preflight.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - model: gemini-3.5-flash-lite
+            slug: google-gemini-3.5-flash-lite
+            workers: 1
+          - model: gemma-4-31b-it
+            slug: google-gemma-4-31b-it
+            workers: 2
+    env:
+      FREEZE_TAG: natural-language-e2e-v35-freeze
+      CONTROL_COMMIT: 29a9e4be6273dbffeda324e15517dc64930ad315
+      CANDIDATE_COMMIT: dd66a4372cfb462f876ac3169ba91df8d4a7f436
+      SEED: '776466'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '3000'
+    steps:
+      - uses: actions/checkout@v7
+        with: {ref: natural-language-e2e-v35-freeze, fetch-depth: 0}
+      - uses: dtolnay/rust-toolchain@stable
+        with: {toolchain: '1.88.0'}
+      - uses: Swatinem/rust-cache@v2
+      - name: Build exact paired CLIs before provider secret
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          git diff --exit-code "$CANDIDATE_COMMIT" -- Cargo.toml Cargo.lock crates
+          grep -q '^version = "0.4.1"$' Cargo.toml
+          sha256sum -c fixtures/natural-language-e2e-v35-surface.sha256
+          python3 scripts/validate_natural_language_e2e_v35_pair.py >/dev/null
+          git worktree add --detach /tmp/v35-control "$CONTROL_COMMIT"
+          cargo build --locked -p reasoning-harness-cli --bin reason
+          (cd /tmp/v35-control && cargo build --locked -p reasoning-harness-cli --bin reason)
+      - name: Check Google credential after frozen preflight
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: test -n "$GEMINI_API_KEY"
+      - name: Run paired Google canonical observation with evidence preservation
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          MODEL: ${{ matrix.model }}
+          SLUG: ${{ matrix.slug }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+          REASON_GOOGLE_SHARED_PACER_PATH: /tmp/v35-${{ matrix.slug }}-google-pacer.state
+          INVESTIGATION_WORKERS: ${{ matrix.workers }}
+        run: |
+          set -euo pipefail
+          CONTROL_CMD="$(jq -nc --arg model "$MODEL" --arg seed "$SEED" --arg max "$MAX_TOKENS" --arg delay "$INTER_CASE_DELAY_MS" --arg slug "$SLUG" --arg workers "$INVESTIGATION_WORKERS" \
+            '["python3","scripts/natural_language_e2e_v35.py","--coordinate-role","control","--reason-bin","/tmp/v35-control/target/debug/reason","--provider","google","--model",$model,"--seed",$seed,"--max-tokens",$max,"--inter-case-delay-ms",$delay,"--investigation-workers",$workers,"--attempt-marker",("/tmp/v35-"+$slug+"-control.attempt.json"),"--output",("/tmp/v35-"+$slug+"-control.json")]')"
+          CANDIDATE_CMD="$(jq -nc --arg model "$MODEL" --arg seed "$SEED" --arg max "$MAX_TOKENS" --arg delay "$INTER_CASE_DELAY_MS" --arg slug "$SLUG" --arg workers "$INVESTIGATION_WORKERS" \
+            '["python3","scripts/natural_language_e2e_v35.py","--coordinate-role","candidate","--reason-bin","target/debug/reason","--provider","google","--model",$model,"--seed",$seed,"--max-tokens",$max,"--inter-case-delay-ms",$delay,"--investigation-workers",$workers,"--attempt-marker",("/tmp/v35-"+$slug+"-candidate.attempt.json"),"--diagnostic-trace-dir",("/tmp/v35-"+$slug+"-candidate-traces"),"--output",("/tmp/v35-"+$slug+"-candidate.json")]')"
+          ACCEPTANCE_CMD="$(jq -nc --arg slug "$SLUG" '["python3","scripts/natural_language_e2e_v35_acceptance.py","--pair-control",("/tmp/v35-"+$slug+"-control.json"),"--pair-candidate",("/tmp/v35-"+$slug+"-candidate.json"),"--output",("/tmp/v35-"+$slug+"-pair-acceptance.json")]')"
+          python3 scripts/paired_canonical_observation.py \
+            --allow-control-nonzero-with-evidence \
+            --heartbeat-seconds 45 \
+            --control-command-json "$CONTROL_CMD" \
+            --candidate-command-json "$CANDIDATE_CMD" \
+            --acceptance-command-json "$ACCEPTANCE_CMD" \
+            --control-required "/tmp/v35-${SLUG}-control.json" \
+            --candidate-required "/tmp/v35-${SLUG}-candidate.json" \
+            --acceptance-required "/tmp/v35-${SLUG}-pair-acceptance.json" \
+            --control-stdout "/tmp/v35-${SLUG}-control.stdout.json" \
+            --candidate-stdout "/tmp/v35-${SLUG}-candidate.stdout.json" \
+            --acceptance-stdout "/tmp/v35-${SLUG}-pair-acceptance.stdout.json" \
+            --output "/tmp/v35-${SLUG}-paired-orchestration.json"
+
+      - name: Validate Google candidate diagnostic sidecars
+        if: always()
+        env:
+          SLUG: ${{ matrix.slug }}
+        run: |
+          set -euo pipefail
+          if test -f "/tmp/v35-${SLUG}-candidate.attempt.json"; then
+            python3 scripts/validate_natural_language_e2e_v35_diagnostics.py \
+              --trace-dir "/tmp/v35-${SLUG}-candidate-traces" --expected-count 10 \
+              --output "/tmp/v35-${SLUG}-candidate-diagnostics-validation.json"
+          fi
+
+      - name: Preserve Google paired evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v35-${{ matrix.slug }}-seed-776466
+          path: |
+            /tmp/v35-${{ matrix.slug }}-*
+            /tmp/v35-${{ matrix.slug }}-candidate-traces/
+          if-no-files-found: warn
+          retention-days: 30
+
+  groq-candidate:
+    needs: preflight
+    if: needs.preflight.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      FREEZE_TAG: natural-language-e2e-v35-freeze
+      CANDIDATE_COMMIT: dd66a4372cfb462f876ac3169ba91df8d4a7f436
+      SEED: '776466'
+      MAX_TOKENS: '1024'
+      INTER_CASE_DELAY_MS: '3000'
+      MODEL: openai/gpt-oss-120b
+    steps:
+      - uses: actions/checkout@v7
+        with: {ref: natural-language-e2e-v35-freeze, fetch-depth: 0}
+      - uses: dtolnay/rust-toolchain@stable
+        with: {toolchain: '1.88.0'}
+      - uses: Swatinem/rust-cache@v2
+      - name: Build exact candidate before provider secret
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          git diff --exit-code "$CANDIDATE_COMMIT" -- Cargo.toml Cargo.lock crates
+          grep -q '^version = "0.4.1"$' Cargo.toml
+          sha256sum -c fixtures/natural-language-e2e-v35-surface.sha256
+          cargo build --locked -p reasoning-harness-cli --bin reason
+          python3 scripts/natural_language_e2e_v35_capability_probe.py --coordinate-role candidate --reason-bin target/debug/reason >/tmp/v35-groq-capability.json
+      - name: Check Groq credential after frozen preflight
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: test -n "$GROQ_API_KEY"
+      - name: Run first candidate generic Groq observation
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '2100'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -euo pipefail
+          python3 scripts/natural_language_e2e_v35.py \
+            --coordinate-role candidate --reason-bin target/debug/reason \
+            --provider groq --model "$MODEL" --seed "$SEED" --max-tokens "$MAX_TOKENS" \
+            --inter-case-delay-ms "$INTER_CASE_DELAY_MS" \
+            --attempt-marker /tmp/v35-groq-candidate.attempt.json \
+            --diagnostic-trace-dir /tmp/v35-groq-candidate-traces \
+            --output /tmp/v35-groq-candidate.json >/tmp/v35-groq-candidate.stdout.json
+          jq -e '.coordinate_role == "candidate" and .provider == "groq" and .model == "openai/gpt-oss-120b" and .aggregate.completed_cases == 13 and .aggregate.operational_failures == 0 and .aggregate.correctness_boundary_violations == 0 and .report_gate_passed == true' /tmp/v35-groq-candidate.json >/dev/null
+      - name: Validate Groq candidate diagnostic sidecars
+        if: always()
+        run: |
+          set -euo pipefail
+          if test -f /tmp/v35-groq-candidate.attempt.json; then
+            python3 scripts/validate_natural_language_e2e_v35_diagnostics.py \
+              --trace-dir /tmp/v35-groq-candidate-traces --expected-count 10 \
+              --output /tmp/v35-groq-candidate-diagnostics-validation.json
+          fi
+
+      - name: Preserve Groq candidate evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: natural-language-e2e-v35-groq-openai-gpt-oss-120b-seed-776466
+          path: |
+            /tmp/v35-groq-*
+            /tmp/v35-groq-candidate-traces/
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.gavorix.audit",
+    "Gavorix audit enforcement mode"
+  ],
+  "id": "session-resume-fork-gavorix",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.gavorix.audit=gavorix-enforced-signed",
+  "start_hypothesis": "session.gavorix.audit=gavorix-enforced-signed",
+  "target": {
+    "key": "session.gavorix.audit",
+    "value": "gavorix-enforced-signed"
+  },
+  "task": "Determine the active Gavorix audit enforcement mode."
+}
