@@ -58,6 +58,24 @@ class PairedCanonicalObservationTests(unittest.TestCase):
         self.assertTrue(result.hard_gate_passed)
         self.assertEqual([name for name, _ in seen], ["control", "candidate", "acceptance"])
 
+    def test_control_nonzero_can_be_delegated_to_acceptance_only_when_explicitly_enabled(self):
+        seen = []
+        result = run_paired_canonical_observation(
+            ["control"],
+            ["candidate"],
+            ["acceptance"],
+            control_required_paths=[self.control_report],
+            candidate_required_paths=[self.candidate_report],
+            acceptance_required_paths=[self.acceptance_report],
+            execute_control=self._executor("control", 4, create=self.control_report, seen=seen),
+            execute_candidate=self._executor("candidate", 0, create=self.candidate_report, seen=seen),
+            execute_acceptance=self._executor("acceptance", 0, create=self.acceptance_report, seen=seen),
+            allow_control_nonzero_with_evidence=True,
+        )
+        self.assertTrue(result.hard_gate_passed)
+        self.assertEqual(result.control.returncode, 4)
+        self.assertEqual([name for name, _ in seen], ["control", "candidate", "acceptance"])
+
     def test_control_failure_with_report_still_runs_candidate_and_acceptance_once(self):
         result, seen = self._run(control_rc=3)
         self.assertFalse(result.hard_gate_passed)

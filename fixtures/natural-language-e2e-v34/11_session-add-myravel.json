@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.myravel.mode=ready",
+  "add_hypothesis": "session.myravel.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.myravel.mode",
+    "Myravel session readiness mode"
+  ],
+  "id": "session-add-myravel",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.myravel.mode",
+    "value": "myravel-ready-signed"
+  },
+  "task": "Determine the current Myravel session readiness mode."
+}

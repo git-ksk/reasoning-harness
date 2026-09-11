@@ -1,0 +1,17 @@
+{
+  "correction": "session.novaryn.threshold=173",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.novaryn.threshold",
+    "Novaryn configured recovery threshold"
+  ],
+  "id": "session-correct-novaryn",
+  "kind": "session_correct",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.novaryn.threshold=83",
+  "target": {
+    "key": "session.novaryn.threshold",
+    "value": "263"
+  },
+  "task": "Determine the configured Novaryn recovery threshold."
+}
