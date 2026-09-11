@@ -27,6 +27,21 @@ def load_policy() -> dict:
         fail("Mistral model-job parallelism must remain serialized by default")
     if providers["google"].get("model_job_parallelism") != 1:
         fail("Google model-job parallelism must remain serialized by default")
+    google = providers["google"]
+    if google.get("canonical_request_start_interval_ms") != 6000:
+        fail("Google canonical request-start interval must remain 6000ms")
+    if google.get("canonical_max_request_starts_per_minute") != 10:
+        fail("Google canonical request-start rate must remain <=10 RPM")
+    if google.get("canonical_headroom_reference_rpm") != 15:
+        fail("Google canonical headroom reference must remain 15 RPM")
+    if google.get("canonical_headroom_requests_per_minute") != 5:
+        fail("Google canonical request-count headroom must remain 5 RPM")
+    if google.get("canonical_inter_case_delay_ms") != 3000:
+        fail("Google canonical inter-case delay must remain 3000ms")
+    if google.get("canonical_google_model_jobs_serial") is not True:
+        fail("Google canonical model jobs must remain serialized")
+    if google.get("shared_pacer_required_for_parallel_fixtures") is not True:
+        fail("Google parallel fixtures must share one request pacer")
     if providers["nvidia"].get("model_job_parallelism") != 1:
         fail("NVIDIA model-job parallelism must remain serialized by default")
     if providers["groq"].get("model_job_parallelism", 0) < 2:
