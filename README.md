@@ -210,6 +210,7 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 | Command | Use it for |
 | --- | --- |
 | `reason "TASK"` | Primary human-facing natural-language path. |
+| `reason auth ...` | Reason CLI 0.5.0 development: securely add, inspect, rotate, or remove provider credentials. |
 | `reason session ...` | Persist, inspect, add to, correct, resume, fork, or close reasoning sessions. |
 | `reason run` | Structured application/CI integration and live candidate generation. |
 | `reason verify` | Deterministically validate a materialized `ReasoningArtifact`. |

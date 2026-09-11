@@ -85,11 +85,77 @@ pub(crate) const fn credential_env(provider: Provider) -> &'static str {
     }
 }
 
-const fn canonical_provider(provider: Provider) -> Provider {
+pub(crate) const fn canonical_provider(provider: Provider) -> Provider {
     match provider {
         Provider::Gemma => Provider::Google,
         other => other,
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum EnvironmentCredentialState {
+    Missing,
+    Present,
+    Invalid,
+}
+
+impl EnvironmentCredentialState {
+    pub(crate) const fn as_str(self) -> &'static str {
+        match self {
+            Self::Missing => "missing",
+            Self::Present => "present",
+            Self::Invalid => "invalid",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum StoredCredentialState {
+    Missing,
+    Present,
+    Invalid,
+    Unavailable,
+}
+
+impl StoredCredentialState {
+    pub(crate) const fn as_str(self) -> &'static str {
+        match self {
+            Self::Missing => "missing",
+            Self::Present => "present",
+            Self::Invalid => "invalid",
+            Self::Unavailable => "unavailable",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum EffectiveCredentialSource {
+    Environment,
+    OsStore,
+    Missing,
+    InvalidEnvironment,
+    InvalidOsStore,
+    StoreUnavailable,
+}
+
+impl EffectiveCredentialSource {
+    pub(crate) const fn as_str(self) -> &'static str {
+        match self {
+            Self::Environment => "environment",
+            Self::OsStore => "os_store",
+            Self::Missing => "missing",
+            Self::InvalidEnvironment => "invalid_environment",
+            Self::InvalidOsStore => "invalid_os_store",
+            Self::StoreUnavailable => "credential_store_unavailable",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct ProviderCredentialStatus {
+    pub environment: EnvironmentCredentialState,
+    pub os_store: StoredCredentialState,
+    pub effective: EffectiveCredentialSource,
 }
 
 trait CredentialStore {
@@ -168,6 +234,69 @@ fn map_store_error(error: KeyringError) -> CredentialError {
     CredentialError::new(kind, message)
 }
 
+pub(crate) fn provider_environment_credential(
+    provider: Provider,
+) -> Result<Option<String>, CredentialError> {
+    let Some(value) = env::var_os(credential_env(provider)) else {
+        return Ok(None);
+    };
+    let secret = value.into_string().map_err(|_| {
+        CredentialError::new(
+            CredentialErrorKind::InvalidEnvironment,
+            format!("{} is set but is not valid UTF-8", credential_env(provider)),
+        )
+    })?;
+    if secret.trim().is_empty() {
+        return Err(CredentialError::new(
+            CredentialErrorKind::InvalidEnvironment,
+            format!("{} is set but empty", credential_env(provider)),
+        ));
+    }
+    Ok(Some(secret))
+}
+
+pub(crate) fn inspect_provider_credential(
+    provider: Provider,
+) -> Result<ProviderCredentialStatus, CredentialError> {
+    let environment = match env::var_os(credential_env(provider)) {
+        None => EnvironmentCredentialState::Missing,
+        Some(value) => match value.into_string() {
+            Ok(secret) if !secret.trim().is_empty() => EnvironmentCredentialState::Present,
+            _ => EnvironmentCredentialState::Invalid,
+        },
+    };
+    let os_store = match OsCredentialStore.get(credential_identity(provider)) {
+        Ok(Some(secret)) if !secret.trim().is_empty() => StoredCredentialState::Present,
+        Ok(Some(_)) => StoredCredentialState::Invalid,
+        Ok(None) => StoredCredentialState::Missing,
+        Err(error) if error.kind == CredentialErrorKind::StoreUnavailable => {
+            StoredCredentialState::Unavailable
+        }
+        Err(error) => return Err(error),
+    };
+    let effective = match (environment, os_store) {
+        (EnvironmentCredentialState::Present, _) => EffectiveCredentialSource::Environment,
+        (EnvironmentCredentialState::Invalid, _) => EffectiveCredentialSource::InvalidEnvironment,
+        (EnvironmentCredentialState::Missing, StoredCredentialState::Present) => {
+            EffectiveCredentialSource::OsStore
+        }
+        (EnvironmentCredentialState::Missing, StoredCredentialState::Invalid) => {
+            EffectiveCredentialSource::InvalidOsStore
+        }
+        (EnvironmentCredentialState::Missing, StoredCredentialState::Unavailable) => {
+            EffectiveCredentialSource::StoreUnavailable
+        }
+        (EnvironmentCredentialState::Missing, StoredCredentialState::Missing) => {
+            EffectiveCredentialSource::Missing
+        }
+    };
+    Ok(ProviderCredentialStatus {
+        environment,
+        os_store,
+        effective,
+    })
+}
+
 pub(crate) fn resolve_provider_credential(
     provider: Provider,
 ) -> Result<ResolvedCredential, CredentialError> {
@@ -239,7 +368,6 @@ fn resolve_with_store(
     }
 }
 
-#[allow(dead_code)]
 pub(crate) fn save_provider_credential(
     provider: Provider,
     secret: &str,
@@ -247,12 +375,10 @@ pub(crate) fn save_provider_credential(
     OsCredentialStore.set(credential_identity(provider), secret)
 }
 
-#[allow(dead_code)]
 pub(crate) fn delete_provider_credential(provider: Provider) -> Result<bool, CredentialError> {
     OsCredentialStore.delete(credential_identity(provider))
 }
 
-#[allow(dead_code)]
 pub(crate) fn stored_provider_credential_exists(
     provider: Provider,
 ) -> Result<bool, CredentialError> {

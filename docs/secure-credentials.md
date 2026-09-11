@@ -41,11 +41,26 @@ If an environment variable is present but empty or invalid, Reason fails rather 
 
 Error messages and JSON failures never include the credential value. A headless Linux environment without Secret Service receives actionable guidance to use the provider environment variable or configure a platform credential service; Reason does not create a plaintext credential file.
 
-## Writing and deleting credentials
+## Managing credentials with `reason auth`
 
-The backend already provides scoped save/replace/delete operations for the provider/default-account identity. The user-facing `reason auth login/list/status/logout` commands are tracked separately in Issue #362 and will call this backend rather than creating another secret store.
+On the Reason CLI 0.5.0 development line, the supported user-facing surface is:
 
-Credential replacement is one logical OS-store update, and deletion is scoped to the selected provider account. The storage naming leaves room for future named work/personal accounts without moving raw secret bytes through config files.
+```bash
+# Hidden TTY entry; provider can be omitted in an interactive terminal to use the picker.
+reason auth login mistral
+
+# Automation-safe alternatives. The secret is never a normal argv value.
+reason auth login mistral --from-env
+printf '%s\n' "$MISTRAL_API_KEY" | reason auth login mistral --stdin
+
+reason auth status mistral
+reason auth list
+reason auth logout mistral
+```
+
+`login` refuses to overwrite an existing OS-store credential unless `--replace` is explicit. `status` and `list` report only source/state (`environment`, `os_store`, `missing`, or typed invalid/unavailable states); they never print masked fragments, prefixes, suffixes, or the credential itself. `logout` deletes only the selected provider/default-account OS-store entry and never modifies an environment variable. If the provider environment variable remains set, it remains the active runtime source after logout.
+
+Interactive entry uses hidden/no-echo TTY input. Non-interactive use must choose `--stdin` or `--from-env`; there is deliberately no `--api-key`, `--secret`, `--password`, or other secret-valued argv flag. Credential replacement is one logical OS-store update, and deletion is scoped to the selected provider account. The storage naming leaves room for future named work/personal accounts without moving raw secret bytes through config files.
 
 ## Trust boundary
 

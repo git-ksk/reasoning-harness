@@ -75,6 +75,7 @@ See [How Reasoning Harness works](how-it-works.md) and [product dogfood](product
 | Goal | Command |
 | --- | --- |
 | Ask a person-facing natural-language question through the verified runtime | `reason "TASK"` |
+| Manage provider credentials on the 0.5.0 development line | `reason auth ...` |
 | Persist, inspect, correct, resume, or fork a natural-language reasoning state | `reason session ...` |
 | Integrate an existing LLM/agent candidate with structured evidence | `reason run` |
 | Validate an already-materialized artifact | `reason verify` |
@@ -85,6 +86,7 @@ For a human using the CLI directly, start with **`reason "TASK"`**. For applicat
 
 ## Product commands
 
+- `reason auth login|status|list|logout` — manage provider credentials in the native OS credential store without secret-valued argv flags.
 - `reason run` — execute the harness-owned correctness process from a recorded candidate or live
   provider candidate generation.
 - `reason verify` — deterministically validate a `ReasoningArtifact`.
@@ -235,7 +237,7 @@ Provider secrets are deliberately **not fields in `reason-config-v1`**. On the R
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
 - GroqCloud: `GROQ_API_KEY`
 
-The config parser rejects unknown secret-like fields such as `api_key`. Credentials are never serialized into effective run configuration, sessions, evidence, or authority state. No plaintext fallback is used when the OS credential service is unavailable. See [Secure provider credentials](secure-credentials.md).
+The config parser rejects unknown secret-like fields such as `api_key`. Credentials are never serialized into effective run configuration, sessions, evidence, or authority state. No plaintext fallback is used when the OS credential service is unavailable. See [Secure provider credentials](secure-credentials.md). On the 0.5.0 development line, use `reason auth login [provider]` for hidden TTY entry, `--stdin`/`--from-env` for automation, `--replace` for explicit rotation, and `reason auth status|list|logout` for secret-free inspection/removal.
 
 ## Semantic runtime product surface
 

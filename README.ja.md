@@ -210,6 +210,7 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 | Command | 用途 |
 | --- | --- |
 | `reason "TASK"` | 人が直接使う自然文path。 |
+| `reason auth ...` | Reason CLI 0.5.0開発ライン: provider credentialの安全な追加・確認・rotation・削除。 |
 | `reason session ...` | sessionの保存・確認・追加・訂正・resume・fork・close。 |
 | `reason run` | Application / CI統合、live candidate生成。 |
 | `reason verify` | materialize済み`ReasoningArtifact`のdeterministic validation。 |
