@@ -28,7 +28,7 @@ releaseは最終immutable v36までevidence-gatedを維持し、Mistral paired P
 
 最後のunified releaseである`v0.4.2`以降は、2本のlineを独立して進める。
 
-1. **Reason CLI 0.5.0 — General-use Productization**（milestone #6 / parent #359）は **Harness Engine 0.4.2** を固定したまま、独立CLI versioning（#355）、secure first-run setup（#356）、doctor/version diagnostics（#357）、非Rustユーザー向けdistribution（#358）を進める。
+1. **Reason CLI 0.5.0 — General-use Productization**（milestone #6 / parent #359）は **Harness Engine 0.4.2** を固定したまま、toolchain不要install、secure auth/setup、interactive/resumableな日常利用、provider/model/config/MCPのdiscoverability、diagnostics/recovery、可逆なlifecycle managementを進める。phase / P0 / P1 / fresh-install gateの詳細は[CLI 0.5.0製品化ロードマップ](reason-cli-0.5-roadmap.ja.md)を参照。
 2. **Harness Engine 0.5.0 — Verified Investigation Utility**（milestone #4）は #248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationを所有する。Engine変更は引き続きevidence-gatedで、CLI productizationの前提にはしない。
 
 v0.4.0は **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation** の順で実装し、#204 negotiated/session `mcp_readonly_v3`、#232 dependency/freeze hygiene、#233 unique-safe-action utility hardeningもrelease前に完了した。v4 cross-model replication (#208 / PR #209) と #216 Groq operational extension（2026-09-06 closeout済み）は凍結済みv4の追試であり、このラインのtuning surfaceには使っていない。

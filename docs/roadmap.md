@@ -28,7 +28,7 @@ The release remained evidence-gated through final immutable v36: Mistral paired 
 
 Two independent forward lines now follow the final unified `v0.4.2` release:
 
-1. **Reason CLI 0.5.0 — General-use Productization** (milestone #6 / parent #359) keeps **Harness Engine 0.4.2** fixed while adding independent CLI versioning (#355), secure first-run setup (#356), doctor/version diagnostics (#357), and non-Rust-user distribution (#358).
+1. **Reason CLI 0.5.0 — General-use Productization** (milestone #6 / parent #359) keeps **Harness Engine 0.4.2** fixed while delivering zero-toolchain install, secure auth/setup, interactive and resumable daily use, discoverable provider/model/config/MCP controls, diagnostics/recovery, and reversible lifecycle management. The detailed phase/P0/P1 plan and fresh-install gate are in [the CLI 0.5.0 productization roadmap](reason-cli-0.5-roadmap.md).
 2. **Harness Engine 0.5.0 — Verified Investigation Utility** (milestone #4) owns #248 finalization/grounding, #282 repeated-trial / `pass^k` planner reliability, and #283 deterministic Harness-owned action materialization. Engine changes stay evidence-gated and are not required for the CLI productization line.
 
 The v0.4.0 implementation order was **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation**, with #204 negotiated/session `mcp_readonly_v3`, #232 dependency/freeze hygiene, and #233 unique-safe-action utility hardening completed before release. v4 cross-model replication (#208 / PR #209), including the #216 Groq operational extension, remains replication over frozen v4 evidence rather than a tuning surface for this line.

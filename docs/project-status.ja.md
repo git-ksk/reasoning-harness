@@ -6,7 +6,7 @@
 
 **v0.4.2 — Investigation Utility & Provider Parity** マイルストーン（#5）は完了し、現在のexternal-preview product lineである。v0.4.xのcorrectness/authority foundationを維持したまま、deterministic safe acquisition precedence、generic Groq provider parity、structured planner/action hardening、provider/eval resilienceを追加し、Mistral / Groq / Gemini 3.5 Flash-Lite / Gemma 4 31Bのimmutable v36 acceptanceで検証した。
 
-`v0.4.2`はCLI/Engineの最後のunified versionでもある。以後は **Reason CLI 0.5.0**（#6/#359）でHarness Engine 0.4.2を一般利用向けに製品化し、**Harness Engine 0.5.0**（#4）は独立したevidence-gated semantic/utility lineとして進める。詳細は[versioning](versioning.ja.md)を参照。
+`v0.4.2`はCLI/Engineの最後のunified versionでもある。以後は **Reason CLI 0.5.0**（#6/#359）でHarness Engine 0.4.2を固定したままinstall/setup、interactive/resumable terminal UX、diagnostics/recovery、lifecycle managementまで一般利用向けに製品化し、**Harness Engine 0.5.0**（#4）は独立したevidence-gated semantic/utility lineとして進める。詳細は[versioning](versioning.ja.md)と[CLI 0.5.0製品化ロードマップ](reason-cli-0.5-roadmap.ja.md)を参照。
 
 v0.4.0 lineでは#210、#211、#212、#213、#214、#204、#232、#233を完了した。#204によりsupported MCP product pathは`mcp_readonly_v3`となり、bounded initialize/negotiation/initialized/tools-list/tools-callを追加する。詳細は[読み取り専用MCPリゾルバー](mcp-resolver.ja.md)、[制約付き調査プランニング](investigation.ja.md)、[再開可能な自然言語セッション](session.ja.md)を参照。
 
