@@ -9,18 +9,18 @@ For the execution/trust model behind `--candidate` versus `--provider`, includin
 
 ## Installation
 
-### Current external preview (`v0.4.1`)
+### Current external preview (`v0.4.2`)
 
 The natural-language-first path is included in the current tagged preview. With Rust 1.88+:
 
 ```bash
-cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.4.1 --locked reasoning-harness-cli --bin reason
+cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.4.2 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-This installs only the supported `reason` product binary, not the research binaries. Standalone `v0.4.1` archives are also published for Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64, with `SHA256SUMS`. Use `main` only for intentionally unreleased development snapshots.
+This installs only the supported `reason` product binary, not the research binaries. Standalone `v0.4.2` archives are also published for Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64, with `SHA256SUMS`. Use `main` only for intentionally unreleased development snapshots.
 
-`v0.4.1` remains an external preview under the v0.x support policy even though the documented v1.0 readiness gate has been satisfied. The version number is a product/distribution coordinate; it does not create a new frozen research generation.
+`v0.4.2` remains an external preview under the v0.x support policy even though the documented v1.0 readiness gate has been satisfied. The version number is a product/distribution coordinate; it does not create a new frozen research generation.
 
 ## Natural-language AI path
 

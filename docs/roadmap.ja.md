@@ -22,16 +22,17 @@ runtime は `unknown`、qualified partial answer、または abstention で停�
 
 ## 現在のプロダクトマイルストーン
 
-現在のexternal previewは `v0.4.1` である。**v0.4.1 — Investigation Utility Hardening（milestone #3）** は完了し、#249のexact-target typed-`no_result` continuationだけを追加する。同じtargetに明示fact-key対応read-only follow-upが1つだけ残る場合に限り継続し、target identity、admission、authority、verification、finalization、answer safety、machine-contract semantics、freeze済みnatural-language E2E v1〜v9 evidenceは維持する。
+現在のexternal previewは `v0.4.2` である。**v0.4.2 — Investigation Utility & Provider Parity（milestone #5 / #260）** は完了・release済み。#261 deterministic safe acquisition precedence、#262 generic Groq provider parity、#281以降のstructured planner/action hardening、v0.4.x authority/finalization boundaryを変えずmetric-v13 acceptanceを完了するprovider/eval resilienceを含む。
 
-次のpatch milestoneは **v0.4.2 — Planner Utility & Provider Parity（milestone #5 / #260）** とする。scopeは#261 deterministic safe action-precedence utility、#262 generic Groq provider parity、freeze済みv18のinvalid-shape regressionを受けた#281 structurally constrained acquire/stop action output、#263 fresh no-regression acceptanceに限定する。v0.4.2はv0.4.1のauthority/finalization boundaryを維持する。より広いreliability/control-plane workはv0.5.0へ分離し、#248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationとして扱う。
-v0.4.2は**evidence-gated**とし、実装完了だけではreleaseしない。#263でv0.4.1比較とimprovement thresholdをlive前にpredeclare/freezeし、fresh canonical successorが実際のplanner utility改善を示し、全zero-regression correctness/safety gateを維持した場合だけtagする。横ばい、gate外mixed、悪化ならreleaseをblockし、観測をrerun/tuningせず保存する。
+releaseは最終immutable v36までevidence-gatedを維持し、Mistral paired PASS、Groq generic candidate PASS、Gemini 3.5 Flash-Lite paired PASS、Gemma 4 31B paired PASS。Geminiでfrozen rowのstrict utility improvementを観測し、全required candidate rowでoperational / generation / correctness-boundary failure `0`を維持した。canonical rerun / post-freeze mutationは0。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)。
+
+次の広いmilestoneは **v0.5.0 — Verified Investigation Utility** のまま。#248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationはv0.4.2 patch lineへ取り込まない。
 
 v0.4.0は **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation** の順で実装し、#204 negotiated/session `mcp_readonly_v3`、#232 dependency/freeze hygiene、#233 unique-safe-action utility hardeningもrelease前に完了した。v4 cross-model replication (#208 / PR #209) と #216 Groq operational extension（2026-09-06 closeout済み）は凍結済みv4の追試であり、このラインのtuning surfaceには使っていない。
 
 重要な測定上の境界として、現在の `unsupported grounded claims = 0` はstructured `factual_claims` の安全性を示すが、任意のfree-form表示文章まで同じ保証が成立するとは扱わない。v0.4.0では表示文章そのもののverified-proposition consistencyをcorrectness gateへ昇格する。
 
-`v0.4.1` は現在公開されている external preview である。v0.4.0は直前のGrounded Investigation & Sessions product foundationとして保持する。直前の **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) はhistorical provenanceとして完了状態を保持する。後続作業は、リリース済みmilestoneの観測を後から書き換えず、新たに測定されたproduct/research gapから開始する。
+`v0.4.2` は現在公開されている external preview である。v0.4.1は直前のInvestigation Utility Hardening patch、v0.4.0はGrounded Investigation & Sessions product foundationとして保持する。直前の **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) はhistorical provenanceとして完了状態を保持する。後続作業は、リリース済みmilestoneの観測を後から書き換えず、新たに測定されたproduct/research gapから開始する。
 
 完了したpatch milestoneは **v0.4.1 — Investigation Utility Hardening（milestone #3）** である。Issue #249ではpost-releaseのavoidable-abstentionを1系統だけ扱い、typed `no_result` 後に同じexact targetへ明示fact-key対応read-only capabilityが機械的に1つだけ残る場合だけ継続する。target merge、admission、authority、verification、finalization、answer safety、freeze済みv1〜v9のmeasurement semanticsは変更しない。#248と#247はそれぞれ別のfuture product/evaluation workとして分離する。
 

@@ -66,18 +66,18 @@ freeze済みv4のGroq追試でも、モデル規模にかかわらず同じ安�
 
 ## 30秒で始める
 
-### 1. 現在のv0.4.1プレビューをインストール
+### 1. 現在のv0.4.2プレビューをインストール
 
-`v0.4.1`が現在の自然文first external previewです。Rust 1.88+がある場合:
+`v0.4.2`が現在の自然文first external previewです。Rust 1.88+がある場合:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.4.1 --locked reasoning-harness-cli --bin reason
+  --tag v0.4.2 --locked reasoning-harness-cli --bin reason
 
 reason --version
 ```
 
-standalone archiveと`SHA256SUMS`は[v0.4.1 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.1)から取得できます。`main`は未releaseの開発変更を意図的に使う場合だけ選んでください。
+standalone archiveと`SHA256SUMS`は[v0.4.2 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.2)から取得できます。`main`は未releaseの開発変更を意図的に使う場合だけ選んでください。
 
 ### 2. 自然文タスク + 明示的なファクトを渡す
 
@@ -359,7 +359,7 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 
 ## 現在できること
 
-現在の`v0.4.1` external previewでは次を実装しています。`main`はtagより先へ進むことがあるため、再現可能なproduct snapshotが必要ならtagを基準にしてください。
+現在の`v0.4.2` external previewでは次を実装しています。`main`はtagより先へ進むことがあるため、再現可能なproduct snapshotが必要ならtagを基準にしてください。
 
 - `HarnessInput` / `ReasoningCandidate` / `ReasoningArtifact`のtyped contract
 - evidence binding、provenance/referenceの決定論的検証
@@ -367,7 +367,7 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 - contradiction、counterexample、assumption、causal、temporal/scope、evidence qualification診断
 - `accept | reject | unknown`とfail-closed runtime
 - bounded resolution/finalization primitivesと`ReasoningPolicy`
-- closed plan/action schemaによるbounded natural-language investigationと、明示keyで一意にboundされたsafe read-only actionだけのHarness deterministic選択
+- closed exact-key plan/action schemaによるbounded natural-language investigation、unique-safe / explicit-priority precedenceのHarness deterministic選択、exact-target typed `no_result` continuation
 - `harness-canonical-exposed-text-v1`によるHarness-canonicalな公開事実テキスト
 - `ReasoningThread` event/checkpoint replay primitivesと`reason session start|inspect|resume|add|correct|fork|close`
 - current semantic runtimeと明示的rollback profile（exact compatibility IDは再現性のため維持）
@@ -397,9 +397,9 @@ contradiction / counterexample / unsupported premise / causal gapなどをsemant
 
 > 小型・低コストなモデルでも、typed intermediate state、evidence binding、明示的不確実性、adversarial pass、deterministic acceptance gate、bounded resolution/re-verificationを通すことで、推論の信頼性を実質的に高められるか？
 
-**v0.4.1 — Investigation Utility Hardening** milestone (#3) は完了し、release済みです。#249のexact-target typed-`no_result` continuationだけを追加し、同じtargetに明示fact-key対応read-only follow-upが1つだけ残る場合、追加のstochastic action-selector callなしでHarnessが選択します。target identity、authority、admission、verification、finalization、answer safety、machine contract、freeze済みnatural-language E2E v1〜v9 evidenceは変更しません。
+**v0.4.2 — Investigation Utility & Provider Parity** milestone (#5) は完了し、release済みです。#261 deterministic safe acquisition precedence、#262 generic Groq natural-language provider parity、構造化したplanner/action contract、provider/eval resilienceを追加しつつ、v0.4.xのauthority boundaryは維持します。最終immutable v36 acceptanceはMistral / Groq / Gemini 3.5 Flash-Lite / Gemma 4 31Bですべて独立PASSしました。詳細は[v36 release acceptance](docs/natural-language-e2e-v36-result.ja.md)を参照してください。
 
-直前の **v0.4.0 — Grounded Investigation & Sessions** milestone (#2) は、exposed-text binding、bounded investigation、resumable session、negotiated/session MCP、既存unique-safe selectorのproduct foundationとしてhistorical provenanceを維持します。さらに前の **v0.3.0 — External Evidence & Resolution** milestone (#173) のacceptanceは[v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.ja.md)に記録済みです。
+直前の **v0.4.1 — Investigation Utility Hardening** milestone (#3) はexact-target typed-`no_result` continuationのfoundationとして維持し、v0.4.0はGrounded Investigation & Sessions foundationとして保持します。さらに前の **v0.3.0 — External Evidence & Resolution** milestone (#173) のacceptanceは[v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.ja.md)に記録済みです。
 
 研究機能は、calibration → 独立したfrozen evaluation → operational stabilization → runtime identity/rollback → CLI compatibilityという昇格手順を通るまでproduct CLIへ入りません。
 

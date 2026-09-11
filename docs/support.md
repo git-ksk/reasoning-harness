@@ -69,7 +69,7 @@ Provider credentials remain environment variables and are not accepted in `reaso
 
 ## Stability status
 
-v0.4.1 is the current external-preview release. It retains the v0.4.0 product and authority foundation and narrowly adds deterministic exact-target continuation after typed `no_result` when one explicit fact-key-bound read-only follow-up remains. Same-key sibling targets remain distinct, and admission, authority, verification, finalization, answer safety, machine contracts, and frozen natural-language E2E v1-v9 evidence are unchanged. The documented v1.0 readiness gate is satisfied, but v0.4.1 intentionally remains a prerelease/v0.x compatibility promise rather than a stable v1.0 claim. A future v1.0 still requires an explicit version/tag/release decision through the normal provenance workflow.
+v0.4.2 is the current external-preview release. It preserves the v0.4.x product/authority foundation while adding deterministic safe acquisition precedence, generic Groq natural-language provider parity, structured planner/action hardening, and provider/evaluation resilience validated by immutable v36 release acceptance. Admission, authority, verification, finalization, answer safety, MCP non-promotion, and session replay remain Harness-owned. The documented v1.0 readiness gate is satisfied, but v0.4.2 intentionally remains a prerelease/v0.x compatibility promise rather than a stable v1.0 claim. A future v1.0 still requires an explicit version/tag/release decision through the normal provenance workflow.
 
 
 For the distinction between product terms, machine/runtime identifiers, and historical research labels, see [Terminology and naming](terminology.md).

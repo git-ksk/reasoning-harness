@@ -1,6 +1,6 @@
 # プロダクトロードマップ：エビデンスに基づくAI CLI
 
-Reasoning Harness は、まずネイティブRust製の `reason` CLI としてプロダクト化される。v0.1.0では構造化された正確性と自動化の契約を確立し、v0.2.0では**AIを利用した自然言語CLI**をエンドユーザー向けの主要経路にし、v0.3.0では制約付きexternal evidence/resolutionを追加した。v0.4.0では同じHarness所有ランタイム上にgrounded investigation、resumable session、exposed-text binding、negotiated/session MCPを追加し、現在の外部プレビューpatch releaseであるv0.4.1ではauthority semanticsを変えずexact-target `no_result` continuationだけを追加する。ユーザーは、Harnessに推論させるためだけに内部JSONを組み立てる必要はない。
+Reasoning Harness は、まずネイティブRust製の `reason` CLI としてプロダクト化される。v0.1.0では構造化された正確性と自動化の契約を確立し、v0.2.0では**AIを利用した自然言語CLI**をエンドユーザー向けの主要経路にし、v0.3.0では制約付きexternal evidence/resolutionを追加した。v0.4.0では同じHarness所有ランタイム上にgrounded investigation、resumable session、exposed-text binding、negotiated/session MCPを追加し、v0.4.1ではexact-target `no_result` continuationを追加し、現在の外部プレビューpatch releaseであるv0.4.2では同じauthority semanticsを維持したままinvestigation utilityとprovider parityをhardeningする。ユーザーは、Harnessに推論させるためだけに内部JSONを組み立てる必要はない。
 
 このプロダクトの目標は、汎用エージェントフレームワークより意図的に狭い。
 
@@ -10,7 +10,7 @@ Reasoning Harness は、まずネイティブRust製の `reason` CLI として�
 
 ## 現在のプロダクト経路
 
-v0.4.1のデフォルト体験は、引き続き自然言語優先かつAIを利用する。
+v0.4.2のデフォルト体験は、引き続き自然言語優先かつAIを利用する。
 
 ```text
 自然言語のタスク
@@ -34,39 +34,25 @@ Reasoning Harness
 
 自然言語の利便性によって正確性の境界を弱めてはならない。ユーザーの文章、ファイル内容、モデルによる抽出、ツール出力、過去のモデル出力は、CLIが受け付けたというだけで信頼済みエビデンスにはならない。エビデンスの取り込み、受け入れ、検証、semantic/answer-safety診断、制約付き解決、再検証、最終主張のカバレッジは、引き続きHarnessが所有する。
 
-## v0.4.2 — Planner Utility & Provider Parity
+## v0.4.2 — Investigation Utility & Provider Parity
 
-Tracking: milestone **v0.4.2 — Planner Utility & Provider Parity** (#5)、parent Issue #260。現在公開済みのexternal previewはfresh acceptance完了までv0.4.1のままとする。v0.4.2はpatch-levelのutility/provider-parity releaseであり、v0.4.xのauthority、admission、verification、finalization、answer-safety boundaryは変更しない。
+Tracking: milestone **v0.4.2 — Investigation Utility & Provider Parity** (#5)、parent Issue #260。immutable v36 metric-v13 acceptanceをPASSしてpatch lineは完了・release済み。v0.4.xのauthority、admission、verification、finalization、answer-safety、MCP non-promotion、session replay boundaryを維持する。
 
-実装順は次で固定する。
+完了scope:
 
-1. **#261 deterministic safe action precedence。** 観測済みの `target_recalled=true` / `actions=0` / `round_budget` planner stallを、明示設定のもとでHarness-owned read-only acquisition choiceが機械的に一意な場合だけ減らす。free-form task文言やJSON配列順から暗黙のprecedenceを推論せず、same-key target identityをmergeせず、model-selected target/actionへauthorityを与えない。既存#233 global unique selectionと#249 exact-target post-`no_result` continuationは別invariant・別telemetryとして維持する。
-2. **#262 generic Groq provider parity。** 既存の`GroqAdapter`をgeneric natural-language `reason`のgeneration/planning/action/regeneration/render/session経路へ露出する。Groq model IDはdataのままとし、provider固有semantic/authority branchは禁止する。freeze済み#256 Groq process failureはmeasurement-design evidenceとして保持し、書き換えない。
-3. **#281 v18後のstructurally constrained action contract。** freeze済みv18 candidateでは、`target_id`を持つ一方で`capability_id`を欠く`acquire` proposalが反復し、`invalid_shape`がcontrol→candidateで13→29へ悪化した。model-facing action schemaをclosedなacquire/stop discriminated shapeへ強化し、実行ID欠落をruntime validationより前の構造で不正にする。ただしfail-closed runtime validationは残し、ID補完、sibling merge、fuzzy matching、provider固有semantic branchは禁止する。
-4. **#263 fresh v0.4.2 acceptance。** #281後、live credential使用前に新しいobservation-free successorをfreezeし、canonical launch前にnetworkなしでexact provider supportを証明し、provider-aware cross-model scheduling (#258)を守り、correctness-boundary regressionゼロをrelease gateにする。utility、operational completeness、correctnessは別々に報告する。v18はimmutableのまま再実行・再採点しない。
+1. **#261 deterministic safe action precedence:** 1つのexact targetに対し、Harness-ownedな明示read-only priorityからunique highest-priority executable acquisitionが決まる場合だけdeterministic選択する。tie、priority欠落、same-key sibling、wildcard/keyless、attempt済pair、terminal state、non-read-only actionはfail-closedのまま。
+2. **#262 generic Groq provider parity:** generic natural-language `reason`のgeneration/planning/action/regeneration/render/sessionでGroqを利用可能にし、provider固有correctness/authority branchは追加しない。
+3. **Planner/action protocol hardening:** #281以降でacquire/stopとexact fact-key planning contractを構造的に制約し、target/capability identityを維持、attempt済pairを除外、priorityをmodel-invisibleに保ち、ID repairやfuzzy matchingなしでmalformed structured outputを拒否する。
+4. **Provider/eval resilience:** bounded structured-output fallback、operational-only retry/observability、shared Google pacing、quota-window classification、Google transient handling、pacingとinter-case delayを独立検証するrunner invariantにより、semantic gateを弱めずacceptanceを安定化した。
+5. **#263 final fresh acceptance:** `natural-language-e2e-v36-freeze`（`57bea659d472a103cc48d86ddee7dfe4a41de790`）をcanonical rerun `0` / post-freeze mutation `0`で完了。Mistral paired PASS、Groq generic candidate PASS、Gemini 3.5 Flash-Lite paired PASS、Gemma 4 31B paired PASS。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)。
 
-evidence-gated release policy:
+strict utility improvementはfreeze済みGemini rowで明確に観測した。controlのtool selection `0.6`、trigger exposure `0`、avoidable stall `3`からcandidate `1.0`、`3`、`0`へ改善し、target recall `1.0`とcorrectness-boundary violation `0`を維持した。Mistral / Gemmaはfrozen follow-up structural ceilingを維持しregressionなし。cross-model averagingは使っていない。
 
-- 実装完了だけではv0.4.2をtag/releaseしない。
-- #263はv0.4.2 live observation前にv0.4.1比較baselineとutility thresholdをfreezeする。
-- candidateはlocked base utility indicatorでcontrolより悪化してはならない。paired control rowがavoidable follow-up stall `0` / trigger exposure `3/3`の構造上限でない限り、これらlocked follow-up utility metricの少なくとも1つをstrictに改善し、他のrequired metricでoffsetting regressionを起こさないことを要求する。同時にtrigger-exposed全caseで#249 conformanceを維持する。
-- あるmodelの改善で別のscorable modelのcorrectness/safety regressionを隠してはならず、cross-model aggregation ruleはlive前にfreezeする。
-- operationally incompleteなmodelはimprovement gateのpositive evidenceには使わない。
-- canonical successorが横ばい、predeclared gate外のmixed、または悪化ならfailed release candidateとして保存し、**v0.4.2はreleaseしない**。次の試行は新しいimplementation/successor identityでのみ行い、失敗したfreeze済み観測をrerun/tuningしない。
-
-no-regression boundary:
-
-- frozen natural-language E2E v9/v10/v11と#256各target observationはimmutableのまま維持する。
-- #249はtyped `no_result` predecessor triggerがexposedしたすべてのcaseでconformantを維持する。
-- fuzzy key/value matching、sibling-target merge、暗黙のtool-order authority、non-read-only deterministic acquisitionは禁止する。
-- unsupported/rejected/operational evidenceはfact authorityへ昇格させない。
-- correctness-boundary violation、unsupported exposed assertion、identity-unsafe admission、MCP authority self-promotion、session external replayはzero-gateを維持する。
-- #248 finalization/grounding bridgeはtarget-to-final-answer authority/finalization semanticsへ踏み込むため **v0.5.0 — Verified Investigation Utility** に残す。
-- **より広いreliability/control-plane follow-upもv0.5.0が所有し、v0.4.2へ持ち込まない。** #282はfreeze済みpatch release rulerとは別にrepeated-trial / `pass^k`型planner reliabilityを特性評価し、#283は機械的に安全なexecutable action materializationをstochastic plannerからHarness-owned deterministic control flowへ戻す設計を評価する。これらは#248とも別責務であり、failed patch acceptanceを通すためだけにv0.4.2へ取り込まない。
+次の広いlineは **v0.5.0 — Verified Investigation Utility** のまま。#248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationはこのpatch releaseへ取り込まない。
 
 ## v0.4.1 — Investigation Utility Hardening
 
-Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3)。v0.4.1が現在のreleased external previewで、Issue #249をもってpatch lineは完了した。v0.4.0のauthority/machine-contract boundaryは維持する。
+Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3)。v0.4.1は直前のreleased external-preview patchで、Issue #249をもってpatch lineは完了した。v0.4.0のauthority/machine-contract boundaryは維持する。
 
 - **#249 exact-target `no_result` continuation:** typed `no_result` 後、同じtargetの`expected_fact_key`に対して明示対応するread-only capabilityが1つだけ残る場合、追加のstochastic action-selector callなしでHarnessがfollow-upを選ぶ。同じkeyの別target identityはmergeせず、admission/authority/verification/finalization/answer-safety semanticsも変更しない。
 - freeze済みnatural-language E2E v1〜v9はimmutable historical evidenceとして維持する。v9はproduct gapの根拠だが、再実行・再採点・tuning surfaceには使わない。
@@ -181,7 +167,7 @@ v0.3.0はproduct/distribution coordinateであり、新しいsemantic research g
 - 現在のsemantic runtimeと、明示的にcharacterizeされたrollback profile（正確なmachine IDは安定して文書化済み）；
 - credential-free deterministic CIと、分離されたlive provider smoke/research workflow。
 
-v0.1.0は、外部から利用できる最初のstructured previewだった。v0.2.0ではnatural-language-first path、successor verified-target recovery、provider retry/resume reliability、process-level compatibility testを追加した。v0.3.0ではexternal acquisition/admission、operational hardening、read-only MCP acquisition、trusted deterministic verification、release acceptance、任意の `reason-mcp` product surfaceを追加した。v0.4.0では同じresearch/authority provenanceを維持しながら、exposed-text binding、whole-invocation deadline、bounded investigation、resumable session、canonical natural-language E2E、negotiated/session MCP、限定的deterministic utility hardeningを追加した。v0.4.1が現在のexternal-preview patch releaseで、exact-target `no_result` continuationだけを追加する。versioned machine contractとサポート対象product commandはv0.x support policyのもとでcompatibility-trackedされるが、これはv1.0のstability promiseではない。
+v0.1.0は、外部から利用できる最初のstructured previewだった。v0.2.0ではnatural-language-first path、successor verified-target recovery、provider retry/resume reliability、process-level compatibility testを追加した。v0.3.0ではexternal acquisition/admission、operational hardening、read-only MCP acquisition、trusted deterministic verification、release acceptance、任意の `reason-mcp` product surfaceを追加した。v0.4.0では同じresearch/authority provenanceを維持しながら、exposed-text binding、whole-invocation deadline、bounded investigation、resumable session、canonical natural-language E2E、negotiated/session MCP、限定的deterministic utility hardeningを追加した。v0.4.1でexact-target `no_result` continuationを追加し、v0.4.2が現在のexternal-preview patch releaseとしてinvestigation utility/provider parityをhardeningする。versioned machine contractとサポート対象product commandはv0.x support policyのもとでcompatibility-trackedされるが、これはv1.0のstability promiseではない。
 
 ## 過去のマイルストーン：サポート対象コマンドとデータ契約
 

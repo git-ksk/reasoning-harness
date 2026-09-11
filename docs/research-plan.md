@@ -14,12 +14,12 @@ The adopted D3 runtime remains the stable semantic baseline. The first residual-
 program (#91) is complete: RSD0/RSD1/RSD2, independent frozen holdout, operational stabilization,
 versioned product wiring, and NL-5 all finished without granting model output authority.
 
-The product follow-up line remains separate from new reasoning research. v0.3.0 was the external-evidence integration release, v0.4.0 extended productization with grounded investigation/sessions, and current v0.4.1 is a narrow utility-hardening patch without creating a new reasoning study:
+The product follow-up line remains separate from new reasoning research. v0.3.0 was the external-evidence integration release, v0.4.0 extended productization with grounded investigation/sessions, v0.4.1 added narrow exact-target continuation, and current v0.4.2 hardens investigation utility/provider parity without creating a new reasoning study:
 
 - **Completed product CLI (#90):** external contract hardening, install/release compatibility, process-level observability, and the documented readiness gate are complete.
 - **Completed provider reliability (#126):** bounded transient retries, provider-attempt telemetry, and exact-identity product evaluation resume are complete without rewriting historical research outcomes.
 - **Completed product utility (#139):** the current successor product rerun closes the recorded Ministral 8B coverage/withholding gap on the six-case product workload while preserving the authority boundary.
-- **Current release:** v0.4.1 retains the v0.4.0 grounded-investigation/session foundation and adds only exact-target `no_result` continuation from #249; no research generation or authority semantics change.
+- **Current release:** v0.4.2 preserves the v0.4.x authority foundation while adding safe acquisition precedence, generic Groq provider parity, structured planner/action hardening, and provider/evaluation resilience validated by immutable v36 acceptance; no semantic research generation is changed.
 - **Completed product milestone (#173):** v0.3.0 connects real external acquisition and trusted verifier/oracle adapters to the existing bounded-resolution boundary; #174/#175/#178 establish the lane, #176 adds read-only MCP acquisition, #177 demonstrates hard external verification, #179 supplies non-frozen open-world acceptance evidence, and #180 adds the optional downstream `reason-mcp` product surface without changing research identity.
 - **Follow-on research:** selective/conformal abstention, relation-level causal sufficiency, or another mechanism starts only if a newly measured gap justifies a new research identity and fresh evaluation sequence.
 

@@ -69,19 +69,19 @@ defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です
 
 ## インストール
 
-### 現在のexternal preview (`v0.4.1`)
+### 現在のexternal preview (`v0.4.2`)
 
 自然文first pathは現在のtagged previewに含まれています。Rust 1.88+がある場合:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.4.1 --locked reasoning-harness-cli --bin reason
+  --tag v0.4.2 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-research binaryは入らず、supported product binaryの`reason`だけをinstallします。Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64向けstandalone archiveと`SHA256SUMS`もv0.4.1 Releaseで配布します。`main`は未releaseの開発snapshotを意図的に使う場合だけ選んでください。
+research binaryは入らず、supported product binaryの`reason`だけをinstallします。Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64向けstandalone archiveと`SHA256SUMS`もv0.4.2 Releaseで配布します。`main`は未releaseの開発snapshotを意図的に使う場合だけ選んでください。
 
-`v0.4.1`はv1.0 readiness gateを満たした後も、v0.x support policy上はexternal previewのままです。versionはproduct/distributionの座標であり、新しいfrozen research generationを意味しません。
+`v0.4.2`はv1.0 readiness gateを満たした後も、v0.x support policy上はexternal previewのままです。versionはproduct/distributionの座標であり、新しいfrozen research generationを意味しません。
 
 ## 最小サンプル
 

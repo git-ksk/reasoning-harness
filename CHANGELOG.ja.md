@@ -4,9 +4,31 @@
 
 ## [Unreleased]
 
-### Research / 評価
+## [0.4.2] - 2026-09-11
 
-- Issue #254 の frozen natural-language E2E v11 canonical Mistral observation (`34129798774`) を exact released v0.4.1 上で保存。13/13 full run は correctness / operational / measurement / report gate をすべて pass。fresh no-result trigger reachability は1/3で、trigger-exposedした1件は `cache no_result -> registry` と Harness follow-up telemetry 1を観測し conditional conformance 1/1、verification progressまで到達した。残り2件はplanner utility dataとして保持し、follow-up target groundingは0/3。frozen v9-v11はrerun/tuningしない。
+v0.4.2はinvestigation utilityとprovider parityのexternal-preview patch release。v0.4.xのcorrectness/authority boundaryを維持したままstochastic investigation control pathをhardeningし、freeze済みmetric-v13 acceptanceでMistral / Groq / Gemini / Gemmaの最終candidateを検証した。
+
+### 追加
+
+- Issue #261: 1つのexact investigation targetについて、明示read-only capability priorityから実行可能なunique highest-priority choiceが機械的に決まる場合だけ、Harness-owned deterministic acquisition precedenceを適用。同じkeyのsibling、tie、priority欠落、wildcard/keyless target、attempt済pair、non-read-only action、terminal budgetは暗黙repairせずfail-closed/model pathに残す。
+- Issue #262: 既存Groq adapterをgeneric natural-language `reason --provider groq`のgeneration/planning/action/regeneration/render/sessionへ接続。provider固有のcorrectness/authority semanticsは追加しない。
+- diagnostic-only structured generation trace、typed action rejection/precedence telemetry、operational observability bounds、incomplete control向けconservative paired acceptance。
+
+### 変更
+
+- investigation plan/action schemaを構造的に制約し、exact fact-key/target/capability bindingを維持、attempt済pairを除外、selection priorityをmodel-invisibleに保ち、実行ID欠落をrepairせずfail closed。
+- structured provider outputはboundedなJSON-schema -> JSON-object -> strict-text JSON compatibility pathへdegradeしつつterminal metadataとfail-closed parsingを維持。factual render schemaでは明示`factual_claims`を必須化。
+- typed `no_result`後に合法なexact-target continuationがある場合、round boundaryでもbounded continuationを維持。historical frozen observationは再採点しない。
+- Google provider operationはbounded transient retry、structured quota-window classification、shared request pacer、canonical 6000ms request-start floor、inter-case delayとの独立policyを使用。
+
+### Release acceptance
+
+- 最終immutable v36: `natural-language-e2e-v36-freeze` / `57bea659d472a103cc48d86ddee7dfe4a41de790`、candidate `9497b563ad914fada13d33e0c1a7fee549a1f1de`、released v0.4.1 control `29a9e4be6273dbffeda324e15517dc64930ad315`、seed `738214`、metric `v13`。canonical rerun / post-freeze mutationはいずれも`0`。
+- Mistral paired Actions `34564120392`: PASS。
+- Cross-model Actions `34564672351`: Groq PASS、Gemini 3.5 Flash-Lite paired PASS、Gemma 4 31B paired PASS。全required candidate rowは13/13完走し、operational/generation/correctness-boundary failureは`0`。cross-model averagingは使用していない。
+- Geminiのfrozen paired follow-up utilityはcontrolのtool selection `0.6`、trigger exposure `0`、avoidable stall `3`からcandidate `1.0`、`3`、`0`へ改善し、target recall `1.0`とzero correctness gateを維持。
+- Google 6000ms pacingにより最終acceptanceでv34のfree-tier RPM failureは再発せず、v35 Gemmaの`pacing == inter_case_delay` eval-runner invariant failureも再発しなかった。
+- 詳細: [Natural-language E2E v36 canonical release acceptance](docs/natural-language-e2e-v36-result.ja.md)。
 
 ## [0.4.1] - 2026-09-07
 

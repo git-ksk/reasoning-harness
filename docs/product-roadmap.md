@@ -2,7 +2,7 @@
 
 Reasoning Harness is productized first as the native Rust `reason` CLI. v0.1.0 established the
 structured correctness and automation contracts; v0.2.0 made the **AI-backed natural-language CLI**
-the primary end-user path, v0.3.0 added bounded external evidence and resolution, v0.4.0 added grounded investigation/sessions and the current authority foundation, and v0.4.1 is the current external-preview patch release adding exact-target `no_result` continuation without changing those semantics. Users do not need to construct internal JSON just to ask the harness to reason.
+the primary end-user path, v0.3.0 added bounded external evidence and resolution, v0.4.0 added grounded investigation/sessions and the current authority foundation, v0.4.1 added exact-target `no_result` continuation, and v0.4.2 is the current external-preview patch release for investigation utility and provider parity while preserving the same authority semantics. Users do not need to construct internal JSON just to ask the harness to reason.
 
 The product goal is deliberately narrower than a general-purpose agent framework:
 
@@ -15,7 +15,7 @@ validation and operational stabilization; the product surface does not track eve
 
 ## Current product path
 
-The v0.4.1 default experience remains natural-language-first and AI-backed:
+The v0.4.2 default experience remains natural-language-first and AI-backed:
 
 ```text
 natural-language task
@@ -45,39 +45,25 @@ extractions, tool output, and prior model output do not become trusted evidence 
 accepted them. Evidence ingestion, admission, verification, semantic/answer-safety diagnostics, bounded
 resolution, re-verification, and final-claim coverage remain harness-owned.
 
-## v0.4.2 — Planner Utility & Provider Parity
+## v0.4.2 — Investigation Utility & Provider Parity
 
-Tracking: milestone **v0.4.2 — Planner Utility & Provider Parity** (#5), parent Issue #260. The currently released external preview remains v0.4.1 until this milestone passes fresh acceptance. v0.4.2 is a patch-level utility/provider-parity release: it does not change the v0.4.x authority, admission, verification, finalization, or answer-safety boundary.
+Tracking: milestone **v0.4.2 — Investigation Utility & Provider Parity** (#5), parent Issue #260. The patch line is complete and released after immutable v36 metric-v13 acceptance. It preserves the v0.4.x authority, admission, verification, finalization, answer-safety, MCP non-promotion, and session-replay boundaries.
 
-Implementation order is fixed:
+Completed scope:
 
-1. **#261 deterministic safe action precedence.** Reduce the measured `target_recalled=true` / `actions=0` / `round_budget` planner stall only where a Harness-owned read-only acquisition choice is mechanically unique under explicit configuration. Do not infer precedence from free-form task wording or JSON array order, merge same-key target identities, or make a model-selected target/action authoritative. Existing #233 globally-unique selection and #249 exact-target post-`no_result` continuation remain distinct invariants with distinct telemetry.
-2. **#262 generic Groq provider parity.** Expose the already implemented `GroqAdapter` through the generic natural-language `reason` generator/planner/action/regeneration/render/session path. Groq model IDs remain data; provider-specific semantics or authority branches are forbidden. The frozen #256 Groq process failures remain historical measurement-design evidence and are not rewritten.
-3. **#281 structurally constrained action contract after v18.** The frozen v18 candidate regressed with repeated `acquire` proposals that carried `target_id` but omitted `capability_id` (`invalid_shape` 13 -> 29 control-to-candidate). Harden the model-facing action schema into a closed acquire/stop discriminated shape so missing executable IDs are structurally invalid before runtime validation, while retaining fail-closed runtime checks and forbidding ID repair, sibling merge, fuzzy matching, or provider-specific semantics.
-4. **#263 fresh v0.4.2 acceptance.** After #281, freeze a new observation-free successor before live credentials, prove exact provider support without network before canonical launch, preserve provider-aware cross-model scheduling (#258), and gate release on zero correctness-boundary regression. Utility, operational completeness, and correctness remain separate report dimensions. v18 remains immutable and is not rerun/rescored.
+1. **#261 deterministic safe action precedence:** Harness-owned explicit read-only priorities may select a unique highest-priority executable acquisition for one exact target; ties, missing priorities, same-key siblings, wildcard/keyless targets, attempted pairs, terminal states, and non-read-only actions remain fail-closed.
+2. **#262 generic Groq provider parity:** the generic natural-language `reason` path supports Groq generation/planning/action/regeneration/render/session without provider-specific correctness or authority branches.
+3. **Planner/action protocol hardening:** #281 and follow-ups constrain acquire/stop and exact fact-key planning contracts, preserve target/capability identity, exclude attempted pairs, keep priority model-invisible, and reject malformed structured output without ID repair or fuzzy matching.
+4. **Provider/evaluation resilience:** bounded structured-output fallback, operational-only retry/observability, shared Google pacing, quota-window classification, longer bounded Google transient handling, and the corrected independent pacing/inter-case invariant support reproducible acceptance without weakening semantic gates.
+5. **#263 final fresh acceptance:** `natural-language-e2e-v36-freeze` (`57bea659d472a103cc48d86ddee7dfe4a41de790`) passed with canonical reruns `0` and post-freeze mutations `0`. Mistral paired PASS, Groq generic candidate PASS, Gemini 3.5 Flash-Lite paired PASS, and Gemma 4 31B paired PASS. See [v36 release acceptance](natural-language-e2e-v36-result.md).
 
-Evidence-gated release policy:
+The strict utility improvement is visible in the frozen Gemini row: control tool selection `0.6`, trigger exposure `0`, and avoidable stalls `3` became candidate `1.0`, `3`, and `0`, with target recall `1.0` and zero correctness-boundary violations preserved. Mistral and Gemma were already at the frozen follow-up structural ceiling and were preserved without regression. No cross-model averaging was used.
 
-- implementation completion is **not** sufficient to tag/release v0.4.2;
-- #263 must freeze the v0.4.1 comparison baseline and utility thresholds before any v0.4.2 live observation;
-- candidate must be non-worse on the locked base utility indicators; unless the paired control row is already at the structural ceiling of `0` avoidable follow-up stalls and `3/3` trigger exposure, candidate must strictly improve at least one of those locked follow-up utility metrics without an offsetting required-metric regression; #249 remains fully conformant on every trigger-exposed case;
-- no scorable model may introduce a correctness/safety regression that is hidden by another model's improvement; the exact cross-model aggregation rule is frozen pre-live;
-- an operationally incomplete model cannot supply positive evidence for the improvement gate;
-- if the canonical successor is flat, mixed outside the predeclared gate, or worse, preserve it as a failed release candidate and **do not release v0.4.2**. Any subsequent attempt requires a new implementation/successor identity; never tune or rerun the failed frozen observation.
-
-No-regression boundary:
-
-- frozen natural-language E2E v9/v10/v11 and #256 target observations remain immutable;
-- #249 must remain conformant whenever its typed-`no_result` predecessor trigger is exposed;
-- no fuzzy key/value matching, sibling-target merge, implicit tool-order authority, or non-read-only deterministic acquisition;
-- unsupported/rejected/operational evidence never becomes fact authority;
-- correctness-boundary violations, unsupported exposed assertions, identity-unsafe admission, MCP authority self-promotion, and session external replay remain zero-gated;
-- #248 finalization/grounding bridge remains in **v0.5.0 — Verified Investigation Utility** because it crosses into target-to-final-answer authority/finalization semantics.
-- **v0.5.0 also owns the broader reliability/control-plane follow-up, not v0.4.2:** #282 adds repeated-trial / `pass^k`-style planner reliability characterization outside the frozen patch release ruler, and #283 evaluates moving mechanically safe executable-action materialization from the stochastic planner into Harness-owned deterministic control flow. These are separate from #248 and must not be pulled into v0.4.2 merely to make a failed patch acceptance pass.
+The next broader line remains **v0.5.0 — Verified Investigation Utility**: #248 finalization/grounding, #282 repeated-trial / `pass^k` planner reliability, and #283 deterministic Harness-owned action materialization remain explicitly out of this patch release.
 
 ## v0.4.1 — Investigation Utility Hardening
 
-Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3). v0.4.1 is the current released external preview; the patch line is complete with Issue #249 and preserves the v0.4.0 authority/machine-contract boundary.
+Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3). v0.4.1 is the preceding released external-preview patch; the line is complete with Issue #249 and preserves the v0.4.0 authority/machine-contract boundary.
 
 - **#249 exact-target `no_result` continuation:** when a typed `no_result` leaves exactly one explicit read-only capability for the same target's `expected_fact_key`, the Harness selects that follow-up without another stochastic action-selector call. Target identity is never merged across same-key siblings, and admission/authority/verification/finalization/answer-safety semantics remain unchanged.
 - Frozen natural-language E2E v1-v9 remain immutable historical evidence. v9 motivates the product gap but is not rerun, rescored, or used as a tuning surface.
@@ -194,7 +180,7 @@ Already available:
 - current semantic runtime plus an explicit characterized rollback profile (exact machine IDs remain stable and documented);
 - credential-free deterministic CI plus separate live provider smoke/research workflows.
 
-v0.1.0 was the first externally consumable structured preview. v0.2.0 added the natural-language-first path, successor verified-target recovery, provider retry/resume reliability, and process-level compatibility tests. v0.3.0 added external acquisition/admission, operational hardening, read-only MCP acquisition, trusted deterministic verification, release acceptance, and the optional `reason-mcp` product surface. v0.4.0 established exposed-text binding, whole-invocation deadlines, bounded investigation, resumable sessions, canonical natural-language E2E validation, negotiated/session MCP compatibility, and narrow deterministic utility hardening. v0.4.1 is the current external-preview patch release, adding only exact-target `no_result` continuation while preserving the same research/authority provenance. Versioned machine contracts and supported product commands remain compatibility-tracked under the v0.x support policy; this is not a v1.0 stability promise.
+v0.1.0 was the first externally consumable structured preview. v0.2.0 added the natural-language-first path, successor verified-target recovery, provider retry/resume reliability, and process-level compatibility tests. v0.3.0 added external acquisition/admission, operational hardening, read-only MCP acquisition, trusted deterministic verification, release acceptance, and the optional `reason-mcp` product surface. v0.4.0 established exposed-text binding, whole-invocation deadlines, bounded investigation, resumable sessions, canonical natural-language E2E validation, negotiated/session MCP compatibility, and narrow deterministic utility hardening. v0.4.1 added exact-target `no_result` continuation; v0.4.2 is the current external-preview patch release for investigation utility/provider parity while preserving the same research/authority provenance. Versioned machine contracts and supported product commands remain compatibility-tracked under the v0.x support policy; this is not a v1.0 stability promise.
 
 ## Historical milestone: supported command and data contract
 
