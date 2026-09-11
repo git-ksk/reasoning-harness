@@ -1,4 +1,4 @@
-name: v36-raw-baseline-supplement-live
+name: v36-raw-safety-supplement-live
 
 on:
   pull_request:
@@ -9,70 +9,91 @@ permissions:
 
 jobs:
   mistral:
-    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'v36-raw-baseline-live'
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'v36-raw-safety-live'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
+      FREEZE_TAG: v36-raw-safety-supplement-v1-freeze
       MODEL: ministral-8b-latest
       SEED: '738214'
       MAX_TOKENS: '1024'
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: v36-raw-safety-supplement-v1-freeze
           fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: '1.88.0'
       - uses: Swatinem/rust-cache@v2
-      - name: Prove source and supplemental contracts before credentials
+      - name: Prove immutable supplement before credentials
         run: |
           set -euo pipefail
+          F="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git rev-parse HEAD)" = "$F"
+          test "${{ github.event.pull_request.head.sha }}" = "$F"
           test "$(git rev-list -n 1 natural-language-e2e-v36-freeze)" = "57bea659d472a103cc48d86ddee7dfe4a41de790"
           test "$(git rev-list -n 1 v0.4.2)" = "d8940b4a98f11ec3e0968444fadc8bc90eae01ff"
+          python3 scripts/validate_v36_raw_safety_surface.py
           cargo run -q --locked -p reasoning-harness-cli --bin v36_raw_baseline -- \
             --provider mistral --model "$MODEL" --validate-only
       - name: Check credential
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
         run: test -n "$MISTRAL_API_KEY"
-      - name: Run raw baseline
+      - name: Run canonical raw safety observation
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
         run: |
           cargo run -q --locked -p reasoning-harness-cli --bin v36_raw_baseline -- \
             --provider mistral --model "$MODEL" --seed "$SEED" --max-tokens "$MAX_TOKENS" \
-            --inter-case-delay-ms 3000 --output /tmp/v36-raw-mistral.json
-          jq '.raw, .harness_reference.aggregate, .raw_minus_harness' /tmp/v36-raw-mistral.json
-      - uses: actions/upload-artifact@v7
+            --inter-case-delay-ms 3000 --output /tmp/v36-raw-safety-mistral.json
+      - name: Preserve canonical evidence
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
-          name: v36-raw-baseline-mistral
-          path: /tmp/v36-raw-mistral.json
-          retention-days: 30
+          name: v36-raw-safety-mistral-seed-738214
+          path: /tmp/v36-raw-safety-mistral.json
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Require operationally complete measurement
+        run: |
+          jq -e '.schema_version == "v36-raw-safety-report-v1" and .raw.measurement_complete == true and .raw.completed_cases == 5 and .raw.operational_failures == 0' /tmp/v36-raw-safety-mistral.json >/dev/null
 
   groq:
-    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'v36-raw-baseline-live'
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'v36-raw-safety-live'
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
+      FREEZE_TAG: v36-raw-safety-supplement-v1-freeze
       MODEL: openai/gpt-oss-120b
       SEED: '738214'
       MAX_TOKENS: '1024'
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: v36-raw-safety-supplement-v1-freeze
           fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: '1.88.0'
       - uses: Swatinem/rust-cache@v2
-      - name: Validate before credentials
-        run: cargo run -q --locked -p reasoning-harness-cli --bin v36_raw_baseline -- --provider groq --model "$MODEL" --validate-only
+      - name: Prove immutable supplement before credentials
+        run: |
+          set -euo pipefail
+          F="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git rev-parse HEAD)" = "$F"
+          test "${{ github.event.pull_request.head.sha }}" = "$F"
+          test "$(git rev-list -n 1 natural-language-e2e-v36-freeze)" = "57bea659d472a103cc48d86ddee7dfe4a41de790"
+          python3 scripts/validate_v36_raw_safety_surface.py
+          cargo run -q --locked -p reasoning-harness-cli --bin v36_raw_baseline -- \
+            --provider groq --model "$MODEL" --validate-only
       - name: Check credential
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: test -n "$GROQ_API_KEY"
-      - name: Run raw baseline
+      - name: Run canonical raw safety observation
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '2100'
@@ -81,16 +102,21 @@ jobs:
         run: |
           cargo run -q --locked -p reasoning-harness-cli --bin v36_raw_baseline -- \
             --provider groq --model "$MODEL" --seed "$SEED" --max-tokens "$MAX_TOKENS" \
-            --inter-case-delay-ms 3000 --output /tmp/v36-raw-groq.json
-          jq '.raw, .harness_reference.aggregate, .raw_minus_harness' /tmp/v36-raw-groq.json
-      - uses: actions/upload-artifact@v7
+            --inter-case-delay-ms 3000 --output /tmp/v36-raw-safety-groq.json
+      - name: Preserve canonical evidence
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
-          name: v36-raw-baseline-groq
-          path: /tmp/v36-raw-groq.json
-          retention-days: 30
+          name: v36-raw-safety-groq-seed-738214
+          path: /tmp/v36-raw-safety-groq.json
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Require operationally complete measurement
+        run: |
+          jq -e '.schema_version == "v36-raw-safety-report-v1" and .raw.measurement_complete == true and .raw.completed_cases == 5 and .raw.operational_failures == 0' /tmp/v36-raw-safety-groq.json >/dev/null
 
   google:
-    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'v36-raw-baseline-live'
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.label.name == 'v36-raw-safety-live'
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     strategy:
@@ -99,23 +125,33 @@ jobs:
       matrix:
         model: [gemini-3.5-flash-lite, gemma-4-31b-it]
     env:
+      FREEZE_TAG: v36-raw-safety-supplement-v1-freeze
       SEED: '738214'
       MAX_TOKENS: '1024'
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: v36-raw-safety-supplement-v1-freeze
           fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: '1.88.0'
       - uses: Swatinem/rust-cache@v2
-      - name: Validate before credentials
-        run: cargo run -q --locked -p reasoning-harness-cli --bin v36_raw_baseline -- --provider google --model "${{ matrix.model }}" --validate-only
+      - name: Prove immutable supplement before credentials
+        run: |
+          set -euo pipefail
+          F="$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git rev-parse HEAD)" = "$F"
+          test "${{ github.event.pull_request.head.sha }}" = "$F"
+          test "$(git rev-list -n 1 natural-language-e2e-v36-freeze)" = "57bea659d472a103cc48d86ddee7dfe4a41de790"
+          python3 scripts/validate_v36_raw_safety_surface.py
+          cargo run -q --locked -p reasoning-harness-cli --bin v36_raw_baseline -- \
+            --provider google --model '${{ matrix.model }}' --validate-only
       - name: Check credential
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: test -n "$GEMINI_API_KEY"
-      - name: Run raw baseline
+      - name: Run canonical raw safety observation
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
@@ -123,10 +159,16 @@ jobs:
           SLUG="$(printf '%s' '${{ matrix.model }}' | tr '/' '-')"
           cargo run -q --locked -p reasoning-harness-cli --bin v36_raw_baseline -- \
             --provider google --model '${{ matrix.model }}' --seed "$SEED" --max-tokens "$MAX_TOKENS" \
-            --inter-case-delay-ms 6000 --output "/tmp/v36-raw-${SLUG}.json"
-          jq '.raw, .harness_reference.aggregate, .raw_minus_harness' "/tmp/v36-raw-${SLUG}.json"
-      - uses: actions/upload-artifact@v7
+            --inter-case-delay-ms 3000 --output "/tmp/v36-raw-safety-${SLUG}.json"
+      - name: Preserve canonical evidence
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
-          name: v36-raw-baseline-google-${{ matrix.model }}
-          path: /tmp/v36-raw-*.json
-          retention-days: 30
+          name: v36-raw-safety-google-${{ matrix.model }}-seed-738214
+          path: /tmp/v36-raw-safety-*.json
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Require operationally complete measurement
+        run: |
+          SLUG="$(printf '%s' '${{ matrix.model }}' | tr '/' '-')"
+          jq -e '.schema_version == "v36-raw-safety-report-v1" and .raw.measurement_complete == true and .raw.completed_cases == 5 and .raw.operational_failures == 0' "/tmp/v36-raw-safety-${SLUG}.json" >/dev/null

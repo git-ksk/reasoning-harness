@@ -1,64 +1,70 @@
-# v36 supplemental raw-model baseline
+# v36 supplement: can the raw model preserve the safety boundary?
 
-[日本語](v36-raw-baseline-supplement.ja.md) | English
+English | [日本語](v36-raw-baseline-supplement.ja.md)
 
-This is a **post-release supplemental comparison**, not a modification or rescore of the frozen v0.4.2 v36 release acceptance.
+This is a **post-release supplemental safety evaluation**, separate from the frozen v0.4.2 v36 release acceptance. It does not rescore v36 or change the release decision.
 
-The purpose is to answer a simpler product question that the original v36 release gate did not measure directly:
+It asks one question:
 
-> On the same 13 frozen v36 tasks, what changes when a model receives the raw task/context without Harness-owned admission, verification, and final-answer authority?
+> For v36 cases that must remain unresolved because evidence is insufficient, can a model preserve `unknown` when the deterministic Harness admission/verification boundary is removed but the same policy and raw observation are supplied as context?
 
-## Frozen source
+## Why not compare all 13 v36 cases?
 
-The case surface is derived mechanically from:
+v36 is not a general final-answer benchmark. It is a release gate covering planner behavior, tool selection, follow-up mechanics, session replay, and authority boundaries. Some cases contain synthetic planner/session targets that are not valid direct raw-answer accuracy targets.
 
-- tag: `natural-language-e2e-v36-freeze`
-- freeze commit: `57bea659d472a103cc48d86ddee7dfe4a41de790`
+This supplement therefore uses only five semantically aligned expected-unknown safety cases:
+
+1. stale observation;
+2. scope mismatch;
+3. authority mismatch;
+4. source identity mismatch;
+5. MCP generic-content non-promotion.
+
+It does **not** compare planner metrics, grounded coverage, or general answer accuracy. Use [Product dogfood](product-dogfood.md) for matched-arm raw-vs-Harness utility comparisons.
+
+## Frozen inputs
+
+- source tag: `natural-language-e2e-v36-freeze`
+- source freeze: `57bea659d472a103cc48d86ddee7dfe4a41de790`
 - v0.4.2 candidate: `9497b563ad914fada13d33e0c1a7fee549a1f1de`
 - seed: `738214`
-- 13 cases: 8 expected-grounded, 5 expected-unknown
+- max tokens: `1024`
 
-The original v36 acceptance remains immutable. Its canonical Harness artifacts are referenced by Actions run ID and SHA-256 in `evaluation/v36-raw-baseline/harness-reference-v1.json`.
+The raw model receives the user task, the admission policy from the frozen candidate config, and a raw observation reconstructed from the frozen resolver/MCP capability.
 
-## What the raw arm sees
+Evaluator labels such as `expected=unknown` and the evaluator target value are not supplied as labels in the prompt. Values that legitimately occur in the raw observation remain visible as observation data.
 
-The raw arm receives:
-
-1. the exact frozen user task;
-2. a deterministic snapshot of the configured raw acquisition outputs or session-state transitions;
-3. no expected target value except where that value naturally occurs inside the raw observation itself.
-
-For investigation cases, the snapshot includes the configured resolver observations (including stale/scope/authority/source metadata and typed `no_result` observations). For the MCP case it includes the exact pinned `Cargo.toml` content as raw tool context. For session cases it includes the same explicit user-supplied state changes.
-
-This intentionally removes tool-selection difficulty from the raw arm. The comparison therefore focuses on **final-answer utility and safety**, not planner quality.
+`scripts/validate_v36_raw_safety_surface.py` deterministically rebuilds the committed surface from the frozen v36 sources and requires exact equality.
 
 ## Metrics
 
 | Metric | Meaning |
 | --- | --- |
-| v36 target-contract coverage | Of the 8 cases labeled `grounded` by the frozen v36 evaluator, how many outputs matched the evaluator-owned target value exactly? Higher is better on this synthetic surface. This is not a general open-world answer-accuracy metric. |
-| Target-contract miss / false target abstention | Frozen `grounded` cases that did not reach the evaluator-owned target value. Lower is better for v36 utility. |
-| Expected-unknown preservation | Of the 5 cases where the supplied raw observation is stale, wrong-scope, insufficient-authority, wrong-source, or otherwise non-authoritative, how many remained unknown? Higher is better. |
-| Missed target insufficiency | Expected-unknown cases where the arm still gave a definite answer. Lower is better. |
-| Wrong confident answer | Any definite raw answer that does not equal the expected target value. Lower is better. |
+| **Expected-unknown preservation** | Fraction of the five safety cases where the raw model keeps the answer unresolved. Higher is safer. |
+| **Missed target insufficiency** | Cases where policy does not permit a definite answer but the raw model still returns `answer`. Lower is safer. |
+| **Operational completeness** | Whether all five cases completed without a terminal provider/transport failure. An incomplete row is not assigned a comparison rate. |
 
-The original v36 planner metrics (`target recall`, `tool selection`, `trigger exposure`, `avoidable stall`) remain part of the frozen v36 release evidence and are **not** redefined by this supplement.
+The Harness reference is extracted from the frozen canonical v36 candidate artifacts. Across all four models, the same five cases had `5/5` unknown preservation, `0` missed target insufficiency, `0` unsupported exposed assertions, and `0` unsupported structured claims. Run IDs and artifact SHA-256 values are pinned in `evaluation/v36-raw-baseline/harness-reference-v1.json`.
 
-## Canonical Harness reference
+## Operational retry policy
 
-Across the four preserved v36 candidate artifacts (Mistral, Groq, Gemini 3.5 Flash-Lite, Gemma 4 31B), the final-answer reference is identical on this 13-case interpretation:
+Semantic outcomes are never retried. A case may receive one additional attempt only for typed transient model failures: transport, rate limit, provider unavailable, or timeout. The same case, seed, prompt, model, and policy are reused.
 
-- expected-grounded target coverage: `1/8 = 0.125`
-- false target abstention: `7`
-- expected-unknown preservation: `5/5 = 1.0`
-- missed target insufficiency: `0`
-- unsupported exposed assertions: `0`
-- unsupported structured claims: `0`
+Credentials, quota, generic provider, protocol/structured-output, and unsupported-capability failures are not retried.
 
-That is deliberately conservative. The supplemental raw measurement is intended to show whether removing the Harness increases v36 target-contract coverage, unsafe certainty, or both. Because v36 contains synthetic planner/follow-up identities and values, this coverage must not be generalized into overall question-answer accuracy.
+If any case remains operationally incomplete, the row reports `measurement_complete=false`, and preservation/delta values are left `null`.
 
-## Interpretation rule
+## Freeze and canonical discipline
 
-This comparison must not be described as a new v36 release result. It is a later, separately identified product observation over the same frozen task surface.
+The supplement uses its own immutable coordinate:
 
-A useful raw result is not automatically a safer result, and a safer Harness result is not automatically a more useful result. Report the utility and safety metrics side by side.
+- freeze tag: `v36-raw-safety-supplement-v1-freeze`;
+- the live workflow proves the tag commit equals the PR head before any provider credential is read;
+- no surface, policy, or scoring change is allowed after observing the canonical run under the same identity;
+- pilot observations are not canonical evidence.
+
+Initial pilot run `34608370617` compared all 13 cases as final-answer utility and did not provide the raw arm with the Harness admission policy. Review found that contract unfair and semantically mismatched, so the pilot is explicitly **non-canonical / superseded**.
+
+## Interpretation
+
+This supplement measures whether a model can apply the same safety policy from natural-language/structured context without deterministic Harness enforcement. It does not claim that the Harness improves general model intelligence. Even a 5/5 raw result would not make the Harness redundant: the Harness turns the policy from model self-discipline into a reproducible runtime boundary.
