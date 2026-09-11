@@ -6,10 +6,31 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ## [Unreleased]
 
-### Research / evaluation
+## [0.4.2] - 2026-09-11
 
-- Preserved the Issue #254 frozen natural-language E2E v11 canonical Mistral observation (`34129798774`) on exact released v0.4.1. The full 13/13 run passed correctness, operational, measurement, and report gates. Fresh no-result trigger reachability was 1/3; the single trigger-exposed case was conditionally conformant 1/1 (`cache no_result -> registry`, Harness follow-up telemetry 1) and produced verification progress, while the two misses remain planner utility data and follow-up target grounding remained 0/3. Frozen v9-v11 are not rerun or tuned.
-- Preserved the Issue #252 frozen v0.4.1 natural-language E2E v10 canonical Mistral observation (`34125135760`) as an exercised-path validity failure with correctness-boundary violations `0` and operational failures `0`. The dedicated #249 lane did not reach its cache/typed-`no_result` trigger, so the post-trigger effect remains inconclusive and moves to fresh successor Issue #254 rather than rerunning or tuning v10.
+Patch external-preview release for investigation utility and provider parity. v0.4.2 preserves the v0.4.x correctness/authority boundary while hardening the stochastic investigation control path and proving the final candidate across Mistral, Groq, Gemini, and Gemma under frozen metric-v13 acceptance.
+
+### Added
+
+- Issue #261: Harness-owned deterministic acquisition precedence for one exact investigation target when explicit read-only capability priorities yield one unique highest-priority executable choice. Same-key siblings, ties, missing priorities, wildcard/keyless targets, attempted pairs, non-read-only actions, and terminal budgets remain fail-closed/model-driven rather than silently repaired.
+- Issue #262: generic natural-language `reason --provider groq` support using the existing Groq adapter across generation/planning/action/regeneration/render/session paths, without provider-specific correctness or authority semantics.
+- Diagnostic-only structured generation traces, typed action-rejection/precedence telemetry, operational observability bounds, and conservative paired acceptance for incomplete controls.
+
+### Changed
+
+- Structurally constrained investigation plan/action schemas now preserve exact fact-key/target/capability binding, exclude already-attempted pairs, keep selection priority model-invisible, and fail closed instead of repairing missing executable IDs.
+- Structured provider output now degrades through bounded JSON-schema -> JSON-object -> strict-text JSON compatibility paths while retaining terminal metadata and fail-closed parsing; factual render schemas require explicit factual claims.
+- Investigation continuation remains available at the round boundary when a typed `no_result` has a legally executable exact-target continuation; historical frozen observations are not rescored.
+- Google provider operation uses fuller bounded transient retry handling, structured quota-window classification, a shared request pacer, a 6000ms canonical request-start floor, and independent inter-case delay semantics.
+
+### Release acceptance
+
+- Final immutable v36 acceptance: `natural-language-e2e-v36-freeze` at `57bea659d472a103cc48d86ddee7dfe4a41de790`, candidate `9497b563ad914fada13d33e0c1a7fee549a1f1de`, released v0.4.1 control `29a9e4be6273dbffeda324e15517dc64930ad315`, seed `738214`, metric `v13`. Canonical reruns and post-freeze mutations: `0`.
+- Mistral paired Actions `34564120392`: PASS.
+- Cross-model Actions `34564672351`: Groq PASS, Gemini 3.5 Flash-Lite paired PASS, Gemma 4 31B paired PASS. All required candidate rows completed 13/13 with operational/generation/correctness-boundary failures `0`; no cross-model averaging was used.
+- Gemini improved the frozen paired follow-up utility row from control tool selection `0.6`, trigger exposure `0`, avoidable stalls `3` to candidate `1.0`, `3`, `0` respectively, while target recall remained `1.0` and correctness gates remained zero.
+- Google 6000ms pacing eliminated the observed v34 free-tier RPM failure in the final acceptance, and the v35 Gemma `pacing == inter_case_delay` eval-runner invariant failure did not recur.
+- Full result: [Natural-language E2E v36 canonical release acceptance](docs/natural-language-e2e-v36-result.md).
 
 ## [0.4.1] - 2026-09-07
 
