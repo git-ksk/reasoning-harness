@@ -48,7 +48,7 @@ Tracking: milestone **v0.4.2 — Investigation Utility & Provider Parity** (#5)�
 
 strict utility improvementはfreeze済みGemini rowで明確に観測した。controlのtool selection `0.6`、trigger exposure `0`、avoidable stall `3`からcandidate `1.0`、`3`、`0`へ改善し、target recall `1.0`とcorrectness-boundary violation `0`を維持した。Mistral / Gemmaはfrozen follow-up structural ceilingを維持しregressionなし。cross-model averagingは使っていない。
 
-最後のunified v0.4.2 release以降は、product UXとengine researchを独立したversion lineへ分ける。**Reason CLI 0.5.0 — General-use Productization**（milestone #6 / #359）はHarness Engine 0.4.2を固定したままsetup、secure credential、diagnostics、distributionを製品化する。別の **Harness Engine 0.5.0 — Verified Investigation Utility**（milestone #4）が #248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationを所有する。
+最後のunified v0.4.2 release以降は、product UXとengine researchを独立したversion lineへ分ける。**Reason CLI 0.5.0 — General-use Productization**（milestone #6 / #359）はHarness Engine 0.4.2を固定したままinstall、secure auth/setup、interactive use、session ergonomics、provider/model/config/MCP discovery、diagnostics/recovery、lifecycle managementを製品化する。詳細は[Reason CLI 0.5.0 一般利用向け製品化ロードマップ](reason-cli-0.5-roadmap.ja.md)を参照。別の **Harness Engine 0.5.0 — Verified Investigation Utility**（milestone #4）が #248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationを所有する。
 
 ## v0.4.1 — Investigation Utility Hardening
 

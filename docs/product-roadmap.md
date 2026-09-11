@@ -59,7 +59,7 @@ Completed scope:
 
 The strict utility improvement is visible in the frozen Gemini row: control tool selection `0.6`, trigger exposure `0`, and avoidable stalls `3` became candidate `1.0`, `3`, and `0`, with target recall `1.0` and zero correctness-boundary violations preserved. Mistral and Gemma were already at the frozen follow-up structural ceiling and were preserved without regression. No cross-model averaging was used.
 
-After the final unified v0.4.2 release, product UX and engine research split into independent version lines. **Reason CLI 0.5.0 — General-use Productization** (milestone #6 / #359) keeps Harness Engine 0.4.2 fixed while productizing setup, secure credentials, diagnostics, and distribution. Separately, **Harness Engine 0.5.0 — Verified Investigation Utility** (milestone #4) owns #248 finalization/grounding, #282 repeated-trial / `pass^k` planner reliability, and #283 deterministic Harness-owned action materialization.
+After the final unified v0.4.2 release, product UX and engine research split into independent version lines. **Reason CLI 0.5.0 — General-use Productization** (milestone #6 / #359) keeps Harness Engine 0.4.2 fixed while productizing installation, secure auth/setup, interactive use, session ergonomics, provider/model/config/MCP discovery, diagnostics/recovery, and lifecycle management. See [Reason CLI 0.5.0 general-use productization roadmap](reason-cli-0.5-roadmap.md). Separately, **Harness Engine 0.5.0 — Verified Investigation Utility** (milestone #4) owns #248 finalization/grounding, #282 repeated-trial / `pass^k` planner reliability, and #283 deterministic Harness-owned action materialization.
 
 ## v0.4.1 — Investigation Utility Hardening
 
