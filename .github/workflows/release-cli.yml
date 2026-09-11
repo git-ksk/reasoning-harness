@@ -140,6 +140,17 @@ jobs:
           pattern: reason-v${{ needs.prepare.outputs.version }}-*
           path: dist
           merge-multiple: true
+      - name: Add native installer entrypoints for split CLI releases
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "${{ needs.prepare.outputs.tag }}" in
+            reason-v*)
+              python3 scripts/test_installer_contract.py
+              cp install.sh install.ps1 dist/
+              ;;
+            *) echo "historical unified release: installer entrypoints did not exist at this tag" ;;
+          esac
       - name: Generate checksums
         shell: bash
         run: |
