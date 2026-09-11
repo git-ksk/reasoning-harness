@@ -4,7 +4,7 @@ reasoning-harness の改善にご協力いただきありがとうございま�
 
 ## 対象範囲
 
-このプロジェクトは、確率的な候補出力を明示的な決定論的正しさ機構に通す、provider-neutral な Rust 研究ハーネスです。貢献では次の境界を維持してください。
+このプロジェクトは、確率的なmodel出力を明示的なevidence / verification / correctness boundaryの内側で扱う、provider-neutralなRust AI runtime / CLIです。researchは重要な基盤ですが、supportedな`reason` product surfaceと使いやすさもfirst-classなcontribution対象です。貢献では次の境界を維持してください。
 
 - モデル出力は信頼されない候補データである。
 - evidence と verification authority はハーネスが所有する。
@@ -12,6 +12,8 @@ reasoning-harness の改善にご協力いただきありがとうございま�
 - `unknown` は有効な成功結果である。
 - soft semantic judge は hard correctness gate を装ってはならない。
 - first-party runtime component は Rust のみとする。
+
+全体像は[Documentation index](docs/README.ja.md)と[Project status](docs/project-status.ja.md)から確認できます。
 
 ## 開発
 

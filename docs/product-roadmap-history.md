@@ -1,0 +1,329 @@
+# Product roadmap: evidence-grounded AI CLI
+
+> **Historical ledger:** this is the preserved release-by-release roadmap that preceded the current forward-looking [Product roadmap](product-roadmap.md). Use it for implementation and research provenance.
+
+Reasoning Harness is productized first as the native Rust `reason` CLI. v0.1.0 established the
+structured correctness and automation contracts; v0.2.0 made the **AI-backed natural-language CLI**
+the primary end-user path, v0.3.0 added bounded external evidence and resolution, v0.4.0 added grounded investigation/sessions and the current authority foundation, v0.4.1 added exact-target `no_result` continuation, and v0.4.2 is the current external-preview patch release for investigation utility and provider parity while preserving the same authority semantics. Users do not need to construct internal JSON just to ask the harness to reason.
+
+The product goal is deliberately narrower than a general-purpose agent framework:
+
+> Give users, developers, and automation a simple AI interface whose answers are produced through an
+> inspectable evidence-grounded reasoning process, with typed uncertainty, abstention, and failure
+> semantics owned by the harness rather than the model.
+
+Research continues in parallel. New mechanisms graduate into the CLI only after independent
+validation and operational stabilization; the product surface does not track every experiment.
+
+## Current product path
+
+The v0.4.2 default experience remains natural-language-first and AI-backed:
+
+```text
+natural-language task
+        |
+        v
+Reasoning Harness
+        |
+        v
+model generates an untrusted candidate
+        |
+        v
+evidence / verification / semantic + answer-safety gates
+        |
+        +--> missing support -> bounded resolution / regeneration -> re-verify
+        |
+        v
+grounded answer | qualified answer | unknown
+```
+
+The existing structured interfaces are **not removed**. `HarnessInput`, `ReasoningCandidate`,
+`ReasoningArtifact`, schema discovery, `reason run --candidate`, and `reason verify` remain supported
+advanced/integration/debug surfaces and internal representations. Product effort should no longer make
+users understand those representations before they can use the main AI path.
+
+Natural-language convenience must not weaken the correctness boundary. User prose, file content, model
+extractions, tool output, and prior model output do not become trusted evidence merely because the CLI
+accepted them. Evidence ingestion, admission, verification, semantic/answer-safety diagnostics, bounded
+resolution, re-verification, and final-claim coverage remain harness-owned.
+
+## v0.4.2 — Investigation Utility & Provider Parity
+
+Tracking: milestone **v0.4.2 — Investigation Utility & Provider Parity** (#5), parent Issue #260. The patch line is complete and released after immutable v36 metric-v13 acceptance. It preserves the v0.4.x authority, admission, verification, finalization, answer-safety, MCP non-promotion, and session-replay boundaries.
+
+Completed scope:
+
+1. **#261 deterministic safe action precedence:** Harness-owned explicit read-only priorities may select a unique highest-priority executable acquisition for one exact target; ties, missing priorities, same-key siblings, wildcard/keyless targets, attempted pairs, terminal states, and non-read-only actions remain fail-closed.
+2. **#262 generic Groq provider parity:** the generic natural-language `reason` path supports Groq generation/planning/action/regeneration/render/session without provider-specific correctness or authority branches.
+3. **Planner/action protocol hardening:** #281 and follow-ups constrain acquire/stop and exact fact-key planning contracts, preserve target/capability identity, exclude attempted pairs, keep priority model-invisible, and reject malformed structured output without ID repair or fuzzy matching.
+4. **Provider/evaluation resilience:** bounded structured-output fallback, operational-only retry/observability, shared Google pacing, quota-window classification, longer bounded Google transient handling, and the corrected independent pacing/inter-case invariant support reproducible acceptance without weakening semantic gates.
+5. **#263 final fresh acceptance:** `natural-language-e2e-v36-freeze` (`57bea659d472a103cc48d86ddee7dfe4a41de790`) passed with canonical reruns `0` and post-freeze mutations `0`. Mistral paired PASS, Groq generic candidate PASS, Gemini 3.5 Flash-Lite paired PASS, and Gemma 4 31B paired PASS. See [v36 release acceptance](natural-language-e2e-v36-result.md).
+
+The strict utility improvement is visible in the frozen Gemini row: control tool selection `0.6`, trigger exposure `0`, and avoidable stalls `3` became candidate `1.0`, `3`, and `0`, with target recall `1.0` and zero correctness-boundary violations preserved. Mistral and Gemma were already at the frozen follow-up structural ceiling and were preserved without regression. No cross-model averaging was used.
+
+After the final unified v0.4.2 release, product UX and engine research split into independent version lines. **Reason CLI 0.5.0 — General-use Productization** (milestone #6 / #359) keeps Harness Engine 0.4.2 fixed while productizing installation, secure auth/setup, interactive use, session ergonomics, provider/model/config/MCP discovery, diagnostics/recovery, and lifecycle management. See [Reason CLI 0.5.0 general-use productization roadmap](reason-cli-0.5-roadmap.md). Separately, **Harness Engine 0.5.0 — Verified Investigation Utility** (milestone #4) owns #248 finalization/grounding, #282 repeated-trial / `pass^k` planner reliability, and #283 deterministic Harness-owned action materialization.
+
+## v0.4.1 — Investigation Utility Hardening
+
+Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3). v0.4.1 is the preceding released external-preview patch; the line is complete with Issue #249 and preserves the v0.4.0 authority/machine-contract boundary.
+
+- **#249 exact-target `no_result` continuation:** when a typed `no_result` leaves exactly one explicit read-only capability for the same target's `expected_fact_key`, the Harness selects that follow-up without another stochastic action-selector call. Target identity is never merged across same-key siblings, and admission/authority/verification/finalization/answer-safety semantics remain unchanged.
+- Frozen natural-language E2E v1-v9 remain immutable historical evidence. v9 motivates the product gap but is not rerun, rescored, or used as a tuning surface.
+- #248 belongs to the separate Harness Engine 0.5.0 Verified Investigation Utility line because it may connect investigation targets to final-answer targets/authority. #247 remains a separate evaluation-gate semantics issue.
+
+## v0.4.0 — Grounded Investigation & Sessions
+
+Tracking: milestone **v0.4.0 — Grounded Investigation & Sessions** (#2). v0.4.0 is the preceding external-preview product foundation. The line was opened from product/correctness gaps measured in the 2026-09-06 review and completed without rewriting historical v0.3.0 acceptance or frozen research/E2E observations.
+
+The milestone moves the product from a Harness that safely manages verified propositions toward a path that can **accept natural-language requests, construct a bounded investigation, acquire needed external evidence, preserve and correct evidence across turns, and bind the actually exposed answer surface to Harness-owned authority**.
+
+Implementation order:
+
+1. **#210 P0 final exposed-text binding — implemented.** Because `FinalAnswerCandidate.text` is independent from verified `factual_claims`, current `GroundedAnswer` can accept a candidate whose structured claim is correct while its exposed prose contradicts it or adds facts. The guaranteed answer surface must be rendered deterministically from Harness-owned verified propositions or use an equivalently mechanical fail-closed binding. Existing #160/#164/#206 target-recovery semantics remain authority-preserving; renderer prose never becomes authority.
+2. **#211 full-lifecycle subprocess deadline — implemented.** One shared Harness-owned wall-clock deadline covers spawn -> complete stdin write -> stdout read -> wait/terminate -> cleanup handoff for `external_command`, `trusted_command`, and the explicit `mcp_readonly_v2` operational successor. Frozen `mcp_readonly_v1` remains byte-for-byte unchanged for historical replay/evaluation. Timeout stays a typed operational failure rather than semantic `unknown`.
+3. **#212 productize bounded investigation planning — implemented.** Generalize the Harness-owned suggestion/bounded-planner primitives already present on research/evaluation surfaces so a natural-language task can yield investigation targets, select configured read-only acquisition capabilities, and perform bounded follow-up investigation from typed outcomes. The planner/model cannot self-authorize tool output, identity, evidence sufficiency, or final correctness. Closed plan/action schemas, read-only capability allowlisting, typed no-progress/rejection handling, candidate regeneration after acquisition, and mandatory return through ordinary verification are now wired into the product path.
+4. **#213 `ReasoningThread` session surface — implemented.** `reason-session-v1` adds explicit start/inspect/resume/add/correct/fork/close operations over the existing native runtime and `ReasoningThread`. Input changes are typed and invalidate stale current state before replacement candidate/artifact acceptance; inspect/resume/fork replay no recorded external side effects; continuation uses `session-replay-only-acquisition-v1` so start-time resolver/MCP/investigation configuration is never implicitly replayed; runtime/safety/config identities are persisted and compatibility-checked.
+5. **#214 fresh natural-language E2E evaluation — complete.** Canonical `natural-language-e2e-v5` is frozen at `3d3c09c` / `natural-language-e2e-v5-freeze`; Actions `34032191037` completed 10/10 cases with operational failures `0` and correctness-boundary violations `0`. Unsupported exposed assertions, unsupported structured claims, missed target insufficiency, and session external replay were all `0`; identity/freshness/scope/authority rejection coverage was `4/4`; adoption gate passed. Utility remains imperfect and is carried forward without tuning the observed surface: target recall `2/7`, tool selection `5/7`, false abstention `3`. v1-v4 remain immutable diagnostics.
+6. **#233 unique-safe investigation follow-up — implemented after the v5 observation without modifying or rerunning it.** When exactly one untried read-only capability is explicitly bound to a target `expected_fact_key`, the Harness selects that pair deterministically instead of delegating a non-choice to the model. Ambiguous, keyless, or wildcard choices still use the model selector; admission, authority, verification, and finalization are unchanged. The v5 utility numbers above remain historical observation, not a post-hoc rescored claim.
+6. **#233 unique-safe-action utility hardening — implemented.** When exactly one untried compatible pair remains and the target's explicit `expected_fact_key` is explicitly listed by that read-only capability, the Harness selects the acquisition action deterministically instead of allowing a model `stop` to create avoidable abstention. Ambiguous, keyless, and wildcard choices still use the model selector; admission, authority, verification, and finalization are unchanged. Historical v5 utility numbers remain untouched.
+7. **#232 dependency/freeze hygiene — complete.** Release artifact actions and `sha2` 0.11 were updated while the frozen v12 adoption checksum file stayed byte-for-byte unchanged. CI now verifies frozen source/checksum identity and the historical Cargo.lock hash at the freeze commit separately from current build dependencies.
+
+### v0.4.0 acceptance boundary
+
+- In current v4 evidence, `unsupported grounded claims = 0` primarily covers structured `factual_claims`; it is **not treated as proof that arbitrary free-form exposed prose contains no unsupported assertion**. #210/#214 add explicit exposed-text correctness coverage.
+- The natural-language planner may propose acquisition actions but owns no evidence-admission, identity-sufficiency, verification, or finalization authority.
+- Session history, user-added prose, prior model output, and MCP/tool output never become trusted evidence without explicit admission/verification.
+- Operational failure remains outside semantic denominators; deadline/budget/transport/protocol failure is not converted into `unknown`.
+- #214 requires zero correctness-boundary violations even if utility metrics remain imperfect.
+- Historical `product-external-info-v1/v2/v3/v4`, Stage-C, RSD2, and other observed holdouts remain immutable and are not v0.4.0 tuning surfaces.
+
+### Parallel tracks
+
+- **#204 MCP negotiated/session stdio compatibility — implemented.** `mcp_readonly_v3` keeps one stdio child across `initialize` -> allowlisted protocol negotiation -> `notifications/initialized` -> bounded `tools/list` read-only declaration verification -> `tools/call`, all under the shared #211 absolute deadline. Unknown protocol revisions fail closed; negotiation/session/protocol/tool failures are typed separately; generic MCP output remains opaque; config/replay provenance binds the negotiation policy and negotiated revision. Frozen `mcp_readonly_v1` remains unchanged and v2 remains the deadline-only historical successor. Deterministic tests are green and a one-off probe against the pinned official GitHub MCP image from #204 succeeded without promoting generic content.
+- **#208 / PR #209 v4 cross-model replication + #216 Groq operational extension (completed):** remains replication over the already frozen v4 evaluation surface, not a tuning gate for v0.4.0 product/semantic implementation. #216 was closed out on 2026-09-06 after adding Groq provider wiring, Free-tier pacing/telemetry, bounded best-effort structured-output retry, and live replication across all three targets. v4 corpus/scoring/admission/finalization semantics remain unchanged; preserve the results as historical comparative evidence.
+
+## Completed v0.2.0 product line
+
+1. **Bounded resolver target closure (#159):** implemented in the successor candidate line: exact Harness-owned unresolved hypotheses/evidence requirements are prioritized ahead of candidate-owned unresolved claims, while resolver class, budget, admission, qualification, and mandatory re-verification remain unchanged.
+2. **Renderer downgrade recovery (#160):** implemented in successor candidate `a020b5925497ff3fdf200a9622270fa1889a6aa1`: if the renderer emits the same exact requested authorized target as `uncertain`, deterministically recover from artifact authority while preserving `Unknown`/`Reject`, qualification, adversarial, and answer-safety boundaries.
+3. **Dependency-aware target-local recovery (#164):** implemented in successor candidate `993874fa0051d06a02c8db8f7a220a2ac7773c17`: artifact-global `Reject` remains unchanged, while an exact directly verified target may be emitted only as target-only `QualifiedPartialAnswer` when typed blocker/dependency/evidence isolation is demonstrable; ambiguous coupling fails closed.
+4. **Provider reliability and resumable evaluation (#126):** implemented as an operational-only successor layer: Google transient 5xx/isolated-empty-output retries are narrowly bounded, actual provider attempts are propagated through telemetry, and `reason-product-dogfood` supports exact-identity case-level checkpoint/resume while preserving interrupted operational failures outside semantic scoring. The semantic successor candidate remains `993874fa0051d06a02c8db8f7a220a2ac7773c17`.
+5. **External CLI hardening (#90) and real-workload UX (#139):** closeout complete: process-level compatibility is pinned across all four supported release platforms, current live semantic/runtime smoke is green, and the successor Ministral 8B product rerun recovered Harness target coverage from 0.25 to 1.00 with zero unsupported grounded claims and zero missed target insufficiency.
+
+## v0.3.0 — External Evidence & Resolution
+
+Tracking: milestone **v0.3.0 — External Evidence & Resolution**, parent Issue #173.
+
+v0.3.0 is the completed product-capability milestone after v0.2.0. The control loop is already implemented in core; this milestone connects it to real external acquisition and hard-verification adapters without moving domain retrieval or trust into core.
+
+The required execution path remains:
+
+```text
+unknown / insufficient support
+  -> typed ResolutionRequest
+  -> external acquisition adapter
+  -> AcquiredEvidence
+  -> EvidenceAdmissionPolicy
+  -> optional TrustedResolutionVerifier / trusted verifier
+  -> ordinary re-verification + diagnostics + decision
+  -> grounded | qualified | unknown
+```
+
+Completed order:
+
+1. **#174 external resolver adapter + CLI/config wiring — implemented.** `external_command_v1` uses the existing `ResolutionResolver` boundary, a closed stdio JSON protocol, literal argv, and fail-closed external evidence admission. It cannot return trusted metadata, receipts, verdicts, or final prose.
+2. **#175 external evidence qualification — implemented.** `external_evidence_admission_v1` normalizes source identity, observation/retrieval time, scope, and claimed authority; exact source allowlists plus Harness-owned ranks/max-age/scope policy decide admission. Resolver authority claims cannot self-elevate, rejection reasons are typed telemetry, and admitted evidence is re-qualified/re-verified through the ordinary pipeline.
+3. **#178 operational hardening — implemented.** External calls are bounded by attempt/time/response limits, typed failures remain operational terminals, resolution telemetry records actual calls/latency/optional token/cost data plus hashed adapter/admission config identities, and ReasoningThread replay preserves records without re-invoking tools.
+4. **#176 read-only MCP resolver adapter — implemented.** `mcp_readonly_v1` calls explicitly allowlisted read-only MCP tools through `ResolutionResolver`; generic tool output stays opaque, the optional acquisition envelope remains untrusted data, and admitted facts re-enter ordinary verification.
+5. **#177 reference trusted verifier/oracle — implemented.** `trusted_command_verifier_v1` keeps acquisition separate, accepts only conclusion + evidence IDs from the external oracle, and constructs exact authority-bearing receipts inside the Harness.
+6. **#179 open-world dogfood and release acceptance — implemented/passed.** `external-resolution-acceptance-v1` covers safe recovery, stale/scope/irrelevant/conflict/operational/budget cases in CI and records a separate live AWS public-information smoke.
+7. **#180 optional full-runtime MCP product surface — implemented.** `reason-mcp` exposes `reason_ask`, `reason_run`, `reason_verify`, and `reason_schema` as closed thin wrappers over the supported native runtime; native product JSON is returned unchanged and the MCP invocation scope is explicitly local to that invocation. This remains non-blocking for v0.3.0.
+
+### v0.3.0 acceptance gate
+
+- at least one initially unsupported real-workload target is recovered from a real external source through the ordinary bounded-resolution path;
+- resolver/tool output cannot directly create `Supported`, trusted metadata, verification receipts, verdicts, or grounded final prose;
+- provenance/freshness/scope/authority requirements are machine-observable and fail closed;
+- acquisition success is measured separately from trusted verification success;
+- operational tool/provider failure, policy denial, timeout, and budget exhaustion remain operational states rather than semantic evidence;
+- every admitted-evidence or candidate-revision step re-enters ordinary validation, verification, diagnostics, decision, and finalization;
+- the declared v0.3.0 acceptance set retains unsupported grounded claims = `0` and missed target insufficiency = `0`;
+- historical Stage-C/RSD2 and other observed research holdouts remain untouched and are not product-tuning surfaces.
+
+MCP has two deliberately separate roles. #176 lets Reasoning Harness call allowlisted MCP tools as resolvers; #180 lets an external MCP client call the full Reasoning Harness runtime. Neither role is the correctness boundary, and a successful MCP invocation never certifies the caller's entire agent loop.
+
+v0.3.0 is a product/distribution coordinate, not a new semantic research generation. The current semantic/runtime and answer-safety identities remain unchanged unless a separate measured gap passes the research-to-product promotion gate below.
+
+The current answer-safety behavior and semantic runtime have exact machine configuration IDs for rollback and reproducibility, but those IDs are not product phase names. See [Terminology and naming](terminology.md).
+
+## Historical research provenance
+
+Earlier work used issue-scoped labels such as `NL-1`–`NL-5`, `D1`–`D3`, and `RSD0`–`RSD4`. They remain useful when tracing the research record, but they are **not** a project-wide version sequence and are not used to name new active product phases.
+
+The completed sequence established:
+
+- the natural-language product path over the same verification/finalization boundary (#107/#109–#113);
+- an independently calibrated semantic runtime and conservative rollback (#73/#84/#85);
+- a residual evidence-sufficiency classifier that cannot create authority (#91/#116/#118/#121/#125);
+- the current claim-local answer-safety configuration with explicit rollback (#129/#134);
+- target-aware/shared-render product dogfood and exposed-text review (#113/#131/#133/#137).
+
+Exact historical phase labels, frozen run identities, and machine configuration IDs remain in the research/evidence documents so provenance is not rewritten.
+
+## Current baseline
+
+Already available:
+
+- external-preview `reason` v0.4.2 executable with the natural-language-first path plus supported `run`, `verify`, `semantic-check`, and `schema` product commands, bounded external resolution, and the optional `reason-mcp` adapter; research/evaluation commands remain separate;
+- provider-neutral core runtime and typed `ReasoningArtifact`;
+- provider adapters for Mistral, Google, NVIDIA, and Groq outside the correctness authority boundary;
+- bounded resolution/finalization, evidence qualification, policy, checkpoint/replay, and typed
+  diagnostics;
+- current semantic runtime plus an explicit characterized rollback profile (exact machine IDs remain stable and documented);
+- credential-free deterministic CI plus separate live provider smoke/research workflows.
+
+v0.1.0 was the first externally consumable structured preview. v0.2.0 added the natural-language-first path, successor verified-target recovery, provider retry/resume reliability, and process-level compatibility tests. v0.3.0 added external acquisition/admission, operational hardening, read-only MCP acquisition, trusted deterministic verification, release acceptance, and the optional `reason-mcp` product surface. v0.4.0 established exposed-text binding, whole-invocation deadlines, bounded investigation, resumable sessions, canonical natural-language E2E validation, negotiated/session MCP compatibility, and narrow deterministic utility hardening. v0.4.1 added exact-target `no_result` continuation; v0.4.2 is the current external-preview patch release for investigation utility/provider parity while preserving the same research/authority provenance. Versioned machine contracts and supported product commands remain compatibility-tracked under the v0.x support policy; this is not a v1.0 stability promise.
+
+## Historical milestone: supported command and data contract
+
+Tracking: Issue #90.
+
+The first product milestone makes the existing CLI predictable for humans, shell pipelines, and CI:
+
+- [implemented #90] define `run`, `verify`, and `schema` as supported product commands separately from research-only/evaluation commands;
+- [implemented #90] stabilize `-` stdin plus file/stdout behavior for supported JSON inputs, with at most one stdin consumer per invocation;
+- [implemented #90] define `reason-cli-output-v1` plus `reasoning-artifact-v1` / `reasoning-candidate-v1` machine-readable contract identities and schema discovery;
+- [implemented #90] document exit-code semantics: successful `accept | reject | unknown` execution is exit 0, command/runtime/validation failure is exit 1, and CLI parse failure is exit 2;
+- [implemented #93] expose the semantic runtime through the separate `reason semantic-check` product command, with canonical machine identity, explicit rollback, and typed operational failure kept outside semantic/final-verdict authority;
+- [implemented #100] normalize machine-readable product failures for `run`/`verify` plus the existing `semantic-check` failure surface; JSON automation keeps input/config/harness/provider failure classes separate from epistemic outcomes;
+- [implemented #94] schema-backed `reason-config-v1` layers explicit CLI flags > explicit config > current-project config > user config > defaults; `--no-config` supports hermetic runs, unknown fields fail closed, and provider secrets remain environment-owned by default;
+- keep `--format json` suitable for automation and human output explicitly non-authoritative;
+- add a short install/quickstart path and copy-paste shell/CI examples.
+
+The CLI must never expose a flag that skips core validation, verification, acceptance, or
+finalization invariants.
+
+## Historical milestone: install, release, and compatibility
+
+Make `reason` straightforward to obtain and safe to upgrade:
+
+- [implemented #97] reproducible `cargo install --git` path plus tag-driven standalone GitHub Release artifacts containing only the supported `reason` binary;
+- [implemented #97] release tags are required to match the CLI semver and releases include SHA-256 checksums;
+- [implemented #97] credential-free product smoke covers Linux x64, macOS arm64, macOS Intel, and Windows x64;
+- [implemented #90] cross-platform process-level compatibility tests pin `reason-cli-output-v1`, supported stdin behavior, schema contract IDs, `unknown` as exit 0, typed operational failure as exit 1, and CLI usage failure as exit 2;
+- [implemented #102] changelog/migration discipline for intentional breaking changes during v0.x;
+- [implemented #102] explicit product/platform/provider support policy separating provider operations from the provider-neutral correctness boundary.
+
+A package split is not required. The current Cargo workspace remains the default until an actual
+external consumer creates an independent versioning or dependency boundary.
+
+## Integration and observability
+
+The CLI remains the first compatibility surface. The natural-language AI path invokes the full
+native runtime, while structured JSON commands remain the advanced compatibility surface for automation,
+debugging, and third-party integrations. Neither path may invent lower-level bypass APIs.
+
+Product telemetry should make the harness useful to operators without turning model confidence into
+correctness authority. The v0.2.0 provider-reliability work in #126 is complete. v0.3.0 extends the same
+operational discipline to external resolvers/tools under #178: calls and retries remain bounded, typed,
+observable, and strictly operational rather than becoming semantic `unknown` or abstention.
+
+- runtime/profile/config identity;
+- `accept | reject | unknown` and abstention/unknown reasons;
+- grounded final-claim coverage and unsafe-final-answer counters;
+- deterministic gate interventions and prevented unsafe assertions where measurable;
+- provider/protocol/quota/rate-limit/timeout failure classes;
+- attempts, retries, tokens, and latency;
+- explicit separation of semantic outcome from operational completeness.
+
+v0.3.0 implements reference external resolver/oracle integrations only when they preserve evidence
+admission, trusted verification, and mandatory re-verification. MCP remains an adapter rather than a
+correctness boundary; the read-only resolver role is tracked in #176 and the optional full-runtime
+product surface in #180. Public embedding compatibility remains deferred until real consumer pressure
+validates that boundary.
+
+## Real-workload adoption evidence
+
+Product readiness requires workloads that are not frozen research holdouts. The natural-language acceptance discipline uses a three-arm comparison: **raw model vs current Harness baseline vs the same Harness with the current answer-safety gate**. The 2026-09-04 successor revalidation on the six-case incident-analysis + architecture-review product workload (Actions run `33822567155`, main `5c5701f77df9dd507c3949294708f8c07a054064`) closed #139: Ministral 8B raw target coverage remained 0.25, while both Harness arms reached 1.00 target coverage with false target abstention 0, unsupported grounded claims 0, and missed target insufficiency 0. Expected-unknown cases remained safely unresolved. The human `reason` path supplies deterministic evidence-insufficiency guidance for unresolved/verification-required states rather than promoting model prose into authority.
+
+The #147 product-evaluation generation is now closed and frozen. Stage B completed on the unchanged 24-case matrix and Stage C used a separately SHA-256-frozen 16-case holdout authored only after selection. The final Stage-C semantic panel recorded target coverage `1.00` for Ministral 8B, Mistral Small, Gemma 4 31B, and Gemini 3.1 Flash-Lite, while Ministral 14B reproducibly recorded `0.875`. Every completed Stage-C run preserved unsupported grounded claims = `0` and missed target insufficiency = `0`; the 14B miss is a conservative utility failure, not an unsafe exposure. Gemini 3.5 Flash-Lite remained outside Stage C because its predeclared Stage-B replication was operationally quota-incomplete, not because of a semantic failure.
+
+The current semantic generation remains frozen at candidate `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352`; current `main` may contain provider-transport reliability changes that do not alter semantic runtime/gate/holdout behavior. #150 is closed as the verified-utility-recovery milestone. Successor semantic work is deliberately split into #159, #160, and #164 and must receive a new runtime/evaluation identity rather than reusing the observed Stage-C holdout as a tuning surface.
+
+The #159 semantic behavior change starts a distinct successor candidate at commit `79ec3b44971c32f9a8847d8173672675947c7288`. That identity records exact Harness-owned bounded-target priority only; it does not replace or reinterpret the frozen `1f27bef9e5e7d1b8d2e95c4e4245c8fe8e77b352` Stage-C candidate, and the observed Stage-C holdout is not rerun as a tuning surface. Any later semantic change for #160 or #164 receives its own successor identity before fresh evaluation.
+
+The #160 renderer-downgrade change advances the successor candidate to `a020b5925497ff3fdf200a9622270fa1889a6aa1`. It reuses only exact Harness-owned target identity and already-existing artifact authority; renderer `uncertain` mode is a trigger, never evidence. Its own recovery helper does not override `Reject`, and `Unknown` remains a target-only qualified result.
+
+The #164 dependency-aware target-local change advances the successor candidate to `993874fa0051d06a02c8db8f7a220a2ac7773c17`. It adds a separate `Reject`-scoped qualified lane rather than relaxing the global decision: exact targets require direct evidence-bound trusted `Supported` receipts; contradicted blockers require their own evidence-bound trusted contradiction receipts; same-key, untyped, shared-evidence, target-local qualification/adversarial/contradiction, and inference/dependency coupling all fail closed. The frozen Stage-C corpus/results are unchanged and were not rerun for tuning.
+
+Issue #126 does not create another semantic candidate. It hardens the provider/evaluation control plane around `993874fa0051d06a02c8db8f7a220a2ac7773c17`: Google temporary 429 behavior remains bounded and quota-aware; 500/502/503/504 and isolated empty model text receive narrow capped retries; actual adapter attempts are observable; and the 16-case product dogfood/Stage-C runner can resume only an exact completed-case prefix under an exact fixture/provider/seed/config/runtime/executable identity. An interrupted active case is restarted from its beginning and its prior operational failure remains recorded. Historical RSD2/Stage-C outcomes are not rewritten.
+
+Use separate dogfood/reference workloads and answer:
+
+- does the harness reduce unsupported final assertions in realistic use?;
+- how often does it correctly abstain, and how often does it abstain unnecessarily?;
+- how often can bounded resolution convert an initially unsupported answer into a verified one?;
+- which missing-support patterns recur in practice?;
+- what are the latency/token/retry costs of the safety process?;
+- can users understand and act on `unknown`, abstention, and failure telemetry?;
+
+Real-workload failures may seed **new calibration corpora**, but they must never be used to repair or
+retune observed frozen holdouts.
+
+Real-workload evidence also decides whether an interactive session surface is worth productizing. Do not add a chat-like
+REPL merely for parity with general-purpose agent CLIs. First observe whether real users repeatedly need
+to add evidence, revisit an `unknown` result, inspect why the harness abstained, or continue the same
+reasoning state across multiple commands. If that demand is measurable, design a thin `reason shell` /
+`reason repl` layer over the existing runtime and `ReasoningThread` checkpoint/replay model. Interactive
+turns must preserve the same authority boundaries: conversation history is not trusted evidence, prior
+model output cannot self-promote, policy/evidence changes trigger re-validation, and every assertive
+result still crosses the normal harness-owned verification/finalization path.
+
+## v1.0 readiness gate
+
+Do not present the CLI as stable/v1.0 until all of the following are true:
+
+1. supported command, JSON, exit-code, and configuration contracts are compatibility-tested;
+2. install/release/upgrade flow is reproducible and documented;
+3. deterministic CI plus bounded live runtime smoke gates are green;
+4. at least two distinct real workload classes have product acceptance evidence;
+5. runtime identity, rollback, typed failures, and operational-completeness semantics are documented
+   and tested;
+6. research/eval commands are clearly distinguished from the supported product surface;
+7. breaking-change policy and security/secret-handling guidance are explicit;
+8. the natural-language AI path preserves the same verification/finalization authority boundaries and
+   has product acceptance evidence against a raw-model baseline.
+
+As of readiness evidence baseline commit `5c5701f77df9dd507c3949294708f8c07a054064`, all eight readiness conditions have recorded evidence: the process-level compatibility contract landed in PR #170 and is green in CI run `33822514022` plus the four-platform run `33822514005`; the reproducible release/install path remains recorded by the v0.1.0 release workflow; current bounded live runtime/product smoke is green in runs `33822794171` and `33822567155`; incident-analysis and architecture-review both have product acceptance evidence; runtime/rollback/failure/secret-handling and research-surface boundaries are documented and tested. This marks the **readiness gate** complete for the current main line. It does not itself publish, tag, or promise a stable v1.0 release; that remains an explicit version/release decision using the normal provenance workflow.
+
+## Research-to-product promotion gate
+
+The research track is allowed to move faster than the product track. A new reasoning mechanism does
+not become part of the stable CLI merely because it improves calibration metrics.
+
+Promotion order:
+
+```text
+fresh calibration-only hypothesis
+  -> pre-observation spec/label review
+  -> calibrated candidate
+  -> fresh independently frozen holdout
+  -> operational stabilization + typed failures
+  -> explicit runtime profile + rollback
+  -> CLI compatibility/observability coverage
+  -> reversible product adoption
+```
+
+The current semantic runtime and the completed #91 residual evidence-sufficiency program retain separate machine identities and rollback boundaries. The answer-safety configuration is versioned independently from the semantic runtime, and neither may create verification authority. Frozen holdout-v4/v5 and the sufficiency holdout remain immutable research history and are
+never product-tuning corpora.
+
+## Deferred product surfaces
+
+- **Public Rust embedding API:** after real CLI consumers validate the correct compatibility
+  boundary.
+- **MCP full-runtime product surface (#180):** implemented as optional `reason-mcp` downstream integration; a successful tool result applies only to that native Harness invocation and is never evidence that the caller's entire agent loop is verified. The read-only MCP resolver role remains separately implemented in #176 as `mcp_readonly_v1`.
+- **Interactive CLI (`reason shell` / `reason repl`):** demand-gated after repeated real-workload dogfood. If adopted, it is a thin stateful session over `ReasoningThread`/checkpoint/replay and the same product runtime, not a separate chat authority or evidence shortcut.
+- **Desktop UI:** thin inspection/review client only after artifact and CLI contracts are stable.
+
+See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md),
+[roadmap](roadmap.md), and [research plan](research-plan.md).

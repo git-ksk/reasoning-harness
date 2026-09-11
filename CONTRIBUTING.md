@@ -4,7 +4,7 @@ Thanks for helping improve reasoning-harness.
 
 ## Scope
 
-The project is a provider-neutral Rust research harness for making stochastic candidate output pass through explicit deterministic correctness machinery. Contributions should preserve these boundaries:
+The project is a provider-neutral Rust AI runtime and CLI that keeps stochastic candidate output behind explicit evidence, verification, and correctness boundaries. Research remains important, but the supported `reason` product surface and its usability are first-class contribution targets. Contributions should preserve these boundaries:
 
 - model output is untrusted candidate data;
 - evidence and verification authority are harness-owned;
@@ -12,6 +12,8 @@ The project is a provider-neutral Rust research harness for making stochastic ca
 - `unknown` is a valid successful outcome;
 - soft semantic judges must never masquerade as hard correctness gates;
 - first-party runtime components remain Rust-only.
+
+For product/documentation orientation, start with the [documentation index](docs/README.md) and [current project status](docs/project-status.md).
 
 ## Development
 
