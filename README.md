@@ -4,7 +4,9 @@
 
 **Stop AI from turning missing evidence into confident answers.**
 
-Reasoning Harness is a native AI CLI/runtime that puts an evidence-and-verification layer around model output. You give it a task and the evidence you actually trust; the model proposes an answer, while the harness decides what can be exposed as grounded, qualified, or still unknown.
+Reasoning Harness is an evidence-grounded AI runtime with a native CLI called **`reason`**. The model proposes an answer; the Harness decides which factual claims are actually supported, which need qualification, and which must remain unknown.
+
+> **The model is a candidate generator, not an authority.**
 
 ```text
  task + evidence
@@ -20,57 +22,56 @@ Reasoning Harness is a native AI CLI/runtime that puts an evidence-and-verificat
        +--> unknown / abstain
 ```
 
-The model is a **candidate generator, not an authority**. Evidence admission, verification, uncertainty, and final factual-claim coverage remain harness-owned.
-
-## When would I use this?
+## Why use it?
 
 Use Reasoning Harness when an LLM or agent is useful, but **"the model said so" is not enough to trust the result**.
 
 Typical uses:
 
-- **RAG / research assistants** — avoid answering beyond what retrieved evidence actually supports.
-- **Incident / architecture analysis** — return the observations that are supported while keeping an unproven root cause or overall conclusion uncertain.
-- **Agents and CI** — validate a model-produced result before another automated step consumes it.
-- **Lower-cost models** — let a cheaper model generate candidates while keeping trust decisions in a provider-neutral runtime.
+- **RAG / research assistants** — keep answers inside the evidence that was actually verified.
+- **Incident / architecture analysis** — expose observations without silently upgrading correlation into root cause.
+- **Agents and CI** — check model-produced results before another automated step consumes them.
+- **Lower-cost models** — use a cheaper model for candidate generation while keeping trust decisions in a provider-neutral runtime.
 
-A useful mental model is:
+Without the Harness:
 
 ```text
-Without the harness:
-  evidence -> LLM -> answer
-
-With the harness:
-  evidence -> LLM -> candidate -> verify / resolve -> grounded | qualified | unknown
+evidence -> LLM -> answer
 ```
 
-## What did v0.4.2 achieve in the final release measurement?
+With the Harness:
 
-The final v0.4.2 gate used a **fresh, frozen 13-case natural-language E2E evaluation (v36 / metric v13)**. The release was not approved by averaging models together: every required provider row had to pass independently, and any candidate operational failure or `INCONCLUSIVE` result remained release-blocking.
+```text
+evidence -> LLM -> candidate -> verify / resolve -> grounded | qualified | unknown
+```
 
-The measurements below are the v0.4.2 release evidence only:
+## See the difference
 
-| Model / provider | v0.4.2 result | What it means |
-| --- | --- | --- |
-| **Mistral / Ministral 8B** | **PASS** — control 13/13, candidate 13/13; target recall `0.6`, tool selection `1.0`, trigger exposure `3/3`, avoidable stalls `0` | The released v0.4.1 control was already at the structural ceiling for the measured follow-up behavior, so v0.4.2 preserved it without regression. |
-| **Groq / GPT-OSS 120B** | **PASS** — candidate 13/13; target recall `1.0`, tool selection `1.0`, trigger exposure `3/3`, avoidable stalls `0` | v0.4.2 closed the generic Groq-provider gap: the normal natural-language product path now completes cleanly without provider-specific correctness logic. |
-| **Gemini 3.5 Flash-Lite** | **PASS** — control 13/13, candidate 13/13; target recall stayed `1.0`; tool selection **`0.6 -> 1.0`**; trigger exposure **`0/3 -> 3/3`**; avoidable stalls **`3 -> 0`** | This is the clearest measured utility gain: when a safe read-only next step existed, v0.4.2 stopped getting stuck and consistently reached the follow-up mechanism. |
-| **Gemma 4 31B** | **PASS** — control 13/13, candidate 13/13; target recall `0.8`, tool selection `0.9`, trigger exposure `3/3`, avoidable stalls `0` | The two-worker Google path completed under independent 6000 ms request pacing and 3000 ms inter-case delay, confirming the v35 eval-runner failure was fixed without changing the correctness boundary. |
+Suppose an incident contains two verified observations:
 
-Across **every required v0.4.2 candidate row**, operational failures were **0**, generation failures were **0**, and correctness-boundary violations were **0**. Canonical reruns and post-freeze mutations were also **0**.
+```text
+HTTP status = 503
+DB connection errors = 7
+```
 
-In this table, **target recall** asks whether the investigation identified the requested target, **tool selection** asks whether it selected an executable safe acquisition step when needed, **trigger exposure** counts how many of the three dedicated follow-up cases actually reached the deterministic follow-up mechanism, and **avoidable stalls** counts cases that stopped even though a safe next step was available.
+A fluent model can easily jump to:
 
-The exact frozen coordinates, run IDs, control/candidate aggregates, pacing policy, and release provenance are recorded in [v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.md). Historical research and earlier release measurements remain in the detailed evidence documents, but are intentionally omitted here so the README reflects the **current released product**.
+```text
+"The database caused the incident."
+```
 
-## Versioning after v0.4.2
+Reasoning Harness keeps the stronger causal claim separate from the observations. If no trusted causal evidence establishes the root cause, the safe result remains qualified or unknown:
 
-`v0.4.2` is the final release where the product CLI and reasoning engine share one version coordinate. From the next product line onward, **Reason CLI** and **Harness Engine** version independently. The current published release is CLI 0.4.2 / Engine 0.4.2; the planned general-use line is Reason CLI 0.5.0 on the unchanged Engine 0.4.2. New CLI release tags use `reason-vX.Y.Z`. Machine contract IDs remain separate compatibility coordinates. See [versioning](docs/versioning.md).
+```text
+The database is not confirmed as the root cause.
+HTTP 503 and seven connection errors were observed, but that does not establish causation.
+```
 
-## 30-second quickstart
+That distinction is the product: **useful AI output without letting model confidence create authority.**
 
-### 1. Install the current v0.4.2 preview
+## Quickstart
 
-`v0.4.2` is the current natural-language-first external preview. With Rust 1.88+:
+`v0.4.2` is the current external preview. With Rust 1.88+:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
@@ -79,9 +80,9 @@ cargo install --git https://github.com/git-ksk/reasoning-harness \
 reason --version
 ```
 
-Standalone archives and `SHA256SUMS` are available from the [v0.4.2 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.2). Install from `main` only when you intentionally want unreleased development changes.
+Standalone archives and `SHA256SUMS` are also available from the [v0.4.2 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.2).
 
-### 2. Give it a task and an explicit fact
+Give `reason` a natural-language task plus evidence you actually want the Harness to treat as a structured fact:
 
 ```bash
 export MISTRAL_API_KEY='...'
@@ -93,9 +94,7 @@ reason "Report the verified deployment region" \
   --hypothesis service.region=us-east-1
 ```
 
-The model generates and renders an answer, but the structured fact is what allows the harness to verify the proposition. Provider/model can normally come from config, so the explicit flags are optional once configured.
-
-### 3. Try an intentionally insufficient case
+Now try a deliberately insufficient case:
 
 ```bash
 reason "Is the database definitely the root cause?" \
@@ -106,53 +105,41 @@ reason "Is the database definitely the root cause?" \
   --hypothesis incident.root_cause=database
 ```
 
-The safe result should not promote those observations into a proven causal conclusion. Depending on the candidate and verified state, `reason` can expose a qualified answer or remain `unknown`. That is a successful safety outcome, not automatically a process error.
+A qualified answer or `unknown` is a successful safety outcome when the evidence does not justify a stronger conclusion.
 
-> **No provider key?** The advanced structured path can verify an externally generated candidate completely offline. See [Advanced structured execution modes](#advanced-structured-execution-modes).
+**No provider key?** You can also verify an externally generated structured candidate completely offline. See the [Getting Started guide](docs/getting-started.md).
 
-## What will the answer look like?
+## What can the result mean?
 
-The human-facing path is designed around three useful outcomes:
-
-| Situation | User-facing behavior | Meaning |
-| --- | --- | --- |
-| Evidence supports the requested target | **Grounded answer** | The factual claim is covered by harness-owned verified state. |
-| Some observations are supported but the requested conclusion is not | **Qualified answer** | Useful facts can be shown while the unsupported conclusion stays explicitly uncertain. |
-| The harness cannot safely expose an answer | **Unknown / abstain** | More evidence or a configured resolver is required. |
-
-For example, if HTTP 503 and seven database connection errors are verified but no causal evidence establishes the root cause, a useful qualified answer is conceptually:
-
-> The database is not confirmed as the root cause. HTTP 503 and seven connection errors were observed in the same window, but that does not establish causation.
-
-The important part is not the exact wording; it is that supported observations can remain useful without being upgraded into a stronger unsupported conclusion.
-
-## What do I give it?
-
-For normal use, start with a natural-language task and add only the context or authority you actually have:
-
-| Input | What it means to the harness |
+| Result | Meaning |
 | --- | --- |
-| positional `TASK` | What you want answered. It is **not evidence**. |
-| `--file PATH` / piped stdin | Context the model may read. It stays **untrusted** until separately verified. |
-| `--fact KEY=VALUE` | Explicit structured evidence owned by the harness and eligible for deterministic verification. |
+| **Grounded answer** | The exposed factual claim is covered by Harness-owned verified state. |
+| **Qualified answer** | Supported observations can be shown, but an unsupported stronger conclusion stays explicitly uncertain. |
+| **Unknown / abstain** | The Harness cannot safely expose the requested conclusion from the available trusted evidence. |
+
+`unknown` is an epistemic result, not automatically an operational failure.
+
+## What counts as evidence?
+
+The important distinction is between **context** and **authority**:
+
+| Input | Harness meaning |
+| --- | --- |
+| positional `TASK` | What you want answered. Not evidence. |
+| `--file PATH` / piped stdin | Model-readable context. Untrusted until separately verified. |
+| `--fact KEY=VALUE` | Explicit structured evidence eligible for deterministic verification. |
 | `--hypothesis KEY=VALUE` | The proposition you want evaluated or resolved. |
-| `--resolver-fact KEY=VALUE` | A local fact available only through bounded resolution, admission, and re-verification. |
-| `--resolver-command PROGRAM` | External stdio JSON resolver acquisition on `main`; acquired evidence remains untrusted until Harness-owned admission. |
-| `resolution.mcp_readonly` config | Allowlisted read-only MCP acquisition through `mcp_readonly_v1`; MCP output is never authority by itself. |
+| external resolver / read-only MCP output | Acquired data. It still has to pass Harness-owned admission and verification. |
 
-If trusted support is missing, a qualified answer or `unknown` is expected behavior. A document merely containing a sentence does not make that sentence verified evidence.
+A sentence appearing in a document does not become true merely because a retriever or model returned it.
 
-Structured `HarnessInput` / `ReasoningCandidate` JSON remains available for applications, CI, reproducibility, and offline candidate checking.
-
-In v0.3.0, an external process can be wired through the existing bounded-resolution boundary with `--resolver-command`. The process cannot mint authority: its wire schema exposes acquisition/revision contributions only. External evidence remains fail-closed unless an explicit source allowlist and Harness-owned freshness/scope/authority policy admits it; admitted evidence still re-enters ordinary qualification and verification. See [External resolver adapters](docs/external-resolvers.md), [Read-only MCP resolver](docs/mcp-resolver.md), [Trusted verifier](docs/trusted-verifier.md), the v0.4 [bounded investigation planner](docs/investigation.md), [resumable sessions](docs/session.md), the immutable [natural-language E2E v1 diagnostic](docs/natural-language-e2e.md), and the canonical [natural-language E2E v5](docs/natural-language-e2e-v5.md).
-
-External agents can optionally call the Harness through the Rust-only `reason-mcp` product adapter. This is the opposite direction from the read-only MCP resolver: `reason-mcp` delegates selected calls back to the native `reason` runtime and does not create a second correctness implementation. See [MCP product surface](docs/mcp-product-surface.md).
+For the full input/configuration contract, see the [CLI guide](docs/cli.md).
 
 ## Application and automation patterns
 
-### A. Check an LLM/RAG answer before publishing it
+### Check an existing LLM or RAG answer
 
-Your application retrieves evidence and asks a model to produce a structured candidate. Feed both into `reason`:
+If your application already owns retrieval and candidate generation:
 
 ```bash
 reason run \
@@ -161,19 +148,11 @@ reason run \
   --format json > checked-result.json
 ```
 
-Then gate the next step on `result.outcome.verdict` instead of trusting the model response directly.
+Gate the next step on the structured Harness result rather than on the model prose itself.
 
-Today, retrieval documents do **not** automatically become trusted evidence just because they came from a RAG system. Your integration must represent the evidence/provenance in `HarnessInput` (and trusted receipts/oracles where appropriate).
-
-This is the core **integration** pattern when another application already owns retrieval or candidate generation.
-
-### B. Let `reason` generate the candidate with a live provider
-
-For example, with Mistral:
+### Let `reason` generate the candidate
 
 ```bash
-export MISTRAL_API_KEY='...'
-
 reason run \
   --input evidence.json \
   --provider mistral \
@@ -181,205 +160,125 @@ reason run \
   --format json
 ```
 
-The provider generates an **untrusted candidate**. The same harness-owned correctness process still runs afterward.
+The provider still produces only an **untrusted candidate**. The same Harness-owned verification path runs afterward.
 
-Google Gemini/AI Studio and NVIDIA Hosted NIM adapters are also implemented. Provider credentials remain environment variables and are never accepted as trusted evidence.
-
-### C. Use it as a CI / agent safety gate
-
-Validate a previously materialized artifact:
+### Use it in CI or an agent pipeline
 
 ```bash
 reason verify artifact.json --format json
 ```
 
-Or use stdin in a pipeline:
+or:
 
 ```bash
 cat artifact.json | reason verify - --format json
 ```
 
-Process-state semantics are stable for automation:
+Exit status represents process state, not epistemic state. Scripts that care about `accept | reject | unknown` should inspect the JSON result.
 
-- `0` — command completed; a successful `run` may still be `accept`, `reject`, or `unknown`.
-- `1` — input, provider, runtime, validation, or other operational failure.
-- `2` — CLI argument/usage error.
+## How does it work without trusting another LLM judge?
 
-In JSON mode, product failures are also emitted as machine-readable failure envelopes.
-
-## Advanced structured execution modes
-
-The structured foundation still exposes two `reason run` modes for advanced integrations. They use the same verification pipeline; the only difference is **who creates the untrusted candidate**.
-
-| Mode | Command shape | Does Reasoning Harness call an AI model? | Typical use |
-| --- | --- | --- | --- |
-| **Bring your own candidate** | `reason run --input ... --candidate ...` | **No** | Your app, RAG system, Claude/ChatGPT/Codex-like agent, or another model already produced structured output. |
-| **Live provider candidate generation** | `reason run --input ... --provider ... --model ...` | **Yes** | You want `reason` itself to ask Mistral, Google, NVIDIA, or Groq for the candidate before checking it. |
-
-Other product commands have their own AI requirements:
-
-| Command | AI required inside `reason`? | Why |
-| --- | --- | --- |
-| `reason run --candidate ...` | **No** | Deterministic materialization, evidence verification, diagnostics, and acceptance policy can operate on an existing candidate. |
-| `reason verify artifact.json` | **No** | Validates an already materialized artifact and its invariants. |
-| `reason run --provider ...` | **Yes** | The provider is used to generate the untrusted candidate. |
-| `reason semantic-check ...` | **Yes** | The semantic runtime is a model-backed soft diagnostic surface. |
-
-So Reasoning Harness is **not inherently an AI endpoint client**. AI is optional for the core candidate-checking path.
-
-## How can it judge a candidate without calling AI?
-
-Because the harness does not ask, "Does this answer sound correct?" It asks narrower questions that can be checked against typed state and harness-owned evidence.
-
-The important boundary is:
+Reasoning Harness does not ask another model, "Does this answer sound correct?" and then trust the answer. It separates proposal from authority:
 
 ```text
-External AI / Agent / RAG
-        |
-        | proposes claims and inference edges
-        v
- ReasoningCandidate          HarnessInput
-   (untrusted)          (task + owned evidence)
-        |                        |
-        +-----------+------------+
-                    v
-          1. Materialize safely
-                    |
-                    v
-          2. Validate structure
-                    |
-                    v
-          3. Verify against evidence
-                    |
-                    v
-          4. Run diagnostics
-                    |
-                    v
-          5. Apply acceptance policy
-                    |
-        +-----------+-----------+
-        |           |           |
-      accept      reject      unknown
+ External AI / Agent / RAG        Harness-owned input
+           |                         |
+           v                         v
+    untrusted candidate       evidence / policy
+           |                         |
+           +-----------+-------------+
+                       v
+                materialize safely
+                       |
+                validate structure
+                       |
+                verify evidence
+                       |
+                run diagnostics
+                       |
+                acceptance policy
+                       |
+             accept | reject | unknown
 ```
 
-A model cannot certify itself. If a candidate says a claim is `known`, `supported`, `inferred`, or even `contradicted`, the default materialization boundary does **not** trust that label. Those strong model-proposed states enter the artifact as `assumed`; only `unknown` and explicit `assumed` remain conservative as proposed.
+A model cannot self-certify a claim by labeling it `known`, `supported`, or `contradicted`. Strong state must be re-established inside the Harness boundary through deterministic checks or explicitly trusted verifiers.
 
-For structured propositions, a deterministic verifier can then compare the candidate's typed `key=value` proposition with structured facts in harness-owned evidence. A matching fact can create a harness-owned `VerificationReceipt` with `supported`; a conflicting fact can create `contradicted`; missing or disqualified evidence creates no hard receipt and preserves uncertainty.
+Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execution model.
 
-The current strict product policy is intentionally conservative:
-
-- any `contradicted` claim -> `reject`;
-- any remaining `assumed` or `unknown` claim -> `unknown`;
-- otherwise, with non-empty adequately established claims -> `accept`;
-- no claims -> `unknown`.
-
-Diagnostics such as contradiction/counterexample discovery, assumption inspection, evidence qualification, and Five Whys checks are inspectable signals. They do not get to invent trusted evidence or silently override the verifier/acceptance boundary.
-
-This is why `reason run --candidate ...` can be useful with **zero API keys**: the model work happened elsewhere, while the harness performs the trust decision with deterministic rules and explicitly trusted verifier inputs.
-
-For a deeper walkthrough, including state transitions, receipts, qualification, and where the semantic safety runtime fits, see [How Reasoning Harness works](docs/how-it-works.md). For raw-model-vs-harness evaluation, see [product dogfood](docs/product-dogfood.md). The [terminology guide](docs/terminology.md) separates product concepts from compatibility IDs and historical research phase names.
-
-## Semantic safety check
-
-The adopted semantic runtime is available separately so a soft diagnostic can never silently become final-verdict authority:
-
-```bash
-reason semantic-check \
-  --input examples/semantic-check.json \
-  --provider mistral \
-  --model ministral-8b-latest \
-  --format json
-```
-
-Use the descriptive CLI selectors `--profile current` (default) and `--profile rollback`. The exact machine configuration IDs remain `semantic-decidability-d3-v1` and `soft-semantic-v3` for reproducibility; legacy `d3` / `v3` selectors remain accepted aliases.
-
-Use this advanced surface when you specifically need a semantic contradiction/counterexample/unsupported-premise/causal-gap diagnostic. For a normal human task, start with `reason "TASK"`; for structured application/CI integration, start with `reason run`.
-
-## Supported product commands
+## Current product surface
 
 | Command | Use it for |
 | --- | --- |
-| `reason "TASK"` | Primary human-facing natural-language path through the verified runtime. |
-| `reason run` | Structured application/CI path for candidate output and harness-owned evidence. |
-| `reason verify` | Deterministically validate a finalized `ReasoningArtifact`. |
-| `reason semantic-check` | Run the adopted soft semantic runtime without granting it final authority. |
-| `reason schema` | Inspect versioned machine-readable product contracts. |
+| `reason "TASK"` | Primary human-facing natural-language path. |
+| `reason session ...` | Persist, inspect, add to, correct, resume, fork, or close reasoning sessions. |
+| `reason run` | Structured application/CI integration and live candidate generation. |
+| `reason verify` | Deterministically validate a materialized `ReasoningArtifact`. |
+| `reason semantic-check` | Run the soft semantic diagnostic runtime without granting it final authority. |
+| `reason schema` | Inspect supported versioned machine contracts. |
 
-`reason eval`, `reason eval-resolution`, `reason eval-judges`, and dedicated study binaries are research/evaluation surfaces. They are not part of the v0.1 product compatibility promise.
+Mistral, Google Gemini/AI Studio, NVIDIA Hosted NIM, and Groq provider adapters are implemented outside the correctness authority boundary. Read-only MCP acquisition, external resolvers, trusted deterministic verifiers, bounded investigation, and resumable sessions are also implemented in the current runtime.
 
-## Why not just ask another LLM to judge the answer?
+## Why trust the project claims?
 
-Because another model is still stochastic output. Reasoning Harness deliberately keeps authority outside model prose:
+The project keeps product claims tied to frozen, reproducible evaluation evidence rather than replacing failed observations with nicer reruns.
 
-- models cannot create harness-owned evidence;
-- models cannot create trusted verification receipts;
-- soft semantic findings cannot directly force a trusted final answer;
-- operational provider failure is not converted into semantic evidence;
-- `unknown` is preserved when support is insufficient.
+The final `v0.4.2` release gate used a fresh frozen 13-case natural-language E2E evaluation. Every required provider row had to pass independently; no cross-model averaging was used.
 
-Deterministic oracles such as tests, schemas, compilers, databases, policy engines, or trusted human review can be integrated as evidence/verifier sources without becoming model-owned authority.
+| Model / provider | Final v0.4.2 release evidence |
+| --- | --- |
+| **Mistral / Ministral 8B** | PASS — candidate 13/13, operational failures 0, correctness-boundary violations 0 |
+| **Groq / GPT-OSS 120B** | PASS — candidate 13/13, operational failures 0, correctness-boundary violations 0 |
+| **Gemini 3.5 Flash-Lite** | PASS — 13/13; tool selection `0.6 -> 1.0`, trigger exposure `0/3 -> 3/3`, avoidable stalls `3 -> 0` |
+| **Gemma 4 31B** | PASS — candidate 13/13, operational failures 0, correctness-boundary violations 0 |
 
-## Current capabilities
+The exact frozen coordinates, metrics, run IDs, pacing policy, and provenance are in [v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.md). Historical studies remain available as research evidence but are intentionally kept out of the main product path.
 
-The current `v0.4.2` external preview includes the capabilities below. `main` may move ahead of the tagged release; use the tag when you need a reproducible product snapshot.
+## Product, engine, and research are separate
 
-- typed `HarnessInput`, `ReasoningCandidate`, and `ReasoningArtifact` contracts;
-- evidence binding and deterministic provenance/reference validation;
-- structured-fact verification and trusted verification receipts;
-- contradiction, counterexample, assumption, causal, temporal/scope, and evidence-qualification diagnostics;
-- `accept | reject | unknown` outcomes with fail-closed runtime behavior;
-- bounded resolution/finalization primitives and `ReasoningPolicy` constraints;
-- bounded natural-language investigation planning with closed exact-key plan/action schemas, deterministic unique-safe and explicit-priority precedence selection, and exact-target `no_result` continuation when one explicit read-only follow-up remains;
-- Harness-canonical exposed factual text under `harness-canonical-exposed-text-v1`;
-- durable `ReasoningThread` event/checkpoint replay primitives plus `reason session start|inspect|resume|add|correct|fork|close`;
-- current semantic runtime with an explicit rollback profile; exact compatibility IDs remain documented for reproducibility;
-- Mistral, Google, NVIDIA, and Groq provider adapters outside the correctness authority boundary;
-- versioned JSON product envelopes, schema-backed layered config, stdin support, and typed failure classes;
-- credential-free product smoke on Linux x64, macOS Apple Silicon/Intel, and Windows x64;
-- bounded external command resolution with fail-closed provenance/freshness/scope/authority admission, typed operational budgets/telemetry, and replay-safe records;
-- allowlisted negotiated/session read-only MCP acquisition (`mcp_readonly_v3`) and a separate trusted deterministic command-verifier lane;
-- optional Rust-only `reason-mcp` product adapter that delegates closed operations to the native `reason` runtime without becoming a correctness boundary.
-- recorded product dogfood across Ministral 3B/8B/14B, Mistral Small, Gemma 4 31B, and Gemini 3.1/3.5 Flash-Lite; Gemma 4 26B A4B and Nemotron 3.5 Lightning remain protocol-incomplete on this product workload.
+`v0.4.2` is the final release where the product CLI and reasoning engine share one version coordinate.
 
-See the [CLI guide](docs/cli.md) for the full invocation contract, the [Japanese CLI guide](docs/cli.ja.md), the [terminology guide](docs/terminology.md), and [support policy](docs/support.md) for v0.x compatibility boundaries.
+From the next product line onward:
+
+- **Reason CLI** versions the user-facing terminal product and distribution UX.
+- **Harness Engine** versions reasoning/correctness behavior.
+- **Machine contract IDs** version wire/schema compatibility independently.
+
+The planned general-use line is **Reason CLI 0.5.0 on Harness Engine 0.4.2**. This lets setup, secure credential storage, interactive UX, installers, diagnostics, and lifecycle management improve without implying that correctness semantics changed.
+
+See [versioning](docs/versioning.md) and the [Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md).
+
+## Documentation
+
+Do not read the `docs/` directory chronologically. It contains both product documentation and the preserved research record.
+
+Start with the **[Documentation index](docs/README.md)**, which separates:
+
+- getting started and daily CLI use;
+- application / CI / MCP integration;
+- architecture and trust boundaries;
+- current roadmap and project status;
+- historical research and evaluation evidence.
+
+Japanese documentation is linked from the same index.
 
 ## What this is not
 
-- A chat client or general-purpose coding agent.
+- A general-purpose chat client or coding agent.
 - A prompt collection.
 - A model-specific agent framework.
 - A post-hoc LLM judge that can self-certify another model's output.
-- A claim that open-world LLM reasoning can be made mathematically correct.
+- A claim that open-world LLM reasoning is mathematically solved.
 - A replacement for deterministic oracles such as compilers, tests, schemas, policy engines, or proof checkers.
-- A general-purpose web crawler or RAG framework embedded in the correctness core.
-
-## Research direction
-
-The research question behind the project is:
-
-> Can a small or inexpensive model become materially more reliable when its reasoning is forced through typed intermediate state, evidence binding, explicit uncertainty, adversarial passes, deterministic acceptance gates, and bounded resolution/re-verification before finalization?
-
-The **v0.4.2 — Investigation Utility & Provider Parity** milestone (#5) is complete and released. It adds deterministic safe acquisition precedence (#261), generic Groq natural-language provider parity (#262), structurally constrained planner/action contracts, and provider/evaluation resilience while preserving the v0.4.x authority boundary. Final immutable v36 acceptance passed independently on Mistral, Groq, Gemini 3.5 Flash-Lite, and Gemma 4 31B; see [the v36 release acceptance](docs/natural-language-e2e-v36-result.md).
-
-The preceding **v0.4.1 — Investigation Utility Hardening** milestone (#3) remains the exact-target typed-`no_result` continuation foundation; v0.4.0 remains the Grounded Investigation & Sessions foundation. The earlier **v0.3.0 — External Evidence & Resolution** milestone (#173) remains historical provenance; its acceptance record is documented in [v0.3.0 external-resolution acceptance](docs/external-resolution-acceptance.md).
-
-Research and product development proceed on separate tracks. New reasoning mechanisms enter the supported CLI only after calibration, independent frozen evaluation, operational stabilization, explicit runtime identity/rollback, and compatibility coverage.
-
-See the [research plan](docs/research-plan.md), [product roadmap](docs/product-roadmap.md), and [project status](docs/project-status.md).
+- A web crawler or RAG framework embedded in the correctness core.
 
 ## Development
 
-Rust 1.88+ is the supported toolchain. The repository intentionally has no Node.js/TypeScript runtime dependency.
+Rust 1.88+ is the supported toolchain. First-party runtime components are Rust-only.
 
 ```bash
 cargo fmt --check
-cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace
-cargo run -p reasoning-harness-cli -- run \
-  --input examples/input.json \
-  --candidate examples/candidate.json \
-  --no-config \
-  --format json
+cargo clippy --locked --workspace --all-targets -- -D warnings
+cargo test --locked --workspace
 ```
 
-Additional design documentation: [architecture](docs/architecture.md), [reasoning policy](docs/reasoning-policy.md), [evidence qualification](docs/evidence-qualification.md), [grounded resolution](docs/grounded-resolution.md), [ADR-0001](docs/adr/0001-interface-and-packaging-boundaries.md), and [ADR-0002](docs/adr/0002-grounded-resolution-and-finalization.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), the [architecture guide](docs/architecture.md), and the [documentation index](docs/README.md).
