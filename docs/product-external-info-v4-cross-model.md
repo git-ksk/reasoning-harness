@@ -14,6 +14,36 @@ Issue #208 established cross-model replication for the frozen `product-external-
 
 The canonical Ministral 8B result from run `34000216929` remains the original v4 observation and is used only as the reference row.
 
+
+## At a glance: raw model → Harness
+
+The primary comparison gives the raw model and Harness the same semantic inputs and shared acquisition snapshot. Across the 18 scored semantic cases:
+
+| Model | Grounded target coverage | Unknown preservation | False abstention | Unsupported grounded claims | Missed insufficiency |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **Ministral 8B** | **80% → 100%** | **53.8% → 100%** | **1 → 0** | **6 → 0** | **6 → 0** |
+| **Gemma 4 31B** | 100% → 100% | **84.6% → 100%** | 0 → 0 | **2 → 0** | **2 → 0** |
+| **Gemini 3.5 Flash-Lite** | 100% → 100% | 100% → 100% | 0 → 0 | 0 → 0 | 0 → 0 |
+| **GPT-OSS 120B** | **80% → 100%** | **76.9% → 100%** | **1 → 0** | **3 → 0** | **3 → 0** |
+
+Every arrow is **raw model → Harness**. The Harness did not merely trade utility for abstention: on Ministral 8B and GPT-OSS 120B, grounded target coverage increased while the observed unsafe claims were eliminated.
+
+| Model | Harness / raw tokens | Harness / raw accounted latency |
+| --- | ---: | ---: |
+| **Ministral 8B** | 1.234x | 0.642x |
+| **Gemma 4 31B** | 0.673x | 1.159x |
+| **Gemini 3.5 Flash-Lite** | 0.641x | 1.034x |
+| **GPT-OSS 120B** | 0.938x | 0.860x |
+
+These cost ratios are single-run operational observations, not stable performance rankings.
+
+Machine-readable artifacts for the four headline rows:
+
+- [Ministral 8B](observations/product-external-info-v4-mistral-ministral-8b-seed-28000-2026-09-06.json)
+- [Gemma 4 31B](observations/product-external-info-v4-google-gemma-4-31b-it-seed-28000-34001534798-2026-09-06.json)
+- [Gemini 3.5 Flash-Lite](observations/product-external-info-v4-google-gemini-3.5-flash-lite-seed-28000-34002172470-2026-09-06.json)
+- [GPT-OSS 120B](observations/product-external-info-v4-groq-openai-gpt-oss-120b-seed-28000-34008471577-2026-09-06.json)
+
 ## Fixed conditions
 
 - corpus: `product-external-info-v4`

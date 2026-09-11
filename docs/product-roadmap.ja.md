@@ -1,4 +1,4 @@
-# Product roadmap: Reason CLI / Harness Engine
+# 製品ロードマップ: Reason CLI / Harness Engine
 
 日本語 | [English](product-roadmap.md)
 
@@ -6,7 +6,7 @@
 
 現在は、CLI product UXとreasoning / correctness changeを分離しています。CLIが使いやすくなったことを、reasoning engineが変わったことと混同しないためです。
 
-## Current coordinates
+## 現在のバージョン座標
 
 ```text
 現在のrelease:
@@ -18,9 +18,9 @@
   Harness Engine 0.4.2
 ```
 
-`v0.4.2`が最後のunified historical releaseです。今後のCLI tagは`reason-vX.Y.Z`を使い、Engine versionとmachine-contract identityは独立して進みます。[Versioning](versioning.md)を参照してください。
+`v0.4.2`が最後の統合versionのhistorical releaseです。今後のCLI tagは`reason-vX.Y.Z`を使い、Engine versionとmachine-contract identityは独立して進みます。[バージョニング](versioning.ja.md)を参照してください。
 
-## Product goal
+## 製品目標
 
 Reasoning Harnessはgeneral-purpose agent frameworkより意図的に狭いproductです。
 
@@ -33,13 +33,13 @@ model proposes
 Harness verifies / qualifies / abstains
 ```
 
-## Track A — Reason CLI 0.5.0: general-use productization
+## トラックA — Reason CLI 0.5.0: 一般利用向け製品化
 
 **Engine baselineは0.4.2に固定。**
 
 underlying authority semanticsを変えず、`reason`を成熟したterminal productとして使える状態にします。
 
-### Phase 1: install / trust / first answer
+### フェーズ1: インストール / trust / 最初の回答
 
 - Rust/Cargo不要のnative installer;
 - release integrity、必要なsigning / notarization;
@@ -49,7 +49,7 @@ underlying authority semanticsを変えず、`reason`を成熟したterminal pro
 - `reason auth`とguided `reason setup`;
 - provider / model discoveryと明示default選択。
 
-### Phase 2: daily terminal UX
+### フェーズ2: 日常的なターミナルUX
 
 - 引数なしinteractive mode;
 - simple continue / resume / session selection;
@@ -60,7 +60,7 @@ underlying authority semanticsを変えず、`reason`を成熟したterminal pro
 - progress / retry / cancellation UX;
 - shell help / completionとaccessible terminal rendering。
 
-### Phase 3: external acquisition UX
+### フェーズ3: 外部情報取得UX
 
 - unrelated ambient secretを渡さないsubprocess environment isolation;
 - guided read-only MCP add/list/inspect/test/remove;
@@ -68,20 +68,20 @@ underlying authority semanticsを変えず、`reason`を成熟したterminal pro
 
 MCP / resolver outputは引き続きacquired dataであり、correctness authorityではありません。
 
-### Phase 4: diagnostics / recovery
+### フェーズ4: 診断 / 復旧
 
 - `reason doctor`;
 - credential / model / quota / network / config / trust / MCP / session / updateのactionable error;
 - silent execution-identity switchをしないprovider/model retirement・fallback policy;
 - insecure bypassを勧めないproxy / custom-CA / headless diagnostics。
 
-### Phase 5: fresh-install release gate
+### フェーズ5: 新規インストールでのリリース判定
 
 `reason-v0.5.0`は、supported platformでinstall、project trust、setup、secure credential、first answer、interactive follow-up、session resume、diagnostics、local privacy、subprocess secret isolation、update/rollback/uninstall、既存JSON automation compatibilityまでacceptanceできるまでtagしません。
 
-完全なP0/P1 issueとacceptance matrixは[Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md)を参照してください。
+完全なP0/P1 issueとacceptance matrixは[Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md)を参照してください。
 
-## Track B — Harness Engine 0.5.0: verified investigation utility
+## トラックB — Harness Engine 0.5.0: 検証付き調査の有用性
 
 reasoning / correctness behaviorへ影響しうる変更はこのtrackで扱い、fresh evidenceを要求します。
 
@@ -93,7 +93,7 @@ reasoning / correctness behaviorへ影響しうる変更はこのtrackで扱い�
 
 正確なscopeはengine milestone / issueをsource of truthとします。Engine 0.5.0のsemantic / utility changeを、CLI-only productizationとして混ぜません。
 
-## Promotion rule
+## 昇格ルール
 
 新しいreasoning mechanismは、1回良いexperiment結果が出ただけではsupported product behaviorへ昇格しません。
 
@@ -109,7 +109,7 @@ reasoning / correctness behaviorへ影響しうる変更はこのtrackで扱い�
 
 historical FAIL / INCONCLUSIVEは、後続fix後に書き換えてPASS扱いしません。
 
-## このroadmapでやらないこと
+## このロードマップでやらないこと
 
 現在のgeneral-use productizationではReasonを以下へ変えません。
 
@@ -121,7 +121,7 @@ historical FAIL / INCONCLUSIVEは、後続fix後に書き換えてPASS扱いし�
 
 必要なら別のproduct / authority designとして扱います。
 
-## Historical releases / research
+## 過去のリリース / 研究
 
 v0.1.0〜v0.4.2のimplementation chronology、completed milestone、旧evaluation coordinate、research provenanceは[Product roadmap history](product-roadmap-history.ja.md)を参照してください。
 

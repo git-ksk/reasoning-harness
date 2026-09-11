@@ -1,10 +1,10 @@
-# Product / Engine / contract のversioning
+# 製品 / Engine / machine contract のバージョニング
 
 Reasoning Harnessでは、製品UXを進めてもreasoning/correctness engineが変わったように見えないよう、version座標を分離します。
 
 ## 3つの座標
 
-### 1. Reason CLI SemVer
+### 1. Reason CLIのSemVer
 
 `reasoning-harness-cli`が、ユーザー向けの **Reason CLI** versionを所有します。
 
@@ -16,7 +16,7 @@ reason-vX.Y.Z
 
 release workflowは、`reason-vX.Y.Z`と`reasoning-harness-cli` package versionが一致することを検証します。
 
-### 2. Harness Engine SemVer
+### 2. Harness EngineのSemVer
 
 `reasoning-harness-core`が **Harness Engine** versionを所有します。
 
@@ -24,7 +24,7 @@ authority、admission、verification、finalization、answer-safety semantics、
 
 `reasoning-harness-providers`は内部crateとして独立versionを持ちますが、第3のユーザー向けproduct versionにはしません。
 
-### 3. Machine contract identity
+### 3. Machine contractの識別子
 
 `reasoning-artifact-v1`、`reason-cli-output-v1`、`reason-config-v1`、`reason-session-v1`などのwire/schema identifierは、package SemVerとは独立したcompatibility座標として維持します。package versionを上げても、既存contract identityの意味を黙って変更しません。
 

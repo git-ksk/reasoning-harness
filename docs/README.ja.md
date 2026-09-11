@@ -20,7 +20,7 @@
 
 インストール前に考え方だけ知りたい場合は、root [README](../README.ja.md) → [仕組み](how-it-works.ja.md)で十分です。
 
-## Application / Agent / RAG / CIへ組み込みたい
+## アプリ / Agent / RAG / CIへ組み込みたい
 
 おすすめ順:
 
@@ -33,7 +33,7 @@
 - [MCP product surface](mcp-product-surface.ja.md) — 外部MCP clientからnative runtimeを呼ぶ。
 - [Resumable session](session.ja.md) — reasoning stateの保存、replay、訂正、fork。
 
-## Trust model / Architectureを理解したい
+## 信頼モデル / アーキテクチャを理解したい
 
 まず:
 
@@ -50,35 +50,37 @@
 - [ADR-0002: grounded resolution / finalization](adr/0002-grounded-resolution-and-finalization.ja.md)
 - [ADR-0003: reasoning control plane](adr/0003-reasoning-control-plane.ja.md)
 
-## 今のstatus / roadmapだけ見たい
+## 現在の状況 / ロードマップだけ見たい
 
 短い現行版を使ってください。
 
-- [Project status](project-status.ja.md) — release済み、active work、主要gap。
-- [Product roadmap](product-roadmap.ja.md) — 現在のproduct / engine前進track。
-- [Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md) — 一般向けterminal productization。
-- [Versioning](versioning.md) — Reason CLI / Harness Engine / machine contractの分離。
+- [プロジェクト状況](project-status.ja.md) — release済み、active work、主要gap。
+- [製品ロードマップ](product-roadmap.ja.md) — 現在のproduct / engine前進track。
+- [Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md) — 一般向けterminal productization。
+- [バージョニング](versioning.ja.md) — Reason CLI / Harness Engine / machine contractの分離。
 
 従来の長い台帳は[project-status history](project-status-history.ja.md)と[product-roadmap history](product-roadmap-history.ja.md)として保存しています。
 
-## Research / Evaluationをレビューしたい
+## 研究・評価をレビューしたい
 
 まず現行release evidenceから入り、必要な場合だけ過去へ遡るのがおすすめです。
 
+- [Harnessなし → ありの総合比較](product-external-info-v4-cross-model.ja.md) — 同じ入力条件でutility / safety / token / latencyを比較。
+- [v36安全性補足](v36-raw-baseline-supplement.ja.md) — release surfaceの5つの安全境界でraw modelとHarnessを追試。
 - [v0.4.2 final v36 release acceptance](natural-language-e2e-v36-result.ja.md) — current release evidence。
-- [Product dogfood](product-dogfood.ja.md) — product-oriented comparison。
-- [Benchmark](benchmark.ja.md) — benchmark / evaluationの読み方。
-- [Research plan](research-plan.ja.md) — 研究課題とpromotion discipline。
+- [Product dogfood](product-dogfood.ja.md) — その他のproduct-oriented comparison。
+- [ベンチマーク](benchmark.ja.md) — benchmark / evaluationの読み方。
+- [研究計画](research-plan.ja.md) — 研究課題とpromotion discipline。
 - [Corpus versioning](corpus-versioning.ja.md) — frozen case identityとscore compatibility。
 
 過去のE2E、holdout、semantic judge、RSD、replication、provider studyはprovenanceのため意図的に残しています。ただし**onboarding用の読み物ではなく、ひとつの共通version列でもありません**。詳しくは[Terminology](terminology.ja.md)を参照してください。
 
-## Contributeしたい
+## コントリビュートしたい
 
 - [CONTRIBUTING.ja.md](../CONTRIBUTING.ja.md)
 - [SECURITY.ja.md](../SECURITY.ja.md)
 - [Architecture](architecture.ja.md)
-- [Project status](project-status.ja.md)
+- [プロジェクト状況](project-status.ja.md)
 
 reasoning / correctness semanticsを変える変更では、fixture / evaluation evidenceを適切に追加し、untrusted model outputとHarness-owned authorityの境界を維持してください。
 
