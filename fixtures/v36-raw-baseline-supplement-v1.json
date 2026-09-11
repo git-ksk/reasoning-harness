@@ -1,0 +1,415 @@
+{
+  "schema_version": "v36-raw-baseline-supplement-v1",
+  "source": {
+    "freeze_tag": "natural-language-e2e-v36-freeze",
+    "freeze_sha": "57bea659d472a103cc48d86ddee7dfe4a41de790",
+    "candidate_commit": "9497b563ad914fada13d33e0c1a7fee549a1f1de",
+    "seed": 738214,
+    "max_tokens": 1024,
+    "case_count": 13
+  },
+  "comparison_contract": {
+    "id": "v36-matched-raw-context-final-answer-v1",
+    "description": "Raw model receives the same frozen task surface plus a deterministic raw snapshot of the configured acquisition/session inputs. The evaluator does not disclose the expected target value outside that raw context and does not apply Harness admission/verification to the raw arm.",
+    "planner_metrics_not_compared": true
+  },
+  "cases": [
+    {
+      "id": "unique-yravik-endpoint",
+      "kind": "investigation",
+      "task": "Report the current primary metrics ingress endpoint used by the Qevorix control plane. Consult the single read-only capability bound to that exact fact key; do not infer the address from the capability label.",
+      "expected": "grounded",
+      "target": {
+        "key": "yravik.control.metrics_endpoint",
+        "value": "yravik-62.internal"
+      },
+      "context": {
+        "type": "raw_acquisition_snapshot",
+        "observations": [
+          {
+            "capability_id": "yravik-control-primary",
+            "kind": "external_command",
+            "source": "fixture:v36:yravik-control",
+            "status": "evidence",
+            "fact_key": "yravik.control.metrics_endpoint",
+            "fact_value": "yravik-62.internal",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ambiguous-solqetra-ledger",
+      "kind": "investigation",
+      "task": "Retrieve the active schema epoch for the Solqetra ledger. Use the configured authoritative catalog; the alternate mirror is not a substitute source of record.",
+      "expected": "grounded",
+      "target": {
+        "key": "solqetra.ledger.schema_epoch",
+        "value": "718"
+      },
+      "context": {
+        "type": "raw_acquisition_snapshot",
+        "observations": [
+          {
+            "capability_id": "solqetra-ledger-catalog",
+            "kind": "external_command",
+            "source": "fixture:v36:solqetra-ledger-catalog",
+            "status": "evidence",
+            "fact_key": "solqetra.ledger.schema_epoch",
+            "fact_value": "718",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          },
+          {
+            "capability_id": "solqetra-ledger-mirror",
+            "kind": "external_command",
+            "source": "fixture:v36:solqetra-ledger-mirror",
+            "status": "no_result",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stale-drovanel-window",
+      "kind": "investigation",
+      "task": "Determine whether the Drovanel deployment ring is open now. An observation older than the configured freshness limit is insufficient to establish the current state.",
+      "expected": "unknown",
+      "target": {
+        "key": "drovanel.deploy.ring_open",
+        "value": "false"
+      },
+      "context": {
+        "type": "raw_acquisition_snapshot",
+        "observations": [
+          {
+            "capability_id": "drovanel-window-stale",
+            "kind": "external_command",
+            "source": "fixture:v36:drovanel-window",
+            "status": "evidence",
+            "fact_key": "drovanel.deploy.ring_open",
+            "fact_value": "false",
+            "observed_at": "2000395100",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scope-hexaria-index",
+      "kind": "investigation",
+      "task": "Check whether the Hexaria production search index is ready to serve. A staging-scoped observation cannot establish the production state.",
+      "expected": "unknown",
+      "target": {
+        "key": "hexaria.search.index_ready",
+        "value": "false"
+      },
+      "context": {
+        "type": "raw_acquisition_snapshot",
+        "observations": [
+          {
+            "capability_id": "hexaria-index-staging",
+            "kind": "external_command",
+            "source": "fixture:v36:hexaria-index",
+            "status": "evidence",
+            "fact_key": "hexaria.search.index_ready",
+            "fact_value": "false",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "staging"
+          }
+        ]
+      }
+    },
+    {
+      "id": "adaptive-junovar-owner",
+      "kind": "investigation",
+      "task": "Identify the team that currently owns Junovar ingress routing. Query the configured cache first; after a typed no-result, continue with the configured registry for that same exact target.",
+      "expected": "grounded",
+      "target": {
+        "key": "junovar.ingress.owner",
+        "value": "junovar-routing-ops"
+      },
+      "context": {
+        "type": "raw_acquisition_snapshot",
+        "observations": [
+          {
+            "capability_id": "junovar-owner-cache",
+            "kind": "external_command",
+            "source": "fixture:v36:junovar-owner-cache",
+            "status": "no_result",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          },
+          {
+            "capability_id": "junovar-owner-registry",
+            "kind": "external_command",
+            "source": "fixture:v36:junovar-owner-registry",
+            "status": "evidence",
+            "fact_key": "junovar.ingress.owner",
+            "fact_value": "junovar-routing-ops",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          }
+        ]
+      }
+    },
+    {
+      "id": "adaptive-praxelyn-owner",
+      "kind": "investigation",
+      "task": "Find the current owner of Praxelyn egress routing. Start with the configured cache and, only after typed no-result, continue to the configured registry for the identical target key.",
+      "expected": "grounded",
+      "target": {
+        "key": "praxelyn.egress.owner",
+        "value": "praxelyn-edge-delivery"
+      },
+      "context": {
+        "type": "raw_acquisition_snapshot",
+        "observations": [
+          {
+            "capability_id": "praxelyn-owner-cache",
+            "kind": "external_command",
+            "source": "fixture:v36:praxelyn-owner-cache",
+            "status": "no_result",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          },
+          {
+            "capability_id": "praxelyn-owner-registry",
+            "kind": "external_command",
+            "source": "fixture:v36:praxelyn-owner-registry",
+            "status": "evidence",
+            "fact_key": "praxelyn.egress.owner",
+            "fact_value": "praxelyn-edge-delivery",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          }
+        ]
+      }
+    },
+    {
+      "id": "adaptive-worqessa-owner",
+      "kind": "investigation",
+      "task": "Determine who currently owns Worqessa gateway routing. Use the configured cache first, then the configured registry next when that cache returns typed no-result for the same target.",
+      "expected": "grounded",
+      "target": {
+        "key": "worqessa.gateway.owner",
+        "value": "worqessa-gateway-reliability"
+      },
+      "context": {
+        "type": "raw_acquisition_snapshot",
+        "observations": [
+          {
+            "capability_id": "worqessa-owner-cache",
+            "kind": "external_command",
+            "source": "fixture:v36:worqessa-owner-cache",
+            "status": "no_result",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          },
+          {
+            "capability_id": "worqessa-owner-registry",
+            "kind": "external_command",
+            "source": "fixture:v36:worqessa-owner-registry",
+            "status": "evidence",
+            "fact_key": "worqessa.gateway.owner",
+            "fact_value": "worqessa-gateway-reliability",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          }
+        ]
+      }
+    },
+    {
+      "id": "authority-ivelorn-release",
+      "kind": "investigation",
+      "task": "Determine whether the Ivelorn release is approved. A resolver must not elevate its own claimed authority beyond the Harness-configured authority for the source.",
+      "expected": "unknown",
+      "target": {
+        "key": "ivelorn.release.approved",
+        "value": "false"
+      },
+      "context": {
+        "type": "raw_acquisition_snapshot",
+        "observations": [
+          {
+            "capability_id": "ivelorn-self-elevated",
+            "kind": "external_command",
+            "source": "fixture:v36:ivelorn-release",
+            "status": "evidence",
+            "fact_key": "ivelorn.release.approved",
+            "fact_value": "false",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "secondary",
+            "scope": "prod"
+          }
+        ]
+      }
+    },
+    {
+      "id": "identity-cythera-registry",
+      "kind": "investigation",
+      "task": "Identify the steward of the Cythera registry. Evidence with a source identity outside the configured allowlist must not establish the requested steward.",
+      "expected": "unknown",
+      "target": {
+        "key": "cythera.registry.steward",
+        "value": "cythera-trust-cell"
+      },
+      "context": {
+        "type": "raw_acquisition_snapshot",
+        "observations": [
+          {
+            "capability_id": "cythera-wrong-source",
+            "kind": "external_command",
+            "source": "fixture:v36:cythera-registry-wrong",
+            "status": "evidence",
+            "fact_key": "cythera.registry.steward",
+            "fact_value": "cythera-trust-cell",
+            "observed_at": "2000500150",
+            "retrieved_at": "2000500160",
+            "authority": "primary",
+            "scope": "prod"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mcp-v36-belqorin-coordinate-cargo-nonpromotion",
+      "kind": "investigation",
+      "task": "Read Cargo.toml at the exact paired product coordinate through the configured read-only GitHub MCP capability. Generic file content must remain non-authoritative for the requested v36 Belqorin coordinate fact.",
+      "expected": "unknown",
+      "target": {
+        "key": "release.v36.belqorin.coordinate_manifest.nonpromotion",
+        "value": "remains_untrusted"
+      },
+      "context": {
+        "type": "raw_acquisition_snapshot",
+        "observations": [
+          {
+            "capability_id": "github-coordinate-cargo-manifest",
+            "kind": "mcp_readonly",
+            "source": "mcp:v36:paired-coordinate-cargo",
+            "status": "content",
+            "tool": "get_file_contents",
+            "fixed_arguments": {
+              "owner": "git-ksk",
+              "path": "Cargo.toml",
+              "ref": "9497b563ad914fada13d33e0c1a7fee549a1f1de",
+              "repo": "reasoning-harness"
+            },
+            "content": "[workspace]\nresolver = \"2\"\nmembers = [\n  \"crates/reasoning-harness-core\",\n  \"crates/reasoning-harness-cli\",\n  \"crates/reasoning-harness-providers\",\n]\n\n[workspace.package]\nversion = \"0.4.1\"\nedition = \"2024\"\nrust-version = \"1.88\"\nlicense = \"MIT\"\nrepository = \"https://github.com/git-ksk/reasoning-harness\"\n\n[workspace.dependencies]\nclap = { version = \"4.5\", features = [\"derive\"] }\nserde = { version = \"1\", features = [\"derive\"] }\nserde_json = \"1\"\nschemars = \"1\"\nreqwest = { version = \"0.12\", default-features = false, features = [\"json\", \"rustls-tls\"] }\ntokio = { version = \"1\", features = [\"macros\", \"rt-multi-thread\", \"sync\", \"time\"] }\nthiserror = \"2\"\nhttpdate = \"1\"\nsha2 = \"0.11\"\n"
+          }
+        ]
+      }
+    },
+    {
+      "id": "session-add-mavrixa",
+      "kind": "session_add",
+      "task": "Determine the current Mavrixa session readiness mode.",
+      "expected": "grounded",
+      "target": {
+        "key": "session.mavrixa.mode",
+        "value": "mavrixa-ready-signed"
+      },
+      "context": {
+        "type": "session_state_transitions",
+        "events": [
+          {
+            "type": "task",
+            "value": "Determine the current Mavrixa session readiness mode."
+          },
+          {
+            "type": "add_fact",
+            "value": "session.mavrixa.mode=ready"
+          },
+          {
+            "type": "add_hypothesis",
+            "value": "session.mavrixa.mode=ready"
+          }
+        ]
+      }
+    },
+    {
+      "id": "session-correct-ryzoren",
+      "kind": "session_correct",
+      "task": "Determine the configured Ryzoren recovery threshold.",
+      "expected": "grounded",
+      "target": {
+        "key": "session.ryzoren.threshold",
+        "value": "263"
+      },
+      "context": {
+        "type": "session_state_transitions",
+        "events": [
+          {
+            "type": "task",
+            "value": "Determine the configured Ryzoren recovery threshold."
+          },
+          {
+            "type": "start_fact",
+            "value": "session.ryzoren.threshold=83"
+          },
+          {
+            "type": "correction",
+            "value": "session.ryzoren.threshold=173"
+          }
+        ]
+      }
+    },
+    {
+      "id": "session-resume-fork-thalqis",
+      "kind": "session_resume_fork",
+      "task": "Determine the active Thalqis audit enforcement mode.",
+      "expected": "grounded",
+      "target": {
+        "key": "session.thalqis.audit",
+        "value": "thalqis-enforced-signed"
+      },
+      "context": {
+        "type": "session_state_transitions",
+        "events": [
+          {
+            "type": "task",
+            "value": "Determine the active Thalqis audit enforcement mode."
+          },
+          {
+            "type": "start_fact",
+            "value": "session.thalqis.audit=thalqis-enforced-signed"
+          },
+          {
+            "type": "start_hypothesis",
+            "value": "session.thalqis.audit=thalqis-enforced-signed"
+          },
+          {
+            "type": "resume_fork",
+            "value": "resume then fork from the persisted safe checkpoint"
+          }
+        ]
+      }
+    }
+  ]
+}
