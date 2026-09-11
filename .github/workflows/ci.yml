@@ -26,6 +26,10 @@ jobs:
         run: cargo test --locked --workspace
       - name: Validate cross-model concurrency policy
         run: python3 scripts/validate_cross_model_concurrency_policy.py
+      - name: Validate Google canonical pacing policy
+        run: |
+          python3 scripts/validate_google_canonical_pacing.py
+          python3 -m unittest -v scripts/test_validate_google_canonical_pacing.py
       - name: Validate operational-only retry and paired evidence policies
         run: |
           python3 -m unittest -v \

@@ -13,7 +13,14 @@
       "coordination": "provider_lane",
       "fixture_concurrency_default": 1,
       "validated_fixture_concurrency": 2,
-      "rationale": "model jobs serialized; fixture concurrency may increase only on runners where separately validated"
+      "rationale": "model jobs serialized; fixture concurrency may increase only on runners where separately validated",
+      "canonical_request_start_interval_ms": 6000,
+      "canonical_max_request_starts_per_minute": 10,
+      "canonical_headroom_reference_rpm": 15,
+      "shared_pacer_required_for_parallel_fixtures": true,
+      "canonical_google_model_jobs_serial": true,
+      "canonical_headroom_requests_per_minute": 5,
+      "canonical_inter_case_delay_ms": 3000
     },
     "nvidia": {
       "model_job_parallelism": 1,
