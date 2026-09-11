@@ -1,0 +1,17 @@
+{
+  "add_fact": "session.dexoria.mode=ready",
+  "add_hypothesis": "session.dexoria.mode=ready",
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.dexoria.mode",
+    "Dexoria session readiness mode"
+  ],
+  "id": "session-add-dexoria",
+  "kind": "session_add",
+  "schema_version": "natural-language-e2e-case-v2",
+  "target": {
+    "key": "session.dexoria.mode",
+    "value": "dexoria-ready-signed"
+  },
+  "task": "Determine the current Dexoria session readiness mode."
+}
