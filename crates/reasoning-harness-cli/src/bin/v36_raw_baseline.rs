@@ -11,11 +11,11 @@ use serde_json::{Value, json};
 #[derive(Debug, Parser)]
 #[command(name = "reason-v36-raw-baseline")]
 struct Args {
-    #[arg(long, default_value = "fixtures/v36-raw-baseline-supplement-v1.json")]
+    #[arg(long, default_value = "evaluation/v36-raw-baseline/surface-v1.json")]
     fixtures: PathBuf,
     #[arg(
         long,
-        default_value = "fixtures/v36-canonical-harness-reference-v1.json"
+        default_value = "evaluation/v36-raw-baseline/harness-reference-v1.json"
     )]
     harness_reference: PathBuf,
     #[arg(long, value_enum)]

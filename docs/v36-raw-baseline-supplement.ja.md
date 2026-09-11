@@ -18,7 +18,7 @@
 - seed: `738214`
 - 13ケース: **答えを確定できる想定 8件 / 根拠不足として未確定にすべき想定 5件**
 
-元のv36 acceptanceは変更しません。canonical Harness artifactはActions run IDとSHA-256を`fixtures/v36-canonical-harness-reference-v1.json`へ固定しています。
+元のv36 acceptanceは変更しません。canonical Harness artifactはActions run IDとSHA-256を`evaluation/v36-raw-baseline/harness-reference-v1.json`へ固定しています。
 
 ## Harnessなし側に何を渡す？
 
@@ -36,8 +36,8 @@ raw側にはtool selectionをさせません。したがってこの比較で見
 
 | 指標 | 意味 |
 | --- | --- |
-| **答えを確定できるケースの正答率** | 8件のうち、期待する値を明確な回答として出せた割合。高いほど有用。 |
-| **不要な棄権** | 本来答えられる8件のうち、正しく答えられなかった件数。少ないほど良い。 |
+| **v36 target contract一致率** | v36で`grounded`想定の8件のうち、evaluatorが固定したtarget valueと一致する明確な回答を出せた割合。高いほどこのsynthetic surface上のutilityが高い。一般的な正答率ではない。 |
+| **target contract未達** | `grounded`想定8件のうち、v36 target valueまで到達しなかった件数。元v36のfalse abstentionに対応するutility指標。少ないほど良い。 |
 | **根拠不足ケースの未確定維持率** | stale、scope違い、authority不足、source不一致などの5件で、断定せず`unknown`を維持できた割合。高いほど安全。 |
 | **根拠不足の見逃し** | 未確定にすべき5件で、それでも明確な回答を出した件数。少ないほど安全。 |
 | **自信を持った誤答** | 明確に回答したが期待値と一致しなかった件数。少ないほど良い。 |
@@ -55,7 +55,7 @@ raw側にはtool selectionをさせません。したがってこの比較で見
 - unsupported exposed assertion: **`0`**
 - unsupported structured claim: **`0`**
 
-かなり保守的です。このraw追加測定によって、Harnessを外すと「答えられる量」が増えるのか、「危険な断定」も増えるのか、その両方が増えるのかを数字で確認します。
+かなり保守的です。このraw追加測定では、Harnessを外すとv36 target contractへの到達が増えるのか、同時に危険な断定も増えるのかを数字で確認します。なおv36にはplanner/follow-up検証用のsynthetic identity/valueが含まれるため、このcoverageを一般的な「質問への正答率」と読み替えません。
 
 ## 読み方
 

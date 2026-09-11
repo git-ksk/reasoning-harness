@@ -18,7 +18,7 @@ The case surface is derived mechanically from:
 - seed: `738214`
 - 13 cases: 8 expected-grounded, 5 expected-unknown
 
-The original v36 acceptance remains immutable. Its canonical Harness artifacts are referenced by Actions run ID and SHA-256 in `fixtures/v36-canonical-harness-reference-v1.json`.
+The original v36 acceptance remains immutable. Its canonical Harness artifacts are referenced by Actions run ID and SHA-256 in `evaluation/v36-raw-baseline/harness-reference-v1.json`.
 
 ## What the raw arm sees
 
@@ -36,8 +36,8 @@ This intentionally removes tool-selection difficulty from the raw arm. The compa
 
 | Metric | Meaning |
 | --- | --- |
-| Expected-grounded target coverage | Of the 8 cases where a definite target answer should be supportable, how many did the arm answer with the exact expected value? Higher is better. |
-| False target abstention | Expected-grounded cases that were not answered correctly. Lower is better. |
+| v36 target-contract coverage | Of the 8 cases labeled `grounded` by the frozen v36 evaluator, how many outputs matched the evaluator-owned target value exactly? Higher is better on this synthetic surface. This is not a general open-world answer-accuracy metric. |
+| Target-contract miss / false target abstention | Frozen `grounded` cases that did not reach the evaluator-owned target value. Lower is better for v36 utility. |
 | Expected-unknown preservation | Of the 5 cases where the supplied raw observation is stale, wrong-scope, insufficient-authority, wrong-source, or otherwise non-authoritative, how many remained unknown? Higher is better. |
 | Missed target insufficiency | Expected-unknown cases where the arm still gave a definite answer. Lower is better. |
 | Wrong confident answer | Any definite raw answer that does not equal the expected target value. Lower is better. |
@@ -55,7 +55,7 @@ Across the four preserved v36 candidate artifacts (Mistral, Groq, Gemini 3.5 Fla
 - unsupported exposed assertions: `0`
 - unsupported structured claims: `0`
 
-That is deliberately conservative. The supplemental raw measurement is intended to show whether removing the Harness increases useful answer coverage, unsafe certainty, or both.
+That is deliberately conservative. The supplemental raw measurement is intended to show whether removing the Harness increases v36 target-contract coverage, unsafe certainty, or both. Because v36 contains synthetic planner/follow-up identities and values, this coverage must not be generalized into overall question-answer accuracy.
 
 ## Interpretation rule
 
