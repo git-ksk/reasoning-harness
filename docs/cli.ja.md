@@ -59,6 +59,7 @@ defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です
 | やりたいこと | コマンド |
 | --- | --- |
 | 人が自然文でtaskを依頼したい | `reason "TASK"` |
+| provider credentialを安全に管理したい（0.5.0開発ライン） | `reason auth ...` |
 | 自然言語reasoning stateを保存・確認・訂正・再開・forkしたい | `reason session ...` |
 | 既存LLM/Agentの候補回答をstructured evidenceでチェックしたい | `reason run` |
 | 完成済みartifactが構造・根拠ルールを満たすか確認したい | `reason verify` |
@@ -322,7 +323,7 @@ secretは意図的に `reason-config-v1` のfieldではありません。Reason 
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
 - GroqCloud: `GROQ_API_KEY`
 
-config parserは `api_key` などのunknown secret-like fieldをrejectします。credentialはeffective run configuration、session、evidence、authority stateへserializeされません。OS credential serviceが使えない場合も平文fallbackはしません。詳細は[プロバイダー認証情報の安全な保存](secure-credentials.ja.md)を参照してください。
+config parserは `api_key` などのunknown secret-like fieldをrejectします。credentialはeffective run configuration、session、evidence、authority stateへserializeされません。OS credential serviceが使えない場合も平文fallbackはしません。詳細は[プロバイダー認証情報の安全な保存](secure-credentials.ja.md)を参照してください。 0.5.0開発ラインでは`reason auth login [provider]`でhidden TTY入力、automationでは`--stdin` / `--from-env`、明示rotationは`--replace`、確認・削除は`reason auth status|list|logout`を使います。
 
 ## セマンティックランタイムの詳細
 

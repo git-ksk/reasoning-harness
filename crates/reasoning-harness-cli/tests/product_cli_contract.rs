@@ -400,3 +400,43 @@ fn session_process_resume_and_fork_replay_no_external_side_effects() {
 
     std::fs::remove_dir_all(temp).ok();
 }
+
+#[test]
+fn auth_noninteractive_stdin_requires_explicit_provider_before_store_access() {
+    let sentinel = b"reason-auth-contract-secret-must-not-leak\n";
+    let output = run_reason(
+        &["auth", "login", "--stdin", "--format", "json"],
+        Some(sentinel),
+    );
+    assert_eq!(output.status.code(), Some(1));
+    assert!(output.stderr.is_empty());
+    let body = String::from_utf8_lossy(&output.stdout);
+    assert!(!body.contains("reason-auth-contract-secret-must-not-leak"));
+    let value = json_stdout(&output);
+    assert_eq!(value["command"], "auth");
+    assert_eq!(value["result"]["status"], "failed");
+    assert_eq!(value["result"]["failure"]["failure_class"], "auth_input");
+    assert!(
+        value["result"]["failure"]["message"]
+            .as_str()
+            .unwrap_or_default()
+            .contains("provider is required")
+    );
+}
+
+#[test]
+fn auth_login_help_has_only_non_secret_argv_controls() {
+    let output = run_reason(&["auth", "login", "--help"], None);
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    let help = String::from_utf8_lossy(&output.stdout);
+    for expected in ["--stdin", "--from-env", "--replace", "--format"] {
+        assert!(help.contains(expected), "missing {expected}: {help}");
+    }
+    for forbidden in ["--api-key", "--secret", "--password", "--token"] {
+        assert!(
+            !help.contains(forbidden),
+            "unexpected secret-valued flag {forbidden}: {help}"
+        );
+    }
+}

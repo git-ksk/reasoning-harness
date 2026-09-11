@@ -1,3 +1,4 @@
+mod auth;
 mod diagnostic_trace;
 mod project_trust;
 mod secure_credentials;
@@ -1678,6 +1679,11 @@ struct SessionOperationOutput {
 
 #[derive(Debug, Subcommand)]
 enum Command {
+    /// PRODUCT: Manage provider credentials in the native OS credential store.
+    Auth {
+        #[command(subcommand)]
+        command: auth::AuthCommand,
+    },
     /// PRODUCT: Inspect, add, or revoke project configuration trust.
     Trust {
         #[command(subcommand)]
@@ -4866,6 +4872,10 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
 impl Cli {
     fn product_error_context(&self) -> Option<ProductErrorContext> {
         match &self.command {
+            Some(Command::Auth { command }) => Some(ProductErrorContext {
+                command: "auth",
+                json: command.format() == OutputFormat::Json,
+            }),
             Some(Command::Trust { command }) => {
                 let format = match command {
                     TrustCommand::Status { format, .. }
@@ -4982,6 +4992,7 @@ async fn main() -> ExitCode {
 async fn run(cli: Cli) -> Result<(), CliError> {
     let Cli { natural, command } = cli;
     match command {
+        Some(Command::Auth { command }) => auth::run(command),
         Some(Command::Trust { command }) => run_trust(command),
         Some(Command::Session { command }) => run_session(command).await,
         Some(Command::Run {

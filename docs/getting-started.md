@@ -29,6 +29,14 @@ export MISTRAL_API_KEY='...'
 
 Provider credentials are operational secrets, not trusted evidence.
 
+On the Reason CLI 0.5.0 development line, you can instead store the credential in the native OS credential store without editing shell startup files:
+
+```bash
+reason auth login mistral
+```
+
+The tagged `v0.4.2` release predates `reason auth`, so its reproducible setup remains the environment-variable form above.
+
 If you do not want to call an AI provider, skip to [Offline candidate verification](#offline-candidate-verification).
 
 ## 3. Run a grounded example
@@ -93,6 +101,7 @@ This is useful for RAG systems, agents, recorded outputs, CI, and provider-indep
 | Goal | Command |
 | --- | --- |
 | Ask a natural-language question | `reason "TASK"` |
+| Manage provider credentials (0.5.0 development) | `reason auth ...` |
 | Continue or correct a persisted reasoning state | `reason session ...` |
 | Integrate existing structured candidate output | `reason run` |
 | Validate an existing artifact | `reason verify` |

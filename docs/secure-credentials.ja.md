@@ -41,11 +41,26 @@ environment variableが存在するのに空または不正な場合は、OS sto
 
 error messageやJSON failureへcredential値を出しません。Secret Serviceがないheadless Linuxでは、provider environment variableを使うかplatform credential serviceを用意する案内を返し、平文credential fileは作りません。
 
-## 保存・削除
+## `reason auth`で管理する
 
-backendにはprovider/default-account単位のsave / replace / deleteを実装済みです。ユーザー向けの`reason auth login/list/status/logout`はIssue #362で追加し、このbackendをそのまま使います。別のsecret storeは作りません。
+Reason CLI 0.5.0開発ラインでは、次のuser-facing commandを使います。
 
-credential replacementはOS store上の1つの論理updateとして扱い、deleteは選択provider accountだけに限定します。storage namingは将来のwork / personal named accountを追加してもraw secret bytesをconfig file経由でmigrationしなくてよい形です。
+```bash
+# TTYでは入力を非表示。対話terminalならprovider省略でpickerも使える。
+reason auth login mistral
+
+# automation向け。secretを通常argvには載せない。
+reason auth login mistral --from-env
+printf '%s\n' "$MISTRAL_API_KEY" | reason auth login mistral --stdin
+
+reason auth status mistral
+reason auth list
+reason auth logout mistral
+```
+
+既存OS-store credentialがある場合、`login`は`--replace`を明示しない限り上書きしません。`status` / `list`が返すのはsource/state（`environment`、`os_store`、`missing`、typedなinvalid/unavailable state）のみで、mask済み断片・prefix・suffixを含めcredential値は一切表示しません。`logout`は選択provider/default-accountのOS-store entryだけを削除し、environment variableは変更しません。environment variableが残っていればlogout後もruntimeではそれが優先されます。
+
+interactive入力はhidden/no-echo TTYです。non-interactiveでは`--stdin`または`--from-env`を使い、`--api-key` / `--secret` / `--password`のようなsecret-valued argv flagは意図的に提供しません。credential replacementはOS store上の1つの論理updateとして扱い、deleteは選択provider accountだけに限定します。storage namingは将来のwork / personal named accountを追加してもraw secret bytesをconfig file経由でmigrationしなくてよい形です。
 
 ## trust boundary
 

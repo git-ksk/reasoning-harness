@@ -29,6 +29,14 @@ export MISTRAL_API_KEY='...'
 
 provider credentialはoperational secretであり、trusted evidenceではありません。
 
+Reason CLI 0.5.0開発ラインでは、shell startup fileを編集せずnative OS credential storeへ保存できます。
+
+```bash
+reason auth login mistral
+```
+
+tagged `v0.4.2` releaseにはまだ`reason auth`がないため、再現可能なv0.4.2手順は上のenvironment variable形式です。
+
 AI providerを呼びたくない場合は[Offline candidate verification](#offline-candidate-verification)へ進んでください。
 
 ## 3. 根拠ありの例を試す
@@ -93,6 +101,7 @@ RAG、Agent、recorded output、CI、provider-independent testに向いた使い
 | 目的 | Command |
 | --- | --- |
 | 自然文で質問する | `reason "TASK"` |
+| provider credentialを管理する（0.5.0開発ライン） | `reason auth ...` |
 | reasoning stateを継続・訂正する | `reason session ...` |
 | 既存structured candidateを統合する | `reason run` |
 | 既存artifactをvalidateする | `reason verify` |
