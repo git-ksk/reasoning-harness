@@ -1,10 +1,10 @@
-# `reason` Getting Started
+# `reason` はじめかた
 
 日本語 | [English](getting-started.md)
 
 このガイドは、current `v0.4.2` external previewを使ってReasoning Harnessの考え方を最短で体験するための入口です。
 
-## 1. Install
+## 1. インストール
 
 Rust 1.88+がある場合:
 
@@ -19,7 +19,7 @@ Linux x86_64、macOS arm64、macOS x86_64、Windows x86_64向けのstandalone re
 
 `main`には未release変更が入る場合があります。再現可能なproduct snapshotが必要ならtagged releaseを使ってください。
 
-## 2. Live providerを使うか、offlineで試すか決める
+## 2. Live providerを使うか、オフラインで試すか決める
 
 自然文pathではprovider credentialを設定します。Mistralの例:
 
@@ -31,7 +31,7 @@ provider credentialはoperational secretであり、trusted evidenceではあり
 
 AI providerを呼びたくない場合は[Offline candidate verification](#offline-candidate-verification)へ進んでください。
 
-## 3. Grounded exampleを試す
+## 3. 根拠ありの例を試す
 
 ```bash
 reason "確認できるdeployment regionを答えて" \
@@ -74,7 +74,7 @@ stdinや`--file`の内容はmodel-readable contextです。自動的にtrusted s
 
 hard authorityが必要なpropositionには、`--fact`、configured evidence-admission path、trusted verifierなどを使います。
 
-## Offline candidate verification
+## オフラインでcandidateを検証する
 
 別アプリや外部AIがすでに`ReasoningCandidate`を作っている場合、AI endpointを呼ばずにHarnessで検証できます。
 
@@ -88,7 +88,7 @@ reason run \
 
 RAG、Agent、recorded output、CI、provider-independent testに向いた使い方です。
 
-## 次にどのcommandを使う？
+## 次にどのコマンドを使う？
 
 | 目的 | Command |
 | --- | --- |

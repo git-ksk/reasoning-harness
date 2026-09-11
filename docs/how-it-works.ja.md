@@ -239,9 +239,9 @@ RAGのretrieval結果も、取得しただけでtrustedにはなりません。s
 ## 関連ドキュメント
 
 - [日本語CLIガイド](cli.ja.md)
-- [Architecture (English)](architecture.md)
-- [Evidence qualification (English)](evidence-qualification.md)
-- [Grounded resolution (English)](grounded-resolution.md)
+- [アーキテクチャ](architecture.ja.md)
+- [Evidence qualification](evidence-qualification.ja.md)
+- [Grounded resolution](grounded-resolution.ja.md)
 - [ADR-0001: interface and packaging boundaries](adr/0001-interface-and-packaging-boundaries.ja.md)
 - [ADR-0002: grounded resolution and finalization](adr/0002-grounded-resolution-and-finalization.ja.md)
 

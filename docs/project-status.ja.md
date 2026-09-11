@@ -1,4 +1,4 @@
-# Project status
+# プロジェクト状況
 
 日本語 | [English](project-status.md)
 
@@ -6,7 +6,7 @@
 
 従来の詳細なprovenance台帳は[Project status history](project-status-history.ja.md)へ保存しました。product docsとresearch evidenceの入口は[Documentation index](README.ja.md)です。
 
-## Current release
+## 現在のリリース
 
 現在のtagged external previewは **Reasoning Harness v0.4.2** です。
 
@@ -38,7 +38,7 @@ supportedなnative product surfaceは:
 
 Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapterを実装済みです。provider callが成功しただけで、そのmodel outputがverification authorityになることはありません。
 
-## Active product track: Reason CLI 0.5.0
+## 現在の製品開発: Reason CLI 0.5.0
 
 次の一般向けproduct lineは:
 
@@ -66,17 +66,17 @@ Harness Engine 0.4.2
 - private local session/stateとsubprocess secret isolation;
 - supported platformでのfresh-install acceptance。
 
-詳細なacceptance planは[Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md)にあります。
+詳細なacceptance planは[Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md)にあります。
 
-## Separate engine track: Harness Engine 0.5.0
+## 別系統のエンジン開発: Harness Engine 0.5.0
 
 reasoning / correctnessを変える仕事は、CLI UXとは意図的に分離します。
 
 Harness Engine 0.5.0は、reasoning utilityやcorrectness behaviorへ影響しうるverified-investigation系の変更を担当します。この種の変更はfresh evaluationが必要で、CLI UX releaseへ紛れ込ませません。
 
-[Versioning](versioning.md)と[Product roadmap](product-roadmap.ja.md)を参照してください。
+[バージョニング](versioning.ja.md)と[製品ロードマップ](product-roadmap.ja.md)を参照してください。
 
-## Current trust boundary
+## 現在の信頼境界
 
 現在のproduct-levelな約束は次の通りです。
 
@@ -87,7 +87,7 @@ Harness Engine 0.5.0は、reasoning utilityやcorrectness behaviorへ影響し�
 5. **最終factual textもauthorityにbinding。** rendererの流暢さで強いunsupported factを混ぜない。
 6. **Historical evaluationは書き換えない。** freeze / observe済みstudyを後から修正して都合の良い結果にしない。
 
-## Main user-facing gaps
+## 主なユーザー向け課題
 
 core correctness/runtimeは、現在のonboarding UXよりかなり先に成熟しています。一般利用へ向けた主なgapは基本機構不足ではなく、product UX / distributionです。
 
@@ -100,7 +100,7 @@ core correctness/runtimeは、現在のonboarding UXよりかなり先に成熟�
 
 これらは隠れた制約ではなく、次のReason CLI lineの明示的な対象です。
 
-## Research posture
+## 研究方針
 
 Reasoning Harnessはopen-world reasoningを解決したとは主張しません。hard correctnessには、hard answerが存在する範囲でdeterministic structureとtrusted evidence / oracleが必要です。model-backed semantic mechanismは、別途authority-safeなpromotionを通さない限りadvisory / restrictiveです。
 

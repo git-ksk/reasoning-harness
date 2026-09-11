@@ -36,6 +36,10 @@ jobs:
         run: |
           python3 scripts/validate_google_canonical_pacing.py
           python3 -m unittest -v scripts/test_validate_google_canonical_pacing.py
+      - name: Validate frozen v36 raw safety supplement
+        run: |
+          git fetch --force origin refs/tags/natural-language-e2e-v36-freeze:refs/tags/natural-language-e2e-v36-freeze
+          python3 scripts/validate_v36_raw_safety_surface.py
       - name: Validate operational-only retry and paired evidence policies
         run: |
           python3 -m unittest -v \

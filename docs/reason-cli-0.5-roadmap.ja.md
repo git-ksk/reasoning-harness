@@ -13,7 +13,7 @@ Harness Engine 0.4.2
 
 Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6)、parent Issue #359。
 
-## Product journey
+## 利用者から見た流れ
 
 ### 初回利用
 
@@ -67,27 +67,27 @@ reason update --check
 
 user-facing operational errorは「何が失敗したか」「taskが実行されたか」「得られた結果を信用してよいか」「次に実行すべき安全なcommand」を説明します。
 
-## Phase 0 — Product/version boundary
+## フェーズ0 — 製品 / バージョン境界
 
 - **#355 — 完了:** Reason CLIとHarness EngineのSemVer座標を分離。
 - `v0.4.2`はimmutableな最後のunified tag。
 - 今後のCLI releaseは`reason-vX.Y.Z`。
 - machine contract identityは独立したcompatibility座標として維持。
 
-## Phase 1 — Install、trust、認証、最初の回答まで
+## フェーズ1 — インストール、trust、認証、最初の回答まで
 
-### Distribution umbrella — #358
+### 配布まわり — #358
 
 - **#371 P0:** macOS / Linux / Windows向けone-command native installer。
 - **#382 P0:** release provenance、必要に応じたcode signing/notarization、trusted installer/updater verification。SHA-256は維持するが唯一のtrust rootにはしない。
 - **#372 P0:** update、明示的rollback、uninstall lifecycle。
 - **#375 P1:** canonical installer/update contract安定後のHomebrew / winget channel。
 
-### Project trust — #377
+### プロジェクトtrust — #377
 
 project `.reason/config.json`にはexecutable/authority-bearing acquisition設定を置けるため、untrusted cloneのcwdへ移動しただけで有効化してはいけません。trustは明示的・inspectable・revocableで、canonical path identityを考慮し、non-interactiveでもfail-closedに扱います。trust後にexecutable/authority-bearing configが変わった場合は永久blanket approvalを引き継がず、関連trust fingerprintを失効または再承認します。
 
-### Setup/auth umbrella — #356
+### セットアップ / 認証 — #356
 
 - **#361 P0:** macOS Keychain / Windows Credential Manager / Linux Secret Service・keyringのOS-native secure credential backend。平文へのsilent fallbackは禁止し、secret入力をargv/shell historyへ残さない。
 - **#362 P0:** `reason auth login/list/status/logout`、secure credential replacement/rotation、将来のwork/personal named accountを阻害しないstorage identity。
@@ -96,7 +96,7 @@ project `.reason/config.json`にはexecutable/authority-bearing acquisition設�
 
 CI、container、remote shell、server用途ではenvironment variableも引き続きサポートし、OS-stored credentialとのprecedenceをdeterministicに定義・文書化します。
 
-## Phase 2 — 日常的なinteractive terminal UX
+## フェーズ2 — 日常的な対話型ターミナルUX
 
 - **#364 P0:** 引数なし`reason`でusage errorではなくinteractive REPLを起動。既存のuntrusted file/context ingestionを低レベルsession file commandなしでinteractive pathから使えるようにする。
 - **#365 P0:** `-c/--continue`、`-r/--resume`、session list/picker、安全なcheckpoint persistence。既存typed session runtimeを利用。
@@ -111,7 +111,7 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 
 既存のone-shot `reason "TASK"`、repeatable `--file`、piped stdin context、JSON automation surfaceは維持します。
 
-## Phase 3 — External acquisition UXとprocess isolation
+## フェーズ3 — 外部情報取得UXとprocess isolation
 
 - **#387 P0:** local external-command / MCP / trusted-verifier subprocessは、親processのprovider/developer secretを丸ごとinheritせず、minimal scoped environmentから起動する。
 - **#368 P1:** guided read-only MCP management: `reason mcp add/list/inspect/test/remove`。
@@ -119,7 +119,7 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 
 これはconfiguration / transport / isolation / visibilityの改善です。MCP outputはauthorityではなくacquisition dataのまま、write-capable/ambiguous capabilityはfail closedを維持し、Harness Engine 0.4.2のMCP correctness boundaryを変更しません。
 
-## Phase 4 — Diagnosticsと運用復旧
+## フェーズ4 — 診断と運用復旧
 
 - **#357 P0:** `reason doctor`でReason CLI / Harness Engine versionを別々に表示し、install/config source、credential presence（値は非表示）、provider/model readiness、OS credential store、managed session path、project trust、設定済みMCP readinessを確認。human/JSON diagnosticsを提供。
 - **#370 P0:** credential、model/protocol、quota/rate limit/outage、structured output、config/trust、MCP、session、update/version、distribution-integrity failureをrecovery-orientedなhuman errorへ整備。
@@ -128,7 +128,7 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 
 Typed machine failureとepistemic `unknown`は分離したままです。friendly remediationのためにoperational failureをsemantic uncertaintyへ潰してはいけません。
 
-## Phase 5 — Fresh-install release gate
+## フェーズ5 — 新規インストールでのリリース判定
 
 **#374 P0** をCLI 0.5.0のacceptance gateにします。supported platformで次を検証します。
 
@@ -153,7 +153,7 @@ Typed machine failureとepistemic `unknown`は分離したままです。friendl
 
 このgateがgreenで、unresolved P0 product blockerが0になるまで`reason-v0.5.0`はtagしません。
 
-## Priority model
+## 優先度
 
 ### P0 — CLI 0.5.0必須
 
@@ -161,13 +161,13 @@ Typed machine failureとepistemic `unknown`は分離したままです。friendl
 
 P0は、replacement acceptance pathを明示してscope変更しない限りgeneral-use release blockerです。
 
-### P1 — Product parity / polish
+### P1 — 製品としての完成度 / polish
 
 #366、#368、#369、#373、#375、#383、#384、#385、#386。
 
 P1はpolished product lineとして進めますが、最初の安全な0.5.0 releaseを自動的にはblockしません。ただし実装中にP0級のusability/safety/supportability gapが判明した場合は昇格します。
 
-## このmilestoneで明示的にやらないこと
+## このマイルストーンで明示的にやらないこと
 
 - Harness Engine 0.4.2のreasoning/authority semantics変更;
 - Reasonをwrite-capable coding agentやbackground-agent platformへ変えること;

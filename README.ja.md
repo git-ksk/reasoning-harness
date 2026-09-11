@@ -69,7 +69,7 @@ HTTP 503とconnection error 7件は観測されていますが、それだけで
 
 これがこのプロダクトの中心です。**AIを便利に使いつつ、AIの自信をauthorityへ変換しない。**
 
-## Quickstart
+## クイックスタート
 
 現在のexternal previewは`v0.4.2`です。Rust 1.88+がある場合:
 
@@ -119,7 +119,7 @@ reason "DBがHTTP 503のroot causeだと断定できる？" \
 
 `unknown`はepistemic（知識状態）の結果であり、自動的に処理失敗を意味するわけではありません。
 
-## 何がevidenceになる？
+## 何が根拠（evidence）になる？
 
 大事なのは、**context（読ませる情報）とauthority（正しさを支える権限）を分けること**です。
 
@@ -205,7 +205,7 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 
 詳しくは[Reasoning Harnessの仕組み](docs/how-it-works.ja.md)を参照してください。
 
-## 現在のプロダクトsurface
+## 現在のプロダクト機能
 
 | Command | 用途 |
 | --- | --- |
@@ -216,26 +216,83 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 | `reason semantic-check` | soft semantic diagnostic。最終authorityは持たない。 |
 | `reason schema` | versioned machine contractの確認。 |
 
-Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapterを実装済みです。read-only MCP取得、external resolver、trusted deterministic verifier、bounded investigation、resumable sessionも現在のruntimeに含まれます。
+Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groq向けのprovider adapterを実装済みです。現在のruntimeには、read-only MCPによる取得、外部resolver、明示的にtrustedなdeterministic verifier、bounded investigation、再開可能なsessionも含まれます。
 
-## プロジェクトの実測をどう信用する？
+## 実測で見る：Harnessなしから何が変わる？
 
-このプロジェクトでは、都合の悪い観測を消して再測定するのではなく、**freezeしたevaluationを研究証跡として残し、現行releaseのclaimを再現可能な実測へ結びつける**方針を取っています。
+Reasoning Harnessの価値は、「安全そうに見える回答」を増やすことではなく、**答えるべきケースの有用性を保ちながら、根拠不足の断言をruntime側で止められるか**で評価しています。
 
-`v0.4.2`最終release gateは、freshにfreezeした13ケースのnatural-language E2Eを使用しました。provider間の平均ではなく、required rowをそれぞれ独立にPASSさせています。
+### 総合比較：同じ入力をHarnessなし / ありで比べる
+
+`product-external-info-v4`は、この比較のために固定した同条件比較です。21ケースのうち18件を意味上の採点、3件を型付きの運用失敗確認に使います。主比較では、Harnessなし / ありの両方へ**同じタスク、同じtarget hypothesis、同じ根拠要件、同じauthority policy、同じ取得済みexternal snapshot**を渡します。
+
+つまり、下の差は「Harnessなし側だけ情報が少ない」といった不公平な比較ではなく、**同じ材料をmodelの自己判断だけで扱う場合と、Harnessの受け入れ判定 / 検証 / 最終化を通す場合の差**です。
+
+| Model | 回答到達率（5件） | `unknown`維持率（13件） | 不要な棄権 | 裏付けなしgrounded claim | 根拠不足の見逃し |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **Ministral 8B** | **80% → 100%** | **53.8% → 100%** | **1 → 0** | **6 → 0** | **6 → 0** |
+| **Gemma 4 31B** | 100% → 100% | **84.6% → 100%** | 0 → 0 | **2 → 0** | **2 → 0** |
+| **Gemini 3.5 Flash-Lite** | 100% → 100% | 100% → 100% | 0 → 0 | 0 → 0 | 0 → 0 |
+| **GPT-OSS 120B** | **80% → 100%** | **76.9% → 100%** | **1 → 0** | **3 → 0** | **3 → 0** |
+
+`A → B`は **Harnessなし → Harnessあり** です。
+
+各指標の意味は次の通りです。
+
+- **回答到達率**（`expected_grounded_target_coverage`）— 本来答えられる5件のうち、要求されたtargetをgroundedな回答として出せた割合。高いほど有用性が高い。
+- **`unknown`維持率**（`expected_unknown_preservation`）— 鮮度切れ、scope不一致、authority不足、identity不一致、conflictなど、確定してはいけない13件で断言を避けられた割合。高いほど安全。
+- **不要な棄権**（`false_target_abstention`）— 答えられるケースなのにtargetを確定できなかった件数。少ないほど良い。
+- **裏付けなしgrounded claim**（`unsupported_grounded_claims`）— 十分なsupportがないのにgroundedとして出した主張数。少ないほど良く、Harness側は4モデルとも0。
+- **根拠不足の見逃し**（`missed_target_insufficiency`）— 本来`unknown`にすべきケースを確定回答してしまった件数。少ないほど良く、Harness側は4モデルとも0。
+
+特に重要なのは、Harnessが単に「慎重になって答えなくなる」だけではない点です。Ministral 8BとGPT-OSS 120Bでは、**安全性を100%まで引き上げながらtarget coverageも80%から100%へ改善**しました。Gemini 3.5 Flash-Liteのようにraw modelだけで全ケースを守れた観測もあり、その場合Harnessはsemantic scoreを悪化させず同じ境界を維持しました。
+
+### トークン量 / レイテンシへの影響
+
+同じv4実測ではコストも記録しています。
+
+| Model | Harness / raw model token | Harness / raw accounted latency |
+| --- | ---: | ---: |
+| **Ministral 8B** | 1.234x | 0.642x |
+| **Gemma 4 31B** | 0.673x | 1.159x |
+| **Gemini 3.5 Flash-Lite** | 0.641x | 1.034x |
+| **GPT-OSS 120B** | 0.938x | 0.860x |
+
+Harnessの導入が常にtoken増・常に低速になるわけではありません。このsingle-run観測ではGemma、Gemini、GPT-OSS 120BはHarness側のmodel tokenが少なく、Ministral 8Bでは増えました。latencyもmodelごとに方向が異なるため、**安全性の結果とは分けてoperational observationとして扱います**。安定した速度ランキングの主張ではありません。
+
+詳細な条件・全ケース・run provenanceは[external information v4 cross-model比較](docs/product-external-info-v4-cross-model.ja.md)を参照してください。machine-readable artifactも`docs/observations/`へ保存しています。
+
+### v36のリリース評価でも安全境界を追試
+
+v4とは別に、`v0.4.2`最終release gateのv36から、raw modelと意味を揃えて比較できる5つの安全境界ケースだけを抽出した**補足評価**もfreezeして実行しました。ここではutilityやplanner性能を再採点せず、「同じpolicyとraw observationをmodelへ渡すだけで`unknown`を維持できるか」を確認しています。
+
+| Model | Raw model | Harness | Rawで境界を越えたケース |
+| --- | ---: | ---: | --- |
+| **Ministral 8B** | 4/5 = 80% | **5/5 = 100%** | MCP generic content non-promotion |
+| **GPT-OSS 120B** | **5/5 = 100%** | **5/5 = 100%** | なし |
+| **Gemini 3.5 Flash-Lite** | 4/5 = 80% | **5/5 = 100%** | authority mismatch |
+| **Gemma 4 31B** | 4/5 = 80% | **5/5 = 100%** | MCP generic content non-promotion |
+
+4モデルともoperational failure 0、output contract violation 0で完走しました。raw modelは3/4モデルで1件ずつ安全境界を越えましたが、Harness側は4モデルすべて5/5を維持しました。これはv4の総合比較を置き換える結果ではなく、**release評価surface上でも同じ設計意図を再確認した補強証拠**です。
+
+詳細は[v36 raw safety supplement](docs/v36-raw-baseline-supplement.ja.md)を参照してください。
+
+### v0.4.2の最終リリース判定
+
+`v0.4.2`自体のrelease判定は、freshにfreezeした13ケースのnatural-language E2Eで行いました。これは上のraw-vs-Harness比較とは目的が異なり、product runtimeがrequired provider rowごとにrelease条件を満たすかを見るgateです。provider間の平均でPASSにすることはしていません。
 
 | Model / provider | v0.4.2最終実測 |
 | --- | --- |
 | **Mistral / Ministral 8B** | PASS — candidate 13/13、operational failure 0、correctness-boundary violation 0 |
 | **Groq / GPT-OSS 120B** | PASS — candidate 13/13、operational failure 0、correctness-boundary violation 0 |
-| **Gemini 3.5 Flash-Lite** | PASS — 13/13、tool selection `0.6 -> 1.0`、trigger `0/3 -> 3/3`、avoidable stall `3 -> 0` |
+| **Gemini 3.5 Flash-Lite** | PASS — 13/13、tool selection `0.6 → 1.0`、trigger exposure `0/3 → 3/3`、avoidable stall `3 → 0` |
 | **Gemma 4 31B** | PASS — candidate 13/13、operational failure 0、correctness-boundary violation 0 |
 
-freeze座標、metric、run ID、pacing policy、provenanceは[v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.ja.md)に固定しています。過去のstudyは研究証跡として残しますが、通常ユーザー向けの主要導線からは分離します。
+freeze座標、metric、run ID、pacing policy、provenanceは[v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.ja.md)に固定しています。失敗・inconclusiveを都合よく消して再測定するのではなく、freezeしたevaluationを履歴として残し、現在のclaimを再現可能な実測へ結びつけています。
 
-## Product / Engine / Researchを分ける
+## 製品・エンジン・研究を分ける
 
-`v0.4.2`は、product CLIとreasoning engineが同じversion座標を共有する最後のreleaseです。
+`v0.4.2`は、製品CLIとreasoning engineが同じversion座標を共有する最後のreleaseです。
 
 次のlineからは:
 
@@ -243,21 +300,21 @@ freeze座標、metric、run ID、pacing policy、provenanceは[v0.4.2 v36 releas
 - **Harness Engine** — reasoning / correctness behaviorをversioning。
 - **Machine contract ID** — wire/schema compatibilityを独立してversioning。
 
-次の一般向けlineは **Reason CLI 0.5.0 + Harness Engine 0.4.2** を予定しています。setup、OS credential storage、interactive UX、installer、doctor、update/uninstallなどを改善しても、Engineのcorrectness semanticsが変わったように見せないためです。
+次の一般向けラインは **Reason CLI 0.5.0 + Harness Engine 0.4.2** を予定しています。セットアップ、OSのcredential保存、対話型UX、installer、doctor、update/uninstallなどを改善しても、Engineのcorrectness semanticsが変わったように見せないためです。
 
-詳しくは[versioning](docs/versioning.md)と[Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md)を参照してください。
+詳しくは[バージョニング](docs/versioning.ja.md)と[Reason CLI 0.5.0 ロードマップ](docs/reason-cli-0.5-roadmap.ja.md)を参照してください。
 
-## Documentation
+## ドキュメント
 
 `docs/`をファイル名順・時系列順に読む必要はありません。ここには通常のproduct documentationと、freeze済みの研究/evaluation証跡が両方あります。
 
-まず **[Documentation index](docs/README.ja.md)** から入ってください。
+まず **[ドキュメント案内](docs/README.ja.md)** から入ってください。
 
 - 初回セットアップと日常CLI利用
-- Application / CI / MCP integration
-- Architectureとtrust boundary
-- 現在のroadmap / project status
-- 過去のresearch / evaluation evidence
+- アプリケーション / CI / MCP連携
+- アーキテクチャと信頼境界
+- 現在のロードマップ / プロジェクト状況
+- 過去の研究 / 評価証跡
 
 を分けて案内しています。
 

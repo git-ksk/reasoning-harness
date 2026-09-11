@@ -218,20 +218,63 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 
 Mistral, Google Gemini/AI Studio, NVIDIA Hosted NIM, and Groq provider adapters are implemented outside the correctness authority boundary. Read-only MCP acquisition, external resolvers, trusted deterministic verifiers, bounded investigation, and resumable sessions are also implemented in the current runtime.
 
-## Why trust the project claims?
+## Measured impact: what changes with the Harness?
 
-The project keeps product claims tied to frozen, reproducible evaluation evidence rather than replacing failed observations with nicer reruns.
+Reasoning Harness is evaluated on whether it can **preserve useful grounded answers while preventing unsupported certainty at runtime**, not on whether answers merely sound safer.
 
-The final `v0.4.2` release gate used a fresh frozen 13-case natural-language E2E evaluation. Every required provider row had to pass independently; no cross-model averaging was used.
+### Matched-context raw model vs Harness
+
+`product-external-info-v4` is a frozen matched-context evaluation built for this comparison. Of 21 cases, 18 are semantically scored and 3 exercise typed operational failures. In the primary comparison, the raw model and Harness arms receive the **same task, exact target hypothesis, evidence requirement, authority policy, and acquired external snapshot**.
+
+| Model | Grounded target coverage | Expected-unknown preservation | False abstention | Unsupported grounded claims | Missed insufficiency |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **Ministral 8B** | **80% → 100%** | **53.8% → 100%** | **1 → 0** | **6 → 0** | **6 → 0** |
+| **Gemma 4 31B** | 100% → 100% | **84.6% → 100%** | 0 → 0 | **2 → 0** | **2 → 0** |
+| **Gemini 3.5 Flash-Lite** | 100% → 100% | 100% → 100% | 0 → 0 | 0 → 0 | 0 → 0 |
+| **GPT-OSS 120B** | **80% → 100%** | **76.9% → 100%** | **1 → 0** | **3 → 0** | **3 → 0** |
+
+Each arrow is **raw model → Harness**. Grounded target coverage measures useful success on the 5 cases that should be answerable. Expected-unknown preservation measures safe abstention on the 13 cases where the evidence should remain insufficient. Unsupported grounded claims count claims exposed as grounded without adequate support; missed insufficiency counts cases that should have remained unknown but were answered definitively.
+
+The Harness is therefore not simply “more conservative.” On Ministral 8B and GPT-OSS 120B it increased grounded target coverage from 80% to 100% while also eliminating the observed unsafe claims. Gemini 3.5 Flash-Lite was already semantically perfect on this frozen corpus; the Harness preserved that boundary without reducing coverage.
+
+### Token and latency observations
+
+| Model | Harness / raw model tokens | Harness / raw accounted latency |
+| --- | ---: | ---: |
+| **Ministral 8B** | 1.234x | 0.642x |
+| **Gemma 4 31B** | 0.673x | 1.159x |
+| **Gemini 3.5 Flash-Lite** | 0.641x | 1.034x |
+| **GPT-OSS 120B** | 0.938x | 0.860x |
+
+Harnessing is not uniformly a token or latency tax. These are single-run operational observations, not stable performance rankings, and should be interpreted separately from the correctness results.
+
+See the [external-information v4 cross-model comparison](docs/product-external-info-v4-cross-model.md) for the frozen contract, full provenance, and detailed observations.
+
+### Safety replication on the v36 release surface
+
+As a separate post-release supplement, five v36 safety-boundary cases that can be meaningfully compared with a raw model were frozen and rerun. This supplement does **not** rescore v36 utility or planner performance; it asks whether a model given the same policy and raw observation can preserve `unknown` without deterministic Harness enforcement.
+
+| Model | Raw model | Harness | Raw boundary failure |
+| --- | ---: | ---: | --- |
+| **Ministral 8B** | 4/5 = 80% | **5/5 = 100%** | MCP generic-content non-promotion |
+| **GPT-OSS 120B** | **5/5 = 100%** | **5/5 = 100%** | none |
+| **Gemini 3.5 Flash-Lite** | 4/5 = 80% | **5/5 = 100%** | authority mismatch |
+| **Gemma 4 31B** | 4/5 = 80% | **5/5 = 100%** | MCP generic-content non-promotion |
+
+All four rows completed with zero operational failures and zero output-contract violations. The raw model crossed one safety boundary in three of four models; the Harness reference preserved all five cases for all four models. See the [v36 raw safety supplement](docs/v36-raw-baseline-supplement.md).
+
+### Final v0.4.2 release gate
+
+The final `v0.4.2` release gate serves a different purpose: it checks the product runtime on a fresh frozen 13-case natural-language E2E surface, with every required provider row passing independently and no cross-model averaging.
 
 | Model / provider | Final v0.4.2 release evidence |
 | --- | --- |
 | **Mistral / Ministral 8B** | PASS — candidate 13/13, operational failures 0, correctness-boundary violations 0 |
 | **Groq / GPT-OSS 120B** | PASS — candidate 13/13, operational failures 0, correctness-boundary violations 0 |
-| **Gemini 3.5 Flash-Lite** | PASS — 13/13; tool selection `0.6 -> 1.0`, trigger exposure `0/3 -> 3/3`, avoidable stalls `3 -> 0` |
+| **Gemini 3.5 Flash-Lite** | PASS — 13/13; tool selection `0.6 → 1.0`, trigger exposure `0/3 → 3/3`, avoidable stalls `3 → 0` |
 | **Gemma 4 31B** | PASS — candidate 13/13, operational failures 0, correctness-boundary violations 0 |
 
-The exact frozen coordinates, metrics, run IDs, pacing policy, and provenance are in [v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.md). Historical studies remain available as research evidence but are intentionally kept out of the main product path.
+The exact frozen coordinates, metrics, run IDs, pacing policy, and provenance are in [v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.md). Failed or inconclusive observations remain part of the research record rather than being overwritten by nicer reruns.
 
 ## Product, engine, and research are separate
 

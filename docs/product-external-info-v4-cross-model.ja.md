@@ -1,6 +1,6 @@
-# Product external-information v4 モデル横断replication
+# 外部情報評価 v4 — モデル横断比較
 
-Issue #208でfreeze済み`product-external-info-v4`のmatched-context 4-arm測定を追加model familyへreplicationし、Issue #216でGroqをoperational replication対象へ追加する。これは観測後のreplicationだけを目的とし、v4のcorpus、target proposition、scoring、evaluator semantics、MCP boundary、admission policy、finalization logicはsemantic head `e324ccbff6e818d205a734f06ccc8cac4b587588`から不変とする。v4 executable内で許可する差分は`GroqAdapter`のprovider wiringだけで、`scripts/validate_product_external_info_v4_provider_wiring.py`がその明示allowlistだけを除去した残りをfreeze済みファイルとbyte-for-byte比較する。
+Issue #208では、freeze済み`product-external-info-v4`の同条件4-arm測定を複数model familyへ展開し、Issue #216でGroqも運用上の追試対象へ追加しました。観測後に評価条件を都合よく変えないため、v4のcorpus、target proposition、採点、evaluator semantics、MCP境界、admission policy、finalization logicはsemantic head `e324ccbff6e818d205a734f06ccc8cac4b587588`から固定しています。v4 executableで許可する差分は`GroqAdapter`のprovider wiringだけで、`scripts/validate_product_external_info_v4_provider_wiring.py`がそれ以外をfreeze済みファイルとbyte-for-byteで照合します。
 
 ## 対象モデル
 
@@ -13,6 +13,35 @@ Issue #208でfreeze済み`product-external-info-v4`のmatched-context 4-arm測�
 - Groq `openai/gpt-oss-20b`
 
 run `34000216929`のMinistral 8B結果はv4のcanonical初回観測のまま保持し、比較表の基準行としてのみ利用する。
+
+## 先に要点：Harnessなし → ありで何が変わったか
+
+この評価では、Harnessなし / ありへ同じtask、target hypothesis、根拠要件、authority policy、取得済みsnapshotを渡して比較します。18件の意味評価ケースのうち、答えるべき5件と、根拠不足のままにすべき13件を分けて採点します。
+
+| Model | 回答到達率（5件） | `unknown`維持率（13件） | 不要な棄権 | 裏付けなしgrounded claim | 根拠不足の見逃し |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| **Ministral 8B** | **80% → 100%** | **53.8% → 100%** | **1 → 0** | **6 → 0** | **6 → 0** |
+| **Gemma 4 31B** | 100% → 100% | **84.6% → 100%** | 0 → 0 | **2 → 0** | **2 → 0** |
+| **Gemini 3.5 Flash-Lite** | 100% → 100% | 100% → 100% | 0 → 0 | 0 → 0 | 0 → 0 |
+| **GPT-OSS 120B** | **80% → 100%** | **76.9% → 100%** | **1 → 0** | **3 → 0** | **3 → 0** |
+
+矢印はすべて **Harnessなし → Harnessあり** です。Ministral 8BとGPT-OSS 120Bでは、安全性を改善しながら回答到達率も80%から100%へ上がりました。
+
+| Model | Harness / raw token | Harness / raw accounted latency |
+| --- | ---: | ---: |
+| **Ministral 8B** | 1.234x | 0.642x |
+| **Gemma 4 31B** | 0.673x | 1.159x |
+| **Gemini 3.5 Flash-Lite** | 0.641x | 1.034x |
+| **GPT-OSS 120B** | 0.938x | 0.860x |
+
+このコスト値は単一runの運用観測であり、安定した速度・コストランキングではありません。
+
+Machine-readableな主要4行のartifact:
+
+- [Ministral 8B](observations/product-external-info-v4-mistral-ministral-8b-seed-28000-2026-09-06.json)
+- [Gemma 4 31B](observations/product-external-info-v4-google-gemma-4-31b-it-seed-28000-34001534798-2026-09-06.json)
+- [Gemini 3.5 Flash-Lite](observations/product-external-info-v4-google-gemini-3.5-flash-lite-seed-28000-34002172470-2026-09-06.json)
+- [GPT-OSS 120B](observations/product-external-info-v4-groq-openai-gpt-oss-120b-seed-28000-34008471577-2026-09-06.json)
 
 ## 固定条件
 
@@ -34,7 +63,7 @@ v4にはfreeze後のsnapshot injection interfaceを追加しないため、live 
 provider/protocol failureはsemantic scoreと分離する。観測結果を理由にv4を変更して修復してはならない。
 
 
-## Groq Free Tier operational extension — Issue #216
+## Groq Free Tier向けの運用拡張 — Issue #216
 
 Groq対象も同じfreeze済みv4 corpus、seed `28000`、max-output `1024`、4-arm scoring contractを使う。GroqはOpenAI-compatible Chat Completions endpointと`GROQ_API_KEY`で接続し、model IDはadapter内のsemantic branchではなくdataとして扱う。
 
@@ -42,7 +71,7 @@ manual Groq laneの対象は`openai/gpt-oss-120b`、`qwen/qwen3.8-27b`、`openai
 
 このpacing値はFree Plan用workflow設定であり、Groq全tier共通quotaの主張でもsemantic tuningでもない。prompt、output schema、fixture、acquisition、admission、verification、scoring、finalizationは変更しない。quota/rate-limitによるoperational failureはsemantic denominatorから分離する。
 
-## 初回cross-model観測 — 2026-09-06
+## 初回モデル横断観測 — 2026-09-06
 
 GitHub Actions run `34001534798` では、v4のcase、target、scoring、evaluator semanticsを変更せず、freeze済み評価面をそのまま再利用した。
 
@@ -67,7 +96,7 @@ run `34002172470` のprovider-only paced retryでは `REASON_GOOGLE_MIN_REQUEST_
 
 このmodelとfreeze済みcorpusではraw external arm自体が完全にsafeかつcompleteだったため、Harnessによるsemantic scoreの改善はなかった。一方でcoverageを落とさず同じcorrectness boundaryを維持した。
 
-### Mistral Small operational blocker
+### Mistral Smallの運用上のブロッカー
 
 `mistral / mistral-small-latest` はscored reportを生成できなかった。初回attemptと時間を空けたretryの両方で最初のcaseからHTTP 429となり、bounded backoff中も `x-ratelimit-limit-req-minute=0` / `x-ratelimit-remaining-req-minute=0` が継続した。semantic caseを1件も完了できていないため、このmodelはcross-model correctness denominatorから除外する。これはprovider rate-limit stateであり、Harness semanticsのevidenceではない。
 
