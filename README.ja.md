@@ -43,29 +43,24 @@ Reasoning Harnessあり:
   evidence -> LLM -> candidate -> verify / resolve -> grounded | qualified | unknown
 ```
 
-## 実測でどこまで効いた？
+## v0.4.2の最終実測で何が良くなった？
 
-このHarnessの狙いは、AIを「何でも正解できるように見せる」ことではありません。**根拠が十分な部分はきちんと答え、根拠が足りない部分は勝手に断言させない**ことです。実測では、安全性を崩さずに「正しく答えられる範囲」を広げられることを確認しています。
+v0.4.2の最終release gateでは、**freshに作成してfreezeした13ケースのnatural-language E2E評価（v36 / metric v13）**を使いました。モデル間の平均点でrelease可否を決めたのではなく、required provider rowを**それぞれ独立にPASS**させています。candidateのoperational failureや`INCONCLUSIVE`は、そのままrelease blockerです。
 
-| 評価 | モデル | 使える回答をどこまで出せたか | 危険な出力を防げたか |
-| --- | --- | --- | --- |
-| freeze済みv0.4.2 release acceptance（v36 / metric v13） | Ministral 8B / Groq GPT-OSS 120B / Gemini 3.5 Flash-Lite / Gemma 4 31B | 全required row **PASS**、全required candidate row **13/13完走**。Gemini pairedはtool selection **0.6 -> 1.0**、trigger exposure **0 -> 3**、avoidable stall **3 -> 0**、target recallは **1.0維持** | 全required candidate rowでoperational failure **0**、generation failure **0**、correctness-boundary violation **0**。cross-model averagingなし、canonical rerun **0** |
-| 実ワークロード6ケース（障害分析 + アーキテクチャレビュー） | Ministral 8B | 根拠付きターゲットを出せた割合 **25% -> 100%**。本来答えられるのに保留した割合 **75% -> 0%** | 根拠なしの断言 **0**、根拠不足の見逃し **0** |
-| freeze済みMCP external-information 21ケース / 7 family | Ministral 8B | scoring対象の根拠付きtarget coverage **0%（raw / 外部取得なし）-> 75%（MCPあり）**。根拠不足targetの維持 **100%** | 根拠なしの断言 **0**、根拠不足の見逃し **0**、identity-unsafe admission **0** |
-| freeze済みv4 matched-context external-information 21ケース | Groq GPT-OSS 120B / Qwen 3.8 27B / GPT-OSS 20B | Harness + MCPは3モデルすべてで grounded target coverage **100%**、根拠不足targetの維持 **100%** | raw + externalのunsupported grounded claimsは順に **3 / 1 / 6**、Harnessではすべて **0**。missed target insufficiencyも **0** |
-| 独立して凍結したStage-C 16ケース | Ministral 8B / Mistral Small / Gemma 4 31B / Gemini 3.1 Flash-Lite | target coverage **1.00（100%）** | 完走した全モデルで unsupported grounded claims **0**、missed target insufficiency **0** |
-| 独立して凍結したStage-C 16ケース | Ministral 14B | target coverage **0.875（87.5%）** | 1件は危険な誤答ではなく「答えられるのに出さなかった」保守的なmiss。安全性counterは **0** |
-| 凍結済みD3 semantic holdout-v5 | Ministral 8B / Gemma 4 31B / Gemini 3.5 Flash-Lite | 各モデル **120/120 call** 完走。根拠が明確なケースの coverage / precision / recall はすべて **1.000** | 根拠不足ケースは **50/50でabstain**、unsafe assertion は **50 -> 0** |
+READMEでは、現行releaseであるv0.4.2の実測だけを載せます。
 
-現在のproduct-level release結果はv0.4.2のv36です。immutableな同一評価面でMistral / Groq / Gemini 3.5 Flash-Lite / Gemma 4 31Bが独立にPASSしました。特にGeminiのpaired比較では、tool selectionが **0.6 -> 1.0**、trigger exposureが **0 -> 3**、avoidable follow-up stallが **3 -> 0**へ改善し、target recall **1.0**と全correctness boundaryを維持しました。Mistral / Gemmaはすでに上限だったfollow-up rowを維持し、Groqはgeneric provider pathを13/13 cleanで完走しています。詳細は[v36 release acceptance](docs/natural-language-e2e-v36-result.ja.md)を参照してください。
+| モデル / provider | v0.4.2実測 | どういう意味？ |
+| --- | --- | --- |
+| **Mistral / Ministral 8B** | **PASS** — control 13/13、candidate 13/13。target recall `0.6`、tool selection `1.0`、trigger exposure `3/3`、avoidable stall `0` | 計測対象のfollow-up挙動ではv0.4.1 controlがすでに構造上限に達しており、v0.4.2でも劣化せず維持できた。 |
+| **Groq / GPT-OSS 120B** | **PASS** — candidate 13/13。target recall `1.0`、tool selection `1.0`、trigger exposure `3/3`、avoidable stall `0` | v0.4.1で未対応だったgeneric Groq pathを閉じ、provider固有のcorrectness logicを足さずに通常のnatural-language product pathを完走できた。 |
+| **Gemini 3.5 Flash-Lite** | **PASS** — control / candidateとも13/13。target recallは`1.0`維持、tool selection **`0.6 -> 1.0`**、trigger exposure **`0/3 -> 3/3`**、avoidable stall **`3 -> 0`** | 一番分かりやすい改善。安全なread-onlyの次手があるのに止まっていたケースがなくなり、3つの専用follow-upケースすべてでdeterministic follow-upへ到達した。 |
+| **Gemma 4 31B** | **PASS** — control / candidateとも13/13。target recall `0.8`、tool selection `0.9`、trigger exposure `3/3`、avoidable stall `0` | 2 workerでもGoogle request pacing 6000msとinter-case delay 3000msを独立に保って完走し、v35で露出したeval-runner不具合がcorrectness boundaryを変えずに解消されたことを確認した。 |
 
-以前の6ケースproduct workloadは、raw modelとHarnessのutility差を最も直感的に示す例です。同じ6つの現実的なタスクで、Ministral 8Bをそのまま使った場合は、要求された根拠付き項目の25%しか出せませんでした。Harness経路では、**根拠のある項目は100%出し、根拠不足と定義した項目は未確定のまま残しました**。単に「何でも拒否する」ことで安全にしたのではなく、**安全性を維持したまま、正しく答えられる範囲を広げた**結果です。
+**v0.4.2の全required candidate row**で、operational failure **0**、generation failure **0**、correctness-boundary violation **0**でした。canonical rerunとpost-freeze mutationも**0**です。
 
-freeze済みv4のGroq追試でも、モデル規模にかかわらず同じ安全境界が確認できました。raw + externalではGPT-OSS 120Bに **3件**、Qwen 3.8 27Bに **1件**、GPT-OSS 20Bに **6件**のunsupported grounded claimが残りましたが、Harness + MCPでは3モデルとも **0件**になり、grounded target coverageと根拠不足targetの維持はいずれも **100%**でした。token消費は一律増加ではなく、120Bで約 **6%減**、Qwen 27Bで約 **52%減**、20Bで約 **31%増**でした。これは単発runのoperational observationであり、安定したコスト順位の主張ではありません。
+数字の意味は、**target recall**が「要求された調査targetを正しく見つけられたか」、**tool selection**が「必要なときに実行可能で安全な取得手段を選べたか」、**trigger exposure**が「専用follow-up 3ケースのうち何件がdeterministic follow-up機構まで到達したか」、**avoidable stall**が「安全な次手が残っているのに止まった件数」です。
 
-別の20ケース・反復live評価では、完走trialだけを使ったHarness correctness（この評価での正答率）が、**Ministral 8B / Ministral 14B / Gemini 3.1 Flash-Lite = 1.00**、**Mistral Small = 0.99**、**Gemini 3.5 Flash-Lite = 0.98**、**Gemma 4 31B = 0.95**、**Gemma 4 26B = 0.867（完走3 trial）**、**Ministral 3B = 0.75**でした。Ministral 3Bは一貫して安全側に倒れすぎる傾向でした。この値はStage-Cのtarget coverageとは評価指標が違うため、直接の優劣比較には使いません。
-
-これは「どんなopen-world taskでも同じ精度になる」という主張ではありません。記録済みworkload / holdout上の実測であり、凍結済みresearch holdoutは再利用・再tuningしません。評価条件や分母、provenanceは[product dogfood](docs/product-dogfood.ja.md)、[MCP external-information評価](docs/product-external-info.ja.md)、[MCP external-information successor freeze](docs/product-external-info-successor.ja.md)、[matched-context v4結果](docs/product-external-info-v4.ja.md)、[v4 cross-model replication](docs/product-external-info-v4-cross-model.ja.md)、[product capability matrix](docs/product-dogfood-capability-matrix.ja.md)、[D3 holdout-v5](docs/semantic-decidability-holdout-v5.ja.md)、[v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.ja.md)に残しています。
+freeze座標、run ID、control/candidateのaggregate、pacing policy、release provenanceは[v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.ja.md)に固定しています。過去releaseや研究の実測は詳細evidence documentには残しますが、READMEでは**現在公開中のv0.4.2**だけが分かる構成にしています。
 
 ## 30秒で始める
 
