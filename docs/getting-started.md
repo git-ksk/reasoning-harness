@@ -37,6 +37,15 @@ reason auth login mistral
 
 The tagged `v0.4.2` release predates `reason auth`, so its reproducible setup remains the environment-variable form above.
 
+On the same 0.5.0 development line, you can discover tested model choices and persist a user default without remembering provider model IDs:
+
+```bash
+reason models mistral
+reason model set mistral ministral-8b-latest
+```
+
+The catalog is evidence-based compatibility metadata, not a provider availability promise or correctness score. The tagged `v0.4.2` release predates these model-management commands too.
+
 If you do not want to call an AI provider, skip to [Offline candidate verification](#offline-candidate-verification).
 
 ## 3. Run a grounded example

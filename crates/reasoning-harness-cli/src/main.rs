@@ -1,5 +1,6 @@
 mod auth;
 mod diagnostic_trace;
+mod model_catalog;
 mod project_trust;
 mod secure_credentials;
 
@@ -1683,6 +1684,20 @@ enum Command {
     Auth {
         #[command(subcommand)]
         command: auth::AuthCommand,
+    },
+    /// PRODUCT: Discover curated provider/model choices and inspect the configured default.
+    Models {
+        #[arg(value_enum)]
+        provider: Option<Provider>,
+        #[arg(long)]
+        configured: bool,
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// PRODUCT: Manage the persisted default provider/model selection.
+    Model {
+        #[command(subcommand)]
+        command: model_catalog::ModelCommand,
     },
     /// PRODUCT: Inspect, add, or revoke project configuration trust.
     Trust {
@@ -4876,6 +4891,14 @@ impl Cli {
                 command: "auth",
                 json: command.format() == OutputFormat::Json,
             }),
+            Some(Command::Models { format, .. }) => Some(ProductErrorContext {
+                command: "models",
+                json: *format == OutputFormat::Json,
+            }),
+            Some(Command::Model { command }) => Some(ProductErrorContext {
+                command: "model",
+                json: command.format() == OutputFormat::Json,
+            }),
             Some(Command::Trust { command }) => {
                 let format = match command {
                     TrustCommand::Status { format, .. }
@@ -4993,6 +5016,12 @@ async fn run(cli: Cli) -> Result<(), CliError> {
     let Cli { natural, command } = cli;
     match command {
         Some(Command::Auth { command }) => auth::run(command),
+        Some(Command::Models {
+            provider,
+            configured,
+            format,
+        }) => model_catalog::list(provider, configured, format),
+        Some(Command::Model { command }) => model_catalog::run(command),
         Some(Command::Trust { command }) => run_trust(command),
         Some(Command::Session { command }) => run_session(command).await,
         Some(Command::Run {

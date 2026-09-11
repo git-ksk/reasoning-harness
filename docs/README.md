@@ -41,6 +41,7 @@ Start with:
 - [Architecture](architecture.md)
 - [Project trust](project-trust.md) — explicit activation boundary for executable/MCP project config.
 - [Secure provider credentials](secure-credentials.md) — OS-native secret storage and deterministic environment precedence for the 0.5.0 line.
+- [Provider/model catalog](model-catalog.md) — curated compatibility evidence, credential readiness, and default switching for the 0.5.0 line.
 - [Reasoning policy](reasoning-policy.md)
 - [Evidence qualification](evidence-qualification.md)
 - [Exposed-text safety](exposed-text-safety.md)

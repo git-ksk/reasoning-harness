@@ -41,6 +41,7 @@
 - [Architecture](architecture.ja.md)
 - [プロジェクトtrust](project-trust.ja.md) — executable / MCPを含むproject configの明示的activation boundary。
 - [プロバイダー認証情報の安全な保存](secure-credentials.ja.md) — 0.5.0向けOS-native secret storageとenvironment優先順位。
+- [Provider / model カタログ](model-catalog.ja.md) — 0.5.0向けcurated compatibility evidence、credential readiness、default切替。
 - [Reasoning policy](reasoning-policy.ja.md)
 - [Evidence qualification](evidence-qualification.ja.md)
 - [Exposed-text safety](exposed-text-safety.ja.md)
