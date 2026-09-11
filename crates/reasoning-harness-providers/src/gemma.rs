@@ -139,6 +139,13 @@ impl GoogleAdapter {
         let api_key = env::var("GEMINI_API_KEY").map_err(|_| {
             ModelError::new(ModelErrorKind::Credentials, "GEMINI_API_KEY is not set")
         })?;
+        Self::from_api_key_and_env(api_key, model)
+    }
+
+    pub fn from_api_key_and_env(
+        api_key: impl Into<String>,
+        model: impl Into<String>,
+    ) -> Result<Self, ModelError> {
         let mut adapter = Self::new(api_key, model)?;
         if let Some(interval) = configured_request_interval_from_env()? {
             let shared_path = configured_shared_pacer_path_from_env()?;

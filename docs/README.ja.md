@@ -40,6 +40,7 @@
 
 - [Architecture](architecture.ja.md)
 - [プロジェクトtrust](project-trust.ja.md) — executable / MCPを含むproject configの明示的activation boundary。
+- [プロバイダー認証情報の安全な保存](secure-credentials.ja.md) — 0.5.0向けOS-native secret storageとenvironment優先順位。
 - [Reasoning policy](reasoning-policy.ja.md)
 - [Evidence qualification](evidence-qualification.ja.md)
 - [Exposed-text safety](exposed-text-safety.ja.md)
@@ -83,6 +84,7 @@
 - [SECURITY.ja.md](../SECURITY.ja.md)
 - [Architecture](architecture.ja.md)
 - [プロジェクトtrust](project-trust.ja.md) — executable / MCPを含むproject configの明示的activation boundary。
+- [プロバイダー認証情報の安全な保存](secure-credentials.ja.md) — 0.5.0向けOS-native secret storageとenvironment優先順位。
 - [プロジェクト状況](project-status.ja.md)
 
 reasoning / correctness semanticsを変える変更では、fixture / evaluation evidenceを適切に追加し、untrusted model outputとHarness-owned authorityの境界を維持してください。

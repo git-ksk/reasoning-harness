@@ -132,7 +132,7 @@ fn json_operational_failure_is_exit_one_and_stays_machine_readable() {
 }
 
 #[test]
-fn generic_groq_missing_credential_is_typed_operational_failure_not_cli_parse_failure() {
+fn generic_groq_empty_environment_override_is_typed_and_does_not_fall_back_to_os_store() {
     let mut command = reason_command();
     let output = command
         .args([
@@ -145,7 +145,7 @@ fn generic_groq_missing_credential_is_typed_operational_failure_not_cli_parse_fa
             "--format",
             "json",
         ])
-        .env_remove("GROQ_API_KEY")
+        .env("GROQ_API_KEY", "")
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .output()
@@ -292,7 +292,7 @@ fn session_add_with_empty_nonterminal_stdin_is_not_rejected_as_piped_input() {
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
-        .env_remove("MISTRAL_API_KEY");
+        .env("MISTRAL_API_KEY", "");
     let output = command.output().expect("run session add");
     assert_eq!(output.status.code(), Some(1));
     let json = json_stdout(&output);

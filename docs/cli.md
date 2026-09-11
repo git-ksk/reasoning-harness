@@ -228,15 +228,14 @@ the configured provider, `--model` must also be supplied explicitly rather than 
 a model configured for another provider. A live provider with no explicit or configured model fails
 closed.
 
-Provider secrets are deliberately **not fields in `reason-config-v1`**:
+Provider secrets are deliberately **not fields in `reason-config-v1`**. On the Reason CLI 0.5.0 development line, runtime lookup uses an explicit environment variable first and the OS-native credential store only when that variable is absent:
 
 - Mistral: `MISTRAL_API_KEY`
-- Google: `GEMINI_API_KEY`
+- Google / Gemma: `GEMINI_API_KEY`
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
 - GroqCloud: `GROQ_API_KEY`
 
-The config parser rejects unknown secret-like fields such as `api_key`. Credentials remain
-environment/provider-adapter inputs and are never serialized into the effective run configuration.
+The config parser rejects unknown secret-like fields such as `api_key`. Credentials are never serialized into effective run configuration, sessions, evidence, or authority state. No plaintext fallback is used when the OS credential service is unavailable. See [Secure provider credentials](secure-credentials.md).
 
 ## Semantic runtime product surface
 
