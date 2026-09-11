@@ -78,14 +78,14 @@ user-facing operational errorは「何が失敗したか」「taskが実行さ�
 
 ### 配布まわり — #358
 
-- **#371 P0:** macOS / Linux / Windows向けone-command native installer。
+- **#371 P0 — 完了:** macOS / Linux / Windows向けone-command native installer。
 - **#382 P0:** release provenance、必要に応じたcode signing/notarization、trusted installer/updater verification。SHA-256は維持するが唯一のtrust rootにはしない。
 - **#372 P0:** update、明示的rollback、uninstall lifecycle。
 - **#375 P1:** canonical installer/update contract安定後のHomebrew / winget channel。
 
-### プロジェクトtrust — #377
+### プロジェクトtrust — #377（完了）
 
-project `.reason/config.json`にはexecutable/authority-bearing acquisition設定を置けるため、untrusted cloneのcwdへ移動しただけで有効化してはいけません。trustは明示的・inspectable・revocableで、canonical path identityを考慮し、non-interactiveでもfail-closedに扱います。trust後にexecutable/authority-bearing configが変わった場合は永久blanket approvalを引き継がず、関連trust fingerprintを失効または再承認します。
+project `.reason/config.json`にはexecutable/authority-bearing acquisition設定を置けるため、untrusted cloneのcwdへ移動しただけで有効化してはいけません。trustは明示的・inspectable・revocableで、canonical path identityを考慮し、non-interactiveでもfail-closedに扱います。trust後にexecutable/authority-bearing configが変わった場合は永久blanket approvalを引き継がず、関連trust fingerprintを失効または再承認します。`reason trust status/add/list/revoke`、canonical project identity、直接executableのSHA-256 binding、project `trusted_command`禁止まで実装済みです。
 
 ### セットアップ / 認証 — #356
 

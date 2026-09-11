@@ -39,6 +39,7 @@
 まず:
 
 - [Architecture](architecture.ja.md)
+- [プロジェクトtrust](project-trust.ja.md) — executable / MCPを含むproject configの明示的activation boundary。
 - [Reasoning policy](reasoning-policy.ja.md)
 - [Evidence qualification](evidence-qualification.ja.md)
 - [Exposed-text safety](exposed-text-safety.ja.md)
@@ -81,6 +82,7 @@
 - [CONTRIBUTING.ja.md](../CONTRIBUTING.ja.md)
 - [SECURITY.ja.md](../SECURITY.ja.md)
 - [Architecture](architecture.ja.md)
+- [プロジェクトtrust](project-trust.ja.md) — executable / MCPを含むproject configの明示的activation boundary。
 - [プロジェクト状況](project-status.ja.md)
 
 reasoning / correctness semanticsを変える変更では、fixture / evaluation evidenceを適切に追加し、untrusted model outputとHarness-owned authorityの境界を維持してください。

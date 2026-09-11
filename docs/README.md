@@ -39,6 +39,7 @@ Recommended order:
 Start with:
 
 - [Architecture](architecture.md)
+- [Project trust](project-trust.md) — explicit activation boundary for executable/MCP project config.
 - [Reasoning policy](reasoning-policy.md)
 - [Evidence qualification](evidence-qualification.md)
 - [Exposed-text safety](exposed-text-safety.md)
@@ -81,6 +82,7 @@ Read:
 - [CONTRIBUTING.md](../CONTRIBUTING.md)
 - [SECURITY.md](../SECURITY.md)
 - [Architecture](architecture.md)
+- [Project trust](project-trust.md) — explicit activation boundary for executable/MCP project config.
 - [Project status](project-status.md)
 
 Changes that affect reasoning/correctness semantics should include appropriate fixtures/evaluation evidence and must preserve the distinction between untrusted model output and Harness-owned authority.
