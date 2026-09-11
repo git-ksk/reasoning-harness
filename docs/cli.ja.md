@@ -81,7 +81,7 @@ reason --version
 
 research binaryは入らず、supported product binaryの`reason`だけをinstallします。Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64向けstandalone archiveと`SHA256SUMS`もv0.4.2 Releaseで配布します。`main`は未releaseの開発snapshotを意図的に使う場合だけ選んでください。
 
-`v0.4.2`はv1.0 readiness gateを満たした後も、v0.x support policy上はexternal previewのままです。versionはproduct/distributionの座標であり、新しいfrozen research generationを意味しません。
+`v0.4.2`はv1.0 readiness gateを満たした後も、v0.x support policy上はexternal previewのままです。また、Reason CLI 0.4.2 + Harness Engine 0.4.2の最後のunified historical coordinateです。今後のCLI releaseはEngineと独立してversioningし、`reason-vX.Y.Z` tagを使います。詳細は[versioning](versioning.ja.md)を参照してください。
 
 ## 最小サンプル
 

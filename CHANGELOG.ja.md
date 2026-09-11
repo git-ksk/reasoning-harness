@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Issue #355で、ユーザー向けReason CLI package versionとHarness Engine（`reasoning-harness-core`）package versionを分離。`v0.4.2`は最後のunified historical releaseとして保持し、今後のCLI release tagは`reason-vX.Y.Z`を使う。machine contract IDは独立したcompatibility座標のまま、provider crate versionは第3のユーザー向けversionにはせず内部実装座標として扱う。
+
 ## [0.4.2] - 2026-09-11
 
 v0.4.2はinvestigation utilityとprovider parityのexternal-preview patch release。v0.4.xのcorrectness/authority boundaryを維持したままstochastic investigation control pathをhardeningし、freeze済みmetric-v13 acceptanceでMistral / Groq / Gemini / Gemmaの最終candidateを検証した。

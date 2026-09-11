@@ -26,7 +26,10 @@ The current external preview is `v0.4.2`. **v0.4.2 — Investigation Utility & P
 
 The release remained evidence-gated through final immutable v36: Mistral paired PASS, Groq generic candidate PASS, Gemini 3.5 Flash-Lite paired PASS, and Gemma 4 31B paired PASS. Gemini supplied strict frozen-row utility improvement while every required candidate row preserved zero operational/generation/correctness-boundary failures. Canonical reruns and post-freeze mutations were zero. See [v36 release acceptance](natural-language-e2e-v36-result.md).
 
-The next broader milestone remains **v0.5.0 — Verified Investigation Utility**. #248 finalization/grounding, #282 repeated-trial / `pass^k` planner reliability, and #283 deterministic Harness-owned action materialization remain out of the v0.4.2 patch line.
+Two independent forward lines now follow the final unified `v0.4.2` release:
+
+1. **Reason CLI 0.5.0 — General-use Productization** (milestone #6 / parent #359) keeps **Harness Engine 0.4.2** fixed while adding independent CLI versioning (#355), secure first-run setup (#356), doctor/version diagnostics (#357), and non-Rust-user distribution (#358).
+2. **Harness Engine 0.5.0 — Verified Investigation Utility** (milestone #4) owns #248 finalization/grounding, #282 repeated-trial / `pass^k` planner reliability, and #283 deterministic Harness-owned action materialization. Engine changes stay evidence-gated and are not required for the CLI productization line.
 
 The v0.4.0 implementation order was **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation**, with #204 negotiated/session `mcp_readonly_v3`, #232 dependency/freeze hygiene, and #233 unique-safe-action utility hardening completed before release. v4 cross-model replication (#208 / PR #209), including the #216 Groq operational extension, remains replication over frozen v4 evidence rather than a tuning surface for this line.
 
@@ -342,10 +345,10 @@ With #13, #27, #28, and the D3 pilot/replication evidence complete, the determin
 - [observed #252] frozen v10 canonical Mistral run `34125135760` completed 11/11 with correctness-boundary violations `0` and operational failures `0`, but measurement validity failed.
 - [censored #252] the dedicated #249 lane recalled the exact target but executed no cache action, so typed `no_result` was never reached; v10 remains inconclusive for the post-trigger #249 effect and is not rerun or tuned.
 - [completed #254] frozen v11 canonical Mistral run `34129798774` completed 13/13 with correctness/operations/measurement/report gates passing. Trigger reachability was 1/3. The single trigger-exposed case was conditionally conformant 1/1 (`cache no_result -> registry`, Harness follow-up telemetry 1) and produced verification progress, while the other two cases were planner trigger misses and follow-up target grounding remained 0/3.
-- [routed] planner/action-selection residual is assigned to v0.4.2 #261 under a narrow deterministic read-only selection invariant; downstream grounding/finalization remains #248 in v0.5.0. Frozen v9/v10/v11 and #256 observations are not rerun or tuned.
+- [routed] planner/action-selection residual is assigned to v0.4.2 #261 under a narrow deterministic read-only selection invariant; downstream grounding/finalization remains #248 in Harness Engine 0.5.0. Frozen v9/v10/v11 and #256 observations are not rerun or tuned.
 - [provider parity] v0.4.2 #262 exposes the existing GroqAdapter through the generic natural-language `reason` surface; #263 must preflight exact provider support before any live canonical launch so unsupported combinations cannot become 13 process failures again.
 - [v18 product residual] #281 keeps the patch-line fix narrow: encode acquire/stop shape requirements structurally in the model-facing schema after v18 observed repeated missing-`capability_id` proposals. Runtime validation stays authoritative/fail-closed; no missing ID is inferred or repaired.
-- [routed to v0.5.0] #282 owns distributional planner reliability (`pass^k`/repeated-trial characterization) and #283 owns the broader question of moving mechanically safe action materialization into deterministic Harness control flow. Neither changes the frozen v0.4.2 ruler or retroactively rescues v18.
+- [routed to Harness Engine 0.5.0] #282 owns distributional planner reliability (`pass^k`/repeated-trial characterization) and #283 owns the broader question of moving mechanically safe action materialization into deterministic Harness control flow. Neither changes the frozen v0.4.2 ruler or retroactively rescues v18.
 
 ## Decision gates for future features
 

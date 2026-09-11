@@ -48,7 +48,7 @@ Tracking: milestone **v0.4.2 — Investigation Utility & Provider Parity** (#5)�
 
 strict utility improvementはfreeze済みGemini rowで明確に観測した。controlのtool selection `0.6`、trigger exposure `0`、avoidable stall `3`からcandidate `1.0`、`3`、`0`へ改善し、target recall `1.0`とcorrectness-boundary violation `0`を維持した。Mistral / Gemmaはfrozen follow-up structural ceilingを維持しregressionなし。cross-model averagingは使っていない。
 
-次の広いlineは **v0.5.0 — Verified Investigation Utility** のまま。#248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationはこのpatch releaseへ取り込まない。
+最後のunified v0.4.2 release以降は、product UXとengine researchを独立したversion lineへ分ける。**Reason CLI 0.5.0 — General-use Productization**（milestone #6 / #359）はHarness Engine 0.4.2を固定したままsetup、secure credential、diagnostics、distributionを製品化する。別の **Harness Engine 0.5.0 — Verified Investigation Utility**（milestone #4）が #248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationを所有する。
 
 ## v0.4.1 — Investigation Utility Hardening
 
@@ -56,7 +56,7 @@ Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3)。v0.4.1
 
 - **#249 exact-target `no_result` continuation:** typed `no_result` 後、同じtargetの`expected_fact_key`に対して明示対応するread-only capabilityが1つだけ残る場合、追加のstochastic action-selector callなしでHarnessがfollow-upを選ぶ。同じkeyの別target identityはmergeせず、admission/authority/verification/finalization/answer-safety semanticsも変更しない。
 - freeze済みnatural-language E2E v1〜v9はimmutable historical evidenceとして維持する。v9はproduct gapの根拠だが、再実行・再採点・tuning surfaceには使わない。
-- #248はinvestigation targetとfinal-answer target/authorityの接続へ踏み込む可能性があるため、別のv0.5.0 Verified Investigation Utility lineで扱う。#247もevaluation-gate semanticsとして分離する。
+- #248はinvestigation targetとfinal-answer target/authorityの接続へ踏み込む可能性があるため、別のHarness Engine 0.5.0 Verified Investigation Utility lineで扱う。#247もevaluation-gate semanticsとして分離する。
 
 ## v0.4.0 — Grounded Investigation & Sessions
 

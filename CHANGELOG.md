@@ -6,6 +6,10 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ## [Unreleased]
 
+### Changed
+
+- Issue #355 decouples the user-facing Reason CLI package version from the Harness Engine (`reasoning-harness-core`) package version. `v0.4.2` remains the final unified historical release; future CLI releases use `reason-vX.Y.Z` tags. Machine contract IDs remain independent compatibility coordinates, and provider crate versions remain internal implementation coordinates rather than a third user-facing product version.
+
 ## [0.4.2] - 2026-09-11
 
 Patch external-preview release for investigation utility and provider parity. v0.4.2 preserves the v0.4.x correctness/authority boundary while hardening the stochastic investigation control path and proving the final candidate across Mistral, Groq, Gemini, and Gemma under frozen metric-v13 acceptance.

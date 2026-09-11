@@ -26,7 +26,10 @@ runtime は `unknown`、qualified partial answer、または abstention で停�
 
 releaseは最終immutable v36までevidence-gatedを維持し、Mistral paired PASS、Groq generic candidate PASS、Gemini 3.5 Flash-Lite paired PASS、Gemma 4 31B paired PASS。Geminiでfrozen rowのstrict utility improvementを観測し、全required candidate rowでoperational / generation / correctness-boundary failure `0`を維持した。canonical rerun / post-freeze mutationは0。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)。
 
-次の広いmilestoneは **v0.5.0 — Verified Investigation Utility** のまま。#248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationはv0.4.2 patch lineへ取り込まない。
+最後のunified releaseである`v0.4.2`以降は、2本のlineを独立して進める。
+
+1. **Reason CLI 0.5.0 — General-use Productization**（milestone #6 / parent #359）は **Harness Engine 0.4.2** を固定したまま、独立CLI versioning（#355）、secure first-run setup（#356）、doctor/version diagnostics（#357）、非Rustユーザー向けdistribution（#358）を進める。
+2. **Harness Engine 0.5.0 — Verified Investigation Utility**（milestone #4）は #248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationを所有する。Engine変更は引き続きevidence-gatedで、CLI productizationの前提にはしない。
 
 v0.4.0は **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation** の順で実装し、#204 negotiated/session `mcp_readonly_v3`、#232 dependency/freeze hygiene、#233 unique-safe-action utility hardeningもrelease前に完了した。v4 cross-model replication (#208 / PR #209) と #216 Groq operational extension（2026-09-06 closeout済み）は凍結済みv4の追試であり、このラインのtuning surfaceには使っていない。
 
@@ -342,10 +345,10 @@ Issue #13、#27、#28、および D3 pilot/replication evidence が完了した�
 - [観測済み #252] frozen v10 canonical Mistral run `34125135760` は11/11 complete、correctness-boundary violation `0`、operational failure `0` だったが measurement validity は fail。
 - [censored #252] #249 専用laneは exact target を recall したが cache action を実行せず typed `no_result` に到達しなかった。したがって v10 は post-trigger #249 effect に対して inconclusive のまま維持し、rerun / tuning しない。
 - [完了 #254] frozen v11 canonical Mistral run `34129798774` は13/13 completeで、correctness / operations / measurement / report gateはすべてpass。trigger reachabilityは1/3。trigger-exposedした1件は `cache no_result -> registry` とHarness follow-up telemetry 1を観測しconditional conformance 1/1、verification progressまで到達した。残り2件はplanner trigger missで、follow-up target groundingは0/3。
-- [振り分け済み] planner/action-selection残差はv0.4.2 #261で狭いdeterministic read-only selection invariantとして扱い、downstream grounding/finalizationはv0.5.0 #248に残す。frozen v9/v10/v11と#256 observationsはrerun/tuningしない。
+- [振り分け済み] planner/action-selection残差はv0.4.2 #261で狭いdeterministic read-only selection invariantとして扱い、downstream grounding/finalizationはHarness Engine 0.5.0 #248に残す。frozen v9/v10/v11と#256 observationsはrerun/tuningしない。
 - [provider parity] v0.4.2 #262で既存GroqAdapterをgeneric natural-language `reason` surfaceへ露出する。#263ではlive canonical launch前にexact provider supportをpreflightし、unsupported combinationが再び13 process failureになることを防ぐ。
 - [v18 product residual] #281ではpatch-line fixを狭く保ち、v18で反復観測されたmissing-`capability_id` proposalに対してmodel-facing schema自身がacquire/stop shape requirementを構造的に表現する。runtime validationはauthoritative/fail-closedのままで、missing IDを推測・補完しない。
-- [v0.5.0へ分離] #282はplannerのdistributional reliability（`pass^k` / repeated-trial characterization）、#283は機械的に安全なaction materializationをdeterministic Harness control flowへ戻す設計を所有する。どちらもfreeze済みv0.4.2 rulerを変更せず、v18をretroactiveに救済しない。
+- [Harness Engine 0.5.0へ分離] #282はplannerのdistributional reliability（`pass^k` / repeated-trial characterization）、#283は機械的に安全なaction materializationをdeterministic Harness control flowへ戻す設計を所有する。どちらもfreeze済みv0.4.2 rulerを変更せず、v18をretroactiveに救済しない。
 
 ## 将来機能の判断ゲート
 

@@ -28,7 +28,13 @@ Tagged releases package one native `reason` executable for each of those platfor
 
 ## Machine contract policy
 
-The executable semver and machine contract identities are separate coordinates.
+Product compatibility uses three separate coordinates:
+
+- **Reason CLI SemVer** — the user-facing product/distribution version owned by `reasoning-harness-cli`;
+- **Harness Engine SemVer** — the reasoning/correctness implementation version owned by `reasoning-harness-core`;
+- **machine contract identities** — wire/schema compatibility IDs such as `reason-cli-output-v1` and `reasoning-artifact-v1`.
+
+`reasoning-harness-providers` has an internal crate version but is not exposed as a third user-facing product version. `v0.4.2` is the final unified CLI/Engine release; future CLI releases use `reason-vX.Y.Z` and can advance without changing the Engine. See [Product, engine, and contract versioning](versioning.md).
 
 Current product identities include:
 

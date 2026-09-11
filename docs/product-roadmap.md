@@ -59,7 +59,7 @@ Completed scope:
 
 The strict utility improvement is visible in the frozen Gemini row: control tool selection `0.6`, trigger exposure `0`, and avoidable stalls `3` became candidate `1.0`, `3`, and `0`, with target recall `1.0` and zero correctness-boundary violations preserved. Mistral and Gemma were already at the frozen follow-up structural ceiling and were preserved without regression. No cross-model averaging was used.
 
-The next broader line remains **v0.5.0 — Verified Investigation Utility**: #248 finalization/grounding, #282 repeated-trial / `pass^k` planner reliability, and #283 deterministic Harness-owned action materialization remain explicitly out of this patch release.
+After the final unified v0.4.2 release, product UX and engine research split into independent version lines. **Reason CLI 0.5.0 — General-use Productization** (milestone #6 / #359) keeps Harness Engine 0.4.2 fixed while productizing setup, secure credentials, diagnostics, and distribution. Separately, **Harness Engine 0.5.0 — Verified Investigation Utility** (milestone #4) owns #248 finalization/grounding, #282 repeated-trial / `pass^k` planner reliability, and #283 deterministic Harness-owned action materialization.
 
 ## v0.4.1 — Investigation Utility Hardening
 
@@ -67,7 +67,7 @@ Tracking: milestone **v0.4.1 — Investigation Utility Hardening** (#3). v0.4.1 
 
 - **#249 exact-target `no_result` continuation:** when a typed `no_result` leaves exactly one explicit read-only capability for the same target's `expected_fact_key`, the Harness selects that follow-up without another stochastic action-selector call. Target identity is never merged across same-key siblings, and admission/authority/verification/finalization/answer-safety semantics remain unchanged.
 - Frozen natural-language E2E v1-v9 remain immutable historical evidence. v9 motivates the product gap but is not rerun, rescored, or used as a tuning surface.
-- #248 belongs to the separate v0.5.0 Verified Investigation Utility line because it may connect investigation targets to final-answer targets/authority. #247 remains a separate evaluation-gate semantics issue.
+- #248 belongs to the separate Harness Engine 0.5.0 Verified Investigation Utility line because it may connect investigation targets to final-answer targets/authority. #247 remains a separate evaluation-gate semantics issue.
 
 ## v0.4.0 — Grounded Investigation & Sessions
 

@@ -56,7 +56,7 @@ Groq 3 target はすべて provider generation 前に generic `reason` CLI が `
 
 released v0.4.1 の #249 trigger が実際に露出した全 case では exact-target typed-`no_result` continuation は conformant だった。Mistral `1/1` + Gemma `3/3` = 観測 `4/4` conformant。completed semantic row では correctness-boundary violation、unsupported exposed assertion、unsupported structured claim、identity-unsafe admission、MCP authority self-promotion、session external side-effect replay はいずれも 0。
 
-したがって product utility gap は #249 mechanism の malfunction evidence ではない。主要な pre-trigger residual は planner / action selection で、Mistral は 1/3、Gemini は 0/3、Gemma は 3/3 trigger exposure と大きな model 差が出た。downstream grounding residual も残り、useful follow-up evidence が grounded final answer へ安定してつながっていない。この finalization / grounding boundary は #248 / v0.5.0 に残し、v0.4.2 へ移動しない。
+したがって product utility gap は #249 mechanism の malfunction evidence ではない。主要な pre-trigger residual は planner / action selection で、Mistral は 1/3、Gemini は 0/3、Gemma は 3/3 trigger exposure と大きな model 差が出た。downstream grounding residual も残り、useful follow-up evidence が grounded final answer へ安定してつながっていない。この finalization / grounding boundary は #248 / Harness Engine 0.5.0 に残し、v0.4.2 へ移動しない。
 
 ## Closeout decision
 

@@ -6,6 +6,8 @@
 
 **v0.4.2 — Investigation Utility & Provider Parity** マイルストーン（#5）は完了し、現在のexternal-preview product lineである。v0.4.xのcorrectness/authority foundationを維持したまま、deterministic safe acquisition precedence、generic Groq provider parity、structured planner/action hardening、provider/eval resilienceを追加し、Mistral / Groq / Gemini 3.5 Flash-Lite / Gemma 4 31Bのimmutable v36 acceptanceで検証した。
 
+`v0.4.2`はCLI/Engineの最後のunified versionでもある。以後は **Reason CLI 0.5.0**（#6/#359）でHarness Engine 0.4.2を一般利用向けに製品化し、**Harness Engine 0.5.0**（#4）は独立したevidence-gated semantic/utility lineとして進める。詳細は[versioning](versioning.ja.md)を参照。
+
 v0.4.0 lineでは#210、#211、#212、#213、#214、#204、#232、#233を完了した。#204によりsupported MCP product pathは`mcp_readonly_v3`となり、bounded initialize/negotiation/initialized/tools-list/tools-callを追加する。詳細は[読み取り専用MCPリゾルバー](mcp-resolver.ja.md)、[制約付き調査プランニング](investigation.ja.md)、[再開可能な自然言語セッション](session.ja.md)を参照。
 
 完了したpatch lineは **v0.4.1 — Investigation Utility Hardening**（milestone #3）である。Issue #249は、typed `no_result` 後に同じexact targetへ明示fact-key対応read-only capabilityが1つだけ残る場合のdeterministic continuationだけを対象とする。これはinvestigation utilityのhardeningであり、correctness/authority promotionではない。同じkeyのsibling targetは分離したまま、既存のadmission、source/freshness/scope/authority、verification、finalization、answer-safety、session/replay、MCP authority boundaryも変更しない。freeze済みnatural-language E2E v1〜v9はhistorical evidenceとして維持し、再実行・再採点しない。

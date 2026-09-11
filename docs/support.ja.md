@@ -26,7 +26,13 @@
 
 ## マシン契約の方針
 
-executableのsemverとmachine contract identityは別々の座標です。
+product compatibilityは3つの独立した座標で管理します。
+
+- **Reason CLI SemVer** — `reasoning-harness-cli`が所有するユーザー向けproduct/distribution version；
+- **Harness Engine SemVer** — `reasoning-harness-core`が所有するreasoning/correctness implementation version；
+- **machine contract identity** — `reason-cli-output-v1`や`reasoning-artifact-v1`などのwire/schema compatibility ID。
+
+`reasoning-harness-providers`は内部crate versionを持ちますが、第3のユーザー向けproduct versionにはしません。`v0.4.2`はCLI/Engineの最後のunified releaseで、今後のCLI releaseは`reason-vX.Y.Z`を使い、Engineを変えずに進められます。詳細は[Product / Engine / contract のversioning](versioning.ja.md)を参照してください。
 
 現在のproduct identityには次が含まれます。
 
