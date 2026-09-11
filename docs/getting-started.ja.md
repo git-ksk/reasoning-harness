@@ -37,6 +37,15 @@ reason auth login mistral
 
 tagged `v0.4.2` releaseにはまだ`reason auth`がないため、再現可能なv0.4.2手順は上のenvironment variable形式です。
 
+同じ0.5.0開発ラインでは、provider固有のmodel IDを暗記せず実測済み候補を確認してuser defaultへ保存できます。
+
+```bash
+reason models mistral
+reason model set mistral ministral-8b-latest
+```
+
+このcatalogは実測ベースのcompatibility metadataであり、provider側の現在availability保証やcorrectness scoreではありません。tagged `v0.4.2` releaseにはmodel管理commandもまだ含まれません。
+
 AI providerを呼びたくない場合は[Offline candidate verification](#offline-candidate-verification)へ進んでください。
 
 ## 3. 根拠ありの例を試す

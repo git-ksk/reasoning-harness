@@ -211,6 +211,8 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 | --- | --- |
 | `reason "TASK"` | Primary human-facing natural-language path. |
 | `reason auth ...` | Reason CLI 0.5.0 development: securely add, inspect, rotate, or remove provider credentials. |
+| `reason models [provider]` | Reason CLI 0.5.0 development: inspect the curated model catalog, compatibility metadata, credential readiness, and current default. |
+| `reason model set <provider> <model>` | Reason CLI 0.5.0 development: persist a curated general-use provider/model default without silent fallback. |
 | `reason session ...` | Persist, inspect, add to, correct, resume, fork, or close reasoning sessions. |
 | `reason run` | Structured application/CI integration and live candidate generation. |
 | `reason verify` | Deterministically validate a materialized `ReasoningArtifact`. |

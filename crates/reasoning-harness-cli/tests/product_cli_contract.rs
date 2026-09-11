@@ -440,3 +440,141 @@ fn auth_login_help_has_only_non_secret_argv_controls() {
         );
     }
 }
+
+#[test]
+fn model_catalog_and_default_switch_preserve_user_config_and_fail_closed() {
+    let temp = std::env::temp_dir().join(format!(
+        "reason-model-config-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    let config_path = temp.join("config.json");
+    std::fs::write(
+        &config_path,
+        r#"{
+  "schema_version": "reason-config-v1",
+  "run": {"max_tokens": 777, "format": "json"},
+  "resolution": {
+    "trusted_command": {
+      "trusted": true,
+      "verifier_id": "local-check",
+      "program": "/usr/bin/true"
+    }
+  }
+}
+"#,
+    )
+    .unwrap();
+
+    let mut set = reason_command();
+    let output = set
+        .args([
+            "model",
+            "set",
+            "mistral",
+            "ministral-8b-latest",
+            "--format",
+            "json",
+        ])
+        .env("REASON_HOME", &temp)
+        .env("MISTRAL_API_KEY", "model-catalog-test-secret")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("set model default");
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    assert!(!String::from_utf8_lossy(&output.stdout).contains("model-catalog-test-secret"));
+    let value = json_stdout(&output);
+    assert_eq!(value["command"], "model");
+    assert_eq!(value["result"]["provider"], "mistral");
+    assert_eq!(value["result"]["model"], "ministral-8b-latest");
+    assert_eq!(value["result"]["compatibility"], "validated");
+    assert_eq!(value["result"]["credential_status"], "available");
+
+    let config: Value = serde_json::from_slice(&std::fs::read(&config_path).unwrap()).unwrap();
+    assert_eq!(config["run"]["provider"], "mistral");
+    assert_eq!(config["run"]["model"], "ministral-8b-latest");
+    assert_eq!(config["run"]["max_tokens"], 777);
+    assert_eq!(config["run"]["format"], "json");
+    assert_eq!(config["resolution"]["trusted_command"]["trusted"], true);
+    assert_eq!(
+        config["resolution"]["trusted_command"]["verifier_id"],
+        "local-check"
+    );
+    assert_eq!(
+        config["resolution"]["trusted_command"]["program"],
+        "/usr/bin/true"
+    );
+    assert!(config["resolution"].get("external_command").is_none());
+
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        assert_eq!(
+            std::fs::metadata(&config_path)
+                .unwrap()
+                .permissions()
+                .mode()
+                & 0o777,
+            0o600
+        );
+    }
+
+    let mut configured = reason_command();
+    let output = configured
+        .args(["models", "--configured", "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .env("MISTRAL_API_KEY", "model-catalog-test-secret")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("inspect configured model");
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    assert!(!String::from_utf8_lossy(&output.stdout).contains("model-catalog-test-secret"));
+    let value = json_stdout(&output);
+    assert_eq!(value["command"], "models");
+    assert_eq!(
+        value["result"]["catalog_version"],
+        "reason-model-catalog-v1"
+    );
+    assert_eq!(
+        value["result"]["configured_default"]["model"],
+        "ministral-8b-latest"
+    );
+    assert_eq!(
+        value["result"]["configured_default"]["credential_status"],
+        "available"
+    );
+
+    for (provider, model, failure_class) in [
+        (
+            "nvidia",
+            "nvidia/nemotron-3.5-lightning-30b-a3b",
+            "model_not_general_use",
+        ),
+        ("mistral", "made-up-model", "model_unlisted"),
+    ] {
+        let mut command = reason_command();
+        let output = command
+            .args(["model", "set", provider, model, "--format", "json"])
+            .env("REASON_HOME", &temp)
+            .env("MISTRAL_API_KEY", "model-catalog-test-secret")
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .output()
+            .expect("reject unsupported default");
+        assert_eq!(output.status.code(), Some(1));
+        assert!(output.stderr.is_empty());
+        let value = json_stdout(&output);
+        assert_eq!(value["result"]["status"], "failed");
+        assert_eq!(value["result"]["failure"]["failure_class"], failure_class);
+    }
+
+    std::fs::remove_dir_all(temp).ok();
+}

@@ -76,6 +76,7 @@ See [How Reasoning Harness works](how-it-works.md) and [product dogfood](product
 | --- | --- |
 | Ask a person-facing natural-language question through the verified runtime | `reason "TASK"` |
 | Manage provider credentials on the 0.5.0 development line | `reason auth ...` |
+| Discover compatible models / set the user default on the 0.5.0 development line | `reason models ...` / `reason model set ...` |
 | Persist, inspect, correct, resume, or fork a natural-language reasoning state | `reason session ...` |
 | Integrate an existing LLM/agent candidate with structured evidence | `reason run` |
 | Validate an already-materialized artifact | `reason verify` |
@@ -87,6 +88,7 @@ For a human using the CLI directly, start with **`reason "TASK"`**. For applicat
 ## Product commands
 
 - `reason auth login|status|list|logout` — manage provider credentials in the native OS credential store without secret-valued argv flags.
+- `reason models [provider]` / `reason model set <provider> <model>` — inspect the curated compatibility catalog and persist a general-use user default without silent fallback. See [Provider/model catalog](model-catalog.md).
 - `reason run` — execute the harness-owned correctness process from a recorded candidate or live
   provider candidate generation.
 - `reason verify` — deterministically validate a `ReasoningArtifact`.
