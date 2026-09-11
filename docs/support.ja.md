@@ -58,10 +58,11 @@ v1.0以前は、command flagやproduct schemaが引き続き変更される可�
 
 providerに依存しないruntimeがproduct boundaryです。Provider adapterはtransport/APIの挙動をnormalizeしますが、verification authorityになることはありません。
 
-- Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIMのadapterは、live candidate generation用に実装されています。
+- Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、GroqCloudのadapterは、live candidate generation用に実装されています。
 - MistralとGoogle-hosted Gemmaは、サポート対象のcurrent/rollback `semantic-check` product pathでlive smokeを実施しています。記録されたworkloadでは、Ministral 3B/8B/14B、Mistral Small、Gemma 4 31B、Gemini 3.1/3.5 Flash-Liteについてproduct dogfoodを完了しています。完了したことはutilityが同等であることを意味しません。記録されたtarget-coverage matrixの範囲は0.00から1.00です。
 - model/providerは、特定のstructured-output protocolと互換性がない場合もあります。Gemma 4 26B A4BとNemotron 3.5 Lightningが記録されている例です。いずれもproduct dogfood runではfallback後のinvalid structured outputで失敗しており、semantic scoreや作為的なabstentionではなく、operational/protocol evidenceとして扱います。
 - Provider quota、service availability、rate limit、model retirement、model固有のoutput qualityは外部のoperational dependencyであり、harness correctnessとは分けて報告します。
+- v0.4.2 release acceptance（`natural-language-e2e-v36-freeze`）はMistral / Groq / Gemini 3.5 Flash-Lite / Gemma 4 31Bで独立にPASSしました。全required candidate rowは13/13完走し、operational / generation / correctness-boundary failureはすべて`0`。Geminiのpaired follow-up rowはtarget recall `1.0`を維持したまま、tool selection `0.6 -> 1.0`、trigger exposure `0 -> 3`、avoidable stall `3 -> 0`へ改善しました。
 
 Provider credentialはenvironment variableのまま保持し、`reason-config-v1`では受け付けません。
 

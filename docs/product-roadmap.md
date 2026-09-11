@@ -172,9 +172,9 @@ Exact historical phase labels, frozen run identities, and machine configuration 
 
 Already available:
 
-- external-preview `reason` v0.3.0 executable with the natural-language-first path plus supported `run`, `verify`, `semantic-check`, and `schema` product commands, bounded external resolution, and the optional `reason-mcp` adapter; research/evaluation commands remain separate;
+- external-preview `reason` v0.4.2 executable with the natural-language-first path plus supported `run`, `verify`, `semantic-check`, and `schema` product commands, bounded external resolution, and the optional `reason-mcp` adapter; research/evaluation commands remain separate;
 - provider-neutral core runtime and typed `ReasoningArtifact`;
-- provider adapters for Mistral, Google, and NVIDIA outside the correctness authority boundary;
+- provider adapters for Mistral, Google, NVIDIA, and Groq outside the correctness authority boundary;
 - bounded resolution/finalization, evidence qualification, policy, checkpoint/replay, and typed
   diagnostics;
 - current semantic runtime plus an explicit characterized rollback profile (exact machine IDs remain stable and documented);
