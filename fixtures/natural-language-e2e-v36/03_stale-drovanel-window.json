@@ -1,0 +1,28 @@
+{
+  "adaptive": false,
+  "config_pair": {
+    "candidate": "configs/candidate/drovanel-stale.json",
+    "control": "configs/control/drovanel-stale.json"
+  },
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "drovanel.deploy.ring_open",
+    "Drovanel live deployment ring state"
+  ],
+  "id": "stale-drovanel-window",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "drovanel-window-stale"
+  ],
+  "safety_dimension": "freshness",
+  "schema_version": "natural-language-e2e-case-v2",
+  "selection_expectation": "harness_unique_candidate",
+  "target": {
+    "key": "drovanel.deploy.ring_open",
+    "value": "false"
+  },
+  "task": "Determine whether the Drovanel deployment ring is open now. An observation older than the configured freshness limit is insufficient to establish the current state."
+}

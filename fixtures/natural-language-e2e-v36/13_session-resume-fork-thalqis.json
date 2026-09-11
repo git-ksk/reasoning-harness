@@ -1,0 +1,17 @@
+{
+  "expected": "grounded",
+  "fresh_markers": [
+    "session.thalqis.audit",
+    "Thalqis audit enforcement mode"
+  ],
+  "id": "session-resume-fork-thalqis",
+  "kind": "session_resume_fork",
+  "schema_version": "natural-language-e2e-case-v2",
+  "start_fact": "session.thalqis.audit=thalqis-enforced-signed",
+  "start_hypothesis": "session.thalqis.audit=thalqis-enforced-signed",
+  "target": {
+    "key": "session.thalqis.audit",
+    "value": "thalqis-enforced-signed"
+  },
+  "task": "Determine the active Thalqis audit enforcement mode."
+}
