@@ -227,6 +227,10 @@ D3 採用後も、typed metadata だけでは説明できない residual evidenc
 
 frozen v10 / Issue #252 canonical Mistral run `34125135760` は11/11 complete、correctness-boundary violation `0`、operational failure `0` だったが、Issue #249 Cobalt laneがtyped `no_result`へ到達せずmeasurement validityはfailし、censored/inconclusive observationとして維持する。続くfrozen v11 / Issue #254 canonical run `34129798774` は13/13 completeでcorrectness / operational / measurement / report gateをすべてpassした。独立にfreezeしたfollow-up 3件のtrigger reachabilityは1/3。exposedした1件ではreleased v0.4.1 exact-target continuationが1/1 conformant（`cache no_result -> registry`、Harness follow-up telemetry 1）で、admitted evidenceとverification progressまで到達した。残り2件はplanner trigger missで、follow-up target groundingは0/3。Issue #256 cross-model replication では trigger が露出した Mistral/Gemma 全観測で #249 conformance 4/4 を確認する一方、planner model 依存性も明確になった。Gemma trigger 3/3、Mistral 1/3、Gemini 0/3 で、Gemini follow-up 3件はすべて target recall 後 actions=0 / round_budget。Groq は generic CLI provider wiring 欠落により generation 前で停止した。これを #261/#262/#263 が比較する v0.4.1 baseline とし、frozen v9/v10/v11/#256はimmutableのまま維持する。詳細は [v10結果](natural-language-e2e-v10-result.ja.md)、[v11結果](natural-language-e2e-v11-result.ja.md)、[v11 cross-model結果](natural-language-e2e-v11-cross-model-result.ja.md)。
 
+## v0.4.2 最終release acceptance
+
+metric-v13 successor lineの最終v36は `natural-language-e2e-v36-freeze`（`57bea659d472a103cc48d86ddee7dfe4a41de790`）、candidate `9497b563ad914fada13d33e0c1a7fee549a1f1de`、released v0.4.1 control `29a9e4be6273dbffeda324e15517dc64930ad315`、seed `738214`でfreezeした。Mistral paired run `34564120392`はPASS、cross-model run `34564672351`ではGroq generic candidate、Gemini 3.5 Flash-Lite paired、Gemma 4 31B pairedがすべて独立PASS。全required candidate rowは13/13 completeで、operational / generation / correctness-boundary failureは`0`。Geminiはstrict paired utility improvementとしてtool selection `0.6 -> 1.0`、trigger exposure `0 -> 3`、avoidable stall `3 -> 0`を示し、target recall `1.0`を維持した。cross-model averagingは使わず、canonical rerun `0`、post-freeze mutation `0`。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)。
+
 ## 評価原則
 
 単一の judge-model score に最適化しません。

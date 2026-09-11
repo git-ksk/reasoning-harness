@@ -160,9 +160,9 @@ v0.3.0はproduct/distribution coordinateであり、新しいsemantic research g
 
 すでに利用可能：
 
-- natural-language-first pathに加え、サポート対象の `run`、`verify`、`semantic-check`、`schema` product command、制約付き外部resolution、任意の `reason-mcp` adapterを備えたexternal-preview `reason` v0.3.0 executable。research/evaluation commandは分離されている。
+- natural-language-first pathに加え、サポート対象の `run`、`verify`、`semantic-check`、`schema` product command、制約付き外部resolution、任意の `reason-mcp` adapterを備えたexternal-preview `reason` v0.4.2 executable。research/evaluation commandは分離されている。
 - provider-neutral core runtimeと型付き `ReasoningArtifact`；
-- correctness authority boundaryの外部にある、Mistral、Google、NVIDIA用provider adapter；
+- correctness authority boundaryの外部にある、Mistral、Google、NVIDIA、Groq用provider adapter；
 - 制約付きresolution/finalization、evidence qualification、policy、checkpoint/replay、型付きdiagnostics；
 - 現在のsemantic runtimeと、明示的にcharacterizeされたrollback profile（正確なmachine IDは安定して文書化済み）；
 - credential-free deterministic CIと、分離されたlive provider smoke/research workflow。

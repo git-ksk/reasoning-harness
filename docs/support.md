@@ -64,6 +64,7 @@ The provider-neutral runtime is the product boundary. Provider adapters normaliz
 - Mistral and Google-hosted Gemma are live-smoked for the supported current/rollback `semantic-check` product path. Product dogfood has completed on Ministral 3B/8B/14B, Mistral Small, Gemma 4 31B, and Gemini 3.1/3.5 Flash-Lite on the recorded workload. Completion does not imply equal utility; the recorded target-coverage matrix ranges from 0.00 to 1.00.
 - A model/provider can still be incompatible with a specific structured-output protocol. Gemma 4 26B A4B and Nemotron 3.5 Lightning are recorded examples: each product dogfood run failed on invalid structured output after fallback and is treated as operational/protocol evidence, not a semantic score or fabricated abstention.
 - Provider quotas, service availability, rate limits, model retirement, and model-specific output quality are external operational dependencies and are reported separately from harness correctness.
+- v0.4.2 release acceptance (`natural-language-e2e-v36-freeze`) passed independently on Mistral, Groq, Gemini 3.5 Flash-Lite, and Gemma 4 31B. Every required candidate row completed 13/13 with operational, generation, and correctness-boundary failures all `0`; Gemini's paired follow-up row improved tool selection `0.6 -> 1.0`, trigger exposure `0 -> 3`, and avoidable stalls `3 -> 0` at unchanged target recall `1.0`.
 
 Provider credentials remain environment variables and are not accepted in `reason-config-v1`.
 

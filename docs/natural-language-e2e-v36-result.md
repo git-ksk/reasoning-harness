@@ -57,3 +57,6 @@ The v35 evaluation-infrastructure failure did not recur: shared Google request p
 No cross-model averaging was used. Every required row passed independently, candidate operational failure remained a hard gate, and `INCONCLUSIVE` remained non-releasable. The final evidence therefore supports releasing v0.4.2 while preserving the v0.4.x correctness, authority, admission, verification, finalization, answer-safety, MCP non-promotion, and session-replay boundaries.
 
 The broader finalization/grounding bridge (#248), repeated-trial planner reliability (#282), and deterministic Harness-owned action materialization (#283) remain v0.5.0 work and were not pulled into this patch release.
+## Release provenance
+
+The accepted product coordinate was released as `v0.4.2` from main commit `d8940b4a98f11ec3e0968444fadc8bc90eae01ff`. Release workflow `34570773900` completed successfully and built, smoke-tested, packaged, and published Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64 artifacts plus `SHA256SUMS`. The GitHub Release remains a v0.x prerelease, consistent with the documented external-preview support policy.
