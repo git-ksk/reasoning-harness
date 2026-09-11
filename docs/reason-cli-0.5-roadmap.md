@@ -78,14 +78,14 @@ A user-facing operational error should explain what failed, whether the task exe
 
 ### Distribution umbrella — #358
 
-- **#371 P0:** one-command native installers for macOS, Linux, and Windows.
+- **#371 P0 — completed:** one-command native installers for macOS, Linux, and Windows.
 - **#382 P0:** release provenance, signing/notarization where appropriate, and trusted installer/updater verification. SHA-256 remains useful but is not the sole trust root.
 - **#372 P0:** update, explicit rollback, and uninstall lifecycle.
 - **#375 P1:** Homebrew and winget channels after the canonical installer/update contract is stable.
 
-### Project trust — #377
+### Project trust — #377 (completed)
 
-Project `.reason/config.json` may contain executable or authority-bearing acquisition configuration. Such settings must not activate merely because the current directory came from an untrusted clone. Trust must be explicit, inspectable, revocable, path/canonical-identity aware, and non-interactive-safe. High-risk executable/authority configuration changes after trust must invalidate or re-confirm the relevant trust fingerprint rather than inheriting a permanent blanket approval.
+Project `.reason/config.json` may contain executable or authority-bearing acquisition configuration. Such settings must not activate merely because the current directory came from an untrusted clone. Trust must be explicit, inspectable, revocable, path/canonical-identity aware, and non-interactive-safe. High-risk executable/authority configuration changes after trust must invalidate or re-confirm the relevant trust fingerprint rather than inheriting a permanent blanket approval. `reason trust status/add/list/revoke`, canonical project identity, direct-executable SHA-256 binding, and a prohibition on project-owned `trusted_command` authority are implemented.
 
 ### Setup/auth umbrella — #356
 

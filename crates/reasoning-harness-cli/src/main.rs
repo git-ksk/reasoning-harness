@@ -1,4 +1,5 @@
 mod diagnostic_trace;
+mod project_trust;
 
 use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
@@ -1555,6 +1556,38 @@ enum SessionCommand {
     },
 }
 
+#[derive(Debug, Subcommand)]
+enum TrustCommand {
+    /// Inspect trust for the current project or an explicit project directory.
+    Status {
+        #[arg(long, value_name = "DIR")]
+        project: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// Trust the current executable/acquisition project configuration fingerprint.
+    Add {
+        #[arg(long, value_name = "DIR")]
+        project: Option<PathBuf>,
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// List persisted project trust records.
+    List {
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// Revoke trust for one project, or all persisted project trust records.
+    Revoke {
+        #[arg(long, value_name = "DIR", conflicts_with = "all")]
+        project: Option<PathBuf>,
+        #[arg(long)]
+        all: bool,
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct SessionRuntimeIdentity {
@@ -1618,6 +1651,11 @@ struct SessionOperationOutput {
 
 #[derive(Debug, Subcommand)]
 enum Command {
+    /// PRODUCT: Inspect, add, or revoke project configuration trust.
+    Trust {
+        #[command(subcommand)]
+        command: TrustCommand,
+    },
     /// PRODUCT: Persist and continue typed natural-language reasoning sessions.
     Session {
         #[command(subcommand)]
@@ -4350,6 +4388,96 @@ fn session_fact_evidence(turn_index: usize, index: usize, proposition: &Proposit
     }
 }
 
+fn run_trust(command: TrustCommand) -> Result<(), CliError> {
+    match command {
+        TrustCommand::Status { project, format } => {
+            let status = project_trust::status(project.as_deref())
+                .map_err(|error| CliError::new("project_trust", error))?;
+            emit_trust_status("status", &status, format)
+        }
+        TrustCommand::Add { project, format } => {
+            let status = project_trust::add(project.as_deref())
+                .map_err(|error| CliError::new("project_trust", error))?;
+            emit_trust_status("add", &status, format)
+        }
+        TrustCommand::List { format } => {
+            let list =
+                project_trust::list().map_err(|error| CliError::new("project_trust", error))?;
+            match format {
+                OutputFormat::Json => print_product_json("trust", &list).map_err(CliError::from),
+                OutputFormat::Human => {
+                    if list.projects.is_empty() {
+                        println!("No trusted projects.");
+                    } else {
+                        for record in &list.projects {
+                            println!("{}  {}", record.project_path, record.config_fingerprint);
+                        }
+                    }
+                    Ok(())
+                }
+            }
+        }
+        TrustCommand::Revoke {
+            project,
+            all,
+            format,
+        } => {
+            let revoked = project_trust::revoke(project.as_deref(), all)
+                .map_err(|error| CliError::new("project_trust", error))?;
+            match format {
+                OutputFormat::Json => print_product_json("trust", &revoked).map_err(CliError::from),
+                OutputFormat::Human => {
+                    if revoked.all {
+                        println!("Revoked {} project trust record(s).", revoked.revoked);
+                    } else if let Some(path) = &revoked.project_path {
+                        println!(
+                            "Revoked {} project trust record(s) for {}.",
+                            revoked.revoked, path
+                        );
+                    }
+                    Ok(())
+                }
+            }
+        }
+    }
+}
+
+fn emit_trust_status(
+    operation: &'static str,
+    status: &project_trust::ProjectTrustStatus,
+    format: OutputFormat,
+) -> Result<(), CliError> {
+    match format {
+        OutputFormat::Json => print_product_json("trust", status).map_err(CliError::from),
+        OutputFormat::Human => {
+            println!("Project: {}", status.project_path);
+            println!("Config: {}", status.config_path);
+            println!("State: {}", status.state);
+            if let Some(fingerprint) = &status.current_fingerprint {
+                println!("Fingerprint: {fingerprint}");
+            }
+            if !status.executable_programs.is_empty() {
+                println!("Executable/acquisition programs:");
+                for program in &status.executable_programs {
+                    println!("  {program}");
+                }
+            }
+            if operation == "add" && status.state == "trusted" {
+                println!("Project executable/acquisition configuration is trusted.");
+            } else if status.state == "not_required" {
+                println!(
+                    "This project config has no executable/network acquisition settings; trust is not required."
+                );
+            } else if status.state == "forbidden_authority" {
+                println!(
+                    "Project config contains trusted_command, which cannot be authorized by project trust."
+                );
+            }
+            Ok(())
+        }
+    }
+}
+
 async fn run_session(command: SessionCommand) -> Result<(), CliError> {
     match command {
         SessionCommand::Start { store, id, natural } => {
@@ -4711,6 +4839,18 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
 impl Cli {
     fn product_error_context(&self) -> Option<ProductErrorContext> {
         match &self.command {
+            Some(Command::Trust { command }) => {
+                let format = match command {
+                    TrustCommand::Status { format, .. }
+                    | TrustCommand::Add { format, .. }
+                    | TrustCommand::List { format }
+                    | TrustCommand::Revoke { format, .. } => *format,
+                };
+                Some(ProductErrorContext {
+                    command: "trust",
+                    json: format == OutputFormat::Json,
+                })
+            }
             Some(Command::Session { command }) => {
                 let json = match command {
                     SessionCommand::Start { natural, .. } => match natural.format {
@@ -4815,6 +4955,7 @@ async fn main() -> ExitCode {
 async fn run(cli: Cli) -> Result<(), CliError> {
     let Cli { natural, command } = cli;
     match command {
+        Some(Command::Trust { command }) => run_trust(command),
         Some(Command::Session { command }) => run_session(command).await,
         Some(Command::Run {
             input,
@@ -6470,7 +6611,7 @@ fn load_cli_config(explicit: Option<&PathBuf>) -> Result<LoadedCliConfig, String
     }
 
     if let Some(path) = project_config_path().filter(|path| path.is_file()) {
-        merge_config_file(&mut loaded, &path, "project")?;
+        project_trust::merge_project_config(&mut loaded, &path)?;
     }
 
     if let Some(path) = explicit {

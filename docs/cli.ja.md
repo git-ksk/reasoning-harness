@@ -152,6 +152,7 @@ live providerは候補を生成するだけです。その出力はtrusted evide
 - Google Gemini/AI Studio: `GEMINI_API_KEY`
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
 - GroqCloud: `GROQ_API_KEY`
+- GroqCloud: `GROQ_API_KEY`
 
 secretは`reason-config-v1`へ保存する設計ではありません。
 
@@ -310,6 +311,8 @@ user configは、`REASON_HOME` 設定時の `$REASON_HOME/config.json`、`$XDG_C
 
 `reason schema config` でcurrent schemaを確認できます。`--no-config` はuser/project configを無視するhermetic invocationで、明示的configがjob inputでない再現可能なCIに推奨します。`--config` と `--no-config` は相互排他的です。
 
+project configには追加のactivation boundaryがあります。通常のrun defaultだけを含むproject configはtrustなしで読めます。一方、`resolution.external_command`、`resolution.mcp_readonly`、`resolution.investigation`を含むproject overlayは、canonical projectとhigh-risk configを`reason trust add`で明示承認するまで全体をfail-closedします。`resolution.trusted_command`はproject configからは常に拒否します。`reason trust status|add|list|revoke`で確認・管理できます。詳細は[プロジェクトtrust](project-trust.ja.md)を参照してください。
+
 設定済みlive providerはdefault provider/model pairを供給できます。CLI `--provider` が設定providerを変更する場合、別provider用modelを誤って再利用しないよう `--model` も明示してください。explicit/configured modelがないlive providerはfail-closedします。
 
 secretは意図的に `reason-config-v1` のfieldではありません。
@@ -317,6 +320,7 @@ secretは意図的に `reason-config-v1` のfieldではありません。
 - Mistral: `MISTRAL_API_KEY`
 - Google: `GEMINI_API_KEY`
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
+- GroqCloud: `GROQ_API_KEY`
 
 config parserは `api_key` などのunknown secret-like fieldをrejectします。credentialはenvironment/provider-adapter inputであり、effective run configurationへserializeされません。
 

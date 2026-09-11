@@ -221,6 +221,8 @@ Use `reason schema config` for the current schema. `--no-config` ignores user/pr
 hermetic invocation, which is recommended in reproducible CI unless an explicit config is part of
 the job input. `--config` and `--no-config` are mutually exclusive.
 
+Project config has an additional activation boundary. A project config containing only safe run defaults can be read without trust; once it also contains `resolution.external_command`, `resolution.mcp_readonly`, or `resolution.investigation`, the project overlay fails closed until the exact canonical project/high-risk configuration is approved with `reason trust add`. `resolution.trusted_command` is never accepted from project config. Use `reason trust status|add|list|revoke` to inspect and manage this boundary; see [Project trust](project-trust.md).
+
 A configured live provider can supply the default provider/model pair. If a CLI `--provider` changes
 the configured provider, `--model` must also be supplied explicitly rather than accidentally reusing
 a model configured for another provider. A live provider with no explicit or configured model fails
