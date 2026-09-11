@@ -315,14 +315,14 @@ project configには追加のactivation boundaryがあります。通常のrun d
 
 設定済みlive providerはdefault provider/model pairを供給できます。CLI `--provider` が設定providerを変更する場合、別provider用modelを誤って再利用しないよう `--model` も明示してください。explicit/configured modelがないlive providerはfail-closedします。
 
-secretは意図的に `reason-config-v1` のfieldではありません。
+secretは意図的に `reason-config-v1` のfieldではありません。Reason CLI 0.5.0開発ラインでは、environment variableを明示overrideとして最優先し、そのvariableが存在しない場合だけOS-native credential storeを使います。
 
 - Mistral: `MISTRAL_API_KEY`
-- Google: `GEMINI_API_KEY`
+- Google / Gemma: `GEMINI_API_KEY`
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
 - GroqCloud: `GROQ_API_KEY`
 
-config parserは `api_key` などのunknown secret-like fieldをrejectします。credentialはenvironment/provider-adapter inputであり、effective run configurationへserializeされません。
+config parserは `api_key` などのunknown secret-like fieldをrejectします。credentialはeffective run configuration、session、evidence、authority stateへserializeされません。OS credential serviceが使えない場合も平文fallbackはしません。詳細は[プロバイダー認証情報の安全な保存](secure-credentials.ja.md)を参照してください。
 
 ## セマンティックランタイムの詳細
 

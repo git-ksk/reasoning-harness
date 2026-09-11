@@ -46,6 +46,13 @@ impl GroqAdapter {
     pub fn from_env(model: impl Into<String>) -> Result<Self, ModelError> {
         let api_key = env::var("GROQ_API_KEY")
             .map_err(|_| ModelError::new(ModelErrorKind::Credentials, "GROQ_API_KEY is not set"))?;
+        Self::from_api_key_and_env(api_key, model)
+    }
+
+    pub fn from_api_key_and_env(
+        api_key: impl Into<String>,
+        model: impl Into<String>,
+    ) -> Result<Self, ModelError> {
         let min_request_interval = env_u64(MIN_REQUEST_INTERVAL_ENV)?
             .map(Duration::from_millis)
             .unwrap_or(Duration::ZERO);

@@ -1,5 +1,6 @@
 mod diagnostic_trace;
 mod project_trust;
+mod secure_credentials;
 
 use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
@@ -481,18 +482,44 @@ enum LiveGenerator {
     Nvidia(NvidiaAdapter),
 }
 
+struct LiveGeneratorInitError {
+    failure_class: &'static str,
+    message: String,
+}
+
 impl LiveGenerator {
-    fn try_from_provider(provider: Provider, model: &str) -> Result<Self, ModelError> {
-        match provider {
-            Provider::Mistral => MistralAdapter::from_env(model).map(Self::Mistral),
-            Provider::Google | Provider::Gemma => GoogleAdapter::from_env(model).map(Self::Google),
-            Provider::Groq => GroqAdapter::from_env(model).map(Self::Groq),
-            Provider::Nvidia => NvidiaAdapter::from_env(model).map(Self::Nvidia),
-        }
+    fn try_from_provider(provider: Provider, model: &str) -> Result<Self, LiveGeneratorInitError> {
+        let credential =
+            secure_credentials::resolve_provider_credential(provider).map_err(|error| {
+                LiveGeneratorInitError {
+                    failure_class: error.failure_class(),
+                    message: error.message,
+                }
+            })?;
+        let _credential_source = credential.source;
+        let result = match provider {
+            Provider::Mistral => {
+                MistralAdapter::new(credential.expose_secret(), model).map(Self::Mistral)
+            }
+            Provider::Google | Provider::Gemma => {
+                GoogleAdapter::from_api_key_and_env(credential.expose_secret(), model)
+                    .map(Self::Google)
+            }
+            Provider::Groq => {
+                GroqAdapter::from_api_key_and_env(credential.expose_secret(), model).map(Self::Groq)
+            }
+            Provider::Nvidia => {
+                NvidiaAdapter::new(credential.expose_secret(), model).map(Self::Nvidia)
+            }
+        };
+        result.map_err(|error| LiveGeneratorInitError {
+            failure_class: model_error_class(error.kind),
+            message: error.to_string(),
+        })
     }
 
     fn from_provider(provider: Provider, model: &str) -> Result<Self, String> {
-        Self::try_from_provider(provider, model).map_err(|error| error.to_string())
+        Self::try_from_provider(provider, model).map_err(|error| error.message)
     }
 
     fn adapter(&self) -> &dyn ModelAdapter {
@@ -3156,7 +3183,7 @@ async fn execute_natural(
         .as_ref()
         .map(|_| DiagnosticTraceRecorder::new(provider_name(provider), &model, args.seed));
     let generator = LiveGenerator::try_from_provider(provider, &model)
-        .map_err(|error| CliError::new(model_error_class(error.kind), error.to_string()))?;
+        .map_err(|error| CliError::new(error.failure_class, error.message))?;
     let initial_generation_phase = DiagnosticPhase::new("initial_generation", None);
     let (mut candidate, generation) = generator
         .generate_traced(
@@ -5008,10 +5035,8 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                         .model
                         .as_deref()
                         .expect("live run config validates model presence");
-                    let generator =
-                        LiveGenerator::try_from_provider(provider, model).map_err(|error| {
-                            CliError::new(model_error_class(error.kind), error.to_string())
-                        })?;
+                    let generator = LiveGenerator::try_from_provider(provider, model)
+                        .map_err(|error| CliError::new(error.failure_class, error.message))?;
                     let (candidate, observation) = generator
                         .generate(&input, resolved.max_tokens, seed, model)
                         .await
@@ -5124,20 +5149,19 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                         configuration,
                         observation: None,
                         operational_failure: Some(SemanticCheckFailure {
-                            failure_class: model_error_class(error.kind),
-                            message: error.to_string(),
+                            failure_class: error.failure_class,
+                            message: error.message.clone(),
                         }),
                     };
                     match format {
                         OutputFormat::Human => eprintln!(
                             "semantic-check failed: class={} {}",
-                            model_error_class(error.kind),
-                            error
+                            error.failure_class, error.message
                         ),
                         OutputFormat::Json => print_product_json("semantic-check", &output)?,
                     }
                     return Err(CliError::emitted(
-                        model_error_class(error.kind),
+                        error.failure_class,
                         "semantic-check operational failure",
                     ));
                 }

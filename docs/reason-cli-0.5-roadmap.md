@@ -89,7 +89,7 @@ Project `.reason/config.json` may contain executable or authority-bearing acquis
 
 ### Setup/auth umbrella — #356
 
-- **#361 P0:** OS-native secure credential backends: macOS Keychain, Windows Credential Manager, Linux Secret Service/keyring where available. No silent plaintext fallback. Secret entry must avoid argv/shell-history exposure.
+- **#361 P0 — completed:** OS-native secure credential backends: macOS Keychain, Windows Credential Manager, Linux Secret Service/keyring where available. No silent plaintext fallback. Secret entry must avoid argv/shell-history exposure.
 - **#362 P0:** `reason auth login/list/status/logout`, secure replacement/rotation, and a storage identity that does not preclude future named accounts.
 - **#367 P0:** provider/model discovery and default switching; no silent model fallback.
 - **#363 P0:** `reason setup` wizard combining provider choice, secure auth, model selection, non-secret defaults, bounded readiness check, billable-check disclosure where applicable, and a first command.
