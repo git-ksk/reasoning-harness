@@ -19,6 +19,7 @@ Reason CLI 0.5.0 development builds an everyday terminal surface without changin
 - `/files` lists persisted untrusted context snapshots active in the managed session.
 - `/status` shows verified facts, unresolved/qualified items, typed acquisition notes, and status from the last completed turn.
 - `/evidence` shows supporting evidence provenance and separately labeled untrusted-context sources from the last completed turn.
+- `/usage` shows cumulative tracked provider/resolver usage for the managed session; configured budgets apply across turns and resumes.
 - `/clear` stops carrying prior conversation/context into later prompts. Existing typed turn history is not deleted.
 - `/help` shows the interactive commands.
 - `/exit` or `/quit` exits.

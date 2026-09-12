@@ -9,6 +9,7 @@ mod model_catalog;
 mod project_trust;
 mod secure_credentials;
 mod setup;
+mod usage_budget;
 
 use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
@@ -163,6 +164,24 @@ struct NaturalArgs {
     /// Maximum tokens for candidate generation and final rendering.
     #[arg(long)]
     max_tokens: Option<u32>,
+    /// Maximum logical model operations across this run/session.
+    #[arg(long, value_name = "CALLS")]
+    max_model_calls: Option<u64>,
+    /// Maximum cumulative provider-reported output tokens across this run/session.
+    #[arg(long, value_name = "TOKENS")]
+    max_output_tokens: Option<u64>,
+    /// Maximum cumulative provider-reported total tokens across this run/session.
+    #[arg(long, value_name = "TOKENS")]
+    max_total_tokens: Option<u64>,
+    /// Explicit input-token USD price per million tokens; requires output price and pricing source.
+    #[arg(long, value_name = "USD_PER_MILLION")]
+    input_cost_per_million: Option<f64>,
+    /// Explicit output-token USD price per million tokens; requires input price and pricing source.
+    #[arg(long, value_name = "USD_PER_MILLION")]
+    output_cost_per_million: Option<f64>,
+    /// Operator-supplied provenance label for explicit model pricing.
+    #[arg(long, value_name = "SOURCE")]
+    pricing_source: Option<String>,
     /// Optional provider random seed.
     #[arg(long)]
     seed: Option<u64>,
@@ -187,6 +206,9 @@ struct NaturalArgs {
     /// In-memory, untrusted conversation context used only by the interactive product path.
     #[arg(skip)]
     interactive_context: Vec<String>,
+    /// Persisted/in-memory cumulative managed-session usage. Product-only; never parsed from CLI.
+    #[arg(skip)]
+    session_usage_baseline: Option<usage_budget::UsageTotals>,
 }
 
 #[derive(
@@ -271,6 +293,12 @@ struct RunFileConfig {
     provider: Option<Provider>,
     model: Option<String>,
     max_tokens: Option<u32>,
+    max_model_calls: Option<u64>,
+    max_output_tokens: Option<u64>,
+    max_total_tokens: Option<u64>,
+    input_cost_per_million: Option<f64>,
+    output_cost_per_million: Option<f64>,
+    pricing_source: Option<String>,
     format: Option<OutputFormat>,
 }
 
@@ -1528,8 +1556,13 @@ fn semantic_runtime_error_class(error: &SemanticRuntimeError) -> &'static str {
 
 fn format_generation_failure(failure: &GenerationFailure) -> String {
     format!(
-        "provider={} model={} failure_class={} latency_ms={}: {}",
-        failure.provider, failure.model, failure.failure_class, failure.latency_ms, failure.message
+        "provider={} model={} failure_class={} provider_attempts={} latency_ms={}: {}",
+        failure.provider,
+        failure.model,
+        failure.failure_class,
+        failure.provider_attempts,
+        failure.latency_ms,
+        failure.message
     )
 }
 
@@ -2071,6 +2104,7 @@ struct NaturalOutput {
     context: NaturalContextObservation,
     candidate: ReasoningCandidate,
     generation: GenerationObservation,
+    usage: usage_budget::UsageReport,
     initial_outcome: HarnessOutcome,
     final_outcome: HarnessOutcome,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -2608,6 +2642,7 @@ fn input_from_artifact(artifact: &ReasoningArtifact) -> HarnessInput {
 
 fn print_natural_human(output: &NaturalOutput) {
     human_presentation::from_output(output).print_full();
+    usage_budget::print_human(&output.usage);
     if let Some(failure) = &output.rendering_failure {
         eprintln!(
             "[reason] natural renderer fallback: class={} {}",
@@ -2638,6 +2673,7 @@ struct NaturalAnswerSafetyCall<'a> {
     max_tokens: u32,
     seed: Option<u64>,
     render_round: usize,
+    usage: &'a mut usage_budget::UsageTracker,
 }
 
 async fn apply_natural_answer_safety(
@@ -2653,6 +2689,7 @@ async fn apply_natural_answer_safety(
         max_tokens,
         seed,
         render_round,
+        usage,
     } = call;
     if profile == AnswerSafetyProfile::Baseline
         || !matches!(
@@ -2674,13 +2711,14 @@ async fn apply_natural_answer_safety(
     let mut blocked = Vec::new();
     for (index, target) in targets.iter().enumerate() {
         let target_seed = seed.and_then(|seed| seed.checked_add(index as u64));
+        let safety_max_tokens = usage.cap_next_model_tokens(max_tokens.min(128))?;
         let observation = run_answer_safety_gate(
             profile,
             generator.adapter(),
             model,
             target,
             artifact,
-            max_tokens.min(128),
+            safety_max_tokens,
             target_seed,
         )
         .await
@@ -2696,10 +2734,12 @@ async fn apply_natural_answer_safety(
         if observation.disposition == AnswerSafetyDisposition::ForceVerification {
             blocked.push(target.clone());
         }
-        observations.push(NaturalSafetyObservation {
+        let recorded = NaturalSafetyObservation {
             render_round,
             observation,
-        });
+        };
+        usage.record_safety(&recorded)?;
+        observations.push(recorded);
     }
 
     if !blocked.is_empty() {
@@ -2803,6 +2843,7 @@ struct NaturalInvestigationCall<'a> {
     model: &'a str,
     max_tokens: u32,
     seed: Option<u64>,
+    usage: &'a mut usage_budget::UsageTracker,
 }
 
 async fn run_natural_investigation(
@@ -2819,6 +2860,7 @@ async fn run_natural_investigation(
         model,
         max_tokens,
         seed,
+        usage,
     } = call;
     let descriptors = config
         .capabilities
@@ -2834,11 +2876,12 @@ async fn run_natural_investigation(
         plan_rejection: None,
     };
 
+    let plan_max_tokens = usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
     let (proposal, plan_generation) = match generator
         .plan_investigation_traced(
             task,
             &descriptors,
-            config.planner_max_tokens.min(max_tokens),
+            plan_max_tokens,
             seed,
             model,
             DiagnosticTraceCall {
@@ -2850,6 +2893,7 @@ async fn run_natural_investigation(
     {
         Ok(result) => result,
         Err(failure) => {
+            usage.record_failure(&failure)?;
             observation.generation_failure = Some(failure);
             return Ok(NaturalInvestigationRun {
                 candidate,
@@ -2859,6 +2903,7 @@ async fn run_natural_investigation(
             });
         }
     };
+    usage.record_generation(&plan_generation)?;
     observation.plan_generation = Some(plan_generation);
     let targets = match admit_investigation_plan(proposal, &config.policy) {
         Ok(targets) => targets,
@@ -2907,11 +2952,13 @@ async fn run_natural_investigation(
             } else {
                 state.note_planner_call();
                 let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
+                let action_max_tokens =
+                    usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
                 let (proposal, action_generation) = match generator
                     .choose_investigation_action_traced(
                         task,
                         state.telemetry(),
-                        config.planner_max_tokens.min(max_tokens),
+                        action_max_tokens,
                         action_seed,
                         model,
                         DiagnosticTraceCall {
@@ -2923,11 +2970,13 @@ async fn run_natural_investigation(
                 {
                     Ok(result) => result,
                     Err(failure) => {
+                        usage.record_failure(&failure)?;
                         state.stop(InvestigationStopReason::OperationalTerminal);
                         observation.generation_failure = Some(failure);
                         break;
                     }
                 };
+                usage.record_generation(&action_generation)?;
                 observation.action_generations.push(action_generation);
                 proposal
             };
@@ -2976,6 +3025,7 @@ async fn run_natural_investigation(
             current_candidate.clone(),
             request,
         )?;
+        usage.record_resolution(&acquisition);
         let (mut status, admitted_evidence) = investigation_attempt_status(&acquisition);
         if let Some(trace) = trace.as_deref_mut() {
             let admitted_evidence_ids = acquisition
@@ -3008,10 +3058,11 @@ async fn run_natural_investigation(
                 .and_then(|seed| seed.checked_add(10_000_u64.saturating_add(round_index as u64)));
             let regeneration_phase =
                 DiagnosticPhase::new("post_investigation_regeneration", Some(round_index));
+            let regeneration_max_tokens = usage.cap_next_model_tokens(max_tokens)?;
             match generator
                 .generate_traced(
                     &current_input,
-                    max_tokens,
+                    regeneration_max_tokens,
                     regeneration_seed,
                     model,
                     DiagnosticTraceCall {
@@ -3022,6 +3073,7 @@ async fn run_natural_investigation(
                 .await
             {
                 Ok((regenerated, generation)) => {
+                    usage.record_generation(&generation)?;
                     observation.candidate_regenerations.push(generation);
                     current_candidate = regenerated;
                     if let Some(trace) = trace.as_deref_mut() {
@@ -3046,6 +3098,7 @@ async fn run_natural_investigation(
                     };
                 }
                 Err(failure) => {
+                    usage.record_failure(&failure)?;
                     state.stop(InvestigationStopReason::OperationalTerminal);
                     observation.generation_failure = Some(failure);
                 }
@@ -3200,6 +3253,8 @@ async fn execute_natural(
             .iter()
             .any(|capability| capability.admission.is_some())
     });
+    let usage_budget = resolve_usage_budget(&args, &loaded_config)
+        .map_err(|error| CliError::new("configuration", error))?;
     let configured_resolver_modes = usize::from(!args.resolver_fact.is_empty())
         + usize::from(external_resolver_config.is_some())
         + usize::from(mcp_resolver_config.is_some())
@@ -3249,11 +3304,14 @@ async fn execute_natural(
         .map(|_| DiagnosticTraceRecorder::new(provider_name(provider), &model, args.seed));
     let generator = LiveGenerator::try_from_provider(provider, &model)
         .map_err(|error| CliError::new(error.failure_class, error.message))?;
+    let mut usage_tracker =
+        usage_budget::UsageTracker::new(usage_budget, args.session_usage_baseline.clone())?;
     let initial_generation_phase = DiagnosticPhase::new("initial_generation", None);
+    let initial_max_tokens = usage_tracker.cap_next_model_tokens(resolved.max_tokens)?;
     let (mut candidate, generation) = generator
         .generate_traced(
             &built.input,
-            resolved.max_tokens,
+            initial_max_tokens,
             args.seed,
             &model,
             DiagnosticTraceCall {
@@ -3265,6 +3323,7 @@ async fn execute_natural(
         .map_err(|failure| {
             CliError::new(failure.failure_class, format_generation_failure(&failure))
         })?;
+    usage_tracker.record_generation(&generation)?;
     if let Some(trace) = diagnostic_trace.as_mut() {
         trace.record_candidate(initial_generation_phase, &candidate);
     }
@@ -3302,6 +3361,7 @@ async fn execute_natural(
                 model: &model,
                 max_tokens: resolved.max_tokens,
                 seed: args.seed,
+                usage: &mut usage_tracker,
             })
             .await?;
             candidate = run.candidate;
@@ -3337,6 +3397,7 @@ async fn execute_natural(
                 None
             };
             if let Some(round) = round {
+                usage_tracker.record_resolution(&round);
                 final_artifact = round.final_artifact.clone();
                 final_verdict = round.final_verdict;
                 resolution_rounds.push(round);
@@ -3351,6 +3412,7 @@ async fn execute_natural(
                 verifier,
                 args.max_resolution_attempts,
             )?;
+            usage_tracker.record_resolution(&round);
             final_artifact = round.final_artifact.clone();
             final_verdict = round.final_verdict;
             resolution_rounds.push(round);
@@ -3375,6 +3437,7 @@ async fn execute_natural(
     loop {
         render_round += 1;
         let final_render_phase = DiagnosticPhase::new("final_render", Some(render_round));
+        let render_max_tokens = usage_tracker.cap_next_model_tokens(resolved.max_tokens)?;
         let mut rendered = match generator
             .render_final_traced(
                 FinalRenderCall {
@@ -3383,7 +3446,7 @@ async fn execute_natural(
                     task: &task,
                     artifact: &final_artifact,
                     verdict: final_verdict,
-                    max_tokens: resolved.max_tokens,
+                    max_tokens: render_max_tokens,
                     seed: args.seed,
                 },
                 DiagnosticTraceCall {
@@ -3394,6 +3457,7 @@ async fn execute_natural(
             .await
         {
             Ok((answer, observation)) => {
+                usage_tracker.record_generation(&observation)?;
                 rendering.push(observation);
                 if let Some(trace) = diagnostic_trace.as_mut() {
                     trace.record_final_render(final_render_phase, render_round, "model", &answer);
@@ -3401,6 +3465,7 @@ async fn execute_natural(
                 answer
             }
             Err(failure) => {
+                usage_tracker.record_failure(&failure)?;
                 rendering_failure = Some(failure);
                 let answer = canonical_verified_target_answer(
                     &final_artifact,
@@ -3557,6 +3622,7 @@ async fn execute_natural(
             max_tokens: resolved.max_tokens,
             seed: args.seed,
             render_round,
+            usage: &mut usage_tracker,
         })
         .await?;
         finalization = gated;
@@ -3626,6 +3692,7 @@ async fn execute_natural(
                 args.max_resolution_attempts,
             )?
         };
+        usage_tracker.record_resolution(&round);
         final_artifact = round.final_artifact.clone();
         final_verdict = round.final_verdict;
         resolution_rounds.push(round);
@@ -3681,6 +3748,7 @@ async fn execute_natural(
         context: built.context,
         candidate,
         generation,
+        usage: usage_tracker.report(),
         initial_outcome,
         final_outcome: HarnessOutcome {
             verdict: final_verdict,
@@ -4348,6 +4416,12 @@ fn continuation_args(
         provider: Some(session.runtime.provider),
         model: Some(session.runtime.model.clone()),
         max_tokens: Some(session.runtime.max_tokens),
+        max_model_calls: None,
+        max_output_tokens: None,
+        max_total_tokens: None,
+        input_cost_per_million: None,
+        output_cost_per_million: None,
+        pricing_source: None,
         seed,
         safety_profile: session.runtime.safety_profile,
         config: None,
@@ -4356,6 +4430,7 @@ fn continuation_args(
         ephemeral: false,
         diagnostic_trace: None,
         interactive_context: vec![],
+        session_usage_baseline: None,
     }
 }
 
@@ -6985,6 +7060,24 @@ fn merge_cli_config(base: &mut CliFileConfig, overlay: CliFileConfig) {
     if overlay.run.max_tokens.is_some() {
         base.run.max_tokens = overlay.run.max_tokens;
     }
+    if overlay.run.max_model_calls.is_some() {
+        base.run.max_model_calls = overlay.run.max_model_calls;
+    }
+    if overlay.run.max_output_tokens.is_some() {
+        base.run.max_output_tokens = overlay.run.max_output_tokens;
+    }
+    if overlay.run.max_total_tokens.is_some() {
+        base.run.max_total_tokens = overlay.run.max_total_tokens;
+    }
+    if overlay.run.input_cost_per_million.is_some() {
+        base.run.input_cost_per_million = overlay.run.input_cost_per_million;
+    }
+    if overlay.run.output_cost_per_million.is_some() {
+        base.run.output_cost_per_million = overlay.run.output_cost_per_million;
+    }
+    if overlay.run.pricing_source.is_some() {
+        base.run.pricing_source = overlay.run.pricing_source;
+    }
     if overlay.run.format.is_some() {
         base.run.format = overlay.run.format;
     }
@@ -7682,6 +7775,31 @@ fn prepare_external_resolution_input(
     Ok(input)
 }
 
+fn resolve_usage_budget(
+    args: &NaturalArgs,
+    loaded: &LoadedCliConfig,
+) -> Result<usage_budget::UsageBudget, String> {
+    let budget = usage_budget::UsageBudget {
+        max_model_calls: args.max_model_calls.or(loaded.config.run.max_model_calls),
+        max_output_tokens: args
+            .max_output_tokens
+            .or(loaded.config.run.max_output_tokens),
+        max_total_tokens: args.max_total_tokens.or(loaded.config.run.max_total_tokens),
+        input_cost_per_million: args
+            .input_cost_per_million
+            .or(loaded.config.run.input_cost_per_million),
+        output_cost_per_million: args
+            .output_cost_per_million
+            .or(loaded.config.run.output_cost_per_million),
+        pricing_source: args
+            .pricing_source
+            .clone()
+            .or_else(|| loaded.config.run.pricing_source.clone()),
+    };
+    budget.validate()?;
+    Ok(budget)
+}
+
 fn resolve_run_config(
     has_candidate: bool,
     cli_provider: Option<Provider>,
@@ -7992,6 +8110,9 @@ mod candidate_json_tests {
                 provider_attempts: 1,
                 cost_usd: None,
             },
+            usage: usage_budget::UsageTracker::new(usage_budget::UsageBudget::default(), None)
+                .unwrap()
+                .report(),
             initial_outcome: initial,
             final_outcome,
             resolution_rounds: vec![],
@@ -8085,6 +8206,7 @@ mod candidate_json_tests {
                 model: Some("base-model".into()),
                 max_tokens: Some(128),
                 format: None,
+                ..Default::default()
             },
             resolution: ResolutionFileConfig::default(),
         };
@@ -8097,6 +8219,7 @@ mod candidate_json_tests {
                     model: Some("override-model".into()),
                     max_tokens: None,
                     format: Some(OutputFormat::Json),
+                    ..Default::default()
                 },
                 resolution: ResolutionFileConfig {
                     external_command: Some(ExternalCommandResolverFileConfig {
@@ -8137,6 +8260,7 @@ mod candidate_json_tests {
                         model: Some("gemini-test".into()),
                         max_tokens: Some(256),
                         format: None,
+                        ..Default::default()
                     },
                     resolution: ResolutionFileConfig::default(),
                 },
@@ -8147,6 +8271,62 @@ mod candidate_json_tests {
         assert_eq!(resolved.provider, None);
         assert_eq!(resolved.format, OutputFormat::Json);
         assert_eq!(resolved.config_sources, vec!["user"]);
+    }
+
+    #[test]
+    fn config_schema_accepts_usage_budget_fields_without_secret_surface() {
+        let config: CliFileConfig = serde_json::from_str(
+            r#"{
+              "schema_version":"reason-config-v1",
+              "run":{
+                "max_model_calls":5,
+                "max_output_tokens":2048,
+                "max_total_tokens":8192,
+                "input_cost_per_million":0.5,
+                "output_cost_per_million":1.5,
+                "pricing_source":"operator-sheet"
+              }
+            }"#,
+        )
+        .unwrap();
+        assert_eq!(config.run.max_model_calls, Some(5));
+        assert_eq!(config.run.max_output_tokens, Some(2048));
+        assert_eq!(config.run.max_total_tokens, Some(8192));
+        assert_eq!(config.run.pricing_source.as_deref(), Some("operator-sheet"));
+    }
+
+    #[test]
+    fn usage_budget_config_is_fieldwise_and_requires_pricing_provenance() {
+        let args = NaturalArgs {
+            max_model_calls: Some(3),
+            ..Default::default()
+        };
+        let loaded = LoadedCliConfig {
+            config: CliFileConfig {
+                schema_version: CLI_CONFIG_CONTRACT_ID.into(),
+                run: RunFileConfig {
+                    max_model_calls: Some(9),
+                    max_output_tokens: Some(500),
+                    input_cost_per_million: Some(1.0),
+                    output_cost_per_million: Some(2.0),
+                    pricing_source: Some("operator-sheet".into()),
+                    ..Default::default()
+                },
+                resolution: ResolutionFileConfig::default(),
+            },
+            sources: vec!["user"],
+        };
+        let budget = resolve_usage_budget(&args, &loaded).unwrap();
+        assert_eq!(budget.max_model_calls, Some(3));
+        assert_eq!(budget.max_output_tokens, Some(500));
+        assert_eq!(budget.pricing_source.as_deref(), Some("operator-sheet"));
+
+        let invalid = NaturalArgs {
+            input_cost_per_million: Some(1.0),
+            output_cost_per_million: Some(2.0),
+            ..Default::default()
+        };
+        assert!(resolve_usage_budget(&invalid, &LoadedCliConfig::default()).is_err());
     }
 
     #[test]
@@ -8179,6 +8359,7 @@ mod candidate_json_tests {
                         model: Some("ministral-8b-latest".into()),
                         max_tokens: None,
                         format: None,
+                        ..Default::default()
                     },
                     resolution: ResolutionFileConfig::default(),
                 },
@@ -9414,6 +9595,36 @@ mod candidate_json_tests {
         assert_eq!(cli.natural.provider, Some(Provider::Mistral));
         assert_eq!(cli.natural.fact, vec!["service.region=us-east-1"]);
         assert_eq!(cli.natural.safety_profile, AnswerSafetyProfileArg::Current);
+    }
+
+    #[test]
+    fn parses_provider_neutral_usage_budget_and_pricing_flags() {
+        let cli = Cli::try_parse_from([
+            "reason",
+            "bounded task",
+            "--max-model-calls",
+            "4",
+            "--max-output-tokens",
+            "1024",
+            "--max-total-tokens",
+            "4096",
+            "--input-cost-per-million",
+            "0.5",
+            "--output-cost-per-million",
+            "1.5",
+            "--pricing-source",
+            "operator-price-sheet-2026-09-12",
+        ])
+        .unwrap();
+        assert_eq!(cli.natural.max_model_calls, Some(4));
+        assert_eq!(cli.natural.max_output_tokens, Some(1024));
+        assert_eq!(cli.natural.max_total_tokens, Some(4096));
+        assert_eq!(cli.natural.input_cost_per_million, Some(0.5));
+        assert_eq!(cli.natural.output_cost_per_million, Some(1.5));
+        assert_eq!(
+            cli.natural.pricing_source.as_deref(),
+            Some("operator-price-sheet-2026-09-12")
+        );
     }
 
     #[test]

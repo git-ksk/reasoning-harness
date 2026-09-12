@@ -226,6 +226,7 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 | `reason schema` | versioned machine contractの確認。 |
 `/add`、multiline input、TTY/JSON dispatch、privacy boundaryを含むinteractive REPLの詳細は[対話型ターミナルUX](docs/reason-interactive.ja.md)を参照してください。
 verified fact、uncertainty、evidence provenanceを示すhuman outputは[Human answer presentation](docs/reason-human-output.ja.md)を参照してください。
+provider usage、`/usage`、session累積accounting、hard budget guardは[Provider usage / budget guard](docs/reason-usage-budget.ja.md)を参照してください。
 managed sessionのlock、optimistic concurrency、crash recovery、rollback compatibilityは[Managed session durability](docs/reason-managed-sessions.ja.md)を参照してください。
 local storage、ephemeral mode、retention/purge、uninstall、outbound-data boundaryは[Local privacy / retention](docs/reason-local-privacy.ja.md)を参照してください。
 
