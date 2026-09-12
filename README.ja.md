@@ -209,7 +209,8 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 
 | Command | 用途 |
 | --- | --- |
-| `reason` | Reason CLI 0.5.0開発ライン: TTY限定interactive REPLを起動。JSON/non-TTYはnon-interactiveのまま。 |
+| `reason` | Reason CLI 0.5.0開発ライン: TTY限定managed interactive sessionを起動。JSON/non-TTYはnon-interactiveのまま。 |
+| `reason -c` / `reason -r [SESSION]` | 最新project sessionをcontinue、またはbacking file pathを意識せずmanaged sessionをresume/pick。 |
 | `reason "TASK"` | 人が直接使う自然文path。 |
 | `reason setup` | Reason CLI 0.5.0開発ライン: provider / credential / model default / readinessを初回設定。 |
 | `reason update` / `reason update --rollback VERSION` | Reason CLI 0.5.0開発ライン: provenance検証済みupdateと明示rollback。 |
@@ -217,7 +218,8 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 | `reason auth ...` | Reason CLI 0.5.0開発ライン: provider credentialの安全な追加・確認・rotation・削除。 |
 | `reason models [provider]` | Reason CLI 0.5.0開発ライン: curated model catalog、compatibility、credential readiness、current defaultを確認。 |
 | `reason model set <provider> <model>` | Reason CLI 0.5.0開発ライン: silent fallbackなしでgeneral-use provider/model defaultを保存。 |
-| `reason session ...` | sessionの保存・確認・追加・訂正・resume・fork・close。 |
+| `reason session list` | managed interactive sessionをhuman/JSONで一覧化。 |
+| `reason session ... --store PATH` | 低レベルtyped session互換surface: 明示session fileの保存・確認・追加・訂正・resume・fork・close。 |
 | `reason run` | Application / CI統合、live candidate生成。 |
 | `reason verify` | materialize済み`ReasoningArtifact`のdeterministic validation。 |
 | `reason semantic-check` | soft semantic diagnostic。最終authorityは持たない。 |

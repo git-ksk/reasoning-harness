@@ -2,6 +2,7 @@ mod auth;
 mod diagnostic_trace;
 mod interactive;
 mod lifecycle;
+mod managed_session;
 mod model_catalog;
 mod project_trust;
 mod secure_credentials;
@@ -95,6 +96,19 @@ const MAX_CONTEXT_TOTAL_BYTES: usize = 4 * 1024 * 1024;
     subcommand_precedence_over_arg = true
 )]
 struct Cli {
+    /// Continue the most recently updated compatible managed session for the current project.
+    #[arg(short = 'c', long = "continue", conflicts_with = "resume")]
+    continue_session: bool,
+    /// Resume a managed session by id. Omit SESSION on a human TTY to choose from a picker.
+    #[arg(
+        short = 'r',
+        long = "resume",
+        value_name = "SESSION",
+        num_args = 0..=1,
+        default_missing_value = "",
+        conflicts_with = "continue_session"
+    )]
+    resume: Option<String>,
     #[command(flatten)]
     natural: NaturalArgs,
     #[command(subcommand)]
@@ -1520,6 +1534,11 @@ fn parse_candidate_json(text: &str) -> Result<(ReasoningCandidate, bool), serde_
 
 #[derive(Debug, Subcommand)]
 enum SessionCommand {
+    /// List managed interactive sessions without exposing their backing file paths.
+    List {
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
     /// Start a persisted natural-language reasoning session and checkpoint it after the first turn.
     Start {
         #[arg(long, value_name = "PATH")]
@@ -4566,6 +4585,30 @@ fn emit_trust_status(
 
 async fn run_session(command: SessionCommand) -> Result<(), CliError> {
     match command {
+        SessionCommand::List { format } => {
+            let output = managed_session::list()?;
+            match format {
+                OutputFormat::Json => {
+                    print_product_json("session", &output).map_err(CliError::from)
+                }
+                OutputFormat::Human => {
+                    if output.sessions.is_empty() {
+                        println!("No managed sessions.");
+                    } else {
+                        for session in output.sessions {
+                            println!(
+                                "{}  turns={}  {}  {}",
+                                session.short_id,
+                                session.turns,
+                                session.title,
+                                session.project_path
+                            );
+                        }
+                    }
+                    Ok(())
+                }
+            }
+        }
         SessionCommand::Start { store, id, natural } => {
             if store.exists() {
                 return Err(CliError::new(
@@ -4971,7 +5014,8 @@ impl Cli {
                             .is_some_and(|format| format == OutputFormat::Json),
                         None => false,
                     },
-                    SessionCommand::Inspect { format, .. }
+                    SessionCommand::List { format, .. }
+                    | SessionCommand::Inspect { format, .. }
                     | SessionCommand::Resume { format, .. }
                     | SessionCommand::Add { format, .. }
                     | SessionCommand::Correct { format, .. }
@@ -5063,7 +5107,25 @@ async fn main() -> ExitCode {
 }
 
 async fn run(cli: Cli) -> Result<(), CliError> {
-    let Cli { natural, command } = cli;
+    let Cli {
+        natural,
+        command,
+        continue_session,
+        resume,
+    } = cli;
+    let managed_resume_requested = continue_session || resume.is_some();
+    if managed_resume_requested
+        && (command.is_some()
+            || natural
+                .task
+                .as_deref()
+                .is_some_and(|task| !task.trim().is_empty()))
+    {
+        return Err(CliError::new(
+            "input",
+            "-c/--continue and -r/--resume are interactive session selectors; do not combine them with TASK or a structured subcommand",
+        ));
+    }
     match command {
         Some(Command::Auth { command }) => auth::run(command),
         Some(Command::Setup(args)) => setup::run(args).await,
@@ -5489,7 +5551,12 @@ async fn run(cli: Cli) -> Result<(), CliError> {
         }
         None => {
             if interactive::should_start(&natural, io::stdin().is_terminal())? {
-                interactive::run(natural).await
+                interactive::run(natural, continue_session, resume).await
+            } else if managed_resume_requested {
+                Err(CliError::new(
+                    "interactive_required",
+                    "managed continuation/resume requires a human TTY with human output; use `reason session list --format json` for non-interactive discovery",
+                ))
             } else {
                 run_natural(natural).await
             }
@@ -9166,6 +9233,30 @@ mod candidate_json_tests {
             Some(Command::EvalJudges { concurrency, .. }) => assert_eq!(concurrency, 4),
             _ => panic!("expected eval-judges command"),
         }
+    }
+
+    #[test]
+    fn parses_managed_session_continue_resume_and_picker_flags() {
+        let continued = Cli::try_parse_from(["reason", "-c"]).unwrap();
+        assert!(continued.continue_session);
+        assert!(continued.resume.is_none());
+        let resumed = Cli::try_parse_from(["reason", "-r", "abc123"]).unwrap();
+        assert_eq!(resumed.resume.as_deref(), Some("abc123"));
+        let picker = Cli::try_parse_from(["reason", "-r"]).unwrap();
+        assert_eq!(picker.resume.as_deref(), Some(""));
+    }
+
+    #[test]
+    fn parses_managed_session_list_surface() {
+        let cli = Cli::try_parse_from(["reason", "session", "list", "--format", "json"]).unwrap();
+        assert!(matches!(
+            cli.command,
+            Some(Command::Session {
+                command: SessionCommand::List {
+                    format: OutputFormat::Json
+                }
+            })
+        ));
     }
 
     #[test]

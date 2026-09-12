@@ -4,23 +4,32 @@ Reason CLI 0.5.0 development builds an everyday terminal surface without changin
 
 ## Dispatch boundary
 
-- Bare `reason` starts the interactive REPL only when stdin is a TTY and effective output is human-readable.
+- Bare `reason` starts a managed interactive session only when stdin is a TTY and effective output is human-readable.
 - `reason "TASK"` remains the one-shot path.
-- Piped/non-TTY stdin never auto-enters the REPL. Piped stdin remains untrusted context for an explicit task.
-- `--format json`, including an effective JSON default from config, never auto-enters the REPL. Automation therefore cannot accidentally block on a prompt.
-- Structured subcommands are unchanged.
+- `reason -c` continues the most recently updated compatible managed session for the canonical current project directory.
+- `reason -r <id>` resumes a selected managed session by full or short stable id. Bare `reason -r` opens a numeric picker on a human TTY.
+- `reason session list` lists managed sessions without exposing backing file paths; `--format json` is available for inspection/automation.
+- Piped/non-TTY stdin never auto-enters the REPL. `-c/-r` also fail closed outside a human TTY instead of blocking for input.
+- `--format json`, including an effective JSON default from config, never auto-enters the REPL.
+- Structured subcommands and the existing low-level explicit `reason session ... --store` contract remain compatible.
 
 ## Commands
 
-- `/add <path>` adds a UTF-8 regular file as untrusted context for later prompts in the current REPL. Quoted paths with spaces are accepted literally; no shell expansion or evaluation occurs.
-- `/files` lists context files active in the REPL.
-- `/clear` clears context files and in-memory conversation context.
+- `/add <path>` snapshots a UTF-8 regular file as persisted untrusted context for later prompts. Quoted paths with spaces are literal; no shell expansion or evaluation occurs.
+- `/files` lists persisted untrusted context snapshots active in the managed session.
+- `/clear` stops carrying prior conversation/context into later prompts. Existing typed turn history is not deleted.
 - `/help` shows the interactive commands.
 - `/exit` or `/quit` exits.
 - A trailing `\` continues a multiline prompt.
 
-## Authority and privacy
+## Managed-session model
 
-Each prompt still goes through the existing Harness-owned natural execution path. Prior exposed user/Reason exchanges are made available to later prompts only as `untrusted_context`; they do not become verified evidence and must be re-verified before they can support a factual claim. Hidden chain-of-thought is neither stored nor displayed.
+A managed conversation is a product-layer `reason-managed-session-v1` wrapper. Each successful user prompt is persisted as its own existing typed `SessionFile` / `ReasoningThread` with a safe checkpoint. This deliberately preserves Core's immutable per-thread task identity instead of changing Engine semantics to imitate a chat transcript.
 
-Phase #364 does not write a shell-style prompt-history file or a managed session file. EOF exits cleanly. A process-level Ctrl-C cannot leave an interactive checkpoint half-written because there is no persistent interactive checkpoint in this phase. Managed continuation/checkpoint persistence and crash/concurrency durability are handled by #365 and #381; retention and purge policy is handled by #379.
+Only a successfully completed turn advances the managed checkpoint. A failed provider/model run leaves the previous persisted state intact. On resume, the persisted provider/model/max-token runtime is pinned; explicit incompatible overrides fail instead of silently switching models.
+
+Prior exposed user/Reason exchanges are made available to later turns only as `untrusted_context`. They never become verified evidence merely because they appeared in a prior answer. Hidden chain-of-thought is neither stored nor displayed.
+
+## Durability and privacy boundaries
+
+#365 establishes managed session selection, safe completed-turn checkpoints, and stable ids. #381 owns store locking, optimistic concurrency/generation, interrupted-write recovery, corruption handling, and update/rollback migration guarantees. #379 owns private local permissions, retention/purge, ephemeral/no-persist mode, and outbound-data disclosure.
