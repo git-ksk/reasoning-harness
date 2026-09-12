@@ -1,4 +1,5 @@
 mod auth;
+mod config_commands;
 mod diagnostic_trace;
 mod human_presentation;
 mod interactive;
@@ -1792,6 +1793,11 @@ enum Command {
     Model {
         #[command(subcommand)]
         command: model_catalog::ModelCommand,
+    },
+    /// PRODUCT: Inspect and edit safe non-secret CLI configuration.
+    Config {
+        #[command(subcommand)]
+        command: config_commands::ConfigCommand,
     },
     /// PRODUCT: Configure provider, credential, model default, and readiness for first use.
     Setup(setup::SetupArgs),
@@ -5195,6 +5201,10 @@ impl Cli {
                 command: "model",
                 json: command.format() == OutputFormat::Json,
             }),
+            Some(Command::Config { command }) => Some(ProductErrorContext {
+                command: "config",
+                json: command.format() == OutputFormat::Json,
+            }),
             Some(Command::Trust { command }) => {
                 let format = match command {
                     TrustCommand::Status { format, .. }
@@ -5349,6 +5359,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             format,
         }) => model_catalog::list(provider, configured, format),
         Some(Command::Model { command }) => model_catalog::run(command),
+        Some(Command::Config { command }) => config_commands::run(command),
         Some(Command::Trust { command }) => run_trust(command),
         Some(Command::Session { command }) => run_session(command).await,
         Some(Command::Run {

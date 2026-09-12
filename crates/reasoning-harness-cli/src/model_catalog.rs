@@ -459,7 +459,10 @@ fn update_user_default(path: &Path, provider: Provider, model: &str) -> Result<(
     write_user_config_value(path, &value)
 }
 
-fn write_user_config_value(path: &Path, value: &serde_json::Value) -> Result<(), CliError> {
+pub(crate) fn write_user_config_value(
+    path: &Path,
+    value: &serde_json::Value,
+) -> Result<(), CliError> {
     if let Some(parent) = path
         .parent()
         .filter(|parent| !parent.as_os_str().is_empty())
