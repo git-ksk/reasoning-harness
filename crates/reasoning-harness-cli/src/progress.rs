@@ -1,7 +1,6 @@
 use std::{
     future::Future,
     io::{self, IsTerminal},
-    process,
     sync::{
         OnceLock,
         atomic::{AtomicBool, Ordering},
@@ -25,19 +24,59 @@ fn cancellation_token() -> &'static SubprocessCancellation {
     CANCELLATION.get_or_init(SubprocessCancellation::default)
 }
 
-fn install_ctrl_c_handler() -> Result<(), CliError> {
-    let installed = CTRL_C_HANDLER.get_or_init(|| {
-        ctrlc::set_handler(|| {
-            if CANCELLATION_ACTIVE.load(Ordering::SeqCst) {
-                cancellation_token().cancel();
-            } else {
-                // At an idle prompt there is no in-flight product mutation to clean up. Preserve
-                // ordinary terminal Ctrl+C behavior instead of leaving the user at a stuck prompt.
-                process::exit(130);
+#[cfg(not(windows))]
+fn install_platform_ctrl_c_handler() -> Result<(), String> {
+    ctrlc::set_handler(|| {
+        if CANCELLATION_ACTIVE.load(Ordering::SeqCst) {
+            if let Some(token) = CANCELLATION.get() {
+                token.cancel();
             }
-        })
-        .map_err(|error| error.to_string())
-    });
+        } else {
+            // The portable signal crate owns the handler on Unix. At an idle prompt there is no
+            // in-flight state to clean up, so preserve ordinary Ctrl+C exit behavior explicitly.
+            std::process::exit(130);
+        }
+    })
+    .map_err(|error| error.to_string())
+}
+
+#[cfg(windows)]
+fn install_platform_ctrl_c_handler() -> Result<(), String> {
+    type Handler = Option<unsafe extern "system" fn(u32) -> i32>;
+
+    #[link(name = "Kernel32")]
+    unsafe extern "system" {
+        fn SetConsoleCtrlHandler(handler: Handler, add: i32) -> i32;
+    }
+
+    unsafe extern "system" fn handler(control: u32) -> i32 {
+        const CTRL_C_EVENT: u32 = 0;
+        const CTRL_BREAK_EVENT: u32 = 1;
+        if !matches!(control, CTRL_C_EVENT | CTRL_BREAK_EVENT) {
+            return 0;
+        }
+        if CANCELLATION_ACTIVE.load(Ordering::SeqCst) {
+            if let Some(token) = CANCELLATION.get() {
+                token.cancel();
+            }
+            1
+        } else {
+            // Returning FALSE lets Windows continue to the default console handler, preserving
+            // ordinary idle Ctrl+C termination without calling allocation-heavy Rust code here.
+            0
+        }
+    }
+
+    let installed = unsafe { SetConsoleCtrlHandler(Some(handler), 1) };
+    if installed == 0 {
+        Err(std::io::Error::last_os_error().to_string())
+    } else {
+        Ok(())
+    }
+}
+
+fn install_ctrl_c_handler() -> Result<(), CliError> {
+    let installed = CTRL_C_HANDLER.get_or_init(install_platform_ctrl_c_handler);
     match installed {
         Ok(()) => Ok(()),
         Err(message) => Err(CliError::new(
@@ -54,6 +93,7 @@ pub(super) struct CancellationRun {
 
 impl CancellationRun {
     pub(super) fn begin() -> Result<Self, CliError> {
+        let token = cancellation_token().clone();
         install_ctrl_c_handler()?;
         if CANCELLATION_ACTIVE.swap(true, Ordering::SeqCst) {
             return Err(CliError::new(
@@ -61,7 +101,6 @@ impl CancellationRun {
                 "another cancellable Reason operation is already active",
             ));
         }
-        let token = cancellation_token().clone();
         token.reset();
         Ok(Self {
             token,
