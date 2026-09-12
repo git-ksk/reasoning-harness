@@ -145,7 +145,7 @@ jobs:
 
       - name: Preserve v2 candidate, preflight, and freeze validation
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: natural-language-e2e-v2-mistral-ministral-8b-seed-41000
           path: |

@@ -71,7 +71,7 @@ jobs:
           ' /tmp/product-external-info-v4-cross-model-preflight.json >/dev/null
       - name: Preserve cross-model acquisition preflight
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: product-external-info-v4-cross-model-preflight
           path: /tmp/product-external-info-v4-cross-model-preflight.json
@@ -158,7 +158,7 @@ jobs:
           jq '{schema_version, comparison_contract, corpus_identity, provider, model, seed, max_tokens, comparison, costs, aggregate}' "$OUT"
       - name: Preserve cross-model result
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: product-external-info-v4-${{ matrix.provider }}-${{ matrix.model }}-seed-28000
           path: |
@@ -221,7 +221,7 @@ jobs:
           jq '{schema_version, comparison_contract, corpus_identity, provider, model, seed, max_tokens, comparison, costs, aggregate}' "$OUT"
       - name: Preserve paced Gemini result
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: product-external-info-v4-google-gemini-3.5-flash-lite-paced-attempt2-seed-28000
           path: |
@@ -284,7 +284,7 @@ jobs:
           jq '{schema_version, comparison_contract, corpus_identity, provider, model, seed, max_tokens, comparison, costs, aggregate}' "$OUT"
       - name: Preserve Ministral 14B result
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: product-external-info-v4-mistral-ministral-14b-latest-seed-28000
           path: |
@@ -379,7 +379,7 @@ jobs:
           jq '{schema_version, comparison_contract, corpus_identity, provider, model, seed, max_tokens, comparison, costs, aggregate}' "$OUT"
       - name: Preserve Groq result
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: product-external-info-v4-groq-${{ strategy.job-index }}-seed-28000
           path: /tmp/product-external-info-v4-groq-*
