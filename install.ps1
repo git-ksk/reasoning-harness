@@ -46,6 +46,10 @@ function Verify-SplitReleaseProvenance([string]$ArchivePath) {
     }
 }
 
+if ($env:REASON_INSTALL_LIBRARY_ONLY -eq '1') {
+    return
+}
+
 $Tag = $null
 $ResolvedVersion = $Version
 if ($Version -match '^reason-v(.+)$') {
