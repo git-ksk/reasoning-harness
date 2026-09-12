@@ -3,7 +3,7 @@ use std::{
     io::{self, IsTerminal},
     sync::{
         OnceLock,
-        atomic::{AtomicBool, Ordering},
+        atomic::{AtomicU8, Ordering},
     },
     time::{Duration, Instant},
 };
@@ -16,7 +16,12 @@ const PROVIDER_WAIT_FIRST_NOTICE: Duration = Duration::from_secs(3);
 const PROVIDER_WAIT_REPEAT_NOTICE: Duration = Duration::from_secs(5);
 const CANCEL_POLL_INTERVAL: Duration = Duration::from_millis(20);
 
-static CANCELLATION_ACTIVE: AtomicBool = AtomicBool::new(false);
+const CANCELLATION_IDLE: u8 = 0;
+const CANCELLATION_ARMING: u8 = 1;
+const CANCELLATION_ACTIVE: u8 = 2;
+const CANCELLATION_PENDING: u8 = 3;
+
+static CANCELLATION_STATE: AtomicU8 = AtomicU8::new(CANCELLATION_IDLE);
 static CANCELLATION: OnceLock<SubprocessCancellation> = OnceLock::new();
 static CTRL_C_HANDLER: OnceLock<Result<(), String>> = OnceLock::new();
 
@@ -24,16 +29,45 @@ fn cancellation_token() -> &'static SubprocessCancellation {
     CANCELLATION.get_or_init(SubprocessCancellation::default)
 }
 
+fn mark_ctrl_c_for_state(state: &AtomicU8, token: Option<&SubprocessCancellation>) -> bool {
+    loop {
+        match state.load(Ordering::SeqCst) {
+            CANCELLATION_IDLE => return false,
+            CANCELLATION_ACTIVE => {
+                if let Some(token) = token {
+                    token.cancel();
+                }
+                return true;
+            }
+            CANCELLATION_ARMING => {
+                if state
+                    .compare_exchange(
+                        CANCELLATION_ARMING,
+                        CANCELLATION_PENDING,
+                        Ordering::SeqCst,
+                        Ordering::SeqCst,
+                    )
+                    .is_ok()
+                {
+                    return true;
+                }
+            }
+            CANCELLATION_PENDING => return true,
+            _ => return false,
+        }
+    }
+}
+
+fn mark_product_ctrl_c() -> bool {
+    mark_ctrl_c_for_state(&CANCELLATION_STATE, CANCELLATION.get())
+}
+
 #[cfg(not(windows))]
 fn install_platform_ctrl_c_handler() -> Result<(), String> {
     ctrlc::set_handler(|| {
-        if CANCELLATION_ACTIVE.load(Ordering::SeqCst) {
-            if let Some(token) = CANCELLATION.get() {
-                token.cancel();
-            }
-        } else {
-            // The portable signal crate owns the handler on Unix. At an idle prompt there is no
-            // in-flight state to clean up, so preserve ordinary Ctrl+C exit behavior explicitly.
+        if !mark_product_ctrl_c() {
+            // At an idle prompt there is no in-flight state to clean up. Preserve ordinary
+            // terminal Ctrl+C behavior instead of swallowing the signal.
             std::process::exit(130);
         }
     })
@@ -55,10 +89,7 @@ fn install_platform_ctrl_c_handler() -> Result<(), String> {
         if !matches!(control, CTRL_C_EVENT | CTRL_BREAK_EVENT) {
             return 0;
         }
-        if CANCELLATION_ACTIVE.load(Ordering::SeqCst) {
-            if let Some(token) = CANCELLATION.get() {
-                token.cancel();
-            }
+        if mark_product_ctrl_c() {
             1
         } else {
             // Returning FALSE lets Windows continue to the default console handler, preserving
@@ -95,13 +126,40 @@ impl CancellationRun {
     pub(super) fn begin() -> Result<Self, CliError> {
         let token = cancellation_token().clone();
         install_ctrl_c_handler()?;
-        if CANCELLATION_ACTIVE.swap(true, Ordering::SeqCst) {
+        if CANCELLATION_STATE
+            .compare_exchange(
+                CANCELLATION_IDLE,
+                CANCELLATION_ARMING,
+                Ordering::SeqCst,
+                Ordering::SeqCst,
+            )
+            .is_err()
+        {
             return Err(CliError::new(
                 "cancellation_state",
                 "another cancellable Reason operation is already active",
             ));
         }
         token.reset();
+        match CANCELLATION_STATE.compare_exchange(
+            CANCELLATION_ARMING,
+            CANCELLATION_ACTIVE,
+            Ordering::SeqCst,
+            Ordering::SeqCst,
+        ) {
+            Ok(_) => {}
+            Err(CANCELLATION_PENDING) => {
+                token.cancel();
+                CANCELLATION_STATE.store(CANCELLATION_ACTIVE, Ordering::SeqCst);
+            }
+            Err(_) => {
+                CANCELLATION_STATE.store(CANCELLATION_IDLE, Ordering::SeqCst);
+                return Err(CliError::new(
+                    "cancellation_state",
+                    "cancellation state changed unexpectedly while arming",
+                ));
+            }
+        }
         Ok(Self {
             token,
             started: Instant::now(),
@@ -148,7 +206,7 @@ impl CancellationRun {
 
 impl Drop for CancellationRun {
     fn drop(&mut self) {
-        CANCELLATION_ACTIVE.store(false, Ordering::SeqCst);
+        CANCELLATION_STATE.store(CANCELLATION_IDLE, Ordering::SeqCst);
         self.token.reset();
     }
 }
@@ -278,6 +336,30 @@ impl ProgressReporter {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn ctrl_c_during_arming_is_preserved_after_token_reset() {
+        let state = AtomicU8::new(CANCELLATION_ARMING);
+        let token = SubprocessCancellation::default();
+        assert!(mark_ctrl_c_for_state(&state, Some(&token)));
+        assert_eq!(state.load(Ordering::SeqCst), CANCELLATION_PENDING);
+        assert!(!token.is_cancelled());
+
+        // begin() resets the reusable token before promoting the pending signal to active.
+        token.reset();
+        assert_eq!(
+            state.compare_exchange(
+                CANCELLATION_ARMING,
+                CANCELLATION_ACTIVE,
+                Ordering::SeqCst,
+                Ordering::SeqCst,
+            ),
+            Err(CANCELLATION_PENDING)
+        );
+        token.cancel();
+        state.store(CANCELLATION_ACTIVE, Ordering::SeqCst);
+        assert!(token.is_cancelled());
+    }
 
     #[test]
     fn progress_is_human_full_tty_only() {

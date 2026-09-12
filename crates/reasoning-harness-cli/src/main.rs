@@ -8086,13 +8086,17 @@ fn main() -> ExitCode {
     // platforms. Clap's derived command tree plus the async product entry point
     // can exceed that budget in debug/test builds, so run the unchanged product
     // entry point on an explicitly bounded 8 MiB stack.
-    std::thread::Builder::new()
+    match std::thread::Builder::new()
         .name("reason-main".into())
         .stack_size(8 * 1024 * 1024)
         .spawn(reason_main)
-        .expect("spawn Reason CLI main thread")
-        .join()
-        .unwrap_or_else(|_| ExitCode::FAILURE)
+    {
+        Ok(thread) => thread.join().unwrap_or(ExitCode::FAILURE),
+        Err(error) => {
+            eprintln!("failed to start Reason CLI runtime: {error}");
+            ExitCode::FAILURE
+        }
+    }
 }
 
 #[cfg(test)]
