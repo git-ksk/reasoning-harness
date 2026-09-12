@@ -225,6 +225,7 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 | `reason semantic-check` | Run the soft semantic diagnostic runtime without granting it final authority. |
 | `reason schema` | Inspect supported versioned machine contracts. |
 Interactive REPL details, including `/add`, multiline input, TTY/JSON dispatch, and privacy boundaries, are documented in [Interactive terminal UX](docs/reason-interactive.md).
+Human output sections for verified facts, uncertainty, and evidence provenance are documented in [Human answer presentation](docs/reason-human-output.md).
 Managed session locking, optimistic concurrency, crash recovery, and rollback compatibility are documented in [Managed session durability](docs/reason-managed-sessions.md).
 Local storage, ephemeral mode, retention/purge, uninstall, and outbound-data boundaries are documented in [Local privacy and retention](docs/reason-local-privacy.md).
 

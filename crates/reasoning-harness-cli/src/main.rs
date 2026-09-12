@@ -1,5 +1,6 @@
 mod auth;
 mod diagnostic_trace;
+mod human_presentation;
 mod interactive;
 mod lifecycle;
 mod local_privacy;
@@ -2606,55 +2607,7 @@ fn input_from_artifact(artifact: &ReasoningArtifact) -> HarnessInput {
 }
 
 fn print_natural_human(output: &NaturalOutput) {
-    match output.finalization.status {
-        FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer => {
-            if let Some(text) = &output.finalization.text {
-                println!("{text}");
-            }
-        }
-        FinalizationStatus::Abstain => {
-            println!("I cannot provide a grounded answer because verified state is contradictory.");
-        }
-        FinalizationStatus::Unresolved | FinalizationStatus::RequiresVerification => {
-            println!("I cannot support a complete answer from the currently verified evidence.");
-        }
-    }
-    let artifact = output
-        .resolution_rounds
-        .last()
-        .map(|round| &round.final_artifact)
-        .unwrap_or(&output.initial_outcome.artifact);
-    let supported = artifact
-        .claims
-        .iter()
-        .filter(|claim| {
-            matches!(
-                claim.state,
-                reasoning_harness_core::EpistemicState::Known
-                    | reasoning_harness_core::EpistemicState::Supported
-            )
-        })
-        .count();
-    let unresolved = artifact
-        .claims
-        .iter()
-        .filter(|claim| {
-            matches!(
-                claim.state,
-                reasoning_harness_core::EpistemicState::Assumed
-                    | reasoning_harness_core::EpistemicState::Unknown
-                    | reasoning_harness_core::EpistemicState::Inferred
-            )
-        })
-        .count();
-    println!(
-        "\nstatus: {:?} | supported_claims={} | unresolved_claims={} | coverage={:.3} | safety={}",
-        output.finalization.status,
-        supported,
-        unresolved,
-        output.finalization.factual_claim_coverage,
-        output.safety_runtime.configuration_id()
-    );
+    human_presentation::from_output(output).print_full();
     if let Some(failure) = &output.rendering_failure {
         eprintln!(
             "[reason] natural renderer fallback: class={} {}",

@@ -5,6 +5,8 @@ enum Directive {
     Prompt(String),
     Add(PathBuf),
     Files,
+    Status,
+    Evidence,
     Clear,
     Help,
     Exit,
@@ -27,6 +29,8 @@ fn parse_directive(input: &str) -> Result<Option<Directive>, CliError> {
         "/exit" | "/quit" if argument.is_empty() => Ok(Some(Directive::Exit)),
         "/help" if argument.is_empty() => Ok(Some(Directive::Help)),
         "/files" if argument.is_empty() => Ok(Some(Directive::Files)),
+        "/status" if argument.is_empty() => Ok(Some(Directive::Status)),
+        "/evidence" if argument.is_empty() => Ok(Some(Directive::Evidence)),
         "/clear" if argument.is_empty() => Ok(Some(Directive::Clear)),
         "/add" => {
             if argument.is_empty() {
@@ -254,6 +258,7 @@ pub(super) async fn run(
         managed_session::save(&mut session)?;
     }
     base.interactive_context = session.conversation_context();
+    let mut last_presentation = session.last_presentation()?;
     base.task = None;
     base.format = Some(OutputFormat::Human);
 
@@ -303,6 +308,10 @@ pub(super) async fn run(
                 );
                 println!("/files       list context snapshots active in this session");
                 println!(
+                    "/status      show verified facts and unresolved items from the last completed turn"
+                );
+                println!("/evidence    show supporting provenance from the last completed turn");
+                println!(
                     "/clear       stop carrying prior conversation/context into later prompts"
                 );
                 println!("/help        show this help");
@@ -319,6 +328,14 @@ pub(super) async fn run(
                     }
                 }
             }
+            Directive::Status => match &last_presentation {
+                Some(presentation) => presentation.print_status(),
+                None => println!("No completed turn is available yet."),
+            },
+            Directive::Evidence => match &last_presentation {
+                Some(presentation) => presentation.print_evidence(),
+                None => println!("No completed turn is available yet."),
+            },
             Directive::Clear => {
                 session.clear_context();
                 base.interactive_context = session.conversation_context();
@@ -346,6 +363,7 @@ pub(super) async fn run(
                 match execute_natural(args, None).await {
                     Ok(output) => {
                         print_natural_human(&output);
+                        last_presentation = Some(human_presentation::from_output(&output));
                         session.append_turn(&output, safety_profile)?;
                         if should_persist_managed(ephemeral, session.turns_len()) {
                             managed_session::save(&mut session)?;
@@ -441,6 +459,11 @@ mod tests {
         assert_eq!(
             parse_directive("follow up on that").unwrap(),
             Some(Directive::Prompt("follow up on that".into()))
+        );
+        assert_eq!(parse_directive("/status").unwrap(), Some(Directive::Status));
+        assert_eq!(
+            parse_directive("/evidence").unwrap(),
+            Some(Directive::Evidence)
         );
         assert_eq!(parse_directive("/exit").unwrap(), Some(Directive::Exit));
         assert!(parse_directive("/unknown").is_err());
