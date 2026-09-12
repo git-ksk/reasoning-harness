@@ -92,7 +92,7 @@ Project `.reason/config.json` may contain executable or authority-bearing acquis
 - **#361 P0 — completed:** OS-native secure credential backends: macOS Keychain, Windows Credential Manager, Linux Secret Service/keyring where available. No silent plaintext fallback. Secret entry must avoid argv/shell-history exposure.
 - **#362 P0 — completed:** `reason auth login/list/status/logout`, secure replacement/rotation, and a storage identity that does not preclude future named accounts.
 - **#367 P0 — completed:** provider/model discovery and default switching; no silent model fallback.
-- **#363 P0:** `reason setup` wizard combining provider choice, secure auth, model selection, non-secret defaults, bounded readiness check, billable-check disclosure where applicable, and a first command.
+- **#363 P0 — completed:** `reason setup` wizard combining provider choice, secure auth, model selection, non-secret defaults, bounded readiness check, billable-check disclosure where applicable, and a first command.
 
 Environment variables remain supported for CI, containers, remote shells, and servers. Their precedence relative to OS-stored credentials must be deterministic and documented.
 

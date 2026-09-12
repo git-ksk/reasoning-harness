@@ -578,3 +578,94 @@ fn model_catalog_and_default_switch_preserve_user_config_and_fail_closed() {
 
     std::fs::remove_dir_all(temp).ok();
 }
+
+#[test]
+fn setup_noninteractive_uses_recommended_model_without_secret_leak() {
+    let temp = std::env::temp_dir().join(format!(
+        "reason-setup-contract-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    let sentinel = "reason-setup-contract-secret-must-not-leak";
+    let mut command = reason_command();
+    let output = command
+        .args([
+            "setup",
+            "--provider",
+            "mistral",
+            "--non-interactive",
+            "--skip-live-check",
+            "--format",
+            "json",
+        ])
+        .env("REASON_HOME", &temp)
+        .env("MISTRAL_API_KEY", sentinel)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("run setup");
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    let body = String::from_utf8_lossy(&output.stdout);
+    assert!(!body.contains(sentinel));
+    let value = json_stdout(&output);
+    assert_eq!(value["command"], "setup");
+    assert_eq!(value["result"]["provider"], "mistral");
+    assert_eq!(value["result"]["model"], "ministral-8b-latest");
+    assert_eq!(value["result"]["credential_source"], "environment");
+    assert_eq!(value["result"]["local_readiness"], "passed");
+    assert_eq!(value["result"]["live_readiness"], "skipped");
+    assert_eq!(value["result"]["live_provider_attempts"], 0);
+    assert!(
+        value["result"]["first_command"]
+            .as_str()
+            .unwrap_or_default()
+            .starts_with("reason ")
+    );
+
+    let config_path = temp.join("config.json");
+    let text = std::fs::read_to_string(&config_path).unwrap();
+    assert!(!text.contains(sentinel));
+    let config: Value = serde_json::from_str(&text).unwrap();
+    assert_eq!(config["run"]["provider"], "mistral");
+    assert_eq!(config["run"]["model"], "ministral-8b-latest");
+
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        assert_eq!(
+            std::fs::metadata(&config_path)
+                .unwrap()
+                .permissions()
+                .mode()
+                & 0o777,
+            0o600
+        );
+    }
+
+    std::fs::remove_dir_all(temp).ok();
+}
+
+#[test]
+fn setup_help_has_no_secret_valued_argv_and_live_check_is_explicit() {
+    let output = run_reason(&["setup", "--help"], None);
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    let help = String::from_utf8_lossy(&output.stdout);
+    for expected in [
+        "--credential-stdin",
+        "--from-env",
+        "--live-check",
+        "--skip-live-check",
+        "--non-interactive",
+    ] {
+        assert!(help.contains(expected), "missing {expected}: {help}");
+    }
+    for forbidden in ["--api-key", "--secret", "--password", "--token"] {
+        assert!(!help.contains(forbidden), "unexpected {forbidden}: {help}");
+    }
+}

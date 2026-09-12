@@ -92,7 +92,7 @@ project `.reason/config.json`にはexecutable/authority-bearing acquisition設�
 - **#361 P0 — 完了:** macOS Keychain / Windows Credential Manager / Linux Secret Service・keyringのOS-native secure credential backend。平文へのsilent fallbackは禁止し、secret入力をargv/shell historyへ残さない。
 - **#362 P0 — 完了:** `reason auth login/list/status/logout`、secure credential replacement/rotation、将来のwork/personal named accountを阻害しないstorage identity。
 - **#367 P0 — 完了:** provider/model discoveryとdefault切替。silent model fallbackは禁止。
-- **#363 P0:** provider選択、secure auth、model選択、non-secret default、bounded readiness check、billable check時の明示、最初のcommandまでをまとめる`reason setup` wizard。
+- **#363 P0 — 完了:** provider選択、secure auth、model選択、non-secret default、bounded readiness check、billable check時の明示、最初のcommandまでをまとめる`reason setup` wizard。
 
 CI、container、remote shell、server用途ではenvironment variableも引き続きサポートし、OS-stored credentialとのprecedenceをdeterministicに定義・文書化します。
 

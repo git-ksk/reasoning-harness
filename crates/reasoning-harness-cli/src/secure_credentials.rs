@@ -12,6 +12,15 @@ pub(crate) enum CredentialSource {
     OsStore,
 }
 
+impl CredentialSource {
+    pub(crate) const fn as_str(self) -> &'static str {
+        match self {
+            Self::Environment => "environment",
+            Self::OsStore => "os_store",
+        }
+    }
+}
+
 pub(crate) struct ResolvedCredential {
     secret: String,
     pub source: CredentialSource,
