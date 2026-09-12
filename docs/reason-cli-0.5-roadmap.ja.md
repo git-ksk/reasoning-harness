@@ -98,7 +98,7 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 
 ## フェーズ2 — 日常的な対話型ターミナルUX
 
-- **#364 P0:** 引数なし`reason`でusage errorではなくinteractive REPLを起動。既存のuntrusted file/context ingestionを低レベルsession file commandなしでinteractive pathから使えるようにする。
+- **#364 P0 — implemented:** human TTYでbare `reason`を実行するとin-memory interactive REPLを起動し、JSON/non-TTY/piped automationはnon-interactiveのまま維持する。`/add <path>`は既存untrusted context pathを再利用し、末尾`\`でmultiline prompt、過去のexposed exchangeはuntrustedなin-memory conversation contextとしてのみ保持し、shell-style history fileは書かない。managed persistenceは#365/#381で扱う。
 - **#365 P0:** `-c/--continue`、`-r/--resume`、session list/picker、安全なcheckpoint persistence。既存typed session runtimeを利用。
 - **#381 P0:** managed session storeのlock/optimistic concurrency、crash recovery、supported CLI update/rollback間のcompatibility/migration。
 - **#379 P0:** private local permission、retention/purge、明示的ephemeral/no-persist、provider/MCP/resolverへ何が外送されるかのdisclosure。
