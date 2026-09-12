@@ -92,3 +92,4 @@ rpassword.workspace = true
 tokio.workspace = true
 reqwest.workspace = true
 semver.workspace = true
+fs2.workspace = true

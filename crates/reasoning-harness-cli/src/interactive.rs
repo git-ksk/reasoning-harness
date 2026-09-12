@@ -123,10 +123,16 @@ fn read_entry() -> Result<Option<String>, CliError> {
 
 fn pick_session() -> Result<managed_session::ManagedSession, CliError> {
     let list = managed_session::list()?;
+    if !list.problems.is_empty() {
+        println!("Unavailable managed sessions:");
+        for problem in &list.problems {
+            println!("  ! {}  {}", problem.file_name, problem.state);
+        }
+    }
     if list.sessions.is_empty() {
         return Err(CliError::new(
             "session_not_found",
-            "no managed sessions exist; start `reason` to create one",
+            "no compatible managed sessions exist; start `reason` or inspect `reason session list`",
         ));
     }
     println!("Choose a managed session:");
@@ -240,7 +246,7 @@ pub(super) async fn run(
         session.add_context_file(&path)?;
     }
     if resuming && session.turns_len() > 0 {
-        managed_session::save(&session)?;
+        managed_session::save(&mut session)?;
     }
     base.interactive_context = session.conversation_context();
     base.task = None;
@@ -299,7 +305,7 @@ pub(super) async fn run(
                 session.clear_context();
                 base.interactive_context = session.conversation_context();
                 if session.turns_len() > 0 {
-                    managed_session::save(&session)?;
+                    managed_session::save(&mut session)?;
                 }
                 println!(
                     "Interactive carry-over context cleared; typed prior turns remain in history."
@@ -309,7 +315,7 @@ pub(super) async fn run(
                 Ok(()) => {
                     base.interactive_context = session.conversation_context();
                     if session.turns_len() > 0 {
-                        managed_session::save(&session)?;
+                        managed_session::save(&mut session)?;
                     }
                     println!("Added untrusted context snapshot: {}", path.display());
                 }
@@ -323,7 +329,7 @@ pub(super) async fn run(
                     Ok(output) => {
                         print_natural_human(&output);
                         session.append_turn(&output, safety_profile)?;
-                        managed_session::save(&session)?;
+                        managed_session::save(&mut session)?;
                         pin_runtime_from_session(&mut base, &session, false)?;
                         base.interactive_context = session.conversation_context();
                         println!("session: {}", session.short_id());

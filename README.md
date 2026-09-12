@@ -225,6 +225,7 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 | `reason semantic-check` | Run the soft semantic diagnostic runtime without granting it final authority. |
 | `reason schema` | Inspect supported versioned machine contracts. |
 Interactive REPL details, including `/add`, multiline input, TTY/JSON dispatch, and privacy boundaries, are documented in [Interactive terminal UX](docs/reason-interactive.md).
+Managed session locking, optimistic concurrency, crash recovery, and rollback compatibility are documented in [Managed session durability](docs/reason-managed-sessions.md).
 
 
 Mistral, Google Gemini/AI Studio, NVIDIA Hosted NIM, and Groq provider adapters are implemented outside the correctness authority boundary. Read-only MCP acquisition, external resolvers, trusted deterministic verifiers, bounded investigation, and resumable sessions are also implemented in the current runtime.
