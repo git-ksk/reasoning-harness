@@ -80,6 +80,7 @@ try {
     $After = [IO.File]::ReadAllBytes($Existing)
     Assert-True ([Convert]::ToBase64String($Before) -eq [Convert]::ToBase64String($After)) 'existing binary changed after failed provenance'
 
+    $global:LASTEXITCODE = 0
     Write-Output 'PowerShell installer provenance contract PASS'
 } finally {
     Remove-Item Env:REASON_INSTALL_LIBRARY_ONLY -ErrorAction SilentlyContinue
