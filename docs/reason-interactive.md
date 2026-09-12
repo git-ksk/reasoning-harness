@@ -17,6 +17,8 @@ Reason CLI 0.5.0 development builds an everyday terminal surface without changin
 
 - `/add <path>` snapshots a UTF-8 regular file as persisted untrusted context for later prompts. Quoted paths with spaces are literal; no shell expansion or evaluation occurs.
 - `/files` lists persisted untrusted context snapshots active in the managed session.
+- `/status` shows verified facts, unresolved/qualified items, typed acquisition notes, and status from the last completed turn.
+- `/evidence` shows supporting evidence provenance and separately labeled untrusted-context sources from the last completed turn.
 - `/clear` stops carrying prior conversation/context into later prompts. Existing typed turn history is not deleted.
 - `/help` shows the interactive commands.
 - `/exit` or `/quit` exits.

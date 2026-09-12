@@ -316,6 +316,33 @@ impl ManagedSession {
         self.turns.last().map(|turn| &turn.typed_session.runtime)
     }
 
+    pub(super) fn last_presentation(
+        &self,
+    ) -> Result<Option<human_presentation::HumanPresentation>, CliError> {
+        let Some(turn) = self.turns.last() else {
+            return Ok(None);
+        };
+        let replay = replay_thread(&turn.typed_session.thread)
+            .map_err(|error| CliError::new("session_invalid", error.to_string()))?;
+        let Some(artifact) = replay.snapshot.artifact.as_ref() else {
+            return Ok(None);
+        };
+        let Some(finalization) = turn
+            .typed_session
+            .turns
+            .last()
+            .map(|record| &record.finalization)
+        else {
+            return Ok(None);
+        };
+        Ok(Some(human_presentation::from_parts(
+            finalization,
+            artifact,
+            &replay.snapshot.resolution_attempts,
+            &turn.typed_session.runtime.safety_configuration_id,
+        )))
+    }
+
     pub(super) fn conversation_context(&self) -> Vec<String> {
         let mut result = self
             .contexts
