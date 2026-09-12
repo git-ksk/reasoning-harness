@@ -4593,7 +4593,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                 }
                 OutputFormat::Human => {
                     if output.sessions.is_empty() {
-                        println!("No managed sessions.");
+                        println!("No compatible managed sessions.");
                     } else {
                         for session in output.sessions {
                             println!(
@@ -4604,6 +4604,12 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                                 session.project_path
                             );
                         }
+                    }
+                    for problem in output.problems {
+                        println!(
+                            "! {}  state={}  {}",
+                            problem.file_name, problem.state, problem.message
+                        );
                     }
                     Ok(())
                 }

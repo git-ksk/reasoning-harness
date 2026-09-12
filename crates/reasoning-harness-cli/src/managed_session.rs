@@ -1,4 +1,5 @@
 use super::*;
+use fs2::FileExt;
 use sha2::{Digest, Sha256};
 use std::sync::atomic::{AtomicU64, Ordering};
 
@@ -36,6 +37,8 @@ pub(super) struct ManagedSession {
     contexts: Vec<ManagedContext>,
     #[serde(default)]
     turns: Vec<ManagedTurn>,
+    #[serde(skip)]
+    source_digest: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -52,6 +55,15 @@ pub(super) struct ManagedSessionSummary {
 pub(super) struct ManagedSessionListOutput {
     pub session_contract: &'static str,
     pub sessions: Vec<ManagedSessionSummary>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub problems: Vec<ManagedSessionProblem>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub(super) struct ManagedSessionProblem {
+    pub file_name: String,
+    pub state: &'static str,
+    pub message: String,
 }
 
 fn now_unix_ms() -> u64 {
@@ -85,6 +97,135 @@ fn session_root() -> Result<PathBuf, CliError> {
         )
     })?;
     Ok(parent.join("sessions"))
+}
+
+fn digest_bytes(bytes: &[u8]) -> String {
+    format!("sha256:{}", hex_lower(&Sha256::digest(bytes)))
+}
+
+fn store_lock(root: &Path) -> Result<fs::File, CliError> {
+    fs::create_dir_all(root).map_err(|error| {
+        CliError::new(
+            "session_io",
+            format!(
+                "create managed session directory {}: {error}",
+                root.display()
+            ),
+        )
+    })?;
+    let lock_path = root.join(".store.lock");
+    let file = fs::OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create(true)
+        .truncate(false)
+        .open(&lock_path)
+        .map_err(|error| {
+            CliError::new("session_io", format!("{}: {error}", lock_path.display()))
+        })?;
+    file.try_lock_exclusive().map_err(|error| {
+        CliError::new(
+            "session_locked",
+            format!("managed session store is busy: {error}"),
+        )
+    })?;
+    Ok(file)
+}
+
+fn cleanup_interrupted_temps(root: &Path) -> Result<(), CliError> {
+    if !root.exists() {
+        return Ok(());
+    }
+    for entry in fs::read_dir(root).map_err(|error| {
+        CliError::new(
+            "session_io",
+            format!("read managed session directory {}: {error}", root.display()),
+        )
+    })? {
+        let entry = entry.map_err(|error| CliError::new("session_io", error.to_string()))?;
+        let name = entry.file_name();
+        let name = name.to_string_lossy();
+        if name.contains(".tmp-") {
+            let path = entry.path();
+            fs::remove_file(&path).map_err(|error| {
+                CliError::new(
+                    "session_io",
+                    format!("remove interrupted temp {}: {error}", path.display()),
+                )
+            })?;
+        }
+    }
+    Ok(())
+}
+
+#[cfg(windows)]
+fn atomic_replace(source: &Path, destination: &Path) -> io::Result<()> {
+    use std::os::windows::ffi::OsStrExt;
+    const MOVEFILE_REPLACE_EXISTING: u32 = 0x1;
+    const MOVEFILE_WRITE_THROUGH: u32 = 0x8;
+    unsafe extern "system" {
+        fn MoveFileExW(existing: *const u16, new_name: *const u16, flags: u32) -> i32;
+    }
+    let source = source
+        .as_os_str()
+        .encode_wide()
+        .chain(Some(0))
+        .collect::<Vec<_>>();
+    let destination = destination
+        .as_os_str()
+        .encode_wide()
+        .chain(Some(0))
+        .collect::<Vec<_>>();
+    let result = unsafe {
+        MoveFileExW(
+            source.as_ptr(),
+            destination.as_ptr(),
+            MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH,
+        )
+    };
+    if result == 0 {
+        Err(io::Error::last_os_error())
+    } else {
+        Ok(())
+    }
+}
+
+#[cfg(not(windows))]
+fn atomic_replace(source: &Path, destination: &Path) -> io::Result<()> {
+    fs::rename(source, destination)
+}
+
+#[cfg(unix)]
+fn sync_directory(path: &Path) -> io::Result<()> {
+    fs::File::open(path)?.sync_all()
+}
+
+#[cfg(not(unix))]
+fn sync_directory(_path: &Path) -> io::Result<()> {
+    Ok(())
+}
+
+fn verify_expected_source(path: &Path, expected: Option<&str>) -> Result<(), CliError> {
+    match (fs::read(path), expected) {
+        (Ok(bytes), Some(expected)) if digest_bytes(&bytes) == expected => Ok(()),
+        (Ok(_), None) => Err(CliError::new(
+            "session_conflict",
+            "managed session was created by another process before this save; reload before retrying",
+        )),
+        (Ok(_), Some(_)) => Err(CliError::new(
+            "session_conflict",
+            "managed session changed in another process; reload before retrying to avoid lost updates",
+        )),
+        (Err(error), Some(_)) if error.kind() == io::ErrorKind::NotFound => Err(CliError::new(
+            "session_conflict",
+            "managed session disappeared after it was loaded; refusing to recreate stale state",
+        )),
+        (Err(error), None) if error.kind() == io::ErrorKind::NotFound => Ok(()),
+        (Err(error), _) => Err(CliError::new(
+            "session_io",
+            format!("{}: {error}", path.display()),
+        )),
+    }
 }
 
 pub(super) fn current_project_key() -> Result<String, CliError> {
@@ -141,6 +282,7 @@ impl ManagedSession {
             memory_start_turn: 0,
             contexts: vec![],
             turns: vec![],
+            source_digest: None,
         }
     }
 
@@ -363,35 +505,34 @@ fn path_for(session: &ManagedSession) -> Result<PathBuf, CliError> {
     Ok(session_root()?.join(format!("{}.json", session.id)))
 }
 
-pub(super) fn save(session: &ManagedSession) -> Result<(), CliError> {
+pub(super) fn save(session: &mut ManagedSession) -> Result<(), CliError> {
     validate(session)?;
+    let root = session_root()?;
+    let _lock = store_lock(&root)?;
+    cleanup_interrupted_temps(&root)?;
     let path = path_for(session)?;
-    let parent = path.parent().expect("managed session path has parent");
-    fs::create_dir_all(parent).map_err(|error| {
-        CliError::new(
-            "session_io",
-            format!(
-                "create managed session directory {}: {error}",
-                parent.display()
-            ),
-        )
-    })?;
+    verify_expected_source(&path, session.source_digest.as_deref())?;
     let bytes = serde_json::to_vec_pretty(session).map_err(|error| {
         CliError::new(
             "session_invalid",
             format!("serialize managed session: {error}"),
         )
     })?;
-    let temporary = path.with_extension(format!("json.tmp-{}", std::process::id()));
-    let mut file = fs::File::create(&temporary).map_err(|error| {
-        CliError::new(
-            "session_io",
-            format!(
-                "write managed session temp {}: {error}",
-                temporary.display()
-            ),
-        )
-    })?;
+    let counter = SESSION_ID_COUNTER.fetch_add(1, Ordering::Relaxed);
+    let temporary = path.with_extension(format!("json.tmp-{}-{counter}", std::process::id()));
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&temporary)
+        .map_err(|error| {
+            CliError::new(
+                "session_io",
+                format!(
+                    "write managed session temp {}: {error}",
+                    temporary.display()
+                ),
+            )
+        })?;
     file.write_all(&bytes).map_err(|error| {
         CliError::new(
             "session_io",
@@ -408,51 +549,49 @@ pub(super) fn save(session: &ManagedSession) -> Result<(), CliError> {
         )
     })?;
     drop(file);
-    match fs::rename(&temporary, &path) {
-        Ok(()) => Ok(()),
-        Err(first) if path.exists() => {
-            fs::remove_file(&path).map_err(|remove| {
-                CliError::new(
-                    "session_io",
-                    format!(
-                        "replace managed session {}: {first}; remove existing failed: {remove}",
-                        path.display()
-                    ),
-                )
-            })?;
-            fs::rename(&temporary, &path).map_err(|error| {
-                CliError::new(
-                    "session_io",
-                    format!("commit managed session {}: {error}", path.display()),
-                )
-            })
-        }
-        Err(error) => Err(CliError::new(
+    if let Err(error) = atomic_replace(&temporary, &path) {
+        let _ = fs::remove_file(&temporary);
+        return Err(CliError::new(
             "session_io",
-            format!("commit managed session {}: {error}", path.display()),
-        )),
+            format!(
+                "atomically commit managed session {}: {error}",
+                path.display()
+            ),
+        ));
     }
+    sync_directory(&root).map_err(|error| {
+        CliError::new(
+            "session_io",
+            format!("sync managed session directory {}: {error}", root.display()),
+        )
+    })?;
+    session.source_digest = Some(digest_bytes(&bytes));
+    Ok(())
 }
 
 fn load_path(path: &Path) -> Result<ManagedSession, CliError> {
     let bytes = fs::read(path)
         .map_err(|error| CliError::new("session_io", format!("{}: {error}", path.display())))?;
-    let session: ManagedSession = serde_json::from_slice(&bytes).map_err(|error| {
+    let mut session: ManagedSession = serde_json::from_slice(&bytes).map_err(|error| {
         CliError::new(
             "session_invalid",
             format!("invalid managed session {}: {error}", path.display()),
         )
     })?;
     validate(&session)?;
+    session.source_digest = Some(digest_bytes(&bytes));
     Ok(session)
 }
 
-fn load_all() -> Result<Vec<ManagedSession>, CliError> {
+fn scan_all() -> Result<(Vec<ManagedSession>, Vec<ManagedSessionProblem>), CliError> {
     let root = session_root()?;
     if !root.exists() {
-        return Ok(vec![]);
+        return Ok((vec![], vec![]));
     }
+    let _lock = store_lock(&root)?;
+    cleanup_interrupted_temps(&root)?;
     let mut sessions = Vec::new();
+    let mut problems = Vec::new();
     for entry in fs::read_dir(&root).map_err(|error| {
         CliError::new(
             "session_io",
@@ -464,20 +603,41 @@ fn load_all() -> Result<Vec<ManagedSession>, CliError> {
         if path.extension().and_then(|value| value.to_str()) != Some("json") {
             continue;
         }
-        sessions.push(load_path(&path)?);
+        match load_path(&path) {
+            Ok(session) => sessions.push(session),
+            Err(error) => problems.push(ManagedSessionProblem {
+                file_name: path
+                    .file_name()
+                    .and_then(|name| name.to_str())
+                    .unwrap_or("<non-utf8-session>")
+                    .to_string(),
+                state: if error.failure_class == "session_incompatible" {
+                    "incompatible"
+                } else {
+                    "corrupt"
+                },
+                message: error.message,
+            }),
+        }
     }
     sessions.sort_by_key(|session| std::cmp::Reverse(session.updated_at_unix_ms));
-    Ok(sessions)
+    problems.sort_by(|left, right| left.file_name.cmp(&right.file_name));
+    Ok((sessions, problems))
+}
+
+fn load_all() -> Result<Vec<ManagedSession>, CliError> {
+    scan_all().map(|(sessions, _)| sessions)
 }
 
 pub(super) fn list() -> Result<ManagedSessionListOutput, CliError> {
-    let sessions = load_all()?
-        .into_iter()
-        .map(|session| session.summary())
-        .collect();
+    let (sessions, problems) = scan_all()?;
     Ok(ManagedSessionListOutput {
         session_contract: MANAGED_SESSION_CONTRACT_ID,
-        sessions,
+        sessions: sessions
+            .into_iter()
+            .map(|session| session.summary())
+            .collect(),
+        problems,
     })
 }
 
@@ -533,6 +693,64 @@ mod tests {
         let second = ManagedSession::new("/tmp/project".into());
         assert_ne!(first.id, second.id);
         assert_ne!(first.short_id, second.short_id);
+    }
+
+    fn test_path(label: &str) -> PathBuf {
+        let counter = SESSION_ID_COUNTER.fetch_add(1, Ordering::Relaxed);
+        env::temp_dir().join(format!("reason-{label}-{}-{counter}", std::process::id()))
+    }
+
+    #[test]
+    fn source_digest_is_not_part_of_v1_wire_format() {
+        let mut session = ManagedSession::new("/tmp/project".into());
+        session.source_digest = Some("sha256:test".into());
+        let json = serde_json::to_string(&session).unwrap();
+        assert!(!json.contains("source_digest"));
+        let decoded: ManagedSession = serde_json::from_str(&json).unwrap();
+        assert!(decoded.source_digest.is_none());
+    }
+
+    #[test]
+    fn optimistic_source_check_rejects_stale_overwrite() {
+        let path = test_path("digest-conflict");
+        fs::write(&path, b"one").unwrap();
+        let expected = digest_bytes(b"one");
+        verify_expected_source(&path, Some(&expected)).unwrap();
+        fs::write(&path, b"two").unwrap();
+        let error = verify_expected_source(&path, Some(&expected)).unwrap_err();
+        assert_eq!(error.failure_class, "session_conflict");
+        let _ = fs::remove_file(path);
+    }
+
+    #[test]
+    fn atomic_replace_overwrites_existing_destination_without_remove_gap() {
+        let root = test_path("atomic-root");
+        fs::create_dir_all(&root).unwrap();
+        let source = root.join("source.tmp");
+        let destination = root.join("session.json");
+        fs::write(&source, b"new").unwrap();
+        fs::write(&destination, b"old").unwrap();
+        atomic_replace(&source, &destination).unwrap();
+        assert_eq!(fs::read(&destination).unwrap(), b"new");
+        assert!(!source.exists());
+        let _ = fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn advisory_store_lock_excludes_second_writer() {
+        let root = test_path("lock-root");
+        let first = store_lock(&root).unwrap();
+        let second_path = root.join(".store.lock");
+        let second = fs::OpenOptions::new()
+            .read(true)
+            .write(true)
+            .open(&second_path)
+            .unwrap();
+        assert!(second.try_lock_exclusive().is_err());
+        drop(first);
+        second.try_lock_exclusive().unwrap();
+        FileExt::unlock(&second).unwrap();
+        let _ = fs::remove_dir_all(root);
     }
 
     #[test]
