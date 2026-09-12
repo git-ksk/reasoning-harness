@@ -15,6 +15,8 @@ reason update --check --format json
 
 `--check` discovers published `reason-v*` releases, downloads only `release-manifest.json`, verifies its GitHub OIDC/Sigstore attestation, and reports Reason CLI and Harness Engine versions separately. It never downloads or replaces the native archive.
 
+Automatic discovery considers only stable SemVer `reason-v*` releases. `-beta` / `-rc` prereleases are never selected implicitly and require an explicit `--version`.
+
 For an explicit target:
 
 ```bash

@@ -3,15 +3,31 @@ import json
 import os
 import platform
 import subprocess
+import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-REASON = ROOT / "target" / "debug" / ("reason.exe" if platform.system() == "Windows" else "reason")
+
+def cargo_target_dir():
+    explicit = os.environ.get("CARGO_TARGET_DIR")
+    if explicit:
+        return Path(explicit)
+    cargo = os.environ.get("CARGO") or shutil.which("cargo")
+    if not cargo:
+        fallback = Path.home() / ".cargo" / "bin" / ("cargo.exe" if platform.system() == "Windows" else "cargo")
+        cargo = str(fallback)
+    metadata = subprocess.run(
+        [cargo, "metadata", "--locked", "--no-deps", "--format-version", "1"],
+        cwd=ROOT, text=True, capture_output=True, check=True
+    )
+    return Path(json.loads(metadata.stdout)["target_directory"])
+
+REASON = cargo_target_dir() / "debug" / ("reason.exe" if platform.system() == "Windows" else "reason")
 
 
 def run(args, expected):
     env = os.environ.copy()
-    env["REASON_HOME"] = str(ROOT / "target" / "lifecycle-smoke-home")
+    env["REASON_HOME"] = str(cargo_target_dir() / "lifecycle-smoke-home")
     completed = subprocess.run(
         [str(REASON), *args], text=True, capture_output=True, env=env, check=False
     )

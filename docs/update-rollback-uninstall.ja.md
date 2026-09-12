@@ -15,6 +15,8 @@ reason update --check --format json
 
 `--check`は公開済み`reason-v*`を探索し、`release-manifest.json`だけを取得してGitHub OIDC/Sigstore attestationを検証します。Reason CLIとHarness Engineのversionを別々に表示し、native archiveのdownload・置換は行いません。
 
+自動discoveryはSemVerのstable `reason-v*`だけを対象にします。`-beta` / `-rc`等のprereleaseは自動選択せず、試す場合は`--version`で明示します。
+
 明示versionも確認できます。
 
 ```bash
