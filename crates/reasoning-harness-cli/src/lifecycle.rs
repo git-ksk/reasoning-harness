@@ -412,19 +412,23 @@ async fn discover_latest_split_release() -> Result<Version, CliError> {
         ));
     }
     let releases: Vec<GithubRelease> = response.json().await.map_err(network_error)?;
+    select_latest_split_release(releases).ok_or_else(|| {
+        CliError::new(
+            "release_discovery",
+            "no published stable split Reason CLI release (reason-v*) was found; prereleases require --version",
+        )
+    })
+}
+
+fn select_latest_split_release(releases: Vec<GithubRelease>) -> Option<Version> {
     releases
         .into_iter()
         .filter(|release| !release.draft)
         .filter_map(|release| release.tag_name.strip_prefix("reason-v").map(str::to_owned))
         .filter_map(|value| Version::parse(&value).ok())
         .filter(|version| *version >= minimum_split_version())
+        .filter(|version| version.pre.is_empty())
         .max()
-        .ok_or_else(|| {
-            CliError::new(
-                "release_discovery",
-                "no published split Reason CLI release (reason-v*) was found",
-            )
-        })
 }
 
 fn normalize_split_version(value: &str) -> Result<Version, CliError> {
@@ -1185,7 +1189,7 @@ fn emit_update(
         provenance: "github_oidc_sigstore+manifest_sha256+release_sha256",
     };
     match format {
-        OutputFormat::Json => print_product_json("update", &output).map_err(CliError::from),
+        OutputFormat::Json => print_product_json(operation, &output).map_err(CliError::from),
         OutputFormat::Human => {
             println!(
                 "Reason CLI: {} -> {} ({:?})",
@@ -1274,6 +1278,32 @@ mod tests {
         assert_eq!(
             compare_direction(&current, &Version::parse("0.5.0").unwrap()),
             LifecycleDirection::Rollback
+        );
+    }
+
+    #[test]
+    fn automatic_release_selection_excludes_semver_prereleases_and_drafts() {
+        let releases = vec![
+            GithubRelease {
+                tag_name: "reason-v0.5.0".into(),
+                draft: false,
+            },
+            GithubRelease {
+                tag_name: "reason-v0.6.0-beta.1".into(),
+                draft: false,
+            },
+            GithubRelease {
+                tag_name: "reason-v0.5.1".into(),
+                draft: true,
+            },
+            GithubRelease {
+                tag_name: "v0.4.2".into(),
+                draft: false,
+            },
+        ];
+        assert_eq!(
+            select_latest_split_release(releases),
+            Some(Version::parse("0.5.0").unwrap())
         );
     }
 
