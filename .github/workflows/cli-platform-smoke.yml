@@ -38,6 +38,32 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Build supported CLI and MCP adapter
         run: cargo build --locked -p reasoning-harness-cli --bin reason --bin reason-mcp
+      - name: Subprocess environment isolation baseline
+        env:
+          REASON_SUBPROCESS_SENTINEL_SECRET: ci-sentinel-must-not-leak
+        run: >-
+          cargo test --locked -p reasoning-harness-providers
+          subprocess_environment::tests::child_environment_strips_ambient_sentinel_and_preserves_launch_baseline
+          -- --exact --nocapture
+      - name: External acquisition subprocess lanes do not inherit ambient secrets
+        if: runner.os != 'Windows'
+        env:
+          REASON_SUBPROCESS_SENTINEL_SECRET: ci-sentinel-must-not-leak
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo test --locked -p reasoning-harness-providers \
+            external_command::tests::command_adapter_exchanges_typed_stdio_without_trust_promotion \
+            -- --exact --nocapture
+          cargo test --locked -p reasoning-harness-providers \
+            mcp_readonly_v2::tests::modern_stdio_call_carries_protocol_and_stable_provenance \
+            -- --exact --nocapture
+          cargo test --locked -p reasoning-harness-providers \
+            mcp_readonly_v3::tests::negotiated_session_accepts_allowlisted_downgrade_and_keeps_generic_content_opaque \
+            -- --exact --nocapture
+          cargo test --locked -p reasoning-harness-providers \
+            trusted_command::tests::verifier_constructs_exact_receipt_in_harness_not_from_external_fields \
+            -- --exact --nocapture
       - name: Product CLI compatibility contract
         run: cargo test --locked -p reasoning-harness-cli --test product_cli_contract
       - name: MCP product-surface contract

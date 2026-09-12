@@ -16,6 +16,7 @@ use crate::{
     config_identity::stable_config_id,
     mcp_readonly::{MCP_PROTOCOL_VERSION, McpReadOnlyResolverConfig},
     subprocess_deadline::run_until_line,
+    subprocess_environment::isolate_subprocess_environment,
 };
 
 pub const MCP_READONLY_V2_RESOLVER_ID: &str = "mcp_readonly_v2";
@@ -230,6 +231,7 @@ impl ResolutionResolver for McpReadOnlyResolverV2 {
 
         let mut command = Command::new(&self.config.program);
         command.args(&self.config.args);
+        isolate_subprocess_environment(&mut command);
         let line = run_until_line(
             &mut command,
             payload,
@@ -314,6 +316,8 @@ mod tests {
     fn modern_stdio_call_carries_protocol_and_stable_provenance() {
         let path = script(
             r#"#!/bin/sh
+[ -z "${REASON_SUBPROCESS_SENTINEL_SECRET+x}" ] || exit 90
+[ -n "${PATH:-}" ] || exit 91
 read request
 printf '%s' "$request" | grep -q '"method":"tools/call"' || exit 2
 printf '%s' "$request" | grep -q '"io.modelcontextprotocol/protocolVersion":"2026-07-28"' || exit 3
