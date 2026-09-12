@@ -5414,7 +5414,7 @@ impl Cli {
 }
 
 #[tokio::main]
-async fn main() -> ExitCode {
+async fn reason_main() -> ExitCode {
     let cli = Cli::parse();
     let error_context = cli.product_error_context();
     match run(cli).await {
@@ -8073,6 +8073,26 @@ fn print_json(value: &impl Serialize) -> Result<(), String> {
         serde_json::to_string_pretty(value).map_err(|error| error.to_string())?
     );
     Ok(())
+}
+
+#[cfg(not(windows))]
+fn main() -> ExitCode {
+    reason_main()
+}
+
+#[cfg(windows)]
+fn main() -> ExitCode {
+    // Windows uses a smaller default main-thread stack than the other supported
+    // platforms. Clap's derived command tree plus the async product entry point
+    // can exceed that budget in debug/test builds, so run the unchanged product
+    // entry point on an explicitly bounded 8 MiB stack.
+    std::thread::Builder::new()
+        .name("reason-main".into())
+        .stack_size(8 * 1024 * 1024)
+        .spawn(reason_main)
+        .expect("spawn Reason CLI main thread")
+        .join()
+        .unwrap_or_else(|_| ExitCode::FAILURE)
 }
 
 #[cfg(test)]
