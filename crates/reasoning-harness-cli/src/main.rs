@@ -3640,34 +3640,35 @@ async fn execute_natural_inner(
     } else {
         None
     };
-    let mcp_resolver: Option<Box<dyn ResolutionResolver>> = if let Some(config) =
-        mcp_resolver_config
-    {
-        Some(Box::new(
-            McpReadOnlyResolverV3::new(config).with_cancellation(cancellation.clone()),
-        ))
-    } else if let Some(config) = mcp_remote_config {
-        let token = config
-            .oauth
-            .as_ref()
-            .map(|oauth| {
-                mcp_oauth::access_token(
-                    &config.resolver.server_id,
-                    &config.resolver.endpoint,
-                    oauth,
-                )
-            })
-            .transpose()?;
-        let resolver = McpRemoteReadOnlyResolver::new(config.resolver, token).map_err(|kind| {
-            CliError::new(
-                "mcp_configuration",
-                format!("remote MCP resolver rejected configuration: {kind:?}"),
-            )
-        })?;
-        Some(Box::new(resolver))
-    } else {
-        None
-    };
+    let mcp_resolver: Option<Box<dyn ResolutionResolver>> =
+        if let Some(config) = mcp_resolver_config {
+            Some(Box::new(
+                McpReadOnlyResolverV3::new(config).with_cancellation(cancellation.clone()),
+            ))
+        } else if let Some(config) = mcp_remote_config {
+            let token = config
+                .oauth
+                .as_ref()
+                .map(|oauth| {
+                    mcp_oauth::access_token(
+                        &config.resolver.server_id,
+                        &config.resolver.endpoint,
+                        oauth,
+                    )
+                })
+                .transpose()?;
+            let resolver = McpRemoteReadOnlyResolver::new(config.resolver, token)
+                .map_err(|kind| {
+                    CliError::new(
+                        "mcp_configuration",
+                        format!("remote MCP resolver rejected configuration: {kind:?}"),
+                    )
+                })?
+                .with_cancellation(cancellation.clone());
+            Some(Box::new(resolver))
+        } else {
+            None
+        };
     let mcp_admission = mcp_admission_config
         .or(mcp_remote_admission_config)
         .map(ExternalEvidenceAdmissionPolicy::new);

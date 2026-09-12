@@ -78,7 +78,7 @@ reason mcp remove docs
 
 `add` / `add-remote`が保存するのはnon-secret configだけです。active sourceの置換には`--replace`が必要で、local / remote acquisition transportはmutually exclusiveです。`list` / `inspect`はlocal executable argument valueやOAuth token valueを表示しません。`test`はselected toolを実行しません。localはnegotiation + `tools/list`、remoteはstateless `tools/list`までで停止し、どちらもselected toolの`readOnlyHint=true`を必須にします。
 
-remote adapterはMCP `2026-07-28`へpinします。各requestにprotocol revision / client identity / capabilityを載せ、HTTP routing headerも送信します。`x-mcp-header`付きselected toolはparameter-to-header contractをまだ公開していないためfail closedです。remote MCP endpointとOAuth metadata endpointはHTTPS必須で、loopback HTTPはdeterministic local testだけ許可します。
+remote adapterはMCP `2026-07-28`へpinします。各requestにprotocol revision / client identity / capabilityを載せ、HTTP routing headerも送信します。`x-mcp-header`付きselected toolはparameter-to-header contractをまだ公開していないためfail closedです。remote MCP endpointとOAuth metadata endpointはHTTPS必須で、loopback HTTPはdeterministic local testだけ許可します。remote readiness / acquisitionはReasonのCtrl+C cancellation tokenを共有し、pending HTTP response/body workをpromptにdropしてjoined workerをoperation return前に終了します。`reason mcp test`もtoolを実行せず同じtyped cancellation pathを使います。
 
 `reason mcp login`はauthorization code + PKCEとloopback callbackを使います。Reasonがcodeをredeemする前に`state`一致とRFC 9207 `iss`のconfigured issuer一致を必須にします。`--no-browser`ではbrowserを開かずauthorization URLを表示するため、SSH/headless環境でも利用できます。access/refresh tokenはnative OS credential storeだけに保存し、MCP source名 / authorization issuer / client ID / exact resource endpointへbindします。issuer/client/resourceが変わった場合、古いcredentialを再利用しません。期限切れtokenのrefreshもconfigured issuer/token endpointだけへ送ります。`logout`はconfigの`remove`後でも実行できるため、orphan credentialを明示削除できます。
 
