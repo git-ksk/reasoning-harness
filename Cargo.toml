@@ -26,3 +26,4 @@ keyring = { version = "4.2.0", default-features = false, features = ["v1"] }
 rpassword = "7.5.4"
 semver = { version = "1", features = ["serde"] }
 fs2 = "0.4"
+libc = "0.2"

@@ -226,6 +226,7 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 | `reason schema` | versioned machine contractの確認。 |
 `/add`、multiline input、TTY/JSON dispatch、privacy boundaryを含むinteractive REPLの詳細は[対話型ターミナルUX](docs/reason-interactive.ja.md)を参照してください。
 managed sessionのlock、optimistic concurrency、crash recovery、rollback compatibilityは[Managed session durability](docs/reason-managed-sessions.ja.md)を参照してください。
+local storage、ephemeral mode、retention/purge、uninstall、outbound-data boundaryは[Local privacy / retention](docs/reason-local-privacy.ja.md)を参照してください。
 
 
 Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groq向けのprovider adapterを実装済みです。現在のruntimeには、read-only MCPによる取得、外部resolver、明示的にtrustedなdeterministic verifier、bounded investigation、再開可能なsessionも含まれます。

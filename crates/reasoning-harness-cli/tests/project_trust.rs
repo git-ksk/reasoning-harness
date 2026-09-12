@@ -148,6 +148,22 @@ fn high_risk_project_config_is_fail_closed_until_explicitly_trusted() {
     let add = trust_json(&home, &project, &["trust", "add", "--format", "json"]);
     assert_eq!(add["result"]["state"], "trusted");
     assert_eq!(add["result"]["trusted"], true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        assert_eq!(
+            fs::metadata(&home).unwrap().permissions().mode() & 0o777,
+            0o700
+        );
+        assert_eq!(
+            fs::metadata(home.join("project-trust.json"))
+                .unwrap()
+                .permissions()
+                .mode()
+                & 0o777,
+            0o600
+        );
+    }
     assert_eq!(
         add["result"]["executable_programs"][0],
         fs::canonicalize(reason_bin()).unwrap().to_str().unwrap()

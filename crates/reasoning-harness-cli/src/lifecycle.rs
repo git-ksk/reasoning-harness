@@ -12,7 +12,8 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 use super::{
-    CliError, OutputFormat, Provider, print_product_json, secure_credentials, user_config_path,
+    CliError, OutputFormat, Provider, managed_session, print_product_json, secure_credentials,
+    user_config_path,
 };
 
 const REPOSITORY: &str = "git-ksk/reasoning-harness";
@@ -56,7 +57,7 @@ pub(crate) struct UninstallArgs {
     /// Uninstall without an interactive confirmation prompt.
     #[arg(long)]
     pub(crate) yes: bool,
-    /// Remove Reason-managed config.json and project-trust.json. Explicit-path session files are retained.
+    /// Remove Reason-managed config.json, project-trust.json, and managed interactive sessions. Explicit-path session files are retained.
     #[arg(long)]
     pub(crate) purge_data: bool,
     /// Remove supported provider credentials from the native OS credential store. Environment variables are untouched.
@@ -267,7 +268,7 @@ pub(crate) async fn run_update(args: UpdateArgs) -> Result<(), CliError> {
 
 pub(crate) fn run_uninstall(args: UninstallArgs) -> Result<(), CliError> {
     let executable = current_executable()?;
-    let data_files = managed_data_files();
+    let data_files = managed_data_paths();
     if !args.dry_run {
         confirm_mutation(
             args.yes,
@@ -295,7 +296,12 @@ pub(crate) fn run_uninstall(args: UninstallArgs) -> Result<(), CliError> {
     let mut data_removed = 0usize;
     if args.purge_data && !args.dry_run {
         for path in &data_files {
-            if path.exists() {
+            if path.is_dir() {
+                fs::remove_dir_all(path).map_err(|error| {
+                    CliError::new("uninstall_io", format!("{}: {error}", path.display()))
+                })?;
+                data_removed += 1;
+            } else if path.exists() {
                 fs::remove_file(path).map_err(|error| {
                     CliError::new("uninstall_io", format!("{}: {error}", path.display()))
                 })?;
@@ -341,9 +347,12 @@ pub(crate) fn run_uninstall(args: UninstallArgs) -> Result<(), CliError> {
                 println!("Binary removed.");
             }
             if args.purge_data {
-                println!("Managed data removed: {} file(s).", output.data_removed);
+                println!(
+                    "Managed data removed: {} managed path(s).",
+                    output.data_removed
+                );
             } else {
-                println!("Managed config/trust data retained.");
+                println!("Managed config/trust/session data retained.");
             }
             if args.purge_credentials {
                 println!(
@@ -1112,15 +1121,18 @@ fn remove_current_executable(path: &Path) -> Result<bool, CliError> {
     Ok(true)
 }
 
-fn managed_data_files() -> Vec<PathBuf> {
+fn managed_data_paths() -> Vec<PathBuf> {
     let Some(config) = user_config_path() else {
         return vec![];
     };
-    let mut files = vec![config.clone()];
+    let mut paths = vec![config.clone()];
     if let Some(parent) = config.parent() {
-        files.push(parent.join("project-trust.json"));
+        paths.push(parent.join("project-trust.json"));
     }
-    files
+    if let Ok(sessions) = managed_session::managed_root_path() {
+        paths.push(sessions);
+    }
+    paths
 }
 
 fn confirm_mutation(yes: bool, format: OutputFormat, prompt: &str) -> Result<(), CliError> {
@@ -1443,13 +1455,16 @@ mod tests {
 
     #[test]
     fn managed_data_scope_never_discovers_arbitrary_session_files() {
-        let files = managed_data_files();
+        let files = managed_data_paths();
         for path in files {
             let name = path
                 .file_name()
                 .and_then(|value| value.to_str())
                 .unwrap_or_default();
-            assert!(matches!(name, "config.json" | "project-trust.json"));
+            assert!(matches!(
+                name,
+                "config.json" | "project-trust.json" | "sessions"
+            ));
         }
     }
 }

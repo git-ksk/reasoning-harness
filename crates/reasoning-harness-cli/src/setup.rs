@@ -52,6 +52,9 @@ struct SetupOutput {
     live_provider_attempts: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     live_total_tokens: Option<u64>,
+    first_party_telemetry: bool,
+    outbound_data_notice: &'static str,
+    credential_storage_notice: &'static str,
     first_command: &'static str,
 }
 
@@ -141,6 +144,9 @@ pub(crate) async fn run(args: SetupArgs) -> Result<(), CliError> {
         live_readiness,
         live_provider_attempts,
         live_total_tokens,
+        first_party_telemetry: false,
+        outbound_data_notice: "Tasks and untrusted context used for model generation are sent to the selected provider. Configured MCP/external resolvers receive only their bounded acquisition requests/arguments. Reason does not send first-party telemetry by default.",
+        credential_storage_notice: "Provider credentials stay in the native OS credential store (or the explicit environment source) and are not written to Reason sessions, history, config, diagnostics, stdout, or stderr.",
         first_command: FIRST_COMMAND,
     };
     emit(&output, args.format)
@@ -349,6 +355,8 @@ fn emit(output: &SetupOutput, format: OutputFormat) -> Result<(), CliError> {
             println!("Config: {}", output.config_path);
             println!("Local readiness: {}", output.local_readiness);
             println!("Live readiness: {}", output.live_readiness);
+            println!("Privacy: {}", output.outbound_data_notice);
+            println!("Credentials: {}", output.credential_storage_notice);
             println!("Try this next:");
             println!("  {}", output.first_command);
             Ok(())

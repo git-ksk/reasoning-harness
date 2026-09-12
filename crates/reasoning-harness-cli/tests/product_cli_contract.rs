@@ -488,6 +488,22 @@ fn model_catalog_and_default_switch_preserve_user_config_and_fail_closed() {
         .expect("set model default");
     assert_eq!(output.status.code(), Some(0));
     assert!(output.stderr.is_empty());
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        assert_eq!(
+            std::fs::metadata(&temp).unwrap().permissions().mode() & 0o777,
+            0o700
+        );
+        assert_eq!(
+            std::fs::metadata(&config_path)
+                .unwrap()
+                .permissions()
+                .mode()
+                & 0o777,
+            0o600
+        );
+    }
     assert!(!String::from_utf8_lossy(&output.stdout).contains("model-catalog-test-secret"));
     let value = json_stdout(&output);
     assert_eq!(value["command"], "model");
@@ -752,8 +768,11 @@ fn uninstall_dry_run_is_non_mutating_and_secret_free() {
     std::fs::create_dir_all(&temp).unwrap();
     let config = temp.join("config.json");
     let trust = temp.join("project-trust.json");
+    let sessions = temp.join("sessions");
     std::fs::write(&config, b"sentinel-config").unwrap();
     std::fs::write(&trust, b"sentinel-trust").unwrap();
+    std::fs::create_dir_all(&sessions).unwrap();
+    std::fs::write(sessions.join("sentinel.json"), b"sentinel-session").unwrap();
     let mut command = reason_command();
     let output = command
         .args(["uninstall", "--dry-run", "--purge-data", "--format", "json"])
@@ -779,5 +798,11 @@ fn uninstall_dry_run_is_non_mutating_and_secret_free() {
     assert_eq!(value["result"]["data_removed"], 0);
     assert!(config.exists());
     assert!(trust.exists());
+    assert!(sessions.join("sentinel.json").exists());
+    let data_files = value["result"]["data_files"].as_array().unwrap();
+    assert!(data_files.iter().any(|path| {
+        path.as_str()
+            .is_some_and(|p| p.ends_with("/sessions") || p.ends_with("\\sessions"))
+    }));
     std::fs::remove_dir_all(temp).ok();
 }
