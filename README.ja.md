@@ -218,6 +218,7 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 | `reason auth ...` | Reason CLI 0.5.0開発ライン: provider credentialの安全な追加・確認・rotation・削除。 |
 | `reason models [provider]` | Reason CLI 0.5.0開発ライン: curated model catalog、compatibility、credential readiness、current defaultを確認。 |
 | `reason model set <provider> <model>` | Reason CLI 0.5.0開発ライン: silent fallbackなしでgeneral-use provider/model defaultを保存。 |
+| `reason config list/get/set/unset/path/sources` | Reason CLI 0.5.0開発ライン: safeなeffective configとprecedence/provenanceを確認し、user-levelのnon-secret run defaultを編集。 |
 | `reason session list` | managed interactive sessionをhuman/JSONで一覧化。 |
 | `reason session ... --store PATH` | 低レベルtyped session互換surface: 明示session fileの保存・確認・追加・訂正・resume・fork・close。 |
 | `reason run` | Application / CI統合、live candidate生成。 |

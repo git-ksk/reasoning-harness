@@ -218,6 +218,7 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 | `reason auth ...` | Reason CLI 0.5.0 development: securely add, inspect, rotate, or remove provider credentials. |
 | `reason models [provider]` | Reason CLI 0.5.0 development: inspect the curated model catalog, compatibility metadata, credential readiness, and current default. |
 | `reason model set <provider> <model>` | Reason CLI 0.5.0 development: persist a curated general-use provider/model default without silent fallback. |
+| `reason config list/get/set/unset/path/sources` | Reason CLI 0.5.0 development: inspect safe effective config, explain precedence/provenance, and edit user-level non-secret run defaults. |
 | `reason session list` | List managed interactive sessions in human or JSON form. |
 | `reason session ... --store PATH` | Low-level typed session compatibility surface: persist, inspect, add, correct, resume, fork, or close an explicit session file. |
 | `reason run` | Structured application/CI integration and live candidate generation. |
