@@ -48,17 +48,41 @@ read-only toolが協調する場合、次のstructured payloadを任意で返せ
 
 ## Guided CLI管理
 
-0.5のsupported product pathでは、`reason mcp`がuser-scopedなlocal stdio sourceを1件activeとして管理します。
+0.5のsupported product pathでは、`reason mcp`がuser-scopedなread-only acquisition sourceを1件activeとして管理します。local stdioは従来どおりです。
 
 ```text
 reason mcp add inventory --program /path/to/mcp-server --arg=--stdio --tool lookup_item
 reason mcp test inventory
 reason mcp inspect inventory
-reason mcp list
 reason mcp remove inventory
 ```
 
-`add`は`read_only=true`、`resolver_class=evidence_acquisition`、selected toolの明示allowlistを持つ制約済み`resolution.mcp_readonly`を生成します。既存sourceの置換には`--replace`が必要です。credential/tokenらしいsecret引数は保存せずrejectし、`list` / `inspect`もexecutable argument valueを表示しません。`test`はnegotiationとbounded `tools/list` discoveryまでで停止し、serverの`readOnlyHint=true`を必須にします。`tools/call`は送らないためreadiness確認でacquisition toolを実行しません。remote HTTP/OAuth lifecycleは#386で別管理です。
+remote Streamable HTTPは2026-era専用transportとOAuth lifecycleを使います。
+
+```text
+reason mcp add-remote docs \
+  --endpoint https://mcp.example.com/mcp \
+  --tool search \
+  --issuer https://auth.example.com \
+  --authorization-endpoint https://auth.example.com/authorize \
+  --token-endpoint https://auth.example.com/token \
+  --client-id https://client.example.com/reason.json \
+  --scope mcp:read
+reason mcp login docs
+reason mcp login docs --no-browser
+reason mcp status docs
+reason mcp test docs
+reason mcp logout docs
+reason mcp remove docs
+```
+
+`add` / `add-remote`が保存するのはnon-secret configだけです。active sourceの置換には`--replace`が必要で、local / remote acquisition transportはmutually exclusiveです。`list` / `inspect`はlocal executable argument valueやOAuth token valueを表示しません。`test`はselected toolを実行しません。localはnegotiation + `tools/list`、remoteはstateless `tools/list`までで停止し、どちらもselected toolの`readOnlyHint=true`を必須にします。
+
+remote adapterはMCP `2026-07-28`へpinします。各requestにprotocol revision / client identity / capabilityを載せ、HTTP routing headerも送信します。`x-mcp-header`付きselected toolはparameter-to-header contractをまだ公開していないためfail closedです。remote MCP endpointとOAuth metadata endpointはHTTPS必須で、loopback HTTPはdeterministic local testだけ許可します。
+
+`reason mcp login`はauthorization code + PKCEとloopback callbackを使います。Reasonがcodeをredeemする前に`state`一致とRFC 9207 `iss`のconfigured issuer一致を必須にします。`--no-browser`ではbrowserを開かずauthorization URLを表示するため、SSH/headless環境でも利用できます。access/refresh tokenはnative OS credential storeだけに保存し、MCP source名 / authorization issuer / client ID / exact resource endpointへbindします。issuer/client/resourceが変わった場合、古いcredentialを再利用しません。期限切れtokenのrefreshもconfigured issuer/token endpointだけへ送ります。`logout`はconfigの`remove`後でも実行できるため、orphan credentialを明示削除できます。
+
+ReasonはDynamic Client Registrationを実行しません。authorization serverで利用可能なpre-registered public client IDまたはClient ID Metadata Document URLを設定し、`reason-config-v1`に`client_secret` surfaceは持たせません。project-level remote MCP configはhigh-risk network acquisition configとして扱い、`reason trust add`でprojectを承認するまでfail closedです。
 
 ## 設定
 
@@ -97,7 +121,7 @@ reason mcp remove inventory
 }
 ```
 
-対象local MCP subprocessは#387のminimal isolated environmentから起動し、親environment全体をinheritしません。config schemaはcredential-likeな未知fieldをrejectし、guided管理もcredential/tokenらしいsecret引数をrejectします。resolver/admission telemetryにはliteral command argumentではなくstable hash化したconfig identityを記録します。
+対象local MCP subprocessは#387のminimal isolated environmentから起動し、親environment全体をinheritしません。remote Bearer tokenはHTTP requestへだけinjectし、resolver config identity / telemetry / config file / session / evidence / stdout / normal diagnosticsから除外します。config schemaは`access_token`、`refresh_token`、`client_secret`、`api_key`などcredential-like unknown fieldをrejectします。resolver/admission telemetryにはnon-secret configだけから作るstable hash identityを記録します。
 
 ## 運用上の失敗と再実行
 

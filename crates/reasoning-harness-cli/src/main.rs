@@ -7,6 +7,7 @@ mod lifecycle;
 mod local_privacy;
 mod managed_session;
 mod mcp_commands;
+mod mcp_oauth;
 mod model_catalog;
 mod progress;
 mod project_trust;
@@ -70,17 +71,19 @@ use reasoning_harness_core::{
 };
 use reasoning_harness_providers::{
     DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS,
-    DEFAULT_MCP_READONLY_V3_MAX_TOOL_LIST_PAGES, DEFAULT_MCP_RESOLVER_MAX_RESPONSE_BYTES,
-    DEFAULT_MCP_RESOLVER_TIMEOUT_MS, DEFAULT_TRUSTED_COMMAND_MAX_RESPONSE_BYTES,
-    DEFAULT_TRUSTED_COMMAND_TIMEOUT_MS, EXTERNAL_COMMAND_RESOLVER_ID,
-    EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver, ExternalCommandResolverConfig,
-    ExternalEvidenceAdmissionConfig, ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy,
-    GoogleAdapter, GroqAdapter, INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID,
-    InvestigationExternalCommandResolver, MCP_PROTOCOL_VERSION,
-    MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION, MCP_READONLY_V3_RESOLVER_ID,
-    McpReadOnlyResolverConfig, McpReadOnlyResolverV3, McpReadOnlyResolverV3Config, MistralAdapter,
-    NvidiaAdapter, SubprocessCancellation, TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier,
-    TrustedCommandVerifierConfig,
+    DEFAULT_MCP_READONLY_V3_MAX_TOOL_LIST_PAGES, DEFAULT_MCP_REMOTE_MAX_RESPONSE_BYTES,
+    DEFAULT_MCP_REMOTE_MAX_TOOL_LIST_PAGES, DEFAULT_MCP_REMOTE_TIMEOUT_MS,
+    DEFAULT_MCP_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_MCP_RESOLVER_TIMEOUT_MS,
+    DEFAULT_TRUSTED_COMMAND_MAX_RESPONSE_BYTES, DEFAULT_TRUSTED_COMMAND_TIMEOUT_MS,
+    EXTERNAL_COMMAND_RESOLVER_ID, EXTERNAL_EVIDENCE_ADMISSION_ID, ExternalCommandResolver,
+    ExternalCommandResolverConfig, ExternalEvidenceAdmissionConfig,
+    ExternalEvidenceAdmissionPolicy, ExternalEvidenceSourcePolicy, GoogleAdapter, GroqAdapter,
+    INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID, InvestigationExternalCommandResolver,
+    MCP_PROTOCOL_VERSION, MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION, MCP_READONLY_V3_RESOLVER_ID,
+    MCP_REMOTE_PROTOCOL_VERSION, MCP_REMOTE_READONLY_RESOLVER_ID, McpReadOnlyResolverConfig,
+    McpReadOnlyResolverV3, McpReadOnlyResolverV3Config, McpRemoteReadOnlyResolver,
+    McpRemoteReadOnlyResolverConfig, MistralAdapter, NvidiaAdapter, SubprocessCancellation,
+    TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier, TrustedCommandVerifierConfig,
 };
 use schemars::{JsonSchema, schema_for};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -343,6 +346,7 @@ struct RunFileConfig {
 struct ResolutionFileConfig {
     external_command: Option<ExternalCommandResolverFileConfig>,
     mcp_readonly: Option<McpReadOnlyResolverFileConfig>,
+    mcp_remote_readonly: Option<McpRemoteReadOnlyResolverFileConfig>,
     trusted_command: Option<TrustedCommandVerifierFileConfig>,
     investigation: Option<InvestigationFileConfig>,
 }
@@ -486,6 +490,52 @@ struct McpReadOnlyResolverFileConfig {
     max_response_bytes: Option<usize>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     admission: Option<ExternalEvidenceAdmissionFileConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct McpRemoteReadOnlyResolverFileConfig {
+    server_id: String,
+    endpoint: String,
+    #[serde(default)]
+    allowed_tools: BTreeSet<String>,
+    tool: String,
+    read_only: bool,
+    resolver_class: String,
+    #[serde(default)]
+    fixed_arguments: BTreeMap<String, serde_json::Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    provenance_argument: Option<String>,
+    source: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    protocol_version: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max_tool_list_pages: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    timeout_ms: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max_response_bytes: Option<usize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    oauth: Option<McpRemoteOAuthFileConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    admission: Option<ExternalEvidenceAdmissionFileConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+struct McpRemoteOAuthFileConfig {
+    issuer: String,
+    authorization_endpoint: String,
+    token_endpoint: String,
+    client_id: String,
+    #[serde(default)]
+    scopes: Vec<String>,
+}
+
+#[derive(Debug, Clone)]
+struct ResolvedMcpRemoteConfig {
+    resolver: McpRemoteReadOnlyResolverConfig,
+    oauth: Option<McpRemoteOAuthFileConfig>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
@@ -1888,17 +1938,22 @@ JSON and piped modes stay non-interactive and decoration-free."#
 Credentials stay in the native OS credential store; config is non-secret."#
         }
         Some(ExampleTopic::Mcp) => {
-            r#"Manage a local read-only MCP acquisition source:
+            r#"Manage one active local or remote read-only MCP acquisition source:
   reason mcp add inventory --program /path/to/server --tool lookup
   reason mcp test inventory
-  reason mcp inspect inventory
-  reason mcp list
-  reason mcp remove inventory
+  reason mcp add-remote docs --endpoint https://mcp.example.com/mcp --tool search --issuer https://auth.example.com --authorization-endpoint https://auth.example.com/authorize --token-endpoint https://auth.example.com/token --client-id https://client.example.com/reason.json --scope mcp:read --replace
+  reason mcp login docs
+  reason mcp login docs --no-browser
+  reason mcp status docs
+  reason mcp test docs
+  reason mcp inspect docs
+  reason mcp logout docs
+  reason mcp remove docs
+
+OAuth tokens stay in the native OS credential store and are never written to Reason config. Managed acquisition remains read-only and non-promoting: MCP output is data, not authority.
 
 This is separate from the optional `reason-mcp` binary, which exposes Reason itself to external MCP clients:
-  reason-mcp --reason-command /path/to/reason
-
-Managed acquisition remains read-only and non-promoting: MCP output is data, not authority."#
+  reason-mcp --reason-command /path/to/reason"#
         }
         Some(ExampleTopic::Update) => {
             r#"Updates:
@@ -3455,7 +3510,13 @@ async fn execute_natural_inner(
         .map_err(|error| CliError::new("configuration", error))?;
     let mcp_resolver_config = resolve_mcp_readonly_config(&loaded_config)
         .map_err(|error| CliError::new("configuration", error))?;
+    let mcp_remote_config = resolve_mcp_remote_readonly_config(&loaded_config)
+        .map_err(|error| CliError::new("configuration", error))?;
+    ensure_mcp_transport_exclusivity(mcp_resolver_config.is_some(), mcp_remote_config.is_some())
+        .map_err(|error| CliError::new("configuration", error))?;
     let mcp_admission_config = resolve_mcp_admission_config(&loaded_config)
+        .map_err(|error| CliError::new("configuration", error))?;
+    let mcp_remote_admission_config = resolve_mcp_remote_admission_config(&loaded_config)
         .map_err(|error| CliError::new("configuration", error))?;
     let trusted_verifier_config = resolve_trusted_command_config(&loaded_config)
         .map_err(|error| CliError::new("configuration", error))?;
@@ -3471,18 +3532,24 @@ async fn execute_natural_inner(
         .map_err(|error| CliError::new("configuration", error))?;
     let configured_resolver_modes = usize::from(!args.resolver_fact.is_empty())
         + usize::from(external_resolver_config.is_some())
-        + usize::from(mcp_resolver_config.is_some())
+        + usize::from(mcp_resolver_config.is_some() || mcp_remote_config.is_some())
         + usize::from(investigation_config.is_some());
     if configured_resolver_modes > 1 {
         return Err(CliError::new(
             "configuration",
-            "choose exactly one acquisition lane: --resolver-fact, external_command, mcp_readonly, or investigation",
+            "choose exactly one acquisition lane: --resolver-fact, external_command, local/remote MCP, or investigation",
         ));
     }
     if mcp_admission_config.is_some() && mcp_resolver_config.is_none() {
         return Err(CliError::new(
             "configuration",
             "resolution.mcp_readonly.admission requires resolution.mcp_readonly",
+        ));
+    }
+    if mcp_remote_admission_config.is_some() && mcp_remote_config.is_none() {
+        return Err(CliError::new(
+            "configuration",
+            "resolution.mcp_remote_readonly.admission requires resolution.mcp_remote_readonly",
         ));
     }
     let resolved = resolve_run_config(
@@ -3566,9 +3633,44 @@ async fn execute_natural_inner(
     let external_resolver = external_resolver_config
         .map(|config| ExternalCommandResolver::new(config).with_cancellation(cancellation.clone()));
     let external_admission = external_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
-    let mcp_resolver = mcp_resolver_config
-        .map(|config| McpReadOnlyResolverV3::new(config).with_cancellation(cancellation.clone()));
-    let mcp_admission = mcp_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
+    let mcp_resolver_id = if mcp_remote_config.is_some() {
+        Some(MCP_REMOTE_READONLY_RESOLVER_ID)
+    } else if mcp_resolver_config.is_some() {
+        Some(MCP_READONLY_V3_RESOLVER_ID)
+    } else {
+        None
+    };
+    let mcp_resolver: Option<Box<dyn ResolutionResolver>> = if let Some(config) =
+        mcp_resolver_config
+    {
+        Some(Box::new(
+            McpReadOnlyResolverV3::new(config).with_cancellation(cancellation.clone()),
+        ))
+    } else if let Some(config) = mcp_remote_config {
+        let token = config
+            .oauth
+            .as_ref()
+            .map(|oauth| {
+                mcp_oauth::access_token(
+                    &config.resolver.server_id,
+                    &config.resolver.endpoint,
+                    oauth,
+                )
+            })
+            .transpose()?;
+        let resolver = McpRemoteReadOnlyResolver::new(config.resolver, token).map_err(|kind| {
+            CliError::new(
+                "mcp_configuration",
+                format!("remote MCP resolver rejected configuration: {kind:?}"),
+            )
+        })?;
+        Some(Box::new(resolver))
+    } else {
+        None
+    };
+    let mcp_admission = mcp_admission_config
+        .or(mcp_remote_admission_config)
+        .map(ExternalEvidenceAdmissionPolicy::new);
     let trusted_verifier = trusted_verifier_config
         .map(|config| TrustedCommandVerifier::new(config).with_cancellation(cancellation.clone()));
     let mut resolution_rounds = Vec::new();
@@ -3620,7 +3722,7 @@ async fn execute_natural_inner(
                 Some(run_external_resolution(
                     built.input.clone(),
                     candidate.clone(),
-                    mcp,
+                    mcp.as_ref(),
                     mcp_admission.as_ref(),
                     args.max_resolution_attempts,
                 )?)
@@ -3941,7 +4043,7 @@ async fn execute_natural_inner(
                 retry_input,
                 candidate.clone(),
                 mcp_resolver
-                    .as_ref()
+                    .as_deref()
                     .expect("MCP resolver availability checked above"),
                 mcp_admission.as_ref(),
                 args.max_resolution_attempts,
@@ -3980,7 +4082,7 @@ async fn execute_natural_inner(
             } else if external_resolver.is_some() {
                 Some(EXTERNAL_COMMAND_RESOLVER_ID)
             } else if mcp_resolver.is_some() {
-                Some(MCP_READONLY_V3_RESOLVER_ID)
+                mcp_resolver_id
             } else if !resolver.facts.is_empty() {
                 Some("cli_local_fact_store")
             } else {
@@ -7404,6 +7506,9 @@ fn merge_cli_config(base: &mut CliFileConfig, overlay: CliFileConfig) {
     if overlay.resolution.mcp_readonly.is_some() {
         base.resolution.mcp_readonly = overlay.resolution.mcp_readonly;
     }
+    if overlay.resolution.mcp_remote_readonly.is_some() {
+        base.resolution.mcp_remote_readonly = overlay.resolution.mcp_remote_readonly;
+    }
     if overlay.resolution.trusted_command.is_some() {
         base.resolution.trusted_command = overlay.resolution.trusted_command;
     }
@@ -7464,6 +7569,17 @@ fn resolve_external_command_config(
         timeout_ms,
         max_response_bytes,
     }))
+}
+
+fn ensure_mcp_transport_exclusivity(local: bool, remote: bool) -> Result<(), String> {
+    if local && remote {
+        Err(
+            "choose only one MCP acquisition transport: resolution.mcp_readonly or resolution.mcp_remote_readonly"
+                .into(),
+        )
+    } else {
+        Ok(())
+    }
 }
 
 fn resolve_mcp_v3_config(
@@ -7594,6 +7710,112 @@ fn resolve_mcp_readonly_config(
         "resolution.mcp_readonly",
     )
     .map(Some)
+}
+
+fn resolve_mcp_remote_readonly_config(
+    loaded: &LoadedCliConfig,
+) -> Result<Option<ResolvedMcpRemoteConfig>, String> {
+    let Some(configured) = &loaded.config.resolution.mcp_remote_readonly else {
+        return Ok(None);
+    };
+    let server_id = configured.server_id.trim();
+    let endpoint = configured.endpoint.trim();
+    let tool = configured.tool.trim();
+    let source = configured.source.trim();
+    if server_id.is_empty() || endpoint.is_empty() || tool.is_empty() || source.is_empty() {
+        return Err(
+            "resolution.mcp_remote_readonly server_id, endpoint, tool, and source must be non-empty"
+                .into(),
+        );
+    }
+    if !configured.read_only {
+        return Err("resolution.mcp_remote_readonly.read_only must be true".into());
+    }
+    if configured.resolver_class != "evidence_acquisition" {
+        return Err(
+            "resolution.mcp_remote_readonly.resolver_class must be \"evidence_acquisition\"".into(),
+        );
+    }
+    if configured.allowed_tools.is_empty()
+        || configured
+            .allowed_tools
+            .iter()
+            .any(|value| value.trim().is_empty())
+        || !configured.allowed_tools.contains(tool)
+    {
+        return Err(
+            "resolution.mcp_remote_readonly.allowed_tools must explicitly contain the selected tool"
+                .into(),
+        );
+    }
+    if configured
+        .fixed_arguments
+        .keys()
+        .any(|key| key.trim().is_empty())
+    {
+        return Err("resolution.mcp_remote_readonly.fixed_arguments contains an empty key".into());
+    }
+    if let Some(argument) = configured.provenance_argument.as_deref() {
+        if argument.trim().is_empty() || configured.fixed_arguments.contains_key(argument) {
+            return Err(
+                "resolution.mcp_remote_readonly.provenance_argument must be non-empty and must not collide with fixed_arguments"
+                    .into(),
+            );
+        }
+    }
+    let protocol = configured
+        .protocol_version
+        .as_deref()
+        .unwrap_or(MCP_REMOTE_PROTOCOL_VERSION);
+    if protocol != MCP_REMOTE_PROTOCOL_VERSION {
+        return Err(format!(
+            "resolution.mcp_remote_readonly.protocol_version must be {MCP_REMOTE_PROTOCOL_VERSION}"
+        ));
+    }
+    let max_tool_list_pages = configured
+        .max_tool_list_pages
+        .unwrap_or(DEFAULT_MCP_REMOTE_MAX_TOOL_LIST_PAGES);
+    let timeout_ms = configured
+        .timeout_ms
+        .unwrap_or(DEFAULT_MCP_REMOTE_TIMEOUT_MS);
+    let max_response_bytes = configured
+        .max_response_bytes
+        .unwrap_or(DEFAULT_MCP_REMOTE_MAX_RESPONSE_BYTES);
+    if max_tool_list_pages == 0
+        || max_tool_list_pages > 32
+        || timeout_ms == 0
+        || max_response_bytes == 0
+    {
+        return Err(
+            "resolution.mcp_remote_readonly requires max_tool_list_pages in 1..=32 and positive timeout/response limits"
+                .into(),
+        );
+    }
+    if let Some(oauth) = configured.oauth.as_ref() {
+        mcp_oauth::validate_oauth_config(oauth).map_err(|error| error.message)?;
+    }
+    let resolver = McpRemoteReadOnlyResolverConfig {
+        server_id: server_id.into(),
+        endpoint: endpoint.into(),
+        allowed_tools: configured.allowed_tools.clone(),
+        tool: tool.into(),
+        resolver_class: ResolverClass::EvidenceAcquisition,
+        fixed_arguments: configured.fixed_arguments.clone(),
+        provenance_argument: configured.provenance_argument.clone(),
+        source: source.into(),
+        protocol_version: protocol.into(),
+        require_read_only_hint: true,
+        max_tool_list_pages,
+        timeout_ms,
+        max_response_bytes,
+    };
+    McpRemoteReadOnlyResolver::new(resolver.clone(), None).map_err(|_| {
+        "resolution.mcp_remote_readonly is invalid or uses an unsafe endpoint".to_string()
+    })?;
+    Ok(Some(ResolvedMcpRemoteConfig {
+        resolver,
+        oauth: configured.oauth.clone(),
+    }))
 }
 
 fn resolve_investigation_config(
@@ -7941,6 +8163,26 @@ fn resolve_mcp_admission_config(
         configured,
         MCP_READONLY_V3_RESOLVER_ID,
         "resolution.mcp_readonly.admission",
+    )
+    .map(Some)
+}
+
+fn resolve_mcp_remote_admission_config(
+    loaded: &LoadedCliConfig,
+) -> Result<Option<ExternalEvidenceAdmissionConfig>, String> {
+    let Some(configured) = loaded
+        .config
+        .resolution
+        .mcp_remote_readonly
+        .as_ref()
+        .and_then(|resolver| resolver.admission.as_ref())
+    else {
+        return Ok(None);
+    };
+    resolve_evidence_admission_config(
+        configured,
+        MCP_REMOTE_READONLY_RESOLVER_ID,
+        "resolution.mcp_remote_readonly.admission",
     )
     .map(Some)
 }
@@ -8591,6 +8833,7 @@ mod candidate_json_tests {
                         admission: None,
                     }),
                     mcp_readonly: None,
+                    mcp_remote_readonly: None,
                     trusted_command: None,
                     investigation: None,
                 },
@@ -8851,6 +9094,110 @@ mod candidate_json_tests {
           }}
         }"#;
         assert!(serde_json::from_str::<CliFileConfig>(secret).is_err());
+    }
+
+    #[test]
+    fn mcp_remote_config_is_2026_read_only_and_secret_closed() {
+        let text = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_remote_readonly":{
+            "server_id":"docs","endpoint":"https://mcp.example.test/mcp",
+            "allowed_tools":["search"],"tool":"search",
+            "read_only":true,"resolver_class":"evidence_acquisition",
+            "source":"mcp:docs:search","protocol_version":"2026-07-28",
+            "oauth":{
+              "issuer":"https://auth.example.test",
+              "authorization_endpoint":"https://auth.example.test/authorize",
+              "token_endpoint":"https://auth.example.test/token",
+              "client_id":"https://client.example.test/reason.json",
+              "scopes":["mcp:read"]
+            }
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(text).unwrap(),
+            sources: vec!["explicit"],
+        };
+        let config = resolve_mcp_remote_readonly_config(&loaded)
+            .unwrap()
+            .unwrap();
+        assert_eq!(config.resolver.server_id, "docs");
+        assert_eq!(
+            config.resolver.protocol_version,
+            MCP_REMOTE_PROTOCOL_VERSION
+        );
+        assert_eq!(
+            config.resolver.resolver_class,
+            ResolverClass::EvidenceAcquisition
+        );
+        assert!(config.resolver.require_read_only_hint);
+        assert_eq!(config.oauth.unwrap().issuer, "https://auth.example.test");
+
+        for secret_field in ["access_token", "refresh_token", "client_secret", "api_key"] {
+            let secret = format!(
+                r#"{{
+              "schema_version":"reason-config-v1",
+              "resolution":{{"mcp_remote_readonly":{{
+                "server_id":"docs","endpoint":"https://mcp.example.test/mcp",
+                "allowed_tools":["search"],"tool":"search",
+                "read_only":true,"resolver_class":"evidence_acquisition",
+                "source":"mcp:docs:search","{secret_field}":"must-not-persist"
+              }}}}
+            }}"#
+            );
+            assert!(serde_json::from_str::<CliFileConfig>(&secret).is_err());
+        }
+    }
+
+    #[test]
+    fn mcp_remote_config_fails_closed_on_write_unlisted_insecure_or_legacy_protocol() {
+        for text in [
+            r#"{"schema_version":"reason-config-v1","resolution":{"mcp_remote_readonly":{"server_id":"s","endpoint":"https://mcp.example.test/mcp","allowed_tools":["read"],"tool":"read","read_only":false,"resolver_class":"evidence_acquisition","source":"mcp:s:read"}}}"#,
+            r#"{"schema_version":"reason-config-v1","resolution":{"mcp_remote_readonly":{"server_id":"s","endpoint":"https://mcp.example.test/mcp","allowed_tools":["other"],"tool":"read","read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read"}}}"#,
+            r#"{"schema_version":"reason-config-v1","resolution":{"mcp_remote_readonly":{"server_id":"s","endpoint":"http://example.test/mcp","allowed_tools":["read"],"tool":"read","read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read"}}}"#,
+            r#"{"schema_version":"reason-config-v1","resolution":{"mcp_remote_readonly":{"server_id":"s","endpoint":"https://mcp.example.test/mcp","allowed_tools":["read"],"tool":"read","read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read","protocol_version":"2025-11-25"}}}"#,
+        ] {
+            let loaded = LoadedCliConfig {
+                config: serde_json::from_str(text).unwrap(),
+                sources: vec![],
+            };
+            assert!(resolve_mcp_remote_readonly_config(&loaded).is_err());
+        }
+    }
+
+    #[test]
+    fn local_and_remote_mcp_transports_are_mutually_exclusive() {
+        assert!(ensure_mcp_transport_exclusivity(true, true).is_err());
+        assert!(ensure_mcp_transport_exclusivity(true, false).is_ok());
+        assert!(ensure_mcp_transport_exclusivity(false, true).is_ok());
+        assert!(ensure_mcp_transport_exclusivity(false, false).is_ok());
+    }
+
+    #[test]
+    fn mcp_remote_admission_uses_remote_resolver_identity() {
+        let text = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_remote_readonly":{
+            "server_id":"s","endpoint":"https://mcp.example.test/mcp",
+            "allowed_tools":["read"],"tool":"read",
+            "read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read",
+            "admission":{
+              "evaluation_time_unix_seconds":1000,
+              "authority_ranks":{"primary":10},
+              "minimum_authority_class":"primary",
+              "sources":{"mcp:s:read":{"authority_class":"primary","max_age_seconds":60}}
+            }
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(text).unwrap(),
+            sources: vec![],
+        };
+        let admission = resolve_mcp_remote_admission_config(&loaded)
+            .unwrap()
+            .unwrap();
+        assert_eq!(admission.resolver_name, MCP_REMOTE_READONLY_RESOLVER_ID);
+        assert_eq!(admission.sources["mcp:s:read"].authority_class, "primary");
     }
 
     #[test]

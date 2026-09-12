@@ -53,17 +53,20 @@ Use `reason setup` for first-run provider/credential/model readiness. `reason au
 
 ## MCP
 
-Manage the single active local read-only MCP acquisition source without hand-authoring low-level JSON:
+Manage one active local or remote read-only MCP acquisition source without hand-authoring low-level JSON:
 
 ```text
 reason mcp add inventory --program /path/to/mcp-server --arg=--stdio --tool lookup_item
-reason mcp test inventory
-reason mcp inspect inventory
-reason mcp list
-reason mcp remove inventory
+reason mcp add-remote docs --endpoint https://mcp.example.com/mcp --tool search --issuer https://auth.example.com --authorization-endpoint https://auth.example.com/authorize --token-endpoint https://auth.example.com/token --client-id https://client.example.com/reason.json --scope mcp:read --replace
+reason mcp login docs
+reason mcp login docs --no-browser
+reason mcp status docs
+reason mcp test docs
+reason mcp logout docs
+reason mcp remove docs
 ```
 
-`reason mcp test` performs MCP negotiation and `tools/list` discovery and requires the selected tool to report `readOnlyHint=true`; it does **not** invoke the tool. Managed configuration is user-scoped and non-secret. `inspect`/`list` expose argument counts rather than argument values, and secret-looking credential/token arguments are rejected by `add`. Remote/Streamable HTTP OAuth is intentionally deferred to #386.
+`reason mcp test` verifies read-only discovery without invoking the selected tool. Remote OAuth uses authorization-code + PKCE; access/refresh tokens live only in the native OS credential store, while config contains non-secret endpoint/issuer/client metadata. `--no-browser` supports headless authorization. Remote project config remains subject to `reason trust`.
 
 The optional `reason-mcp` binary is a different surface: it exposes selected Reason operations to external MCP clients. MCP acquisition output remains data rather than authority. See `docs/mcp-resolver.md` and `docs/mcp-product-surface.md`.
 

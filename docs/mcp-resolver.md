@@ -48,17 +48,41 @@ Those fields are still resolver-supplied raw acquisition data. The Harness assig
 
 ## Guided CLI management
 
-For the supported 0.5 product path, `reason mcp` manages one active user-scoped local stdio source:
+For the supported 0.5 product path, `reason mcp` manages one active user-scoped read-only acquisition source. Local stdio remains the simple path:
 
 ```text
 reason mcp add inventory --program /path/to/mcp-server --arg=--stdio --tool lookup_item
 reason mcp test inventory
 reason mcp inspect inventory
-reason mcp list
 reason mcp remove inventory
 ```
 
-`add` generates the restrictive `resolution.mcp_readonly` shape with `read_only=true`, `resolver_class=evidence_acquisition`, and an explicit selected-tool allowlist. Replacing an existing source requires `--replace`. Secret-looking credential/token arguments are rejected instead of being persisted. `list` and `inspect` do not print executable argument values. `test` stops after negotiation and bounded `tools/list` discovery, requiring server `readOnlyHint=true`; it never sends `tools/call`, so readiness checking does not execute the acquisition tool. Remote HTTP/OAuth lifecycle is outside this local 0.5 surface and tracked separately by #386.
+Remote Streamable HTTP uses the separate 2026-era transport and OAuth lifecycle:
+
+```text
+reason mcp add-remote docs \
+  --endpoint https://mcp.example.com/mcp \
+  --tool search \
+  --issuer https://auth.example.com \
+  --authorization-endpoint https://auth.example.com/authorize \
+  --token-endpoint https://auth.example.com/token \
+  --client-id https://client.example.com/reason.json \
+  --scope mcp:read
+reason mcp login docs
+reason mcp login docs --no-browser
+reason mcp status docs
+reason mcp test docs
+reason mcp logout docs
+reason mcp remove docs
+```
+
+`add` and `add-remote` persist only non-secret configuration. Replacing the active source requires `--replace`; local and remote acquisition transports are mutually exclusive. `list` and `inspect` never expose local executable argument values or OAuth token values. `test` never invokes the selected tool: local stdio stops after MCP negotiation and `tools/list`, while remote Streamable HTTP performs a stateless `tools/list`; both require the selected tool to declare `readOnlyHint=true`.
+
+The remote adapter is pinned to MCP `2026-07-28`. It sends the protocol revision, client identity, and capabilities on every request and uses the required HTTP routing headers. It deliberately fails closed for selected tools using `x-mcp-header` until that parameter-to-header contract is implemented. Remote endpoints and OAuth metadata endpoints require HTTPS; loopback HTTP is accepted only for deterministic local tests.
+
+`reason mcp login` uses authorization-code + PKCE with a loopback callback. `state` must match and the authorization response must carry the configured RFC 9207 `iss` value before Reason redeems the code. `--no-browser` prints the authorization URL for SSH/headless use instead of opening a browser. Access/refresh tokens are stored only in the native OS credential store and are bound to the MCP source name, authorization issuer, client ID, and exact resource endpoint. A changed issuer/client/resource therefore cannot reuse an old credential. Expired credentials refresh only against the configured issuer/token endpoint. `logout` deletes the stored credential and also works after `remove`, so orphaned credentials can be cleaned up explicitly.
+
+Reason does not perform Dynamic Client Registration. Configure a pre-registered public client ID or a Client ID Metadata Document URL supported by the authorization server; no `client_secret` field exists in `reason-config-v1`. Project-level remote MCP configuration is high-risk network acquisition configuration and remains fail-closed until the project is approved with `reason trust add`.
 
 ## Configuration
 
@@ -97,7 +121,7 @@ reason mcp remove inventory
 }
 ```
 
-Covered local MCP subprocesses start from the minimal isolated environment defined by #387 rather than inheriting the parent environment. Config schemas reject unknown credential-like fields, and guided management rejects secret-looking credential/token arguments. Resolver/admission telemetry records stable hashed config identities rather than literal command arguments.
+Covered local MCP subprocesses start from the minimal isolated environment defined by #387 rather than inheriting the parent environment. Remote Bearer tokens are injected only into the HTTP request and are excluded from resolver config identity, telemetry, config files, sessions, evidence, stdout, and normal diagnostics. Config schemas reject credential-like unknown fields, including `access_token`, `refresh_token`, `client_secret`, and `api_key`. Resolver/admission telemetry records stable hashed non-secret config identities.
 
 ## Operational failures and replay
 

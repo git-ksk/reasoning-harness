@@ -369,6 +369,7 @@ fn resolve_project_root(project: Option<&Path>) -> Result<PathBuf, String> {
 fn has_high_risk_resolution(resolution: &ResolutionFileConfig) -> bool {
     resolution.external_command.is_some()
         || resolution.mcp_readonly.is_some()
+        || resolution.mcp_remote_readonly.is_some()
         || resolution.trusted_command.is_some()
         || resolution.investigation.is_some()
 }

@@ -699,6 +699,36 @@ fn setup_help_has_no_secret_valued_argv_and_live_check_is_explicit() {
     }
 }
 
+#[test]
+fn mcp_help_exposes_remote_oauth_lifecycle_without_secret_valued_flags() {
+    let output = run_reason(&["mcp", "--help"], None);
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    let help = String::from_utf8_lossy(&output.stdout);
+    for expected in ["add-remote", "login", "status", "logout", "test"] {
+        assert!(help.contains(expected), "missing {expected}: {help}");
+    }
+    for forbidden in [
+        "--access-token",
+        "--refresh-token",
+        "--client-secret",
+        "--api-key",
+        "--token",
+    ] {
+        assert!(
+            !help.contains(forbidden),
+            "unexpected secret-valued flag {forbidden}: {help}"
+        );
+    }
+
+    let login = run_reason(&["mcp", "login", "--help"], None);
+    assert_eq!(login.status.code(), Some(0));
+    let login_help = String::from_utf8_lossy(&login.stdout);
+    assert!(login_help.contains("--no-browser"));
+    assert!(login_help.contains("--replace"));
+    assert!(!login_help.contains("--client-secret"));
+}
+
 #[cfg(unix)]
 #[test]
 fn mcp_management_add_inspect_test_remove_is_read_only_and_secret_free() {
@@ -1122,5 +1152,129 @@ fn mcp_management_add_list_inspect_remove_is_non_secret_and_machine_readable() {
             .is_empty()
     );
 
+    std::fs::remove_dir_all(temp).ok();
+}
+
+#[test]
+fn remote_mcp_management_persists_only_non_secret_oauth_metadata() {
+    let temp = std::env::temp_dir().join(format!(
+        "reason-mcp-remote-management-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    let run = |args: &[&str]| {
+        reason_command()
+            .args(args)
+            .env("REASON_HOME", &temp)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .output()
+            .expect("run remote mcp management")
+    };
+
+    let add = run(&[
+        "mcp",
+        "add-remote",
+        "docs",
+        "--endpoint",
+        "https://mcp.example.test/mcp",
+        "--tool",
+        "search",
+        "--issuer",
+        "https://auth.example.test",
+        "--authorization-endpoint",
+        "https://auth.example.test/authorize",
+        "--token-endpoint",
+        "https://auth.example.test/token",
+        "--client-id",
+        "https://client.example.test/reason.json",
+        "--scope",
+        "mcp:read",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(
+        add.status.code(),
+        Some(0),
+        "stdout={} stderr={}",
+        String::from_utf8_lossy(&add.stdout),
+        String::from_utf8_lossy(&add.stderr)
+    );
+    assert!(add.stderr.is_empty());
+    let add_json = json_stdout(&add);
+    assert_eq!(add_json["result"]["operation"], "add_remote");
+    assert_eq!(add_json["result"]["source"]["transport"], "streamable_http");
+    assert_eq!(
+        add_json["result"]["source"]["protocol_version"],
+        "2026-07-28"
+    );
+    assert_eq!(add_json["result"]["source"]["oauth_configured"], true);
+
+    let config_bytes = std::fs::read(temp.join("config.json")).unwrap();
+    let config_text = String::from_utf8(config_bytes.clone()).unwrap();
+    assert!(!config_text.contains("access_token"));
+    assert!(!config_text.contains("refresh_token"));
+    assert!(!config_text.contains("client_secret"));
+    let config: Value = serde_json::from_slice(&config_bytes).unwrap();
+    let remote = &config["resolution"]["mcp_remote_readonly"];
+    assert_eq!(remote["server_id"], "docs");
+    assert_eq!(remote["read_only"], true);
+    assert_eq!(remote["resolver_class"], "evidence_acquisition");
+    assert_eq!(remote["protocol_version"], "2026-07-28");
+    assert_eq!(remote["oauth"]["issuer"], "https://auth.example.test");
+    assert_eq!(
+        remote["oauth"]["client_id"],
+        "https://client.example.test/reason.json"
+    );
+
+    let inspect = run(&["mcp", "inspect", "docs", "--format", "json"]);
+    assert_eq!(inspect.status.code(), Some(0));
+    assert!(inspect.stderr.is_empty());
+    let inspect_text = String::from_utf8_lossy(&inspect.stdout);
+    assert!(!inspect_text.contains("access_token"));
+    assert!(!inspect_text.contains("refresh_token"));
+    let inspect_json = json_stdout(&inspect);
+    assert_eq!(
+        inspect_json["result"]["source"]["endpoint"],
+        "https://mcp.example.test/mcp"
+    );
+    assert_eq!(
+        inspect_json["result"]["source"]["oauth_issuer"],
+        "https://auth.example.test"
+    );
+
+    let insecure = run(&[
+        "mcp",
+        "add-remote",
+        "bad",
+        "--endpoint",
+        "http://example.test/mcp",
+        "--tool",
+        "search",
+        "--issuer",
+        "https://auth.example.test",
+        "--authorization-endpoint",
+        "https://auth.example.test/authorize",
+        "--token-endpoint",
+        "https://auth.example.test/token",
+        "--client-id",
+        "client",
+        "--replace",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(insecure.status.code(), Some(1));
+    assert!(insecure.stderr.is_empty());
+    assert_eq!(
+        json_stdout(&insecure)["result"]["failure"]["failure_class"],
+        "mcp_configuration"
+    );
+
+    let remove = run(&["mcp", "remove", "docs", "--format", "json"]);
+    assert_eq!(remove.status.code(), Some(0));
     std::fs::remove_dir_all(temp).ok();
 }

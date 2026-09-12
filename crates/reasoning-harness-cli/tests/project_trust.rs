@@ -181,6 +181,66 @@ fn high_risk_project_config_is_fail_closed_until_explicitly_trusted() {
 }
 
 #[test]
+fn remote_mcp_project_config_requires_trust_and_config_change_invalidates_it() {
+    let sandbox = TestDir::new("remote-mcp-trust");
+    let project = sandbox.path().join("project");
+    let home = sandbox.path().join("home");
+    fs::create_dir_all(&project).unwrap();
+    fs::create_dir_all(&home).unwrap();
+    let remote = |endpoint: &str| {
+        json!({
+            "mcp_remote_readonly": {
+                "server_id": "remote-docs",
+                "endpoint": endpoint,
+                "allowed_tools": ["search"],
+                "tool": "search",
+                "read_only": true,
+                "resolver_class": "evidence_acquisition",
+                "source": "mcp:remote-docs:search",
+                "protocol_version": "2026-07-28",
+                "oauth": {
+                    "issuer": "https://auth.example.test",
+                    "authorization_endpoint": "https://auth.example.test/authorize",
+                    "token_endpoint": "https://auth.example.test/token",
+                    "client_id": "https://client.example.test/reason.json",
+                    "scopes": ["mcp:read"]
+                }
+            }
+        })
+    };
+    write_project_config(&project, remote("https://mcp.example.test/mcp"), json!({}));
+
+    let status = trust_json(&home, &project, &["trust", "status", "--format", "json"]);
+    assert_eq!(status["result"]["state"], "untrusted");
+    assert_eq!(status["result"]["high_risk_config"], true);
+    assert_eq!(
+        status["result"]["executable_programs"]
+            .as_array()
+            .unwrap()
+            .len(),
+        0
+    );
+    let blocked = offline_run(&home, &project, &[]);
+    assert!(!blocked.status.success());
+
+    let add = trust_json(&home, &project, &["trust", "add", "--format", "json"]);
+    assert_eq!(add["result"]["state"], "trusted");
+    assert_eq!(add["result"]["trusted"], true);
+    assert_eq!(
+        add["result"]["executable_programs"]
+            .as_array()
+            .unwrap()
+            .len(),
+        0
+    );
+
+    write_project_config(&project, remote("https://mcp2.example.test/mcp"), json!({}));
+    let stale = trust_json(&home, &project, &["trust", "status", "--format", "json"]);
+    assert_eq!(stale["result"]["state"], "stale");
+    assert_eq!(stale["result"]["trusted"], false);
+}
+
+#[test]
 fn changed_project_executable_bytes_invalidate_existing_trust() {
     let sandbox = TestDir::new("executable-content-stale");
     let project = sandbox.path().join("project");
