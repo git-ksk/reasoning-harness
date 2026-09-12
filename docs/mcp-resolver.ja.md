@@ -82,7 +82,7 @@ remote adapterはMCP `2026-07-28`へpinします。各requestにprotocol revisio
 
 `reason mcp login`はauthorization code + PKCEとloopback callbackを使います。Reasonがcodeをredeemする前に`state`一致とRFC 9207 `iss`のconfigured issuer一致を必須にします。`--no-browser`ではbrowserを開かずauthorization URLを表示するため、SSH/headless環境でも利用できます。access/refresh tokenはnative OS credential storeだけに保存し、MCP source名 / authorization issuer / client ID / exact resource endpointへbindします。issuer/client/resourceが変わった場合、古いcredentialを再利用しません。期限切れtokenのrefreshもconfigured issuer/token endpointだけへ送ります。`logout`はconfigの`remove`後でも実行できるため、orphan credentialを明示削除できます。
 
-ReasonはDynamic Client Registrationを実行しません。authorization serverで利用可能なpre-registered public client IDまたはClient ID Metadata Document URLを設定し、`reason-config-v1`に`client_secret` surfaceは持たせません。project-level remote MCP configはhigh-risk network acquisition configとして扱い、`reason trust add`でprojectを承認するまでfail closedです。
+ReasonはDynamic Client Registrationを実行しません。authorization serverで利用可能なpre-registered public client IDまたはClient ID Metadata Document URLを設定し、`reason-config-v1`に`client_secret` surfaceは持たせません。MCP `fixed_arguments`はnested object / arrayも含めてcredential-bearing keyをrecursiveに検査するため、runtime credentialはconfigではなくscoped secure credential injectionまたはnative OS credential storeを使います。project-level remote MCP configはhigh-risk network acquisition configとして扱い、`reason trust add`でprojectを承認するまでfail closedです。
 
 ## 設定
 

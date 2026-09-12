@@ -124,7 +124,7 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 - **#414 P1:** MCP Protected Resource Metadataとauthorization-server/OIDC metadataをdiscoverし、OAuth endpointの手入力依存をなくす。issuer/resource relationshipはfail closedで検証する。
 - **#415 P1:** OAuth `insufficient_scope`をgeneric permission denialと分離し、silent scope拡張を行わない明示的なscope step-up recoveryを提供する。
 - **#416 P1:** remote HTTP readiness/acquisitionをReasonのsafe Ctrl+C cancellation contractへ接続し、cancel後にremote timeout待ちやdetached network workを残さない。
-- **#419 P1:** MCP `fixed_arguments`内のsecret-bearing nested fieldをrecursiveにrejectし、hand-authored low-level configでもnon-secret configuration boundaryを維持する。
+- **#419 P1 — implemented:** local / remote / investigation MCP configの`fixed_arguments`内をrecursiveに検査してsecret-bearing nested fieldをrejectし、secret valueをechoせず、hand-authored low-level configでもnon-secret configuration boundaryを維持する。
 
 ### 追跡するcompatibility / lifecycle follow-up
 
