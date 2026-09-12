@@ -1,0 +1,55 @@
+name: lifecycle-smoke
+
+on:
+  pull_request:
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'crates/reasoning-harness-core/**'
+      - 'crates/reasoning-harness-cli/**'
+      - 'scripts/test_lifecycle_cli_smoke.py'
+      - '.github/workflows/lifecycle-smoke.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'crates/reasoning-harness-core/**'
+      - 'crates/reasoning-harness-cli/**'
+      - 'scripts/test_lifecycle_cli_smoke.py'
+      - '.github/workflows/lifecycle-smoke.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  lifecycle:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            asset: linux-x86_64
+          - os: macos-15
+            asset: macos-aarch64
+          - os: macos-15-intel
+            asset: macos-x86_64
+          - os: windows-2025
+            asset: windows-x86_64
+    runs-on: ${{ matrix.os }}
+    name: lifecycle (${{ matrix.asset }})
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Lifecycle unit contract
+        shell: bash
+        run: cargo test --locked -p reasoning-harness-cli --bin reason lifecycle::tests -- --nocapture
+      - name: Lifecycle product smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo build --locked -p reasoning-harness-cli --bin reason
+          python scripts/test_lifecycle_cli_smoke.py

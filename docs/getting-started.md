@@ -113,6 +113,7 @@ This is useful for RAG systems, agents, recorded outputs, CI, and provider-indep
 | --- | --- |
 | Ask a natural-language question | `reason "TASK"` |
 | Complete first-run setup (0.5.0 development) | `reason setup` |
+| Check for a CLI update without mutation (0.5.0 development) | `reason update --check` |
 | Manage provider credentials (0.5.0 development) | `reason auth ...` |
 | Continue or correct a persisted reasoning state | `reason session ...` |
 | Integrate existing structured candidate output | `reason run` |

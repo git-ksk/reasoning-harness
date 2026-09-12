@@ -33,6 +33,8 @@ Each split release includes an attested `release-manifest.json` (`reason-release
 
 The manifest exists so update/rollback tooling can compare CLI and Engine identities before mutation and reject confused-channel or mismatched metadata. It is itself attested by the same release workflow.
 
+`reason update --check`, `reason update`, and `reason update --rollback VERSION` consume this attested manifest directly. Manifest identity is verified before archive acquisition; apply then re-verifies the platform archive attestation and manifest/`SHA256SUMS` digests.
+
 ## Key and trust-root rotation
 
 Reason does not keep a long-lived project signing private key for this provenance layer. GitHub Actions obtains a short-lived OIDC identity and the attestation is recorded through GitHub/Sigstore infrastructure. This removes a static release-signing secret from the repository and CI configuration.

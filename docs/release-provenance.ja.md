@@ -33,6 +33,8 @@ split releaseにはattested `release-manifest.json`（`reason-release-manifest-v
 
 これはupdate / rollback時にmutation前のCLI / Engine identity比較を可能にし、channel混同やmetadata mismatchを拒否するためのものです。manifest自体も同じrelease workflowからattestします。
 
+`reason update --check` / `reason update` / `reason update --rollback VERSION`はこのattested manifestを直接consumerとして使用します。archive取得前にmanifest identityを検証し、apply時はplatform archive attestationとmanifest / `SHA256SUMS` digestを再照合します。
+
 ## key / trust-root rotation
 
 このprovenance layerでは長期project signing private keyを保持しません。GitHub Actionsがshort-lived OIDC identityを取得し、GitHub / Sigstore infrastructureを通してattestationを記録します。repositoryやCI secretへ固定release private keyを置く必要がありません。

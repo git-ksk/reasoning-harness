@@ -1,5 +1,6 @@
 mod auth;
 mod diagnostic_trace;
+mod lifecycle;
 mod model_catalog;
 mod project_trust;
 mod secure_credentials;
@@ -1702,6 +1703,10 @@ enum Command {
     },
     /// PRODUCT: Configure provider, credential, model default, and readiness for first use.
     Setup(setup::SetupArgs),
+    /// PRODUCT: Check or apply a provenance-verified Reason CLI update.
+    Update(lifecycle::UpdateArgs),
+    /// PRODUCT: Remove the Reason CLI binary with explicit data/credential retention controls.
+    Uninstall(lifecycle::UninstallArgs),
     /// PRODUCT: Inspect, add, or revoke project configuration trust.
     Trust {
         #[command(subcommand)]
@@ -4898,6 +4903,14 @@ impl Cli {
                 command: "setup",
                 json: args.format() == OutputFormat::Json,
             }),
+            Some(Command::Update(args)) => Some(ProductErrorContext {
+                command: "update",
+                json: args.format() == OutputFormat::Json,
+            }),
+            Some(Command::Uninstall(args)) => Some(ProductErrorContext {
+                command: "uninstall",
+                json: args.format() == OutputFormat::Json,
+            }),
             Some(Command::Models { format, .. }) => Some(ProductErrorContext {
                 command: "models",
                 json: *format == OutputFormat::Json,
@@ -5024,6 +5037,8 @@ async fn run(cli: Cli) -> Result<(), CliError> {
     match command {
         Some(Command::Auth { command }) => auth::run(command),
         Some(Command::Setup(args)) => setup::run(args).await,
+        Some(Command::Update(args)) => lifecycle::run_update(args).await,
+        Some(Command::Uninstall(args)) => lifecycle::run_uninstall(args),
         Some(Command::Models {
             provider,
             configured,
