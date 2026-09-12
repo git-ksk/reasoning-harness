@@ -2,6 +2,8 @@
 set -eu
 
 REPOSITORY="git-ksk/reasoning-harness"
+SIGNER_WORKFLOW="git-ksk/reasoning-harness/.github/workflows/release-cli.yml"
+MIN_GH_VERSION="2.93.0"
 DEFAULT_VERSION="0.4.2"
 VERSION="$DEFAULT_VERSION"
 BIN_DIR=""
@@ -19,15 +21,44 @@ Options:
   --bin-dir DIR          Install directory (default: $HOME/.local/bin)
   -h, --help             Show this help.
 
-The installer downloads the platform archive and SHA256SUMS from the same
-GitHub Release, verifies the archive checksum, verifies `reason --version`,
-and only then replaces the destination binary.
+For reason-v* releases the installer requires GitHub CLI 2.93.0+ and verifies
+GitHub/Sigstore provenance before SHA-256 and `reason --version`. Historical
+v0.4.2 and earlier use their immutable pre-attestation checksum path.
 USAGE
 }
 
 fail() {
   printf 'reason installer: %s\n' "$*" >&2
   exit 1
+}
+
+version_at_least() {
+  current=$1
+  minimum=$2
+  old_ifs=$IFS
+  IFS=.
+  set -- $current
+  c1=${1:-0}; c2=${2:-0}; c3=${3:-0}
+  set -- $minimum
+  m1=${1:-0}; m2=${2:-0}; m3=${3:-0}
+  IFS=$old_ifs
+  [ "$c1" -gt "$m1" ] || { [ "$c1" -eq "$m1" ] && { [ "$c2" -gt "$m2" ] || { [ "$c2" -eq "$m2" ] && [ "$c3" -ge "$m3" ]; }; }; }
+}
+
+verify_split_release_provenance() {
+  archive_path=$1
+  command -v gh >/dev/null 2>&1 || fail "GitHub CLI >= $MIN_GH_VERSION is required to verify reason-v* release provenance"
+  gh_version=$(gh --version 2>/dev/null | awk 'NR==1 {print $3}')
+  printf '%s\n' "$gh_version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' \
+    || fail "could not determine GitHub CLI version; require gh >= $MIN_GH_VERSION"
+  version_at_least "$gh_version" "$MIN_GH_VERSION" \
+    || fail "GitHub CLI $gh_version is too old for trusted attestation verification; require >= $MIN_GH_VERSION"
+  GH_HOST=github.com gh attestation verify "$archive_path" \
+    --repo "$REPOSITORY" \
+    --signer-workflow "$SIGNER_WORKFLOW" \
+    --source-ref "refs/tags/$TAG" \
+    --deny-self-hosted-runners >/dev/null \
+    || fail "release provenance verification failed for $ARCHIVE; refusing to install"
 }
 
 while [ "$#" -gt 0 ]; do
@@ -120,6 +151,11 @@ curl -fL --retry 3 --retry-delay 1 -o "$TMP_DIR/$ARCHIVE" "$BASE_URL/$ARCHIVE" \
 curl -fL --retry 3 --retry-delay 1 -o "$TMP_DIR/SHA256SUMS" "$BASE_URL/SHA256SUMS" \
   || fail "failed to download SHA256SUMS from $TAG"
 
+case "$TAG" in
+  reason-v*) verify_split_release_provenance "$TMP_DIR/$ARCHIVE" ;;
+  *) ;;
+esac
+
 EXPECTED=$(awk -v name="$ARCHIVE" '$2 == name || $2 == "*" name { print $1 }' "$TMP_DIR/SHA256SUMS")
 [ -n "$EXPECTED" ] || fail "$ARCHIVE is missing from SHA256SUMS"
 case "$EXPECTED" in
@@ -174,4 +210,7 @@ case ":${PATH:-}:" in
     ;;
 esac
 
-printf '\nIntegrity: SHA-256 verified against the published release checksum.\n'
+case "$TAG" in
+  reason-v*) printf '\nIntegrity: GitHub/Sigstore provenance and SHA-256 verified.\n' ;;
+  *) printf '\nIntegrity: SHA-256 verified for historical release (pre-attestation).\n' ;;
+esac

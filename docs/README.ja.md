@@ -15,6 +15,7 @@
 
 1. [Getting Started](getting-started.ja.md) — current previewのinstallと、grounded / 根拠不足ケースを試す。
 2. [ネイティブインストーラー](native-installers.ja.md) — Reason CLI 0.5.0向け1コマンド配布の契約。
+3. [Release provenance](release-provenance.ja.md) — `reason-v*`のOIDC/Sigstore provenance、checksum、immutable release trust。
 3. [CLIガイド](cli.ja.md) — command、input、provider credential、config、stdin、JSON、exit semantics。
 4. [Reasoning Harnessの仕組み](how-it-works.ja.md) — candidateとauthorityを分ける実行モデル。
 5. [Product support / compatibility](support.ja.md) — supported platform、contract、provider、v0.x互換性。

@@ -10,9 +10,44 @@ param(
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 $Repository = "git-ksk/reasoning-harness"
+$SignerWorkflow = "git-ksk/reasoning-harness/.github/workflows/release-cli.yml"
+$MinimumGhVersion = [Version]"2.93.0"
 
 function Fail([string]$Message) {
     throw "reason installer: $Message"
+}
+
+function Verify-SplitReleaseProvenance([string]$ArchivePath) {
+    $Gh = Get-Command gh -ErrorAction SilentlyContinue
+    if (-not $Gh) {
+        Fail "GitHub CLI >= $MinimumGhVersion is required to verify reason-v* release provenance"
+    }
+    $VersionLine = (& gh --version 2>$null | Select-Object -First 1)
+    if ($VersionLine -notmatch '^gh version (\d+\.\d+\.\d+)') {
+        Fail "could not determine GitHub CLI version; require gh >= $MinimumGhVersion"
+    }
+    $GhVersion = [Version]$Matches[1]
+    if ($GhVersion -lt $MinimumGhVersion) {
+        Fail "GitHub CLI $GhVersion is too old for trusted attestation verification; require >= $MinimumGhVersion"
+    }
+    $OldGhHost = $env:GH_HOST
+    try {
+        $env:GH_HOST = 'github.com'
+        & gh attestation verify $ArchivePath `
+            --repo $Repository `
+            --signer-workflow $SignerWorkflow `
+            --source-ref "refs/tags/$Tag" `
+            --deny-self-hosted-runners *> $null
+        if ($LASTEXITCODE -ne 0) {
+            Fail "release provenance verification failed for $Archive; refusing to install"
+        }
+    } finally {
+        $env:GH_HOST = $OldGhHost
+    }
+}
+
+if ($env:REASON_INSTALL_LIBRARY_ONLY -eq '1') {
+    return
 }
 
 $Tag = $null
@@ -66,6 +101,10 @@ try {
         Fail "failed to download release assets from $Tag`: $($_.Exception.Message)"
     }
 
+    if ($Tag.StartsWith('reason-v')) {
+        Verify-SplitReleaseProvenance $ArchivePath
+    }
+
     $ChecksumLines = Get-Content -LiteralPath $ChecksumsPath
     $MatchesForArchive = @($ChecksumLines | Where-Object { $_ -match ('^([0-9a-fA-F]{64})\s+\*?' + [Regex]::Escape($Archive) + '$') })
     if ($MatchesForArchive.Count -ne 1) {
@@ -112,7 +151,11 @@ try {
     }
 
     Write-Host ""
-    Write-Host "Integrity: SHA-256 verified against the published release checksum."
+    if ($Tag.StartsWith('reason-v')) {
+        Write-Host "Integrity: GitHub/Sigstore provenance and SHA-256 verified."
+    } else {
+        Write-Host "Integrity: SHA-256 verified for historical release (pre-attestation)."
+    }
 } finally {
     if (Test-Path -LiteralPath $TempDir) {
         Remove-Item -LiteralPath $TempDir -Recurse -Force -ErrorAction SilentlyContinue

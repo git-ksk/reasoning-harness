@@ -15,7 +15,7 @@ Reason CLI 0.5.0では、RustやCargoを入れていない一般ユーザー向�
 
 ## リリース版での使い方
 
-CLI / Engine分離後のrelease（`reason-vX.Y.Z`）では、native archiveと`SHA256SUMS`に加えて`install.sh` / `install.ps1`をRelease assetとして公開します。
+CLI / Engine分離後のrelease（`reason-vX.Y.Z`）では、native archive、`SHA256SUMS`、attested `release-manifest.json`に加えて`install.sh` / `install.ps1`をRelease assetとして公開します。split releaseのinstallはGitHub/Sigstore provenanceを検証するため`gh` 2.93.0以上が必要です。
 
 Unix:
 
@@ -49,15 +49,19 @@ installerはshell profileやPATHを勝手に書き換えません。PATH追加�
 
 1. OS / architectureに対応する公開済みarchiveを選ぶ;
 2. 同じGitHub Releaseからarchiveと`SHA256SUMS`を取得する;
-3. archiveのSHA-256を照合する;
+3. `reason-v*`では`gh attestation verify`でrepository / signer workflow / exact tag ref / non-self-hosted provenanceを検証する;
+4. archiveのSHA-256を照合する;
 4. 期待する`reason` / `reason.exe`だけを展開対象として確認する;
 5. binaryの`reason --version`が要求versionと一致することを確認する;
 6. install先で一時stageしてから既存binaryを置き換える。
 
 checksum不一致、archive形状不一致、version不一致、未対応platform、download failureでは、既存binaryを置き換えず停止します。
 
-SHA-256検証は#371のintegrity baselineです。署名付きrelease provenance、利用可能なGitHub/Sigstore attestation、macOS / Windowsのplatform signing・notarizationは別P0の#382で扱います。一般向け0.5.0 release gateでは、その強いrelease identityまで通してからinstallerを最終的なtrusted distribution pathとして扱います。
+SHA-256検証は#371のintegrity baselineです。#382で`reason-v*`にGitHub OIDC/Sigstore attestation、exact repository/workflow/tag verification、immutable releasesを追加しました。macOS / Windows native signingは外部signing identityが未provisionのためrepository secretには埋め込まず、OS security controlを無効化する手順も案内しません。
 
 ## 過去リリースとの互換性
 
 historical unified tag（`v0.1.0`〜`v0.4.2`）はimmutableのままです。release workflowから過去tagへinstaller fileを後付けしません。一方、既存native archiveと`SHA256SUMS`は公開済みなので、installer実装のcompatibility / smoke testでは`v0.4.2`を明示指定して実際にinstallできます。
+
+
+詳しいtrust modelは[Release provenance](release-provenance.ja.md)を参照してください。`reason-v*`ではattestation verification失敗時にSHA-256だけへfallbackしません。historical `v0.4.2`はpre-attestation releaseとして既存checksum互換経路を維持します。

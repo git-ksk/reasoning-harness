@@ -8,6 +8,9 @@ on:
       - '.github/workflows/installer-smoke.yml'
       - '.github/workflows/release-cli.yml'
       - 'scripts/test_installer_contract.py'
+      - 'scripts/test_installer_contract.ps1'
+      - 'scripts/test_release_provenance_contract.py'
+      - 'scripts/generate_release_manifest.py'
       - 'crates/reasoning-harness-cli/Cargo.toml'
   push:
     branches: [main]
@@ -17,6 +20,9 @@ on:
       - '.github/workflows/installer-smoke.yml'
       - '.github/workflows/release-cli.yml'
       - 'scripts/test_installer_contract.py'
+      - 'scripts/test_installer_contract.ps1'
+      - 'scripts/test_release_provenance_contract.py'
+      - 'scripts/generate_release_manifest.py'
       - 'crates/reasoning-harness-cli/Cargo.toml'
 
 permissions:
@@ -38,9 +44,11 @@ jobs:
     name: unix (${{ matrix.expected }})
     steps:
       - uses: actions/checkout@v7
-      - name: Deterministic installer contract tests
+      - name: Deterministic installer and provenance contract tests
         if: runner.os == 'Linux'
-        run: python3 scripts/test_installer_contract.py
+        run: |
+          python3 scripts/test_installer_contract.py
+          python3 scripts/test_release_provenance_contract.py
       - name: Install immutable v0.4.2 release without Rust
         shell: bash
         run: |
@@ -54,6 +62,9 @@ jobs:
     name: windows (windows-x86_64)
     steps:
       - uses: actions/checkout@v7
+      - name: PowerShell provenance contract
+        shell: pwsh
+        run: ./scripts/test_installer_contract.ps1
       - name: Install immutable v0.4.2 release without Rust
         shell: pwsh
         run: |
