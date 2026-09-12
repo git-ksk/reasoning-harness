@@ -4,8 +4,8 @@ use clap::Subcommand;
 use serde::Serialize;
 
 use super::{
-    CLI_CONFIG_CONTRACT_ID, CliError, CliFileConfig, OutputFormat, Provider, print_product_json,
-    provider_name, secure_credentials, user_config_path,
+    CLI_CONFIG_CONTRACT_ID, CliError, CliFileConfig, OutputFormat, Provider, local_privacy,
+    print_product_json, provider_name, secure_credentials, user_config_path,
 };
 
 const MODEL_CATALOG_VERSION: &str = "reason-model-catalog-v1";
@@ -464,15 +464,8 @@ fn write_user_config_value(path: &Path, value: &serde_json::Value) -> Result<(),
         .parent()
         .filter(|parent| !parent.as_os_str().is_empty())
     {
-        fs::create_dir_all(parent).map_err(|error| {
-            CliError::new(
-                "configuration",
-                format!(
-                    "{}: cannot create user config directory: {error}",
-                    parent.display()
-                ),
-            )
-        })?;
+        local_privacy::ensure_private_directory(parent)
+            .map_err(|error| CliError::new("configuration_privacy", error))?;
     }
     let mut bytes = serde_json::to_vec_pretty(value).map_err(|error| {
         CliError::new(
@@ -562,6 +555,8 @@ fn write_user_config_value(path: &Path, value: &serde_json::Value) -> Result<(),
                 format!("{}: cannot commit user config: {error}", path.display()),
             )
         })?;
+        local_privacy::ensure_private_file(path)
+            .map_err(|error| CliError::new("configuration_privacy", error))?;
         Ok(())
     })();
     if result.is_err() {

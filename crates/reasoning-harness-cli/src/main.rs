@@ -2,6 +2,7 @@ mod auth;
 mod diagnostic_trace;
 mod interactive;
 mod lifecycle;
+mod local_privacy;
 mod managed_session;
 mod model_catalog;
 mod project_trust;
@@ -176,6 +177,9 @@ struct NaturalArgs {
     /// Human-readable output by default; JSON is available for automation/inspection.
     #[arg(long, value_enum)]
     format: Option<OutputFormat>,
+    /// Do not persist managed interactive session/history state. One-shot runs are already non-persistent unless an explicit output/trace path is requested.
+    #[arg(long, conflicts_with = "diagnostic_trace")]
+    ephemeral: bool,
     /// Write a diagnostic-only natural execution trace to PATH. This never changes model requests, evaluation, or product JSON output.
     #[arg(long, value_name = "PATH")]
     diagnostic_trace: Option<PathBuf>,
@@ -1536,6 +1540,37 @@ fn parse_candidate_json(text: &str) -> Result<(ReasoningCandidate, bool), serde_
 enum SessionCommand {
     /// List managed interactive sessions without exposing their backing file paths.
     List {
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// Export one managed session to a new private JSON file without removing the original.
+    Export {
+        id: String,
+        #[arg(long, value_name = "PATH")]
+        out: PathBuf,
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// Delete one managed session. Use --dry-run to preview; mutation requires confirmation or --yes.
+    Delete {
+        id: String,
+        #[arg(long)]
+        dry_run: bool,
+        #[arg(long)]
+        yes: bool,
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// Purge managed sessions by explicit scope. --all also removes corrupt/incompatible managed-session JSON files.
+    Purge {
+        #[arg(long, conflicts_with = "older_than_days")]
+        all: bool,
+        #[arg(long, value_name = "DAYS", conflicts_with = "all")]
+        older_than_days: Option<u64>,
+        #[arg(long)]
+        dry_run: bool,
+        #[arg(long)]
+        yes: bool,
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
@@ -4164,6 +4199,8 @@ fn save_session_file(
             format!("write session temp {}: {error}", temporary.display()),
         )
     })?;
+    local_privacy::ensure_private_file(&temporary)
+        .map_err(|error| CliError::new("session_privacy", error))?;
     file.write_all(&bytes).map_err(|error| {
         CliError::new(
             "session_io",
@@ -4177,7 +4214,7 @@ fn save_session_file(
         )
     })?;
     drop(file);
-    match fs::rename(&temporary, path) {
+    let committed = match fs::rename(&temporary, path) {
         Ok(()) => Ok(()),
         Err(first) if path.exists() && !create_only => {
             fs::remove_file(path).map_err(|remove| {
@@ -4200,7 +4237,11 @@ fn save_session_file(
             "session_io",
             format!("commit session {}: {error}", path.display()),
         )),
-    }
+    };
+    committed?;
+    local_privacy::ensure_private_file(path)
+        .map_err(|error| CliError::new("session_privacy", error))?;
+    Ok(())
 }
 
 fn session_operation_output(
@@ -4359,6 +4400,7 @@ fn continuation_args(
         config: None,
         no_config: true,
         format: Some(format),
+        ephemeral: false,
         diagnostic_trace: None,
         interactive_context: vec![],
     }
@@ -4583,6 +4625,36 @@ fn emit_trust_status(
     }
 }
 
+fn confirm_session_mutation(
+    yes: bool,
+    dry_run: bool,
+    format: OutputFormat,
+    prompt: &str,
+) -> Result<(), CliError> {
+    if dry_run || yes {
+        return Ok(());
+    }
+    if format == OutputFormat::Json || !io::stdin().is_terminal() || !io::stderr().is_terminal() {
+        return Err(CliError::new(
+            "confirmation_required",
+            format!("{prompt} Re-run with --yes to confirm or --dry-run to preview."),
+        ));
+    }
+    eprint!("{prompt} [y/N] ");
+    io::stderr()
+        .flush()
+        .map_err(|error| CliError::new("confirmation", error.to_string()))?;
+    let mut line = String::new();
+    io::stdin()
+        .read_line(&mut line)
+        .map_err(|error| CliError::new("confirmation", error.to_string()))?;
+    if matches!(line.trim().to_ascii_lowercase().as_str(), "y" | "yes") {
+        Ok(())
+    } else {
+        Err(CliError::new("cancelled", "session mutation cancelled"))
+    }
+}
+
 async fn run_session(command: SessionCommand) -> Result<(), CliError> {
     match command {
         SessionCommand::List { format } => {
@@ -4615,6 +4687,97 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                 }
             }
         }
+        SessionCommand::Export { id, out, format } => {
+            let output = managed_session::export(&id, &out)?;
+            match format {
+                OutputFormat::Json => {
+                    print_product_json("session", &output).map_err(CliError::from)
+                }
+                OutputFormat::Human => {
+                    println!(
+                        "Exported managed session {} to {}.",
+                        output.short_id, output.output_path
+                    );
+                    Ok(())
+                }
+            }
+        }
+        SessionCommand::Delete {
+            id,
+            dry_run,
+            yes,
+            format,
+        } => {
+            confirm_session_mutation(
+                yes,
+                dry_run,
+                format,
+                &format!("Delete managed session {id}?"),
+            )?;
+            let output = managed_session::delete(&id, dry_run)?;
+            match format {
+                OutputFormat::Json => {
+                    print_product_json("session", &output).map_err(CliError::from)
+                }
+                OutputFormat::Human => {
+                    if dry_run {
+                        println!(
+                            "Dry run: would delete {} managed session(s): {}",
+                            output.selected.len(),
+                            output.selected.join(", ")
+                        );
+                    } else {
+                        println!("Deleted {} managed session(s).", output.removed);
+                    }
+                    Ok(())
+                }
+            }
+        }
+        SessionCommand::Purge {
+            all,
+            older_than_days,
+            dry_run,
+            yes,
+            format,
+        } => {
+            if all == older_than_days.is_some() {
+                return Err(CliError::new(
+                    "input",
+                    "session purge requires exactly one of --all or --older-than-days DAYS",
+                ));
+            }
+            let scope = if all {
+                "all managed sessions".to_string()
+            } else {
+                format!(
+                    "managed sessions at least {} day(s) old",
+                    older_than_days.unwrap_or_default()
+                )
+            };
+            confirm_session_mutation(yes, dry_run, format, &format!("Purge {scope}?"))?;
+            let output = managed_session::purge(all, older_than_days, dry_run)?;
+            match format {
+                OutputFormat::Json => {
+                    print_product_json("session", &output).map_err(CliError::from)
+                }
+                OutputFormat::Human => {
+                    if dry_run {
+                        if output.selected.is_empty() {
+                            println!("Dry run: no managed sessions match this purge scope.");
+                        } else {
+                            println!(
+                                "Dry run: would purge {} item(s): {}",
+                                output.selected.len(),
+                                output.selected.join(", ")
+                            );
+                        }
+                    } else {
+                        println!("Purged {} managed session item(s).", output.removed);
+                    }
+                    Ok(())
+                }
+            }
+        }
         SessionCommand::Start { store, id, natural } => {
             if store.exists() {
                 return Err(CliError::new(
@@ -4623,6 +4786,12 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                 ));
             }
             let natural = *natural;
+            if natural.ephemeral {
+                return Err(CliError::new(
+                    "input",
+                    "reason session start persists an explicit session and cannot be used with --ephemeral",
+                ));
+            }
             if natural
                 .task
                 .as_deref()
@@ -5021,6 +5190,9 @@ impl Cli {
                         None => false,
                     },
                     SessionCommand::List { format, .. }
+                    | SessionCommand::Export { format, .. }
+                    | SessionCommand::Delete { format, .. }
+                    | SessionCommand::Purge { format, .. }
                     | SessionCommand::Inspect { format, .. }
                     | SessionCommand::Resume { format, .. }
                     | SessionCommand::Add { format, .. }
@@ -5120,6 +5292,12 @@ async fn run(cli: Cli) -> Result<(), CliError> {
         resume,
     } = cli;
     let managed_resume_requested = continue_session || resume.is_some();
+    if managed_resume_requested && natural.ephemeral {
+        return Err(CliError::new(
+            "input",
+            "--ephemeral cannot be combined with -c/--continue or -r/--resume because those selectors require persisted managed state",
+        ));
+    }
     if managed_resume_requested
         && (command.is_some()
             || natural

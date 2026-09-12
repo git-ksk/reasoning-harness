@@ -1328,6 +1328,7 @@ dependencies = [
  "clap",
  "fs2",
  "keyring",
+ "libc",
  "reasoning-harness-core",
  "reasoning-harness-providers",
  "reqwest",

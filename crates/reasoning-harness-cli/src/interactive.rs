@@ -175,6 +175,10 @@ fn pick_session() -> Result<managed_session::ManagedSession, CliError> {
     managed_session::load_by_selector(&summary.id)
 }
 
+fn should_persist_managed(ephemeral: bool, turns_len: usize) -> bool {
+    !ephemeral && turns_len > 0
+}
+
 fn pin_runtime_from_session(
     base: &mut NaturalArgs,
     session: &managed_session::ManagedSession,
@@ -226,6 +230,7 @@ pub(super) async fn run(
     resume: Option<String>,
 ) -> Result<(), CliError> {
     let project = managed_session::current_project_key()?;
+    let ephemeral = base.ephemeral;
     let resuming = continue_session || resume.is_some();
     let mut session = if continue_session {
         managed_session::load_latest_for_project(&project)?
@@ -245,7 +250,7 @@ pub(super) async fn run(
     for path in std::mem::take(&mut base.file) {
         session.add_context_file(&path)?;
     }
-    if resuming && session.turns_len() > 0 {
+    if resuming && should_persist_managed(ephemeral, session.turns_len()) {
         managed_session::save(&mut session)?;
     }
     base.interactive_context = session.conversation_context();
@@ -262,7 +267,13 @@ pub(super) async fn run(
         );
     } else {
         println!("Reason interactive — Harness-verified answers. /help for commands.");
-        println!("A managed session is saved after the first successful verified turn.");
+        if ephemeral {
+            println!(
+                "Ephemeral mode: prompts, context snapshots, and turns are kept in memory only and are not persisted by Reason."
+            );
+        } else {
+            println!("A managed session is saved after the first successful verified turn.");
+        }
     }
 
     loop {
@@ -282,7 +293,14 @@ pub(super) async fn run(
         match directive {
             Directive::Exit => return Ok(()),
             Directive::Help => {
-                println!("/add <path>  add a persisted untrusted context snapshot");
+                println!(
+                    "/add <path>  add an untrusted context snapshot ({})",
+                    if ephemeral {
+                        "memory-only"
+                    } else {
+                        "persisted"
+                    }
+                );
                 println!("/files       list context snapshots active in this session");
                 println!(
                     "/clear       stop carrying prior conversation/context into later prompts"
@@ -304,7 +322,7 @@ pub(super) async fn run(
             Directive::Clear => {
                 session.clear_context();
                 base.interactive_context = session.conversation_context();
-                if session.turns_len() > 0 {
+                if should_persist_managed(ephemeral, session.turns_len()) {
                     managed_session::save(&mut session)?;
                 }
                 println!(
@@ -314,7 +332,7 @@ pub(super) async fn run(
             Directive::Add(path) => match session.add_context_file(&path) {
                 Ok(()) => {
                     base.interactive_context = session.conversation_context();
-                    if session.turns_len() > 0 {
+                    if should_persist_managed(ephemeral, session.turns_len()) {
                         managed_session::save(&mut session)?;
                     }
                     println!("Added untrusted context snapshot: {}", path.display());
@@ -329,10 +347,14 @@ pub(super) async fn run(
                     Ok(output) => {
                         print_natural_human(&output);
                         session.append_turn(&output, safety_profile)?;
-                        managed_session::save(&mut session)?;
+                        if should_persist_managed(ephemeral, session.turns_len()) {
+                            managed_session::save(&mut session)?;
+                        }
                         pin_runtime_from_session(&mut base, &session, false)?;
                         base.interactive_context = session.conversation_context();
-                        println!("session: {}", session.short_id());
+                        if !ephemeral {
+                            println!("session: {}", session.short_id());
+                        }
                     }
                     Err(error) => eprintln!("{}", error.message),
                 }
@@ -398,6 +420,14 @@ mod tests {
             memory.metadata.provenance_class.as_deref(),
             Some("untrusted_context")
         );
+    }
+
+    #[test]
+    fn ephemeral_mode_never_persists_managed_state_even_after_turns_exist() {
+        assert!(!should_persist_managed(true, 1));
+        assert!(!should_persist_managed(true, 99));
+        assert!(!should_persist_managed(false, 0));
+        assert!(should_persist_managed(false, 1));
     }
 
     #[test]

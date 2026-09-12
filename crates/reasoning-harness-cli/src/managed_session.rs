@@ -66,6 +66,23 @@ pub(super) struct ManagedSessionProblem {
     pub message: String,
 }
 
+#[derive(Debug, Serialize)]
+pub(super) struct ManagedSessionExportOutput {
+    pub session_contract: &'static str,
+    pub id: String,
+    pub short_id: String,
+    pub output_path: String,
+}
+
+#[derive(Debug, Serialize)]
+pub(super) struct ManagedSessionMutationOutput {
+    pub session_contract: &'static str,
+    pub operation: &'static str,
+    pub dry_run: bool,
+    pub selected: Vec<String>,
+    pub removed: usize,
+}
+
 fn now_unix_ms() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -83,7 +100,7 @@ fn hex_lower(bytes: &[u8]) -> String {
     output
 }
 
-fn session_root() -> Result<PathBuf, CliError> {
+pub(super) fn managed_root_path() -> Result<PathBuf, CliError> {
     let config = user_config_path().ok_or_else(|| {
         CliError::new(
             "session_io",
@@ -104,15 +121,12 @@ fn digest_bytes(bytes: &[u8]) -> String {
 }
 
 fn store_lock(root: &Path) -> Result<fs::File, CliError> {
-    fs::create_dir_all(root).map_err(|error| {
-        CliError::new(
-            "session_io",
-            format!(
-                "create managed session directory {}: {error}",
-                root.display()
-            ),
-        )
-    })?;
+    if let Some(parent) = root.parent() {
+        local_privacy::ensure_private_directory(parent)
+            .map_err(|error| CliError::new("session_privacy", error))?;
+    }
+    local_privacy::ensure_private_directory(root)
+        .map_err(|error| CliError::new("session_privacy", error))?;
     let lock_path = root.join(".store.lock");
     let file = fs::OpenOptions::new()
         .read(true)
@@ -123,6 +137,8 @@ fn store_lock(root: &Path) -> Result<fs::File, CliError> {
         .map_err(|error| {
             CliError::new("session_io", format!("{}: {error}", lock_path.display()))
         })?;
+    local_privacy::ensure_private_file(&lock_path)
+        .map_err(|error| CliError::new("session_privacy", error))?;
     file.try_lock_exclusive().map_err(|error| {
         CliError::new(
             "session_locked",
@@ -502,12 +518,12 @@ fn validate(session: &ManagedSession) -> Result<(), CliError> {
 }
 
 fn path_for(session: &ManagedSession) -> Result<PathBuf, CliError> {
-    Ok(session_root()?.join(format!("{}.json", session.id)))
+    Ok(managed_root_path()?.join(format!("{}.json", session.id)))
 }
 
 pub(super) fn save(session: &mut ManagedSession) -> Result<(), CliError> {
     validate(session)?;
-    let root = session_root()?;
+    let root = managed_root_path()?;
     let _lock = store_lock(&root)?;
     cleanup_interrupted_temps(&root)?;
     let path = path_for(session)?;
@@ -533,6 +549,8 @@ pub(super) fn save(session: &mut ManagedSession) -> Result<(), CliError> {
                 ),
             )
         })?;
+    local_privacy::ensure_private_file(&temporary)
+        .map_err(|error| CliError::new("session_privacy", error))?;
     file.write_all(&bytes).map_err(|error| {
         CliError::new(
             "session_io",
@@ -559,6 +577,8 @@ pub(super) fn save(session: &mut ManagedSession) -> Result<(), CliError> {
             ),
         ));
     }
+    local_privacy::ensure_private_file(&path)
+        .map_err(|error| CliError::new("session_privacy", error))?;
     sync_directory(&root).map_err(|error| {
         CliError::new(
             "session_io",
@@ -570,6 +590,8 @@ pub(super) fn save(session: &mut ManagedSession) -> Result<(), CliError> {
 }
 
 fn load_path(path: &Path) -> Result<ManagedSession, CliError> {
+    local_privacy::ensure_private_file(path)
+        .map_err(|error| CliError::new("session_privacy", error))?;
     let bytes = fs::read(path)
         .map_err(|error| CliError::new("session_io", format!("{}: {error}", path.display())))?;
     let mut session: ManagedSession = serde_json::from_slice(&bytes).map_err(|error| {
@@ -584,7 +606,7 @@ fn load_path(path: &Path) -> Result<ManagedSession, CliError> {
 }
 
 fn scan_all() -> Result<(Vec<ManagedSession>, Vec<ManagedSessionProblem>), CliError> {
-    let root = session_root()?;
+    let root = managed_root_path()?;
     if !root.exists() {
         return Ok((vec![], vec![]));
     }
@@ -671,6 +693,132 @@ pub(super) fn load_by_selector(selector: &str) -> Result<ManagedSession, CliErro
     }
 }
 
+pub(super) fn export(
+    selector: &str,
+    output: &Path,
+) -> Result<ManagedSessionExportOutput, CliError> {
+    let session = load_by_selector(selector)?;
+    let mut bytes = serde_json::to_vec_pretty(&session).map_err(|error| {
+        CliError::new(
+            "session_invalid",
+            format!("serialize managed session export: {error}"),
+        )
+    })?;
+    bytes.push(b'\n');
+    local_privacy::write_new_private_file(output, &bytes)
+        .map_err(|error| CliError::new("session_export", error))?;
+    Ok(ManagedSessionExportOutput {
+        session_contract: MANAGED_SESSION_CONTRACT_ID,
+        id: session.id.clone(),
+        short_id: session.short_id.clone(),
+        output_path: output.display().to_string(),
+    })
+}
+
+pub(super) fn delete(
+    selector: &str,
+    dry_run: bool,
+) -> Result<ManagedSessionMutationOutput, CliError> {
+    let session = load_by_selector(selector)?;
+    let root = managed_root_path()?;
+    let path = path_for(&session)?;
+    let _lock = store_lock(&root)?;
+    verify_expected_source(&path, session.source_digest.as_deref())?;
+    if !dry_run {
+        fs::remove_file(&path)
+            .map_err(|error| CliError::new("session_io", format!("{}: {error}", path.display())))?;
+        sync_directory(&root).map_err(|error| {
+            CliError::new(
+                "session_io",
+                format!("sync managed session directory {}: {error}", root.display()),
+            )
+        })?;
+    }
+    Ok(ManagedSessionMutationOutput {
+        session_contract: MANAGED_SESSION_CONTRACT_ID,
+        operation: "delete",
+        dry_run,
+        selected: vec![session.short_id],
+        removed: usize::from(!dry_run),
+    })
+}
+
+pub(super) fn purge(
+    all: bool,
+    older_than_days: Option<u64>,
+    dry_run: bool,
+) -> Result<ManagedSessionMutationOutput, CliError> {
+    if all == older_than_days.is_some() {
+        return Err(CliError::new(
+            "input",
+            "session purge requires exactly one of --all or --older-than-days DAYS",
+        ));
+    }
+    let (sessions, problems) = scan_all()?;
+    let cutoff = older_than_days
+        .map(|days| now_unix_ms().saturating_sub(days.saturating_mul(24 * 60 * 60 * 1000)));
+    let selected_sessions = sessions
+        .into_iter()
+        .filter(|session| all || cutoff.is_some_and(|cutoff| session.updated_at_unix_ms <= cutoff))
+        .collect::<Vec<_>>();
+    let root = managed_root_path()?;
+    let _lock = store_lock(&root)?;
+    let mut selected = selected_sessions
+        .iter()
+        .map(|session| session.short_id.clone())
+        .collect::<Vec<_>>();
+    for session in &selected_sessions {
+        let path = path_for(session)?;
+        verify_expected_source(&path, session.source_digest.as_deref())?;
+    }
+    let mut problem_files = Vec::new();
+    if all {
+        for problem in problems {
+            problem_files.push(problem.file_name.clone());
+            selected.push(format!("{}:{}", problem.state, problem.file_name));
+        }
+    }
+    let mut removed = 0usize;
+    if !dry_run {
+        for session in &selected_sessions {
+            fs::remove_file(path_for(session)?).map_err(|error| {
+                CliError::new(
+                    "session_io",
+                    format!("purge managed session {}: {error}", session.short_id),
+                )
+            })?;
+            removed += 1;
+        }
+        for name in &problem_files {
+            let path = root.join(name);
+            if path.parent() == Some(root.as_path())
+                && path.extension().and_then(|v| v.to_str()) == Some("json")
+            {
+                fs::remove_file(&path).map_err(|error| {
+                    CliError::new(
+                        "session_io",
+                        format!("purge managed session problem {}: {error}", path.display()),
+                    )
+                })?;
+                removed += 1;
+            }
+        }
+        sync_directory(&root).map_err(|error| {
+            CliError::new(
+                "session_io",
+                format!("sync managed session directory {}: {error}", root.display()),
+            )
+        })?;
+    }
+    Ok(ManagedSessionMutationOutput {
+        session_contract: MANAGED_SESSION_CONTRACT_ID,
+        operation: "purge",
+        dry_run,
+        selected,
+        removed,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -738,7 +886,9 @@ mod tests {
 
     #[test]
     fn advisory_store_lock_excludes_second_writer() {
-        let root = test_path("lock-root");
+        let private_parent = test_path("lock-parent");
+        fs::create_dir_all(&private_parent).unwrap();
+        let root = private_parent.join("sessions");
         let first = store_lock(&root).unwrap();
         let second_path = root.join(".store.lock");
         let second = fs::OpenOptions::new()
@@ -750,7 +900,7 @@ mod tests {
         drop(first);
         second.try_lock_exclusive().unwrap();
         FileExt::unlock(&second).unwrap();
-        let _ = fs::remove_dir_all(root);
+        let _ = fs::remove_dir_all(private_parent);
     }
 
     #[test]

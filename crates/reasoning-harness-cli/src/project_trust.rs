@@ -9,7 +9,7 @@ use sha2::{Digest, Sha256};
 
 use super::{
     CLI_CONFIG_CONTRACT_ID, CliFileConfig, InvestigationCapabilityFileConfig, LoadedCliConfig,
-    ResolutionFileConfig, merge_cli_config, user_config_path,
+    ResolutionFileConfig, local_privacy, merge_cli_config, user_config_path,
 };
 
 pub(crate) const PROJECT_TRUST_CONTRACT_ID: &str = "reason-project-trust-v1";
@@ -575,12 +575,7 @@ fn write_store(store: &ProjectTrustStore) -> Result<(), String> {
     let directory = path
         .parent()
         .ok_or_else(|| format!("{}: invalid project trust path", path.display()))?;
-    fs::create_dir_all(directory).map_err(|error| {
-        format!(
-            "{}: cannot create trust directory: {error}",
-            directory.display()
-        )
-    })?;
+    local_privacy::ensure_private_directory(directory)?;
     let mut bytes = serde_json::to_vec_pretty(store)
         .map_err(|error| format!("cannot serialize project trust store: {error}"))?;
     bytes.push(b'\n');
@@ -655,6 +650,7 @@ fn write_store(store: &ProjectTrustStore) -> Result<(), String> {
         let _ = fs::remove_file(&temporary);
         format!("{}: cannot commit trust store: {error}", path.display())
     })?;
+    local_privacy::ensure_private_file(&path)?;
     Ok(())
 }
 
