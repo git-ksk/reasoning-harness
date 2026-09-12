@@ -8,7 +8,13 @@ use std::{
 
 use reasoning_harness_core::ResolutionAdapterErrorKind;
 
+use crate::SubprocessCancellation;
+
 const PROCESS_POLL_INTERVAL: Duration = Duration::from_millis(5);
+
+fn cancellation_requested(cancellation: Option<&SubprocessCancellation>) -> bool {
+    cancellation.is_some_and(SubprocessCancellation::is_cancelled)
+}
 
 fn spawn_error_kind(error: &std::io::Error) -> ResolutionAdapterErrorKind {
     match error.kind() {
@@ -159,6 +165,7 @@ pub(crate) struct DeadlineLineSession {
     reader: Receiver<Result<Vec<u8>, LineReadError>>,
     started: Instant,
     timeout: Duration,
+    cancellation: Option<SubprocessCancellation>,
 }
 
 impl DeadlineLineSession {
@@ -167,9 +174,13 @@ impl DeadlineLineSession {
         started: Instant,
         timeout: Duration,
         max_response_bytes: usize,
+        cancellation: Option<SubprocessCancellation>,
     ) -> Result<Self, ResolutionAdapterErrorKind> {
         if max_response_bytes == 0 {
             return Err(ResolutionAdapterErrorKind::PolicyDenied);
+        }
+        if cancellation_requested(cancellation.as_ref()) {
+            return Err(ResolutionAdapterErrorKind::Transport);
         }
         if remaining(started, timeout).is_none() {
             return Err(ResolutionAdapterErrorKind::Timeout);
@@ -200,6 +211,7 @@ impl DeadlineLineSession {
             reader: spawn_stream_line_reader(stdout, max_response_bytes),
             started,
             timeout,
+            cancellation,
         })
     }
 
@@ -210,6 +222,10 @@ impl DeadlineLineSession {
         if !payload.ends_with(b"\n") {
             payload.push(b'\n');
         }
+        if cancellation_requested(self.cancellation.as_ref()) {
+            self.terminate();
+            return Err(ResolutionAdapterErrorKind::Transport);
+        }
         if remaining(self.started, self.timeout).is_none() {
             self.terminate();
             return Err(ResolutionAdapterErrorKind::Timeout);
@@ -219,46 +235,62 @@ impl DeadlineLineSession {
             .take()
             .ok_or(ResolutionAdapterErrorKind::Transport)?;
         let writer = spawn_session_writer(stdin, payload);
-        let left =
-            remaining(self.started, self.timeout).ok_or(ResolutionAdapterErrorKind::Timeout)?;
-        match writer.recv_timeout(left) {
-            Ok((Ok(()), stdin)) => {
-                self.stdin = Some(stdin);
-                Ok(())
-            }
-            Ok((Err(_), stdin)) => {
-                self.stdin = Some(stdin);
+        loop {
+            if cancellation_requested(self.cancellation.as_ref()) {
                 self.terminate();
-                Err(ResolutionAdapterErrorKind::Transport)
+                return Err(ResolutionAdapterErrorKind::Transport);
             }
-            Err(mpsc::RecvTimeoutError::Timeout) => {
-                self.terminate();
-                Err(ResolutionAdapterErrorKind::Timeout)
-            }
-            Err(mpsc::RecvTimeoutError::Disconnected) => {
-                self.terminate();
-                Err(ResolutionAdapterErrorKind::Transport)
+            let left = match remaining(self.started, self.timeout) {
+                Some(left) if !left.is_zero() => left,
+                _ => {
+                    self.terminate();
+                    return Err(ResolutionAdapterErrorKind::Timeout);
+                }
+            };
+            match writer.recv_timeout(left.min(PROCESS_POLL_INTERVAL)) {
+                Ok((Ok(()), stdin)) => {
+                    self.stdin = Some(stdin);
+                    return Ok(());
+                }
+                Ok((Err(_), stdin)) => {
+                    self.stdin = Some(stdin);
+                    self.terminate();
+                    return Err(ResolutionAdapterErrorKind::Transport);
+                }
+                Err(mpsc::RecvTimeoutError::Timeout) => continue,
+                Err(mpsc::RecvTimeoutError::Disconnected) => {
+                    self.terminate();
+                    return Err(ResolutionAdapterErrorKind::Transport);
+                }
             }
         }
     }
 
     pub(crate) fn read_line(&mut self) -> Result<Vec<u8>, ResolutionAdapterErrorKind> {
-        let left =
-            remaining(self.started, self.timeout).ok_or(ResolutionAdapterErrorKind::Timeout)?;
-        match self.reader.recv_timeout(left) {
-            Ok(Ok(line)) => Ok(line),
-            Ok(Err(LineReadError::TooLarge)) => {
+        loop {
+            if cancellation_requested(self.cancellation.as_ref()) {
                 self.terminate();
-                Err(ResolutionAdapterErrorKind::Protocol)
+                return Err(ResolutionAdapterErrorKind::Transport);
             }
-            Ok(Err(LineReadError::Io | LineReadError::Eof))
-            | Err(mpsc::RecvTimeoutError::Disconnected) => {
-                self.terminate();
-                Err(ResolutionAdapterErrorKind::Transport)
-            }
-            Err(mpsc::RecvTimeoutError::Timeout) => {
-                self.terminate();
-                Err(ResolutionAdapterErrorKind::Timeout)
+            let left = match remaining(self.started, self.timeout) {
+                Some(left) if !left.is_zero() => left,
+                _ => {
+                    self.terminate();
+                    return Err(ResolutionAdapterErrorKind::Timeout);
+                }
+            };
+            match self.reader.recv_timeout(left.min(PROCESS_POLL_INTERVAL)) {
+                Ok(Ok(line)) => return Ok(line),
+                Ok(Err(LineReadError::TooLarge)) => {
+                    self.terminate();
+                    return Err(ResolutionAdapterErrorKind::Protocol);
+                }
+                Ok(Err(LineReadError::Io | LineReadError::Eof))
+                | Err(mpsc::RecvTimeoutError::Disconnected) => {
+                    self.terminate();
+                    return Err(ResolutionAdapterErrorKind::Transport);
+                }
+                Err(mpsc::RecvTimeoutError::Timeout) => continue,
             }
         }
     }
@@ -309,14 +341,22 @@ fn wait_for_writer(
     receiver: &Receiver<std::io::Result<()>>,
     started: Instant,
     timeout: Duration,
+    cancellation: Option<&SubprocessCancellation>,
 ) -> Result<(), ResolutionAdapterErrorKind> {
-    let remaining = remaining(started, timeout).ok_or(ResolutionAdapterErrorKind::Timeout)?;
-    match receiver.recv_timeout(remaining) {
-        Ok(Ok(())) => Ok(()),
-        Ok(Err(_)) | Err(mpsc::RecvTimeoutError::Disconnected) => {
-            Err(ResolutionAdapterErrorKind::Transport)
+    loop {
+        if cancellation_requested(cancellation) {
+            return Err(ResolutionAdapterErrorKind::Transport);
         }
-        Err(mpsc::RecvTimeoutError::Timeout) => Err(ResolutionAdapterErrorKind::Timeout),
+        let left = remaining(started, timeout)
+            .filter(|left| !left.is_zero())
+            .ok_or(ResolutionAdapterErrorKind::Timeout)?;
+        match receiver.recv_timeout(left.min(PROCESS_POLL_INTERVAL)) {
+            Ok(Ok(())) => return Ok(()),
+            Ok(Err(_)) | Err(mpsc::RecvTimeoutError::Disconnected) => {
+                return Err(ResolutionAdapterErrorKind::Transport);
+            }
+            Err(mpsc::RecvTimeoutError::Timeout) => continue,
+        }
     }
 }
 
@@ -326,10 +366,14 @@ pub(crate) fn run_to_exit(
     started: Instant,
     timeout: Duration,
     max_response_bytes: usize,
+    cancellation: Option<&SubprocessCancellation>,
 ) -> Result<Vec<u8>, ResolutionAdapterErrorKind> {
     let response_limit = max_response_bytes
         .checked_add(1)
         .ok_or(ResolutionAdapterErrorKind::PolicyDenied)?;
+    if cancellation_requested(cancellation) {
+        return Err(ResolutionAdapterErrorKind::Transport);
+    }
     if remaining(started, timeout).is_none() {
         return Err(ResolutionAdapterErrorKind::Timeout);
     }
@@ -359,6 +403,10 @@ pub(crate) fn run_to_exit(
     let mut writer_completed = false;
 
     let status = loop {
+        if cancellation_requested(cancellation) {
+            terminate_without_waiting(child);
+            return Err(ResolutionAdapterErrorKind::Transport);
+        }
         if let Err(kind) = observe_writer(&writer, &mut writer_completed) {
             terminate_without_waiting(child);
             return Err(kind);
@@ -385,15 +433,22 @@ pub(crate) fn run_to_exit(
         return Err(ResolutionAdapterErrorKind::Protocol);
     }
     if !writer_completed {
-        wait_for_writer(&writer, started, timeout)?;
+        wait_for_writer(&writer, started, timeout, cancellation)?;
     }
-    let remaining = remaining(started, timeout).ok_or(ResolutionAdapterErrorKind::Timeout)?;
-    let output = match reader.recv_timeout(remaining) {
-        Ok(Ok(output)) => output,
-        Ok(Err(_)) | Err(mpsc::RecvTimeoutError::Disconnected) => {
+    let output = loop {
+        if cancellation_requested(cancellation) {
             return Err(ResolutionAdapterErrorKind::Transport);
         }
-        Err(mpsc::RecvTimeoutError::Timeout) => return Err(ResolutionAdapterErrorKind::Timeout),
+        let left = remaining(started, timeout)
+            .filter(|left| !left.is_zero())
+            .ok_or(ResolutionAdapterErrorKind::Timeout)?;
+        match reader.recv_timeout(left.min(PROCESS_POLL_INTERVAL)) {
+            Ok(Ok(output)) => break output,
+            Ok(Err(_)) | Err(mpsc::RecvTimeoutError::Disconnected) => {
+                return Err(ResolutionAdapterErrorKind::Transport);
+            }
+            Err(mpsc::RecvTimeoutError::Timeout) => continue,
+        }
     };
     if output.len() > max_response_bytes {
         return Err(ResolutionAdapterErrorKind::Protocol);
@@ -407,9 +462,13 @@ pub(crate) fn run_until_line(
     started: Instant,
     timeout: Duration,
     max_response_bytes: usize,
+    cancellation: Option<&SubprocessCancellation>,
 ) -> Result<Vec<u8>, ResolutionAdapterErrorKind> {
     if max_response_bytes == 0 {
         return Err(ResolutionAdapterErrorKind::PolicyDenied);
+    }
+    if cancellation_requested(cancellation) {
+        return Err(ResolutionAdapterErrorKind::Transport);
     }
     if remaining(started, timeout).is_none() {
         return Err(ResolutionAdapterErrorKind::Timeout);
@@ -441,6 +500,10 @@ pub(crate) fn run_until_line(
     let mut line = None;
 
     loop {
+        if cancellation_requested(cancellation) {
+            terminate_without_waiting(child);
+            return Err(ResolutionAdapterErrorKind::Transport);
+        }
         if let Err(kind) = observe_writer(&writer, &mut writer_completed) {
             terminate_without_waiting(child);
             return Err(kind);
@@ -501,6 +564,26 @@ mod tests {
     }
 
     #[test]
+    fn pre_cancelled_subprocess_is_never_spawned() {
+        let path = script("sleep 5", "pre-cancelled-child");
+        let started = Instant::now();
+        let cancellation = SubprocessCancellation::default();
+        cancellation.cancel();
+        let mut command = Command::new(&path);
+        let result = run_to_exit(
+            &mut command,
+            b"request".to_vec(),
+            started,
+            Duration::from_secs(10),
+            1024,
+            Some(&cancellation),
+        );
+        fs::remove_file(path).ok();
+        assert_eq!(result.unwrap_err(), ResolutionAdapterErrorKind::Transport);
+        assert!(started.elapsed() < Duration::from_millis(250));
+    }
+
+    #[test]
     fn large_write_to_non_reader_is_bounded_by_absolute_deadline() {
         let path = script("sleep 1", "blocked-write");
         let started = Instant::now();
@@ -511,6 +594,7 @@ mod tests {
             started,
             Duration::from_millis(40),
             1024,
+            None,
         );
         fs::remove_file(path).ok();
         assert_eq!(result.unwrap_err(), ResolutionAdapterErrorKind::Timeout);
@@ -533,9 +617,56 @@ exit 0",
             started,
             Duration::from_millis(40),
             1024,
+            None,
         );
         fs::remove_file(path).ok();
         assert_eq!(result.unwrap_err(), ResolutionAdapterErrorKind::Timeout);
+        assert!(started.elapsed() < Duration::from_millis(500));
+    }
+
+    #[test]
+    fn cancellation_terminates_owned_subprocess_before_deadline() {
+        let path = script("exec sleep 10", "cancelled-child");
+        let cancellation = SubprocessCancellation::default();
+        let trigger = cancellation.clone();
+        let signal = std::thread::spawn(move || {
+            std::thread::sleep(Duration::from_millis(30));
+            trigger.cancel();
+        });
+        let started = Instant::now();
+        let mut command = Command::new(&path);
+        let result = run_to_exit(
+            &mut command,
+            b"request".to_vec(),
+            started,
+            Duration::from_secs(5),
+            1024,
+            Some(&cancellation),
+        );
+        signal.join().unwrap();
+        fs::remove_file(path).ok();
+        assert_eq!(result.unwrap_err(), ResolutionAdapterErrorKind::Transport);
+        assert!(started.elapsed() < Duration::from_millis(500));
+    }
+
+    #[test]
+    fn cancellation_terminates_stream_session_before_deadline() {
+        let path = script("cat >/dev/null; exec sleep 10", "cancelled-session");
+        let cancellation = SubprocessCancellation::default();
+        let started = Instant::now();
+        let mut command = Command::new(&path);
+        let mut session = DeadlineLineSession::spawn(
+            &mut command,
+            started,
+            Duration::from_secs(5),
+            1024,
+            Some(cancellation.clone()),
+        )
+        .unwrap();
+        cancellation.cancel();
+        let result = session.read_line();
+        fs::remove_file(path).ok();
+        assert_eq!(result.unwrap_err(), ResolutionAdapterErrorKind::Transport);
         assert!(started.elapsed() < Duration::from_millis(500));
     }
 
@@ -554,6 +685,7 @@ head -c 131072 /dev/zero",
             started,
             Duration::from_secs(10),
             1024,
+            None,
         );
         fs::remove_file(path).ok();
         // This test isolates response-size classification rather than scheduler performance.

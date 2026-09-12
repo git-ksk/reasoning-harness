@@ -13,6 +13,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 use crate::{
+    SubprocessCancellation,
     config_identity::stable_config_id,
     mcp_readonly::{MCP_PROTOCOL_VERSION, McpReadOnlyResolverConfig},
     subprocess_deadline::DeadlineLineSession,
@@ -53,12 +54,22 @@ impl McpReadOnlyResolverV3Config {
 pub struct McpReadOnlyResolverV3 {
     config: McpReadOnlyResolverV3Config,
     config_id: String,
+    cancellation: Option<SubprocessCancellation>,
 }
 
 impl McpReadOnlyResolverV3 {
     pub fn new(config: McpReadOnlyResolverV3Config) -> Self {
         let config_id = stable_config_id(MCP_READONLY_V3_RESOLVER_ID, &config);
-        Self { config, config_id }
+        Self {
+            config,
+            config_id,
+            cancellation: None,
+        }
+    }
+
+    pub fn with_cancellation(mut self, cancellation: SubprocessCancellation) -> Self {
+        self.cancellation = Some(cancellation);
+        self
     }
 }
 
@@ -319,9 +330,14 @@ impl ResolutionResolver for McpReadOnlyResolverV3 {
         let timeout = Duration::from_millis(base.timeout_ms);
         let mut command = Command::new(&base.program);
         command.args(&base.args);
-        let mut session =
-            DeadlineLineSession::spawn(&mut command, started, timeout, base.max_response_bytes)
-                .map_err(|kind| error(kind, started))?;
+        let mut session = DeadlineLineSession::spawn(
+            &mut command,
+            started,
+            timeout,
+            base.max_response_bytes,
+            self.cancellation.clone(),
+        )
+        .map_err(|kind| error(kind, started))?;
 
         let id_prefix = format!("reasoning-harness:{}:{}", request.id, attempt_index);
         let initialize_id = format!("{id_prefix}:initialize");

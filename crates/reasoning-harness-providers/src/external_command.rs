@@ -12,7 +12,9 @@ use reasoning_harness_core::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::{config_identity::stable_config_id, subprocess_deadline::run_to_exit};
+use crate::{
+    SubprocessCancellation, config_identity::stable_config_id, subprocess_deadline::run_to_exit,
+};
 
 pub const EXTERNAL_COMMAND_RESOLVER_ID: &str = "external_command_v1";
 pub const INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID: &str = "investigation_external_command_v1";
@@ -46,12 +48,22 @@ impl ExternalCommandResolverConfig {
 pub struct ExternalCommandResolver {
     config: ExternalCommandResolverConfig,
     config_id: String,
+    cancellation: Option<SubprocessCancellation>,
 }
 
 impl ExternalCommandResolver {
     pub fn new(config: ExternalCommandResolverConfig) -> Self {
         let config_id = stable_config_id(EXTERNAL_COMMAND_RESOLVER_ID, &config);
-        Self { config, config_id }
+        Self {
+            config,
+            config_id,
+            cancellation: None,
+        }
+    }
+
+    pub fn with_cancellation(mut self, cancellation: SubprocessCancellation) -> Self {
+        self.cancellation = Some(cancellation);
+        self
     }
 }
 
@@ -59,12 +71,22 @@ impl ExternalCommandResolver {
 pub struct InvestigationExternalCommandResolver {
     config: ExternalCommandResolverConfig,
     config_id: String,
+    cancellation: Option<SubprocessCancellation>,
 }
 
 impl InvestigationExternalCommandResolver {
     pub fn new(config: ExternalCommandResolverConfig) -> Self {
         let config_id = stable_config_id(INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID, &config);
-        Self { config, config_id }
+        Self {
+            config,
+            config_id,
+            cancellation: None,
+        }
+    }
+
+    pub fn with_cancellation(mut self, cancellation: SubprocessCancellation) -> Self {
+        self.cancellation = Some(cancellation);
+        self
     }
 }
 
@@ -204,6 +226,7 @@ fn execute_external_payload(
     config: &ExternalCommandResolverConfig,
     payload: Vec<u8>,
     started: Instant,
+    cancellation: Option<&SubprocessCancellation>,
 ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
     let mut command = Command::new(&config.program);
     command.args(&config.args);
@@ -213,6 +236,7 @@ fn execute_external_payload(
         started,
         Duration::from_millis(config.timeout_ms),
         config.max_response_bytes,
+        cancellation,
     )
     .map_err(|kind| adapter_error(kind, started, ResolutionCost::default()))?;
 
@@ -285,7 +309,7 @@ impl ResolutionResolver for ExternalCommandResolver {
             )
         })?;
 
-        execute_external_payload(&self.config, payload, started)
+        execute_external_payload(&self.config, payload, started, self.cancellation.as_ref())
     }
 }
 
@@ -338,7 +362,7 @@ impl ResolutionResolver for InvestigationExternalCommandResolver {
                 ResolutionCost::default(),
             )
         })?;
-        execute_external_payload(&self.config, payload, started)
+        execute_external_payload(&self.config, payload, started, self.cancellation.as_ref())
     }
 }
 

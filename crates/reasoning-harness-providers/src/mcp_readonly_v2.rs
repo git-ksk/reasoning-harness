@@ -236,6 +236,7 @@ impl ResolutionResolver for McpReadOnlyResolverV2 {
             started,
             Duration::from_millis(self.config.timeout_ms),
             self.config.max_response_bytes,
+            None,
         )
         .map_err(|kind| error(kind, started))?;
         let response: JsonRpcResponse = serde_json::from_slice(&line)

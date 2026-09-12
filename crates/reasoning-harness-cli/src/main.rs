@@ -7,6 +7,7 @@ mod lifecycle;
 mod local_privacy;
 mod managed_session;
 mod model_catalog;
+mod progress;
 mod project_trust;
 mod secure_credentials;
 mod setup;
@@ -75,7 +76,7 @@ use reasoning_harness_providers::{
     InvestigationExternalCommandResolver, MCP_PROTOCOL_VERSION,
     MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION, MCP_READONLY_V3_RESOLVER_ID,
     McpReadOnlyResolverConfig, McpReadOnlyResolverV3, McpReadOnlyResolverV3Config, MistralAdapter,
-    NvidiaAdapter, TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier,
+    NvidiaAdapter, SubprocessCancellation, TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier,
     TrustedCommandVerifierConfig,
 };
 use schemars::{JsonSchema, schema_for};
@@ -198,6 +199,9 @@ struct NaturalArgs {
     /// Human-readable output by default; JSON is available for automation/inspection.
     #[arg(long, value_enum)]
     format: Option<OutputFormat>,
+    /// Show concise operational provider/phase details on an interactive human TTY. Never exposes hidden reasoning.
+    #[arg(long)]
+    verbose: bool,
     /// Do not persist managed interactive session/history state. One-shot runs are already non-persistent unless an explicit output/trace path is requested.
     #[arg(long, conflicts_with = "diagnostic_trace")]
     ephemeral: bool,
@@ -2821,6 +2825,7 @@ fn run_configured_investigation_capability(
     input: HarnessInput,
     candidate: ReasoningCandidate,
     request: ResolutionRequest,
+    cancellation: &SubprocessCancellation,
 ) -> Result<GroundedResolutionOutcome, CliError> {
     let admission = capability
         .admission
@@ -2828,11 +2833,13 @@ fn run_configured_investigation_capability(
         .map(ExternalEvidenceAdmissionPolicy::new);
     match &capability.resolver {
         InvestigationResolverConfig::ExternalCommand(config) => {
-            let resolver = InvestigationExternalCommandResolver::new(config.clone());
+            let resolver = InvestigationExternalCommandResolver::new(config.clone())
+                .with_cancellation(cancellation.clone());
             run_investigation_resolution(input, candidate, &resolver, admission.as_ref(), request)
         }
         InvestigationResolverConfig::McpReadonly(config) => {
-            let resolver = McpReadOnlyResolverV3::new((**config).clone());
+            let resolver = McpReadOnlyResolverV3::new((**config).clone())
+                .with_cancellation(cancellation.clone());
             run_investigation_resolution(input, candidate, &resolver, admission.as_ref(), request)
         }
     }
@@ -2850,6 +2857,8 @@ struct NaturalInvestigationCall<'a> {
     max_tokens: u32,
     seed: Option<u64>,
     usage: &'a mut usage_budget::UsageTracker,
+    progress: &'a progress::ProgressReporter,
+    cancellation: &'a SubprocessCancellation,
 }
 
 async fn run_natural_investigation(
@@ -2867,6 +2876,8 @@ async fn run_natural_investigation(
         max_tokens,
         seed,
         usage,
+        progress,
+        cancellation,
     } = call;
     let descriptors = config
         .capabilities
@@ -2883,22 +2894,27 @@ async fn run_natural_investigation(
     };
 
     let plan_max_tokens = usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
-    let (proposal, plan_generation) = match generator
-        .plan_investigation_traced(
-            task,
-            &descriptors,
-            plan_max_tokens,
-            seed,
-            model,
-            DiagnosticTraceCall {
-                recorder: trace.as_deref_mut(),
-                phase: DiagnosticPhase::new("investigation_plan", None),
-            },
+    progress.phase("Planning", "building a bounded investigation plan");
+    let (proposal, plan_generation) = match progress
+        .wait_for_provider(
+            "waiting on the selected provider for an investigation plan",
+            generator.plan_investigation_traced(
+                task,
+                &descriptors,
+                plan_max_tokens,
+                seed,
+                model,
+                DiagnosticTraceCall {
+                    recorder: trace.as_deref_mut(),
+                    phase: DiagnosticPhase::new("investigation_plan", None),
+                },
+            ),
         )
         .await
     {
         Ok(result) => result,
         Err(failure) => {
+            progress.failure(&failure);
             usage.record_failure(&failure)?;
             observation.generation_failure = Some(failure);
             return Ok(NaturalInvestigationRun {
@@ -2909,6 +2925,7 @@ async fn run_natural_investigation(
             });
         }
     };
+    progress.provider(&plan_generation);
     usage.record_generation(&plan_generation)?;
     observation.plan_generation = Some(plan_generation);
     let targets = match admit_investigation_plan(proposal, &config.policy) {
@@ -2939,29 +2956,34 @@ async fn run_natural_investigation(
             state.stop(InvestigationStopReason::TargetsExhausted);
             break;
         }
-        let (round_index, proposal) = if let Some((round, proposal)) =
-            state.select_no_result_followup_continuation()
-        {
-            (round, proposal)
-        } else {
-            let round_index = match state.begin_round() {
-                Ok(round) => round,
-                Err(_) => break,
-            };
-            let proposal = if let Some(proposal) = state.unique_compatible_action_proposal() {
-                state.note_harness_unique_selection();
-                proposal
-            } else if let Some(proposal) = state.unique_precedence_action_proposal_with_diagnostic()
-            {
-                state.note_harness_precedence_selection();
-                proposal
+        let (round_index, proposal) =
+            if let Some((round, proposal)) = state.select_no_result_followup_continuation() {
+                (round, proposal)
             } else {
-                state.note_planner_call();
-                let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
-                let action_max_tokens =
-                    usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
-                let (proposal, action_generation) = match generator
-                    .choose_investigation_action_traced(
+                let round_index = match state.begin_round() {
+                    Ok(round) => round,
+                    Err(_) => break,
+                };
+                let proposal =
+                    if let Some(proposal) = state.unique_compatible_action_proposal() {
+                        state.note_harness_unique_selection();
+                        proposal
+                    } else if let Some(proposal) =
+                        state.unique_precedence_action_proposal_with_diagnostic()
+                    {
+                        state.note_harness_precedence_selection();
+                        proposal
+                    } else {
+                        state.note_planner_call();
+                        let action_seed =
+                            seed.and_then(|seed| seed.checked_add(round_index as u64));
+                        let action_max_tokens = usage
+                            .cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
+                        progress.phase("Planning", "selecting the next bounded acquisition action");
+                        let (proposal, action_generation) = match progress
+                    .wait_for_provider(
+                        "waiting on the selected provider for the next investigation action",
+                        generator.choose_investigation_action_traced(
                         task,
                         state.telemetry(),
                         action_max_tokens,
@@ -2971,23 +2993,26 @@ async fn run_natural_investigation(
                             recorder: trace.as_deref_mut(),
                             phase: DiagnosticPhase::new("investigation_action", Some(round_index)),
                         },
+                        ),
                     )
                     .await
                 {
                     Ok(result) => result,
                     Err(failure) => {
+                        progress.failure(&failure);
                         usage.record_failure(&failure)?;
                         state.stop(InvestigationStopReason::OperationalTerminal);
                         observation.generation_failure = Some(failure);
                         break;
                     }
                 };
-                usage.record_generation(&action_generation)?;
-                observation.action_generations.push(action_generation);
-                proposal
+                        progress.provider(&action_generation);
+                        usage.record_generation(&action_generation)?;
+                        observation.action_generations.push(action_generation);
+                        proposal
+                    };
+                (round_index, proposal)
             };
-            (round_index, proposal)
-        };
         let action = match state.validate_action(proposal) {
             Ok(Some(action)) => action,
             Ok(None) => break,
@@ -3025,11 +3050,16 @@ async fn run_natural_investigation(
         };
         let before_supported = supported_claim_count(&current_outcome);
         let before_verdict = current_outcome.verdict;
+        progress.phase(
+            "Acquiring",
+            "running a bounded read-only acquisition action",
+        );
         let acquisition = run_configured_investigation_capability(
             capability,
             current_input.clone(),
             current_candidate.clone(),
             request,
+            cancellation,
         )?;
         usage.record_resolution(&acquisition);
         let (mut status, admitted_evidence) = investigation_attempt_status(&acquisition);
@@ -3065,20 +3095,28 @@ async fn run_natural_investigation(
             let regeneration_phase =
                 DiagnosticPhase::new("post_investigation_regeneration", Some(round_index));
             let regeneration_max_tokens = usage.cap_next_model_tokens(max_tokens)?;
-            match generator
-                .generate_traced(
-                    &current_input,
-                    regeneration_max_tokens,
-                    regeneration_seed,
-                    model,
-                    DiagnosticTraceCall {
-                        recorder: trace.as_deref_mut(),
-                        phase: regeneration_phase,
-                    },
+            progress.phase(
+                "Verifying",
+                "regenerating from admitted evidence for re-verification",
+            );
+            match progress
+                .wait_for_provider(
+                    "waiting on the selected provider to regenerate from admitted evidence",
+                    generator.generate_traced(
+                        &current_input,
+                        regeneration_max_tokens,
+                        regeneration_seed,
+                        model,
+                        DiagnosticTraceCall {
+                            recorder: trace.as_deref_mut(),
+                            phase: regeneration_phase,
+                        },
+                    ),
                 )
                 .await
             {
                 Ok((regenerated, generation)) => {
+                    progress.provider(&generation);
                     usage.record_generation(&generation)?;
                     observation.candidate_regenerations.push(generation);
                     current_candidate = regenerated;
@@ -3104,12 +3142,14 @@ async fn run_natural_investigation(
                     };
                 }
                 Err(failure) => {
+                    progress.failure(&failure);
                     usage.record_failure(&failure)?;
                     state.stop(InvestigationStopReason::OperationalTerminal);
                     observation.generation_failure = Some(failure);
                 }
             }
         } else {
+            progress.phase("Verifying", "checking acquisition result");
             current_outcome =
                 run_standard_grounding(current_input.clone(), current_candidate.clone())?;
             if let Some(trace) = trace.as_deref_mut() {
@@ -3212,9 +3252,10 @@ fn merge_natural_execution_seed(
     Ok(built)
 }
 
-async fn execute_natural(
+async fn execute_natural_inner(
     args: NaturalArgs,
     seed: Option<NaturalExecutionSeed>,
+    cancellation: SubprocessCancellation,
 ) -> Result<NaturalOutput, CliError> {
     let diagnostic_trace_path = args.diagnostic_trace.clone();
     let task = args
@@ -3297,6 +3338,7 @@ async fn execute_natural(
         .as_deref()
         .expect("natural live config validates model presence")
         .to_string();
+    let progress = progress::ProgressReporter::new(resolved.format, args.verbose);
     let built = build_natural_input(&args, &task)?;
     let built = if let Some(seed) = seed {
         merge_natural_execution_seed(built, seed)?
@@ -3314,26 +3356,36 @@ async fn execute_natural(
         usage_budget::UsageTracker::new(usage_budget, args.session_usage_baseline.clone())?;
     let initial_generation_phase = DiagnosticPhase::new("initial_generation", None);
     let initial_max_tokens = usage_tracker.cap_next_model_tokens(resolved.max_tokens)?;
-    let (mut candidate, generation) = generator
-        .generate_traced(
-            &built.input,
-            initial_max_tokens,
-            args.seed,
-            &model,
-            DiagnosticTraceCall {
-                recorder: diagnostic_trace.as_mut(),
-                phase: initial_generation_phase,
-            },
+    progress.phase("Planning", "waiting on provider for the initial candidate");
+    let (mut candidate, generation) = progress
+        .wait_for_provider(
+            "waiting on the selected provider for the initial candidate",
+            generator.generate_traced(
+                &built.input,
+                initial_max_tokens,
+                args.seed,
+                &model,
+                DiagnosticTraceCall {
+                    recorder: diagnostic_trace.as_mut(),
+                    phase: initial_generation_phase,
+                },
+            ),
         )
         .await
         .map_err(|failure| {
+            progress.failure(&failure);
             CliError::new(failure.failure_class, format_generation_failure(&failure))
         })?;
+    progress.provider(&generation);
     usage_tracker.record_generation(&generation)?;
     if let Some(trace) = diagnostic_trace.as_mut() {
         trace.record_candidate(initial_generation_phase, &candidate);
     }
 
+    progress.phase(
+        "Verifying",
+        "checking generated claims against Harness evidence",
+    );
     let initial_outcome = run_standard_grounding(built.input.clone(), candidate.clone())?;
     if let Some(trace) = diagnostic_trace.as_mut() {
         trace.record_grounding(
@@ -3344,11 +3396,14 @@ async fn execute_natural(
     let resolver = LocalFactStoreResolver {
         facts: built.resolver_facts.clone(),
     };
-    let external_resolver = external_resolver_config.map(ExternalCommandResolver::new);
+    let external_resolver = external_resolver_config
+        .map(|config| ExternalCommandResolver::new(config).with_cancellation(cancellation.clone()));
     let external_admission = external_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
-    let mcp_resolver = mcp_resolver_config.map(McpReadOnlyResolverV3::new);
+    let mcp_resolver = mcp_resolver_config
+        .map(|config| McpReadOnlyResolverV3::new(config).with_cancellation(cancellation.clone()));
     let mcp_admission = mcp_admission_config.map(ExternalEvidenceAdmissionPolicy::new);
-    let trusted_verifier = trusted_verifier_config.map(TrustedCommandVerifier::new);
+    let trusted_verifier = trusted_verifier_config
+        .map(|config| TrustedCommandVerifier::new(config).with_cancellation(cancellation.clone()));
     let mut resolution_rounds = Vec::new();
     let mut investigation_observation = None;
     let mut final_artifact = initial_outcome.artifact.clone();
@@ -3368,6 +3423,8 @@ async fn execute_natural(
                 max_tokens: resolved.max_tokens,
                 seed: args.seed,
                 usage: &mut usage_tracker,
+                progress: &progress,
+                cancellation: &cancellation,
             })
             .await?;
             candidate = run.candidate;
@@ -3376,6 +3433,7 @@ async fn execute_natural(
             resolution_rounds.extend(run.resolution_rounds);
             investigation_observation = Some(run.observation);
         } else {
+            progress.phase("Acquiring", "running bounded evidence acquisition");
             let round = if !resolver.facts.is_empty() {
                 Some(run_local_resolution(
                     built.input.clone(),
@@ -3403,6 +3461,7 @@ async fn execute_natural(
                 None
             };
             if let Some(round) = round {
+                progress.phase("Verifying", "checking acquired evidence");
                 usage_tracker.record_resolution(&round);
                 final_artifact = round.final_artifact.clone();
                 final_verdict = round.final_verdict;
@@ -3412,12 +3471,14 @@ async fn execute_natural(
     }
     if final_verdict != Verdict::Accept {
         if let Some(verifier) = trusted_verifier.as_ref() {
+            progress.phase("Acquiring", "running the configured trusted verifier");
             let round = run_trusted_resolution(
                 input_from_artifact(&final_artifact),
                 candidate.clone(),
                 verifier,
                 args.max_resolution_attempts,
             )?;
+            progress.phase("Verifying", "checking trusted verification result");
             usage_tracker.record_resolution(&round);
             final_artifact = round.final_artifact.clone();
             final_verdict = round.final_verdict;
@@ -3442,27 +3503,32 @@ async fn execute_natural(
     let mut render_round = 0usize;
     loop {
         render_round += 1;
+        progress.phase("Finalizing", "rendering the Harness-verified answer");
         let final_render_phase = DiagnosticPhase::new("final_render", Some(render_round));
         let render_max_tokens = usage_tracker.cap_next_model_tokens(resolved.max_tokens)?;
-        let mut rendered = match generator
-            .render_final_traced(
-                FinalRenderCall {
-                    provider: generator.provider_label(),
-                    requested_model: &model,
-                    task: &task,
-                    artifact: &final_artifact,
-                    verdict: final_verdict,
-                    max_tokens: render_max_tokens,
-                    seed: args.seed,
-                },
-                DiagnosticTraceCall {
-                    recorder: diagnostic_trace.as_mut(),
-                    phase: final_render_phase,
-                },
+        let mut rendered = match progress
+            .wait_for_provider(
+                "waiting on the selected provider for final rendering",
+                generator.render_final_traced(
+                    FinalRenderCall {
+                        provider: generator.provider_label(),
+                        requested_model: &model,
+                        task: &task,
+                        artifact: &final_artifact,
+                        verdict: final_verdict,
+                        max_tokens: render_max_tokens,
+                        seed: args.seed,
+                    },
+                    DiagnosticTraceCall {
+                        recorder: diagnostic_trace.as_mut(),
+                        phase: final_render_phase,
+                    },
+                ),
             )
             .await
         {
             Ok((answer, observation)) => {
+                progress.provider(&observation);
                 usage_tracker.record_generation(&observation)?;
                 rendering.push(observation);
                 if let Some(trace) = diagnostic_trace.as_mut() {
@@ -3471,6 +3537,7 @@ async fn execute_natural(
                 answer
             }
             Err(failure) => {
+                progress.failure(&failure);
                 usage_tracker.record_failure(&failure)?;
                 rendering_failure = Some(failure);
                 let answer = canonical_verified_target_answer(
@@ -3618,19 +3685,30 @@ async fn execute_natural(
             }
         }
         let rendered_for_safety = rendered.clone();
-        let (gated, observations) = apply_natural_answer_safety(NaturalAnswerSafetyCall {
-            profile: safety_profile,
-            generator: &generator,
-            model: &model,
-            artifact: &final_artifact,
-            rendered: &rendered_for_safety,
-            baseline: finalization,
-            max_tokens: resolved.max_tokens,
-            seed: args.seed,
-            render_round,
-            usage: &mut usage_tracker,
-        })
-        .await?;
+        progress.phase("Verifying", "running the answer-safety gate");
+        let (gated, observations) = progress
+            .wait_for_provider(
+                "waiting on the selected provider for answer-safety verification",
+                apply_natural_answer_safety(NaturalAnswerSafetyCall {
+                    profile: safety_profile,
+                    generator: &generator,
+                    model: &model,
+                    artifact: &final_artifact,
+                    rendered: &rendered_for_safety,
+                    baseline: finalization,
+                    max_tokens: resolved.max_tokens,
+                    seed: args.seed,
+                    render_round,
+                    usage: &mut usage_tracker,
+                }),
+            )
+            .await?;
+        for observation in &observations {
+            if let Some(sufficiency) = observation.observation.sufficiency.as_ref() {
+                progress
+                    .provider_attempts(generator.provider_label(), sufficiency.provider_attempts);
+            }
+        }
         finalization = gated;
         if let Some(trace) = diagnostic_trace.as_mut() {
             for observation in &observations {
@@ -3665,6 +3743,10 @@ async fn execute_natural(
             }
         }
         let before = final_artifact.clone();
+        progress.phase(
+            "Acquiring",
+            "resolving uncovered propositions before finalization retry",
+        );
         let round = if let Some(verifier) = trusted_verifier.as_ref() {
             run_trusted_resolution(
                 retry_input,
@@ -3698,6 +3780,7 @@ async fn execute_natural(
                 args.max_resolution_attempts,
             )?
         };
+        progress.phase("Verifying", "checking retry evidence");
         usage_tracker.record_resolution(&round);
         final_artifact = round.final_artifact.clone();
         final_verdict = round.final_verdict;
@@ -3716,6 +3799,7 @@ async fn execute_natural(
         }
     }
 
+    progress.done();
     let output = NaturalOutput {
         output_contract: NATURAL_OUTPUT_CONTRACT_ID,
         task,
@@ -3777,6 +3861,37 @@ async fn execute_natural(
         }
     }
     Ok(output)
+}
+
+async fn await_cancellable_operation<T, F>(
+    cancellation: &progress::CancellationRun,
+    operation: F,
+) -> Result<T, CliError>
+where
+    F: std::future::Future<Output = Result<T, CliError>>,
+{
+    tokio::pin!(operation);
+    let result = tokio::select! {
+        result = &mut operation => result,
+        () = cancellation.wait_cancelled() => Err(cancellation.error()),
+    };
+    if cancellation.is_cancelled() {
+        Err(cancellation.error())
+    } else {
+        result
+    }
+}
+
+async fn execute_natural(
+    args: NaturalArgs,
+    seed: Option<NaturalExecutionSeed>,
+) -> Result<NaturalOutput, CliError> {
+    let cancellation = progress::CancellationRun::begin()?;
+    await_cancellable_operation(
+        &cancellation,
+        execute_natural_inner(args, seed, cancellation.subprocess_token()),
+    )
+    .await
 }
 
 async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
@@ -4433,6 +4548,7 @@ fn continuation_args(
         config: None,
         no_config: true,
         format: Some(format),
+        verbose: false,
         ephemeral: false,
         diagnostic_trace: None,
         interactive_context: vec![],
@@ -7962,6 +8078,26 @@ fn print_json(value: &impl Serialize) -> Result<(), String> {
 #[cfg(test)]
 mod candidate_json_tests {
     use super::*;
+
+    #[test]
+    fn parses_verbose_natural_progress_flag() {
+        let cli = Cli::try_parse_from(["reason", "inspect this", "--verbose"]).unwrap();
+        assert!(cli.natural.verbose);
+    }
+
+    #[tokio::test]
+    async fn cancellation_is_typed_operational_failure() {
+        let cancellation = progress::CancellationRun::test_instance();
+        cancellation.cancel_for_test();
+        let error = await_cancellable_operation(
+            &cancellation,
+            std::future::pending::<Result<(), CliError>>(),
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(error.failure_class, "cancelled");
+        assert!(error.message.contains("no incomplete turn"));
+    }
 
     #[test]
     fn accepts_one_complete_candidate_with_non_json_trailing_text() {
