@@ -220,6 +220,8 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 | `reason model set <provider> <model>` | Reason CLI 0.5.0開発ライン: silent fallbackなしでgeneral-use provider/model defaultを保存。 |
 | `reason config list/get/set/unset/path/sources` | Reason CLI 0.5.0開発ライン: safeなeffective configとprecedence/provenanceを確認し、user-levelのnon-secret run defaultを編集。 |
 | `reason session list` | managed interactive sessionをhuman/JSONで一覧化。 |
+| `reason examples [topic]` | common workflowのcopy-paste例を表示。 |
+| `reason completions <shell>` | bash/zsh/fish/PowerShell completionをstdoutへ生成。shell設定は変更しない。 |
 | `reason session ... --store PATH` | 低レベルtyped session互換surface: 明示session fileの保存・確認・追加・訂正・resume・fork・close。 |
 | `reason run` | Application / CI統合、live candidate生成。 |
 | `reason verify` | materialize済み`ReasoningArtifact`のdeterministic validation。 |
@@ -230,6 +232,7 @@ verified fact、uncertainty、evidence provenanceを示すhuman outputは[Human 
 progress、retry visibility、Ctrl+C semanticsは[Progress / retry / cancellation](docs/reason-progress.ja.md)を参照してください。
 provider usage、`/usage`、session累積accounting、hard budget guardは[Provider usage / budget guard](docs/reason-usage-budget.ja.md)を参照してください。
 managed sessionのlock、optimistic concurrency、crash recovery、rollback compatibilityは[Managed session durability](docs/reason-managed-sessions.ja.md)を参照してください。
+help / examples / shell completionは[Reason CLI help / examples / completions](docs/reason-help.ja.md)を参照してください。
 local storage、ephemeral mode、retention/purge、uninstall、outbound-data boundaryは[Local privacy / retention](docs/reason-local-privacy.ja.md)を参照してください。
 
 

@@ -106,7 +106,7 @@ Environment variables remain supported for CI, containers, remote shells, and se
 - **#380 P0 — implemented:** additive human/JSON provider/resolver usage, interactive `/usage`, rollback-safe cumulative managed-session accounting, hard `max_model_calls` / reported output-token / measurable total-token guards with typed operational exhaustion, and currency estimates only from explicit operator pricing provenance.
 - **#366 P1 — implemented:** `reason config list/get/set/unset/path/sources` exposes effective safe run defaults with per-key provenance and precedence, while editing only the user layer. Secrets and authority-bearing resolver/MCP/trusted-verifier settings remain outside this surface and rejected by `reason-config-v1`.
 - **#369 P1 — implemented:** human full-TTY execution shows only Harness-owned `Planning` / `Acquiring` / `Verifying` / `Finalizing` phases, bounded provider retry/elapsed status, and optional secret/CoT-free `--verbose` operational details. JSON/piped/non-TTY mode stays quiet; Ctrl+C returns typed `cancelled` without committing an incomplete ordinary turn as a successful checkpoint.
-- **#373 P1:** self-teaching help, examples, and shell completions for zsh/bash/fish/PowerShell.
+- **#373 P1 — implemented:** self-teaching help, copy-paste examples, and stdout-only shell completions for zsh/bash/fish/PowerShell; common natural-language workflows are prioritized while advanced/research surfaces remain explicitly discoverable.
 - **#383 P1:** accessible/plain terminal rendering, `NO_COLOR`, screen-reader/minimal-terminal behavior, and width/unicode-safe presentation.
 
 The existing one-shot `reason "TASK"`, repeatable `--file`, piped stdin context, and JSON automation surfaces remain supported.

@@ -23,7 +23,8 @@ use std::{
     time::{Instant, SystemTime, UNIX_EPOCH},
 };
 
-use clap::{Args, Parser, Subcommand, ValueEnum};
+use clap::{Args, CommandFactory, Parser, Subcommand, ValueEnum};
+use clap_complete::{Shell, generate};
 use diagnostic_trace::{DiagnosticModelAdapter, DiagnosticPhase, DiagnosticTraceRecorder};
 use reasoning_harness_core::{
     AcquiredEvidence, AdversarialDiscoveryPass, AnswerSafetyDisposition, AnswerSafetyError,
@@ -93,11 +94,29 @@ const DEFAULT_MAX_TOKENS: u32 = 1024;
 const MAX_CONTEXT_FILE_BYTES: u64 = 1024 * 1024;
 const MAX_CONTEXT_TOTAL_BYTES: usize = 4 * 1024 * 1024;
 
+const TOP_LEVEL_AFTER_HELP: &str = r#"QUICK START:
+  reason setup
+  reason "Explain why this deployment failed"
+  reason                         # interactive mode on a human TTY
+  reason --continue              # continue the latest managed session
+  reason --file notes.txt "Check these notes"
+
+DISCOVER:
+  reason examples
+  reason help <command>
+  reason completions <bash|zsh|fish|powershell>
+
+ADVANCED / RESEARCH:
+  Structured product commands: run, semantic-check, verify, schema
+  Research/eval commands: eval, eval-resolution, eval-judges
+  Use `reason help <command>` for their full contract."#;
+
 #[derive(Debug, Parser)]
 #[command(
     name = "reason",
     version,
     about = "Evidence-grounded AI reasoning CLI",
+    after_help = TOP_LEVEL_AFTER_HELP,
     subcommand_precedence_over_arg = true
 )]
 struct Cli {
@@ -129,33 +148,39 @@ struct NaturalArgs {
     #[arg(long, value_name = "PATH")]
     file: Vec<PathBuf>,
     /// Explicit trusted structured fact in KEY=VALUE form. Repeatable.
-    #[arg(long, value_name = "KEY=VALUE")]
+    #[arg(long, value_name = "KEY=VALUE", hide = true)]
     fact: Vec<String>,
     /// Harness-owned proposition to evaluate/resolve in KEY=VALUE form. Repeatable.
-    #[arg(long, value_name = "KEY=VALUE")]
+    #[arg(long, value_name = "KEY=VALUE", hide = true)]
     hypothesis: Vec<String>,
     /// Explicit local resolver fact in KEY=VALUE form. Used only through bounded resolution. Repeatable.
-    #[arg(long, value_name = "KEY=VALUE")]
+    #[arg(long, value_name = "KEY=VALUE", hide = true)]
     resolver_fact: Vec<String>,
     /// External resolver program using the reason external-resolver stdio JSON protocol.
-    #[arg(long, value_name = "PROGRAM")]
+    #[arg(long, value_name = "PROGRAM", hide = true)]
     resolver_command: Option<PathBuf>,
     /// Argument passed literally to --resolver-command. Repeatable; no shell parsing is performed.
     #[arg(
         long,
         value_name = "ARG",
         requires = "resolver_command",
-        allow_hyphen_values = true
+        allow_hyphen_values = true,
+        hide = true
     )]
     resolver_arg: Vec<String>,
     /// Wall-clock timeout for one external resolver process invocation.
-    #[arg(long, value_name = "MILLISECONDS", requires = "resolver_command")]
+    #[arg(
+        long,
+        value_name = "MILLISECONDS",
+        requires = "resolver_command",
+        hide = true
+    )]
     resolver_timeout_ms: Option<u64>,
     /// Maximum stdout bytes accepted from one external resolver process.
-    #[arg(long, value_name = "BYTES", requires = "resolver_command")]
+    #[arg(long, value_name = "BYTES", requires = "resolver_command", hide = true)]
     resolver_max_response_bytes: Option<usize>,
     /// Maximum bounded-resolution attempts for the natural-language path.
-    #[arg(long, default_value_t = 3)]
+    #[arg(long, default_value_t = 3, hide = true)]
     max_resolution_attempts: usize,
     /// Live candidate/renderer provider. If omitted, layered config is used.
     #[arg(long, value_enum)]
@@ -176,19 +201,19 @@ struct NaturalArgs {
     #[arg(long, value_name = "TOKENS")]
     max_total_tokens: Option<u64>,
     /// Explicit input-token USD price per million tokens; requires output price and pricing source.
-    #[arg(long, value_name = "USD_PER_MILLION")]
+    #[arg(long, value_name = "USD_PER_MILLION", hide = true)]
     input_cost_per_million: Option<f64>,
     /// Explicit output-token USD price per million tokens; requires input price and pricing source.
-    #[arg(long, value_name = "USD_PER_MILLION")]
+    #[arg(long, value_name = "USD_PER_MILLION", hide = true)]
     output_cost_per_million: Option<f64>,
     /// Operator-supplied provenance label for explicit model pricing.
-    #[arg(long, value_name = "SOURCE")]
+    #[arg(long, value_name = "SOURCE", hide = true)]
     pricing_source: Option<String>,
     /// Optional provider random seed.
-    #[arg(long)]
+    #[arg(long, hide = true)]
     seed: Option<u64>,
     /// Final-answer safety profile. current is the default; rollback selects the previous profile, with legacy-v1 and baseline retained for older compatibility/testing.
-    #[arg(long, value_enum, default_value_t = AnswerSafetyProfileArg::Current)]
+    #[arg(long, value_enum, default_value_t = AnswerSafetyProfileArg::Current, hide = true)]
     safety_profile: AnswerSafetyProfileArg,
     /// Highest-precedence non-secret config file layered over project/user config.
     #[arg(long, value_name = "PATH", conflicts_with = "no_config")]
@@ -206,7 +231,7 @@ struct NaturalArgs {
     #[arg(long, conflicts_with = "diagnostic_trace")]
     ephemeral: bool,
     /// Write a diagnostic-only natural execution trace to PATH. This never changes model requests, evaluation, or product JSON output.
-    #[arg(long, value_name = "PATH")]
+    #[arg(long, value_name = "PATH", hide = true)]
     diagnostic_trace: Option<PathBuf>,
     /// In-memory, untrusted conversation context used only by the interactive product path.
     #[arg(skip)]
@@ -1777,14 +1802,121 @@ struct SessionOperationOutput {
     finalization: Option<FinalizationResult>,
 }
 
+#[derive(Debug, Clone, Copy, ValueEnum)]
+enum ExampleTopic {
+    OneShot,
+    Interactive,
+    Sessions,
+    Files,
+    Json,
+    Auth,
+    Mcp,
+    Update,
+    Research,
+}
+
+fn example_text(topic: Option<ExampleTopic>) -> &'static str {
+    match topic {
+        None => {
+            r#"Common examples:
+  reason setup
+  reason "Compare the evidence and explain what is still unresolved"
+  reason
+  reason --continue
+  reason --file incident.txt "What does this evidence support?"
+
+More examples:
+  reason examples one-shot
+  reason examples interactive
+  reason examples sessions
+  reason examples files
+  reason examples json
+  reason examples auth
+  reason examples mcp
+  reason examples update
+  reason examples research"#
+        }
+        Some(ExampleTopic::OneShot) => {
+            r#"One-shot reasoning:
+  reason "Explain the likely cause and distinguish verified facts from unresolved points"
+  reason --provider mistral --model ministral-8b-latest "Check this claim""#
+        }
+        Some(ExampleTopic::Interactive) => {
+            r#"Interactive use:
+  reason
+  reason --ephemeral
+
+Inside the REPL, /add PATH adds untrusted file context. Ctrl+C safely cancels active work."#
+        }
+        Some(ExampleTopic::Sessions) => {
+            r#"Managed sessions:
+  reason --continue
+  reason --resume
+  reason --resume SESSION_ID
+  reason session list
+
+Use `reason help session` for low-level typed session-file operations."#
+        }
+        Some(ExampleTopic::Files) => {
+            r#"Files are untrusted context unless separately verified:
+  reason --file notes.txt "Summarize what these notes support"
+  reason --file a.txt --file b.txt "Compare these inputs""#
+        }
+        Some(ExampleTopic::Json) => {
+            r#"Automation / JSON:
+  reason --format json "Check this claim"
+  reason session list --format json
+  reason update --check --format json
+
+JSON and piped modes stay non-interactive and decoration-free."#
+        }
+        Some(ExampleTopic::Auth) => {
+            r#"First-run setup and credentials:
+  reason setup
+  reason auth --help
+  reason models
+  reason model --help
+  reason config sources
+
+Credentials stay in the native OS credential store; config is non-secret."#
+        }
+        Some(ExampleTopic::Mcp) => {
+            r#"MCP integration uses the separate optional `reason-mcp` binary:
+  reason-mcp --reason-command /path/to/reason
+
+`reason-mcp` delegates selected operations to the native Reason runtime. MCP output does not gain authority by itself. See `docs/mcp-product-surface.md`."#
+        }
+        Some(ExampleTopic::Update) => {
+            r#"Updates:
+  reason update --check
+  reason update
+  reason update --rollback VERSION
+
+Use `reason help update` for provenance, confirmation, and rollback controls."#
+        }
+        Some(ExampleTopic::Research) => {
+            r#"Advanced / research surfaces remain available:
+  reason help run
+  reason help semantic-check
+  reason help verify
+  reason help schema
+  reason help eval
+  reason help eval-resolution
+  reason help eval-judges
+
+These are explicit structured/research surfaces; ordinary use starts with a natural-language task."#
+        }
+    }
+}
+
 #[derive(Debug, Subcommand)]
 enum Command {
-    /// PRODUCT: Manage provider credentials in the native OS credential store.
+    /// Manage provider credentials in the native OS credential store.
     Auth {
         #[command(subcommand)]
         command: auth::AuthCommand,
     },
-    /// PRODUCT: Discover curated provider/model choices and inspect the configured default.
+    /// Discover curated provider/model choices and inspect the configured default.
     Models {
         #[arg(value_enum)]
         provider: Option<Provider>,
@@ -1793,33 +1925,43 @@ enum Command {
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// PRODUCT: Manage the persisted default provider/model selection.
+    /// Manage the persisted default provider/model selection.
     Model {
         #[command(subcommand)]
         command: model_catalog::ModelCommand,
     },
-    /// PRODUCT: Inspect and edit safe non-secret CLI configuration.
+    /// Inspect and edit safe non-secret CLI configuration.
     Config {
         #[command(subcommand)]
         command: config_commands::ConfigCommand,
     },
-    /// PRODUCT: Configure provider, credential, model default, and readiness for first use.
+    /// Configure provider, credential, model default, and readiness for first use.
     Setup(setup::SetupArgs),
-    /// PRODUCT: Check or apply a provenance-verified Reason CLI update.
+    /// Check or apply a provenance-verified Reason CLI update.
     Update(lifecycle::UpdateArgs),
-    /// PRODUCT: Remove the Reason CLI binary with explicit data/credential retention controls.
+    /// Remove the Reason CLI binary with explicit data/credential retention controls.
     Uninstall(lifecycle::UninstallArgs),
-    /// PRODUCT: Inspect, add, or revoke project configuration trust.
+    /// Inspect, add, or revoke project configuration trust.
     Trust {
         #[command(subcommand)]
         command: TrustCommand,
     },
-    /// PRODUCT: Persist and continue typed natural-language reasoning sessions.
+    /// Persist and continue typed natural-language reasoning sessions.
     Session {
         #[command(subcommand)]
         command: SessionCommand,
     },
-    /// PRODUCT: Generate or load a candidate, then execute the harness-owned correctness process.
+    /// Show copy-paste examples for common workflows.
+    Examples {
+        #[arg(value_enum)]
+        topic: Option<ExampleTopic>,
+    },
+    /// Generate shell completion code to stdout without changing shell configuration.
+    Completions {
+        #[arg(value_enum)]
+        shell: Shell,
+    },
+    /// Advanced: generate or load a candidate, then execute the harness-owned correctness process.
     Run {
         /// Harness-owned task and evidence JSON.
         #[arg(long)]
@@ -1851,7 +1993,7 @@ enum Command {
         #[arg(long, value_enum)]
         format: Option<OutputFormat>,
     },
-    /// PRODUCT: Run the current semantic runtime without granting it final-verdict authority.
+    /// Advanced: run the current semantic runtime without granting it final-verdict authority.
     SemanticCheck {
         /// Semantic request plus harness-owned artifact JSON. Use '-' for stdin.
         #[arg(long)]
@@ -1870,18 +2012,19 @@ enum Command {
         #[arg(long, value_enum, default_value_t = OutputFormat::Json)]
         format: OutputFormat,
     },
-    /// PRODUCT: Deterministically validate a finalized ReasoningArtifact JSON file.
+    /// Advanced: deterministically validate a finalized ReasoningArtifact JSON file.
     Verify {
         artifact: PathBuf,
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// PRODUCT: Print a versioned JSON Schema for a supported wire contract.
+    /// Advanced: print a versioned JSON Schema for a supported wire contract.
     Schema {
         #[arg(value_enum)]
         kind: SchemaKind,
     },
     /// RESEARCH/EVAL: Evaluate one artifact or a directory of benchmark fixtures.
+    #[command(hide = true)]
     Eval {
         target: PathBuf,
         /// Optional live provider. Without this, fixture suites use recorded candidates.
@@ -1910,6 +2053,7 @@ enum Command {
         format: OutputFormat,
     },
     /// RESEARCH/EVAL: Evaluate the deterministic bounded-resolution research scenarios.
+    #[command(hide = true)]
     EvalResolution {
         /// Directory containing ResolutionBenchmarkFixture JSON scenarios.
         target: PathBuf,
@@ -1917,6 +2061,7 @@ enum Command {
         format: OutputFormat,
     },
     /// RESEARCH/EVAL: Evaluate recorded or live soft semantic-judge calibration.
+    #[command(hide = true)]
     EvalJudges {
         /// Directory containing SoftJudgeCalibrationFixture JSON cases.
         target: PathBuf,
@@ -5390,6 +5535,7 @@ impl Cli {
                 command: "schema",
                 json: true,
             }),
+            Some(Command::Examples { .. }) | Some(Command::Completions { .. }) => None,
             Some(Command::Eval { .. })
             | Some(Command::EvalResolution { .. })
             | Some(Command::EvalJudges { .. }) => None,
@@ -5465,6 +5611,15 @@ async fn run(cli: Cli) -> Result<(), CliError> {
         ));
     }
     match command {
+        Some(Command::Examples { topic }) => {
+            println!("{}", example_text(topic));
+            Ok(())
+        }
+        Some(Command::Completions { shell }) => {
+            let mut command = Cli::command();
+            generate(shell, &mut command, "reason", &mut io::stdout());
+            Ok(())
+        }
         Some(Command::Auth { command }) => auth::run(command),
         Some(Command::Setup(args)) => setup::run(args).await,
         Some(Command::Update(args)) => lifecycle::run_update(args).await,
@@ -10680,5 +10835,59 @@ mod candidate_json_tests {
         assert_eq!(seed.evidence.len(), 1);
         assert_eq!(seed.evidence[0].id, "external");
         assert_eq!(seed.evidence[0].facts[key], "eu-west-1");
+    }
+    #[test]
+    fn top_level_help_prioritizes_common_workflows_and_keeps_research_discoverable() {
+        let mut command = Cli::command();
+        let help = command.render_long_help().to_string();
+        assert!(help.contains("QUICK START:"));
+        assert!(help.contains("reason examples"));
+        assert!(help.contains("reason completions <bash|zsh|fish|powershell>"));
+        assert!(help.contains("Research/eval commands: eval, eval-resolution, eval-judges"));
+        assert!(!help.contains("\n  eval             RESEARCH/EVAL:"));
+    }
+
+    #[test]
+    fn hidden_research_and_low_level_natural_surfaces_remain_parseable() {
+        let research =
+            Cli::try_parse_from(["reason", "eval", "fixtures/product-dogfood-v1"]).unwrap();
+        assert!(matches!(research.command, Some(Command::Eval { .. })));
+
+        let natural = Cli::try_parse_from([
+            "reason",
+            "check this",
+            "--fact",
+            "region=us-east-1",
+            "--resolver-fact",
+            "region=us-east-1",
+            "--safety-profile",
+            "current",
+        ])
+        .unwrap();
+        assert_eq!(natural.natural.fact, vec!["region=us-east-1"]);
+        assert_eq!(natural.natural.resolver_fact, vec!["region=us-east-1"]);
+        assert_eq!(
+            natural.natural.safety_profile,
+            AnswerSafetyProfileArg::Current
+        );
+    }
+
+    #[test]
+    fn supported_shell_completions_generate_to_memory() {
+        for shell in [Shell::Bash, Shell::Zsh, Shell::Fish, Shell::PowerShell] {
+            let mut command = Cli::command();
+            let mut output = Vec::new();
+            generate(shell, &mut command, "reason", &mut output);
+            assert!(!output.is_empty(), "empty completion output for {shell:?}");
+        }
+    }
+
+    #[test]
+    fn examples_surface_prefers_natural_language_and_documents_separate_mcp_binary() {
+        assert!(example_text(None).contains("reason \"Compare the evidence"));
+        assert!(example_text(Some(ExampleTopic::Interactive)).contains("reason\n"));
+        let mcp = example_text(Some(ExampleTopic::Mcp));
+        assert!(mcp.contains("reason-mcp --reason-command"));
+        assert!(!mcp.contains("reason mcp "));
     }
 }
