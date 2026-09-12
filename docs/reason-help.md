@@ -53,13 +53,19 @@ Use `reason setup` for first-run provider/credential/model readiness. `reason au
 
 ## MCP
 
-MCP product integration is a separate optional binary, not a `reason mcp` subcommand:
+Manage the single active local read-only MCP acquisition source without hand-authoring low-level JSON:
 
 ```text
-reason-mcp --reason-command /path/to/reason
+reason mcp add inventory --program /path/to/mcp-server --arg=--stdio --tool lookup_item
+reason mcp test inventory
+reason mcp inspect inventory
+reason mcp list
+reason mcp remove inventory
 ```
 
-`reason-mcp` delegates selected operations to the native Reason runtime and preserves the native product contract. MCP results do not self-promote into trusted authority. See `docs/mcp-product-surface.md` for the protocol boundary.
+`reason mcp test` performs MCP negotiation and `tools/list` discovery and requires the selected tool to report `readOnlyHint=true`; it does **not** invoke the tool. Managed configuration is user-scoped and non-secret. `inspect`/`list` expose argument counts rather than argument values, and secret-looking credential/token arguments are rejected by `add`. Remote/Streamable HTTP OAuth is intentionally deferred to #386.
+
+The optional `reason-mcp` binary is a different surface: it exposes selected Reason operations to external MCP clients. MCP acquisition output remains data rather than authority. See `docs/mcp-resolver.md` and `docs/mcp-product-surface.md`.
 
 ## Update
 

@@ -41,7 +41,8 @@ pub use mcp_readonly_v2::{MCP_READONLY_V2_RESOLVER_ID, McpReadOnlyResolverV2};
 
 pub use mcp_readonly_v3::{
     DEFAULT_MCP_READONLY_V3_MAX_TOOL_LIST_PAGES, MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION,
-    MCP_READONLY_V3_RESOLVER_ID, McpReadOnlyResolverV3, McpReadOnlyResolverV3Config,
+    MCP_READONLY_V3_RESOLVER_ID, McpReadOnlyReadiness, McpReadOnlyResolverV3,
+    McpReadOnlyResolverV3Config,
 };
 
 pub use trusted_command::{

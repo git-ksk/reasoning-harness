@@ -46,6 +46,20 @@ read-only toolが協調する場合、次のstructured payloadを任意で返せ
 
 これらのfieldもresolverが供給するraw acquisition dataにすぎません。Harnessは設定済みのsource identityを割り当て、その後`external_evidence_admission_v1`がsource allowlisting、freshness、scope、authority policyを独立に検査してから、通常のqualificationとverificationを再実行します。MCP toolはこの経路でtrusted `EvidenceMetadata`、verification receipt、verdict、grounded final proseを返せません。
 
+## Guided CLI管理
+
+0.5のsupported product pathでは、`reason mcp`がuser-scopedなlocal stdio sourceを1件activeとして管理します。
+
+```text
+reason mcp add inventory --program /path/to/mcp-server --arg=--stdio --tool lookup_item
+reason mcp test inventory
+reason mcp inspect inventory
+reason mcp list
+reason mcp remove inventory
+```
+
+`add`は`read_only=true`、`resolver_class=evidence_acquisition`、selected toolの明示allowlistを持つ制約済み`resolution.mcp_readonly`を生成します。既存sourceの置換には`--replace`が必要です。credential/tokenらしいsecret引数は保存せずrejectし、`list` / `inspect`もexecutable argument valueを表示しません。`test`はnegotiationとbounded `tools/list` discoveryまでで停止し、serverの`readOnlyHint=true`を必須にします。`tools/call`は送らないためreadiness確認でacquisition toolを実行しません。remote HTTP/OAuth lifecycleは#386で別管理です。
+
 ## 設定
 
 ```json
@@ -83,7 +97,7 @@ read-only toolが協調する場合、次のstructured payloadを任意で返せ
 }
 ```
 
-server processは通常のenvironmentを継承しますが、config schemaはcredential-likeな未知fieldを拒否します。resolver/admission telemetryには、literal command argumentsではなく安定したhash化config identityを記録します。
+対象local MCP subprocessは#387のminimal isolated environmentから起動し、親environment全体をinheritしません。config schemaはcredential-likeな未知fieldをrejectし、guided管理もcredential/tokenらしいsecret引数をrejectします。resolver/admission telemetryにはliteral command argumentではなくstable hash化したconfig identityを記録します。
 
 ## 運用上の失敗と再実行
 

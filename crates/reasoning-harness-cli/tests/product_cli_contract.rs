@@ -699,6 +699,209 @@ fn setup_help_has_no_secret_valued_argv_and_live_check_is_explicit() {
     }
 }
 
+#[cfg(unix)]
+#[test]
+fn mcp_management_add_inspect_test_remove_is_read_only_and_secret_free() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let temp = std::env::temp_dir().join(format!(
+        "reason-mcp-management-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    let home = temp.join("home");
+    let safe = temp.join("safe-mcp.sh");
+    let unsafe_server = temp.join("unsafe-mcp.sh");
+    std::fs::write(
+        &safe,
+        r#"#!/bin/sh
+read initialize
+printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:mcp-readiness:initialize","result":{"protocolVersion":"2026-07-28","capabilities":{},"serverInfo":{"name":"fixture","version":"1"}}}'
+read initialized
+read list
+printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:mcp-readiness:tools-list:0","result":{"tools":[{"name":"lookup","inputSchema":{"type":"object"},"annotations":{"readOnlyHint":true}}]}}'
+"#,
+    )
+    .unwrap();
+    std::fs::write(
+        &unsafe_server,
+        r#"#!/bin/sh
+read initialize
+printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:mcp-readiness:initialize","result":{"protocolVersion":"2026-07-28","capabilities":{},"serverInfo":{"name":"fixture","version":"1"}}}'
+read initialized
+read list
+printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:mcp-readiness:tools-list:0","result":{"tools":[{"name":"lookup","inputSchema":{"type":"object"},"annotations":{"readOnlyHint":false}}]}}'
+"#,
+    )
+    .unwrap();
+    for script in [&safe, &unsafe_server] {
+        let mut permissions = std::fs::metadata(script).unwrap().permissions();
+        permissions.set_mode(0o700);
+        std::fs::set_permissions(script, permissions).unwrap();
+    }
+
+    let run = |args: &[&str]| {
+        reason_command()
+            .args(args)
+            .env("REASON_HOME", &home)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .output()
+            .expect("run reason mcp command")
+    };
+    let safe_program = safe.to_string_lossy().into_owned();
+    let unsafe_program = unsafe_server.to_string_lossy().into_owned();
+    let visible_only_in_config = "launch-argument-value";
+
+    let add = run(&[
+        "mcp",
+        "add",
+        "inventory",
+        "--program",
+        &safe_program,
+        "--arg",
+        visible_only_in_config,
+        "--tool",
+        "lookup",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(
+        add.status.code(),
+        Some(0),
+        "stdout={} stderr={}",
+        String::from_utf8_lossy(&add.stdout),
+        String::from_utf8_lossy(&add.stderr)
+    );
+    assert!(add.stderr.is_empty());
+    let value = json_stdout(&add);
+    assert_eq!(value["command"], "mcp");
+    assert_eq!(value["result"]["operation"], "add");
+    assert_eq!(value["result"]["source"]["read_only"], true);
+    assert_eq!(value["result"]["source"]["argument_count"], 1);
+    assert!(!String::from_utf8_lossy(&add.stdout).contains(visible_only_in_config));
+
+    let config_path = home.join("config.json");
+    let config: Value = serde_json::from_slice(&std::fs::read(&config_path).unwrap()).unwrap();
+    assert_eq!(
+        config["resolution"]["mcp_readonly"]["server_id"],
+        "inventory"
+    );
+    assert_eq!(config["resolution"]["mcp_readonly"]["read_only"], true);
+    assert_eq!(
+        config["resolution"]["mcp_readonly"]["resolver_class"],
+        "evidence_acquisition"
+    );
+    assert_eq!(
+        config["resolution"]["mcp_readonly"]["allowed_tools"][0],
+        "lookup"
+    );
+    assert_eq!(
+        std::fs::metadata(&config_path)
+            .unwrap()
+            .permissions()
+            .mode()
+            & 0o777,
+        0o600
+    );
+
+    let inspect = run(&["mcp", "inspect", "inventory", "--format", "json"]);
+    assert_eq!(inspect.status.code(), Some(0));
+    assert!(inspect.stderr.is_empty());
+    assert!(!String::from_utf8_lossy(&inspect.stdout).contains(visible_only_in_config));
+    assert_eq!(
+        json_stdout(&inspect)["result"]["source"]["argument_count"],
+        1
+    );
+
+    let readiness = run(&["mcp", "test", "inventory", "--format", "json"]);
+    assert_eq!(readiness.status.code(), Some(0));
+    assert!(readiness.stderr.is_empty());
+    let value = json_stdout(&readiness);
+    assert_eq!(value["result"]["status"], "ready");
+    assert_eq!(value["result"]["negotiated_protocol_version"], "2026-07-28");
+    assert_eq!(value["result"]["read_only_hint"], true);
+
+    let conflict = run(&[
+        "mcp",
+        "add",
+        "other",
+        "--program",
+        &safe_program,
+        "--tool",
+        "lookup",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(conflict.status.code(), Some(1));
+    assert_eq!(
+        json_stdout(&conflict)["result"]["failure"]["failure_class"],
+        "mcp_configuration"
+    );
+
+    let replace = run(&[
+        "mcp",
+        "add",
+        "inventory",
+        "--program",
+        &unsafe_program,
+        "--tool",
+        "lookup",
+        "--replace",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(replace.status.code(), Some(0));
+    let rejected = run(&["mcp", "test", "inventory", "--format", "json"]);
+    assert_eq!(rejected.status.code(), Some(1));
+    assert!(rejected.stderr.is_empty());
+    assert_eq!(
+        json_stdout(&rejected)["result"]["failure"]["failure_class"],
+        "mcp_policy"
+    );
+
+    let secret_arg = run(&[
+        "mcp",
+        "add",
+        "inventory",
+        "--program",
+        "fixture-mcp-server",
+        "--arg=--api-key=must-not-persist",
+        "--tool",
+        "lookup_item",
+        "--replace",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(secret_arg.status.code(), Some(1));
+    assert!(secret_arg.stderr.is_empty());
+    let secret_json = json_stdout(&secret_arg);
+    assert_eq!(
+        secret_json["result"]["failure"]["failure_class"],
+        "mcp_secret_input"
+    );
+    assert!(!String::from_utf8_lossy(&secret_arg.stdout).contains("must-not-persist"));
+
+    let remove = run(&["mcp", "remove", "inventory", "--format", "json"]);
+    assert_eq!(remove.status.code(), Some(0));
+    assert_eq!(json_stdout(&remove)["result"]["operation"], "remove");
+    let list = run(&["mcp", "list", "--format", "json"]);
+    assert_eq!(list.status.code(), Some(0));
+    assert_eq!(
+        json_stdout(&list)["result"]["sources"]
+            .as_array()
+            .unwrap()
+            .len(),
+        0
+    );
+
+    std::fs::remove_dir_all(temp).ok();
+}
+
 #[test]
 fn lifecycle_help_is_explicit_and_has_no_insecure_provenance_bypass() {
     for (command, expected) in [
@@ -817,5 +1020,107 @@ fn uninstall_dry_run_is_non_mutating_and_secret_free() {
         path.as_str()
             .is_some_and(|p| p.ends_with("/sessions") || p.ends_with("\\sessions"))
     }));
+    std::fs::remove_dir_all(temp).ok();
+}
+
+#[test]
+fn mcp_management_add_list_inspect_remove_is_non_secret_and_machine_readable() {
+    let temp = std::env::temp_dir().join(format!(
+        "reason-mcp-management-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+
+    let run = |args: &[&str]| {
+        let mut command = reason_command();
+        command
+            .args(args)
+            .env("REASON_HOME", &temp)
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .output()
+            .expect("run reason mcp command")
+    };
+
+    let add = run(&[
+        "mcp",
+        "add",
+        "inventory",
+        "--program",
+        "fixture-mcp-server",
+        "--arg=--stdio",
+        "--tool",
+        "lookup_item",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(
+        add.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&add.stderr)
+    );
+    assert!(add.stderr.is_empty());
+    let add_json = json_stdout(&add);
+    assert_eq!(add_json["command"], "mcp");
+    assert_eq!(add_json["result"]["operation"], "add");
+    assert_eq!(add_json["result"]["name"], "inventory");
+    assert_eq!(add_json["result"]["source"]["read_only"], true);
+    assert_eq!(add_json["result"]["source"]["argument_count"], 1);
+    assert!(!String::from_utf8_lossy(&add.stdout).contains("--stdio"));
+
+    let list = run(&["mcp", "list", "--format", "json"]);
+    assert_eq!(list.status.code(), Some(0));
+    let list_json = json_stdout(&list);
+    assert_eq!(list_json["result"]["sources"].as_array().unwrap().len(), 1);
+    assert_eq!(list_json["result"]["sources"][0]["name"], "inventory");
+    assert!(!String::from_utf8_lossy(&list.stdout).contains("--stdio"));
+
+    let inspect = run(&["mcp", "inspect", "inventory", "--format", "json"]);
+    assert_eq!(inspect.status.code(), Some(0));
+    let inspect_json = json_stdout(&inspect);
+    assert_eq!(
+        inspect_json["result"]["source"]["selected_tool"],
+        "lookup_item"
+    );
+    assert_eq!(inspect_json["result"]["source"]["transport"], "stdio");
+    assert!(!String::from_utf8_lossy(&inspect.stdout).contains("--stdio"));
+
+    let duplicate = run(&[
+        "mcp",
+        "add",
+        "other",
+        "--program",
+        "other-server",
+        "--tool",
+        "read",
+        "--format",
+        "json",
+    ]);
+    assert_eq!(duplicate.status.code(), Some(1));
+    assert!(duplicate.stderr.is_empty());
+    let duplicate_json = json_stdout(&duplicate);
+    assert_eq!(
+        duplicate_json["result"]["failure"]["failure_class"],
+        "mcp_configuration"
+    );
+
+    let remove = run(&["mcp", "remove", "inventory", "--format", "json"]);
+    assert_eq!(remove.status.code(), Some(0));
+    assert_eq!(json_stdout(&remove)["result"]["operation"], "remove");
+
+    let empty = run(&["mcp", "list", "--format", "json"]);
+    assert_eq!(empty.status.code(), Some(0));
+    assert!(
+        json_stdout(&empty)["result"]["sources"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+
     std::fs::remove_dir_all(temp).ok();
 }
