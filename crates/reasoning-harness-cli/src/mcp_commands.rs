@@ -2,68 +2,115 @@ use std::{collections::BTreeSet, fs, path::PathBuf};
 
 use clap::Subcommand;
 use reasoning_harness_core::ResolutionAdapterErrorKind;
-use reasoning_harness_providers::McpReadOnlyResolverV3;
+use reasoning_harness_providers::{
+    MCP_REMOTE_PROTOCOL_VERSION, McpReadOnlyResolverV3, McpRemoteReadOnlyResolver,
+};
 use serde::Serialize;
 
 use super::{
     CLI_CONFIG_CONTRACT_ID, CliError, CliFileConfig, LoadedCliConfig,
-    McpReadOnlyResolverFileConfig, OutputFormat, model_catalog, print_product_json,
-    resolve_mcp_readonly_config, user_config_path,
+    McpReadOnlyResolverFileConfig, McpRemoteOAuthFileConfig, McpRemoteReadOnlyResolverFileConfig,
+    OutputFormat, mcp_oauth, model_catalog, print_product_json, resolve_mcp_readonly_config,
+    resolve_mcp_remote_readonly_config, user_config_path,
 };
 
-const SURFACE_ID: &str = "reason-mcp-management-v1";
+const SURFACE_ID: &str = "reason-mcp-management-v2";
 
 #[derive(Debug, Subcommand)]
 pub(crate) enum McpCommand {
-    /// Add one active local read-only MCP acquisition source to the user config.
+    /// Add one active local read-only MCP stdio source to user config.
     Add {
-        /// Local source name. Stored as the MCP server_id.
         name: String,
-        /// Local MCP stdio executable.
         #[arg(long, value_name = "PROGRAM")]
         program: String,
-        /// Literal executable argument. Repeatable; no shell parsing is performed.
         #[arg(long = "arg", value_name = "ARG", allow_hyphen_values = true)]
         args: Vec<String>,
-        /// Selected read-only MCP tool.
         #[arg(long, value_name = "TOOL")]
         tool: String,
-        /// Additional explicitly allowlisted tool name. Repeatable. The selected tool is always included.
         #[arg(long = "allow-tool", value_name = "TOOL")]
         allow_tools: Vec<String>,
-        /// Harness-owned provenance source label. Defaults to mcp:<name>:<tool>.
         #[arg(long, value_name = "SOURCE")]
         source: Option<String>,
-        /// Whole-session timeout in milliseconds.
         #[arg(long, value_name = "MILLISECONDS")]
         timeout_ms: Option<u64>,
-        /// Maximum bytes accepted for one MCP response line.
         #[arg(long, value_name = "BYTES")]
         max_response_bytes: Option<usize>,
-        /// Explicitly replace the currently configured user MCP source.
         #[arg(long)]
         replace: bool,
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// List the user-configured local read-only MCP acquisition source.
+    /// Add one active remote stateless read-only MCP source with OAuth client metadata.
+    AddRemote {
+        name: String,
+        #[arg(long, value_name = "HTTPS_URL")]
+        endpoint: String,
+        #[arg(long, value_name = "TOOL")]
+        tool: String,
+        #[arg(long = "allow-tool", value_name = "TOOL")]
+        allow_tools: Vec<String>,
+        #[arg(long, value_name = "SOURCE")]
+        source: Option<String>,
+        #[arg(long, value_name = "URL")]
+        issuer: String,
+        #[arg(long, value_name = "URL")]
+        authorization_endpoint: String,
+        #[arg(long, value_name = "URL")]
+        token_endpoint: String,
+        #[arg(long, value_name = "CLIENT_ID")]
+        client_id: String,
+        #[arg(long = "scope", value_name = "SCOPE")]
+        scopes: Vec<String>,
+        #[arg(long, value_name = "MILLISECONDS")]
+        timeout_ms: Option<u64>,
+        #[arg(long, value_name = "BYTES")]
+        max_response_bytes: Option<usize>,
+        #[arg(long)]
+        replace: bool,
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// List the active user-configured MCP acquisition source.
     List {
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// Inspect one user-configured MCP source without exposing argument values or secrets.
+    /// Inspect one MCP source without exposing executable arguments or OAuth tokens.
     Inspect {
         name: String,
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// Verify MCP negotiation and server read-only proof without invoking the selected tool.
+    /// Verify read-only MCP readiness without invoking the selected tool.
     Test {
         name: String,
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// Remove one user-configured MCP source.
+    /// Start OAuth authorization-code + PKCE login for a remote MCP source.
+    Login {
+        name: String,
+        /// Print the authorization URL without attempting to open a browser.
+        #[arg(long)]
+        no_browser: bool,
+        #[arg(long)]
+        replace: bool,
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// Show remote MCP OAuth credential status without exposing token values.
+    Status {
+        name: String,
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// Delete the remote MCP OAuth credential from the native OS store.
+    Logout {
+        name: String,
+        #[arg(long, value_enum, default_value_t)]
+        format: OutputFormat,
+    },
+    /// Remove one MCP source from user config. OAuth credentials are retained until logout.
     Remove {
         name: String,
         #[arg(long, value_enum, default_value_t)]
@@ -75,9 +122,13 @@ impl McpCommand {
     pub(crate) const fn format(&self) -> OutputFormat {
         match self {
             Self::Add { format, .. }
+            | Self::AddRemote { format, .. }
             | Self::List { format }
             | Self::Inspect { format, .. }
             | Self::Test { format, .. }
+            | Self::Login { format, .. }
+            | Self::Status { format, .. }
+            | Self::Logout { format, .. }
             | Self::Remove { format, .. } => *format,
         }
     }
@@ -87,19 +138,26 @@ impl McpCommand {
 struct McpSummary {
     name: String,
     transport: &'static str,
-    program: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    program: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    endpoint: Option<String>,
     argument_count: usize,
     selected_tool: String,
     allowed_tools: Vec<String>,
     source: String,
     read_only: bool,
     resolver_class: &'static str,
-    requested_protocol_version: String,
-    supported_protocol_versions: Vec<String>,
+    protocol_version: String,
     max_tool_list_pages: usize,
     timeout_ms: u64,
     max_response_bytes: usize,
     fixed_argument_keys: Vec<String>,
+    oauth_configured: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    oauth_issuer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    oauth_client_id: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -135,10 +193,16 @@ struct TestOutput {
     status: &'static str,
     name: String,
     transport: &'static str,
-    program: String,
     selected_tool: String,
     negotiated_protocol_version: String,
     read_only_hint: bool,
+}
+
+struct UserMcpConfig {
+    path: PathBuf,
+    root: serde_json::Value,
+    local: Option<McpReadOnlyResolverFileConfig>,
+    remote: Option<McpRemoteReadOnlyResolverFileConfig>,
 }
 
 pub(crate) fn run(command: McpCommand) -> Result<(), CliError> {
@@ -154,7 +218,7 @@ pub(crate) fn run(command: McpCommand) -> Result<(), CliError> {
             max_response_bytes,
             replace,
             format,
-        } => add(
+        } => add_local(
             name,
             program,
             args,
@@ -166,15 +230,54 @@ pub(crate) fn run(command: McpCommand) -> Result<(), CliError> {
             replace,
             format,
         ),
+        McpCommand::AddRemote {
+            name,
+            endpoint,
+            tool,
+            allow_tools,
+            source,
+            issuer,
+            authorization_endpoint,
+            token_endpoint,
+            client_id,
+            scopes,
+            timeout_ms,
+            max_response_bytes,
+            replace,
+            format,
+        } => add_remote(
+            name,
+            endpoint,
+            tool,
+            allow_tools,
+            source,
+            issuer,
+            authorization_endpoint,
+            token_endpoint,
+            client_id,
+            scopes,
+            timeout_ms,
+            max_response_bytes,
+            replace,
+            format,
+        ),
         McpCommand::List { format } => list(format),
         McpCommand::Inspect { name, format } => inspect(&name, format),
         McpCommand::Test { name, format } => test(&name, format),
+        McpCommand::Login {
+            name,
+            no_browser,
+            replace,
+            format,
+        } => login(&name, no_browser, replace, format),
+        McpCommand::Status { name, format } => oauth_status(&name, format),
+        McpCommand::Logout { name, format } => logout(&name, format),
         McpCommand::Remove { name, format } => remove(&name, format),
     }
 }
 
 #[allow(clippy::too_many_arguments)]
-fn add(
+fn add_local(
     name: String,
     program: String,
     args: Vec<String>,
@@ -190,20 +293,12 @@ fn add(
     let program = required("program", program)?;
     reject_secret_like_args(&args)?;
     let tool = required("tool", tool)?;
-    if timeout_ms == Some(0) || max_response_bytes == Some(0) {
-        return Err(CliError::new(
-            "mcp_configuration",
-            "--timeout-ms and --max-response-bytes must be at least 1",
-        ));
-    }
-    let mut allowed_tools = BTreeSet::from([tool.clone()]);
-    for allowed in allow_tools {
-        allowed_tools.insert(required("allow-tool", allowed)?);
-    }
-    let source = match source {
-        Some(source) => required("source", source)?,
-        None => format!("mcp:{name}:{tool}"),
-    };
+    validate_limits(timeout_ms, max_response_bytes)?;
+    let allowed_tools = allowlist(&tool, allow_tools)?;
+    let source = source
+        .map(|value| required("source", value))
+        .transpose()?
+        .unwrap_or_else(|| format!("mcp:{name}:{tool}"));
     let configured = McpReadOnlyResolverFileConfig {
         server_id: name.clone(),
         program,
@@ -222,60 +317,114 @@ fn add(
         max_response_bytes,
         admission: None,
     };
-    // Validate the exact runtime policy before touching disk.
-    let summary = resolved_summary(&configured)?;
-    let (path, mut root, existing) = user_json()?;
-    if let Some(existing) = existing
-        && !replace
-    {
-        return Err(CliError::new(
-            "mcp_configuration",
-            format!(
-                "user config already contains MCP source {:?}; use --replace to replace it explicitly",
-                existing.server_id
-            ),
-        ));
-    }
-    set_mcp_json(&mut root, Some(&configured))?;
-    validate_root(&root)?;
-    model_catalog::write_user_config_value(&path, &root)?;
-    emit_mutation("add", path, name, Some(summary), format)
+    let summary = local_summary(&configured)?;
+    let mut user = user_json()?;
+    ensure_replace_policy(&user, replace)?;
+    set_local_json(&mut user.root, Some(&configured))?;
+    set_remote_json(&mut user.root, None)?;
+    validate_root(&user.root)?;
+    model_catalog::write_user_config_value(&user.path, &user.root)?;
+    emit_mutation("add", user.path, name, Some(summary), format)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn add_remote(
+    name: String,
+    endpoint: String,
+    tool: String,
+    allow_tools: Vec<String>,
+    source: Option<String>,
+    issuer: String,
+    authorization_endpoint: String,
+    token_endpoint: String,
+    client_id: String,
+    scopes: Vec<String>,
+    timeout_ms: Option<u64>,
+    max_response_bytes: Option<usize>,
+    replace: bool,
+    format: OutputFormat,
+) -> Result<(), CliError> {
+    validate_name(&name)?;
+    let endpoint = required("endpoint", endpoint)?;
+    let tool = required("tool", tool)?;
+    validate_limits(timeout_ms, max_response_bytes)?;
+    let allowed_tools = allowlist(&tool, allow_tools)?;
+    let source = source
+        .map(|value| required("source", value))
+        .transpose()?
+        .unwrap_or_else(|| format!("mcp:{name}:{tool}"));
+    let oauth = McpRemoteOAuthFileConfig {
+        issuer: required("issuer", issuer)?,
+        authorization_endpoint: required("authorization-endpoint", authorization_endpoint)?,
+        token_endpoint: required("token-endpoint", token_endpoint)?,
+        client_id: required("client-id", client_id)?,
+        scopes: scopes
+            .into_iter()
+            .map(|scope| required("scope", scope))
+            .collect::<Result<_, _>>()?,
+    };
+    mcp_oauth::validate_oauth_config(&oauth)?;
+    let configured = McpRemoteReadOnlyResolverFileConfig {
+        server_id: name.clone(),
+        endpoint,
+        allowed_tools,
+        tool,
+        read_only: true,
+        resolver_class: "evidence_acquisition".into(),
+        fixed_arguments: Default::default(),
+        provenance_argument: None,
+        source,
+        protocol_version: Some(MCP_REMOTE_PROTOCOL_VERSION.into()),
+        max_tool_list_pages: None,
+        timeout_ms,
+        max_response_bytes,
+        oauth: Some(oauth),
+        admission: None,
+    };
+    let summary = remote_summary(&configured)?;
+    let mut user = user_json()?;
+    ensure_replace_policy(&user, replace)?;
+    set_local_json(&mut user.root, None)?;
+    set_remote_json(&mut user.root, Some(&configured))?;
+    validate_root(&user.root)?;
+    model_catalog::write_user_config_value(&user.path, &user.root)?;
+    emit_mutation("add_remote", user.path, name, Some(summary), format)
 }
 
 fn list(format: OutputFormat) -> Result<(), CliError> {
-    let (path, _root, configured) = user_json()?;
-    let sources = configured
-        .as_ref()
-        .map(resolved_summary)
-        .transpose()?
-        .into_iter()
-        .collect::<Vec<_>>();
+    let user = user_json()?;
+    let mut sources = Vec::new();
+    if let Some(local) = user.local.as_ref() {
+        sources.push(local_summary(local)?);
+    }
+    if let Some(remote) = user.remote.as_ref() {
+        sources.push(remote_summary(remote)?);
+    }
     match format {
         OutputFormat::Json => print_product_json(
             "mcp",
             &ListOutput {
                 management_surface: SURFACE_ID,
                 config_contract: CLI_CONFIG_CONTRACT_ID,
-                config_path: path.display().to_string(),
+                config_path: user.path.display().to_string(),
                 sources,
             },
         )
-        .map_err(|error| CliError::new("serialization", error)),
+        .map_err(CliError::from),
         OutputFormat::Human => {
             if sources.is_empty() {
                 println!("No user MCP acquisition source configured.");
-            } else {
-                for source in sources {
-                    println!(
-                        "{}  transport={}  program={}  tool={}  read_only={}  allowed_tools={}",
-                        source.name,
-                        source.transport,
-                        source.program,
-                        source.selected_tool,
-                        source.read_only,
-                        source.allowed_tools.join(",")
-                    );
-                }
+            }
+            for source in sources {
+                let target = source
+                    .endpoint
+                    .as_deref()
+                    .or(source.program.as_deref())
+                    .unwrap_or("-");
+                println!(
+                    "{}  transport={}  target={}  tool={}  read_only={}",
+                    source.name, source.transport, target, source.selected_tool, source.read_only
+                );
             }
             Ok(())
         }
@@ -284,45 +433,45 @@ fn list(format: OutputFormat) -> Result<(), CliError> {
 
 fn inspect(name: &str, format: OutputFormat) -> Result<(), CliError> {
     validate_name(name)?;
-    let (path, _root, configured) = user_json()?;
-    let configured = require_named(configured.as_ref(), name)?;
-    let source = resolved_summary(configured)?;
+    let user = user_json()?;
+    let source = named_summary(&user, name)?;
     match format {
         OutputFormat::Json => print_product_json(
             "mcp",
             &InspectOutput {
                 management_surface: SURFACE_ID,
                 config_contract: CLI_CONFIG_CONTRACT_ID,
-                config_path: path.display().to_string(),
+                config_path: user.path.display().to_string(),
                 source,
             },
         )
-        .map_err(|error| CliError::new("serialization", error)),
+        .map_err(CliError::from),
         OutputFormat::Human => {
             println!("name: {}", source.name);
             println!("transport: {}", source.transport);
-            println!("program: {}", source.program);
-            println!("argument_count: {}", source.argument_count);
+            if let Some(program) = &source.program {
+                println!("program: {program}");
+                println!("argument_count: {}", source.argument_count);
+            }
+            if let Some(endpoint) = &source.endpoint {
+                println!("endpoint: {endpoint}");
+            }
             println!("selected_tool: {}", source.selected_tool);
             println!("allowed_tools: {}", source.allowed_tools.join(", "));
             println!("source: {}", source.source);
-            println!("read_only: {}", source.read_only);
-            println!("resolver_class: {}", source.resolver_class);
-            println!(
-                "requested_protocol_version: {}",
-                source.requested_protocol_version
-            );
-            println!(
-                "supported_protocol_versions: {}",
-                source.supported_protocol_versions.join(", ")
-            );
-            println!("max_tool_list_pages: {}", source.max_tool_list_pages);
-            println!("timeout_ms: {}", source.timeout_ms);
-            println!("max_response_bytes: {}", source.max_response_bytes);
-            if !source.fixed_argument_keys.is_empty() {
+            println!("protocol_version: {}", source.protocol_version);
+            println!("read_only: true");
+            if source.oauth_configured {
                 println!(
-                    "fixed_argument_keys: {} (values hidden)",
-                    source.fixed_argument_keys.join(", ")
+                    "oauth: configured (credential value stored separately in native OS store)"
+                );
+                println!(
+                    "oauth_issuer: {}",
+                    source.oauth_issuer.as_deref().unwrap_or("-")
+                );
+                println!(
+                    "oauth_client_id: {}",
+                    source.oauth_client_id.as_deref().unwrap_or("-")
                 );
             }
             Ok(())
@@ -332,44 +481,138 @@ fn inspect(name: &str, format: OutputFormat) -> Result<(), CliError> {
 
 fn test(name: &str, format: OutputFormat) -> Result<(), CliError> {
     validate_name(name)?;
-    let (_path, _root, configured) = user_json()?;
-    let configured = require_named(configured.as_ref(), name)?;
-    let runtime = resolve_runtime(configured)?;
-    let program = runtime.base.program.display().to_string();
-    let resolver = McpReadOnlyResolverV3::new(runtime);
-    let readiness = resolver.probe_readiness().map_err(readiness_error)?;
-    let output = TestOutput {
-        management_surface: SURFACE_ID,
-        status: "ready",
-        name: readiness.server_id,
-        transport: "stdio",
-        program,
-        selected_tool: readiness.selected_tool,
-        negotiated_protocol_version: readiness.negotiated_protocol_version,
-        read_only_hint: readiness.read_only_hint,
+    let user = user_json()?;
+    let output = if let Some(local) = user.local.as_ref().filter(|value| value.server_id == name) {
+        let runtime = resolve_local_runtime(local)?;
+        let readiness = McpReadOnlyResolverV3::new(runtime)
+            .probe_readiness()
+            .map_err(readiness_error)?;
+        TestOutput {
+            management_surface: SURFACE_ID,
+            status: "ready",
+            name: readiness.server_id,
+            transport: "stdio",
+            selected_tool: readiness.selected_tool,
+            negotiated_protocol_version: readiness.negotiated_protocol_version,
+            read_only_hint: readiness.read_only_hint,
+        }
+    } else if let Some(remote) = user.remote.as_ref().filter(|value| value.server_id == name) {
+        let resolved = resolve_remote_runtime(remote)?;
+        let token = resolved
+            .oauth
+            .as_ref()
+            .map(|oauth| mcp_oauth::access_token(name, &resolved.resolver.endpoint, oauth))
+            .transpose()?;
+        let readiness = McpRemoteReadOnlyResolver::new(resolved.resolver, token)
+            .map_err(|kind| {
+                CliError::new(
+                    "mcp_configuration",
+                    format!("remote MCP configuration rejected: {kind:?}"),
+                )
+            })?
+            .probe_readiness()
+            .map_err(readiness_error)?;
+        TestOutput {
+            management_surface: SURFACE_ID,
+            status: "ready",
+            name: readiness.server_id,
+            transport: "streamable_http",
+            selected_tool: readiness.selected_tool,
+            negotiated_protocol_version: readiness.protocol_version,
+            read_only_hint: readiness.read_only_hint,
+        }
+    } else {
+        return Err(not_found(name, &user));
     };
     match format {
-        OutputFormat::Json => print_product_json("mcp", &output)
-            .map_err(|error| CliError::new("serialization", error)),
+        OutputFormat::Json => print_product_json("mcp", &output).map_err(CliError::from),
         OutputFormat::Human => {
             println!(
-                "ready: name={} protocol={} tool={} read_only_hint=true",
-                output.name, output.negotiated_protocol_version, output.selected_tool
+                "ready: name={} transport={} protocol={} tool={} read_only_hint=true",
+                output.name,
+                output.transport,
+                output.negotiated_protocol_version,
+                output.selected_tool
             );
             Ok(())
         }
     }
 }
 
+fn login(
+    name: &str,
+    no_browser: bool,
+    replace: bool,
+    format: OutputFormat,
+) -> Result<(), CliError> {
+    validate_name(name)?;
+    let user = user_json()?;
+    let remote = require_remote(&user, name)?;
+    let oauth = remote.oauth.as_ref().ok_or_else(|| {
+        CliError::new(
+            "mcp_oauth_configuration",
+            "remote MCP source has no OAuth configuration",
+        )
+    })?;
+    mcp_oauth::login(name, &remote.endpoint, oauth, no_browser, replace, format)
+}
+
+fn oauth_status(name: &str, format: OutputFormat) -> Result<(), CliError> {
+    validate_name(name)?;
+    let user = user_json()?;
+    let remote = require_remote(&user, name)?;
+    let oauth = remote.oauth.as_ref().ok_or_else(|| {
+        CliError::new(
+            "mcp_oauth_configuration",
+            "remote MCP source has no OAuth configuration",
+        )
+    })?;
+    let status = mcp_oauth::status(name, &remote.endpoint, oauth)?;
+    match format {
+        OutputFormat::Json => print_product_json("mcp", &status).map_err(CliError::from),
+        OutputFormat::Human => {
+            println!(
+                "{}: stored={} usable={} issuer={} client_id={} refresh_available={}",
+                status.server_name,
+                status.stored,
+                status.usable,
+                status.issuer,
+                status.client_id,
+                status.refresh_available
+            );
+            Ok(())
+        }
+    }
+}
+
+fn logout(name: &str, format: OutputFormat) -> Result<(), CliError> {
+    validate_name(name)?;
+    mcp_oauth::logout(name, format)
+}
+
 fn remove(name: &str, format: OutputFormat) -> Result<(), CliError> {
     validate_name(name)?;
-    let (path, mut root, configured) = user_json()?;
-    let configured = require_named(configured.as_ref(), name)?;
-    let removed_name = configured.server_id.clone();
-    set_mcp_json(&mut root, None)?;
-    validate_root(&root)?;
-    model_catalog::write_user_config_value(&path, &root)?;
-    emit_mutation("remove", path, removed_name, None, format)
+    let mut user = user_json()?;
+    let removed = if user
+        .local
+        .as_ref()
+        .is_some_and(|value| value.server_id == name)
+    {
+        set_local_json(&mut user.root, None)?;
+        name.to_string()
+    } else if user
+        .remote
+        .as_ref()
+        .is_some_and(|value| value.server_id == name)
+    {
+        set_remote_json(&mut user.root, None)?;
+        name.to_string()
+    } else {
+        return Err(not_found(name, &user));
+    };
+    validate_root(&user.root)?;
+    model_catalog::write_user_config_value(&user.path, &user.root)?;
+    emit_mutation("remove", user.path, removed, None, format)
 }
 
 fn emit_mutation(
@@ -391,18 +634,278 @@ fn emit_mutation(
                 source,
             },
         )
-        .map_err(|error| CliError::new("serialization", error)),
+        .map_err(CliError::from),
         OutputFormat::Human => {
             println!("{operation}: {name}");
             println!("config: {}", path.display());
-            if let Some(source) = source {
-                println!(
-                    "transport={} program={} tool={} read_only=true",
-                    source.transport, source.program, source.selected_tool
-                );
-            }
             Ok(())
         }
+    }
+}
+
+fn user_json() -> Result<UserMcpConfig, CliError> {
+    let path = user_config_path().ok_or_else(|| {
+        CliError::new(
+            "configuration",
+            "cannot determine user config path; set REASON_HOME, XDG_CONFIG_HOME, APPDATA, or HOME",
+        )
+    })?;
+    let root = if path.is_file() {
+        let bytes = fs::read(&path).map_err(|error| {
+            CliError::new("configuration", format!("{}: {error}", path.display()))
+        })?;
+        serde_json::from_slice(&bytes).map_err(|error| {
+            CliError::new("configuration", format!("{}: {error}", path.display()))
+        })?
+    } else {
+        serde_json::json!({"schema_version": CLI_CONFIG_CONTRACT_ID, "run": {}, "resolution": {}})
+    };
+    let parsed: CliFileConfig = serde_json::from_value(root.clone())
+        .map_err(|error| CliError::new("configuration", format!("{}: {error}", path.display())))?;
+    if parsed.schema_version != CLI_CONFIG_CONTRACT_ID {
+        return Err(CliError::new(
+            "configuration",
+            format!("{}: unsupported schema_version", path.display()),
+        ));
+    }
+    Ok(UserMcpConfig {
+        path,
+        root,
+        local: parsed.resolution.mcp_readonly,
+        remote: parsed.resolution.mcp_remote_readonly,
+    })
+}
+
+fn ensure_replace_policy(user: &UserMcpConfig, replace: bool) -> Result<(), CliError> {
+    if !replace {
+        if let Some(name) = user
+            .local
+            .as_ref()
+            .map(|value| &value.server_id)
+            .or_else(|| user.remote.as_ref().map(|value| &value.server_id))
+        {
+            return Err(CliError::new(
+                "mcp_configuration",
+                format!(
+                    "user config already contains MCP source {name:?}; use --replace to replace it explicitly"
+                ),
+            ));
+        }
+    }
+    Ok(())
+}
+
+fn resolution_object(
+    root: &mut serde_json::Value,
+) -> Result<&mut serde_json::Map<String, serde_json::Value>, CliError> {
+    root.as_object_mut()
+        .ok_or_else(|| CliError::new("configuration", "user config root must be a JSON object"))?
+        .entry("resolution")
+        .or_insert_with(|| serde_json::json!({}))
+        .as_object_mut()
+        .ok_or_else(|| CliError::new("configuration", "user config resolution must be an object"))
+}
+
+fn set_local_json(
+    root: &mut serde_json::Value,
+    configured: Option<&McpReadOnlyResolverFileConfig>,
+) -> Result<(), CliError> {
+    let resolution = resolution_object(root)?;
+    if let Some(value) = configured {
+        resolution.insert(
+            "mcp_readonly".into(),
+            serde_json::to_value(value)
+                .map_err(|error| CliError::new("configuration", error.to_string()))?,
+        );
+    } else {
+        resolution.remove("mcp_readonly");
+    }
+    Ok(())
+}
+
+fn set_remote_json(
+    root: &mut serde_json::Value,
+    configured: Option<&McpRemoteReadOnlyResolverFileConfig>,
+) -> Result<(), CliError> {
+    let resolution = resolution_object(root)?;
+    if let Some(value) = configured {
+        resolution.insert(
+            "mcp_remote_readonly".into(),
+            serde_json::to_value(value)
+                .map_err(|error| CliError::new("configuration", error.to_string()))?,
+        );
+    } else {
+        resolution.remove("mcp_remote_readonly");
+    }
+    Ok(())
+}
+
+fn validate_root(root: &serde_json::Value) -> Result<(), CliError> {
+    let parsed: CliFileConfig = serde_json::from_value(root.clone()).map_err(|error| {
+        CliError::new(
+            "mcp_configuration",
+            format!("resulting user config is invalid: {error}"),
+        )
+    })?;
+    if parsed.schema_version != CLI_CONFIG_CONTRACT_ID {
+        return Err(CliError::new(
+            "mcp_configuration",
+            "resulting user config has an unsupported schema_version",
+        ));
+    }
+    if parsed.resolution.mcp_readonly.is_some() && parsed.resolution.mcp_remote_readonly.is_some() {
+        return Err(CliError::new(
+            "mcp_configuration",
+            "local and remote MCP acquisition sources are mutually exclusive",
+        ));
+    }
+    if let Some(local) = parsed.resolution.mcp_readonly.as_ref() {
+        resolve_local_runtime(local)?;
+    }
+    if let Some(remote) = parsed.resolution.mcp_remote_readonly.as_ref() {
+        resolve_remote_runtime(remote)?;
+    }
+    Ok(())
+}
+
+fn named_summary(user: &UserMcpConfig, name: &str) -> Result<McpSummary, CliError> {
+    if let Some(local) = user.local.as_ref().filter(|value| value.server_id == name) {
+        local_summary(local)
+    } else if let Some(remote) = user.remote.as_ref().filter(|value| value.server_id == name) {
+        remote_summary(remote)
+    } else {
+        Err(not_found(name, user))
+    }
+}
+
+fn require_remote<'a>(
+    user: &'a UserMcpConfig,
+    name: &str,
+) -> Result<&'a McpRemoteReadOnlyResolverFileConfig, CliError> {
+    user.remote
+        .as_ref()
+        .filter(|value| value.server_id == name)
+        .ok_or_else(|| not_found(name, user))
+}
+
+fn not_found(name: &str, user: &UserMcpConfig) -> CliError {
+    let current = user
+        .local
+        .as_ref()
+        .map(|v| v.server_id.as_str())
+        .or_else(|| user.remote.as_ref().map(|v| v.server_id.as_str()));
+    match current {
+        Some(current) => CliError::new(
+            "mcp_not_found",
+            format!("MCP source {name:?} is not configured; current user source is {current:?}"),
+        ),
+        None => CliError::new(
+            "mcp_not_found",
+            "no user MCP acquisition source is configured; use `reason mcp add` or `reason mcp add-remote` first",
+        ),
+    }
+}
+
+fn resolve_local_runtime(
+    configured: &McpReadOnlyResolverFileConfig,
+) -> Result<reasoning_harness_providers::McpReadOnlyResolverV3Config, CliError> {
+    let mut config = CliFileConfig::default();
+    config.resolution.mcp_readonly = Some(configured.clone());
+    resolve_mcp_readonly_config(&LoadedCliConfig {
+        config,
+        sources: vec!["user"],
+    })
+    .map_err(|error| CliError::new("mcp_configuration", error))?
+    .ok_or_else(|| CliError::new("mcp_configuration", "MCP source unexpectedly missing"))
+}
+
+fn resolve_remote_runtime(
+    configured: &McpRemoteReadOnlyResolverFileConfig,
+) -> Result<super::ResolvedMcpRemoteConfig, CliError> {
+    let mut config = CliFileConfig::default();
+    config.resolution.mcp_remote_readonly = Some(configured.clone());
+    resolve_mcp_remote_readonly_config(&LoadedCliConfig {
+        config,
+        sources: vec!["user"],
+    })
+    .map_err(|error| CliError::new("mcp_configuration", error))?
+    .ok_or_else(|| {
+        CliError::new(
+            "mcp_configuration",
+            "remote MCP source unexpectedly missing",
+        )
+    })
+}
+
+fn local_summary(configured: &McpReadOnlyResolverFileConfig) -> Result<McpSummary, CliError> {
+    let runtime = resolve_local_runtime(configured)?;
+    Ok(McpSummary {
+        name: runtime.base.server_id,
+        transport: "stdio",
+        program: Some(runtime.base.program.display().to_string()),
+        endpoint: None,
+        argument_count: runtime.base.args.len(),
+        selected_tool: runtime.base.tool,
+        allowed_tools: runtime.base.allowed_tools.into_iter().collect(),
+        source: runtime.base.source,
+        read_only: true,
+        resolver_class: "evidence_acquisition",
+        protocol_version: runtime.requested_protocol_version,
+        max_tool_list_pages: runtime.max_tool_list_pages,
+        timeout_ms: runtime.base.timeout_ms,
+        max_response_bytes: runtime.base.max_response_bytes,
+        fixed_argument_keys: configured.fixed_arguments.keys().cloned().collect(),
+        oauth_configured: false,
+        oauth_issuer: None,
+        oauth_client_id: None,
+    })
+}
+
+fn remote_summary(
+    configured: &McpRemoteReadOnlyResolverFileConfig,
+) -> Result<McpSummary, CliError> {
+    let runtime = resolve_remote_runtime(configured)?;
+    Ok(McpSummary {
+        name: runtime.resolver.server_id,
+        transport: "streamable_http",
+        program: None,
+        endpoint: Some(runtime.resolver.endpoint),
+        argument_count: 0,
+        selected_tool: runtime.resolver.tool,
+        allowed_tools: runtime.resolver.allowed_tools.into_iter().collect(),
+        source: runtime.resolver.source,
+        read_only: true,
+        resolver_class: "evidence_acquisition",
+        protocol_version: runtime.resolver.protocol_version,
+        max_tool_list_pages: runtime.resolver.max_tool_list_pages,
+        timeout_ms: runtime.resolver.timeout_ms,
+        max_response_bytes: runtime.resolver.max_response_bytes,
+        fixed_argument_keys: configured.fixed_arguments.keys().cloned().collect(),
+        oauth_configured: runtime.oauth.is_some(),
+        oauth_issuer: runtime.oauth.as_ref().map(|o| o.issuer.clone()),
+        oauth_client_id: runtime.oauth.as_ref().map(|o| o.client_id.clone()),
+    })
+}
+
+fn allowlist(tool: &str, extras: Vec<String>) -> Result<BTreeSet<String>, CliError> {
+    let mut values = BTreeSet::from([tool.to_string()]);
+    for value in extras {
+        values.insert(required("allow-tool", value)?);
+    }
+    Ok(values)
+}
+
+fn validate_limits(
+    timeout_ms: Option<u64>,
+    max_response_bytes: Option<usize>,
+) -> Result<(), CliError> {
+    if timeout_ms == Some(0) || max_response_bytes == Some(0) {
+        Err(CliError::new(
+            "mcp_configuration",
+            "--timeout-ms and --max-response-bytes must be at least 1",
+        ))
+    } else {
+        Ok(())
     }
 }
 
@@ -456,146 +959,6 @@ fn required(label: &str, value: String) -> Result<String, CliError> {
     }
 }
 
-fn user_json() -> Result<
-    (
-        PathBuf,
-        serde_json::Value,
-        Option<McpReadOnlyResolverFileConfig>,
-    ),
-    CliError,
-> {
-    let path = user_config_path().ok_or_else(|| {
-        CliError::new(
-            "configuration",
-            "cannot determine user config path; set REASON_HOME, XDG_CONFIG_HOME, APPDATA, or HOME",
-        )
-    })?;
-    let root = if path.is_file() {
-        let bytes = fs::read(&path).map_err(|error| {
-            CliError::new("configuration", format!("{}: {error}", path.display()))
-        })?;
-        serde_json::from_slice(&bytes).map_err(|error| {
-            CliError::new("configuration", format!("{}: {error}", path.display()))
-        })?
-    } else {
-        serde_json::json!({"schema_version": CLI_CONFIG_CONTRACT_ID, "run": {}, "resolution": {}})
-    };
-    let parsed: CliFileConfig = serde_json::from_value(root.clone())
-        .map_err(|error| CliError::new("configuration", format!("{}: {error}", path.display())))?;
-    if parsed.schema_version != CLI_CONFIG_CONTRACT_ID {
-        return Err(CliError::new(
-            "configuration",
-            format!("{}: unsupported schema_version", path.display()),
-        ));
-    }
-    Ok((path, root, parsed.resolution.mcp_readonly))
-}
-
-fn set_mcp_json(
-    root: &mut serde_json::Value,
-    configured: Option<&McpReadOnlyResolverFileConfig>,
-) -> Result<(), CliError> {
-    let object = root
-        .as_object_mut()
-        .ok_or_else(|| CliError::new("configuration", "user config root must be a JSON object"))?;
-    let resolution = object
-        .entry("resolution")
-        .or_insert_with(|| serde_json::json!({}))
-        .as_object_mut()
-        .ok_or_else(|| {
-            CliError::new("configuration", "user config resolution must be an object")
-        })?;
-    match configured {
-        Some(configured) => {
-            resolution.insert(
-                "mcp_readonly".into(),
-                serde_json::to_value(configured).map_err(|error| {
-                    CliError::new("configuration", format!("serialize MCP config: {error}"))
-                })?,
-            );
-        }
-        None => {
-            resolution.remove("mcp_readonly");
-        }
-    }
-    Ok(())
-}
-
-fn validate_root(root: &serde_json::Value) -> Result<(), CliError> {
-    let parsed: CliFileConfig = serde_json::from_value(root.clone()).map_err(|error| {
-        CliError::new(
-            "mcp_configuration",
-            format!("resulting user config is invalid: {error}"),
-        )
-    })?;
-    if parsed.schema_version != CLI_CONFIG_CONTRACT_ID {
-        return Err(CliError::new(
-            "mcp_configuration",
-            "resulting user config has an unsupported schema_version",
-        ));
-    }
-    if let Some(configured) = parsed.resolution.mcp_readonly.as_ref() {
-        resolve_runtime(configured)?;
-    }
-    Ok(())
-}
-
-fn require_named<'a>(
-    configured: Option<&'a McpReadOnlyResolverFileConfig>,
-    name: &str,
-) -> Result<&'a McpReadOnlyResolverFileConfig, CliError> {
-    let configured = configured.ok_or_else(|| {
-        CliError::new(
-            "mcp_not_found",
-            "no user MCP acquisition source is configured; use `reason mcp add` first",
-        )
-    })?;
-    if configured.server_id != name {
-        return Err(CliError::new(
-            "mcp_not_found",
-            format!(
-                "MCP source {name:?} is not configured; current user source is {:?}",
-                configured.server_id
-            ),
-        ));
-    }
-    Ok(configured)
-}
-
-fn resolve_runtime(
-    configured: &McpReadOnlyResolverFileConfig,
-) -> Result<reasoning_harness_providers::McpReadOnlyResolverV3Config, CliError> {
-    let mut config = CliFileConfig::default();
-    config.resolution.mcp_readonly = Some(configured.clone());
-    resolve_mcp_readonly_config(&LoadedCliConfig {
-        config,
-        sources: vec!["user"],
-    })
-    .map_err(|error| CliError::new("mcp_configuration", error))?
-    .ok_or_else(|| CliError::new("mcp_configuration", "MCP source unexpectedly missing"))
-}
-
-fn resolved_summary(configured: &McpReadOnlyResolverFileConfig) -> Result<McpSummary, CliError> {
-    let runtime = resolve_runtime(configured)?;
-    Ok(McpSummary {
-        name: runtime.base.server_id,
-        transport: "stdio",
-        program: runtime.base.program.display().to_string(),
-        argument_count: runtime.base.args.len(),
-        selected_tool: runtime.base.tool,
-        allowed_tools: runtime.base.allowed_tools.into_iter().collect(),
-        source: runtime.base.source,
-        read_only: true,
-        resolver_class: "evidence_acquisition",
-        requested_protocol_version: runtime.requested_protocol_version,
-        supported_protocol_versions: runtime.supported_protocol_versions.into_iter().collect(),
-        max_tool_list_pages: runtime.max_tool_list_pages,
-        timeout_ms: runtime.base.timeout_ms,
-        max_response_bytes: runtime.base.max_response_bytes,
-        fixed_argument_keys: configured.fixed_arguments.keys().cloned().collect(),
-    })
-}
-
 fn readiness_error(error: reasoning_harness_core::ResolutionAdapterError) -> CliError {
     let (failure_class, message) = match error.kind {
         ResolutionAdapterErrorKind::PolicyDenied => (
@@ -608,11 +971,11 @@ fn readiness_error(error: reasoning_harness_core::ResolutionAdapterError) -> Cli
         ),
         ResolutionAdapterErrorKind::Authentication => (
             "mcp_authentication",
-            "MCP readiness requires authentication; remote/OAuth lifecycle is handled separately",
+            "MCP readiness requires authentication; run `reason mcp login <name>` for remote OAuth sources",
         ),
         ResolutionAdapterErrorKind::PermissionDenied => (
             "mcp_permission",
-            "MCP readiness was denied by the server or local process permissions",
+            "MCP readiness was denied by server or local process permissions",
         ),
         ResolutionAdapterErrorKind::Timeout => ("mcp_timeout", "MCP readiness timed out"),
         ResolutionAdapterErrorKind::Unavailable => (
@@ -621,11 +984,11 @@ fn readiness_error(error: reasoning_harness_core::ResolutionAdapterError) -> Cli
         ),
         ResolutionAdapterErrorKind::Transport => (
             "mcp_transport",
-            "MCP readiness failed while starting or communicating with the server",
+            "MCP readiness failed while communicating with the server",
         ),
         ResolutionAdapterErrorKind::Session => (
             "mcp_session",
-            "MCP readiness failed during the MCP session or bounded tool discovery",
+            "MCP readiness failed during bounded tool discovery",
         ),
         ResolutionAdapterErrorKind::Protocol | ResolutionAdapterErrorKind::MalformedOutput => (
             "mcp_protocol",

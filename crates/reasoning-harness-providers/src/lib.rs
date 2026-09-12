@@ -6,6 +6,7 @@ pub mod groq;
 pub mod mcp_readonly;
 pub mod mcp_readonly_v2;
 pub mod mcp_readonly_v3;
+mod mcp_remote;
 pub mod mistral;
 pub mod nvidia;
 mod subprocess_cancellation;
@@ -38,6 +39,12 @@ pub use mcp_readonly::{
 };
 
 pub use mcp_readonly_v2::{MCP_READONLY_V2_RESOLVER_ID, McpReadOnlyResolverV2};
+
+pub use mcp_remote::{
+    DEFAULT_MCP_REMOTE_MAX_RESPONSE_BYTES, DEFAULT_MCP_REMOTE_MAX_TOOL_LIST_PAGES,
+    DEFAULT_MCP_REMOTE_TIMEOUT_MS, MCP_REMOTE_PROTOCOL_VERSION, MCP_REMOTE_READONLY_RESOLVER_ID,
+    McpRemoteReadOnlyResolver, McpRemoteReadOnlyResolverConfig, McpRemoteReadiness,
+};
 
 pub use mcp_readonly_v3::{
     DEFAULT_MCP_READONLY_V3_MAX_TOOL_LIST_PAGES, MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION,

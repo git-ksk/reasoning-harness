@@ -53,17 +53,20 @@ reason completions powershell
 
 ## MCP
 
-low-level JSONを手書きせず、単一active local read-only MCP acquisition sourceを管理できます。
+low-level JSONを手書きせず、単一activeなlocal / remote read-only MCP acquisition sourceを管理できます。
 
 ```text
 reason mcp add inventory --program /path/to/mcp-server --arg=--stdio --tool lookup_item
-reason mcp test inventory
-reason mcp inspect inventory
-reason mcp list
-reason mcp remove inventory
+reason mcp add-remote docs --endpoint https://mcp.example.com/mcp --tool search --issuer https://auth.example.com --authorization-endpoint https://auth.example.com/authorize --token-endpoint https://auth.example.com/token --client-id https://client.example.com/reason.json --scope mcp:read --replace
+reason mcp login docs
+reason mcp login docs --no-browser
+reason mcp status docs
+reason mcp test docs
+reason mcp logout docs
+reason mcp remove docs
 ```
 
-`reason mcp test`はMCP negotiationと`tools/list` discoveryを行い、selected toolが`readOnlyHint=true`を宣言することを必須にします。**tool自体は実行しません。** 管理対象はuser-scoped non-secret configで、`inspect` / `list`はargument valueではなくcountだけを表示し、credential/tokenらしいsecret引数は`add`でrejectします。remote / Streamable HTTP OAuthは#386へ分離しています。
+`reason mcp test`はselected toolを実行せずread-only discoveryだけを確認します。remote OAuthはauthorization code + PKCEを使い、access/refresh tokenはnative OS credential storeだけに保持します。configへ保存するのはnon-secretなendpoint / issuer / client metadataだけです。`--no-browser`でheadless authorizationにも対応します。project-level remote configは`reason trust`対象です。
 
 optional `reason-mcp` binaryは別surfaceで、Reasonのselected operationをexternal MCP clientへ公開するものです。MCP acquisition outputはauthorityではなくdataのままです。`docs/mcp-resolver.ja.md`と`docs/mcp-product-surface.ja.md`を参照してください。
 

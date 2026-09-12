@@ -1393,12 +1393,14 @@ dependencies = [
 name = "reasoning-harness-cli"
 version = "0.4.2"
 dependencies = [
+ "base64",
  "clap",
  "clap_complete",
  "ctrlc",
  "fs2",
  "keyring",
  "libc",
+ "rand",
  "reasoning-harness-core",
  "reasoning-harness-providers",
  "reqwest",
@@ -1409,6 +1411,7 @@ dependencies = [
  "serde_json",
  "sha2",
  "tokio",
+ "url",
 ]
 
 [[package]]
