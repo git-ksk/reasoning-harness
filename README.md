@@ -209,7 +209,8 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 
 | Command | Use it for |
 | --- | --- |
-| `reason` | Reason CLI 0.5.0 development: start the TTY-only interactive REPL; JSON/non-TTY invocations remain non-interactive. |
+| `reason` | Reason CLI 0.5.0 development: start a managed TTY-only interactive session; JSON/non-TTY invocations remain non-interactive. |
+| `reason -c` / `reason -r [SESSION]` | Continue the latest project session or resume/pick a managed session without learning backing file paths. |
 | `reason "TASK"` | Primary human-facing natural-language path. |
 | `reason setup` | Reason CLI 0.5.0 development: first-run provider, credential, model-default, and readiness setup. |
 | `reason update` / `reason update --rollback VERSION` | Reason CLI 0.5.0 development: provenance-verified update and explicit rollback. |
@@ -217,7 +218,8 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 | `reason auth ...` | Reason CLI 0.5.0 development: securely add, inspect, rotate, or remove provider credentials. |
 | `reason models [provider]` | Reason CLI 0.5.0 development: inspect the curated model catalog, compatibility metadata, credential readiness, and current default. |
 | `reason model set <provider> <model>` | Reason CLI 0.5.0 development: persist a curated general-use provider/model default without silent fallback. |
-| `reason session ...` | Persist, inspect, add to, correct, resume, fork, or close reasoning sessions. |
+| `reason session list` | List managed interactive sessions in human or JSON form. |
+| `reason session ... --store PATH` | Low-level typed session compatibility surface: persist, inspect, add, correct, resume, fork, or close an explicit session file. |
 | `reason run` | Structured application/CI integration and live candidate generation. |
 | `reason verify` | Deterministically validate a materialized `ReasoningArtifact`. |
 | `reason semantic-check` | Run the soft semantic diagnostic runtime without granting it final authority. |

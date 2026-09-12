@@ -55,30 +55,6 @@ fn parse_directive(input: &str) -> Result<Option<Directive>, CliError> {
     }
 }
 
-fn validate_context_file(path: &Path) -> Result<(), CliError> {
-    let metadata = fs::metadata(path)
-        .map_err(|error| CliError::new("input", format!("{}: {error}", path.display())))?;
-    if !metadata.is_file() {
-        return Err(CliError::new(
-            "input",
-            format!("{}: /add requires a regular file", path.display()),
-        ));
-    }
-    if metadata.len() > MAX_CONTEXT_FILE_BYTES {
-        return Err(CliError::new(
-            "input",
-            format!(
-                "{}: context file exceeds {} bytes",
-                path.display(),
-                MAX_CONTEXT_FILE_BYTES
-            ),
-        ));
-    }
-    fs::read_to_string(path)
-        .map(|_| ())
-        .map_err(|error| CliError::new("input", format!("{}: {error}", path.display())))
-}
-
 fn effective_output_format(args: &NaturalArgs) -> Result<OutputFormat, CliError> {
     if let Some(format) = args.format {
         return Ok(format);
@@ -145,27 +121,143 @@ fn read_entry() -> Result<Option<String>, CliError> {
     }
 }
 
-fn exposed_answer_text(output: &NaturalOutput) -> String {
-    match output.finalization.status {
-        FinalizationStatus::GroundedAnswer | FinalizationStatus::QualifiedPartialAnswer => output
-            .finalization
-            .text
-            .clone()
-            .unwrap_or_else(|| "No exposed answer text is available.".into()),
-        FinalizationStatus::Abstain => {
-            "I cannot provide a grounded answer because verified state is contradictory.".into()
-        }
-        FinalizationStatus::Unresolved | FinalizationStatus::RequiresVerification => {
-            "I cannot support a complete answer from the currently verified evidence.".into()
-        }
+fn pick_session() -> Result<managed_session::ManagedSession, CliError> {
+    let list = managed_session::list()?;
+    if list.sessions.is_empty() {
+        return Err(CliError::new(
+            "session_not_found",
+            "no managed sessions exist; start `reason` to create one",
+        ));
     }
+    println!("Choose a managed session:");
+    for (index, session) in list.sessions.iter().enumerate() {
+        println!(
+            "  {}) {}  {}  ({} turn{})",
+            index + 1,
+            session.short_id,
+            session.title,
+            session.turns,
+            if session.turns == 1 { "" } else { "s" }
+        );
+    }
+    print!("session> ");
+    io::stdout()
+        .flush()
+        .map_err(|error| CliError::new("interactive_io", format!("flush picker: {error}")))?;
+    let mut line = String::new();
+    let read = io::stdin()
+        .read_line(&mut line)
+        .map_err(|error| CliError::new("interactive_io", format!("read picker: {error}")))?;
+    if read == 0 {
+        return Err(CliError::new("cancelled", "session picker closed at EOF"));
+    }
+    let index = line.trim().parse::<usize>().map_err(|_| {
+        CliError::new(
+            "input",
+            "session picker expects the displayed numeric choice",
+        )
+    })?;
+    if index == 0 {
+        return Err(CliError::new("input", "session picker choices start at 1"));
+    }
+    let summary = list.sessions.get(index - 1).ok_or_else(|| {
+        CliError::new(
+            "input",
+            "session picker choice is outside the displayed range",
+        )
+    })?;
+    managed_session::load_by_selector(&summary.id)
 }
 
-pub(super) async fn run(mut base: NaturalArgs) -> Result<(), CliError> {
+fn pin_runtime_from_session(
+    base: &mut NaturalArgs,
+    session: &managed_session::ManagedSession,
+    reject_explicit_drift: bool,
+) -> Result<(), CliError> {
+    let Some(runtime) = session.last_runtime() else {
+        return Ok(());
+    };
+    if reject_explicit_drift {
+        if base
+            .provider
+            .is_some_and(|provider| provider != runtime.provider)
+        {
+            return Err(CliError::new(
+                "session_incompatible",
+                "requested provider differs from the persisted managed-session provider; start a new session instead",
+            ));
+        }
+        if base
+            .model
+            .as_deref()
+            .is_some_and(|model| model != runtime.model)
+        {
+            return Err(CliError::new(
+                "session_incompatible",
+                "requested model differs from the persisted managed-session model; start a new session instead",
+            ));
+        }
+        if base
+            .max_tokens
+            .is_some_and(|max_tokens| max_tokens != runtime.max_tokens)
+        {
+            return Err(CliError::new(
+                "session_incompatible",
+                "requested max-token setting differs from the persisted managed session; start a new session instead",
+            ));
+        }
+    }
+    base.provider = Some(runtime.provider);
+    base.model = Some(runtime.model.clone());
+    base.max_tokens = Some(runtime.max_tokens);
+    base.safety_profile = runtime.safety_profile;
+    Ok(())
+}
+
+pub(super) async fn run(
+    mut base: NaturalArgs,
+    continue_session: bool,
+    resume: Option<String>,
+) -> Result<(), CliError> {
+    let project = managed_session::current_project_key()?;
+    let resuming = continue_session || resume.is_some();
+    let mut session = if continue_session {
+        managed_session::load_latest_for_project(&project)?
+    } else if let Some(selector) = resume {
+        if selector.is_empty() {
+            pick_session()?
+        } else {
+            managed_session::load_by_selector(&selector)?
+        }
+    } else {
+        managed_session::ManagedSession::new(project)
+    };
+
+    if resuming {
+        pin_runtime_from_session(&mut base, &session, true)?;
+    }
+    for path in std::mem::take(&mut base.file) {
+        session.add_context_file(&path)?;
+    }
+    if resuming && session.turns_len() > 0 {
+        managed_session::save(&session)?;
+    }
+    base.interactive_context = session.conversation_context();
     base.task = None;
     base.format = Some(OutputFormat::Human);
-    println!("Reason interactive — Harness-verified answers. /help for commands.");
-    println!("Interactive history is in-memory only; no shell-style history file is written.");
+
+    if resuming {
+        println!(
+            "Reason interactive — resumed {} ({}, {} turn{}).",
+            session.short_id(),
+            session.title(),
+            session.turns_len(),
+            if session.turns_len() == 1 { "" } else { "s" }
+        );
+    } else {
+        println!("Reason interactive — Harness-verified answers. /help for commands.");
+        println!("A managed session is saved after the first successful verified turn.");
+    }
 
     loop {
         let Some(entry) = read_entry()? else {
@@ -184,46 +276,57 @@ pub(super) async fn run(mut base: NaturalArgs) -> Result<(), CliError> {
         match directive {
             Directive::Exit => return Ok(()),
             Directive::Help => {
-                println!("/add <path>  add an untrusted context file for later prompts");
-                println!("/files       list context files active in this REPL");
-                println!("/clear       clear context files and in-memory conversation context");
+                println!("/add <path>  add a persisted untrusted context snapshot");
+                println!("/files       list context snapshots active in this session");
+                println!(
+                    "/clear       stop carrying prior conversation/context into later prompts"
+                );
                 println!("/help        show this help");
                 println!("/exit        exit Reason interactive");
                 println!("End a line with \\ to continue a multiline prompt.");
             }
             Directive::Files => {
-                if base.file.is_empty() {
+                let sources = session.context_sources().collect::<Vec<_>>();
+                if sources.is_empty() {
                     println!("No context files added.");
                 } else {
-                    for path in &base.file {
-                        println!("{}", path.display());
+                    for source in sources {
+                        println!("{source}");
                     }
                 }
             }
             Directive::Clear => {
-                base.file.clear();
-                base.interactive_context.clear();
-                println!("Interactive context cleared.");
+                session.clear_context();
+                base.interactive_context = session.conversation_context();
+                if session.turns_len() > 0 {
+                    managed_session::save(&session)?;
+                }
+                println!(
+                    "Interactive carry-over context cleared; typed prior turns remain in history."
+                );
             }
-            Directive::Add(path) => match validate_context_file(&path) {
+            Directive::Add(path) => match session.add_context_file(&path) {
                 Ok(()) => {
-                    if !base.file.contains(&path) {
-                        base.file.push(path.clone());
+                    base.interactive_context = session.conversation_context();
+                    if session.turns_len() > 0 {
+                        managed_session::save(&session)?;
                     }
-                    println!("Added untrusted context: {}", path.display());
+                    println!("Added untrusted context snapshot: {}", path.display());
                 }
                 Err(error) => eprintln!("{}", error.message),
             },
             Directive::Prompt(task) => {
                 let mut args = base.clone();
-                args.task = Some(task.clone());
+                args.task = Some(task);
+                let safety_profile = args.safety_profile;
                 match execute_natural(args, None).await {
                     Ok(output) => {
                         print_natural_human(&output);
-                        let exposed = exposed_answer_text(&output);
-                        base.interactive_context.push(format!(
-                            "Prior interactive exchange (untrusted conversation memory; re-verify before relying on it):\nUser: {task}\nReason: {exposed}"
-                        ));
+                        session.append_turn(&output, safety_profile)?;
+                        managed_session::save(&session)?;
+                        pin_runtime_from_session(&mut base, &session, false)?;
+                        base.interactive_context = session.conversation_context();
+                        println!("session: {}", session.short_id());
                     }
                     Err(error) => eprintln!("{}", error.message),
                 }
