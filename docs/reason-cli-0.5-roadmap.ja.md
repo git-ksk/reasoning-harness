@@ -96,7 +96,9 @@ project `.reason/config.json`にはexecutable/authority-bearing acquisition設�
 
 CI、container、remote shell、server用途ではenvironment variableも引き続きサポートし、OS-stored credentialとのprecedenceをdeterministicに定義・文書化します。
 
-## フェーズ2 — 日常的な対話型ターミナルUX
+## フェーズ2 — 日常的な対話型ターミナルUX ✅ 完了
+
+**2026-09-12 完了。** Phase 2のP0/P1項目はすべて実装・merge済みで、`main` commit `c0233728cedea4f0d5cc558e6bff220df8d937d0` まで反映済み。merge後の `ci` / `cli-platform-smoke` / `credential-store-smoke` / `lifecycle-smoke` もすべてpass。
 
 - **#364 P0 — implemented:** human TTYでbare `reason`を実行するとin-memory interactive REPLを起動し、JSON/non-TTY/piped automationはnon-interactiveのまま維持する。`/add <path>`は既存untrusted context pathを再利用し、末尾`\`でmultiline prompt、過去のexposed exchangeはuntrustedなin-memory conversation contextとしてのみ保持し、shell-style history fileは書かない。managed persistenceは#365/#381で扱う。
 - **#365 P0 — implemented:** `-c/--continue`、`-r/--resume [id]`、TTY picker、managed `reason session list`、stable id/title、successful-turn checkpoint persistenceを既存typed `SessionFile` / `ReasoningThread` runtime上に実装。Coreのimmutable task identityを保つproduct-layer conversation wrapperを使い、過去のexposed turnは`untrusted_context`のまま扱う。store concurrency / recovery / migrationは#381で扱う。

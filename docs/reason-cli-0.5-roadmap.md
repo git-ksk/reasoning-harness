@@ -96,7 +96,9 @@ Project `.reason/config.json` may contain executable or authority-bearing acquis
 
 Environment variables remain supported for CI, containers, remote shells, and servers. Their precedence relative to OS-stored credentials must be deterministic and documented.
 
-## Phase 2 — Everyday interactive terminal UX
+## Phase 2 — Everyday interactive terminal UX ✅ COMPLETE
+
+**Completed 2026-09-12.** All Phase 2 P0/P1 items are implemented and merged through `main` commit `c0233728cedea4f0d5cc558e6bff220df8d937d0`; the merge-post `ci`, `cli-platform-smoke`, `credential-store-smoke`, and `lifecycle-smoke` workflows all passed.
 
 - **#364 P0 — implemented:** bare `reason` on a human TTY starts an in-memory interactive REPL; JSON/non-TTY/piped automation remains non-interactive. `/add <path>` reuses the existing untrusted context path, multiline prompts use a trailing `\`, previous exposed exchanges are retained only as untrusted in-memory conversation context, and no shell-style history file is written. Managed persistence remains owned by #365/#381.
 - **#365 P0 — implemented:** `-c/--continue`, `-r/--resume [id]`, TTY picker, managed `reason session list`, stable ids/titles, and successful-turn checkpoint persistence over the existing typed `SessionFile`/`ReasoningThread` runtime. A product-layer conversation wrapper preserves Core immutable task identity; prior exposed turns remain `untrusted_context`. Store concurrency/recovery/migration remains #381.
