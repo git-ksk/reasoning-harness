@@ -46,6 +46,20 @@ A cooperating read-only tool may return this optional structured payload:
 
 Those fields are still resolver-supplied raw acquisition data. The Harness assigns the configured source identity, then `external_evidence_admission_v1` independently checks source allowlisting, freshness, scope, and authority policy before ordinary qualification and verification run again. The MCP tool cannot return trusted `EvidenceMetadata`, verification receipts, a verdict, or grounded final prose through this path.
 
+## Guided CLI management
+
+For the supported 0.5 product path, `reason mcp` manages one active user-scoped local stdio source:
+
+```text
+reason mcp add inventory --program /path/to/mcp-server --arg=--stdio --tool lookup_item
+reason mcp test inventory
+reason mcp inspect inventory
+reason mcp list
+reason mcp remove inventory
+```
+
+`add` generates the restrictive `resolution.mcp_readonly` shape with `read_only=true`, `resolver_class=evidence_acquisition`, and an explicit selected-tool allowlist. Replacing an existing source requires `--replace`. Secret-looking credential/token arguments are rejected instead of being persisted. `list` and `inspect` do not print executable argument values. `test` stops after negotiation and bounded `tools/list` discovery, requiring server `readOnlyHint=true`; it never sends `tools/call`, so readiness checking does not execute the acquisition tool. Remote HTTP/OAuth lifecycle is outside this local 0.5 surface and tracked separately by #386.
+
 ## Configuration
 
 ```json
@@ -83,7 +97,7 @@ Those fields are still resolver-supplied raw acquisition data. The Harness assig
 }
 ```
 
-The server process inherits the normal environment, but config schemas reject unknown credential-like fields. Resolver/admission telemetry records stable hashed config identities rather than literal command arguments.
+Covered local MCP subprocesses start from the minimal isolated environment defined by #387 rather than inheriting the parent environment. Config schemas reject unknown credential-like fields, and guided management rejects secret-looking credential/token arguments. Resolver/admission telemetry records stable hashed config identities rather than literal command arguments.
 
 ## Operational failures and replay
 

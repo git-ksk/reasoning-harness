@@ -51,6 +51,14 @@ impl McpReadOnlyResolverV3Config {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct McpReadOnlyReadiness {
+    pub server_id: String,
+    pub selected_tool: String,
+    pub negotiated_protocol_version: String,
+    pub read_only_hint: bool,
+}
+
 #[derive(Debug)]
 pub struct McpReadOnlyResolverV3 {
     config: McpReadOnlyResolverV3Config,
@@ -71,6 +79,176 @@ impl McpReadOnlyResolverV3 {
     pub fn with_cancellation(mut self, cancellation: SubprocessCancellation) -> Self {
         self.cancellation = Some(cancellation);
         self
+    }
+
+    /// Verifies MCP session negotiation and the selected tool's server-declared read-only proof
+    /// without invoking the tool. This is a product-readiness check only; it creates no evidence
+    /// and grants no authority.
+    pub fn probe_readiness(&self) -> Result<McpReadOnlyReadiness, ResolutionAdapterError> {
+        let started = Instant::now();
+        let base = &self.config.base;
+        if base.server_id.trim().is_empty()
+            || base.tool.trim().is_empty()
+            || base.source.trim().is_empty()
+            || base.resolver_class != ResolverClass::EvidenceAcquisition
+            || !base.allowed_tools.contains(&base.tool)
+            || base.timeout_ms == 0
+            || base.max_response_bytes == 0
+            || self.config.requested_protocol_version.trim().is_empty()
+            || self.config.supported_protocol_versions.is_empty()
+            || !self
+                .config
+                .supported_protocol_versions
+                .contains(&self.config.requested_protocol_version)
+            || self
+                .config
+                .supported_protocol_versions
+                .iter()
+                .any(|version| version.trim().is_empty())
+            || self.config.max_tool_list_pages == 0
+        {
+            return Err(error(ResolutionAdapterErrorKind::PolicyDenied, started));
+        }
+
+        let timeout = Duration::from_millis(base.timeout_ms);
+        let mut command = Command::new(&base.program);
+        command.args(&base.args);
+        isolate_subprocess_environment(&mut command);
+        let mut session = DeadlineLineSession::spawn(
+            &mut command,
+            started,
+            timeout,
+            base.max_response_bytes,
+            self.cancellation.clone(),
+        )
+        .map_err(|kind| error(kind, started))?;
+
+        let id_prefix = "reasoning-harness:mcp-readiness";
+        let initialize_id = format!("{id_prefix}:initialize");
+        write_json(
+            &mut session,
+            &json!({
+                "jsonrpc": "2.0",
+                "id": initialize_id,
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": self.config.requested_protocol_version,
+                    "capabilities": {},
+                    "clientInfo": {
+                        "name": MCP_CLIENT_NAME,
+                        "version": env!("CARGO_PKG_VERSION")
+                    }
+                }
+            }),
+        )
+        .map_err(|kind| error(session_io_kind(kind), started))?;
+        let initialize_response = read_rpc(&mut session, &initialize_id)
+            .map_err(|kind| error(session_io_kind(kind), started))?;
+        if let Some(rpc_error) = initialize_response.error {
+            let kind = rpc_error_kind(&rpc_error);
+            return Err(error(
+                if kind == ResolutionAdapterErrorKind::Protocol {
+                    ResolutionAdapterErrorKind::Negotiation
+                } else {
+                    kind
+                },
+                started,
+            ));
+        }
+        let initialize_result: McpInitializeResult = serde_json::from_value(
+            initialize_response
+                .result
+                .ok_or_else(|| error(ResolutionAdapterErrorKind::Negotiation, started))?,
+        )
+        .map_err(|_| error(ResolutionAdapterErrorKind::Negotiation, started))?;
+        if !self
+            .config
+            .supported_protocol_versions
+            .contains(&initialize_result.protocol_version)
+        {
+            return Err(error(ResolutionAdapterErrorKind::Negotiation, started));
+        }
+        let negotiated_protocol = initialize_result.protocol_version;
+
+        write_json(
+            &mut session,
+            &json!({
+                "jsonrpc": "2.0",
+                "method": "notifications/initialized"
+            }),
+        )
+        .map_err(|kind| error(session_io_kind(kind), started))?;
+
+        let mut cursor = None::<String>;
+        let mut seen_cursors = BTreeSet::new();
+        let mut pagination_incomplete = false;
+        for page in 0..self.config.max_tool_list_pages {
+            let list_id = format!("{id_prefix}:tools-list:{page}");
+            let params = match cursor.as_deref() {
+                Some(cursor) => json!({ "cursor": cursor }),
+                None => json!({}),
+            };
+            write_json(
+                &mut session,
+                &json!({
+                    "jsonrpc": "2.0",
+                    "id": list_id,
+                    "method": "tools/list",
+                    "params": params
+                }),
+            )
+            .map_err(|kind| error(session_io_kind(kind), started))?;
+            let response = read_rpc(&mut session, &list_id)
+                .map_err(|kind| error(session_io_kind(kind), started))?;
+            if let Some(rpc_error) = response.error {
+                let kind = rpc_error_kind(&rpc_error);
+                return Err(error(
+                    if kind == ResolutionAdapterErrorKind::Protocol {
+                        ResolutionAdapterErrorKind::Session
+                    } else {
+                        kind
+                    },
+                    started,
+                ));
+            }
+            let result: McpToolsListResult = serde_json::from_value(
+                response
+                    .result
+                    .ok_or_else(|| error(ResolutionAdapterErrorKind::Protocol, started))?,
+            )
+            .map_err(|_| error(ResolutionAdapterErrorKind::Protocol, started))?;
+            if let Some(tool) = result.tools.iter().find(|tool| tool.name == base.tool) {
+                let read_only_hint = tool.annotations.as_ref().and_then(|a| a.read_only_hint);
+                if self.config.require_read_only_hint && read_only_hint != Some(true) {
+                    return Err(error(ResolutionAdapterErrorKind::PolicyDenied, started));
+                }
+                return Ok(McpReadOnlyReadiness {
+                    server_id: base.server_id.clone(),
+                    selected_tool: base.tool.clone(),
+                    negotiated_protocol_version: negotiated_protocol,
+                    read_only_hint: read_only_hint == Some(true),
+                });
+            }
+            let Some(next_cursor) = result.next_cursor.filter(|cursor| !cursor.is_empty()) else {
+                break;
+            };
+            if !seen_cursors.insert(next_cursor.clone()) {
+                return Err(error(ResolutionAdapterErrorKind::Session, started));
+            }
+            if page + 1 == self.config.max_tool_list_pages {
+                pagination_incomplete = true;
+                break;
+            }
+            cursor = Some(next_cursor);
+        }
+        Err(error(
+            if pagination_incomplete {
+                ResolutionAdapterErrorKind::Session
+            } else {
+                ResolutionAdapterErrorKind::PolicyDenied
+            },
+            started,
+        ))
     }
 }
 
@@ -577,6 +755,49 @@ mod tests {
             "lookup",
             "mcp:fixture:lookup",
         ))
+    }
+
+    #[test]
+    fn readiness_probe_negotiates_and_verifies_read_only_without_calling_tool() {
+        let path = script(
+            r#"#!/bin/sh
+read initialize
+printf '%s' "$initialize" | grep -q '"method":"initialize"' || exit 2
+printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:mcp-readiness:initialize","result":{"protocolVersion":"2025-11-25","capabilities":{},"serverInfo":{"name":"fixture","version":"1"}}}'
+read initialized
+printf '%s' "$initialized" | grep -q '"method":"notifications/initialized"' || exit 3
+read list
+printf '%s' "$list" | grep -q '"method":"tools/list"' || exit 4
+printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:mcp-readiness:tools-list:0","result":{"tools":[{"name":"lookup","inputSchema":{"type":"object"},"annotations":{"readOnlyHint":true}}]}}'
+# A readiness probe must end here; any tools/call would make the test hang/fail.
+"#,
+            "readiness",
+        );
+        let resolver = McpReadOnlyResolverV3::new(config(path.clone()));
+        let readiness = resolver.probe_readiness().unwrap();
+        fs::remove_file(path).ok();
+        assert_eq!(readiness.server_id, "fixture-server");
+        assert_eq!(readiness.selected_tool, "lookup");
+        assert_eq!(readiness.negotiated_protocol_version, "2025-11-25");
+        assert!(readiness.read_only_hint);
+    }
+
+    #[test]
+    fn readiness_probe_rejects_selected_tool_without_read_only_proof() {
+        let path = script(
+            r#"#!/bin/sh
+read initialize
+printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:mcp-readiness:initialize","result":{"protocolVersion":"2026-07-28","capabilities":{},"serverInfo":{"name":"fixture","version":"1"}}}'
+read initialized
+read list
+printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:mcp-readiness:tools-list:0","result":{"tools":[{"name":"lookup","inputSchema":{"type":"object"},"annotations":{"readOnlyHint":false}}]}}'
+"#,
+            "readiness-write-hint",
+        );
+        let resolver = McpReadOnlyResolverV3::new(config(path.clone()));
+        let failure = resolver.probe_readiness().unwrap_err();
+        fs::remove_file(path).ok();
+        assert_eq!(failure.kind, ResolutionAdapterErrorKind::PolicyDenied);
     }
 
     #[test]

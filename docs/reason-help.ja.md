@@ -53,13 +53,19 @@ reason completions powershell
 
 ## MCP
 
-MCP product integrationは`reason mcp` subcommandではなく、別のoptional binaryです。
+low-level JSONを手書きせず、単一active local read-only MCP acquisition sourceを管理できます。
 
 ```text
-reason-mcp --reason-command /path/to/reason
+reason mcp add inventory --program /path/to/mcp-server --arg=--stdio --tool lookup_item
+reason mcp test inventory
+reason mcp inspect inventory
+reason mcp list
+reason mcp remove inventory
 ```
 
-`reason-mcp`はselected operationをnative Reason runtimeへdelegateし、native product contractを維持します。MCP resultが自動的にtrusted authorityへ昇格することはありません。protocol boundaryは`docs/mcp-product-surface.ja.md`を参照してください。
+`reason mcp test`はMCP negotiationと`tools/list` discoveryを行い、selected toolが`readOnlyHint=true`を宣言することを必須にします。**tool自体は実行しません。** 管理対象はuser-scoped non-secret configで、`inspect` / `list`はargument valueではなくcountだけを表示し、credential/tokenらしいsecret引数は`add`でrejectします。remote / Streamable HTTP OAuthは#386へ分離しています。
+
+optional `reason-mcp` binaryは別surfaceで、Reasonのselected operationをexternal MCP clientへ公開するものです。MCP acquisition outputはauthorityではなくdataのままです。`docs/mcp-resolver.ja.md`と`docs/mcp-product-surface.ja.md`を参照してください。
 
 ## Update
 

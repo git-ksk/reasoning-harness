@@ -6,6 +6,7 @@ mod interactive;
 mod lifecycle;
 mod local_privacy;
 mod managed_session;
+mod mcp_commands;
 mod model_catalog;
 mod progress;
 mod project_trust;
@@ -104,6 +105,7 @@ const TOP_LEVEL_AFTER_HELP: &str = r#"QUICK START:
 
 DISCOVER:
   reason examples
+  reason mcp --help              # manage read-only MCP acquisition sources
   reason help <command>
   reason completions <bash|zsh|fish|powershell>
 
@@ -1886,10 +1888,17 @@ JSON and piped modes stay non-interactive and decoration-free."#
 Credentials stay in the native OS credential store; config is non-secret."#
         }
         Some(ExampleTopic::Mcp) => {
-            r#"MCP integration uses the separate optional `reason-mcp` binary:
+            r#"Manage a local read-only MCP acquisition source:
+  reason mcp add inventory --program /path/to/server --tool lookup
+  reason mcp test inventory
+  reason mcp inspect inventory
+  reason mcp list
+  reason mcp remove inventory
+
+This is separate from the optional `reason-mcp` binary, which exposes Reason itself to external MCP clients:
   reason-mcp --reason-command /path/to/reason
 
-`reason-mcp` delegates selected operations to the native Reason runtime. MCP output does not gain authority by itself. See `docs/mcp-product-surface.md`."#
+Managed acquisition remains read-only and non-promoting: MCP output is data, not authority."#
         }
         Some(ExampleTopic::Update) => {
             r#"Updates:
@@ -1939,6 +1948,11 @@ enum Command {
     Config {
         #[command(subcommand)]
         command: config_commands::ConfigCommand,
+    },
+    /// Manage the local read-only MCP acquisition source in user configuration.
+    Mcp {
+        #[command(subcommand)]
+        command: mcp_commands::McpCommand,
     },
     /// Configure provider, credential, model default, and readiness for first use.
     Setup(setup::SetupArgs),
@@ -5482,6 +5496,10 @@ impl Cli {
                 command: "config",
                 json: command.format() == OutputFormat::Json,
             }),
+            Some(Command::Mcp { command }) => Some(ProductErrorContext {
+                command: "mcp",
+                json: command.format() == OutputFormat::Json,
+            }),
             Some(Command::Trust { command }) => {
                 let format = match command {
                     TrustCommand::Status { format, .. }
@@ -5647,6 +5665,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
         }) => model_catalog::list(provider, configured, format),
         Some(Command::Model { command }) => model_catalog::run(command),
         Some(Command::Config { command }) => config_commands::run(command),
+        Some(Command::Mcp { command }) => mcp_commands::run(command),
         Some(Command::Trust { command }) => run_trust(command),
         Some(Command::Session { command }) => run_session(command).await,
         Some(Command::Run {
@@ -10916,7 +10935,9 @@ mod candidate_json_tests {
         assert!(example_text(None).contains("reason \"Compare the evidence"));
         assert!(example_text(Some(ExampleTopic::Interactive)).contains("reason\n"));
         let mcp = example_text(Some(ExampleTopic::Mcp));
+        assert!(mcp.contains("reason mcp add inventory"));
+        assert!(mcp.contains("reason mcp test inventory"));
         assert!(mcp.contains("reason-mcp --reason-command"));
-        assert!(!mcp.contains("reason mcp "));
+        assert!(mcp.contains("MCP output is data, not authority"));
     }
 }

@@ -116,7 +116,7 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 ## フェーズ3 — 外部情報取得UXとprocess isolation
 
 - **#387 P0 — implemented:** 現行external-command、MCP v3（＋v2 compatibility）、trusted-command subprocessはambient provider/developer secretをinheritせず、documented minimal cross-platform environmentから起動する。将来integration credential向けのscoped injection boundaryを用意し、secret-valued project config / arbitrary ambient-variable inheritanceは公開しない。historical freeze対象の`mcp_readonly_v1`は変更しない。詳細は[Local subprocess environment isolation](reason-subprocess-isolation.ja.md)。
-- **#368 P1:** guided read-only MCP management: `reason mcp add/list/inspect/test/remove`。
+- **#368 P1 — implemented:** 単一active local read-only MCP acquisition sourceを`reason mcp add/list/inspect/test/remove`でguided管理。addはnon-secret user configだけを書き、inspect/listはargument valueを表示せず、`test`はselected toolを実行せずnegotiation + `tools/list`のread-only証明まで確認する。
 - **#386 P1:** local read-only management後のsecure remote MCP / Streamable HTTP OAuth lifecycle。可能な範囲でheadless/no-browser authも扱う。
 
 これはconfiguration / transport / isolation / visibilityの改善です。MCP outputはauthorityではなくacquisition dataのまま、write-capable/ambiguous capabilityはfail closedを維持し、Harness Engine 0.4.2のMCP correctness boundaryを変更しません。

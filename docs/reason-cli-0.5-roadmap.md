@@ -116,7 +116,7 @@ The existing one-shot `reason "TASK"`, repeatable `--file`, piped stdin context,
 ## Phase 3 — External acquisition UX and process isolation
 
 - **#387 P0 — implemented:** current external-command, MCP v3 (plus v2 compatibility), and trusted-command subprocesses start from a documented minimal cross-platform environment instead of inheriting ambient provider/developer secrets. Explicit future integration credentials have a scoped injection boundary; secret-valued project config and arbitrary ambient-variable inheritance remain unavailable. Historical frozen `mcp_readonly_v1` remains untouched. See [Local subprocess environment isolation](reason-subprocess-isolation.md).
-- **#368 P1:** guided read-only MCP management: `reason mcp add/list/inspect/test/remove`.
+- **#368 P1 — implemented:** guided management for the single active local read-only MCP acquisition source via `reason mcp add/list/inspect/test/remove`; add writes only non-secret user configuration, inspect/list hide argument values, and `test` performs negotiation plus `tools/list` read-only verification without invoking the selected tool.
 - **#386 P1:** secure remote MCP/Streamable HTTP OAuth lifecycle after the local read-only management path, including headless/no-browser auth where practical.
 
 This is a configuration, transport, isolation, and visibility improvement only. MCP output remains acquisition data rather than authority, write-capable or ambiguous capabilities remain fail-closed, and the supported Engine 0.4.2 MCP correctness boundary is unchanged.
