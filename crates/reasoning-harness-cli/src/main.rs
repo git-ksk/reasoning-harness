@@ -11,6 +11,7 @@ mod progress;
 mod project_trust;
 mod secure_credentials;
 mod setup;
+mod terminal_presentation;
 mod usage_budget;
 
 use std::{
@@ -227,6 +228,9 @@ struct NaturalArgs {
     /// Show concise operational provider/phase details on an interactive human TTY. Never exposes hidden reasoning.
     #[arg(long)]
     verbose: bool,
+    /// Use static, accessibility-friendly terminal presentation with no decorative progress. Also selected by NO_COLOR, TERM=dumb, and redirected output.
+    #[arg(long, global = true)]
+    plain: bool,
     /// Do not persist managed interactive session/history state. One-shot runs are already non-persistent unless an explicit output/trace path is requested.
     #[arg(long, conflicts_with = "diagnostic_trace")]
     ephemeral: bool,
@@ -1844,6 +1848,7 @@ More examples:
         Some(ExampleTopic::Interactive) => {
             r#"Interactive use:
   reason
+  reason --plain
   reason --ephemeral
 
 Inside the REPL, /add PATH adds untrusted file context. Ctrl+C safely cancels active work."#
@@ -2795,8 +2800,11 @@ fn input_from_artifact(artifact: &ReasoningArtifact) -> HarnessInput {
     }
 }
 
-fn print_natural_human(output: &NaturalOutput) {
-    human_presentation::from_output(output).print_full();
+fn print_natural_human(
+    output: &NaturalOutput,
+    presentation: terminal_presentation::TerminalPresentation,
+) {
+    human_presentation::from_output(output).print_full(presentation);
     usage_budget::print_human(&output.usage);
     if let Some(failure) = &output.rendering_failure {
         eprintln!(
@@ -3483,7 +3491,7 @@ async fn execute_natural_inner(
         .as_deref()
         .expect("natural live config validates model presence")
         .to_string();
-    let progress = progress::ProgressReporter::new(resolved.format, args.verbose);
+    let progress = progress::ProgressReporter::new(resolved.format, args.verbose, args.plain);
     let built = build_natural_input(&args, &task)?;
     let built = if let Some(seed) = seed {
         merge_natural_execution_seed(built, seed)?
@@ -4040,9 +4048,16 @@ async fn execute_natural(
 }
 
 async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
+    let explicit_plain = args.plain;
     let output = execute_natural(args, None).await?;
     match output.configuration.output_format {
-        OutputFormat::Human => print_natural_human(&output),
+        OutputFormat::Human => print_natural_human(
+            &output,
+            terminal_presentation::TerminalPresentation::detect(
+                OutputFormat::Human,
+                explicit_plain,
+            ),
+        ),
         OutputFormat::Json => print_product_json("ask", &output).map_err(CliError::from)?,
     }
     Ok(())
@@ -4694,6 +4709,7 @@ fn continuation_args(
         no_config: true,
         format: Some(format),
         verbose: false,
+        plain: false,
         ephemeral: false,
         diagnostic_trace: None,
         interactive_context: vec![],
@@ -10843,8 +10859,21 @@ mod candidate_json_tests {
         assert!(help.contains("QUICK START:"));
         assert!(help.contains("reason examples"));
         assert!(help.contains("reason completions <bash|zsh|fish|powershell>"));
+        assert!(help.contains("--plain"));
         assert!(help.contains("Research/eval commands: eval, eval-resolution, eval-judges"));
         assert!(!help.contains("\n  eval             RESEARCH/EVAL:"));
+    }
+
+    #[test]
+    fn plain_flag_is_parseable_without_changing_json_selection() {
+        let cli =
+            Cli::try_parse_from(["reason", "--plain", "--format", "json", "check this"]).unwrap();
+        assert!(cli.natural.plain);
+        assert_eq!(cli.natural.format, Some(OutputFormat::Json));
+
+        let setup = Cli::try_parse_from(["reason", "setup", "--plain"]).unwrap();
+        assert!(setup.natural.plain);
+        assert!(matches!(setup.command, Some(Command::Setup(_))));
     }
 
     #[test]

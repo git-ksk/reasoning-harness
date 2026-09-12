@@ -24,6 +24,12 @@ reason update --check
 
 fileは別途admission / verificationされない限りuntrusted contextです。JSON / pipe modeは引き続きnon-interactiveかつdecoration-freeです。
 
+## Plain / accessibility terminal presentation
+
+`reason --plain`で、staticかつaccessibility-friendlyなhuman terminal outputを選べます。plain modeではprogress / decorative presentationを抑制しつつ、promptとCtrl+Cのsemanticsは維持します。`NO_COLOR`が存在する場合、`TERM=dumb`、またはhuman output streamがredirect / non-TTYの場合も同じplain policyを自動選択します。plain modeではANSI color、spinner animation、cursor-control依存を導入しません。
+
+human textはterminal幅に合わせた危険なbyte truncationを行わず、Unicode内容を途中byteで切りません。JSON output contractはこのpresentation policyで変更しません。
+
 structuredな`run`、`semantic-check`、`verify`、`schema`はadvanced product / automation用として残します。research/evaluationの`eval`、`eval-resolution`、`eval-judges`も削除せず、top-level helpでは意図的にde-emphasizeします。
 
 `reason doctor`はPhase 2対象外なのでhelpでは案内しません。

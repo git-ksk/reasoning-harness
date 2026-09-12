@@ -222,6 +222,7 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 | `reason session list` | List managed interactive sessions in human or JSON form. |
 | `reason examples [topic]` | Show copy-paste examples for common workflows. |
 | `reason completions <shell>` | Generate bash/zsh/fish/PowerShell completion code to stdout without changing shell configuration. |
+| `reason --plain "TASK"` | Static accessible terminal presentation; also selected by `NO_COLOR`, `TERM=dumb`, or redirected human output. |
 | `reason session ... --store PATH` | Low-level typed session compatibility surface: persist, inspect, add, correct, resume, fork, or close an explicit session file. |
 | `reason run` | Structured application/CI integration and live candidate generation. |
 | `reason verify` | Deterministically validate a materialized `ReasoningArtifact`. |
@@ -232,7 +233,7 @@ Human output sections for verified facts, uncertainty, and evidence provenance a
 Progress, retry visibility, and Ctrl+C semantics are documented in [Progress, retries, and cancellation](docs/reason-progress.md).
 Provider usage, `/usage`, cumulative session accounting, and hard budget guards are documented in [Provider usage and budget guards](docs/reason-usage-budget.md).
 Managed session locking, optimistic concurrency, crash recovery, and rollback compatibility are documented in [Managed session durability](docs/reason-managed-sessions.md).
-Help, examples, and shell completions are documented in [Reason CLI help, examples, and completions](docs/reason-help.md).
+Help, examples, shell completions, and plain/accessibility terminal behavior are documented in [Reason CLI help, examples, and completions](docs/reason-help.md).
 Local storage, ephemeral mode, retention/purge, uninstall, and outbound-data boundaries are documented in [Local privacy and retention](docs/reason-local-privacy.md).
 
 

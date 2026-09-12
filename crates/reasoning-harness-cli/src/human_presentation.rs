@@ -5,7 +5,7 @@ use reasoning_harness_core::{
     ReasoningArtifact, ResolutionAttempt, ResolutionAttemptStatus,
 };
 
-use super::NaturalOutput;
+use super::{NaturalOutput, terminal_presentation::TerminalPresentation};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) struct HumanPresentation {
@@ -155,27 +155,27 @@ pub(super) fn from_parts(
 }
 
 impl HumanPresentation {
-    pub(super) fn print_full(&self) {
+    pub(super) fn print_full(&self, presentation: TerminalPresentation) {
         println!("Answer\n{}\n", self.answer);
-        self.print_status_sections();
+        self.print_status_sections(presentation);
         println!();
-        self.print_evidence_sections();
-        self.print_summary();
+        self.print_evidence_sections(presentation);
+        self.print_summary(presentation);
     }
-    pub(super) fn print_status(&self) {
-        self.print_status_sections();
+    pub(super) fn print_status(&self, presentation: TerminalPresentation) {
+        self.print_status_sections(presentation);
         if !self.acquisition_notes.is_empty() {
             println!("\nAcquisition / verification notes");
             for note in &self.acquisition_notes {
                 println!("- {note}");
             }
         }
-        self.print_summary();
+        self.print_summary(presentation);
     }
-    pub(super) fn print_evidence(&self) {
-        self.print_evidence_sections();
+    pub(super) fn print_evidence(&self, presentation: TerminalPresentation) {
+        self.print_evidence_sections(presentation);
     }
-    fn print_status_sections(&self) {
+    fn print_status_sections(&self, presentation: TerminalPresentation) {
         println!("Verified facts");
         if self.verified_facts.is_empty() {
             println!("- none");
@@ -187,19 +187,29 @@ impl HumanPresentation {
         if self.unresolved.is_empty() {
             println!("- none");
         }
+        let separator = if presentation.decoration_allowed() {
+            " — "
+        } else {
+            " - "
+        };
         for item in &self.unresolved {
-            println!("- {} — {}", item.proposition, item.reason);
+            println!("- {}{}{}", item.proposition, separator, item.reason);
         }
     }
-    fn print_evidence_sections(&self) {
+    fn print_evidence_sections(&self, presentation: TerminalPresentation) {
         println!("Evidence / sources");
         if self.evidence.is_empty() {
             println!("- no supporting source is exposed for the verified facts");
         }
+        let separator = if presentation.decoration_allowed() {
+            " — "
+        } else {
+            " - "
+        };
         for item in &self.evidence {
             println!(
-                "- {} — provenance={} — evidence_id={}",
-                item.source, item.provenance, item.id
+                "- {}{}provenance={}{}evidence_id={}",
+                item.source, separator, item.provenance, separator, item.id
             );
         }
         if !self.untrusted_context_sources.is_empty() {
@@ -215,15 +225,24 @@ impl HumanPresentation {
             }
         }
     }
-    fn print_summary(&self) {
-        println!(
-            "\nstatus: {} | verified_facts={} | unresolved_items={} | coverage={} | safety={}",
-            self.status,
-            self.verified_facts.len(),
-            self.unresolved.len(),
-            self.coverage,
-            self.safety_configuration_id
-        );
+    fn print_summary(&self, presentation: TerminalPresentation) {
+        if presentation.is_plain() {
+            println!("\nSummary");
+            println!("- status={}", self.status);
+            println!("- verified_facts={}", self.verified_facts.len());
+            println!("- unresolved_items={}", self.unresolved.len());
+            println!("- coverage={}", self.coverage);
+            println!("- safety={}", self.safety_configuration_id);
+        } else {
+            println!(
+                "\nstatus: {} | verified_facts={} | unresolved_items={} | coverage={} | safety={}",
+                self.status,
+                self.verified_facts.len(),
+                self.unresolved.len(),
+                self.coverage,
+                self.safety_configuration_id
+            );
+        }
     }
     #[cfg(test)]
     fn render_for_test(&self) -> String {
@@ -497,6 +516,42 @@ mod tests {
             from_parts(&f, &ReasoningArtifact::default(), &[], "safe-v1").render_for_test();
         assert!(rendered.contains("currently verified evidence"));
         assert!(!rendered.contains("UNSAFE RENDERER TEXT"));
+    }
+
+    #[test]
+    fn unicode_content_is_preserved_without_width_or_byte_truncation() {
+        let artifact = ReasoningArtifact {
+            claims: vec![Claim {
+                id: "c-unicode".into(),
+                statement: "ignored".into(),
+                state: EpistemicState::Supported,
+                proposition: Some(Proposition {
+                    key: "地域🚲".into(),
+                    value: "横浜・港北区".into(),
+                }),
+                evidence_ids: vec!["e-unicode".into()],
+            }],
+            evidence: vec![Evidence {
+                id: "e-unicode".into(),
+                source: "一次情報_日本語_📚".into(),
+                observation: String::new(),
+                facts: BTreeMap::new(),
+                metadata: EvidenceMetadata {
+                    provenance_class: Some("primary".into()),
+                    ..Default::default()
+                },
+            }],
+            ..Default::default()
+        };
+        let rendered = from_parts(
+            &finalization(FinalizationStatus::GroundedAnswer),
+            &artifact,
+            &[],
+            "safe-v1",
+        )
+        .render_for_test();
+        assert!(rendered.contains("地域🚲=横浜・港北区"));
+        assert!(rendered.contains("一次情報_日本語_📚"));
     }
 
     #[test]

@@ -177,6 +177,19 @@ fn cli_usage_error_is_exit_two_and_not_an_epistemic_outcome() {
 }
 
 #[test]
+fn plain_presentation_never_changes_machine_json_contract() {
+    let normal = run_reason(&["schema", "artifact"], None);
+    let plain = run_reason(&["schema", "artifact", "--plain"], None);
+
+    assert_eq!(normal.status.code(), Some(0));
+    assert_eq!(plain.status.code(), Some(0));
+    assert!(normal.stderr.is_empty());
+    assert!(plain.stderr.is_empty());
+    assert_eq!(plain.stdout, normal.stdout);
+    assert_eq!(json_stdout(&plain)["command"], "schema");
+}
+
+#[test]
 fn schema_command_exposes_all_compatibility_tracked_contract_ids() {
     for (kind, expected) in [
         ("artifact", "reasoning-artifact-v1"),

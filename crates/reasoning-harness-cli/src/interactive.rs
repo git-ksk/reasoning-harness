@@ -269,6 +269,8 @@ pub(super) async fn run(
     let mut last_presentation = session.last_presentation()?;
     base.task = None;
     base.format = Some(OutputFormat::Human);
+    let presentation =
+        terminal_presentation::TerminalPresentation::detect(OutputFormat::Human, base.plain);
 
     if resuming {
         println!(
@@ -338,11 +340,11 @@ pub(super) async fn run(
                 }
             }
             Directive::Status => match &last_presentation {
-                Some(presentation) => presentation.print_status(),
+                Some(last) => last.print_status(presentation),
                 None => println!("No completed turn is available yet."),
             },
             Directive::Evidence => match &last_presentation {
-                Some(presentation) => presentation.print_evidence(),
+                Some(last) => last.print_evidence(presentation),
                 None => println!("No completed turn is available yet."),
             },
             Directive::Usage => {
@@ -374,7 +376,7 @@ pub(super) async fn run(
                 let safety_profile = args.safety_profile;
                 match execute_natural(args, None).await {
                     Ok(output) => {
-                        print_natural_human(&output);
+                        print_natural_human(&output, presentation);
                         last_presentation = Some(human_presentation::from_output(&output));
                         cumulative_usage = output
                             .usage
@@ -411,6 +413,27 @@ mod tests {
             ..Default::default()
         };
         assert!(should_start(&args, true).unwrap());
+    }
+
+    #[test]
+    fn explicit_plain_keeps_static_interactive_prompt_path_available() {
+        let args = NaturalArgs {
+            plain: true,
+            no_config: true,
+            ..Default::default()
+        };
+        assert!(should_start(&args, true).unwrap());
+        let policy = terminal_presentation::TerminalPresentation::from_inputs(
+            OutputFormat::Human,
+            true,
+            true,
+            true,
+            true,
+            false,
+            Some("xterm-256color"),
+        );
+        assert!(policy.is_plain());
+        assert!(!policy.decoration_allowed());
     }
 
     #[test]

@@ -14,7 +14,7 @@
 reason "この障害を分析して" --fact http.status_code=503
 ```
 
-provider/modelは`reason-config-v1`または明示flagから取ります。defaultはhuman-readable出力で、自動化では`--format json`を使えます。
+provider/modelは`reason-config-v1`または明示flagから取ります。defaultはhuman-readable出力で、自動化では`--format json`を使えます。`--plain`（`NO_COLOR`、`TERM=dumb`、redirectされたhuman outputでも自動選択）はdecorative progressを無効化しますが、JSON contractやHarness semanticsは変更しません。
 
 | input | trust上の意味 |
 | --- | --- |
