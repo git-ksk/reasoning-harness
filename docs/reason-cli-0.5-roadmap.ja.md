@@ -113,13 +113,25 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 
 既存のone-shot `reason "TASK"`、repeatable `--file`、piped stdin context、JSON automation surfaceは維持します。
 
-## フェーズ3 — 外部情報取得UXとprocess isolation ✅ 完了
+## フェーズ3 — 外部情報取得UXとprocess isolation ⚠️ CORE IMPLEMENTED / 0.5.0 HARDENING OPEN
 
 - **#387 P0 — implemented:** 現行external-command、MCP v3（＋v2 compatibility）、trusted-command subprocessはambient provider/developer secretをinheritせず、documented minimal cross-platform environmentから起動する。将来integration credential向けのscoped injection boundaryを用意し、secret-valued project config / arbitrary ambient-variable inheritanceは公開しない。historical freeze対象の`mcp_readonly_v1`は変更しない。詳細は[Local subprocess environment isolation](reason-subprocess-isolation.ja.md)。
 - **#368 P1 — implemented:** 単一active local read-only MCP acquisition sourceを`reason mcp add/list/inspect/test/remove`でguided管理。addはnon-secret user configだけを書き、inspect/listはargument valueを表示せず、`test`はselected toolを実行せずnegotiation + `tools/list`のread-only証明まで確認する。
 - **#386 P1 — implemented:** remote MCP `2026-07-28` Streamable HTTPのread-only stateless discovery/acquisition、OAuth authorization code + PKCE login/status/logout、browser / `--no-browser` flow、issuer/state/resource binding、native OS credential-store保存、HTTPS強制、project-trust gateを実装。tokenは`reason-config-v1`とresolver authorityの外に保持する。
 
-これはconfiguration / transport / isolation / visibilityの改善です。MCP outputはauthorityではなくacquisition dataのまま、write-capable/ambiguous capabilityはfail closedを維持し、Harness Engine 0.4.2のMCP correctness boundaryを変更しません。
+### Phase 3を完全完了扱いする前に必要な0.5.0 hardening
+
+- **#414 P1:** MCP Protected Resource Metadataとauthorization-server/OIDC metadataをdiscoverし、OAuth endpointの手入力依存をなくす。issuer/resource relationshipはfail closedで検証する。
+- **#415 P1:** OAuth `insufficient_scope`をgeneric permission denialと分離し、silent scope拡張を行わない明示的なscope step-up recoveryを提供する。
+- **#416 P1:** remote HTTP readiness/acquisitionをReasonのsafe Ctrl+C cancellation contractへ接続し、cancel後にremote timeout待ちやdetached network workを残さない。
+- **#419 P1:** MCP `fixed_arguments`内のsecret-bearing nested fieldをrecursiveにrejectし、hand-authored low-level configでもnon-secret configuration boundaryを維持する。
+
+### 追跡するcompatibility / lifecycle follow-up
+
+- **#417:** MCP 2026 `input_required` mid-tool transitionを認識し、interactive elicitation対応まではtyped fail-closed compatibility outcomeとして扱う。
+- **#418:** remote MCP config removalとnative OAuth credential cleanupの挙動を明示し、machine-readableにする。
+
+merge済みPhase 3 coreは引き続きsafe-by-defaultです。MCP outputはauthorityではなくacquisition dataのまま、write-capable/ambiguous capabilityはfail closedを維持し、Harness Engine 0.4.2のcorrectness boundaryも変更しません。open hardeningはinteroperability / cancellation / secret-boundaryの改善であり、MCP outputへのauthority付与やverification緩和ではありません。
 
 ## フェーズ4 — 診断と運用復旧
 

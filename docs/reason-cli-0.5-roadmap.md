@@ -113,13 +113,25 @@ Environment variables remain supported for CI, containers, remote shells, and se
 
 The existing one-shot `reason "TASK"`, repeatable `--file`, piped stdin context, and JSON automation surfaces remain supported.
 
-## Phase 3 — External acquisition UX and process isolation ✅ COMPLETE
+## Phase 3 — External acquisition UX and process isolation ⚠️ CORE IMPLEMENTED / 0.5.0 HARDENING OPEN
 
 - **#387 P0 — implemented:** current external-command, MCP v3 (plus v2 compatibility), and trusted-command subprocesses start from a documented minimal cross-platform environment instead of inheriting ambient provider/developer secrets. Explicit future integration credentials have a scoped injection boundary; secret-valued project config and arbitrary ambient-variable inheritance remain unavailable. Historical frozen `mcp_readonly_v1` remains untouched. See [Local subprocess environment isolation](reason-subprocess-isolation.md).
 - **#368 P1 — implemented:** guided management for the single active local read-only MCP acquisition source via `reason mcp add/list/inspect/test/remove`; add writes only non-secret user configuration, inspect/list hide argument values, and `test` performs negotiation plus `tools/list` read-only verification without invoking the selected tool.
 - **#386 P1 — implemented:** secure remote MCP `2026-07-28` Streamable HTTP support with read-only stateless discovery/acquisition, OAuth authorization-code + PKCE login/status/logout, browser and `--no-browser` flows, issuer/state/resource binding, native OS credential-store persistence, HTTPS enforcement, and project-trust gating. Tokens remain outside `reason-config-v1` and resolver authority.
 
-This is a configuration, transport, isolation, and visibility improvement only. MCP output remains acquisition data rather than authority, write-capable or ambiguous capabilities remain fail-closed, and the supported Engine 0.4.2 MCP correctness boundary is unchanged.
+### 0.5.0 hardening required before Phase 3 is considered fully complete
+
+- **#414 P1:** discover MCP Protected Resource Metadata and authorization-server/OIDC metadata instead of requiring hand-authored OAuth endpoints; validate issuer/resource relationships fail-closed.
+- **#415 P1:** distinguish OAuth `insufficient_scope` from generic permission denial and provide explicit, non-silent scope step-up recovery.
+- **#416 P1:** wire remote HTTP readiness/acquisition into Reason's safe Ctrl+C cancellation contract so cancellation does not wait for the remote timeout or leave detached network work.
+- **#419 P1:** recursively reject secret-bearing nested MCP `fixed_arguments` so the documented non-secret configuration boundary also holds for hand-authored low-level config.
+
+### Tracked compatibility / lifecycle follow-ups
+
+- **#417:** recognize MCP 2026 `input_required` mid-tool transitions and return a typed fail-closed compatibility outcome until interactive elicitation is supported.
+- **#418:** make remote MCP config removal and native OAuth credential cleanup behavior explicit and machine-readable.
+
+The already-merged Phase 3 core remains safe-by-default: MCP output is acquisition data rather than authority, write-capable or ambiguous capabilities remain fail-closed, and the supported Engine 0.4.2 MCP correctness boundary is unchanged. The open hardening items above are interoperability, cancellation, and secret-boundary work; they do not authorize MCP output or weaken verification.
 
 ## Phase 4 — Diagnostics and operational recovery
 
