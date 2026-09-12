@@ -7,6 +7,7 @@ enum Directive {
     Files,
     Status,
     Evidence,
+    Usage,
     Clear,
     Help,
     Exit,
@@ -31,6 +32,7 @@ fn parse_directive(input: &str) -> Result<Option<Directive>, CliError> {
         "/files" if argument.is_empty() => Ok(Some(Directive::Files)),
         "/status" if argument.is_empty() => Ok(Some(Directive::Status)),
         "/evidence" if argument.is_empty() => Ok(Some(Directive::Evidence)),
+        "/usage" if argument.is_empty() => Ok(Some(Directive::Usage)),
         "/clear" if argument.is_empty() => Ok(Some(Directive::Clear)),
         "/add" => {
             if argument.is_empty() {
@@ -247,6 +249,12 @@ pub(super) async fn run(
     } else {
         managed_session::ManagedSession::new(project)
     };
+    let mut cumulative_usage = if ephemeral {
+        usage_budget::UsageTotals::default()
+    } else {
+        session.load_usage()?
+    };
+    base.session_usage_baseline = Some(cumulative_usage.clone());
 
     if resuming {
         pin_runtime_from_session(&mut base, &session, true)?;
@@ -311,6 +319,7 @@ pub(super) async fn run(
                     "/status      show verified facts and unresolved items from the last completed turn"
                 );
                 println!("/evidence    show supporting provenance from the last completed turn");
+                println!("/usage       show cumulative provider/resolver usage for this session");
                 println!(
                     "/clear       stop carrying prior conversation/context into later prompts"
                 );
@@ -336,6 +345,9 @@ pub(super) async fn run(
                 Some(presentation) => presentation.print_evidence(),
                 None => println!("No completed turn is available yet."),
             },
+            Directive::Usage => {
+                usage_budget::print_totals_human(&cumulative_usage, None, None);
+            }
             Directive::Clear => {
                 session.clear_context();
                 base.interactive_context = session.conversation_context();
@@ -364,12 +376,19 @@ pub(super) async fn run(
                     Ok(output) => {
                         print_natural_human(&output);
                         last_presentation = Some(human_presentation::from_output(&output));
+                        cumulative_usage = output
+                            .usage
+                            .session
+                            .clone()
+                            .unwrap_or_else(|| output.usage.run.clone());
                         session.append_turn(&output, safety_profile)?;
                         if should_persist_managed(ephemeral, session.turns_len()) {
                             managed_session::save(&mut session)?;
+                            session.save_usage(&cumulative_usage)?;
                         }
                         pin_runtime_from_session(&mut base, &session, false)?;
                         base.interactive_context = session.conversation_context();
+                        base.session_usage_baseline = Some(cumulative_usage.clone());
                         if !ephemeral {
                             println!("session: {}", session.short_id());
                         }
@@ -465,6 +484,12 @@ mod tests {
             parse_directive("/evidence").unwrap(),
             Some(Directive::Evidence)
         );
+        assert_eq!(parse_directive("/status").unwrap(), Some(Directive::Status));
+        assert_eq!(
+            parse_directive("/evidence").unwrap(),
+            Some(Directive::Evidence)
+        );
+        assert_eq!(parse_directive("/usage").unwrap(), Some(Directive::Usage));
         assert_eq!(parse_directive("/exit").unwrap(), Some(Directive::Exit));
         assert!(parse_directive("/unknown").is_err());
     }

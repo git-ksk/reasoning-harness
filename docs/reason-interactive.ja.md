@@ -19,6 +19,7 @@ Reason CLI 0.5.0開発ラインでは、Harness Engine 0.4.2のauthority / corre
 - `/files`: 現在有効なpersisted untrusted context snapshotを表示します。
 - `/status`: 直前のcompleted turnからverified fact、unresolved/qualified item、typed acquisition note、statusを表示します。
 - `/evidence`: 直前のcompleted turnからsupporting evidence provenanceと、別表示されたuntrusted-context sourceを表示します。
+- `/usage`: managed sessionの累積provider/resolver usageを表示します。設定済みbudgetはturn/resumeをまたいで適用します。
 - `/clear`: 以後のpromptへ過去conversation/contextを持ち越さないようにします。既存のtyped turn history自体は削除しません。
 - `/help`: interactive commandを表示します。
 - `/exit` / `/quit`: 終了します。

@@ -103,7 +103,7 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 - **#381 P0 — implemented:** managed session store lock、in-memory digestによるoptimistic concurrency、crash-safe atomic replacement/temp recovery、corrupt/incompatible listing、0.5.xのno-destructive-migration rollback policyを実装。
 - **#379 P0 — implemented:** private managed-state permission/ownership check、明示的`--ephemeral`、managed session export/delete/scoped purge、deterministicなuninstall retention/purge boundary、provider/MCP/resolverへのoutbound-data disclosure、default first-party telemetryなしを実装。
 - **#378 P0 — implemented:** finalized answer、canonical verified fact、unresolved/qualified proposition、supporting evidence/source provenance、untrusted context、typed acquisition/rejection noteを分離したhuman outputを実装。interactive `/status` / `/evidence`もtyped checkpointから同じviewを再構成し、JSONは変更せず、hidden reasoningやunsupported model proseへauthorityを与えない。
-- **#380 P0:** providerが返すattempt/token usageと、Reasonが確実にenforceできるprovider-neutral run/session budget guard。通貨costはpricing provenanceが分かる場合だけestimatedとして表示。
+- **#380 P0 — implemented:** additiveなhuman/JSON provider/resolver usage、interactive `/usage`、rollback-safeなmanaged-session累積accounting、hardな`max_model_calls` / reported output-token / measurable total-token guardとtyped operational exhaustion、明示operator pricing provenanceがある場合のみcurrency estimateを実装。
 - **#366 P1:** `reason config list/get/set/unset/path/sources`。secretは`reason-config-v1`から引き続きreject。
 - **#369 P1:** high-level progress/retry statusとdeterministicな安全cancel。JSON/piped modeは明示指定なしでは静かに保つ。
 - **#373 P1:** self-teaching help、examples、zsh/bash/fish/PowerShell completion。

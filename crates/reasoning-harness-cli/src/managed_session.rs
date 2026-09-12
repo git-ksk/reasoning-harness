@@ -6,6 +6,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 static SESSION_ID_COUNTER: AtomicU64 = AtomicU64::new(0);
 
 pub(super) const MANAGED_SESSION_CONTRACT_ID: &str = "reason-managed-session-v1";
+const MANAGED_USAGE_CONTRACT_ID: &str = "reason-managed-usage-v1";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -19,6 +20,14 @@ struct ManagedContext {
 struct ManagedTurn {
     prompt: String,
     typed_session: SessionFile,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ManagedUsageSidecar {
+    schema_version: String,
+    tracked_turns: usize,
+    totals: usage_budget::UsageTotals,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -114,6 +123,14 @@ pub(super) fn managed_root_path() -> Result<PathBuf, CliError> {
         )
     })?;
     Ok(parent.join("sessions"))
+}
+
+fn usage_root_path() -> Result<PathBuf, CliError> {
+    Ok(managed_root_path()?.join(".usage"))
+}
+
+fn usage_path(session: &ManagedSession) -> Result<PathBuf, CliError> {
+    Ok(usage_root_path()?.join(format!("{}.json", session.id)))
 }
 
 fn digest_bytes(bytes: &[u8]) -> String {
@@ -314,6 +331,122 @@ impl ManagedSession {
 
     pub(super) fn last_runtime(&self) -> Option<&SessionRuntimeIdentity> {
         self.turns.last().map(|turn| &turn.typed_session.runtime)
+    }
+
+    pub(super) fn load_usage(&self) -> Result<usage_budget::UsageTotals, CliError> {
+        let path = usage_path(self)?;
+        if !path.exists() {
+            return Ok(if self.turns.is_empty() {
+                usage_budget::UsageTotals::default()
+            } else {
+                usage_budget::UsageTotals::untracked_history()
+            });
+        }
+        let usage_root = usage_root_path()?;
+        if let Err(error) = local_privacy::ensure_private_directory(&usage_root) {
+            eprintln!("[reason] managed usage directory is not private: {error}");
+            return Ok(usage_budget::UsageTotals::untracked_history());
+        }
+        if let Err(error) = local_privacy::ensure_private_file(&path) {
+            eprintln!("[reason] managed usage sidecar is not private: {error}");
+            return Ok(usage_budget::UsageTotals::untracked_history());
+        }
+        let bytes = match fs::read(&path) {
+            Ok(bytes) => bytes,
+            Err(error) => {
+                eprintln!(
+                    "[reason] cannot read managed usage sidecar {}: {error}",
+                    path.display()
+                );
+                return Ok(usage_budget::UsageTotals::untracked_history());
+            }
+        };
+        let sidecar: ManagedUsageSidecar = match serde_json::from_slice(&bytes) {
+            Ok(sidecar) => sidecar,
+            Err(error) => {
+                eprintln!(
+                    "[reason] invalid managed usage sidecar {}: {error}",
+                    path.display()
+                );
+                return Ok(usage_budget::UsageTotals::untracked_history());
+            }
+        };
+        if sidecar.schema_version != MANAGED_USAGE_CONTRACT_ID
+            || sidecar.tracked_turns != self.turns.len()
+        {
+            eprintln!(
+                "[reason] managed usage sidecar is stale/incompatible for session {}",
+                self.short_id
+            );
+            return Ok(usage_budget::UsageTotals::untracked_history());
+        }
+        Ok(sidecar.totals)
+    }
+
+    pub(super) fn save_usage(&self, totals: &usage_budget::UsageTotals) -> Result<(), CliError> {
+        let root = managed_root_path()?;
+        let _lock = store_lock(&root)?;
+        let usage_root = usage_root_path()?;
+        local_privacy::ensure_private_directory(&usage_root)
+            .map_err(|error| CliError::new("session_privacy", error))?;
+        cleanup_interrupted_temps(&usage_root)?;
+        let path = usage_path(self)?;
+        let sidecar = ManagedUsageSidecar {
+            schema_version: MANAGED_USAGE_CONTRACT_ID.into(),
+            tracked_turns: self.turns.len(),
+            totals: totals.clone(),
+        };
+        let mut bytes = serde_json::to_vec_pretty(&sidecar).map_err(|error| {
+            CliError::new(
+                "session_invalid",
+                format!("serialize managed usage: {error}"),
+            )
+        })?;
+        bytes.push(b'\n');
+        let counter = SESSION_ID_COUNTER.fetch_add(1, Ordering::Relaxed);
+        let temporary = usage_root.join(format!(
+            "{}.json.tmp-{}-{counter}",
+            self.id,
+            std::process::id()
+        ));
+        let mut file = fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(&temporary)
+            .map_err(|error| {
+                CliError::new("session_io", format!("{}: {error}", temporary.display()))
+            })?;
+        local_privacy::ensure_private_file(&temporary)
+            .map_err(|error| CliError::new("session_privacy", error))?;
+        file.write_all(&bytes).map_err(|error| {
+            CliError::new("session_io", format!("{}: {error}", temporary.display()))
+        })?;
+        file.sync_all().map_err(|error| {
+            CliError::new("session_io", format!("{}: {error}", temporary.display()))
+        })?;
+        drop(file);
+        if let Err(error) = atomic_replace(&temporary, &path) {
+            let _ = fs::remove_file(&temporary);
+            return Err(CliError::new(
+                "session_io",
+                format!(
+                    "atomically commit managed usage {}: {error}",
+                    path.display()
+                ),
+            ));
+        }
+        local_privacy::ensure_private_file(&path)
+            .map_err(|error| CliError::new("session_privacy", error))?;
+        sync_directory(&usage_root).map_err(|error| {
+            CliError::new(
+                "session_io",
+                format!(
+                    "sync managed usage directory {}: {error}",
+                    usage_root.display()
+                ),
+            )
+        })?;
+        Ok(())
     }
 
     pub(super) fn last_presentation(
@@ -754,6 +887,23 @@ pub(super) fn delete(
     if !dry_run {
         fs::remove_file(&path)
             .map_err(|error| CliError::new("session_io", format!("{}: {error}", path.display())))?;
+        let usage = usage_path(&session)?;
+        if usage.exists() {
+            fs::remove_file(&usage).map_err(|error| {
+                CliError::new("session_io", format!("{}: {error}", usage.display()))
+            })?;
+            if let Some(usage_root) = usage.parent() {
+                sync_directory(usage_root).map_err(|error| {
+                    CliError::new(
+                        "session_io",
+                        format!(
+                            "sync managed usage directory {}: {error}",
+                            usage_root.display()
+                        ),
+                    )
+                })?;
+            }
+        }
         sync_directory(&root).map_err(|error| {
             CliError::new(
                 "session_io",
@@ -814,6 +964,12 @@ pub(super) fn purge(
                     format!("purge managed session {}: {error}", session.short_id),
                 )
             })?;
+            let usage = usage_path(session)?;
+            if usage.exists() {
+                fs::remove_file(&usage).map_err(|error| {
+                    CliError::new("session_io", format!("{}: {error}", usage.display()))
+                })?;
+            }
             removed += 1;
         }
         for name in &problem_files {
@@ -828,6 +984,14 @@ pub(super) fn purge(
                     )
                 })?;
                 removed += 1;
+            }
+        }
+        if all {
+            let usage_root = usage_root_path()?;
+            if usage_root.exists() {
+                fs::remove_dir_all(&usage_root).map_err(|error| {
+                    CliError::new("session_io", format!("{}: {error}", usage_root.display()))
+                })?;
             }
         }
         sync_directory(&root).map_err(|error| {
@@ -873,6 +1037,28 @@ mod tests {
     fn test_path(label: &str) -> PathBuf {
         let counter = SESSION_ID_COUNTER.fetch_add(1, Ordering::Relaxed);
         env::temp_dir().join(format!("reason-{label}-{}-{counter}", std::process::id()))
+    }
+
+    #[test]
+    fn managed_session_v1_wire_remains_usage_sidecar_free() {
+        let session = ManagedSession::new("/tmp/project".into());
+        let json = serde_json::to_string(&session).unwrap();
+        assert!(!json.contains("reason-managed-usage-v1"));
+        assert!(!json.contains("tracked_turns"));
+        assert!(!json.contains("model_calls"));
+    }
+
+    #[test]
+    fn managed_usage_sidecar_has_its_own_versioned_contract() {
+        let sidecar = ManagedUsageSidecar {
+            schema_version: MANAGED_USAGE_CONTRACT_ID.into(),
+            tracked_turns: 0,
+            totals: usage_budget::UsageTotals::default(),
+        };
+        let json = serde_json::to_value(&sidecar).unwrap();
+        assert_eq!(json["schema_version"], MANAGED_USAGE_CONTRACT_ID);
+        assert_eq!(json["tracked_turns"], 0);
+        assert_eq!(json["totals"]["tracked_from_session_start"], true);
     }
 
     #[test]
@@ -924,9 +1110,10 @@ mod tests {
             .open(&second_path)
             .unwrap();
         assert!(second.try_lock_exclusive().is_err());
-        drop(first);
+        FileExt::unlock(&first).unwrap();
         second.try_lock_exclusive().unwrap();
         FileExt::unlock(&second).unwrap();
+        drop(first);
         let _ = fs::remove_dir_all(private_parent);
     }
 

@@ -26,6 +26,7 @@ pub(crate) struct SetupArgs {
     from_env: bool,
     #[arg(long)]
     replace_credential: bool,
+    /// Run a minimal live provider request. This may consume quota or incur provider cost.
     #[arg(long, conflicts_with = "skip_live_check")]
     live_check: bool,
     #[arg(long, conflicts_with = "live_check")]
@@ -55,6 +56,7 @@ struct SetupOutput {
     first_party_telemetry: bool,
     outbound_data_notice: &'static str,
     credential_storage_notice: &'static str,
+    live_check_notice: &'static str,
     first_command: &'static str,
 }
 
@@ -147,6 +149,7 @@ pub(crate) async fn run(args: SetupArgs) -> Result<(), CliError> {
         first_party_telemetry: false,
         outbound_data_notice: "Tasks and untrusted context used for model generation are sent to the selected provider. Configured MCP/external resolvers receive only their bounded acquisition requests/arguments. Reason does not send first-party telemetry by default.",
         credential_storage_notice: "Provider credentials stay in the native OS credential store (or the explicit environment source) and are not written to Reason sessions, history, config, diagnostics, stdout, or stderr.",
+        live_check_notice: "A live readiness check sends a real provider request and may consume quota or incur provider cost; it is skipped unless explicitly requested or approved interactively.",
         first_command: FIRST_COMMAND,
     };
     emit(&output, args.format)
@@ -357,6 +360,7 @@ fn emit(output: &SetupOutput, format: OutputFormat) -> Result<(), CliError> {
             println!("Live readiness: {}", output.live_readiness);
             println!("Privacy: {}", output.outbound_data_notice);
             println!("Credentials: {}", output.credential_storage_notice);
+            println!("Live check: {}", output.live_check_notice);
             println!("Try this next:");
             println!("  {}", output.first_command);
             Ok(())
