@@ -8,6 +8,7 @@ pub mod mcp_readonly_v2;
 pub mod mcp_readonly_v3;
 pub mod mistral;
 pub mod nvidia;
+mod subprocess_cancellation;
 mod subprocess_deadline;
 pub mod trusted_command;
 
@@ -15,6 +16,7 @@ pub use gemma::GoogleAdapter;
 pub use groq::GroqAdapter;
 pub use mistral::MistralAdapter;
 pub use nvidia::NvidiaAdapter;
+pub use subprocess_cancellation::SubprocessCancellation;
 
 pub use external_command::{
     DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS,

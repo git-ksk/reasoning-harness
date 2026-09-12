@@ -13,7 +13,9 @@ use reasoning_harness_core::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::{config_identity::stable_config_id, subprocess_deadline::run_to_exit};
+use crate::{
+    SubprocessCancellation, config_identity::stable_config_id, subprocess_deadline::run_to_exit,
+};
 
 pub const TRUSTED_COMMAND_VERIFIER_ID: &str = "trusted_command_verifier_v1";
 pub const TRUSTED_COMMAND_REQUEST_SCHEMA: &str = "reason-trusted-verifier-request-v1";
@@ -47,12 +49,22 @@ impl TrustedCommandVerifierConfig {
 pub struct TrustedCommandVerifier {
     config: TrustedCommandVerifierConfig,
     config_id: String,
+    cancellation: Option<SubprocessCancellation>,
 }
 
 impl TrustedCommandVerifier {
     pub fn new(config: TrustedCommandVerifierConfig) -> Self {
         let config_id = stable_config_id(TRUSTED_COMMAND_VERIFIER_ID, &config);
-        Self { config, config_id }
+        Self {
+            config,
+            config_id,
+            cancellation: None,
+        }
+    }
+
+    pub fn with_cancellation(mut self, cancellation: SubprocessCancellation) -> Self {
+        self.cancellation = Some(cancellation);
+        self
     }
 }
 
@@ -268,6 +280,7 @@ impl TrustedResolutionVerifier for TrustedCommandVerifier {
             started,
             Duration::from_millis(self.config.timeout_ms),
             self.config.max_response_bytes,
+            self.cancellation.as_ref(),
         )
         .map_err(|kind| adapter_error(kind, started, ResolutionCost::default()))?;
 

@@ -94,3 +94,6 @@ reqwest.workspace = true
 semver.workspace = true
 fs2.workspace = true
 libc.workspace = true
+
+[target.'cfg(not(windows))'.dependencies]
+ctrlc.workspace = true

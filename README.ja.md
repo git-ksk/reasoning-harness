@@ -211,7 +211,7 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 | --- | --- |
 | `reason` | Reason CLI 0.5.0開発ライン: TTY限定managed interactive sessionを起動。JSON/non-TTYはnon-interactiveのまま。 |
 | `reason -c` / `reason -r [SESSION]` | 最新project sessionをcontinue、またはbacking file pathを意識せずmanaged sessionをresume/pick。 |
-| `reason "TASK"` | 人が直接使う自然文path。 |
+| `reason "TASK"` | 人が直接使う自然文path。interactive TTYではcoarseなHarness progressを表示し、Ctrl+Cで安全cancel。 |
 | `reason setup` | Reason CLI 0.5.0開発ライン: provider / credential / model default / readinessを初回設定。 |
 | `reason update` / `reason update --rollback VERSION` | Reason CLI 0.5.0開発ライン: provenance検証済みupdateと明示rollback。 |
 | `reason uninstall` | Reason CLI 0.5.0開発ライン: data / credential保持をdefaultにした明示uninstall。 |
@@ -227,6 +227,7 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 | `reason schema` | versioned machine contractの確認。 |
 `/add`、multiline input、TTY/JSON dispatch、privacy boundaryを含むinteractive REPLの詳細は[対話型ターミナルUX](docs/reason-interactive.ja.md)を参照してください。
 verified fact、uncertainty、evidence provenanceを示すhuman outputは[Human answer presentation](docs/reason-human-output.ja.md)を参照してください。
+progress、retry visibility、Ctrl+C semanticsは[Progress / retry / cancellation](docs/reason-progress.ja.md)を参照してください。
 provider usage、`/usage`、session累積accounting、hard budget guardは[Provider usage / budget guard](docs/reason-usage-budget.ja.md)を参照してください。
 managed sessionのlock、optimistic concurrency、crash recovery、rollback compatibilityは[Managed session durability](docs/reason-managed-sessions.ja.md)を参照してください。
 local storage、ephemeral mode、retention/purge、uninstall、outbound-data boundaryは[Local privacy / retention](docs/reason-local-privacy.ja.md)を参照してください。
