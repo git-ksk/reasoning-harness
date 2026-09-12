@@ -79,7 +79,7 @@ A user-facing operational error should explain what failed, whether the task exe
 ### Distribution umbrella — #358
 
 - **#371 P0 — completed:** one-command native installers for macOS, Linux, and Windows.
-- **#382 P0:** release provenance, signing/notarization where appropriate, and trusted installer/updater verification. SHA-256 remains useful but is not the sole trust root.
+- **#382 P0 — provenance foundation implemented / awaiting #372 updater acceptance:** release provenance, signing/notarization where appropriate, and trusted installer/updater verification. SHA-256 remains useful but is not the sole trust root.
 - **#372 P0:** update, explicit rollback, and uninstall lifecycle.
 - **#375 P1:** Homebrew and winget channels after the canonical installer/update contract is stable.
 
