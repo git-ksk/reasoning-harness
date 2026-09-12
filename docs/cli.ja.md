@@ -59,6 +59,7 @@ defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です
 | やりたいこと | コマンド |
 | --- | --- |
 | 人が自然文でtaskを依頼したい | `reason "TASK"` |
+| 初回設定をまとめて完了したい（0.5.0開発ライン） | `reason setup` |
 | provider credentialを安全に管理したい（0.5.0開発ライン） | `reason auth ...` |
 | 対応modelを確認 / user defaultを切り替えたい（0.5.0開発ライン） | `reason models ...` / `reason model set ...` |
 | 自然言語reasoning stateを保存・確認・訂正・再開・forkしたい | `reason session ...` |
@@ -350,3 +351,7 @@ CLI ergonomicsは成熟したterminal-first AI toolから意図的に学んで�
 - OpenCodeはdedicated non-interactive `run`、stdin-friendly automation、JSON output、JSON-Schema-backed configuration、明示的なconfig discovery/precedenceを提供します。Reasoning HarnessはこれらをUX referenceとして使いつつ、Harness-owned evidence/verdict boundaryは独自に維持します。[https://opencode.ai/v2/docs/cli](https://opencode.ai/v2/docs/cli)、[https://opencode.ai/v2/docs/config](https://opencode.ai/v2/docs/config)
 
 これらはdesign referenceであり、wire-compatibility targetではありません。`reason` のproduct valueはpredictable evidence-grounded reasoning harnessであり、general-purpose coding agentではありません。
+
+## `reason setup`（0.5.0開発ライン）
+
+`reason setup`はprovider、credential、curated general-use model default、local readinessを一つの導線で設定します。credentialはhidden TTY入力または`--credential-stdin` / `--from-env`で扱い、secret-valued argvは提供しません。`--non-interactive`では`--provider`が必須で、model省略時はcurated recommended modelを選びます。local readinessはnetworkを使わず、live checkはquota/costが発生し得るため明示的な`--live-check`またはinteractive consent時のみです。

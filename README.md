@@ -210,6 +210,7 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 | Command | Use it for |
 | --- | --- |
 | `reason "TASK"` | Primary human-facing natural-language path. |
+| `reason setup` | Reason CLI 0.5.0 development: first-run provider, credential, model-default, and readiness setup. |
 | `reason auth ...` | Reason CLI 0.5.0 development: securely add, inspect, rotate, or remove provider credentials. |
 | `reason models [provider]` | Reason CLI 0.5.0 development: inspect the curated model catalog, compatibility metadata, credential readiness, and current default. |
 | `reason model set <provider> <model>` | Reason CLI 0.5.0 development: persist a curated general-use provider/model default without silent fallback. |

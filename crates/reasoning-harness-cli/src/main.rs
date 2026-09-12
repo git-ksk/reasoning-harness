@@ -3,6 +3,7 @@ mod diagnostic_trace;
 mod model_catalog;
 mod project_trust;
 mod secure_credentials;
+mod setup;
 
 use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
@@ -1699,6 +1700,8 @@ enum Command {
         #[command(subcommand)]
         command: model_catalog::ModelCommand,
     },
+    /// PRODUCT: Configure provider, credential, model default, and readiness for first use.
+    Setup(setup::SetupArgs),
     /// PRODUCT: Inspect, add, or revoke project configuration trust.
     Trust {
         #[command(subcommand)]
@@ -4891,6 +4894,10 @@ impl Cli {
                 command: "auth",
                 json: command.format() == OutputFormat::Json,
             }),
+            Some(Command::Setup(args)) => Some(ProductErrorContext {
+                command: "setup",
+                json: args.format() == OutputFormat::Json,
+            }),
             Some(Command::Models { format, .. }) => Some(ProductErrorContext {
                 command: "models",
                 json: *format == OutputFormat::Json,
@@ -5016,6 +5023,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
     let Cli { natural, command } = cli;
     match command {
         Some(Command::Auth { command }) => auth::run(command),
+        Some(Command::Setup(args)) => setup::run(args).await,
         Some(Command::Models {
             provider,
             configured,

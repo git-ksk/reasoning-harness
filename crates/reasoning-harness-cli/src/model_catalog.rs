@@ -292,6 +292,60 @@ fn set_default(provider: Provider, model: &str, format: OutputFormat) -> Result<
     }
 }
 
+pub(crate) fn recommended_model(provider: Provider) -> Option<&'static str> {
+    let provider = secure_credentials::canonical_provider(provider);
+    MODELS
+        .iter()
+        .find(|e| e.provider == provider && e.general_use && e.recommended)
+        .map(|e| e.model)
+}
+
+pub(crate) fn general_use_models(provider: Provider) -> Vec<(&'static str, bool, &'static str)> {
+    let provider = secure_credentials::canonical_provider(provider);
+    MODELS
+        .iter()
+        .filter(|e| e.provider == provider && e.general_use)
+        .map(|e| (e.model, e.recommended, e.compatibility.as_str()))
+        .collect()
+}
+
+pub(crate) fn validate_general_use_model(
+    provider: Provider,
+    model: &str,
+) -> Result<&'static str, CliError> {
+    let provider = secure_credentials::canonical_provider(provider);
+    let Some(spec) = find_model(provider, model) else {
+        return Err(CliError::new(
+            "model_unlisted",
+            format!(
+                "{} / {model} is not in the curated Reason model catalog; use `reason models {}` to list supported choices",
+                provider_name(provider),
+                provider_name(provider)
+            ),
+        ));
+    };
+    if !spec.general_use {
+        return Err(CliError::new(
+            "model_not_general_use",
+            format!(
+                "{} / {} is cataloged as {} and cannot be used as a general-use setup default",
+                provider_name(provider),
+                spec.model,
+                spec.compatibility.as_str()
+            ),
+        ));
+    }
+    Ok(spec.compatibility.as_str())
+}
+
+pub(crate) fn persist_user_default(provider: Provider, model: &str) -> Result<String, CliError> {
+    let provider = secure_credentials::canonical_provider(provider);
+    validate_general_use_model(provider, model)?;
+    let path = user_config_path().ok_or_else(|| CliError::new("configuration", "cannot determine the user config path; set REASON_HOME, XDG_CONFIG_HOME, APPDATA, or HOME"))?;
+    update_user_default(&path, provider, model)?;
+    Ok(path.display().to_string())
+}
+
 fn find_model(provider: Provider, model: &str) -> Option<&'static ModelSpec> {
     MODELS
         .iter()
