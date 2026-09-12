@@ -14,6 +14,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     SubprocessCancellation, config_identity::stable_config_id, subprocess_deadline::run_to_exit,
+    subprocess_environment::isolate_subprocess_environment,
 };
 
 pub const EXTERNAL_COMMAND_RESOLVER_ID: &str = "external_command_v1";
@@ -230,6 +231,7 @@ fn execute_external_payload(
 ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
     let mut command = Command::new(&config.program);
     command.args(&config.args);
+    isolate_subprocess_environment(&mut command);
     let output = run_to_exit(
         &mut command,
         payload,
@@ -467,6 +469,8 @@ mod tests {
         fs::write(
             &path,
             r#"#!/bin/sh
+[ -z "${REASON_SUBPROCESS_SENTINEL_SECRET+x}" ] || exit 90
+[ -n "${PATH:-}" ] || exit 91
 cat >/dev/null
 printf '%s' '{"schema_version":"reason-external-resolver-response-v1","contribution":{"kind":"acquired_evidence","evidence":[{"id":"ext-1","source":"reference:test","observation":"service.region=eu-west-1","facts":{"service.region":"eu-west-1"}}]}}'
 "#,

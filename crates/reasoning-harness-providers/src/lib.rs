@@ -10,6 +10,7 @@ pub mod mistral;
 pub mod nvidia;
 mod subprocess_cancellation;
 mod subprocess_deadline;
+mod subprocess_environment;
 pub mod trusted_command;
 
 pub use gemma::GoogleAdapter;

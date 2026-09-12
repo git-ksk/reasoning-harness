@@ -115,7 +115,7 @@ The existing one-shot `reason "TASK"`, repeatable `--file`, piped stdin context,
 
 ## Phase 3 — External acquisition UX and process isolation
 
-- **#387 P0:** local external-command, MCP, and trusted-verifier subprocesses must start from a minimal scoped environment rather than inheriting unrelated ambient provider/developer secrets.
+- **#387 P0 — implemented:** current external-command, MCP v3 (plus v2 compatibility), and trusted-command subprocesses start from a documented minimal cross-platform environment instead of inheriting ambient provider/developer secrets. Explicit future integration credentials have a scoped injection boundary; secret-valued project config and arbitrary ambient-variable inheritance remain unavailable. Historical frozen `mcp_readonly_v1` remains untouched. See [Local subprocess environment isolation](reason-subprocess-isolation.md).
 - **#368 P1:** guided read-only MCP management: `reason mcp add/list/inspect/test/remove`.
 - **#386 P1:** secure remote MCP/Streamable HTTP OAuth lifecycle after the local read-only management path, including headless/no-browser auth where practical.
 

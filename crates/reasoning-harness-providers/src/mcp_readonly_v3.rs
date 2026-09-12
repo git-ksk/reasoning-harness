@@ -17,6 +17,7 @@ use crate::{
     config_identity::stable_config_id,
     mcp_readonly::{MCP_PROTOCOL_VERSION, McpReadOnlyResolverConfig},
     subprocess_deadline::DeadlineLineSession,
+    subprocess_environment::isolate_subprocess_environment,
 };
 
 pub const MCP_READONLY_V3_RESOLVER_ID: &str = "mcp_readonly_v3";
@@ -330,6 +331,7 @@ impl ResolutionResolver for McpReadOnlyResolverV3 {
         let timeout = Duration::from_millis(base.timeout_ms);
         let mut command = Command::new(&base.program);
         command.args(&base.args);
+        isolate_subprocess_environment(&mut command);
         let mut session = DeadlineLineSession::spawn(
             &mut command,
             started,
@@ -581,6 +583,8 @@ mod tests {
     fn negotiated_session_accepts_allowlisted_downgrade_and_keeps_generic_content_opaque() {
         let path = script(
             r#"#!/bin/sh
+[ -z "${REASON_SUBPROCESS_SENTINEL_SECRET+x}" ] || exit 90
+[ -n "${PATH:-}" ] || exit 91
 read initialize
 printf '%s' "$initialize" | grep -q '"method":"initialize"' || exit 2
 printf '%s' "$initialize" | grep -q '"protocolVersion":"2026-07-28"' || exit 3

@@ -15,6 +15,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     SubprocessCancellation, config_identity::stable_config_id, subprocess_deadline::run_to_exit,
+    subprocess_environment::isolate_subprocess_environment,
 };
 
 pub const TRUSTED_COMMAND_VERIFIER_ID: &str = "trusted_command_verifier_v1";
@@ -274,6 +275,7 @@ impl TrustedResolutionVerifier for TrustedCommandVerifier {
 
         let mut command = Command::new(&self.config.program);
         command.args(&self.config.args);
+        isolate_subprocess_environment(&mut command);
         let output = run_to_exit(
             &mut command,
             payload,
@@ -442,6 +444,8 @@ mod tests {
     fn verifier_constructs_exact_receipt_in_harness_not_from_external_fields() {
         let path = script(
             r#"#!/bin/sh
+[ -z "${REASON_SUBPROCESS_SENTINEL_SECRET+x}" ] || exit 90
+[ -n "${PATH:-}" ] || exit 91
 cat >/dev/null
 printf '%s' '{"schema_version":"reason-trusted-verifier-response-v1","result":{"conclusion":"supported","evidence_ids":["e1"]}}'
 "#,
