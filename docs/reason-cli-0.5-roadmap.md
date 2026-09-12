@@ -124,7 +124,7 @@ The existing one-shot `reason "TASK"`, repeatable `--file`, piped stdin context,
 - **#414 P1:** discover MCP Protected Resource Metadata and authorization-server/OIDC metadata instead of requiring hand-authored OAuth endpoints; validate issuer/resource relationships fail-closed.
 - **#415 P1:** distinguish OAuth `insufficient_scope` from generic permission denial and provide explicit, non-silent scope step-up recovery.
 - **#416 P1:** wire remote HTTP readiness/acquisition into Reason's safe Ctrl+C cancellation contract so cancellation does not wait for the remote timeout or leave detached network work.
-- **#419 P1:** recursively reject secret-bearing nested MCP `fixed_arguments` so the documented non-secret configuration boundary also holds for hand-authored low-level config.
+- **#419 P1 — implemented:** recursively rejects secret-bearing nested MCP `fixed_arguments` across local, remote, and investigation MCP configuration without echoing secret values, preserving the documented non-secret configuration boundary for hand-authored low-level config.
 
 ### Tracked compatibility / lifecycle follow-ups
 

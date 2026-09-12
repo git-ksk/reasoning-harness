@@ -7582,6 +7582,86 @@ fn ensure_mcp_transport_exclusivity(local: bool, remote: bool) -> Result<(), Str
     }
 }
 
+fn normalized_fixed_argument_key(key: &str) -> String {
+    key.chars()
+        .filter(|character| character.is_ascii_alphanumeric())
+        .flat_map(char::to_lowercase)
+        .collect()
+}
+
+fn is_secret_bearing_fixed_argument_key(key: &str) -> bool {
+    let normalized = normalized_fixed_argument_key(key);
+    matches!(
+        normalized.as_str(),
+        "token"
+            | "accesstoken"
+            | "refreshtoken"
+            | "idtoken"
+            | "authtoken"
+            | "oauthtoken"
+            | "bearertoken"
+            | "sessiontoken"
+            | "apikey"
+            | "clientsecret"
+            | "secret"
+            | "secretkey"
+            | "password"
+            | "passwd"
+            | "credential"
+            | "credentials"
+            | "authorization"
+            | "authorizationcode"
+            | "codeverifier"
+            | "pkceverifier"
+            | "privatekey"
+            | "cookie"
+    ) || normalized.ends_with("apikey")
+        || normalized.ends_with("token")
+        || normalized.ends_with("password")
+        || normalized.ends_with("credential")
+        || normalized.ends_with("privatekey")
+}
+
+fn validate_non_secret_fixed_argument_value(
+    owner: &str,
+    value: &serde_json::Value,
+) -> Result<(), String> {
+    match value {
+        serde_json::Value::Object(object) => {
+            for (key, nested) in object {
+                if is_secret_bearing_fixed_argument_key(key) {
+                    return Err(format!(
+                        "{owner} contains a credential-bearing key; runtime credentials must use scoped secure credential injection or the native OS credential store"
+                    ));
+                }
+                validate_non_secret_fixed_argument_value(owner, nested)?;
+            }
+        }
+        serde_json::Value::Array(values) => {
+            for nested in values {
+                validate_non_secret_fixed_argument_value(owner, nested)?;
+            }
+        }
+        _ => {}
+    }
+    Ok(())
+}
+
+fn validate_non_secret_fixed_arguments(
+    owner: &str,
+    fixed_arguments: &BTreeMap<String, serde_json::Value>,
+) -> Result<(), String> {
+    for (key, value) in fixed_arguments {
+        if is_secret_bearing_fixed_argument_key(key) {
+            return Err(format!(
+                "{owner} contains a credential-bearing key; runtime credentials must use scoped secure credential injection or the native OS credential store"
+            ));
+        }
+        validate_non_secret_fixed_argument_value(owner, value)?;
+    }
+    Ok(())
+}
+
 fn resolve_mcp_v3_config(
     base: McpReadOnlyResolverConfig,
     requested_protocol_version: Option<&str>,
@@ -7670,6 +7750,10 @@ fn resolve_mcp_readonly_config(
     {
         return Err("resolution.mcp_readonly.fixed_arguments contains an empty key".into());
     }
+    validate_non_secret_fixed_arguments(
+        "resolution.mcp_readonly.fixed_arguments",
+        &configured.fixed_arguments,
+    )?;
     if let Some(argument) = configured.provenance_argument.as_deref() {
         if argument.trim().is_empty() || configured.fixed_arguments.contains_key(argument) {
             return Err(
@@ -7755,6 +7839,10 @@ fn resolve_mcp_remote_readonly_config(
     {
         return Err("resolution.mcp_remote_readonly.fixed_arguments contains an empty key".into());
     }
+    validate_non_secret_fixed_arguments(
+        "resolution.mcp_remote_readonly.fixed_arguments",
+        &configured.fixed_arguments,
+    )?;
     if let Some(argument) = configured.provenance_argument.as_deref() {
         if argument.trim().is_empty() || configured.fixed_arguments.contains_key(argument) {
             return Err(
@@ -7980,6 +8068,10 @@ fn resolve_investigation_config(
                         "resolution.investigation MCP capability {id} contains an empty selector/argument key"
                     ));
                 }
+                validate_non_secret_fixed_arguments(
+                    &format!("resolution.investigation.capabilities[{id}].fixed_arguments"),
+                    fixed_arguments,
+                )?;
                 if let Some(argument) = provenance_argument.as_deref()
                     && (argument.trim().is_empty() || fixed_arguments.contains_key(argument))
                 {
@@ -9147,6 +9239,80 @@ mod candidate_json_tests {
             );
             assert!(serde_json::from_str::<CliFileConfig>(&secret).is_err());
         }
+    }
+
+    #[test]
+    fn mcp_fixed_arguments_reject_nested_credentials_without_echoing_values() {
+        let local = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_readonly":{
+            "server_id":"s","program":"p","allowed_tools":["read"],"tool":"read",
+            "read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read",
+            "fixed_arguments":{"nested":{"authorization":{"access_token":"DO_NOT_ECHO"}}}
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(local).unwrap(),
+            sources: vec![],
+        };
+        let error = resolve_mcp_readonly_config(&loaded).unwrap_err();
+        assert!(error.contains("credential-bearing key"));
+        assert!(!error.contains("DO_NOT_ECHO"));
+
+        let remote = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_remote_readonly":{
+            "server_id":"s","endpoint":"https://mcp.example.test/mcp",
+            "allowed_tools":["read"],"tool":"read","read_only":true,
+            "resolver_class":"evidence_acquisition","source":"mcp:s:read",
+            "fixed_arguments":{"headers":{"X-Api-Key":"DO_NOT_ECHO"}}
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(remote).unwrap(),
+            sources: vec![],
+        };
+        let error = resolve_mcp_remote_readonly_config(&loaded).unwrap_err();
+        assert!(error.contains("credential-bearing key"));
+        assert!(!error.contains("DO_NOT_ECHO"));
+
+        let investigation = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"investigation":{"capabilities":[{
+            "kind":"mcp_readonly","id":"inventory","read_only":true,
+            "server_id":"s","program":"p","allowed_tools":["read"],"tool":"read",
+            "source":"mcp:s:read",
+            "fixed_arguments":{"items":[{"session_token":"DO_NOT_ECHO"}]}
+          }]}}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(investigation).unwrap(),
+            sources: vec![],
+        };
+        let error = resolve_investigation_config(&loaded).unwrap_err();
+        assert!(error.contains("credential-bearing key"));
+        assert!(!error.contains("DO_NOT_ECHO"));
+    }
+
+    #[test]
+    fn mcp_fixed_arguments_keep_benign_nested_structures_compatible() {
+        let text = r#"{
+          "schema_version":"reason-config-v1",
+          "resolution":{"mcp_readonly":{
+            "server_id":"s","program":"p","allowed_tools":["read"],"tool":"read",
+            "read_only":true,"resolver_class":"evidence_acquisition","source":"mcp:s:read",
+            "fixed_arguments":{"filters":{"region":"us-east-1","ids":[1,2],"metadata":{"board":"primary"}}}
+          }}
+        }"#;
+        let loaded = LoadedCliConfig {
+            config: serde_json::from_str(text).unwrap(),
+            sources: vec![],
+        };
+        let resolved = resolve_mcp_readonly_config(&loaded).unwrap().unwrap();
+        assert_eq!(
+            resolved.base.fixed_arguments["filters"]["metadata"]["board"],
+            "primary"
+        );
     }
 
     #[test]
