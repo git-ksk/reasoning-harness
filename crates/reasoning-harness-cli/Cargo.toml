@@ -81,6 +81,7 @@ path = "src/bin/sufficiency.rs"
 
 [dependencies]
 clap.workspace = true
+clap_complete.workspace = true
 reasoning-harness-core = { path = "../reasoning-harness-core" }
 reasoning-harness-providers = { path = "../reasoning-harness-providers" }
 schemars.workspace = true

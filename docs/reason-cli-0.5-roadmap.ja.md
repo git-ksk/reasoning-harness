@@ -106,7 +106,7 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 - **#380 P0 — implemented:** additiveなhuman/JSON provider/resolver usage、interactive `/usage`、rollback-safeなmanaged-session累積accounting、hardな`max_model_calls` / reported output-token / measurable total-token guardとtyped operational exhaustion、明示operator pricing provenanceがある場合のみcurrency estimateを実装。
 - **#366 P1 — implemented:** `reason config list/get/set/unset/path/sources`でsafeなrun defaultのeffective value・per-key provenance・precedenceを確認し、編集はuser layerだけに限定。secretとauthority-bearingなresolver/MCP/trusted-verifier設定はこのsurface外で、`reason-config-v1`でも引き続きreject。
 - **#369 P1 — implemented:** human full-TTYではHarness-owned `Planning` / `Acquiring` / `Verifying` / `Finalizing` phase、bounded provider retry/elapsed status、secret/CoT-freeな任意`--verbose` operational detailを表示。JSON/piped/non-TTYは静かなまま、Ctrl+Cはincompleteな通常turnをsuccessful checkpoint化せずtyped `cancelled`で終了。
-- **#373 P1:** self-teaching help、examples、zsh/bash/fish/PowerShell completion。
+- **#373 P1 — implemented:** self-teaching help、copy-paste examples、stdout-onlyのzsh/bash/fish/PowerShell completion。commonな自然言語workflowを優先しつつ、advanced/research surfaceは明示的にdiscoverableなまま維持。
 - **#383 P1:** accessible/plain terminal rendering、`NO_COLOR`、screen reader/minimal terminal、width/unicode-safe presentation。
 
 既存のone-shot `reason "TASK"`、repeatable `--file`、piped stdin context、JSON automation surfaceは維持します。
