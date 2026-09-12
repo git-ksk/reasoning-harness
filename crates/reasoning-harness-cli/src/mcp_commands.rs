@@ -10,8 +10,8 @@ use serde::Serialize;
 use super::{
     CLI_CONFIG_CONTRACT_ID, CliError, CliFileConfig, LoadedCliConfig,
     McpReadOnlyResolverFileConfig, McpRemoteOAuthFileConfig, McpRemoteReadOnlyResolverFileConfig,
-    OutputFormat, mcp_oauth, model_catalog, print_product_json, resolve_mcp_readonly_config,
-    resolve_mcp_remote_readonly_config, user_config_path,
+    OutputFormat, mcp_oauth, model_catalog, print_product_json, progress,
+    resolve_mcp_readonly_config, resolve_mcp_remote_readonly_config, user_config_path,
 };
 
 const SURFACE_ID: &str = "reason-mcp-management-v2";
@@ -482,48 +482,58 @@ fn inspect(name: &str, format: OutputFormat) -> Result<(), CliError> {
 fn test(name: &str, format: OutputFormat) -> Result<(), CliError> {
     validate_name(name)?;
     let user = user_json()?;
-    let output = if let Some(local) = user.local.as_ref().filter(|value| value.server_id == name) {
-        let runtime = resolve_local_runtime(local)?;
-        let readiness = McpReadOnlyResolverV3::new(runtime)
-            .probe_readiness()
-            .map_err(readiness_error)?;
-        TestOutput {
-            management_surface: SURFACE_ID,
-            status: "ready",
-            name: readiness.server_id,
-            transport: "stdio",
-            selected_tool: readiness.selected_tool,
-            negotiated_protocol_version: readiness.negotiated_protocol_version,
-            read_only_hint: readiness.read_only_hint,
+    let cancellation = progress::CancellationRun::begin()?;
+    let cancellation_token = cancellation.subprocess_token();
+    let output = (|| -> Result<TestOutput, CliError> {
+        if let Some(local) = user.local.as_ref().filter(|value| value.server_id == name) {
+            let runtime = resolve_local_runtime(local)?;
+            let readiness = McpReadOnlyResolverV3::new(runtime)
+                .with_cancellation(cancellation_token.clone())
+                .probe_readiness()
+                .map_err(readiness_error)?;
+            Ok(TestOutput {
+                management_surface: SURFACE_ID,
+                status: "ready",
+                name: readiness.server_id,
+                transport: "stdio",
+                selected_tool: readiness.selected_tool,
+                negotiated_protocol_version: readiness.negotiated_protocol_version,
+                read_only_hint: readiness.read_only_hint,
+            })
+        } else if let Some(remote) = user.remote.as_ref().filter(|value| value.server_id == name) {
+            let resolved = resolve_remote_runtime(remote)?;
+            let token = resolved
+                .oauth
+                .as_ref()
+                .map(|oauth| mcp_oauth::access_token(name, &resolved.resolver.endpoint, oauth))
+                .transpose()?;
+            let readiness = McpRemoteReadOnlyResolver::new(resolved.resolver, token)
+                .map_err(|kind| {
+                    CliError::new(
+                        "mcp_configuration",
+                        format!("remote MCP configuration rejected: {kind:?}"),
+                    )
+                })?
+                .with_cancellation(cancellation_token.clone())
+                .probe_readiness()
+                .map_err(readiness_error)?;
+            Ok(TestOutput {
+                management_surface: SURFACE_ID,
+                status: "ready",
+                name: readiness.server_id,
+                transport: "streamable_http",
+                selected_tool: readiness.selected_tool,
+                negotiated_protocol_version: readiness.protocol_version,
+                read_only_hint: readiness.read_only_hint,
+            })
+        } else {
+            Err(not_found(name, &user))
         }
-    } else if let Some(remote) = user.remote.as_ref().filter(|value| value.server_id == name) {
-        let resolved = resolve_remote_runtime(remote)?;
-        let token = resolved
-            .oauth
-            .as_ref()
-            .map(|oauth| mcp_oauth::access_token(name, &resolved.resolver.endpoint, oauth))
-            .transpose()?;
-        let readiness = McpRemoteReadOnlyResolver::new(resolved.resolver, token)
-            .map_err(|kind| {
-                CliError::new(
-                    "mcp_configuration",
-                    format!("remote MCP configuration rejected: {kind:?}"),
-                )
-            })?
-            .probe_readiness()
-            .map_err(readiness_error)?;
-        TestOutput {
-            management_surface: SURFACE_ID,
-            status: "ready",
-            name: readiness.server_id,
-            transport: "streamable_http",
-            selected_tool: readiness.selected_tool,
-            negotiated_protocol_version: readiness.protocol_version,
-            read_only_hint: readiness.read_only_hint,
-        }
-    } else {
-        return Err(not_found(name, &user));
-    };
+    })();
+    if cancellation.is_cancelled() {
+        return Err(cancellation.error());
+    }
+    let output = output?;
     match format {
         OutputFormat::Json => print_product_json("mcp", &output).map_err(CliError::from),
         OutputFormat::Human => {
