@@ -98,7 +98,7 @@ Environment variables remain supported for CI, containers, remote shells, and se
 
 ## Phase 2 — Everyday interactive terminal UX
 
-- **#364 P0:** `reason` with no arguments starts an interactive REPL instead of returning a usage error. Existing untrusted file/context ingestion must be reachable from the interactive path without teaching low-level session-file commands.
+- **#364 P0 — implemented:** bare `reason` on a human TTY starts an in-memory interactive REPL; JSON/non-TTY/piped automation remains non-interactive. `/add <path>` reuses the existing untrusted context path, multiline prompts use a trailing `\`, previous exposed exchanges are retained only as untrusted in-memory conversation context, and no shell-style history file is written. Managed persistence remains owned by #365/#381.
 - **#365 P0:** `-c/--continue`, `-r/--resume`, session listing/picking, and safe checkpoint persistence over the existing typed session runtime.
 - **#381 P0:** managed-session store locking/optimistic concurrency, crash recovery, and compatibility/migration across supported CLI updates/rollback.
 - **#379 P0:** private local permissions, retention/purge semantics, explicit ephemeral/no-persist use, and disclosure of what data leaves the machine for providers/MCP/resolvers.

@@ -209,6 +209,7 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 
 | Command | Use it for |
 | --- | --- |
+| `reason` | Reason CLI 0.5.0 development: start the TTY-only interactive REPL; JSON/non-TTY invocations remain non-interactive. |
 | `reason "TASK"` | Primary human-facing natural-language path. |
 | `reason setup` | Reason CLI 0.5.0 development: first-run provider, credential, model-default, and readiness setup. |
 | `reason update` / `reason update --rollback VERSION` | Reason CLI 0.5.0 development: provenance-verified update and explicit rollback. |
@@ -221,6 +222,8 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 | `reason verify` | Deterministically validate a materialized `ReasoningArtifact`. |
 | `reason semantic-check` | Run the soft semantic diagnostic runtime without granting it final authority. |
 | `reason schema` | Inspect supported versioned machine contracts. |
+Interactive REPL details, including `/add`, multiline input, TTY/JSON dispatch, and privacy boundaries, are documented in [Interactive terminal UX](docs/reason-interactive.md).
+
 
 Mistral, Google Gemini/AI Studio, NVIDIA Hosted NIM, and Groq provider adapters are implemented outside the correctness authority boundary. Read-only MCP acquisition, external resolvers, trusted deterministic verifiers, bounded investigation, and resumable sessions are also implemented in the current runtime.
 

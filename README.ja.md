@@ -209,6 +209,7 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 
 | Command | 用途 |
 | --- | --- |
+| `reason` | Reason CLI 0.5.0開発ライン: TTY限定interactive REPLを起動。JSON/non-TTYはnon-interactiveのまま。 |
 | `reason "TASK"` | 人が直接使う自然文path。 |
 | `reason setup` | Reason CLI 0.5.0開発ライン: provider / credential / model default / readinessを初回設定。 |
 | `reason update` / `reason update --rollback VERSION` | Reason CLI 0.5.0開発ライン: provenance検証済みupdateと明示rollback。 |
@@ -221,6 +222,8 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 | `reason verify` | materialize済み`ReasoningArtifact`のdeterministic validation。 |
 | `reason semantic-check` | soft semantic diagnostic。最終authorityは持たない。 |
 | `reason schema` | versioned machine contractの確認。 |
+`/add`、multiline input、TTY/JSON dispatch、privacy boundaryを含むinteractive REPLの詳細は[対話型ターミナルUX](docs/reason-interactive.ja.md)を参照してください。
+
 
 Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groq向けのprovider adapterを実装済みです。現在のruntimeには、read-only MCPによる取得、外部resolver、明示的にtrustedなdeterministic verifier、bounded investigation、再開可能なsessionも含まれます。
 

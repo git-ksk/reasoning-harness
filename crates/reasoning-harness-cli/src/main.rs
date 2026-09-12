@@ -1,5 +1,6 @@
 mod auth;
 mod diagnostic_trace;
+mod interactive;
 mod lifecycle;
 mod model_catalog;
 mod project_trust;
@@ -164,6 +165,9 @@ struct NaturalArgs {
     /// Write a diagnostic-only natural execution trace to PATH. This never changes model requests, evaluation, or product JSON output.
     #[arg(long, value_name = "PATH")]
     diagnostic_trace: Option<PathBuf>,
+    /// In-memory, untrusted conversation context used only by the interactive product path.
+    #[arg(skip)]
+    interactive_context: Vec<String>,
 }
 
 #[derive(
@@ -2198,6 +2202,31 @@ fn build_natural_input(args: &NaturalArgs, task: &str) -> Result<NaturalInputBui
             id: format!("context-file-{index}"),
             source: path.display().to_string(),
             observation: text,
+            facts: BTreeMap::new(),
+            metadata: EvidenceMetadata {
+                temporal: None,
+                scope: None,
+                provenance_class: Some("untrusted_context".into()),
+            },
+        });
+    }
+
+    for (index, text) in args.interactive_context.iter().enumerate() {
+        total_context_bytes = total_context_bytes
+            .checked_add(text.len())
+            .ok_or_else(|| CliError::new("input", "context byte count overflow"))?;
+        if total_context_bytes > MAX_CONTEXT_TOTAL_BYTES {
+            return Err(CliError::new(
+                "input",
+                format!(
+                    "total --file/stdin/interactive context exceeds {MAX_CONTEXT_TOTAL_BYTES} bytes"
+                ),
+            ));
+        }
+        evidence.push(Evidence {
+            id: format!("interactive-context-{index}"),
+            source: "interactive-session".into(),
+            observation: text.clone(),
             facts: BTreeMap::new(),
             metadata: EvidenceMetadata {
                 temporal: None,
@@ -4312,6 +4341,7 @@ fn continuation_args(
         no_config: true,
         format: Some(format),
         diagnostic_trace: None,
+        interactive_context: vec![],
     }
 }
 
@@ -5457,7 +5487,13 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                 }
             }
         }
-        None => run_natural(natural).await,
+        None => {
+            if interactive::should_start(&natural, io::stdin().is_terminal())? {
+                interactive::run(natural).await
+            } else {
+                run_natural(natural).await
+            }
+        }
     }
 }
 
