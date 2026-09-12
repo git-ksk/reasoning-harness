@@ -1,5 +1,7 @@
 #![cfg_attr(test, allow(clippy::field_reassign_with_default))]
 
+pub const ENGINE_VERSION: &str = env!("CARGO_PKG_VERSION");
+
 pub mod adversarial;
 pub mod answer_safety;
 pub mod assumption;

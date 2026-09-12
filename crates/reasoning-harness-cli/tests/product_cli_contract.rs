@@ -669,3 +669,115 @@ fn setup_help_has_no_secret_valued_argv_and_live_check_is_explicit() {
         assert!(!help.contains(forbidden), "unexpected {forbidden}: {help}");
     }
 }
+
+#[test]
+fn lifecycle_help_is_explicit_and_has_no_insecure_provenance_bypass() {
+    for (command, expected) in [
+        (
+            "update",
+            vec![
+                "--check",
+                "--version",
+                "--rollback",
+                "--allow-engine-change",
+                "--yes",
+                "--format",
+            ],
+        ),
+        (
+            "uninstall",
+            vec![
+                "--dry-run",
+                "--yes",
+                "--purge-data",
+                "--purge-credentials",
+                "--format",
+            ],
+        ),
+    ] {
+        let output = run_reason(&[command, "--help"], None);
+        assert_eq!(
+            output.status.code(),
+            Some(0),
+            "{command}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert!(output.stderr.is_empty());
+        let help = String::from_utf8_lossy(&output.stdout);
+        for flag in expected {
+            assert!(help.contains(flag), "{command} missing {flag}: {help}");
+        }
+        for forbidden in [
+            "--insecure",
+            "--skip-verify",
+            "--no-verify",
+            "--api-key",
+            "--token",
+        ] {
+            assert!(
+                !help.contains(forbidden),
+                "{command} exposes forbidden {forbidden}: {help}"
+            );
+        }
+    }
+}
+
+#[test]
+fn rollback_rejects_historical_pre_attestation_release_before_mutation() {
+    let output = run_reason(
+        &["update", "--rollback", "0.4.2", "--yes", "--format", "json"],
+        None,
+    );
+    assert_eq!(output.status.code(), Some(1));
+    assert!(output.stderr.is_empty());
+    let value = json_stdout(&output);
+    assert_eq!(value["command"], "update");
+    assert_eq!(value["result"]["status"], "failed");
+    assert_eq!(
+        value["result"]["failure"]["failure_class"],
+        "historical_release_boundary"
+    );
+}
+
+#[test]
+fn uninstall_dry_run_is_non_mutating_and_secret_free() {
+    let temp = std::env::temp_dir().join(format!(
+        "reason-uninstall-dry-run-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    let config = temp.join("config.json");
+    let trust = temp.join("project-trust.json");
+    std::fs::write(&config, b"sentinel-config").unwrap();
+    std::fs::write(&trust, b"sentinel-trust").unwrap();
+    let mut command = reason_command();
+    let output = command
+        .args(["uninstall", "--dry-run", "--purge-data", "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .env("MISTRAL_API_KEY", "uninstall-secret-must-not-leak")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .unwrap();
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(output.stderr.is_empty());
+    let body = String::from_utf8_lossy(&output.stdout);
+    assert!(!body.contains("uninstall-secret-must-not-leak"));
+    let value = json_stdout(&output);
+    assert_eq!(value["command"], "uninstall");
+    assert_eq!(value["result"]["dry_run"], true);
+    assert_eq!(value["result"]["binary_removed"], false);
+    assert_eq!(value["result"]["data_removed"], 0);
+    assert!(config.exists());
+    assert!(trust.exists());
+    std::fs::remove_dir_all(temp).ok();
+}

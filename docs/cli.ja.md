@@ -60,6 +60,7 @@ defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です
 | --- | --- |
 | 人が自然文でtaskを依頼したい | `reason "TASK"` |
 | 初回設定をまとめて完了したい（0.5.0開発ライン） | `reason setup` |
+| provenance検証済みupdate / 明示rollback / uninstallを管理したい | `reason update`, `reason update --rollback VERSION`, `reason uninstall` |
 | provider credentialを安全に管理したい（0.5.0開発ライン） | `reason auth ...` |
 | 対応modelを確認 / user defaultを切り替えたい（0.5.0開発ライン） | `reason models ...` / `reason model set ...` |
 | 自然言語reasoning stateを保存・確認・訂正・再開・forkしたい | `reason session ...` |
@@ -355,3 +356,6 @@ CLI ergonomicsは成熟したterminal-first AI toolから意図的に学んで�
 ## `reason setup`（0.5.0開発ライン）
 
 `reason setup`はprovider、credential、curated general-use model default、local readinessを一つの導線で設定します。credentialはhidden TTY入力または`--credential-stdin` / `--from-env`で扱い、secret-valued argvは提供しません。`--non-interactive`では`--provider`が必須で、model省略時はcurated recommended modelを選びます。local readinessはnetworkを使わず、live checkはquota/costが発生し得るため明示的な`--live-check`またはinteractive consent時のみです。
+
+
+0.5.0開発ラインのlifecycle管理は[Update / rollback / uninstall](update-rollback-uninstall.ja.md)を参照してください。

@@ -76,6 +76,7 @@ See [How Reasoning Harness works](how-it-works.md) and [product dogfood](product
 | --- | --- |
 | Ask a person-facing natural-language question through the verified runtime | `reason "TASK"` |
 | Complete first-run setup on the 0.5.0 development line | `reason setup` |
+| Manage provenance-verified update, explicit rollback, or uninstall | `reason update`, `reason update --rollback VERSION`, `reason uninstall` |
 | Manage provider credentials on the 0.5.0 development line | `reason auth ...` |
 | Discover compatible models / set the user default on the 0.5.0 development line | `reason models ...` / `reason model set ...` |
 | Persist, inspect, correct, resume, or fork a natural-language reasoning state | `reason session ...` |
@@ -301,3 +302,6 @@ coding agent.
 ## `reason setup` (0.5.0 development line)
 
 `reason setup` configures provider, credential, a curated general-use model default, and local readiness in one path. Credentials use hidden TTY input or `--credential-stdin` / `--from-env`; no secret-valued argv flag exists. `--non-interactive` requires `--provider` and selects the curated recommendation when `--model` is omitted. Local readiness is network-free. A live check may consume quota or incur cost, so it runs only with explicit `--live-check` or interactive consent.
+
+
+For lifecycle management on the 0.5.0 development line, see [Update, rollback, and uninstall](update-rollback-uninstall.md).

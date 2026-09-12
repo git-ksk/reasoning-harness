@@ -79,8 +79,8 @@ user-facing operational errorは「何が失敗したか」「taskが実行さ�
 ### 配布まわり — #358
 
 - **#371 P0 — 完了:** macOS / Linux / Windows向けone-command native installer。
-- **#382 P0 — provenance基盤実装済み / #372 updater acceptance待ち:** release provenance、必要に応じたcode signing/notarization、trusted installer/updater verification。SHA-256は維持するが唯一のtrust rootにはしない。
-- **#372 P0:** update、明示的rollback、uninstall lifecycle。
+- **#382 P0 — 完了:** release provenance、必要に応じたcode signing/notarization、trusted installer/updater verification。SHA-256は維持するが唯一のtrust rootにはしない。
+- **#372 P0 — 完了:** provenance検証済みupdate、明示的rollback、保持defaultのuninstall lifecycle。
 - **#375 P1:** canonical installer/update contract安定後のHomebrew / winget channel。
 
 ### プロジェクトtrust — #377（完了）

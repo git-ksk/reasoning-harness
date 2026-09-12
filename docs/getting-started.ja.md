@@ -113,6 +113,7 @@ RAG、Agent、recorded output、CI、provider-independent testに向いた使い
 | --- | --- |
 | 自然文で質問する | `reason "TASK"` |
 | 初回セットアップを完了する（0.5.0開発ライン） | `reason setup` |
+| CLI updateを非破壊で確認する（0.5.0開発ライン） | `reason update --check` |
 | provider credentialを管理する（0.5.0開発ライン） | `reason auth ...` |
 | reasoning stateを継続・訂正する | `reason session ...` |
 | 既存structured candidateを統合する | `reason run` |
