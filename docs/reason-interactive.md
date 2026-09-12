@@ -13,6 +13,12 @@ Reason CLI 0.5.0 development builds an everyday terminal surface without changin
 - `--format json`, including an effective JSON default from config, never auto-enters the REPL.
 - Structured subcommands and the existing low-level explicit `reason session ... --store` contract remain compatible.
 
+## Plain and accessibility presentation
+
+`reason --plain` keeps the REPL available on a human TTY but suppresses decorative progress and uses simpler static human rendering. `NO_COLOR` and `TERM=dumb` select the same plain presentation policy automatically. Prompts remain ordinary line input (`reason> ` / `... `), with no spinner or cursor-control dependency, and Ctrl+C keeps the same typed cancellation semantics. Redirected/non-TTY and JSON invocations remain non-interactive and decoration-free.
+
+Reason does not truncate human output to terminal width; Unicode text is emitted intact instead of being sliced at a byte boundary.
+
 ## Commands
 
 - `/add <path>` snapshots a UTF-8 regular file as persisted untrusted context for later prompts. Quoted paths with spaces are literal; no shell expansion or evaluation occurs.

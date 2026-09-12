@@ -30,7 +30,7 @@ The primary human-facing path accepts a task directly:
 reason "Analyze this incident" --fact http.status_code=503
 ```
 
-Provider/model can come from `reason-config-v1` or explicit flags. Human output is the default; use `--format json` for automation. Useful inputs are:
+Provider/model can come from `reason-config-v1` or explicit flags. Human output is the default; use `--format json` for automation. `--plain` (also selected by `NO_COLOR`, `TERM=dumb`, or redirected human output) disables decorative progress without changing JSON or Harness semantics. Useful inputs are:
 
 | input | trust semantics |
 | --- | --- |

@@ -24,6 +24,12 @@ reason update --check
 
 Files are untrusted context unless they are separately admitted and verified. JSON and piped modes remain non-interactive and decoration-free.
 
+## Plain and accessible terminal presentation
+
+Use `reason --plain` for static, accessibility-friendly human terminal output. Plain mode suppresses progress/decorative presentation while keeping prompts and Ctrl+C semantics intact. The same plain policy is selected automatically when `NO_COLOR` is present, when `TERM=dumb`, or when the human output streams are redirected/non-TTY. Reason does not introduce ANSI color, spinner animation, or cursor-control dependence in plain mode.
+
+Human text is emitted without terminal-width byte truncation, so Unicode content is preserved rather than sliced at an unsafe byte boundary. JSON output is unaffected by this presentation policy.
+
 The structured `run`, `semantic-check`, `verify`, and `schema` commands remain available for advanced product/automation use. Research/evaluation commands remain available as `eval`, `eval-resolution`, and `eval-judges`; they are intentionally de-emphasized in the top-level help rather than removed.
 
 `reason doctor` is not part of Phase 2 and is not advertised by the CLI.

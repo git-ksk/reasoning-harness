@@ -1,6 +1,5 @@
 use std::{
     future::Future,
-    io::{self, IsTerminal},
     sync::{
         OnceLock,
         atomic::{AtomicU8, Ordering},
@@ -10,7 +9,10 @@ use std::{
 
 use reasoning_harness_providers::SubprocessCancellation;
 
-use super::{CliError, GenerationFailure, GenerationObservation, OutputFormat};
+use super::{
+    CliError, GenerationFailure, GenerationObservation, OutputFormat,
+    terminal_presentation::TerminalPresentation,
+};
 
 const PROVIDER_WAIT_FIRST_NOTICE: Duration = Duration::from_secs(3);
 const PROVIDER_WAIT_REPEAT_NOTICE: Duration = Duration::from_secs(5);
@@ -218,25 +220,16 @@ pub(super) struct ProgressReporter {
 }
 
 impl ProgressReporter {
-    pub(super) fn new(format: OutputFormat, verbose: bool) -> Self {
-        Self::with_terminals(
-            format,
+    pub(super) fn new(format: OutputFormat, verbose: bool, explicit_plain: bool) -> Self {
+        Self::with_presentation(
             verbose,
-            io::stdin().is_terminal(),
-            io::stdout().is_terminal(),
-            io::stderr().is_terminal(),
+            TerminalPresentation::detect(format, explicit_plain),
         )
     }
 
-    fn with_terminals(
-        format: OutputFormat,
-        verbose: bool,
-        stdin: bool,
-        stdout: bool,
-        stderr: bool,
-    ) -> Self {
+    fn with_presentation(verbose: bool, presentation: TerminalPresentation) -> Self {
         Self {
-            enabled: format == OutputFormat::Human && stdin && stdout && stderr,
+            enabled: presentation.progress_allowed(),
             verbose,
             started: Instant::now(),
         }
@@ -362,24 +355,99 @@ mod tests {
     }
 
     #[test]
-    fn progress_is_human_full_tty_only() {
-        assert!(
-            ProgressReporter::with_terminals(OutputFormat::Human, false, true, true, true).enabled
+    fn progress_is_human_full_tty_and_non_plain_only() {
+        let normal = TerminalPresentation::from_inputs(
+            OutputFormat::Human,
+            false,
+            true,
+            true,
+            true,
+            false,
+            Some("xterm-256color"),
         );
-        assert!(
-            !ProgressReporter::with_terminals(OutputFormat::Json, true, true, true, true).enabled
+        assert!(ProgressReporter::with_presentation(false, normal).enabled);
+
+        for policy in [
+            TerminalPresentation::from_inputs(
+                OutputFormat::Json,
+                false,
+                true,
+                true,
+                true,
+                false,
+                Some("xterm-256color"),
+            ),
+            TerminalPresentation::from_inputs(
+                OutputFormat::Human,
+                true,
+                true,
+                true,
+                true,
+                false,
+                Some("xterm-256color"),
+            ),
+            TerminalPresentation::from_inputs(
+                OutputFormat::Human,
+                false,
+                true,
+                true,
+                true,
+                true,
+                Some("xterm-256color"),
+            ),
+            TerminalPresentation::from_inputs(
+                OutputFormat::Human,
+                false,
+                true,
+                true,
+                true,
+                false,
+                Some("dumb"),
+            ),
+            TerminalPresentation::from_inputs(
+                OutputFormat::Human,
+                false,
+                false,
+                true,
+                true,
+                false,
+                Some("xterm-256color"),
+            ),
+        ] {
+            assert!(!ProgressReporter::with_presentation(true, policy).enabled);
+        }
+    }
+
+    #[test]
+    fn plain_mode_preserves_ctrl_c_cancellation_state_machine() {
+        let policy = TerminalPresentation::from_inputs(
+            OutputFormat::Human,
+            true,
+            true,
+            true,
+            true,
+            false,
+            Some("xterm-256color"),
         );
-        assert!(
-            !ProgressReporter::with_terminals(OutputFormat::Human, true, false, true, true).enabled
-        );
-        assert!(
-            !ProgressReporter::with_terminals(OutputFormat::Human, true, true, false, true).enabled
-        );
+        assert!(policy.is_plain());
+        let state = AtomicU8::new(CANCELLATION_ACTIVE);
+        let token = SubprocessCancellation::default();
+        assert!(mark_ctrl_c_for_state(&state, Some(&token)));
+        assert!(token.is_cancelled());
     }
 
     #[tokio::test]
     async fn provider_wait_wrapper_preserves_result_when_progress_is_disabled() {
-        let reporter = ProgressReporter::with_terminals(OutputFormat::Json, true, true, true, true);
+        let policy = TerminalPresentation::from_inputs(
+            OutputFormat::Json,
+            false,
+            true,
+            true,
+            true,
+            false,
+            Some("xterm-256color"),
+        );
+        let reporter = ProgressReporter::with_presentation(true, policy);
         assert_eq!(reporter.wait_for_provider("test", async { 42 }).await, 42);
     }
 }

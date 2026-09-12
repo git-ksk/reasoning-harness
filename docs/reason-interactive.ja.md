@@ -13,6 +13,12 @@ Reason CLI 0.5.0開発ラインでは、Harness Engine 0.4.2のauthority / corre
 - config由来を含め`--format json`がeffectiveな場合はREPLへ自動遷移しません。
 - structured subcommandと既存の低レベル`reason session ... --store` contractは互換維持します。
 
+## plain / accessibility presentation
+
+`reason --plain`はhuman TTY上のREPLを維持しつつ、decorative progressを抑制し、より単純なstatic human renderingを使います。`NO_COLOR`と`TERM=dumb`でも同じplain presentation policyを自動選択します。promptは通常のline input（`reason> ` / `... `）のままで、spinner / cursor-controlへ依存せず、Ctrl+Cも同じtyped cancellation semanticsを維持します。redirect / non-TTYとJSON invocationは引き続きnon-interactiveかつdecoration-freeです。
+
+human outputをterminal widthに合わせてtruncateしないため、Unicode textをbyte途中で切らずそのまま出力します。
+
 ## command
 
 - `/add <path>`: UTF-8 regular fileをpersisted untrusted context snapshotとして追加します。spaceを含むquoted pathはliteralに扱い、shell展開や評価は行いません。
