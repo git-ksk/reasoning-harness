@@ -6,6 +6,7 @@ use std::{
     thread,
 };
 
+use keyring::{Entry, Error as KeyringError};
 use serde_json::Value;
 
 fn workspace_root() -> PathBuf {
@@ -1143,7 +1144,14 @@ fn mcp_management_add_list_inspect_remove_is_non_secret_and_machine_readable() {
 
     let remove = run(&["mcp", "remove", "inventory", "--format", "json"]);
     assert_eq!(remove.status.code(), Some(0));
-    assert_eq!(json_stdout(&remove)["result"]["operation"], "remove");
+    let remove_json = json_stdout(&remove);
+    assert_eq!(remove_json["result"]["operation"], "remove");
+    assert_eq!(remove_json["result"]["config_removed"], true);
+    assert_eq!(remove_json["result"]["credential_removed"], false);
+    assert_eq!(
+        remove_json["result"]["credential_cleanup_status"],
+        "not_applicable"
+    );
 
     let empty = run(&["mcp", "list", "--format", "json"]);
     assert_eq!(empty.status.code(), Some(0));
@@ -1155,6 +1163,78 @@ fn mcp_management_add_list_inspect_remove_is_non_secret_and_machine_readable() {
     );
 
     std::fs::remove_dir_all(temp).ok();
+}
+
+const TEST_MCP_OAUTH_SERVICE: &str = "io.github.git-ksk.reason-cli.mcp-oauth.v1";
+
+fn unique_mcp_name(prefix: &str) -> String {
+    format!(
+        "{prefix}-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    )
+}
+
+fn mcp_oauth_entry(name: &str) -> Entry {
+    Entry::new(TEST_MCP_OAUTH_SERVICE, &format!("mcp:{name}:oauth")).unwrap()
+}
+
+fn remove_test_credential(name: &str) {
+    match mcp_oauth_entry(name).delete_credential() {
+        Ok(()) | Err(KeyringError::NoEntry) => {}
+        Err(error) => panic!("remove test credential {name}: {error}"),
+    }
+}
+
+fn seed_test_mcp_oauth_credential(name: &str, marker: &str) {
+    let token = serde_json::json!({
+        "schema_version": "reason-mcp-oauth-token-v1",
+        "server_name": name,
+        "issuer": "https://auth.example.test",
+        "client_id": "https://client.example.test/reason.json",
+        "resource": "https://mcp.example.test/mcp",
+        "token_endpoint": "https://auth.example.test/token",
+        "access_token": marker,
+        "token_type": "Bearer",
+        "scope": "mcp:read",
+        "expires_at_unix_seconds": u64::MAX
+    });
+    mcp_oauth_entry(name)
+        .set_password(&token.to_string())
+        .expect("seed MCP OAuth test credential");
+}
+
+fn write_remote_mcp_test_config(temp: &Path, name: &str) {
+    let config = serde_json::json!({
+        "schema_version": "reason-config-v1",
+        "resolution": {
+            "mcp_remote_readonly": {
+                "server_id": name,
+                "endpoint": "https://mcp.example.test/mcp",
+                "allowed_tools": ["search"],
+                "tool": "search",
+                "read_only": true,
+                "resolver_class": "evidence_acquisition",
+                "source": format!("mcp:{name}:search"),
+                "protocol_version": "2026-07-28",
+                "oauth": {
+                    "issuer": "https://auth.example.test",
+                    "authorization_endpoint": "https://auth.example.test/authorize",
+                    "token_endpoint": "https://auth.example.test/token",
+                    "client_id": "https://client.example.test/reason.json",
+                    "scopes": ["mcp:read"]
+                }
+            }
+        }
+    });
+    std::fs::write(
+        temp.join("config.json"),
+        serde_json::to_vec_pretty(&config).unwrap(),
+    )
+    .unwrap();
 }
 
 fn spawn_oauth_discovery_fixture() -> (String, String, thread::JoinHandle<()>) {
@@ -1346,8 +1426,130 @@ fn remote_mcp_management_persists_only_non_secret_oauth_metadata() {
         "mcp_configuration"
     );
 
-    let remove = run(&["mcp", "remove", "docs", "--format", "json"]);
+    std::fs::remove_dir_all(temp).ok();
+}
+
+#[test]
+#[ignore = "mutates the native OS credential store; run only in isolated CI"]
+fn remote_mcp_remove_reports_present_and_absent_credentials_without_cross_account_deletion() {
+    let temp = std::env::temp_dir().join(unique_mcp_name("reason-mcp-remove-native"));
+    std::fs::create_dir_all(&temp).unwrap();
+    let first = unique_mcp_name("remove-first");
+    let second = unique_mcp_name("remove-second");
+    remove_test_credential(&first);
+    remove_test_credential(&second);
+    seed_test_mcp_oauth_credential(&first, "first-token-must-not-leak");
+    seed_test_mcp_oauth_credential(&second, "second-token-must-not-leak");
+    write_remote_mcp_test_config(&temp, &first);
+
+    let remove = reason_command()
+        .args(["mcp", "remove", &first, "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("remove remote MCP with stored credential");
     assert_eq!(remove.status.code(), Some(0));
+    assert!(remove.stderr.is_empty());
+    let text = String::from_utf8_lossy(&remove.stdout);
+    assert!(!text.contains("first-token-must-not-leak"));
+    assert!(!text.contains("second-token-must-not-leak"));
+    let json = json_stdout(&remove);
+    assert_eq!(json["result"]["operation"], "remove");
+    assert_eq!(json["result"]["status"], "ok");
+    assert_eq!(json["result"]["config_removed"], true);
+    assert_eq!(json["result"]["credential_removed"], true);
+    assert_eq!(json["result"]["credential_cleanup_status"], "removed");
+    assert!(matches!(
+        mcp_oauth_entry(&first).get_password(),
+        Err(KeyringError::NoEntry)
+    ));
+    let second_stored: Value =
+        serde_json::from_str(&mcp_oauth_entry(&second).get_password().unwrap())
+            .expect("second stored credential JSON");
+    assert_eq!(second_stored["server_name"], second);
+
+    seed_test_mcp_oauth_credential(&first, "orphan-token-must-not-leak");
+    let logout = reason_command()
+        .args(["mcp", "logout", &first, "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("logout same-name credential after config removal");
+    assert_eq!(logout.status.code(), Some(0));
+    assert!(logout.stderr.is_empty());
+    let logout_text = String::from_utf8_lossy(&logout.stdout);
+    assert!(!logout_text.contains("orphan-token-must-not-leak"));
+    assert_eq!(json_stdout(&logout)["result"]["removed"], true);
+    assert!(matches!(
+        mcp_oauth_entry(&first).get_password(),
+        Err(KeyringError::NoEntry)
+    ));
+    remove_test_credential(&second);
+
+    let absent = unique_mcp_name("remove-absent");
+    remove_test_credential(&absent);
+    write_remote_mcp_test_config(&temp, &absent);
+    let remove_absent = reason_command()
+        .args(["mcp", "remove", &absent, "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("remove remote MCP without stored credential");
+    assert_eq!(remove_absent.status.code(), Some(0));
+    let absent_json = json_stdout(&remove_absent);
+    assert_eq!(absent_json["result"]["config_removed"], true);
+    assert_eq!(absent_json["result"]["credential_removed"], false);
+    assert_eq!(absent_json["result"]["credential_cleanup_status"], "absent");
+    std::fs::remove_dir_all(temp).ok();
+}
+
+#[cfg(target_os = "linux")]
+#[test]
+#[ignore = "requires a deliberately unavailable Linux Secret Service"]
+fn remote_mcp_remove_reports_partial_failure_when_credential_store_is_unavailable() {
+    let temp = std::env::temp_dir().join(unique_mcp_name("reason-mcp-remove-headless"));
+    std::fs::create_dir_all(&temp).unwrap();
+    let name = unique_mcp_name("remove-headless");
+    write_remote_mcp_test_config(&temp, &name);
+    let missing_runtime = temp.join("missing-runtime");
+    let output = reason_command()
+        .args(["mcp", "remove", &name, "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .env(
+            "DBUS_SESSION_BUS_ADDRESS",
+            format!("unix:path={}", temp.join("missing-bus").display()),
+        )
+        .env("XDG_RUNTIME_DIR", &missing_runtime)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("remove remote MCP with unavailable credential store");
+    assert_eq!(output.status.code(), Some(1));
+    assert!(output.stderr.is_empty());
+    let text = String::from_utf8_lossy(&output.stdout);
+    assert!(!text.contains("access_token"));
+    assert!(!text.contains("refresh_token"));
+    let json = json_stdout(&output);
+    assert_eq!(json["result"]["status"], "partial_failure");
+    assert_eq!(json["result"]["config_removed"], true);
+    assert_eq!(json["result"]["credential_removed"], false);
+    assert_eq!(json["result"]["credential_cleanup_status"], "failed");
+    assert_eq!(
+        json["result"]["failure"]["failure_class"],
+        "credential_store_unavailable"
+    );
+    assert!(
+        json["result"]["failure"]["recovery"]
+            .as_str()
+            .unwrap()
+            .contains("reason mcp logout")
+    );
+    let config: Value =
+        serde_json::from_slice(&std::fs::read(temp.join("config.json")).unwrap()).unwrap();
+    assert!(config["resolution"].get("mcp_remote_readonly").is_none());
     std::fs::remove_dir_all(temp).ok();
 }
 
