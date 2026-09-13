@@ -1670,3 +1670,124 @@ fn remote_mcp_scope_step_up_requires_explicit_replace() {
     assert!(!message.contains("access_token"));
     assert!(!message.contains("refresh_token"));
 }
+
+#[test]
+fn doctor_reports_versions_sources_and_secret_free_readiness_without_live_side_effects() {
+    let temp = std::env::temp_dir().join(format!(
+        "reason-doctor-contract-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    let config = serde_json::json!({
+        "schema_version": "reason-config-v1",
+        "run": {
+            "provider": "groq",
+            "model": "openai/gpt-oss-120b"
+        },
+        "resolution": {
+            "mcp_remote_readonly": {
+                "server_id": "doctor-docs",
+                "endpoint": "https://mcp.example.test/mcp",
+                "allowed_tools": ["search"],
+                "tool": "search",
+                "read_only": true,
+                "resolver_class": "evidence_acquisition",
+                "source": "mcp:doctor-docs:search",
+                "protocol_version": "2026-07-28"
+            }
+        }
+    });
+    std::fs::write(
+        temp.join("config.json"),
+        serde_json::to_vec_pretty(&config).unwrap(),
+    )
+    .unwrap();
+    let marker = "doctor-contract-secret-must-never-leak";
+    let output = reason_command()
+        .args(["doctor", "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .env("GROQ_API_KEY", marker)
+        .env_remove("MISTRAL_API_KEY")
+        .env_remove("GEMINI_API_KEY")
+        .env_remove("NVIDIA_API_KEY")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("run doctor");
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    let text = String::from_utf8_lossy(&output.stdout);
+    assert!(!text.contains(marker));
+    let json = json_stdout(&output);
+    assert_eq!(json["schema_version"], "reason-cli-output-v1");
+    assert_eq!(json["command"], "doctor");
+    assert_eq!(json["result"]["doctor_surface"], "reason-doctor-v1");
+    assert_eq!(json["result"]["versions"]["cli"], env!("CARGO_PKG_VERSION"));
+    assert_eq!(json["result"]["versions"]["engine"], "0.4.2");
+    assert_eq!(json["result"]["config"]["status"], "valid");
+    assert!(
+        json["result"]["config"]["effective_sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|value| value == "user")
+    );
+    assert_eq!(json["result"]["provider"]["provider"], "groq");
+    assert_eq!(json["result"]["provider"]["model"], "openai/gpt-oss-120b");
+    assert_eq!(json["result"]["provider"]["local_readiness"], "ready");
+    assert_eq!(json["result"]["provider"]["live_readiness"], "skipped");
+    let groq = json["result"]["credentials"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|row| row["provider"] == "groq")
+        .unwrap();
+    assert_eq!(groq["environment"], "present");
+    assert_eq!(groq["effective_source"], "environment");
+    assert_eq!(json["result"]["mcp"]["configured"], true);
+    assert_eq!(json["result"]["mcp"]["readiness"], "not_checked");
+    assert_eq!(json["result"]["update"]["status"], "skipped");
+    std::fs::remove_dir_all(temp).ok();
+}
+
+#[test]
+fn doctor_keeps_invalid_config_diagnostic_machine_readable() {
+    let temp = std::env::temp_dir().join(format!(
+        "reason-doctor-invalid-config-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    std::fs::write(temp.join("config.json"), b"{not-json").unwrap();
+    let output = reason_command()
+        .args(["doctor", "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .env_remove("MISTRAL_API_KEY")
+        .env_remove("GEMINI_API_KEY")
+        .env_remove("GROQ_API_KEY")
+        .env_remove("NVIDIA_API_KEY")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("run doctor on invalid config");
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    let json = json_stdout(&output);
+    assert_eq!(json["result"]["status"], "attention");
+    assert_eq!(json["result"]["config"]["status"], "invalid");
+    assert!(
+        json["result"]["issues"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|issue| issue["failure_class"] == "configuration")
+    );
+    std::fs::remove_dir_all(temp).ok();
+}

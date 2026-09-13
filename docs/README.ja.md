@@ -17,6 +17,7 @@
 2. [ネイティブインストーラー](native-installers.ja.md) — Reason CLI 0.5.0向け1コマンド配布の契約。
 3. [Release provenance](release-provenance.ja.md) — `reason-v*`のOIDC/Sigstore provenance、checksum、immutable release trust。
 4. [Update / rollback / uninstall](update-rollback-uninstall.ja.md) — provenance検証済みlifecycleと保持・purge境界。
+5. [Reason doctor](reason-doctor.ja.md) — secret-freeなlocal diagnosticsと明示的なbounded live readiness check。
 3. [CLIガイド](cli.ja.md) — command、input、provider credential、config、stdin、JSON、exit semantics。
 4. [Reasoning Harnessの仕組み](how-it-works.ja.md) — candidateとauthorityを分ける実行モデル。
 5. [Product support / compatibility](support.ja.md) — supported platform、contract、provider、v0.x互換性。

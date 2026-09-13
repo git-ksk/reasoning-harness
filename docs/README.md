@@ -17,6 +17,7 @@ Start here:
 2. [Native installers](native-installers.md) — one-command macOS/Linux/Windows distribution contract for Reason CLI 0.5.0.
 3. [Release provenance](release-provenance.md) — OIDC/Sigstore provenance, checksums, and immutable-release trust for `reason-v*`.
 4. [Update / rollback / uninstall](update-rollback-uninstall.md) — provenance-verified lifecycle and retention/purge boundaries.
+5. [Reason doctor](reason-doctor.md) — secret-free local diagnostics plus explicit bounded live readiness checks.
 3. [CLI guide](cli.md) — commands, input, provider credentials, config, stdin, JSON output, and exit semantics.
 4. [How Reasoning Harness works](how-it-works.md) — the proposal-vs-authority boundary in practical terms.
 5. [Product support and compatibility](support.md) — supported platforms, contracts, provider posture, and v0.x compatibility.

@@ -1,6 +1,7 @@
 mod auth;
 mod config_commands;
 mod diagnostic_trace;
+mod doctor;
 mod human_presentation;
 mod interactive;
 mod lifecycle;
@@ -109,6 +110,7 @@ const TOP_LEVEL_AFTER_HELP: &str = r#"QUICK START:
 
 DISCOVER:
   reason examples
+  reason doctor                   # diagnose install/config/auth/readiness
   reason mcp --help              # manage read-only MCP acquisition sources
   reason help <command>
   reason completions <bash|zsh|fish|powershell>
@@ -1986,6 +1988,8 @@ enum Command {
         #[command(subcommand)]
         command: auth::AuthCommand,
     },
+    /// Diagnose installation, configuration, credentials, runtime readiness, and recovery surfaces.
+    Doctor(doctor::DoctorArgs),
     /// Discover curated provider/model choices and inspect the configured default.
     Models {
         #[arg(value_enum)]
@@ -5626,6 +5630,10 @@ impl Cli {
                 command: "setup",
                 json: args.format() == OutputFormat::Json,
             }),
+            Some(Command::Doctor(args)) => Some(ProductErrorContext {
+                command: "doctor",
+                json: args.format() == OutputFormat::Json,
+            }),
             Some(Command::Update(args)) => Some(ProductErrorContext {
                 command: "update",
                 json: args.format() == OutputFormat::Json,
@@ -5805,6 +5813,7 @@ async fn run(cli: Cli) -> Result<(), CliError> {
             Ok(())
         }
         Some(Command::Auth { command }) => auth::run(command),
+        Some(Command::Doctor(args)) => doctor::run(args).await,
         Some(Command::Setup(args)) => setup::run(args).await,
         Some(Command::Update(args)) => lifecycle::run_update(args).await,
         Some(Command::Uninstall(args)) => lifecycle::run_uninstall(args),
