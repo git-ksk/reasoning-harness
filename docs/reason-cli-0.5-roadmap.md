@@ -167,6 +167,8 @@ Typed machine failures remain separate from epistemic `unknown`. Human-friendly 
 
 `reason-v0.5.0` is not tagged until this gate is green and no unresolved P0 product blocker remains.
 
+The executable acceptance/evidence map is documented in [Reason CLI 0.5.0 fresh-install release acceptance](reason-cli-0.5-release-acceptance.md).
+
 ## Priority model
 
 ### P0 — required for CLI 0.5.0

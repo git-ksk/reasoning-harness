@@ -167,6 +167,8 @@ Typed machine failureとepistemic `unknown`は分離したままです。friendl
 
 このgateがgreenで、unresolved P0 product blockerが0になるまで`reason-v0.5.0`はtagしません。
 
+実行可能なacceptance/evidence対応は[Reason CLI 0.5.0 fresh-install release acceptance](reason-cli-0.5-release-acceptance.ja.md)に固定します。
+
 ## 優先度
 
 ### P0 — CLI 0.5.0必須
