@@ -19,6 +19,10 @@ reason model set mistral ministral-8b-latest
 
 An unlisted model is **never silently substituted**. You can still use an arbitrary provider model explicitly with `--model` for research/advanced use, but the product-facing setter accepts only catalog entries marked for general use.
 
+## Availability and compatibility
+
+`reason models` reports lifecycle `availability` independently from compatibility. Current catalog identities use `current`; trustworthy lifecycle evidence may mark an identity `deprecated` or `unavailable`; known protocol-negative controls use `known_incompatible`. Non-current identities are never selected or saved through the general-use setup/default surfaces. See [Provider/model retirement and fallback policy](model-retirement-policy.md).
+
 ## Compatibility labels
 
 - `validated` — used by the canonical v0.4.2 release-acceptance evidence for that provider identity.
@@ -29,16 +33,16 @@ These labels are **operational compatibility metadata, not correctness scores**.
 
 ## Initial curated catalog
 
-| Provider | Model | Compatibility | General-use default? | Evidence coordinate |
-| --- | --- | --- | --- | --- |
-| Mistral | `ministral-8b-latest` | `validated` | yes, recommended | v0.4.2 release acceptance |
-| Mistral | `ministral-14b-latest` | `observed` | yes | frozen `product-external-info-v4` |
-| Google | `gemini-3.5-flash-lite` | `validated` | yes, recommended | v0.4.2 release acceptance |
-| Google | `gemma-4-31b-it` | `validated` | yes | v0.4.2 release acceptance |
-| Groq | `openai/gpt-oss-120b` | `validated` | yes, recommended | v0.4.2 release acceptance |
-| Groq | `qwen/qwen3.8-27b` | `observed` | yes | frozen `product-external-info-v4` |
-| Groq | `openai/gpt-oss-20b` | `observed` | yes | frozen `product-external-info-v4` |
-| NVIDIA | `nvidia/nemotron-3.5-lightning-30b-a3b` | `limited` | no | semantic D3 negative-control evidence |
+| Provider | Model | Compatibility | Availability | General-use default? | Evidence coordinate |
+| --- | --- | --- | --- | --- | --- | --- |
+| Mistral | `ministral-8b-latest` | `validated` | `current` | yes, recommended | v0.4.2 release acceptance |
+| Mistral | `ministral-14b-latest` | `observed` | `current` | yes | frozen `product-external-info-v4` |
+| Google | `gemini-3.5-flash-lite` | `validated` | `current` | yes, recommended | v0.4.2 release acceptance |
+| Google | `gemma-4-31b-it` | `validated` | `current` | yes | v0.4.2 release acceptance |
+| Groq | `openai/gpt-oss-120b` | `validated` | `current` | yes, recommended | v0.4.2 release acceptance |
+| Groq | `qwen/qwen3.8-27b` | `observed` | `current` | yes | frozen `product-external-info-v4` |
+| Groq | `openai/gpt-oss-20b` | `observed` | `current` | yes | frozen `product-external-info-v4` |
+| NVIDIA | `nvidia/nemotron-3.5-lightning-30b-a3b` | `limited` | `known_incompatible` | no | semantic D3 negative-control evidence |
 
 The catalog is intentionally conservative. Models can be added or moved between labels only when the repository has matching runtime evidence. Model retirement/provider lifecycle handling is tracked separately; Reason must not silently replace a configured model with a different identity.
 

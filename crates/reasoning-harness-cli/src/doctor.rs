@@ -77,6 +77,8 @@ struct ProviderDiagnostic {
     model: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     compatibility: Option<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    model_availability: Option<&'static str>,
     local_readiness: &'static str,
     live_readiness: &'static str,
     live_provider_attempts: u32,
@@ -379,6 +381,7 @@ async fn diagnose_provider(
             provider: None,
             model: None,
             compatibility: None,
+            model_availability: None,
             local_readiness: "blocked",
             live_readiness: "not_run",
             live_provider_attempts: 0,
@@ -400,6 +403,7 @@ async fn diagnose_provider(
             provider: provider.map(provider_name),
             model,
             compatibility: None,
+            model_availability: None,
             local_readiness: "not_configured",
             live_readiness: "not_run",
             live_provider_attempts: 0,
@@ -407,6 +411,7 @@ async fn diagnose_provider(
         };
     };
 
+    let model_availability = model_catalog::model_availability(provider, &model);
     let compatibility = match model_catalog::validate_general_use_model(provider, &model) {
         Ok(compatibility) => Some(compatibility),
         Err(error) => {
@@ -448,6 +453,7 @@ async fn diagnose_provider(
             provider: Some(provider_name(provider)),
             model: Some(model),
             compatibility,
+            model_availability: Some(model_availability),
             local_readiness: if local_ready { "ready" } else { "blocked" },
             live_readiness: if live_check { "blocked" } else { "skipped" },
             live_provider_attempts: 0,
@@ -470,6 +476,7 @@ async fn diagnose_provider(
                 provider: Some(provider_name(provider)),
                 model: Some(model),
                 compatibility,
+                model_availability: Some(model_availability),
                 local_readiness: "ready",
                 live_readiness: "failed",
                 live_provider_attempts: 0,
@@ -493,6 +500,7 @@ async fn diagnose_provider(
             provider: Some(provider_name(provider)),
             model: Some(model),
             compatibility,
+            model_availability: Some(model_availability),
             local_readiness: "ready",
             live_readiness: "passed",
             live_provider_attempts: response.provider_attempts,
@@ -511,6 +519,7 @@ async fn diagnose_provider(
                 provider: Some(provider_name(provider)),
                 model: Some(model),
                 compatibility,
+                model_availability: Some(model_availability),
                 local_readiness: "ready",
                 live_readiness: "failed",
                 live_provider_attempts: 0,
@@ -585,9 +594,10 @@ fn emit(output: &DoctorOutput, format: OutputFormat) -> Result<(), CliError> {
                 );
             }
             println!(
-                "Provider: {} model={} local={} live={}",
+                "Provider: {} model={} availability={} local={} live={}",
                 output.provider.provider.unwrap_or("-"),
                 output.provider.model.as_deref().unwrap_or("-"),
+                output.provider.model_availability.unwrap_or("-"),
                 output.provider.local_readiness,
                 output.provider.live_readiness
             );

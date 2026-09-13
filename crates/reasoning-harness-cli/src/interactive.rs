@@ -185,14 +185,11 @@ fn should_persist_managed(ephemeral: bool, turns_len: usize) -> bool {
     !ephemeral && turns_len > 0
 }
 
-fn pin_runtime_from_session(
+fn pin_runtime_identity(
     base: &mut NaturalArgs,
-    session: &managed_session::ManagedSession,
+    runtime: &SessionRuntimeIdentity,
     reject_explicit_drift: bool,
 ) -> Result<(), CliError> {
-    let Some(runtime) = session.last_runtime() else {
-        return Ok(());
-    };
     if reject_explicit_drift {
         if base
             .provider
@@ -228,6 +225,17 @@ fn pin_runtime_from_session(
     base.max_tokens = Some(runtime.max_tokens);
     base.safety_profile = runtime.safety_profile;
     Ok(())
+}
+
+fn pin_runtime_from_session(
+    base: &mut NaturalArgs,
+    session: &managed_session::ManagedSession,
+    reject_explicit_drift: bool,
+) -> Result<(), CliError> {
+    let Some(runtime) = session.last_runtime() else {
+        return Ok(());
+    };
+    pin_runtime_identity(base, runtime, reject_explicit_drift)
 }
 
 pub(super) async fn run(
@@ -515,5 +523,46 @@ mod tests {
         assert_eq!(parse_directive("/usage").unwrap(), Some(Directive::Usage));
         assert_eq!(parse_directive("/exit").unwrap(), Some(Directive::Exit));
         assert!(parse_directive("/unknown").is_err());
+    }
+    #[test]
+    fn persisted_session_identity_never_silently_switches_provider_or_model() {
+        let runtime = SessionRuntimeIdentity {
+            natural_output_contract: NATURAL_OUTPUT_CONTRACT_ID.into(),
+            exposed_text_policy_id: EXPOSED_TEXT_POLICY_ID.into(),
+            reasoning_thread_schema_version: REASONING_THREAD_SCHEMA_VERSION,
+            provider: Provider::Groq,
+            model: "openai/gpt-oss-120b".into(),
+            max_tokens: 64,
+            safety_profile: AnswerSafetyProfileArg::Current,
+            safety_configuration_id: AnswerSafetyProfileArg::Current
+                .runtime_profile()
+                .identity()
+                .configuration_id()
+                .into(),
+            continuation_policy_id: SESSION_CONTINUATION_POLICY_ID.into(),
+            start_resolver_adapter: None,
+            start_resolver_admission: None,
+            start_trusted_verifier: None,
+            config_sources: vec![],
+        };
+
+        let mut drift = NaturalArgs {
+            provider: Some(Provider::Google),
+            model: Some("gemini-3.5-flash-lite".into()),
+            no_config: true,
+            ..Default::default()
+        };
+        let error = pin_runtime_identity(&mut drift, &runtime, true).unwrap_err();
+        assert_eq!(error.failure_class, "session_incompatible");
+        assert!(error.message.contains("persisted managed-session provider"));
+
+        let mut pinned = NaturalArgs {
+            no_config: true,
+            ..Default::default()
+        };
+        pin_runtime_identity(&mut pinned, &runtime, true).unwrap();
+        assert_eq!(pinned.provider, Some(Provider::Groq));
+        assert_eq!(pinned.model.as_deref(), Some("openai/gpt-oss-120b"));
+        assert_eq!(pinned.max_tokens, Some(64));
     }
 }
