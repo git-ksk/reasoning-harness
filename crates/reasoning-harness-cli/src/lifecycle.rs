@@ -476,6 +476,12 @@ fn current_engine_version() -> Result<Version, CliError> {
     Version::parse(reasoning_harness_core::ENGINE_VERSION)
         .map_err(|error| CliError::new("version", error.to_string()))
 }
+
+pub(crate) async fn diagnostic_update_availability() -> Result<Option<String>, CliError> {
+    let current = current_cli_version()?;
+    let latest = discover_latest_split_release().await?;
+    Ok((latest > current).then(|| latest.to_string()))
+}
 fn compare_direction(current: &Version, target: &Version) -> LifecycleDirection {
     use std::cmp::Ordering;
     match target.cmp(current) {

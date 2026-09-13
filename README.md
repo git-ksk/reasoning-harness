@@ -213,6 +213,7 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 | `reason -c` / `reason -r [SESSION]` | Continue the latest project session or resume/pick a managed session without learning backing file paths. |
 | `reason "TASK"` | Primary human-facing natural-language path; interactive TTYs show coarse Harness progress and Ctrl+C cancels safely. |
 | `reason setup` | Reason CLI 0.5.0 development: first-run provider, credential, model-default, and readiness setup. |
+| `reason doctor` / `reason doctor --live-check` | Diagnose CLI/Engine versions, config, credential-store state, provider/model readiness, sessions, trust, MCP, and optional live/update readiness without exposing secrets. |
 | `reason update` / `reason update --rollback VERSION` | Reason CLI 0.5.0 development: provenance-verified update and explicit rollback. |
 | `reason uninstall` | Reason CLI 0.5.0 development: explicit uninstall with data/credential retention by default. |
 | `reason auth ...` | Reason CLI 0.5.0 development: securely add, inspect, rotate, or remove provider credentials. |

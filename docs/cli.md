@@ -304,4 +304,8 @@ coding agent.
 `reason setup` configures provider, credential, a curated general-use model default, and local readiness in one path. Credentials use hidden TTY input or `--credential-stdin` / `--from-env`; no secret-valued argv flag exists. `--non-interactive` requires `--provider` and selects the curated recommendation when `--model` is omitted. Local readiness is network-free. A live check may consume quota or incur cost, so it runs only with explicit `--live-check` or interactive consent.
 
 
+## `reason doctor` (0.5.0 development line)
+
+`reason doctor` reports Reason CLI and Harness Engine versions separately and inspects config sources, secret-free credential state, OS credential-store availability, provider/model readiness, managed-session paths, project trust, and configured user MCP state. Default diagnostics are local-only and non-mutating. `--live-check` opts into bounded provider/MCP/update checks and may consume provider quota or incur cost. JSON uses the stable `reason-doctor-v1` result surface. See [Reason doctor](reason-doctor.md).
+
 For lifecycle management on the 0.5.0 development line, see [Update, rollback, and uninstall](update-rollback-uninstall.md).

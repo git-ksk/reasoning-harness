@@ -32,7 +32,7 @@ Human text is emitted without terminal-width byte truncation, so Unicode content
 
 The structured `run`, `semantic-check`, `verify`, and `schema` commands remain available for advanced product/automation use. Research/evaluation commands remain available as `eval`, `eval-resolution`, and `eval-judges`; they are intentionally de-emphasized in the top-level help rather than removed.
 
-`reason doctor` is not part of Phase 2 and is not advertised by the CLI.
+`reason doctor` is now part of Phase 4 diagnostics and is advertised from top-level discovery. It is read-only by default; `--live-check` opts into bounded provider/MCP/update checks and may consume provider quota or incur cost. See [Reason doctor](reason-doctor.md).
 
 ## Shell completions
 

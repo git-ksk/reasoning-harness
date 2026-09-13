@@ -230,6 +230,20 @@ struct TestOutput {
     read_only_hint: bool,
 }
 
+#[derive(Debug, Serialize)]
+pub(crate) struct McpDoctorStatus {
+    pub configured: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transport: Option<&'static str>,
+    pub readiness: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selected_tool: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub negotiated_protocol_version: Option<String>,
+}
+
 struct UserMcpConfig {
     path: PathBuf,
     root: serde_json::Value,
@@ -514,7 +528,7 @@ fn inspect(name: &str, format: OutputFormat) -> Result<(), CliError> {
     }
 }
 
-fn test(name: &str, format: OutputFormat) -> Result<(), CliError> {
+fn probe(name: &str) -> Result<TestOutput, CliError> {
     validate_name(name)?;
     let user = user_json()?;
     let cancellation = progress::CancellationRun::begin()?;
@@ -576,7 +590,53 @@ fn test(name: &str, format: OutputFormat) -> Result<(), CliError> {
     if cancellation.is_cancelled() {
         return Err(cancellation.error());
     }
-    let output = output?;
+    output
+}
+
+pub(crate) fn doctor_status(live_check: bool) -> Result<McpDoctorStatus, CliError> {
+    let user = user_json()?;
+    let configured = user
+        .local
+        .as_ref()
+        .map(|value| (value.server_id.clone(), "stdio"))
+        .or_else(|| {
+            user.remote
+                .as_ref()
+                .map(|value| (value.server_id.clone(), "streamable_http"))
+        });
+    let Some((name, transport)) = configured else {
+        return Ok(McpDoctorStatus {
+            configured: false,
+            name: None,
+            transport: None,
+            readiness: "not_configured",
+            selected_tool: None,
+            negotiated_protocol_version: None,
+        });
+    };
+    if !live_check {
+        return Ok(McpDoctorStatus {
+            configured: true,
+            name: Some(name),
+            transport: Some(transport),
+            readiness: "not_checked",
+            selected_tool: None,
+            negotiated_protocol_version: None,
+        });
+    }
+    let output = probe(&name)?;
+    Ok(McpDoctorStatus {
+        configured: true,
+        name: Some(output.name),
+        transport: Some(output.transport),
+        readiness: output.status,
+        selected_tool: Some(output.selected_tool),
+        negotiated_protocol_version: Some(output.negotiated_protocol_version),
+    })
+}
+
+fn test(name: &str, format: OutputFormat) -> Result<(), CliError> {
+    let output = probe(name)?;
     match format {
         OutputFormat::Json => print_product_json("mcp", &output).map_err(CliError::from),
         OutputFormat::Human => {

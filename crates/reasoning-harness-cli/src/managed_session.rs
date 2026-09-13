@@ -109,7 +109,7 @@ fn hex_lower(bytes: &[u8]) -> String {
     output
 }
 
-pub(super) fn managed_root_path() -> Result<PathBuf, CliError> {
+pub(crate) fn managed_root_path() -> Result<PathBuf, CliError> {
     let config = user_config_path().ok_or_else(|| {
         CliError::new(
             "session_io",

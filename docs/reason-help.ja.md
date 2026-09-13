@@ -32,7 +32,7 @@ human textはterminal幅に合わせた危険なbyte truncationを行わず、Un
 
 structuredな`run`、`semantic-check`、`verify`、`schema`はadvanced product / automation用として残します。research/evaluationの`eval`、`eval-resolution`、`eval-judges`も削除せず、top-level helpでは意図的にde-emphasizeします。
 
-`reason doctor`はPhase 2対象外なのでhelpでは案内しません。
+`reason doctor`はPhase 4 diagnosticsとして実装され、top-level discoveryから案内します。defaultはread-only / local-onlyで、`--live-check`指定時だけbounded provider / MCP / update checkを行い、provider quota消費や課金が発生する可能性があります。詳細は[Reason doctor](reason-doctor.ja.md)を参照してください。
 
 ## Shell completions
 
