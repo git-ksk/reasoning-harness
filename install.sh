@@ -4,7 +4,7 @@ set -eu
 REPOSITORY="git-ksk/reasoning-harness"
 SIGNER_WORKFLOW="git-ksk/reasoning-harness/.github/workflows/release-cli.yml"
 MIN_GH_VERSION="2.93.0"
-DEFAULT_VERSION="0.5.0"
+DEFAULT_VERSION="0.5.1"
 VERSION="$DEFAULT_VERSION"
 BIN_DIR=""
 

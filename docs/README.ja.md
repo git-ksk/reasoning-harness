@@ -14,7 +14,8 @@
 この順がおすすめです。
 
 1. [Getting Started](getting-started.ja.md) — current previewのinstallと、grounded / 根拠不足ケースを試す。
-2. [ネイティブインストーラー](native-installers.ja.md) — Reason CLI 0.5.0向け1コマンド配布の契約。
+2. [ネイティブインストーラー](native-installers.ja.md) — Reason CLI 0.5.x向け1コマンド配布の契約。
+3. [Package manager](package-managers.ja.md) — Homebrew / WinGet channelとlifecycle ownership。
 3. [Release provenance](release-provenance.ja.md) — `reason-v*`のOIDC/Sigstore provenance、checksum、immutable release trust。
 4. [Update / rollback / uninstall](update-rollback-uninstall.ja.md) — provenance検証済みlifecycleと保持・purge境界。
 5. [Reason doctor](reason-doctor.ja.md) — secret-freeなlocal diagnosticsと明示的なbounded live readiness check。

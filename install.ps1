@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter()]
-    [string]$Version = "0.5.0",
+    [string]$Version = "0.5.1",
 
     [Parameter()]
     [string]$BinDir = $(if ($env:LOCALAPPDATA) { Join-Path $env:LOCALAPPDATA "Programs\Reason\bin" } else { Join-Path $HOME ".local\bin" })

@@ -10,6 +10,19 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 - Issue #355 decouples the user-facing Reason CLI package version from the Harness Engine (`reasoning-harness-core`) package version. `v0.4.2` remains the final unified historical release; future CLI releases use `reason-vX.Y.Z` tags. Machine contract IDs remain independent compatibility coordinates, and provider crate versions remain internal implementation coordinates rather than a third user-facing product version.
 
+## [0.5.1] - 2026-09-13
+
+Patch distribution release for Issue #375. Harness Engine remains 0.4.2 with no authority/correctness semantic changes.
+
+### Added
+
+- Package-manager ownership detection for Homebrew Cellar and WinGet portable-package installs.
+- Homebrew/WinGet distribution documentation and manager-native upgrade/uninstall recovery.
+
+### Changed
+
+- `reason update` / rollback and `reason uninstall` refuse to mutate package-manager-owned executables and return typed `external_package_manager` recovery; non-mutating checks/dry-runs remain available.
+
 ## [0.4.2] - 2026-09-11
 
 Patch external-preview release for investigation utility and provider parity. v0.4.2 preserves the v0.4.x correctness/authority boundary while hardening the stochastic investigation control path and proving the final candidate across Mistral, Groq, Gemini, and Gemma under frozen metric-v13 acceptance.
