@@ -103,7 +103,7 @@ jobs:
 
       - name: Preserve first observation report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: product-external-info-v1-mistral-ministral-8b-seed-15000
           path: |
