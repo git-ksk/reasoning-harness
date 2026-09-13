@@ -2,21 +2,21 @@
 
 [日本語](package-managers.ja.md) | English
 
-Reason CLI supports package-manager-owned installations starting with **0.5.1**. The package-manager channels reuse the same immutable `reason-v*` native archives published by `git-ksk/reasoning-harness`; they do not rebuild Harness Engine or change its authority/correctness semantics.
+Reason CLI supports package-manager-owned installations starting with **0.5.2**. The package-manager channels reuse the same immutable `reason-v*` native archives published by `git-ksk/reasoning-harness`; they do not rebuild Harness Engine or change its authority/correctness semantics.
 
 ## Homebrew
 
-The upstream tap is `git-ksk/reason`:
+The upstream tap is `git-ksk/homebrew-tap` (`git-ksk/tap`):
 
 ```bash
-brew install git-ksk/reason/reason
+brew install git-ksk/tap/reason
 ```
 
 Upgrade and uninstall through Homebrew:
 
 ```bash
-brew upgrade reason
-brew uninstall reason
+brew upgrade git-ksk/tap/reason
+brew uninstall git-ksk/tap/reason
 ```
 
 The formula selects the published macOS arm64, macOS x86_64, or Linux x86_64 archive and pins its SHA-256. Homebrew owns the Cellar executable and symlink lifecycle.

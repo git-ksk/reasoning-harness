@@ -10,6 +10,15 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 - Issue #355 decouples the user-facing Reason CLI package version from the Harness Engine (`reasoning-harness-core`) package version. `v0.4.2` remains the final unified historical release; future CLI releases use `reason-vX.Y.Z` tags. Machine contract IDs remain independent compatibility coordinates, and provider crate versions remain internal implementation coordinates rather than a third user-facing product version.
 
+## [0.5.2] - 2026-09-14
+
+Patch release for package-manager ownership correctness discovered during physical Homebrew acceptance.
+
+### Fixed
+
+- Resolve the running executable through symlinks before classifying Homebrew/WinGet ownership, so package-manager installs cannot be overwritten by `reason update`, rollback, or uninstall.
+- Use fully-qualified Homebrew recovery commands (`git-ksk/tap/reason`) to avoid future short-name ambiguity.
+
 ## [0.5.1] - 2026-09-13
 
 Patch distribution release for Issue #375. Harness Engine remains 0.4.2 with no authority/correctness semantic changes.
