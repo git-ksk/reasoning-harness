@@ -362,4 +362,6 @@ CLI ergonomicsは成熟したterminal-first AI toolから意図的に学んで�
 
 `reason doctor`はReason CLI / Harness Engine versionを別々に表示し、config source、secret-freeなcredential state、OS credential store availability、provider/model readiness、managed-session path、project trust、configured user MCP stateを確認します。defaultはlocal-onlyかつnon-mutatingです。`--live-check`指定時だけbounded provider / MCP / update checkを行い、provider quota消費や課金が発生する可能性があります。JSONはstableな`reason-doctor-v1` result surfaceを使います。詳細は[Reason doctor](reason-doctor.ja.md)を参照してください。
 
+recovery-orientedなproduct failureでは、既存typed failure classを維持したままexecution / trust / recovery guidanceを追加します。human errorは`What failed`、`Task execution`、`Result trust`、`Next`を表示し、JSON product failureは`failure.failure_class`を変えずadditiveな`remediation` objectを返します。詳細は[Operational failure recovery](reason-recovery.ja.md)を参照してください。
+
 0.5.0開発ラインのlifecycle管理は[Update / rollback / uninstall](update-rollback-uninstall.ja.md)を参照してください。

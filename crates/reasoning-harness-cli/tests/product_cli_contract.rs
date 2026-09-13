@@ -132,6 +132,15 @@ fn json_operational_failure_is_exit_one_and_stays_machine_readable() {
     assert_eq!(value["command"], "run");
     assert_eq!(value["result"]["status"], "failed");
     assert_eq!(value["result"]["failure"]["failure_class"], "input");
+    assert_eq!(
+        value["result"]["remediation"]["task_execution"],
+        "not_started"
+    );
+    assert_eq!(value["result"]["remediation"]["result_trust"], "no_result");
+    assert_eq!(
+        value["result"]["remediation"]["next_command"],
+        "reason help"
+    );
 }
 
 #[test]
@@ -167,6 +176,46 @@ fn generic_groq_empty_environment_override_is_typed_and_does_not_fall_back_to_os
             .unwrap_or_default()
             .contains("GROQ_API_KEY")
     );
+    assert_eq!(
+        value["result"]["remediation"]["what_failed"],
+        "provider credential or native credential-store readiness"
+    );
+    assert_eq!(
+        value["result"]["remediation"]["task_execution"],
+        "not_started"
+    );
+    assert_eq!(value["result"]["remediation"]["result_trust"], "no_result");
+    assert_eq!(
+        value["result"]["remediation"]["next_command"],
+        "reason auth status"
+    );
+}
+
+#[test]
+fn human_operational_failure_explains_execution_trust_and_safe_recovery() {
+    let output = reason_command()
+        .args([
+            "investigate this target",
+            "--provider",
+            "groq",
+            "--model",
+            "openai/gpt-oss-120b",
+            "--no-config",
+            "--format",
+            "human",
+        ])
+        .env("GROQ_API_KEY", "")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("run human credential failure");
+    assert_eq!(output.status.code(), Some(1));
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("Error:"));
+    assert!(stderr.contains("What failed: provider credential"));
+    assert!(stderr.contains("Task execution: the task did not start"));
+    assert!(stderr.contains("Result trust: no result was produced"));
+    assert!(stderr.contains("Next: reason auth status"));
 }
 
 #[test]

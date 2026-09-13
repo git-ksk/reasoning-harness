@@ -4506,10 +4506,236 @@ struct ProductFailure {
     message: String,
 }
 
+#[derive(Debug, Clone, Serialize)]
+struct ProductRemediation {
+    what_failed: &'static str,
+    task_execution: &'static str,
+    result_trust: &'static str,
+    next_command: String,
+}
+
 #[derive(Debug, Serialize)]
 struct ProductFailureOutput {
     status: &'static str,
     failure: ProductFailure,
+    remediation: ProductRemediation,
+}
+
+fn product_remediation(command: &str, failure_class: &str) -> ProductRemediation {
+    let (what_failed, task_execution, result_trust, next_command) = if matches!(
+        failure_class,
+        "credentials"
+            | "credential_store_unavailable"
+            | "credential_store_error"
+            | "credential_exists"
+            | "auth_input"
+    ) {
+        (
+            "provider credential or native credential-store readiness",
+            "not_started",
+            "no_result",
+            "reason auth status",
+        )
+    } else if matches!(
+        failure_class,
+        "model_unlisted" | "model_not_general_use" | "unsupported_capability" | "invalid_request"
+    ) {
+        (
+            "provider/model compatibility or requested capability",
+            "not_started",
+            "no_result",
+            "reason models",
+        )
+    } else if matches!(
+        failure_class,
+        "rate_limit"
+            | "quota"
+            | "provider_unavailable"
+            | "provider_error"
+            | "transport"
+            | "timeout"
+    ) {
+        (
+            "provider connectivity or service availability",
+            "request_may_have_started",
+            "no_trustworthy_result",
+            "reason doctor --live-check",
+        )
+    } else if matches!(
+        failure_class,
+        "protocol" | "structured_output" | "materialization_protocol"
+    ) {
+        (
+            "provider response/protocol compatibility",
+            "request_may_have_started",
+            "no_trustworthy_result",
+            "reason doctor --live-check",
+        )
+    } else if failure_class == "configuration"
+        || failure_class.starts_with("configuration_")
+        || failure_class == "setup_input"
+    {
+        (
+            "configuration discovery, parsing, or precedence",
+            "not_started",
+            "no_result",
+            "reason config sources",
+        )
+    } else if failure_class == "project_trust" || failure_class.starts_with("project_trust_") {
+        (
+            "project trust validation",
+            "not_started",
+            "no_result",
+            "reason trust status",
+        )
+    } else if failure_class == "mcp_configuration" {
+        (
+            "MCP configuration or read-only policy validation",
+            "not_started",
+            "no_result",
+            "reason mcp list",
+        )
+    } else if failure_class.starts_with("mcp_")
+        || matches!(
+            failure_class,
+            "authentication" | "permission_denied" | "negotiation_failure" | "tool_failed"
+        )
+    {
+        (
+            "MCP configuration, authentication, negotiation, or read-only readiness",
+            "external_work_may_have_started",
+            "no_trustworthy_result",
+            "reason doctor --live-check",
+        )
+    } else if failure_class == "session_invalid"
+        || failure_class == "session_io"
+        || failure_class == "session_state"
+        || failure_class == "session_context"
+        || failure_class == "session_privacy"
+        || failure_class == "session_export"
+        || failure_class == "session_failure"
+    {
+        (
+            "managed or explicit session state",
+            "not_completed",
+            "no_new_result",
+            "reason session list",
+        )
+    } else if failure_class == "version"
+        || failure_class == "lifecycle_io"
+        || failure_class == "update_io"
+        || failure_class == "uninstall_io"
+        || failure_class == "release_integrity"
+        || failure_class == "release_manifest"
+        || failure_class == "release_archive"
+        || failure_class == "release_binary"
+        || failure_class == "release_discovery"
+        || failure_class == "release_download"
+        || failure_class == "release_network"
+        || failure_class == "provenance_verifier"
+        || failure_class == "historical_release_boundary"
+        || failure_class == "rollback_direction"
+        || failure_class == "rollback_required"
+        || failure_class == "engine_change_confirmation_required"
+    {
+        (
+            "Reason CLI version, update, or distribution integrity",
+            "not_applicable",
+            "no_new_result",
+            "reason update --check",
+        )
+    } else if failure_class == "cancelled" {
+        (
+            "the requested operation was cancelled",
+            "interrupted",
+            "no_incomplete_result_committed",
+            "reason doctor",
+        )
+    } else if failure_class == "input"
+        || failure_class == "confirmation"
+        || failure_class == "confirmation_required"
+    {
+        (
+            "command input or required confirmation",
+            "not_started",
+            "no_result",
+            "reason help",
+        )
+    } else if failure_class == "usage_budget_exceeded"
+        || failure_class == "usage_budget_unmeasurable"
+    {
+        (
+            "configured provider usage budget",
+            "stopped_before_next_model_call",
+            "no_new_final_result",
+            "reason config list",
+        )
+    } else {
+        (
+            "the requested Reason operation",
+            "unknown_or_not_completed",
+            "no_trustworthy_new_result",
+            "reason doctor",
+        )
+    };
+    let next_command = if command == "mcp" && next_command == "reason doctor --live-check" {
+        "reason mcp list".to_string()
+    } else {
+        next_command.to_string()
+    };
+    ProductRemediation {
+        what_failed,
+        task_execution,
+        result_trust,
+        next_command,
+    }
+}
+
+fn human_task_execution(state: &str) -> &'static str {
+    match state {
+        "not_started" => "the task did not start",
+        "request_may_have_started" => {
+            "a provider request may have started, but the task did not complete"
+        }
+        "external_work_may_have_started" => {
+            "external MCP work may have started, but the task did not complete"
+        }
+        "not_completed" => "the operation did not complete",
+        "not_applicable" => "no reasoning task was executed",
+        "interrupted" => "the operation started but was interrupted",
+        "stopped_before_next_model_call" => "execution stopped before the next model call",
+        _ => "execution may have started, but completion is not confirmed",
+    }
+}
+
+fn human_result_trust(state: &str) -> &'static str {
+    match state {
+        "no_result" => "no result was produced",
+        "no_trustworthy_result" => {
+            "no result from this failed operation should be treated as trustworthy"
+        }
+        "no_new_result" => "no new result was produced",
+        "no_incomplete_result_committed" => {
+            "no incomplete result was committed as a successful result"
+        }
+        "no_new_final_result" => "no new final result was produced",
+        _ => "no new result should be treated as trustworthy",
+    }
+}
+
+fn print_product_failure_human(command: Option<&str>, error: &CliError) {
+    let remediation = product_remediation(command.unwrap_or("reason"), error.failure_class);
+    eprintln!("Error: {}", error.message);
+    eprintln!("What failed: {}", remediation.what_failed);
+    eprintln!(
+        "Task execution: {}",
+        human_task_execution(remediation.task_execution)
+    );
+    eprintln!(
+        "Result trust: {}",
+        human_result_trust(remediation.result_trust)
+    );
+    eprintln!("Next: {}", remediation.next_command);
 }
 
 fn generated_session_thread_id() -> String {
@@ -5768,7 +5994,10 @@ async fn reason_main() -> ExitCode {
                         eprintln!("{serialization_error}");
                     }
                 } else {
-                    eprintln!("{}", error.message);
+                    print_product_failure_human(
+                        error_context.map(|context| context.command),
+                        &error,
+                    );
                 }
             }
             ExitCode::FAILURE
@@ -5997,9 +6226,9 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                         }),
                     };
                     match format {
-                        OutputFormat::Human => eprintln!(
-                            "semantic-check failed: class={} {}",
-                            error.failure_class, error.message
+                        OutputFormat::Human => print_product_failure_human(
+                            Some("semantic-check"),
+                            &CliError::new(error.failure_class, error.message.clone()),
                         ),
                         OutputFormat::Json => print_product_json("semantic-check", &output)?,
                     }
@@ -6057,9 +6286,10 @@ async fn run(cli: Cli) -> Result<(), CliError> {
                         }),
                     };
                     match format {
-                        OutputFormat::Human => {
-                            eprintln!("semantic-check failed: class={failure_class} {error}")
-                        }
+                        OutputFormat::Human => print_product_failure_human(
+                            Some("semantic-check"),
+                            &CliError::new(failure_class, error.to_string()),
+                        ),
                         OutputFormat::Json => print_product_json("semantic-check", &output)?,
                     }
                     Err(CliError::emitted(
@@ -8630,6 +8860,7 @@ fn print_product_failure_json(
                 failure_class,
                 message: message.to_string(),
             },
+            remediation: product_remediation(command, failure_class),
         },
     )
 }
@@ -8819,12 +9050,46 @@ mod candidate_json_tests {
                     failure_class: "input",
                     message: "bad input".into(),
                 },
+                remediation: product_remediation("run", "input"),
             },
         })
         .unwrap();
         assert_eq!(value["command"], "run");
         assert_eq!(value["result"]["status"], "failed");
         assert_eq!(value["result"]["failure"]["failure_class"], "input");
+        assert_eq!(
+            value["result"]["remediation"]["task_execution"],
+            "not_started"
+        );
+        assert_eq!(value["result"]["remediation"]["result_trust"], "no_result");
+        assert_eq!(
+            value["result"]["remediation"]["next_command"],
+            "reason help"
+        );
+    }
+
+    #[test]
+    fn remediation_catalog_covers_phase4_required_failure_families() {
+        let cases = [
+            ("ask", "credentials", "reason auth status"),
+            ("ask", "model_unlisted", "reason models"),
+            ("ask", "rate_limit", "reason doctor --live-check"),
+            ("ask", "protocol", "reason doctor --live-check"),
+            ("config", "configuration", "reason config sources"),
+            ("trust", "project_trust", "reason trust status"),
+            ("mcp", "mcp_configuration", "reason mcp list"),
+            ("mcp", "mcp_negotiation", "reason mcp list"),
+            ("session", "session_invalid", "reason session list"),
+            ("update", "release_integrity", "reason update --check"),
+            ("update", "rollback_required", "reason update --check"),
+        ];
+        for (command, class, next) in cases {
+            let remediation = product_remediation(command, class);
+            assert!(!remediation.what_failed.is_empty(), "{class}");
+            assert!(!remediation.task_execution.is_empty(), "{class}");
+            assert!(!remediation.result_trust.is_empty(), "{class}");
+            assert_eq!(remediation.next_command, next, "{class}");
+        }
     }
 
     #[test]
