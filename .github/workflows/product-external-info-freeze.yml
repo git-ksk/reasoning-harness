@@ -116,8 +116,8 @@ jobs:
       - name: Test MCP read-only and external-admission boundaries
         run: |
           set -euo pipefail
-          cargo test --locked -p reasoning-harness-providers mcp_readonly -- --nocapture
-          cargo test --locked -p reasoning-harness-providers external_admission -- --nocapture
+          cargo test --locked -p reasoning-harness-providers mcp_readonly -- --nocapture --test-threads=1
+          cargo test --locked -p reasoning-harness-providers external_admission -- --nocapture --test-threads=1
 
       - name: Run deterministic external-resolution safety coverage
         run: |
