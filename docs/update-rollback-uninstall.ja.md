@@ -20,7 +20,7 @@ reason update --check --format json
 明示versionも確認できます。
 
 ```bash
-reason update --check --version 0.5.1
+reason update --check --version 0.5.2
 ```
 
 ## updateを適用する
@@ -65,7 +65,7 @@ provenance、manifest、checksum、Engine change、confirmationはupdateと同�
 
 ## Package-manager管理のinstall
 
-Reason CLI 0.5.1以降、Homebrew / WinGet管理下のexecutableはself-update / self-uninstallしません。`reason update --check`はnon-mutatingのまま使えますが、apply / rollbackはtyped `external_package_manager` recoveryとして失敗し、`brew upgrade reason`または`winget upgrade --id git-ksk.Reason`を案内します。`reason uninstall`のapplyも同様にmanager-native uninstallを案内します。package manager stateをmutation authorityとして維持するためです。詳しくは[Package managerからのインストール](package-managers.ja.md)を参照してください。
+Reason CLI 0.5.2以降、Homebrew / WinGet管理下のexecutableはself-update / self-uninstallしません。`reason update --check`はnon-mutatingのまま使えますが、apply / rollbackはtyped `external_package_manager` recoveryとして失敗し、`brew upgrade git-ksk/tap/reason`または`winget upgrade --id git-ksk.Reason`を案内します。`reason uninstall`のapplyも同様にmanager-native uninstallを案内します。package manager stateをmutation authorityとして維持するためです。詳しくは[Package managerからのインストール](package-managers.ja.md)を参照してください。
 
 ## uninstall
 

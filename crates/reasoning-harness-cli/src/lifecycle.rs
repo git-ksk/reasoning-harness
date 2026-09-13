@@ -45,27 +45,37 @@ impl ExternalPackageManager {
 
     const fn update_command(self) -> &'static str {
         match self {
-            Self::Homebrew => "brew upgrade reason",
+            Self::Homebrew => "brew upgrade git-ksk/tap/reason",
             Self::Winget => "winget upgrade --id git-ksk.Reason",
         }
     }
 
     const fn uninstall_command(self) -> &'static str {
         match self {
-            Self::Homebrew => "brew uninstall reason",
+            Self::Homebrew => "brew uninstall git-ksk/tap/reason",
             Self::Winget => "winget uninstall --id git-ksk.Reason",
         }
     }
 }
 
 fn external_package_manager(path: &Path) -> Option<ExternalPackageManager> {
+    classify_package_manager_path(path).or_else(|| {
+        fs::canonicalize(path)
+            .ok()
+            .as_deref()
+            .and_then(classify_package_manager_path)
+    })
+}
+
+fn classify_package_manager_path(path: &Path) -> Option<ExternalPackageManager> {
     let value = path.to_string_lossy().replace('\\', "/");
     let lower = value.to_ascii_lowercase();
     if lower.contains("/cellar/reason/") || lower.contains("/homebrew/cellar/reason/") {
         Some(ExternalPackageManager::Homebrew)
     } else if lower.contains("/microsoft/winget/packages/")
-        || lower.contains("/winget/packages/git-ksk.reason_")
-        || lower.contains("/winget/packages/git-ksk.reason/")
+        || lower.split('/').any(|component| {
+            component == "git-ksk.reason" || component.starts_with("git-ksk.reason_")
+        })
     {
         Some(ExternalPackageManager::Winget)
     } else {
@@ -1571,6 +1581,73 @@ mod package_manager_tests {
             )),
             Some(ExternalPackageManager::Winget)
         );
+    }
+
+    #[test]
+    fn detects_winget_custom_portable_root() {
+        assert_eq!(
+            external_package_manager(Path::new(
+                r"D:\PortableApps\git-ksk.Reason_Microsoft.Winget.Source_8wekyb3d8bbwe\reason.exe"
+            )),
+            Some(ExternalPackageManager::Winget)
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn detects_winget_through_links_symlink() {
+        use std::fs;
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let root = std::env::temp_dir().join(format!("reason-winget-package-manager-{nonce}"));
+        let package_binary = root
+            .join("CustomPortableRoot")
+            .join("git-ksk.Reason_Microsoft.Winget.Source_8wekyb3d8bbwe")
+            .join("reason.exe");
+        let link = root.join("Links/reason.exe");
+        fs::create_dir_all(package_binary.parent().unwrap()).unwrap();
+        fs::create_dir_all(link.parent().unwrap()).unwrap();
+        fs::write(&package_binary, b"reason").unwrap();
+        symlink(&package_binary, &link).unwrap();
+
+        assert_eq!(
+            external_package_manager(&link),
+            Some(ExternalPackageManager::Winget)
+        );
+
+        fs::remove_dir_all(root).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn detects_homebrew_through_executable_symlink() {
+        use std::fs;
+        use std::os::unix::fs::symlink;
+        use std::time::{SystemTime, UNIX_EPOCH};
+
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let root = std::env::temp_dir().join(format!("reason-package-manager-{nonce}"));
+        let cellar_binary = root.join("Cellar/reason/0.5.2/bin/reason");
+        let link = root.join("bin/reason");
+        fs::create_dir_all(cellar_binary.parent().unwrap()).unwrap();
+        fs::create_dir_all(link.parent().unwrap()).unwrap();
+        fs::write(&cellar_binary, b"reason").unwrap();
+        symlink(&cellar_binary, &link).unwrap();
+
+        assert_eq!(
+            external_package_manager(&link),
+            Some(ExternalPackageManager::Homebrew)
+        );
+
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]
