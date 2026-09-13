@@ -1,0 +1,149 @@
+name: fresh-install-acceptance
+
+on:
+  pull_request:
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'crates/reasoning-harness-core/**'
+      - 'crates/reasoning-harness-cli/**'
+      - 'crates/reasoning-harness-providers/**'
+      - 'install.sh'
+      - 'install.ps1'
+      - 'scripts/test_fresh_install_acceptance.py'
+      - 'scripts/test_installer_contract.py'
+      - 'scripts/test_installer_contract.ps1'
+      - 'scripts/test_release_provenance_contract.py'
+      - '.github/workflows/fresh-install-acceptance.yml'
+      - '.github/workflows/release-cli.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'crates/reasoning-harness-core/**'
+      - 'crates/reasoning-harness-cli/**'
+      - 'crates/reasoning-harness-providers/**'
+      - 'install.sh'
+      - 'install.ps1'
+      - 'scripts/test_fresh_install_acceptance.py'
+      - 'scripts/test_installer_contract.py'
+      - 'scripts/test_installer_contract.ps1'
+      - 'scripts/test_release_provenance_contract.py'
+      - '.github/workflows/fresh-install-acceptance.yml'
+      - '.github/workflows/release-cli.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-candidate:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            asset: linux-x86_64
+            executable: target/release/reason
+            archive: tar.gz
+          - os: macos-15
+            asset: macos-aarch64
+            executable: target/release/reason
+            archive: tar.gz
+          - os: macos-15-intel
+            asset: macos-x86_64
+            executable: target/release/reason
+            archive: tar.gz
+          - os: windows-2025
+            asset: windows-x86_64
+            executable: target/release/reason.exe
+            archive: zip
+    runs-on: ${{ matrix.os }}
+    name: package candidate (${{ matrix.asset }})
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+      - uses: Swatinem/rust-cache@v2
+      - name: Assert release coordinate boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          META="$(cargo metadata --locked --no-deps --format-version 1)"
+          CLI_VERSION="$(printf '%s' "$META" | python -c 'import json,sys; d=json.load(sys.stdin); print(next(p["version"] for p in d["packages"] if p["name"]=="reasoning-harness-cli"))')"
+          ENGINE_VERSION="$(printf '%s' "$META" | python -c 'import json,sys; d=json.load(sys.stdin); print(next(p["version"] for p in d["packages"] if p["name"]=="reasoning-harness-core"))')"
+          test "$CLI_VERSION" = "0.5.0"
+          test "$ENGINE_VERSION" = "0.4.2"
+      - name: Build release candidate binary
+        run: cargo build --locked --release -p reasoning-harness-cli --bin reason
+      - name: Package Unix candidate in release shape
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          NAME="reason-v0.5.0-${{ matrix.asset }}"
+          mkdir "$NAME"
+          cp "${{ matrix.executable }}" "$NAME/reason"
+          cp README.md LICENSE CHANGELOG.md "$NAME/"
+          tar -czf "$NAME.tar.gz" "$NAME"
+      - name: Package Windows candidate in release shape
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $name = "reason-v0.5.0-${{ matrix.asset }}"
+          New-Item -ItemType Directory -Path $name | Out-Null
+          Copy-Item "${{ matrix.executable }}" "$name/reason.exe"
+          Copy-Item README.md, LICENSE, CHANGELOG.md $name
+          Compress-Archive -Path $name -DestinationPath "$name.zip"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: phase5-${{ matrix.asset }}
+          path: reason-v0.5.0-${{ matrix.asset }}.${{ matrix.archive }}
+          if-no-files-found: error
+
+  fresh-install:
+    needs: package-candidate
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            asset: linux-x86_64
+            archive: tar.gz
+          - os: macos-15
+            asset: macos-aarch64
+            archive: tar.gz
+          - os: macos-15-intel
+            asset: macos-x86_64
+            archive: tar.gz
+          - os: windows-2025
+            asset: windows-x86_64
+            archive: zip
+    runs-on: ${{ matrix.os }}
+    name: no-Rust consumer (${{ matrix.asset }})
+    steps:
+      - uses: actions/checkout@v7
+      # Deliberately no Rust toolchain action in this consumer job.
+      - uses: actions/download-artifact@v8
+        with:
+          name: phase5-${{ matrix.asset }}
+          path: phase5-dist
+      - name: Native binary fresh-install acceptance
+        shell: bash
+        run: >-
+          python scripts/test_fresh_install_acceptance.py
+          --archive "phase5-dist/reason-v0.5.0-${{ matrix.asset }}.${{ matrix.archive }}"
+          --asset "${{ matrix.asset }}"
+          --repo-root .
+
+  distribution-contract:
+    runs-on: ubuntu-24.04
+    name: installer/provenance fail-closed contract
+    steps:
+      - uses: actions/checkout@v7
+      - name: Deterministic installer and provenance contracts
+        run: |
+          python3 scripts/test_installer_contract.py
+          python3 scripts/test_release_provenance_contract.py

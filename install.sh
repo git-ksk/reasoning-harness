@@ -4,7 +4,7 @@ set -eu
 REPOSITORY="git-ksk/reasoning-harness"
 SIGNER_WORKFLOW="git-ksk/reasoning-harness/.github/workflows/release-cli.yml"
 MIN_GH_VERSION="2.93.0"
-DEFAULT_VERSION="0.4.2"
+DEFAULT_VERSION="0.5.0"
 VERSION="$DEFAULT_VERSION"
 BIN_DIR=""
 
@@ -16,7 +16,7 @@ Usage:
   install.sh [--version VERSION|TAG] [--bin-dir DIR]
 
 Options:
-  --version VERSION|TAG  CLI version or release tag (default: 0.4.2)
+  --version VERSION|TAG  CLI version or release tag (default: 0.5.0)
                          Examples: 0.4.2, v0.4.2, 0.5.0, reason-v0.5.0
   --bin-dir DIR          Install directory (default: $HOME/.local/bin)
   -h, --help             Show this help.
