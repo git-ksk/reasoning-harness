@@ -137,7 +137,7 @@ Phase 3 remains safe-by-default after hardening: MCP output is acquisition data 
 
 - **#357 P0 — implemented:** `reason doctor` reports Reason CLI and Harness Engine versions separately; checks installation/config sources, credential presence without secret values, provider/model readiness, OS credential-store availability, managed-session paths, project trust, and configured user-MCP readiness. Default diagnostics are local-only; explicit `--live-check` adds bounded provider/MCP/update checks. Human and machine-readable diagnostics share `reason-doctor-v1`.
 - **#370 P0 — implemented:** a centralized remediation map covers credential, model/protocol, quota/rate-limit/outage, structured-output, config/trust, MCP, session, update/version, and distribution-integrity failures. Human errors state What failed / Task execution / Result trust / Next; JSON preserves existing `failure_class` values and adds `remediation` metadata.
-- **#385 P1:** explicit model retirement/fallback policy. Default behavior never silently changes provider/model execution identity; any future fallback chain records the actual provider/model used.
+- **#385 P1 — implemented:** catalog/doctor expose model lifecycle availability and non-current identities fail closed. Reason never silently changes provider/model identity, persisted sessions remain pinned to their recorded identity, and Reason CLI 0.5.0 has no automatic fallback chain.
 - **#384 P1:** proxy/custom-CA/headless network diagnostics without recommending insecure TLS bypass.
 
 Typed machine failures remain separate from epistemic `unknown`. Human-friendly remediation must not collapse operational failure into semantic uncertainty.

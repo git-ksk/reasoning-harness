@@ -4538,7 +4538,14 @@ fn product_remediation(command: &str, failure_class: &str) -> ProductRemediation
         )
     } else if matches!(
         failure_class,
-        "model_unlisted" | "model_not_general_use" | "unsupported_capability" | "invalid_request"
+        "model_unlisted"
+            | "model_not_general_use"
+            | "model_deprecated"
+            | "model_unavailable"
+            | "model_known_incompatible"
+            | "model_catalog_status"
+            | "unsupported_capability"
+            | "invalid_request"
     ) {
         (
             "provider/model compatibility or requested capability",

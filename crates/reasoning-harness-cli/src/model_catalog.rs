@@ -33,6 +33,7 @@ struct ModelSpec {
     provider: Provider,
     model: &'static str,
     compatibility: Compatibility,
+    availability: &'static str,
     general_use: bool,
     recommended: bool,
     evidence: &'static str,
@@ -44,6 +45,7 @@ const MODELS: &[ModelSpec] = &[
         provider: Provider::Mistral,
         model: "ministral-8b-latest",
         compatibility: Compatibility::Validated,
+        availability: "current",
         general_use: true,
         recommended: true,
         evidence: "v0.4.2_release_acceptance",
@@ -53,6 +55,7 @@ const MODELS: &[ModelSpec] = &[
         provider: Provider::Mistral,
         model: "ministral-14b-latest",
         compatibility: Compatibility::Observed,
+        availability: "current",
         general_use: true,
         recommended: false,
         evidence: "product_external_info_v4",
@@ -62,6 +65,7 @@ const MODELS: &[ModelSpec] = &[
         provider: Provider::Google,
         model: "gemini-3.5-flash-lite",
         compatibility: Compatibility::Validated,
+        availability: "current",
         general_use: true,
         recommended: true,
         evidence: "v0.4.2_release_acceptance",
@@ -71,6 +75,7 @@ const MODELS: &[ModelSpec] = &[
         provider: Provider::Google,
         model: "gemma-4-31b-it",
         compatibility: Compatibility::Validated,
+        availability: "current",
         general_use: true,
         recommended: false,
         evidence: "v0.4.2_release_acceptance",
@@ -80,6 +85,7 @@ const MODELS: &[ModelSpec] = &[
         provider: Provider::Groq,
         model: "openai/gpt-oss-120b",
         compatibility: Compatibility::Validated,
+        availability: "current",
         general_use: true,
         recommended: true,
         evidence: "v0.4.2_release_acceptance",
@@ -89,6 +95,7 @@ const MODELS: &[ModelSpec] = &[
         provider: Provider::Groq,
         model: "qwen/qwen3.8-27b",
         compatibility: Compatibility::Observed,
+        availability: "current",
         general_use: true,
         recommended: false,
         evidence: "product_external_info_v4",
@@ -98,6 +105,7 @@ const MODELS: &[ModelSpec] = &[
         provider: Provider::Groq,
         model: "openai/gpt-oss-20b",
         compatibility: Compatibility::Observed,
+        availability: "current",
         general_use: true,
         recommended: false,
         evidence: "product_external_info_v4",
@@ -107,6 +115,7 @@ const MODELS: &[ModelSpec] = &[
         provider: Provider::Nvidia,
         model: "nvidia/nemotron-3.5-lightning-30b-a3b",
         compatibility: Compatibility::Limited,
+        availability: "known_incompatible",
         general_use: false,
         recommended: false,
         evidence: "semantic_d3_negative_control",
@@ -139,6 +148,7 @@ struct ModelRow {
     provider: &'static str,
     model: &'static str,
     compatibility: &'static str,
+    availability: &'static str,
     general_use: bool,
     recommended: bool,
     evidence: &'static str,
@@ -152,6 +162,7 @@ struct ConfiguredDefault {
     provider: &'static str,
     model: String,
     catalog_status: &'static str,
+    availability: &'static str,
     credential_status: &'static str,
 }
 
@@ -169,6 +180,7 @@ struct ModelSetOutput {
     provider: &'static str,
     model: &'static str,
     compatibility: &'static str,
+    availability: &'static str,
     credential_status: &'static str,
     config_path: String,
 }
@@ -186,6 +198,7 @@ pub(crate) fn list(
             provider: provider_name(*configured_provider),
             model: model.clone(),
             catalog_status: spec.map_or("unlisted", |entry| entry.compatibility.as_str()),
+            availability: spec.map_or("unlisted", |entry| entry.availability),
             credential_status: credential_status(*configured_provider),
         }
     });
@@ -205,6 +218,7 @@ pub(crate) fn list(
             provider: provider_name(entry.provider),
             model: entry.model,
             compatibility: entry.compatibility.as_str(),
+            availability: entry.availability,
             general_use: entry.general_use,
             recommended: entry.recommended,
             evidence: entry.evidence,
@@ -248,6 +262,7 @@ fn set_default(provider: Provider, model: &str, format: OutputFormat) -> Result<
             ),
         ));
     };
+    ensure_current_model(provider, spec)?;
     if !spec.general_use {
         return Err(CliError::new(
             "model_not_general_use",
@@ -273,6 +288,7 @@ fn set_default(provider: Provider, model: &str, format: OutputFormat) -> Result<
         provider: provider_name(provider),
         model: spec.model,
         compatibility: spec.compatibility.as_str(),
+        availability: spec.availability,
         credential_status: credential_status(provider),
         config_path: path.display().to_string(),
     };
@@ -296,7 +312,9 @@ pub(crate) fn recommended_model(provider: Provider) -> Option<&'static str> {
     let provider = secure_credentials::canonical_provider(provider);
     MODELS
         .iter()
-        .find(|e| e.provider == provider && e.general_use && e.recommended)
+        .find(|e| {
+            e.provider == provider && e.general_use && e.recommended && e.availability == "current"
+        })
         .map(|e| e.model)
 }
 
@@ -304,7 +322,7 @@ pub(crate) fn general_use_models(provider: Provider) -> Vec<(&'static str, bool,
     let provider = secure_credentials::canonical_provider(provider);
     MODELS
         .iter()
-        .filter(|e| e.provider == provider && e.general_use)
+        .filter(|e| e.provider == provider && e.general_use && e.availability == "current")
         .map(|e| (e.model, e.recommended, e.compatibility.as_str()))
         .collect()
 }
@@ -324,6 +342,7 @@ pub(crate) fn validate_general_use_model(
             ),
         ));
     };
+    ensure_current_model(provider, spec)?;
     if !spec.general_use {
         return Err(CliError::new(
             "model_not_general_use",
@@ -336,6 +355,36 @@ pub(crate) fn validate_general_use_model(
         ));
     }
     Ok(spec.compatibility.as_str())
+}
+
+pub(crate) fn model_availability(provider: Provider, model: &str) -> &'static str {
+    let provider = secure_credentials::canonical_provider(provider);
+    find_model(provider, model).map_or("unlisted", |spec| spec.availability)
+}
+
+fn lifecycle_failure_class(availability: &str) -> &'static str {
+    match availability {
+        "deprecated" => "model_deprecated",
+        "unavailable" => "model_unavailable",
+        "known_incompatible" => "model_known_incompatible",
+        _ => "model_catalog_status",
+    }
+}
+
+fn ensure_current_model(provider: Provider, spec: &ModelSpec) -> Result<(), CliError> {
+    if spec.availability == "current" {
+        return Ok(());
+    }
+    Err(CliError::new(
+        lifecycle_failure_class(spec.availability),
+        format!(
+            "{} / {} is cataloged as {}; Reason will not silently substitute another provider/model. Run `reason models {}` and explicitly select a current compatible model",
+            provider_name(provider),
+            spec.model,
+            spec.availability,
+            provider_name(provider)
+        ),
+    ))
 }
 
 pub(crate) fn persist_user_default(provider: Provider, model: &str) -> Result<String, CliError> {
@@ -593,10 +642,11 @@ fn emit_models(
         OutputFormat::Human => {
             if let Some(default) = &output.configured_default {
                 println!(
-                    "Configured default: {} / {} (catalog={}, credential={})",
+                    "Configured default: {} / {} (catalog={}, availability={}, credential={})",
                     default.provider,
                     default.model,
                     default.catalog_status,
+                    default.availability,
                     default.credential_status
                 );
             } else {
@@ -617,11 +667,12 @@ fn emit_models(
                     ""
                 };
                 println!(
-                    "{} / {}{} — {}{}",
+                    "{} / {}{} — {}, {}{}",
                     row.provider,
                     row.model,
                     marker,
                     row.compatibility,
+                    row.availability,
                     if row.general_use {
                         ""
                     } else {
@@ -656,7 +707,22 @@ mod tests {
     fn nvidia_negative_control_is_visible_but_not_general_use() {
         let model = find_model(Provider::Nvidia, "nvidia/nemotron-3.5-lightning-30b-a3b").unwrap();
         assert_eq!(model.compatibility, Compatibility::Limited);
+        assert_eq!(model.availability, "known_incompatible");
         assert!(!model.general_use);
         assert!(!model.recommended);
+    }
+    #[test]
+    fn lifecycle_policy_never_silently_substitutes_non_current_models() {
+        assert_eq!(lifecycle_failure_class("deprecated"), "model_deprecated");
+        assert_eq!(lifecycle_failure_class("unavailable"), "model_unavailable");
+        assert_eq!(
+            lifecycle_failure_class("known_incompatible"),
+            "model_known_incompatible"
+        );
+        let model = find_model(Provider::Nvidia, "nvidia/nemotron-3.5-lightning-30b-a3b").unwrap();
+        let error = ensure_current_model(Provider::Nvidia, model).unwrap_err();
+        assert_eq!(error.failure_class, "model_known_incompatible");
+        assert!(error.message.contains("will not silently substitute"));
+        assert!(error.message.contains("reason models nvidia"));
     }
 }

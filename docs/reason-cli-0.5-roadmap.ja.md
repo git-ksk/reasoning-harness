@@ -137,7 +137,7 @@ Phase 3はhardening完了後もsafe-by-defaultです。MCP outputはauthorityで
 
 - **#357 P0 — implemented:** `reason doctor`でReason CLI / Harness Engine versionを別々に表示し、install/config source、credential presence（値は非表示）、provider/model readiness、OS credential store、managed session path、project trust、設定済みuser MCP readinessを確認。defaultはlocal-only、`--live-check`でbounded provider/MCP/update checkを明示実行し、human/JSON diagnosticsを提供。
 - **#370 P0 — implemented:** credential、model/protocol、quota/rate limit/outage、structured output、config/trust、MCP、session、update/version、distribution-integrity failureをcentral remediation mapでrecovery-orientedに表示。human errorはWhat failed / Task execution / Result trust / Nextを明示し、JSONは既存`failure_class`を維持したままadditiveな`remediation` metadataを返す。
-- **#385 P1:** explicit model retirement/fallback policy。defaultでprovider/model execution identityをsilent変更しない。将来fallback chainを入れる場合も実使用provider/modelを記録する。
+- **#385 P1 — implemented:** model lifecycle availabilityをcatalog/doctorで明示し、non-current identityはfail closed。defaultでprovider/modelをsilent変更せず、persisted sessionは記録済みidentityへpinする。Reason CLI 0.5.0はautomatic fallback chainを持たない。
 - **#384 P1:** proxy/custom CA/headless network diagnostics。insecure TLS bypassを推奨しない。
 
 Typed machine failureとepistemic `unknown`は分離したままです。friendly remediationのためにoperational failureをsemantic uncertaintyへ潰してはいけません。

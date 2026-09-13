@@ -575,6 +575,7 @@ fn model_catalog_and_default_switch_preserve_user_config_and_fail_closed() {
     assert_eq!(value["result"]["provider"], "mistral");
     assert_eq!(value["result"]["model"], "ministral-8b-latest");
     assert_eq!(value["result"]["compatibility"], "validated");
+    assert_eq!(value["result"]["availability"], "current");
     assert_eq!(value["result"]["credential_status"], "available");
 
     let config: Value = serde_json::from_slice(&std::fs::read(&config_path).unwrap()).unwrap();
@@ -632,12 +633,16 @@ fn model_catalog_and_default_switch_preserve_user_config_and_fail_closed() {
         value["result"]["configured_default"]["credential_status"],
         "available"
     );
+    assert_eq!(
+        value["result"]["configured_default"]["availability"],
+        "current"
+    );
 
     for (provider, model, failure_class) in [
         (
             "nvidia",
             "nvidia/nemotron-3.5-lightning-30b-a3b",
-            "model_not_general_use",
+            "model_known_incompatible",
         ),
         ("mistral", "made-up-model", "model_unlisted"),
     ] {
@@ -655,7 +660,34 @@ fn model_catalog_and_default_switch_preserve_user_config_and_fail_closed() {
         let value = json_stdout(&output);
         assert_eq!(value["result"]["status"], "failed");
         assert_eq!(value["result"]["failure"]["failure_class"], failure_class);
+        if failure_class == "model_known_incompatible" {
+            assert_eq!(
+                value["result"]["remediation"]["next_command"],
+                "reason models"
+            );
+            assert!(
+                value["result"]["failure"]["message"]
+                    .as_str()
+                    .unwrap_or_default()
+                    .contains("will not silently substitute")
+            );
+        }
     }
+
+    let mut lifecycle = reason_command();
+    let output = lifecycle
+        .args(["models", "nvidia", "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("inspect lifecycle status");
+    assert_eq!(output.status.code(), Some(0));
+    let value = json_stdout(&output);
+    let nvidia = &value["result"]["models"][0];
+    assert_eq!(nvidia["availability"], "known_incompatible");
+    assert_eq!(nvidia["general_use"], false);
+    assert_eq!(nvidia["recommended"], false);
 
     std::fs::remove_dir_all(temp).ok();
 }
@@ -1787,6 +1819,7 @@ fn doctor_reports_versions_sources_and_secret_free_readiness_without_live_side_e
     );
     assert_eq!(json["result"]["provider"]["provider"], "groq");
     assert_eq!(json["result"]["provider"]["model"], "openai/gpt-oss-120b");
+    assert_eq!(json["result"]["provider"]["model_availability"], "current");
     assert_eq!(json["result"]["provider"]["local_readiness"], "ready");
     assert_eq!(json["result"]["provider"]["live_readiness"], "skipped");
     let groq = json["result"]["credentials"]
@@ -1800,6 +1833,56 @@ fn doctor_reports_versions_sources_and_secret_free_readiness_without_live_side_e
     assert_eq!(json["result"]["mcp"]["configured"], true);
     assert_eq!(json["result"]["mcp"]["readiness"], "not_checked");
     assert_eq!(json["result"]["update"]["status"], "skipped");
+    std::fs::remove_dir_all(temp).ok();
+}
+
+#[test]
+fn doctor_reports_non_current_model_lifecycle_and_explicit_replacement_path() {
+    let temp = std::env::temp_dir().join(format!(
+        "reason-doctor-model-lifecycle-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    let config = serde_json::json!({
+        "schema_version": "reason-config-v1",
+        "run": {
+            "provider": "nvidia",
+            "model": "nvidia/nemotron-3.5-lightning-30b-a3b"
+        }
+    });
+    std::fs::write(
+        temp.join("config.json"),
+        serde_json::to_vec_pretty(&config).unwrap(),
+    )
+    .unwrap();
+
+    let output = reason_command()
+        .args(["doctor", "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .env_remove("NVIDIA_API_KEY")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("run doctor on known-incompatible model");
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    let json = json_stdout(&output);
+    assert_eq!(
+        json["result"]["provider"]["model_availability"],
+        "known_incompatible"
+    );
+    assert_eq!(json["result"]["provider"]["local_readiness"], "blocked");
+    let lifecycle_issue = json["result"]["issues"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|issue| issue["failure_class"] == "model_known_incompatible")
+        .expect("model lifecycle issue");
+    assert_eq!(lifecycle_issue["recovery"], "reason models nvidia");
     std::fs::remove_dir_all(temp).ok();
 }
 
