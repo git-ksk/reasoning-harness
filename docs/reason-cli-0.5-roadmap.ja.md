@@ -128,7 +128,7 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 
 ### 追跡するcompatibility / lifecycle follow-up
 
-- **#417:** MCP 2026 `input_required` mid-tool transitionを認識し、interactive elicitation対応まではtyped fail-closed compatibility outcomeとして扱う。
+- **#417 P1 — implemented:** MCP 2026 `input_required` mid-tool transitionを認識し、typed `mcp_input_required`としてfail closedに扱う。partial tool outputはevidence化せず、prompt / request stateも保持・echoしない。Reason CLI 0.5.0ではinteractive elicitationを自動実行しない。
 - **#418:** remote MCP config removalとnative OAuth credential cleanupの挙動を明示し、machine-readableにする。
 
 merge済みPhase 3 coreは引き続きsafe-by-defaultです。MCP outputはauthorityではなくacquisition dataのまま、write-capable/ambiguous capabilityはfail closedを維持し、Harness Engine 0.4.2のcorrectness boundaryも変更しません。open hardeningはinteroperability / cancellation / secret-boundaryの改善であり、MCP outputへのauthority付与やverification緩和ではありません。

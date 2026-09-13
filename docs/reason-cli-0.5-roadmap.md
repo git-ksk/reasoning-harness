@@ -128,7 +128,7 @@ The existing one-shot `reason "TASK"`, repeatable `--file`, piped stdin context,
 
 ### Tracked compatibility / lifecycle follow-ups
 
-- **#417:** recognize MCP 2026 `input_required` mid-tool transitions and return a typed fail-closed compatibility outcome until interactive elicitation is supported.
+- **#417 P1 — implemented:** recognize MCP 2026 `input_required` mid-tool transitions and fail closed as typed `mcp_input_required`; partial tool output is never admitted as evidence, prompt/request state is not retained or echoed, and Reason CLI 0.5.0 does not auto-run interactive elicitation.
 - **#418:** make remote MCP config removal and native OAuth credential cleanup behavior explicit and machine-readable.
 
 The already-merged Phase 3 core remains safe-by-default: MCP output is acquisition data rather than authority, write-capable or ambiguous capabilities remain fail-closed, and the supported Engine 0.4.2 MCP correctness boundary is unchanged. The open hardening items above are interoperability, cancellation, and secret-boundary work; they do not authorize MCP output or weaken verification.
