@@ -81,10 +81,10 @@ use reasoning_harness_providers::{
     INVESTIGATION_EXTERNAL_COMMAND_RESOLVER_ID, InvestigationExternalCommandResolver,
     MCP_PROTOCOL_VERSION, MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION, MCP_READONLY_V3_RESOLVER_ID,
     MCP_REMOTE_PROTOCOL_VERSION, MCP_REMOTE_READONLY_RESOLVER_ID, McpReadOnlyResolverConfig,
-    McpReadOnlyResolverV3, McpReadOnlyResolverV3Config, McpRemoteReadOnlyResolver,
-    McpRemoteReadOnlyResolverConfig, McpRemoteScopeChallengeState, MistralAdapter, NvidiaAdapter,
-    SubprocessCancellation, TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier,
-    TrustedCommandVerifierConfig,
+    McpReadOnlyResolverV3, McpReadOnlyResolverV3Config, McpRemoteInputRequired,
+    McpRemoteInputRequiredState, McpRemoteReadOnlyResolver, McpRemoteReadOnlyResolverConfig,
+    McpRemoteScopeChallengeState, MistralAdapter, NvidiaAdapter, SubprocessCancellation,
+    TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier, TrustedCommandVerifierConfig,
 };
 use schemars::{JsonSchema, schema_for};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -2825,6 +2825,20 @@ fn run_external_resolution(
     )
 }
 
+fn mcp_input_required_error(name: &str, transition: &McpRemoteInputRequired) -> CliError {
+    CliError::new(
+        "mcp_input_required",
+        format!(
+            "remote MCP source {name:?} paused the selected read-only tool for user input \
+             (input_requests={}, request_state_present={}); Reason CLI 0.5.0 does not support \
+             MCP mid-tool interactive input yet, so it did not fabricate or submit input and did \
+             not admit partial tool output as evidence. Retry with a non-interactive tool/path or \
+             use an MCP client that supports interactive mid-tool input.",
+            transition.request_count, transition.has_request_state
+        ),
+    )
+}
+
 fn run_mcp_resolution(
     input: HarnessInput,
     candidate: ReasoningCandidate,
@@ -2832,14 +2846,20 @@ fn run_mcp_resolution(
     admission: Option<&ExternalEvidenceAdmissionPolicy>,
     max_attempts: usize,
     scope_recovery: Option<&(String, McpRemoteScopeChallengeState)>,
+    input_required: Option<&(String, McpRemoteInputRequiredState)>,
 ) -> Result<GroundedResolutionOutcome, CliError> {
-    let round = run_external_resolution(input, candidate, resolver, admission, max_attempts)?;
+    let round = run_external_resolution(input, candidate, resolver, admission, max_attempts);
+    if let Some((name, state)) = input_required
+        && let Some(transition) = state.current()
+    {
+        return Err(mcp_input_required_error(name, &transition));
+    }
     if let Some((name, state)) = scope_recovery
         && let Some(challenge) = state.current()
     {
         return Err(mcp_oauth::insufficient_scope_error(name, &challenge));
     }
-    Ok(round)
+    round
 }
 
 fn run_trusted_resolution(
@@ -3659,6 +3679,7 @@ async fn execute_natural_inner(
         None
     };
     let mut mcp_scope_recovery: Option<(String, McpRemoteScopeChallengeState)> = None;
+    let mut mcp_input_required: Option<(String, McpRemoteInputRequiredState)> = None;
     let mcp_resolver: Option<Box<dyn ResolutionResolver>> =
         if let Some(config) = mcp_resolver_config {
             Some(Box::new(
@@ -3685,7 +3706,8 @@ async fn execute_natural_inner(
                     )
                 })?
                 .with_cancellation(cancellation.clone());
-            mcp_scope_recovery = Some((server_name, resolver.scope_challenge_state()));
+            mcp_scope_recovery = Some((server_name.clone(), resolver.scope_challenge_state()));
+            mcp_input_required = Some((server_name, resolver.input_required_state()));
             Some(Box::new(resolver))
         } else {
             None
@@ -3748,6 +3770,7 @@ async fn execute_natural_inner(
                     mcp_admission.as_ref(),
                     args.max_resolution_attempts,
                     mcp_scope_recovery.as_ref(),
+                    mcp_input_required.as_ref(),
                 )?)
             } else {
                 None
@@ -4071,6 +4094,7 @@ async fn execute_natural_inner(
                 mcp_admission.as_ref(),
                 args.max_resolution_attempts,
                 mcp_scope_recovery.as_ref(),
+                mcp_input_required.as_ref(),
             )?
         };
         progress.phase("Verifying", "checking retry evidence");
@@ -8650,6 +8674,29 @@ fn main() -> ExitCode {
 #[cfg(test)]
 mod candidate_json_tests {
     use super::*;
+
+    #[test]
+    fn mcp_input_required_error_is_typed_actionable_and_secret_free() {
+        let transition = McpRemoteInputRequired {
+            request_count: 2,
+            has_request_state: true,
+        };
+        let error = mcp_input_required_error("fixture", &transition);
+        assert_eq!(error.failure_class, "mcp_input_required");
+        assert!(
+            error
+                .message
+                .contains("does not support MCP mid-tool interactive input yet")
+        );
+        assert!(error.message.contains("did not fabricate or submit input"));
+        assert!(
+            error
+                .message
+                .contains("did not admit partial tool output as evidence")
+        );
+        assert!(error.message.contains("input_requests=2"));
+        assert!(error.message.contains("request_state_present=true"));
+    }
 
     #[test]
     fn parses_verbose_natural_progress_flag() {

@@ -86,6 +86,46 @@ pub struct McpRemoteScopeChallenge {
     pub resource: String,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct McpRemoteInputRequired {
+    pub request_count: usize,
+    pub has_request_state: bool,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct McpRemoteInputRequiredState {
+    inner: Arc<Mutex<Option<McpRemoteInputRequired>>>,
+}
+
+impl McpRemoteInputRequiredState {
+    pub fn current(&self) -> Option<McpRemoteInputRequired> {
+        self.inner.lock().ok().and_then(|value| value.clone())
+    }
+
+    fn clear(&self) -> Result<(), ResolutionAdapterErrorKind> {
+        *self
+            .inner
+            .lock()
+            .map_err(|_| ResolutionAdapterErrorKind::Protocol)? = None;
+        Ok(())
+    }
+
+    fn record(&self, transition: McpRemoteInputRequired) -> Result<(), ResolutionAdapterErrorKind> {
+        let mut state = self
+            .inner
+            .lock()
+            .map_err(|_| ResolutionAdapterErrorKind::Protocol)?;
+        if state
+            .as_ref()
+            .is_some_and(|existing| existing != &transition)
+        {
+            return Err(ResolutionAdapterErrorKind::Protocol);
+        }
+        *state = Some(transition);
+        Ok(())
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct McpRemoteScopeChallengeState {
     inner: Arc<Mutex<Option<McpRemoteScopeChallenge>>>,
@@ -126,6 +166,7 @@ pub struct McpRemoteReadOnlyResolver {
     access_token: Option<String>,
     cancellation: Option<SubprocessCancellation>,
     scope_challenge: McpRemoteScopeChallengeState,
+    input_required: McpRemoteInputRequiredState,
 }
 
 #[derive(Debug, Deserialize)]
@@ -205,6 +246,7 @@ impl McpRemoteReadOnlyResolver {
             access_token,
             cancellation: None,
             scope_challenge: McpRemoteScopeChallengeState::default(),
+            input_required: McpRemoteInputRequiredState::default(),
         })
     }
 
@@ -217,9 +259,16 @@ impl McpRemoteReadOnlyResolver {
         self.scope_challenge.clone()
     }
 
+    pub fn input_required_state(&self) -> McpRemoteInputRequiredState {
+        self.input_required.clone()
+    }
+
     pub fn probe_readiness(&self) -> Result<McpRemoteReadiness, ResolutionAdapterError> {
         let started = Instant::now();
         self.scope_challenge
+            .clear()
+            .map_err(|kind| error(kind, started))?;
+        self.input_required
             .clear()
             .map_err(|kind| error(kind, started))?;
         self.verify_selected_tool(started)?;
@@ -448,6 +497,9 @@ impl ResolutionResolver for McpRemoteReadOnlyResolver {
         self.scope_challenge
             .clear()
             .map_err(|kind| error(kind, started))?;
+        self.input_required
+            .clear()
+            .map_err(|kind| error(kind, started))?;
         self.verify_selected_tool(started)?;
         let mut arguments = self.config.fixed_arguments.clone();
         let provenance = json!({
@@ -487,12 +539,19 @@ impl ResolutionResolver for McpRemoteReadOnlyResolver {
                 started,
             )
             .map_err(|kind| error(kind, started))?;
-        let result: McpCallToolResult = serde_json::from_value(
-            result
-                .result
-                .ok_or_else(|| error(ResolutionAdapterErrorKind::Protocol, started))?,
-        )
-        .map_err(|_| error(ResolutionAdapterErrorKind::Protocol, started))?;
+        let result = result
+            .result
+            .ok_or_else(|| error(ResolutionAdapterErrorKind::Protocol, started))?;
+        if let Some(transition) =
+            classify_call_result_transition(&result).map_err(|kind| error(kind, started))?
+        {
+            self.input_required
+                .record(transition)
+                .map_err(|kind| error(kind, started))?;
+            return Err(error(ResolutionAdapterErrorKind::Protocol, started));
+        }
+        let result: McpCallToolResult = serde_json::from_value(result)
+            .map_err(|_| error(ResolutionAdapterErrorKind::Protocol, started))?;
         if result.is_error.unwrap_or(false) {
             return Err(error(ResolutionAdapterErrorKind::ToolExecution, started));
         }
@@ -500,6 +559,44 @@ impl ResolutionResolver for McpRemoteReadOnlyResolver {
             contribution: contribution_from_result(&self.config, request, attempt_index, result),
             cost: measured_cost(started),
         })
+    }
+}
+
+fn classify_call_result_transition(
+    result: &Value,
+) -> Result<Option<McpRemoteInputRequired>, ResolutionAdapterErrorKind> {
+    let object = result
+        .as_object()
+        .ok_or(ResolutionAdapterErrorKind::Protocol)?;
+    let Some(result_type) = object.get("resultType") else {
+        // Keep compatibility with pre-2026 servers that omit resultType.
+        return Ok(None);
+    };
+    let result_type = result_type
+        .as_str()
+        .ok_or(ResolutionAdapterErrorKind::Protocol)?;
+    match result_type {
+        "complete" => Ok(None),
+        "input_required" => {
+            let request_count = match object.get("inputRequests") {
+                Some(Value::Object(requests)) => Some(requests.len()),
+                Some(_) => return Err(ResolutionAdapterErrorKind::Protocol),
+                None => None,
+            };
+            let has_request_state = match object.get("requestState") {
+                Some(Value::String(_)) => true,
+                Some(_) => return Err(ResolutionAdapterErrorKind::Protocol),
+                None => false,
+            };
+            if request_count.is_none() && !has_request_state {
+                return Err(ResolutionAdapterErrorKind::Protocol);
+            }
+            Ok(Some(McpRemoteInputRequired {
+                request_count: request_count.unwrap_or(0),
+                has_request_state,
+            }))
+        }
+        _ => Err(ResolutionAdapterErrorKind::Protocol),
     }
 }
 
@@ -914,6 +1011,56 @@ mod tests {
     }
 
     #[test]
+    fn input_required_transition_is_typed_without_retaining_prompt_or_state() {
+        let result = json!({
+            "resultType": "input_required",
+            "inputRequests": {
+                "confirm": {
+                    "method": "elicitation/create",
+                    "params": {"message": "sensitive-prompt-marker"}
+                }
+            },
+            "requestState": "opaque-sensitive-state",
+            "content": [{"type": "text", "text": "partial-must-not-be-evidence"}]
+        });
+        let transition = classify_call_result_transition(&result).unwrap().unwrap();
+        assert_eq!(transition.request_count, 1);
+        assert!(transition.has_request_state);
+        let rendered = format!("{transition:?}");
+        assert!(!rendered.contains("sensitive-prompt-marker"));
+        assert!(!rendered.contains("opaque-sensitive-state"));
+        assert!(!rendered.contains("partial-must-not-be-evidence"));
+    }
+
+    #[test]
+    fn malformed_or_unknown_mid_tool_transition_fails_closed() {
+        for result in [
+            json!({"resultType": "input_required", "content": []}),
+            json!({"resultType": "input_required", "inputRequests": []}),
+            json!({"resultType": "input_required", "requestState": {"opaque": true}}),
+            json!({"resultType": "future_transition", "content": []}),
+            json!({"resultType": 7, "content": []}),
+        ] {
+            assert_eq!(
+                classify_call_result_transition(&result).unwrap_err(),
+                ResolutionAdapterErrorKind::Protocol
+            );
+        }
+    }
+
+    #[test]
+    fn complete_and_legacy_call_results_keep_existing_shape() {
+        for result in [
+            json!({"resultType": "complete", "content": [], "isError": true}),
+            json!({"content": [], "isError": true}),
+        ] {
+            assert!(classify_call_result_transition(&result).unwrap().is_none());
+            let parsed: McpCallToolResult = serde_json::from_value(result).unwrap();
+            assert_eq!(parsed.is_error, Some(true));
+        }
+    }
+
+    #[test]
     fn insufficient_scope_challenge_is_bounded_typed_and_secret_free() {
         let endpoint = "https://mcp.example.test/mcp";
         let mut headers = header::HeaderMap::new();
@@ -1200,6 +1347,63 @@ mod tests {
             }
             other => panic!("expected acquired evidence, got {other:?}"),
         }
+    }
+
+    #[test]
+    fn input_required_mid_tool_records_only_safe_state_and_returns_no_evidence() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        thread::spawn(move || {
+            for (expected_method, body) in [
+                (
+                    "tools/list",
+                    r#"{"jsonrpc":"2.0","id":"reasoning-harness:remote:tools-list:0","result":{"tools":[{"name":"lookup","annotations":{"readOnlyHint":true}}]}}"#,
+                ),
+                (
+                    "tools/call",
+                    r#"{"jsonrpc":"2.0","id":"reasoning-harness:remote:resolution:service.region:0:tools-call","result":{"resultType":"input_required","inputRequests":{"confirm":{"method":"elicitation/create","params":{"message":"sensitive-prompt-marker"}}},"requestState":"opaque-sensitive-state","content":[{"type":"text","text":"partial-must-not-be-evidence"}],"structuredContent":{"reasoning_harness":{"observation":"partial-must-not-be-evidence","facts":{"service.region":"forbidden-partial"}}}}}"#,
+                ),
+            ] {
+                let (mut stream, _) = listener.accept().unwrap();
+                read_request(&mut stream, expected_method);
+                let response = format!(
+                    "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                    body.len(),
+                    body
+                );
+                stream.write_all(response.as_bytes()).unwrap();
+            }
+        });
+        let config = McpRemoteReadOnlyResolverConfig::with_defaults(
+            "fixture",
+            format!("http://{addr}/mcp"),
+            "lookup",
+            "mcp:fixture:lookup",
+        );
+        let resolver = McpRemoteReadOnlyResolver::new(config, None).unwrap();
+        let state = resolver.input_required_state();
+        let request = reasoning_harness_core::ResolutionRequest {
+            id: "resolution:service.region".into(),
+            reason: reasoning_harness_core::ResolutionReason::MissingSupport,
+            target: reasoning_harness_core::ResolutionTarget::Proposition {
+                proposition: reasoning_harness_core::Proposition {
+                    key: "service.region".into(),
+                    value: "eu-west-1".into(),
+                },
+            },
+            resolver_class: ResolverClass::EvidenceAcquisition,
+            budget: reasoning_harness_core::ResolutionRequestBudget::default(),
+        };
+        let error = resolver.resolve(&request, 0).unwrap_err();
+        assert_eq!(error.kind, ResolutionAdapterErrorKind::Protocol);
+        let transition = state.current().expect("typed input_required transition");
+        assert_eq!(transition.request_count, 1);
+        assert!(transition.has_request_state);
+        let rendered = format!("{transition:?}");
+        assert!(!rendered.contains("sensitive-prompt-marker"));
+        assert!(!rendered.contains("opaque-sensitive-state"));
+        assert!(!rendered.contains("partial-must-not-be-evidence"));
+        assert!(!rendered.contains("forbidden-partial"));
     }
 
     #[test]

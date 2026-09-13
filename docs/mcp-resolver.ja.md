@@ -81,6 +81,8 @@ remote adapterはMCP `2026-07-28`へpinします。各requestにprotocol revisio
 
 remote MCP requestがboundedなBearer `insufficient_scope` challengeを返した場合、Reasonはrequired scope tokenとchallenge resourceを検証してからtyped `mcp_insufficient_scope`を返します。OAuth scopeを自動拡張しません。step-upは`reason mcp login <name> --replace --scope <scope>...`で明示的に行い、token endpointが`scope`を省略してもgrant済みstep-up scopeを以後のrefreshで維持します。malformed / conflicting / oversized / resource-mismatch challengeはfail closed、通常の403はgeneric permission denialのままです。`error_description`など任意challenge textは保存・echoしません。
 
+MCP `2026-07-28`のtool resultでは、Reasonは`resultType: "input_required"`を明示的に認識し、completed callとして扱わずtyped `mcp_input_required`を返します。Reason CLI 0.5.0はinteractiveなmid-tool inputを実装しません。user inputを推測・生成・自動送信せず、途中の`content` / `structuredContent`をevidenceへ昇格せず、input promptや`requestState`を保存・echoしません。CLI errorへ渡すのはinput request件数とrequest state有無だけです。malformed / unknown transitionはfail closed、通常のcompleted callと既存`isError`処理は変更しません。
+
 ReasonはDynamic Client Registrationを実行しません。authorization serverで利用可能なpre-registered public client IDまたはClient ID Metadata Document URLを設定し、`reason-config-v1`に`client_secret` surfaceは持たせません。MCP `fixed_arguments`はnested object / arrayも含めてcredential-bearing keyをrecursiveに検査するため、runtime credentialはconfigではなくscoped secure credential injectionまたはnative OS credential storeを使います。project-level remote MCP configはhigh-risk network acquisition configとして扱い、`reason trust add`でprojectを承認するまでfail closedです。
 
 ## 設定
