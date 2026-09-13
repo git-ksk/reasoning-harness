@@ -1,4 +1,8 @@
-use std::{collections::BTreeSet, fs, path::PathBuf};
+use std::{
+    collections::BTreeSet,
+    fs,
+    path::{Path, PathBuf},
+};
 
 use clap::Subcommand;
 use reasoning_harness_core::ResolutionAdapterErrorKind;
@@ -116,7 +120,7 @@ pub(crate) enum McpCommand {
         #[arg(long, value_enum, default_value_t)]
         format: OutputFormat,
     },
-    /// Remove one MCP source from user config. OAuth credentials are retained until logout.
+    /// Remove one MCP source from user config. Remote OAuth credentials are deleted with it.
     Remove {
         name: String,
         #[arg(long, value_enum, default_value_t)]
@@ -191,6 +195,28 @@ struct MutationOutput {
     name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     source: Option<McpSummary>,
+}
+
+#[derive(Debug, Serialize)]
+struct RemoveFailure {
+    failure_class: &'static str,
+    message: String,
+    recovery: String,
+}
+
+#[derive(Debug, Serialize)]
+struct RemoveOutput {
+    management_surface: &'static str,
+    config_contract: &'static str,
+    operation: &'static str,
+    status: &'static str,
+    config_path: String,
+    name: String,
+    config_removed: bool,
+    credential_removed: bool,
+    credential_cleanup_status: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    failure: Option<RemoveFailure>,
 }
 
 #[derive(Debug, Serialize)]
@@ -635,26 +661,169 @@ fn logout(name: &str, format: OutputFormat) -> Result<(), CliError> {
 fn remove(name: &str, format: OutputFormat) -> Result<(), CliError> {
     validate_name(name)?;
     let mut user = user_json()?;
-    let removed = if user
+    let remote = if user
         .local
         .as_ref()
         .is_some_and(|value| value.server_id == name)
     {
         set_local_json(&mut user.root, None)?;
-        name.to_string()
-    } else if user
+        None
+    } else if let Some(remote) = user
         .remote
         .as_ref()
-        .is_some_and(|value| value.server_id == name)
+        .filter(|value| value.server_id == name)
+        .cloned()
     {
         set_remote_json(&mut user.root, None)?;
-        name.to_string()
+        Some(remote)
     } else {
         return Err(not_found(name, &user));
     };
-    validate_root(&user.root)?;
-    model_catalog::write_user_config_value(&user.path, &user.root)?;
-    emit_mutation("remove", user.path, removed, None, format)
+
+    if let Err(error) = validate_root(&user.root) {
+        return emit_remove_failure(
+            name,
+            &user.path,
+            false,
+            false,
+            "not_attempted",
+            error,
+            format,
+        );
+    }
+    if let Err(error) = model_catalog::write_user_config_value(&user.path, &user.root) {
+        return emit_remove_failure(
+            name,
+            &user.path,
+            false,
+            false,
+            "not_attempted",
+            error,
+            format,
+        );
+    }
+
+    let Some(remote) = remote else {
+        return emit_remove_success(name, user.path, true, false, "not_applicable", format);
+    };
+    let Some(oauth) = remote.oauth.as_ref() else {
+        return emit_remove_success(name, user.path, true, false, "not_configured", format);
+    };
+
+    match mcp_oauth::delete_matching_stored_credential(name, &remote.endpoint, oauth) {
+        Ok(mcp_oauth::McpOAuthCredentialCleanup::Removed) => {
+            emit_remove_success(name, user.path, true, true, "removed", format)
+        }
+        Ok(mcp_oauth::McpOAuthCredentialCleanup::Absent) => {
+            emit_remove_success(name, user.path, true, false, "absent", format)
+        }
+        Ok(mcp_oauth::McpOAuthCredentialCleanup::BindingMismatch) => emit_remove_failure(
+            name,
+            &user.path,
+            true,
+            false,
+            "binding_mismatch",
+            CliError::new(
+                "mcp_oauth_binding_mismatch",
+                "stored OAuth credential is bound to different issuer/client/resource metadata and was not deleted automatically",
+            ),
+            format,
+        ),
+        Err(error) => emit_remove_failure(name, &user.path, true, false, "failed", error, format),
+    }
+}
+
+fn emit_remove_success(
+    name: &str,
+    path: PathBuf,
+    config_removed: bool,
+    credential_removed: bool,
+    credential_cleanup_status: &'static str,
+    format: OutputFormat,
+) -> Result<(), CliError> {
+    emit_remove_output(
+        RemoveOutput {
+            management_surface: SURFACE_ID,
+            config_contract: CLI_CONFIG_CONTRACT_ID,
+            operation: "remove",
+            status: "ok",
+            config_path: path.display().to_string(),
+            name: name.into(),
+            config_removed,
+            credential_removed,
+            credential_cleanup_status,
+            failure: None,
+        },
+        format,
+    )
+}
+
+fn emit_remove_failure(
+    name: &str,
+    path: &Path,
+    config_removed: bool,
+    credential_removed: bool,
+    credential_cleanup_status: &'static str,
+    error: CliError,
+    format: OutputFormat,
+) -> Result<(), CliError> {
+    let failure_class = error.failure_class;
+    let recovery = if config_removed {
+        format!("reason mcp logout {name}")
+    } else {
+        format!("reason mcp remove {name}")
+    };
+    let message = if config_removed {
+        format!(
+            "MCP config for {name:?} was removed, but its OAuth credential cleanup failed: {}; retry `{recovery}`",
+            error.message
+        )
+    } else {
+        format!("MCP config for {name:?} was not removed: {}", error.message)
+    };
+    let output = RemoveOutput {
+        management_surface: SURFACE_ID,
+        config_contract: CLI_CONFIG_CONTRACT_ID,
+        operation: "remove",
+        status: if config_removed {
+            "partial_failure"
+        } else {
+            "failed"
+        },
+        config_path: path.display().to_string(),
+        name: name.into(),
+        config_removed,
+        credential_removed,
+        credential_cleanup_status,
+        failure: Some(RemoveFailure {
+            failure_class,
+            message: message.clone(),
+            recovery,
+        }),
+    };
+    emit_remove_output(output, format)?;
+    Err(CliError::emitted(failure_class, message))
+}
+
+fn emit_remove_output(output: RemoveOutput, format: OutputFormat) -> Result<(), CliError> {
+    match format {
+        OutputFormat::Json => print_product_json("mcp", &output).map_err(CliError::from),
+        OutputFormat::Human => {
+            println!("remove: {}", output.name);
+            println!("status: {}", output.status);
+            println!("config: {}", output.config_path);
+            println!("config_removed: {}", output.config_removed);
+            println!("credential_removed: {}", output.credential_removed);
+            println!(
+                "credential_cleanup_status: {}",
+                output.credential_cleanup_status
+            );
+            if let Some(failure) = output.failure {
+                eprintln!("{}", failure.message);
+            }
+            Ok(())
+        }
+    }
 }
 
 fn emit_mutation(

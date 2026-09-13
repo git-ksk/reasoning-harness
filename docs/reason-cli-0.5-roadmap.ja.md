@@ -113,13 +113,13 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 
 既存のone-shot `reason "TASK"`、repeatable `--file`、piped stdin context、JSON automation surfaceは維持します。
 
-## フェーズ3 — 外部情報取得UXとprocess isolation ⚠️ CORE IMPLEMENTED / 0.5.0 HARDENING OPEN
+## フェーズ3 — 外部情報取得UXとprocess isolation ✅ COMPLETE
 
 - **#387 P0 — implemented:** 現行external-command、MCP v3（＋v2 compatibility）、trusted-command subprocessはambient provider/developer secretをinheritせず、documented minimal cross-platform environmentから起動する。将来integration credential向けのscoped injection boundaryを用意し、secret-valued project config / arbitrary ambient-variable inheritanceは公開しない。historical freeze対象の`mcp_readonly_v1`は変更しない。詳細は[Local subprocess environment isolation](reason-subprocess-isolation.ja.md)。
 - **#368 P1 — implemented:** 単一active local read-only MCP acquisition sourceを`reason mcp add/list/inspect/test/remove`でguided管理。addはnon-secret user configだけを書き、inspect/listはargument valueを表示せず、`test`はselected toolを実行せずnegotiation + `tools/list`のread-only証明まで確認する。
 - **#386 P1 — implemented:** remote MCP `2026-07-28` Streamable HTTPのread-only stateless discovery/acquisition、OAuth authorization code + PKCE login/status/logout、browser / `--no-browser` flow、issuer/state/resource binding、native OS credential-store保存、HTTPS強制、project-trust gateを実装。tokenは`reason-config-v1`とresolver authorityの外に保持する。
 
-### Phase 3を完全完了扱いする前に必要な0.5.0 hardening
+### 0.5.0 hardening 完了
 
 - **#414 P1 — implemented:** `add-remote`でRFC 9728 Protected Resource MetadataとRFC 8414/OIDC authorization-server metadataをdiscoverし、resource/issuer relationshipとPKCE `S256`をfail closedで検証する。metadata redirectは拒否し、従来endpoint flagはdiscovery結果と一致必須のadvanced overrideとしてのみ残す。
 - **#415 P1 — implemented:** boundedなBearer challenge parsingでOAuth `insufficient_scope`を通常の403 denialから分離し、challengeされたresource/scope setをfail-closedで検証してtyped `mcp_insufficient_scope` recoveryを返す。`reason mcp login <name> --replace --scope ...`を明示的step-up surfaceとし、scopeをsilentに拡張せず、grant済みstep-up scopeをrefresh後も維持する。
@@ -129,9 +129,9 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 ### 追跡するcompatibility / lifecycle follow-up
 
 - **#417 P1 — implemented:** MCP 2026 `input_required` mid-tool transitionを認識し、typed `mcp_input_required`としてfail closedに扱う。partial tool outputはevidence化せず、prompt / request stateも保持・echoしない。Reason CLI 0.5.0ではinteractive elicitationを自動実行しない。
-- **#418:** remote MCP config removalとnative OAuth credential cleanupの挙動を明示し、machine-readableにする。
+- **#418 P1 — implemented:** remote `mcp remove`はconfigと同名sourceのnative OAuth credentialをdefaultで削除し、JSONでconfig/credential removalを別々に報告する。config削除後もname-scoped `logout`を利用でき、credential cleanup不能時はsecret-freeなtyped partial failureを返す。
 
-merge済みPhase 3 coreは引き続きsafe-by-defaultです。MCP outputはauthorityではなくacquisition dataのまま、write-capable/ambiguous capabilityはfail closedを維持し、Harness Engine 0.4.2のcorrectness boundaryも変更しません。open hardeningはinteroperability / cancellation / secret-boundaryの改善であり、MCP outputへのauthority付与やverification緩和ではありません。
+Phase 3はhardening完了後もsafe-by-defaultです。MCP outputはauthorityではなくacquisition dataのまま、write-capable/ambiguous capabilityはfail closedを維持し、Harness Engine 0.4.2のcorrectness boundaryも変更しません。完了したinteroperability / cancellation / credential lifecycle / secret-boundary改善は、MCP outputへのauthority付与やverification緩和を行いません。
 
 ## フェーズ4 — 診断と運用復旧
 

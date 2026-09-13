@@ -82,6 +82,13 @@ struct LogoutOutput {
     removed: bool,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum McpOAuthCredentialCleanup {
+    Removed,
+    Absent,
+    BindingMismatch,
+}
+
 pub(crate) fn status(
     name: &str,
     resource: &str,
@@ -1253,6 +1260,25 @@ fn save_token(name: &str, token: &StoredOAuthToken) -> Result<(), CliError> {
     entry(name)?.set_password(&value).map_err(store_error)
 }
 
+pub(crate) fn delete_matching_stored_credential(
+    name: &str,
+    resource: &str,
+    oauth: &McpRemoteOAuthFileConfig,
+) -> Result<McpOAuthCredentialCleanup, CliError> {
+    validate_oauth_config(oauth)?;
+    let Some(token) = load_token(name)? else {
+        return Ok(McpOAuthCredentialCleanup::Absent);
+    };
+    if !token_matches_config(&token, name, resource, oauth) {
+        return Ok(McpOAuthCredentialCleanup::BindingMismatch);
+    }
+    Ok(if delete_token(name)? {
+        McpOAuthCredentialCleanup::Removed
+    } else {
+        McpOAuthCredentialCleanup::Absent
+    })
+}
+
 fn delete_token(name: &str) -> Result<bool, CliError> {
     match entry(name)?.delete_credential() {
         Ok(()) => Ok(true),
@@ -1758,6 +1784,72 @@ mod tests {
         assert_eq!(loaded.access_token, "ci-access-token");
         assert!(delete_token(&name).unwrap());
         assert!(load_token(&name).unwrap().is_none());
+    }
+
+    #[test]
+    #[ignore = "mutates the native OS credential store; run only in isolated CI"]
+    fn native_os_store_scoped_delete_does_not_cross_accounts() {
+        let suffix = format!(
+            "{}-{}",
+            std::process::id(),
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        );
+        let first_name = format!("ci-oauth-first-{suffix}");
+        let second_name = format!("ci-oauth-second-{suffix}");
+        let config = oauth();
+        let token = |name: &str, access_token: &str| StoredOAuthToken {
+            schema_version: "reason-mcp-oauth-token-v1".into(),
+            server_name: name.into(),
+            issuer: config.issuer.clone(),
+            client_id: config.client_id.clone(),
+            resource: "https://mcp.example.test/mcp".into(),
+            token_endpoint: config.token_endpoint.clone(),
+            access_token: access_token.into(),
+            refresh_token: None,
+            token_type: "Bearer".into(),
+            scope: Some("mcp:read".into()),
+            expires_at_unix_seconds: Some(now_unix().saturating_add(3600)),
+        };
+        let _ = delete_token(&first_name);
+        let _ = delete_token(&second_name);
+        save_token(&first_name, &token(&first_name, "first-secret")).unwrap();
+        save_token(&second_name, &token(&second_name, "second-secret")).unwrap();
+
+        assert_eq!(
+            delete_matching_stored_credential(
+                &first_name,
+                "https://mcp.example.test/mcp",
+                &config,
+            )
+            .unwrap(),
+            McpOAuthCredentialCleanup::Removed
+        );
+        assert!(load_token(&first_name).unwrap().is_none());
+        let second = load_token(&second_name)
+            .unwrap()
+            .expect("second credential");
+        assert_eq!(second.server_name, second_name);
+        assert!(second.access_token == "second-secret");
+
+        let mut mismatched = token(&first_name, "mismatch-secret");
+        mismatched.resource = "https://other.example.test/mcp".into();
+        save_token(&first_name, &mismatched).unwrap();
+        assert_eq!(
+            delete_matching_stored_credential(
+                &first_name,
+                "https://mcp.example.test/mcp",
+                &config,
+            )
+            .unwrap(),
+            McpOAuthCredentialCleanup::BindingMismatch
+        );
+        assert!(load_token(&first_name).unwrap().unwrap().access_token == "mismatch-secret");
+
+        assert!(delete_token(&first_name).unwrap());
+        assert!(delete_token(&second_name).unwrap());
     }
 
     #[test]
