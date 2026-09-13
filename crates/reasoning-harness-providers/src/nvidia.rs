@@ -96,7 +96,13 @@ impl NvidiaAdapter {
                 format!("invalid NVIDIA API base URL: {error}"),
             )
         })?;
-        let client = Client::builder()
+        let client = crate::network::client_builder()
+            .map_err(|error| {
+                ModelError::new(
+                    ModelErrorKind::Transport,
+                    format!("failed to configure HTTP client: {}", error.message()),
+                )
+            })?
             .timeout(timeout)
             .build()
             .map_err(|error| {

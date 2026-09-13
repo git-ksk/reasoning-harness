@@ -141,7 +141,13 @@ impl GroqAdapter {
                 format!("invalid Groq API base URL: {error}"),
             )
         })?;
-        let client = Client::builder()
+        let client = crate::network::client_builder()
+            .map_err(|error| {
+                ModelError::new(
+                    ModelErrorKind::Transport,
+                    format!("failed to configure Groq HTTP client: {}", error.message()),
+                )
+            })?
             .timeout(timeout)
             .build()
             .map_err(|error| {

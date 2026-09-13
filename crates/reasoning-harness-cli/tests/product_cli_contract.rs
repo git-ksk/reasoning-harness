@@ -1795,6 +1795,7 @@ fn doctor_reports_versions_sources_and_secret_free_readiness_without_live_side_e
         .env_remove("MISTRAL_API_KEY")
         .env_remove("GEMINI_API_KEY")
         .env_remove("NVIDIA_API_KEY")
+        .env_remove("REASON_CA_BUNDLE")
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .output()
@@ -1822,6 +1823,8 @@ fn doctor_reports_versions_sources_and_secret_free_readiness_without_live_side_e
     assert_eq!(json["result"]["provider"]["model_availability"], "current");
     assert_eq!(json["result"]["provider"]["local_readiness"], "ready");
     assert_eq!(json["result"]["provider"]["live_readiness"], "skipped");
+    assert_eq!(json["result"]["network"]["custom_ca"], "not_configured");
+    assert_eq!(json["result"]["network"]["live_probe"], "skipped");
     let groq = json["result"]["credentials"]
         .as_array()
         .unwrap()
@@ -1833,6 +1836,147 @@ fn doctor_reports_versions_sources_and_secret_free_readiness_without_live_side_e
     assert_eq!(json["result"]["mcp"]["configured"], true);
     assert_eq!(json["result"]["mcp"]["readiness"], "not_checked");
     assert_eq!(json["result"]["update"]["status"], "skipped");
+    std::fs::remove_dir_all(temp).ok();
+}
+
+#[test]
+fn doctor_reports_proxy_presence_and_invalid_custom_ca_without_leaking_values_or_tls_bypass_advice()
+{
+    let temp = std::env::temp_dir().join(format!(
+        "reason-doctor-network-contract-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    let ca_path = temp.join("broken-ca.pem");
+    std::fs::write(&ca_path, b"not-a-certificate").unwrap();
+    let proxy_marker = "proxy-user:proxy-secret@example.invalid:8443";
+    let no_proxy_marker = "internal-secret.example.invalid";
+
+    let output = reason_command()
+        .args(["doctor", "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .env_remove("https_proxy")
+        .env_remove("no_proxy")
+        .env("HTTPS_PROXY", format!("http://{proxy_marker}"))
+        .env("NO_PROXY", no_proxy_marker)
+        .env("REASON_CA_BUNDLE", &ca_path)
+        .env_remove("MISTRAL_API_KEY")
+        .env_remove("GEMINI_API_KEY")
+        .env_remove("GROQ_API_KEY")
+        .env_remove("NVIDIA_API_KEY")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("run doctor with proxy/custom CA environment");
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    let text = String::from_utf8_lossy(&output.stdout);
+    assert!(!text.contains(proxy_marker));
+    assert!(!text.contains(no_proxy_marker));
+    assert!(!text.contains(&ca_path.to_string_lossy().to_string()));
+    let json = json_stdout(&output);
+    assert_eq!(json["result"]["network"]["https_proxy"], true);
+    assert_eq!(json["result"]["network"]["no_proxy"], true);
+    assert_eq!(json["result"]["network"]["custom_ca"], "invalid");
+    assert_eq!(json["result"]["network"]["live_probe"], "not_run");
+    let issue = json["result"]["issues"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|issue| issue["failure_class"] == "network_custom_ca")
+        .expect("custom CA issue");
+    let recovery = issue["recovery"].as_str().unwrap();
+    assert!(recovery.contains("REASON_CA_BUNDLE"));
+    for forbidden in [
+        "danger_accept_invalid",
+        "accept invalid cert",
+        "disable tls",
+        "skip certificate",
+        "insecure tls",
+    ] {
+        assert!(!recovery.to_ascii_lowercase().contains(forbidden));
+    }
+    std::fs::remove_dir_all(temp).ok();
+}
+
+#[test]
+fn doctor_live_check_honors_https_proxy_and_classifies_proxy_failure_before_provider_auth() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let addr = listener.local_addr().unwrap();
+    let proxy = thread::spawn(move || {
+        let (mut stream, _) = listener.accept().unwrap();
+        let mut reader = BufReader::new(stream.try_clone().unwrap());
+        let mut first = String::new();
+        reader.read_line(&mut first).unwrap();
+        assert!(
+            first.starts_with("CONNECT api.groq.com:443 "),
+            "unexpected proxy request: {first:?}"
+        );
+        loop {
+            let mut line = String::new();
+            reader.read_line(&mut line).unwrap();
+            if line == "\r\n" || line.is_empty() {
+                break;
+            }
+        }
+        stream
+            .write_all(
+                b"HTTP/1.1 407 Proxy Authentication Required\r\nProxy-Authenticate: Basic realm=\"reason-test\"\r\nContent-Length: 0\r\nConnection: close\r\n\r\n",
+            )
+            .unwrap();
+    });
+
+    let temp = std::env::temp_dir().join(format!(
+        "reason-doctor-proxy-live-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    std::fs::write(
+        temp.join("config.json"),
+        serde_json::to_vec_pretty(&serde_json::json!({
+            "schema_version": "reason-config-v1",
+            "run": {"provider": "groq", "model": "openai/gpt-oss-120b"}
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+
+    let output = reason_command()
+        .args(["doctor", "--live-check", "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .env_remove("https_proxy")
+        .env_remove("ALL_PROXY")
+        .env_remove("all_proxy")
+        .env_remove("NO_PROXY")
+        .env_remove("no_proxy")
+        .env("HTTPS_PROXY", format!("http://{addr}"))
+        .env_remove("REASON_CA_BUNDLE")
+        .env_remove("GROQ_API_KEY")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("run doctor through local HTTPS proxy");
+    proxy.join().unwrap();
+    assert_eq!(output.status.code(), Some(0));
+    assert!(output.stderr.is_empty());
+    let json = json_stdout(&output);
+    assert_eq!(json["result"]["network"]["https_proxy"], true);
+    assert_eq!(json["result"]["network"]["live_probe"], "failed");
+    assert!(
+        json["result"]["issues"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|issue| issue["failure_class"] == "network_proxy")
+    );
     std::fs::remove_dir_all(temp).ok();
 }
 

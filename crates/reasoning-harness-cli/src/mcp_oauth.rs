@@ -9,7 +9,7 @@ use std::{
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
 use keyring::{Entry, Error as KeyringError};
 use rand::RngExt as _;
-use reasoning_harness_providers::McpRemoteScopeChallenge;
+use reasoning_harness_providers::{McpRemoteScopeChallenge, network};
 use reqwest::{Client, StatusCode, header, redirect};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -665,7 +665,8 @@ fn fetch_discovery_json<T: for<'de> Deserialize<'de> + Send + 'static>(
 }
 
 fn discovery_client() -> Result<Client, CliError> {
-    Client::builder()
+    network::client_builder()
+        .map_err(|error| CliError::new("network_custom_ca", error.message().to_string()))?
         .timeout(Duration::from_secs(30))
         .redirect(redirect::Policy::none())
         .build()
@@ -1143,7 +1144,8 @@ fn token_request(
             .build()
             .map_err(|_| CliError::new("mcp_oauth_transport", "cannot build OAuth runtime"))?;
         runtime.block_on(async move {
-            let client = Client::builder()
+            let client = network::client_builder()
+                .map_err(|error| CliError::new("network_custom_ca", error.message().to_string()))?
                 .timeout(Duration::from_secs(30))
                 .redirect(redirect::Policy::none())
                 .build()

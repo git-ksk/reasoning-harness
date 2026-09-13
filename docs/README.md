@@ -19,6 +19,7 @@ Start here:
 4. [Update / rollback / uninstall](update-rollback-uninstall.md) — provenance-verified lifecycle and retention/purge boundaries.
 5. [Reason doctor](reason-doctor.md) — secret-free local diagnostics plus explicit bounded live readiness checks.
 6. [Operational failure recovery](reason-recovery.md) — actionable human recovery plus additive machine remediation while preserving failure classes.
+7. [Proxy, custom CA, and headless network environments](network-environments.md) — proxy presence, additive CA trust, and typed network diagnostics.
 3. [CLI guide](cli.md) — commands, input, provider credentials, config, stdin, JSON output, and exit semantics.
 4. [How Reasoning Harness works](how-it-works.md) — the proposal-vs-authority boundary in practical terms.
 5. [Product support and compatibility](support.md) — supported platforms, contracts, provider posture, and v0.x compatibility.

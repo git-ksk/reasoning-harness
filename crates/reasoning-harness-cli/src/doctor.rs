@@ -1,7 +1,8 @@
-use std::{env, fs, path::Path};
+use std::{env, fs, path::Path, time::Duration};
 
 use clap::Args;
 use reasoning_harness_core::{ModelOutputFormat, ModelRequest};
+use reasoning_harness_providers::network;
 use serde::Serialize;
 
 use super::{
@@ -71,6 +72,19 @@ struct SecretStoreDiagnostic {
 }
 
 #[derive(Debug, Serialize)]
+struct NetworkDiagnostic {
+    status: &'static str,
+    http_proxy: bool,
+    https_proxy: bool,
+    all_proxy: bool,
+    no_proxy: bool,
+    custom_ca: &'static str,
+    live_probe: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    live_target: Option<&'static str>,
+}
+
+#[derive(Debug, Serialize)]
 struct ProviderDiagnostic {
     status: &'static str,
     provider: Option<&'static str>,
@@ -127,6 +141,7 @@ struct DoctorOutput {
     config: ConfigDiagnostic,
     credentials: Vec<CredentialDiagnostic>,
     secret_store: SecretStoreDiagnostic,
+    network: NetworkDiagnostic,
     provider: ProviderDiagnostic,
     sessions: PathDiagnostic,
     project_trust: TrustDiagnostic,
@@ -230,6 +245,7 @@ pub(crate) async fn run(args: DoctorArgs) -> Result<(), CliError> {
         },
     };
 
+    let network = diagnose_network(loaded.as_ref(), args.live_check, &mut issues).await;
     let provider = diagnose_provider(loaded.as_ref(), args.live_check, &mut issues).await;
 
     let sessions = match managed_session::managed_root_path() {
@@ -359,6 +375,7 @@ pub(crate) async fn run(args: DoctorArgs) -> Result<(), CliError> {
         config,
         credentials,
         secret_store,
+        network,
         provider,
         sessions,
         project_trust,
@@ -368,6 +385,134 @@ pub(crate) async fn run(args: DoctorArgs) -> Result<(), CliError> {
     };
 
     emit(&output, args.format)
+}
+
+fn provider_network_probe_url(provider: Provider) -> &'static str {
+    match provider {
+        Provider::Mistral => "https://api.mistral.ai/",
+        Provider::Google | Provider::Gemma => "https://generativelanguage.googleapis.com/",
+        Provider::Groq => "https://api.groq.com/",
+        Provider::Nvidia => "https://integrate.api.nvidia.com/",
+    }
+}
+
+fn network_failure_class(kind: network::NetworkFailureKind) -> &'static str {
+    match kind {
+        network::NetworkFailureKind::Timeout => "network_timeout",
+        network::NetworkFailureKind::Dns => "network_dns",
+        network::NetworkFailureKind::Proxy => "network_proxy",
+        network::NetworkFailureKind::TlsCertificate => "network_tls_certificate",
+        network::NetworkFailureKind::Connectivity => "network_connectivity",
+        network::NetworkFailureKind::Transport => "network_transport",
+        network::NetworkFailureKind::CustomCa => "network_custom_ca",
+    }
+}
+
+fn network_recovery(kind: network::NetworkFailureKind) -> &'static str {
+    match kind {
+        network::NetworkFailureKind::Dns => {
+            "check DNS/network configuration, then run `reason doctor --live-check`"
+        }
+        network::NetworkFailureKind::Proxy => {
+            "check HTTP_PROXY/HTTPS_PROXY/ALL_PROXY/NO_PROXY, then run `reason doctor --live-check`"
+        }
+        network::NetworkFailureKind::TlsCertificate | network::NetworkFailureKind::CustomCa => {
+            "fix system trust or REASON_CA_BUNDLE, then run `reason doctor --live-check`"
+        }
+        _ => "check network connectivity, then run `reason doctor --live-check`",
+    }
+}
+
+async fn diagnose_network(
+    loaded: Option<&super::LoadedCliConfig>,
+    live_check: bool,
+    issues: &mut Vec<DoctorIssue>,
+) -> NetworkDiagnostic {
+    let environment = network::environment_status();
+    let custom_ca = match network::validate_custom_ca() {
+        Ok(status) => status,
+        Err(error) => {
+            issues.push(DoctorIssue {
+                severity: "error",
+                component: "network",
+                failure_class: "network_custom_ca",
+                message: error.message().to_string(),
+                recovery: network_recovery(network::NetworkFailureKind::CustomCa).into(),
+            });
+            return NetworkDiagnostic {
+                status: "attention",
+                http_proxy: environment.http_proxy,
+                https_proxy: environment.https_proxy,
+                all_proxy: environment.all_proxy,
+                no_proxy: environment.no_proxy,
+                custom_ca: "invalid",
+                live_probe: if live_check { "blocked" } else { "not_run" },
+                live_target: None,
+            };
+        }
+    };
+
+    if !live_check {
+        return NetworkDiagnostic {
+            status: "ready",
+            http_proxy: environment.http_proxy,
+            https_proxy: environment.https_proxy,
+            all_proxy: environment.all_proxy,
+            no_proxy: environment.no_proxy,
+            custom_ca,
+            live_probe: "skipped",
+            live_target: None,
+        };
+    }
+
+    let Some(provider) = loaded.and_then(|loaded| loaded.config.run.provider) else {
+        return NetworkDiagnostic {
+            status: "ready",
+            http_proxy: environment.http_proxy,
+            https_proxy: environment.https_proxy,
+            all_proxy: environment.all_proxy,
+            no_proxy: environment.no_proxy,
+            custom_ca,
+            live_probe: "not_configured",
+            live_target: None,
+        };
+    };
+    let target = provider_network_probe_url(provider);
+    match network::probe_https(target, Duration::from_secs(10)).await {
+        Ok(_) => NetworkDiagnostic {
+            status: "ready",
+            http_proxy: environment.http_proxy,
+            https_proxy: environment.https_proxy,
+            all_proxy: environment.all_proxy,
+            no_proxy: environment.no_proxy,
+            custom_ca,
+            live_probe: "passed",
+            live_target: Some(target),
+        },
+        Err(failure) => {
+            let kind = failure.kind;
+            issues.push(DoctorIssue {
+                severity: "error",
+                component: "network",
+                failure_class: network_failure_class(kind),
+                message: format!(
+                    "HTTPS connectivity probe failed before provider authentication ({})",
+                    kind.as_str()
+                ),
+                recovery: network_recovery(kind).into(),
+            });
+            NetworkDiagnostic {
+                status: "attention",
+                http_proxy: environment.http_proxy,
+                https_proxy: environment.https_proxy,
+                all_proxy: environment.all_proxy,
+                no_proxy: environment.no_proxy,
+                custom_ca,
+                live_probe: "failed",
+                live_target: Some(target),
+            }
+        }
+    }
 }
 
 async fn diagnose_provider(
@@ -593,6 +738,16 @@ fn emit(output: &DoctorOutput, format: OutputFormat) -> Result<(), CliError> {
                     credential.effective_source
                 );
             }
+            println!(
+                "Network: {} proxy(http={}, https={}, all={}, no_proxy={}) custom_ca={} live={}",
+                output.network.status,
+                output.network.http_proxy,
+                output.network.https_proxy,
+                output.network.all_proxy,
+                output.network.no_proxy,
+                output.network.custom_ca,
+                output.network.live_probe
+            );
             println!(
                 "Provider: {} model={} availability={} local={} live={}",
                 output.provider.provider.unwrap_or("-"),

@@ -65,7 +65,13 @@ impl MistralAdapter {
                 format!("invalid Mistral base URL: {error}"),
             )
         })?;
-        let client = Client::builder()
+        let client = crate::network::client_builder()
+            .map_err(|error| {
+                ModelError::new(
+                    ModelErrorKind::Transport,
+                    format!("failed to configure HTTP client: {}", error.message()),
+                )
+            })?
             .timeout(DEFAULT_TIMEOUT)
             .build()
             .map_err(|error| {

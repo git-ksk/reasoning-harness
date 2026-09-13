@@ -21,8 +21,9 @@ human / JSONの両方で次を報告します。
 - user / project config path、存在、validity、effective config source;
 - credential値を出さずprovider credentialのpresence/sourceだけを表示;
 - native OS credential storeのavailability;
+- proxy env presenceと`REASON_CA_BUNDLE` validation（値/pathは非表示）;
 - configured provider/model compatibilityとlocal readiness;
-- optionalなbounded provider live readiness;
+- optionalなbounded network/provider live readiness;
 - managed-session path health;
 - trustを付与せずcurrent project trust stateを表示;
 - configured user MCPのpresenceとoptionalなread-only readiness probe;
@@ -34,5 +35,7 @@ JSON resultは既存の`reason-cli-output-v1` product envelope内で`doctor_surf
 ## Safety boundary
 
 `reason doctor`はAPI key、OAuth token、refresh tokenなどcredential valueを表示しません。config、trust state、session、credential、MCP config、Engine stateを変更しません。通常実行ではconfigured MCP processを起動せず、provider/network requestも送りません。live MCP probeは`reason mcp test`と同じread-only readiness pathを使い、selected toolを実行しません。
+
+`--live-check`ではconfigured provider hostへのHTTPS probeを先に行い、DNS / proxy / TLS certificate / connectivity failureをprovider outageやcredential failureから分離して報告します。TLS verificationを無効化するrecoveryは案内しません。詳細は[Proxy / custom CA / headless network環境](network-environments.ja.md)を参照してください。
 
 operational diagnosticsはsemantic `unknown`とは別です。Doctor statusはproduct readinessを表すだけで、evidence、claim、final answerをcertifyしません。
