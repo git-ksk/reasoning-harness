@@ -18,10 +18,10 @@ import stat
 import subprocess
 import tarfile
 import tempfile
+import tomllib
 import zipfile
 from pathlib import Path
 
-CLI_VERSION = "0.5.0"
 ENGINE_VERSION = "0.4.2"
 SECRETS = (
     "reason-phase5-mistral-secret-7Fz3-not-real",
@@ -36,6 +36,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--asset", required=True)
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
     return parser.parse_args()
+
+
+def current_cli_version(repo_root: Path) -> str:
+    manifest = repo_root / "crates" / "reasoning-harness-cli" / "Cargo.toml"
+    with manifest.open("rb") as handle:
+        document = tomllib.load(handle)
+    version = document.get("package", {}).get("version")
+    assert isinstance(version, str) and version, manifest
+    return version
 
 
 def safe_extract(archive: Path, destination: Path) -> None:
@@ -138,6 +147,7 @@ def main() -> None:
     args = parse_args()
     archive = args.archive.resolve()
     repo_root = args.repo_root.resolve()
+    cli_version = current_cli_version(repo_root)
     assert archive.is_file(), archive
     assert (repo_root / "examples" / "input.json").is_file(), repo_root
 
@@ -148,7 +158,7 @@ def main() -> None:
         safe_extract(archive, unpack)
 
         executable_name = "reason.exe" if os.name == "nt" else "reason"
-        package_root = unpack / f"reason-v{CLI_VERSION}-{args.asset}"
+        package_root = unpack / f"reason-v{cli_version}-{args.asset}"
         reason = package_root / executable_name
         assert reason.is_file(), reason
         if os.name != "nt":
@@ -166,7 +176,7 @@ def main() -> None:
         assert shutil.which("rustc", path=env["PATH"]) is None, env["PATH"]
 
         version = invoke(reason, ["--version"], cwd=workspace, env=env).stdout.strip()
-        assert version == f"reason {CLI_VERSION}", version
+        assert version == f"reason {cli_version}", version
 
         # Empty-home setup uses an environment credential path (documented for headless/CI),
         # never a secret-valued argv. Live readiness is deliberately skipped to spend zero quota.
@@ -221,7 +231,7 @@ def main() -> None:
         doctor = json_invoke(reason, ["doctor", "--format", "json"], cwd=workspace, env=setup_env)
         assert doctor["command"] == "doctor"
         assert doctor["result"]["doctor_surface"] == "reason-doctor-v1"
-        assert doctor["result"]["versions"]["cli"] == CLI_VERSION
+        assert doctor["result"]["versions"]["cli"] == cli_version
         assert doctor["result"]["versions"]["engine"] == ENGINE_VERSION
         assert doctor["result"]["network"]["live_probe"] == "skipped"
 
@@ -285,7 +295,7 @@ def main() -> None:
         print(json.dumps({
             "status": "passed",
             "asset": args.asset,
-            "cli_version": CLI_VERSION,
+            "cli_version": cli_version,
             "engine_version": ENGINE_VERSION,
             "live_provider_calls": 0,
             "rust_toolchain_required": False,

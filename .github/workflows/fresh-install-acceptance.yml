@@ -67,15 +67,22 @@ jobs:
         with:
           toolchain: 1.88.0
       - uses: Swatinem/rust-cache@v2
-      - name: Assert release coordinate boundary
+      - id: coordinates
+        name: Assert release coordinate boundary
         shell: bash
         run: |
           set -euo pipefail
           META="$(cargo metadata --locked --no-deps --format-version 1)"
           CLI_VERSION="$(printf '%s' "$META" | python -c 'import json,sys; d=json.load(sys.stdin); print(next(p["version"] for p in d["packages"] if p["name"]=="reasoning-harness-cli"))')"
           ENGINE_VERSION="$(printf '%s' "$META" | python -c 'import json,sys; d=json.load(sys.stdin); print(next(p["version"] for p in d["packages"] if p["name"]=="reasoning-harness-core"))')"
-          test "$CLI_VERSION" = "0.5.0"
+          python - "$CLI_VERSION" <<'PY'
+          import sys
+          major, minor, patch = map(int, sys.argv[1].split("."))
+          assert (major, minor) == (0, 5), sys.argv[1]
+          assert patch >= 0
+          PY
           test "$ENGINE_VERSION" = "0.4.2"
+          echo "cli_version=$CLI_VERSION" >> "$GITHUB_OUTPUT"
       - name: Build release candidate binary
         run: cargo build --locked --release -p reasoning-harness-cli --bin reason
       - name: Package Unix candidate in release shape
@@ -83,7 +90,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          NAME="reason-v0.5.0-${{ matrix.asset }}"
+          NAME="reason-v${{ steps.coordinates.outputs.cli_version }}-${{ matrix.asset }}"
           mkdir "$NAME"
           cp "${{ matrix.executable }}" "$NAME/reason"
           cp README.md LICENSE CHANGELOG.md "$NAME/"
@@ -92,7 +99,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $name = "reason-v0.5.0-${{ matrix.asset }}"
+          $name = "reason-v${{ steps.coordinates.outputs.cli_version }}-${{ matrix.asset }}"
           New-Item -ItemType Directory -Path $name | Out-Null
           Copy-Item "${{ matrix.executable }}" "$name/reason.exe"
           Copy-Item README.md, LICENSE, CHANGELOG.md $name
@@ -100,7 +107,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: phase5-${{ matrix.asset }}
-          path: reason-v0.5.0-${{ matrix.asset }}.${{ matrix.archive }}
+          path: reason-v${{ steps.coordinates.outputs.cli_version }}-${{ matrix.asset }}.${{ matrix.archive }}
           if-no-files-found: error
 
   fresh-install:
@@ -132,11 +139,15 @@ jobs:
           path: phase5-dist
       - name: Native binary fresh-install acceptance
         shell: bash
-        run: >-
-          python scripts/test_fresh_install_acceptance.py
-          --archive "phase5-dist/reason-v0.5.0-${{ matrix.asset }}.${{ matrix.archive }}"
-          --asset "${{ matrix.asset }}"
-          --repo-root .
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          archives=(phase5-dist/reason-v*-${{ matrix.asset }}.${{ matrix.archive }})
+          test "${#archives[@]}" -eq 1
+          python scripts/test_fresh_install_acceptance.py \
+            --archive "${archives[0]}" \
+            --asset "${{ matrix.asset }}" \
+            --repo-root .
 
   distribution-contract:
     runs-on: ubuntu-24.04
