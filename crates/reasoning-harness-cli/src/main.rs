@@ -1941,7 +1941,7 @@ Credentials stay in the native OS credential store; config is non-secret."#
             r#"Manage one active local or remote read-only MCP acquisition source:
   reason mcp add inventory --program /path/to/server --tool lookup
   reason mcp test inventory
-  reason mcp add-remote docs --endpoint https://mcp.example.com/mcp --tool search --issuer https://auth.example.com --authorization-endpoint https://auth.example.com/authorize --token-endpoint https://auth.example.com/token --client-id https://client.example.com/reason.json --scope mcp:read --replace
+  reason mcp add-remote docs --endpoint https://mcp.example.com/mcp --tool search --client-id https://client.example.com/reason.json --scope mcp:read --replace
   reason mcp login docs
   reason mcp login docs --no-browser
   reason mcp status docs

@@ -121,7 +121,7 @@ CI、container、remote shell、server用途ではenvironment variableも引き�
 
 ### Phase 3を完全完了扱いする前に必要な0.5.0 hardening
 
-- **#414 P1:** MCP Protected Resource Metadataとauthorization-server/OIDC metadataをdiscoverし、OAuth endpointの手入力依存をなくす。issuer/resource relationshipはfail closedで検証する。
+- **#414 P1 — implemented:** `add-remote`でRFC 9728 Protected Resource MetadataとRFC 8414/OIDC authorization-server metadataをdiscoverし、resource/issuer relationshipとPKCE `S256`をfail closedで検証する。metadata redirectは拒否し、従来endpoint flagはdiscovery結果と一致必須のadvanced overrideとしてのみ残す。
 - **#415 P1:** OAuth `insufficient_scope`をgeneric permission denialと分離し、silent scope拡張を行わない明示的なscope step-up recoveryを提供する。
 - **#416 P1 — implemented:** remote HTTP readiness/acquisitionをReasonのsafe Ctrl+C cancellation tokenへ接続。pendingな`tools/list` / `tools/call`をpromptにdropし、joined workerをcommand return前に終了させ、CLIではsemantic `unknown`ではなく既存のtyped `cancelled` operational outcomeを維持する。
 - **#419 P1 — implemented:** local / remote / investigation MCP configの`fixed_arguments`内をrecursiveに検査してsecret-bearing nested fieldをrejectし、secret valueをechoせず、hand-authored low-level configでもnon-secret configuration boundaryを維持する。

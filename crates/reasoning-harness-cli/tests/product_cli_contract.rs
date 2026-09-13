@@ -1,7 +1,9 @@
 use std::{
-    io::Write,
+    io::{BufRead, BufReader, Read, Write},
+    net::TcpListener,
     path::{Path, PathBuf},
     process::{Command, Output, Stdio},
+    thread,
 };
 
 use serde_json::Value;
@@ -1155,6 +1157,85 @@ fn mcp_management_add_list_inspect_remove_is_non_secret_and_machine_readable() {
     std::fs::remove_dir_all(temp).ok();
 }
 
+fn spawn_oauth_discovery_fixture() -> (String, String, thread::JoinHandle<()>) {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let addr = listener.local_addr().unwrap();
+    let endpoint = format!("http://{addr}/mcp");
+    let issuer = format!("http://{addr}/auth");
+    let resource_metadata = format!("http://{addr}/resource-metadata");
+    let endpoint_for_server = endpoint.clone();
+    let issuer_for_server = issuer.clone();
+    let resource_for_server = resource_metadata.clone();
+    let server = thread::spawn(move || {
+        for request_index in 0..3 {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream.try_clone().unwrap());
+            let mut first = String::new();
+            reader.read_line(&mut first).unwrap();
+            let mut content_length = 0usize;
+            loop {
+                let mut line = String::new();
+                reader.read_line(&mut line).unwrap();
+                if line == "\r\n" {
+                    break;
+                }
+                if let Some(value) = line.to_ascii_lowercase().strip_prefix("content-length:") {
+                    content_length = value.trim().parse().unwrap();
+                }
+            }
+            if content_length > 0 {
+                let mut body = vec![0u8; content_length];
+                reader.read_exact(&mut body).unwrap();
+            }
+            let (status, extra_headers, body) = match request_index {
+                0 => {
+                    assert!(first.starts_with("POST /mcp "));
+                    (
+                        "401 Unauthorized",
+                        format!(
+                            "WWW-Authenticate: Bearer resource_metadata=\"{resource_for_server}\", scope=\"mcp:read\"\r\n"
+                        ),
+                        String::new(),
+                    )
+                }
+                1 => {
+                    assert!(first.starts_with("GET /resource-metadata "));
+                    (
+                        "200 OK",
+                        String::new(),
+                        serde_json::json!({
+                            "resource": endpoint_for_server,
+                            "authorization_servers": [issuer_for_server],
+                            "scopes_supported": ["mcp:read"]
+                        })
+                        .to_string(),
+                    )
+                }
+                _ => {
+                    assert!(first.starts_with("GET /.well-known/oauth-authorization-server/auth "));
+                    (
+                        "200 OK",
+                        String::new(),
+                        serde_json::json!({
+                            "issuer": issuer_for_server,
+                            "authorization_endpoint": format!("{issuer_for_server}/authorize"),
+                            "token_endpoint": format!("{issuer_for_server}/token"),
+                            "code_challenge_methods_supported": ["S256"]
+                        })
+                        .to_string(),
+                    )
+                }
+            };
+            let response = format!(
+                "HTTP/1.1 {status}\r\nContent-Type: application/json\r\n{extra_headers}Content-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            );
+            stream.write_all(response.as_bytes()).unwrap();
+        }
+    });
+    (endpoint, issuer, server)
+}
+
 #[test]
 fn remote_mcp_management_persists_only_non_secret_oauth_metadata() {
     let temp = std::env::temp_dir().join(format!(
@@ -1166,6 +1247,7 @@ fn remote_mcp_management_persists_only_non_secret_oauth_metadata() {
             .as_nanos()
     ));
     std::fs::create_dir_all(&temp).unwrap();
+    let (endpoint, issuer, discovery_server) = spawn_oauth_discovery_fixture();
     let run = |args: &[&str]| {
         reason_command()
             .args(args)
@@ -1181,15 +1263,9 @@ fn remote_mcp_management_persists_only_non_secret_oauth_metadata() {
         "add-remote",
         "docs",
         "--endpoint",
-        "https://mcp.example.test/mcp",
+        endpoint.as_str(),
         "--tool",
         "search",
-        "--issuer",
-        "https://auth.example.test",
-        "--authorization-endpoint",
-        "https://auth.example.test/authorize",
-        "--token-endpoint",
-        "https://auth.example.test/token",
         "--client-id",
         "https://client.example.test/reason.json",
         "--scope",
@@ -1225,7 +1301,7 @@ fn remote_mcp_management_persists_only_non_secret_oauth_metadata() {
     assert_eq!(remote["read_only"], true);
     assert_eq!(remote["resolver_class"], "evidence_acquisition");
     assert_eq!(remote["protocol_version"], "2026-07-28");
-    assert_eq!(remote["oauth"]["issuer"], "https://auth.example.test");
+    assert_eq!(remote["oauth"]["issuer"], issuer);
     assert_eq!(
         remote["oauth"]["client_id"],
         "https://client.example.test/reason.json"
@@ -1238,14 +1314,10 @@ fn remote_mcp_management_persists_only_non_secret_oauth_metadata() {
     assert!(!inspect_text.contains("access_token"));
     assert!(!inspect_text.contains("refresh_token"));
     let inspect_json = json_stdout(&inspect);
-    assert_eq!(
-        inspect_json["result"]["source"]["endpoint"],
-        "https://mcp.example.test/mcp"
-    );
-    assert_eq!(
-        inspect_json["result"]["source"]["oauth_issuer"],
-        "https://auth.example.test"
-    );
+    assert_eq!(inspect_json["result"]["source"]["endpoint"], endpoint);
+    assert_eq!(inspect_json["result"]["source"]["oauth_issuer"], issuer);
+
+    discovery_server.join().unwrap();
 
     let insecure = run(&[
         "mcp",

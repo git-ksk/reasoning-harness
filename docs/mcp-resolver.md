@@ -63,9 +63,6 @@ Remote Streamable HTTP uses the separate 2026-era transport and OAuth lifecycle:
 reason mcp add-remote docs \
   --endpoint https://mcp.example.com/mcp \
   --tool search \
-  --issuer https://auth.example.com \
-  --authorization-endpoint https://auth.example.com/authorize \
-  --token-endpoint https://auth.example.com/token \
   --client-id https://client.example.com/reason.json \
   --scope mcp:read
 reason mcp login docs
@@ -78,7 +75,7 @@ reason mcp remove docs
 
 `add` and `add-remote` persist only non-secret configuration. Replacing the active source requires `--replace`; local and remote acquisition transports are mutually exclusive. `list` and `inspect` never expose local executable argument values or OAuth token values. `test` never invokes the selected tool: local stdio stops after MCP negotiation and `tools/list`, while remote Streamable HTTP performs a stateless `tools/list`; both require the selected tool to declare `readOnlyHint=true`.
 
-The remote adapter is pinned to MCP `2026-07-28`. It sends the protocol revision, client identity, and capabilities on every request and uses the required HTTP routing headers. It deliberately fails closed for selected tools using `x-mcp-header` until that parameter-to-header contract is implemented. Remote endpoints and OAuth metadata endpoints require HTTPS; loopback HTTP is accepted only for deterministic local tests. Remote readiness and acquisition share Reason's Ctrl+C cancellation token: pending HTTP response/body work is dropped promptly and the joined worker exits before the operation returns. `reason mcp test` uses the same typed cancellation path without invoking the tool.
+The remote adapter is pinned to MCP `2026-07-28`. It sends the protocol revision, client identity, and capabilities on every request and uses the required HTTP routing headers. It deliberately fails closed for selected tools using `x-mcp-header` until that parameter-to-header contract is implemented. Remote endpoints and OAuth metadata endpoints require HTTPS; loopback HTTP is accepted only for deterministic local tests. Remote readiness and acquisition share Reason's Ctrl+C cancellation token: pending HTTP response/body work is dropped promptly and the joined worker exits before the operation returns. `reason mcp test` uses the same typed cancellation path without invoking the tool. `add-remote` discovers RFC 9728 Protected Resource Metadata first, preferring a `WWW-Authenticate` `resource_metadata` URL and otherwise trying endpoint-path then root well-known URIs. It then discovers RFC 8414 authorization-server metadata with OpenID Connect discovery compatibility, requires issuer/resource binding and PKCE `S256`, and refuses metadata redirects. Legacy `--issuer`, `--authorization-endpoint`, and `--token-endpoint` flags remain only as advanced compatibility overrides and must exactly match discovered metadata.
 
 `reason mcp login` uses authorization-code + PKCE with a loopback callback. `state` must match and the authorization response must carry the configured RFC 9207 `iss` value before Reason redeems the code. `--no-browser` prints the authorization URL for SSH/headless use instead of opening a browser. Access/refresh tokens are stored only in the native OS credential store and are bound to the MCP source name, authorization issuer, client ID, and exact resource endpoint. A changed issuer/client/resource therefore cannot reuse an old credential. Expired credentials refresh only against the configured issuer/token endpoint. `logout` deletes the stored credential and also works after `remove`, so orphaned credentials can be cleaned up explicitly.
 

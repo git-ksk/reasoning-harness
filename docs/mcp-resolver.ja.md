@@ -63,9 +63,6 @@ remote Streamable HTTPは2026-era専用transportとOAuth lifecycleを使いま�
 reason mcp add-remote docs \
   --endpoint https://mcp.example.com/mcp \
   --tool search \
-  --issuer https://auth.example.com \
-  --authorization-endpoint https://auth.example.com/authorize \
-  --token-endpoint https://auth.example.com/token \
   --client-id https://client.example.com/reason.json \
   --scope mcp:read
 reason mcp login docs
@@ -78,7 +75,7 @@ reason mcp remove docs
 
 `add` / `add-remote`が保存するのはnon-secret configだけです。active sourceの置換には`--replace`が必要で、local / remote acquisition transportはmutually exclusiveです。`list` / `inspect`はlocal executable argument valueやOAuth token valueを表示しません。`test`はselected toolを実行しません。localはnegotiation + `tools/list`、remoteはstateless `tools/list`までで停止し、どちらもselected toolの`readOnlyHint=true`を必須にします。
 
-remote adapterはMCP `2026-07-28`へpinします。各requestにprotocol revision / client identity / capabilityを載せ、HTTP routing headerも送信します。`x-mcp-header`付きselected toolはparameter-to-header contractをまだ公開していないためfail closedです。remote MCP endpointとOAuth metadata endpointはHTTPS必須で、loopback HTTPはdeterministic local testだけ許可します。remote readiness / acquisitionはReasonのCtrl+C cancellation tokenを共有し、pending HTTP response/body workをpromptにdropしてjoined workerをoperation return前に終了します。`reason mcp test`もtoolを実行せず同じtyped cancellation pathを使います。
+remote adapterはMCP `2026-07-28`へpinします。各requestにprotocol revision / client identity / capabilityを載せ、HTTP routing headerも送信します。`x-mcp-header`付きselected toolはparameter-to-header contractをまだ公開していないためfail closedです。remote MCP endpointとOAuth metadata endpointはHTTPS必須で、loopback HTTPはdeterministic local testだけ許可します。remote readiness / acquisitionはReasonのCtrl+C cancellation tokenを共有し、pending HTTP response/body workをpromptにdropしてjoined workerをoperation return前に終了します。`reason mcp test`もtoolを実行せず同じtyped cancellation pathを使います。 `add-remote`はまずRFC 9728 Protected Resource Metadataをdiscoverし、`WWW-Authenticate`の`resource_metadata` URLを優先し、なければendpoint-path→rootのwell-known URIを順に試します。その後RFC 8414 authorization-server metadataをOIDC discovery互換順でdiscoverし、issuer/resource bindingとPKCE `S256`を必須にし、metadata redirectは拒否します。従来の`--issuer` / `--authorization-endpoint` / `--token-endpoint`はadvanced compatibility overrideとしてのみ残し、discovery結果との完全一致を必須にします。
 
 `reason mcp login`はauthorization code + PKCEとloopback callbackを使います。Reasonがcodeをredeemする前に`state`一致とRFC 9207 `iss`のconfigured issuer一致を必須にします。`--no-browser`ではbrowserを開かずauthorization URLを表示するため、SSH/headless環境でも利用できます。access/refresh tokenはnative OS credential storeだけに保存し、MCP source名 / authorization issuer / client ID / exact resource endpointへbindします。issuer/client/resourceが変わった場合、古いcredentialを再利用しません。期限切れtokenのrefreshもconfigured issuer/token endpointだけへ送ります。`logout`はconfigの`remove`後でも実行できるため、orphan credentialを明示削除できます。
 

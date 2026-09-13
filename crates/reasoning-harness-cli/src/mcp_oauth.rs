@@ -9,7 +9,7 @@ use std::{
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
 use keyring::{Entry, Error as KeyringError};
 use rand::RngExt as _;
-use reqwest::{Client, redirect};
+use reqwest::{Client, StatusCode, header, redirect};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use url::Url;
@@ -19,6 +19,7 @@ use super::{CliError, McpRemoteOAuthFileConfig, OutputFormat, print_product_json
 const MCP_OAUTH_SERVICE: &str = "io.github.git-ksk.reason-cli.mcp-oauth.v1";
 const LOGIN_TIMEOUT: Duration = Duration::from_secs(300);
 const CALLBACK_PATH: &str = "/oauth/callback";
+const MAX_DISCOVERY_METADATA_BYTES: usize = 262_144;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct StoredOAuthToken {
@@ -245,6 +246,523 @@ pub(crate) fn access_token(
     token = refresh(name, endpoint, oauth, &refresh_token)?;
     save_token(name, &token)?;
     Ok(token.access_token)
+}
+
+#[derive(Debug, Deserialize)]
+struct ProtectedResourceMetadata {
+    resource: String,
+    authorization_servers: Vec<String>,
+    #[serde(default)]
+    scopes_supported: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct AuthorizationServerMetadata {
+    issuer: String,
+    authorization_endpoint: String,
+    token_endpoint: String,
+    #[serde(default)]
+    code_challenge_methods_supported: Vec<String>,
+}
+
+#[derive(Debug)]
+struct ResourceDiscovery {
+    metadata: ProtectedResourceMetadata,
+    challenge_scope: Option<Vec<String>>,
+}
+
+#[derive(Debug)]
+struct BearerResourceChallenge {
+    resource_metadata: String,
+    scope: Option<Vec<String>>,
+}
+
+pub(crate) fn discover_oauth_config(
+    endpoint: &str,
+    client_id: String,
+    requested_scopes: Vec<String>,
+    issuer_override: Option<String>,
+    authorization_endpoint_override: Option<String>,
+    token_endpoint_override: Option<String>,
+) -> Result<McpRemoteOAuthFileConfig, CliError> {
+    validate_resource_endpoint(endpoint)?;
+    if client_id.trim().is_empty() || requested_scopes.iter().any(|scope| scope.trim().is_empty()) {
+        return Err(CliError::new(
+            "mcp_oauth_configuration",
+            "OAuth client_id and every requested scope must be non-empty",
+        ));
+    }
+    let override_count = [
+        issuer_override.as_ref(),
+        authorization_endpoint_override.as_ref(),
+        token_endpoint_override.as_ref(),
+    ]
+    .into_iter()
+    .flatten()
+    .count();
+    if override_count != 0 && override_count != 3 {
+        return Err(CliError::new(
+            "mcp_oauth_configuration",
+            "advanced OAuth metadata overrides require --issuer, --authorization-endpoint, and --token-endpoint together",
+        ));
+    }
+
+    let discovery = discover_protected_resource_metadata(endpoint)?;
+    validate_protected_resource_metadata(endpoint, &discovery.metadata)?;
+    let issuer = select_authorization_server(
+        &discovery.metadata.authorization_servers,
+        issuer_override.as_deref(),
+    )?;
+    let metadata = discover_authorization_server_metadata(&issuer)?;
+    validate_authorization_server_metadata(&issuer, &metadata)?;
+
+    if let (Some(override_issuer), Some(override_authorization), Some(override_token)) = (
+        issuer_override.as_deref(),
+        authorization_endpoint_override.as_deref(),
+        token_endpoint_override.as_deref(),
+    ) && (!urls_equal(override_issuer, &metadata.issuer)
+        || !urls_equal(override_authorization, &metadata.authorization_endpoint)
+        || !urls_equal(override_token, &metadata.token_endpoint))
+    {
+        return Err(CliError::new(
+            "mcp_oauth_discovery",
+            "advanced OAuth metadata overrides did not match discovered authorization-server metadata",
+        ));
+    }
+
+    let scopes = if !requested_scopes.is_empty() {
+        requested_scopes
+    } else if let Some(challenge) = discovery.challenge_scope {
+        challenge
+    } else {
+        discovery.metadata.scopes_supported
+    };
+    let oauth = McpRemoteOAuthFileConfig {
+        issuer: metadata.issuer,
+        authorization_endpoint: metadata.authorization_endpoint,
+        token_endpoint: metadata.token_endpoint,
+        client_id,
+        scopes,
+    };
+    validate_oauth_config(&oauth)?;
+    Ok(oauth)
+}
+
+fn discover_protected_resource_metadata(endpoint: &str) -> Result<ResourceDiscovery, CliError> {
+    if let Some(challenge) = discover_resource_metadata_challenge(endpoint)? {
+        let metadata =
+            fetch_discovery_json::<ProtectedResourceMetadata>(&challenge.resource_metadata, false)?
+                .ok_or_else(|| {
+                    CliError::new(
+                        "mcp_oauth_discovery",
+                        "WWW-Authenticate resource_metadata URL returned no metadata",
+                    )
+                })?;
+        return Ok(ResourceDiscovery {
+            metadata,
+            challenge_scope: challenge.scope,
+        });
+    }
+
+    let endpoint_url = Url::parse(endpoint).map_err(|_| {
+        CliError::new(
+            "mcp_oauth_discovery",
+            "remote MCP endpoint must be a valid URL for OAuth discovery",
+        )
+    })?;
+    for candidate in protected_resource_metadata_urls(&endpoint_url)? {
+        if let Some(metadata) =
+            fetch_discovery_json::<ProtectedResourceMetadata>(candidate.as_str(), true)?
+        {
+            return Ok(ResourceDiscovery {
+                metadata,
+                challenge_scope: None,
+            });
+        }
+    }
+    Err(CliError::new(
+        "mcp_oauth_discovery",
+        "remote MCP server exposed neither a usable WWW-Authenticate resource_metadata URL nor OAuth Protected Resource Metadata well-known endpoint",
+    ))
+}
+
+fn discover_resource_metadata_challenge(
+    endpoint: &str,
+) -> Result<Option<BearerResourceChallenge>, CliError> {
+    let endpoint = endpoint.to_string();
+    thread::spawn(move || {
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .map_err(|_| CliError::new("mcp_oauth_transport", "cannot build OAuth discovery runtime"))?;
+        runtime.block_on(async move {
+            let response = discovery_client()?
+                .post(&endpoint)
+                .header("MCP-Protocol-Version", "2026-07-28")
+                .header("Mcp-Method", "tools/list")
+                .header(header::ACCEPT, "application/json, text/event-stream")
+                .json(&serde_json::json!({
+                    "jsonrpc": "2.0",
+                    "id": "reasoning-harness:oauth-discovery",
+                    "method": "tools/list",
+                    "params": {"_meta": {
+                        "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+                        "io.modelcontextprotocol/clientInfo": {"name": "reasoning-harness", "version": env!("CARGO_PKG_VERSION")},
+                        "io.modelcontextprotocol/clientCapabilities": {}
+                    }}
+                }))
+                .send()
+                .await
+                .map_err(|_| CliError::new("mcp_oauth_transport", "remote MCP OAuth discovery probe failed"))?;
+            if response.status() != StatusCode::UNAUTHORIZED {
+                return Ok(None);
+            }
+            for value in response.headers().get_all(header::WWW_AUTHENTICATE) {
+                let Ok(value) = value.to_str() else { continue };
+                if let Some(challenge) = parse_bearer_challenge(value)? {
+                    validate_discovery_url(&challenge.resource_metadata, "resource_metadata")?;
+                    return Ok(Some(challenge));
+                }
+            }
+            Ok(None)
+        })
+    })
+    .join()
+    .map_err(|_| CliError::new("mcp_oauth_transport", "OAuth discovery worker thread failed"))?
+}
+
+fn parse_bearer_challenge(value: &str) -> Result<Option<BearerResourceChallenge>, CliError> {
+    let trimmed = value.trim();
+    if !trimmed
+        .get(..7)
+        .is_some_and(|prefix| prefix.eq_ignore_ascii_case("bearer "))
+    {
+        return Ok(None);
+    }
+    let mut resource_metadata = None;
+    let mut scope = None;
+    for part in split_auth_params(&trimmed[7..]) {
+        let Some((name, raw)) = part.split_once('=') else {
+            continue;
+        };
+        let raw = raw.trim();
+        let decoded = if raw.starts_with('"') {
+            if raw.len() < 2 || !raw.ends_with('"') {
+                return Err(CliError::new(
+                    "mcp_oauth_discovery",
+                    "malformed quoted WWW-Authenticate parameter",
+                ));
+            }
+            unescape_quoted(&raw[1..raw.len() - 1])?
+        } else {
+            raw.to_string()
+        };
+        match name.trim() {
+            "resource_metadata" => resource_metadata = Some(decoded),
+            "scope" => {
+                let values = decoded
+                    .split_ascii_whitespace()
+                    .map(str::to_string)
+                    .collect::<Vec<_>>();
+                if !values.is_empty() {
+                    scope = Some(values);
+                }
+            }
+            _ => {}
+        }
+    }
+    Ok(resource_metadata.map(|metadata| BearerResourceChallenge {
+        resource_metadata: metadata,
+        scope,
+    }))
+}
+
+fn unescape_quoted(value: &str) -> Result<String, CliError> {
+    let mut output = String::with_capacity(value.len());
+    let mut escaped = false;
+    for character in value.chars() {
+        if escaped {
+            output.push(character);
+            escaped = false;
+        } else if character == '\\' {
+            escaped = true;
+        } else {
+            output.push(character);
+        }
+    }
+    if escaped {
+        return Err(CliError::new(
+            "mcp_oauth_discovery",
+            "malformed quoted WWW-Authenticate escape",
+        ));
+    }
+    Ok(output)
+}
+
+fn split_auth_params(input: &str) -> Vec<&str> {
+    let mut parts = Vec::new();
+    let mut start = 0usize;
+    let mut quoted = false;
+    let mut escaped = false;
+    for (index, character) in input.char_indices() {
+        if escaped {
+            escaped = false;
+            continue;
+        }
+        if character == '\\' && quoted {
+            escaped = true;
+        } else if character == '"' {
+            quoted = !quoted;
+        } else if character == ',' && !quoted {
+            parts.push(input[start..index].trim());
+            start = index + 1;
+        }
+    }
+    parts.push(input[start..].trim());
+    parts
+}
+
+fn protected_resource_metadata_urls(endpoint: &Url) -> Result<Vec<Url>, CliError> {
+    let endpoint_path = endpoint.path().trim_start_matches('/');
+    let mut path_specific = endpoint.clone();
+    path_specific.set_query(None);
+    path_specific.set_fragment(None);
+    let path = if endpoint_path.is_empty() {
+        "/.well-known/oauth-protected-resource".to_string()
+    } else {
+        format!("/.well-known/oauth-protected-resource/{endpoint_path}")
+    };
+    path_specific.set_path(&path);
+    let mut urls = vec![path_specific.clone()];
+    if !endpoint_path.is_empty() {
+        path_specific.set_path("/.well-known/oauth-protected-resource");
+        urls.push(path_specific);
+    }
+    for url in &urls {
+        validate_discovery_url(url.as_str(), "protected-resource metadata")?;
+    }
+    Ok(urls)
+}
+
+fn discover_authorization_server_metadata(
+    issuer: &str,
+) -> Result<AuthorizationServerMetadata, CliError> {
+    let issuer_url = Url::parse(issuer).map_err(|_| {
+        CliError::new(
+            "mcp_oauth_discovery",
+            "authorization server issuer is not a valid URL",
+        )
+    })?;
+    validate_discovery_url(issuer, "authorization server issuer")?;
+    for candidate in authorization_server_metadata_urls(&issuer_url)? {
+        if let Some(metadata) =
+            fetch_discovery_json::<AuthorizationServerMetadata>(candidate.as_str(), true)?
+        {
+            return Ok(metadata);
+        }
+    }
+    Err(CliError::new(
+        "mcp_oauth_discovery",
+        "authorization server exposed neither RFC 8414 nor OpenID Connect discovery metadata",
+    ))
+}
+
+fn authorization_server_metadata_urls(issuer: &Url) -> Result<Vec<Url>, CliError> {
+    let mut base = issuer.clone();
+    base.set_query(None);
+    base.set_fragment(None);
+    let issuer_path = issuer.path().trim_matches('/');
+    let paths = if issuer_path.is_empty() {
+        vec![
+            "/.well-known/oauth-authorization-server".to_string(),
+            "/.well-known/openid-configuration".to_string(),
+        ]
+    } else {
+        vec![
+            format!("/.well-known/oauth-authorization-server/{issuer_path}"),
+            format!("/.well-known/openid-configuration/{issuer_path}"),
+            format!("/{issuer_path}/.well-known/openid-configuration"),
+        ]
+    };
+    let mut urls = Vec::with_capacity(paths.len());
+    for path in paths {
+        let mut url = base.clone();
+        url.set_path(&path);
+        validate_discovery_url(url.as_str(), "authorization-server metadata")?;
+        urls.push(url);
+    }
+    Ok(urls)
+}
+
+fn fetch_discovery_json<T: for<'de> Deserialize<'de> + Send + 'static>(
+    url: &str,
+    allow_not_found: bool,
+) -> Result<Option<T>, CliError> {
+    validate_discovery_url(url, "OAuth metadata")?;
+    let url = url.to_string();
+    thread::spawn(move || {
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .map_err(|_| CliError::new("mcp_oauth_transport", "cannot build OAuth discovery runtime"))?;
+        runtime.block_on(async move {
+            let response = discovery_client()?
+                .get(&url)
+                .header(header::ACCEPT, "application/json")
+                .send()
+                .await
+                .map_err(|_| CliError::new("mcp_oauth_transport", "OAuth metadata request failed"))?;
+            if allow_not_found && response.status() == StatusCode::NOT_FOUND {
+                return Ok(None);
+            }
+            if response.status().is_redirection() {
+                return Err(CliError::new(
+                    "mcp_oauth_discovery",
+                    "OAuth metadata endpoint attempted an HTTP redirect; refusing unvalidated redirect",
+                ));
+            }
+            if !response.status().is_success() {
+                return Err(CliError::new(
+                    "mcp_oauth_discovery",
+                    format!("OAuth metadata endpoint returned HTTP {}", response.status().as_u16()),
+                ));
+            }
+            let mut response = response;
+            let mut body = Vec::new();
+            while let Some(chunk) = response.chunk().await.map_err(|_| {
+                CliError::new("mcp_oauth_transport", "OAuth metadata response read failed")
+            })? {
+                if body.len().saturating_add(chunk.len()) > MAX_DISCOVERY_METADATA_BYTES {
+                    return Err(CliError::new(
+                        "mcp_oauth_discovery",
+                        "OAuth metadata response exceeded the bounded discovery size limit",
+                    ));
+                }
+                body.extend_from_slice(&chunk);
+            }
+            serde_json::from_slice::<T>(&body).map(Some).map_err(|_| {
+                CliError::new("mcp_oauth_discovery", "OAuth metadata response was invalid or incomplete JSON")
+            })
+        })
+    })
+    .join()
+    .map_err(|_| CliError::new("mcp_oauth_transport", "OAuth discovery worker thread failed"))?
+}
+
+fn discovery_client() -> Result<Client, CliError> {
+    Client::builder()
+        .timeout(Duration::from_secs(30))
+        .redirect(redirect::Policy::none())
+        .build()
+        .map_err(|_| {
+            CliError::new(
+                "mcp_oauth_transport",
+                "cannot build OAuth discovery HTTP client",
+            )
+        })
+}
+
+fn validate_protected_resource_metadata(
+    endpoint: &str,
+    metadata: &ProtectedResourceMetadata,
+) -> Result<(), CliError> {
+    if metadata.authorization_servers.is_empty() {
+        return Err(CliError::new(
+            "mcp_oauth_discovery",
+            "Protected Resource Metadata omitted authorization_servers",
+        ));
+    }
+    if !urls_equal(endpoint, &metadata.resource) {
+        return Err(CliError::new(
+            "mcp_oauth_discovery",
+            "Protected Resource Metadata resource did not match the configured MCP endpoint",
+        ));
+    }
+    for issuer in &metadata.authorization_servers {
+        validate_discovery_url(issuer, "authorization server issuer")?;
+    }
+    Ok(())
+}
+
+fn select_authorization_server(
+    authorization_servers: &[String],
+    issuer_override: Option<&str>,
+) -> Result<String, CliError> {
+    if let Some(issuer) = issuer_override {
+        validate_discovery_url(issuer, "authorization server issuer override")?;
+        if let Some(found) = authorization_servers
+            .iter()
+            .find(|candidate| urls_equal(candidate, issuer))
+        {
+            return Ok(found.clone());
+        }
+        return Err(CliError::new(
+            "mcp_oauth_discovery",
+            "advanced --issuer override was not advertised by Protected Resource Metadata",
+        ));
+    }
+    if authorization_servers.len() != 1 {
+        return Err(CliError::new(
+            "mcp_oauth_discovery",
+            "Protected Resource Metadata advertised multiple authorization servers; use the advanced --issuer override to choose one advertised issuer explicitly",
+        ));
+    }
+    Ok(authorization_servers[0].clone())
+}
+
+fn validate_authorization_server_metadata(
+    expected_issuer: &str,
+    metadata: &AuthorizationServerMetadata,
+) -> Result<(), CliError> {
+    if !urls_equal(expected_issuer, &metadata.issuer) {
+        return Err(CliError::new(
+            "mcp_oauth_discovery",
+            "authorization-server metadata issuer did not match the issuer advertised by the protected resource",
+        ));
+    }
+    validate_discovery_url(&metadata.issuer, "authorization server issuer")?;
+    validate_discovery_url(&metadata.authorization_endpoint, "authorization endpoint")?;
+    validate_discovery_url(&metadata.token_endpoint, "token endpoint")?;
+    if !metadata
+        .code_challenge_methods_supported
+        .iter()
+        .any(|method| method == "S256")
+    {
+        return Err(CliError::new(
+            "mcp_oauth_discovery",
+            "authorization-server metadata does not advertise PKCE S256 support",
+        ));
+    }
+    Ok(())
+}
+
+fn validate_discovery_url(value: &str, label: &str) -> Result<(), CliError> {
+    let url = Url::parse(value).map_err(|_| {
+        CliError::new(
+            "mcp_oauth_discovery",
+            format!("{label} must be a valid URL"),
+        )
+    })?;
+    if (url.scheme() != "https" && !loopback_http(&url))
+        || !url.username().is_empty()
+        || url.password().is_some()
+        || url.fragment().is_some()
+    {
+        return Err(CliError::new(
+            "mcp_oauth_discovery",
+            format!(
+                "{label} must use a credential-free HTTPS URL without a fragment (loopback HTTP is allowed only for deterministic local tests)"
+            ),
+        ));
+    }
+    Ok(())
+}
+
+fn urls_equal(left: &str, right: &str) -> bool {
+    match (Url::parse(left), Url::parse(right)) {
+        (Ok(left), Ok(right)) => left == right,
+        _ => false,
+    }
 }
 
 pub(crate) fn validate_oauth_config(oauth: &McpRemoteOAuthFileConfig) -> Result<(), CliError> {
@@ -736,6 +1254,184 @@ mod tests {
             client_id: "https://client.example.test/reason.json".into(),
             scopes: vec!["mcp:read".into()],
         }
+    }
+
+    fn read_http_request(stream: &mut TcpStream) -> String {
+        let mut reader = BufReader::new(stream.try_clone().unwrap());
+        let mut first = String::new();
+        reader.read_line(&mut first).unwrap();
+        let mut content_length = 0usize;
+        loop {
+            let mut line = String::new();
+            reader.read_line(&mut line).unwrap();
+            if line == "\r\n" {
+                break;
+            }
+            if let Some(value) = line.to_ascii_lowercase().strip_prefix("content-length:") {
+                content_length = value.trim().parse().unwrap();
+            }
+        }
+        if content_length > 0 {
+            let mut body = vec![0u8; content_length];
+            std::io::Read::read_exact(&mut reader, &mut body).unwrap();
+        }
+        first
+    }
+
+    fn write_http_response(stream: &mut TcpStream, status: &str, headers: &str, body: &str) {
+        let response = format!(
+            "HTTP/1.1 {status}\r\nContent-Type: application/json\r\n{headers}Content-Length: {}\r\nConnection: close\r\n\r\n{body}",
+            body.len()
+        );
+        stream.write_all(response.as_bytes()).unwrap();
+    }
+
+    #[test]
+    fn oauth_discovery_falls_back_to_root_prm_and_oidc_path_insertion() {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let endpoint = format!("http://{addr}/mcp");
+        let issuer = format!("http://{addr}/tenant");
+        let endpoint_server = endpoint.clone();
+        let issuer_server = issuer.clone();
+        let server = thread::spawn(move || {
+            for index in 0..5 {
+                let (mut stream, _) = listener.accept().unwrap();
+                let first = read_http_request(&mut stream);
+                match index {
+                    0 => {
+                        assert!(first.starts_with("POST /mcp "));
+                        write_http_response(&mut stream, "200 OK", "", "{}");
+                    }
+                    1 => {
+                        assert!(
+                            first.starts_with("GET /.well-known/oauth-protected-resource/mcp ")
+                        );
+                        write_http_response(&mut stream, "404 Not Found", "", "");
+                    }
+                    2 => {
+                        assert!(first.starts_with("GET /.well-known/oauth-protected-resource "));
+                        let body = serde_json::json!({
+                            "resource": endpoint_server,
+                            "authorization_servers": [issuer_server],
+                            "scopes_supported": ["mcp:read"]
+                        })
+                        .to_string();
+                        write_http_response(&mut stream, "200 OK", "", &body);
+                    }
+                    3 => {
+                        assert!(
+                            first
+                                .starts_with("GET /.well-known/oauth-authorization-server/tenant ")
+                        );
+                        write_http_response(&mut stream, "404 Not Found", "", "");
+                    }
+                    _ => {
+                        assert!(first.starts_with("GET /.well-known/openid-configuration/tenant "));
+                        let body = serde_json::json!({
+                            "issuer": issuer_server,
+                            "authorization_endpoint": format!("{issuer_server}/authorize"),
+                            "token_endpoint": format!("{issuer_server}/token"),
+                            "code_challenge_methods_supported": ["S256"]
+                        })
+                        .to_string();
+                        write_http_response(&mut stream, "200 OK", "", &body);
+                    }
+                }
+            }
+        });
+        let discovered = discover_oauth_config(
+            &endpoint,
+            "https://client.example.test/reason.json".into(),
+            Vec::new(),
+            None,
+            None,
+            None,
+        )
+        .unwrap();
+        server.join().unwrap();
+        assert_eq!(discovered.issuer, issuer);
+        assert_eq!(discovered.scopes, vec!["mcp:read"]);
+        assert!(discovered.authorization_endpoint.ends_with("/authorize"));
+        assert!(discovered.token_endpoint.ends_with("/token"));
+    }
+
+    #[test]
+    fn oauth_discovery_rejects_redirect_and_malformed_metadata() {
+        for (status, headers, body) in [
+            (
+                "302 Found",
+                "Location: http://127.0.0.1:9/elsewhere\r\n",
+                "",
+            ),
+            ("200 OK", "", "not-json"),
+        ] {
+            let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+            let addr = listener.local_addr().unwrap();
+            let server = thread::spawn(move || {
+                let (mut stream, _) = listener.accept().unwrap();
+                let first = read_http_request(&mut stream);
+                assert!(first.starts_with("GET /metadata "));
+                write_http_response(&mut stream, status, headers, body);
+            });
+            let error = fetch_discovery_json::<ProtectedResourceMetadata>(
+                &format!("http://{addr}/metadata"),
+                false,
+            )
+            .unwrap_err();
+            server.join().unwrap();
+            assert_eq!(error.failure_class, "mcp_oauth_discovery");
+        }
+    }
+
+    #[test]
+    fn oauth_discovery_rejects_resource_issuer_and_insecure_metadata_mismatch() {
+        let prm = ProtectedResourceMetadata {
+            resource: "https://other.example.test/mcp".into(),
+            authorization_servers: vec!["https://auth.example.test".into()],
+            scopes_supported: vec![],
+        };
+        assert_eq!(
+            validate_protected_resource_metadata("https://mcp.example.test/mcp", &prm)
+                .unwrap_err()
+                .failure_class,
+            "mcp_oauth_discovery"
+        );
+        let metadata = AuthorizationServerMetadata {
+            issuer: "https://other-auth.example.test".into(),
+            authorization_endpoint: "https://other-auth.example.test/authorize".into(),
+            token_endpoint: "https://other-auth.example.test/token".into(),
+            code_challenge_methods_supported: vec!["S256".into()],
+        };
+        assert_eq!(
+            validate_authorization_server_metadata("https://auth.example.test", &metadata)
+                .unwrap_err()
+                .failure_class,
+            "mcp_oauth_discovery"
+        );
+        assert_eq!(
+            validate_discovery_url(
+                "http://auth.example.test/.well-known/oauth-authorization-server",
+                "metadata"
+            )
+            .unwrap_err()
+            .failure_class,
+            "mcp_oauth_discovery"
+        );
+    }
+
+    #[test]
+    fn bearer_challenge_parser_extracts_resource_metadata_and_scope_without_secrets() {
+        let challenge = parse_bearer_challenge(
+            r#"Bearer realm="mcp", resource_metadata="https://mcp.example.test/.well-known/oauth-protected-resource", scope="files:read user:profile""#,
+        )
+        .unwrap()
+        .unwrap();
+        assert_eq!(
+            challenge.resource_metadata,
+            "https://mcp.example.test/.well-known/oauth-protected-resource"
+        );
+        assert_eq!(challenge.scope.unwrap(), vec!["files:read", "user:profile"]);
     }
 
     #[test]
