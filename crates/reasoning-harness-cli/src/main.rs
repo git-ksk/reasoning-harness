@@ -82,8 +82,9 @@ use reasoning_harness_providers::{
     MCP_PROTOCOL_VERSION, MCP_READONLY_V3_DOWNLEVEL_PROTOCOL_VERSION, MCP_READONLY_V3_RESOLVER_ID,
     MCP_REMOTE_PROTOCOL_VERSION, MCP_REMOTE_READONLY_RESOLVER_ID, McpReadOnlyResolverConfig,
     McpReadOnlyResolverV3, McpReadOnlyResolverV3Config, McpRemoteReadOnlyResolver,
-    McpRemoteReadOnlyResolverConfig, MistralAdapter, NvidiaAdapter, SubprocessCancellation,
-    TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier, TrustedCommandVerifierConfig,
+    McpRemoteReadOnlyResolverConfig, McpRemoteScopeChallengeState, MistralAdapter, NvidiaAdapter,
+    SubprocessCancellation, TRUSTED_COMMAND_VERIFIER_ID, TrustedCommandVerifier,
+    TrustedCommandVerifierConfig,
 };
 use schemars::{JsonSchema, schema_for};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -2824,6 +2825,23 @@ fn run_external_resolution(
     )
 }
 
+fn run_mcp_resolution(
+    input: HarnessInput,
+    candidate: ReasoningCandidate,
+    resolver: &dyn ResolutionResolver,
+    admission: Option<&ExternalEvidenceAdmissionPolicy>,
+    max_attempts: usize,
+    scope_recovery: Option<&(String, McpRemoteScopeChallengeState)>,
+) -> Result<GroundedResolutionOutcome, CliError> {
+    let round = run_external_resolution(input, candidate, resolver, admission, max_attempts)?;
+    if let Some((name, state)) = scope_recovery
+        && let Some(challenge) = state.current()
+    {
+        return Err(mcp_oauth::insufficient_scope_error(name, &challenge));
+    }
+    Ok(round)
+}
+
 fn run_trusted_resolution(
     input: HarnessInput,
     candidate: ReasoningCandidate,
@@ -3640,6 +3658,7 @@ async fn execute_natural_inner(
     } else {
         None
     };
+    let mut mcp_scope_recovery: Option<(String, McpRemoteScopeChallengeState)> = None;
     let mcp_resolver: Option<Box<dyn ResolutionResolver>> =
         if let Some(config) = mcp_resolver_config {
             Some(Box::new(
@@ -3657,6 +3676,7 @@ async fn execute_natural_inner(
                     )
                 })
                 .transpose()?;
+            let server_name = config.resolver.server_id.clone();
             let resolver = McpRemoteReadOnlyResolver::new(config.resolver, token)
                 .map_err(|kind| {
                     CliError::new(
@@ -3665,6 +3685,7 @@ async fn execute_natural_inner(
                     )
                 })?
                 .with_cancellation(cancellation.clone());
+            mcp_scope_recovery = Some((server_name, resolver.scope_challenge_state()));
             Some(Box::new(resolver))
         } else {
             None
@@ -3720,12 +3741,13 @@ async fn execute_natural_inner(
                     args.max_resolution_attempts,
                 )?)
             } else if let Some(mcp) = mcp_resolver.as_ref() {
-                Some(run_external_resolution(
+                Some(run_mcp_resolution(
                     built.input.clone(),
                     candidate.clone(),
                     mcp.as_ref(),
                     mcp_admission.as_ref(),
                     args.max_resolution_attempts,
+                    mcp_scope_recovery.as_ref(),
                 )?)
             } else {
                 None
@@ -4040,7 +4062,7 @@ async fn execute_natural_inner(
                 args.max_resolution_attempts,
             )?
         } else {
-            run_external_resolution(
+            run_mcp_resolution(
                 retry_input,
                 candidate.clone(),
                 mcp_resolver
@@ -4048,6 +4070,7 @@ async fn execute_natural_inner(
                     .expect("MCP resolver availability checked above"),
                 mcp_admission.as_ref(),
                 args.max_resolution_attempts,
+                mcp_scope_recovery.as_ref(),
             )?
         };
         progress.phase("Verifying", "checking retry evidence");

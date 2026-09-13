@@ -44,6 +44,7 @@ pub use mcp_remote::{
     DEFAULT_MCP_REMOTE_MAX_RESPONSE_BYTES, DEFAULT_MCP_REMOTE_MAX_TOOL_LIST_PAGES,
     DEFAULT_MCP_REMOTE_TIMEOUT_MS, MCP_REMOTE_PROTOCOL_VERSION, MCP_REMOTE_READONLY_RESOLVER_ID,
     McpRemoteReadOnlyResolver, McpRemoteReadOnlyResolverConfig, McpRemoteReadiness,
+    McpRemoteScopeChallenge, McpRemoteScopeChallengeState,
 };
 
 pub use mcp_readonly_v3::{

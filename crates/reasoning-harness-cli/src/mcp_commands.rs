@@ -93,6 +93,9 @@ pub(crate) enum McpCommand {
     /// Start OAuth authorization-code + PKCE login for a remote MCP source.
     Login {
         name: String,
+        /// Explicitly request additional OAuth scopes during reauthorization. Never applied silently.
+        #[arg(long = "scope", value_name = "SCOPE")]
+        scopes: Vec<String>,
         /// Print the authorization URL without attempting to open a browser.
         #[arg(long)]
         no_browser: bool,
@@ -269,10 +272,11 @@ pub(crate) fn run(command: McpCommand) -> Result<(), CliError> {
         McpCommand::Test { name, format } => test(&name, format),
         McpCommand::Login {
             name,
+            scopes,
             no_browser,
             replace,
             format,
-        } => login(&name, no_browser, replace, format),
+        } => login(&name, scopes, no_browser, replace, format),
         McpCommand::Status { name, format } => oauth_status(&name, format),
         McpCommand::Logout { name, format } => logout(&name, format),
         McpCommand::Remove { name, format } => remove(&name, format),
@@ -512,16 +516,24 @@ fn test(name: &str, format: OutputFormat) -> Result<(), CliError> {
                 .as_ref()
                 .map(|oauth| mcp_oauth::access_token(name, &resolved.resolver.endpoint, oauth))
                 .transpose()?;
-            let readiness = McpRemoteReadOnlyResolver::new(resolved.resolver, token)
+            let resolver = McpRemoteReadOnlyResolver::new(resolved.resolver, token)
                 .map_err(|kind| {
                     CliError::new(
                         "mcp_configuration",
                         format!("remote MCP configuration rejected: {kind:?}"),
                     )
                 })?
-                .with_cancellation(cancellation_token.clone())
-                .probe_readiness()
-                .map_err(readiness_error)?;
+                .with_cancellation(cancellation_token.clone());
+            let scope_state = resolver.scope_challenge_state();
+            let readiness = match resolver.probe_readiness() {
+                Ok(readiness) => readiness,
+                Err(error) => {
+                    if let Some(challenge) = scope_state.current() {
+                        return Err(mcp_oauth::insufficient_scope_error(name, &challenge));
+                    }
+                    return Err(readiness_error(error));
+                }
+            };
             Ok(TestOutput {
                 management_surface: SURFACE_ID,
                 status: "ready",
@@ -556,20 +568,35 @@ fn test(name: &str, format: OutputFormat) -> Result<(), CliError> {
 
 fn login(
     name: &str,
+    scopes: Vec<String>,
     no_browser: bool,
     replace: bool,
     format: OutputFormat,
 ) -> Result<(), CliError> {
     validate_name(name)?;
+    if !scopes.is_empty() && !replace {
+        return Err(CliError::new(
+            "mcp_scope_step_up",
+            "explicit OAuth scope step-up requires --replace so an existing credential is never broadened silently",
+        ));
+    }
     let user = user_json()?;
     let remote = require_remote(&user, name)?;
-    let oauth = remote.oauth.as_ref().ok_or_else(|| {
+    let mut oauth = remote.oauth.clone().ok_or_else(|| {
         CliError::new(
             "mcp_oauth_configuration",
             "remote MCP source has no OAuth configuration",
         )
     })?;
-    mcp_oauth::login(name, &remote.endpoint, oauth, no_browser, replace, format)
+    if !scopes.is_empty() {
+        let mut merged = oauth.scopes.iter().cloned().collect::<BTreeSet<_>>();
+        for scope in scopes {
+            merged.insert(required("scope", scope)?);
+        }
+        oauth.scopes = merged.into_iter().collect();
+    }
+    mcp_oauth::validate_oauth_config(&oauth)?;
+    mcp_oauth::login(name, &remote.endpoint, &oauth, no_browser, replace, format)
 }
 
 fn oauth_status(name: &str, format: OutputFormat) -> Result<(), CliError> {

@@ -1350,3 +1350,121 @@ fn remote_mcp_management_persists_only_non_secret_oauth_metadata() {
     assert_eq!(remove.status.code(), Some(0));
     std::fs::remove_dir_all(temp).ok();
 }
+
+#[test]
+fn remote_mcp_insufficient_scope_is_typed_actionable_and_secret_free() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let addr = listener.local_addr().unwrap();
+    let endpoint = format!("http://{addr}/mcp");
+    let server = thread::spawn(move || {
+        let (mut stream, _) = listener.accept().unwrap();
+        let mut reader = BufReader::new(stream.try_clone().unwrap());
+        let mut first = String::new();
+        reader.read_line(&mut first).unwrap();
+        assert!(first.starts_with("POST /mcp "));
+        let mut content_length = 0usize;
+        loop {
+            let mut line = String::new();
+            reader.read_line(&mut line).unwrap();
+            if line == "\r\n" {
+                break;
+            }
+            if let Some(value) = line.to_ascii_lowercase().strip_prefix("content-length:") {
+                content_length = value.trim().parse().unwrap();
+            }
+        }
+        if content_length > 0 {
+            let mut body = vec![0u8; content_length];
+            reader.read_exact(&mut body).unwrap();
+        }
+        let response = concat!(
+            "HTTP/1.1 403 Forbidden\r\n",
+            "WWW-Authenticate: Bearer error=\"insufficient_scope\", scope=\"profile:read files:read\", error_description=\"sensitive-marker\"\r\n",
+            "Content-Length: 0\r\nConnection: close\r\n\r\n"
+        );
+        stream.write_all(response.as_bytes()).unwrap();
+    });
+
+    let temp = std::env::temp_dir().join(format!(
+        "reason-mcp-scope-step-up-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&temp).unwrap();
+    let config = serde_json::json!({
+        "schema_version": "reason-config-v1",
+        "resolution": {
+            "mcp_remote_readonly": {
+                "server_id": "scope-demo",
+                "endpoint": endpoint,
+                "allowed_tools": ["search"],
+                "tool": "search",
+                "read_only": true,
+                "resolver_class": "evidence_acquisition",
+                "source": "mcp:scope-demo:search",
+                "protocol_version": "2026-07-28"
+            }
+        }
+    });
+    std::fs::write(
+        temp.join("config.json"),
+        serde_json::to_vec_pretty(&config).unwrap(),
+    )
+    .unwrap();
+    let output = reason_command()
+        .args(["mcp", "test", "scope-demo", "--format", "json"])
+        .env("REASON_HOME", &temp)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .expect("run remote MCP scope fixture");
+    server.join().unwrap();
+    assert_eq!(output.status.code(), Some(1));
+    assert!(output.stderr.is_empty());
+    let text = String::from_utf8_lossy(&output.stdout);
+    assert!(!text.contains("sensitive-marker"));
+    let json = json_stdout(&output);
+    assert_eq!(
+        json["result"]["failure"]["failure_class"],
+        "mcp_insufficient_scope"
+    );
+    let message = json["result"]["failure"]["message"].as_str().unwrap();
+    assert!(message.contains("files:read"));
+    assert!(message.contains("profile:read"));
+    assert!(message.contains("scope-demo"));
+    assert!(message.contains("reason mcp login"));
+    assert!(message.contains("--replace"));
+    assert!(message.contains("--scope"));
+    assert!(message.contains(&endpoint));
+    std::fs::remove_dir_all(temp).ok();
+}
+
+#[test]
+fn remote_mcp_scope_step_up_requires_explicit_replace() {
+    let output = run_reason(
+        &[
+            "mcp",
+            "login",
+            "scope-demo",
+            "--scope",
+            "files:read",
+            "--format",
+            "json",
+        ],
+        None,
+    );
+    assert_eq!(output.status.code(), Some(1));
+    assert!(output.stderr.is_empty());
+    let json = json_stdout(&output);
+    assert_eq!(
+        json["result"]["failure"]["failure_class"],
+        "mcp_scope_step_up"
+    );
+    let message = json["result"]["failure"]["message"].as_str().unwrap();
+    assert!(message.contains("--replace"));
+    assert!(!message.contains("access_token"));
+    assert!(!message.contains("refresh_token"));
+}

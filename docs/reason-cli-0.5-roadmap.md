@@ -122,7 +122,7 @@ The existing one-shot `reason "TASK"`, repeatable `--file`, piped stdin context,
 ### 0.5.0 hardening required before Phase 3 is considered fully complete
 
 - **#414 P1 — implemented:** `add-remote` now discovers RFC 9728 Protected Resource Metadata and RFC 8414/OIDC authorization-server metadata, validates resource/issuer relationships and PKCE `S256`, refuses metadata redirects, and keeps legacy endpoint flags only as advanced overrides that must match discovery.
-- **#415 P1:** distinguish OAuth `insufficient_scope` from generic permission denial and provide explicit, non-silent scope step-up recovery.
+- **#415 P1 — implemented:** bounded Bearer challenge parsing distinguishes OAuth `insufficient_scope` from ordinary 403 denial, validates the challenged resource/scope set fail-closed, and returns typed `mcp_insufficient_scope` recovery. `reason mcp login <name> --replace --scope ...` is an explicit step-up surface; scope is never broadened silently, and granted step-up scope is preserved across refresh.
 - **#416 P1 — implemented:** remote HTTP readiness/acquisition now shares Reason's safe Ctrl+C cancellation token; pending `tools/list` / `tools/call` work is dropped promptly, the joined worker exits before the command returns, and CLI cancellation remains the existing typed `cancelled` operational outcome rather than semantic `unknown`.
 - **#419 P1 — implemented:** recursively rejects secret-bearing nested MCP `fixed_arguments` across local, remote, and investigation MCP configuration without echoing secret values, preserving the documented non-secret configuration boundary for hand-authored low-level config.
 

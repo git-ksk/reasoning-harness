@@ -9,6 +9,7 @@ use std::{
 use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD};
 use keyring::{Entry, Error as KeyringError};
 use rand::RngExt as _;
+use reasoning_harness_providers::McpRemoteScopeChallenge;
 use reqwest::{Client, StatusCode, header, redirect};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -243,7 +244,14 @@ pub(crate) fn access_token(
             ),
         ));
     };
-    token = refresh(name, endpoint, oauth, &refresh_token)?;
+    let granted_scope = token.scope.clone();
+    token = refresh(
+        name,
+        endpoint,
+        oauth,
+        &refresh_token,
+        granted_scope.as_deref(),
+    )?;
     save_token(name, &token)?;
     Ok(token.access_token)
 }
@@ -765,6 +773,59 @@ fn urls_equal(left: &str, right: &str) -> bool {
     }
 }
 
+pub(crate) fn insufficient_scope_error(
+    name: &str,
+    challenge: &McpRemoteScopeChallenge,
+) -> CliError {
+    let scopes = challenge.required_scopes.join(", ");
+    let recovery = if safe_cli_atom(name)
+        && challenge
+            .required_scopes
+            .iter()
+            .all(|scope| safe_cli_atom(scope))
+    {
+        let scope_args = challenge
+            .required_scopes
+            .iter()
+            .map(|scope| format!(" --scope {scope}"))
+            .collect::<String>();
+        format!("reason mcp login {name} --replace{scope_args}")
+    } else {
+        "reason mcp login <name> --replace, with one --scope argument for each required scope"
+            .to_string()
+    };
+    CliError::new(
+        "mcp_insufficient_scope",
+        format!(
+            "remote MCP source {name:?} requires additional OAuth scope(s) [{scopes}] for resource {}; authorization was not broadened automatically. Reauthorize explicitly with: {recovery}",
+            challenge.resource
+        ),
+    )
+}
+
+fn safe_cli_atom(value: &str) -> bool {
+    !value.is_empty()
+        && value.bytes().all(|byte| {
+            byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.' | b':' | b'/' | b'~')
+        })
+}
+
+pub(crate) fn validate_scope_values(scopes: &[String]) -> Result<(), CliError> {
+    if scopes.iter().any(|scope| {
+        scope.is_empty()
+            || scope.len() > 128
+            || !scope.bytes().all(|byte| {
+                byte == 0x21 || (0x23..=0x5b).contains(&byte) || (0x5d..=0x7e).contains(&byte)
+            })
+    }) {
+        return Err(CliError::new(
+            "mcp_oauth_configuration",
+            "OAuth scopes must be individual RFC 6749 scope-token values with bounded printable characters",
+        ));
+    }
+    Ok(())
+}
+
 pub(crate) fn validate_oauth_config(oauth: &McpRemoteOAuthFileConfig) -> Result<(), CliError> {
     for (label, value) in [
         ("issuer", oauth.issuer.as_str()),
@@ -818,12 +879,7 @@ pub(crate) fn validate_oauth_config(oauth: &McpRemoteOAuthFileConfig) -> Result<
             ));
         }
     }
-    if oauth.scopes.iter().any(|scope| scope.trim().is_empty()) {
-        return Err(CliError::new(
-            "mcp_oauth_configuration",
-            "OAuth scopes must not contain empty values",
-        ));
-    }
+    validate_scope_values(&oauth.scopes)?;
     Ok(())
 }
 
@@ -1043,6 +1099,7 @@ fn refresh(
     resource: &str,
     oauth: &McpRemoteOAuthFileConfig,
     refresh_token: &str,
+    granted_scope: Option<&str>,
 ) -> Result<StoredOAuthToken, CliError> {
     let mut form = vec![
         ("grant_type".to_string(), "refresh_token".to_string()),
@@ -1050,12 +1107,19 @@ fn refresh(
         ("client_id".to_string(), oauth.client_id.clone()),
         ("resource".to_string(), resource.to_string()),
     ];
-    if !oauth.scopes.is_empty() {
+    if let Some(scope) = granted_scope.filter(|scope| !scope.trim().is_empty()) {
+        form.push(("scope".to_string(), scope.to_string()));
+    } else if !oauth.scopes.is_empty() {
         form.push(("scope".to_string(), oauth.scopes.join(" ")));
     }
     let mut refreshed = token_request(&oauth.token_endpoint, form, "refresh")?;
     if refreshed.refresh_token.is_none() {
         refreshed.refresh_token = Some(refresh_token.into());
+    }
+    if refreshed.scope.is_none() {
+        refreshed.scope = granted_scope
+            .filter(|scope| !scope.trim().is_empty())
+            .map(str::to_string);
     }
     token_from_response(name, resource, oauth, refreshed)
 }
@@ -1131,7 +1195,9 @@ fn token_from_response(
         access_token: token.access_token,
         refresh_token: token.refresh_token.filter(|value| !value.trim().is_empty()),
         token_type: "Bearer".into(),
-        scope: token.scope,
+        scope: token
+            .scope
+            .or_else(|| (!oauth.scopes.is_empty()).then(|| oauth.scopes.join(" "))),
         expires_at_unix_seconds: token.expires_in.map(|seconds| now.saturating_add(seconds)),
     })
 }
@@ -1560,6 +1626,60 @@ mod tests {
         assert_eq!(token.client_id, "client-id");
         assert_eq!(token.resource, "https://mcp.example.test/mcp");
         assert_eq!(token.token_endpoint, config.token_endpoint);
+    }
+
+    #[test]
+    fn refresh_preserves_explicit_step_up_scope_when_server_omits_scope() {
+        use std::io::Read as _;
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut reader = BufReader::new(stream.try_clone().unwrap());
+            let mut first = String::new();
+            reader.read_line(&mut first).unwrap();
+            assert!(first.starts_with("POST /token "));
+            let mut content_length = 0usize;
+            loop {
+                let mut line = String::new();
+                reader.read_line(&mut line).unwrap();
+                if line == "\r\n" {
+                    break;
+                }
+                if let Some(value) = line.to_ascii_lowercase().strip_prefix("content-length:") {
+                    content_length = value.trim().parse().unwrap();
+                }
+            }
+            let mut body = vec![0u8; content_length];
+            reader.read_exact(&mut body).unwrap();
+            let body = String::from_utf8(body).unwrap();
+            assert!(body.contains("grant_type=refresh_token"));
+            assert!(
+                body.contains("scope=files%3Aread+profile%3Aread")
+                    || body.contains("scope=files%3Aread%20profile%3Aread")
+            );
+            let response_body =
+                r#"{"access_token":"new-access","token_type":"Bearer","expires_in":3600}"#;
+            let response = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                response_body.len(),
+                response_body
+            );
+            stream.write_all(response.as_bytes()).unwrap();
+        });
+        let mut config = oauth();
+        config.token_endpoint = format!("http://{addr}/token");
+        let refreshed = refresh(
+            "demo",
+            "https://mcp.example.test/mcp",
+            &config,
+            "refresh-secret",
+            Some("files:read profile:read"),
+        )
+        .unwrap();
+        server.join().unwrap();
+        assert_eq!(refreshed.scope.as_deref(), Some("files:read profile:read"));
+        assert_eq!(refreshed.refresh_token.as_deref(), Some("refresh-secret"));
     }
 
     #[test]
