@@ -9,9 +9,9 @@ use serde::Serialize;
 
 use super::{
     CLI_CONFIG_CONTRACT_ID, CliError, CliFileConfig, LoadedCliConfig,
-    McpReadOnlyResolverFileConfig, McpRemoteOAuthFileConfig, McpRemoteReadOnlyResolverFileConfig,
-    OutputFormat, mcp_oauth, model_catalog, print_product_json, progress,
-    resolve_mcp_readonly_config, resolve_mcp_remote_readonly_config, user_config_path,
+    McpReadOnlyResolverFileConfig, McpRemoteReadOnlyResolverFileConfig, OutputFormat, mcp_oauth,
+    model_catalog, print_product_json, progress, resolve_mcp_readonly_config,
+    resolve_mcp_remote_readonly_config, user_config_path,
 };
 
 const SURFACE_ID: &str = "reason-mcp-management-v2";
@@ -51,12 +51,15 @@ pub(crate) enum McpCommand {
         allow_tools: Vec<String>,
         #[arg(long, value_name = "SOURCE")]
         source: Option<String>,
+        /// Advanced compatibility override; must match discovered authorization-server metadata.
         #[arg(long, value_name = "URL")]
-        issuer: String,
+        issuer: Option<String>,
+        /// Advanced compatibility override; must match discovered authorization-server metadata.
         #[arg(long, value_name = "URL")]
-        authorization_endpoint: String,
+        authorization_endpoint: Option<String>,
+        /// Advanced compatibility override; must match discovered authorization-server metadata.
         #[arg(long, value_name = "URL")]
-        token_endpoint: String,
+        token_endpoint: Option<String>,
         #[arg(long, value_name = "CLIENT_ID")]
         client_id: String,
         #[arg(long = "scope", value_name = "SCOPE")]
@@ -334,9 +337,9 @@ fn add_remote(
     tool: String,
     allow_tools: Vec<String>,
     source: Option<String>,
-    issuer: String,
-    authorization_endpoint: String,
-    token_endpoint: String,
+    issuer: Option<String>,
+    authorization_endpoint: Option<String>,
+    token_endpoint: Option<String>,
     client_id: String,
     scopes: Vec<String>,
     timeout_ms: Option<u64>,
@@ -353,17 +356,19 @@ fn add_remote(
         .map(|value| required("source", value))
         .transpose()?
         .unwrap_or_else(|| format!("mcp:{name}:{tool}"));
-    let oauth = McpRemoteOAuthFileConfig {
-        issuer: required("issuer", issuer)?,
-        authorization_endpoint: required("authorization-endpoint", authorization_endpoint)?,
-        token_endpoint: required("token-endpoint", token_endpoint)?,
-        client_id: required("client-id", client_id)?,
-        scopes: scopes
-            .into_iter()
-            .map(|scope| required("scope", scope))
-            .collect::<Result<_, _>>()?,
-    };
-    mcp_oauth::validate_oauth_config(&oauth)?;
+    let client_id = required("client-id", client_id)?;
+    let scopes = scopes
+        .into_iter()
+        .map(|scope| required("scope", scope))
+        .collect::<Result<Vec<_>, _>>()?;
+    let oauth = mcp_oauth::discover_oauth_config(
+        &endpoint,
+        client_id,
+        scopes,
+        issuer,
+        authorization_endpoint,
+        token_endpoint,
+    )?;
     let configured = McpRemoteReadOnlyResolverFileConfig {
         server_id: name.clone(),
         endpoint,
