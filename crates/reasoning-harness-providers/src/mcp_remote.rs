@@ -1,5 +1,6 @@
 use std::{
     collections::{BTreeMap, BTreeSet},
+    sync::{Arc, Mutex},
     thread,
     time::{Duration, Instant},
 };
@@ -24,6 +25,9 @@ pub const DEFAULT_MCP_REMOTE_MAX_TOOL_LIST_PAGES: usize = 8;
 const MCP_CLIENT_NAME: &str = "reasoning-harness";
 const MCP_PROVENANCE_META_KEY: &str = "git-ksk/reasoning-harness/provenance";
 const REMOTE_CANCELLATION_POLL_INTERVAL: Duration = Duration::from_millis(10);
+const MAX_WWW_AUTHENTICATE_BYTES: usize = 8_192;
+const MAX_SCOPE_COUNT: usize = 32;
+const MAX_SCOPE_BYTES: usize = 128;
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct McpRemoteReadOnlyResolverConfig {
@@ -76,11 +80,52 @@ pub struct McpRemoteReadiness {
     pub read_only_hint: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct McpRemoteScopeChallenge {
+    pub required_scopes: Vec<String>,
+    pub resource: String,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct McpRemoteScopeChallengeState {
+    inner: Arc<Mutex<Option<McpRemoteScopeChallenge>>>,
+}
+
+impl McpRemoteScopeChallengeState {
+    pub fn current(&self) -> Option<McpRemoteScopeChallenge> {
+        self.inner.lock().ok().and_then(|value| value.clone())
+    }
+
+    fn clear(&self) -> Result<(), ResolutionAdapterErrorKind> {
+        *self
+            .inner
+            .lock()
+            .map_err(|_| ResolutionAdapterErrorKind::Protocol)? = None;
+        Ok(())
+    }
+
+    fn record(&self, challenge: McpRemoteScopeChallenge) -> Result<(), ResolutionAdapterErrorKind> {
+        let mut state = self
+            .inner
+            .lock()
+            .map_err(|_| ResolutionAdapterErrorKind::Protocol)?;
+        if state
+            .as_ref()
+            .is_some_and(|existing| existing != &challenge)
+        {
+            return Err(ResolutionAdapterErrorKind::Protocol);
+        }
+        *state = Some(challenge);
+        Ok(())
+    }
+}
+
 pub struct McpRemoteReadOnlyResolver {
     config: McpRemoteReadOnlyResolverConfig,
     config_id: String,
     access_token: Option<String>,
     cancellation: Option<SubprocessCancellation>,
+    scope_challenge: McpRemoteScopeChallengeState,
 }
 
 #[derive(Debug, Deserialize)]
@@ -159,6 +204,7 @@ impl McpRemoteReadOnlyResolver {
             config_id,
             access_token,
             cancellation: None,
+            scope_challenge: McpRemoteScopeChallengeState::default(),
         })
     }
 
@@ -167,8 +213,15 @@ impl McpRemoteReadOnlyResolver {
         self
     }
 
+    pub fn scope_challenge_state(&self) -> McpRemoteScopeChallengeState {
+        self.scope_challenge.clone()
+    }
+
     pub fn probe_readiness(&self) -> Result<McpRemoteReadiness, ResolutionAdapterError> {
         let started = Instant::now();
+        self.scope_challenge
+            .clear()
+            .map_err(|kind| error(kind, started))?;
         self.verify_selected_tool(started)?;
         Ok(McpRemoteReadiness {
             server_id: self.config.server_id.clone(),
@@ -259,6 +312,7 @@ impl McpRemoteReadOnlyResolver {
         let protocol_version = self.config.protocol_version.clone();
         let access_token = self.access_token.clone();
         let cancellation = self.cancellation.clone();
+        let scope_challenge = self.scope_challenge.clone();
         let max_response_bytes = self.config.max_response_bytes;
         let method = method.to_string();
         let name = name.map(str::to_string);
@@ -301,6 +355,11 @@ impl McpRemoteReadOnlyResolver {
                             return Err(ResolutionAdapterErrorKind::Authentication);
                         }
                         StatusCode::FORBIDDEN => {
+                            if let Some(challenge) =
+                                parse_insufficient_scope_challenge(response.headers(), &endpoint)?
+                            {
+                                scope_challenge.record(challenge)?;
+                            }
                             return Err(ResolutionAdapterErrorKind::PermissionDenied);
                         }
                         StatusCode::TOO_MANY_REQUESTS | StatusCode::SERVICE_UNAVAILABLE => {
@@ -386,6 +445,9 @@ impl ResolutionResolver for McpRemoteReadOnlyResolver {
         attempt_index: usize,
     ) -> Result<ResolutionResolverOutput, ResolutionAdapterError> {
         let started = Instant::now();
+        self.scope_challenge
+            .clear()
+            .map_err(|kind| error(kind, started))?;
         self.verify_selected_tool(started)?;
         let mut arguments = self.config.fixed_arguments.clone();
         let provenance = json!({
@@ -439,6 +501,175 @@ impl ResolutionResolver for McpRemoteReadOnlyResolver {
             cost: measured_cost(started),
         })
     }
+}
+
+fn parse_insufficient_scope_challenge(
+    headers: &header::HeaderMap,
+    endpoint: &str,
+) -> Result<Option<McpRemoteScopeChallenge>, ResolutionAdapterErrorKind> {
+    let mut total = 0usize;
+    let mut found = None::<McpRemoteScopeChallenge>;
+    for raw in headers.get_all(header::WWW_AUTHENTICATE) {
+        let value = raw
+            .to_str()
+            .map_err(|_| ResolutionAdapterErrorKind::Protocol)?;
+        total = total.saturating_add(value.len());
+        if total > MAX_WWW_AUTHENTICATE_BYTES {
+            return Err(ResolutionAdapterErrorKind::Protocol);
+        }
+        let Some((scheme, parameters)) = value.split_once(' ') else {
+            continue;
+        };
+        if !scheme.eq_ignore_ascii_case("Bearer") {
+            continue;
+        }
+        let parsed = parse_bearer_parameters(parameters)?;
+        if parsed.error.as_deref() != Some("insufficient_scope") {
+            continue;
+        }
+        let scopes = parsed.scope.ok_or(ResolutionAdapterErrorKind::Protocol)?;
+        if scopes.is_empty() || scopes.len() > MAX_SCOPE_COUNT {
+            return Err(ResolutionAdapterErrorKind::Protocol);
+        }
+        if scopes.iter().any(|scope| !valid_scope_token(scope)) {
+            return Err(ResolutionAdapterErrorKind::Protocol);
+        }
+        if let Some(resource) = parsed.resource.as_deref() {
+            let expected =
+                reqwest::Url::parse(endpoint).map_err(|_| ResolutionAdapterErrorKind::Protocol)?;
+            let actual =
+                reqwest::Url::parse(resource).map_err(|_| ResolutionAdapterErrorKind::Protocol)?;
+            if actual != expected {
+                return Err(ResolutionAdapterErrorKind::Protocol);
+            }
+        }
+        let challenge = McpRemoteScopeChallenge {
+            required_scopes: scopes,
+            resource: endpoint.to_string(),
+        };
+        if found
+            .as_ref()
+            .is_some_and(|existing| existing != &challenge)
+        {
+            return Err(ResolutionAdapterErrorKind::Protocol);
+        }
+        found = Some(challenge);
+    }
+    Ok(found)
+}
+
+#[derive(Default)]
+struct BearerChallengeParameters {
+    error: Option<String>,
+    scope: Option<Vec<String>>,
+    resource: Option<String>,
+}
+
+fn parse_bearer_parameters(
+    value: &str,
+) -> Result<BearerChallengeParameters, ResolutionAdapterErrorKind> {
+    let mut parsed = BearerChallengeParameters::default();
+    for item in split_auth_parameters(value)? {
+        let (name, raw_value) = item
+            .split_once('=')
+            .ok_or(ResolutionAdapterErrorKind::Protocol)?;
+        let name = name.trim().to_ascii_lowercase();
+        let value = unquote_auth_value(raw_value.trim())?;
+        match name.as_str() {
+            "error" => set_unique(&mut parsed.error, value)?,
+            "scope" => {
+                if parsed.scope.is_some() {
+                    return Err(ResolutionAdapterErrorKind::Protocol);
+                }
+                let scopes = value
+                    .split_ascii_whitespace()
+                    .map(str::to_string)
+                    .collect::<BTreeSet<_>>()
+                    .into_iter()
+                    .collect::<Vec<_>>();
+                parsed.scope = Some(scopes);
+            }
+            "resource" => set_unique(&mut parsed.resource, value)?,
+            _ => {}
+        }
+    }
+    Ok(parsed)
+}
+
+fn split_auth_parameters(value: &str) -> Result<Vec<&str>, ResolutionAdapterErrorKind> {
+    let mut parts = Vec::new();
+    let mut start = 0usize;
+    let mut quoted = false;
+    let mut escaped = false;
+    for (index, ch) in value.char_indices() {
+        if escaped {
+            escaped = false;
+            continue;
+        }
+        match ch {
+            '\\' if quoted => escaped = true,
+            '"' => quoted = !quoted,
+            ',' if !quoted => {
+                let part = value[start..index].trim();
+                if !part.is_empty() {
+                    parts.push(part);
+                }
+                start = index + ch.len_utf8();
+            }
+            _ => {}
+        }
+    }
+    if quoted || escaped {
+        return Err(ResolutionAdapterErrorKind::Protocol);
+    }
+    let tail = value[start..].trim();
+    if !tail.is_empty() {
+        parts.push(tail);
+    }
+    Ok(parts)
+}
+
+fn unquote_auth_value(value: &str) -> Result<String, ResolutionAdapterErrorKind> {
+    if let Some(inner) = value
+        .strip_prefix('"')
+        .and_then(|value| value.strip_suffix('"'))
+    {
+        let mut output = String::with_capacity(inner.len());
+        let mut escaped = false;
+        for ch in inner.chars() {
+            if escaped {
+                output.push(ch);
+                escaped = false;
+            } else if ch == '\\' {
+                escaped = true;
+            } else {
+                output.push(ch);
+            }
+        }
+        if escaped {
+            return Err(ResolutionAdapterErrorKind::Protocol);
+        }
+        Ok(output)
+    } else if value.contains('"') {
+        Err(ResolutionAdapterErrorKind::Protocol)
+    } else {
+        Ok(value.to_string())
+    }
+}
+
+fn set_unique(slot: &mut Option<String>, value: String) -> Result<(), ResolutionAdapterErrorKind> {
+    if slot.replace(value).is_some() {
+        return Err(ResolutionAdapterErrorKind::Protocol);
+    }
+    Ok(())
+}
+
+fn valid_scope_token(scope: &str) -> bool {
+    !scope.is_empty()
+        && scope.len() <= MAX_SCOPE_BYTES
+        && scope.bytes().all(|byte| {
+            byte == 0x21 || (0x23..=0x5b).contains(&byte) || (0x5d..=0x7e).contains(&byte)
+        })
 }
 
 async fn wait_for_remote_cancellation(cancellation: Option<SubprocessCancellation>) {
@@ -683,6 +914,69 @@ mod tests {
     }
 
     #[test]
+    fn insufficient_scope_challenge_is_bounded_typed_and_secret_free() {
+        let endpoint = "https://mcp.example.test/mcp";
+        let mut headers = header::HeaderMap::new();
+        headers.insert(
+            header::WWW_AUTHENTICATE,
+            header::HeaderValue::from_static(
+                "Bearer error=\"insufficient_scope\", scope=\"files:read profile:read\", error_description=\"sensitive-marker\"",
+            ),
+        );
+        let challenge = parse_insufficient_scope_challenge(&headers, endpoint)
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            challenge.required_scopes,
+            vec!["files:read".to_string(), "profile:read".to_string()]
+        );
+        assert_eq!(challenge.resource, endpoint);
+        assert!(!format!("{challenge:?}").contains("sensitive-marker"));
+    }
+
+    #[test]
+    fn ordinary_forbidden_challenge_remains_generic_permission_denial_shape() {
+        let mut headers = header::HeaderMap::new();
+        headers.insert(
+            header::WWW_AUTHENTICATE,
+            header::HeaderValue::from_static("Bearer error=\"invalid_token\""),
+        );
+        assert!(
+            parse_insufficient_scope_challenge(&headers, "https://mcp.example.test/mcp")
+                .unwrap()
+                .is_none()
+        );
+    }
+
+    #[test]
+    fn malformed_or_conflicting_insufficient_scope_challenges_fail_closed() {
+        let endpoint = "https://mcp.example.test/mcp";
+        for values in [
+            vec!["Bearer error=\"insufficient_scope\", scope=\"a\", scope=\"b\""],
+            vec![
+                "Bearer error=\"insufficient_scope\", scope=\"a\"",
+                "Bearer error=\"insufficient_scope\", scope=\"b\"",
+            ],
+            vec!["Bearer error=\"insufficient_scope\""],
+            vec![
+                "Bearer error=\"insufficient_scope\", scope=\"a\", resource=\"https://other.example.test/mcp\"",
+            ],
+        ] {
+            let mut headers = header::HeaderMap::new();
+            for value in values {
+                headers.append(
+                    header::WWW_AUTHENTICATE,
+                    header::HeaderValue::from_str(value).unwrap(),
+                );
+            }
+            assert_eq!(
+                parse_insufficient_scope_challenge(&headers, endpoint).unwrap_err(),
+                ResolutionAdapterErrorKind::Protocol
+            );
+        }
+    }
+
+    #[test]
     fn readiness_is_stateless_and_requires_read_only_hint() {
         let endpoint = serve_once(
             r#"{"jsonrpc":"2.0","id":"reasoning-harness:remote:tools-list:0","result":{"tools":[{"name":"lookup","annotations":{"readOnlyHint":true}}]}}"#,
@@ -698,6 +992,92 @@ mod tests {
         let ready = resolver.probe_readiness().unwrap();
         assert!(ready.read_only_hint);
         assert_eq!(ready.protocol_version, MCP_REMOTE_PROTOCOL_VERSION);
+    }
+
+    fn serve_forbidden(www_authenticate: &[&str]) -> String {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let headers = www_authenticate
+            .iter()
+            .map(|value| format!("WWW-Authenticate: {value}\r\n"))
+            .collect::<String>();
+        thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            read_request(&mut stream, "tools/list");
+            let response = format!(
+                "HTTP/1.1 403 Forbidden\r\n{headers}Content-Length: 0\r\nConnection: close\r\n\r\n"
+            );
+            stream.write_all(response.as_bytes()).unwrap();
+        });
+        format!("http://{addr}/mcp")
+    }
+
+    #[test]
+    fn insufficient_scope_is_typed_outside_core_error_semantics() {
+        let endpoint = serve_forbidden(&[
+            r#"Bearer error="insufficient_scope", scope="profile:read files:read""#,
+        ]);
+        let config = McpRemoteReadOnlyResolverConfig::with_defaults(
+            "fixture",
+            endpoint.clone(),
+            "lookup",
+            "mcp:fixture:lookup",
+        );
+        let resolver = McpRemoteReadOnlyResolver::new(config, None).unwrap();
+        let state = resolver.scope_challenge_state();
+        assert_eq!(
+            resolver.probe_readiness().unwrap_err().kind,
+            ResolutionAdapterErrorKind::PermissionDenied
+        );
+        let challenge = state.current().expect("scope challenge");
+        assert_eq!(
+            challenge.required_scopes,
+            vec!["files:read", "profile:read"]
+        );
+        assert_eq!(challenge.resource, endpoint);
+    }
+
+    #[test]
+    fn ordinary_forbidden_remains_permission_denied_without_scope_recovery() {
+        let endpoint = serve_forbidden(&[]);
+        let config = McpRemoteReadOnlyResolverConfig::with_defaults(
+            "fixture",
+            endpoint,
+            "lookup",
+            "mcp:fixture:lookup",
+        );
+        let resolver = McpRemoteReadOnlyResolver::new(config, None).unwrap();
+        let state = resolver.scope_challenge_state();
+        assert_eq!(
+            resolver.probe_readiness().unwrap_err().kind,
+            ResolutionAdapterErrorKind::PermissionDenied
+        );
+        assert!(state.current().is_none());
+    }
+
+    #[test]
+    fn malformed_or_conflicting_scope_challenges_fail_closed() {
+        for headers in [
+            vec![r#"Bearer error="insufficient_scope""#],
+            vec![r#"Bearer error="insufficient_scope", scope="files:read", scope="profile:read""#],
+            vec![
+                r#"Bearer error="insufficient_scope", scope="files:read""#,
+                r#"Bearer error="insufficient_scope", scope="profile:read""#,
+            ],
+        ] {
+            let endpoint = serve_forbidden(&headers);
+            let config = McpRemoteReadOnlyResolverConfig::with_defaults(
+                "fixture",
+                endpoint,
+                "lookup",
+                "mcp:fixture:lookup",
+            );
+            let resolver = McpRemoteReadOnlyResolver::new(config, None).unwrap();
+            assert_eq!(
+                resolver.probe_readiness().unwrap_err().kind,
+                ResolutionAdapterErrorKind::Protocol
+            );
+        }
     }
 
     #[test]

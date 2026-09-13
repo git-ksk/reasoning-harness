@@ -79,6 +79,8 @@ remote adapterはMCP `2026-07-28`へpinします。各requestにprotocol revisio
 
 `reason mcp login`はauthorization code + PKCEとloopback callbackを使います。Reasonがcodeをredeemする前に`state`一致とRFC 9207 `iss`のconfigured issuer一致を必須にします。`--no-browser`ではbrowserを開かずauthorization URLを表示するため、SSH/headless環境でも利用できます。access/refresh tokenはnative OS credential storeだけに保存し、MCP source名 / authorization issuer / client ID / exact resource endpointへbindします。issuer/client/resourceが変わった場合、古いcredentialを再利用しません。期限切れtokenのrefreshもconfigured issuer/token endpointだけへ送ります。`logout`はconfigの`remove`後でも実行できるため、orphan credentialを明示削除できます。
 
+remote MCP requestがboundedなBearer `insufficient_scope` challengeを返した場合、Reasonはrequired scope tokenとchallenge resourceを検証してからtyped `mcp_insufficient_scope`を返します。OAuth scopeを自動拡張しません。step-upは`reason mcp login <name> --replace --scope <scope>...`で明示的に行い、token endpointが`scope`を省略してもgrant済みstep-up scopeを以後のrefreshで維持します。malformed / conflicting / oversized / resource-mismatch challengeはfail closed、通常の403はgeneric permission denialのままです。`error_description`など任意challenge textは保存・echoしません。
+
 ReasonはDynamic Client Registrationを実行しません。authorization serverで利用可能なpre-registered public client IDまたはClient ID Metadata Document URLを設定し、`reason-config-v1`に`client_secret` surfaceは持たせません。MCP `fixed_arguments`はnested object / arrayも含めてcredential-bearing keyをrecursiveに検査するため、runtime credentialはconfigではなくscoped secure credential injectionまたはnative OS credential storeを使います。project-level remote MCP configはhigh-risk network acquisition configとして扱い、`reason trust add`でprojectを承認するまでfail closedです。
 
 ## 設定
