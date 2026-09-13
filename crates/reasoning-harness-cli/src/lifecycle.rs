@@ -29,6 +29,65 @@ const MAX_MANIFEST_BYTES: usize = 1024 * 1024;
 const MAX_CHECKSUM_BYTES: usize = 1024 * 1024;
 const MAX_ARCHIVE_BYTES: usize = 512 * 1024 * 1024;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ExternalPackageManager {
+    Homebrew,
+    Winget,
+}
+
+impl ExternalPackageManager {
+    const fn name(self) -> &'static str {
+        match self {
+            Self::Homebrew => "Homebrew",
+            Self::Winget => "WinGet",
+        }
+    }
+
+    const fn update_command(self) -> &'static str {
+        match self {
+            Self::Homebrew => "brew upgrade reason",
+            Self::Winget => "winget upgrade --id git-ksk.Reason",
+        }
+    }
+
+    const fn uninstall_command(self) -> &'static str {
+        match self {
+            Self::Homebrew => "brew uninstall reason",
+            Self::Winget => "winget uninstall --id git-ksk.Reason",
+        }
+    }
+}
+
+fn external_package_manager(path: &Path) -> Option<ExternalPackageManager> {
+    let value = path.to_string_lossy().replace('\\', "/");
+    let lower = value.to_ascii_lowercase();
+    if lower.contains("/cellar/reason/") || lower.contains("/homebrew/cellar/reason/") {
+        Some(ExternalPackageManager::Homebrew)
+    } else if lower.contains("/microsoft/winget/packages/")
+        || lower.contains("/winget/packages/git-ksk.reason_")
+        || lower.contains("/winget/packages/git-ksk.reason/")
+    {
+        Some(ExternalPackageManager::Winget)
+    } else {
+        None
+    }
+}
+
+fn external_manager_error(manager: ExternalPackageManager, operation: &'static str) -> CliError {
+    let command = if operation == "uninstall" {
+        manager.uninstall_command()
+    } else {
+        manager.update_command()
+    };
+    CliError::new(
+        "external_package_manager",
+        format!(
+            "Reason CLI is managed by {}; `{operation}` will not modify the package-manager-owned executable. Use `{command}` instead",
+            manager.name()
+        ),
+    )
+}
+
 #[derive(Debug, Args)]
 pub(crate) struct UpdateArgs {
     /// Check for an update without downloading/replacing the CLI archive.
@@ -238,6 +297,9 @@ pub(crate) async fn run_update(args: UpdateArgs) -> Result<(), CliError> {
             args.format,
         );
     }
+    if let Some(manager) = external_package_manager(&executable) {
+        return Err(external_manager_error(manager, operation));
+    }
     let verb = if rollback_requested {
         "Rollback"
     } else {
@@ -269,6 +331,11 @@ pub(crate) async fn run_update(args: UpdateArgs) -> Result<(), CliError> {
 
 pub(crate) fn run_uninstall(args: UninstallArgs) -> Result<(), CliError> {
     let executable = current_executable()?;
+    if !args.dry_run {
+        if let Some(manager) = external_package_manager(&executable) {
+            return Err(external_manager_error(manager, "uninstall"));
+        }
+    }
     let data_files = managed_data_paths();
     if !args.dry_run {
         confirm_mutation(
@@ -1474,5 +1541,43 @@ mod tests {
                 "config.json" | "project-trust.json" | "sessions"
             ));
         }
+    }
+}
+
+#[cfg(test)]
+mod package_manager_tests {
+    use super::{ExternalPackageManager, external_package_manager};
+    use std::path::Path;
+
+    #[test]
+    fn detects_homebrew_cellar_paths() {
+        assert_eq!(
+            external_package_manager(Path::new("/opt/homebrew/Cellar/reason/0.5.1/bin/reason")),
+            Some(ExternalPackageManager::Homebrew)
+        );
+        assert_eq!(
+            external_package_manager(Path::new(
+                "/home/linuxbrew/.linuxbrew/Cellar/reason/0.5.1/bin/reason"
+            )),
+            Some(ExternalPackageManager::Homebrew)
+        );
+    }
+
+    #[test]
+    fn detects_winget_portable_paths() {
+        assert_eq!(
+            external_package_manager(Path::new(
+                r"C:\Users\u\AppData\Local\Microsoft\WinGet\Packages\git-ksk.Reason_abc\reason-v0.5.1-windows-x86_64\reason.exe"
+            )),
+            Some(ExternalPackageManager::Winget)
+        );
+    }
+
+    #[test]
+    fn leaves_direct_installs_unmanaged() {
+        assert_eq!(
+            external_package_manager(Path::new("/Users/u/.local/bin/reason")),
+            None
+        );
     }
 }

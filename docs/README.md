@@ -14,7 +14,8 @@ You do **not** need to read the research record before using the product. Choose
 Start here:
 
 1. [Getting Started](getting-started.md) — install the current preview and run a grounded and intentionally-insufficient example.
-2. [Native installers](native-installers.md) — one-command macOS/Linux/Windows distribution contract for Reason CLI 0.5.0.
+2. [Native installers](native-installers.md) — one-command macOS/Linux/Windows distribution contract for Reason CLI 0.5.x.
+3. [Package managers](package-managers.md) — Homebrew/WinGet channels and lifecycle ownership.
 3. [Release provenance](release-provenance.md) — OIDC/Sigstore provenance, checksums, and immutable-release trust for `reason-v*`.
 4. [Update / rollback / uninstall](update-rollback-uninstall.md) — provenance-verified lifecycle and retention/purge boundaries.
 5. [Reason doctor](reason-doctor.md) — secret-free local diagnostics plus explicit bounded live readiness checks.

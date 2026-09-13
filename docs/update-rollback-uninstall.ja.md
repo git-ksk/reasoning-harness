@@ -63,6 +63,10 @@ reason update --rollback 0.5.0
 
 provenance、manifest、checksum、Engine change、confirmationはupdateと同じ契約です。`reason update`は古いversionを拒否してrollbackを案内し、rollbackは同一・新しいversionを拒否します。
 
+## Package-manager管理のinstall
+
+Reason CLI 0.5.1以降、Homebrew / WinGet管理下のexecutableはself-update / self-uninstallしません。`reason update --check`はnon-mutatingのまま使えますが、apply / rollbackはtyped `external_package_manager` recoveryとして失敗し、`brew upgrade reason`または`winget upgrade --id git-ksk.Reason`を案内します。`reason uninstall`のapplyも同様にmanager-native uninstallを案内します。package manager stateをmutation authorityとして維持するためです。詳しくは[Package managerからのインストール](package-managers.ja.md)を参照してください。
+
 ## uninstall
 
 まずpreviewできます。

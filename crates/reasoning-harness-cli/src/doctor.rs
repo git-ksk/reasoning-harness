@@ -698,11 +698,17 @@ fn installation_method(path: &Path) -> &'static str {
         "development_build"
     } else if value.contains("/.cargo/bin/") {
         "cargo"
-    } else if value.contains("/opt/homebrew/")
+    } else if value.contains("/Cellar/reason/")
+        || value.contains("/opt/homebrew/")
         || value.contains("/usr/local/Cellar/")
         || value.contains("/usr/local/opt/")
     {
         "homebrew"
+    } else if value.contains("/Microsoft/WinGet/Packages/")
+        || value.contains("/WinGet/Packages/git-ksk.Reason_")
+        || value.contains("/WinGet/Packages/git-ksk.Reason/")
+    {
+        "winget"
     } else {
         "unknown"
     }

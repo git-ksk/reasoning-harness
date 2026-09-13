@@ -63,6 +63,10 @@ reason update --rollback 0.5.0
 
 The same provenance, manifest, checksum, Engine-change, and confirmation rules apply. `reason update` refuses an older version and points to `reason update --rollback VERSION`; rollback mode refuses a same/newer version. This prevents a confused update channel from silently downgrading the executable.
 
+## Package-manager-owned installs
+
+Starting with Reason CLI 0.5.1, Homebrew/WinGet-owned executables do not self-update or self-uninstall. `reason update --check` remains non-mutating, but an apply/rollback returns typed `external_package_manager` recovery pointing to `brew upgrade reason` or `winget upgrade --id git-ksk.Reason`. Applying `reason uninstall` similarly points to the manager-native uninstall command. This keeps package-manager state authoritative. See [Package-manager installation](package-managers.md).
+
 ## Uninstall
 
 Preview first:
