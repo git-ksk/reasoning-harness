@@ -7,6 +7,7 @@ use std::{
 };
 
 use clap::Args;
+use reasoning_harness_providers::network;
 use semver::Version;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -492,7 +493,8 @@ fn compare_direction(current: &Version, target: &Version) -> LifecycleDirection 
 }
 
 fn release_client() -> Result<reqwest::Client, CliError> {
-    reqwest::Client::builder()
+    network::client_builder()
+        .map_err(|error| CliError::new("network_custom_ca", error.message().to_string()))?
         .user_agent(format!("reason/{}", env!("CARGO_PKG_VERSION")))
         .build()
         .map_err(network_error)

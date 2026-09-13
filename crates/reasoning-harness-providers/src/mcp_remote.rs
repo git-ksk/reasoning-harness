@@ -10,7 +10,7 @@ use reasoning_harness_core::{
     ResolutionCost, ResolutionRequest, ResolutionResolver, ResolutionResolverContribution,
     ResolutionResolverOutput, ResolverClass,
 };
-use reqwest::{Client, StatusCode, header, redirect};
+use reqwest::{StatusCode, header, redirect};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
@@ -373,7 +373,8 @@ impl McpRemoteReadOnlyResolver {
                 .map_err(|_| ResolutionAdapterErrorKind::Transport)?;
             runtime.block_on(async move {
                 let request = async move {
-                    let client = Client::builder()
+                    let client = crate::network::client_builder()
+                        .map_err(|_| ResolutionAdapterErrorKind::Transport)?
                         .timeout(Duration::from_millis(timeout_ms))
                         .redirect(redirect::Policy::none())
                         .build()

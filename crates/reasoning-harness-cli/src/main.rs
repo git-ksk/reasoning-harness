@@ -4553,6 +4553,13 @@ fn product_remediation(command: &str, failure_class: &str) -> ProductRemediation
             "no_result",
             "reason models",
         )
+    } else if failure_class.starts_with("network_") {
+        (
+            "network proxy, DNS, TLS/certificate, or custom-CA readiness",
+            "not_started",
+            "no_result",
+            "reason doctor --live-check",
+        )
     } else if matches!(
         failure_class,
         "rate_limit"
@@ -9080,6 +9087,11 @@ mod candidate_json_tests {
         let cases = [
             ("ask", "credentials", "reason auth status"),
             ("ask", "model_unlisted", "reason models"),
+            (
+                "ask",
+                "network_tls_certificate",
+                "reason doctor --live-check",
+            ),
             ("ask", "rate_limit", "reason doctor --live-check"),
             ("ask", "protocol", "reason doctor --live-check"),
             ("config", "configuration", "reason config sources"),

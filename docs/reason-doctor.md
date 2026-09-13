@@ -21,8 +21,9 @@ Human and JSON output report:
 - user/project config paths, presence, validity, and effective config sources;
 - provider credential presence/source without credential values;
 - native OS credential-store availability;
+- proxy-environment presence and `REASON_CA_BUNDLE` validation without exposing values/paths;
 - configured provider/model compatibility and local readiness;
-- optional bounded provider live readiness;
+- optional bounded network/provider live readiness;
 - managed-session path health;
 - current project trust state without granting trust;
 - configured user-MCP presence and optional read-only readiness probe;
@@ -34,5 +35,7 @@ The JSON result uses `doctor_surface: "reason-doctor-v1"` inside the existing `r
 ## Safety boundary
 
 `reason doctor` never prints API keys, OAuth tokens, refresh tokens, or other credential values. It does not mutate config, trust state, sessions, credentials, MCP configuration, or Engine state. A normal run does not activate configured MCP processes or make provider/network requests. Live MCP probing uses the same read-only readiness path as `reason mcp test` and never invokes the selected tool.
+
+`--live-check` probes the configured provider host first so DNS, proxy, TLS-certificate, and connectivity failures are distinct from provider outages and credential failures. Recovery never recommends disabling TLS verification. See [Proxy, custom CA, and headless network environments](network-environments.md).
 
 Operational diagnostics remain separate from semantic `unknown`. Doctor status describes product readiness; it does not certify evidence, claims, or final answers.
