@@ -879,7 +879,18 @@ fn emit_remove_output(output: RemoveOutput, format: OutputFormat) -> Result<(), 
                 output.credential_cleanup_status
             );
             if let Some(failure) = output.failure {
-                eprintln!("{}", failure.message);
+                eprintln!("Error: {}", failure.message);
+                eprintln!("What failed: MCP credential cleanup");
+                eprintln!(
+                    "Task execution: {}",
+                    if output.config_removed {
+                        "config_removed_credential_cleanup_incomplete"
+                    } else {
+                        "not_started"
+                    }
+                );
+                eprintln!("Result trust: no_new_reasoning_result");
+                eprintln!("Next: {}", failure.recovery);
             }
             Ok(())
         }

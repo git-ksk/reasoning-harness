@@ -308,4 +308,6 @@ coding agent.
 
 `reason doctor` reports Reason CLI and Harness Engine versions separately and inspects config sources, secret-free credential state, OS credential-store availability, provider/model readiness, managed-session paths, project trust, and configured user MCP state. Default diagnostics are local-only and non-mutating. `--live-check` opts into bounded provider/MCP/update checks and may consume provider quota or incur cost. JSON uses the stable `reason-doctor-v1` result surface. See [Reason doctor](reason-doctor.md).
 
+For recovery-oriented product failures, Reason preserves the existing typed failure class and adds explicit execution/trust/recovery guidance. Human errors show `What failed`, `Task execution`, `Result trust`, and `Next`; JSON product failures add a `remediation` object without changing `failure.failure_class`. See [Operational failure recovery](reason-recovery.md).
+
 For lifecycle management on the 0.5.0 development line, see [Update, rollback, and uninstall](update-rollback-uninstall.md).

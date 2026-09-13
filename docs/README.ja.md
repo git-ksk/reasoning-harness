@@ -18,6 +18,7 @@
 3. [Release provenance](release-provenance.ja.md) — `reason-v*`のOIDC/Sigstore provenance、checksum、immutable release trust。
 4. [Update / rollback / uninstall](update-rollback-uninstall.ja.md) — provenance検証済みlifecycleと保持・purge境界。
 5. [Reason doctor](reason-doctor.ja.md) — secret-freeなlocal diagnosticsと明示的なbounded live readiness check。
+6. [Operational failure recovery](reason-recovery.ja.md) — failure classを維持したactionable human recoveryとadditive machine remediation。
 3. [CLIガイド](cli.ja.md) — command、input、provider credential、config、stdin、JSON、exit semantics。
 4. [Reasoning Harnessの仕組み](how-it-works.ja.md) — candidateとauthorityを分ける実行モデル。
 5. [Product support / compatibility](support.ja.md) — supported platform、contract、provider、v0.x互換性。
