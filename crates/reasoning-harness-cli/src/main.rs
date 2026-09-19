@@ -3537,6 +3537,7 @@ async fn run_natural_investigation(
 struct NaturalExecutionSeed {
     input: HarnessInput,
     new_evidence_prefix: String,
+    finalization_targets: Vec<Proposition>,
 }
 
 fn merge_natural_execution_seed(
@@ -3696,6 +3697,10 @@ async fn execute_natural_inner(
         .to_string();
     let progress = progress::ProgressReporter::new(resolved.format, args.verbose, args.plain);
     let built = build_natural_input(&args, &task)?;
+    let seed_finalization_targets = seed
+        .as_ref()
+        .map(|seed| seed.finalization_targets.clone())
+        .unwrap_or_default();
     let built = if let Some(seed) = seed {
         merge_natural_execution_seed(built, seed)?
     } else {
@@ -3806,6 +3811,9 @@ async fn execute_natural_inner(
     let mut final_artifact = initial_outcome.artifact.clone();
     let mut final_verdict = initial_outcome.verdict;
     let mut finalization_targets = built.input.hypotheses.clone();
+    if finalization_targets.is_empty() {
+        finalization_targets = seed_finalization_targets;
+    }
 
     if final_verdict != Verdict::Accept {
         if let Some(config) = investigation_config.as_ref() {
@@ -5249,6 +5257,38 @@ fn previous_explicit_fact(
     })
 }
 
+fn session_correction_finalization_targets(
+    snapshot: &reasoning_harness_core::ReasoningThreadSnapshot,
+    correction: &Proposition,
+) -> Vec<Proposition> {
+    let Some(artifact) = snapshot.artifact.as_ref() else {
+        return vec![];
+    };
+    let mut prior = Vec::new();
+    for proposition in artifact.claims.iter().filter_map(|claim| {
+        if !matches!(
+            claim.state,
+            reasoning_harness_core::EpistemicState::Known
+                | reasoning_harness_core::EpistemicState::Supported
+        ) {
+            return None;
+        }
+        claim
+            .proposition
+            .as_ref()
+            .filter(|proposition| proposition.key == correction.key)
+    }) {
+        if !prior.contains(proposition) {
+            prior.push(proposition.clone());
+        }
+    }
+    if prior.len() == 1 {
+        vec![correction.clone()]
+    } else {
+        vec![]
+    }
+}
+
 fn ensure_session_active_for_change(
     session: &mut SessionFile,
 ) -> Result<reasoning_harness_core::ReasoningThreadSnapshot, CliError> {
@@ -5798,6 +5838,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                 Some(NaturalExecutionSeed {
                     input,
                     new_evidence_prefix: format!("session-turn-{turn_index}"),
+                    finalization_targets: vec![],
                 }),
             )
             .await?;
@@ -5826,6 +5867,8 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
             let mut session = load_session_file(&store)?;
             let snapshot = ensure_session_active_for_change(&mut session)?;
             let previous_value = previous_explicit_fact(&snapshot, &proposition.key);
+            let finalization_targets =
+                session_correction_finalization_targets(&snapshot, &proposition);
             let mut input = seed_input_for_session_turn(&snapshot, Some(&proposition.key))?;
             let turn_index = session.turns.len() + 1;
             input
@@ -5860,6 +5903,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                 Some(NaturalExecutionSeed {
                     input,
                     new_evidence_prefix: format!("session-turn-{turn_index}"),
+                    finalization_targets,
                 }),
             )
             .await?;
@@ -11921,6 +11965,112 @@ mod candidate_json_tests {
         assert!(output.pending_revalidation);
         assert!(output.finalization.is_none());
         assert_eq!(output.external_calls_replayed, 0);
+    }
+
+    #[test]
+    fn session_correction_target_requires_one_unique_grounded_prior_proposition() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let prior = Proposition {
+            key: correction.key.clone(),
+            value: "10".into(),
+        };
+        let artifact = ReasoningArtifact {
+            claims: vec![
+                reasoning_harness_core::Claim {
+                    id: "known".into(),
+                    statement: "threshold is 10".into(),
+                    state: reasoning_harness_core::EpistemicState::Known,
+                    proposition: Some(prior.clone()),
+                    evidence_ids: vec![],
+                },
+                reasoning_harness_core::Claim {
+                    id: "supported-duplicate".into(),
+                    statement: "threshold is 10".into(),
+                    state: reasoning_harness_core::EpistemicState::Supported,
+                    proposition: Some(prior),
+                    evidence_ids: vec![],
+                },
+            ],
+            ..Default::default()
+        };
+        let snapshot = reasoning_harness_core::ReasoningThreadSnapshot {
+            artifact: Some(artifact),
+            ..Default::default()
+        };
+
+        assert_eq!(
+            session_correction_finalization_targets(&snapshot, &correction),
+            vec![correction]
+        );
+    }
+
+    #[test]
+    fn session_correction_target_fails_closed_without_grounded_prior_key() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let artifact = ReasoningArtifact {
+            claims: vec![reasoning_harness_core::Claim {
+                id: "other".into(),
+                statement: "different key".into(),
+                state: reasoning_harness_core::EpistemicState::Supported,
+                proposition: Some(Proposition {
+                    key: "session.other".into(),
+                    value: "10".into(),
+                }),
+                evidence_ids: vec![],
+            }],
+            ..Default::default()
+        };
+        let snapshot = reasoning_harness_core::ReasoningThreadSnapshot {
+            artifact: Some(artifact),
+            ..Default::default()
+        };
+
+        assert!(session_correction_finalization_targets(&snapshot, &correction).is_empty());
+    }
+
+    #[test]
+    fn session_correction_target_fails_closed_on_conflicting_grounded_prior_values() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let artifact = ReasoningArtifact {
+            claims: vec![
+                reasoning_harness_core::Claim {
+                    id: "old-10".into(),
+                    statement: "threshold is 10".into(),
+                    state: reasoning_harness_core::EpistemicState::Known,
+                    proposition: Some(Proposition {
+                        key: correction.key.clone(),
+                        value: "10".into(),
+                    }),
+                    evidence_ids: vec![],
+                },
+                reasoning_harness_core::Claim {
+                    id: "old-12".into(),
+                    statement: "threshold is 12".into(),
+                    state: reasoning_harness_core::EpistemicState::Supported,
+                    proposition: Some(Proposition {
+                        key: correction.key.clone(),
+                        value: "12".into(),
+                    }),
+                    evidence_ids: vec![],
+                },
+            ],
+            ..Default::default()
+        };
+        let snapshot = reasoning_harness_core::ReasoningThreadSnapshot {
+            artifact: Some(artifact),
+            ..Default::default()
+        };
+
+        assert!(session_correction_finalization_targets(&snapshot, &correction).is_empty());
     }
 
     #[test]
