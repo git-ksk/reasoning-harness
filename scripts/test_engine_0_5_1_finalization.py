@@ -12,7 +12,7 @@ class Engine051FinalizationTests(unittest.TestCase):
     def test_fresh_corpus_and_matrix_validate(self):
         manifest, cases = MOD.validate_corpus()
         self.assertEqual(manifest["corpus_identity"], MOD.CORPUS_ID)
-        self.assertEqual(len(manifest["provider_targets"]), 8)
+        self.assertEqual(len(manifest["provider_targets"]), 6)
         self.assertEqual(
             [case["kind"] for case in cases],
             ["investigation", "investigation", "session_correct"],
@@ -98,6 +98,71 @@ class Engine051FinalizationTests(unittest.TestCase):
         self.assertTrue(scored["artifact_exact_supported"])
         self.assertFalse(scored["target_grounded"])
         self.assertFalse(scored["passed"])
+
+
+
+    def test_session_start_identity_uses_persisted_explicit_fact_not_model_claim(self):
+        target = {"key": "session.fresh", "value": "old"}
+        artifact = {
+            "claims": [],
+            "evidence": [
+                {
+                    "metadata": {"provenance_class": "explicit_user_fact"},
+                    "facts": {"session.fresh": "old"},
+                }
+            ],
+        }
+        self.assertFalse(MOD.proposition_supported(artifact, target))
+        self.assertTrue(MOD.exact_explicit_user_fact_persisted(artifact, target))
+
+    def test_session_start_identity_fails_closed_on_conflicting_explicit_facts(self):
+        target = {"key": "session.fresh", "value": "old"}
+        artifact = {
+            "evidence": [
+                {
+                    "metadata": {"provenance_class": "explicit_user_fact"},
+                    "facts": {"session.fresh": "old"},
+                },
+                {
+                    "metadata": {"provenance_class": "explicit_user_fact"},
+                    "facts": {"session.fresh": "other"},
+                },
+            ]
+        }
+        self.assertFalse(MOD.exact_explicit_user_fact_persisted(artifact, target))
+
+    def test_harness_owned_correction_target_is_observable_only_after_support(self):
+        target = {"key": "session.fresh", "value": "new"}
+        supported = {
+            "claims": [
+                {
+                    "id": "harness_session_correction_target_0",
+                    "state": "supported",
+                    "proposition": target,
+                }
+            ]
+        }
+        assumed = {
+            "claims": [
+                {
+                    "id": "harness_session_correction_target_0",
+                    "state": "assumed",
+                    "proposition": target,
+                }
+            ]
+        }
+        model_only = {
+            "claims": [
+                {
+                    "id": "model-proposal",
+                    "state": "supported",
+                    "proposition": target,
+                }
+            ]
+        }
+        self.assertTrue(MOD.harness_owned_correction_target_supported(supported, target))
+        self.assertFalse(MOD.harness_owned_correction_target_supported(assumed, target))
+        self.assertFalse(MOD.harness_owned_correction_target_supported(model_only, target))
 
 
 

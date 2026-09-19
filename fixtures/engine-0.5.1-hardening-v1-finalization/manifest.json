@@ -1,0 +1,81 @@
+{
+  "acceptance": {
+    "all_six_rows_required_independently": true,
+    "grounded_finalization_does_not_require_planner_target_recall": true,
+    "max_correctness_boundary_violations": 0,
+    "max_external_calls_replayed": 0,
+    "session_correction_requires_exact_grounding": true,
+    "session_correction_requires_harness_owned_materialization": true,
+    "session_start_requires_unique_persisted_explicit_fact_identity": true,
+    "target_recall_remains_telemetry": true
+  },
+  "case_files": [
+    "01_investigation-velquor-route.json",
+    "02_fail-closed-tarvess-registry.json",
+    "03_session-correct-oryndel.json"
+  ],
+  "control_commit": "12292b92bcd7890b3a81fc53b2523d172c2bde3a",
+  "corpus_identity": "engine-0.5.1-hardening-v1-finalization",
+  "evaluator_identity": "reason-engine-0.5.1-hardening-v1-finalization",
+  "live_observation_policy": {
+    "any_failed_workflow_requires_fresh_successor_identity": true,
+    "first_live_launch_per_target_is_canonical": true,
+    "historical_frozen_evidence_immutable": true,
+    "no_cross_model_averaging": true,
+    "surface_must_be_frozen_before_first_live_observation": true,
+    "workflow_rerun_forbidden": true
+  },
+  "product_commit": "19ef4ac58cd1a3157313ace2e3f45ee7e36f29e5",
+  "provider_targets": {
+    "google-gemini-3.5-flash-lite": {
+      "base_seed": 812411,
+      "inter_case_delay_ms": 6000,
+      "max_tokens": 1024,
+      "model": "gemini-3.5-flash-lite",
+      "provider": "google",
+      "role": "validated_reference"
+    },
+    "google-gemma-4-31b-it": {
+      "base_seed": 812411,
+      "inter_case_delay_ms": 6000,
+      "max_tokens": 1024,
+      "model": "gemma-4-31b-it",
+      "provider": "google",
+      "role": "validated_reference"
+    },
+    "groq-gpt-oss-120b": {
+      "base_seed": 812411,
+      "inter_case_delay_ms": 2100,
+      "max_tokens": 1024,
+      "model": "openai/gpt-oss-120b",
+      "provider": "groq",
+      "role": "validated_reference"
+    },
+    "groq-qwen3.8-27b": {
+      "base_seed": 812411,
+      "inter_case_delay_ms": 2100,
+      "max_tokens": 1024,
+      "model": "qwen/qwen3.8-27b",
+      "provider": "groq",
+      "role": "affected_required"
+    },
+    "mistral-14b": {
+      "base_seed": 812411,
+      "inter_case_delay_ms": 1500,
+      "max_tokens": 1024,
+      "model": "ministral-14b-latest",
+      "provider": "mistral",
+      "role": "affected_required"
+    },
+    "mistral-8b": {
+      "base_seed": 812411,
+      "inter_case_delay_ms": 1500,
+      "max_tokens": 1024,
+      "model": "ministral-8b-latest",
+      "provider": "mistral",
+      "role": "validated_reference"
+    }
+  },
+  "schema_version": "engine-0.5.1-hardening-manifest-v1",
+  "scoring_identity": "engine-0.5.1-hardening-v1-scoring-v1"
+}

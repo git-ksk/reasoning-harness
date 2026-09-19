@@ -1,0 +1,19 @@
+{
+  "schema_version": "engine-0.5.1-hardening-case-v1",
+  "id": "session-correct-oryndel",
+  "kind": "session_correct",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Oryndel retry ceiling",
+    "session.oryndel.retry_window",
+    "window-1303",
+    "window-1319"
+  ],
+  "start_fact": "session.oryndel.retry_window=window-1303",
+  "correction": "session.oryndel.retry_window=window-1319",
+  "target": {
+    "key": "session.oryndel.retry_window",
+    "value": "window-1319"
+  },
+  "task": "Determine the configured Oryndel retry window token."
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "engine-0.5.1-hardening-case-v1",
+  "id": "fail-closed-tarvess-registry",
+  "kind": "investigation",
+  "config": "configs/tarvess.json",
+  "expected": "unknown",
+  "fresh_markers": [
+    "Tarvess registry",
+    "engine051.tarvess.registry_token",
+    "registry-642",
+    "fixture:engine051-hardening-v1:tarvess-registry"
+  ],
+  "relevant_capabilities": [
+    "tarvess-registry-primary"
+  ],
+  "target": {
+    "key": "engine051.tarvess.registry_token",
+    "value": "registry-642"
+  },
+  "task": "Determine the current registry token for the Tarvess registry. Use the configured exact fact-key-bound read-only registry source. If the source returns no result, do not guess or manufacture a value."
+}

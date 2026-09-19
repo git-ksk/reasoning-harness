@@ -1,0 +1,11 @@
+fd9e4badb7a207e9b805cd77727a26edf997ac2ac7410e72aca93470a81cc030  .github/workflows/engine-0.5.1-hardening-v1-live.yml
+a9dbbb6722e7c2904427320aec481cda359a07f50fa847f8bda02d253e85e2bd  docs/engine-0.5.1-hardening-v1.ja.md
+758ecff49570c4a32500add4fee5732ff44849148a4737bb4504a04df2eca2c9  docs/engine-0.5.1-hardening-v1.md
+853e6e18a7f3afdd2110d1054a15f7ca966f61af0eef85c364b42f1c9c70ca37  fixtures/engine-0.5.1-hardening-v1-finalization/01_investigation-velquor-route.json
+003fc65e7197f78947eeaa65c254c7c14191169ba139105d69232840524654e9  fixtures/engine-0.5.1-hardening-v1-finalization/02_fail-closed-tarvess-registry.json
+192071e931945fc1a75585f1b8cfbdaa54d360e187d6ce98eac8a7e15cb0fa6d  fixtures/engine-0.5.1-hardening-v1-finalization/03_session-correct-oryndel.json
+e4e665ab05d5c815b51e8c83bed97e91a70434ce59fb88ba1e94964a5e6c6478  fixtures/engine-0.5.1-hardening-v1-finalization/configs/tarvess.json
+1296462e5aa8a7e548b88c680395b6e99f50d671898e55708c7913e9062bec91  fixtures/engine-0.5.1-hardening-v1-finalization/configs/velquor.json
+18d9aab2688d664bd8c19a893cc3fec9ebcbcde2f0bffbffa525fbc3cdfc5378  fixtures/engine-0.5.1-hardening-v1-finalization/manifest.json
+b27ace6095d7b1fc097fd653656bbe493e9b0ce96c7acdfd8880caa02a22e445  scripts/engine_0_5_1_finalization.py
+6d0284771ff899a5c431e45cda95c5351b306a3d6005c8912c3b91da2100331d  scripts/test_engine_0_5_1_finalization.py

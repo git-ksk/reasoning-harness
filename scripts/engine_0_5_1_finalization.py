@@ -7,23 +7,21 @@ import tempfile
 import time
 from pathlib import Path
 
-CORPUS_ID = "engine-0.5-final-v1-finalization"
-EVALUATOR_ID = "reason-engine-0.5-final-v1-finalization"
-SCORING_ID = "engine-0.5-final-v1-finalization-scoring-v1"
-REPORT_SCHEMA = "reason-engine-0.5-final-v1-finalization"
-CASE_SCHEMA = "engine-0.5-finalization-case-v1"
-MANIFEST_SCHEMA = "engine-0.5-finalization-manifest-v1"
-PRODUCT_COMMIT = "7a91d272af1bab0a97bf80ed7bba027ff253d50a"
-BASELINE_COMMIT = "d8940b4a98f11ec3e0968444fadc8bc90eae01ff"
+CORPUS_ID = "engine-0.5.1-hardening-v1-finalization"
+EVALUATOR_ID = "reason-engine-0.5.1-hardening-v1-finalization"
+SCORING_ID = "engine-0.5.1-hardening-v1-scoring-v1"
+REPORT_SCHEMA = "reason-engine-0.5.1-hardening-v1-finalization"
+CASE_SCHEMA = "engine-0.5.1-hardening-case-v1"
+MANIFEST_SCHEMA = "engine-0.5.1-hardening-manifest-v1"
+PRODUCT_COMMIT = "19ef4ac58cd1a3157313ace2e3f45ee7e36f29e5"
+CONTROL_COMMIT = "12292b92bcd7890b3a81fc53b2523d172c2bde3a"
 EXPECTED_TARGETS = {
-    "mistral-8b": ("mistral", "ministral-8b-latest", "validated_required"),
-    "mistral-14b": ("mistral", "ministral-14b-latest", "observed_characterization"),
-    "google-gemini-3.5-flash-lite": ("google", "gemini-3.5-flash-lite", "validated_required"),
-    "google-gemma-4-31b-it": ("google", "gemma-4-31b-it", "validated_required"),
-    "groq-gpt-oss-120b": ("groq", "openai/gpt-oss-120b", "validated_required"),
-    "groq-qwen3.8-27b": ("groq", "qwen/qwen3.8-27b", "observed_characterization"),
-    "groq-gpt-oss-20b": ("groq", "openai/gpt-oss-20b", "observed_characterization"),
-    "nvidia-nemotron": ("nvidia", "nvidia/nemotron-3.5-lightning-30b-a3b", "limited_negative_control"),
+    "mistral-8b": ("mistral", "ministral-8b-latest", "validated_reference"),
+    "mistral-14b": ("mistral", "ministral-14b-latest", "affected_required"),
+    "google-gemini-3.5-flash-lite": ("google", "gemini-3.5-flash-lite", "validated_reference"),
+    "google-gemma-4-31b-it": ("google", "gemma-4-31b-it", "validated_reference"),
+    "groq-gpt-oss-120b": ("groq", "openai/gpt-oss-120b", "validated_reference"),
+    "groq-qwen3.8-27b": ("groq", "qwen/qwen3.8-27b", "affected_required"),
 }
 CANON_GROUNDED = re.compile(r"^([^;=()]+?) = (.+)$")
 CANON_UNCERTAIN = re.compile(r"^uncertain\(([^;=()]+?) = (.+)\)$")
@@ -55,29 +53,58 @@ def validate_corpus():
         ("evaluator_identity", EVALUATOR_ID),
         ("scoring_identity", SCORING_ID),
         ("product_commit", PRODUCT_COMMIT),
-        ("engine_0_4_2_baseline", BASELINE_COMMIT),
+        ("control_commit", CONTROL_COMMIT),
     ):
         if manifest.get(key) != expected:
             raise EvalError(f"manifest {key} drift")
+
+    expected_policy = {
+        "surface_must_be_frozen_before_first_live_observation": True,
+        "first_live_launch_per_target_is_canonical": True,
+        "workflow_rerun_forbidden": True,
+        "any_failed_workflow_requires_fresh_successor_identity": True,
+        "historical_frozen_evidence_immutable": True,
+        "no_cross_model_averaging": True,
+    }
+    if manifest.get("live_observation_policy") != expected_policy:
+        raise EvalError("live observation policy drift")
+    expected_acceptance = {
+        "all_six_rows_required_independently": True,
+        "grounded_finalization_does_not_require_planner_target_recall": True,
+        "target_recall_remains_telemetry": True,
+        "session_start_requires_unique_persisted_explicit_fact_identity": True,
+        "session_correction_requires_exact_grounding": True,
+        "session_correction_requires_harness_owned_materialization": True,
+        "max_correctness_boundary_violations": 0,
+        "max_external_calls_replayed": 0,
+    }
+    if manifest.get("acceptance") != expected_acceptance:
+        raise EvalError("acceptance policy drift")
+
     targets = manifest.get("provider_targets") or {}
     if set(targets) != set(EXPECTED_TARGETS):
         raise EvalError("provider target set drift")
     for target_id, (provider, model, role) in EXPECTED_TARGETS.items():
         policy = targets[target_id]
-        if policy.get("provider") != provider or policy.get("model") != model or policy.get("role") != role:
+        if (
+            policy.get("provider") != provider
+            or policy.get("model") != model
+            or policy.get("role") != role
+        ):
             raise EvalError(f"provider target drift: {target_id}")
-        if int(policy.get("base_seed") or 0) != 771101:
+        if int(policy.get("base_seed") or 0) != 812411:
             raise EvalError(f"seed drift: {target_id}")
         if int(policy.get("max_tokens") or 0) != 1024:
             raise EvalError(f"max token drift: {target_id}")
         if int(policy.get("inter_case_delay_ms") or 0) <= 0:
             raise EvalError(f"invalid pacing: {target_id}")
+
     files = manifest.get("case_files") or []
     if len(files) != 3 or len(set(files)) != 3:
         raise EvalError("expected exactly three unique fresh cases")
     cases = []
     kinds = []
-    markers = []
+    markers = set()
     for filename in files:
         case = load_json(root / filename)
         if case.get("schema_version") != CASE_SCHEMA:
@@ -87,24 +114,67 @@ def validate_corpus():
         target = case.get("target") or {}
         if not target.get("key") or target.get("value") is None:
             raise EvalError(f"{filename}: missing exact target")
+        for marker in case.get("fresh_markers") or []:
+            if marker in markers:
+                raise EvalError(f"{filename}: duplicate fresh marker {marker}")
+            markers.add(marker)
+
         if case.get("kind") == "investigation":
             if "hypothesis" in case or "--hypothesis" in json.dumps(case):
                 raise EvalError(f"{filename}: explicit hypothesis forbidden")
-            cfg = root / case.get("config", "")
-            if not cfg.is_file():
+            config_path = root / case.get("config", "")
+            if not config_path.is_file():
                 raise EvalError(f"{filename}: missing config")
+            config = load_json(config_path)
+            investigation = (config.get("resolution") or {}).get("investigation") or {}
+            capabilities = investigation.get("capabilities") or []
+            if len(capabilities) != 1:
+                raise EvalError(f"{filename}: expected one exact capability")
+            capability = capabilities[0]
+            if capability.get("read_only") is not True:
+                raise EvalError(f"{filename}: capability must be read-only")
+            if capability.get("supported_fact_keys") != [target["key"]]:
+                raise EvalError(f"{filename}: exact-key capability drift")
+            if case.get("relevant_capabilities") != [capability.get("id")]:
+                raise EvalError(f"{filename}: relevant capability drift")
+            args = capability.get("args") or []
+            if "scripts/natural_e2e_fixture_resolver.py" not in args:
+                raise EvalError(f"{filename}: fixture resolver drift")
+            expected_source = next(
+                (marker for marker in case.get("fresh_markers") or [] if marker.startswith("fixture:")),
+                None,
+            )
+            if expected_source is None or expected_source not in args:
+                raise EvalError(f"{filename}: fresh source drift")
+            sources = ((capability.get("admission") or {}).get("sources") or {})
+            if set(sources) != {expected_source}:
+                raise EvalError(f"{filename}: admission source drift")
+            if case.get("expected") == "grounded":
+                if "--mode" not in args or "evidence" not in args:
+                    raise EvalError(f"{filename}: grounded resolver mode drift")
+                if target["key"] not in args or str(target["value"]) not in args:
+                    raise EvalError(f"{filename}: grounded exact fact drift")
+            elif case.get("expected") == "unknown":
+                if "--mode" not in args or "no-result" not in args:
+                    raise EvalError(f"{filename}: fail-closed resolver mode drift")
+            else:
+                raise EvalError(f"{filename}: unsupported investigation expectation")
         elif case.get("kind") == "session_correct":
             if not case.get("start_fact") or not case.get("correction"):
                 raise EvalError(f"{filename}: missing session correction inputs")
+            start_key, start_value = case["start_fact"].split("=", 1)
+            correction_key, correction_value = case["correction"].split("=", 1)
+            if start_key != target["key"] or correction_key != target["key"]:
+                raise EvalError(f"{filename}: session key identity drift")
+            if correction_value != str(target["value"]) or start_value == correction_value:
+                raise EvalError(f"{filename}: session correction value drift")
         else:
             raise EvalError(f"{filename}: unsupported case kind")
         kinds.append(case["kind"])
-        markers.extend(case.get("fresh_markers") or [])
         cases.append(case)
+
     if kinds != ["investigation", "investigation", "session_correct"]:
         raise EvalError("case ordering/kinds drift")
-    if len(markers) != len(set(markers)):
-        raise EvalError("fresh markers must be unique inside corpus")
     return manifest, cases
 
 def run_json(cmd, cwd):
@@ -262,14 +332,44 @@ def event_change_kind(event):
     return change.get("kind") if isinstance(change, dict) else None
 
 
+def explicit_user_fact_values(artifact, key):
+    values = set()
+    for evidence in artifact.get("evidence") or []:
+        metadata = evidence.get("metadata") or {}
+        if metadata.get("provenance_class") != "explicit_user_fact":
+            continue
+        facts = evidence.get("facts") or {}
+        if key in facts:
+            values.add(str(facts[key]))
+    return values
+
+
+def exact_explicit_user_fact_persisted(artifact, target):
+    values = explicit_user_fact_values(artifact, target["key"])
+    return values == {str(target["value"])}
+
+
+def harness_owned_correction_target_supported(artifact, target):
+    for claim in artifact.get("claims") or []:
+        proposition = claim.get("proposition") or {}
+        if (
+            str(claim.get("id") or "").startswith("harness_session_correction_target_")
+            and proposition.get("key") == target["key"]
+            and str(proposition.get("value")) == str(target["value"])
+            and claim.get("state") in ("known", "supported")
+        ):
+            return True
+    return False
+
+
 def run_session_correct(case, reason_bin, policy, cwd, seed):
     target = case["target"]
-    with tempfile.TemporaryDirectory(prefix="reason-engine050-final-session-") as td:
+    with tempfile.TemporaryDirectory(prefix="reason-engine051-hardening-session-") as td:
         store = Path(td) / "session.json"
         start = [
             str(reason_bin), "session", "start",
             "--store", str(store),
-            "--id", "engine050-" + case["id"],
+            "--id", "engine051-" + case["id"],
             case["task"],
             "--provider", policy["provider"],
             "--model", policy["model"],
@@ -286,8 +386,11 @@ def run_session_correct(case, reason_bin, policy, cwd, seed):
             "value": case["start_fact"].split("=", 1)[1],
         }
         start_supported = proposition_supported(start_artifact, start_target)
-        if not start_supported:
-            raise EvalError("session start did not establish the unique grounded prior target")
+        start_explicit_fact_persisted = exact_explicit_user_fact_persisted(
+            start_artifact, start_target
+        )
+        if not start_explicit_fact_persisted:
+            raise EvalError("session start did not persist the unique explicit user fact identity")
 
         time.sleep(policy["inter_case_delay_ms"] / 1000)
         correct = [
@@ -310,13 +413,15 @@ def run_session_correct(case, reason_bin, policy, cwd, seed):
         )
         invalidated = any(event_kind(event) == "input_state_invalidated" for event in events)
         exact_supported = proposition_supported(artifact, target)
+        harness_materialized = harness_owned_correction_target_supported(artifact, target)
         passed = (
-            start_supported
+            start_explicit_fact_persisted
             and corrected
             and invalidated
             and result.get("pending_revalidation") is False
             and int(result.get("external_calls_replayed") or 0) == 0
             and exact_supported
+            and harness_materialized
             and grounded
             and unsupported == 0
         )
@@ -326,11 +431,13 @@ def run_session_correct(case, reason_bin, policy, cwd, seed):
             "expected": case["expected"],
             "target": target,
             "start_prior_grounded": start_supported,
+            "start_prior_explicit_fact_persisted": start_explicit_fact_persisted,
             "correction_event_recorded": corrected,
             "invalidation_event_recorded": invalidated,
             "pending_revalidation": result.get("pending_revalidation"),
             "external_calls_replayed": int(result.get("external_calls_replayed") or 0),
             "artifact_exact_supported": exact_supported,
+            "harness_materialized_correction_target": harness_materialized,
             "target_grounded": grounded,
             "unsupported_exposed_assertions": unsupported,
             "finalization_status": finalization.get("status"),
@@ -381,7 +488,7 @@ def run_live(reason_bin, target_id):
         "evaluator_identity": EVALUATOR_ID,
         "scoring_identity": SCORING_ID,
         "product_commit": PRODUCT_COMMIT,
-        "engine_0_4_2_baseline": BASELINE_COMMIT,
+        "control_commit": CONTROL_COMMIT,
         "provider_target": target_id,
         "provider_policy": policy,
         "live_observation_performed": True,
@@ -410,7 +517,7 @@ def main():
             "evaluator_identity": EVALUATOR_ID,
             "scoring_identity": SCORING_ID,
             "product_commit": PRODUCT_COMMIT,
-            "engine_0_4_2_baseline": BASELINE_COMMIT,
+            "control_commit": CONTROL_COMMIT,
             "provider_targets": sorted(manifest["provider_targets"]),
             "cases": len(cases),
             "live_observation_performed": False,
