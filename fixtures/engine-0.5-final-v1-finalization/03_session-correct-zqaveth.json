@@ -1,0 +1,19 @@
+{
+  "schema_version": "engine-0.5-finalization-case-v1",
+  "id": "session-correct-zqaveth",
+  "kind": "session_correct",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Zqaveth retry ceiling",
+    "session.zqaveth.retry_window",
+    "window-1201",
+    "window-1217"
+  ],
+  "start_fact": "session.zqaveth.retry_window=window-1201",
+  "correction": "session.zqaveth.retry_window=window-1217",
+  "target": {
+    "key": "session.zqaveth.retry_window",
+    "value": "window-1217"
+  },
+  "task": "Determine the configured Zqaveth retry window token."
+}

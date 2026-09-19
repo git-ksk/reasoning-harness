@@ -1,0 +1,27 @@
+{
+  "config": "configs/zqsolven.json",
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "zqsolven.access.window.is_open",
+    "zqsolven-window-primary",
+    "fixture:engine-0.5-final-v1-materialization:zqsolven:primary"
+  ],
+  "id": "stale-zqsolven",
+  "kind": "investigation",
+  "minimum_same_key_targets": 2,
+  "preferred_capability": "zqsolven-window-primary",
+  "relevant_capabilities": [
+    "zqsolven-window-primary",
+    "zqsolven-window-secondary"
+  ],
+  "role": "stale_same_key_siblings",
+  "schema_version": "engine-0.5-final-materialization-case-v1",
+  "target": {
+    "key": "zqsolven.access.window.is_open",
+    "value": "true"
+  },
+  "task": "Determine whether the exact fact family zqsolven.access.window.is_open is true now. Keep two separate investigation questions for this same fact: one for the primary access-window record and one as a separately tracked confirmation question. Do not merge the two questions. Use the configured read-only sources, and reject stale observations rather than promoting them to current truth."
+}

@@ -1,0 +1,24 @@
+{
+  "config": "configs/zqneris.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "zqneris.release.primary_custodian",
+    "team-violet",
+    "fixture:engine-0.5-final-v1-materialization:zqneris:primary"
+  ],
+  "id": "grounded-zqneris",
+  "kind": "investigation",
+  "minimum_same_key_targets": 2,
+  "preferred_capability": "zqneris-custodian-primary",
+  "relevant_capabilities": [
+    "zqneris-custodian-primary",
+    "zqneris-custodian-secondary"
+  ],
+  "role": "grounded_same_key_siblings",
+  "schema_version": "engine-0.5-final-materialization-case-v1",
+  "target": {
+    "key": "zqneris.release.primary_custodian",
+    "value": "team-violet"
+  },
+  "task": "Determine the current value of the exact fact family zqneris.release.primary_custodian. Keep two separate investigation questions for this same fact: one for the primary custody record and one as a separately tracked confirmation question. Do not merge the two questions. Use the configured read-only sources and answer only from admitted evidence."
+}

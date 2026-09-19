@@ -1,0 +1,19 @@
+{
+  "schema_version": "engine-0.5-finalization-case-v1",
+  "id": "fail-closed-zqmorin-registry",
+  "kind": "investigation",
+  "config": "configs/zqmorin.json",
+  "expected": "unknown",
+  "fresh_markers": [
+    "Zqmorin registry",
+    "engine050.zqmorin.build_epoch",
+    "zqmorin-epoch-8462",
+    "fixture:engine050-final-v1:zqmorin-registry"
+  ],
+  "relevant_capabilities": ["zqmorin-registry-primary"],
+  "target": {
+    "key": "engine050.zqmorin.build_epoch",
+    "value": "zqmorin-epoch-8462"
+  },
+  "task": "Determine the current build epoch token for the Zqmorin registry. Use the configured exact fact-key-bound read-only registry source. If the source returns no result, do not guess or manufacture a value."
+}
