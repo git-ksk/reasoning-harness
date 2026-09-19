@@ -8,25 +8,27 @@
 
 ## 現在のリリース
 
-現在のtagged external previewは **Reasoning Harness v0.4.2** です。
-
-user-facingなReason CLIとHarness Engineが同じSemVerを共有する最後のreleaseです。
+現在のtagged split external previewは **Reason CLI 0.5.2 / Harness Engine 0.4.2** です。
 
 ```text
-Reason CLI 0.4.2
+Reason CLI 0.5.2
 Harness Engine 0.4.2
 ```
 
-中心となるtrust boundaryは変わりません。model outputはuntrusted candidate / rendererであり、evidence admission、qualification、verification、bounded resolution、最終的に表示するfactual claimのauthorityはHarness側が持ちます。
+`v0.4.2`はCLI / Engineが同じSemVerを共有したimmutableな最後のunified releaseです。`reason-v0.5.0`で最初のsplit general-use CLIをreleaseし、0.5.1 / 0.5.2 patch lineもEngine 0.4.2のreasoning / authority semanticsを変えずに進めています。
 
-最終freeze済みv0.4.2 natural-language release evaluationは、Mistral、Groq、Gemini 3.5 Flash-Lite、Gemma 4 31Bを独立にPASSしています。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)を参照してください。
+中心となるtrust boundaryは変わりません。model outputはuntrusted candidate / rendererであり、evidence admission、qualification、verification、bounded resolution、最終的に表示するfactual claimのauthorityはHarness側が持ちます。最終freeze済みEngine 0.4.2 natural-language release evaluationは、Mistral、Groq、Gemini 3.5 Flash-Lite、Gemma 4 31Bを独立にPASSしています。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)を参照してください。
 
 ## 今できること
 
 supportedなnative product surfaceは:
 
-- `reason "TASK"` — natural-language verified path;
-- `reason session ...` — reasoning stateの保存 / resume;
+- 引数なし`reason` — managed interactive terminal、`reason "TASK"` — one-shot natural-language verified path;
+- `reason setup` / `reason auth ...` / provider・model・config command — guided setupとsecureな日常利用;
+- `reason session ...` / `-c` / `-r` — reasoning stateの保存 / continue / resume;
+- `reason doctor` — local diagnosticsと明示的なbounded live readiness check;
+- `reason mcp ...` — acquisition-only boundaryを維持したlocal / remote read-only MCP lifecycle;
+- `reason update` / explicit rollback / `reason uninstall` — provenance検証済みCLI lifecycle;
 - `reason run` — structured candidate / application integration;
 - `reason verify` — deterministic artifact validation;
 - `reason semantic-check` — soft semantic diagnostics;
@@ -38,20 +40,11 @@ supportedなnative product surfaceは:
 
 Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapterを実装済みです。provider callが成功しただけで、そのmodel outputがverification authorityになることはありません。
 
-## 現在の製品開発: Reason CLI 0.5.0
+## 現在の製品ライン: Reason CLI 0.5.x
 
-次の一般向けproduct lineは:
+最初のsplit general-use release `reason-v0.5.0` はrelease済みで、現在のpatch coordinateは `reason-v0.5.2`、Harness Engineは引き続き0.4.2です。
 
-```text
-Reason CLI 0.5.0
-Harness Engine 0.4.2
-```
-
-を予定しています。
-
-目的は、**Engine 0.4.2のreasoning / correctness semanticsを変えずに、普通のterminalユーザーが使いやすいproductへ仕上げること**です。
-
-主な0.5.0 productization:
+0.5.x productizationでは、**Engine 0.4.2のreasoning / correctness semanticsを変えずに**次を提供しています。
 
 - Rust toolchain不要のnative install;
 - verified distributionとupdate / rollback / uninstall lifecycle;
@@ -87,18 +80,13 @@ Harness Engine 0.5.0は、reasoning utilityやcorrectness behaviorへ影響し�
 5. **最終factual textもauthorityにbinding。** rendererの流暢さで強いunsupported factを混ぜない。
 6. **Historical evaluationは書き換えない。** freeze / observe済みstudyを後から修正して都合の良い結果にしない。
 
-## 主なユーザー向け課題
+## 現在の主なgap
 
-core correctness/runtimeは、現在のonboarding UXよりかなり先に成熟しています。一般利用へ向けた主なgapは基本機構不足ではなく、product UX / distributionです。
+general-use CLI productizationはrelease済みです。native install、guided setup/auth、interactive / continue / resume、config/model/MCP discovery、progress/cancellation、diagnostics、private local state、lifecycle managementは現在の0.5.x product lineに含まれます。
 
-- installはrelease archiveまたはRust/Cargo workflowが中心;
-- current releaseのcredential UXはenvironment variable中心;
-- first-run setupがguidedではない;
-- interactive / continue / resumeは成熟AI CLIより低レベル;
-- config / MCP / provider discoveryとrecovery UXが未productized;
-- progress、diagnostics、local-state management、update/uninstall lifecycleを0.5.0でhardening中。
+product側で残るdistribution follow-upは#375です。Homebrew physical acceptanceは完了し、WinGet community manifestもMicrosoft validation / CLAを通過してcommunity moderator approval待ちです。この外部reviewはHarness Engine開発をblockしません。
 
-これらは隠れた制約ではなく、次のReason CLI lineの明示的な対象です。
+技術的な主戦場は別trackのHarness Engine 0.5.0へ移っており、まずdistributional planner reliability (#282)を測り、そのbaseline後にのみdeterministic Harness-owned action materialization (#283)を進めます。
 
 ## 研究方針
 

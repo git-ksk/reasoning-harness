@@ -2,7 +2,7 @@
 
 日本語 | [English](reason-usage-budget.md)
 
-**Status:** Reason CLI 0.5.0 development lineで実装済み。Harness Engine 0.4.2のcorrectness / authority semanticsは変更しません。
+**Status:** Reason CLI 0.5.x product lineで実装済み。Harness Engine 0.4.2のcorrectness / authority semanticsは変更しません。
 
 Reasonはprovider/resolver消費量をoperational telemetryとして表示します。usageやbudget exhaustionがepistemic evidenceになったり、verdictへauthorityを与えたり、semantic `unknown`として扱われることはありません。provider quota/rate-limit failureも既存のtyped operational failure classのままで、semantic uncertaintyへ再分類しません。
 

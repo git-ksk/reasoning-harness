@@ -22,22 +22,22 @@ runtime は `unknown`、qualified partial answer、または abstention で停�
 
 ## 現在のプロダクトマイルストーン
 
-現在のexternal previewは `v0.4.2` である。**v0.4.2 — Investigation Utility & Provider Parity（milestone #5 / #260）** は完了・release済み。#261 deterministic safe acquisition precedence、#262 generic Groq provider parity、#281以降のstructured planner/action hardening、v0.4.x authority/finalization boundaryを変えずmetric-v13 acceptanceを完了するprovider/eval resilienceを含む。
+現在のsplit external previewは **Reason CLI 0.5.2 / Harness Engine 0.4.2** である。`v0.4.2`はimmutableな最後のunified releaseかつEngine 0.4.2 baselineとして保持する。**v0.4.2 — Investigation Utility & Provider Parity（milestone #5 / #260）** は完了・release済み。#261 deterministic safe acquisition precedence、#262 generic Groq provider parity、#281以降のstructured planner/action hardening、v0.4.x authority/finalization boundaryを変えずmetric-v13 acceptanceを完了するprovider/eval resilienceを含む。
 
 releaseは最終immutable v36までevidence-gatedを維持し、Mistral paired PASS、Groq generic candidate PASS、Gemini 3.5 Flash-Lite paired PASS、Gemma 4 31B paired PASS。Geminiでfrozen rowのstrict utility improvementを観測し、全required candidate rowでoperational / generation / correctness-boundary failure `0`を維持した。canonical rerun / post-freeze mutationは0。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)。
 
 最後のunified releaseである`v0.4.2`以降は、2本のlineを独立して進める。
 
-1. **Reason CLI 0.5.0 — General-use Productization**（milestone #6 / parent #359）は **Harness Engine 0.4.2** を固定したまま、toolchain不要install、secure auth/setup、interactive/resumableな日常利用、provider/model/config/MCPのdiscoverability、diagnostics/recovery、可逆なlifecycle managementを進める。phase / P0 / P1 / fresh-install gateの詳細は[CLI 0.5.0製品化ロードマップ](reason-cli-0.5-roadmap.ja.md)を参照。
-2. **Harness Engine 0.5.0 — Verified Investigation Utility**（milestone #4）は #248 finalization/grounding、#282 repeated-trial / `pass^k` planner reliability、#283 Harness-owned deterministic action materializationを所有する。Engine変更は引き続きevidence-gatedで、CLI productizationの前提にはしない。
+1. **Reason CLI 0.5.x — General-use Productization**（milestone #6 / parent #359）は **Harness Engine 0.4.2** を固定する。`reason-v0.5.0`でP0 product lineをreleaseし、現在は`reason-v0.5.2`。残るのはP1 #375だけで、Homebrew acceptanceは完了、WinGetはvalidation / CLA完了後のcommunity moderator approval待ち。phase / P0 / P1の詳細は[CLI 0.5.0製品化ロードマップ](reason-cli-0.5-roadmap.ja.md)を参照。
+2. **Harness Engine 0.5.0 — Verified Investigation Utility**（milestone #4）が現在のactive implementation line。#248 finalization/groundingはfresh evaluation付きで完了、#247 evaluator-semantics cleanupもfrozen v11で完了。次は#282 repeated-trial / `pass^k` planner reliability、そのbaseline後に#283 Harness-owned deterministic action materializationを進める。Engine変更は引き続きevidence-gatedで、release済みCLI lineをblockしない。
 
 v0.4.0は **#210 exposed-text binding (P0) -> #211 full-lifecycle deadline -> #212 investigation planner -> #213 resumable sessions -> #214 fresh E2E evaluation** の順で実装し、#204 negotiated/session `mcp_readonly_v3`、#232 dependency/freeze hygiene、#233 unique-safe-action utility hardeningもrelease前に完了した。v4 cross-model replication (#208 / PR #209) と #216 Groq operational extension（2026-09-06 closeout済み）は凍結済みv4の追試であり、このラインのtuning surfaceには使っていない。
 
 重要な測定上の境界として、現在の `unsupported grounded claims = 0` はstructured `factual_claims` の安全性を示すが、任意のfree-form表示文章まで同じ保証が成立するとは扱わない。v0.4.0では表示文章そのもののverified-proposition consistencyをcorrectness gateへ昇格する。
 
-`v0.4.2` は現在公開されている external preview である。v0.4.1は直前のInvestigation Utility Hardening patch、v0.4.0はGrounded Investigation & Sessions product foundationとして保持する。直前の **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) はhistorical provenanceとして完了状態を保持する。後続作業は、リリース済みmilestoneの観測を後から書き換えず、新たに測定されたproduct/research gapから開始する。
+`reason-v0.5.2`が現在公開されているsplit CLI previewで、Harness Engineは0.4.2。`v0.4.2`は最後のunified historical releaseかつ現在のreleased Engine baselineとして保持する。v0.4.1は直前のInvestigation Utility Hardening patch、v0.4.0はGrounded Investigation & Sessions product foundationとして保持する。直前の **v0.3.0 — External Evidence & Resolution** (milestone #1 / parent #173) はhistorical provenanceとして完了状態を保持する。後続作業は、リリース済みmilestoneの観測を後から書き換えず、新たに測定されたproduct/research gapから開始する。
 
-完了したpatch milestoneは **v0.4.1 — Investigation Utility Hardening（milestone #3）** である。Issue #249ではpost-releaseのavoidable-abstentionを1系統だけ扱い、typed `no_result` 後に同じexact targetへ明示fact-key対応read-only capabilityが機械的に1つだけ残る場合だけ継続する。target merge、admission、authority、verification、finalization、answer safety、freeze済みv1〜v9のmeasurement semanticsは変更しない。#248と#247はそれぞれ別のfuture product/evaluation workとして分離する。
+完了したpatch milestoneは **v0.4.1 — Investigation Utility Hardening（milestone #3）** である。Issue #249ではpost-releaseのavoidable-abstentionを1系統だけ扱い、typed `no_result` 後に同じexact targetへ明示fact-key対応read-only capabilityが機械的に1つだけ残る場合だけ継続する。target merge、admission、authority、verification、finalization、answer safety、freeze済みv1〜v9のmeasurement semanticsは変更しない。後続の#247 evaluator contractはfrozen v11で完了し、#248 finalization/groundingもEngine 0.5.0 lineで完了したが、historical v0.4.1 observationは書き換えていない。
 
 v0.3.0 はデフォルトで別の reasoning mechanism を追加しない。既存の `ResolutionResolver -> EvidenceAdmissionPolicy / TrustedResolutionVerifier -> re-verification` boundary を通じて、すでに実装済みの bounded control loop を、実際の external acquisition および trusted-verifier adapters に接続する。
 

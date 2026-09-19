@@ -195,6 +195,8 @@ exit {verify_exit}
         shell_text = INSTALLER.read_text(encoding="utf-8")
         powershell_text = (ROOT / "install.ps1").read_text(encoding="utf-8")
         self.assertRegex(shell_text, rf'DEFAULT_VERSION="{re.escape(expected)}"')
+        self.assertIn(f"(default: {expected})", shell_text)
+        self.assertIn(f"reason-v{expected}", shell_text)
         self.assertRegex(powershell_text, rf'\[string\]\$Version = "{re.escape(expected)}"')
 
 

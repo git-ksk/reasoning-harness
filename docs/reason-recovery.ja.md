@@ -1,6 +1,6 @@
 # Operational failure recovery
 
-**状態:** Reason CLI 0.5.0開発ラインで実装済み。product UX layerの変更であり、Harness Engine 0.4.2のreasoning / authority semanticsは変更しません。
+**状態:** Reason CLI 0.5.x product lineで実装済み。product UX layerの変更であり、Harness Engine 0.4.2のreasoning / authority semanticsは変更しません。
 
 Reasonはoperational failureを`unknown`などのsemantic outcomeと分離します。provider outage、invalid credential、壊れたMCP server、corrupt session、update integrity failureをsemantic answerへ変換しません。
 

@@ -71,16 +71,21 @@ HTTP 503とconnection error 7件は観測されていますが、それだけで
 
 ## クイックスタート
 
-現在のexternal previewは`v0.4.2`です。Rust 1.88+がある場合:
+現在のsplit previewは **Reason CLI 0.5.2 / Harness Engine 0.4.2** です。macOS / Linuxではpublished native installerが通常のend-user pathです（provenance verificationのためGitHub CLI 2.93+が必要です）。
+
+```bash
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
+reason setup
+```
+
+Rust 1.88+がある場合はCLIを直接installすることもできます。
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.4.2 --locked reasoning-harness-cli --bin reason
-
-reason --version
+  --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
 ```
 
-standalone archiveと`SHA256SUMS`も[v0.4.2 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.2)から取得できます。
+standalone native archive、installer、`SHA256SUMS`、release provenance metadataは[Reason CLI v0.5.2 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/reason-v0.5.2)から取得できます。`v0.4.2`はimmutableな最後のunified CLI/Engine historical releaseとして保持します。
 
 自然文taskと、Harnessに明示的なstructured factとして扱わせたい根拠を渡します。
 
@@ -209,16 +214,17 @@ modelが自分で`known`や`supported`と書いても、それだけではtruste
 
 | Command | 用途 |
 | --- | --- |
-| `reason` | Reason CLI 0.5.0開発ライン: TTY限定managed interactive sessionを起動。JSON/non-TTYはnon-interactiveのまま。 |
+| `reason` | Reason CLI 0.5.x: TTY限定managed interactive sessionを起動。JSON/non-TTYはnon-interactiveのまま。 |
 | `reason -c` / `reason -r [SESSION]` | 最新project sessionをcontinue、またはbacking file pathを意識せずmanaged sessionをresume/pick。 |
 | `reason "TASK"` | 人が直接使う自然文path。interactive TTYではcoarseなHarness progressを表示し、Ctrl+Cで安全cancel。 |
-| `reason setup` | Reason CLI 0.5.0開発ライン: provider / credential / model default / readinessを初回設定。 |
-| `reason update` / `reason update --rollback VERSION` | Reason CLI 0.5.0開発ライン: provenance検証済みupdateと明示rollback。 |
-| `reason uninstall` | Reason CLI 0.5.0開発ライン: data / credential保持をdefaultにした明示uninstall。 |
-| `reason auth ...` | Reason CLI 0.5.0開発ライン: provider credentialの安全な追加・確認・rotation・削除。 |
-| `reason models [provider]` | Reason CLI 0.5.0開発ライン: curated model catalog、compatibility、credential readiness、current defaultを確認。 |
-| `reason model set <provider> <model>` | Reason CLI 0.5.0開発ライン: silent fallbackなしでgeneral-use provider/model defaultを保存。 |
-| `reason config list/get/set/unset/path/sources` | Reason CLI 0.5.0開発ライン: safeなeffective configとprecedence/provenanceを確認し、user-levelのnon-secret run defaultを編集。 |
+| `reason setup` | Reason CLI 0.5.x: provider / credential / model default / readinessを初回設定。 |
+| `reason doctor` / `reason doctor --live-check` | CLI / Engine version、config、credential store、provider/model、session、trust、MCP、optional live/update readinessをsecret非表示で診断。 |
+| `reason update` / `reason update --rollback VERSION` | Reason CLI 0.5.x: provenance検証済みupdateと明示rollback。 |
+| `reason uninstall` | Reason CLI 0.5.x: data / credential保持をdefaultにした明示uninstall。 |
+| `reason auth ...` | Reason CLI 0.5.x: provider credentialの安全な追加・確認・rotation・削除。 |
+| `reason models [provider]` | Reason CLI 0.5.x: curated model catalog、compatibility、credential readiness、current defaultを確認。 |
+| `reason model set <provider> <model>` | Reason CLI 0.5.x: silent fallbackなしでgeneral-use provider/model defaultを保存。 |
+| `reason config list/get/set/unset/path/sources` | Reason CLI 0.5.x: safeなeffective configとprecedence/provenanceを確認し、user-levelのnon-secret run defaultを編集。 |
 | `reason session list` | managed interactive sessionをhuman/JSONで一覧化。 |
 | `reason examples [topic]` | common workflowのcopy-paste例を表示。 |
 | `reason completions <shell>` | bash/zsh/fish/PowerShell completionをstdoutへ生成。shell設定は変更しない。 |
@@ -321,7 +327,7 @@ freeze座標、metric、run ID、pacing policy、provenanceは[v0.4.2 v36 releas
 - **Harness Engine** — reasoning / correctness behaviorをversioning。
 - **Machine contract ID** — wire/schema compatibilityを独立してversioning。
 
-次の一般向けラインは **Reason CLI 0.5.0 + Harness Engine 0.4.2** を予定しています。セットアップ、OSのcredential保存、対話型UX、installer、doctor、update/uninstallなどを改善しても、Engineのcorrectness semanticsが変わったように見せないためです。
+split general-use lineは **Reason CLI 0.5.x + Harness Engine 0.4.2** としてrelease済みで、現在は0.5.2です。setup、OS credential保存、対話型UX、installer、doctor、update/uninstallを改善しつつ、Engine 0.4.2のcorrectness semanticsは変更していません。
 
 詳しくは[バージョニング](docs/versioning.ja.md)と[Reason CLI 0.5.0 ロードマップ](docs/reason-cli-0.5-roadmap.ja.md)を参照してください。
 

@@ -9,16 +9,19 @@
 ## 現在のバージョン座標
 
 ```text
-現在のrelease:
+現在のsplit preview:
+  Reason CLI 0.5.2
+  Harness Engine 0.4.2
+
+最後のunified historical release:
   Reason CLI 0.4.2
   Harness Engine 0.4.2
 
-次のgeneral-use product line:
-  Reason CLI 0.5.0
-  Harness Engine 0.4.2
+現在のEngine line:
+  Harness Engine 0.5.0 — Verified Investigation Utility
 ```
 
-`v0.4.2`が最後の統合versionのhistorical releaseです。今後のCLI tagは`reason-vX.Y.Z`を使い、Engine versionとmachine-contract identityは独立して進みます。[バージョニング](versioning.ja.md)を参照してください。
+`v0.4.2`が最後のunified historical releaseです。split CLI lineはすでに`reason-v0.5.0` / `reason-v0.5.1` / `reason-v0.5.2`まで進んでおり、CLI / Engine / machine-contract identityは独立して進みます。[バージョニング](versioning.ja.md)を参照してください。
 
 ## 製品目標
 
@@ -33,9 +36,11 @@ model proposes
 Harness verifies / qualifies / abstains
 ```
 
-## トラックA — Reason CLI 0.5.0: 一般利用向け製品化
+## トラックA — Reason CLI 0.5.x: 一般利用向け製品化
 
 **Engine baselineは0.4.2に固定。**
+
+base `reason-v0.5.0` と0.5.1 / 0.5.2 patch lineはrelease済みです。P0 release gateは完了し、milestoneで残るのはP1 distribution follow-up #375だけです。Homebrew physical acceptanceは完了、WinGet community manifestはvalidation / CLAを通過してcommunity moderator approval待ちです。
 
 underlying authority semanticsを変えず、`reason`を成熟したterminal productとして使える状態にします。
 
@@ -75,9 +80,9 @@ MCP / resolver outputは引き続きacquired dataであり、correctness authori
 - silent execution-identity switchをしないprovider/model retirement・fallback policy;
 - insecure bypassを勧めないproxy / custom-CA / headless diagnostics。
 
-### フェーズ5: 新規インストールでのリリース判定
+### フェーズ5: 新規インストールでのリリース判定 — 完了
 
-`reason-v0.5.0`は、supported platformでinstall、project trust、setup、secure credential、first answer、interactive follow-up、session resume、diagnostics、local privacy、subprocess secret isolation、update/rollback/uninstall、既存JSON automation compatibilityまでacceptanceできるまでtagしません。
+`reason-v0.5.0`は、supported platformでinstall、project trust、setup、secure credential、first answer、interactive follow-up、session resume、diagnostics、local privacy、subprocess secret isolation、update/rollback/uninstall、既存JSON automation compatibilityまでacceptanceした後にtagしました。このgateは0.5.x patch lineでもregression coverageとして維持します。
 
 完全なP0/P1 issueとacceptance matrixは[Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md)を参照してください。
 
@@ -85,11 +90,12 @@ MCP / resolver outputは引き続きacquired dataであり、correctness authori
 
 reasoning / correctness behaviorへ影響しうる変更はこのtrackで扱い、fresh evidenceを要求します。
 
-対象にはたとえば:
+現在地と順序:
 
-- verified targetのexposureへ影響するfinalization / grounding改善;
-- one-shot成功ではなくrepeated-trialで測るplanner reliability;
-- model variabilityが不要な箇所のdeterministic Harness-owned action materialization。
+- **#248 finalization / grounding — 完了:** PR #435をmergeし、fresh frozen `issue-248-finalization-e2e-v2`で3/3 case、correctness-boundary violation 0、session external-call replay 0を確認;
+- **#247 evaluator semantics — 完了:** frozen v11でpath observability / product utility / hard correctness / operational completenessを分離し、frozen v9はrescoreしていない;
+- **#282 repeated-trial planner reliability — 次:** frozen repeated-trial identityとexact denominatorでplanner/actionのstochastic reliabilityをcharacterize;
+- **#283 deterministic Harness-owned action materialization — #282 baseline後:** mechanically safeなexecutable action ownershipをHarness control flowへ移せるか評価し、adoption claimには別のfresh holdoutを使う。
 
 正確なscopeはengine milestone / issueをsource of truthとします。Engine 0.5.0のsemantic / utility changeを、CLI-only productizationとして混ぜません。
 

@@ -2,7 +2,7 @@
 
 [日本語](reason-usage-budget.ja.md) | English
 
-**Status:** implemented on the Reason CLI 0.5.0 development line. Harness Engine 0.4.2 correctness and authority semantics are unchanged.
+**Status:** implemented on the Reason CLI 0.5.x product line. Harness Engine 0.4.2 correctness and authority semantics are unchanged.
 
 Reason surfaces provider/resolver consumption as operational telemetry. Usage and budget exhaustion never become epistemic evidence, never change a verdict into authority, and never mean semantic `unknown`. Provider quota/rate-limit failures remain their existing typed operational failure classes and are not reclassified as semantic uncertainty.
 

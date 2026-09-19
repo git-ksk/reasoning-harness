@@ -2,51 +2,50 @@
 
 日本語 | [English](getting-started.md)
 
-このガイドは、current `v0.4.2` external previewを使ってReasoning Harnessの考え方を最短で体験するための入口です。
+このガイドは、fresh machineからReasoning Harnessの考え方を最短で体験するための入口です。対象は現在のsplit preview、**Reason CLI 0.5.2 / Harness Engine 0.4.2** です。
 
 ## 1. インストール
 
-Rust 1.88+がある場合:
+通常userにはpublished native installerを推奨します。split CLI installerは、install前にrelease provenanceを検証するためGitHub CLI 2.93+を必要とします。
+
+macOS / Linux:
+
+```bash
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
+```
+
+Windows PowerShell:
+
+```powershell
+irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.ps1 | iex
+```
+
+Rust 1.88+がある場合は、同じtagged CLIを直接installすることもできます。
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.4.2 --locked reasoning-harness-cli --bin reason
-
-reason --version
+  --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
 ```
 
-Linux x86_64、macOS arm64、macOS x86_64、Windows x86_64向けのstandalone release archiveも使えます。
-
-`main`には未release変更が入る場合があります。再現可能なproduct snapshotが必要ならtagged releaseを使ってください。
+その後`reason --version`を確認します。`main`には未release変更が入る場合があるため、再現可能なproduct snapshotにはtagged releaseを使います。provenanceやplatform条件は[Native installer contract](native-installers.ja.md)を参照してください。
 
 ## 2. Live providerを使うか、オフラインで試すか決める
 
-自然文pathではprovider credentialを設定します。Mistralの例:
-
-```bash
-export MISTRAL_API_KEY='...'
-```
-
-provider credentialはoperational secretであり、trusted evidenceではありません。
-
-Reason CLI 0.5.0開発ラインでは、初回は`reason setup`だけでprovider選択、native OS credential storeへの保存、recommended model default、non-billable local readinessまで設定できます。
+自然文pathの初回設定は次を推奨します。
 
 ```bash
 reason setup
 ```
 
-live provider readiness checkはquota/costを消費し得るため、interactive promptで明示的に同意した場合、または`--live-check`を指定した場合だけ実行します。個別のcredential管理には`reason auth ...`を使えます。
+provider選択、native OS credential storeへの保存、curated model default、non-billable local readinessを案内します。live provider readiness checkはquota/costを消費し得るため、interactive promptで明示的に同意した場合、または`--live-check`指定時だけ実行します。
 
-tagged `v0.4.2` releaseにはまだ`reason auth`がないため、再現可能なv0.4.2手順は上のenvironment variable形式です。
-
-同じ0.5.0開発ラインでは、provider固有のmodel IDを暗記せず実測済み候補を確認してuser defaultへ保存できます。
+CI、container、remote shellではprovider environment variableも引き続き利用できます。Mistralの例:
 
 ```bash
-reason models mistral
-reason model set mistral ministral-8b-latest
+export MISTRAL_API_KEY='...'
 ```
 
-このcatalogは実測ベースのcompatibility metadataであり、provider側の現在availability保証やcorrectness scoreではありません。tagged `v0.4.2` releaseにはmodel管理commandもまだ含まれません。
+provider credentialはoperational secretであり、trusted evidenceではありません。credential管理には`reason auth ...`、curated model defaultの確認・変更には`reason models` / `reason model set`を使います。このcatalogは実測ベースのcompatibility metadataであり、provider availabilityやcorrectness scoreの保証ではありません。
 
 AI providerを呼びたくない場合は[Offline candidate verification](#offline-candidate-verification)へ進んでください。
 
@@ -112,9 +111,9 @@ RAG、Agent、recorded output、CI、provider-independent testに向いた使い
 | 目的 | Command |
 | --- | --- |
 | 自然文で質問する | `reason "TASK"` |
-| 初回セットアップを完了する（0.5.0開発ライン） | `reason setup` |
-| CLI updateを非破壊で確認する（0.5.0開発ライン） | `reason update --check` |
-| provider credentialを管理する（0.5.0開発ライン） | `reason auth ...` |
+| 初回セットアップを完了する（0.5.x product line） | `reason setup` |
+| CLI updateを非破壊で確認する（0.5.x product line） | `reason update --check` |
+| provider credentialを管理する（0.5.x product line） | `reason auth ...` |
 | reasoning stateを継続・訂正する | `reason session ...` |
 | 既存structured candidateを統合する | `reason run` |
 | 既存artifactをvalidateする | `reason verify` |

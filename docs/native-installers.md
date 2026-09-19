@@ -20,13 +20,13 @@ Starting with split CLI releases (`reason-vX.Y.Z`), the release workflow publish
 Unix:
 
 ```bash
-curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.0/install.sh | sh
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.0/install.ps1 | iex
+irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.ps1 | iex
 ```
 
 The version embedded in each tagged installer must match the `reasoning-harness-cli` package version. The release workflow runs the installer contract tests before attaching installer entrypoints.
@@ -34,11 +34,11 @@ The version embedded in each tagged installer must match the `reasoning-harness-
 For an explicit version or destination after downloading the script:
 
 ```bash
-./install.sh --version 0.5.0 --bin-dir "$HOME/.local/bin"
+./install.sh --version 0.5.2 --bin-dir "$HOME/.local/bin"
 ```
 
 ```powershell
-./install.ps1 -Version 0.5.0 -BinDir "$env:LOCALAPPDATA\Programs\Reason\bin"
+./install.ps1 -Version 0.5.2 -BinDir "$env:LOCALAPPDATA\Programs\Reason\bin"
 ```
 
 The installer does not silently edit shell profiles or PATH. It prints the install directory when PATH guidance is required.

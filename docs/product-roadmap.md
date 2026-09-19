@@ -9,16 +9,19 @@ The project now separates product UX work from reasoning/correctness changes so 
 ## Current coordinates
 
 ```text
-Released today:
+Current split preview:
+  Reason CLI 0.5.2
+  Harness Engine 0.4.2
+
+Final unified historical release:
   Reason CLI 0.4.2
   Harness Engine 0.4.2
 
-Next general-use product line:
-  Reason CLI 0.5.0
-  Harness Engine 0.4.2
+Active engine line:
+  Harness Engine 0.5.0 — Verified Investigation Utility
 ```
 
-`v0.4.2` is the final unified historical release. Future CLI releases use `reason-vX.Y.Z`; Engine versions and machine-contract identities advance independently. See [versioning](versioning.md).
+`v0.4.2` is the final unified historical release. The split CLI line is already active (`reason-v0.5.0`, `reason-v0.5.1`, `reason-v0.5.2`); CLI, Engine, and machine-contract identities now advance independently. See [versioning](versioning.md).
 
 ## Product goal
 
@@ -33,11 +36,13 @@ model proposes
 Harness verifies / qualifies / abstains
 ```
 
-## Track A — Reason CLI 0.5.0: general-use productization
+## Track A — Reason CLI 0.5.x: general-use productization
 
 **Engine baseline: fixed at 0.4.2.**
 
-This track should make `reason` feel like a mature terminal product without changing the underlying authority semantics.
+The base `reason-v0.5.0` release and the 0.5.1/0.5.2 patch line are shipped. The milestone's P0 release gate is complete; the only remaining milestone issue is the P1 distribution follow-up #375. Homebrew physical acceptance is complete, while the WinGet community manifest has passed validation and CLA checks and is waiting for community moderator approval.
+
+This track makes `reason` a mature terminal product without changing the underlying authority semantics.
 
 ### Phase 1: install, trust, and first answer
 
@@ -75,9 +80,9 @@ MCP/resolver output remains acquired data rather than correctness authority.
 - explicit provider/model retirement/fallback policy with no silent execution-identity switch;
 - proxy/custom-CA/headless diagnostics without insecure bypass guidance.
 
-### Phase 5: fresh-install release gate
+### Phase 5: fresh-install release gate — complete
 
-`reason-v0.5.0` is not tagged until supported-platform fresh-install acceptance covers installation, trust, setup, secure credential handling, first answer, interactive follow-up, session resume, diagnostics, local privacy, subprocess secret isolation, update/rollback/uninstall, and existing JSON automation compatibility.
+`reason-v0.5.0` was tagged only after supported-platform fresh-install acceptance covered installation, trust, setup, secure credential handling, first answer, interactive follow-up, session resume, diagnostics, local privacy, subprocess secret isolation, update/rollback/uninstall, and existing JSON automation compatibility. The same gate remains regression coverage for the 0.5.x patch line.
 
 The complete P0/P1 issue list and acceptance matrix live in the [Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md).
 
@@ -85,11 +90,12 @@ The complete P0/P1 issue list and acceptance matrix live in the [Reason CLI 0.5.
 
 This track owns changes that may alter reasoning/correctness behavior and therefore require fresh evidence.
 
-It includes the remaining verified-investigation work such as:
+Current status/order:
 
-- finalization/grounding improvements that affect what a verified target may expose;
-- repeated-trial planner reliability measurement rather than one-shot success claims;
-- deterministic Harness-owned action materialization where model variability is not required.
+- **#248 finalization/grounding — complete:** PR #435 merged with fresh frozen `issue-248-finalization-e2e-v2` acceptance (3/3 cases, zero correctness-boundary violations, zero session external-call replay);
+- **#247 evaluator semantics — complete:** frozen v11 separates path observability, product utility, hard correctness, and operational completeness without rescoring frozen v9;
+- **#282 repeated-trial planner reliability — next:** characterize stochastic planner/action behavior with frozen repeated-trial identities and exact denominators;
+- **#283 deterministic Harness-owned action materialization — after #282 baseline:** evaluate moving mechanically safe executable-action ownership into deterministic Harness control flow, with a separate fresh adoption holdout.
 
 The exact engine milestone/issue definitions remain the source of truth for scope. No Engine 0.5.0 semantic/utility change should land under the label of a CLI-only productization change.
 

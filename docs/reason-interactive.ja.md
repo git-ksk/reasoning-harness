@@ -1,6 +1,6 @@
 # Reason 対話型ターミナルUX
 
-Reason CLI 0.5.0開発ラインでは、Harness Engine 0.4.2のauthority / correctness semanticsを変えずに、日常利用向けterminal surfaceを追加します。
+Reason CLI 0.5.x product lineでは、Harness Engine 0.4.2のauthority / correctness semanticsを変えずに、日常利用向けterminal surfaceを提供します。
 
 ## dispatch boundary
 

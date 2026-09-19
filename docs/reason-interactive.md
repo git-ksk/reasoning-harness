@@ -1,6 +1,6 @@
 # Reason interactive terminal UX
 
-Reason CLI 0.5.0 development builds an everyday terminal surface without changing Harness Engine 0.4.2 authority or correctness semantics.
+Reason CLI 0.5.x an everyday terminal surface without changing Harness Engine 0.4.2 authority or correctness semantics.
 
 ## Dispatch boundary
 

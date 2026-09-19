@@ -1,6 +1,6 @@
 # Proxy, custom CA, and headless network environments
 
-**Status:** implemented on the Reason CLI 0.5.0 development line. Harness Engine 0.4.2 reasoning/authority semantics are unchanged.
+**Status:** implemented on the Reason CLI 0.5.x product line. Harness Engine 0.4.2 reasoning/authority semantics are unchanged.
 
 Reason uses the standard reqwest system-proxy behavior for HTTP clients. `HTTP_PROXY` / `http_proxy`, `HTTPS_PROXY` / `https_proxy`, `ALL_PROXY` / `all_proxy`, and `NO_PROXY` / `no_proxy` are honored by provider adapters, remote MCP, MCP OAuth discovery/token exchange, and CLI release/update traffic. Diagnostic output reports only whether those variables are present; proxy URLs, usernames, passwords, and bypass lists are never echoed.
 

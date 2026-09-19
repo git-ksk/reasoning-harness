@@ -2,7 +2,7 @@
 
 日本語 | [English](secure-credentials.md)
 
-**状態:** Reason CLI 0.5.0開発ラインで実装。tagged `v0.4.2` releaseはまだprovider environment variableのみを使います。
+**状態:** Reason CLI 0.5.x product lineで実装。tagged `v0.4.2` releaseはまだprovider environment variableのみを使います。
 
 Reasonはprovider API keyを`reason-config-v1`、project file、session、evidence、authority stateへ保存しません。0.5.0のcredential backendはOS-nativeなsecure storeを使います。
 
@@ -43,7 +43,7 @@ error messageやJSON failureへcredential値を出しません。Secret Service�
 
 ## `reason auth`で管理する
 
-Reason CLI 0.5.0開発ラインでは、次のuser-facing commandを使います。
+Reason CLI 0.5.x product lineでは、次のuser-facing commandを使います。
 
 ```bash
 # TTYでは入力を非表示。対話terminalならprovider省略でpickerも使える。

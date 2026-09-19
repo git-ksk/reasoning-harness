@@ -2,7 +2,7 @@
 
 日本語 | [English](project-trust.md)
 
-**状態:** Reason CLI 0.5.0開発ラインで実装。tagged `v0.4.2` releaseにはまだ`reason trust` commandは含まれません。
+**状態:** Reason CLI 0.5.x product lineで実装。tagged `v0.4.2` releaseにはまだ`reason trust` commandは含まれません。
 
 Reasonはcurrent projectの`.reason/config.json`を読めます。このfileにはsubprocess、read-only MCP取得、investigation capabilityを設定できるため、**未trustのrepositoryへ移動しただけでそれらが自動有効化されてはいけません**。
 

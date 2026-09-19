@@ -1,6 +1,6 @@
 # Reason doctor
 
-**状態:** Reason CLI 0.5.0開発ラインで実装済み。Harness Engine 0.4.2のsemanticsは変更しません。
+**状態:** Reason CLI 0.5.x product lineで実装済み。Harness Engine 0.4.2のsemanticsは変更しません。
 
 `reason doctor`は、install、config、credential、local product readiness、managed data path、project trust、MCP config、version identityを確認するread-only diagnostics surfaceです。
 
