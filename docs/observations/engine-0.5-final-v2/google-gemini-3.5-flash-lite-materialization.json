@@ -1,0 +1,232 @@
+{
+  "acceptance_passed": true,
+  "checks": {
+    "action_path_success": true,
+    "action_rejections_zero": true,
+    "correctness_zero": true,
+    "intent_calls_positive": true,
+    "intent_rejections_zero": true,
+    "legacy_action_calls_zero": true,
+    "materialization_path_all_cases": true,
+    "materializations_positive": true,
+    "operationally_complete": true,
+    "same_key_siblings_all_cases": true
+  },
+  "corpus_identity": "engine-0.5-final-v1-materialization",
+  "evaluator_identity": "reason-engine-0.5-final-v1-materialization",
+  "github_run_attempt": "1",
+  "github_run_id": "35435026552",
+  "live_observation_performed": true,
+  "observed_at_utc": "2026-09-19T10:03:26.405297+00:00",
+  "observed_model_identities": {
+    "gemini-3.5-flash-lite": 11
+  },
+  "prechange_commit": "94ff1b79ac0e9c183d2fc30ceaf41f23f3927d3e",
+  "product_commit": "7a91d272af1bab0a97bf80ed7bba027ff253d50a",
+  "provider": "google",
+  "provider_target": "google-gemini-3.5-flash-lite",
+  "requested_model": "gemini-3.5-flash-lite",
+  "role": "validated_required",
+  "schema_version": "reason-engine-0.5-final-v1-materialization",
+  "scoring_identity": "engine-0.5-final-v1-materialization-scoring-v1",
+  "summary": {
+    "action_path_success": true,
+    "action_rejection_count": 0,
+    "candidate_path_conformant_cases": 2,
+    "case_count": 2,
+    "control_path_exposed_cases": 0,
+    "correctness_boundary_violations": 0,
+    "downstream_finalization": {
+      "blocked_unverified_propositions": 0,
+      "false_abstention_cases": 0,
+      "status_counts": {
+        "grounded_answer": 1,
+        "unresolved": 1
+      }
+    },
+    "harness_intent_materializations": 3,
+    "intent_planner_calls": 4,
+    "intent_rejection_count": 0,
+    "legacy_action_planner_calls": 0,
+    "observed_model_identities": {
+      "gemini-3.5-flash-lite": 11
+    },
+    "operational_failure_classes": {},
+    "operationally_complete": true,
+    "provider_attempts_observed": 11,
+    "provider_calls_observed": 11,
+    "provider_latency_ms_observed": 55449,
+    "same_key_sibling_exposed_cases": 2,
+    "tokens_observed": 7237,
+    "wall_clock_ms": 55569
+  },
+  "trial": {
+    "cases": [
+      {
+        "action_count": 1,
+        "action_path_success": true,
+        "action_rejection_count": 0,
+        "action_rejection_records": [],
+        "action_rejections": {},
+        "admission_rejections": {},
+        "assertions": [
+          {
+            "key": "zqneris.release.primary_custodian",
+            "mode": "grounded",
+            "value": "team-violet"
+          }
+        ],
+        "blocked_unverified_propositions": 0,
+        "candidate_path_conformant": true,
+        "case_seed": 771211,
+        "control_path_exposed": null,
+        "correctness_boundary_violations": 0,
+        "expected": "grounded",
+        "expected_rejection_observed": null,
+        "exposed_text_contract_violations": 0,
+        "false_abstention": 0,
+        "finalization_status": "grounded_answer",
+        "generation_failure_class": null,
+        "harness_intent_materializations": 1,
+        "id": "grounded-zqneris",
+        "intent_contract": "reason-investigation-intent-v1",
+        "intent_planner_calls": 1,
+        "intent_rejection_count": 0,
+        "intent_rejection_records": [],
+        "intent_rejections": {},
+        "irrelevant_acquisition_attempts": 0,
+        "legacy_action_planner_calls": 0,
+        "materialization_policy": "target-intent-materialization-v1",
+        "missed_target_insufficiency": 0,
+        "observed_model_identities": {
+          "gemini-3.5-flash-lite": 5
+        },
+        "operationally_complete": true,
+        "provider_attempts_observed": 5,
+        "provider_calls_observed": 5,
+        "provider_latency_ms_observed": 24751,
+        "role": "grounded_same_key_siblings",
+        "same_key_sibling_exposed": true,
+        "same_key_target_count": 2,
+        "same_key_target_ids": [
+          "target_primary_custodian_record",
+          "target_confirmation_custodian_record"
+        ],
+        "selected_capabilities": [
+          "zqneris-custodian-primary"
+        ],
+        "target": {
+          "key": "zqneris.release.primary_custodian",
+          "value": "team-violet"
+        },
+        "target_grounded": true,
+        "target_recalled": true,
+        "target_uncertain": false,
+        "tokens_observed": 3914,
+        "tool_selection_success": true,
+        "typed_operational_failure_classes": {},
+        "unsupported_exposed_assertions": 0,
+        "unsupported_structured_claims": 0,
+        "wall_clock_ms": 24794
+      },
+      {
+        "action_count": 2,
+        "action_path_success": true,
+        "action_rejection_count": 0,
+        "action_rejection_records": [],
+        "action_rejections": {},
+        "admission_rejections": {
+          "stale": 2
+        },
+        "assertions": [],
+        "blocked_unverified_propositions": 0,
+        "candidate_path_conformant": true,
+        "case_seed": 771212,
+        "control_path_exposed": null,
+        "correctness_boundary_violations": 0,
+        "expected": "unknown",
+        "expected_rejection_observed": true,
+        "exposed_text_contract_violations": 0,
+        "false_abstention": 0,
+        "finalization_status": "unresolved",
+        "generation_failure_class": null,
+        "harness_intent_materializations": 2,
+        "id": "stale-zqsolven",
+        "intent_contract": "reason-investigation-intent-v1",
+        "intent_planner_calls": 3,
+        "intent_rejection_count": 0,
+        "intent_rejection_records": [],
+        "intent_rejections": {},
+        "irrelevant_acquisition_attempts": 0,
+        "legacy_action_planner_calls": 0,
+        "materialization_policy": "target-intent-materialization-v1",
+        "missed_target_insufficiency": 0,
+        "observed_model_identities": {
+          "gemini-3.5-flash-lite": 6
+        },
+        "operationally_complete": true,
+        "provider_attempts_observed": 6,
+        "provider_calls_observed": 6,
+        "provider_latency_ms_observed": 30698,
+        "role": "stale_same_key_siblings",
+        "same_key_sibling_exposed": true,
+        "same_key_target_count": 2,
+        "same_key_target_ids": [
+          "zqsolven-primary-check",
+          "zqsolven-secondary-check"
+        ],
+        "selected_capabilities": [
+          "zqsolven-window-primary",
+          "zqsolven-window-primary"
+        ],
+        "target": {
+          "key": "zqsolven.access.window.is_open",
+          "value": "true"
+        },
+        "target_grounded": false,
+        "target_recalled": true,
+        "target_uncertain": false,
+        "tokens_observed": 3323,
+        "tool_selection_success": true,
+        "typed_operational_failure_classes": {},
+        "unsupported_exposed_assertions": 0,
+        "unsupported_structured_claims": 0,
+        "wall_clock_ms": 30775
+      }
+    ],
+    "coordinate": "candidate",
+    "seed": 771211,
+    "summary": {
+      "action_path_success": true,
+      "action_rejection_count": 0,
+      "candidate_path_conformant_cases": 2,
+      "case_count": 2,
+      "control_path_exposed_cases": 0,
+      "correctness_boundary_violations": 0,
+      "downstream_finalization": {
+        "blocked_unverified_propositions": 0,
+        "false_abstention_cases": 0,
+        "status_counts": {
+          "grounded_answer": 1,
+          "unresolved": 1
+        }
+      },
+      "harness_intent_materializations": 3,
+      "intent_planner_calls": 4,
+      "intent_rejection_count": 0,
+      "legacy_action_planner_calls": 0,
+      "observed_model_identities": {
+        "gemini-3.5-flash-lite": 11
+      },
+      "operational_failure_classes": {},
+      "operationally_complete": true,
+      "provider_attempts_observed": 11,
+      "provider_calls_observed": 11,
+      "provider_latency_ms_observed": 55449,
+      "same_key_sibling_exposed_cases": 2,
+      "tokens_observed": 7237,
+      "wall_clock_ms": 55569
+    },
+    "trial_id": "candidate-seed-771211"
+  }
+}

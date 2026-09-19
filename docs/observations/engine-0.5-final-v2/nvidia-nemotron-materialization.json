@@ -1,0 +1,123 @@
+{
+  "acceptance_passed": false,
+  "checks": {
+    "action_path_success": false,
+    "action_rejections_zero": true,
+    "correctness_zero": true,
+    "intent_calls_positive": false,
+    "intent_rejections_zero": true,
+    "legacy_action_calls_zero": true,
+    "materialization_path_all_cases": false,
+    "materializations_positive": false,
+    "operationally_complete": false,
+    "same_key_siblings_all_cases": false
+  },
+  "corpus_identity": "engine-0.5-final-v1-materialization",
+  "evaluator_identity": "reason-engine-0.5-final-v1-materialization",
+  "github_run_attempt": "1",
+  "github_run_id": "35435026552",
+  "live_observation_performed": true,
+  "observed_at_utc": "2026-09-19T10:05:24.647852+00:00",
+  "observed_model_identities": {},
+  "prechange_commit": "94ff1b79ac0e9c183d2fc30ceaf41f23f3927d3e",
+  "product_commit": "7a91d272af1bab0a97bf80ed7bba027ff253d50a",
+  "provider": "nvidia",
+  "provider_target": "nvidia-nemotron",
+  "requested_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "role": "limited_negative_control",
+  "schema_version": "reason-engine-0.5-final-v1-materialization",
+  "scoring_identity": "engine-0.5-final-v1-materialization-scoring-v1",
+  "summary": {
+    "action_path_success": null,
+    "action_rejection_count": 0,
+    "candidate_path_conformant_cases": 0,
+    "case_count": 2,
+    "control_path_exposed_cases": 0,
+    "correctness_boundary_violations": 0,
+    "downstream_finalization": {
+      "blocked_unverified_propositions": 0,
+      "false_abstention_cases": 0,
+      "status_counts": {}
+    },
+    "harness_intent_materializations": 0,
+    "intent_planner_calls": 0,
+    "intent_rejection_count": 0,
+    "legacy_action_planner_calls": 0,
+    "observed_model_identities": {},
+    "operational_failure_classes": {
+      "protocol": 1,
+      "timeout": 1
+    },
+    "operationally_complete": false,
+    "provider_attempts_observed": 0,
+    "provider_calls_observed": 0,
+    "provider_latency_ms_observed": 0,
+    "same_key_sibling_exposed_cases": 0,
+    "tokens_observed": 0,
+    "wall_clock_ms": 583654
+  },
+  "trial": {
+    "cases": [
+      {
+        "case_seed": 771211,
+        "expected": "grounded",
+        "id": "grounded-zqneris",
+        "operational_failure": {
+          "exit_code": 1,
+          "failure_class": "protocol",
+          "message": "provider=nvidia model=nvidia/nemotron-3.5-lightning-30b-a3b failure_class=protocol provider_attempts=1 latency_ms=260667: provider returned invalid candidate JSON after structured-output fallback: first_error=expected value at line 1 column 1; first_finish_reason=length; first_bytes=4698; second_error=expected value at line 1 column 1; second_finish_reason=length; second_bytes=4662"
+        },
+        "operationally_complete": false,
+        "planner_success": null,
+        "role": "grounded_same_key_siblings",
+        "wall_clock_ms": 260674
+      },
+      {
+        "case_seed": 771212,
+        "expected": "unknown",
+        "id": "stale-zqsolven",
+        "operational_failure": {
+          "exit_code": 1,
+          "failure_class": "timeout",
+          "message": "provider=nvidia model=nvidia/nemotron-3.5-lightning-30b-a3b failure_class=timeout provider_attempts=2 latency_ms=322972: nvidia structured-output fallback failed after invalid first candidate (finish_reason=length, bytes=4723): NVIDIA API request timed out"
+        },
+        "operationally_complete": false,
+        "planner_success": null,
+        "role": "stale_same_key_siblings",
+        "wall_clock_ms": 322980
+      }
+    ],
+    "coordinate": "candidate",
+    "seed": 771211,
+    "summary": {
+      "action_path_success": null,
+      "action_rejection_count": 0,
+      "candidate_path_conformant_cases": 0,
+      "case_count": 2,
+      "control_path_exposed_cases": 0,
+      "correctness_boundary_violations": 0,
+      "downstream_finalization": {
+        "blocked_unverified_propositions": 0,
+        "false_abstention_cases": 0,
+        "status_counts": {}
+      },
+      "harness_intent_materializations": 0,
+      "intent_planner_calls": 0,
+      "intent_rejection_count": 0,
+      "legacy_action_planner_calls": 0,
+      "observed_model_identities": {},
+      "operational_failure_classes": {
+        "protocol": 1,
+        "timeout": 1
+      },
+      "operationally_complete": false,
+      "provider_attempts_observed": 0,
+      "provider_calls_observed": 0,
+      "provider_latency_ms_observed": 0,
+      "same_key_sibling_exposed_cases": 0,
+      "tokens_observed": 0,
+      "wall_clock_ms": 583654
+    },
+    "trial_id": "candidate-seed-771211"
+  }
+}

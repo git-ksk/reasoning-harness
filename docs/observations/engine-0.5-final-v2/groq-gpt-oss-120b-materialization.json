@@ -1,0 +1,239 @@
+{
+  "acceptance_passed": true,
+  "checks": {
+    "action_path_success": true,
+    "action_rejections_zero": true,
+    "correctness_zero": true,
+    "intent_calls_positive": true,
+    "intent_rejections_zero": true,
+    "legacy_action_calls_zero": true,
+    "materialization_path_all_cases": true,
+    "materializations_positive": true,
+    "operationally_complete": true,
+    "same_key_siblings_all_cases": true
+  },
+  "corpus_identity": "engine-0.5-final-v1-materialization",
+  "evaluator_identity": "reason-engine-0.5-final-v1-materialization",
+  "github_run_attempt": "1",
+  "github_run_id": "35435026552",
+  "live_observation_performed": true,
+  "observed_at_utc": "2026-09-19T09:44:55.359626+00:00",
+  "observed_model_identities": {
+    "openai/gpt-oss-120b": 11
+  },
+  "prechange_commit": "94ff1b79ac0e9c183d2fc30ceaf41f23f3927d3e",
+  "product_commit": "7a91d272af1bab0a97bf80ed7bba027ff253d50a",
+  "provider": "groq",
+  "provider_target": "groq-gpt-oss-120b",
+  "requested_model": "openai/gpt-oss-120b",
+  "role": "validated_required",
+  "schema_version": "reason-engine-0.5-final-v1-materialization",
+  "scoring_identity": "engine-0.5-final-v1-materialization-scoring-v1",
+  "summary": {
+    "action_path_success": true,
+    "action_rejection_count": 0,
+    "candidate_path_conformant_cases": 2,
+    "case_count": 2,
+    "control_path_exposed_cases": 0,
+    "correctness_boundary_violations": 0,
+    "downstream_finalization": {
+      "blocked_unverified_propositions": 1,
+      "false_abstention_cases": 0,
+      "status_counts": {
+        "grounded_answer": 1,
+        "requires_verification": 1
+      }
+    },
+    "harness_intent_materializations": 4,
+    "intent_planner_calls": 4,
+    "intent_rejection_count": 0,
+    "legacy_action_planner_calls": 0,
+    "observed_model_identities": {
+      "openai/gpt-oss-120b": 11
+    },
+    "operational_failure_classes": {},
+    "operationally_complete": true,
+    "provider_attempts_observed": 17,
+    "provider_calls_observed": 11,
+    "provider_latency_ms_observed": 86765,
+    "same_key_sibling_exposed_cases": 2,
+    "tokens_observed": 11417,
+    "wall_clock_ms": 86913
+  },
+  "trial": {
+    "cases": [
+      {
+        "action_count": 1,
+        "action_path_success": true,
+        "action_rejection_count": 0,
+        "action_rejection_records": [],
+        "action_rejections": {},
+        "admission_rejections": {},
+        "assertions": [
+          {
+            "key": "zqneris.release.primary_custodian",
+            "mode": "grounded",
+            "value": "team-violet"
+          },
+          {
+            "key": "zqneris.release.primary_custodian",
+            "mode": "grounded",
+            "value": "team-violet"
+          }
+        ],
+        "blocked_unverified_propositions": 0,
+        "candidate_path_conformant": true,
+        "case_seed": 771211,
+        "control_path_exposed": null,
+        "correctness_boundary_violations": 0,
+        "expected": "grounded",
+        "expected_rejection_observed": null,
+        "exposed_text_contract_violations": 0,
+        "false_abstention": 0,
+        "finalization_status": "grounded_answer",
+        "generation_failure_class": null,
+        "harness_intent_materializations": 1,
+        "id": "grounded-zqneris",
+        "intent_contract": "reason-investigation-intent-v1",
+        "intent_planner_calls": 1,
+        "intent_rejection_count": 0,
+        "intent_rejection_records": [],
+        "intent_rejections": {},
+        "irrelevant_acquisition_attempts": 0,
+        "legacy_action_planner_calls": 0,
+        "materialization_policy": "target-intent-materialization-v1",
+        "missed_target_insufficiency": 0,
+        "observed_model_identities": {
+          "openai/gpt-oss-120b": 5
+        },
+        "operationally_complete": true,
+        "provider_attempts_observed": 7,
+        "provider_calls_observed": 5,
+        "provider_latency_ms_observed": 39367,
+        "role": "grounded_same_key_siblings",
+        "same_key_sibling_exposed": true,
+        "same_key_target_count": 2,
+        "same_key_target_ids": [
+          "primary-custody-record",
+          "secondary-confirmation"
+        ],
+        "selected_capabilities": [
+          "zqneris-custodian-primary"
+        ],
+        "target": {
+          "key": "zqneris.release.primary_custodian",
+          "value": "team-violet"
+        },
+        "target_grounded": true,
+        "target_recalled": true,
+        "target_uncertain": false,
+        "tokens_observed": 5978,
+        "tool_selection_success": true,
+        "typed_operational_failure_classes": {},
+        "unsupported_exposed_assertions": 0,
+        "unsupported_structured_claims": 0,
+        "wall_clock_ms": 39402
+      },
+      {
+        "action_count": 4,
+        "action_path_success": true,
+        "action_rejection_count": 0,
+        "action_rejection_records": [],
+        "action_rejections": {},
+        "admission_rejections": {
+          "stale": 2
+        },
+        "assertions": [],
+        "blocked_unverified_propositions": 1,
+        "candidate_path_conformant": true,
+        "case_seed": 771212,
+        "control_path_exposed": null,
+        "correctness_boundary_violations": 0,
+        "expected": "unknown",
+        "expected_rejection_observed": true,
+        "exposed_text_contract_violations": 0,
+        "false_abstention": 0,
+        "finalization_status": "requires_verification",
+        "generation_failure_class": null,
+        "harness_intent_materializations": 3,
+        "id": "stale-zqsolven",
+        "intent_contract": "reason-investigation-intent-v1",
+        "intent_planner_calls": 3,
+        "intent_rejection_count": 0,
+        "intent_rejection_records": [],
+        "intent_rejections": {},
+        "irrelevant_acquisition_attempts": 0,
+        "legacy_action_planner_calls": 0,
+        "materialization_policy": "target-intent-materialization-v1",
+        "missed_target_insufficiency": 0,
+        "observed_model_identities": {
+          "openai/gpt-oss-120b": 6
+        },
+        "operationally_complete": true,
+        "provider_attempts_observed": 10,
+        "provider_calls_observed": 6,
+        "provider_latency_ms_observed": 47398,
+        "role": "stale_same_key_siblings",
+        "same_key_sibling_exposed": true,
+        "same_key_target_count": 2,
+        "same_key_target_ids": [
+          "primary-window-check",
+          "secondary-confirmation-check"
+        ],
+        "selected_capabilities": [
+          "zqsolven-window-primary",
+          "zqsolven-window-primary",
+          "zqsolven-window-secondary",
+          "zqsolven-window-secondary"
+        ],
+        "target": {
+          "key": "zqsolven.access.window.is_open",
+          "value": "true"
+        },
+        "target_grounded": false,
+        "target_recalled": true,
+        "target_uncertain": false,
+        "tokens_observed": 5439,
+        "tool_selection_success": true,
+        "typed_operational_failure_classes": {},
+        "unsupported_exposed_assertions": 0,
+        "unsupported_structured_claims": 0,
+        "wall_clock_ms": 47511
+      }
+    ],
+    "coordinate": "candidate",
+    "seed": 771211,
+    "summary": {
+      "action_path_success": true,
+      "action_rejection_count": 0,
+      "candidate_path_conformant_cases": 2,
+      "case_count": 2,
+      "control_path_exposed_cases": 0,
+      "correctness_boundary_violations": 0,
+      "downstream_finalization": {
+        "blocked_unverified_propositions": 1,
+        "false_abstention_cases": 0,
+        "status_counts": {
+          "grounded_answer": 1,
+          "requires_verification": 1
+        }
+      },
+      "harness_intent_materializations": 4,
+      "intent_planner_calls": 4,
+      "intent_rejection_count": 0,
+      "legacy_action_planner_calls": 0,
+      "observed_model_identities": {
+        "openai/gpt-oss-120b": 11
+      },
+      "operational_failure_classes": {},
+      "operationally_complete": true,
+      "provider_attempts_observed": 17,
+      "provider_calls_observed": 11,
+      "provider_latency_ms_observed": 86765,
+      "same_key_sibling_exposed_cases": 2,
+      "tokens_observed": 11417,
+      "wall_clock_ms": 86913
+    },
+    "trial_id": "candidate-seed-771211"
+  }
+}

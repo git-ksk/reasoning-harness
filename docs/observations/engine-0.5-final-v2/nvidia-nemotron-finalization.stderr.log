@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/runner/work/reasoning-harness/reasoning-harness/scripts/engine_0_5_final_finalization.py", line 433, in <module>
+    main()
+  File "/home/runner/work/reasoning-harness/reasoning-harness/scripts/engine_0_5_final_finalization.py", line 423, in main
+    report = run_live(args.reason_bin.resolve(), args.target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/reasoning-harness/reasoning-harness/scripts/engine_0_5_final_finalization.py", line 370, in run_live
+    payload, elapsed = run_json(cmd, cwd)
+                       ^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/reasoning-harness/reasoning-harness/scripts/engine_0_5_final_finalization.py", line 128, in run_json
+    raise EvalError(
+EvalError: command failed exit=1 class=protocol message=provider=nvidia model=nvidia/nemotron-3.5-lightning-30b-a3b failure_class=protocol provider_attempts=1 latency_ms=140618: provider returned invalid candidate JSON after structured-output fallback: first_error=EOF while parsing a value at line 2 column 10; first_finish_reason=length; first_bytes=12; second_error=expected value at line 1 column 1; second_finish_reason=length; second_bytes=4809

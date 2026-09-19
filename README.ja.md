@@ -317,6 +317,25 @@ v4とは別に、`v0.4.2`最終release gateのv36から、raw modelと意味を�
 
 freeze座標、metric、run ID、pacing policy、provenanceは[v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.ja.md)に固定しています。失敗・inconclusiveを都合よく消して再測定するのではなく、freezeしたevaluationを履歴として残し、現在のclaimを再現可能な実測へ結びつけています。
 
+### Harness Engine 0.5.0 最終cross-model acceptance
+
+semanticなEngine 0.5.0 lineは、#248 finalization bridgeと#283 Harness-owned action materializationを対象にしたfresh frozen delta surfaceで最終acceptanceを完了しました。predeclareしたvalidated provider/model 4 rowはすべて独立にPASSし、cross-model平均は使っていません。
+
+| Model / provider | Catalog role | Finalization | Materialization | Final classification |
+| --- | --- | --- | --- | --- |
+| **Mistral / Ministral 8B** | validated required | PASS 3/3 | PASS | **PASS** |
+| **Google / Gemini 3.5 Flash-Lite** | validated required | PASS 3/3 | PASS | **PASS** |
+| **Google / Gemma 4 31B** | validated required | PASS 3/3 | PASS | **PASS** |
+| **Groq / GPT-OSS 120B** | validated required | PASS 3/3 | PASS | **PASS** |
+| Mistral / Ministral 14B | observed characterization | FAIL 2/3 | PASS | FAIL |
+| Groq / GPT-OSS 20B | observed characterization | PASS 3/3 | PASS | PASS |
+| Groq / Qwen 3.8 27B | observed characterization | incomplete | PASS | INCOMPLETE |
+| NVIDIA / Nemotron 3.5 Lightning 30B A3B | limited negative control | incomplete | operationally incomplete | INCOMPLETE |
+
+完了したsemantic rowではobserved correctness-boundary violationはすべて0でした。required rowはsession external replayも0を維持し、#283 materialization surfaceではlegacy executable-action planner callも0でした。observed / limited rowはrelease voteではなくcharacterization evidenceなので、既存catalog labelを暗黙に昇格させません。NVIDIAの結果は既存の`limited / known_incompatible` statusと整合します。
+
+canonical v2 runはfreeze tag `engine-0.5-final-v2-freeze` からの `35435026552` で、preflight / final gateともにPASSしました。exact coordinate、residual、artifact provenance、保存済みraw reportは[Engine 0.5.0 final cross-model result](docs/engine-0.5-final-v2-result.ja.md)を参照してください。これはsemantic acceptance evidenceであり、別途versioned Engine 0.5.0 releaseでcoordinateを変更するまではcurrent packaged binaryはHarness Engine `0.4.2`をreportします。
+
 ## 製品・エンジン・研究を分ける
 
 `v0.4.2`は、製品CLIとreasoning engineが同じversion座標を共有する最後のreleaseです。

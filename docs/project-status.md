@@ -86,7 +86,7 @@ The general-use CLI productization work is shipped. Native installation, guided 
 
 The remaining product-side distribution follow-up is #375: Homebrew physical acceptance is complete; the WinGet community manifest has passed Microsoft validation and CLA checks and is waiting for community moderator approval. This external review does not block Harness Engine work.
 
-The active technical gap is now #283 on the separate Engine 0.5.0 line. #282 completed the frozen repeated-trial planner baseline: Mistral was 5/5 strict planner-success, while Google was 4/5 with one safely rejected `unsupported_target_key` proposal and zero correctness-boundary violations. #283 must use this as pre-change diagnostic evidence and a separate fresh adoption holdout.
+The Engine 0.5.0 semantic line is implementation- and acceptance-complete through #248, #282, #283, and final closeout #443. The fresh `engine-0.5-final-v2-freeze` matrix passed all four validated-required rows independently with zero observed correctness-boundary violations; observed/limited rows remain characterization evidence rather than release votes. See the [Engine 0.5.0 final cross-model result](engine-0.5-final-v2-result.md). The packaged Engine coordinate remains 0.4.2 until a separate versioned release is performed.
 
 ## Research posture
 

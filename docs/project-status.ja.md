@@ -86,7 +86,7 @@ general-use CLI productizationはrelease済みです。native install、guided s
 
 product側で残るdistribution follow-upは#375です。Homebrew physical acceptanceは完了し、WinGet community manifestもMicrosoft validation / CLAを通過してcommunity moderator approval待ちです。この外部reviewはHarness Engine開発をblockしません。
 
-技術的な主戦場は別trackのHarness Engine 0.5.0に残る#283です。#282のfrozen repeated-trial planner baselineは完了し、Mistralはstrict planner-success 5/5、Googleは4/5で、1件の`unsupported_target_key` proposalが安全にrejectされcorrectness-boundary violationは0でした。#283ではこれをpre-change diagnostic evidenceとして使い、adoptionには別fresh holdoutを使います。
+Harness Engine 0.5.0のsemantic lineは#248 / #282 / #283の実装と、最終closeout #443まで完了しました。fresh `engine-0.5-final-v2-freeze` matrixではvalidated-required 4 rowがすべて独立にPASSし、observed correctness-boundary violationは0でした。observed / limited rowはrelease voteではなくcharacterization evidenceとして保持します。詳細は[Engine 0.5.0 final cross-model result](engine-0.5-final-v2-result.ja.md)。package上のEngine coordinateは、別途versioned releaseを行うまでは0.4.2のままです。
 
 ## 研究方針
 

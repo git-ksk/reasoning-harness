@@ -1,0 +1,67 @@
+{
+  "artifacts": {
+    "google-gemini-3.5-flash-lite": {
+      "id": 10582370676,
+      "zip_sha256": "312af9af19bc8c3aacfdaf38292a0c93fb0b0a28b14c837f34a1c3cd8de0d074"
+    },
+    "google-gemma-4-31b-it": {
+      "id": 10582390389,
+      "zip_sha256": "bbd9ee2caca1d7f4fdf6b0606c8335c8ecba85dfc9595ce2a1efc11abe9c0069"
+    },
+    "groq-gpt-oss-120b": {
+      "id": 10581348514,
+      "zip_sha256": "90e26e21580049e6d6147225f31e5f51069d497b5efa7a94a98705daf8292ca1"
+    },
+    "groq-gpt-oss-20b": {
+      "id": 10581134267,
+      "zip_sha256": "a9fcb514e6732c6623ab31be2ff0d7ae4dc27ba24907ed6142206278313eff38"
+    },
+    "groq-qwen3.8-27b": {
+      "id": 10581219144,
+      "zip_sha256": "9972f1503b26d3204d15f0a31508e0e8063178d2246da08f115ecc2b02b9b4b2"
+    },
+    "matrix": {
+      "id": 10582365811,
+      "zip_sha256": "f60fe1932aa21718113947598b9ac43032f52d0749ddb79e70b96f3062efb8b1"
+    },
+    "mistral-14b": {
+      "id": 10581704377,
+      "zip_sha256": "d598784c6647a1071219cd33c2f81a14230753d7a3587b7ed2f5229bf8f51e26"
+    },
+    "mistral-8b": {
+      "id": 10581838927,
+      "zip_sha256": "ed7f255d85d626a05f7cb7550edfeb22d79047ae90a1847c365d95f9137c2132"
+    },
+    "nvidia-nemotron": {
+      "id": 10582505610,
+      "zip_sha256": "8043b458345d72dfc55806291d2597ea201ea8da5f25978fe2e26295d1f0f56d"
+    }
+  },
+  "canonical_run_id": "35435026552",
+  "final_gate_job_id": "105879807991",
+  "freeze_commit": "9f816536bc948fd278fd3d2bcbb837e9649b5edb",
+  "freeze_tag": "engine-0.5-final-v2-freeze",
+  "freeze_tag_object": "566ac48081bb0999bd4241ce7a10af20f2999aef",
+  "jobs": {
+    "google-gemini-3.5-flash-lite": 105876640576,
+    "google-gemma-4-31b-it": 105876640166,
+    "groq-gpt-oss-120b": 105876941833,
+    "groq-gpt-oss-20b": 105877449950,
+    "groq-qwen3.8-27b": 105877357969,
+    "mistral-14b": 105876640588,
+    "mistral-8b": 105876640159,
+    "nvidia-nemotron": 105878261877
+  },
+  "preflight_job_id": "105876114468",
+  "product_candidate": "7a91d272af1bab0a97bf80ed7bba027ff253d50a",
+  "run_conclusion": "success",
+  "schema_version": "engine-0.5-final-v2-provenance-v1",
+  "v1_preflight_failure": {
+    "cause": "Rust 1.88 runner lacked rustfmt before credentials; v2 changed only workflow toolchain components.",
+    "freeze_commit": "7ce08128754c7d0f9f8ac783625518bf8601d7b5",
+    "freeze_tag": "engine-0.5-final-v1-freeze",
+    "live_provider_observations": 0,
+    "preflight_job_id": "105875860582",
+    "run_id": "35434927007"
+  }
+}
