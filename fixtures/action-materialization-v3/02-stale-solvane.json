@@ -1,0 +1,27 @@
+{
+  "config": "configs/solvane.json",
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "solvane.access.window.is_open",
+    "solvane-window-primary",
+    "fixture:action-materialization-v3:solvane:primary"
+  ],
+  "id": "stale-solvane",
+  "kind": "investigation",
+  "minimum_same_key_targets": 2,
+  "preferred_capability": "solvane-window-primary",
+  "relevant_capabilities": [
+    "solvane-window-primary",
+    "solvane-window-secondary"
+  ],
+  "role": "stale_same_key_siblings",
+  "schema_version": "action-materialization-case-v3",
+  "target": {
+    "key": "solvane.access.window.is_open",
+    "value": "true"
+  },
+  "task": "Determine whether the exact fact family solvane.access.window.is_open is true now. Keep two separate investigation questions for this same fact: one for the primary access-window record and one as a separately tracked confirmation question. Do not merge the two questions. Use the configured read-only sources, and reject stale observations rather than promoting them to current truth."
+}
