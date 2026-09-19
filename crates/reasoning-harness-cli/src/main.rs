@@ -3719,14 +3719,6 @@ fn materialize_harness_owned_seed_targets(
     targets: &[Proposition],
 ) {
     for (index, target) in targets.iter().enumerate() {
-        if candidate
-            .claims
-            .iter()
-            .any(|claim| claim.proposition.as_ref() == Some(target))
-        {
-            continue;
-        }
-
         let explicit_for_key = input
             .evidence
             .iter()
@@ -3742,6 +3734,10 @@ fn materialize_harness_owned_seed_targets(
         {
             continue;
         }
+
+        candidate
+            .claims
+            .retain(|claim| claim.proposition.as_ref() != Some(target));
 
         let mut id = format!("harness_session_correction_target_{index}");
         let mut suffix = 1usize;
@@ -12380,6 +12376,56 @@ mod candidate_json_tests {
         assert!(session_correction_finalization_targets(&snapshot, &correction).is_empty());
         assert!(
             session_correction_candidate_materialization_targets(&snapshot, &correction).is_empty()
+        );
+    }
+
+    #[test]
+    fn session_correction_materialization_replaces_matching_model_claim_with_harness_owned_claim() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let input = HarnessInput {
+            task: "report threshold".into(),
+            evidence: vec![Evidence {
+                id: "corrected-user-fact".into(),
+                source: "session:--fact".into(),
+                observation: "session.quill.threshold=11".into(),
+                facts: BTreeMap::from([(correction.key.clone(), correction.value.clone())]),
+                metadata: EvidenceMetadata {
+                    temporal: None,
+                    scope: None,
+                    provenance_class: Some("explicit_user_fact".into()),
+                },
+            }],
+            ..Default::default()
+        };
+        let mut candidate = ReasoningCandidate {
+            claims: vec![reasoning_harness_core::CandidateClaim {
+                id: "model-proposal".into(),
+                statement: "model restated corrected value".into(),
+                proposed_state: reasoning_harness_core::EpistemicState::Known,
+                proposition: Some(correction.clone()),
+                evidence_ids: vec!["corrected-user-fact".into()],
+            }],
+            inferences: vec![],
+        };
+
+        materialize_harness_owned_seed_targets(
+            &mut candidate,
+            &input,
+            std::slice::from_ref(&correction),
+        );
+
+        assert_eq!(candidate.claims.len(), 1);
+        assert_eq!(
+            candidate.claims[0].id,
+            "harness_session_correction_target_0"
+        );
+        assert_eq!(candidate.claims[0].proposition.as_ref(), Some(&correction));
+        assert_eq!(
+            candidate.claims[0].proposed_state,
+            reasoning_harness_core::EpistemicState::Assumed
         );
     }
 
