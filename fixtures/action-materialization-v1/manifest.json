@@ -1,0 +1,122 @@
+{
+  "acceptance": {
+    "candidate_planner_success_trials_required": 5,
+    "max_correctness_boundary_violations_each_coordinate": 0,
+    "min_complete_trials_each_coordinate": 5,
+    "require_candidate_action_rejections_zero": true,
+    "require_candidate_intent_calls_positive_each_trial": true,
+    "require_candidate_intent_rejections_zero": true,
+    "require_candidate_legacy_action_calls_zero": true,
+    "require_candidate_legacy_calls_strictly_lower_than_control": true,
+    "require_candidate_materialization_path_all_complete_cases": true,
+    "require_candidate_materializations_positive_each_trial": true,
+    "require_candidate_planner_success_not_below_control": true,
+    "require_control_legacy_action_path_all_complete_cases": true,
+    "require_same_key_sibling_exposure_all_complete_cases": true
+  },
+  "cases": [
+    "01-grounded-orvessa.json",
+    "02-stale-selvara.json"
+  ],
+  "coordinates": {
+    "candidate": {
+      "commit": "7a91d272af1bab0a97bf80ed7bba027ff253d50a",
+      "harness_engine": "0.4.2",
+      "intent_contract": "reason-investigation-intent-v1",
+      "materialization_policy": "target-intent-materialization-v1",
+      "reason_cli": "0.5.2"
+    },
+    "control": {
+      "commit": "94ff1b79ac0e9c183d2fc30ceaf41f23f3927d3e",
+      "harness_engine": "0.4.2",
+      "reason_cli": "0.5.2"
+    }
+  },
+  "corpus_identity": "action-materialization-v1",
+  "evaluator_dependencies": {
+    "scripts/planner_reliability_v1.py": "0770d47f4bf9700ac03448b72669147d6ec45f52675ec7e2735cb66ca689e574"
+  },
+  "evaluator_identity": "reason-action-materialization-v1",
+  "live_observation_policy": {
+    "failed_observation_requires_fresh_successor_identity": true,
+    "first_live_launch_per_provider_is_canonical": true,
+    "pre_live_infrastructure_retry_allowed": true,
+    "semantic_retry_forbidden": true,
+    "surface_must_be_frozen_before_first_live_observation": true
+  },
+  "measurement_semantics": {
+    "architecture_benefit_metric": "strict reduction in legacy executable-ID model calls on the predeclared eligible path",
+    "exercised_path_observability_separate_from_utility": true,
+    "hard_correctness_separate_from_utility": true,
+    "independence_derived_p_to_k_reported": false,
+    "no_cross_model_averaging": true,
+    "no_majority_vote_authority": true,
+    "operational_completeness_separate_from_semantic_metrics": true,
+    "operationally_incomplete_trials_excluded_from_semantic_distributions": true,
+    "provider_internal_attempts_are_operational_not_semantic_trials": true
+  },
+  "planner_success_predicate": {
+    "expected_admission_rejection_required_when_declared": true,
+    "grounded_case_requires_grounded_target": true,
+    "requires_every_case_relevant_tool_selected": true,
+    "requires_every_case_target_recalled": true,
+    "requires_operationally_complete_trial": true,
+    "requires_zero_action_rejections": true,
+    "requires_zero_correctness_boundary_violations": true,
+    "unknown_case_requires_no_grounded_target": true
+  },
+  "provider_targets": {
+    "google": {
+      "inter_invocation_delay_ms": 1500,
+      "max_tokens": 1024,
+      "model": "gemini-3.5-flash-lite",
+      "provider": "google"
+    },
+    "mistral": {
+      "inter_invocation_delay_ms": 1500,
+      "max_tokens": 1024,
+      "model": "ministral-8b-latest",
+      "provider": "mistral"
+    }
+  },
+  "purpose": "adoption_holdout_for_issue_283",
+  "schema_version": "action-materialization-manifest-v1",
+  "scoring_identity": "action-materialization-scoring-v1",
+  "surface_contract": {
+    "candidate_intent_materialization_path_required": true,
+    "case_roles": [
+      "grounded_same_key_siblings",
+      "stale_same_key_siblings"
+    ],
+    "control_stochastic_action_path_required": true,
+    "exact_read_only_capabilities_per_key": 2,
+    "explicit_unique_priority_required": true,
+    "minimum_same_key_targets_per_case": 2,
+    "same_key_sibling_identity_must_remain_distinct": true
+  },
+  "trial_plan": {
+    "all_k_group": {
+      "k": 5,
+      "seeds": [
+        97211,
+        97212,
+        97213,
+        97214,
+        97215
+      ]
+    },
+    "case_seed_derivation": "trial_seed + zero_based_case_index",
+    "declared_k": [
+      1,
+      5
+    ],
+    "paired_coordinate_order": "trial_index_even:control_then_candidate;trial_index_odd:candidate_then_control",
+    "primary_trial_seeds": [
+      97211,
+      97212,
+      97213,
+      97214,
+      97215
+    ]
+  }
+}

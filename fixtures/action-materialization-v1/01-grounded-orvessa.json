@@ -1,0 +1,24 @@
+{
+  "config": "configs/orvessa.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "orvessa.release.primary_owner",
+    "Orvessa primary ownership record",
+    "team-auric"
+  ],
+  "id": "grounded-orvessa",
+  "kind": "investigation",
+  "minimum_same_key_targets": 2,
+  "preferred_capability": "orvessa-owner-primary",
+  "relevant_capabilities": [
+    "orvessa-owner-primary",
+    "orvessa-owner-secondary"
+  ],
+  "role": "grounded_same_key_siblings",
+  "schema_version": "action-materialization-case-v1",
+  "target": {
+    "key": "orvessa.release.primary_owner",
+    "value": "team-auric"
+  },
+  "task": "Determine the current value of the exact fact family orvessa.release.primary_owner. Keep two separate investigation questions for this same fact: one for the primary ownership record and one for an independent ownership confirmation. Do not merge the two questions. Use the configured read-only sources and answer only from admitted evidence."
+}
