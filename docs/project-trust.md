@@ -2,7 +2,7 @@
 
 [日本語](project-trust.ja.md) | English
 
-**Status:** implemented on the Reason CLI 0.5.0 development line. The tagged `v0.4.2` release predates these `reason trust` commands.
+**Status:** implemented on the Reason CLI 0.5.x product line. The tagged `v0.4.2` release predates these `reason trust` commands.
 
 Reason can read `.reason/config.json` from the current project. Because that file may configure subprocesses, read-only MCP acquisition, or investigation capabilities, **entering an untrusted repository must not activate those capabilities automatically**.
 

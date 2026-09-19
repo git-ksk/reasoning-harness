@@ -2,7 +2,7 @@
 
 日本語 | [English](model-retirement-policy.md)
 
-**状態:** Reason CLI 0.5.0開発ラインで実装済み。Harness Engine 0.4.2のreasoning / authority semanticsは変更しません。
+**状態:** Reason CLI 0.5.x product lineで実装済み。Harness Engine 0.4.2のreasoning / authority semanticsは変更しません。
 
 Reasonはmodel retirement、incompatibility、quota、outage、provider errorから復旧するために、provider/model execution identityを**黙って変更しません**。
 

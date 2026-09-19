@@ -1,6 +1,6 @@
 # Proxy / custom CA / headless network環境
 
-**状態:** Reason CLI 0.5.0開発ラインで実装済み。Harness Engine 0.4.2のreasoning / authority semanticsは変更しません。
+**状態:** Reason CLI 0.5.x product lineで実装済み。Harness Engine 0.4.2のreasoning / authority semanticsは変更しません。
 
 ReasonのHTTP clientはreqwest標準のsystem proxy挙動を使います。`HTTP_PROXY` / `http_proxy`、`HTTPS_PROXY` / `https_proxy`、`ALL_PROXY` / `all_proxy`、`NO_PROXY` / `no_proxy`はprovider adapter、remote MCP、MCP OAuth discovery/token exchange、CLI release/update通信で有効です。diagnostic outputには各変数のpresenceだけを出し、proxy URL、user/password、bypass listの値は表示しません。
 

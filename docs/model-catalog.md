@@ -2,7 +2,7 @@
 
 [日本語](model-catalog.ja.md) | English
 
-**Status:** implemented on the Reason CLI 0.5.0 development line. The tagged `v0.4.2` release predates `reason models` / `reason model set`.
+**Status:** implemented on the Reason CLI 0.5.x product line. The tagged `v0.4.2` release predates `reason models` / `reason model set`.
 
 Reason exposes a **curated compatibility catalog**, not a live copy of every model name a provider happens to advertise. This distinction matters: provider existence does not prove that a model satisfies Reason's current structured-generation/runtime protocol.
 

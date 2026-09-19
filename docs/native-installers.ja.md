@@ -20,13 +20,13 @@ CLI / Engine分離後のrelease（`reason-vX.Y.Z`）では、native archive、`S
 Unix:
 
 ```bash
-curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.0/install.sh | sh
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.0/install.ps1 | iex
+irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.ps1 | iex
 ```
 
 各tagに含まれるinstallerの既定versionは`reasoning-harness-cli` package versionと一致しなければなりません。release workflow自身がinstaller contract testを実行してからassetへ追加します。
@@ -34,11 +34,11 @@ irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.0
 scriptを取得した後でversionや配置先を明示することもできます。
 
 ```bash
-./install.sh --version 0.5.0 --bin-dir "$HOME/.local/bin"
+./install.sh --version 0.5.2 --bin-dir "$HOME/.local/bin"
 ```
 
 ```powershell
-./install.ps1 -Version 0.5.0 -BinDir "$env:LOCALAPPDATA\Programs\Reason\bin"
+./install.ps1 -Version 0.5.2 -BinDir "$env:LOCALAPPDATA\Programs\Reason\bin"
 ```
 
 installerはshell profileやPATHを勝手に書き換えません。PATH追加が必要な場合は配置先を表示します。

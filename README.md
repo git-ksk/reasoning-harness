@@ -71,16 +71,21 @@ That distinction is the product: **useful AI output without letting model confid
 
 ## Quickstart
 
-`v0.4.2` is the current external preview. With Rust 1.88+:
+The current split preview is **Reason CLI 0.5.2 on Harness Engine 0.4.2**. For macOS/Linux, the published native installer is the normal end-user path (GitHub CLI 2.93+ is required for provenance verification):
+
+```bash
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
+reason setup
+```
+
+With Rust 1.88+ you can also install the CLI directly:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.4.2 --locked reasoning-harness-cli --bin reason
-
-reason --version
+  --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
 ```
 
-Standalone archives and `SHA256SUMS` are also available from the [v0.4.2 release](https://github.com/git-ksk/reasoning-harness/releases/tag/v0.4.2).
+Standalone native archives, installers, `SHA256SUMS`, and release provenance metadata are available from the [Reason CLI v0.5.2 release](https://github.com/git-ksk/reasoning-harness/releases/tag/reason-v0.5.2). `v0.4.2` remains the immutable final unified CLI/Engine historical release.
 
 Give `reason` a natural-language task plus evidence you actually want the Harness to treat as a structured fact:
 
@@ -209,17 +214,17 @@ Read [How Reasoning Harness works](docs/how-it-works.md) for the detailed execut
 
 | Command | Use it for |
 | --- | --- |
-| `reason` | Reason CLI 0.5.0 development: start a managed TTY-only interactive session; JSON/non-TTY invocations remain non-interactive. |
+| `reason` | Reason CLI 0.5.x: start a managed TTY-only interactive session; JSON/non-TTY invocations remain non-interactive. |
 | `reason -c` / `reason -r [SESSION]` | Continue the latest project session or resume/pick a managed session without learning backing file paths. |
 | `reason "TASK"` | Primary human-facing natural-language path; interactive TTYs show coarse Harness progress and Ctrl+C cancels safely. |
-| `reason setup` | Reason CLI 0.5.0 development: first-run provider, credential, model-default, and readiness setup. |
+| `reason setup` | Reason CLI 0.5.x: first-run provider, credential, model-default, and readiness setup. |
 | `reason doctor` / `reason doctor --live-check` | Diagnose CLI/Engine versions, config, credential-store state, provider/model readiness, sessions, trust, MCP, and optional live/update readiness without exposing secrets. |
-| `reason update` / `reason update --rollback VERSION` | Reason CLI 0.5.0 development: provenance-verified update and explicit rollback. |
-| `reason uninstall` | Reason CLI 0.5.0 development: explicit uninstall with data/credential retention by default. |
-| `reason auth ...` | Reason CLI 0.5.0 development: securely add, inspect, rotate, or remove provider credentials. |
-| `reason models [provider]` | Reason CLI 0.5.0 development: inspect the curated model catalog, compatibility metadata, credential readiness, and current default. |
-| `reason model set <provider> <model>` | Reason CLI 0.5.0 development: persist a curated general-use provider/model default without silent fallback. |
-| `reason config list/get/set/unset/path/sources` | Reason CLI 0.5.0 development: inspect safe effective config, explain precedence/provenance, and edit user-level non-secret run defaults. |
+| `reason update` / `reason update --rollback VERSION` | Reason CLI 0.5.x: provenance-verified update and explicit rollback. |
+| `reason uninstall` | Reason CLI 0.5.x: explicit uninstall with data/credential retention by default. |
+| `reason auth ...` | Reason CLI 0.5.x: securely add, inspect, rotate, or remove provider credentials. |
+| `reason models [provider]` | Reason CLI 0.5.x: inspect the curated model catalog, compatibility metadata, credential readiness, and current default. |
+| `reason model set <provider> <model>` | Reason CLI 0.5.x: persist a curated general-use provider/model default without silent fallback. |
+| `reason config list/get/set/unset/path/sources` | Reason CLI 0.5.x: inspect safe effective config, explain precedence/provenance, and edit user-level non-secret run defaults. |
 | `reason session list` | List managed interactive sessions in human or JSON form. |
 | `reason examples [topic]` | Show copy-paste examples for common workflows. |
 | `reason completions <shell>` | Generate bash/zsh/fish/PowerShell completion code to stdout without changing shell configuration. |
@@ -308,7 +313,7 @@ From the next product line onward:
 - **Harness Engine** versions reasoning/correctness behavior.
 - **Machine contract IDs** version wire/schema compatibility independently.
 
-The planned general-use line is **Reason CLI 0.5.0 on Harness Engine 0.4.2**. This lets setup, secure credential storage, interactive UX, installers, diagnostics, and lifecycle management improve without implying that correctness semantics changed.
+The split general-use line is now shipped as **Reason CLI 0.5.x on Harness Engine 0.4.2**, with 0.5.2 current. Setup, secure credential storage, interactive UX, installers, diagnostics, and lifecycle management advanced without changing the Engine 0.4.2 correctness semantics.
 
 See [versioning](docs/versioning.md) and the [Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md).
 

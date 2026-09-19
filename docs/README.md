@@ -76,7 +76,7 @@ The previous long-form ledgers were preserved as [project-status history](projec
 
 Start from the current release evidence, then move backward only if you need provenance:
 
-- [v0.4.2 final v36 release acceptance](natural-language-e2e-v36-result.md) — current release evidence.
+- [v0.4.2 final v36 release acceptance](natural-language-e2e-v36-result.md) — immutable final unified / Engine 0.4.2 release evidence.
 - [Product dogfood](product-dogfood.md) — product-oriented comparative evaluation.
 - [Benchmark](benchmark.md) — benchmark/evaluation methodology and interpretation.
 - [Research plan](research-plan.md) — research questions and promotion discipline.

@@ -1,6 +1,6 @@
 # Operational failure recovery
 
-**Status:** implemented on the Reason CLI 0.5.0 development line. This is a product UX layer; Harness Engine 0.4.2 reasoning and authority semantics are unchanged.
+**Status:** implemented on the Reason CLI 0.5.x product line. This is a product UX layer; Harness Engine 0.4.2 reasoning and authority semantics are unchanged.
 
 Reason keeps operational failures separate from semantic outcomes such as `unknown`. A provider outage, invalid credential, broken MCP server, corrupt session, or update-integrity failure never becomes a semantic answer.
 

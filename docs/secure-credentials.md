@@ -2,7 +2,7 @@
 
 [日本語](secure-credentials.ja.md) | English
 
-**Status:** implemented on the Reason CLI 0.5.0 development line. The tagged `v0.4.2` release still uses provider environment variables only.
+**Status:** implemented on the Reason CLI 0.5.x product line. The tagged `v0.4.2` release still uses provider environment variables only.
 
 Reason keeps provider API keys outside `reason-config-v1`, project files, sessions, evidence, and authority state. The 0.5.0 credential backend uses the native OS credential store:
 
@@ -43,7 +43,7 @@ Error messages and JSON failures never include the credential value. A headless 
 
 ## Managing credentials with `reason auth`
 
-On the Reason CLI 0.5.0 development line, the supported user-facing surface is:
+On the Reason CLI 0.5.x product line, the supported user-facing surface is:
 
 ```bash
 # Hidden TTY entry; provider can be omitted in an interactive terminal to use the picker.

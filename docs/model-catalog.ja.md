@@ -2,7 +2,7 @@
 
 日本語 | [English](model-catalog.md)
 
-**状態:** Reason CLI 0.5.0開発ラインで実装。tagged `v0.4.2` releaseにはまだ`reason models` / `reason model set`は含まれません。
+**状態:** Reason CLI 0.5.x product lineで実装。tagged `v0.4.2` releaseにはまだ`reason models` / `reason model set`は含まれません。
 
 Reasonが表示するのは、providerが公開している全model名のlive copyではなく、**Reason側で実測根拠を持つcurated compatibility catalog**です。providerにmodelが存在することと、Reasonの現在のstructured generation / runtime protocolへ適合することは別です。
 

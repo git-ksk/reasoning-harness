@@ -8,25 +8,27 @@ For the preserved long-form provenance ledger, see [Project status history](proj
 
 ## Current release
 
-**Reasoning Harness v0.4.2** is the current tagged external preview.
-
-It is the final release where the user-facing Reason CLI and the Harness Engine share the same SemVer coordinate:
+**Reason CLI 0.5.2 on Harness Engine 0.4.2** is the current tagged split external preview.
 
 ```text
-Reason CLI 0.4.2
+Reason CLI 0.5.2
 Harness Engine 0.4.2
 ```
 
-The release keeps the central trust boundary unchanged: model output is an untrusted candidate/renderer, while evidence admission, qualification, verification, bounded resolution, and exposed factual-claim authority remain Harness-owned.
+`v0.4.2` remains the immutable final release where the CLI and Engine shared one SemVer coordinate. `reason-v0.5.0` shipped the first split general-use CLI, followed by the 0.5.1/0.5.2 patch line without changing Engine 0.4.2 reasoning/authority semantics.
 
-The final frozen v0.4.2 natural-language release evaluation passed independently across Mistral, Groq, Gemini 3.5 Flash-Lite, and Gemma 4 31B. See [v36 release acceptance](natural-language-e2e-v36-result.md).
+The central trust boundary remains unchanged: model output is an untrusted candidate/renderer, while evidence admission, qualification, verification, bounded resolution, and exposed factual-claim authority remain Harness-owned. The final frozen Engine 0.4.2 natural-language release evaluation passed independently across Mistral, Groq, Gemini 3.5 Flash-Lite, and Gemma 4 31B. See [v36 release acceptance](natural-language-e2e-v36-result.md).
 
 ## What users can do today
 
 The supported native product surface includes:
 
-- `reason "TASK"` for the natural-language verified path;
-- `reason session ...` for persisted/resumable reasoning state;
+- bare `reason` for managed interactive terminal use, plus `reason "TASK"` for the one-shot natural-language verified path;
+- `reason setup`, `reason auth ...`, and provider/model/config commands for guided setup and secure daily use;
+- `reason session ...`, `-c`, and `-r` for persisted/resumable reasoning state;
+- `reason doctor` for local diagnostics and explicit bounded live readiness checks;
+- `reason mcp ...` for guided local/remote read-only MCP lifecycle under the existing acquisition-only boundary;
+- `reason update`, explicit rollback, and `reason uninstall` for the verified CLI lifecycle;
 - `reason run` for structured candidate/application integration;
 - `reason verify` for deterministic artifact validation;
 - `reason semantic-check` for soft semantic diagnostics;
@@ -38,18 +40,11 @@ The supported native product surface includes:
 
 Supported provider adapters include Mistral, Google Gemini/AI Studio, NVIDIA Hosted NIM, and Groq. Provider/model output never becomes verification authority merely because the provider call succeeded.
 
-## Active product track: Reason CLI 0.5.0
+## Current product track: Reason CLI 0.5.x
 
-The next general-use product line is planned as:
+The first split general-use release (`reason-v0.5.0`) has shipped, and the current patch coordinate is `reason-v0.5.2`, still on Harness Engine 0.4.2.
 
-```text
-Reason CLI 0.5.0
-Harness Engine 0.4.2
-```
-
-The goal is to improve ordinary terminal usability **without changing Engine 0.4.2 reasoning/correctness semantics**.
-
-The 0.5.0 productization work is organized around:
+The 0.5.x productization line delivered ordinary terminal usability **without changing Engine 0.4.2 reasoning/correctness semantics**, including:
 
 - native installation without requiring a Rust toolchain;
 - signed/verifiable distribution and update/rollback/uninstall lifecycle;
@@ -85,18 +80,13 @@ The project currently makes these product-level commitments:
 5. **Final factual text is authority-bound.** Renderer fluency cannot introduce stronger unsupported factual claims into the exposed grounded answer.
 6. **Historical evaluations remain historical.** Frozen/observed studies are not rewritten after the fact to make a later implementation look better.
 
-## Main user-facing gaps
+## Main current gaps
 
-The core correctness/runtime surface is substantially more mature than the current onboarding experience. The main general-use gaps are therefore product UX and distribution rather than a lack of basic Harness machinery:
+The general-use CLI productization work is shipped. Native installation, guided setup/auth, interactive/continue/resume UX, config/model/MCP discovery, progress/cancellation, diagnostics, private local state, and lifecycle management are all part of the current 0.5.x product line.
 
-- installation still expects either a release archive or Rust/Cargo workflow;
-- provider credentials are environment-variable oriented in the current release;
-- first-run setup is not yet guided;
-- interactive/continue/resume ergonomics are lower-level than mature AI CLIs;
-- configuration/MCP/provider discovery and recovery UX need productization;
-- user-facing progress, diagnostics, local-state management, and lifecycle management are still being hardened for CLI 0.5.0.
+The remaining product-side distribution follow-up is #375: Homebrew physical acceptance is complete; the WinGet community manifest has passed Microsoft validation and CLA checks and is waiting for community moderator approval. This external review does not block Harness Engine work.
 
-These are the explicit focus of the next Reason CLI line rather than hidden limitations.
+The active technical gaps are now primarily on the separate Engine 0.5.0 line: distributional planner reliability (#282) and, only after that baseline is measured, deterministic Harness-owned action materialization (#283).
 
 ## Research posture
 

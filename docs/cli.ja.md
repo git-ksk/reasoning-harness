@@ -59,10 +59,10 @@ defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です
 | やりたいこと | コマンド |
 | --- | --- |
 | 人が自然文でtaskを依頼したい | `reason "TASK"` |
-| 初回設定をまとめて完了したい（0.5.0開発ライン） | `reason setup` |
+| 初回設定をまとめて完了したい（0.5.x product line） | `reason setup` |
 | provenance検証済みupdate / 明示rollback / uninstallを管理したい | `reason update`, `reason update --rollback VERSION`, `reason uninstall` |
-| provider credentialを安全に管理したい（0.5.0開発ライン） | `reason auth ...` |
-| 対応modelを確認 / user defaultを切り替えたい（0.5.0開発ライン） | `reason models ...` / `reason model set ...` |
+| provider credentialを安全に管理したい（0.5.x product line） | `reason auth ...` |
+| 対応modelを確認 / user defaultを切り替えたい（0.5.x product line） | `reason models ...` / `reason model set ...` |
 | 自然言語reasoning stateを保存・確認・訂正・再開・forkしたい | `reason session ...` |
 | 既存LLM/Agentの候補回答をstructured evidenceでチェックしたい | `reason run` |
 | 完成済みartifactが構造・根拠ルールを満たすか確認したい | `reason verify` |
@@ -73,19 +73,19 @@ defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です
 
 ## インストール
 
-### 現在のexternal preview (`v0.4.2`)
+### 現在のsplit preview (`reason-v0.5.2`)
 
-自然文first pathは現在のtagged previewに含まれています。Rust 1.88+がある場合:
+現在のproduct coordinateは **Reason CLI 0.5.2 / Harness Engine 0.4.2** です。通常userにはpublished native installerを推奨し、Rust 1.88+がある場合はCLIを直接installすることもできます。
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.4.2 --locked reasoning-harness-cli --bin reason
+  --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-research binaryは入らず、supported product binaryの`reason`だけをinstallします。Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64向けstandalone archiveと`SHA256SUMS`もv0.4.2 Releaseで配布します。`main`は未releaseの開発snapshotを意図的に使う場合だけ選んでください。
+research binaryは入らず、supported product binaryの`reason`だけをinstallします。Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64向け0.5.2 standalone archive / installer、`SHA256SUMS`、release provenance metadataを配布しています。`main`は未releaseの開発snapshotを意図的に使う場合だけ選んでください。
 
-`v0.4.2`はv1.0 readiness gateを満たした後も、v0.x support policy上はexternal previewのままです。また、Reason CLI 0.4.2 + Harness Engine 0.4.2の最後のunified historical coordinateです。今後のCLI releaseはEngineと独立してversioningし、`reason-vX.Y.Z` tagを使います。詳細は[versioning](versioning.ja.md)を参照してください。
+`reason-v0.5.x`がv0.x preview policy下のactive split CLI lineです。`v0.4.2`はReason CLI 0.4.2 + Harness Engine 0.4.2のimmutableな最後のunified historical coordinateとして保持し、以後CLI / Engine versionは独立して進みます。詳細は[versioning](versioning.ja.md)を参照してください。
 
 ## 最小サンプル
 
@@ -319,16 +319,16 @@ project configには追加のactivation boundaryがあります。通常のrun d
 
 設定済みlive providerはdefault provider/model pairを供給できます。CLI `--provider` が設定providerを変更する場合、別provider用modelを誤って再利用しないよう `--model` も明示してください。explicit/configured modelがないlive providerはfail-closedします。
 
-secretは意図的に `reason-config-v1` のfieldではありません。Reason CLI 0.5.0開発ラインでは、environment variableを明示overrideとして最優先し、そのvariableが存在しない場合だけOS-native credential storeを使います。
+secretは意図的に `reason-config-v1` のfieldではありません。Reason CLI 0.5.x product lineでは、environment variableを明示overrideとして最優先し、そのvariableが存在しない場合だけOS-native credential storeを使います。
 
 - Mistral: `MISTRAL_API_KEY`
 - Google / Gemma: `GEMINI_API_KEY`
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
 - GroqCloud: `GROQ_API_KEY`
 
-config parserは `api_key` などのunknown secret-like fieldをrejectします。credentialはeffective run configuration、session、evidence、authority stateへserializeされません。OS credential serviceが使えない場合も平文fallbackはしません。詳細は[プロバイダー認証情報の安全な保存](secure-credentials.ja.md)を参照してください。 0.5.0開発ラインでは`reason auth login [provider]`でhidden TTY入力、automationでは`--stdin` / `--from-env`、明示rotationは`--replace`、確認・削除は`reason auth status|list|logout`を使います。
+config parserは `api_key` などのunknown secret-like fieldをrejectします。credentialはeffective run configuration、session、evidence、authority stateへserializeされません。OS credential serviceが使えない場合も平文fallbackはしません。詳細は[プロバイダー認証情報の安全な保存](secure-credentials.ja.md)を参照してください。 0.5.x product lineでは`reason auth login [provider]`でhidden TTY入力、automationでは`--stdin` / `--from-env`、明示rotationは`--replace`、確認・削除は`reason auth status|list|logout`を使います。
 
-同じ0.5.0開発ラインでは`reason models [provider]`でReason側の実測compatibility catalogを確認し、`reason model set <provider> <model>`でuser defaultを保存できます。catalog外やknown-limited modelへのsilent fallbackはありません。詳細は[Provider / model カタログ](model-catalog.ja.md)を参照してください。
+同じ0.5.x product lineでは`reason models [provider]`でReason側の実測compatibility catalogを確認し、`reason model set <provider> <model>`でuser defaultを保存できます。catalog外やknown-limited modelへのsilent fallbackはありません。詳細は[Provider / model カタログ](model-catalog.ja.md)を参照してください。
 
 ## セマンティックランタイムの詳細
 
@@ -353,15 +353,15 @@ CLI ergonomicsは成熟したterminal-first AI toolから意図的に学んで�
 
 これらはdesign referenceであり、wire-compatibility targetではありません。`reason` のproduct valueはpredictable evidence-grounded reasoning harnessであり、general-purpose coding agentではありません。
 
-## `reason setup`（0.5.0開発ライン）
+## `reason setup`（0.5.x product line）
 
 `reason setup`はprovider、credential、curated general-use model default、local readinessを一つの導線で設定します。credentialはhidden TTY入力または`--credential-stdin` / `--from-env`で扱い、secret-valued argvは提供しません。`--non-interactive`では`--provider`が必須で、model省略時はcurated recommended modelを選びます。local readinessはnetworkを使わず、live checkはquota/costが発生し得るため明示的な`--live-check`またはinteractive consent時のみです。
 
 
-## `reason doctor`（0.5.0開発ライン）
+## `reason doctor`（0.5.x product line）
 
 `reason doctor`はReason CLI / Harness Engine versionを別々に表示し、config source、secret-freeなcredential state、OS credential store availability、provider/model readiness、managed-session path、project trust、configured user MCP stateを確認します。defaultはlocal-onlyかつnon-mutatingです。`--live-check`指定時だけbounded provider / MCP / update checkを行い、provider quota消費や課金が発生する可能性があります。JSONはstableな`reason-doctor-v1` result surfaceを使います。詳細は[Reason doctor](reason-doctor.ja.md)を参照してください。
 
 recovery-orientedなproduct failureでは、既存typed failure classを維持したままexecution / trust / recovery guidanceを追加します。human errorは`What failed`、`Task execution`、`Result trust`、`Next`を表示し、JSON product failureは`failure.failure_class`を変えずadditiveな`remediation` objectを返します。詳細は[Operational failure recovery](reason-recovery.ja.md)を参照してください。
 
-0.5.0開発ラインのlifecycle管理は[Update / rollback / uninstall](update-rollback-uninstall.ja.md)を参照してください。
+0.5.x product lineのlifecycle管理は[Update / rollback / uninstall](update-rollback-uninstall.ja.md)を参照してください。

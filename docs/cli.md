@@ -9,18 +9,18 @@ For the execution/trust model behind `--candidate` versus `--provider`, includin
 
 ## Installation
 
-### Current external preview (`v0.4.2`)
+### Current split preview (`reason-v0.5.2`)
 
-The natural-language-first path is included in the current tagged preview. With Rust 1.88+:
+The current product coordinate is **Reason CLI 0.5.2 on Harness Engine 0.4.2**. Published native installers are the normal end-user path; with Rust 1.88+ the CLI can also be installed directly:
 
 ```bash
-cargo install --git https://github.com/git-ksk/reasoning-harness --tag v0.4.2 --locked reasoning-harness-cli --bin reason
+cargo install --git https://github.com/git-ksk/reasoning-harness --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-This installs only the supported `reason` product binary, not the research binaries. Standalone `v0.4.2` archives are also published for Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64, with `SHA256SUMS`. Use `main` only for intentionally unreleased development snapshots.
+This installs only the supported `reason` product binary, not the research binaries. Standalone 0.5.2 archives/installers are published for Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64 with `SHA256SUMS` and release provenance metadata. Use `main` only for intentionally unreleased development snapshots.
 
-`v0.4.2` remains an external preview under the v0.x support policy even though the documented v1.0 readiness gate has been satisfied. It is also the final unified historical coordinate for Reason CLI 0.4.2 + Harness Engine 0.4.2. Future CLI releases version independently and use `reason-vX.Y.Z` tags; see [versioning](versioning.md).
+The `reason-v0.5.x` line is the active split CLI line under the v0.x preview policy. `v0.4.2` remains the immutable final unified historical coordinate for Reason CLI 0.4.2 + Harness Engine 0.4.2. CLI and Engine versions now advance independently; see [versioning](versioning.md).
 
 ## Natural-language AI path
 
@@ -75,10 +75,10 @@ See [How Reasoning Harness works](how-it-works.md) and [product dogfood](product
 | Goal | Command |
 | --- | --- |
 | Ask a person-facing natural-language question through the verified runtime | `reason "TASK"` |
-| Complete first-run setup on the 0.5.0 development line | `reason setup` |
+| Complete first-run setup on the 0.5.x product line | `reason setup` |
 | Manage provenance-verified update, explicit rollback, or uninstall | `reason update`, `reason update --rollback VERSION`, `reason uninstall` |
-| Manage provider credentials on the 0.5.0 development line | `reason auth ...` |
-| Discover compatible models / set the user default on the 0.5.0 development line | `reason models ...` / `reason model set ...` |
+| Manage provider credentials on the 0.5.x product line | `reason auth ...` |
+| Discover compatible models / set the user default on the 0.5.x product line | `reason models ...` / `reason model set ...` |
 | Persist, inspect, correct, resume, or fork a natural-language reasoning state | `reason session ...` |
 | Integrate an existing LLM/agent candidate with structured evidence | `reason run` |
 | Validate an already-materialized artifact | `reason verify` |
@@ -234,14 +234,14 @@ the configured provider, `--model` must also be supplied explicitly rather than 
 a model configured for another provider. A live provider with no explicit or configured model fails
 closed.
 
-Provider secrets are deliberately **not fields in `reason-config-v1`**. On the Reason CLI 0.5.0 development line, runtime lookup uses an explicit environment variable first and the OS-native credential store only when that variable is absent:
+Provider secrets are deliberately **not fields in `reason-config-v1`**. On the Reason CLI 0.5.x product line, runtime lookup uses an explicit environment variable first and the OS-native credential store only when that variable is absent:
 
 - Mistral: `MISTRAL_API_KEY`
 - Google / Gemma: `GEMINI_API_KEY`
 - NVIDIA Hosted NIM: `NVIDIA_API_KEY`
 - GroqCloud: `GROQ_API_KEY`
 
-The config parser rejects unknown secret-like fields such as `api_key`. Credentials are never serialized into effective run configuration, sessions, evidence, or authority state. No plaintext fallback is used when the OS credential service is unavailable. See [Secure provider credentials](secure-credentials.md). On the 0.5.0 development line, use `reason auth login [provider]` for hidden TTY entry, `--stdin`/`--from-env` for automation, `--replace` for explicit rotation, and `reason auth status|list|logout` for secret-free inspection/removal.
+The config parser rejects unknown secret-like fields such as `api_key`. Credentials are never serialized into effective run configuration, sessions, evidence, or authority state. No plaintext fallback is used when the OS credential service is unavailable. See [Secure provider credentials](secure-credentials.md). On the 0.5.x product line, use `reason auth login [provider]` for hidden TTY entry, `--stdin`/`--from-env` for automation, `--replace` for explicit rotation, and `reason auth status|list|logout` for secret-free inspection/removal.
 
 ## Semantic runtime product surface
 
@@ -299,15 +299,15 @@ These projects are design references, not wire-compatibility targets. `reason` s
 its product value is a predictable evidence-grounded reasoning harness, not another general-purpose
 coding agent.
 
-## `reason setup` (0.5.0 development line)
+## `reason setup` (0.5.x product line)
 
 `reason setup` configures provider, credential, a curated general-use model default, and local readiness in one path. Credentials use hidden TTY input or `--credential-stdin` / `--from-env`; no secret-valued argv flag exists. `--non-interactive` requires `--provider` and selects the curated recommendation when `--model` is omitted. Local readiness is network-free. A live check may consume quota or incur cost, so it runs only with explicit `--live-check` or interactive consent.
 
 
-## `reason doctor` (0.5.0 development line)
+## `reason doctor` (0.5.x product line)
 
 `reason doctor` reports Reason CLI and Harness Engine versions separately and inspects config sources, secret-free credential state, OS credential-store availability, provider/model readiness, managed-session paths, project trust, and configured user MCP state. Default diagnostics are local-only and non-mutating. `--live-check` opts into bounded provider/MCP/update checks and may consume provider quota or incur cost. JSON uses the stable `reason-doctor-v1` result surface. See [Reason doctor](reason-doctor.md).
 
 For recovery-oriented product failures, Reason preserves the existing typed failure class and adds explicit execution/trust/recovery guidance. Human errors show `What failed`, `Task execution`, `Result trust`, and `Next`; JSON product failures add a `remediation` object without changing `failure.failure_class`. See [Operational failure recovery](reason-recovery.md).
 
-For lifecycle management on the 0.5.0 development line, see [Update, rollback, and uninstall](update-rollback-uninstall.md).
+For lifecycle management on the 0.5.x product line, see [Update, rollback, and uninstall](update-rollback-uninstall.md).

@@ -2,51 +2,50 @@
 
 [日本語](getting-started.ja.md) | English
 
-This guide is the shortest path from a fresh machine to understanding what Reasoning Harness does. It targets the current `v0.4.2` external preview.
+This guide is the shortest path from a fresh machine to understanding what Reasoning Harness does. It targets the current split preview: **Reason CLI 0.5.2 on Harness Engine 0.4.2**.
 
 ## 1. Install
 
-With Rust 1.88+:
+The published native installer is the normal end-user path. Split CLI installers require GitHub CLI 2.93+ so release provenance can be verified before installation.
+
+macOS / Linux:
+
+```bash
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
+```
+
+Windows PowerShell:
+
+```powershell
+irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.ps1 | iex
+```
+
+With Rust 1.88+, you can alternatively install the same tagged CLI directly:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag v0.4.2 --locked reasoning-harness-cli --bin reason
-
-reason --version
+  --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
 ```
 
-You can also use a standalone release archive for Linux x86_64, macOS arm64, macOS x86_64, or Windows x86_64.
-
-`main` may contain unreleased work. Use the tagged release when you want a reproducible product snapshot.
+Then confirm `reason --version`. `main` may contain unreleased work; use the tagged release for a reproducible product snapshot. See [Native installer contract](native-installers.md) for provenance and platform details.
 
 ## 2. Choose a live provider or stay offline
 
-For the natural-language path, configure a provider credential. Example with Mistral:
-
-```bash
-export MISTRAL_API_KEY='...'
-```
-
-Provider credentials are operational secrets, not trusted evidence.
-
-On the Reason CLI 0.5.0 development line, first run `reason setup`. It guides provider selection, native OS credential storage, a recommended model default, and a non-billable local readiness check:
+For the natural-language path, the recommended first-run flow is:
 
 ```bash
 reason setup
 ```
 
-A live provider readiness check can consume quota or incur cost, so it runs only after explicit interactive consent or with `--live-check`. Use `reason auth ...` for individual credential management.
+It guides provider selection, native OS credential storage, a curated model default, and a non-billable local readiness check. A live provider readiness check can consume quota or incur cost, so it runs only after explicit interactive consent or with `--live-check`.
 
-The tagged `v0.4.2` release predates `reason auth`, so its reproducible setup remains the environment-variable form above.
-
-On the same 0.5.0 development line, you can discover tested model choices and persist a user default without remembering provider model IDs:
+For CI, containers, or remote shells, provider environment variables remain supported. Example with Mistral:
 
 ```bash
-reason models mistral
-reason model set mistral ministral-8b-latest
+export MISTRAL_API_KEY='...'
 ```
 
-The catalog is evidence-based compatibility metadata, not a provider availability promise or correctness score. The tagged `v0.4.2` release predates these model-management commands too.
+Provider credentials are operational secrets, not trusted evidence. Use `reason auth ...` for credential management and `reason models` / `reason model set` to inspect or change the curated model default. The catalog is evidence-based compatibility metadata, not a provider availability promise or correctness score.
 
 If you do not want to call an AI provider, skip to [Offline candidate verification](#offline-candidate-verification).
 
@@ -112,9 +111,9 @@ This is useful for RAG systems, agents, recorded outputs, CI, and provider-indep
 | Goal | Command |
 | --- | --- |
 | Ask a natural-language question | `reason "TASK"` |
-| Complete first-run setup (0.5.0 development) | `reason setup` |
-| Check for a CLI update without mutation (0.5.0 development) | `reason update --check` |
-| Manage provider credentials (0.5.0 development) | `reason auth ...` |
+| Complete first-run setup (0.5.x product line) | `reason setup` |
+| Check for a CLI update without mutation (0.5.x product line) | `reason update --check` |
+| Manage provider credentials (0.5.x product line) | `reason auth ...` |
 | Continue or correct a persisted reasoning state | `reason session ...` |
 | Integrate existing structured candidate output | `reason run` |
 | Validate an existing artifact | `reason verify` |

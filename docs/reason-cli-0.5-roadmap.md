@@ -2,16 +2,18 @@
 
 Reason CLI 0.5.0 is the first product line that versions independently from Harness Engine. It productizes the accepted **Harness Engine 0.4.2** for ordinary terminal users without changing the v0.4.2 reasoning, authority, admission, verification, finalization, answer-safety, MCP non-promotion, or session replay boundaries.
 
-`v0.4.2` remains the final unified historical release. The first planned split release is:
+`v0.4.2` remains the final unified historical release. The first split release has shipped and the current patch coordinate is:
 
 ```text
-Reason CLI 0.5.0
+Reason CLI 0.5.2
 Harness Engine 0.4.2
 ```
 
+`reason-v0.5.0` established the split line; `reason-v0.5.1` and `reason-v0.5.2` are patch releases on the same fixed Engine 0.4.2 baseline.
+
 The target is not to copy a coding agent. The target is to match the low-friction terminal ergonomics users now expect from mature AI CLIs while preserving Reason's stricter product boundary: install without a toolchain, explicit project trust, guided secure authentication, a useful no-argument interactive mode, understandable verified evidence, easy continuation/resume, visible provider usage, discoverable provider/model/config/MCP controls, actionable diagnostics, private local state, and a verifiable reversible update/uninstall lifecycle.
 
-Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6), parent Issue #359.
+Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6), parent Issue #359. The parent and all P0 release-gate work are complete; the milestone remains open only for P1 distribution follow-up #375.
 
 ## Product journeys
 
@@ -81,7 +83,7 @@ A user-facing operational error should explain what failed, whether the task exe
 - **#371 P0 — completed:** one-command native installers for macOS, Linux, and Windows.
 - **#382 P0 — completed:** release provenance, signing/notarization where appropriate, and trusted installer/updater verification. SHA-256 remains useful but is not the sole trust root.
 - **#372 P0 — completed:** provenance-verified update, explicit rollback, and retention-by-default uninstall lifecycle.
-- **#375 P1:** Homebrew and winget channels after the canonical installer/update contract is stable.
+- **#375 P1 — external closeout pending:** Homebrew physical acceptance is complete on Reason CLI 0.5.2. The WinGet community manifest has passed Microsoft validation (01–10) and CLA checks; only community moderator approval/merge remains. This does not block Engine 0.5.0 work.
 
 ### Project trust — #377 (completed)
 
@@ -142,9 +144,9 @@ Phase 3 remains safe-by-default after hardening: MCP output is acquisition data 
 
 Typed machine failures remain separate from epistemic `unknown`. Human-friendly remediation must not collapse operational failure into semantic uncertainty.
 
-## Phase 5 — Fresh-install release gate
+## Phase 5 — Fresh-install release gate ✅ COMPLETE
 
-**#374 P0** is the CLI 0.5.0 acceptance gate. On supported platforms, it must cover:
+**#374 P0** completed as the CLI 0.5.0 acceptance gate. On supported platforms it covers:
 
 1. install from a published native artifact without Rust and verify its trusted release identity;
 2. an untrusted project cannot activate executable/MCP/trusted-verifier behavior before explicit trust;
@@ -165,7 +167,7 @@ Typed machine failures remain separate from epistemic `unknown`. Human-friendly 
 17. existing JSON/non-interactive contract smoke;
 18. zero credential/secret leakage through stdout, stderr, diagnostics, config, session/history, or subprocess environment.
 
-`reason-v0.5.0` is not tagged until this gate is green and no unresolved P0 product blocker remains.
+`reason-v0.5.0` was tagged only after this gate was green with no unresolved P0 product blocker. The gate remains active regression coverage for the 0.5.x patch line.
 
 The executable acceptance/evidence map is documented in [Reason CLI 0.5.0 fresh-install release acceptance](reason-cli-0.5-release-acceptance.md).
 

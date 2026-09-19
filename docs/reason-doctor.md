@@ -1,6 +1,6 @@
 # Reason doctor
 
-**Status:** implemented on the Reason CLI 0.5.0 development line. Harness Engine 0.4.2 semantics are unchanged.
+**Status:** implemented on the Reason CLI 0.5.x product line. Harness Engine 0.4.2 semantics are unchanged.
 
 `reason doctor` is the read-only diagnostics surface for installation, configuration, credentials, local product readiness, managed data paths, project trust, MCP configuration, and version identity.
 

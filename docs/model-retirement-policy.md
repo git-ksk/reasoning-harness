@@ -2,7 +2,7 @@
 
 [日本語](model-retirement-policy.ja.md) | English
 
-**Status:** implemented on the Reason CLI 0.5.0 development line. Harness Engine 0.4.2 reasoning and authority semantics are unchanged.
+**Status:** implemented on the Reason CLI 0.5.x product line. Harness Engine 0.4.2 reasoning and authority semantics are unchanged.
 
 Reason does **not** silently change provider/model execution identity to recover from model retirement, incompatibility, quota, outage, or provider errors.
 

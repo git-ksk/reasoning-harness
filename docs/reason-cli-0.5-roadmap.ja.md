@@ -2,16 +2,18 @@
 
 Reason CLI 0.5.0は、Harness Engineと独立してversioningする最初のproduct lineです。受け入れ済みの **Harness Engine 0.4.2** を一般のterminal userが使いやすい製品へ仕上げますが、v0.4.2のreasoning / authority / admission / verification / finalization / answer-safety / MCP non-promotion / session replay boundaryは変更しません。
 
-`v0.4.2`は最後のunified historical releaseとして固定します。最初のsplit release予定は次の形です。
+`v0.4.2`は最後のunified historical releaseとして固定します。最初のsplit releaseはすでにrelease済みで、現在のpatch coordinateは次です。
 
 ```text
-Reason CLI 0.5.0
+Reason CLI 0.5.2
 Harness Engine 0.4.2
 ```
 
+`reason-v0.5.0`でsplit lineを開始し、`reason-v0.5.1` / `reason-v0.5.2`は同じ固定Engine 0.4.2 baseline上のpatch releaseです。
+
 目的はcoding agentをコピーすることではありません。成熟したAI CLIで期待される低摩擦UXを、Reason固有の厳しいboundaryを保ったまま実現します。toolchain不要install、明示的project trust、guided secure auth、引数なしinteractive mode、理解しやすいverified evidence、continue/resume、provider usage可視化、provider/model/config/MCPのdiscoverability、actionable diagnostics、private local state、検証可能で可逆なupdate/uninstallを対象にします。
 
-Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6)、parent Issue #359。
+Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6)、parent Issue #359。parentとP0 release-gate workは完了済みで、milestoneはP1 distribution follow-up #375だけを残しています。
 
 ## 利用者から見た流れ
 
@@ -81,7 +83,7 @@ user-facing operational errorは「何が失敗したか」「taskが実行さ�
 - **#371 P0 — 完了:** macOS / Linux / Windows向けone-command native installer。
 - **#382 P0 — 完了:** release provenance、必要に応じたcode signing/notarization、trusted installer/updater verification。SHA-256は維持するが唯一のtrust rootにはしない。
 - **#372 P0 — 完了:** provenance検証済みupdate、明示的rollback、保持defaultのuninstall lifecycle。
-- **#375 P1:** canonical installer/update contract安定後のHomebrew / winget channel。
+- **#375 P1 — external closeout待ち:** Reason CLI 0.5.2のHomebrew physical acceptanceは完了。WinGet community manifestはMicrosoft validation 01–10とCLAを通過し、community moderator approval / mergeだけが残る。Harness Engine 0.5.0はblockしない。
 
 ### プロジェクトtrust — #377（完了）
 
@@ -142,9 +144,9 @@ Phase 3はhardening完了後もsafe-by-defaultです。MCP outputはauthorityで
 
 Typed machine failureとepistemic `unknown`は分離したままです。friendly remediationのためにoperational failureをsemantic uncertaintyへ潰してはいけません。
 
-## フェーズ5 — 新規インストールでのリリース判定
+## フェーズ5 — 新規インストールでのリリース判定 ✅ 完了
 
-**#374 P0** をCLI 0.5.0のacceptance gateにします。supported platformで次を検証します。
+**#374 P0** はCLI 0.5.0のacceptance gateとして完了済みです。supported platformで次を検証します。
 
 1. Rustなしでpublished native artifactからinstallし、trusted release identityを検証;
 2. untrusted project configがexplicit trust前にexecutable/MCP/trusted-verifierをactivateできない;
@@ -165,7 +167,7 @@ Typed machine failureとepistemic `unknown`は分離したままです。friendl
 17. 既存JSON/non-interactive contract smoke;
 18. stdout / stderr / diagnostics / config / session/history / subprocess environmentへのcredential/secret leakが0。
 
-このgateがgreenで、unresolved P0 product blockerが0になるまで`reason-v0.5.0`はtagしません。
+このgateがgreenでunresolved P0 product blockerが0になった後に`reason-v0.5.0`をtagしました。0.5.x patch lineでもregression coverageとして維持します。
 
 実行可能なacceptance/evidence対応は[Reason CLI 0.5.0 fresh-install release acceptance](reason-cli-0.5-release-acceptance.ja.md)に固定します。
 

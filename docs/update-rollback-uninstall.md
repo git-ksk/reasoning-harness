@@ -2,7 +2,7 @@
 
 [日本語](update-rollback-uninstall.ja.md) | English
 
-**Status:** Reason CLI 0.5.0 development line. Split releases (`reason-v*`) only.
+**Status:** Reason CLI 0.5.x product line. Split releases (`reason-v*`) only.
 
 Reason lifecycle changes are explicit, provenance-verified, and reversible. Historical unified releases through `v0.4.2` predate the split-release attestation contract and are not self-update/rollback targets.
 
