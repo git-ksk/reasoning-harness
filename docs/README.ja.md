@@ -78,6 +78,7 @@
 
 - [Harnessなし → ありの総合比較](product-external-info-v4-cross-model.ja.md) — 同じ入力条件でutility / safety / token / latencyを比較。
 - [v36安全性補足](v36-raw-baseline-supplement.ja.md) — release surfaceの5つの安全境界でraw modelとHarnessを追試。
+- [Planner reliability v1結果](planner-reliability-v1-result.ja.md) — #283 action materialization変更前のfrozen #282 repeated-trial baseline。
 - [v0.4.2 final v36 release acceptance](natural-language-e2e-v36-result.ja.md) — immutableなfinal unified / Engine 0.4.2 release evidence。
 - [Product dogfood](product-dogfood.ja.md) — その他のproduct-oriented comparison。
 - [ベンチマーク](benchmark.ja.md) — benchmark / evaluationの読み方。

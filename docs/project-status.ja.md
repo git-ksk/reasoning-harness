@@ -86,7 +86,7 @@ general-use CLI productizationはrelease済みです。native install、guided s
 
 product側で残るdistribution follow-upは#375です。Homebrew physical acceptanceは完了し、WinGet community manifestもMicrosoft validation / CLAを通過してcommunity moderator approval待ちです。この外部reviewはHarness Engine開発をblockしません。
 
-技術的な主戦場は別trackのHarness Engine 0.5.0へ移っており、まずdistributional planner reliability (#282)を測り、そのbaseline後にのみdeterministic Harness-owned action materialization (#283)を進めます。
+技術的な主戦場は別trackのHarness Engine 0.5.0に残る#283です。#282のfrozen repeated-trial planner baselineは完了し、Mistralはstrict planner-success 5/5、Googleは4/5で、1件の`unsupported_target_key` proposalが安全にrejectされcorrectness-boundary violationは0でした。#283ではこれをpre-change diagnostic evidenceとして使い、adoptionには別fresh holdoutを使います。
 
 ## 研究方針
 

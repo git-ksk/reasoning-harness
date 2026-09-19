@@ -94,8 +94,8 @@ Current status/order:
 
 - **#248 finalization/grounding — complete:** PR #435 merged with fresh frozen `issue-248-finalization-e2e-v2` acceptance (3/3 cases, zero correctness-boundary violations, zero session external-call replay);
 - **#247 evaluator semantics — complete:** frozen v11 separates path observability, product utility, hard correctness, and operational completeness without rescoring frozen v9;
-- **#282 repeated-trial planner reliability — next:** characterize stochastic planner/action behavior with frozen repeated-trial identities and exact denominators;
-- **#283 deterministic Harness-owned action materialization — after #282 baseline:** evaluate moving mechanically safe executable-action ownership into deterministic Harness control flow, with a separate fresh adoption holdout.
+- **#282 repeated-trial planner reliability — complete:** frozen `planner-reliability-v1` completed 5/5 primary trials on both routine provider targets; Mistral strict planner success was 5/5, Google 4/5 because one inadmissible action proposal was safely rejected, with zero correctness-boundary violations;
+- **#283 deterministic Harness-owned action materialization — next:** evaluate moving mechanically safe executable-action ownership into deterministic Harness control flow against the #282 pre-change baseline, with a separate fresh adoption holdout.
 
 The exact engine milestone/issue definitions remain the source of truth for scope. No Engine 0.5.0 semantic/utility change should land under the label of a CLI-only productization change.
 
