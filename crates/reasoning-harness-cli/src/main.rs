@@ -3171,6 +3171,80 @@ fn run_configured_investigation_capability(
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct HarnessOwnedInvestigationFact {
+    proposition: Proposition,
+    evidence_ids: Vec<String>,
+}
+
+fn harness_owned_investigation_fact(
+    target: &reasoning_harness_core::InvestigationTarget,
+    capability: &InvestigationCapability,
+    artifact: &ReasoningArtifact,
+    admitted_evidence_ids: &[String],
+) -> Option<HarnessOwnedInvestigationFact> {
+    if !capability.read_only || capability.supported_fact_keys.len() != 1 {
+        return None;
+    }
+    let key = capability.supported_fact_keys.iter().next()?;
+    if key.is_empty() || key.trim() != key {
+        return None;
+    }
+    if let Some(expected) = target.expected_fact_key.as_deref() {
+        if expected != key {
+            return None;
+        }
+    }
+
+    let admitted = admitted_evidence_ids.iter().collect::<BTreeSet<_>>();
+    let mut values = BTreeSet::new();
+    let mut evidence_ids = Vec::new();
+    for evidence in &artifact.evidence {
+        if !admitted.contains(&evidence.id) {
+            continue;
+        }
+        let Some(value) = evidence.facts.get(key) else {
+            continue;
+        };
+        values.insert(value.clone());
+        evidence_ids.push(evidence.id.clone());
+    }
+    if values.len() != 1 || evidence_ids.is_empty() {
+        return None;
+    }
+
+    Some(HarnessOwnedInvestigationFact {
+        proposition: Proposition {
+            key: key.clone(),
+            value: values.into_iter().next().expect("one admitted exact value"),
+        },
+        evidence_ids,
+    })
+}
+
+fn materialize_harness_owned_investigation_fact(
+    candidate: &mut ReasoningCandidate,
+    fact: &HarnessOwnedInvestigationFact,
+    round_index: usize,
+) {
+    let base = format!("harness_investigation_admitted_fact_{round_index}");
+    let mut id = base.clone();
+    let mut suffix = 1usize;
+    while candidate.claims.iter().any(|claim| claim.id == id) {
+        id = format!("{base}_{suffix}");
+        suffix += 1;
+    }
+    candidate
+        .claims
+        .push(reasoning_harness_core::CandidateClaim {
+            id,
+            statement: format!("{} = {}", fact.proposition.key, fact.proposition.value),
+            proposed_state: reasoning_harness_core::EpistemicState::Assumed,
+            proposition: Some(fact.proposition.clone()),
+            evidence_ids: fact.evidence_ids.clone(),
+        });
+}
+
 fn record_investigation_finalization_observation(
     observations: &mut BTreeMap<String, Vec<Proposition>>,
     target_id: &str,
@@ -3209,18 +3283,16 @@ fn resolved_investigation_finalization_targets(
 
     let mut resolved = Vec::with_capacity(target_keys.len());
     for (target_id, expected_fact_key) in target_keys {
-        let Some(expected_fact_key) = expected_fact_key.as_deref().filter(|key| !key.is_empty())
-        else {
-            return vec![];
-        };
         let Some(candidates) = observations.get(target_id) else {
             return vec![];
         };
-        if candidates.len() != 1
-            || candidates[0].key != expected_fact_key
-            || resolved.contains(&candidates[0])
-        {
+        if candidates.len() != 1 || resolved.contains(&candidates[0]) {
             return vec![];
+        }
+        match expected_fact_key.as_deref() {
+            Some("") => return vec![],
+            Some(expected_fact_key) if candidates[0].key != expected_fact_key => return vec![],
+            Some(_) | None => {}
         }
         resolved.push(candidates[0].clone());
     }
@@ -3325,7 +3397,7 @@ async fn run_natural_investigation(
             });
         }
     };
-    let finalization_target_keys = targets
+    let mut finalization_target_keys = targets
         .iter()
         .map(|target| (target.id.clone(), target.expected_fact_key.clone()))
         .collect::<Vec<_>>();
@@ -3481,9 +3553,9 @@ async fn run_natural_investigation(
             ),
             reason: ResolutionReason::Investigation,
             target: ResolutionTarget::InvestigationQuestion {
-                target_id: target.id,
-                question: target.question,
-                expected_fact_key: target.expected_fact_key,
+                target_id: target.id.clone(),
+                question: target.question.clone(),
+                expected_fact_key: target.expected_fact_key.clone(),
             },
             resolver_class: ResolverClass::EvidenceAcquisition,
             budget: ResolutionRequestBudget {
@@ -3511,14 +3583,31 @@ async fn run_natural_investigation(
             .last()
             .map(|attempt| attempt.admitted_evidence_ids.clone())
             .unwrap_or_default();
-        let expected_fact_key = finalization_target_keys
+        let harness_fact = harness_owned_investigation_fact(
+            &target,
+            &capability.descriptor,
+            &acquisition.final_artifact,
+            &admitted_evidence_ids,
+        );
+        let fallback_fact_key = finalization_target_keys
             .iter()
             .find(|(target_id, _)| target_id == &action.target_id)
-            .and_then(|(_, expected_fact_key)| expected_fact_key.as_deref());
+            .and_then(|(_, expected_fact_key)| expected_fact_key.clone());
+        let effective_fact_key = harness_fact
+            .as_ref()
+            .map(|fact| fact.proposition.key.clone())
+            .or(fallback_fact_key);
+        if let Some(fact) = harness_fact.as_ref()
+            && let Some((_, key)) = finalization_target_keys
+                .iter_mut()
+                .find(|(target_id, _)| target_id == &action.target_id)
+        {
+            *key = Some(fact.proposition.key.clone());
+        }
         record_investigation_finalization_observation(
             &mut finalization_target_observations,
             &action.target_id,
-            expected_fact_key,
+            effective_fact_key.as_deref(),
             &acquisition.final_artifact,
             &admitted_evidence_ids,
         );
@@ -3574,6 +3663,13 @@ async fn run_natural_investigation(
                     usage.record_generation(&generation)?;
                     observation.candidate_regenerations.push(generation);
                     current_candidate = regenerated;
+                    if let Some(fact) = harness_fact.as_ref() {
+                        materialize_harness_owned_investigation_fact(
+                            &mut current_candidate,
+                            fact,
+                            round_index,
+                        );
+                    }
                     if let Some(trace) = trace.as_deref_mut() {
                         trace.record_candidate(regeneration_phase, &current_candidate);
                     }
@@ -9297,6 +9393,283 @@ mod candidate_json_tests {
         assert!(cli.natural.verbose);
     }
 
+    fn test_investigation_target(
+        expected_fact_key: Option<&str>,
+    ) -> reasoning_harness_core::InvestigationTarget {
+        reasoning_harness_core::InvestigationTarget {
+            id: "target".into(),
+            question: "determine the configured value".into(),
+            expected_fact_key: expected_fact_key.map(str::to_string),
+            origin: reasoning_harness_core::InvestigationTargetOrigin::ModelProposedUntrusted,
+        }
+    }
+
+    fn test_investigation_capability(read_only: bool, keys: &[&str]) -> InvestigationCapability {
+        InvestigationCapability {
+            id: "capability".into(),
+            adapter: "fixture".into(),
+            read_only,
+            selection_priority: None,
+            supported_fact_keys: keys.iter().map(|key| (*key).to_string()).collect(),
+        }
+    }
+
+    fn test_admitted_artifact(values: &[(&str, &str, &str)]) -> ReasoningArtifact {
+        ReasoningArtifact {
+            evidence: values
+                .iter()
+                .map(|(id, key, value)| Evidence {
+                    id: (*id).into(),
+                    source: "resolver".into(),
+                    observation: format!("{key}={value}"),
+                    facts: BTreeMap::from([((*key).into(), (*value).into())]),
+                    metadata: EvidenceMetadata::default(),
+                })
+                .collect(),
+            ..ReasoningArtifact::default()
+        }
+    }
+
+    #[test]
+    fn investigation_exact_fact_materialization_accepts_keyless_selected_target() {
+        let target = test_investigation_target(None);
+        let capability = test_investigation_capability(true, &["service.region"]);
+        let artifact = test_admitted_artifact(&[("admitted-1", "service.region", "us-east-1")]);
+
+        let fact = harness_owned_investigation_fact(
+            &target,
+            &capability,
+            &artifact,
+            &["admitted-1".into()],
+        )
+        .unwrap();
+
+        assert_eq!(
+            fact.proposition,
+            Proposition {
+                key: "service.region".into(),
+                value: "us-east-1".into(),
+            }
+        );
+        assert_eq!(fact.evidence_ids, vec!["admitted-1"]);
+    }
+
+    #[test]
+    fn investigation_exact_fact_materialization_accepts_matching_explicit_target_key() {
+        let target = test_investigation_target(Some("service.region"));
+        let capability = test_investigation_capability(true, &["service.region"]);
+        let artifact = test_admitted_artifact(&[("admitted-1", "service.region", "us-east-1")]);
+
+        assert!(
+            harness_owned_investigation_fact(
+                &target,
+                &capability,
+                &artifact,
+                &["admitted-1".into()],
+            )
+            .is_some()
+        );
+    }
+
+    #[test]
+    fn investigation_exact_fact_materialization_fails_closed_on_wrong_target_key() {
+        let target = test_investigation_target(Some("service.owner"));
+        let capability = test_investigation_capability(true, &["service.region"]);
+        let artifact = test_admitted_artifact(&[("admitted-1", "service.region", "us-east-1")]);
+
+        assert!(
+            harness_owned_investigation_fact(
+                &target,
+                &capability,
+                &artifact,
+                &["admitted-1".into()],
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn investigation_exact_fact_materialization_fails_closed_on_write_or_multi_key_capability() {
+        let target = test_investigation_target(None);
+        let artifact = test_admitted_artifact(&[("admitted-1", "service.region", "us-east-1")]);
+        let write = test_investigation_capability(false, &["service.region"]);
+        let multi = test_investigation_capability(true, &["service.region", "service.owner"]);
+
+        for capability in [&write, &multi] {
+            assert!(
+                harness_owned_investigation_fact(
+                    &target,
+                    capability,
+                    &artifact,
+                    &["admitted-1".into()],
+                )
+                .is_none()
+            );
+        }
+    }
+
+    #[test]
+    fn investigation_exact_fact_materialization_ignores_unadmitted_and_conflicting_values() {
+        let target = test_investigation_target(None);
+        let capability = test_investigation_capability(true, &["service.region"]);
+        let artifact = test_admitted_artifact(&[
+            ("admitted-1", "service.region", "us-east-1"),
+            ("admitted-2", "service.region", "us-west-2"),
+            ("context", "service.region", "eu-west-1"),
+        ]);
+
+        assert!(harness_owned_investigation_fact(&target, &capability, &artifact, &[]).is_none());
+        assert!(
+            harness_owned_investigation_fact(
+                &target,
+                &capability,
+                &artifact,
+                &["admitted-1".into(), "admitted-2".into()],
+            )
+            .is_none()
+        );
+        let fact = harness_owned_investigation_fact(
+            &target,
+            &capability,
+            &artifact,
+            &["admitted-1".into()],
+        )
+        .unwrap();
+        assert_eq!(fact.proposition.value, "us-east-1");
+    }
+
+    #[test]
+    fn investigation_exact_fact_claim_is_assumed_until_existing_verification_supports_it() {
+        let input = HarnessInput {
+            task: "determine region".into(),
+            evidence: vec![Evidence {
+                id: "admitted-1".into(),
+                source: "resolver".into(),
+                observation: "service.region=us-east-1".into(),
+                facts: BTreeMap::from([("service.region".into(), "us-east-1".into())]),
+                metadata: EvidenceMetadata::default(),
+            }],
+            ..HarnessInput::default()
+        };
+        let fact = HarnessOwnedInvestigationFact {
+            proposition: Proposition {
+                key: "service.region".into(),
+                value: "us-east-1".into(),
+            },
+            evidence_ids: vec!["admitted-1".into()],
+        };
+        let mut candidate = ReasoningCandidate::default();
+        materialize_harness_owned_investigation_fact(&mut candidate, &fact, 2);
+        assert_eq!(candidate.claims.len(), 1);
+        assert_eq!(
+            candidate.claims[0].id,
+            "harness_investigation_admitted_fact_2"
+        );
+        assert_eq!(
+            candidate.claims[0].proposed_state,
+            reasoning_harness_core::EpistemicState::Assumed
+        );
+
+        let preverified =
+            reasoning_harness_core::materialize_candidate(input.clone(), candidate.clone());
+        assert_eq!(
+            preverified.claims[0].state,
+            reasoning_harness_core::EpistemicState::Assumed
+        );
+
+        let verified = run_standard_grounding(input, candidate).unwrap();
+        let claim = verified
+            .artifact
+            .claims
+            .iter()
+            .find(|claim| claim.id == "harness_investigation_admitted_fact_2")
+            .unwrap();
+        assert_eq!(
+            claim.state,
+            reasoning_harness_core::EpistemicState::Supported
+        );
+    }
+
+    #[test]
+    fn investigation_exact_fact_materialization_adds_observable_claim_alongside_matching_model_claim()
+     {
+        let fact = HarnessOwnedInvestigationFact {
+            proposition: Proposition {
+                key: "service.region".into(),
+                value: "us-east-1".into(),
+            },
+            evidence_ids: vec!["admitted-1".into()],
+        };
+        let mut candidate = ReasoningCandidate {
+            claims: vec![reasoning_harness_core::CandidateClaim {
+                id: "model-exact".into(),
+                statement: "model restated exact value".into(),
+                proposed_state: reasoning_harness_core::EpistemicState::Known,
+                proposition: Some(fact.proposition.clone()),
+                evidence_ids: vec!["admitted-1".into()],
+            }],
+            inferences: vec![],
+        };
+
+        materialize_harness_owned_investigation_fact(&mut candidate, &fact, 3);
+
+        assert_eq!(candidate.claims.len(), 2);
+        assert!(
+            candidate
+                .claims
+                .iter()
+                .any(|claim| claim.id == "model-exact")
+        );
+        let harness_claim = candidate
+            .claims
+            .iter()
+            .find(|claim| claim.id == "harness_investigation_admitted_fact_3")
+            .unwrap();
+        assert_eq!(harness_claim.proposition.as_ref(), Some(&fact.proposition));
+        assert_eq!(
+            harness_claim.proposed_state,
+            reasoning_harness_core::EpistemicState::Assumed
+        );
+    }
+
+    #[test]
+    fn investigation_exact_fact_materialization_preserves_conflicting_model_claim() {
+        let fact = HarnessOwnedInvestigationFact {
+            proposition: Proposition {
+                key: "service.region".into(),
+                value: "us-east-1".into(),
+            },
+            evidence_ids: vec!["admitted-1".into()],
+        };
+        let mut candidate = ReasoningCandidate {
+            claims: vec![reasoning_harness_core::CandidateClaim {
+                id: "model-conflict".into(),
+                statement: "region is west".into(),
+                proposed_state: reasoning_harness_core::EpistemicState::Known,
+                proposition: Some(Proposition {
+                    key: "service.region".into(),
+                    value: "us-west-2".into(),
+                }),
+                evidence_ids: vec![],
+            }],
+            inferences: vec![],
+        };
+
+        materialize_harness_owned_investigation_fact(&mut candidate, &fact, 1);
+
+        assert_eq!(candidate.claims.len(), 2);
+        assert!(
+            candidate
+                .claims
+                .iter()
+                .any(|claim| claim.id == "model-conflict")
+        );
+        assert!(candidate.claims.iter().any(|claim| {
+            claim.id == "harness_investigation_admitted_fact_1"
+                && claim.proposition.as_ref() == Some(&fact.proposition)
+        }));
+    }
+
     #[test]
     fn investigation_finalization_bridge_requires_exact_admitted_fact() {
         let target_keys = vec![(
@@ -9322,6 +9695,26 @@ mod candidate_json_tests {
             &artifact,
             &["admitted-1".into()],
         );
+
+        assert_eq!(
+            resolved_investigation_finalization_targets(&target_keys, &observations),
+            vec![Proposition {
+                key: "service.region".into(),
+                value: "us-east-1".into(),
+            }]
+        );
+    }
+
+    #[test]
+    fn investigation_finalization_bridge_accepts_harness_materialized_key_for_keyless_target() {
+        let target_keys = vec![("deployment-region".to_string(), None)];
+        let observations = BTreeMap::from([(
+            "deployment-region".to_string(),
+            vec![Proposition {
+                key: "service.region".into(),
+                value: "us-east-1".into(),
+            }],
+        )]);
 
         assert_eq!(
             resolved_investigation_finalization_targets(&target_keys, &observations),
