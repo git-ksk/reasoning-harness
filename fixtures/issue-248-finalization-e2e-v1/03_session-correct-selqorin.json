@@ -1,0 +1,19 @@
+{
+  "schema_version": "issue-248-finalization-e2e-case-v1",
+  "id": "session-correct-selqorin",
+  "kind": "session_correct",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Selqorin retry ceiling",
+    "session.selqorin.retry_window",
+    "window-817",
+    "window-823"
+  ],
+  "start_fact": "session.selqorin.retry_window=window-817",
+  "correction": "session.selqorin.retry_window=window-823",
+  "target": {
+    "key": "session.selqorin.retry_window",
+    "value": "window-823"
+  },
+  "task": "Determine the configured Selqorin retry window token."
+}

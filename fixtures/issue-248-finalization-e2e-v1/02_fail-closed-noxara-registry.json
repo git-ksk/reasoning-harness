@@ -1,0 +1,19 @@
+{
+  "schema_version": "issue-248-finalization-e2e-case-v1",
+  "id": "fail-closed-noxara-registry",
+  "kind": "investigation",
+  "config": "configs/noxara.json",
+  "expected": "unknown",
+  "fresh_markers": [
+    "Noxara registry",
+    "issue248.noxara.build_epoch",
+    "noxara-epoch-7319",
+    "fixture:issue248-v1:noxara-registry"
+  ],
+  "relevant_capabilities": ["noxara-registry-primary"],
+  "target": {
+    "key": "issue248.noxara.build_epoch",
+    "value": "noxara-epoch-7319"
+  },
+  "task": "Determine the current build epoch token for the Noxara registry. Use the configured exact fact-key-bound read-only registry source. If the source returns no result, do not guess or manufacture a value."
+}
