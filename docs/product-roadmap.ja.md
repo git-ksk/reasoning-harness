@@ -94,8 +94,8 @@ reasoning / correctness behaviorへ影響しうる変更はこのtrackで扱い�
 
 - **#248 finalization / grounding — 完了:** PR #435をmergeし、fresh frozen `issue-248-finalization-e2e-v2`で3/3 case、correctness-boundary violation 0、session external-call replay 0を確認;
 - **#247 evaluator semantics — 完了:** frozen v11でpath observability / product utility / hard correctness / operational completenessを分離し、frozen v9はrescoreしていない;
-- **#282 repeated-trial planner reliability — 次:** frozen repeated-trial identityとexact denominatorでplanner/actionのstochastic reliabilityをcharacterize;
-- **#283 deterministic Harness-owned action materialization — #282 baseline後:** mechanically safeなexecutable action ownershipをHarness control flowへ移せるか評価し、adoption claimには別のfresh holdoutを使う。
+- **#282 repeated-trial planner reliability — 完了:** frozen `planner-reliability-v1`は両routine providerでprimary 5/5 trialを完了。Mistral strict planner successは5/5、Googleはinadmissible action proposal 1仰が安全にrejectされ4/5、correctness-boundary violationは0;
+- **#283 deterministic Harness-owned action materialization — 次:** #282 pre-change baselineと比較してmechanically safeなexecutable action ownershipをHarness control flowへ移せるか評価し、adoption claimには別fresh holdoutを使う。
 
 正確なscopeはengine milestone / issueをsource of truthとします。Engine 0.5.0のsemantic / utility changeを、CLI-only productizationとして混ぜません。
 

@@ -76,6 +76,7 @@ The previous long-form ledgers were preserved as [project-status history](projec
 
 Start from the current release evidence, then move backward only if you need provenance:
 
+- [Planner reliability v1 result](planner-reliability-v1-result.md) — frozen #282 repeated-trial baseline before #283 action-materialization changes.
 - [v0.4.2 final v36 release acceptance](natural-language-e2e-v36-result.md) — immutable final unified / Engine 0.4.2 release evidence.
 - [Product dogfood](product-dogfood.md) — product-oriented comparative evaluation.
 - [Benchmark](benchmark.md) — benchmark/evaluation methodology and interpretation.

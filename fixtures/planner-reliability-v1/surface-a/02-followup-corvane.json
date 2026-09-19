@@ -1,0 +1,30 @@
+{
+  "adaptive": true,
+  "config": "surface-a/configs/corvane-followup.json",
+  "coverage_contract": {
+    "first_capability": "corvane-owner-cache",
+    "followup_capability": "corvane-owner-registry",
+    "kind": "no_result_followup_observational",
+    "mechanism_selection": "harness_exact_target_followup",
+    "trigger_status": "no_result"
+  },
+  "expected": "grounded",
+  "fresh_markers": [
+    "corvane.edge.owner",
+    "Corvane edge routing owner",
+    "runtime-fleet"
+  ],
+  "id": "followup-corvane",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "corvane-owner-cache",
+    "corvane-owner-registry"
+  ],
+  "role": "no_result_followup",
+  "schema_version": "planner-reliability-case-v1",
+  "target": {
+    "key": "corvane.edge.owner",
+    "value": "runtime-fleet"
+  },
+  "task": "Determine which team currently owns Corvane edge routing owner. Use the configured read-only sources; if a cache lookup reports no result, continue with another source for the same exact fact."
+}

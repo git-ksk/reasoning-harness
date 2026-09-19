@@ -1,0 +1,22 @@
+{
+  "config": "surface-b/configs/vestril-direct.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "vestril.mesh.primary_endpoint",
+    "Vestril mesh endpoint",
+    "prism-642.internal"
+  ],
+  "id": "direct-vestril",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "vestril-primary-one",
+    "vestril-primary-two"
+  ],
+  "role": "direct_grounded",
+  "schema_version": "planner-reliability-case-v1",
+  "target": {
+    "key": "vestril.mesh.primary_endpoint",
+    "value": "prism-642.internal"
+  },
+  "task": "Determine the current primary endpoint for the Vestril mesh endpoint. Use a configured read-only source and do not infer an endpoint from a capability name."
+}
