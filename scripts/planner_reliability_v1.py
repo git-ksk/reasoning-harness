@@ -561,15 +561,79 @@ def validate_corpus(root):
             raise EvalError(f"{surface_name}: role ordering drift")
         loaded[surface_name] = cases
 
+    # Fresh markers are synthetic evaluation identities and must not already
+    # occur in any other committed fixture surface. Exact string reuse would
+    # make the claimed fresh-surface sensitivity ambiguous.
+    repo_root = root.parent.parent
+    historical_hits = []
+    for marker in sorted(markers):
+        for candidate in (repo_root / "fixtures").rglob("*.json"):
+            if root in candidate.parents:
+                continue
+            try:
+                text = candidate.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                continue
+            if marker in text:
+                historical_hits.append((marker, str(candidate.relative_to(repo_root))))
+    if historical_hits:
+        raise EvalError(f"fresh marker reused in historical fixture: {historical_hits[0]}")
+
+    def case_shape(case):
+        cfg = load_json(root / case["config"])
+        caps = (cfg.get("resolution") or {}).get("investigation", {}).get("capabilities") or []
+        target_key = case["target"]["key"]
+        relevant = set(case.get("relevant_capabilities") or [])
+        exact = [
+            cap for cap in caps
+            if cap.get("id") in relevant
+            and target_key in (cap.get("supported_fact_keys") or [])
+        ]
+        distractors = [
+            cap for cap in caps
+            if cap.get("id") not in relevant
+            and target_key not in (cap.get("supported_fact_keys") or [])
+        ]
+        modes = []
+        stale_flags = []
+        for cap in exact:
+            args = list(cap.get("args") or [])
+            mode = args[args.index("--mode") + 1] if "--mode" in args else None
+            modes.append(mode)
+            admission = cap.get("admission") or {}
+            source_policies = admission.get("sources") or {}
+            max_ages = [
+                policy.get("max_age_seconds")
+                for policy in source_policies.values()
+                if isinstance(policy, dict)
+            ]
+            observed = None
+            if "--observed-at" in args:
+                observed = int(args[args.index("--observed-at") + 1])
+            evaluation = admission.get("evaluation_time_unix_seconds")
+            stale = bool(
+                observed is not None
+                and isinstance(evaluation, int)
+                and max_ages
+                and all(isinstance(age, int) for age in max_ages)
+                and all(evaluation - observed > age for age in max_ages)
+            )
+            stale_flags.append(stale)
+        return {
+            "role": case["role"],
+            "expected": case["expected"],
+            "capability_count": len(caps),
+            "exact_relevant_count": len(exact),
+            "distractor_count": len(distractors),
+            "relevant_modes": sorted(modes),
+            "relevant_stale_flags": sorted(stale_flags),
+            "has_followup_contract": bool(case.get("coverage_contract")),
+        }
+
     a = loaded["surface-a"]
     b = loaded["surface-b"]
     for ca, cb in zip(a, b):
-        if (
-            ca["role"] != cb["role"]
-            or ca["expected"] != cb["expected"]
-            or bool(ca.get("coverage_contract"))
-            != bool(cb.get("coverage_contract"))
-        ):
+        if case_shape(ca) != case_shape(cb):
             raise EvalError("surface information-equivalence shape drift")
 
     acceptance = manifest.get("acceptance") or {}

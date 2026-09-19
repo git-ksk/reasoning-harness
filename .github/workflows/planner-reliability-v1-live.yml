@@ -38,7 +38,7 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
           test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
-          git diff --exit-code "$BASE_COMMIT" -- Cargo.toml Cargo.lock crates
+          git diff --exit-code "$BASE_COMMIT" --             Cargo.toml Cargo.lock crates scripts/natural_e2e_fixture_resolver.py
           sha256sum -c fixtures/planner-reliability-v1-surface.sha256
           python3 scripts/planner_reliability_v1.py --validate-only > /tmp/planner-v1-validate.json
           python3 scripts/planner_reliability_v1.py --preflight > /tmp/planner-v1-preflight.json

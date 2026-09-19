@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import importlib.util
+import json
+import shutil
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -177,6 +180,31 @@ class PlannerReliabilityV1Tests(unittest.TestCase):
         self.assertFalse(scored["valid_action_shape"])
         self.assertFalse(scored["planner_success"])
         self.assertEqual(scored["correctness_boundary_violations"], 0)
+
+    def test_surface_information_equivalence_drift_fails_closed(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td) / "fixtures" / "planner-reliability-v1"
+            shutil.copytree(FIXTURES, root)
+            config_path = root / "surface-b/configs/vestril-direct.json"
+            config = json.loads(config_path.read_text())
+            duplicate = dict(config["resolution"]["investigation"]["capabilities"][-1])
+            duplicate["id"] = "vestril-extra-distractor"
+            config["resolution"]["investigation"]["capabilities"].append(duplicate)
+            config_path.write_text(json.dumps(config, indent=2) + "\n")
+            with self.assertRaisesRegex(M.EvalError, "information-equivalence"):
+                M.validate_corpus(root)
+
+    def test_historical_fresh_marker_reuse_fails_closed(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td) / "fixtures" / "planner-reliability-v1"
+            shutil.copytree(FIXTURES, root)
+            historical = Path(td) / "fixtures" / "historical"
+            historical.mkdir(parents=True)
+            (historical / "old.json").write_text(
+                json.dumps({"marker": "thalvex.mesh.primary_endpoint"}) + "\n"
+            )
+            with self.assertRaisesRegex(M.EvalError, "fresh marker reused"):
+                M.validate_corpus(root)
 
     def test_matched_surface_pair_is_descriptive_only(self):
         manifest, _ = M.validate_corpus(FIXTURES)
