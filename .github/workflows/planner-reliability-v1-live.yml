@@ -1,0 +1,120 @@
+name: planner-reliability-v1-live
+
+on:
+  push:
+    tags:
+      - planner-reliability-v1-freeze
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-provider-observation:
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        target: [mistral, google]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      FREEZE_TAG: planner-reliability-v1-freeze
+      BASE_COMMIT: bcbd326e147fae21f06a601f988e6ab060ca41bb
+      TARGET: ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: planner-reliability-v1-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate frozen planner reliability surface before credentials
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          git diff --exit-code "$BASE_COMMIT" -- Cargo.toml Cargo.lock crates
+          sha256sum -c fixtures/planner-reliability-v1-surface.sha256
+          python3 scripts/planner_reliability_v1.py --validate-only > /tmp/planner-v1-validate.json
+          python3 scripts/planner_reliability_v1.py --preflight > /tmp/planner-v1-preflight.json
+          python3 -m unittest -v scripts/test_planner_reliability_v1.py
+
+      - name: Build frozen baseline runtime
+        run: cargo build --locked -p reasoning-harness-cli --bin reason
+
+      - name: Check provider credential before live boundary
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$TARGET" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            *) exit 2 ;;
+          esac
+
+      - name: Run canonical repeated-trial observation exactly once
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -euo pipefail
+          python3 scripts/planner_reliability_v1.py             --reason-bin target/debug/reason             --provider-target "$TARGET"             --attempt-marker "/tmp/planner-reliability-v1-$TARGET.attempt.json"             --output "/tmp/planner-reliability-v1-$TARGET.json"             > "/tmp/planner-reliability-v1-$TARGET.stdout.json"             2> "/tmp/planner-reliability-v1-$TARGET.stderr.log"
+          cat "/tmp/planner-reliability-v1-$TARGET.stdout.json"
+          cat "/tmp/planner-reliability-v1-$TARGET.stderr.log" >&2
+
+      - name: Enforce measurement acceptance without utility cherry-picking
+        run: |
+          set -euo pipefail
+          python3 - "$TARGET" <<'PY2'
+          import json,sys
+          target=sys.argv[1]
+          p=json.load(open(f"/tmp/planner-reliability-v1-{target}.json"))
+          assert p["schema_version"]=="reason-planner-reliability-v1"
+          assert p["corpus_identity"]=="planner-reliability-v1"
+          assert p["evaluator_identity"]=="reason-planner-reliability-v1"
+          assert p["scoring_identity"]=="planner-reliability-scoring-v1"
+          assert p["provider_target"]==target
+          assert p["live_observation_performed"] is True
+          assert len(p["primary_trials"])==5
+          assert p["aggregate"]["attempted_trials"]==5
+          assert p["aggregate"]["complete_trials"]==5
+          assert p["aggregate"]["planner_success_denominator"]==5
+          assert p["aggregate"]["all_k"]["k"]==5
+          assert p["aggregate"]["all_k"]["defined"] is True
+          assert p["aggregate"]["all_k"]["derived_independence_p_to_k"] is None
+          assert p["aggregate"]["total_correctness_boundary_violations_all_attempts"]==0
+          assert p["surface_sensitivity"]["pair_complete"] is True
+          assert p["observed_model_identities"]
+          assert p["acceptance_passed"] is True
+          print(json.dumps({
+            "provider_target":target,
+            "observed_model_identities":p["observed_model_identities"],
+            "pass_at_1":p["aggregate"]["pass_at_1"],
+            "all_k":p["aggregate"]["all_k"],
+            "completion_rate":p["aggregate"]["trial_completion_rate"],
+            "per_case":p["aggregate"]["per_case_frequencies_complete_trials_only"],
+            "surface_sensitivity":p["surface_sensitivity"]
+          },indent=2,sort_keys=True))
+          PY2
+
+      - name: Upload canonical provider observation
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: planner-reliability-v1-${{ matrix.target }}
+          path: |
+            /tmp/planner-reliability-v1-${{ matrix.target }}.json
+            /tmp/planner-reliability-v1-${{ matrix.target }}.stdout.json
+            /tmp/planner-reliability-v1-${{ matrix.target }}.stderr.log
+            /tmp/planner-reliability-v1-${{ matrix.target }}.attempt.json
+            /tmp/planner-v1-validate.json
+            /tmp/planner-v1-preflight.json
+          if-no-files-found: warn

@@ -1,0 +1,194 @@
+{
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "secondary": 10
+            },
+            "evaluation_time_unix_seconds": 2000010000,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "ecosystem": {
+                "kind": "values",
+                "values": [
+                  "prod"
+                ]
+              }
+            },
+            "sources": {
+              "fixture:planner-stability-v1:a:thalvex:one": {
+                "authority_class": "primary",
+                "max_age_seconds": 300,
+                "scope": {
+                  "ecosystem": {
+                    "kind": "values",
+                    "values": [
+                      "prod"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "args": [
+            "scripts/natural_e2e_fixture_resolver.py",
+            "--mode",
+            "evidence",
+            "--source",
+            "fixture:planner-stability-v1:a:thalvex:one",
+            "--fact-key",
+            "thalvex.mesh.primary_endpoint",
+            "--fact-value",
+            "orbit-417.internal",
+            "--observed-at",
+            "2000009950",
+            "--retrieved-at",
+            "2000009960",
+            "--authority",
+            "primary",
+            "--scope",
+            "prod"
+          ],
+          "id": "thalvex-primary-one",
+          "kind": "external_command",
+          "max_response_bytes": 65536,
+          "program": "python3",
+          "read_only": true,
+          "supported_fact_keys": [
+            "thalvex.mesh.primary_endpoint"
+          ],
+          "timeout_ms": 5000
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "secondary": 10
+            },
+            "evaluation_time_unix_seconds": 2000010000,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "ecosystem": {
+                "kind": "values",
+                "values": [
+                  "prod"
+                ]
+              }
+            },
+            "sources": {
+              "fixture:planner-stability-v1:a:thalvex:two": {
+                "authority_class": "primary",
+                "max_age_seconds": 300,
+                "scope": {
+                  "ecosystem": {
+                    "kind": "values",
+                    "values": [
+                      "prod"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "args": [
+            "scripts/natural_e2e_fixture_resolver.py",
+            "--mode",
+            "evidence",
+            "--source",
+            "fixture:planner-stability-v1:a:thalvex:two",
+            "--fact-key",
+            "thalvex.mesh.primary_endpoint",
+            "--fact-value",
+            "orbit-417.internal",
+            "--observed-at",
+            "2000009950",
+            "--retrieved-at",
+            "2000009960",
+            "--authority",
+            "primary",
+            "--scope",
+            "prod"
+          ],
+          "id": "thalvex-primary-two",
+          "kind": "external_command",
+          "max_response_bytes": 65536,
+          "program": "python3",
+          "read_only": true,
+          "supported_fact_keys": [
+            "thalvex.mesh.primary_endpoint"
+          ],
+          "timeout_ms": 5000
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "secondary": 10
+            },
+            "evaluation_time_unix_seconds": 2000010000,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "ecosystem": {
+                "kind": "values",
+                "values": [
+                  "prod"
+                ]
+              }
+            },
+            "sources": {
+              "fixture:planner-stability-v1:a:thalvex:backup": {
+                "authority_class": "primary",
+                "max_age_seconds": 300,
+                "scope": {
+                  "ecosystem": {
+                    "kind": "values",
+                    "values": [
+                      "prod"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "args": [
+            "scripts/natural_e2e_fixture_resolver.py",
+            "--mode",
+            "evidence",
+            "--source",
+            "fixture:planner-stability-v1:a:thalvex:backup",
+            "--fact-key",
+            "thalvex.mesh.backup_endpoint",
+            "--fact-value",
+            "backup-a-91.internal",
+            "--observed-at",
+            "2000009950",
+            "--retrieved-at",
+            "2000009960",
+            "--authority",
+            "primary",
+            "--scope",
+            "prod"
+          ],
+          "id": "thalvex-backup-distractor",
+          "kind": "external_command",
+          "max_response_bytes": 65536,
+          "program": "python3",
+          "read_only": true,
+          "supported_fact_keys": [
+            "thalvex.mesh.backup_endpoint"
+          ],
+          "timeout_ms": 5000
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 4,
+      "max_targets": 3,
+      "planner_max_tokens": 256
+    }
+  },
+  "schema_version": "reason-config-v1"
+}

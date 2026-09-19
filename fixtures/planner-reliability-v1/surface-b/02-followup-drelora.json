@@ -1,0 +1,30 @@
+{
+  "adaptive": true,
+  "config": "surface-b/configs/drelora-followup.json",
+  "coverage_contract": {
+    "first_capability": "drelora-owner-cache",
+    "followup_capability": "drelora-owner-registry",
+    "kind": "no_result_followup_observational",
+    "mechanism_selection": "harness_exact_target_followup",
+    "trigger_status": "no_result"
+  },
+  "expected": "grounded",
+  "fresh_markers": [
+    "drelora.edge.owner",
+    "Drelora edge routing owner",
+    "platform-routing"
+  ],
+  "id": "followup-drelora",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "drelora-owner-cache",
+    "drelora-owner-registry"
+  ],
+  "role": "no_result_followup",
+  "schema_version": "planner-reliability-case-v1",
+  "target": {
+    "key": "drelora.edge.owner",
+    "value": "platform-routing"
+  },
+  "task": "Determine which team currently owns Drelora edge routing owner. Use the configured read-only sources; if a cache lookup reports no result, continue with another source for the same exact fact."
+}

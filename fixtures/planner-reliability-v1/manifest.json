@@ -1,0 +1,129 @@
+{
+  "acceptance": {
+    "max_correctness_boundary_violations": 0,
+    "min_complete_primary_trials": 5,
+    "planner_utility_success_required": false,
+    "require_matched_surface_pair_complete": true
+  },
+  "corpus_identity": "planner-reliability-v1",
+  "evaluator_identity": "reason-planner-reliability-v1",
+  "historical_inputs": {
+    "historical_evidence_immutable": true,
+    "metric_semantics": "natural-language-e2e-v11-freeze",
+    "motivation_only": [
+      "natural-language-e2e-v17-freeze",
+      "natural-language-e2e-v18-freeze"
+    ]
+  },
+  "live_observation_policy": {
+    "failed_observation_requires_fresh_successor_identity": true,
+    "first_live_launch_per_provider_is_canonical": true,
+    "pre_live_infrastructure_retry_allowed": true,
+    "semantic_retry_forbidden": true,
+    "surface_must_be_frozen_before_first_live_observation": true
+  },
+  "measurement_semantics": {
+    "exercised_path_observability_separate_from_utility": true,
+    "hard_correctness_separate_from_utility": true,
+    "independence_derived_p_to_k_reported": false,
+    "no_cross_model_averaging": true,
+    "no_majority_vote_authority": true,
+    "operational_completeness_separate_from_semantic_metrics": true,
+    "operationally_incomplete_trials_excluded_from_semantic_distributions": true,
+    "utility_success_not_required_for_measurement_acceptance": true
+  },
+  "planner_success_predicate": {
+    "followup_conformance_required_only_when_trigger_exposed": true,
+    "grounded_cases_require_grounded_target": true,
+    "requires_every_case_relevant_tool_selected": true,
+    "requires_every_case_target_recalled": true,
+    "requires_operationally_complete_trial": true,
+    "requires_zero_action_rejections": true,
+    "requires_zero_avoidable_followup_stalls": true,
+    "requires_zero_correctness_boundary_violations": true,
+    "requires_zero_false_abstentions": true,
+    "unknown_cases_require_no_grounded_target": true
+  },
+  "product_coordinate": {
+    "commit": "bcbd326e147fae21f06a601f988e6ab060ca41bb",
+    "harness_engine": "0.4.2",
+    "reason_cli": "0.5.2"
+  },
+  "provider_targets": {
+    "google": {
+      "inter_case_delay_ms": 1500,
+      "max_tokens": 1024,
+      "model": "gemini-3.5-flash-lite",
+      "provider": "google"
+    },
+    "mistral": {
+      "inter_case_delay_ms": 1500,
+      "max_tokens": 1024,
+      "model": "ministral-8b-latest",
+      "provider": "mistral"
+    }
+  },
+  "purpose": "baseline_for_issue_283",
+  "schema_version": "planner-reliability-manifest-v1",
+  "scoring_identity": "planner-reliability-scoring-v1",
+  "surface_contract": {
+    "case_roles": [
+      "direct_grounded",
+      "no_result_followup",
+      "stale_unknown"
+    ],
+    "minimum_exact_read_only_candidates_per_target": 2,
+    "nonmatching_distractor_required": true,
+    "selection_priority_forbidden": true,
+    "stochastic_action_selector_exposure_required": true
+  },
+  "surfaces": {
+    "surface-a": {
+      "case_files": [
+        "surface-a/01-direct-thalvex.json",
+        "surface-a/02-followup-corvane.json",
+        "surface-a/03-stale-myrador.json"
+      ],
+      "information_equivalence_role": "primary"
+    },
+    "surface-b": {
+      "case_files": [
+        "surface-b/01-direct-vestril.json",
+        "surface-b/02-followup-drelora.json",
+        "surface-b/03-stale-qenvar.json"
+      ],
+      "information_equivalence_role": "matched_fresh_surface",
+      "information_equivalent_to": "surface-a"
+    }
+  },
+  "trial_plan": {
+    "all_k_group": {
+      "k": 5,
+      "seeds": [
+        86101,
+        86102,
+        86103,
+        86104,
+        86105
+      ]
+    },
+    "case_seed_derivation": "trial_seed + zero_based_case_index",
+    "declared_k": [
+      1,
+      5
+    ],
+    "matched_surface_sensitivity": {
+      "seed": 86105,
+      "surface_a": "surface-a",
+      "surface_b": "surface-b"
+    },
+    "primary_surface": "surface-a",
+    "primary_trial_seeds": [
+      86101,
+      86102,
+      86103,
+      86104,
+      86105
+    ]
+  }
+}

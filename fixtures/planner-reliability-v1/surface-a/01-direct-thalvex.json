@@ -1,0 +1,22 @@
+{
+  "config": "surface-a/configs/thalvex-direct.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "thalvex.mesh.primary_endpoint",
+    "Thalvex mesh endpoint",
+    "orbit-417.internal"
+  ],
+  "id": "direct-thalvex",
+  "kind": "investigation",
+  "relevant_capabilities": [
+    "thalvex-primary-one",
+    "thalvex-primary-two"
+  ],
+  "role": "direct_grounded",
+  "schema_version": "planner-reliability-case-v1",
+  "target": {
+    "key": "thalvex.mesh.primary_endpoint",
+    "value": "orbit-417.internal"
+  },
+  "task": "Determine the current primary endpoint for the Thalvex mesh endpoint. Use a configured read-only source and do not infer an endpoint from a capability name."
+}
