@@ -1,0 +1,100 @@
+{
+  "acceptance_passed": true,
+  "aggregate": {
+    "correctness_boundary_violations": 0,
+    "passed_cases": 3,
+    "session_external_calls_replayed": 0,
+    "total_cases": 3
+  },
+  "cases": [
+    {
+      "admitted_evidence": 1,
+      "artifact_exact_supported": true,
+      "assertions": [
+        {
+          "key": "engine050.zqelora.route_endpoint",
+          "mode": "grounded",
+          "value": "lane-842.omega"
+        }
+      ],
+      "expected": "grounded",
+      "finalization_status": "grounded_answer",
+      "hypotheses_empty": true,
+      "id": "investigation-zqelora-route",
+      "investigation_stop_reason": "resolved",
+      "kind": "investigation",
+      "passed": true,
+      "target": {
+        "key": "engine050.zqelora.route_endpoint",
+        "value": "lane-842.omega"
+      },
+      "target_grounded": true,
+      "target_recalled": true,
+      "unsupported_exposed_assertions": 0,
+      "wall_clock_ms": 184691
+    },
+    {
+      "admitted_evidence": 0,
+      "artifact_exact_supported": false,
+      "assertions": [],
+      "expected": "unknown",
+      "finalization_status": "unresolved",
+      "hypotheses_empty": true,
+      "id": "fail-closed-zqmorin-registry",
+      "investigation_stop_reason": "targets_exhausted",
+      "kind": "investigation",
+      "passed": true,
+      "target": {
+        "key": "engine050.zqmorin.build_epoch",
+        "value": "zqmorin-epoch-8462"
+      },
+      "target_grounded": false,
+      "target_recalled": true,
+      "unsupported_exposed_assertions": 0,
+      "wall_clock_ms": 125906
+    },
+    {
+      "artifact_exact_supported": true,
+      "assertions": [
+        {
+          "key": "session.zqaveth.retry_window",
+          "mode": "grounded",
+          "value": "window-1217"
+        }
+      ],
+      "correction_event_recorded": true,
+      "expected": "grounded",
+      "external_calls_replayed": 0,
+      "finalization_status": "grounded_answer",
+      "id": "session-correct-zqaveth",
+      "invalidation_event_recorded": true,
+      "kind": "session_correct",
+      "passed": true,
+      "pending_revalidation": false,
+      "start_prior_grounded": true,
+      "target": {
+        "key": "session.zqaveth.retry_window",
+        "value": "window-1217"
+      },
+      "target_grounded": true,
+      "unsupported_exposed_assertions": 0,
+      "wall_clock_ms": 162141
+    }
+  ],
+  "corpus_identity": "engine-0.5-final-v1-finalization",
+  "engine_0_4_2_baseline": "d8940b4a98f11ec3e0968444fadc8bc90eae01ff",
+  "evaluator_identity": "reason-engine-0.5-final-v1-finalization",
+  "live_observation_performed": true,
+  "product_commit": "7a91d272af1bab0a97bf80ed7bba027ff253d50a",
+  "provider_policy": {
+    "base_seed": 771101,
+    "inter_case_delay_ms": 6000,
+    "max_tokens": 1024,
+    "model": "gemma-4-31b-it",
+    "provider": "google",
+    "role": "validated_required"
+  },
+  "provider_target": "google-gemma-4-31b-it",
+  "schema_version": "reason-engine-0.5-final-v1-finalization",
+  "scoring_identity": "engine-0.5-final-v1-finalization-scoring-v1"
+}

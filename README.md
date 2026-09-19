@@ -303,6 +303,25 @@ The final `v0.4.2` release gate serves a different purpose: it checks the produc
 
 The exact frozen coordinates, metrics, run IDs, pacing policy, and provenance are in [v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.md). Failed or inconclusive observations remain part of the research record rather than being overwritten by nicer reruns.
 
+### Harness Engine 0.5.0 final cross-model acceptance
+
+The semantic Engine 0.5.0 line is now final-acceptance complete on a fresh frozen delta surface covering the #248 finalization bridge and #283 Harness-owned action materialization. The four predeclared validated provider/model rows all passed independently; there is no cross-model averaging.
+
+| Model / provider | Catalog role | Finalization | Materialization | Final classification |
+| --- | --- | --- | --- | --- |
+| **Mistral / Ministral 8B** | validated required | PASS 3/3 | PASS | **PASS** |
+| **Google / Gemini 3.5 Flash-Lite** | validated required | PASS 3/3 | PASS | **PASS** |
+| **Google / Gemma 4 31B** | validated required | PASS 3/3 | PASS | **PASS** |
+| **Groq / GPT-OSS 120B** | validated required | PASS 3/3 | PASS | **PASS** |
+| Mistral / Ministral 14B | observed characterization | FAIL 2/3 | PASS | FAIL |
+| Groq / GPT-OSS 20B | observed characterization | PASS 3/3 | PASS | PASS |
+| Groq / Qwen 3.8 27B | observed characterization | incomplete | PASS | INCOMPLETE |
+| NVIDIA / Nemotron 3.5 Lightning 30B A3B | limited negative control | incomplete | operationally incomplete | INCOMPLETE |
+
+Every completed semantic row above preserved zero observed correctness-boundary violations; the required rows also preserved session external replay at zero and used zero legacy executable-action planner calls on the #283 materialization surface. Observed/limited rows are characterization evidence rather than release votes, so their existing catalog labels are not silently promoted. The NVIDIA result remains consistent with its existing `limited / known_incompatible` status.
+
+The canonical v2 run was `35435026552` from freeze tag `engine-0.5-final-v2-freeze`; both preflight and final gate passed. See the [Engine 0.5.0 final cross-model result](docs/engine-0.5-final-v2-result.md) for exact coordinates, residuals, artifact provenance, and preserved raw reports. This is semantic acceptance evidence; the current packaged binary still reports Harness Engine `0.4.2` until a separate versioned Engine 0.5.0 release changes that coordinate.
+
 ## Product, engine, and research are separate
 
 `v0.4.2` is the final release where the product CLI and reasoning engine share one version coordinate.

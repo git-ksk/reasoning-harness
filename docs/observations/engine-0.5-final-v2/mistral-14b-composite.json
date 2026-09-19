@@ -1,0 +1,73 @@
+{
+  "classification": "FAIL",
+  "components": {
+    "finalization": {
+      "acceptance_passed": false,
+      "aggregate": {
+        "correctness_boundary_violations": 0,
+        "passed_cases": 2,
+        "session_external_calls_replayed": 0,
+        "total_cases": 3
+      },
+      "exit_code": 1,
+      "report_present": true
+    },
+    "materialization": {
+      "acceptance_passed": true,
+      "checks": {
+        "action_path_success": true,
+        "action_rejections_zero": true,
+        "correctness_zero": true,
+        "intent_calls_positive": true,
+        "intent_rejections_zero": true,
+        "legacy_action_calls_zero": true,
+        "materialization_path_all_cases": true,
+        "materializations_positive": true,
+        "operationally_complete": true,
+        "same_key_siblings_all_cases": true
+      },
+      "exit_code": 0,
+      "observed_model_identities": {
+        "ministral-14b-latest": 14
+      },
+      "report_present": true,
+      "summary": {
+        "action_path_success": true,
+        "action_rejection_count": 0,
+        "candidate_path_conformant_cases": 2,
+        "case_count": 2,
+        "control_path_exposed_cases": 0,
+        "correctness_boundary_violations": 0,
+        "downstream_finalization": {
+          "blocked_unverified_propositions": 4,
+          "false_abstention_cases": 1,
+          "status_counts": {
+            "requires_verification": 2
+          }
+        },
+        "harness_intent_materializations": 6,
+        "intent_planner_calls": 6,
+        "intent_rejection_count": 0,
+        "legacy_action_planner_calls": 0,
+        "observed_model_identities": {
+          "ministral-14b-latest": 14
+        },
+        "operational_failure_classes": {},
+        "operationally_complete": true,
+        "provider_attempts_observed": 18,
+        "provider_calls_observed": 14,
+        "provider_latency_ms_observed": 58385,
+        "same_key_sibling_exposed_cases": 2,
+        "tokens_observed": 14358,
+        "wall_clock_ms": 58669
+      }
+    }
+  },
+  "provider": "mistral",
+  "release_gate_passed": null,
+  "release_required": false,
+  "requested_model": "ministral-14b-latest",
+  "role": "observed_characterization",
+  "schema_version": "reason-engine-0.5-final-v1-composite",
+  "target": "mistral-14b"
+}

@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/runner/work/reasoning-harness/reasoning-harness/scripts/engine_0_5_final_finalization.py", line 433, in <module>
+    main()
+  File "/home/runner/work/reasoning-harness/reasoning-harness/scripts/engine_0_5_final_finalization.py", line 423, in main
+    report = run_live(args.reason_bin.resolve(), args.target)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/reasoning-harness/reasoning-harness/scripts/engine_0_5_final_finalization.py", line 356, in run_live
+    result = run_session_correct(case, reason_bin, policy, cwd, seed)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/reasoning-harness/reasoning-harness/scripts/engine_0_5_final_finalization.py", line 291, in run_session_correct
+    raise EvalError("session start did not establish the unique grounded prior target")
+EvalError: session start did not establish the unique grounded prior target

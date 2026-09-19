@@ -79,6 +79,7 @@ Start from the current release evidence, then move backward only if you need pro
 
 - [Planner reliability v1 result](planner-reliability-v1-result.md) — frozen #282 repeated-trial baseline before #283 action-materialization changes.
 - [v0.4.2 final v36 release acceptance](natural-language-e2e-v36-result.md) — immutable final unified / Engine 0.4.2 release evidence.
+- [Harness Engine 0.5.0 final cross-model acceptance](engine-0.5-final-v2-result.md) — fresh final semantic-delta gate across the current curated model catalog.
 - [Product dogfood](product-dogfood.md) — product-oriented comparative evaluation.
 - [Benchmark](benchmark.md) — benchmark/evaluation methodology and interpretation.
 - [Research plan](research-plan.md) — research questions and promotion discipline.

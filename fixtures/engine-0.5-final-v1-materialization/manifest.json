@@ -1,0 +1,116 @@
+{
+  "acceptance": {
+    "complete_cases_required": 2,
+    "max_correctness_boundary_violations": 0,
+    "require_action_rejections_zero": true,
+    "require_candidate_intent_calls_positive": true,
+    "require_candidate_legacy_action_calls_zero": true,
+    "require_candidate_materialization_path_all_cases": true,
+    "require_candidate_materializations_positive": true,
+    "require_intent_rejections_zero": true,
+    "require_same_key_sibling_exposure_all_cases": true
+  },
+  "cases": [
+    "01-grounded-zqneris.json",
+    "02-stale-zqsolven.json"
+  ],
+  "corpus_identity": "engine-0.5-final-v1-materialization",
+  "evaluator_dependencies": {
+    "scripts/planner_reliability_v1.py": "0770d47f4bf9700ac03448b72669147d6ec45f52675ec7e2735cb66ca689e574"
+  },
+  "evaluator_identity": "reason-engine-0.5-final-v1-materialization",
+  "live_observation_policy": {
+    "failed_semantic_observation_requires_fresh_successor_identity": true,
+    "first_live_launch_per_target_is_canonical": true,
+    "no_cross_model_averaging": true,
+    "semantic_retry_forbidden": true,
+    "surface_must_be_frozen_before_first_live_observation": true
+  },
+  "prechange_commit": "94ff1b79ac0e9c183d2fc30ceaf41f23f3927d3e",
+  "product_commit": "7a91d272af1bab0a97bf80ed7bba027ff253d50a",
+  "provider_targets": {
+    "google-gemini-3.5-flash-lite": {
+      "base_seed": 771211,
+      "inter_case_delay_ms": 6000,
+      "max_tokens": 1024,
+      "model": "gemini-3.5-flash-lite",
+      "provider": "google",
+      "role": "validated_required"
+    },
+    "google-gemma-4-31b-it": {
+      "base_seed": 771211,
+      "inter_case_delay_ms": 6000,
+      "max_tokens": 1024,
+      "model": "gemma-4-31b-it",
+      "provider": "google",
+      "role": "validated_required"
+    },
+    "groq-gpt-oss-120b": {
+      "base_seed": 771211,
+      "inter_case_delay_ms": 2100,
+      "max_tokens": 1024,
+      "model": "openai/gpt-oss-120b",
+      "provider": "groq",
+      "role": "validated_required"
+    },
+    "groq-gpt-oss-20b": {
+      "base_seed": 771211,
+      "inter_case_delay_ms": 2100,
+      "max_tokens": 1024,
+      "model": "openai/gpt-oss-20b",
+      "provider": "groq",
+      "role": "observed_characterization"
+    },
+    "groq-qwen3.8-27b": {
+      "base_seed": 771211,
+      "inter_case_delay_ms": 2100,
+      "max_tokens": 1024,
+      "model": "qwen/qwen3.8-27b",
+      "provider": "groq",
+      "role": "observed_characterization"
+    },
+    "mistral-14b": {
+      "base_seed": 771211,
+      "inter_case_delay_ms": 1500,
+      "max_tokens": 1024,
+      "model": "ministral-14b-latest",
+      "provider": "mistral",
+      "role": "observed_characterization"
+    },
+    "mistral-8b": {
+      "base_seed": 771211,
+      "inter_case_delay_ms": 1500,
+      "max_tokens": 1024,
+      "model": "ministral-8b-latest",
+      "provider": "mistral",
+      "role": "validated_required"
+    },
+    "nvidia-nemotron": {
+      "base_seed": 771211,
+      "inter_case_delay_ms": 1500,
+      "max_tokens": 1024,
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+      "provider": "nvidia",
+      "role": "limited_negative_control"
+    }
+  },
+  "schema_version": "engine-0.5-final-materialization-manifest-v1",
+  "scoring_identity": "engine-0.5-final-v1-materialization-scoring-v1",
+  "surface_contract": {
+    "candidate_intent_materialization_path_required": true,
+    "case_roles": [
+      "grounded_same_key_siblings",
+      "stale_same_key_siblings"
+    ],
+    "exact_read_only_capabilities_per_key": 2,
+    "explicit_unique_priority_required": true,
+    "minimum_same_key_targets_per_case": 2,
+    "same_key_sibling_identity_must_remain_distinct": true
+  },
+  "trial_plan": {
+    "case_seed_derivation": "trial_seed + zero_based_case_index",
+    "primary_trial_seeds": [
+      771211
+    ]
+  }
+}

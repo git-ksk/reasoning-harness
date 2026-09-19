@@ -1,0 +1,19 @@
+{
+  "schema_version": "engine-0.5-finalization-case-v1",
+  "id": "investigation-zqelora-route",
+  "kind": "investigation",
+  "config": "configs/zqelora.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Zqelora routing plane",
+    "engine050.zqelora.route_endpoint",
+    "lane-842.omega",
+    "fixture:engine050-final-v1:zqelora-route"
+  ],
+  "relevant_capabilities": ["zqelora-route-primary"],
+  "target": {
+    "key": "engine050.zqelora.route_endpoint",
+    "value": "lane-842.omega"
+  },
+  "task": "Determine the current primary read endpoint for the Zqelora routing plane. Use the configured exact fact-key-bound read-only source and do not infer an endpoint from the source name."
+}
