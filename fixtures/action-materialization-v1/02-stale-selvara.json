@@ -1,0 +1,26 @@
+{
+  "config": "configs/selvara.json",
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "selvara.window.is_open",
+    "Selvara current window record"
+  ],
+  "id": "stale-selvara",
+  "kind": "investigation",
+  "minimum_same_key_targets": 2,
+  "preferred_capability": "selvara-window-primary",
+  "relevant_capabilities": [
+    "selvara-window-primary",
+    "selvara-window-secondary"
+  ],
+  "role": "stale_same_key_siblings",
+  "schema_version": "action-materialization-case-v1",
+  "target": {
+    "key": "selvara.window.is_open",
+    "value": "true"
+  },
+  "task": "Determine whether the exact fact family selvara.window.is_open is true now. Keep two separate investigation questions for this same fact: one for the primary window record and one for an independent window confirmation. Do not merge the two questions. Use the configured read-only sources, and reject stale observations rather than promoting them to current truth."
+}

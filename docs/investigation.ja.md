@@ -6,7 +6,9 @@ machine identity:
 
 - runtime: `bounded-investigation-v1`
 - plan proposal: `reason-investigation-plan-v1`
-- action proposal: `reason-investigation-action-v1`
+- target intent proposal: `reason-investigation-intent-v1`
+- Harness materialization policy: `target-intent-materialization-v1`
+- legacy executable action proposal/fallback: `reason-investigation-action-v1`
 - investigation external-command adapter: `investigation_external_command_v1`
 - investigation external-command request: `reason-investigation-external-resolver-request-v1`
 - MCP acquisition: `mcp_readonly_v3`
@@ -19,8 +21,8 @@ historical freeze 対象の `mcp_readonly_v1` と、既存 static `external_comm
 
 1. model は closed な `reason-investigation-plan-v1` JSON schema を通じて、少数の investigation question を提案する。生成された target は明示的に `model_proposed_untrusted` として扱う。
 2. Harness が target 数、ID、shape を検証し、通過した proposal を canonical investigation target にする。これは planning object の受け入れであって、提案された答えを真と認定する処理ではない。
-3. 各 round で model が選べるのは、既存 target ID と既存 read-only capability ID の組み合わせ1つ、または stop だけである。action schema には自由な query text、tool argument、authority class、evidence、receipt、verdict の field を持たせない。
-4. Harness は未知 capability、`read_only` でない capability、selector/key の不一致、同じ target/capability pair の再実行、budget 超過を拒否する。
+3. 既存 #249/#233/#261 deterministic selector を先に評価する。どれも action を選ばない場合、Harness は exact executable read-only capability を mechanically materialize できる target ID 集合を計算する。この path では model は `continue(target_id)` または `stop` だけを出し、capability ID を出さない。materializable target が無い場合、または typed intent materialization が refuse した場合は、変更していない `reason-investigation-action-v1` を bounded fallback として使う。
+4. materialized action と legacy action は同じ既存 validation を通る。Harness は未知 capability、`read_only` でない capability、selector/key 不一致、同じ target/capability pair の再実行、budget 超過を拒否する。
 5. 選ばれた acquisition adapter を1回だけ実行する。investigation external command は `external_command_v1` を暗黙拡張せず専用 request identity を使う。MCP は v0.4 product 向けの `mcp_readonly_v3` と、Harness-owned の fixed argument / tool allowlist を使う。
 6. 取得データは引き続き untrusted である。admission policy がある場合だけ、通常の source allowlist、freshness、scope、authority policy を適用する。admission がなければ external data は trusted evidence に昇格できない。
 7. evidence が admit された後、更新済み Harness input から natural-language candidate を再生成し、通常の validation、qualification、verification、diagnostics、verdict、finalization、answer-safety をもう一度通す。
@@ -107,7 +109,7 @@ investigation external command が受け取る request は `reason-investigation
 
 runtime は `max_targets`、`max_rounds`、`max_actions`、`max_no_progress_rounds` で構造的に上限を持つ。planner call には `planner_max_tokens`、candidate regeneration には既存 natural-language generation の max-token 上限があり、各 acquisition adapter には whole-invocation timeout と response-size 上限がある。invalid/repeated action も round budget は消費するため、無限 repair loop にはならない。
 
-自然文 JSON output では investigation を通常の resolution round と分けて記録する。accepted target / capability descriptor、planner call 数、typed action rejection、action record、admitted evidence 数、verification progress、stop reason、plan/action/candidate-regeneration の provider observation を保持する。provider/protocol failure は operational evidence のままで、semantic fact や `unknown` の根拠へ変換しない。
+自然文 JSON output では investigation を通常の resolution round と分けて記録する。accepted target / capability descriptor、legacy action planner call 数、別軸の intent planner call 数、Harness intent materialization 数、typed intent/action rejection、action record、admitted evidence 数、verification progress、stop reason、plan/intent/action/candidate-regeneration の provider observation を保持する。provider/protocol failure は operational evidence のままで、semantic fact や `unknown` の根拠へ変換しない。
 
 ## static path との互換性
 
@@ -132,3 +134,7 @@ capabilityはoptionalな`selection_priority`をHarness-owned acquisition-selecti
 Harnessがこのprecedenceを見るのは、v0.4.1 exact-target `no_result` continuationとv0.4.0 globally unique-pair selectorのどちらもactionを選ばなかった場合だけである。model action callなしで選択できるのは、明示的な`expected_fact_key`を持つeligible target identityがちょうど1つ、そのtargetに対する未試行read-only capabilityがkeyを`supported_fact_keys`で明示し、eligible capabilityすべてにpriorityが設定され、最高priorityがちょうど1つに決まる場合だけ。priority欠落、tie、same-key siblingを含む複数eligible target identity、keyless target、wildcard-only matching、attempted pair、non-read-only capability、terminal/action-budget stateでは従来のbounded model/fail-closed pathを維持する。
 
 この選択は`harness_precedence_selections`として独立に観測し、`harness_unique_selections`や`harness_no_result_followup_selections`と混同しない。precedenceで選択したactionがtyped `no_result`になった場合、次roundでは条件を満たせば既存v0.4.1 exact-target continuationをそのまま使う。
+
+### Target-intent materialization（Harness Engine 0.5.0 candidate）
+
+Issue #283 では、[ADR-0004](adr/0004-investigation-target-intent-materialization.ja.md) で定義した additive な `reason-investigation-intent-v1` model contract と `target-intent-materialization-v1` Harness policy を追加する。model が選ぶのは existing exact target ID または stop だけである。exact-key/read-only/untried/unique-priority precondition で capability が一意に決まる場合だけ Harness が capability を materialize する。same-key sibling は別 target identity のまま維持する。priority 欠落、tie、keyless/wildcard-only compatibility、write-capable tool、terminal state は fail closed で既存 bounded `reason-investigation-action-v1` fallback へ進む。authority/admission/verification/finalization semantics は変更しない。

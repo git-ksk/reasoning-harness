@@ -59,6 +59,7 @@ Then use the ADRs for design rationale:
 - [ADR-0001: interface and packaging boundaries](adr/0001-interface-and-packaging-boundaries.md)
 - [ADR-0002: grounded resolution and finalization](adr/0002-grounded-resolution-and-finalization.md)
 - [ADR-0003: reasoning control plane](adr/0003-reasoning-control-plane.md)
+- [ADR-0004: Harness-owned investigation action materialization](adr/0004-investigation-target-intent-materialization.md)
 
 ## I want the current project status or roadmap
 

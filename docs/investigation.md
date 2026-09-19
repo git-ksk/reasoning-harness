@@ -6,7 +6,9 @@ Machine identities:
 
 - runtime: `bounded-investigation-v1`
 - plan proposal: `reason-investigation-plan-v1`
-- action proposal: `reason-investigation-action-v1`
+- target intent proposal: `reason-investigation-intent-v1`
+- Harness materialization policy: `target-intent-materialization-v1`
+- legacy executable action proposal/fallback: `reason-investigation-action-v1`
 - investigation external-command adapter: `investigation_external_command_v1`
 - investigation external-command request: `reason-investigation-external-resolver-request-v1`
 - MCP acquisition: `mcp_readonly_v3`
@@ -19,8 +21,8 @@ When `resolution.investigation` is configured and the initial natural-language r
 
 1. The model proposes a small list of investigation questions through the closed `reason-investigation-plan-v1` JSON schema. These targets are explicitly marked `model_proposed_untrusted`.
 2. The Harness validates target count, identity, and shape and turns accepted proposal objects into canonical investigation targets. This is planning admission only; it does not make any proposed answer true.
-3. For each round, the model may select one existing target ID and one existing configured read-only capability ID, or stop. The action schema contains no arbitrary query text, tool arguments, authority class, evidence, receipt, or verdict fields.
-4. The Harness rejects unknown capabilities, capabilities not declared read-only, selector/key mismatches, duplicate target/capability pairs, and actions beyond the configured budgets.
+3. Existing #249/#233/#261 deterministic selectors run first. When none selects an action, the Harness computes exact target IDs for which one executable read-only capability can be materialized mechanically. On that path the model emits only `continue(target_id)` or `stop`; it never emits a capability ID. If no target is materializable, or typed intent materialization refuses the proposal, the unchanged `reason-investigation-action-v1` selector remains the bounded fallback.
+4. Materialized and legacy actions both pass the same existing validation. The Harness rejects unknown capabilities, capabilities not declared read-only, selector/key mismatches, duplicate target/capability pairs, and actions beyond the configured budgets.
 5. The selected acquisition adapter runs once. Investigation external commands use their own request identity rather than extending `external_command_v1`. MCP uses the v0.4 `mcp_readonly_v3` operational successor and Harness-owned fixed arguments/tool allowlists.
 6. Acquired evidence is still untrusted. If an admission policy is configured, normal source allowlisting, freshness, scope, and authority rules are applied. Without admission, external data cannot become trusted evidence.
 7. After admitted evidence is added, the natural-language candidate is regenerated against the updated Harness input and passes through the ordinary validation, qualification, verification, diagnostics, verdict, finalization, and answer-safety path again.
@@ -107,7 +109,7 @@ An investigation external command receives `reason-investigation-external-resolv
 
 The runtime is bounded structurally by `max_targets`, `max_rounds`, `max_actions`, and `max_no_progress_rounds`. Every planner call also has `planner_max_tokens`, candidate regeneration uses the existing bounded natural-language generation limit, and each acquisition adapter retains its configured whole-invocation timeout/response-size cap. Invalid/repeated actions consume bounded rounds even when they do not consume an acquisition action.
 
-Natural JSON output reports the investigation object separately from ordinary resolution rounds. It contains the accepted targets/capability descriptors, planner-call count, typed action rejections, action records, admitted-evidence counts, verification-progress flags, stop reason, and provider observations for plan/action/candidate-regeneration calls. Provider or protocol failure remains operational evidence; it is never converted into a semantic fact or `unknown` proof.
+Natural JSON output reports the investigation object separately from ordinary resolution rounds. It contains the accepted targets/capability descriptors, legacy action-planner call count, separate intent-planner call count, Harness intent-materialization count, typed intent/action rejections, action records, admitted-evidence counts, verification-progress flags, stop reason, and provider observations for plan/intent/action/candidate-regeneration calls. Provider or protocol failure remains operational evidence; it is never converted into a semantic fact or `unknown` proof.
 
 ## Static-path compatibility
 
@@ -132,3 +134,7 @@ A capability may optionally declare `selection_priority` as a Harness-owned acqu
 The Harness considers this precedence only after the v0.4.1 exact-target `no_result` continuation and the v0.4.0 globally unique-pair selector have not selected an action. It may select without a model action call only when exactly one investigation target identity has eligible untried read-only capabilities that explicitly list that target's `expected_fact_key`, every eligible capability for that target has an explicit priority, and exactly one capability has the highest priority. Missing priorities, ties, multiple eligible target identities (including same-key siblings), keyless targets, wildcard-only capability matching, attempted pairs, non-read-only capabilities, and terminal/action-budget states all remain on the existing bounded model/fail-closed path.
 
 The selection is observable separately as `harness_precedence_selections`; it does not alias `harness_unique_selections` or `harness_no_result_followup_selections`. A typed `no_result` from a precedence-selected action still uses the existing v0.4.1 exact-target continuation on the next round when that invariant is satisfied.
+
+### Target-intent materialization (Harness Engine 0.5.0 candidate)
+
+Issue #283 adds the additive `reason-investigation-intent-v1` model contract and `target-intent-materialization-v1` Harness policy described in [ADR-0004](adr/0004-investigation-target-intent-materialization.md). The model chooses only an exact existing target ID or stop. The Harness owns capability materialization when exact-key/read-only/untried/unique-priority preconditions yield exactly one capability. Same-key siblings remain distinct target identities. Missing priority, ties, keyless/wildcard-only compatibility, write-capable tools, and terminal states fail closed to the existing bounded `reason-investigation-action-v1` fallback. No authority/admission/verification/finalization semantics change.

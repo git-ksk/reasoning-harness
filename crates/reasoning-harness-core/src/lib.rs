@@ -120,14 +120,18 @@ pub use generation::{
 };
 pub use harness::{HarnessError, HarnessOutcome, Pass, run_harness, run_passes};
 pub use investigation::{
-    INVESTIGATION_ACTION_CONTRACT_ID, INVESTIGATION_PLAN_CONTRACT_ID, INVESTIGATION_RUNTIME_ID,
-    InvestigationAction, InvestigationActionKind, InvestigationActionProposal,
-    InvestigationActionRecord, InvestigationActionRejection, InvestigationCapability,
+    INVESTIGATION_ACTION_CONTRACT_ID, INVESTIGATION_INTENT_CONTRACT_ID,
+    INVESTIGATION_MATERIALIZATION_POLICY_ID, INVESTIGATION_PLAN_CONTRACT_ID,
+    INVESTIGATION_RUNTIME_ID, InvestigationAction, InvestigationActionKind,
+    InvestigationActionProposal, InvestigationActionRecord, InvestigationActionRejection,
+    InvestigationCapability, InvestigationIntentKind, InvestigationIntentProposal,
+    InvestigationIntentRejection, InvestigationIntentRejectionRecord,
     InvestigationObservationStatus, InvestigationPlanProposal, InvestigationPolicy,
     InvestigationState, InvestigationStopReason, InvestigationTarget, InvestigationTargetOrigin,
     InvestigationTargetProposal, InvestigationTelemetry, admit_investigation_plan,
-    build_investigation_action_request, build_investigation_plan_request,
-    investigation_action_schema, investigation_plan_schema, parse_investigation_action,
+    build_investigation_action_request, build_investigation_intent_request,
+    build_investigation_plan_request, investigation_action_schema, investigation_intent_schema,
+    investigation_plan_schema, parse_investigation_action, parse_investigation_intent,
     parse_investigation_plan,
 };
 pub use metamorphic::{

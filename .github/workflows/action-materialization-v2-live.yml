@@ -1,0 +1,184 @@
+name: action-materialization-v2-live
+
+on:
+  push:
+    tags:
+      - action-materialization-v2-freeze
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-paired-observation:
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        target: [mistral, google]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      FREEZE_TAG: action-materialization-v2-freeze
+      CONTROL_COMMIT: 94ff1b79ac0e9c183d2fc30ceaf41f23f3927d3e
+      CANDIDATE_COMMIT: 7a91d272af1bab0a97bf80ed7bba027ff253d50a
+      TARGET: ${{ matrix.target }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: action-materialization-v2-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate frozen adoption surface before credentials
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+
+          # Evaluation-only successor files may sit above the reviewed product
+          # candidate, but product/package inputs must remain byte-identical.
+          git diff --exit-code "$CANDIDATE_COMMIT" -- \
+            Cargo.toml Cargo.lock crates
+
+          sha256sum -c fixtures/action-materialization-v2-surface.sha256
+          python3 scripts/action_materialization_v2.py \
+            --validate-only > /tmp/action-materialization-v2-validate.json
+          python3 scripts/action_materialization_v2.py \
+            --preflight > /tmp/action-materialization-v2-preflight.json
+          python3 -m unittest -v scripts/test_action_materialization_v2.py
+
+      - name: Build exact control and candidate coordinates
+        run: |
+          set -euo pipefail
+          git worktree add --detach /tmp/reason-control "$CONTROL_COMMIT"
+          git worktree add --detach /tmp/reason-candidate "$CANDIDATE_COMMIT"
+
+          (
+            cd /tmp/reason-control
+            CARGO_TARGET_DIR=/tmp/reason-control-target \
+              cargo build --locked -p reasoning-harness-cli --bin reason
+          )
+          (
+            cd /tmp/reason-candidate
+            CARGO_TARGET_DIR=/tmp/reason-candidate-target \
+              cargo build --locked -p reasoning-harness-cli --bin reason
+          )
+
+          /tmp/reason-control-target/debug/reason --version
+          /tmp/reason-candidate-target/debug/reason --version
+
+      - name: Check provider credential before live boundary
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$TARGET" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            *) exit 2 ;;
+          esac
+
+      - name: Run first canonical paired adoption observation
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -uo pipefail
+          python3 scripts/action_materialization_v2.py \
+            --control-bin /tmp/reason-control-target/debug/reason \
+            --candidate-bin /tmp/reason-candidate-target/debug/reason \
+            --provider-target "$TARGET" \
+            --attempt-marker "/tmp/action-materialization-v2-$TARGET.attempt.json" \
+            --output "/tmp/action-materialization-v2-$TARGET.json" \
+            > "/tmp/action-materialization-v2-$TARGET.stdout.json" \
+            2> "/tmp/action-materialization-v2-$TARGET.stderr.log"
+          rc=$?
+          cat "/tmp/action-materialization-v2-$TARGET.stdout.json" || true
+          cat "/tmp/action-materialization-v2-$TARGET.stderr.log" >&2 || true
+          exit "$rc"
+
+      - name: Enforce frozen adoption acceptance
+        run: |
+          set -euo pipefail
+          python3 - "$TARGET" <<'PY2'
+          import json
+          import sys
+
+          target = sys.argv[1]
+          with open(
+              f"/tmp/action-materialization-v2-{target}.json",
+              encoding="utf-8",
+          ) as stream:
+              report = json.load(stream)
+
+          assert report["schema_version"] == "reason-action-materialization-v2"
+          assert report["corpus_identity"] == "action-materialization-v2"
+          assert report["evaluator_identity"] == "reason-action-materialization-v2"
+          assert report["scoring_identity"] == "action-materialization-scoring-v2"
+          assert report["provider_target"] == target
+          assert report["live_observation_performed"] is True
+          assert len(report["control_trials"]) == 5
+          assert len(report["candidate_trials"]) == 5
+
+          paired = report["paired_summary"]
+          assert paired["control"]["complete_trials"] == 5
+          assert paired["candidate"]["complete_trials"] == 5
+          assert paired["control"]["all_k"]["derived_independence_p_to_k"] is None
+          assert paired["candidate"]["all_k"]["derived_independence_p_to_k"] is None
+          assert (
+              paired["control"][
+                  "total_correctness_boundary_violations_all_attempts"
+              ]
+              == 0
+          )
+          assert (
+              paired["candidate"][
+                  "total_correctness_boundary_violations_all_attempts"
+              ]
+              == 0
+          )
+          assert paired["control"]["legacy_action_planner_calls"] > 0
+          assert paired["candidate"]["legacy_action_planner_calls"] == 0
+          assert paired["candidate"]["intent_planner_calls"] > 0
+          assert paired["candidate"]["harness_intent_materializations"] > 0
+          assert all(paired["checks"].values())
+          assert report["acceptance_passed"] is True
+
+          print(
+              json.dumps(
+                  {
+                      "provider_target": target,
+                      "observed_model_identities": report[
+                          "observed_model_identities"
+                      ],
+                      "control": paired["control"],
+                      "candidate": paired["candidate"],
+                      "checks": paired["checks"],
+                  },
+                  indent=2,
+                  sort_keys=True,
+              )
+          )
+          PY2
+
+      - name: Upload canonical paired observation
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: action-materialization-v2-${{ matrix.target }}
+          path: |
+            /tmp/action-materialization-v2-${{ matrix.target }}.json
+            /tmp/action-materialization-v2-${{ matrix.target }}.stdout.json
+            /tmp/action-materialization-v2-${{ matrix.target }}.stderr.log
+            /tmp/action-materialization-v2-${{ matrix.target }}.attempt.json
+            /tmp/action-materialization-v2-validate.json
+            /tmp/action-materialization-v2-preflight.json
+          if-no-files-found: warn

@@ -1,0 +1,24 @@
+{
+  "config": "configs/nerava.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "nerava.release.primary_custodian",
+    "team-orchid",
+    "fixture:action-materialization-v3:nerava:primary"
+  ],
+  "id": "grounded-nerava",
+  "kind": "investigation",
+  "minimum_same_key_targets": 2,
+  "preferred_capability": "nerava-custodian-primary",
+  "relevant_capabilities": [
+    "nerava-custodian-primary",
+    "nerava-custodian-secondary"
+  ],
+  "role": "grounded_same_key_siblings",
+  "schema_version": "action-materialization-case-v3",
+  "target": {
+    "key": "nerava.release.primary_custodian",
+    "value": "team-orchid"
+  },
+  "task": "Determine the current value of the exact fact family nerava.release.primary_custodian. Keep two separate investigation questions for this same fact: one for the primary custody record and one as a separately tracked confirmation question. Do not merge the two questions. Use the configured read-only sources and answer only from admitted evidence."
+}

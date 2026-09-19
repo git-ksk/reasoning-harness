@@ -1,0 +1,132 @@
+{
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "secondary": 10
+            },
+            "evaluation_time_unix_seconds": 2200010000,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "ecosystem": {
+                "kind": "values",
+                "values": [
+                  "prod"
+                ]
+              }
+            },
+            "sources": {
+              "fixture:action-materialization-v3:nerava:primary": {
+                "authority_class": "primary",
+                "max_age_seconds": 300,
+                "scope": {
+                  "ecosystem": {
+                    "kind": "values",
+                    "values": [
+                      "prod"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "args": [
+            "scripts/action_materialization_fixture_resolver_v3.py",
+            "--mode",
+            "evidence",
+            "--source",
+            "fixture:action-materialization-v3:nerava:primary",
+            "--fact-key",
+            "nerava.release.primary_custodian",
+            "--fact-value",
+            "team-orchid",
+            "--observed-at",
+            "2200009950",
+            "--retrieved-at",
+            "2200009960",
+            "--authority",
+            "primary",
+            "--scope",
+            "prod"
+          ],
+          "id": "nerava-custodian-primary",
+          "kind": "external_command",
+          "max_response_bytes": 65536,
+          "program": "python3",
+          "read_only": true,
+          "selection_priority": 20,
+          "supported_fact_keys": [
+            "nerava.release.primary_custodian"
+          ],
+          "timeout_ms": 5000
+        },
+        {
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "secondary": 10
+            },
+            "evaluation_time_unix_seconds": 2200010000,
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "ecosystem": {
+                "kind": "values",
+                "values": [
+                  "prod"
+                ]
+              }
+            },
+            "sources": {
+              "fixture:action-materialization-v3:nerava:secondary": {
+                "authority_class": "primary",
+                "max_age_seconds": 300,
+                "scope": {
+                  "ecosystem": {
+                    "kind": "values",
+                    "values": [
+                      "prod"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "args": [
+            "scripts/action_materialization_fixture_resolver_v3.py",
+            "--mode",
+            "no-result",
+            "--source",
+            "fixture:action-materialization-v3:nerava:secondary",
+            "--observed-at",
+            "2200009950",
+            "--retrieved-at",
+            "2200009960",
+            "--authority",
+            "primary",
+            "--scope",
+            "prod"
+          ],
+          "id": "nerava-custodian-secondary",
+          "kind": "external_command",
+          "max_response_bytes": 65536,
+          "program": "python3",
+          "read_only": true,
+          "selection_priority": 10,
+          "supported_fact_keys": [
+            "nerava.release.primary_custodian"
+          ],
+          "timeout_ms": 5000
+        }
+      ],
+      "max_actions": 5,
+      "max_no_progress_rounds": 4,
+      "max_rounds": 5,
+      "max_targets": 3,
+      "planner_max_tokens": 256
+    }
+  },
+  "schema_version": "reason-config-v1"
+}
