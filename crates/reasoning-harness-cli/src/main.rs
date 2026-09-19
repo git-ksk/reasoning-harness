@@ -9173,7 +9173,6 @@ mod candidate_json_tests {
         );
     }
 
-
     #[tokio::test]
     async fn cancellation_is_typed_operational_failure() {
         let cancellation = progress::CancellationRun::test_instance();
