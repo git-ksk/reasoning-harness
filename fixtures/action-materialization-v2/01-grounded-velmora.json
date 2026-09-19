@@ -1,0 +1,24 @@
+{
+  "config": "configs/velmora.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "velmora.release.primary_owner",
+    "team-ember",
+    "fixture:action-materialization-v2:velmora:primary"
+  ],
+  "id": "grounded-velmora",
+  "kind": "investigation",
+  "minimum_same_key_targets": 2,
+  "preferred_capability": "velmora-owner-primary",
+  "relevant_capabilities": [
+    "velmora-owner-primary",
+    "velmora-owner-secondary"
+  ],
+  "role": "grounded_same_key_siblings",
+  "schema_version": "action-materialization-case-v2",
+  "target": {
+    "key": "velmora.release.primary_owner",
+    "value": "team-ember"
+  },
+  "task": "Determine the current value of the exact fact family velmora.release.primary_owner. Keep two separate investigation questions for this same fact: one for the primary ownership record and one as a separately tracked confirmation question. Do not merge the two questions. Use the configured read-only sources and answer only from admitted evidence."
+}

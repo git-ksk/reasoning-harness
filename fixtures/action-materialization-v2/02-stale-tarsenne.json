@@ -1,0 +1,27 @@
+{
+  "config": "configs/tarsenne.json",
+  "expected": "unknown",
+  "expected_rejection": [
+    "stale"
+  ],
+  "fresh_markers": [
+    "tarsenne.window.is_open",
+    "tarsenne-window-primary",
+    "fixture:action-materialization-v2:tarsenne:primary"
+  ],
+  "id": "stale-tarsenne",
+  "kind": "investigation",
+  "minimum_same_key_targets": 2,
+  "preferred_capability": "tarsenne-window-primary",
+  "relevant_capabilities": [
+    "tarsenne-window-primary",
+    "tarsenne-window-secondary"
+  ],
+  "role": "stale_same_key_siblings",
+  "schema_version": "action-materialization-case-v2",
+  "target": {
+    "key": "tarsenne.window.is_open",
+    "value": "true"
+  },
+  "task": "Determine whether the exact fact family tarsenne.window.is_open is true now. Keep two separate investigation questions for this same fact: one for the primary window record and one as a separately tracked confirmation question. Do not merge the two questions. Use the configured read-only sources, and reject stale observations rather than promoting them to current truth."
+}
