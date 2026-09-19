@@ -8,7 +8,17 @@ use crate::{ModelOutputFormat, ModelReasoningPreference, ModelRequest};
 
 pub const INVESTIGATION_PLAN_CONTRACT_ID: &str = "reason-investigation-plan-v1";
 pub const INVESTIGATION_ACTION_CONTRACT_ID: &str = "reason-investigation-action-v1";
+pub const INVESTIGATION_INTENT_CONTRACT_ID: &str = "reason-investigation-intent-v1";
+pub const INVESTIGATION_MATERIALIZATION_POLICY_ID: &str = "target-intent-materialization-v1";
 pub const INVESTIGATION_RUNTIME_ID: &str = "bounded-investigation-v1";
+
+fn default_investigation_intent_contract_id() -> &'static str {
+    INVESTIGATION_INTENT_CONTRACT_ID
+}
+
+fn default_investigation_materialization_policy_id() -> &'static str {
+    INVESTIGATION_MATERIALIZATION_POLICY_ID
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
@@ -197,6 +207,32 @@ enum ModelFacingInvestigationActionProposal {
     Stop {},
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum InvestigationIntentKind {
+    Continue,
+    Stop,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+pub struct InvestigationIntentProposal {
+    pub action: InvestigationIntentKind,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target_id: Option<String>,
+}
+
+#[allow(dead_code)]
+#[derive(JsonSchema)]
+#[serde(tag = "action", rename_all = "snake_case", deny_unknown_fields)]
+enum ModelFacingInvestigationIntentProposal {
+    Continue {
+        #[schemars(length(min = 1))]
+        target_id: String,
+    },
+    Stop {},
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct InvestigationAction {
     pub action_index: usize,
@@ -222,6 +258,25 @@ pub struct InvestigationActionRejectionRecord {
     pub round: usize,
     pub proposal: InvestigationActionProposal,
     pub reason: InvestigationActionRejection,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum InvestigationIntentRejection {
+    StoppedOrActionBudget,
+    InvalidShape,
+    UnknownTarget,
+    MissingExpectedFactKey,
+    NoEligibleCapability,
+    MissingPriority,
+    HighestPriorityTie,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct InvestigationIntentRejectionRecord {
+    pub round: usize,
+    pub proposal: InvestigationIntentProposal,
+    pub reason: InvestigationIntentRejection,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
@@ -291,10 +346,22 @@ pub struct InvestigationTelemetry {
     pub runtime_id: &'static str,
     pub plan_contract: &'static str,
     pub action_contract: &'static str,
+    #[serde(default = "default_investigation_intent_contract_id")]
+    pub intent_contract: &'static str,
+    #[serde(default = "default_investigation_materialization_policy_id")]
+    pub materialization_policy: &'static str,
     pub targets: Vec<InvestigationTarget>,
     pub capabilities: Vec<InvestigationCapability>,
     pub rounds: usize,
     pub planner_calls: usize,
+    #[serde(default)]
+    pub planner_intent_calls: usize,
+    #[serde(default)]
+    pub harness_intent_materializations: usize,
+    #[serde(default)]
+    pub intent_rejections: BTreeMap<InvestigationIntentRejection, usize>,
+    #[serde(default)]
+    pub intent_rejection_records: Vec<InvestigationIntentRejectionRecord>,
     /// Actions selected deterministically by the Harness because exactly one compatible untried
     /// target/capability pair remained. This is selection only and grants no authority.
     #[serde(default)]
@@ -340,6 +407,38 @@ pub fn investigation_plan_schema() -> Value {
 pub fn investigation_action_schema() -> Value {
     serde_json::to_value(schema_for!(ModelFacingInvestigationActionProposal))
         .expect("investigation action schema must serialize")
+}
+
+pub fn investigation_intent_schema() -> Value {
+    serde_json::to_value(schema_for!(ModelFacingInvestigationIntentProposal))
+        .expect("investigation intent schema must serialize")
+}
+
+fn investigation_intent_schema_for_targets(target_ids: &[String]) -> Value {
+    let mut schema = investigation_intent_schema();
+    let branches = schema["oneOf"]
+        .as_array()
+        .expect("intent closed union")
+        .clone();
+    let cont = branches
+        .iter()
+        .find(|branch| branch["properties"]["action"]["const"] == "continue")
+        .expect("intent continue")
+        .clone();
+    let stop = branches
+        .iter()
+        .find(|branch| branch["properties"]["action"]["const"] == "stop")
+        .expect("intent stop")
+        .clone();
+    let mut available = Vec::new();
+    for target_id in target_ids {
+        let mut branch = cont.clone();
+        branch["properties"]["target_id"]["const"] = Value::String(target_id.clone());
+        available.push(branch);
+    }
+    available.push(stop);
+    schema["oneOf"] = Value::Array(available);
+    schema
 }
 
 fn investigation_action_schema_for_telemetry(telemetry: &InvestigationTelemetry) -> Value {
@@ -467,10 +566,16 @@ impl InvestigationState {
                 runtime_id: INVESTIGATION_RUNTIME_ID,
                 plan_contract: INVESTIGATION_PLAN_CONTRACT_ID,
                 action_contract: INVESTIGATION_ACTION_CONTRACT_ID,
+                intent_contract: INVESTIGATION_INTENT_CONTRACT_ID,
+                materialization_policy: INVESTIGATION_MATERIALIZATION_POLICY_ID,
                 targets,
                 capabilities,
                 rounds: 0,
                 planner_calls: 0,
+                planner_intent_calls: 0,
+                harness_intent_materializations: 0,
+                intent_rejections: BTreeMap::new(),
+                intent_rejection_records: vec![],
                 harness_unique_selections: 0,
                 harness_no_result_followup_selections: 0,
                 harness_precedence_selections: 0,
@@ -652,6 +757,126 @@ impl InvestigationState {
         })
     }
 
+    fn materializable_action_for_target(
+        &self,
+        target_id: &str,
+    ) -> Result<InvestigationActionProposal, InvestigationIntentRejection> {
+        if self.telemetry.stop_reason.is_some()
+            || self.telemetry.actions.len() >= self.policy.max_actions
+        {
+            return Err(InvestigationIntentRejection::StoppedOrActionBudget);
+        }
+        let target = self
+            .targets
+            .get(target_id)
+            .ok_or(InvestigationIntentRejection::UnknownTarget)?;
+        let key = target
+            .expected_fact_key
+            .as_deref()
+            .filter(|key| !key.is_empty())
+            .ok_or(InvestigationIntentRejection::MissingExpectedFactKey)?;
+        let capabilities = self
+            .capabilities
+            .values()
+            .filter(|capability| {
+                capability.read_only
+                    && !capability.supported_fact_keys.is_empty()
+                    && capability.supported_fact_keys.contains(key)
+                    && !self
+                        .attempted_pairs
+                        .contains(&(target.id.clone(), capability.id.clone()))
+            })
+            .collect::<Vec<_>>();
+        if capabilities.is_empty() {
+            return Err(InvestigationIntentRejection::NoEligibleCapability);
+        }
+        let capability = if capabilities.len() == 1 {
+            capabilities[0]
+        } else {
+            if capabilities
+                .iter()
+                .any(|capability| capability.selection_priority.is_none())
+            {
+                return Err(InvestigationIntentRejection::MissingPriority);
+            }
+            let highest = capabilities
+                .iter()
+                .filter_map(|capability| capability.selection_priority)
+                .max()
+                .ok_or(InvestigationIntentRejection::MissingPriority)?;
+            let best = capabilities
+                .iter()
+                .filter(|capability| capability.selection_priority == Some(highest))
+                .collect::<Vec<_>>();
+            if best.len() != 1 {
+                return Err(InvestigationIntentRejection::HighestPriorityTie);
+            }
+            best[0]
+        };
+        Ok(InvestigationActionProposal {
+            action: InvestigationActionKind::Acquire,
+            target_id: Some(target.id.clone()),
+            capability_id: Some(capability.id.clone()),
+        })
+    }
+
+    pub fn materializable_target_ids(&self) -> Vec<String> {
+        self.targets
+            .keys()
+            .filter(|target_id| self.materializable_action_for_target(target_id).is_ok())
+            .cloned()
+            .collect()
+    }
+
+    pub fn materialize_intent(
+        &mut self,
+        round: usize,
+        proposal: InvestigationIntentProposal,
+    ) -> Result<InvestigationActionProposal, InvestigationIntentRejection> {
+        let result = match proposal.action {
+            InvestigationIntentKind::Stop => {
+                if proposal.target_id.is_some() {
+                    Err(InvestigationIntentRejection::InvalidShape)
+                } else {
+                    Ok(InvestigationActionProposal {
+                        action: InvestigationActionKind::Stop,
+                        target_id: None,
+                        capability_id: None,
+                    })
+                }
+            }
+            InvestigationIntentKind::Continue => {
+                let target_id = match proposal
+                    .target_id
+                    .as_deref()
+                    .filter(|target_id| !target_id.trim().is_empty())
+                {
+                    Some(target_id) => target_id,
+                    None => {
+                        return self.reject_intent(
+                            round,
+                            proposal,
+                            InvestigationIntentRejection::InvalidShape,
+                        );
+                    }
+                };
+                self.materializable_action_for_target(target_id)
+            }
+        };
+        match result {
+            Ok(action) => {
+                if action.action == InvestigationActionKind::Acquire {
+                    self.telemetry.harness_intent_materializations = self
+                        .telemetry
+                        .harness_intent_materializations
+                        .saturating_add(1);
+                }
+                Ok(action)
+            }
+            Err(reason) => self.reject_intent(round, proposal, reason),
+        }
+    }
+
     /// After a typed `no_result`, continue the same exact target without another stochastic
     /// selector call only when one explicitly key-bound read-only capability remains for that
     /// target. Other investigation targets are deliberately ignored for this narrow continuation:
@@ -727,6 +952,10 @@ impl InvestigationState {
 
     pub fn note_planner_call(&mut self) {
         self.telemetry.planner_calls = self.telemetry.planner_calls.saturating_add(1);
+    }
+
+    pub fn note_planner_intent_call(&mut self) {
+        self.telemetry.planner_intent_calls = self.telemetry.planner_intent_calls.saturating_add(1);
     }
 
     pub fn note_harness_unique_selection(&mut self) {
@@ -853,6 +1082,23 @@ impl InvestigationState {
         }
     }
 
+    fn reject_intent<T>(
+        &mut self,
+        round: usize,
+        proposal: InvestigationIntentProposal,
+        reason: InvestigationIntentRejection,
+    ) -> Result<T, InvestigationIntentRejection> {
+        *self.telemetry.intent_rejections.entry(reason).or_default() += 1;
+        self.telemetry
+            .intent_rejection_records
+            .push(InvestigationIntentRejectionRecord {
+                round,
+                proposal,
+                reason,
+            });
+        Err(reason)
+    }
+
     fn reject_action<T>(
         &mut self,
         proposal: &InvestigationActionProposal,
@@ -915,6 +1161,45 @@ pub fn build_investigation_plan_request(
     })
 }
 
+pub fn build_investigation_intent_request(
+    task: &str,
+    telemetry: &InvestigationTelemetry,
+    materializable_target_ids: &[String],
+    max_tokens: Option<u32>,
+    random_seed: Option<u64>,
+) -> Result<ModelRequest, serde_json::Error> {
+    let targets = serde_json::to_string_pretty(&telemetry.targets)?;
+    let prior_actions = serde_json::to_string_pretty(&telemetry.actions)?;
+    let prior_refusals = serde_json::to_string_pretty(&telemetry.intent_rejection_records)?;
+    Ok(ModelRequest {
+        system: Some(
+            "You are an untrusted target-intent selector inside a bounded investigation harness. Return only the requested structured intent. Continue chooses one existing target_id from the schema; stop omits target_id. You never choose or invent a capability ID. The Harness owns exact executable capability materialization, validation, admission, verification, budgets, and correctness. Target intent is planning state only and grants no evidence or answer authority.".into(),
+        ),
+        task: format!(
+            "User task:
+{task}
+
+Canonical Harness investigation targets:
+{targets}
+
+Prior typed action outcomes:
+{prior_actions}
+
+Prior target-intent materialization refusals:
+{prior_refusals}
+
+Select exactly one continue intent using an allowed existing target_id or stop. Do not invent, merge, normalize, or rewrite target identities. Do not emit capability IDs, tool arguments, evidence, authority, or verdicts."
+        ),
+        output_format: ModelOutputFormat::JsonSchema {
+            name: INVESTIGATION_INTENT_CONTRACT_ID.into(),
+            schema: investigation_intent_schema_for_targets(materializable_target_ids),
+        },
+        max_tokens,
+        random_seed,
+        reasoning_preference: Some(ModelReasoningPreference::Minimize),
+    })
+}
+
 pub fn build_investigation_action_request(
     task: &str,
     telemetry: &InvestigationTelemetry,
@@ -945,6 +1230,12 @@ pub fn build_investigation_action_request(
 pub fn parse_investigation_plan(
     text: &str,
 ) -> Result<InvestigationPlanProposal, serde_json::Error> {
+    serde_json::from_str(text)
+}
+
+pub fn parse_investigation_intent(
+    text: &str,
+) -> Result<InvestigationIntentProposal, serde_json::Error> {
     serde_json::from_str(text)
 }
 

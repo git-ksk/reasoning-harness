@@ -59,6 +59,7 @@
 - [ADR-0001: interface / packaging boundary](adr/0001-interface-and-packaging-boundaries.ja.md)
 - [ADR-0002: grounded resolution / finalization](adr/0002-grounded-resolution-and-finalization.ja.md)
 - [ADR-0003: reasoning control plane](adr/0003-reasoning-control-plane.ja.md)
+- [ADR-0004: Harness-owned investigation action materialization](adr/0004-investigation-target-intent-materialization.ja.md)
 
 ## 現在の状況 / ロードマップだけ見たい
 

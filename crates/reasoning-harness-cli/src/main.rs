@@ -41,8 +41,8 @@ use reasoning_harness_core::{
     FinalClaimMode, FinalizationPolicy, FinalizationResult, FinalizationStatus,
     GroundedResolutionOutcome, GroundedResolutionPolicy, GroundedResolutionRuntime, HarnessInput,
     HarnessOutcome, INVESTIGATION_RUNTIME_ID, InvestigationActionProposal, InvestigationCapability,
-    InvestigationObservationStatus, InvestigationPlanProposal, InvestigationPolicy,
-    InvestigationState, InvestigationStopReason, InvestigationTelemetry,
+    InvestigationIntentProposal, InvestigationObservationStatus, InvestigationPlanProposal,
+    InvestigationPolicy, InvestigationState, InvestigationStopReason, InvestigationTelemetry,
     MaterializationFailureClass, ModelAdapter, ModelBackedSoftJudgeError, ModelError,
     ModelErrorKind, ModelOutputFormat, ModelRequest, ModelUsage, Proposition,
     REASONING_ARTIFACT_CONTRACT_ID, REASONING_CANDIDATE_CONTRACT_ID,
@@ -61,14 +61,15 @@ use reasoning_harness_core::{
     aggregate_claim_corpus, aggregate_repeated_diagnostics, aggregate_resolution_benchmark,
     aggregate_soft_judge_calibration, build_candidate_json_fallback_request,
     build_candidate_request, build_final_answer_json_fallback_request, build_final_answer_request,
-    build_investigation_action_request, build_investigation_plan_request,
-    canonical_verified_target_answer, canonical_verified_target_partial_answer,
-    canonical_verified_target_reject_partial_answer, classify_materialization_failure, evaluate,
-    evaluate_benchmark_fixture_with_diagnostics, evaluate_resolution_fixture, finalize_answer,
-    frameworks::five_whys::FiveWhysRestatementPass, reasoning_artifact_schema,
-    reasoning_candidate_schema, recover_verified_target_renderer_downgrade, replay_thread,
-    run_answer_safety_gate, run_harness, run_model_backed_soft_judge, run_semantic_runtime,
-    structured_fact_verifier_for_input, validate_artifact, validate_thread,
+    build_investigation_action_request, build_investigation_intent_request,
+    build_investigation_plan_request, canonical_verified_target_answer,
+    canonical_verified_target_partial_answer, canonical_verified_target_reject_partial_answer,
+    classify_materialization_failure, evaluate, evaluate_benchmark_fixture_with_diagnostics,
+    evaluate_resolution_fixture, finalize_answer, frameworks::five_whys::FiveWhysRestatementPass,
+    reasoning_artifact_schema, reasoning_candidate_schema,
+    recover_verified_target_renderer_downgrade, replay_thread, run_answer_safety_gate, run_harness,
+    run_model_backed_soft_judge, run_semantic_runtime, structured_fact_verifier_for_input,
+    validate_artifact, validate_thread,
 };
 use reasoning_harness_providers::{
     DEFAULT_EXTERNAL_RESOLVER_MAX_RESPONSE_BYTES, DEFAULT_EXTERNAL_RESOLVER_TIMEOUT_MS,
@@ -619,6 +620,15 @@ struct DiagnosticTraceCall<'a> {
     phase: DiagnosticPhase,
 }
 
+struct InvestigationIntentGenerationCall<'a> {
+    task: &'a str,
+    telemetry: &'a InvestigationTelemetry,
+    materializable_target_ids: &'a [String],
+    max_tokens: u32,
+    seed: Option<u64>,
+    requested_model: &'a str,
+}
+
 enum LiveGenerator {
     Mistral(MistralAdapter),
     Google(GoogleAdapter),
@@ -791,6 +801,55 @@ impl LiveGenerator {
         } else {
             self.plan_investigation(task, capabilities, max_tokens, seed, requested_model)
                 .await
+        }
+    }
+
+    async fn choose_investigation_intent_traced(
+        &self,
+        call: InvestigationIntentGenerationCall<'_>,
+        trace: DiagnosticTraceCall<'_>,
+    ) -> Result<(InvestigationIntentProposal, GenerationObservation), GenerationFailure> {
+        let InvestigationIntentGenerationCall {
+            task,
+            telemetry,
+            materializable_target_ids,
+            max_tokens,
+            seed,
+            requested_model,
+        } = call;
+        let request = build_investigation_intent_request(
+            task,
+            telemetry,
+            materializable_target_ids,
+            Some(max_tokens),
+            seed,
+        )
+        .map_err(|error| {
+            generation_failure(
+                self.provider_label(),
+                requested_model,
+                Instant::now(),
+                ModelError::new(ModelErrorKind::Protocol, error.to_string()),
+            )
+        })?;
+        if let Some(recorder) = trace.recorder {
+            let adapter = DiagnosticModelAdapter::new(
+                self.adapter(),
+                recorder,
+                trace.phase,
+                self.provider_label(),
+                requested_model,
+            );
+            run_structured_json_call(&adapter, self.provider_label(), requested_model, request)
+                .await
+        } else {
+            run_structured_json_call(
+                self.adapter(),
+                self.provider_label(),
+                requested_model,
+                request,
+            )
+            .await
         }
     }
 
@@ -2312,6 +2371,8 @@ struct NaturalInvestigationObservation {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     action_generations: Vec<GenerationObservation>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    intent_generations: Vec<GenerationObservation>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     candidate_regenerations: Vec<GenerationObservation>,
     #[serde(skip_serializing_if = "Option::is_none")]
     generation_failure: Option<GenerationFailure>,
@@ -3209,6 +3270,7 @@ async fn run_natural_investigation(
         telemetry: None,
         plan_generation: None,
         action_generations: vec![],
+        intent_generations: vec![],
         candidate_regenerations: vec![],
         generation_failure: None,
         plan_rejection: None,
@@ -3284,63 +3346,116 @@ async fn run_natural_investigation(
             state.stop(InvestigationStopReason::TargetsExhausted);
             break;
         }
-        let (round_index, proposal) =
-            if let Some((round, proposal)) = state.select_no_result_followup_continuation() {
-                (round, proposal)
-            } else {
-                let round_index = match state.begin_round() {
-                    Ok(round) => round,
-                    Err(_) => break,
-                };
-                let proposal =
-                    if let Some(proposal) = state.unique_compatible_action_proposal() {
-                        state.note_harness_unique_selection();
-                        proposal
-                    } else if let Some(proposal) =
-                        state.unique_precedence_action_proposal_with_diagnostic()
-                    {
-                        state.note_harness_precedence_selection();
-                        proposal
-                    } else {
-                        state.note_planner_call();
-                        let action_seed =
-                            seed.and_then(|seed| seed.checked_add(round_index as u64));
-                        let action_max_tokens = usage
-                            .cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
-                        progress.phase("Planning", "selecting the next bounded acquisition action");
-                        let (proposal, action_generation) = match progress
-                    .wait_for_provider(
-                        "waiting on the selected provider for the next investigation action",
-                        generator.choose_investigation_action_traced(
-                        task,
-                        state.telemetry(),
-                        action_max_tokens,
-                        action_seed,
-                        model,
-                        DiagnosticTraceCall {
-                            recorder: trace.as_deref_mut(),
-                            phase: DiagnosticPhase::new("investigation_action", Some(round_index)),
-                        },
-                        ),
-                    )
-                    .await
-                {
-                    Ok(result) => result,
-                    Err(failure) => {
-                        progress.failure(&failure);
-                        usage.record_failure(&failure)?;
-                        state.stop(InvestigationStopReason::OperationalTerminal);
-                        observation.generation_failure = Some(failure);
-                        break;
-                    }
-                };
-                        progress.provider(&action_generation);
-                        usage.record_generation(&action_generation)?;
-                        observation.action_generations.push(action_generation);
-                        proposal
-                    };
-                (round_index, proposal)
+        let (round_index, proposal) = if let Some((round, proposal)) =
+            state.select_no_result_followup_continuation()
+        {
+            (round, proposal)
+        } else {
+            let round_index = match state.begin_round() {
+                Ok(round) => round,
+                Err(_) => break,
             };
+            let proposal = if let Some(proposal) = state.unique_compatible_action_proposal() {
+                state.note_harness_unique_selection();
+                proposal
+            } else if let Some(proposal) = state.unique_precedence_action_proposal_with_diagnostic()
+            {
+                state.note_harness_precedence_selection();
+                proposal
+            } else {
+                let action_seed = seed.and_then(|seed| seed.checked_add(round_index as u64));
+                let mut materialized = None;
+                let materializable_target_ids = state.materializable_target_ids();
+                if !materializable_target_ids.is_empty() {
+                    state.note_planner_intent_call();
+                    let intent_max_tokens =
+                        usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
+                    progress.phase(
+                        "Planning",
+                        "selecting the next bounded investigation target",
+                    );
+                    let (intent, intent_generation) = match progress
+                        .wait_for_provider(
+                            "waiting on the selected provider for the next investigation target",
+                            generator.choose_investigation_intent_traced(
+                                InvestigationIntentGenerationCall {
+                                    task,
+                                    telemetry: state.telemetry(),
+                                    materializable_target_ids: &materializable_target_ids,
+                                    max_tokens: intent_max_tokens,
+                                    seed: action_seed,
+                                    requested_model: model,
+                                },
+                                DiagnosticTraceCall {
+                                    recorder: trace.as_deref_mut(),
+                                    phase: DiagnosticPhase::new(
+                                        "investigation_intent",
+                                        Some(round_index),
+                                    ),
+                                },
+                            ),
+                        )
+                        .await
+                    {
+                        Ok(result) => result,
+                        Err(failure) => {
+                            progress.failure(&failure);
+                            usage.record_failure(&failure)?;
+                            state.stop(InvestigationStopReason::OperationalTerminal);
+                            observation.generation_failure = Some(failure);
+                            break;
+                        }
+                    };
+                    progress.provider(&intent_generation);
+                    usage.record_generation(&intent_generation)?;
+                    observation.intent_generations.push(intent_generation);
+                    materialized = state.materialize_intent(round_index, intent).ok();
+                }
+
+                if let Some(proposal) = materialized {
+                    proposal
+                } else {
+                    state.note_planner_call();
+                    let action_max_tokens =
+                        usage.cap_next_model_tokens(config.planner_max_tokens.min(max_tokens))?;
+                    progress.phase("Planning", "selecting the next bounded acquisition action");
+                    let (proposal, action_generation) = match progress
+                        .wait_for_provider(
+                            "waiting on the selected provider for the next investigation action",
+                            generator.choose_investigation_action_traced(
+                                task,
+                                state.telemetry(),
+                                action_max_tokens,
+                                action_seed,
+                                model,
+                                DiagnosticTraceCall {
+                                    recorder: trace.as_deref_mut(),
+                                    phase: DiagnosticPhase::new(
+                                        "investigation_action",
+                                        Some(round_index),
+                                    ),
+                                },
+                            ),
+                        )
+                        .await
+                    {
+                        Ok(result) => result,
+                        Err(failure) => {
+                            progress.failure(&failure);
+                            usage.record_failure(&failure)?;
+                            state.stop(InvestigationStopReason::OperationalTerminal);
+                            observation.generation_failure = Some(failure);
+                            break;
+                        }
+                    };
+                    progress.provider(&action_generation);
+                    usage.record_generation(&action_generation)?;
+                    observation.action_generations.push(action_generation);
+                    proposal
+                }
+            };
+            (round_index, proposal)
+        };
         let action = match state.validate_action(proposal) {
             Ok(Some(action)) => action,
             Ok(None) => break,
@@ -11839,6 +11954,60 @@ mod candidate_json_tests {
             None,
         )
         .unwrap();
+        assert_eq!(output.external_calls_replayed, 0);
+        fs::remove_file(path).ok();
+    }
+
+    #[test]
+    fn session_replay_preserves_materialized_investigation_attempt_without_external_reexecution() {
+        let path = synthetic_session_path("intent-materialization-replay");
+        let mut session = synthetic_session_file();
+        ensure_session_active_for_change(&mut session).unwrap();
+        session
+            .thread
+            .record_resolution_attempt(
+                "session-intent-materialized-attempt",
+                reasoning_harness_core::ResolutionAttempt {
+                    attempt_index: 0,
+                    request: ResolutionRequest {
+                        id: "investigation:owner:cache".into(),
+                        reason: ResolutionReason::Investigation,
+                        target: ResolutionTarget::InvestigationQuestion {
+                            target_id: "owner".into(),
+                            question: "Who owns routing?".into(),
+                            expected_fact_key: Some("routing.owner".into()),
+                        },
+                        resolver_class: ResolverClass::EvidenceAcquisition,
+                        budget: ResolutionRequestBudget::default(),
+                    },
+                    adapter_name: "investigation_external_command_v1".into(),
+                    adapter_config_id: Some("target-intent-materialization-v1".into()),
+                    admission_policy_id: None,
+                    status: reasoning_harness_core::ResolutionAttemptStatus::NoResult,
+                    cost: ResolutionCost {
+                        calls: 1,
+                        ..ResolutionCost::default()
+                    },
+                    admitted_evidence_ids: vec![],
+                    verification_receipts: 0,
+                    admission_rejection: None,
+                },
+            )
+            .unwrap();
+        save_session_file(&path, &session, true).unwrap();
+
+        let loaded = load_session_file(&path).unwrap();
+        let replay = replay_thread(&loaded.thread).unwrap();
+        assert_eq!(replay.snapshot.resolution_attempts.len(), 1);
+        assert_eq!(
+            replay.snapshot.resolution_attempts[0]
+                .adapter_config_id
+                .as_deref(),
+            Some("target-intent-materialization-v1")
+        );
+        assert_eq!(replay.snapshot.resolution_attempts[0].cost.calls, 1);
+        let output = session_operation_output("inspect", &loaded, None, None).unwrap();
+        assert_eq!(output.recorded_resolution_attempts, 1);
         assert_eq!(output.external_calls_replayed, 0);
         fs::remove_file(path).ok();
     }
