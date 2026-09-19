@@ -1,0 +1,19 @@
+{
+  "schema_version": "issue-248-finalization-e2e-case-v1",
+  "id": "investigation-veldrith-route",
+  "kind": "investigation",
+  "config": "configs/veldrith.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Veldrith routing plane",
+    "issue248.veldrith.route_endpoint",
+    "lane-941.delta",
+    "fixture:issue248-v1:veldrith-route"
+  ],
+  "relevant_capabilities": ["veldrith-route-primary"],
+  "target": {
+    "key": "issue248.veldrith.route_endpoint",
+    "value": "lane-941.delta"
+  },
+  "task": "Determine the current primary read endpoint for the Veldrith routing plane. Use the configured exact fact-key-bound read-only source and do not infer an endpoint from the source name."
+}

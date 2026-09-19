@@ -2324,6 +2324,7 @@ struct NaturalInvestigationRun {
     candidate: ReasoningCandidate,
     outcome: HarnessOutcome,
     resolution_rounds: Vec<GroundedResolutionOutcome>,
+    finalization_targets: Vec<Proposition>,
     observation: NaturalInvestigationObservation,
 }
 
@@ -3109,6 +3110,62 @@ fn run_configured_investigation_capability(
     }
 }
 
+fn record_investigation_finalization_observation(
+    observations: &mut BTreeMap<String, Vec<Proposition>>,
+    target_id: &str,
+    expected_fact_key: Option<&str>,
+    artifact: &ReasoningArtifact,
+    admitted_evidence_ids: &[String],
+) {
+    let Some(expected_fact_key) = expected_fact_key.filter(|key| !key.is_empty()) else {
+        return;
+    };
+    let entry = observations.entry(target_id.to_string()).or_default();
+    for evidence in &artifact.evidence {
+        if !admitted_evidence_ids.iter().any(|id| id == &evidence.id) {
+            continue;
+        }
+        let Some(value) = evidence.facts.get(expected_fact_key) else {
+            continue;
+        };
+        let proposition = Proposition {
+            key: expected_fact_key.to_string(),
+            value: value.clone(),
+        };
+        if !entry.contains(&proposition) {
+            entry.push(proposition);
+        }
+    }
+}
+
+fn resolved_investigation_finalization_targets(
+    target_keys: &[(String, Option<String>)],
+    observations: &BTreeMap<String, Vec<Proposition>>,
+) -> Vec<Proposition> {
+    if target_keys.is_empty() {
+        return vec![];
+    }
+
+    let mut resolved = Vec::with_capacity(target_keys.len());
+    for (target_id, expected_fact_key) in target_keys {
+        let Some(expected_fact_key) = expected_fact_key.as_deref().filter(|key| !key.is_empty())
+        else {
+            return vec![];
+        };
+        let Some(candidates) = observations.get(target_id) else {
+            return vec![];
+        };
+        if candidates.len() != 1
+            || candidates[0].key != expected_fact_key
+            || resolved.contains(&candidates[0])
+        {
+            return vec![];
+        }
+        resolved.push(candidates[0].clone());
+    }
+    resolved
+}
+
 struct NaturalInvestigationCall<'a> {
     task: &'a str,
     input: HarnessInput,
@@ -3185,6 +3242,7 @@ async fn run_natural_investigation(
                 candidate,
                 outcome: initial_outcome,
                 resolution_rounds: vec![],
+                finalization_targets: vec![],
                 observation,
             });
         }
@@ -3200,10 +3258,16 @@ async fn run_natural_investigation(
                 candidate,
                 outcome: initial_outcome,
                 resolution_rounds: vec![],
+                finalization_targets: vec![],
                 observation,
             });
         }
     };
+    let finalization_target_keys = targets
+        .iter()
+        .map(|target| (target.id.clone(), target.expected_fact_key.clone()))
+        .collect::<Vec<_>>();
+    let mut finalization_target_observations = BTreeMap::new();
     let mut state = InvestigationState::new(targets, descriptors, config.policy.clone())
         .map_err(|reason| CliError::new("configuration", reason))?;
     let mut current_input = input;
@@ -3327,12 +3391,23 @@ async fn run_natural_investigation(
         )?;
         usage.record_resolution(&acquisition);
         let (mut status, admitted_evidence) = investigation_attempt_status(&acquisition);
+        let admitted_evidence_ids = acquisition
+            .attempts
+            .last()
+            .map(|attempt| attempt.admitted_evidence_ids.clone())
+            .unwrap_or_default();
+        let expected_fact_key = finalization_target_keys
+            .iter()
+            .find(|(target_id, _)| target_id == &action.target_id)
+            .and_then(|(_, expected_fact_key)| expected_fact_key.as_deref());
+        record_investigation_finalization_observation(
+            &mut finalization_target_observations,
+            &action.target_id,
+            expected_fact_key,
+            &acquisition.final_artifact,
+            &admitted_evidence_ids,
+        );
         if let Some(trace) = trace.as_deref_mut() {
-            let admitted_evidence_ids = acquisition
-                .attempts
-                .last()
-                .map(|attempt| attempt.admitted_evidence_ids.clone())
-                .unwrap_or_default();
             let fact_keys = acquisition
                 .final_artifact
                 .evidence
@@ -3444,11 +3519,16 @@ async fn run_natural_investigation(
         }
     }
 
+    let finalization_targets = resolved_investigation_finalization_targets(
+        &finalization_target_keys,
+        &finalization_target_observations,
+    );
     observation.telemetry = Some(state.into_telemetry());
     Ok(NaturalInvestigationRun {
         candidate: current_candidate,
         outcome: current_outcome,
         resolution_rounds,
+        finalization_targets,
         observation,
     })
 }
@@ -3457,6 +3537,7 @@ async fn run_natural_investigation(
 struct NaturalExecutionSeed {
     input: HarnessInput,
     new_evidence_prefix: String,
+    finalization_targets: Vec<Proposition>,
 }
 
 fn merge_natural_execution_seed(
@@ -3616,6 +3697,10 @@ async fn execute_natural_inner(
         .to_string();
     let progress = progress::ProgressReporter::new(resolved.format, args.verbose, args.plain);
     let built = build_natural_input(&args, &task)?;
+    let seed_finalization_targets = seed
+        .as_ref()
+        .map(|seed| seed.finalization_targets.clone())
+        .unwrap_or_default();
     let built = if let Some(seed) = seed {
         merge_natural_execution_seed(built, seed)?
     } else {
@@ -3725,6 +3810,10 @@ async fn execute_natural_inner(
     let mut investigation_observation = None;
     let mut final_artifact = initial_outcome.artifact.clone();
     let mut final_verdict = initial_outcome.verdict;
+    let mut finalization_targets = built.input.hypotheses.clone();
+    if finalization_targets.is_empty() {
+        finalization_targets = seed_finalization_targets;
+    }
 
     if final_verdict != Verdict::Accept {
         if let Some(config) = investigation_config.as_ref() {
@@ -3744,6 +3833,9 @@ async fn execute_natural_inner(
                 cancellation: &cancellation,
             })
             .await?;
+            if finalization_targets.is_empty() {
+                finalization_targets = run.finalization_targets.clone();
+            }
             candidate = run.candidate;
             final_artifact = run.outcome.artifact.clone();
             final_verdict = run.outcome.verdict;
@@ -3862,7 +3954,7 @@ async fn execute_natural_inner(
                 let answer = canonical_verified_target_answer(
                     &final_artifact,
                     final_verdict,
-                    &built.input.hypotheses,
+                    &finalization_targets,
                 )
                 .unwrap_or_else(|| {
                     CanonicalFinalAnswerRenderer.render(&final_artifact, final_verdict)
@@ -3899,7 +3991,7 @@ async fn execute_natural_inner(
             if let Some(recovered) = canonical_verified_target_answer(
                 &final_artifact,
                 final_verdict,
-                &built.input.hypotheses,
+                &finalization_targets,
             ) {
                 rendered = recovered;
                 finalization = finalize_answer(
@@ -3932,7 +4024,7 @@ async fn execute_natural_inner(
                 canonical_verified_target_partial_answer(
                     &final_artifact,
                     final_verdict,
-                    &built.input.hypotheses,
+                    &finalization_targets,
                 )
             {
                 rendered = recovered;
@@ -3957,7 +4049,7 @@ async fn execute_natural_inner(
             recover_verified_target_renderer_downgrade(
                 &final_artifact,
                 final_verdict,
-                &built.input.hypotheses,
+                &finalization_targets,
                 &rendered,
                 &finalization,
             )
@@ -3983,7 +4075,7 @@ async fn execute_natural_inner(
             canonical_verified_target_reject_partial_answer(
                 &final_artifact,
                 final_verdict,
-                &built.input.hypotheses,
+                &finalization_targets,
             )
         {
             rendered = recovered;
@@ -5165,6 +5257,38 @@ fn previous_explicit_fact(
     })
 }
 
+fn session_correction_finalization_targets(
+    snapshot: &reasoning_harness_core::ReasoningThreadSnapshot,
+    correction: &Proposition,
+) -> Vec<Proposition> {
+    let Some(artifact) = snapshot.artifact.as_ref() else {
+        return vec![];
+    };
+    let mut prior = Vec::new();
+    for proposition in artifact.claims.iter().filter_map(|claim| {
+        if !matches!(
+            claim.state,
+            reasoning_harness_core::EpistemicState::Known
+                | reasoning_harness_core::EpistemicState::Supported
+        ) {
+            return None;
+        }
+        claim
+            .proposition
+            .as_ref()
+            .filter(|proposition| proposition.key == correction.key)
+    }) {
+        if !prior.contains(proposition) {
+            prior.push(proposition.clone());
+        }
+    }
+    if prior.len() == 1 {
+        vec![correction.clone()]
+    } else {
+        vec![]
+    }
+}
+
 fn ensure_session_active_for_change(
     session: &mut SessionFile,
 ) -> Result<reasoning_harness_core::ReasoningThreadSnapshot, CliError> {
@@ -5714,6 +5838,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                 Some(NaturalExecutionSeed {
                     input,
                     new_evidence_prefix: format!("session-turn-{turn_index}"),
+                    finalization_targets: vec![],
                 }),
             )
             .await?;
@@ -5742,6 +5867,8 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
             let mut session = load_session_file(&store)?;
             let snapshot = ensure_session_active_for_change(&mut session)?;
             let previous_value = previous_explicit_fact(&snapshot, &proposition.key);
+            let finalization_targets =
+                session_correction_finalization_targets(&snapshot, &proposition);
             let mut input = seed_input_for_session_turn(&snapshot, Some(&proposition.key))?;
             let turn_index = session.turns.len() + 1;
             input
@@ -5776,6 +5903,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                 Some(NaturalExecutionSeed {
                     input,
                     new_evidence_prefix: format!("session-turn-{turn_index}"),
+                    finalization_targets,
                 }),
             )
             .await?;
@@ -8958,6 +9086,137 @@ mod candidate_json_tests {
         assert!(cli.natural.verbose);
     }
 
+    #[test]
+    fn investigation_finalization_bridge_requires_exact_admitted_fact() {
+        let target_keys = vec![(
+            "deployment-region".to_string(),
+            Some("service.region".to_string()),
+        )];
+        let artifact = ReasoningArtifact {
+            evidence: vec![Evidence {
+                id: "admitted-1".into(),
+                source: "resolver".into(),
+                observation: "service.region=us-east-1".into(),
+                facts: BTreeMap::from([("service.region".into(), "us-east-1".into())]),
+                metadata: EvidenceMetadata::default(),
+            }],
+            ..ReasoningArtifact::default()
+        };
+        let mut observations = BTreeMap::new();
+
+        record_investigation_finalization_observation(
+            &mut observations,
+            "deployment-region",
+            Some("service.region"),
+            &artifact,
+            &["admitted-1".into()],
+        );
+
+        assert_eq!(
+            resolved_investigation_finalization_targets(&target_keys, &observations),
+            vec![Proposition {
+                key: "service.region".into(),
+                value: "us-east-1".into(),
+            }]
+        );
+    }
+
+    #[test]
+    fn investigation_finalization_bridge_ignores_unadmitted_fact() {
+        let target_keys = vec![(
+            "deployment-region".to_string(),
+            Some("service.region".to_string()),
+        )];
+        let artifact = ReasoningArtifact {
+            evidence: vec![Evidence {
+                id: "context-1".into(),
+                source: "context".into(),
+                observation: "service.region=us-east-1".into(),
+                facts: BTreeMap::from([("service.region".into(), "us-east-1".into())]),
+                metadata: EvidenceMetadata::default(),
+            }],
+            ..ReasoningArtifact::default()
+        };
+        let mut observations = BTreeMap::new();
+
+        record_investigation_finalization_observation(
+            &mut observations,
+            "deployment-region",
+            Some("service.region"),
+            &artifact,
+            &[],
+        );
+
+        assert!(
+            resolved_investigation_finalization_targets(&target_keys, &observations).is_empty()
+        );
+    }
+
+    #[test]
+    fn investigation_finalization_bridge_fails_closed_on_conflicting_values() {
+        let target_keys = vec![(
+            "deployment-region".to_string(),
+            Some("service.region".to_string()),
+        )];
+        let artifact = ReasoningArtifact {
+            evidence: vec![
+                Evidence {
+                    id: "admitted-1".into(),
+                    source: "resolver-a".into(),
+                    observation: "service.region=us-east-1".into(),
+                    facts: BTreeMap::from([("service.region".into(), "us-east-1".into())]),
+                    metadata: EvidenceMetadata::default(),
+                },
+                Evidence {
+                    id: "admitted-2".into(),
+                    source: "resolver-b".into(),
+                    observation: "service.region=us-west-2".into(),
+                    facts: BTreeMap::from([("service.region".into(), "us-west-2".into())]),
+                    metadata: EvidenceMetadata::default(),
+                },
+            ],
+            ..ReasoningArtifact::default()
+        };
+        let mut observations = BTreeMap::new();
+
+        record_investigation_finalization_observation(
+            &mut observations,
+            "deployment-region",
+            Some("service.region"),
+            &artifact,
+            &["admitted-1".into(), "admitted-2".into()],
+        );
+
+        assert!(
+            resolved_investigation_finalization_targets(&target_keys, &observations).is_empty()
+        );
+    }
+
+    #[test]
+    fn investigation_finalization_bridge_requires_every_planned_target() {
+        let target_keys = vec![
+            (
+                "deployment-region".to_string(),
+                Some("service.region".to_string()),
+            ),
+            (
+                "deployment-owner".to_string(),
+                Some("service.owner".to_string()),
+            ),
+        ];
+        let observations = BTreeMap::from([(
+            "deployment-region".to_string(),
+            vec![Proposition {
+                key: "service.region".into(),
+                value: "us-east-1".into(),
+            }],
+        )]);
+
+        assert!(
+            resolved_investigation_finalization_targets(&target_keys, &observations).is_empty()
+        );
+    }
+
     #[tokio::test]
     async fn cancellation_is_typed_operational_failure() {
         let cancellation = progress::CancellationRun::test_instance();
@@ -11706,6 +11965,112 @@ mod candidate_json_tests {
         assert!(output.pending_revalidation);
         assert!(output.finalization.is_none());
         assert_eq!(output.external_calls_replayed, 0);
+    }
+
+    #[test]
+    fn session_correction_target_requires_one_unique_grounded_prior_proposition() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let prior = Proposition {
+            key: correction.key.clone(),
+            value: "10".into(),
+        };
+        let artifact = ReasoningArtifact {
+            claims: vec![
+                reasoning_harness_core::Claim {
+                    id: "known".into(),
+                    statement: "threshold is 10".into(),
+                    state: reasoning_harness_core::EpistemicState::Known,
+                    proposition: Some(prior.clone()),
+                    evidence_ids: vec![],
+                },
+                reasoning_harness_core::Claim {
+                    id: "supported-duplicate".into(),
+                    statement: "threshold is 10".into(),
+                    state: reasoning_harness_core::EpistemicState::Supported,
+                    proposition: Some(prior),
+                    evidence_ids: vec![],
+                },
+            ],
+            ..Default::default()
+        };
+        let snapshot = reasoning_harness_core::ReasoningThreadSnapshot {
+            artifact: Some(artifact),
+            ..Default::default()
+        };
+
+        assert_eq!(
+            session_correction_finalization_targets(&snapshot, &correction),
+            vec![correction]
+        );
+    }
+
+    #[test]
+    fn session_correction_target_fails_closed_without_grounded_prior_key() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let artifact = ReasoningArtifact {
+            claims: vec![reasoning_harness_core::Claim {
+                id: "other".into(),
+                statement: "different key".into(),
+                state: reasoning_harness_core::EpistemicState::Supported,
+                proposition: Some(Proposition {
+                    key: "session.other".into(),
+                    value: "10".into(),
+                }),
+                evidence_ids: vec![],
+            }],
+            ..Default::default()
+        };
+        let snapshot = reasoning_harness_core::ReasoningThreadSnapshot {
+            artifact: Some(artifact),
+            ..Default::default()
+        };
+
+        assert!(session_correction_finalization_targets(&snapshot, &correction).is_empty());
+    }
+
+    #[test]
+    fn session_correction_target_fails_closed_on_conflicting_grounded_prior_values() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let artifact = ReasoningArtifact {
+            claims: vec![
+                reasoning_harness_core::Claim {
+                    id: "old-10".into(),
+                    statement: "threshold is 10".into(),
+                    state: reasoning_harness_core::EpistemicState::Known,
+                    proposition: Some(Proposition {
+                        key: correction.key.clone(),
+                        value: "10".into(),
+                    }),
+                    evidence_ids: vec![],
+                },
+                reasoning_harness_core::Claim {
+                    id: "old-12".into(),
+                    statement: "threshold is 12".into(),
+                    state: reasoning_harness_core::EpistemicState::Supported,
+                    proposition: Some(Proposition {
+                        key: correction.key.clone(),
+                        value: "12".into(),
+                    }),
+                    evidence_ids: vec![],
+                },
+            ],
+            ..Default::default()
+        };
+        let snapshot = reasoning_harness_core::ReasoningThreadSnapshot {
+            artifact: Some(artifact),
+            ..Default::default()
+        };
+
+        assert!(session_correction_finalization_targets(&snapshot, &correction).is_empty());
     }
 
     #[test]
