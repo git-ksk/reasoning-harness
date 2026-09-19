@@ -1,0 +1,259 @@
+name: engine-0.5-final-v2-live
+
+on:
+  push:
+    tags:
+      - engine-0.5-final-v2-freeze
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      FREEZE_TAG: engine-0.5-final-v2-freeze
+      PRODUCT_COMMIT: 7a91d272af1bab0a97bf80ed7bba027ff253d50a
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.5-final-v2-freeze
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Revalidate frozen surface before credentials
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          git diff --exit-code "$PRODUCT_COMMIT" -- Cargo.toml Cargo.lock crates
+          sha256sum -c fixtures/engine-0.5-final-v2-surface.sha256
+          python3 scripts/engine_0_5_final_finalization.py --validate-only >/tmp/engine050-finalization-validate.json
+          python3 scripts/engine_0_5_final_materialization.py --validate-only >/tmp/engine050-materialization-validate.json
+          python3 scripts/engine_0_5_final_materialization.py --preflight >/tmp/engine050-materialization-preflight.json
+          python3 -m unittest -v \
+            scripts/test_engine_0_5_final_finalization.py \
+            scripts/test_engine_0_5_final_materialization.py \
+            scripts/test_engine_0_5_final_composite.py
+          cargo fmt --all -- --check
+          cargo clippy --workspace --all-targets -- -D warnings
+          cargo test --workspace
+      - name: Preserve preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.5-final-v2-preflight
+          path: /tmp/engine050-*.json
+          if-no-files-found: warn
+
+  observation:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - target: mistral-8b
+            provider: mistral
+            role: validated_required
+          - target: mistral-14b
+            provider: mistral
+            role: observed_characterization
+          - target: google-gemini-3.5-flash-lite
+            provider: google
+            role: validated_required
+          - target: google-gemma-4-31b-it
+            provider: google
+            role: validated_required
+          - target: groq-gpt-oss-120b
+            provider: groq
+            role: validated_required
+          - target: groq-qwen3.8-27b
+            provider: groq
+            role: observed_characterization
+          - target: groq-gpt-oss-20b
+            provider: groq
+            role: observed_characterization
+          - target: nvidia-nemotron
+            provider: nvidia
+            role: limited_negative_control
+    concurrency:
+      group: engine050-final-${{ github.run_id }}-${{ matrix.provider }}
+      cancel-in-progress: false
+    env:
+      FREEZE_TAG: engine-0.5-final-v2-freeze
+      PRODUCT_COMMIT: 7a91d272af1bab0a97bf80ed7bba027ff253d50a
+      TARGET: ${{ matrix.target }}
+      PROVIDER: ${{ matrix.provider }}
+      ROLE: ${{ matrix.role }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.5-final-v2-freeze
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+      - name: Revalidate target surface and build exact product candidate
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          git diff --exit-code "$PRODUCT_COMMIT" -- Cargo.toml Cargo.lock crates
+          sha256sum -c fixtures/engine-0.5-final-v2-surface.sha256
+          python3 scripts/engine_0_5_final_finalization.py --validate-only >/dev/null
+          python3 scripts/engine_0_5_final_materialization.py --validate-only >/dev/null
+          python3 scripts/engine_0_5_final_materialization.py --preflight >/dev/null
+          git worktree add --detach /tmp/engine050-product "$PRODUCT_COMMIT"
+          (
+            cd /tmp/engine050-product
+            CARGO_TARGET_DIR=/tmp/engine050-target cargo build --locked -p reasoning-harness-cli --bin reason
+          )
+          /tmp/engine050-target/debug/reason --version
+      - name: Check provider credential after frozen preflight
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            groq) test -n "$GROQ_API_KEY" ;;
+            nvidia) test -n "$NVIDIA_API_KEY" ;;
+            *) exit 2 ;;
+          esac
+      - name: Run first canonical Engine 0.5.0 delta observation
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '2100'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -u
+          printf '%s\n' "{\"schema_version\":\"engine-0.5-final-v2-live-attempt\",\"target\":\"$TARGET\",\"provider\":\"$PROVIDER\",\"role\":\"$ROLE\",\"github_run_id\":\"$GITHUB_RUN_ID\",\"github_run_attempt\":\"$GITHUB_RUN_ATTEMPT\"}" > "/tmp/engine050-$TARGET-attempt.json"
+
+          set +e
+          python3 scripts/engine_0_5_final_finalization.py \
+            --reason-bin /tmp/engine050-target/debug/reason \
+            --target "$TARGET" \
+            --output "/tmp/engine050-$TARGET-finalization.json" \
+            > "/tmp/engine050-$TARGET-finalization.stdout.json" \
+            2> "/tmp/engine050-$TARGET-finalization.stderr.log"
+          FINAL_RC=$?
+          printf '%s\n' "$FINAL_RC" > "/tmp/engine050-$TARGET-finalization.rc"
+
+          python3 scripts/engine_0_5_final_materialization.py \
+            --candidate-bin /tmp/engine050-target/debug/reason \
+            --target "$TARGET" \
+            --attempt-marker "/tmp/engine050-$TARGET-materialization.attempt.json" \
+            --output "/tmp/engine050-$TARGET-materialization.json" \
+            > "/tmp/engine050-$TARGET-materialization.stdout.json" \
+            2> "/tmp/engine050-$TARGET-materialization.stderr.log"
+          MATERIAL_RC=$?
+          printf '%s\n' "$MATERIAL_RC" > "/tmp/engine050-$TARGET-materialization.rc"
+          set -e
+
+          python3 scripts/engine_0_5_final_composite.py \
+            --target "$TARGET" \
+            --finalization "/tmp/engine050-$TARGET-finalization.json" \
+            --finalization-rc "$FINAL_RC" \
+            --materialization "/tmp/engine050-$TARGET-materialization.json" \
+            --materialization-rc "$MATERIAL_RC" \
+            --output "/tmp/engine050-$TARGET-composite.json" \
+            > "/tmp/engine050-$TARGET-composite.stdout.json"
+
+          cat "/tmp/engine050-$TARGET-composite.json"
+          exit 0
+      - name: Preserve canonical target evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.5-final-v2-${{ matrix.target }}
+          path: /tmp/engine050-${{ matrix.target }}-*
+          if-no-files-found: warn
+
+  final-gate:
+    needs: observation
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.5-final-v2-*
+          path: /tmp/engine050-artifacts
+          merge-multiple: true
+      - name: Enforce independent validated-row gate and preserve full matrix
+        env:
+          GITHUB_RUN_ID_VALUE: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import glob
+          import json
+          import os
+          from pathlib import Path
+
+          required = {
+              'mistral-8b',
+              'google-gemini-3.5-flash-lite',
+              'google-gemma-4-31b-it',
+              'groq-gpt-oss-120b',
+          }
+          expected = required | {
+              'mistral-14b',
+              'groq-qwen3.8-27b',
+              'groq-gpt-oss-20b',
+              'nvidia-nemotron',
+          }
+          rows = {}
+          for path in glob.glob('/tmp/engine050-artifacts/engine050-*-composite.json'):
+              row = json.loads(Path(path).read_text())
+              rows[row['target']] = row
+          missing = sorted(expected - set(rows))
+          if missing:
+              raise SystemExit(f'missing composite reports: {missing}')
+          required_failures = sorted(
+              target for target in required
+              if rows[target].get('classification') != 'PASS'
+              or rows[target].get('release_gate_passed') is not True
+          )
+          matrix = {
+              'schema_version': 'reason-engine-0.5-final-v2-matrix',
+              'github_run_id': os.environ.get('GITHUB_RUN_ID_VALUE'),
+              'no_cross_model_averaging': True,
+              'required_targets': sorted(required),
+              'required_failures': required_failures,
+              'all_expected_targets_present': True,
+              'matrix_acceptance_passed': not required_failures,
+              'rows': [rows[target] for target in sorted(rows)],
+          }
+          Path('/tmp/engine-0.5-final-v2-matrix.json').write_text(
+              json.dumps(matrix, indent=2, sort_keys=True) + '\n'
+          )
+          print(json.dumps(matrix, indent=2, sort_keys=True))
+          if required_failures:
+              raise SystemExit(f'required Engine 0.5.0 rows failed: {required_failures}')
+          PY
+      - name: Upload aggregate matrix
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.5-final-v2-matrix
+          path: /tmp/engine-0.5-final-v2-matrix.json
+          if-no-files-found: warn
