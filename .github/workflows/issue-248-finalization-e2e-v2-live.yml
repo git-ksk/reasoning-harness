@@ -1,0 +1,111 @@
+name: issue-248-finalization-e2e-v2-live
+
+on:
+  push:
+    tags:
+      - issue-248-finalization-e2e-v2-freeze
+
+permissions:
+  contents: read
+
+jobs:
+  canonical-mistral-observation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      FREEZE_TAG: issue-248-finalization-e2e-v2-freeze
+      CANDIDATE_PARENT: f0735b957f4eac64aade99453272f1418ea54a10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: issue-248-finalization-e2e-v2-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate frozen v2 surface before credentials
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          git diff --exit-code "$CANDIDATE_PARENT" -- Cargo.toml Cargo.lock crates
+          sha256sum -c fixtures/issue-248-finalization-e2e-v2-surface.sha256
+          python3 scripts/issue_248_finalization_e2e_v2.py --validate-only >/tmp/issue248-v2-preflight.json
+          python3 -m unittest -v scripts/test_issue_248_finalization_e2e_v2.py
+
+      - name: Build frozen candidate runtime
+        run: cargo build --locked -p reasoning-harness-cli --bin reason
+
+      - name: Check live credential only after all pre-observation gates
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: test -n "$MISTRAL_API_KEY"
+
+      - name: Run canonical v2 observation exactly once
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          REASON_MISTRAL_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -euo pipefail
+          python3 scripts/issue_248_finalization_e2e_v2.py             --reason-bin target/debug/reason             --output /tmp/issue-248-finalization-e2e-v2-live.json             > /tmp/issue-248-finalization-e2e-v2-live.stdout.json             2> /tmp/issue-248-finalization-e2e-v2-live.stderr.log
+          cat /tmp/issue-248-finalization-e2e-v2-live.stdout.json
+          cat /tmp/issue-248-finalization-e2e-v2-live.stderr.log >&2
+
+      - name: Enforce Issue 248 acceptance
+        run: |
+          python3 - <<'PY'
+          import json
+          p=json.load(open('/tmp/issue-248-finalization-e2e-v2-live.json'))
+          assert p['schema_version']=='reason-issue-248-finalization-e2e-v2'
+          assert p['corpus_identity']=='issue-248-finalization-e2e-v2'
+          assert p['evaluator_identity']=='reason-issue-248-finalization-e2e-v2'
+          assert p['scoring_identity']=='issue-248-finalization-e2e-scoring-v2'
+          assert p['live_observation_performed'] is True
+          assert p['aggregate']['total_cases']==3
+          assert p['aggregate']['passed_cases']==3
+          assert p['aggregate']['correctness_boundary_violations']==0
+          assert p['aggregate']['session_external_calls_replayed']==0
+          assert p['acceptance_passed'] is True
+          by_id={c['id']:c for c in p['cases']}
+          natural=by_id['investigation-caelvorn-route']
+          assert natural['hypotheses_empty'] is True
+          assert natural['target_recalled'] is True
+          assert natural['admitted_evidence'] >= 1
+          assert natural['artifact_exact_supported'] is True
+          assert natural['target_grounded'] is True
+          safe=by_id['fail-closed-orphira-registry']
+          assert safe['hypotheses_empty'] is True
+          assert safe['target_grounded'] is False
+          assert safe['artifact_exact_supported'] is False
+          session=by_id['session-correct-tessovar']
+          assert session['start_prior_grounded'] is True
+          assert session['correction_event_recorded'] is True
+          assert session['invalidation_event_recorded'] is True
+          assert session['artifact_exact_supported'] is True
+          assert session['target_grounded'] is True
+          assert session['external_calls_replayed']==0
+          print(json.dumps({
+              'acceptance_passed': p['acceptance_passed'],
+              'aggregate': p['aggregate'],
+              'cases': [{k:c.get(k) for k in (
+                  'id','passed','target_grounded','artifact_exact_supported',
+                  'hypotheses_empty','admitted_evidence','finalization_status',
+                  'external_calls_replayed'
+              )} for c in p['cases']]
+          }, indent=2))
+          PY
+
+      - name: Upload canonical observation
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: issue-248-finalization-e2e-v2-live
+          path: |
+            /tmp/issue-248-finalization-e2e-v2-live.json
+            /tmp/issue-248-finalization-e2e-v2-live.stdout.json
+            /tmp/issue-248-finalization-e2e-v2-live.stderr.log
+          if-no-files-found: warn

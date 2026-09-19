@@ -1,0 +1,19 @@
+{
+  "schema_version": "issue-248-finalization-e2e-case-v1",
+  "id": "session-correct-tessovar",
+  "kind": "session_correct",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Tessovar retry ceiling",
+    "session.tessovar.retry_window",
+    "window-911",
+    "window-919"
+  ],
+  "start_fact": "session.tessovar.retry_window=window-911",
+  "correction": "session.tessovar.retry_window=window-919",
+  "target": {
+    "key": "session.tessovar.retry_window",
+    "value": "window-919"
+  },
+  "task": "Determine the configured Tessovar retry window token."
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "issue-248-finalization-e2e-case-v1",
+  "id": "fail-closed-orphira-registry",
+  "kind": "investigation",
+  "config": "configs/orphira.json",
+  "expected": "unknown",
+  "fresh_markers": [
+    "Orphira registry",
+    "issue248.orphira.build_epoch",
+    "orphira-epoch-7319",
+    "fixture:issue248-v2:orphira-registry"
+  ],
+  "relevant_capabilities": ["orphira-registry-primary"],
+  "target": {
+    "key": "issue248.orphira.build_epoch",
+    "value": "orphira-epoch-7319"
+  },
+  "task": "Determine the current build epoch token for the Orphira registry. Use the configured exact fact-key-bound read-only registry source. If the source returns no result, do not guess or manufacture a value."
+}
