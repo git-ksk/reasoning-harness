@@ -16,8 +16,8 @@ Usage:
   install.sh [--version VERSION|TAG] [--bin-dir DIR]
 
 Options:
-  --version VERSION|TAG  CLI version or release tag (default: 0.5.0)
-                         Examples: 0.4.2, v0.4.2, 0.5.0, reason-v0.5.0
+  --version VERSION|TAG  CLI version or release tag (default: 0.5.2)
+                         Examples: 0.4.2, v0.4.2, 0.5.2, reason-v0.5.2
   --bin-dir DIR          Install directory (default: $HOME/.local/bin)
   -h, --help             Show this help.
 
