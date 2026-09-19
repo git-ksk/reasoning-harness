@@ -1,0 +1,21 @@
+{
+  "schema_version": "engine-0.5-finalization-case-v3",
+  "id": "investigation-averiq-route",
+  "kind": "investigation",
+  "config": "configs/averiq.json",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Averiq routing plane",
+    "engine050v3.averiq.route_endpoint",
+    "lane-947.sigma",
+    "fixture:engine050-final-v3:averiq-route"
+  ],
+  "relevant_capabilities": [
+    "averiq-route-primary"
+  ],
+  "target": {
+    "key": "engine050v3.averiq.route_endpoint",
+    "value": "lane-947.sigma"
+  },
+  "task": "Determine the current primary read endpoint for the Averiq routing plane. Use the configured exact fact-key-bound read-only source and do not infer an endpoint from the source name."
+}

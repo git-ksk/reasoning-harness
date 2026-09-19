@@ -1,0 +1,19 @@
+{
+  "schema_version": "engine-0.5-finalization-case-v3",
+  "id": "session-correct-orivane",
+  "kind": "session_correct",
+  "expected": "grounded",
+  "fresh_markers": [
+    "Orivane retry ceiling",
+    "session.orivane.retry_window",
+    "window-1409",
+    "window-1423"
+  ],
+  "start_fact": "session.orivane.retry_window=window-1409",
+  "correction": "session.orivane.retry_window=window-1423",
+  "target": {
+    "key": "session.orivane.retry_window",
+    "value": "window-1423"
+  },
+  "task": "Determine the configured Orivane retry window token."
+}
