@@ -1,0 +1,19 @@
+{
+  "cases": 3,
+  "control_commit": "12292b92bcd7890b3a81fc53b2523d172c2bde3a",
+  "corpus_identity": "engine-0.5-final-v3-finalization",
+  "evaluator_identity": "reason-engine-0.5-final-v3-finalization",
+  "live_observation_performed": false,
+  "product_commit": "d60b9afdf0bb2a0c1986f8c8f7cb47e534a4cd90",
+  "provider_targets": [
+    "google-gemini-3.5-flash-lite",
+    "google-gemma-4-31b-it",
+    "groq-gpt-oss-120b",
+    "groq-qwen3.8-27b",
+    "mistral-14b",
+    "mistral-8b"
+  ],
+  "schema_version": "reason-engine-0.5-final-v3-finalization",
+  "scoring_identity": "engine-0.5-final-v3-scoring-v1",
+  "valid": true
+}

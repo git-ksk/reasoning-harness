@@ -1,0 +1,144 @@
+{
+  "all_rows_required_independently": true,
+  "github_run_id": "35457038163",
+  "matrix_acceptance_passed": true,
+  "no_cross_model_averaging": true,
+  "required_failures": [],
+  "required_targets": [
+    "mistral-14b",
+    "groq-qwen3.8-27b",
+    "mistral-8b",
+    "google-gemini-3.5-flash-lite",
+    "google-gemma-4-31b-it",
+    "groq-gpt-oss-120b"
+  ],
+  "rows": [
+    {
+      "acceptance_passed": true,
+      "aggregate": {
+        "correctness_boundary_violations": 0,
+        "passed_cases": 3,
+        "session_external_calls_replayed": 0,
+        "total_cases": 3
+      },
+      "exit_code": 0,
+      "provider_policy": {
+        "base_seed": 823511,
+        "inter_case_delay_ms": 1500,
+        "max_tokens": 1024,
+        "model": "ministral-14b-latest",
+        "provider": "mistral",
+        "role": "affected_required"
+      },
+      "report_present": true,
+      "row_gate_passed": true,
+      "target": "mistral-14b"
+    },
+    {
+      "acceptance_passed": true,
+      "aggregate": {
+        "correctness_boundary_violations": 0,
+        "passed_cases": 3,
+        "session_external_calls_replayed": 0,
+        "total_cases": 3
+      },
+      "exit_code": 0,
+      "provider_policy": {
+        "base_seed": 823511,
+        "inter_case_delay_ms": 2100,
+        "max_tokens": 1024,
+        "model": "qwen/qwen3.8-27b",
+        "provider": "groq",
+        "role": "affected_required"
+      },
+      "report_present": true,
+      "row_gate_passed": true,
+      "target": "groq-qwen3.8-27b"
+    },
+    {
+      "acceptance_passed": true,
+      "aggregate": {
+        "correctness_boundary_violations": 0,
+        "passed_cases": 3,
+        "session_external_calls_replayed": 0,
+        "total_cases": 3
+      },
+      "exit_code": 0,
+      "provider_policy": {
+        "base_seed": 823511,
+        "inter_case_delay_ms": 1500,
+        "max_tokens": 1024,
+        "model": "ministral-8b-latest",
+        "provider": "mistral",
+        "role": "validated_reference"
+      },
+      "report_present": true,
+      "row_gate_passed": true,
+      "target": "mistral-8b"
+    },
+    {
+      "acceptance_passed": true,
+      "aggregate": {
+        "correctness_boundary_violations": 0,
+        "passed_cases": 3,
+        "session_external_calls_replayed": 0,
+        "total_cases": 3
+      },
+      "exit_code": 0,
+      "provider_policy": {
+        "base_seed": 823511,
+        "inter_case_delay_ms": 6000,
+        "max_tokens": 1024,
+        "model": "gemini-3.5-flash-lite",
+        "provider": "google",
+        "role": "validated_reference"
+      },
+      "report_present": true,
+      "row_gate_passed": true,
+      "target": "google-gemini-3.5-flash-lite"
+    },
+    {
+      "acceptance_passed": true,
+      "aggregate": {
+        "correctness_boundary_violations": 0,
+        "passed_cases": 3,
+        "session_external_calls_replayed": 0,
+        "total_cases": 3
+      },
+      "exit_code": 0,
+      "provider_policy": {
+        "base_seed": 823511,
+        "inter_case_delay_ms": 6000,
+        "max_tokens": 1024,
+        "model": "gemma-4-31b-it",
+        "provider": "google",
+        "role": "validated_reference"
+      },
+      "report_present": true,
+      "row_gate_passed": true,
+      "target": "google-gemma-4-31b-it"
+    },
+    {
+      "acceptance_passed": true,
+      "aggregate": {
+        "correctness_boundary_violations": 0,
+        "passed_cases": 3,
+        "session_external_calls_replayed": 0,
+        "total_cases": 3
+      },
+      "exit_code": 0,
+      "provider_policy": {
+        "base_seed": 823511,
+        "inter_case_delay_ms": 2100,
+        "max_tokens": 1024,
+        "model": "openai/gpt-oss-120b",
+        "provider": "groq",
+        "role": "validated_reference"
+      },
+      "report_present": true,
+      "row_gate_passed": true,
+      "target": "groq-gpt-oss-120b"
+    }
+  ],
+  "schema_version": "reason-engine-0.5-final-v3-matrix"
+}
