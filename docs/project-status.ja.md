@@ -65,7 +65,7 @@ Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapter�
 
 reasoning / correctnessを変える仕事は、CLI UXとは意図的に分離します。
 
-Harness Engine 0.5.0は、reasoning utilityやcorrectness behaviorへ影響しうるverified-investigation系の変更を担当します。この種の変更はfresh evaluationが必要で、CLI UX releaseへ紛れ込ませません。
+Harness Engine 0.5.0はrelease-completeです。final-v3 canonical run `35457038163`で独立required 6 row・fresh 18/18 caseをPASSし、correctness-boundary violation 0、session external replay 0を確認しました。次の作業はEngine semantic変更ではなく、#455でrelease済みEngine 0.5.0を次のReason CLI patchへadoptする統合trackです。
 
 [バージョニング](versioning.ja.md)と[製品ロードマップ](product-roadmap.ja.md)を参照してください。
 

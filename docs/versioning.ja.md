@@ -39,6 +39,6 @@ Reason CLI 0.5.0
 Harness Engine 0.4.2
 ```
 
-CLI 0.5.0のproductization milestoneでは、Engine 0.4.2 semanticsを固定したままsetup、secure credential、diagnostics、distributionを改善します。別の **Harness Engine 0.5.0 — Verified Investigation Utility** milestoneが、engine semantics/utilityに踏み込む変更を所有し、その場合はfresh evaluationを必須にします。
+CLI 0.5.0 productization milestoneはEngine 0.4.2上でsetup、secure credential、diagnostics、distributionをreleaseしました。別の **Harness Engine 0.5.0 — Verified Investigation Utility** milestoneがfresh-evidenceを必要とするsemantic / utility workを所有し、`engine-v0.5.0` release後にclosed済みです。このrelease済みEngineを次のReason CLI patchへadoptする作業は#455で別途追跡します。
 
 過去のunified tag `v0.1.0`〜`v0.4.2`はimmutableのまま保持します。新しいCLI releaseは`reason-v*` namespace、独立したHarness Engine source releaseは`engine-v*` namespaceを使います。Harness Engine 0.5.0は最初のsplit Engine releaseとして`engine-v0.5.0`を使います。既に公開済みのReason CLI 0.5.2 artifactはEngine 0.4.2のままで、将来のCLI releaseが新しいEngine coordinateを明示的にadoptするまで変更しません。

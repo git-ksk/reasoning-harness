@@ -9,16 +9,19 @@
 ## 現在のバージョン座標
 
 ```text
-現在のsplit preview:
+公開済みsplit CLI:
   Reason CLI 0.5.2
   Harness Engine 0.4.2
+
+最新の独立Engine source release:
+  Harness Engine 0.5.0 (`engine-v0.5.0`)
+
+次の統合:
+  Reason CLI 0.5.x patch -> Harness Engine 0.5.0 (#455)
 
 最後のunified historical release:
   Reason CLI 0.4.2
   Harness Engine 0.4.2
-
-現在のEngine line:
-  Harness Engine 0.5.0 — Verified Investigation Utility
 ```
 
 `v0.4.2`が最後のunified historical releaseです。split CLI lineはすでに`reason-v0.5.0` / `reason-v0.5.1` / `reason-v0.5.2`まで進んでおり、CLI / Engine / machine-contract identityは独立して進みます。[バージョニング](versioning.ja.md)を参照してください。
@@ -38,9 +41,9 @@ Harness verifies / qualifies / abstains
 
 ## トラックA — Reason CLI 0.5.x: 一般利用向け製品化
 
-**Engine baselineは0.4.2に固定。**
+**公開済み`reason-v0.5.2`までのEngine baselineは0.4.2。** 既存release artifactはimmutableのまま保持し、次のCLI patchへのadoptionは#455で別途追跡します。
 
-base `reason-v0.5.0` と0.5.1 / 0.5.2 patch lineはrelease済みです。P0 release gateは完了し、milestoneで残るのはP1 distribution follow-up #375だけです。Homebrew physical acceptanceは完了、WinGet community manifestはvalidation / CLAを通過してcommunity moderator approval待ちです。
+base `reason-v0.5.0` と0.5.1 / 0.5.2 patch lineはrelease済みです。P0 release gateは完了しています。残るP1はdistribution follow-up #375と、release済みHarness Engine 0.5.0を次のCLI patchへadoptする#455です。Homebrew physical acceptanceは完了、WinGet community manifestはvalidation / CLAを通過してcommunity moderator approval待ちです。
 
 underlying authority semanticsを変えず、`reason`を成熟したterminal productとして使える状態にします。
 
@@ -86,7 +89,17 @@ MCP / resolver outputは引き続きacquired dataであり、correctness authori
 
 完全なP0/P1 issueとacceptance matrixは[Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md)を参照してください。
 
-## トラックB — Harness Engine 0.5.0: 検証付き調査の有用性
+### 次のpatch統合: Harness Engine 0.5.0 adoption（#455）
+
+Engine 0.5.0自体はすでにrelease-completeです。#455は新しいEngine semantic workではなく、**CLI adoption / distribution** taskとして扱います。
+
+- 公開済み`reason-v0.5.2` artifactはEngine 0.4.2のままimmutableに保持;
+- 次に利用可能なReason CLI 0.5.x patch coordinateを使う（未使用なら0.5.3想定）;
+- release provenanceでEngine 0.5.0をexactに識別;
+- `reason update`がEngine 0.4.2 -> 0.5.0を跨ぐ際はexplicit consentを維持;
+- release前にupdate/rollback、package-manager ownership、fresh-install、no-Rust consumer、supported-platform packagingを検証。
+
+## トラックB — Harness Engine 0.5.0: 検証付き調査の有用性 — 完了
 
 reasoning / correctness behaviorへ影響しうる変更はこのtrackで扱い、fresh evidenceを要求します。
 
@@ -96,9 +109,12 @@ reasoning / correctness behaviorへ影響しうる変更はこのtrackで扱い�
 - **#247 evaluator semantics — 完了:** frozen v11でpath observability / product utility / hard correctness / operational completenessを分離し、frozen v9はrescoreしていない;
 - **#282 repeated-trial planner reliability — 完了:** frozen `planner-reliability-v1`は両routine providerでprimary 5/5 trialを完了。Mistral strict planner successは5/5、Googleはinadmissible action proposal 1仰が安全にrejectされ4/5、correctness-boundary violationは0;
 - **#283 deterministic Harness-owned action materialization — 完了:** accepted candidateでmechanically safeなexact-key read-only action materializationをHarness control flowへ移し、`reason-investigation-intent-v1` / `target-intent-materialization-v1`を採用。frozen v3 adoption evidenceでarchitecture-path gateをPASSし、authority / finalization semanticsは変更していない。
-- **#443 Engine 0.5 final cross-model acceptance — 完了:** fresh `engine-0.5-final-v2-freeze`で#248 finalizationと#283 materializationをcurrent catalog全rowに対して確認し、validated-required 4 rowはすべて独立にPASS。observed / limited rowはcharacterization evidenceとして保存した。
+- **#443 initial Engine 0.5 final cross-model acceptance — 完了:** fresh `engine-0.5-final-v2-freeze`でaccepted baselineを確立;
+- **#445/#446/#450 final hardening — 完了:** finalization correctnessとplanner target-recall utilityを分離し、explicit-fact session correction continuityとmechanically uniqueなadmitted exact-fact materializationをHarness controlへ決定論化。verification authorityは弱めていない;
+- **#452 final-v3 / versioned release closeout — 完了:** `engine-0.5-final-v3-freeze` canonical run `35457038163`で独立required 6 row・fresh 18/18 case PASS、correctness-boundary violation 0、session external replay 0;
+- **Versioned Engine release — 完了:** `engine-v0.5.0`は`4fd6acc85511f286fd6b2f7c9439665b7819206a`を指し、`reasoning-harness-core`は0.5.0をreport。milestone #4はopen issue 0でclosed。
 
-正確なscopeはengine milestone / issueをsource of truthとします。Engine 0.5.0のsemantic / utility changeを、CLI-only productizationとして混ぜません。
+Engine 0.5.0はclosed release baselineです。今後のsemantic Engine workは新たに測定されたgapと新しいEngine identityを要求します。release済みEngineのCLI adoptionは#455が所有し、0.5.0 evidenceをreopen / rewriteしません。
 
 ## 昇格ルール
 

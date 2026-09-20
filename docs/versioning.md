@@ -39,6 +39,6 @@ Reason CLI 0.5.0
 Harness Engine 0.4.2
 ```
 
-The CLI 0.5.0 productization milestone focuses on setup, secure credentials, diagnostics, and distribution while keeping Engine 0.4.2 semantics fixed. The separate **Harness Engine 0.5.0 — Verified Investigation Utility** milestone owns semantic/utility work that may change the engine and therefore requires fresh evaluation.
+The CLI 0.5.0 productization milestone shipped setup, secure credentials, diagnostics, and distribution on Engine 0.4.2. The separate **Harness Engine 0.5.0 — Verified Investigation Utility** milestone owned the fresh-evidence semantic/utility work and is now closed after the `engine-v0.5.0` release. Adoption of that released Engine into the next Reason CLI patch is tracked separately in #455.
 
 Historical unified tags `v0.1.0` through `v0.4.2` remain immutable. New CLI releases use the `reason-v*` namespace; independent Harness Engine source releases use the `engine-v*` namespace. Harness Engine 0.5.0 is the first split Engine release under `engine-v0.5.0`. The already-published Reason CLI 0.5.2 artifacts remain on Engine 0.4.2 until a later CLI release explicitly adopts the newer Engine coordinate.

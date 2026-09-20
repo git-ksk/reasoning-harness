@@ -13,7 +13,7 @@ Harness Engine 0.4.2
 
 目的はcoding agentをコピーすることではありません。成熟したAI CLIで期待される低摩擦UXを、Reason固有の厳しいboundaryを保ったまま実現します。toolchain不要install、明示的project trust、guided secure auth、引数なしinteractive mode、理解しやすいverified evidence、continue/resume、provider usage可視化、provider/model/config/MCPのdiscoverability、actionable diagnostics、private local state、検証可能で可逆なupdate/uninstallを対象にします。
 
-Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6)、parent Issue #359。parentとP0 release-gate workは完了済みで、milestoneはP1 distribution follow-up #375だけを残しています。
+Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6)、parent Issue #359。parentとP0 release-gate workは完了済みで、milestoneはP1 distribution follow-up #375とEngine 0.5.0 adoption #455を残しています。
 
 ## 利用者から見た流れ
 
@@ -84,6 +84,7 @@ user-facing operational errorは「何が失敗したか」「taskが実行さ�
 - **#382 P0 — 完了:** release provenance、必要に応じたcode signing/notarization、trusted installer/updater verification。SHA-256は維持するが唯一のtrust rootにはしない。
 - **#372 P0 — 完了:** provenance検証済みupdate、明示的rollback、保持defaultのuninstall lifecycle。
 - **#375 P1 — external closeout待ち:** Reason CLI 0.5.2のHomebrew physical acceptanceは完了。WinGet community manifestはMicrosoft validation 01–10とCLAを通過し、community moderator approval / mergeだけが残る。Harness Engine 0.5.0はblockしない。
+- **#455 P1 — Engine 0.5.0 adoption待ち:** Harness Engine 0.5.0は`engine-v0.5.0`として独立release済みで、現在の`main`もReason CLI codeをEngine 0.5.0と組み合わせてbuild/package可能。次のCLI patchでは`reason-v0.5.2`を書き換えず新しい`reason-v0.5.x` coordinateでadoptし、Engine changeを伴うupdate/rollbackのexplicit consentを維持し、supported-platform fresh-install / distribution / provenance acceptanceを再実行する。
 
 ### プロジェクトtrust — #377（完了）
 
@@ -181,7 +182,7 @@ P0は、replacement acceptance pathを明示してscope変更しない限りgene
 
 ### P1 — 製品としての完成度 / polish
 
-#366、#368、#369、#373、#375、#383、#384、#385、#386。
+#366、#368、#369、#373、#375、#383、#384、#385、#386、#455。
 
 P1はpolished product lineとして進めますが、最初の安全な0.5.0 releaseを自動的にはblockしません。ただし実装中にP0級のusability/safety/supportability gapが判明した場合は昇格します。
 
@@ -198,4 +199,4 @@ P1はpolished product lineとして進めますが、最初の安全な0.5.0 rel
 - cloud account/session syncやbuilt-in hosted telemetryをlocal useの前提にすること;
 - v0.4.2やfreeze済みevaluation evidenceのretroactive変更。
 
-semantic/utility変更は別の **Harness Engine 0.5.0 — Verified Investigation Utility** milestone (#4)で扱い、adoption前にfresh evidenceを必須にします。
+別の **Harness Engine 0.5.0 — Verified Investigation Utility** milestone (#4)はclosed済みで、`engine-v0.5.0`としてreleaseされています。このCLI roadmapでEngine 0.5.0 semantic workを追加せず、#455がaccepted Engineを次のCLI patchへadoptする作業だけを所有します。

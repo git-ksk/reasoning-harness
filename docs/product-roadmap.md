@@ -9,16 +9,19 @@ The project now separates product UX work from reasoning/correctness changes so 
 ## Current coordinates
 
 ```text
-Current split preview:
+Published split CLI:
   Reason CLI 0.5.2
   Harness Engine 0.4.2
+
+Latest independent Engine source release:
+  Harness Engine 0.5.0 (`engine-v0.5.0`)
+
+Next integration:
+  Reason CLI 0.5.x patch -> Harness Engine 0.5.0 (#455)
 
 Final unified historical release:
   Reason CLI 0.4.2
   Harness Engine 0.4.2
-
-Active engine line:
-  Harness Engine 0.5.0 — Verified Investigation Utility
 ```
 
 `v0.4.2` is the final unified historical release. The split CLI line is already active (`reason-v0.5.0`, `reason-v0.5.1`, `reason-v0.5.2`); CLI, Engine, and machine-contract identities now advance independently. See [versioning](versioning.md).
@@ -38,9 +41,9 @@ Harness verifies / qualifies / abstains
 
 ## Track A — Reason CLI 0.5.x: general-use productization
 
-**Engine baseline: fixed at 0.4.2.**
+**Published baseline through `reason-v0.5.2`: Harness Engine 0.4.2.** Existing release artifacts remain immutable; the next CLI patch adoption is tracked separately in #455.
 
-The base `reason-v0.5.0` release and the 0.5.1/0.5.2 patch line are shipped. The milestone's P0 release gate is complete; the only remaining milestone issue is the P1 distribution follow-up #375. Homebrew physical acceptance is complete, while the WinGet community manifest has passed validation and CLA checks and is waiting for community moderator approval.
+The base `reason-v0.5.0` release and the 0.5.1/0.5.2 patch line are shipped. The milestone P0 release gate is complete. Remaining P1 work is #375 distribution follow-up plus #455 adoption of the released Harness Engine 0.5.0 into the next CLI patch. Homebrew physical acceptance is complete, while the WinGet community manifest has passed validation and CLA checks and is waiting for community moderator approval.
 
 This track makes `reason` a mature terminal product without changing the underlying authority semantics.
 
@@ -86,7 +89,17 @@ MCP/resolver output remains acquired data rather than correctness authority.
 
 The complete P0/P1 issue list and acceptance matrix live in the [Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md).
 
-## Track B — Harness Engine 0.5.0: verified investigation utility
+### Next patch integration: adopt Harness Engine 0.5.0 (#455)
+
+Engine 0.5.0 is already release-complete; #455 is a **CLI adoption/distribution** task, not new Engine semantic work.
+
+- keep the published `reason-v0.5.2` artifacts immutable on Engine 0.4.2;
+- use the next available Reason CLI 0.5.x patch coordinate (expected 0.5.3 if still available);
+- publish provenance that identifies Engine 0.5.0 exactly;
+- preserve explicit user consent when `reason update` crosses the Engine 0.4.2 -> 0.5.0 boundary;
+- validate update/rollback, package-manager ownership, fresh-install, no-Rust consumer, and supported-platform packaging before release.
+
+## Track B — Harness Engine 0.5.0: verified investigation utility — complete
 
 This track owns changes that may alter reasoning/correctness behavior and therefore require fresh evidence.
 
@@ -96,9 +109,12 @@ Current status/order:
 - **#247 evaluator semantics — complete:** frozen v11 separates path observability, product utility, hard correctness, and operational completeness without rescoring frozen v9;
 - **#282 repeated-trial planner reliability — complete:** frozen `planner-reliability-v1` completed 5/5 primary trials on both routine provider targets; Mistral strict planner success was 5/5, Google 4/5 because one inadmissible action proposal was safely rejected, with zero correctness-boundary violations;
 - **#283 deterministic Harness-owned action materialization — complete:** the accepted candidate moved mechanically safe exact-key read-only action materialization into Harness control flow with `reason-investigation-intent-v1` / `target-intent-materialization-v1`; frozen v3 adoption evidence passed the architecture-path gate without changing authority/finalization semantics.
-- **#443 Engine 0.5 final cross-model acceptance — complete:** fresh `engine-0.5-final-v2-freeze` covered #248 finalization and #283 materialization across every current catalog row; all four validated-required rows passed independently, with observed/limited rows preserved as characterization evidence.
+- **#443 initial Engine 0.5 final cross-model acceptance — complete:** fresh `engine-0.5-final-v2-freeze` established the accepted baseline across the validated-required rows;
+- **#445/#446/#450 final hardening — complete:** separated finalization correctness from planner target-recall utility, made explicit-fact session correction continuity deterministic, and materialized mechanically unique admitted exact facts under Harness control without weakening verification authority;
+- **#452 final-v3/versioned release closeout — complete:** `engine-0.5-final-v3-freeze` canonical run `35457038163` passed all six independently required rows and 18/18 fresh cases with correctness-boundary violations 0 and session external replay 0;
+- **Versioned Engine release — complete:** `engine-v0.5.0` points to `4fd6acc85511f286fd6b2f7c9439665b7819206a`, where `reasoning-harness-core` reports 0.5.0. Milestone #4 is closed with zero open issues.
 
-The exact engine milestone/issue definitions remain the source of truth for scope. No Engine 0.5.0 semantic/utility change should land under the label of a CLI-only productization change.
+Engine 0.5.0 is now a closed release baseline. Further semantic Engine work requires a new measured gap and a new Engine identity; CLI adoption of this already-released Engine belongs to #455 and must not reopen or rewrite the 0.5.0 evidence.
 
 ## Promotion rule
 
