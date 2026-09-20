@@ -71,7 +71,7 @@ HTTP 503とconnection error 7件は観測されていますが、それだけで
 
 ## クイックスタート
 
-現在のsplit previewは **Reason CLI 0.5.2 / Harness Engine 0.4.2** です。macOS / Linuxではpublished native installerが通常のend-user pathです（provenance verificationのためGitHub CLI 2.93+が必要です）。
+現在公開済みのsplit CLIは **Reason CLI 0.5.2 / Harness Engine 0.4.2** のままです。一方、独立versioningされたHarness Engine lineでは **Engine 0.5.0** を `engine-v0.5.0` としてreleaseします。将来のReason CLI releaseがこれを別途adoptできます。macOS / Linuxではpublished native installerが通常のend-user pathです（provenance verificationのためGitHub CLI 2.93+が必要です）。
 
 ```bash
 curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
@@ -317,24 +317,24 @@ v4とは別に、`v0.4.2`最終release gateのv36から、raw modelと意味を�
 
 freeze座標、metric、run ID、pacing policy、provenanceは[v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.ja.md)に固定しています。失敗・inconclusiveを都合よく消して再測定するのではなく、freezeしたevaluationを履歴として残し、現在のclaimを再現可能な実測へ結びつけています。
 
-### Harness Engine 0.5.0 最終cross-model acceptance
+### Harness Engine 0.5.0 release acceptance
 
-semanticなEngine 0.5.0 lineは、#248 finalization bridgeと#283 Harness-owned action materializationを対象にしたfresh frozen delta surfaceで最終acceptanceを完了しました。predeclareしたvalidated provider/model 4 rowはすべて独立にPASSし、cross-model平均は使っていません。
+Harness Engine 0.5.0はfreshな `engine-0.5-final-v3-freeze` surfaceでfinal hardeningを完了し、`engine-v0.5.0` として独立releaseします。release candidateにはexplicit-fact session continuityの決定論化（#446）、admitted exact-fact investigation materializationの決定論化（#450）、planner target-recall utilityとfinalization correctnessの分離（#445）が含まれます。
 
-| Model / provider | Catalog role | Finalization | Materialization | Final classification |
-| --- | --- | --- | --- | --- |
-| **Mistral / Ministral 8B** | validated required | PASS 3/3 | PASS | **PASS** |
-| **Google / Gemini 3.5 Flash-Lite** | validated required | PASS 3/3 | PASS | **PASS** |
-| **Google / Gemma 4 31B** | validated required | PASS 3/3 | PASS | **PASS** |
-| **Groq / GPT-OSS 120B** | validated required | PASS 3/3 | PASS | **PASS** |
-| Mistral / Ministral 14B | observed characterization | FAIL 2/3 | PASS | FAIL |
-| Groq / GPT-OSS 20B | observed characterization | PASS 3/3 | PASS | PASS |
-| Groq / Qwen 3.8 27B | observed characterization | incomplete | PASS | INCOMPLETE |
-| NVIDIA / Nemotron 3.5 Lightning 30B A3B | limited negative control | incomplete | operationally incomplete | INCOMPLETE |
+canonical Actions run `35457038163` ではrequired 6 provider/model rowがすべて独立にPASSし、cross-model平均は使っていません。
 
-完了したsemantic rowではobserved correctness-boundary violationはすべて0でした。required rowはsession external replayも0を維持し、#283 materialization surfaceではlegacy executable-action planner callも0でした。observed / limited rowはrelease voteではなくcharacterization evidenceなので、既存catalog labelを暗黙に昇格させません。NVIDIAの結果は既存の`limited / known_incompatible` statusと整合します。
+| Model / provider | Role | Fresh cases | Correctness violations | Session replay | Result |
+| --- | --- | ---: | ---: | ---: | --- |
+| **Mistral / Ministral 14B** | affected required | 3/3 | 0 | 0 | **PASS** |
+| **Groq / Qwen 3.8 27B** | affected required | 3/3 | 0 | 0 | **PASS** |
+| **Mistral / Ministral 8B** | validated reference | 3/3 | 0 | 0 | **PASS** |
+| **Google / Gemini 3.5 Flash-Lite** | validated reference | 3/3 | 0 | 0 | **PASS** |
+| **Google / Gemma 4 31B** | validated reference | 3/3 | 0 | 0 | **PASS** |
+| **Groq / GPT-OSS 120B** | validated reference | 3/3 | 0 | 0 | **PASS** |
 
-canonical v2 runはfreeze tag `engine-0.5-final-v2-freeze` からの `35435026552` で、preflight / final gateともにPASSしました。exact coordinate、residual、artifact provenance、保存済みraw reportは[Engine 0.5.0 final cross-model result](docs/engine-0.5-final-v2-result.ja.md)を参照してください。これはsemantic acceptance evidenceであり、別途versioned Engine 0.5.0 releaseでcoordinateを変更するまではcurrent packaged binaryはHarness Engine `0.4.2`をreportします。
+Averiq grounded caseではsupported exact `harness_investigation_admitted_fact_*` claim、Orivane correction caseではsupported exact `harness_session_correction_target_*` claimを必須にし、モデルが偶然正答しただけでは通らないgateにしています。Vardelis no-result caseは全rowでfail-closedを維持しました。
+
+exact coordinateと保存済みraw evidenceは[Engine 0.5.0 final-v3 result](docs/engine-0.5-final-v3-result.ja.md)および[Engine 0.5.0 release notes](docs/engine-0.5.0-release.ja.md)を参照してください。既に公開済みのReason CLI 0.5.2 binaryはEngine 0.4.2のままで、Engine / CLI releaseは独立に進みます。
 
 ## 製品・エンジン・研究を分ける
 
@@ -346,7 +346,7 @@ canonical v2 runはfreeze tag `engine-0.5-final-v2-freeze` からの `3543502655
 - **Harness Engine** — reasoning / correctness behaviorをversioning。
 - **Machine contract ID** — wire/schema compatibilityを独立してversioning。
 
-split general-use lineは **Reason CLI 0.5.x + Harness Engine 0.4.2** としてrelease済みで、現在は0.5.2です。setup、OS credential保存、対話型UX、installer、doctor、update/uninstallを改善しつつ、Engine 0.4.2のcorrectness semanticsは変更していません。
+公開済みsplit CLIは引き続き **Reason CLI 0.5.2 + Harness Engine 0.4.2** です。一方、Harness Engine 0.5.0はaccepted semantic lineから `engine-v0.5.0` として独立releaseします。既存CLI artifactはimmutableであり、Engine 0.5.0をdistribution済みCLIへadoptする場合は別のCLI releaseが必要です。
 
 詳しくは[バージョニング](docs/versioning.ja.md)と[Reason CLI 0.5.0 ロードマップ](docs/reason-cli-0.5-roadmap.ja.md)を参照してください。
 

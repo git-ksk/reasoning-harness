@@ -8,11 +8,11 @@ For the preserved long-form provenance ledger, see [Project status history](proj
 
 ## Current release
 
-**Reason CLI 0.5.2 on Harness Engine 0.4.2** is the current tagged split external preview.
+**Reason CLI 0.5.2 on Harness Engine 0.4.2** remains the current published CLI preview. **Harness Engine 0.5.0** is now independently released from the accepted semantic line as `engine-v0.5.0`.
 
 ```text
-Reason CLI 0.5.2
-Harness Engine 0.4.2
+Published CLI: Reason CLI 0.5.2 / Harness Engine 0.4.2
+Latest Engine source release: Harness Engine 0.5.0
 ```
 
 `v0.4.2` remains the immutable final release where the CLI and Engine shared one SemVer coordinate. `reason-v0.5.0` shipped the first split general-use CLI, followed by the 0.5.1/0.5.2 patch line without changing Engine 0.4.2 reasoning/authority semantics.
@@ -42,7 +42,7 @@ Supported provider adapters include Mistral, Google Gemini/AI Studio, NVIDIA Hos
 
 ## Current product track: Reason CLI 0.5.x
 
-The first split general-use release (`reason-v0.5.0`) has shipped, and the current patch coordinate is `reason-v0.5.2`, still on Harness Engine 0.4.2.
+The first split general-use release (`reason-v0.5.0`) has shipped, and the current published patch coordinate is `reason-v0.5.2`, still on its immutable Engine 0.4.2 payload. Engine 0.5.0 is a separate source release and is not retrofitted into those existing CLI artifacts.
 
 The 0.5.x productization line delivered ordinary terminal usability **without changing Engine 0.4.2 reasoning/correctness semantics**, including:
 
@@ -65,7 +65,7 @@ The detailed acceptance plan is in the [Reason CLI 0.5.0 roadmap](reason-cli-0.5
 
 Reasoning/correctness changes are intentionally separated from CLI product UX work.
 
-The Harness Engine 0.5.0 line owns evidence-gated changes that may alter reasoning utility or correctness behavior, including the remaining verified-investigation work tracked in the engine milestone. Such changes require fresh evaluation and cannot be smuggled into a CLI UX release.
+Harness Engine 0.5.0 is release-complete. Final-v3 canonical run `35457038163` passed all six independently required rows and all 18 fresh cases with zero correctness-boundary violations and zero session external replay. The release includes deterministic explicit-fact correction continuity, deterministic admitted exact-fact investigation materialization, and the finalization-correctness/planner-utility evaluator separation. See [Engine 0.5.0 final-v3 result](engine-0.5-final-v3-result.md).
 
 See [Product, engine, and contract versioning](versioning.md) and the [product roadmap](product-roadmap.md).
 
@@ -86,7 +86,7 @@ The general-use CLI productization work is shipped. Native installation, guided 
 
 The remaining product-side distribution follow-up is #375: Homebrew physical acceptance is complete; the WinGet community manifest has passed Microsoft validation and CLA checks and is waiting for community moderator approval. This external review does not block Harness Engine work.
 
-The Engine 0.5.0 semantic line is implementation- and acceptance-complete through #248, #282, #283, and final closeout #443. The fresh `engine-0.5-final-v2-freeze` matrix passed all four validated-required rows independently with zero observed correctness-boundary violations; observed/limited rows remain characterization evidence rather than release votes. See the [Engine 0.5.0 final cross-model result](engine-0.5-final-v2-result.md). The packaged Engine coordinate remains 0.4.2 until a separate versioned release is performed.
+Harness Engine 0.5.0 is implementation-, acceptance-, and release-complete. Final hardening #445/#446/#450 was validated by `engine-0.5-final-v3-freeze`; canonical run `35457038163` passed all six independently required rows and all 18 fresh cases with zero correctness-boundary violations and zero session external replay. See the [Engine 0.5.0 final-v3 result](engine-0.5-final-v3-result.md). The independent Engine source release is `engine-v0.5.0`; existing Reason CLI 0.5.2 artifacts remain on Engine 0.4.2.
 
 ## Research posture
 

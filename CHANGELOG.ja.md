@@ -8,6 +8,23 @@
 
 - Issue #355で、ユーザー向けReason CLI package versionとHarness Engine（`reasoning-harness-core`）package versionを分離。`v0.4.2`は最後のunified historical releaseとして保持し、今後のCLI release tagは`reason-vX.Y.Z`を使う。machine contract IDは独立したcompatibility座標のまま、provider crate versionは第3のユーザー向けversionにはせず内部実装座標として扱う。
 
+## Harness Engine [0.5.0] - 2026-09-20
+
+`engine-v*` namespaceで初めて独立versioningするHarness Engine source release。既存Reason CLI 0.5.2 release artifactはEngine 0.4.2のまま保持する。
+
+### 変更
+
+- exact supportとgrounded exposureがfinalization contractを満たす場合、planner `target_recalled` telemetryをcorrectness conjunctとして扱わないよう分離（#445）。
+- explicit session factのcorrection identityをHarness側で決定論的に保持し、grounded exposure前の通常verification requirementは維持（#446）。
+- validated read-only investigation actionが機械的に一意なexact factをadmitした後、Harnessがそのpropositionを`Assumed`としてmaterialize可能にし、`Supported`/`Known`への昇格は通常verificationだけに限定（#450）。
+
+### Release acceptance
+
+- frozen surface: `engine-0.5-final-v3-freeze` / `063833f38c38225109586b3db92348563b3822f8`。
+- product candidate: `d60b9afdf0bb2a0c1986f8c8f7cb47e534a4cd90`。
+- canonical Actions run `35457038163`: required 6 model rowすべて独立PASS、fresh 18/18 case PASS、correctness-boundary violation 0、session external replay 0。
+- 詳細とraw evidence: [Engine 0.5.0 final-v3 result](docs/engine-0.5-final-v3-result.ja.md)。
+
 ## [0.4.2] - 2026-09-11
 
 v0.4.2はinvestigation utilityとprovider parityのexternal-preview patch release。v0.4.xのcorrectness/authority boundaryを維持したままstochastic investigation control pathをhardeningし、freeze済みmetric-v13 acceptanceでMistral / Groq / Gemini / Gemmaの最終candidateを検証した。

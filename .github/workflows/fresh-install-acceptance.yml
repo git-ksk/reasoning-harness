@@ -81,7 +81,7 @@ jobs:
           assert (major, minor) == (0, 5), sys.argv[1]
           assert patch >= 0
           PY
-          test "$ENGINE_VERSION" = "0.4.2"
+          test "$ENGINE_VERSION" = "0.5.0"
           echo "cli_version=$CLI_VERSION" >> "$GITHUB_OUTPUT"
       - name: Build release candidate binary
         run: cargo build --locked --release -p reasoning-harness-cli --bin reason

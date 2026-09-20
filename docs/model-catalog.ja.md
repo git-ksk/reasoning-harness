@@ -31,7 +31,7 @@ catalogにないmodelへ**黙ってfallbackすることはありません**。�
 
 これは**operational compatibility metadataであってcorrectness scoreではありません**。最終的なcorrectness authorityはmodel選択ではなく、Harnessのevidence admission / verification / finalizationが持ちます。
 
-後続の[Harness Engine 0.5.0 final cross-model matrix](engine-0.5-final-v2-result.ja.md)ではcurrent catalog全rowをEngine 0.5.0 semantic delta上でcharacterizeしています。ただし、この結果でlabel定義をretroactiveに変更せず、labelは引き続きv0.4.2 canonical release identityへ紐づけます。
+後続の[Harness Engine 0.5.0 final cross-model matrix](engine-0.5-final-v3-result.ja.md)ではcurrent catalog全rowをEngine 0.5.0 semantic delta上でcharacterizeしています。ただし、この結果でlabel定義をretroactiveに変更せず、labelは引き続きv0.4.2 canonical release identityへ紐づけます。
 
 ## 初期curated catalog
 

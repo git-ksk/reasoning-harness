@@ -1809,7 +1809,7 @@ fn doctor_reports_versions_sources_and_secret_free_readiness_without_live_side_e
     assert_eq!(json["command"], "doctor");
     assert_eq!(json["result"]["doctor_surface"], "reason-doctor-v1");
     assert_eq!(json["result"]["versions"]["cli"], env!("CARGO_PKG_VERSION"));
-    assert_eq!(json["result"]["versions"]["engine"], "0.4.2");
+    assert_eq!(json["result"]["versions"]["engine"], "0.5.0");
     assert_eq!(json["result"]["config"]["status"], "valid");
     assert!(
         json["result"]["config"]["effective_sources"]
