@@ -10,6 +10,23 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 - Issue #355 decouples the user-facing Reason CLI package version from the Harness Engine (`reasoning-harness-core`) package version. `v0.4.2` remains the final unified historical release; future CLI releases use `reason-vX.Y.Z` tags. Machine contract IDs remain independent compatibility coordinates, and provider crate versions remain internal implementation coordinates rather than a third user-facing product version.
 
+## Harness Engine [0.5.0] - 2026-09-20
+
+First independently versioned Harness Engine source release under the split `engine-v*` namespace. Existing Reason CLI 0.5.2 release artifacts remain on Engine 0.4.2.
+
+### Changed
+
+- Finalization correctness no longer treats planner `target_recalled` telemetry as a correctness conjunct when exact support and grounded exposure already satisfy the finalization contract (#445).
+- Explicit session-fact correction identity is retained deterministically by the Harness and still requires ordinary verification before grounded exposure (#446).
+- After a validated read-only investigation action admits one mechanically unique exact fact, the Harness can materialize that exact proposition as `Assumed`; normal verification remains the only path to `Supported`/`Known` (#450).
+
+### Release acceptance
+
+- Frozen surface: `engine-0.5-final-v3-freeze` at `063833f38c38225109586b3db92348563b3822f8`.
+- Product candidate: `d60b9afdf0bb2a0c1986f8c8f7cb47e534a4cd90`.
+- Canonical Actions run `35457038163`: all six required model rows passed independently, 18/18 fresh cases PASS, correctness-boundary violations 0, session external replay 0.
+- Full result and raw evidence: [Engine 0.5.0 final-v3 result](docs/engine-0.5-final-v3-result.md).
+
 ## [0.5.2] - 2026-09-14
 
 Patch release for package-manager ownership correctness discovered during physical Homebrew acceptance.

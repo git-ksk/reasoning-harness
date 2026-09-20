@@ -22,7 +22,7 @@ import tomllib
 import zipfile
 from pathlib import Path
 
-ENGINE_VERSION = "0.4.2"
+ENGINE_VERSION = "0.5.0"
 SECRETS = (
     "reason-phase5-mistral-secret-7Fz3-not-real",
     "reason-phase5-google-secret-4Qm8-not-real",

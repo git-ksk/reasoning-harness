@@ -81,7 +81,8 @@
 - [v36安全性補足](v36-raw-baseline-supplement.ja.md) — release surfaceの5つの安全境界でraw modelとHarnessを追試。
 - [Planner reliability v1結果](planner-reliability-v1-result.ja.md) — #283 action materialization変更前のfrozen #282 repeated-trial baseline。
 - [v0.4.2 final v36 release acceptance](natural-language-e2e-v36-result.ja.md) — immutableなfinal unified / Engine 0.4.2 release evidence。
-- [Harness Engine 0.5.0 final cross-model acceptance](engine-0.5-final-v2-result.ja.md) — current curated model catalog全体を対象にしたfresh final semantic-delta gate。
+- [Harness Engine 0.5.0 release](engine-0.5.0-release.ja.md) — versioned Engine coordinate、release boundary、accepted semantic delta。
+- [Harness Engine 0.5.0 final cross-model acceptance](engine-0.5-final-v3-result.ja.md) — current curated model catalog全体を対象にしたfresh final semantic-delta gate。
 - [Product dogfood](product-dogfood.ja.md) — その他のproduct-oriented comparison。
 - [ベンチマーク](benchmark.ja.md) — benchmark / evaluationの読み方。
 - [研究計画](research-plan.ja.md) — 研究課題とpromotion discipline。

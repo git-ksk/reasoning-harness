@@ -14,7 +14,7 @@ This version changes for product-facing work such as commands, setup/configurati
 reason-vX.Y.Z
 ```
 
-The release workflow validates that `reason-vX.Y.Z` matches the `reasoning-harness-cli` package version.
+The release workflow validates that `reason-vX.Y.Z` matches the `reasoning-harness-cli` package version. Harness Engine source releases use a separate `engine-vX.Y.Z` namespace and must match the `reasoning-harness-core` package version.
 
 ### 2. Harness Engine SemVer
 
@@ -41,4 +41,4 @@ Harness Engine 0.4.2
 
 The CLI 0.5.0 productization milestone focuses on setup, secure credentials, diagnostics, and distribution while keeping Engine 0.4.2 semantics fixed. The separate **Harness Engine 0.5.0 — Verified Investigation Utility** milestone owns semantic/utility work that may change the engine and therefore requires fresh evaluation.
 
-Historical unified tags `v0.1.0` through `v0.4.2` remain immutable. The release workflow can manually repackage those exact historical tags, but new automatic CLI releases use only the `reason-v*` namespace.
+Historical unified tags `v0.1.0` through `v0.4.2` remain immutable. New CLI releases use the `reason-v*` namespace; independent Harness Engine source releases use the `engine-v*` namespace. Harness Engine 0.5.0 is the first split Engine release under `engine-v0.5.0`. The already-published Reason CLI 0.5.2 artifacts remain on Engine 0.4.2 until a later CLI release explicitly adopts the newer Engine coordinate.

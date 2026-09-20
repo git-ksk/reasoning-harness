@@ -8,11 +8,11 @@
 
 ## 現在のリリース
 
-現在のtagged split external previewは **Reason CLI 0.5.2 / Harness Engine 0.4.2** です。
+現在公開済みのtagged split CLI previewは **Reason CLI 0.5.2 / Harness Engine 0.4.2** のままです。一方、**Harness Engine 0.5.0** はaccepted semantic lineから `engine-v0.5.0` として独立releaseします。
 
 ```text
-Reason CLI 0.5.2
-Harness Engine 0.4.2
+公開済みCLI: Reason CLI 0.5.2 / Harness Engine 0.4.2
+最新Engine source release: Harness Engine 0.5.0
 ```
 
 `v0.4.2`はCLI / Engineが同じSemVerを共有したimmutableな最後のunified releaseです。`reason-v0.5.0`で最初のsplit general-use CLIをreleaseし、0.5.1 / 0.5.2 patch lineもEngine 0.4.2のreasoning / authority semanticsを変えずに進めています。
@@ -44,7 +44,7 @@ Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapter�
 
 最初のsplit general-use release `reason-v0.5.0` はrelease済みで、現在のpatch coordinateは `reason-v0.5.2`、Harness Engineは引き続き0.4.2です。
 
-0.5.x productizationでは、**Engine 0.4.2のreasoning / correctness semanticsを変えずに**次を提供しています。
+公開済み0.5.x productization artifactでは、**Engine 0.4.2のreasoning / correctness semanticsを変えずに**次を提供しています。Engine 0.5.0は別source releaseとして扱い、既存CLI artifactへretrofitしません。
 
 - Rust toolchain不要のnative install;
 - verified distributionとupdate / rollback / uninstall lifecycle;
@@ -86,7 +86,7 @@ general-use CLI productizationはrelease済みです。native install、guided s
 
 product側で残るdistribution follow-upは#375です。Homebrew physical acceptanceは完了し、WinGet community manifestもMicrosoft validation / CLAを通過してcommunity moderator approval待ちです。この外部reviewはHarness Engine開発をblockしません。
 
-Harness Engine 0.5.0のsemantic lineは#248 / #282 / #283の実装と、最終closeout #443まで完了しました。fresh `engine-0.5-final-v2-freeze` matrixではvalidated-required 4 rowがすべて独立にPASSし、observed correctness-boundary violationは0でした。observed / limited rowはrelease voteではなくcharacterization evidenceとして保持します。詳細は[Engine 0.5.0 final cross-model result](engine-0.5-final-v2-result.ja.md)。package上のEngine coordinateは、別途versioned releaseを行うまでは0.4.2のままです。
+Harness Engine 0.5.0は実装・acceptance・releaseまで完了しました。final hardening #445/#446/#450を`engine-0.5-final-v3-freeze`で検証し、canonical run `35457038163` は独立required 6 row・fresh 18 caseすべてPASS、correctness-boundary violation 0、session external replay 0でした。詳細は[Engine 0.5.0 final-v3 result](engine-0.5-final-v3-result.ja.md)を参照してください。独立Engine source releaseは`engine-v0.5.0`で、既存Reason CLI 0.5.2 artifactはEngine 0.4.2のままです。
 
 ## 研究方針
 

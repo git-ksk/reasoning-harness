@@ -31,7 +31,7 @@ An unlisted model is **never silently substituted**. You can still use an arbitr
 
 These labels are **operational compatibility metadata, not correctness scores**. Harness correctness authority still comes from evidence admission, verification, and finalization—not from the chosen model.
 
-The later [Harness Engine 0.5.0 final cross-model matrix](engine-0.5-final-v2-result.md) characterizes all current catalog rows on the Engine 0.5.0 semantic delta. It does not retroactively redefine these labels, which remain anchored to the v0.4.2 canonical release identities.
+The later [Harness Engine 0.5.0 final cross-model matrix](engine-0.5-final-v3-result.md) characterizes all current catalog rows on the Engine 0.5.0 semantic delta. It does not retroactively redefine these labels, which remain anchored to the v0.4.2 canonical release identities.
 
 ## Initial curated catalog
 

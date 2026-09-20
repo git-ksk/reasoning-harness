@@ -71,7 +71,7 @@ That distinction is the product: **useful AI output without letting model confid
 
 ## Quickstart
 
-The current split preview is **Reason CLI 0.5.2 on Harness Engine 0.4.2**. For macOS/Linux, the published native installer is the normal end-user path (GitHub CLI 2.93+ is required for provenance verification):
+The current published split CLI remains **Reason CLI 0.5.2 on Harness Engine 0.4.2**. The independently versioned Harness Engine line has now released **Engine 0.5.0** as `engine-v0.5.0`; a future Reason CLI release may adopt it separately. For macOS/Linux, the published native installer is the normal end-user path (GitHub CLI 2.93+ is required for provenance verification):
 
 ```bash
 curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
@@ -303,24 +303,24 @@ The final `v0.4.2` release gate serves a different purpose: it checks the produc
 
 The exact frozen coordinates, metrics, run IDs, pacing policy, and provenance are in [v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.md). Failed or inconclusive observations remain part of the research record rather than being overwritten by nicer reruns.
 
-### Harness Engine 0.5.0 final cross-model acceptance
+### Harness Engine 0.5.0 release acceptance
 
-The semantic Engine 0.5.0 line is now final-acceptance complete on a fresh frozen delta surface covering the #248 finalization bridge and #283 Harness-owned action materialization. The four predeclared validated provider/model rows all passed independently; there is no cross-model averaging.
+Harness Engine 0.5.0 completed final hardening on the fresh `engine-0.5-final-v3-freeze` surface and is released independently under `engine-v0.5.0`. The release candidate combines deterministic session explicit-fact continuity (#446), deterministic admitted exact-fact investigation materialization (#450), and evaluator separation of planner target-recall utility from finalization correctness (#445).
 
-| Model / provider | Catalog role | Finalization | Materialization | Final classification |
-| --- | --- | --- | --- | --- |
-| **Mistral / Ministral 8B** | validated required | PASS 3/3 | PASS | **PASS** |
-| **Google / Gemini 3.5 Flash-Lite** | validated required | PASS 3/3 | PASS | **PASS** |
-| **Google / Gemma 4 31B** | validated required | PASS 3/3 | PASS | **PASS** |
-| **Groq / GPT-OSS 120B** | validated required | PASS 3/3 | PASS | **PASS** |
-| Mistral / Ministral 14B | observed characterization | FAIL 2/3 | PASS | FAIL |
-| Groq / GPT-OSS 20B | observed characterization | PASS 3/3 | PASS | PASS |
-| Groq / Qwen 3.8 27B | observed characterization | incomplete | PASS | INCOMPLETE |
-| NVIDIA / Nemotron 3.5 Lightning 30B A3B | limited negative control | incomplete | operationally incomplete | INCOMPLETE |
+All six required provider/model rows passed independently on canonical Actions run `35457038163`; no cross-model averaging was used.
 
-Every completed semantic row above preserved zero observed correctness-boundary violations; the required rows also preserved session external replay at zero and used zero legacy executable-action planner calls on the #283 materialization surface. Observed/limited rows are characterization evidence rather than release votes, so their existing catalog labels are not silently promoted. The NVIDIA result remains consistent with its existing `limited / known_incompatible` status.
+| Model / provider | Role | Fresh cases | Correctness violations | Session replay | Result |
+| --- | --- | ---: | ---: | ---: | --- |
+| **Mistral / Ministral 14B** | affected required | 3/3 | 0 | 0 | **PASS** |
+| **Groq / Qwen 3.8 27B** | affected required | 3/3 | 0 | 0 | **PASS** |
+| **Mistral / Ministral 8B** | validated reference | 3/3 | 0 | 0 | **PASS** |
+| **Google / Gemini 3.5 Flash-Lite** | validated reference | 3/3 | 0 | 0 | **PASS** |
+| **Google / Gemma 4 31B** | validated reference | 3/3 | 0 | 0 | **PASS** |
+| **Groq / GPT-OSS 120B** | validated reference | 3/3 | 0 | 0 | **PASS** |
 
-The canonical v2 run was `35435026552` from freeze tag `engine-0.5-final-v2-freeze`; both preflight and final gate passed. See the [Engine 0.5.0 final cross-model result](docs/engine-0.5-final-v2-result.md) for exact coordinates, residuals, artifact provenance, and preserved raw reports. This is semantic acceptance evidence; the current packaged binary still reports Harness Engine `0.4.2` until a separate versioned Engine 0.5.0 release changes that coordinate.
+The grounded Averiq case required a supported exact `harness_investigation_admitted_fact_*` claim, and the Orivane correction case required a supported exact `harness_session_correction_target_*` claim, so the deterministic hardening paths had to be exercised rather than merely coinciding with a model-generated answer. The Vardelis no-result case remained fail-closed on every row.
+
+See the [Engine 0.5.0 final-v3 result](docs/engine-0.5-final-v3-result.md) and [Engine 0.5.0 release notes](docs/engine-0.5.0-release.md) for exact coordinates and preserved raw evidence. The already-published Reason CLI 0.5.2 binaries remain on Engine 0.4.2; Engine and CLI releases advance independently.
 
 ## Product, engine, and research are separate
 
@@ -332,7 +332,7 @@ From the next product line onward:
 - **Harness Engine** versions reasoning/correctness behavior.
 - **Machine contract IDs** version wire/schema compatibility independently.
 
-The split general-use line is now shipped as **Reason CLI 0.5.x on Harness Engine 0.4.2**, with 0.5.2 current. Setup, secure credential storage, interactive UX, installers, diagnostics, and lifecycle management advanced without changing the Engine 0.4.2 correctness semantics.
+The published split CLI line is still **Reason CLI 0.5.2 on Harness Engine 0.4.2**. Separately, Harness Engine 0.5.0 is released as `engine-v0.5.0` from the accepted semantic line. Existing CLI artifacts are immutable; adopting Engine 0.5.0 into a distributed CLI requires a separate CLI release.
 
 See [versioning](docs/versioning.md) and the [Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md).
 
