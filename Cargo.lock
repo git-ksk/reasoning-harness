@@ -1391,7 +1391,7 @@ dependencies = [
 
 [[package]]
 name = "reasoning-harness-cli"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "base64",
  "clap",

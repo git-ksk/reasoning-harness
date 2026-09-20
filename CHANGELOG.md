@@ -10,6 +10,21 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 - Issue #355 decouples the user-facing Reason CLI package version from the Harness Engine (`reasoning-harness-core`) package version. `v0.4.2` remains the final unified historical release; future CLI releases use `reason-vX.Y.Z` tags. Machine contract IDs remain independent compatibility coordinates, and provider crate versions remain internal implementation coordinates rather than a third user-facing product version.
 
+## [0.5.3] - 2026-09-20
+
+Patch release that formally adopts the independently released Harness Engine 0.5.0 into the Reason CLI distribution line. Published `reason-v0.5.2` artifacts remain immutable on Engine 0.4.2.
+
+### Changed
+
+- Reason CLI now reports the split product pair `Reason CLI 0.5.3 / Harness Engine 0.5.0` across `--version`/machine output, `reason doctor`, release manifests, and provenance metadata.
+- The supported Engine-changing lifecycle path remains explicit: `reason update --check` may inspect the Engine transition, while update or rollback mutation requires `--allow-engine-change`; `--yes` does not weaken that boundary.
+- Lifecycle regression coverage now pins both Engine 0.4.2 -> 0.5.0 adoption and Engine 0.5.0 -> 0.4.2 rollback consent behavior.
+- Existing Homebrew/WinGet ownership protection remains unchanged; package-manager-owned executables are not replaced by Reason's self-updater.
+
+### Preserved
+
+- No Engine 0.5.x semantic work is introduced by this CLI patch. `engine-v0.5.0`, `engine-0.5-final-v3-freeze`, its evaluator/fixtures/checksums, and historical freeze evidence remain immutable.
+
 ## Harness Engine [0.5.0] - 2026-09-20
 
 First independently versioned Harness Engine source release under the split `engine-v*` namespace. Existing Reason CLI 0.5.2 release artifacts remain on Engine 0.4.2.
