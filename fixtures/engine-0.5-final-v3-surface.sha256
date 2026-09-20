@@ -1,0 +1,11 @@
+7b93ac3512b5d19c7e9347d3d8ca3e976e1754c1d22f454ccd200d50c1872233  .github/workflows/engine-0.5-final-v3-live.yml
+0a49309ac7e361ec8bf69d0a163fb8efa6320f8d669575358c34db7a0d1902b2  docs/engine-0.5-final-v3.ja.md
+fe7a0491ddf565ffbd0b5b9738fa8d61011eb7fef164fa9d12025178c190744d  docs/engine-0.5-final-v3.md
+b259c955d7c54c38d48ca3293cf875476da53a23b5c6e3721b0262260756da10  fixtures/engine-0.5-final-v3-finalization/01_investigation-averiq-route.json
+843d8947a776bba3a3d2f4e262e723a508c91f6b8038f8526242e78e80abefa1  fixtures/engine-0.5-final-v3-finalization/02_fail-closed-vardelis-registry.json
+2a3a5d16319e24eecd5b5be1232f9a611fafdfcfc5718f3b7435ee8b5837a7dc  fixtures/engine-0.5-final-v3-finalization/03_session-correct-orivane.json
+8a666e7da1c83ba967f96c244bc118f2f13f081ae796d644c7961495bb07029b  fixtures/engine-0.5-final-v3-finalization/configs/averiq.json
+40020a42e87e6d32a17d1a005b8d7cf8970275f37b0fb3eb349d6651a4856766  fixtures/engine-0.5-final-v3-finalization/configs/vardelis.json
+24478459435ac81b71b5565cd4bb89506ca332513ca3ce36cb3b78d01c754805  fixtures/engine-0.5-final-v3-finalization/manifest.json
+9fc6b251c3a3896f5f938e01201f149babc662f710210487e78bf769087d748a  scripts/engine_0_5_final_v3_finalization.py
+5f91beb985885d5ee5f83ad85e2f4791492e91d5a3ac7a0910333873e3d63c21  scripts/test_engine_0_5_final_v3_finalization.py

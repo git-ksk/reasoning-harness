@@ -1,0 +1,21 @@
+{
+  "schema_version": "engine-0.5-finalization-case-v3",
+  "id": "fail-closed-vardelis-registry",
+  "kind": "investigation",
+  "config": "configs/vardelis.json",
+  "expected": "unknown",
+  "fresh_markers": [
+    "Vardelis registry",
+    "engine050v3.vardelis.registry_token",
+    "registry-731",
+    "fixture:engine050-final-v3:vardelis-registry"
+  ],
+  "relevant_capabilities": [
+    "vardelis-registry-primary"
+  ],
+  "target": {
+    "key": "engine050v3.vardelis.registry_token",
+    "value": "registry-731"
+  },
+  "task": "Determine the current registry token for the Vardelis registry. Use the configured exact fact-key-bound read-only registry source. If the source returns no result, do not guess or manufacture a value."
+}

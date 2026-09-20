@@ -1,0 +1,234 @@
+{
+  "artifacts": [
+    {
+      "expired": false,
+      "id": 10588975134,
+      "name": "engine-0.5-final-v3-groq-qwen3.8-27b",
+      "size_in_bytes": 2852
+    },
+    {
+      "expired": false,
+      "id": 10588960608,
+      "name": "engine-0.5-final-v3-google-gemma-4-31b-it",
+      "size_in_bytes": 2918
+    },
+    {
+      "expired": false,
+      "id": 10588780429,
+      "name": "engine-0.5-final-v3-groq-gpt-oss-120b",
+      "size_in_bytes": 2889
+    },
+    {
+      "expired": false,
+      "id": 10588279354,
+      "name": "engine-0.5-final-v3-google-gemini-3.5-flash-lite",
+      "size_in_bytes": 2989
+    },
+    {
+      "expired": false,
+      "id": 10588269387,
+      "name": "engine-0.5-final-v3-mistral-14b",
+      "size_in_bytes": 2810
+    },
+    {
+      "expired": false,
+      "id": 10588209994,
+      "name": "engine-0.5-final-v3-matrix",
+      "size_in_bytes": 765
+    },
+    {
+      "expired": false,
+      "id": 10588124217,
+      "name": "engine-0.5-final-v3-preflight",
+      "size_in_bytes": 481
+    },
+    {
+      "expired": false,
+      "id": 10588004711,
+      "name": "engine-0.5-final-v3-mistral-8b",
+      "size_in_bytes": 2774
+    }
+  ],
+  "control_commit": "12292b92bcd7890b3a81fc53b2523d172c2bde3a",
+  "engine_version": "0.5.0",
+  "files": [
+    {
+      "bytes": 3883,
+      "path": "engine-0.5-final-v3-matrix.json",
+      "sha256": "f01ccc7c9ec5533cf4dd7f7a33667ac0c92ac37e401216e323050914eba38b91"
+    },
+    {
+      "bytes": 623,
+      "path": "engine050v3-validate.json",
+      "sha256": "b22a706eb2916a501b33b0c77206bf4b63e43d54d7363b7851fde1d468e3cbe8"
+    },
+    {
+      "bytes": 173,
+      "path": "google-gemini-3.5-flash-lite-attempt.json",
+      "sha256": "15826ac0807f552b89c1e654ad756b33c210997416668da3ec0f0950980c663c"
+    },
+    {
+      "bytes": 3256,
+      "path": "google-gemini-3.5-flash-lite-report.json",
+      "sha256": "5b9c7644b826a1e092a39a1bc7014280edefb555bc62cf9294ec46e866547e25"
+    },
+    {
+      "bytes": 2,
+      "path": "google-gemini-3.5-flash-lite.rc",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 0,
+      "path": "google-gemini-3.5-flash-lite.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3256,
+      "path": "google-gemini-3.5-flash-lite.stdout.json",
+      "sha256": "5b9c7644b826a1e092a39a1bc7014280edefb555bc62cf9294ec46e866547e25"
+    },
+    {
+      "bytes": 166,
+      "path": "google-gemma-4-31b-it-attempt.json",
+      "sha256": "5265cc23e375036299e51247d36d5ff22abdca58ee75598323c28a3247cf0b3c"
+    },
+    {
+      "bytes": 3245,
+      "path": "google-gemma-4-31b-it-report.json",
+      "sha256": "eb8df150ff5f5f8a0de945c4b02d16f18e9b2437b043cd356c3ba460106fbf49"
+    },
+    {
+      "bytes": 2,
+      "path": "google-gemma-4-31b-it.rc",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 0,
+      "path": "google-gemma-4-31b-it.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3245,
+      "path": "google-gemma-4-31b-it.stdout.json",
+      "sha256": "eb8df150ff5f5f8a0de945c4b02d16f18e9b2437b043cd356c3ba460106fbf49"
+    },
+    {
+      "bytes": 162,
+      "path": "groq-gpt-oss-120b-attempt.json",
+      "sha256": "81fe7df745aa71f35b5bdc73135585dae7b90b9f5aba8a5e15a1a5b6df72a86b"
+    },
+    {
+      "bytes": 3242,
+      "path": "groq-gpt-oss-120b-report.json",
+      "sha256": "c4830a2d6ada1782a58aeb9e25ad6bc3890b1401d647c248215300f958f57788"
+    },
+    {
+      "bytes": 2,
+      "path": "groq-gpt-oss-120b.rc",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 0,
+      "path": "groq-gpt-oss-120b.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3242,
+      "path": "groq-gpt-oss-120b.stdout.json",
+      "sha256": "c4830a2d6ada1782a58aeb9e25ad6bc3890b1401d647c248215300f958f57788"
+    },
+    {
+      "bytes": 159,
+      "path": "groq-qwen3.8-27b-attempt.json",
+      "sha256": "5c4d9b19c5b9d0251bbb6747f52569f60ffaa2bfb5c15fb7c60942a69a66ba11"
+    },
+    {
+      "bytes": 3226,
+      "path": "groq-qwen3.8-27b-report.json",
+      "sha256": "eb0b9a34a9eda62a150fe6933ad04ce8306afb4a4d455ec130c7f71538169ae5"
+    },
+    {
+      "bytes": 2,
+      "path": "groq-qwen3.8-27b.rc",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 0,
+      "path": "groq-qwen3.8-27b.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3226,
+      "path": "groq-qwen3.8-27b.stdout.json",
+      "sha256": "eb0b9a34a9eda62a150fe6933ad04ce8306afb4a4d455ec130c7f71538169ae5"
+    },
+    {
+      "bytes": 154,
+      "path": "mistral-14b-attempt.json",
+      "sha256": "79be37080798352a69b3af288cae44aba2eab482638ab624111b430b3dbcbdea"
+    },
+    {
+      "bytes": 3238,
+      "path": "mistral-14b-report.json",
+      "sha256": "740c518b961aa9b3dfddad1b5706c2ad3152348cfd9be2c25ccaaff64532fdad"
+    },
+    {
+      "bytes": 2,
+      "path": "mistral-14b.rc",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 0,
+      "path": "mistral-14b.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3238,
+      "path": "mistral-14b.stdout.json",
+      "sha256": "740c518b961aa9b3dfddad1b5706c2ad3152348cfd9be2c25ccaaff64532fdad"
+    },
+    {
+      "bytes": 155,
+      "path": "mistral-8b-attempt.json",
+      "sha256": "6c6db91d17aaa5f2703f933f0c60ec2a783e36b1c678069be085733c6f4c7ca9"
+    },
+    {
+      "bytes": 3225,
+      "path": "mistral-8b-report.json",
+      "sha256": "66b6d1badaaa84eac14fb97b7a624c6cecbe090d22166cfce5dbf034c62383d9"
+    },
+    {
+      "bytes": 2,
+      "path": "mistral-8b.rc",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "bytes": 0,
+      "path": "mistral-8b.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3225,
+      "path": "mistral-8b.stdout.json",
+      "sha256": "66b6d1badaaa84eac14fb97b7a624c6cecbe090d22166cfce5dbf034c62383d9"
+    }
+  ],
+  "freeze_commit": "063833f38c38225109586b3db92348563b3822f8",
+  "freeze_tag": "engine-0.5-final-v3-freeze",
+  "freeze_tag_object": "6d9d61a0dd9426506b4198ee709d16efe3efaffe",
+  "github_run_id": "35457038163",
+  "github_run_url": "https://github.com/git-ksk/reasoning-harness/actions/runs/35457038163",
+  "historical_note": "The earlier engine-0.5.1-hardening-v1-freeze identity was a misnamed pre-release evaluation surface, not an Engine 0.5.1 release. Its evidence remains immutable.",
+  "matrix_acceptance_passed": true,
+  "product_candidate": "d60b9afdf0bb2a0c1986f8c8f7cb47e534a4cd90",
+  "release_state": "pre-release acceptance passed",
+  "required_targets": [
+    "mistral-14b",
+    "groq-qwen3.8-27b",
+    "mistral-8b",
+    "google-gemini-3.5-flash-lite",
+    "google-gemma-4-31b-it",
+    "groq-gpt-oss-120b"
+  ],
+  "schema_version": "engine-0.5-final-v3-provenance-v1"
+}
