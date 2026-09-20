@@ -5,15 +5,15 @@ Reason CLI 0.5.0は、Harness Engineと独立してversioningする最初のprod
 `v0.4.2`は最後のunified historical releaseとして固定します。最初のsplit releaseはすでにrelease済みで、現在のpatch coordinateは次です。
 
 ```text
-Reason CLI 0.5.2
-Harness Engine 0.4.2
+Reason CLI 0.5.3
+Harness Engine 0.5.0
 ```
 
-`reason-v0.5.0`でsplit lineを開始し、`reason-v0.5.1` / `reason-v0.5.2`は同じ固定Engine 0.4.2 baseline上のpatch releaseです。
+`reason-v0.5.0`でsplit lineを開始し、`reason-v0.5.1` / `reason-v0.5.2`は固定Engine 0.4.2 baseline上のpatch releaseでした。`reason-v0.5.3`は別trackでaccept済みのEngine 0.5.0をadoptするpatchです。
 
 目的はcoding agentをコピーすることではありません。成熟したAI CLIで期待される低摩擦UXを、Reason固有の厳しいboundaryを保ったまま実現します。toolchain不要install、明示的project trust、guided secure auth、引数なしinteractive mode、理解しやすいverified evidence、continue/resume、provider usage可視化、provider/model/config/MCPのdiscoverability、actionable diagnostics、private local state、検証可能で可逆なupdate/uninstallを対象にします。
 
-Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6)、parent Issue #359。parentとP0 release-gate workは完了済みで、milestoneはP1 distribution follow-up #375とEngine 0.5.0 adoption #455を残しています。
+Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6)、parent Issue #359。parent、P0 release-gate work、Engine 0.5.0 adoption #455は完了済みで、milestoneはP1 distribution follow-up #375だけを残しています。
 
 ## 利用者から見た流れ
 
@@ -84,7 +84,7 @@ user-facing operational errorは「何が失敗したか」「taskが実行さ�
 - **#382 P0 — 完了:** release provenance、必要に応じたcode signing/notarization、trusted installer/updater verification。SHA-256は維持するが唯一のtrust rootにはしない。
 - **#372 P0 — 完了:** provenance検証済みupdate、明示的rollback、保持defaultのuninstall lifecycle。
 - **#375 P1 — external closeout待ち:** Reason CLI 0.5.2のHomebrew physical acceptanceは完了。WinGet community manifestはMicrosoft validation 01–10とCLAを通過し、community moderator approval / mergeだけが残る。Harness Engine 0.5.0はblockしない。
-- **#455 P1 — Engine 0.5.0 adoption待ち:** Harness Engine 0.5.0は`engine-v0.5.0`として独立release済みで、現在の`main`もReason CLI codeをEngine 0.5.0と組み合わせてbuild/package可能。次のCLI patchでは`reason-v0.5.2`を書き換えず新しい`reason-v0.5.x` coordinateでadoptし、Engine changeを伴うupdate/rollbackのexplicit consentを維持し、supported-platform fresh-install / distribution / provenance acceptanceを再実行する。
+- **#455 P1 — Engine 0.5.0 adoption完了:** `reason-v0.5.3`でReason CLI 0.5.3 / Harness Engine 0.5.0を公開し、`reason-v0.5.2`は書き換えていません。supported-platform fresh-install / package / no-Rust / lifecycle gateはPASSし、release provenanceはexactなCLI/Engine pairとmerge commitをbinding、live 0.5.2 <-> 0.5.3 update/rollbackでも`--allow-engine-change`によるexplicit consentを維持しました。
 
 ### プロジェクトtrust — #377（完了）
 
@@ -188,7 +188,7 @@ P1はpolished product lineとして進めますが、最初の安全な0.5.0 rel
 
 ## このマイルストーンで明示的にやらないこと
 
-- Harness Engine 0.4.2のreasoning/authority semantics変更;
+- CLI productization track内で新しいHarness Engine semanticsを実装し、独立acceptance済みEngine releaseをadoptする手順を迂回すること;
 - Reasonをwrite-capable coding agentやbackground-agent platformへ変えること;
 - supported product boundaryに存在しないdestructive tool向けapproval systemの追加;
 - availability/retirement回避のためprovider/modelをsilent切替すること;
@@ -199,4 +199,4 @@ P1はpolished product lineとして進めますが、最初の安全な0.5.0 rel
 - cloud account/session syncやbuilt-in hosted telemetryをlocal useの前提にすること;
 - v0.4.2やfreeze済みevaluation evidenceのretroactive変更。
 
-別の **Harness Engine 0.5.0 — Verified Investigation Utility** milestone (#4)はclosed済みで、`engine-v0.5.0`としてreleaseされています。このCLI roadmapでEngine 0.5.0 semantic workを追加せず、#455がaccepted Engineを次のCLI patchへadoptする作業だけを所有します。
+別の **Harness Engine 0.5.0 — Verified Investigation Utility** milestone (#4)はclosed済みで、`engine-v0.5.0`としてreleaseされています。このCLI roadmapでEngine 0.5.0 semantic workを追加せず、完了済み#455がそのaccepted Engineを`reason-v0.5.3`へadoptしました。frozen evidenceは変更していません。

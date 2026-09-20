@@ -71,10 +71,10 @@ That distinction is the product: **useful AI output without letting model confid
 
 ## Quickstart
 
-The current published split CLI remains **Reason CLI 0.5.2 on Harness Engine 0.4.2**. The independently versioned Harness Engine line has now released **Engine 0.5.0** as `engine-v0.5.0`; a future Reason CLI release may adopt it separately. For macOS/Linux, the published native installer is the normal end-user path (GitHub CLI 2.93+ is required for provenance verification):
+The current published split CLI is **Reason CLI 0.5.3 on Harness Engine 0.5.0**. `reason-v0.5.3` formally adopts the independently released `engine-v0.5.0`; the already-published `reason-v0.5.2` artifacts remain immutable on Engine 0.4.2. For macOS/Linux, the published native installer is the normal end-user path (GitHub CLI 2.93+ is required for provenance verification):
 
 ```bash
-curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.sh | sh
 reason setup
 ```
 
@@ -82,10 +82,10 @@ With Rust 1.88+ you can also install the CLI directly:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
+  --tag reason-v0.5.3 --locked reasoning-harness-cli --bin reason
 ```
 
-Standalone native archives, installers, `SHA256SUMS`, and release provenance metadata are available from the [Reason CLI v0.5.2 release](https://github.com/git-ksk/reasoning-harness/releases/tag/reason-v0.5.2). `v0.4.2` remains the immutable final unified CLI/Engine historical release.
+Standalone native archives, installers, `SHA256SUMS`, and release provenance metadata are available from the [Reason CLI v0.5.3 release](https://github.com/git-ksk/reasoning-harness/releases/tag/reason-v0.5.3). `v0.4.2` remains the immutable final unified CLI/Engine historical release.
 
 Give `reason` a natural-language task plus evidence you actually want the Harness to treat as a structured fact:
 
@@ -320,7 +320,7 @@ All six required provider/model rows passed independently on canonical Actions r
 
 The grounded Averiq case required a supported exact `harness_investigation_admitted_fact_*` claim, and the Orivane correction case required a supported exact `harness_session_correction_target_*` claim, so the deterministic hardening paths had to be exercised rather than merely coinciding with a model-generated answer. The Vardelis no-result case remained fail-closed on every row.
 
-See the [Engine 0.5.0 final-v3 result](docs/engine-0.5-final-v3-result.md) and [Engine 0.5.0 release notes](docs/engine-0.5.0-release.md) for exact coordinates and preserved raw evidence. The already-published Reason CLI 0.5.2 binaries remain on Engine 0.4.2; Engine and CLI releases advance independently.
+See the [Engine 0.5.0 final-v3 result](docs/engine-0.5-final-v3-result.md) and [Engine 0.5.0 release notes](docs/engine-0.5.0-release.md) for exact coordinates and preserved raw evidence. Reason CLI 0.5.3 now distributes that accepted Engine 0.5.0, while the already-published Reason CLI 0.5.2 binaries remain immutable on Engine 0.4.2.
 
 ## Product, engine, and research are separate
 
@@ -332,7 +332,7 @@ From the next product line onward:
 - **Harness Engine** versions reasoning/correctness behavior.
 - **Machine contract IDs** version wire/schema compatibility independently.
 
-The published split CLI line is still **Reason CLI 0.5.2 on Harness Engine 0.4.2**. Separately, Harness Engine 0.5.0 is released as `engine-v0.5.0` from the accepted semantic line. Existing CLI artifacts are immutable; adopting Engine 0.5.0 into a distributed CLI requires a separate CLI release.
+The published split CLI line is now **Reason CLI 0.5.3 on Harness Engine 0.5.0**. Harness Engine 0.5.0 remains independently versioned and released as `engine-v0.5.0`; `reason-v0.5.3` is the separate CLI release that adopts it. Earlier CLI artifacts, including `reason-v0.5.2` on Engine 0.4.2, remain immutable.
 
 See [versioning](docs/versioning.md) and the [Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md).
 

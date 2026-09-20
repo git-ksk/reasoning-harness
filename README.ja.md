@@ -71,10 +71,10 @@ HTTP 503とconnection error 7件は観測されていますが、それだけで
 
 ## クイックスタート
 
-現在公開済みのsplit CLIは **Reason CLI 0.5.2 / Harness Engine 0.4.2** のままです。一方、独立versioningされたHarness Engine lineでは **Engine 0.5.0** を `engine-v0.5.0` としてreleaseします。将来のReason CLI releaseがこれを別途adoptできます。macOS / Linuxではpublished native installerが通常のend-user pathです（provenance verificationのためGitHub CLI 2.93+が必要です）。
+現在公開済みのsplit CLIは **Reason CLI 0.5.3 / Harness Engine 0.5.0** です。`reason-v0.5.3`が独立release済みの`engine-v0.5.0`を正式にadoptしました。既に公開済みの`reason-v0.5.2` artifactはEngine 0.4.2のままimmutableです。macOS / Linuxではpublished native installerが通常のend-user pathです（provenance verificationのためGitHub CLI 2.93+が必要です）。
 
 ```bash
-curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.sh | sh
 reason setup
 ```
 
@@ -82,10 +82,10 @@ Rust 1.88+がある場合はCLIを直接installすることもできます。
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
+  --tag reason-v0.5.3 --locked reasoning-harness-cli --bin reason
 ```
 
-standalone native archive、installer、`SHA256SUMS`、release provenance metadataは[Reason CLI v0.5.2 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/reason-v0.5.2)から取得できます。`v0.4.2`はimmutableな最後のunified CLI/Engine historical releaseとして保持します。
+standalone native archive、installer、`SHA256SUMS`、release provenance metadataは[Reason CLI v0.5.3 Release](https://github.com/git-ksk/reasoning-harness/releases/tag/reason-v0.5.3)から取得できます。`v0.4.2`はimmutableな最後のunified CLI/Engine historical releaseとして保持します。
 
 自然文taskと、Harnessに明示的なstructured factとして扱わせたい根拠を渡します。
 
@@ -334,7 +334,7 @@ canonical Actions run `35457038163` ではrequired 6 provider/model rowがすべ
 
 Averiq grounded caseではsupported exact `harness_investigation_admitted_fact_*` claim、Orivane correction caseではsupported exact `harness_session_correction_target_*` claimを必須にし、モデルが偶然正答しただけでは通らないgateにしています。Vardelis no-result caseは全rowでfail-closedを維持しました。
 
-exact coordinateと保存済みraw evidenceは[Engine 0.5.0 final-v3 result](docs/engine-0.5-final-v3-result.ja.md)および[Engine 0.5.0 release notes](docs/engine-0.5.0-release.ja.md)を参照してください。既に公開済みのReason CLI 0.5.2 binaryはEngine 0.4.2のままで、Engine / CLI releaseは独立に進みます。
+exact coordinateと保存済みraw evidenceは[Engine 0.5.0 final-v3 result](docs/engine-0.5-final-v3-result.ja.md)および[Engine 0.5.0 release notes](docs/engine-0.5.0-release.ja.md)を参照してください。Reason CLI 0.5.3はそのaccepted Engine 0.5.0をdistributionし、既に公開済みのReason CLI 0.5.2 binaryはEngine 0.4.2のままimmutableです。
 
 ## 製品・エンジン・研究を分ける
 
@@ -346,7 +346,7 @@ exact coordinateと保存済みraw evidenceは[Engine 0.5.0 final-v3 result](doc
 - **Harness Engine** — reasoning / correctness behaviorをversioning。
 - **Machine contract ID** — wire/schema compatibilityを独立してversioning。
 
-公開済みsplit CLIは引き続き **Reason CLI 0.5.2 + Harness Engine 0.4.2** です。一方、Harness Engine 0.5.0はaccepted semantic lineから `engine-v0.5.0` として独立releaseします。既存CLI artifactはimmutableであり、Engine 0.5.0をdistribution済みCLIへadoptする場合は別のCLI releaseが必要です。
+公開済みsplit CLIは **Reason CLI 0.5.3 + Harness Engine 0.5.0** です。Harness Engine 0.5.0はaccepted semantic lineから`engine-v0.5.0`として独立versioning / releaseされ、`reason-v0.5.3`がそれをadoptする別のCLI releaseです。`reason-v0.5.2`を含む既存artifactはimmutableのままです。
 
 詳しくは[バージョニング](docs/versioning.ja.md)と[Reason CLI 0.5.0 ロードマップ](docs/reason-cli-0.5-roadmap.ja.md)を参照してください。
 
