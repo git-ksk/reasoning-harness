@@ -39,6 +39,6 @@ Reason CLI 0.5.0
 Harness Engine 0.4.2
 ```
 
-CLI 0.5.0 productization milestoneはEngine 0.4.2上でsetup、secure credential、diagnostics、distributionをreleaseしました。別の **Harness Engine 0.5.0 — Verified Investigation Utility** milestoneがfresh-evidenceを必要とするsemantic / utility workを所有し、`engine-v0.5.0` release後にclosed済みです。`reason-v0.5.3`がこのrelease済みEngineを正式にadoptする最初のCLI patchで、product pairはReason CLI 0.5.3 / Harness Engine 0.5.0になります。#455は新しいEngine semantic workではなく、このdistribution / lifecycle adoptionを所有します。
+CLI 0.5.0 productization milestoneはEngine 0.4.2上でsetup、secure credential、diagnostics、distributionをreleaseしました。別の **Harness Engine 0.5.0 — Verified Investigation Utility** milestoneがfresh-evidenceを必要とするsemantic / utility workを所有し、`engine-v0.5.0` release後にclosed済みです。`reason-v0.5.3`がこのrelease済みEngineを正式にadoptする最初のCLI patchで、公開済みproduct pairはReason CLI 0.5.3 / Harness Engine 0.5.0です。完了済み#455は新しいEngine semantic workではなく、このdistribution / lifecycle adoptionを所有しました。
 
 過去のunified tag `v0.1.0`〜`v0.4.2`はimmutableのまま保持します。新しいCLI releaseは`reason-v*` namespace、独立したHarness Engine source releaseは`engine-v*` namespaceを使います。Harness Engine 0.5.0は最初のsplit Engine releaseとして`engine-v0.5.0`を使います。既に公開済みのReason CLI 0.5.2 artifactはEngine 0.4.2のままimmutableです。Reason CLI 0.5.3はEngine 0.5.0をadoptする新しいrelease coordinateであり、0.5.2 artifactを書き換えません。

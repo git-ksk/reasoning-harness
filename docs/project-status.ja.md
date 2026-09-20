@@ -8,14 +8,14 @@
 
 ## 現在のリリース
 
-現在公開済みのtagged split CLI previewは **Reason CLI 0.5.2 / Harness Engine 0.4.2** のままです。一方、**Harness Engine 0.5.0** はaccepted semantic lineから `engine-v0.5.0` として独立releaseします。
+現在公開済みのtagged split CLI previewは **Reason CLI 0.5.3 / Harness Engine 0.5.0** です。Harness Engine 0.5.0はaccepted semantic lineから`engine-v0.5.0`として独立release済みで、`reason-v0.5.3`がそれをdistributionするreleaseです。
 
 ```text
-公開済みCLI: Reason CLI 0.5.2 / Harness Engine 0.4.2
+公開済みCLI: Reason CLI 0.5.3 / Harness Engine 0.5.0
 最新Engine source release: Harness Engine 0.5.0
 ```
 
-`v0.4.2`はCLI / Engineが同じSemVerを共有したimmutableな最後のunified releaseです。`reason-v0.5.0`で最初のsplit general-use CLIをreleaseし、0.5.1 / 0.5.2 patch lineもEngine 0.4.2のreasoning / authority semanticsを変えずに進めています。
+`v0.4.2`はCLI / Engineが同じSemVerを共有したimmutableな最後のunified releaseです。`reason-v0.5.0`で最初のsplit general-use CLIをreleaseし、0.5.1 / 0.5.2 patch lineはEngine 0.4.2で進めました。`reason-v0.5.3`では独立acceptance済みのEngine 0.5.0を新しいCLI coordinateでadoptしました。
 
 中心となるtrust boundaryは変わりません。model outputはuntrusted candidate / rendererであり、evidence admission、qualification、verification、bounded resolution、最終的に表示するfactual claimのauthorityはHarness側が持ちます。最終freeze済みEngine 0.4.2 natural-language release evaluationは、Mistral、Groq、Gemini 3.5 Flash-Lite、Gemma 4 31Bを独立にPASSしています。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)を参照してください。
 
@@ -42,9 +42,9 @@ Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapter�
 
 ## 現在の製品ライン: Reason CLI 0.5.x
 
-最初のsplit general-use release `reason-v0.5.0` はrelease済みで、現在のpatch coordinateは `reason-v0.5.2`、Harness Engineは引き続き0.4.2です。
+最初のsplit general-use release `reason-v0.5.0` はrelease済みで、現在のpatch coordinateは `reason-v0.5.3`、Harness Engineは0.5.0です。`reason-v0.5.2`はEngine 0.4.2のままimmutableで、新しいEngineは0.5.3という別releaseでのみadoptしています。
 
-公開済み0.5.x productization artifactでは、**Engine 0.4.2のreasoning / correctness semanticsを変えずに**次を提供しています。Engine 0.5.0は別source releaseとして扱い、既存CLI artifactへretrofitしません。
+0.5.0〜0.5.2のproductization artifactでは、固定Engine 0.4.2 baseline上で一般利用向けterminal UXを提供しました。Reason CLI 0.5.3はそのproduct surfaceを維持しつつ、別trackでaccept済みのEngine 0.5.0をadoptしています。
 
 - Rust toolchain不要のnative install;
 - verified distributionとupdate / rollback / uninstall lifecycle;
@@ -65,9 +65,9 @@ Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapter�
 
 reasoning / correctnessを変える仕事は、CLI UXとは意図的に分離します。
 
-Harness Engine 0.5.0はrelease-completeです。final-v3 canonical run `35457038163`で独立required 6 row・fresh 18/18 caseをPASSし、correctness-boundary violation 0、session external replay 0を確認しました。次の作業はEngine semantic変更ではなく、#455でrelease済みEngine 0.5.0を次のReason CLI patchへadoptする統合trackです。
+Harness Engine 0.5.0はrelease-completeです。final-v3 canonical run `35457038163`で独立required 6 row・fresh 18/18 caseをPASSし、correctness-boundary violation 0、session external replay 0を確認しました。#455の統合trackも完了し、`reason-v0.5.3`がrelease済みEngine 0.5.0をdistributionしています。
 
-[バージョニング](versioning.ja.md)と[製品ロードマップ](product-roadmap.ja.md)を参照してください。
+`reason-v0.5.3`のrelease provenanceはCLI 0.5.3、Engine 0.5.0、merge commit `e9148c737c6f9bf29ce7c9258d549f5c526dfb4a`をbindingしています。supported-platform package / no-Rust / lifecycle acceptanceはPASSし、live 0.5.2 <-> 0.5.3 update/rollbackでもEngine-change consentのfail-closedを確認しました。[バージョニング](versioning.ja.md)と[製品ロードマップ](product-roadmap.ja.md)を参照してください。
 
 ## 現在の信頼境界
 
@@ -86,7 +86,7 @@ general-use CLI productizationはrelease済みです。native install、guided s
 
 product側で残るdistribution follow-upは#375です。Homebrew physical acceptanceは完了し、WinGet community manifestもMicrosoft validation / CLAを通過してcommunity moderator approval待ちです。この外部reviewはHarness Engine開発をblockしません。
 
-Harness Engine 0.5.0は実装・acceptance・releaseまで完了しました。final hardening #445/#446/#450を`engine-0.5-final-v3-freeze`で検証し、canonical run `35457038163` は独立required 6 row・fresh 18 caseすべてPASS、correctness-boundary violation 0、session external replay 0でした。詳細は[Engine 0.5.0 final-v3 result](engine-0.5-final-v3-result.ja.md)を参照してください。独立Engine source releaseは`engine-v0.5.0`で、既存Reason CLI 0.5.2 artifactはEngine 0.4.2のままです。
+Harness Engine 0.5.0は実装・acceptance・releaseまで完了しました。final hardening #445/#446/#450を`engine-0.5-final-v3-freeze`で検証し、canonical run `35457038163` は独立required 6 row・fresh 18 caseすべてPASS、correctness-boundary violation 0、session external replay 0でした。詳細は[Engine 0.5.0 final-v3 result](engine-0.5-final-v3-result.ja.md)を参照してください。独立Engine source releaseは`engine-v0.5.0`で、Reason CLI 0.5.3がこれをdistributionし、Reason CLI 0.5.2 artifactはEngine 0.4.2のままimmutableです。
 
 ## 研究方針
 

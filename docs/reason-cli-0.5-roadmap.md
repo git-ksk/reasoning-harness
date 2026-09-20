@@ -5,15 +5,15 @@ Reason CLI 0.5.0 is the first product line that versions independently from Harn
 `v0.4.2` remains the final unified historical release. The first split release has shipped and the current patch coordinate is:
 
 ```text
-Reason CLI 0.5.2
-Harness Engine 0.4.2
+Reason CLI 0.5.3
+Harness Engine 0.5.0
 ```
 
-`reason-v0.5.0` established the split line; `reason-v0.5.1` and `reason-v0.5.2` are patch releases on the same fixed Engine 0.4.2 baseline.
+`reason-v0.5.0` established the split line; `reason-v0.5.1` and `reason-v0.5.2` remained on the fixed Engine 0.4.2 baseline. `reason-v0.5.3` is the separately accepted adoption patch for Engine 0.5.0.
 
 The target is not to copy a coding agent. The target is to match the low-friction terminal ergonomics users now expect from mature AI CLIs while preserving Reason's stricter product boundary: install without a toolchain, explicit project trust, guided secure authentication, a useful no-argument interactive mode, understandable verified evidence, easy continuation/resume, visible provider usage, discoverable provider/model/config/MCP controls, actionable diagnostics, private local state, and a verifiable reversible update/uninstall lifecycle.
 
-Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6), parent Issue #359. The parent and all P0 release-gate work are complete; the milestone remains open for P1 distribution follow-up #375 and Engine 0.5.0 adoption #455.
+Tracking: milestone **Reason CLI 0.5.0 — General-use Productization** (#6), parent Issue #359. The parent, all P0 release-gate work, and Engine 0.5.0 adoption #455 are complete; the milestone remains open only for P1 distribution follow-up #375.
 
 ## Product journeys
 
@@ -84,7 +84,7 @@ A user-facing operational error should explain what failed, whether the task exe
 - **#382 P0 — completed:** release provenance, signing/notarization where appropriate, and trusted installer/updater verification. SHA-256 remains useful but is not the sole trust root.
 - **#372 P0 — completed:** provenance-verified update, explicit rollback, and retention-by-default uninstall lifecycle.
 - **#375 P1 — external closeout pending:** Homebrew physical acceptance is complete on Reason CLI 0.5.2. The WinGet community manifest has passed Microsoft validation (01–10) and CLA checks; only community moderator approval/merge remains. This does not block Engine 0.5.0 work.
-- **#455 P1 — Engine 0.5.0 adoption pending:** Harness Engine 0.5.0 is independently released as `engine-v0.5.0`, and current `main` already builds/packages Reason CLI code against Engine 0.5.0. The next CLI patch must adopt it under a new `reason-v0.5.x` coordinate without rewriting `reason-v0.5.2`, preserve explicit consent for Engine-changing update/rollback, and rerun supported-platform fresh-install/distribution/provenance acceptance.
+- **#455 P1 — Engine 0.5.0 adoption completed:** `reason-v0.5.3` publishes Reason CLI 0.5.3 / Harness Engine 0.5.0 without rewriting `reason-v0.5.2`. Supported-platform fresh-install/package/no-Rust/lifecycle gates passed, release provenance binds the exact CLI/Engine pair and merge commit, and live 0.5.2 <-> 0.5.3 update/rollback acceptance preserves explicit `--allow-engine-change` consent.
 
 ### Project trust — #377 (completed)
 
@@ -188,7 +188,7 @@ P1 work is expected for a polished product line but does not automatically block
 
 ## Explicit non-goals for this milestone
 
-- changing Harness Engine 0.4.2 reasoning/authority semantics;
+- introducing new Harness Engine semantics inside the CLI productization track rather than adopting an independently accepted Engine release;
 - converting Reason into a write-capable coding agent or background-agent platform;
 - adding an approval system for destructive tools that do not exist in the supported product boundary;
 - silently switching models/providers to recover from availability or retirement;
@@ -199,4 +199,4 @@ P1 work is expected for a polished product line but does not automatically block
 - cloud account/session synchronization or built-in hosted telemetry as a prerequisite for local use;
 - retroactively changing v0.4.2 or frozen evaluation evidence.
 
-The separate **Harness Engine 0.5.0 — Verified Investigation Utility** milestone (#4) is closed and released as `engine-v0.5.0`. No further Engine 0.5.0 semantic changes belong in this CLI roadmap; #455 owns adoption of the already-accepted Engine into the next CLI patch.
+The separate **Harness Engine 0.5.0 — Verified Investigation Utility** milestone (#4) is closed and released as `engine-v0.5.0`. No further Engine 0.5.0 semantic changes belong in this CLI roadmap; completed #455 adopted that accepted Engine in `reason-v0.5.3` without changing the frozen evidence.

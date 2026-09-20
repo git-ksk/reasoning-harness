@@ -10,21 +10,21 @@
 
 ```text
 公開済みsplit CLI:
-  Reason CLI 0.5.2
-  Harness Engine 0.4.2
+  Reason CLI 0.5.3
+  Harness Engine 0.5.0
 
 最新の独立Engine source release:
   Harness Engine 0.5.0 (`engine-v0.5.0`)
 
-次の統合:
-  Reason CLI 0.5.x patch -> Harness Engine 0.5.0 (#455)
+直近完了した統合:
+  Reason CLI 0.5.3 -> Harness Engine 0.5.0 (#455)
 
 最後のunified historical release:
   Reason CLI 0.4.2
   Harness Engine 0.4.2
 ```
 
-`v0.4.2`が最後のunified historical releaseです。split CLI lineはすでに`reason-v0.5.0` / `reason-v0.5.1` / `reason-v0.5.2`まで進んでおり、CLI / Engine / machine-contract identityは独立して進みます。[バージョニング](versioning.ja.md)を参照してください。
+`v0.4.2`が最後のunified historical releaseです。split CLI lineは`reason-v0.5.3`まで進み、CLI / Engine / machine-contract identityは独立して進みます。`reason-v0.5.2`はEngine 0.4.2のままimmutableで、`reason-v0.5.3`が独立release済みEngine 0.5.0をadoptしました。[バージョニング](versioning.ja.md)を参照してください。
 
 ## 製品目標
 
@@ -41,9 +41,9 @@ Harness verifies / qualifies / abstains
 
 ## トラックA — Reason CLI 0.5.x: 一般利用向け製品化
 
-**公開済み`reason-v0.5.2`までのEngine baselineは0.4.2。** 既存release artifactはimmutableのまま保持し、次のCLI patchへのadoptionは#455で別途追跡します。
+**現在の公開pairは`reason-v0.5.3` / Harness Engine 0.5.0。** 以前の`reason-v0.5.2`はEngine 0.4.2のままimmutableで、#455は新しいCLI coordinateでadoptionを完了しました。
 
-base `reason-v0.5.0` と0.5.1 / 0.5.2 patch lineはrelease済みです。P0 release gateは完了しています。残るP1はdistribution follow-up #375と、release済みHarness Engine 0.5.0を次のCLI patchへadoptする#455です。Homebrew physical acceptanceは完了、WinGet community manifestはvalidation / CLAを通過してcommunity moderator approval待ちです。
+base `reason-v0.5.0` と0.5.1 / 0.5.2 patch lineはEngine 0.4.2でrelease済みで、`reason-v0.5.3`はaccepted Engine 0.5.0をdistributionします。P0 release gateと#455 Engine adoptionは完了しました。残るP1はdistribution follow-up #375のみです。Homebrew physical acceptanceは完了、WinGet community manifestはvalidation / CLAを通過してcommunity moderator approval待ちです。
 
 underlying authority semanticsを変えず、`reason`を成熟したterminal productとして使える状態にします。
 
@@ -89,15 +89,15 @@ MCP / resolver outputは引き続きacquired dataであり、correctness authori
 
 完全なP0/P1 issueとacceptance matrixは[Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md)を参照してください。
 
-### 次のpatch統合: Harness Engine 0.5.0 adoption（#455）
+### Harness Engine 0.5.0 adoption — 完了（#455）
 
-Engine 0.5.0自体はすでにrelease-completeです。#455は新しいEngine semantic workではなく、**CLI adoption / distribution** taskとして扱います。
+`reason-v0.5.3`を **Reason CLI 0.5.3 / Harness Engine 0.5.0** として公開済みです。adoptionは`reason-v0.5.2`のimmutabilityを維持し、Engine semantic workを再開していません。
 
-- 公開済み`reason-v0.5.2` artifactはEngine 0.4.2のままimmutableに保持;
-- 次に利用可能なReason CLI 0.5.x patch coordinateを使う（未使用なら0.5.3想定）;
-- release provenanceでEngine 0.5.0をexactに識別;
-- `reason update`がEngine 0.4.2 -> 0.5.0を跨ぐ際はexplicit consentを維持;
-- release前にupdate/rollback、package-manager ownership、fresh-install、no-Rust consumer、supported-platform packagingを検証。
+- release manifest / provenanceはCLI 0.5.3、Engine 0.5.0、merge commit `e9148c737c6f9bf29ce7c9258d549f5c526dfb4a`をbinding;
+- supported-platform package candidate / installer / no-Rust consumer / lifecycle / credential-store / CLI smoke gateはPASS;
+- live `reason-v0.5.2` -> `reason-v0.5.3` updateと`reason-v0.5.3` -> `reason-v0.5.2` rollbackはいずれもEngine transitionを表示し、`--allow-engine-change`なしではfail closed;
+- explicit consent付きupdate / rollbackは公開済みprovenance-verified release間で成功;
+- Engine 0.5.0 frozen evidenceは変更なし。
 
 ## トラックB — Harness Engine 0.5.0: 検証付き調査の有用性 — 完了
 
@@ -114,7 +114,7 @@ reasoning / correctness behaviorへ影響しうる変更はこのtrackで扱い�
 - **#452 final-v3 / versioned release closeout — 完了:** `engine-0.5-final-v3-freeze` canonical run `35457038163`で独立required 6 row・fresh 18/18 case PASS、correctness-boundary violation 0、session external replay 0;
 - **Versioned Engine release — 完了:** `engine-v0.5.0`は`4fd6acc85511f286fd6b2f7c9439665b7819206a`を指し、`reasoning-harness-core`は0.5.0をreport。milestone #4はopen issue 0でclosed。
 
-Engine 0.5.0はclosed release baselineです。今後のsemantic Engine workは新たに測定されたgapと新しいEngine identityを要求します。release済みEngineのCLI adoptionは#455が所有し、0.5.0 evidenceをreopen / rewriteしません。
+Engine 0.5.0はclosed release baselineで、Reason CLI 0.5.3からdistributionされています。今後のsemantic Engine workは新たに測定されたgapと新しいEngine identityを要求します。完了済み#455 adoptionは0.5.0 evidenceをreopen / rewriteしていません。
 
 ## 昇格ルール
 
