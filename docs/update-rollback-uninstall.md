@@ -20,7 +20,7 @@ Automatic discovery considers only stable SemVer `reason-v*` releases. `-beta` /
 For an explicit target:
 
 ```bash
-reason update --check --version 0.5.2
+reason update --check --version 0.5.3
 ```
 
 ## Apply an update
@@ -45,23 +45,30 @@ The apply path verifies, in order:
 6. archive path safety on Unix and the extracted `reason --version` identity;
 7. an atomic same-directory replacement on Unix, or a staged replacement immediately after process exit on Windows.
 
-If the Harness Engine SemVer changes, apply fails until the user explicitly acknowledges it:
+If the Harness Engine SemVer changes, apply fails until the user explicitly acknowledges it. For the `reason-v0.5.2` (Engine 0.4.2) -> `reason-v0.5.3` (Engine 0.5.0) adoption:
 
 ```bash
-reason update --allow-engine-change
+reason update --check --version 0.5.3
+reason update --version 0.5.3 --allow-engine-change
 ```
 
-A presentation-only CLI update therefore cannot silently look identical to a reasoning/correctness engine change.
+Automation must provide both forms of consent when applicable:
+
+```bash
+reason update --version 0.5.3 --allow-engine-change --yes --format json
+```
+
+`--yes` suppresses the ordinary interactive mutation prompt; it never implies Engine-change consent. A presentation-only CLI update therefore cannot silently look identical to a reasoning/correctness engine change.
 
 ## Explicit rollback
 
 Rollback is a separate operation and only accepts an older split release:
 
 ```bash
-reason update --rollback 0.5.0
+reason update --rollback 0.5.2 --allow-engine-change
 ```
 
-The same provenance, manifest, checksum, Engine-change, and confirmation rules apply. `reason update` refuses an older version and points to `reason update --rollback VERSION`; rollback mode refuses a same/newer version. This prevents a confused update channel from silently downgrading the executable.
+The `--allow-engine-change` flag is required when rolling back from Engine 0.5.0 to an older split CLI that carries Engine 0.4.2. The same provenance, manifest, checksum, Engine-change, and confirmation rules apply. `reason update` refuses an older version and points to `reason update --rollback VERSION`; rollback mode refuses a same/newer version. This prevents a confused update channel from silently downgrading the executable.
 
 ## Package-manager-owned installs
 

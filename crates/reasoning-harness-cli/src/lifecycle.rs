@@ -109,7 +109,7 @@ pub(crate) struct UpdateArgs {
     /// Explicitly select an older split Reason CLI version. Never inferred from --version.
     #[arg(long, value_name = "VERSION", conflicts_with = "version")]
     pub(crate) rollback: Option<String>,
-    /// Explicitly allow an update that changes Harness Engine SemVer.
+    /// Explicitly acknowledge a Harness Engine SemVer change for update or rollback. Required even with --yes.
     #[arg(long)]
     pub(crate) allow_engine_change: bool,
     /// Apply without an interactive confirmation prompt.
@@ -282,10 +282,12 @@ pub(crate) async fn run_update(args: UpdateArgs) -> Result<(), CliError> {
         ));
     }
 
-    let engine_change = current_engine != target.engine_version;
-    if !args.check && engine_change && !args.allow_engine_change {
-        return Err(engine_change_error(&current_engine, &target.engine_version));
-    }
+    let engine_change = enforce_engine_change_policy(
+        args.check,
+        args.allow_engine_change,
+        &current_engine,
+        &target.engine_version,
+    )?;
     let executable = current_executable()?;
     let operation = if rollback_requested {
         "rollback"
@@ -1245,6 +1247,19 @@ fn confirm_mutation(yes: bool, format: OutputFormat, prompt: &str) -> Result<(),
     }
 }
 
+fn enforce_engine_change_policy(
+    check: bool,
+    allow_engine_change: bool,
+    current: &Version,
+    target: &Version,
+) -> Result<bool, CliError> {
+    let engine_change = current != target;
+    if !check && engine_change && !allow_engine_change {
+        return Err(engine_change_error(current, target));
+    }
+    Ok(engine_change)
+}
+
 fn engine_change_error(current: &Version, target: &Version) -> CliError {
     CliError::new(
         "engine_change_confirmation_required",
@@ -1402,6 +1417,37 @@ mod tests {
             select_latest_split_release(releases),
             Some(Version::parse("0.5.0").unwrap())
         );
+    }
+
+    #[test]
+    fn engine_change_policy_requires_explicit_consent_in_both_directions() {
+        let engine_042 = Version::parse("0.4.2").unwrap();
+        let engine_050 = Version::parse("0.5.0").unwrap();
+
+        assert!(enforce_engine_change_policy(true, false, &engine_042, &engine_050).unwrap());
+        let upgrade =
+            enforce_engine_change_policy(false, false, &engine_042, &engine_050).unwrap_err();
+        assert_eq!(upgrade.failure_class, "engine_change_confirmation_required");
+        assert!(upgrade.message.contains("0.4.2 -> 0.5.0"));
+        assert!(upgrade.message.contains("--allow-engine-change"));
+        assert!(enforce_engine_change_policy(false, true, &engine_042, &engine_050).unwrap());
+
+        assert!(enforce_engine_change_policy(true, false, &engine_050, &engine_042).unwrap());
+        let rollback =
+            enforce_engine_change_policy(false, false, &engine_050, &engine_042).unwrap_err();
+        assert_eq!(
+            rollback.failure_class,
+            "engine_change_confirmation_required"
+        );
+        assert!(rollback.message.contains("0.5.0 -> 0.4.2"));
+        assert!(rollback.message.contains("--allow-engine-change"));
+        assert!(enforce_engine_change_policy(false, true, &engine_050, &engine_042).unwrap());
+    }
+
+    #[test]
+    fn unchanged_engine_does_not_require_engine_change_consent() {
+        let engine = Version::parse("0.5.0").unwrap();
+        assert!(!enforce_engine_change_policy(false, false, &engine, &engine).unwrap());
     }
 
     #[test]

@@ -20,7 +20,7 @@ reason update --check --format json
 明示versionも確認できます。
 
 ```bash
-reason update --check --version 0.5.2
+reason update --check --version 0.5.3
 ```
 
 ## updateを適用する
@@ -45,23 +45,30 @@ apply pathは次を順に検証します。
 6. Unixではarchive path safety、さらに展開後`reason --version` identity;
 7. Unixでは同一directoryでatomic replacement、Windowsではprocess終了直後のstaged replacement。
 
-Harness Engine SemVerが変わる場合は、次を明示しない限りapplyを拒否します。
+Harness Engine SemVerが変わる場合は、明示的にacknowledgeしない限りapplyを拒否します。`reason-v0.5.2`（Engine 0.4.2）から`reason-v0.5.3`（Engine 0.5.0）へadoptする場合は次です。
 
 ```bash
-reason update --allow-engine-change
+reason update --check --version 0.5.3
+reason update --version 0.5.3 --allow-engine-change
 ```
 
-これによりpresentation-onlyなCLI更新とreasoning/correctness engine変更をsilentに同一視しません。
+automationでは、必要な場合に通常mutationとEngine changeの両方を明示します。
+
+```bash
+reason update --version 0.5.3 --allow-engine-change --yes --format json
+```
+
+`--yes`は通常のinteractive mutation promptを省略するだけで、Engine-change consentを兼ねません。これによりpresentation-onlyなCLI更新とreasoning/correctness engine変更をsilentに同一視しません。
 
 ## 明示rollback
 
 rollbackは別operationで、現在より古いsplit releaseだけを受け付けます。
 
 ```bash
-reason update --rollback 0.5.0
+reason update --rollback 0.5.2 --allow-engine-change
 ```
 
-provenance、manifest、checksum、Engine change、confirmationはupdateと同じ契約です。`reason update`は古いversionを拒否してrollbackを案内し、rollbackは同一・新しいversionを拒否します。
+Engine 0.5.0からEngine 0.4.2を含む古いsplit CLIへ戻す場合も`--allow-engine-change`が必要です。provenance、manifest、checksum、Engine change、confirmationはupdateと同じ契約です。`reason update`は古いversionを拒否してrollbackを案内し、rollbackは同一・新しいversionを拒否します。
 
 ## Package-manager管理のinstall
 
