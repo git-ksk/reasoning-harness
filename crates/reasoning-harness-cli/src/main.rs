@@ -3653,6 +3653,7 @@ struct NaturalExecutionSeed {
     input: HarnessInput,
     new_evidence_prefix: String,
     finalization_targets: Vec<Proposition>,
+    candidate_materialization_targets: Vec<Proposition>,
 }
 
 fn merge_natural_execution_seed(
@@ -3710,6 +3711,53 @@ fn merge_natural_execution_seed(
         built.input.authority_policy = seed.input.authority_policy;
     }
     Ok(built)
+}
+
+fn materialize_harness_owned_seed_targets(
+    candidate: &mut ReasoningCandidate,
+    input: &HarnessInput,
+    targets: &[Proposition],
+) {
+    for (index, target) in targets.iter().enumerate() {
+        let explicit_for_key = input
+            .evidence
+            .iter()
+            .filter(|evidence| {
+                evidence.metadata.provenance_class.as_deref() == Some("explicit_user_fact")
+                    && evidence.facts.contains_key(&target.key)
+            })
+            .collect::<Vec<_>>();
+        if explicit_for_key.is_empty()
+            || explicit_for_key.iter().any(|evidence| {
+                evidence.facts.get(&target.key).map(String::as_str) != Some(target.value.as_str())
+            })
+        {
+            continue;
+        }
+
+        candidate
+            .claims
+            .retain(|claim| claim.proposition.as_ref() != Some(target));
+
+        let mut id = format!("harness_session_correction_target_{index}");
+        let mut suffix = 1usize;
+        while candidate.claims.iter().any(|claim| claim.id == id) {
+            id = format!("harness_session_correction_target_{index}_{suffix}");
+            suffix += 1;
+        }
+        candidate
+            .claims
+            .push(reasoning_harness_core::CandidateClaim {
+                id,
+                statement: format!("{} = {}", target.key, target.value),
+                proposed_state: reasoning_harness_core::EpistemicState::Assumed,
+                proposition: Some(target.clone()),
+                evidence_ids: explicit_for_key
+                    .into_iter()
+                    .map(|evidence| evidence.id.clone())
+                    .collect(),
+            });
+    }
 }
 
 async fn execute_natural_inner(
@@ -3816,6 +3864,10 @@ async fn execute_natural_inner(
         .as_ref()
         .map(|seed| seed.finalization_targets.clone())
         .unwrap_or_default();
+    let seed_candidate_materialization_targets = seed
+        .as_ref()
+        .map(|seed| seed.candidate_materialization_targets.clone())
+        .unwrap_or_default();
     let built = if let Some(seed) = seed {
         merge_natural_execution_seed(built, seed)?
     } else {
@@ -3857,6 +3909,11 @@ async fn execute_natural_inner(
     if let Some(trace) = diagnostic_trace.as_mut() {
         trace.record_candidate(initial_generation_phase, &candidate);
     }
+    materialize_harness_owned_seed_targets(
+        &mut candidate,
+        &built.input,
+        &seed_candidate_materialization_targets,
+    );
 
     progress.phase(
         "Verifying",
@@ -5357,47 +5414,82 @@ fn seed_input_for_session_turn(
     Ok(input)
 }
 
+fn explicit_user_fact_values(
+    snapshot: &reasoning_harness_core::ReasoningThreadSnapshot,
+    key: &str,
+) -> BTreeSet<String> {
+    let Some(artifact) = snapshot.artifact.as_ref() else {
+        return BTreeSet::new();
+    };
+    artifact
+        .evidence
+        .iter()
+        .filter(|evidence| {
+            evidence.metadata.provenance_class.as_deref() == Some("explicit_user_fact")
+        })
+        .filter_map(|evidence| evidence.facts.get(key).cloned())
+        .collect()
+}
+
+fn grounded_prior_values(
+    snapshot: &reasoning_harness_core::ReasoningThreadSnapshot,
+    key: &str,
+) -> BTreeSet<String> {
+    let Some(artifact) = snapshot.artifact.as_ref() else {
+        return BTreeSet::new();
+    };
+    artifact
+        .claims
+        .iter()
+        .filter(|claim| {
+            matches!(
+                claim.state,
+                reasoning_harness_core::EpistemicState::Known
+                    | reasoning_harness_core::EpistemicState::Supported
+            )
+        })
+        .filter_map(|claim| claim.proposition.as_ref())
+        .filter(|proposition| proposition.key == key)
+        .map(|proposition| proposition.value.clone())
+        .collect()
+}
+
 fn previous_explicit_fact(
     snapshot: &reasoning_harness_core::ReasoningThreadSnapshot,
     key: &str,
 ) -> Option<String> {
-    snapshot.artifact.as_ref().and_then(|artifact| {
-        artifact
-            .evidence
-            .iter()
-            .filter(|evidence| {
-                evidence.metadata.provenance_class.as_deref() == Some("explicit_user_fact")
-            })
-            .find_map(|evidence| evidence.facts.get(key).cloned())
-    })
+    let values = explicit_user_fact_values(snapshot, key);
+    (values.len() == 1).then(|| values.into_iter().next().expect("one explicit value"))
+}
+
+fn session_correction_prior_value(
+    snapshot: &reasoning_harness_core::ReasoningThreadSnapshot,
+    key: &str,
+) -> Option<String> {
+    let explicit = explicit_user_fact_values(snapshot, key);
+    let grounded = grounded_prior_values(snapshot, key);
+    let values = explicit.union(&grounded).cloned().collect::<BTreeSet<_>>();
+    (values.len() == 1).then(|| values.into_iter().next().expect("one prior value"))
 }
 
 fn session_correction_finalization_targets(
     snapshot: &reasoning_harness_core::ReasoningThreadSnapshot,
     correction: &Proposition,
 ) -> Vec<Proposition> {
-    let Some(artifact) = snapshot.artifact.as_ref() else {
-        return vec![];
-    };
-    let mut prior = Vec::new();
-    for proposition in artifact.claims.iter().filter_map(|claim| {
-        if !matches!(
-            claim.state,
-            reasoning_harness_core::EpistemicState::Known
-                | reasoning_harness_core::EpistemicState::Supported
-        ) {
-            return None;
-        }
-        claim
-            .proposition
-            .as_ref()
-            .filter(|proposition| proposition.key == correction.key)
-    }) {
-        if !prior.contains(proposition) {
-            prior.push(proposition.clone());
-        }
+    if session_correction_prior_value(snapshot, &correction.key).is_some() {
+        vec![correction.clone()]
+    } else {
+        vec![]
     }
-    if prior.len() == 1 {
+}
+
+fn session_correction_candidate_materialization_targets(
+    snapshot: &reasoning_harness_core::ReasoningThreadSnapshot,
+    correction: &Proposition,
+) -> Vec<Proposition> {
+    if explicit_user_fact_values(snapshot, &correction.key).len() == 1
+        && session_correction_prior_value(snapshot, &correction.key).is_some()
+    {
         vec![correction.clone()]
     } else {
         vec![]
@@ -5954,6 +6046,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                     input,
                     new_evidence_prefix: format!("session-turn-{turn_index}"),
                     finalization_targets: vec![],
+                    candidate_materialization_targets: vec![],
                 }),
             )
             .await?;
@@ -5984,6 +6077,8 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
             let previous_value = previous_explicit_fact(&snapshot, &proposition.key);
             let finalization_targets =
                 session_correction_finalization_targets(&snapshot, &proposition);
+            let candidate_materialization_targets =
+                session_correction_candidate_materialization_targets(&snapshot, &proposition);
             let mut input = seed_input_for_session_turn(&snapshot, Some(&proposition.key))?;
             let turn_index = session.turns.len() + 1;
             input
@@ -6019,6 +6114,7 @@ async fn run_session(command: SessionCommand) -> Result<(), CliError> {
                     input,
                     new_evidence_prefix: format!("session-turn-{turn_index}"),
                     finalization_targets,
+                    candidate_materialization_targets,
                 }),
             )
             .await?;
@@ -12174,6 +12270,260 @@ mod candidate_json_tests {
             session_correction_finalization_targets(&snapshot, &correction),
             vec![correction]
         );
+    }
+
+    #[test]
+    fn session_correction_target_accepts_unique_persisted_explicit_fact_without_model_claim() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let artifact = ReasoningArtifact {
+            evidence: vec![Evidence {
+                id: "user-prior".into(),
+                source: "session:--fact".into(),
+                observation: "session.quill.threshold=10".into(),
+                facts: BTreeMap::from([(correction.key.clone(), "10".into())]),
+                metadata: EvidenceMetadata {
+                    temporal: None,
+                    scope: None,
+                    provenance_class: Some("explicit_user_fact".into()),
+                },
+            }],
+            ..Default::default()
+        };
+        let snapshot = reasoning_harness_core::ReasoningThreadSnapshot {
+            artifact: Some(artifact),
+            ..Default::default()
+        };
+
+        assert_eq!(
+            session_correction_finalization_targets(&snapshot, &correction),
+            vec![correction]
+        );
+    }
+
+    #[test]
+    fn session_correction_target_fails_closed_on_explicit_fact_conflict() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let evidence = ["9", "10"]
+            .into_iter()
+            .enumerate()
+            .map(|(index, value)| Evidence {
+                id: format!("user-{index}"),
+                source: "session:--fact".into(),
+                observation: format!("{}={value}", correction.key),
+                facts: BTreeMap::from([(correction.key.clone(), value.into())]),
+                metadata: EvidenceMetadata {
+                    temporal: None,
+                    scope: None,
+                    provenance_class: Some("explicit_user_fact".into()),
+                },
+            })
+            .collect();
+        let snapshot = reasoning_harness_core::ReasoningThreadSnapshot {
+            artifact: Some(ReasoningArtifact {
+                evidence,
+                ..Default::default()
+            }),
+            ..Default::default()
+        };
+
+        assert!(session_correction_finalization_targets(&snapshot, &correction).is_empty());
+        assert!(
+            session_correction_candidate_materialization_targets(&snapshot, &correction).is_empty()
+        );
+        assert_eq!(previous_explicit_fact(&snapshot, &correction.key), None);
+    }
+
+    #[test]
+    fn session_correction_target_fails_closed_on_grounded_and_explicit_conflict() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let snapshot = reasoning_harness_core::ReasoningThreadSnapshot {
+            artifact: Some(ReasoningArtifact {
+                evidence: vec![Evidence {
+                    id: "user-prior".into(),
+                    source: "session:--fact".into(),
+                    observation: "session.quill.threshold=10".into(),
+                    facts: BTreeMap::from([(correction.key.clone(), "10".into())]),
+                    metadata: EvidenceMetadata {
+                        temporal: None,
+                        scope: None,
+                        provenance_class: Some("explicit_user_fact".into()),
+                    },
+                }],
+                claims: vec![reasoning_harness_core::Claim {
+                    id: "grounded-prior".into(),
+                    statement: "threshold is 9".into(),
+                    state: reasoning_harness_core::EpistemicState::Supported,
+                    proposition: Some(Proposition {
+                        key: correction.key.clone(),
+                        value: "9".into(),
+                    }),
+                    evidence_ids: vec![],
+                }],
+                ..Default::default()
+            }),
+            ..Default::default()
+        };
+
+        assert!(session_correction_finalization_targets(&snapshot, &correction).is_empty());
+        assert!(
+            session_correction_candidate_materialization_targets(&snapshot, &correction).is_empty()
+        );
+    }
+
+    #[test]
+    fn session_correction_materialization_replaces_matching_model_claim_with_harness_owned_claim() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let input = HarnessInput {
+            task: "report threshold".into(),
+            evidence: vec![Evidence {
+                id: "corrected-user-fact".into(),
+                source: "session:--fact".into(),
+                observation: "session.quill.threshold=11".into(),
+                facts: BTreeMap::from([(correction.key.clone(), correction.value.clone())]),
+                metadata: EvidenceMetadata {
+                    temporal: None,
+                    scope: None,
+                    provenance_class: Some("explicit_user_fact".into()),
+                },
+            }],
+            ..Default::default()
+        };
+        let mut candidate = ReasoningCandidate {
+            claims: vec![reasoning_harness_core::CandidateClaim {
+                id: "model-proposal".into(),
+                statement: "model restated corrected value".into(),
+                proposed_state: reasoning_harness_core::EpistemicState::Known,
+                proposition: Some(correction.clone()),
+                evidence_ids: vec!["corrected-user-fact".into()],
+            }],
+            inferences: vec![],
+        };
+
+        materialize_harness_owned_seed_targets(
+            &mut candidate,
+            &input,
+            std::slice::from_ref(&correction),
+        );
+
+        assert_eq!(candidate.claims.len(), 1);
+        assert_eq!(
+            candidate.claims[0].id,
+            "harness_session_correction_target_0"
+        );
+        assert_eq!(candidate.claims[0].proposition.as_ref(), Some(&correction));
+        assert_eq!(
+            candidate.claims[0].proposed_state,
+            reasoning_harness_core::EpistemicState::Assumed
+        );
+    }
+
+    #[test]
+    fn session_correction_materialization_is_assumed_until_normal_verification() {
+        let correction = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let input = HarnessInput {
+            task: "report threshold".into(),
+            evidence: vec![Evidence {
+                id: "corrected-user-fact".into(),
+                source: "session:--fact".into(),
+                observation: "session.quill.threshold=11".into(),
+                facts: BTreeMap::from([(correction.key.clone(), correction.value.clone())]),
+                metadata: EvidenceMetadata {
+                    temporal: None,
+                    scope: None,
+                    provenance_class: Some("explicit_user_fact".into()),
+                },
+            }],
+            ..Default::default()
+        };
+        let mut candidate = ReasoningCandidate::default();
+        materialize_harness_owned_seed_targets(
+            &mut candidate,
+            &input,
+            std::slice::from_ref(&correction),
+        );
+        assert_eq!(candidate.claims.len(), 1);
+        assert_eq!(candidate.claims[0].proposition.as_ref(), Some(&correction));
+        assert_eq!(
+            candidate.claims[0].proposed_state,
+            reasoning_harness_core::EpistemicState::Assumed
+        );
+        assert_eq!(
+            candidate.claims[0].evidence_ids,
+            vec!["corrected-user-fact"]
+        );
+
+        let preverified =
+            reasoning_harness_core::materialize_candidate(input.clone(), candidate.clone());
+        assert_eq!(
+            preverified.claims[0].state,
+            reasoning_harness_core::EpistemicState::Assumed
+        );
+
+        let verified = run_standard_grounding(input, candidate).unwrap();
+        let claim = verified
+            .artifact
+            .claims
+            .iter()
+            .find(|claim| claim.proposition.as_ref() == Some(&correction))
+            .unwrap();
+        assert_eq!(
+            claim.state,
+            reasoning_harness_core::EpistemicState::Supported
+        );
+    }
+
+    #[test]
+    fn session_correction_materialization_refuses_conflicting_explicit_facts() {
+        let target = Proposition {
+            key: "session.quill.threshold".into(),
+            value: "11".into(),
+        };
+        let input = HarnessInput {
+            task: "report threshold".into(),
+            evidence: vec![
+                Evidence {
+                    id: "old".into(),
+                    source: "session:--fact".into(),
+                    observation: "session.quill.threshold=10".into(),
+                    facts: BTreeMap::from([(target.key.clone(), "10".into())]),
+                    metadata: EvidenceMetadata {
+                        temporal: None,
+                        scope: None,
+                        provenance_class: Some("explicit_user_fact".into()),
+                    },
+                },
+                Evidence {
+                    id: "new".into(),
+                    source: "session:--fact".into(),
+                    observation: "session.quill.threshold=11".into(),
+                    facts: BTreeMap::from([(target.key.clone(), "11".into())]),
+                    metadata: EvidenceMetadata {
+                        temporal: None,
+                        scope: None,
+                        provenance_class: Some("explicit_user_fact".into()),
+                    },
+                },
+            ],
+            ..Default::default()
+        };
+        let mut candidate = ReasoningCandidate::default();
+        materialize_harness_owned_seed_targets(&mut candidate, &input, &[target]);
+        assert!(candidate.claims.is_empty());
     }
 
     #[test]
