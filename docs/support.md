@@ -34,7 +34,7 @@ Product compatibility uses three separate coordinates:
 - **Harness Engine SemVer** — the reasoning/correctness implementation version owned by `reasoning-harness-core`;
 - **machine contract identities** — wire/schema compatibility IDs such as `reason-cli-output-v1` and `reasoning-artifact-v1`.
 
-`reasoning-harness-providers` has an internal crate version but is not exposed as a third user-facing product version. `v0.4.2` is the final unified CLI/Engine release; future CLI releases use `reason-vX.Y.Z` and can advance without changing the Engine. See [Product, engine, and contract versioning](versioning.md).
+`reasoning-harness-providers` has an internal crate version but is not exposed as a third user-facing product version. `v0.4.2` is the final unified CLI/Engine release; split CLI releases use `reason-vX.Y.Z` and may advance independently from Harness Engine releases. See [Product, engine, and contract versioning](versioning.md).
 
 Current product identities include:
 
@@ -72,11 +72,11 @@ The provider-neutral runtime is the product boundary. Provider adapters normaliz
 - Provider quotas, service availability, rate limits, model retirement, and model-specific output quality are external operational dependencies and are reported separately from harness correctness.
 - v0.4.2 release acceptance (`natural-language-e2e-v36-freeze`) passed independently on Mistral, Groq, Gemini 3.5 Flash-Lite, and Gemma 4 31B. Every required candidate row completed 13/13 with operational, generation, and correctness-boundary failures all `0`; Gemini's paired follow-up row improved tool selection `0.6 -> 1.0`, trigger exposure `0 -> 3`, and avoidable stalls `3 -> 0` at unchanged target recall `1.0`.
 
-Provider credentials remain environment variables and are not accepted in `reason-config-v1`.
+Provider credentials are never accepted in `reason-config-v1`. `reason setup` / `reason auth` can store them in the native OS credential store, while environment variables remain supported with deterministic precedence.
 
 ## Stability status
 
-v0.4.2 is the current external-preview release. It preserves the v0.4.x product/authority foundation while adding deterministic safe acquisition precedence, generic Groq natural-language provider parity, structured planner/action hardening, and provider/evaluation resilience validated by immutable v36 release acceptance. Admission, authority, verification, finalization, answer safety, MCP non-promotion, and session replay remain Harness-owned. The documented v1.0 readiness gate is satisfied, but v0.4.2 intentionally remains a prerelease/v0.x compatibility promise rather than a stable v1.0 claim. A future v1.0 still requires an explicit version/tag/release decision through the normal provenance workflow.
+**Reason CLI 0.5.3 on Harness Engine 0.5.0** is the current external-preview product pair. `v0.4.2` remains the immutable final unified CLI/Engine historical release, and the 0.5.0-0.5.2 split CLI line remains immutable on Engine 0.4.2. Engine 0.5.0 was independently accepted and released as `engine-v0.5.0`, then adopted by `reason-v0.5.3`. Admission, authority, verification, finalization, answer safety, MCP non-promotion, and session replay remain Harness-owned. The documented v1.0 readiness gate is satisfied, but the current 0.5.x line intentionally remains a prerelease/v0.x compatibility promise rather than a stable v1.0 claim. A future v1.0 still requires an explicit version/tag/release decision through the normal provenance workflow.
 
 
 For the distinction between product terms, machine/runtime identifiers, and historical research labels, see [Terminology and naming](terminology.md).

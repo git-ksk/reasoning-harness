@@ -50,4 +50,4 @@ Package managers remain authoritative for the executable they install. Reason in
 
 This behavior prevents Reason's self-updater from mutating Homebrew Cellar state or WinGet portable-package state behind the package manager's back. Direct installs from `install.sh` / `install.ps1` continue to use Reason's provenance-verified self-update lifecycle.
 
-The package-manager definitions add distribution convenience only. They do not grant package-manager metadata any evidence or correctness authority inside Harness Engine 0.4.2.
+The package-manager definitions add distribution convenience only. They do not grant package-manager metadata any evidence or correctness authority inside Harness Engine, including the current Engine 0.5.0 runtime.

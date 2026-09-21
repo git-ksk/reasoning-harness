@@ -71,10 +71,23 @@ HTTP 503とconnection error 7件は観測されていますが、それだけで
 
 ## クイックスタート
 
-現在公開済みのsplit CLIは **Reason CLI 0.5.3 / Harness Engine 0.5.0** です。`reason-v0.5.3`が独立release済みの`engine-v0.5.0`を正式にadoptしました。既に公開済みの`reason-v0.5.2` artifactはEngine 0.4.2のままimmutableです。macOS / Linuxではpublished native installerが通常のend-user pathです（provenance verificationのためGitHub CLI 2.93+が必要です）。
+現在公開済みのsplit CLIは **Reason CLI 0.5.3 / Harness Engine 0.5.0** です。`reason-v0.5.3`が独立release済みの`engine-v0.5.0`を正式にadoptしました。既に公開済みの`reason-v0.5.2` artifactはEngine 0.4.2のままimmutableです。published native installerが通常のend-user pathです（provenance verificationのためGitHub CLI 2.93+が必要です）。
+
+macOS / Linux:
 
 ```bash
 curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.sh | sh
+```
+
+Windows PowerShell:
+
+```powershell
+irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.ps1 | iex
+```
+
+installer directoryが`PATH`に入っていることを確認したら（未設定の場合はinstallerが案内を表示します）、次を実行します。
+
+```bash
 reason setup
 ```
 

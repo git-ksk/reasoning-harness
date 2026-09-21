@@ -13,17 +13,17 @@
 
 この順がおすすめです。
 
-1. [Getting Started](getting-started.ja.md) — current previewのinstallと、grounded / 根拠不足ケースを試す。
+1. [Getting Started](getting-started.ja.md) — current releaseのinstallと、grounded / 根拠不足ケースを試す。
 2. [ネイティブインストーラー](native-installers.ja.md) — Reason CLI 0.5.x向け1コマンド配布の契約。
 3. [Package manager](package-managers.ja.md) — Homebrew / WinGet channelとlifecycle ownership。
-3. [Release provenance](release-provenance.ja.md) — `reason-v*`のOIDC/Sigstore provenance、checksum、immutable release trust。
-4. [Update / rollback / uninstall](update-rollback-uninstall.ja.md) — provenance検証済みlifecycleと保持・purge境界。
-5. [Reason doctor](reason-doctor.ja.md) — secret-freeなlocal diagnosticsと明示的なbounded live readiness check。
-6. [Operational failure recovery](reason-recovery.ja.md) — failure classを維持したactionable human recoveryとadditive machine remediation。
-7. [Proxy / custom CA / headless network環境](network-environments.ja.md) — proxy presence、追加CA trust、typed network diagnostics。
-3. [CLIガイド](cli.ja.md) — command、input、provider credential、config、stdin、JSON、exit semantics。
-4. [Reasoning Harnessの仕組み](how-it-works.ja.md) — candidateとauthorityを分ける実行モデル。
-5. [Product support / compatibility](support.ja.md) — supported platform、contract、provider、v0.x互換性。
+4. [Release provenance](release-provenance.ja.md) — `reason-v*`のOIDC/Sigstore provenance、checksum、immutable release trust。
+5. [Update / rollback / uninstall](update-rollback-uninstall.ja.md) — provenance検証済みlifecycleと保持・purge境界。
+6. [Reason doctor](reason-doctor.ja.md) — secret-freeなlocal diagnosticsと明示的なbounded live readiness check。
+7. [Operational failure recovery](reason-recovery.ja.md) — failure classを維持したactionable human recoveryとadditive machine remediation。
+8. [Proxy / custom CA / headless network環境](network-environments.ja.md) — proxy presence、追加CA trust、typed network diagnostics。
+9. [CLIガイド](cli.ja.md) — command、input、provider credential、config、stdin、JSON、exit semantics。
+10. [Reasoning Harnessの仕組み](how-it-works.ja.md) — candidateとauthorityを分ける実行モデル。
+11. [Product support / compatibility](support.ja.md) — supported platform、contract、provider、v0.x互換性。
 
 インストール前に考え方だけ知りたい場合は、root [README](../README.ja.md) → [仕組み](how-it-works.ja.md)で十分です。
 
@@ -46,8 +46,8 @@
 
 - [Architecture](architecture.ja.md)
 - [プロジェクトtrust](project-trust.ja.md) — executable / MCPを含むproject configの明示的activation boundary。
-- [プロバイダー認証情報の安全な保存](secure-credentials.ja.md) — 0.5.0向けOS-native secret storageとenvironment優先順位。
-- [Provider / model カタログ](model-catalog.ja.md) — 0.5.0向けcurated compatibility evidence、credential readiness、default切替。
+- [プロバイダー認証情報の安全な保存](secure-credentials.ja.md) — 0.5.x向けOS-native secret storageとenvironment優先順位。
+- [Provider / model カタログ](model-catalog.ja.md) — 0.5.x向けcurated compatibility evidence、credential readiness、default切替。
 - [Reasoning policy](reasoning-policy.ja.md)
 - [Evidence qualification](evidence-qualification.ja.md)
 - [Exposed-text safety](exposed-text-safety.ja.md)
@@ -96,7 +96,7 @@
 - [SECURITY.ja.md](../SECURITY.ja.md)
 - [Architecture](architecture.ja.md)
 - [プロジェクトtrust](project-trust.ja.md) — executable / MCPを含むproject configの明示的activation boundary。
-- [プロバイダー認証情報の安全な保存](secure-credentials.ja.md) — 0.5.0向けOS-native secret storageとenvironment優先順位。
+- [プロバイダー認証情報の安全な保存](secure-credentials.ja.md) — 0.5.x向けOS-native secret storageとenvironment優先順位。
 - [プロジェクト状況](project-status.ja.md)
 
 reasoning / correctness semanticsを変える変更では、fixture / evaluation evidenceを適切に追加し、untrusted model outputとHarness-owned authorityの境界を維持してください。

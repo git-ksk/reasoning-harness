@@ -13,17 +13,17 @@ You do **not** need to read the research record before using the product. Choose
 
 Start here:
 
-1. [Getting Started](getting-started.md) — install the current preview and run a grounded and intentionally-insufficient example.
+1. [Getting Started](getting-started.md) — install the current release and run a grounded and intentionally-insufficient example.
 2. [Native installers](native-installers.md) — one-command macOS/Linux/Windows distribution contract for Reason CLI 0.5.x.
 3. [Package managers](package-managers.md) — Homebrew/WinGet channels and lifecycle ownership.
-3. [Release provenance](release-provenance.md) — OIDC/Sigstore provenance, checksums, and immutable-release trust for `reason-v*`.
-4. [Update / rollback / uninstall](update-rollback-uninstall.md) — provenance-verified lifecycle and retention/purge boundaries.
-5. [Reason doctor](reason-doctor.md) — secret-free local diagnostics plus explicit bounded live readiness checks.
-6. [Operational failure recovery](reason-recovery.md) — actionable human recovery plus additive machine remediation while preserving failure classes.
-7. [Proxy, custom CA, and headless network environments](network-environments.md) — proxy presence, additive CA trust, and typed network diagnostics.
-3. [CLI guide](cli.md) — commands, input, provider credentials, config, stdin, JSON output, and exit semantics.
-4. [How Reasoning Harness works](how-it-works.md) — the proposal-vs-authority boundary in practical terms.
-5. [Product support and compatibility](support.md) — supported platforms, contracts, provider posture, and v0.x compatibility.
+4. [Release provenance](release-provenance.md) — OIDC/Sigstore provenance, checksums, and immutable-release trust for `reason-v*`.
+5. [Update / rollback / uninstall](update-rollback-uninstall.md) — provenance-verified lifecycle and retention/purge boundaries.
+6. [Reason doctor](reason-doctor.md) — secret-free local diagnostics plus explicit bounded live readiness checks.
+7. [Operational failure recovery](reason-recovery.md) — actionable human recovery plus additive machine remediation while preserving failure classes.
+8. [Proxy, custom CA, and headless network environments](network-environments.md) — proxy presence, additive CA trust, and typed network diagnostics.
+9. [CLI guide](cli.md) — commands, input, provider credentials, config, stdin, JSON output, and exit semantics.
+10. [How Reasoning Harness works](how-it-works.md) — the proposal-vs-authority boundary in practical terms.
+11. [Product support and compatibility](support.md) — supported platforms, contracts, provider posture, and v0.x compatibility.
 
 If you only want to understand the project before installing it, read the root [README](../README.md) and then [How it works](how-it-works.md).
 
@@ -46,8 +46,8 @@ Start with:
 
 - [Architecture](architecture.md)
 - [Project trust](project-trust.md) — explicit activation boundary for executable/MCP project config.
-- [Secure provider credentials](secure-credentials.md) — OS-native secret storage and deterministic environment precedence for the 0.5.0 line.
-- [Provider/model catalog](model-catalog.md) — curated compatibility evidence, credential readiness, and default switching for the 0.5.0 line.
+- [Secure provider credentials](secure-credentials.md) — OS-native secret storage and deterministic environment precedence for the 0.5.x line.
+- [Provider/model catalog](model-catalog.md) — curated compatibility evidence, credential readiness, and default switching for the 0.5.x line.
 - [Reasoning policy](reasoning-policy.md)
 - [Evidence qualification](evidence-qualification.md)
 - [Exposed-text safety](exposed-text-safety.md)
@@ -96,7 +96,7 @@ Read:
 - [SECURITY.md](../SECURITY.md)
 - [Architecture](architecture.md)
 - [Project trust](project-trust.md) — explicit activation boundary for executable/MCP project config.
-- [Secure provider credentials](secure-credentials.md) — OS-native secret storage and deterministic environment precedence for the 0.5.0 line.
+- [Secure provider credentials](secure-credentials.md) — OS-native secret storage and deterministic environment precedence for the 0.5.x line.
 - [Project status](project-status.md)
 
 Changes that affect reasoning/correctness semantics should include appropriate fixtures/evaluation evidence and must preserve the distinction between untrusted model output and Harness-owned authority.

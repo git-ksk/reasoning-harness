@@ -2,7 +2,7 @@
 
 [日本語](getting-started.ja.md) | English
 
-This guide is the shortest path from a fresh machine to understanding what Reasoning Harness does. It targets the current split preview: **Reason CLI 0.5.2 on Harness Engine 0.4.2**.
+This guide is the shortest path from a fresh machine to understanding what Reasoning Harness does. It targets the current split release: **Reason CLI 0.5.3 on Harness Engine 0.5.0**.
 
 ## 1. Install
 
@@ -11,20 +11,20 @@ The published native installer is the normal end-user path. Split CLI installers
 macOS / Linux:
 
 ```bash
-curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.ps1 | iex
+irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.ps1 | iex
 ```
 
 With Rust 1.88+, you can alternatively install the same tagged CLI directly:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
+  --tag reason-v0.5.3 --locked reasoning-harness-cli --bin reason
 ```
 
 Then confirm `reason --version`. `main` may contain unreleased work; use the tagged release for a reproducible product snapshot. See [Native installer contract](native-installers.md) for provenance and platform details.

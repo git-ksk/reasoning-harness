@@ -9,16 +9,16 @@ For the execution/trust model behind `--candidate` versus `--provider`, includin
 
 ## Installation
 
-### Current split preview (`reason-v0.5.2`)
+### Current split release (`reason-v0.5.3`)
 
-The current product coordinate is **Reason CLI 0.5.2 on Harness Engine 0.4.2**. Published native installers are the normal end-user path; with Rust 1.88+ the CLI can also be installed directly:
+The current product coordinate is **Reason CLI 0.5.3 on Harness Engine 0.5.0**. Published native installers are the normal end-user path; with Rust 1.88+ the CLI can also be installed directly:
 
 ```bash
-cargo install --git https://github.com/git-ksk/reasoning-harness --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
+cargo install --git https://github.com/git-ksk/reasoning-harness --tag reason-v0.5.3 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-This installs only the supported `reason` product binary, not the research binaries. Standalone 0.5.2 archives/installers are published for Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64 with `SHA256SUMS` and release provenance metadata. Use `main` only for intentionally unreleased development snapshots.
+This installs only the supported `reason` product binary, not the research binaries. Standalone 0.5.3 archives/installers are published for Linux x86_64, macOS arm64, macOS x86_64, and Windows x86_64 with `SHA256SUMS` and release provenance metadata. Use `main` only for intentionally unreleased development snapshots.
 
 The `reason-v0.5.x` line is the active split CLI line under the v0.x preview policy. `v0.4.2` remains the immutable final unified historical coordinate for Reason CLI 0.4.2 + Harness Engine 0.4.2. CLI and Engine versions now advance independently; see [versioning](versioning.md).
 

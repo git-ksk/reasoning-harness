@@ -73,17 +73,17 @@ defaultは`--safety-profile current`（`verified-target-answer-gate-v1`）です
 
 ## インストール
 
-### 現在のsplit preview (`reason-v0.5.2`)
+### 現在のsplit release (`reason-v0.5.3`)
 
-現在のproduct coordinateは **Reason CLI 0.5.2 / Harness Engine 0.4.2** です。通常userにはpublished native installerを推奨し、Rust 1.88+がある場合はCLIを直接installすることもできます。
+現在のproduct coordinateは **Reason CLI 0.5.3 / Harness Engine 0.5.0** です。通常userにはpublished native installerを推奨し、Rust 1.88+がある場合はCLIを直接installすることもできます。
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
+  --tag reason-v0.5.3 --locked reasoning-harness-cli --bin reason
 reason --version
 ```
 
-research binaryは入らず、supported product binaryの`reason`だけをinstallします。Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64向け0.5.2 standalone archive / installer、`SHA256SUMS`、release provenance metadataを配布しています。`main`は未releaseの開発snapshotを意図的に使う場合だけ選んでください。
+research binaryは入らず、supported product binaryの`reason`だけをinstallします。Linux x86_64 / macOS arm64 / macOS x86_64 / Windows x86_64向け0.5.3 standalone archive / installer、`SHA256SUMS`、release provenance metadataを配布しています。`main`は未releaseの開発snapshotを意図的に使う場合だけ選んでください。
 
 `reason-v0.5.x`がv0.x preview policy下のactive split CLI lineです。`v0.4.2`はReason CLI 0.4.2 + Harness Engine 0.4.2のimmutableな最後のunified historical coordinateとして保持し、以後CLI / Engine versionは独立して進みます。詳細は[versioning](versioning.ja.md)を参照してください。
 

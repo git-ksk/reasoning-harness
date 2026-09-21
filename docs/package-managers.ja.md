@@ -50,4 +50,4 @@ package managerがinstallしたexecutableは、そのpackage managerが唯一の
 
 これによりReasonのself-updaterがHomebrew CellarやWinGet portable-package stateをpackage managerの管理外で変更することを防ぎます。`install.sh` / `install.ps1`によるdirect installは、従来どおりReason自身のprovenance-verified self-update lifecycleを使います。
 
-package-manager definitionはdistribution convenienceのみを追加します。package manager metadataがHarness Engine 0.4.2内部のevidence / correctness authorityになることはありません。
+package-manager definitionはdistribution convenienceのみを追加します。package manager metadataがHarness Engine内部のevidence / correctness authorityになることはなく、current Engine 0.5.0でも同じです。

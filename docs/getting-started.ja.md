@@ -2,7 +2,7 @@
 
 日本語 | [English](getting-started.md)
 
-このガイドは、fresh machineからReasoning Harnessの考え方を最短で体験するための入口です。対象は現在のsplit preview、**Reason CLI 0.5.2 / Harness Engine 0.4.2** です。
+このガイドは、fresh machineからReasoning Harnessの考え方を最短で体験するための入口です。対象は現在のsplit release、**Reason CLI 0.5.3 / Harness Engine 0.5.0** です。
 
 ## 1. インストール
 
@@ -11,20 +11,20 @@
 macOS / Linux:
 
 ```bash
-curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.sh | sh
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.2/install.ps1 | iex
+irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.ps1 | iex
 ```
 
 Rust 1.88+がある場合は、同じtagged CLIを直接installすることもできます。
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag reason-v0.5.2 --locked reasoning-harness-cli --bin reason
+  --tag reason-v0.5.3 --locked reasoning-harness-cli --bin reason
 ```
 
 その後`reason --version`を確認します。`main`には未release変更が入る場合があるため、再現可能なproduct snapshotにはtagged releaseを使います。provenanceやplatform条件は[Native installer contract](native-installers.ja.md)を参照してください。

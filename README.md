@@ -71,10 +71,23 @@ That distinction is the product: **useful AI output without letting model confid
 
 ## Quickstart
 
-The current published split CLI is **Reason CLI 0.5.3 on Harness Engine 0.5.0**. `reason-v0.5.3` formally adopts the independently released `engine-v0.5.0`; the already-published `reason-v0.5.2` artifacts remain immutable on Engine 0.4.2. For macOS/Linux, the published native installer is the normal end-user path (GitHub CLI 2.93+ is required for provenance verification):
+The current published split CLI is **Reason CLI 0.5.3 on Harness Engine 0.5.0**. `reason-v0.5.3` formally adopts the independently released `engine-v0.5.0`; the already-published `reason-v0.5.2` artifacts remain immutable on Engine 0.4.2. Published native installers are the normal end-user path (GitHub CLI 2.93+ is required for provenance verification).
+
+macOS / Linux:
 
 ```bash
 curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.sh | sh
+```
+
+Windows PowerShell:
+
+```powershell
+irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.ps1 | iex
+```
+
+Once the installer directory is on `PATH` (the installer prints guidance when it is not), run:
+
+```bash
 reason setup
 ```
 

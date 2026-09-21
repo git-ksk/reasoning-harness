@@ -32,7 +32,7 @@ product compatibilityは3つの独立した座標で管理します。
 - **Harness Engine SemVer** — `reasoning-harness-core`が所有するreasoning/correctness implementation version；
 - **machine contract identity** — `reason-cli-output-v1`や`reasoning-artifact-v1`などのwire/schema compatibility ID。
 
-`reasoning-harness-providers`は内部crate versionを持ちますが、第3のユーザー向けproduct versionにはしません。`v0.4.2`はCLI/Engineの最後のunified releaseで、今後のCLI releaseは`reason-vX.Y.Z`を使い、Engineを変えずに進められます。詳細は[Product / Engine / contract のversioning](versioning.ja.md)を参照してください。
+`reasoning-harness-providers`は内部crate versionを持ちますが、第3のユーザー向けproduct versionにはしません。`v0.4.2`はCLI/Engineの最後のunified releaseで、split CLI releaseは`reason-vX.Y.Z`を使い、Harness Engine releaseとは独立して進められます。詳細は[Product / Engine / contract のversioning](versioning.ja.md)を参照してください。
 
 現在のproduct identityには次が含まれます。
 
@@ -70,11 +70,11 @@ providerに依存しないruntimeがproduct boundaryです。Provider adapterは
 - Provider quota、service availability、rate limit、model retirement、model固有のoutput qualityは外部のoperational dependencyであり、harness correctnessとは分けて報告します。
 - v0.4.2 release acceptance（`natural-language-e2e-v36-freeze`）はMistral / Groq / Gemini 3.5 Flash-Lite / Gemma 4 31Bで独立にPASSしました。全required candidate rowは13/13完走し、operational / generation / correctness-boundary failureはすべて`0`。Geminiのpaired follow-up rowはtarget recall `1.0`を維持したまま、tool selection `0.6 -> 1.0`、trigger exposure `0 -> 3`、avoidable stall `3 -> 0`へ改善しました。
 
-Provider credentialはenvironment variableのまま保持し、`reason-config-v1`では受け付けません。
+Provider credentialは`reason-config-v1`では受け付けません。`reason setup` / `reason auth`ではOS-native credential storeへ保存でき、environment variableもdeterministic precedenceで引き続き利用できます。
 
 ## 安定性ステータス
 
-`v0.4.2`は現在の外部プレビューリリースです。v0.4.xのproduct/authority foundationを維持しつつ、deterministic safe acquisition precedence、generic Groq natural-language provider parity、structured planner/action hardening、immutable v36 release acceptanceで検証したprovider/eval resilienceを追加しています。admission、authority、verification、finalization、answer safety、MCP non-promotion、session replayは引き続きHarness-ownedです。文書化されたv1.0 readiness gateは満たされていますが、`v0.4.2`は意図的にstable v1.0の主張ではなく、prerelease/v0.x compatibility promiseのままです。将来のv1.0には通常のprovenance workflowを通じた明示的なversion/tag/release decisionがなお必要です。
+**Reason CLI 0.5.3 / Harness Engine 0.5.0** が現在のexternal-preview product pairです。`v0.4.2`はimmutableな最後のunified CLI/Engine historical releaseで、0.5.0〜0.5.2のsplit CLI lineはEngine 0.4.2のままimmutableです。Engine 0.5.0は`engine-v0.5.0`として独立acceptance / releaseされた後、`reason-v0.5.3`でadoptされました。admission、authority、verification、finalization、answer safety、MCP non-promotion、session replayは引き続きHarness-ownedです。文書化されたv1.0 readiness gateは満たされていますが、current 0.5.x lineは意図的にstable v1.0の主張ではなく、prerelease/v0.x compatibility promiseのままです。将来のv1.0には通常のprovenance workflowを通じた明示的なversion/tag/release decisionがなお必要です。
 
 
 product term、machine/runtime identifier、過去のresearch labelの区別については、[用語と命名ルール](terminology.ja.md)を参照してください。
