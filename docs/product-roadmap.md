@@ -43,7 +43,7 @@ Harness verifies / qualifies / abstains
 
 **Current published pair: `reason-v0.5.3` / Harness Engine 0.5.0.** The prior `reason-v0.5.2` release remains immutable on Engine 0.4.2; #455 completed the adoption under a new CLI coordinate.
 
-The base `reason-v0.5.0` release and the 0.5.1/0.5.2 patch line shipped on Engine 0.4.2; `reason-v0.5.3` now ships the accepted Engine 0.5.0. The milestone P0 release gate and #455 Engine adoption are complete. The only remaining P1 item is #375 distribution follow-up: Homebrew physical acceptance is complete, while the WinGet community manifest has passed validation and CLA checks and is waiting for community moderator approval.
+The base `reason-v0.5.0` release and the 0.5.1/0.5.2 patch line shipped on Engine 0.4.2; `reason-v0.5.3` now ships the accepted Engine 0.5.0. The milestone P0 release gate and #455 Engine adoption are complete. The only remaining P1 item is #375 distribution follow-up: Homebrew 0.5.3 physical upgrade/test acceptance is complete, while the WinGet community manifest has passed validation and CLA checks and is waiting for community moderator approval.
 
 This track makes `reason` a mature terminal product without changing the underlying authority semantics.
 

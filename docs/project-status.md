@@ -84,7 +84,7 @@ The project currently makes these product-level commitments:
 
 The general-use CLI productization work is shipped. Native installation, guided setup/auth, interactive/continue/resume UX, config/model/MCP discovery, progress/cancellation, diagnostics, private local state, and lifecycle management are all part of the current 0.5.x product line.
 
-The remaining product-side distribution follow-up is #375: Homebrew physical acceptance is complete; the WinGet community manifest has passed Microsoft validation and CLA checks and is waiting for community moderator approval. This external review does not block Harness Engine work.
+The remaining product-side distribution follow-up is #375: Homebrew 0.5.3 physical upgrade/test acceptance is complete; the WinGet community manifest has passed Microsoft validation and CLA checks and is waiting for community moderator approval. This external review does not block Harness Engine work.
 
 Harness Engine 0.5.0 is implementation-, acceptance-, and release-complete. Final hardening #445/#446/#450 was validated by `engine-0.5-final-v3-freeze`; canonical run `35457038163` passed all six independently required rows and all 18 fresh cases with zero correctness-boundary violations and zero session external replay. See the [Engine 0.5.0 final-v3 result](engine-0.5-final-v3-result.md). The independent Engine source release is `engine-v0.5.0`; Reason CLI 0.5.3 now distributes it, while Reason CLI 0.5.2 remains immutable on Engine 0.4.2.
 

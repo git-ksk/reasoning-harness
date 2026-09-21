@@ -83,7 +83,7 @@ A user-facing operational error should explain what failed, whether the task exe
 - **#371 P0 — completed:** one-command native installers for macOS, Linux, and Windows.
 - **#382 P0 — completed:** release provenance, signing/notarization where appropriate, and trusted installer/updater verification. SHA-256 remains useful but is not the sole trust root.
 - **#372 P0 — completed:** provenance-verified update, explicit rollback, and retention-by-default uninstall lifecycle.
-- **#375 P1 — external closeout pending:** Homebrew physical acceptance is complete on Reason CLI 0.5.2. The WinGet community manifest has passed Microsoft validation (01–10) and CLA checks; only community moderator approval/merge remains. This does not block Engine 0.5.0 work.
+- **#375 P1 — external closeout pending:** Homebrew physical acceptance is complete on Reason CLI 0.5.3. The WinGet community manifest has passed Microsoft validation (01–10) and CLA checks; only community moderator approval/merge remains. This does not block Engine 0.5.0 work.
 - **#455 P1 — Engine 0.5.0 adoption completed:** `reason-v0.5.3` publishes Reason CLI 0.5.3 / Harness Engine 0.5.0 without rewriting `reason-v0.5.2`. Supported-platform fresh-install/package/no-Rust/lifecycle gates passed, release provenance binds the exact CLI/Engine pair and merge commit, and live 0.5.2 <-> 0.5.3 update/rollback acceptance preserves explicit `--allow-engine-change` consent.
 
 ### Project trust — #377 (completed)
