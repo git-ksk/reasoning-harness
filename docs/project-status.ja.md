@@ -84,7 +84,7 @@ Harness Engine 0.5.0はrelease-completeです。final-v3 canonical run `35457038
 
 general-use CLI productizationはrelease済みです。native install、guided setup/auth、interactive / continue / resume、config/model/MCP discovery、progress/cancellation、diagnostics、private local state、lifecycle managementは現在の0.5.x product lineに含まれます。
 
-product側で残るdistribution follow-upは#375です。Homebrew physical acceptanceは完了し、WinGet community manifestもMicrosoft validation / CLAを通過してcommunity moderator approval待ちです。この外部reviewはHarness Engine開発をblockしません。
+product側で残るdistribution follow-upは#375です。Homebrew 0.5.3 physical upgrade/test acceptanceは完了し、WinGet community manifestもMicrosoft validation / CLAを通過してcommunity moderator approval待ちです。この外部reviewはHarness Engine開発をblockしません。
 
 Harness Engine 0.5.0は実装・acceptance・releaseまで完了しました。final hardening #445/#446/#450を`engine-0.5-final-v3-freeze`で検証し、canonical run `35457038163` は独立required 6 row・fresh 18 caseすべてPASS、correctness-boundary violation 0、session external replay 0でした。詳細は[Engine 0.5.0 final-v3 result](engine-0.5-final-v3-result.ja.md)を参照してください。独立Engine source releaseは`engine-v0.5.0`で、Reason CLI 0.5.3がこれをdistributionし、Reason CLI 0.5.2 artifactはEngine 0.4.2のままimmutableです。
 

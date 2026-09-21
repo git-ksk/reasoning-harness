@@ -83,7 +83,7 @@ user-facing operational errorは「何が失敗したか」「taskが実行さ�
 - **#371 P0 — 完了:** macOS / Linux / Windows向けone-command native installer。
 - **#382 P0 — 完了:** release provenance、必要に応じたcode signing/notarization、trusted installer/updater verification。SHA-256は維持するが唯一のtrust rootにはしない。
 - **#372 P0 — 完了:** provenance検証済みupdate、明示的rollback、保持defaultのuninstall lifecycle。
-- **#375 P1 — external closeout待ち:** Reason CLI 0.5.2のHomebrew physical acceptanceは完了。WinGet community manifestはMicrosoft validation 01–10とCLAを通過し、community moderator approval / mergeだけが残る。Harness Engine 0.5.0はblockしない。
+- **#375 P1 — external closeout待ち:** Reason CLI 0.5.3のHomebrew physical acceptanceは完了。WinGet community manifestはMicrosoft validation 01–10とCLAを通過し、community moderator approval / mergeだけが残る。Harness Engine 0.5.0はblockしない。
 - **#455 P1 — Engine 0.5.0 adoption完了:** `reason-v0.5.3`でReason CLI 0.5.3 / Harness Engine 0.5.0を公開し、`reason-v0.5.2`は書き換えていません。supported-platform fresh-install / package / no-Rust / lifecycle gateはPASSし、release provenanceはexactなCLI/Engine pairとmerge commitをbinding、live 0.5.2 <-> 0.5.3 update/rollbackでも`--allow-engine-change`によるexplicit consentを維持しました。
 
 ### プロジェクトtrust — #377（完了）
