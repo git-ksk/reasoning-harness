@@ -142,7 +142,7 @@ pub use metamorphic::{
 };
 pub use model::{
     ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelReasoningPreference,
-    ModelRequest, ModelResponse, ModelUsage,
+    ModelRequest, ModelResponse, ModelUsage, build_json_object_fallback_request,
 };
 pub use reasoning_policy::{
     PolicyEscalation, PolicyEscalationAction, PolicyEvidenceConstraints, PolicyInvalidation,
