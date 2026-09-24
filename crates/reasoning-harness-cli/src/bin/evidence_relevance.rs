@@ -8,19 +8,19 @@ use std::{
 
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
-    EvidenceRelevanceAssessment, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
-    EvidenceRelevanceProposal, EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy,
+    EvidenceRelevanceAssessment, EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate,
+    EvidenceRelevanceDisposition, EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy,
     ModelAdapter, ModelError, ModelErrorKind, ModelRequest, ModelUsage,
-    build_evidence_relevance_proposal_request, build_json_object_fallback_request,
-    materialize_evidence_relevance, parse_evidence_relevance_proposal,
+    build_evidence_relevance_binding_proposal_request, build_json_object_fallback_request,
+    materialize_evidence_relevance_v2, parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v2";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v2";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v3";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v3";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v2";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v3";
 
 #[derive(Debug, Parser)]
 #[command(
@@ -116,7 +116,7 @@ struct CalibrationCase {
     _task: String,
     policy: EvidenceRelevanceTargetPolicy,
     candidate: EvidenceRelevanceCandidate,
-    expected_proposal: EvidenceRelevanceDisposition,
+    expected_proposal: EvidenceRelevanceBindingProposal,
     expected_disposition: EvidenceRelevanceDisposition,
 }
 
@@ -139,9 +139,9 @@ impl UsageSummary {
 struct CaseObservation {
     id: String,
     family: String,
-    expected_proposal: EvidenceRelevanceDisposition,
+    expected_proposal: EvidenceRelevanceBindingProposal,
     #[serde(skip_serializing_if = "Option::is_none")]
-    observed_proposal: Option<EvidenceRelevanceDisposition>,
+    observed_proposal: Option<EvidenceRelevanceBindingProposal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proposal_match: Option<bool>,
     expected_disposition: EvidenceRelevanceDisposition,
@@ -231,7 +231,7 @@ struct Checkpoint<'a> {
 
 #[derive(Debug)]
 struct CallOutcome {
-    proposal: EvidenceRelevanceProposal,
+    proposal: EvidenceRelevanceBindingProposal,
     used_json_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
@@ -278,11 +278,9 @@ async fn run() -> Result<StudyOutput, String> {
     let selected = select_cases(&manifest, &args.fixture_ids)?;
 
     for case in &selected {
-        let expected = EvidenceRelevanceProposal {
-            disposition: case.expected_proposal,
-        };
+        let expected = case.expected_proposal;
         let assessment =
-            materialize_evidence_relevance(&case.policy, &case.candidate, Some(&expected))
+            materialize_evidence_relevance_v2(&case.policy, &case.candidate, Some(&expected))
                 .map_err(|error| format!("invalid calibration policy {}: {error}", case.id))?;
         if assessment.disposition != case.expected_disposition {
             return Err(format!(
@@ -328,9 +326,12 @@ async fn run() -> Result<StudyOutput, String> {
 
     for (index, case) in selected.iter().enumerate() {
         let case_seed = args.seed.and_then(|base| base.checked_add(index as u64));
-        let request =
-            build_evidence_relevance_proposal_request(&case.policy, &case.candidate, case_seed)
-                .map_err(|error| format!("build relevance request {}: {error}", case.id))?;
+        let request = build_evidence_relevance_binding_proposal_request(
+            &case.policy,
+            &case.candidate,
+            case_seed,
+        )
+        .map_err(|error| format!("build relevance request {}: {error}", case.id))?;
         let lexical_baseline = simple_lexical_baseline(&case.policy, &case.candidate);
 
         let started = Instant::now();
@@ -345,8 +346,8 @@ async fn run() -> Result<StudyOutput, String> {
 
         let observation = match result {
             Ok(call) => {
-                let observed = call.proposal.disposition;
-                match materialize_evidence_relevance(
+                let observed = call.proposal;
+                match materialize_evidence_relevance_v2(
                     &case.policy,
                     &case.candidate,
                     Some(&call.proposal),
@@ -364,9 +365,14 @@ async fn run() -> Result<StudyOutput, String> {
                             disposition_match: Some(materialized == case.expected_disposition),
                             lexical_baseline,
                             lexical_baseline_match: lexical_baseline == case.expected_disposition,
-                            deterministic_safety_override: observed
-                                == EvidenceRelevanceDisposition::Relevant
-                                && materialized != EvidenceRelevanceDisposition::Relevant,
+                            deterministic_safety_override: matches!(
+                                (observed.target_binding, observed.relation_binding),
+                                (
+                                    reasoning_harness_core::EvidenceRelevanceBinding::Exact,
+                                    reasoning_harness_core::EvidenceRelevanceBinding::Exact
+                                )
+                            ) && materialized
+                                != EvidenceRelevanceDisposition::Relevant,
                             used_json_fallback: call.used_json_fallback,
                             model_calls: call.model_calls,
                             provider_attempts: call.provider_attempts,
@@ -575,7 +581,7 @@ async fn call_model_for_proposal(
             usage.add(&response.usage);
             last_model = Some(response.model.clone());
             last_finish_reason = response.finish_reason.clone();
-            match parse_evidence_relevance_proposal(&response.text) {
+            match parse_evidence_relevance_binding_proposal(&response.text) {
                 Ok(proposal) => Ok(CallOutcome {
                     proposal,
                     used_json_fallback: false,
@@ -713,7 +719,7 @@ async fn call_fallback(
             usage.add(&response.usage);
             let model = Some(response.model.clone());
             let finish_reason = response.finish_reason.clone();
-            match parse_evidence_relevance_proposal(&response.text) {
+            match parse_evidence_relevance_binding_proposal(&response.text) {
                 Ok(proposal) => Ok(CallOutcome {
                     proposal,
                     used_json_fallback: true,
@@ -1198,11 +1204,9 @@ mod tests {
         let manifest = load();
         assert_eq!(manifest.cases.len(), 26);
         for case in manifest.cases {
-            let proposal = EvidenceRelevanceProposal {
-                disposition: case.expected_proposal,
-            };
+            let proposal = case.expected_proposal;
             let assessment =
-                materialize_evidence_relevance(&case.policy, &case.candidate, Some(&proposal))
+                materialize_evidence_relevance_v2(&case.policy, &case.candidate, Some(&proposal))
                     .unwrap();
             assert_eq!(
                 assessment.disposition, case.expected_disposition,
@@ -1272,7 +1276,7 @@ mod tests {
     fn fixture_request() -> ModelRequest {
         let manifest = load();
         let case = &manifest.cases[0];
-        build_evidence_relevance_proposal_request(&case.policy, &case.candidate, Some(462))
+        build_evidence_relevance_binding_proposal_request(&case.policy, &case.candidate, Some(462))
             .expect("request")
     }
 
@@ -1281,7 +1285,7 @@ mod tests {
         let adapter = SequenceAdapter::new(
             vec![
                 model_response("not json"),
-                model_response(r#"{"disposition":"relevant"}"#),
+                model_response(r#"{"target_binding":"exact","relation_binding":"exact"}"#),
             ],
             0,
         );
@@ -1296,8 +1300,12 @@ mod tests {
 
     #[tokio::test]
     async fn assessment_elapsed_budget_fails_typed_and_closed() {
-        let adapter =
-            SequenceAdapter::new(vec![model_response(r#"{"disposition":"relevant"}"#)], 50);
+        let adapter = SequenceAdapter::new(
+            vec![model_response(
+                r#"{"target_binding":"exact","relation_binding":"exact"}"#,
+            )],
+            50,
+        );
         let failure =
             call_model_for_proposal(&adapter, fixture_request(), 2, Duration::from_millis(5))
                 .await
@@ -1311,7 +1319,7 @@ mod tests {
         let adapter = SequenceAdapter::new(
             vec![
                 model_response("not json"),
-                model_response(r#"{"disposition":"relevant"}"#),
+                model_response(r#"{"target_binding":"exact","relation_binding":"exact"}"#),
             ],
             0,
         );

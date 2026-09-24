@@ -111,14 +111,18 @@ pub use evidence_qualification_benchmark::{
     evaluate_evidence_qualification_fixture,
 };
 pub use evidence_relevance::{
-    EVIDENCE_RELEVANCE_MATERIALIZATION_POLICY_ID, EVIDENCE_RELEVANCE_PROPOSAL_CONTRACT_ID,
-    EvidenceRelevanceAssessment, EvidenceRelevanceAssessmentBudget,
-    EvidenceRelevanceAssessmentPath, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
+    EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_ID,
+    EVIDENCE_RELEVANCE_BINDING_PROPOSAL_CONTRACT_ID, EVIDENCE_RELEVANCE_MATERIALIZATION_POLICY_ID,
+    EVIDENCE_RELEVANCE_PROPOSAL_CONTRACT_ID, EvidenceRelevanceAssessment,
+    EvidenceRelevanceAssessmentBudget, EvidenceRelevanceAssessmentPath, EvidenceRelevanceBinding,
+    EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
     EvidenceRelevanceError, EvidenceRelevanceIdentityRequirement, EvidenceRelevanceProposal,
     EvidenceRelevanceReason, EvidenceRelevanceRelationKind, EvidenceRelevanceSignal,
     EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy, EvidenceTargetEntityIdentity,
-    build_evidence_relevance_proposal_request, evidence_relevance_proposal_schema,
-    materialize_evidence_relevance, parse_evidence_relevance_proposal,
+    build_evidence_relevance_binding_proposal_request, build_evidence_relevance_proposal_request,
+    evidence_relevance_binding_proposal_schema, evidence_relevance_proposal_schema,
+    materialize_evidence_relevance, materialize_evidence_relevance_v2,
+    parse_evidence_relevance_binding_proposal, parse_evidence_relevance_proposal,
 };
 pub use finalization::{
     CanonicalFinalAnswerRenderer, FinalAnswerCandidate, FinalAnswerClaim, FinalAnswerRenderer,
