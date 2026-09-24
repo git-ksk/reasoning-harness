@@ -17,10 +17,10 @@ use reasoning_harness_core::{
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v5";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v5";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v6";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v6";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v5";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v6";
 
 #[derive(Debug, Parser)]
 #[command(
@@ -41,6 +41,8 @@ struct Args {
     inter_case_delay_ms: u64,
     #[arg(long)]
     checkpoint: Option<PathBuf>,
+    #[arg(long, default_value_t = 2)]
+    max_consecutive_operational_failures: usize,
     #[arg(long, default_value_t = false)]
     validate_only: bool,
 }
@@ -155,6 +157,7 @@ struct CaseObservation {
     used_json_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
+    provider_attempts_complete: bool,
     latency_ms: u128,
     usage: UsageSummary,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -190,11 +193,18 @@ struct CalibrationMetrics {
     lexical_expected_relevant_misses: usize,
     model_calls: u64,
     provider_attempts: u64,
+    provider_attempts_incomplete_observations: usize,
     input_tokens: u64,
     output_tokens: u64,
     total_tokens: u64,
     total_latency_ms: u128,
     mean_latency_ms: Option<f64>,
+    latency_p50_ms: Option<u128>,
+    latency_p95_ms: Option<u128>,
+    latency_max_ms: Option<u128>,
+    successful_latency_p50_ms: Option<u128>,
+    successful_latency_p95_ms: Option<u128>,
+    successful_latency_max_ms: Option<u128>,
     failure_counts: BTreeMap<String, usize>,
 }
 
@@ -209,10 +219,24 @@ struct StudyOutput {
     provider: String,
     model: String,
     seed: Option<u64>,
+    planned_cases: usize,
+    completed_cases: usize,
     canonical_full_calibration: bool,
     scorability: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    operational_abort: Option<OperationalAbort>,
     metrics: CalibrationMetrics,
     observations: Vec<CaseObservation>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct OperationalAbort {
+    reason: &'static str,
+    after_case_id: String,
+    next_case_id: String,
+    consecutive_operational_failures: usize,
+    max_consecutive_operational_failures: usize,
+    remaining_cases: usize,
 }
 
 #[derive(Debug, Serialize)]
@@ -247,6 +271,7 @@ struct CallFailure {
     used_json_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
+    provider_attempts_complete: bool,
     usage: UsageSummary,
     provider_model: Option<String>,
     finish_reason: Option<String>,
@@ -301,16 +326,25 @@ async fn run() -> Result<StudyOutput, String> {
             provider: args.provider.name().into(),
             model: args.model,
             seed: args.seed,
+            planned_cases: selected.len(),
+            completed_cases: 0,
             canonical_full_calibration: false,
             scorability: "validate_only_non_scorable",
+            operational_abort: None,
             metrics: empty_metrics(selected.len()),
             observations: Vec::new(),
         });
     }
 
+    if args.max_consecutive_operational_failures == 0 {
+        return Err("--max-consecutive-operational-failures must be at least 1".into());
+    }
+
     let generator = Generator::from_provider(args.provider, &args.model)?;
     let provider = args.provider.name().to_owned();
     let mut observations = Vec::with_capacity(selected.len());
+    let mut consecutive_operational_failures = 0usize;
+    let mut operational_abort: Option<OperationalAbort> = None;
 
     if let Some(path) = args.checkpoint.as_deref() {
         write_checkpoint(
@@ -376,6 +410,7 @@ async fn run() -> Result<StudyOutput, String> {
                             used_json_fallback: call.used_json_fallback,
                             model_calls: call.model_calls,
                             provider_attempts: call.provider_attempts,
+                            provider_attempts_complete: true,
                             latency_ms,
                             usage: call.usage,
                             provider_model: call.provider_model,
@@ -393,6 +428,7 @@ async fn run() -> Result<StudyOutput, String> {
                             used_json_fallback: call.used_json_fallback,
                             model_calls: call.model_calls,
                             provider_attempts: call.provider_attempts,
+                            provider_attempts_complete: true,
                             usage: call.usage,
                             provider_model: call.provider_model,
                             finish_reason: call.finish_reason,
@@ -410,6 +446,7 @@ async fn run() -> Result<StudyOutput, String> {
                     used_json_fallback: failure.used_json_fallback,
                     model_calls: failure.model_calls,
                     provider_attempts: failure.provider_attempts,
+                    provider_attempts_complete: failure.provider_attempts_complete,
                     usage: failure.usage,
                     provider_model: failure.provider_model,
                     finish_reason: failure.finish_reason,
@@ -446,6 +483,32 @@ async fn run() -> Result<StudyOutput, String> {
             )?;
         }
 
+        consecutive_operational_failures = next_operational_failure_streak(
+            consecutive_operational_failures,
+            observations
+                .last()
+                .and_then(|observation| observation.failure_class.as_deref()),
+        );
+
+        if consecutive_operational_failures >= args.max_consecutive_operational_failures
+            && index + 1 < selected.len()
+        {
+            operational_abort = Some(OperationalAbort {
+                reason: "consecutive_operational_failure_budget_exhausted",
+                after_case_id: case.id.clone(),
+                next_case_id: selected[index + 1].id.clone(),
+                consecutive_operational_failures,
+                max_consecutive_operational_failures: args.max_consecutive_operational_failures,
+                remaining_cases: selected.len().saturating_sub(index + 1),
+            });
+            eprintln!(
+                "[evidence-relevance-study] aborting after {} consecutive operational provider failures; next_case={}",
+                consecutive_operational_failures,
+                selected[index + 1].id
+            );
+            break;
+        }
+
         if index + 1 < selected.len() && args.inter_case_delay_ms > 0 {
             tokio::time::sleep(Duration::from_millis(args.inter_case_delay_ms)).await;
         }
@@ -459,13 +522,19 @@ async fn run() -> Result<StudyOutput, String> {
             &args.model,
             selected.len(),
             &observations,
-            "completed",
+            if operational_abort.is_some() {
+                "aborted_operational_failure_budget"
+            } else {
+                "completed"
+            },
         )?;
     }
 
     let canonical_full_calibration =
         args.fixture_ids.is_empty() && selected.len() == manifest.cases.len();
-    let operationally_complete = observations.iter().all(|case| case.failure.is_none());
+    let operationally_complete = operational_abort.is_none()
+        && observations.len() == selected.len()
+        && observations.iter().all(|case| case.failure.is_none());
     let scorability = if canonical_full_calibration && operationally_complete {
         "complete_calibration_observation"
     } else {
@@ -474,16 +543,19 @@ async fn run() -> Result<StudyOutput, String> {
 
     Ok(StudyOutput {
         configuration_id: CONFIGURATION_ID,
-        suite_id: manifest.suite_id,
+        suite_id: manifest.suite_id.clone(),
         issue: manifest.issue,
-        source_rule: manifest.source_rule,
-        corpus_status_at_observation: manifest.status,
+        source_rule: manifest.source_rule.clone(),
+        corpus_status_at_observation: manifest.status.clone(),
         candidate_commit: git_head().unwrap_or_else(|_| "unknown".into()),
         provider,
         model: args.model,
         seed: args.seed,
+        planned_cases: selected.len(),
+        completed_cases: observations.len(),
         canonical_full_calibration,
         scorability,
+        operational_abort,
         metrics: summarize_metrics(&observations),
         observations,
     })
@@ -494,6 +566,7 @@ struct ObservationFailure {
     used_json_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
+    provider_attempts_complete: bool,
     usage: UsageSummary,
     provider_model: Option<String>,
     finish_reason: Option<String>,
@@ -521,6 +594,7 @@ fn failure_observation(
         used_json_fallback: failure.used_json_fallback,
         model_calls: failure.model_calls,
         provider_attempts: failure.provider_attempts,
+        provider_attempts_complete: failure.provider_attempts_complete,
         latency_ms: failure.latency_ms,
         usage: failure.usage,
         provider_model: failure.provider_model,
@@ -551,6 +625,7 @@ async fn call_model_for_proposal(
             used_json_fallback: false,
             model_calls,
             provider_attempts,
+            provider_attempts_complete: true,
             usage,
             provider_model: last_model,
             finish_reason: last_finish_reason,
@@ -568,6 +643,7 @@ async fn call_model_for_proposal(
                 used_json_fallback: false,
                 model_calls,
                 provider_attempts,
+                provider_attempts_complete: false,
                 usage,
                 provider_model: last_model,
                 finish_reason: last_finish_reason,
@@ -601,6 +677,7 @@ async fn call_model_for_proposal(
                             used_json_fallback: false,
                             model_calls,
                             provider_attempts,
+                            provider_attempts_complete: true,
                             usage,
                             provider_model: last_model,
                             finish_reason: last_finish_reason,
@@ -686,6 +763,7 @@ async fn call_fallback(
             used_json_fallback: false,
             model_calls: prior_model_calls,
             provider_attempts: prior_provider_attempts,
+            provider_attempts_complete: true,
             usage,
             provider_model: prior_model,
             finish_reason: prior_finish_reason,
@@ -705,6 +783,7 @@ async fn call_fallback(
                 used_json_fallback: true,
                 model_calls,
                 provider_attempts: prior_provider_attempts,
+                provider_attempts_complete: false,
                 usage,
                 provider_model: prior_model,
                 finish_reason: prior_finish_reason,
@@ -737,6 +816,7 @@ async fn call_fallback(
                     used_json_fallback: true,
                     model_calls,
                     provider_attempts,
+                    provider_attempts_complete: true,
                     usage,
                     provider_model: model,
                     finish_reason,
@@ -775,6 +855,7 @@ fn model_failure(
         used_json_fallback,
         model_calls,
         provider_attempts,
+        provider_attempts_complete: true,
         usage,
         provider_model,
         finish_reason,
@@ -793,6 +874,28 @@ fn model_error_class(kind: ModelErrorKind) -> &'static str {
         ModelErrorKind::Protocol => "protocol",
         ModelErrorKind::UnsupportedCapability => "unsupported_capability",
     }
+}
+
+fn next_operational_failure_streak(current: usize, failure_class: Option<&str>) -> usize {
+    if failure_class.is_some_and(is_operational_provider_failure_class) {
+        current.saturating_add(1)
+    } else {
+        0
+    }
+}
+
+fn is_operational_provider_failure_class(class: &str) -> bool {
+    matches!(
+        class,
+        "assessment_timeout"
+            | "credentials"
+            | "provider"
+            | "provider_unavailable"
+            | "quota"
+            | "rate_limit"
+            | "timeout"
+            | "transport"
+    )
 }
 
 fn repository_root() -> Result<PathBuf, String> {
@@ -1041,6 +1144,25 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
     let total_latency_ms = observations.iter().map(|case| case.latency_ms).sum();
     let mean_latency_ms =
         (!observations.is_empty()).then(|| total_latency_ms as f64 / observations.len() as f64);
+    let latencies = observations
+        .iter()
+        .map(|case| case.latency_ms)
+        .collect::<Vec<_>>();
+    let successful_latencies = observations
+        .iter()
+        .filter(|case| case.failure.is_none())
+        .map(|case| case.latency_ms)
+        .collect::<Vec<_>>();
+    let latency_p50_ms = percentile_latency(&latencies, 50);
+    let latency_p95_ms = percentile_latency(&latencies, 95);
+    let latency_max_ms = latencies.iter().copied().max();
+    let successful_latency_p50_ms = percentile_latency(&successful_latencies, 50);
+    let successful_latency_p95_ms = percentile_latency(&successful_latencies, 95);
+    let successful_latency_max_ms = successful_latencies.iter().copied().max();
+    let provider_attempts_incomplete_observations = observations
+        .iter()
+        .filter(|case| !case.provider_attempts_complete)
+        .count();
 
     let mut failure_counts = BTreeMap::new();
     for failure in observations
@@ -1070,11 +1192,18 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         lexical_expected_relevant_misses,
         model_calls,
         provider_attempts,
+        provider_attempts_incomplete_observations,
         input_tokens,
         output_tokens,
         total_tokens,
         total_latency_ms,
         mean_latency_ms,
+        latency_p50_ms,
+        latency_p95_ms,
+        latency_max_ms,
+        successful_latency_p50_ms,
+        successful_latency_p95_ms,
+        successful_latency_max_ms,
         failure_counts,
     }
 }
@@ -1100,13 +1229,31 @@ fn empty_metrics(cases: usize) -> CalibrationMetrics {
         lexical_expected_relevant_misses: 0,
         model_calls: 0,
         provider_attempts: 0,
+        provider_attempts_incomplete_observations: 0,
         input_tokens: 0,
         output_tokens: 0,
         total_tokens: 0,
         total_latency_ms: 0,
         mean_latency_ms: None,
+        latency_p50_ms: None,
+        latency_p95_ms: None,
+        latency_max_ms: None,
+        successful_latency_p50_ms: None,
+        successful_latency_p95_ms: None,
+        successful_latency_max_ms: None,
         failure_counts: BTreeMap::new(),
     }
+}
+
+fn percentile_latency(values: &[u128], percentile: usize) -> Option<u128> {
+    if values.is_empty() {
+        return None;
+    }
+    let mut sorted = values.to_vec();
+    sorted.sort_unstable();
+    let percentile = percentile.clamp(1, 100);
+    let rank = percentile.saturating_mul(sorted.len()).saturating_add(99) / 100;
+    sorted.get(rank.saturating_sub(1)).copied()
 }
 
 fn accuracy(matches: usize, denominator: usize) -> Option<f64> {
@@ -1312,6 +1459,33 @@ mod tests {
                 .unwrap_err();
         assert_eq!(failure.class, "assessment_timeout");
         assert_eq!(failure.model_calls, 1);
+        assert!(!failure.provider_attempts_complete);
+    }
+
+    #[test]
+    fn operational_failure_streak_counts_provider_failures_and_resets_on_response_failure() {
+        assert_eq!(
+            next_operational_failure_streak(0, Some("assessment_timeout")),
+            1
+        );
+        assert_eq!(
+            next_operational_failure_streak(1, Some("provider_unavailable")),
+            2
+        );
+        assert_eq!(next_operational_failure_streak(2, Some("protocol")), 0);
+        assert_eq!(next_operational_failure_streak(2, None), 0);
+        assert!(is_operational_provider_failure_class("rate_limit"));
+        assert!(is_operational_provider_failure_class("quota"));
+        assert!(!is_operational_provider_failure_class("materialization"));
+    }
+
+    #[test]
+    fn latency_percentiles_use_nearest_rank() {
+        let values = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+        assert_eq!(percentile_latency(&values, 50), Some(50));
+        assert_eq!(percentile_latency(&values, 95), Some(100));
+        assert_eq!(percentile_latency(&[42], 95), Some(42));
+        assert_eq!(percentile_latency(&[], 95), None);
     }
 
     #[tokio::test]

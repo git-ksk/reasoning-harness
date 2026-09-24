@@ -539,7 +539,7 @@ fn is_transient_http_status(status: StatusCode) -> bool {
     matches!(status.as_u16(), 500 | 502 | 503 | 504)
 }
 
-fn transient_retry_delay(retry_index: usize) -> Duration {
+fn transient_retry_base_delay(retry_index: usize) -> Duration {
     TRANSIENT_BACKOFF_SCHEDULE
         .get(retry_index)
         .copied()
@@ -548,6 +548,25 @@ fn transient_retry_delay(retry_index: usize) -> Duration {
                 .last()
                 .expect("non-empty schedule")
         })
+}
+
+fn retry_delay_with_equal_jitter(base: Duration) -> Duration {
+    retry_delay_with_equal_jitter_entropy(base, rand::random::<u64>())
+}
+
+fn retry_delay_with_equal_jitter_entropy(base: Duration, entropy: u64) -> Duration {
+    let base_ms = u64::try_from(base.as_millis()).unwrap_or(u64::MAX);
+    if base_ms <= 1 {
+        return base;
+    }
+    let floor_ms = base_ms / 2;
+    let jitter_span_ms = base_ms.saturating_sub(floor_ms);
+    let jitter_ms = entropy % jitter_span_ms.saturating_add(1);
+    Duration::from_millis(floor_ms.saturating_add(jitter_ms))
+}
+
+fn transient_retry_delay(retry_index: usize) -> Duration {
+    retry_delay_with_equal_jitter(transient_retry_base_delay(retry_index))
 }
 
 fn google_error_detail(body: &str) -> String {
@@ -632,9 +651,10 @@ fn rate_limit_delay(headers: &reqwest::header::HeaderMap, retry_index: usize) ->
     }
 
     let multiplier = 1u32.checked_shl(retry_index as u32).unwrap_or(u32::MAX);
-    INITIAL_RATE_LIMIT_BACKOFF
+    let base = INITIAL_RATE_LIMIT_BACKOFF
         .checked_mul(multiplier)
-        .unwrap_or(Duration::MAX)
+        .unwrap_or(Duration::MAX);
+    retry_delay_with_equal_jitter(base)
 }
 
 fn response_format(format: ModelOutputFormat) -> ResponseFormat {
@@ -815,11 +835,27 @@ mod tests {
     }
 
     #[test]
-    fn transient_5xx_backoff_spans_the_high_demand_window() {
-        assert_eq!(transient_retry_delay(0), Duration::from_secs(2));
-        assert_eq!(transient_retry_delay(1), Duration::from_secs(5));
-        assert_eq!(transient_retry_delay(2), Duration::from_secs(10));
-        assert_eq!(transient_retry_delay(3), Duration::from_secs(10));
+    fn transient_5xx_backoff_keeps_bounded_base_schedule() {
+        assert_eq!(transient_retry_base_delay(0), Duration::from_secs(2));
+        assert_eq!(transient_retry_base_delay(1), Duration::from_secs(5));
+        assert_eq!(transient_retry_base_delay(2), Duration::from_secs(10));
+        assert_eq!(transient_retry_base_delay(3), Duration::from_secs(10));
+    }
+
+    #[test]
+    fn retry_delay_uses_bounded_equal_jitter() {
+        let base = Duration::from_secs(10);
+        assert_eq!(
+            retry_delay_with_equal_jitter_entropy(base, 0),
+            Duration::from_secs(5)
+        );
+        assert_eq!(
+            retry_delay_with_equal_jitter_entropy(base, 5_000),
+            Duration::from_secs(10)
+        );
+        let sampled = retry_delay_with_equal_jitter(base);
+        assert!(sampled >= Duration::from_secs(5));
+        assert!(sampled <= Duration::from_secs(10));
     }
 
     #[test]
@@ -830,11 +866,13 @@ mod tests {
     }
 
     #[test]
-    fn rate_limit_delay_uses_bounded_exponential_fallback() {
+    fn rate_limit_delay_uses_bounded_jittered_exponential_fallback() {
         let headers = reqwest::header::HeaderMap::new();
-        assert_eq!(rate_limit_delay(&headers, 0), Duration::from_secs(10));
-        assert_eq!(rate_limit_delay(&headers, 1), Duration::from_secs(20));
-        assert_eq!(rate_limit_delay(&headers, 2), Duration::from_secs(40));
+        for (retry_index, base_secs) in [(0, 10), (1, 20), (2, 40)] {
+            let delay = rate_limit_delay(&headers, retry_index);
+            assert!(delay >= Duration::from_secs(base_secs / 2));
+            assert!(delay <= Duration::from_secs(base_secs));
+        }
     }
 
     #[test]

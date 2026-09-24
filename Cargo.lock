@@ -1430,6 +1430,7 @@ name = "reasoning-harness-providers"
 version = "0.4.2"
 dependencies = [
  "httpdate",
+ "rand",
  "reasoning-harness-core",
  "reqwest",
  "serde",
