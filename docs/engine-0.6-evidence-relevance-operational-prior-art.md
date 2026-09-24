@@ -94,6 +94,6 @@ Before a canonical v6 is frozen:
 7. Add a bounded run-level overload/retry budget or recovery circuit so one provider-capacity incident does not cause a full calibration to hammer the same dependency.
 8. Preserve typed provider failures separately from semantic outcomes.
 9. Improve operational telemetry so canonical results report p50/p95/max latency and provider attempt/failure information.
-10. Run a small unchanged-surface Google recovery diagnostic before selecting the exact v6 operational policy.
+10. Run a small unchanged-surface Google recovery smoke diagnostic first. If it passes 6/6, run a fresh broader recovery diagnostic over all 15 v5 failures plus four controls before selecting the exact v6 operational policy. If the smoke still fails, skip the broader probe and harden overload/retry behavior first.
 
 The recovery diagnostic is not a v5 rerun and cannot turn v5 into a pass.

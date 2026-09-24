@@ -2,7 +2,7 @@
 
 Status: fresh non-canonical operational diagnostic after frozen v5 FAIL.
 
-This diagnostic does not change or rescore v5. It cannot make v5 pass.
+This diagnostic does not change or rescore v5. It cannot make v5 pass. It is a six-case recovery smoke probe only and is not sufficient by itself to authorize v6.
 
 ## Question
 
@@ -35,8 +35,9 @@ This is a recovery probe over existing calibration material, not a new semantic 
 
 ## Reading the result
 
-- 6/6 operational completion with no provider failure supports a transient-capacity interpretation, but does not erase v5 FAIL.
-- continuing timeout / provider-unavailable results mean v6 should not be launched until a new operational design is implemented.
+- 6/6 operational completion with no provider failure supports a transient-capacity interpretation, but does not erase v5 FAIL and does not authorize v6.
+- if v1 is 6/6, author a fresh recovery diagnostic v2 covering all 15 v5-failed cases plus four control successes spanning early and late portions of the run before selecting the v6 operational design.
+- if v1 still shows timeout / provider-unavailable, skip the broad v2 probe and implement overload/retry hardening before any v6 canonical run.
 - semantic disposition is diagnostic here; expected labels are unchanged.
 
 The diagnostic is first/only and rejects workflow reruns.
