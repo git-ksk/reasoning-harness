@@ -99,9 +99,9 @@ A canonical full calibration omits `--fixture` and observes all 22 cases exactly
 
 In-progress checkpoints are non-scorable, and completed runs containing provider failures remain operationally incomplete and non-scorable. Raw model responses and credentials are not persisted in checkpoint/output.
 
-Like the existing research runners, this live runner resolves provider credentials from the provider environment variables (`MISTRAL_API_KEY`, `GEMINI_API_KEY`, `GROQ_API_KEY`, or `NVIDIA_API_KEY`).
+Live calibration does not depend on local credentials. GitHub Actions injects provider environment variables from repository secrets. The repository has `MISTRAL_API_KEY`, `GEMINI_API_KEY`, `GROQ_API_KEY`, and `NVIDIA_API_KEY` configured; the #461 v1 first canonical observation uses `MISTRAL_API_KEY` and `GEMINI_API_KEY`.
 
-The current local `reason auth status` reports no effective credential source for Mistral, Google, Groq, or Nvidia, so no live observation has been performed yet. This operational prerequisite is kept separate from semantic results.
+The first-observation surface is frozen by the `engine-0.6-evidence-need-calibration-v1-freeze` tag. Pushing that tag triggers `.github/workflows/engine-0.6-evidence-need-calibration-v1-live.yml` exactly once. The arms are fixed to `ministral-8b-latest` and `gemini-3.5-flash-lite`, seed `4610600`, and the complete 22-case calibration corpus. Workflow reruns are rejected; a required re-observation must use a new explicit freeze identity.
 
 ## Evaluation sequence
 

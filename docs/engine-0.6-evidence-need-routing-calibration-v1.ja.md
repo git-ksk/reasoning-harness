@@ -78,9 +78,9 @@ canonical full calibrationは `--fixture` を指定せず22 caseすべてを1回
 
 in-progress checkpointはnon-scorableで、provider failureを含むcompleted runもoperationally incompleteとしてscoring対象外にする。raw model responseやcredentialはcheckpoint/outputへ保存しない。
 
-既存research runnerと同様、このrunnerのlive provider credentialはprovider環境変数（`MISTRAL_API_KEY` / `GEMINI_API_KEY` / `GROQ_API_KEY` / `NVIDIA_API_KEY`）から解決する。
+live calibrationはローカルcredentialを前提にせず、GitHub Actions上でrepository secretsからprovider環境変数へ注入して実行する。repositoryには `MISTRAL_API_KEY` / `GEMINI_API_KEY` / `GROQ_API_KEY` / `NVIDIA_API_KEY` が登録済みで、#461 v1のfirst canonical observationは `MISTRAL_API_KEY` と `GEMINI_API_KEY` を使う。
 
-現在のローカル `reason auth status` では Mistral / Google / Groq / Nvidia のeffective credential sourceがすべてmissingであり、live observationはまだ実行していない。このoperational prerequisiteはsemantic resultと分離して扱う。
+初回観測surfaceは `engine-0.6-evidence-need-calibration-v1-freeze` tagでfreezeし、`.github/workflows/engine-0.6-evidence-need-calibration-v1-live.yml` がtag pushで一度だけ発火する。armは `ministral-8b-latest` と `gemini-3.5-flash-lite`、seedは `4610600`、22 case full calibrationに固定する。workflow rerunは拒否し、再観測が必要なら新しい明示的freeze identityを作る。
 
 ## Evaluation sequence
 
