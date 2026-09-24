@@ -112,6 +112,7 @@ pub use evidence_qualification_benchmark::{
 };
 pub use evidence_relevance::{
     EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_ID,
+    EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V3_ID,
     EVIDENCE_RELEVANCE_BINDING_PROPOSAL_CONTRACT_ID, EVIDENCE_RELEVANCE_MATERIALIZATION_POLICY_ID,
     EVIDENCE_RELEVANCE_PROPOSAL_CONTRACT_ID, EvidenceRelevanceAssessment,
     EvidenceRelevanceAssessmentBudget, EvidenceRelevanceAssessmentPath, EvidenceRelevanceBinding,
@@ -122,7 +123,8 @@ pub use evidence_relevance::{
     build_evidence_relevance_binding_proposal_request, build_evidence_relevance_proposal_request,
     evidence_relevance_binding_proposal_schema, evidence_relevance_proposal_schema,
     materialize_evidence_relevance, materialize_evidence_relevance_v2,
-    parse_evidence_relevance_binding_proposal, parse_evidence_relevance_proposal,
+    materialize_evidence_relevance_v3, parse_evidence_relevance_binding_proposal,
+    parse_evidence_relevance_proposal,
 };
 pub use finalization::{
     CanonicalFinalAnswerRenderer, FinalAnswerCandidate, FinalAnswerClaim, FinalAnswerRenderer,

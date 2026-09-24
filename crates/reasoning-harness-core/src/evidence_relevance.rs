@@ -11,6 +11,8 @@ pub const EVIDENCE_RELEVANCE_BINDING_PROPOSAL_CONTRACT_ID: &str =
     "reason-evidence-relevance-binding-proposal-v2";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_ID: &str =
     "target-evidence-relevance-binding-materialization-v2";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V3_ID: &str =
+    "target-evidence-relevance-binding-materialization-v3";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -496,6 +498,94 @@ pub fn materialize_evidence_relevance_v2(
     })
 }
 
+pub fn materialize_evidence_relevance_v3(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    validate_policy(policy)?;
+    validate_candidate(candidate)?;
+
+    let (has_harness_anchor, _url_only_anchor, mut reasons) = anchor_match(policy, candidate);
+    let Some(proposal) = proposal else {
+        reasons.push(EvidenceRelevanceReason::NoModelProposal);
+        return Ok(EvidenceRelevanceAssessment {
+            contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_CONTRACT_ID.into(),
+            materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V3_ID
+                .into(),
+            policy_id: policy.policy_id.clone(),
+            target_id: policy.target_id.clone(),
+            evidence_id: candidate.evidence_id.clone(),
+            source_id: candidate.source_id.clone(),
+            disposition: EvidenceRelevanceDisposition::Ambiguous,
+            path: EvidenceRelevanceAssessmentPath::ConservativeFallback,
+            reasons,
+        });
+    };
+
+    use EvidenceRelevanceBinding as Binding;
+
+    let strict_identity_block = policy.identity_requirement
+        == EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor
+        && !has_harness_anchor;
+
+    let disposition = match proposal.target_binding {
+        Binding::Different => {
+            reasons.push(EvidenceRelevanceReason::ModelIrrelevant);
+            EvidenceRelevanceDisposition::Irrelevant
+        }
+        Binding::Unresolved => {
+            reasons.push(EvidenceRelevanceReason::ModelAmbiguous);
+            EvidenceRelevanceDisposition::Ambiguous
+        }
+        Binding::Exact if strict_identity_block => {
+            reasons.push(EvidenceRelevanceReason::RequiredIdentityAnchorMissing);
+            if proposal.relation_binding == Binding::Exact {
+                reasons.push(EvidenceRelevanceReason::ModelRelevantBlockedByIdentity);
+            } else {
+                reasons.push(EvidenceRelevanceReason::ModelAmbiguous);
+            }
+            EvidenceRelevanceDisposition::Ambiguous
+        }
+        Binding::Exact => match proposal.relation_binding {
+            Binding::Different => {
+                reasons.push(EvidenceRelevanceReason::ModelIrrelevant);
+                EvidenceRelevanceDisposition::Irrelevant
+            }
+            Binding::Unresolved => {
+                reasons.push(EvidenceRelevanceReason::ModelAmbiguous);
+                EvidenceRelevanceDisposition::Ambiguous
+            }
+            Binding::Exact => {
+                if policy.identity_requirement
+                    == EvidenceRelevanceIdentityRequirement::AllowSemanticEquivalent
+                    && !has_harness_anchor
+                {
+                    reasons.push(EvidenceRelevanceReason::SemanticEquivalentAllowedByPolicy);
+                }
+                reasons.push(EvidenceRelevanceReason::ModelRelevant);
+                EvidenceRelevanceDisposition::Relevant
+            }
+        },
+    };
+
+    Ok(EvidenceRelevanceAssessment {
+        contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_CONTRACT_ID.into(),
+        materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V3_ID.into(),
+        policy_id: policy.policy_id.clone(),
+        target_id: policy.target_id.clone(),
+        evidence_id: candidate.evidence_id.clone(),
+        source_id: candidate.source_id.clone(),
+        disposition,
+        path: if strict_identity_block {
+            EvidenceRelevanceAssessmentPath::ConservativeFallback
+        } else {
+            EvidenceRelevanceAssessmentPath::ModelAssisted
+        },
+        reasons,
+    })
+}
+
 pub fn evidence_relevance_binding_proposal_schema() -> Value {
     json!({
         "type": "object",
@@ -950,6 +1040,46 @@ mod tests {
             error,
             EvidenceRelevanceError::InvalidBindingProposal(_)
         ));
+    }
+
+    #[test]
+    fn v3_unresolved_target_dominates_relation_different() {
+        let result = materialize_evidence_relevance_v3(
+            &strict_policy(),
+            &candidate(vec![(
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Cirrus Lens availability",
+            )]),
+            Some(&EvidenceRelevanceBindingProposal {
+                target_binding: EvidenceRelevanceBinding::Unresolved,
+                relation_binding: EvidenceRelevanceBinding::Different,
+            }),
+        )
+        .unwrap();
+
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Ambiguous);
+        assert_eq!(
+            result.materialization_policy_id,
+            EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V3_ID
+        );
+    }
+
+    #[test]
+    fn v3_exact_target_different_relation_is_irrelevant() {
+        let result = materialize_evidence_relevance_v3(
+            &strict_policy(),
+            &candidate(vec![(
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Amazon CloudWatch Omni pricing",
+            )]),
+            Some(&EvidenceRelevanceBindingProposal {
+                target_binding: EvidenceRelevanceBinding::Exact,
+                relation_binding: EvidenceRelevanceBinding::Different,
+            }),
+        )
+        .unwrap();
+
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Irrelevant);
     }
 
     #[test]

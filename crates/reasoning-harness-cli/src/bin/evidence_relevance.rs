@@ -12,15 +12,15 @@ use reasoning_harness_core::{
     EvidenceRelevanceDisposition, EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy,
     ModelAdapter, ModelError, ModelErrorKind, ModelRequest, ModelUsage,
     build_evidence_relevance_binding_proposal_request, build_json_object_fallback_request,
-    materialize_evidence_relevance_v2, parse_evidence_relevance_binding_proposal,
+    materialize_evidence_relevance_v3, parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v3";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v3";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v4";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v4";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v3";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v4";
 
 #[derive(Debug, Parser)]
 #[command(
@@ -280,7 +280,7 @@ async fn run() -> Result<StudyOutput, String> {
     for case in &selected {
         let expected = case.expected_proposal;
         let assessment =
-            materialize_evidence_relevance_v2(&case.policy, &case.candidate, Some(&expected))
+            materialize_evidence_relevance_v3(&case.policy, &case.candidate, Some(&expected))
                 .map_err(|error| format!("invalid calibration policy {}: {error}", case.id))?;
         if assessment.disposition != case.expected_disposition {
             return Err(format!(
@@ -347,7 +347,7 @@ async fn run() -> Result<StudyOutput, String> {
         let observation = match result {
             Ok(call) => {
                 let observed = call.proposal;
-                match materialize_evidence_relevance_v2(
+                match materialize_evidence_relevance_v3(
                     &case.policy,
                     &case.candidate,
                     Some(&call.proposal),
@@ -1206,7 +1206,7 @@ mod tests {
         for case in manifest.cases {
             let proposal = case.expected_proposal;
             let assessment =
-                materialize_evidence_relevance_v2(&case.policy, &case.candidate, Some(&proposal))
+                materialize_evidence_relevance_v3(&case.policy, &case.candidate, Some(&proposal))
                     .unwrap();
             assert_eq!(
                 assessment.disposition, case.expected_disposition,
