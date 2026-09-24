@@ -26,7 +26,9 @@ Evidence need and acquisition disposition are separate. A target may remain exte
 
 The model-facing object is only an EvidenceNeedProposal containing an existing target ID and a proposed mode. It has no evidence, authority, source, freshness, scope, tool, or verdict field.
 
-Harness-owned target kind is typed as non_factual, content_local, external_world, or ambiguous. content_local has a context_only semantic floor; external_world and ambiguous have an external_required semantic floor. This makes claims-about-content versus claims-about-world auditable rather than implicit in prose.\n\nHarness-owned EvidenceNeedTargetPolicy owns:
+Harness-owned target kind is typed as non_factual, content_local, external_world, or ambiguous. content_local has a context_only semantic floor; external_world and ambiguous have an external_required semantic floor. This makes claims-about-content versus claims-about-world auditable rather than implicit in prose.
+
+Harness-owned EvidenceNeedTargetPolicy owns:
 
 - the exact target identity and question;
 - the deterministic baseline mode;
@@ -38,7 +40,7 @@ Harness-owned target kind is typed as non_factual, content_local, external_world
 - supplied-context state and target-local sufficiency;
 - existing-evidence reuse status.
 
-A model proposal may escalate a requirement. A downgrade is accepted only inside an explicit Harness-owned downgrade floor and is then rechecked against all hard floors. Without that permission, a lower model proposal is ignored.
+A model proposal may escalate through ordinary external requirements. The trusted authority class remains Harness-owned: `trusted_verification_required` is exposed in the model-facing schema only when the target policy already requires trusted verification. The model cannot create a trusted-verification requirement on its own. A downgrade is accepted only inside an explicit Harness-owned downgrade floor and is then rechecked against all hard floors. Without that permission, a lower model proposal is ignored.
 
 ## Responsibility boundaries
 

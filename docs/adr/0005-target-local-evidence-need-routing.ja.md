@@ -26,7 +26,9 @@ evidence needとacquisition dispositionは分離する。既存のHarness-owned 
 
 model-facing objectはexisting target IDとproposed modeだけを持つEvidenceNeedProposalとする。evidence、authority、source、freshness、scope、tool、verdictは持たせない。
 
-Harness-owned EvidenceNeedTargetPolicyが次を所有する。\n\ntarget kindは non_factual / content_local / external_world / ambiguous のtyped Harness-owned fieldとし、content_localは最低context_only、external_world / ambiguousは最低external_requiredをhard floorとして適用する。
+Harness-owned EvidenceNeedTargetPolicyが次を所有する。
+
+target kindは non_factual / content_local / external_world / ambiguous のtyped Harness-owned fieldとし、content_localは最低context_only、external_world / ambiguousは最低external_requiredをhard floorとして適用する。
 
 - exact target identity / question
 - deterministic baseline mode
@@ -38,7 +40,7 @@ Harness-owned EvidenceNeedTargetPolicyが次を所有する。\n\ntarget kindは
 - supplied-context stateとtarget-local sufficiency
 - existing-evidence reuse status
 
-model proposalによるescalationは許容できる。downgradeはHarness-owned downgrade floorが明示され、その範囲内でのみ受理し、その後すべてのhard floorを再適用する。明示許可がなければlower proposalは無視する。
+model proposalによるordinary external requirementまでのescalationは許容できる。ただしtrusted authority classはHarness-ownedであり、`trusted_verification_required`がtrueのtargetでのみmodel-facing schemaへ公開する。model単独でtrusted verification requirementを作成できない。downgradeはHarness-owned downgrade floorが明示され、その範囲内でのみ受理し、その後すべてのhard floorを再適用する。明示許可がなければlower proposalは無視する。
 
 ## Responsibility boundaries
 

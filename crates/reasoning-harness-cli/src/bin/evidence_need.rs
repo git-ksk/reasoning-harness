@@ -17,7 +17,7 @@ use reasoning_harness_core::{
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-need-routing-live-calibration-v2";
+const CONFIGURATION_ID: &str = "evidence-need-routing-live-calibration-v3";
 const EXPECTED_SUITE_ID: &str = "evidence-need-routing-calibration-v1";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
 const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-need-routing-calibration-v1";
@@ -999,7 +999,7 @@ fn write_checkpoint(
     run_status: &'static str,
 ) -> Result<(), String> {
     let checkpoint = Checkpoint {
-        checkpoint_version: "evidence-need-calibration-checkpoint-v2",
+        checkpoint_version: "evidence-need-calibration-checkpoint-v3",
         run_status,
         configuration_id: CONFIGURATION_ID,
         suite_id,

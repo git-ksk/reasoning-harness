@@ -623,6 +623,6 @@ fn disallowed_model_local_mode_cannot_abort_or_weaken_safe_baseline() {
     assert!(
         decision
             .reasons
-            .contains(&EvidenceNeedMaterializationReason::ModelDowngradeBlocked)
+            .contains(&EvidenceNeedMaterializationReason::ModelModeBlockedByPolicy)
     );
 }
