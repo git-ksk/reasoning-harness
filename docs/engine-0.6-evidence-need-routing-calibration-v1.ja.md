@@ -59,11 +59,34 @@ correctnessとutilityは別々にreportする。
 
 always-external-required candidateは安全という理由だけではutility PASSにしない。always-context-only candidateはcorrectness FAILとする。
 
+## Live calibration runner
+
+実装済みrunner:
+
+```bash
+cargo run -p reasoning-harness-cli --bin reason-evidence-need-study -- \
+  fixtures/evidence-need-routing-calibration-v1 \
+  --provider <provider> \
+  --model <model> \
+  --seed <seed> \
+  --checkpoint /tmp/evidence-need-calibration-checkpoint.json
+```
+
+provider callなしのcontract/corpus preflightは `--validate-only` で実行でき、22 caseすべてのpolicy materializationを検証する。
+
+canonical full calibrationは `--fixture` を指定せず22 caseすべてを1回観測する。runnerはproposal exact match、materialized mode、acquisition disposition、correctness-boundary violation、utility miss、provider failure、token/latencyを別軸で記録する。JSON-Schema transportがunsupportedまたはstrict parse failureの場合だけ、既存のbounded JSON-object fallbackを1回使用し、fallback利用とprovider attemptを明示する。
+
+in-progress checkpointはnon-scorableで、provider failureを含むcompleted runもoperationally incompleteとしてscoring対象外にする。raw model responseやcredentialはcheckpoint/outputへ保存しない。
+
+既存research runnerと同様、このrunnerのlive provider credentialはprovider環境変数（`MISTRAL_API_KEY` / `GEMINI_API_KEY` / `GROQ_API_KEY` / `NVIDIA_API_KEY`）から解決する。
+
+現在のローカル `reason auth status` では Mistral / Google / Groq / Nvidia のeffective credential sourceがすべてmissingであり、live observationはまだ実行していない。このoperational prerequisiteはsemantic resultと分離して扱う。
+
 ## Evaluation sequence
 
 1. 最初のrecorded live calibration observationまではこのcalibration suiteだけをmutable surfaceとする。
 2. model qualityとは独立にdeterministic materialization testsを実行する。
-3. proposal modeとHarness-materialized mode / acquisition dispositionを別々に記録するmodel-backed calibration runnerを追加する。
+3. `reason-evidence-need-study` でproposal modeとHarness-materialized mode / acquisition dispositionを別々に記録する。runner実装済み。
 4. tuningはこのfresh calibration identityだけに対して行う。
 5. candidate semantics / thresholdsをfreezeする。
 6. acceptance criteria freeze後に別のindependent holdoutをauthorする。

@@ -80,12 +80,35 @@ Correctness and utility are reported separately:
 An always-external-required candidate cannot pass utility merely because it is safe. An
 always-context-only candidate fails correctness.
 
+## Live calibration runner
+
+Implemented runner:
+
+```bash
+cargo run -p reasoning-harness-cli --bin reason-evidence-need-study -- \
+  fixtures/evidence-need-routing-calibration-v1 \
+  --provider <provider> \
+  --model <model> \
+  --seed <seed> \
+  --checkpoint /tmp/evidence-need-calibration-checkpoint.json
+```
+
+`--validate-only` performs corpus/contract preflight without a provider call and validates deterministic policy materialization for all 22 cases.
+
+A canonical full calibration omits `--fixture` and observes all 22 cases exactly once. The runner records proposal exact match separately from Harness-materialized mode and acquisition disposition, plus correctness-boundary violations, utility misses, provider failures, token usage, and latency. If JSON-Schema transport is unsupported or the strict primary proposal parse fails, it uses the existing bounded JSON-object fallback once and records the fallback and provider-attempt count.
+
+In-progress checkpoints are non-scorable, and completed runs containing provider failures remain operationally incomplete and non-scorable. Raw model responses and credentials are not persisted in checkpoint/output.
+
+Like the existing research runners, this live runner resolves provider credentials from the provider environment variables (`MISTRAL_API_KEY`, `GEMINI_API_KEY`, `GROQ_API_KEY`, or `NVIDIA_API_KEY`).
+
+The current local `reason auth status` reports no effective credential source for Mistral, Google, Groq, or Nvidia, so no live observation has been performed yet. This operational prerequisite is kept separate from semantic results.
+
 ## Evaluation sequence
 
 1. Keep this calibration suite mutable only until the first recorded live calibration observation.
 2. Run deterministic materialization tests independently of model quality.
-3. Add a model-backed calibration runner that records proposal mode separately from final
-   Harness-materialized mode and acquisition disposition.
+3. Use the implemented `reason-evidence-need-study` runner to record proposal mode separately
+   from final Harness-materialized mode and acquisition disposition.
 4. Tune only against this fresh calibration identity.
 5. Freeze candidate semantics and thresholds.
 6. Author a separate independent holdout after the acceptance criteria above are already frozen.
