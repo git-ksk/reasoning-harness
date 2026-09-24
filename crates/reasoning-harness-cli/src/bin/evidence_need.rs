@@ -17,7 +17,7 @@ use reasoning_harness_core::{
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-need-routing-live-calibration-v1";
+const CONFIGURATION_ID: &str = "evidence-need-routing-live-calibration-v2";
 const EXPECTED_SUITE_ID: &str = "evidence-need-routing-calibration-v1";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
 const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-need-routing-calibration-v1";
@@ -206,11 +206,13 @@ struct CaseObservation {
     #[serde(skip_serializing_if = "Option::is_none")]
     proposal_match: Option<bool>,
     expected_mode: EvidenceNeedMode,
+    minimum_permitted_mode: EvidenceNeedMode,
     #[serde(skip_serializing_if = "Option::is_none")]
     materialized_mode: Option<EvidenceNeedMode>,
     #[serde(skip_serializing_if = "Option::is_none")]
     mode_match: Option<bool>,
     expected_acquisition: EvidenceAcquisitionDisposition,
+    minimum_permitted_acquisition: EvidenceAcquisitionDisposition,
     #[serde(skip_serializing_if = "Option::is_none")]
     acquisition: Option<EvidenceAcquisitionDisposition>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -385,9 +387,12 @@ async fn run() -> Result<StudyOutput, String> {
 
     for (index, case) in selected.iter().enumerate() {
         let case_seed = args.seed.and_then(|base| base.checked_add(index as u64));
+        let policy = case.policy();
+        let minimum_permitted = minimum_permitted_decision(&policy)
+            .map_err(|error| format!("minimum permitted route {}: {error}", case.id))?;
         let request = build_evidence_need_proposal_request(
             &case.task,
-            &case.policy(),
+            &policy,
             &case.context,
             Some(args.max_tokens),
             case_seed,
@@ -401,7 +406,7 @@ async fn run() -> Result<StudyOutput, String> {
         let observation = match result {
             Ok(call) => {
                 let proposal_mode = call.proposal.mode;
-                match materialize_evidence_need(&case.policy(), Some(&call.proposal)) {
+                match materialize_evidence_need(&policy, Some(&call.proposal)) {
                     Ok(decision) => CaseObservation {
                         id: case.id.clone(),
                         family: case.family.clone(),
@@ -410,9 +415,11 @@ async fn run() -> Result<StudyOutput, String> {
                         observed_proposal: Some(proposal_mode),
                         proposal_match: Some(proposal_mode == case.expected_proposal),
                         expected_mode: case.expected_mode,
+                        minimum_permitted_mode: minimum_permitted.mode,
                         materialized_mode: Some(decision.mode),
                         mode_match: Some(decision.mode == case.expected_mode),
                         expected_acquisition: case.expected_acquisition,
+                        minimum_permitted_acquisition: minimum_permitted.acquisition,
                         acquisition: Some(decision.acquisition),
                         acquisition_match: Some(decision.acquisition == case.expected_acquisition),
                         resolver_available: case.resolver_available,
@@ -437,9 +444,11 @@ async fn run() -> Result<StudyOutput, String> {
                         observed_proposal: Some(proposal_mode),
                         proposal_match: Some(proposal_mode == case.expected_proposal),
                         expected_mode: case.expected_mode,
+                        minimum_permitted_mode: minimum_permitted.mode,
                         materialized_mode: None,
                         mode_match: None,
                         expected_acquisition: case.expected_acquisition,
+                        minimum_permitted_acquisition: minimum_permitted.acquisition,
                         acquisition: None,
                         acquisition_match: None,
                         resolver_available: case.resolver_available,
@@ -466,9 +475,11 @@ async fn run() -> Result<StudyOutput, String> {
                 observed_proposal: None,
                 proposal_match: None,
                 expected_mode: case.expected_mode,
+                minimum_permitted_mode: minimum_permitted.mode,
                 materialized_mode: None,
                 mode_match: None,
                 expected_acquisition: case.expected_acquisition,
+                minimum_permitted_acquisition: minimum_permitted.acquisition,
                 acquisition: None,
                 acquisition_match: None,
                 resolver_available: case.resolver_available,
@@ -809,6 +820,17 @@ fn select_cases<'a>(
     Ok(selected)
 }
 
+fn minimum_permitted_decision(
+    policy: &EvidenceNeedTargetPolicy,
+) -> Result<EvidenceNeedDecision, reasoning_harness_core::EvidenceNeedError> {
+    let mode = policy.model_downgrade_floor.unwrap_or(policy.baseline_mode);
+    let proposal = EvidenceNeedProposal {
+        target_id: policy.target_id.clone(),
+        mode,
+    };
+    materialize_evidence_need(policy, Some(&proposal))
+}
+
 fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
     let successful_provider_cases = observations
         .iter()
@@ -918,14 +940,14 @@ fn is_correctness_boundary_violation(case: &CaseObservation) -> bool {
     let Some(actual_mode) = case.materialized_mode else {
         return false;
     };
-    if actual_mode < case.expected_mode {
+    if actual_mode < case.minimum_permitted_mode {
         return true;
     }
 
     let Some(actual_acquisition) = case.acquisition else {
         return false;
     };
-    match case.expected_acquisition {
+    match case.minimum_permitted_acquisition {
         EvidenceAcquisitionDisposition::ExternalRequired => !matches!(
             actual_acquisition,
             EvidenceAcquisitionDisposition::ExternalRequired
@@ -938,7 +960,22 @@ fn is_correctness_boundary_violation(case: &CaseObservation) -> bool {
     }
 }
 
+fn acquisition_cost(disposition: EvidenceAcquisitionDisposition) -> u8 {
+    match disposition {
+        EvidenceAcquisitionDisposition::None
+        | EvidenceAcquisitionDisposition::ContextOnly
+        | EvidenceAcquisitionDisposition::ReuseExisting => 0,
+        EvidenceAcquisitionDisposition::OptionalExternal => 1,
+        EvidenceAcquisitionDisposition::ExternalRequired => 2,
+        EvidenceAcquisitionDisposition::TrustedVerificationRequired => 3,
+    }
+}
+
 fn is_utility_miss(case: &CaseObservation) -> bool {
+    if is_correctness_boundary_violation(case) {
+        return false;
+    }
+
     let Some(actual_mode) = case.materialized_mode else {
         return false;
     };
@@ -949,7 +986,7 @@ fn is_utility_miss(case: &CaseObservation) -> bool {
     let Some(actual_acquisition) = case.acquisition else {
         return false;
     };
-    actual_acquisition != case.expected_acquisition && !is_correctness_boundary_violation(case)
+    acquisition_cost(actual_acquisition) > acquisition_cost(case.expected_acquisition)
 }
 
 fn write_checkpoint(
@@ -962,7 +999,7 @@ fn write_checkpoint(
     run_status: &'static str,
 ) -> Result<(), String> {
     let checkpoint = Checkpoint {
-        checkpoint_version: "evidence-need-calibration-checkpoint-v1",
+        checkpoint_version: "evidence-need-calibration-checkpoint-v2",
         run_status,
         configuration_id: CONFIGURATION_ID,
         suite_id,
@@ -1020,9 +1057,11 @@ mod tests {
             observed_proposal: Some(actual_mode),
             proposal_match: Some(expected_mode == actual_mode),
             expected_mode,
+            minimum_permitted_mode: expected_mode,
             materialized_mode: Some(actual_mode),
             mode_match: Some(expected_mode == actual_mode),
             expected_acquisition,
+            minimum_permitted_acquisition: expected_acquisition,
             acquisition: Some(actual_acquisition),
             acquisition_match: Some(expected_acquisition == actual_acquisition),
             resolver_available: true,
@@ -1065,6 +1104,21 @@ mod tests {
         );
         assert!(!is_correctness_boundary_violation(&case));
         assert!(is_utility_miss(&case));
+    }
+
+    #[test]
+    fn permitted_cheaper_route_is_not_a_correctness_or_utility_failure() {
+        let mut case = observation(
+            EvidenceNeedMode::ExternalOptional,
+            EvidenceNeedMode::ContextOnly,
+            EvidenceAcquisitionDisposition::OptionalExternal,
+            EvidenceAcquisitionDisposition::ContextOnly,
+        );
+        case.minimum_permitted_mode = EvidenceNeedMode::ContextOnly;
+        case.minimum_permitted_acquisition = EvidenceAcquisitionDisposition::ContextOnly;
+
+        assert!(!is_correctness_boundary_violation(&case));
+        assert!(!is_utility_miss(&case));
     }
 
     #[test]
