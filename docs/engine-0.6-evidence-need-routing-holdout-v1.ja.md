@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-need routing independent holdout v1
 
-Status: #461 semantic freeze後に独立author済み。deterministic preflightはgreen。model-backed holdout observationはまだ0回。
+Status: PASS。freeze済みfirst/only independent holdout observation完了。結果は[holdout v1 result](engine-0.6-evidence-need-routing-holdout-v1-result.ja.md)を参照。
 
 ## Independence boundary
 
