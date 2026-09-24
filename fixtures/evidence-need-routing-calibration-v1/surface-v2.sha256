@@ -1,0 +1,5 @@
+bcf2096e301ad994addc91047f799bc9b751eead48624581ada58296318b46f2  crates/reasoning-harness-core/src/evidence_need.rs
+e46e4d6fe97fa719785fa70210963fa9027472ccf719127bc9af0308bd4c37e7  crates/reasoning-harness-core/tests/evidence_need_routing.rs
+ff6c390122c7b1d55d8a8be8be497875d54f99fa6680aba1ff0fe889b02ec67f  crates/reasoning-harness-cli/Cargo.toml
+54fe8b7aa752964d41115f966e6217e4855fd90c198c675f137b452fdb609cea  crates/reasoning-harness-cli/src/bin/evidence_need.rs
+2389b8ffec9fc90e19840c218dd83052093671101730cbb64e9a3065987c6660  fixtures/evidence-need-routing-calibration-v1/manifest.json
