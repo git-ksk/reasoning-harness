@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-need routing calibration v2
 
-Status: tuning successor prepared after the frozen v1 observation; the 22-case calibration corpus is unchanged.
+Status: frozen v2 observation completed. See [calibration v2 result](engine-0.6-evidence-need-routing-calibration-v2-result.md).
 
 ## Why v2 exists
 

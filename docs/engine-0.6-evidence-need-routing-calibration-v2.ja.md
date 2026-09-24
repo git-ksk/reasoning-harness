@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-need routing calibration v2
 
-Status: frozen v1 observation後のtuning successor準備済み。22-case calibration corpusは変更しない。
+Status: frozen v2 observation完了。結果は[calibration v2 result](engine-0.6-evidence-need-routing-calibration-v2-result.ja.md)を参照。
 
 ## v2の理由
 
