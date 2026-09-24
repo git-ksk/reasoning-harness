@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-need routing calibration v3
 
-Status: frozen v2後のtuning successor準備済み。22-case calibration corpusは変更しない。
+Status: frozen v3 live calibration PASS。#461 candidate semanticsはfreeze済み。結果は[calibration v3 result](engine-0.6-evidence-need-routing-calibration-v3-result.ja.md)を参照。
 
 ## v3の理由
 
