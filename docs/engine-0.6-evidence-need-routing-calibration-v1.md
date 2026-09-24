@@ -1,6 +1,6 @@
 # Engine 0.6 candidate: evidence-need routing calibration v1
 
-Status: fresh calibration prepared; no live model observation recorded yet.
+Status: first canonical live calibration observation recorded; v1 surface is frozen. See [calibration v1 result](engine-0.6-evidence-need-routing-calibration-v1-result.md).
 
 Issue #461 adds a pre-acquisition, target-local evidence-need layer. This document freezes the
 candidate acceptance rules before any independent holdout is authored or observed. Released Engine

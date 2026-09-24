@@ -1,6 +1,6 @@
 # Engine 0.6 candidate: evidence-need routing calibration v1
 
-Status: fresh calibration prepared。live model observationはまだ記録していない。
+Status: first canonical live calibration observation記録済み。v1 surfaceはfreeze済み。結果は[calibration v1 result](engine-0.6-evidence-need-routing-calibration-v1-result.ja.md)を参照。
 
 Issue #461はacquisition前にtarget-local evidence-need layerを追加する。この文書ではindependent holdout authoring / observationより前にcandidate acceptance ruleをfreezeする。release済みEngine 0.5.0 semanticsはimmutableのまま保持する。
 
