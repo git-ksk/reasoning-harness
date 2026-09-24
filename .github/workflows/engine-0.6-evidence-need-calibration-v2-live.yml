@@ -1,0 +1,309 @@
+name: engine-0.6-evidence-need-calibration-v2-live
+
+on:
+  push:
+    tags:
+      - engine-0.6-evidence-need-calibration-v2-freeze
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  FREEZE_TAG: engine-0.6-evidence-need-calibration-v2-freeze
+  CALIBRATION_DIR: fixtures/evidence-need-routing-calibration-v1
+  CALIBRATION_SEED: '4610600'
+  CALIBRATION_MAX_TOKENS: '128'
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-need-calibration-v2-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate exact frozen calibration surface
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          sha256sum -c "$CALIBRATION_DIR/surface-v2.sha256"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-need-study -- \
+            "$CALIBRATION_DIR" \
+            --provider mistral \
+            --model calibration-placeholder \
+            --validate-only \
+            > /tmp/evidence-need-calibration-validate.json
+          jq -e '
+            .configuration_id == "evidence-need-routing-live-calibration-v2"
+            and .suite_id == "evidence-need-routing-calibration-v1"
+            and .corpus_status_at_observation == "fresh_unobserved_calibration"
+            and .metrics.cases == 22
+            and .scorability == "validate_only_non_scorable"
+          ' /tmp/evidence-need-calibration-validate.json >/dev/null
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-core --all-targets -- -D warnings
+          cargo clippy -p reasoning-harness-cli --bin reason-evidence-need-study -- -D warnings
+          cargo test -p reasoning-harness-core --test evidence_need_routing
+          cargo test -p reasoning-harness-cli --bin reason-evidence-need-study
+
+      - name: Preserve preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-need-calibration-v2-preflight
+          path: /tmp/evidence-need-calibration-validate.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-latest
+            inter_case_delay_ms: 1200
+          - provider: google
+            model: gemini-3.5-flash-lite
+            inter_case_delay_ms: 6100
+
+    concurrency:
+      group: engine-0.6-evidence-need-calibration-v2-${{ matrix.provider }}
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-need-calibration-v2-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate frozen surface before credentials
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          sha256sum -c "$CALIBRATION_DIR/surface-v2.sha256"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-need-study -- \
+            "$CALIBRATION_DIR" \
+            --provider mistral \
+            --model calibration-placeholder \
+            --validate-only \
+            > /dev/null
+
+      - name: Check provider credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            *) echo "unsupported frozen provider: $PROVIDER" >&2; exit 2 ;;
+          esac
+
+      - name: Run first canonical 22-case live calibration observation
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          DELAY_MS: ${{ matrix.inter_case_delay_ms }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+        run: |
+          set -u
+          BASE="/tmp/evidence-need-${PROVIDER}"
+          printf '%s\n' \
+            "{\"schema_version\":\"engine-0.6-evidence-need-calibration-attempt-v1\",\"provider\":\"$PROVIDER\",\"model\":\"$MODEL\",\"freeze_tag\":\"$FREEZE_TAG\",\"github_run_id\":\"$GITHUB_RUN_ID\",\"github_run_attempt\":\"$GITHUB_RUN_ATTEMPT\"}" \
+            > "${BASE}-attempt.json"
+
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-need-study -- \
+            "$CALIBRATION_DIR" \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed "$CALIBRATION_SEED" \
+            --max-tokens "$CALIBRATION_MAX_TOKENS" \
+            --inter-case-delay-ms "$DELAY_MS" \
+            --checkpoint "${BASE}-checkpoint.json" \
+            > "${BASE}-result.json" \
+            2> "${BASE}-stderr.log"
+          RC=$?
+          set -e
+          printf '%s\n' "$RC" > "${BASE}.rc"
+
+          if test -f "${BASE}-result.json"; then
+            jq '{
+              configuration_id,
+              suite_id,
+              corpus_status_at_observation,
+              candidate_commit,
+              provider,
+              model,
+              canonical_full_calibration,
+              scorability,
+              metrics,
+              mismatches: [
+                .observations[]
+                | select(
+                    .proposal_match == false
+                    or .mode_match == false
+                    or .acquisition_match == false
+                    or .failure_class != null
+                  )
+                | {
+                    id,
+                    family,
+                    expected_proposal,
+                    observed_proposal,
+                    expected_mode,
+                    materialized_mode,
+                    expected_acquisition,
+                    acquisition,
+                    failure_class
+                  }
+              ]
+            }' "${BASE}-result.json"
+          fi
+
+          exit 0
+
+      - name: Preserve canonical live evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-need-calibration-v2-${{ matrix.provider }}-${{ matrix.model }}
+          path: /tmp/evidence-need-${{ matrix.provider }}*
+          if-no-files-found: error
+          retention-days: 90
+
+  final-gate:
+    needs: live
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.6-evidence-need-calibration-v2-*
+          path: /tmp/evidence-need-artifacts
+          merge-multiple: true
+
+      - name: Summarize frozen calibration arms
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path("/tmp/evidence-need-artifacts")
+          expected = {
+              "mistral": "ministral-8b-latest",
+              "google": "gemini-3.5-flash-lite",
+          }
+          summary = {
+              "schema_version": "engine-0.6-evidence-need-calibration-summary-v2",
+              "providers": {},
+              "operationally_complete": True,
+              "correctness_gate_passed": True,
+          }
+
+          for provider, model in expected.items():
+              result_path = root / f"evidence-need-{provider}-result.json"
+              rc_path = root / f"evidence-need-{provider}.rc"
+              if not result_path.exists() or not rc_path.exists():
+                  summary["providers"][provider] = {"missing": True}
+                  summary["operationally_complete"] = False
+                  summary["correctness_gate_passed"] = False
+                  continue
+
+              rc = int(rc_path.read_text().strip())
+              try:
+                  result = json.loads(result_path.read_text())
+              except Exception as exc:
+                  summary["providers"][provider] = {
+                      "model": model,
+                      "runner_rc": rc,
+                      "parse_error": str(exc),
+                  }
+                  summary["operationally_complete"] = False
+                  summary["correctness_gate_passed"] = False
+                  continue
+
+              metrics = result.get("metrics", {})
+              complete = (
+                  rc == 0
+                  and result.get("model") == model
+                  and result.get("canonical_full_calibration") is True
+                  and result.get("scorability") == "complete_calibration_observation"
+                  and metrics.get("successful_provider_cases") == 22
+                  and metrics.get("failed_provider_cases") == 0
+              )
+              correctness_ok = (
+                  complete
+                  and metrics.get("correctness_boundary_violations") == 0
+              )
+
+              summary["providers"][provider] = {
+                  "model": model,
+                  "runner_rc": rc,
+                  "scorability": result.get("scorability"),
+                  "successful_provider_cases": metrics.get("successful_provider_cases"),
+                  "failed_provider_cases": metrics.get("failed_provider_cases"),
+                  "proposal_exact_accuracy": metrics.get("proposal_exact_accuracy"),
+                  "materialized_mode_accuracy": metrics.get("materialized_mode_accuracy"),
+                  "acquisition_accuracy": metrics.get("acquisition_accuracy"),
+                  "correctness_boundary_violations": metrics.get("correctness_boundary_violations"),
+                  "utility_misses": metrics.get("utility_misses"),
+                  "provider_attempts": metrics.get("provider_attempts"),
+                  "total_tokens": metrics.get("total_tokens"),
+                  "total_latency_ms": metrics.get("total_latency_ms"),
+                  "complete": complete,
+                  "correctness_ok": correctness_ok,
+              }
+              summary["operationally_complete"] &= complete
+              summary["correctness_gate_passed"] &= correctness_ok
+
+          out = Path("/tmp/evidence-need-calibration-summary.json")
+          out.write_text(json.dumps(summary, indent=2) + "\n")
+          print(out.read_text())
+
+          if not summary["operationally_complete"]:
+              raise SystemExit("canonical calibration was operationally incomplete")
+          if not summary["correctness_gate_passed"]:
+              raise SystemExit("correctness boundary violation observed")
+          PY
+
+      - name: Preserve combined summary
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-need-calibration-v2-summary
+          path: /tmp/evidence-need-calibration-summary.json
+          if-no-files-found: warn
+          retention-days: 90
