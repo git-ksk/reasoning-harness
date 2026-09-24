@@ -255,7 +255,12 @@ impl GroqAdapter {
                 .json(&body)
                 .send()
                 .await
-                .map_err(classify_transport_error)?;
+                .map_err(|error| {
+                    classify_transport_error(error).with_provider_attempts(provider_attempts(
+                        rate_limit_retries,
+                        structured_output_retries,
+                    ))
+                })?;
 
             let status = response.status();
             log_rate_limit_telemetry(status, response.headers(), rate_limit_retries);
@@ -871,6 +876,36 @@ mod tests {
         assert!(error.message.contains("reasoning_present=true"));
         assert!(!error.message.contains("PRIVATE_REASONING_MUST_NOT_LEAK"));
         server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn transport_failure_records_the_started_provider_attempt() {
+        use std::net::TcpListener;
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        drop(listener);
+
+        let adapter = GroqAdapter::with_base_url_and_timeout(
+            "test-key",
+            "openai/gpt-oss-120b",
+            &format!("http://{address}/v1/"),
+            Duration::from_millis(250),
+        )
+        .unwrap();
+        let error = adapter
+            .generate(ModelRequest {
+                task: "return json".into(),
+                system: None,
+                output_format: ModelOutputFormat::JsonObject,
+                max_tokens: Some(16),
+                random_seed: Some(1),
+                reasoning_preference: Some(ModelReasoningPreference::Minimize),
+            })
+            .await
+            .unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::ProviderUnavailable);
+        assert_eq!(error.provider_attempts, 1);
     }
 
     #[test]

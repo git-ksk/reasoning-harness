@@ -17,10 +17,10 @@ use reasoning_harness_core::{
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v6";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v6";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v7";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v7";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v6";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v7";
 
 #[derive(Debug, Parser)]
 #[command(
