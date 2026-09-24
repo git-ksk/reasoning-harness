@@ -1,6 +1,6 @@
 # Engine 0.6 candidate: evidence-target relevance calibration v1
 
-Status: fresh unobserved calibration作成済み。core relevance contractとdeterministic materialization testはPASS。live model-backed observationはまだ実施していない。
+Status: fresh unobserved calibration作成済み。core relevance contract、bounded live calibration runner、lexical baseline、deterministic materialization validationを実装済み。live model-backed observationはまだ実施していない。
 
 ## Identity
 
@@ -52,6 +52,16 @@ always-relevant policyはcorrectness FAIL。always-irrelevant/ambiguous policy�
 - negative-family expected caseはrelevantへmaterializeされない
 - core clippy `-D warnings`: PASS
 - `git diff --check`: PASS
+
+## Live calibration runner
+
+実装済みの `reason-evidence-relevance-study` runnerはexact 26-case calibration directoryへbindし、別suite/status/issue identityをrejectする。`--validate-only`はprovider call 0でcorpus/materializationをdeterministic validationする。canonical observationは`--fixture`を指定せず26 caseすべてを1回だけ評価する。
+
+各caseでadvisory model proposalとHarness-materialized relevance assessmentを別々に記録する。さらに意図的に単純なlexical baseline、deterministic safety override、model-call数、provider attempt数、token usage、latency、fallback利用、typed operational failure classを記録する。raw model responseとcredentialは保存しない。
+
+v1のHarness-owned assessment budgetは2 model calls、1 callあたりmax output 192 tokens、caseあたりabsolute assessment 15,000 ms。primary JSON-Schema call 1回と最大1回のbounded JSON-object fallbackだけを許可する。fallbackはmodel-call budgetを超えられず、primary+fallbackは1つのabsolute elapsed deadlineを共有する。adapter内部HTTP retryは別の`provider_attempts`として観測する。
+
+first canonical live observationはlocal credentialではなくGitHub Actions repository secretsを使う。frozen armはMistral `ministral-8b-latest` とGoogle `gemini-3.5-flash-lite`。workflowは`.github/workflows/engine-0.6-evidence-relevance-calibration-v1-live.yml`。first-observation surfaceはcredential読込前にchecksum+freeze tagで固定し、そのfreeze identityのworkflow rerunは禁止する。
 
 ## Next sequence
 

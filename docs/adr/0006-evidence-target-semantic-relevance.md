@@ -76,7 +76,7 @@ Likewise:
 
 ## Bounded model assistance
 
-EvidenceRelevanceAssessmentBudget is Harness-owned and contains max model attempts, max tokens, and max elapsed milliseconds. Zero budgets are invalid.
+EvidenceRelevanceAssessmentBudget is Harness-owned and contains max model attempts, max tokens, and max elapsed milliseconds. The v1 default is 2 attempts / 192 tokens / 15,000 ms, allowing one primary structured call plus at most one bounded JSON-object fallback. Zero budgets are invalid.
 
 No model proposal or assessment failure may implicitly become relevant. Missing proposal materializes to typed ambiguous. Provider/transport/protocol failures remain operational failures in the eventual live runner and are scored separately from semantic outcomes.
 

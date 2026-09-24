@@ -75,9 +75,9 @@ pub struct EvidenceRelevanceAssessmentBudget {
 impl Default for EvidenceRelevanceAssessmentBudget {
     fn default() -> Self {
         Self {
-            max_model_attempts: 1,
+            max_model_attempts: 2,
             max_tokens: 192,
-            max_elapsed_ms: 5_000,
+            max_elapsed_ms: 15_000,
         }
     }
 }

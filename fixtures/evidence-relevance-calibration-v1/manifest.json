@@ -20,9 +20,9 @@
         "relation": "availability",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -60,9 +60,9 @@
         "relation": "limit",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -100,9 +100,9 @@
         "relation": "change_or_launch",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -138,9 +138,9 @@
         "relation": "benefit_or_use_case",
         "identity_requirement": "allow_semantic_equivalent",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -172,9 +172,9 @@
         "relation": "pricing",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -210,9 +210,9 @@
         "relation": "limit",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -248,9 +248,9 @@
         "relation": "availability",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -292,9 +292,9 @@
         "relation": "availability",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -332,9 +332,9 @@
         "relation": "limit",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -370,9 +370,9 @@
         "relation": "definition",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -408,9 +408,9 @@
         "relation": "limit",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -446,9 +446,9 @@
         "relation": "benefit_or_use_case",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -488,9 +488,9 @@
         "relation": "general",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -526,9 +526,9 @@
         "relation": "general",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -564,9 +564,9 @@
         "relation": "pricing",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -602,9 +602,9 @@
         "relation": "availability",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -640,9 +640,9 @@
         "relation": "change_or_launch",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -678,9 +678,9 @@
         "relation": "pricing",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -716,9 +716,9 @@
         "relation": "availability",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -754,9 +754,9 @@
         "relation": "limit",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -790,9 +790,9 @@
         "relation": "availability",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -828,9 +828,9 @@
         "relation": "pricing",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -866,9 +866,9 @@
         "relation": "availability",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -904,9 +904,9 @@
         "relation": "availability",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -946,9 +946,9 @@
         "relation": "change_or_launch",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {
@@ -984,9 +984,9 @@
         "relation": "availability",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
-          "max_model_attempts": 1,
+          "max_model_attempts": 2,
           "max_tokens": 192,
-          "max_elapsed_ms": 5000
+          "max_elapsed_ms": 15000
         }
       },
       "candidate": {

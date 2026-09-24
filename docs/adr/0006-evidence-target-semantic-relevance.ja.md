@@ -66,7 +66,7 @@ stale documentでもsemantic relevanceは成立し得る。relevant-yet-staleと
 
 ## Bounded model assistance
 
-`EvidenceRelevanceAssessmentBudget`はHarness-ownedで、max model attempts / max tokens / max elapsed millisecondsを保持する。0はinvalid。
+`EvidenceRelevanceAssessmentBudget`はHarness-ownedで、max model attempts / max tokens / max elapsed millisecondsを保持する。v1 defaultは2 attempts / 192 tokens / 15,000 msで、1回のprimary structured callと最大1回のbounded JSON-object fallbackを収容する。0はinvalid。
 
 model proposal欠落やassessment失敗をimplicit relevantにしてはならない。proposal無しはtyped `ambiguous`へmaterializeする。provider / transport / protocol failureはlive runnerでoperational failureとしてsemantic outcomeと分離する。
 
