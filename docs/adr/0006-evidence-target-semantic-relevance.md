@@ -78,13 +78,15 @@ Likewise:
 
 EvidenceRelevanceAssessmentBudget is Harness-owned and contains max model attempts, max tokens, and max elapsed milliseconds. The v1 default is 2 attempts / 192 tokens / 15,000 ms, allowing one primary structured call plus at most one bounded JSON-object fallback. Zero budgets are invalid.
 
+The calibration operational lineage changes only that bounded elapsed envelope: v4 used 30,000 ms and v5 uses 60,000 ms while max model calls remain 2 and max output remains 192 tokens. The v5 60-second bound is intentionally smaller than the Google adapter's worst-case retry envelope: it gives measured tail latency limited headroom without hiding sustained provider instability, which remains a typed operational failure.
+
 No model proposal or assessment failure may implicitly become relevant. Missing proposal materializes to typed ambiguous. Provider/transport/protocol failures remain operational failures in the eventual live runner and are scored separately from semantic outcomes.
 
 The serialized assessment contains only stable policy/target/evidence/source IDs, disposition, assessment path, and typed reasons. Raw document payload is not required for telemetry or replay.
 
 ## Evaluation
 
-Fresh calibration identity: evidence-relevance-calibration-v1.
+Calibration identities v1-v4 remain immutable historical evidence. The current fresh successor is evidence-relevance-calibration-v5; only a v5 pass permits freezing the semantic implementation and authoring a separate independent holdout.
 
 The first corpus contains 26 synthetic cases spanning exact identity, aliases/acronyms, semantic paraphrase, distributed title/body support, structured metadata, Japanese/English cross-lingual identity, stale-but-relevant material, same-service wrong feature, sibling products, navigation/footer-only matches, broad landing pages, comparison-only mentions, relation mismatch, prompt injection, unknown renames, partial identity, mixed documents, conflicting sections, insufficient excerpts, and URL-only identity.
 

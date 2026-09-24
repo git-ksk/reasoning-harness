@@ -68,13 +68,15 @@ stale documentでもsemantic relevanceは成立し得る。relevant-yet-staleと
 
 `EvidenceRelevanceAssessmentBudget`はHarness-ownedで、max model attempts / max tokens / max elapsed millisecondsを保持する。v1 defaultは2 attempts / 192 tokens / 15,000 msで、1回のprimary structured callと最大1回のbounded JSON-object fallbackを収容する。0はinvalid。
 
+calibrationのoperational lineageではsemantic contractを変えず、v4で30,000 ms、v5で60,000 msへbounded elapsed budgetのみを拡張した。max model calls=2 / max output=192は維持する。v5の60秒はGoogle adapterの最悪retry envelope全体を吸収する値ではなく、実測tail latencyにheadroomを与えつつ継続的provider instabilityをtyped operational failureとして残す上限である。
+
 model proposal欠落やassessment失敗をimplicit relevantにしてはならない。proposal無しはtyped `ambiguous`へmaterializeする。provider / transport / protocol failureはlive runnerでoperational failureとしてsemantic outcomeと分離する。
 
 serialized assessmentはstable policy/target/evidence/source ID、disposition、assessment path、typed reasonだけで診断可能とし、raw document payloadをtelemetry/replayへ要求しない。
 
 ## Evaluation
 
-fresh calibration identityは `evidence-relevance-calibration-v1`。
+calibration identityはv1-v4をimmutable historical evidenceとして保持し、現在のfresh successorは `evidence-relevance-calibration-v5`。v5 PASS後にのみsemantic implementationをfreezeし、別authorのindependent holdoutへ進む。
 
 26 synthetic caseでexact identity、alias/acronym、semantic paraphrase、distributed title/body support、structured metadata、日本語/英語cross-lingual identity、stale-but-relevant、same-service wrong feature、sibling product、navigation/footer-only、broad landing、comparison-only、relation mismatch、prompt injection、unknown rename、partial identity、mixed document、conflicting section、insufficient excerpt、URL-only identityを含む。
 
