@@ -68,7 +68,7 @@ struct GoogleAttemptTelemetryEvent<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     quota_window: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    detail: Option<&'a str>,
+    provider_status: Option<&'a str>,
     #[serde(skip_serializing_if = "Option::is_none")]
     rate_limit_headers: Option<&'a str>,
 }
@@ -105,7 +105,7 @@ impl<'a> GoogleAttemptTelemetryGuard<'a> {
                 error_class: None,
                 retry_delay_ms: None,
                 quota_window: None,
-                detail: None,
+                provider_status: None,
                 rate_limit_headers: None,
             },
         );
@@ -139,7 +139,7 @@ impl Drop for GoogleAttemptTelemetryGuard<'_> {
                 error_class: Some("cancelled_before_response"),
                 retry_delay_ms: None,
                 quota_window: None,
-                detail: None,
+                provider_status: None,
                 rate_limit_headers: None,
             },
         );
@@ -381,7 +381,7 @@ impl GoogleAdapter {
                             error_class: Some(model_error_kind_name(kind)),
                             retry_delay_ms: None,
                             quota_window: None,
-                            detail: None,
+                            provider_status: None,
                             rate_limit_headers: None,
                         },
                     );
@@ -411,7 +411,7 @@ impl GoogleAdapter {
                     error_class: None,
                     retry_delay_ms: None,
                     quota_window: None,
-                    detail: None,
+                    provider_status: None,
                     rate_limit_headers: (!rate_limit_headers.is_empty())
                         .then_some(rate_limit_headers.as_str()),
                 },
@@ -421,6 +421,7 @@ impl GoogleAdapter {
                 let body = response.text().await.unwrap_or_default();
                 let kind = classify_http_error(status, &body);
                 let quota_window = structured_google_quota_window(&body).map(quota_window_name);
+                let provider_status = google_provider_status(&body);
                 let detail = google_error_detail(&body);
                 log_google_attempt_telemetry(
                     self.attempt_telemetry_path.as_deref(),
@@ -435,7 +436,7 @@ impl GoogleAdapter {
                         error_class: Some(model_error_kind_name(kind)),
                         retry_delay_ms: None,
                         quota_window,
-                        detail: (!detail.is_empty()).then_some(detail.as_str()),
+                        provider_status: provider_status.as_deref(),
                         rate_limit_headers: (!rate_limit_headers.is_empty())
                             .then_some(rate_limit_headers.as_str()),
                     },
@@ -491,7 +492,7 @@ impl GoogleAdapter {
                     error_class: None,
                     retry_delay_ms: None,
                     quota_window: None,
-                    detail: None,
+                    provider_status: None,
                     rate_limit_headers: (!rate_limit_headers.is_empty())
                         .then_some(rate_limit_headers.as_str()),
                 },
@@ -805,7 +806,7 @@ fn log_retry_scheduled_telemetry(
             error_class: Some(model_error_kind_name(kind)),
             retry_delay_ms: Some(delay.as_millis()),
             quota_window,
-            detail: None,
+            provider_status: None,
             rate_limit_headers: None,
         },
     );
@@ -881,6 +882,15 @@ fn retry_delay_with_equal_jitter_entropy(base: Duration, entropy: u64) -> Durati
 
 fn transient_retry_delay(retry_index: usize) -> Duration {
     retry_delay_with_equal_jitter(transient_retry_base_delay(retry_index))
+}
+
+fn google_provider_status(body: &str) -> Option<String> {
+    serde_json::from_str::<Value>(body)
+        .ok()?
+        .get("error")?
+        .get("status")?
+        .as_str()
+        .map(|value| truncate_diagnostic(value, 64))
 }
 
 fn google_error_detail(body: &str) -> String {
@@ -1574,9 +1584,11 @@ mod tests {
         assert_eq!(response["status_code"], 429);
         assert_eq!(response["error_class"], "quota");
         assert_eq!(response["quota_window"], "daily");
+        assert_eq!(response["provider_status"], "RESOURCE_EXHAUSTED");
         let raw = fs::read_to_string(&path).unwrap();
         assert!(!raw.contains("test-key"));
         assert!(!raw.contains("Return exactly one"));
+        assert!(!raw.contains("quota exceeded"));
         let _ = fs::remove_file(path);
     }
 

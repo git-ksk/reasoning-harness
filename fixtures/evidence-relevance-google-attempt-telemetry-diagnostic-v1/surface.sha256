@@ -1,4 +1,4 @@
-8577e4339e97e8cae57f9bba18931100966011d11a8d96c4dbdaa31344d6af7f  crates/reasoning-harness-providers/src/gemma.rs
+bb65d9bb9a1a4ff0c44e16796c2a7f85a1f4192bb3872c6729c63d404813d9c3  crates/reasoning-harness-providers/src/gemma.rs
 ed715ac6ea9d764e2786fc0a8e686c445b5c4df9e3ed9a60b7db80890afa4d09  crates/reasoning-harness-providers/src/network.rs
 d4fc100260fc8a61516fd12bf096a247a3f7fb8b34d090c52501fafd42afb5ad  crates/reasoning-harness-providers/Cargo.toml
 b3e917b985b0713d7f48dd7de3ee459b298e0a650145896bcb6b2e7373d20398  Cargo.lock
@@ -9,6 +9,6 @@ c9f00e5abd326e9453cc4345a5919cfb53f6fefa31787a50a473df5413ed1d62  crates/reasoni
 3d79872ce9e01954e1ea42c0d430e88a739c8a85c925da3e5bfd7bbb45e4d6b0  crates/reasoning-harness-core/src/lib.rs
 7f7aa19a0b430793c6af62612c2d3acb2dd9377e8cb5c8d05819676ac5cf204a  crates/reasoning-harness-core/tests/evidence_relevance_routing_v6.rs
 d02552e384b5ae695d2d166c46b78dd6a1cb39495629375ab8e505ee68d821bf  fixtures/evidence-relevance-calibration-v6/manifest.json
-cc69dcd7d77abd42647fe4ce003b67657c2447b061b138a3c7fc802db0a2ae1f  .github/workflows/engine-0.6-google-attempt-telemetry-diagnostic-v1.yml
-e90592f60f953c7d5d026b8422ecc02c44928eb1e0f617689defc9d61da92f63  docs/engine-0.6-google-attempt-telemetry-diagnostic-v1.md
-942692872b0696236bc061395ff070d2358b254836f7fd2d192952ce2143d1f9  docs/engine-0.6-google-attempt-telemetry-diagnostic-v1.ja.md
+212b0950484bba67e7d27be0aa47375a53200d5512b6042b8ccac51327a8ad11  .github/workflows/engine-0.6-google-attempt-telemetry-diagnostic-v1.yml
+2802e4e75a2b417af720beee331130721b6d0fedea69fb6195f3b8594f5a67b0  docs/engine-0.6-google-attempt-telemetry-diagnostic-v1.md
+176d3f99655b07825ebb00dc32ba52cbb719e15fa603075541adc536219a9f8d  docs/engine-0.6-google-attempt-telemetry-diagnostic-v1.ja.md

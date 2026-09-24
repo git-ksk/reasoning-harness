@@ -34,7 +34,7 @@ The Google adapter writes opt-in JSONL telemetry only when `REASON_GOOGLE_ATTEMP
 - structured quota window when Google supplies one;
 - bounded retry delay;
 - safe rate-limit response headers;
-- bounded provider error detail;
+- provider error status code without provider message text;
 - in-flight cancellation before a completed response classification.
 
 API keys, request prompts, system instructions, candidate evidence text, and response body content are not written to telemetry.

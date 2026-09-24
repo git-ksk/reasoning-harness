@@ -12,7 +12,7 @@ permissions:
 env:
   DIAGNOSTIC_TAG: engine-0.6-google-attempt-telemetry-diagnostic-v1
   CALIBRATION_DIR: fixtures/evidence-relevance-calibration-v6
-  SURFACE_FILE: fixtures/google-attempt-telemetry-diagnostic-v1/surface.sha256
+  SURFACE_FILE: fixtures/evidence-relevance-google-attempt-telemetry-diagnostic-v1/surface.sha256
   MODEL: gemini-3.5-flash-lite
   DIAGNOSTIC_SEED: '4625701'
 
@@ -125,10 +125,8 @@ jobs:
           for event in events:
               calls[event.get('call_id', 'unknown')].append(event)
 
-          explicit_quota = any(
-              e.get('status_code') == 429 and e.get('error_class') in {'quota', 'rate_limit'}
-              for e in events
-          )
+          provider_status_counts = Counter(e['provider_status'] for e in events if e.get('provider_status'))
+          explicit_quota = any(e.get('status_code') == 429 for e in events)
           explicit_capacity = any(
               e.get('status_code') == 503 or e.get('error_class') == 'provider_unavailable'
               for e in events
@@ -169,6 +167,7 @@ jobs:
                   'attempts_started': sum(e.get('event') == 'attempt_start' for e in call_events),
                   'statuses': [e.get('status_code') for e in call_events if e.get('event') == 'http_headers'],
                   'classified_errors': [e.get('error_class') for e in call_events if e.get('event') == 'http_response' and e.get('error_class')],
+                  'provider_statuses': [e.get('provider_status') for e in call_events if e.get('provider_status')],
                   'retry_delays_ms': [e.get('retry_delay_ms') for e in call_events if e.get('event') == 'retry_scheduled'],
                   'cancelled_in_flight': any(e.get('event') == 'cancelled_in_flight' for e in call_events),
               })
@@ -181,6 +180,7 @@ jobs:
               'status_counts': dict(status_counts),
               'error_class_counts': dict(error_counts),
               'quota_window_counts': dict(quota_windows),
+              'provider_status_counts': dict(provider_status_counts),
               'cancelled_in_flight': len(cancellations),
               'cancelled_without_http_headers': cancellations_without_headers,
               'result': {
