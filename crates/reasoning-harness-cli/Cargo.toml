@@ -105,3 +105,7 @@ libc.workspace = true
 
 [target.'cfg(not(windows))'.dependencies]
 ctrlc.workspace = true
+
+[[bin]]
+name = "reason-evidence-need-holdout-study"
+path = "src/bin/evidence_need_holdout.rs"
