@@ -1,0 +1,221 @@
+name: engine-0.6-google-attempt-telemetry-diagnostic-v1
+
+on:
+  push:
+    tags:
+      - engine-0.6-google-attempt-telemetry-diagnostic-v1
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  DIAGNOSTIC_TAG: engine-0.6-google-attempt-telemetry-diagnostic-v1
+  CALIBRATION_DIR: fixtures/evidence-relevance-calibration-v6
+  SURFACE_FILE: fixtures/google-attempt-telemetry-diagnostic-v1/surface.sha256
+  MODEL: gemini-3.5-flash-lite
+  DIAGNOSTIC_SEED: '4625701'
+
+jobs:
+  google-attempt-telemetry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+      REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH: /tmp/google-attempt-telemetry.jsonl
+
+    steps:
+      - name: Reject workflow reruns
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-google-attempt-telemetry-diagnostic-v1
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate frozen diagnostic surface
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$DIAGNOSTIC_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$DIAGNOSTIC_TAG"
+          sha256sum -c "$SURFACE_FILE"
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-providers --lib -- -D warnings
+          cargo test -p reasoning-harness-providers gemma::tests:: --lib
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider google \
+            --model calibration-placeholder \
+            --fixture 01_exact_name_availability \
+            --fixture 02_acronym_alias \
+            --fixture 03_expanded_alias \
+            --validate-only \
+            > /tmp/google-attempt-diagnostic-validate.json
+          jq -e '
+            .configuration_id == "evidence-relevance-live-calibration-v6"
+            and .suite_id == "evidence-relevance-calibration-v6"
+            and .planned_cases == 3
+            and .completed_cases == 0
+            and .canonical_full_calibration == false
+            and .scorability == "validate_only_non_scorable"
+          ' /tmp/google-attempt-diagnostic-validate.json >/dev/null
+
+      - name: Check Google credential
+        run: |
+          set -euo pipefail
+          test -n "${GEMINI_API_KEY:-}"
+
+      - name: Run first and only three-case provider diagnostic
+        run: |
+          set +e
+          rm -f "$REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider google \
+            --model "$MODEL" \
+            --fixture 01_exact_name_availability \
+            --fixture 02_acronym_alias \
+            --fixture 03_expanded_alias \
+            --seed "$DIAGNOSTIC_SEED" \
+            --inter-case-delay-ms 6100 \
+            --max-consecutive-operational-failures 2 \
+            --checkpoint /tmp/google-attempt-diagnostic-checkpoint.json \
+            > /tmp/google-attempt-diagnostic-result.json \
+            2> /tmp/google-attempt-diagnostic-stderr.log
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" > /tmp/google-attempt-diagnostic.rc
+
+      - name: Classify provider evidence
+        if: always()
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from collections import Counter, defaultdict
+          from pathlib import Path
+
+          telemetry_path = Path('/tmp/google-attempt-telemetry.jsonl')
+          result_path = Path('/tmp/google-attempt-diagnostic-result.json')
+          rc_path = Path('/tmp/google-attempt-diagnostic.rc')
+
+          events = []
+          if telemetry_path.exists():
+              for line in telemetry_path.read_text().splitlines():
+                  if line.strip():
+                      events.append(json.loads(line))
+
+          result = json.loads(result_path.read_text()) if result_path.exists() and result_path.stat().st_size else None
+          runner_rc = int(rc_path.read_text().strip()) if rc_path.exists() else None
+
+          status_counts = Counter(str(e['status_code']) for e in events if e.get('status_code') is not None)
+          error_counts = Counter(e['error_class'] for e in events if e.get('error_class'))
+          quota_windows = Counter(e['quota_window'] for e in events if e.get('quota_window'))
+          calls = defaultdict(list)
+          for event in events:
+              calls[event.get('call_id', 'unknown')].append(event)
+
+          explicit_quota = any(
+              e.get('status_code') == 429 and e.get('error_class') in {'quota', 'rate_limit'}
+              for e in events
+          )
+          explicit_capacity = any(
+              e.get('status_code') == 503 or e.get('error_class') == 'provider_unavailable'
+              for e in events
+          )
+          cancellations = [e for e in events if e.get('event') == 'cancelled_in_flight']
+          cancellations_without_headers = 0
+          for cancelled in cancellations:
+              cid = cancelled.get('call_id')
+              if not any(e.get('event') == 'http_headers' for e in calls[cid]):
+                  cancellations_without_headers += 1
+
+          if explicit_quota and explicit_capacity:
+              classification = 'mixed_quota_and_provider_capacity'
+          elif explicit_quota:
+              classification = 'quota_or_rate_limit_observed'
+          elif explicit_capacity:
+              classification = 'provider_capacity_unavailable_observed'
+          elif cancellations_without_headers:
+              classification = 'no_http_headers_before_harness_deadline'
+          else:
+              classification = 'no_quota_or_capacity_signal_observed'
+
+          metrics = (result or {}).get('metrics', {})
+          provider_operational = bool(
+              runner_rc == 0
+              and result
+              and result.get('planned_cases') == 3
+              and result.get('completed_cases') == 3
+              and result.get('operational_abort') is None
+              and metrics.get('successful_provider_cases') == 3
+              and metrics.get('failed_provider_cases') == 0
+          )
+
+          call_summaries = []
+          for call_id, call_events in calls.items():
+              call_summaries.append({
+                  'call_id': call_id,
+                  'attempts_started': sum(e.get('event') == 'attempt_start' for e in call_events),
+                  'statuses': [e.get('status_code') for e in call_events if e.get('event') == 'http_headers'],
+                  'classified_errors': [e.get('error_class') for e in call_events if e.get('event') == 'http_response' and e.get('error_class')],
+                  'retry_delays_ms': [e.get('retry_delay_ms') for e in call_events if e.get('event') == 'retry_scheduled'],
+                  'cancelled_in_flight': any(e.get('event') == 'cancelled_in_flight' for e in call_events),
+              })
+
+          summary = {
+              'schema_version': 'engine-0.6-google-attempt-telemetry-diagnostic-summary-v1',
+              'runner_rc': runner_rc,
+              'classification': classification,
+              'provider_operational': provider_operational,
+              'status_counts': dict(status_counts),
+              'error_class_counts': dict(error_counts),
+              'quota_window_counts': dict(quota_windows),
+              'cancelled_in_flight': len(cancellations),
+              'cancelled_without_http_headers': cancellations_without_headers,
+              'result': {
+                  'planned_cases': (result or {}).get('planned_cases'),
+                  'completed_cases': (result or {}).get('completed_cases'),
+                  'operational_abort': (result or {}).get('operational_abort'),
+                  'successful_provider_cases': metrics.get('successful_provider_cases'),
+                  'failed_provider_cases': metrics.get('failed_provider_cases'),
+                  'failure_counts': metrics.get('failure_counts'),
+              },
+              'calls': call_summaries,
+          }
+          out = Path('/tmp/google-attempt-diagnostic-summary.json')
+          out.write_text(json.dumps(summary, indent=2) + '\n')
+          print(out.read_text())
+          PY
+
+      - name: Preserve diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-google-attempt-telemetry-diagnostic-v1
+          path: |
+            /tmp/google-attempt-diagnostic-validate.json
+            /tmp/google-attempt-diagnostic-result.json
+            /tmp/google-attempt-diagnostic-checkpoint.json
+            /tmp/google-attempt-diagnostic-stderr.log
+            /tmp/google-attempt-diagnostic.rc
+            /tmp/google-attempt-telemetry.jsonl
+            /tmp/google-attempt-diagnostic-summary.json
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Provider operational gate
+        if: always()
+        run: |
+          set -euo pipefail
+          jq -e '.provider_operational == true' /tmp/google-attempt-diagnostic-summary.json >/dev/null
