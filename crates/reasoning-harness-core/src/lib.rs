@@ -17,6 +17,7 @@ pub mod eval;
 pub mod evidence_need;
 pub mod evidence_qualification;
 pub mod evidence_qualification_benchmark;
+pub mod evidence_relevance;
 pub mod finalization;
 pub mod format_invariance;
 pub mod frameworks;
@@ -108,6 +109,16 @@ pub use evidence_qualification_benchmark::{
     EvidenceQualificationBenchmarkAggregate, EvidenceQualificationBenchmarkCaseResult,
     EvidenceQualificationBenchmarkFixture, aggregate_evidence_qualification_benchmark,
     evaluate_evidence_qualification_fixture,
+};
+pub use evidence_relevance::{
+    EVIDENCE_RELEVANCE_MATERIALIZATION_POLICY_ID, EVIDENCE_RELEVANCE_PROPOSAL_CONTRACT_ID,
+    EvidenceRelevanceAssessment, EvidenceRelevanceAssessmentBudget,
+    EvidenceRelevanceAssessmentPath, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
+    EvidenceRelevanceError, EvidenceRelevanceIdentityRequirement, EvidenceRelevanceProposal,
+    EvidenceRelevanceReason, EvidenceRelevanceRelationKind, EvidenceRelevanceSignal,
+    EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy, EvidenceTargetEntityIdentity,
+    build_evidence_relevance_proposal_request, evidence_relevance_proposal_schema,
+    materialize_evidence_relevance, parse_evidence_relevance_proposal,
 };
 pub use finalization::{
     CanonicalFinalAnswerRenderer, FinalAnswerCandidate, FinalAnswerClaim, FinalAnswerRenderer,
