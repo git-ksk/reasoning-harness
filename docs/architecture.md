@@ -145,6 +145,28 @@ No resolution implementation may silently convert `unknown` into `supported` mer
 
 See [bounded grounded resolution and finalization](grounded-resolution.md) for the concrete contracts and deterministic benchmark.
 
+
+### Candidate pre-acquisition evidence-need routing
+
+Issue #461 introduces a candidate Engine 0.6 pre-acquisition boundary before ordinary resolution.
+It is additive to released Engine 0.5.0 rather than a rewrite of EvidenceRequirement,
+EvidenceAdmissionPolicy, or GroundedResolutionRuntime semantics.
+
+For each exact Harness-owned target, the candidate materializes an EvidenceNeedDecision from
+Harness-owned policy plus an optional untrusted model proposal. The model cannot create authority or
+silently weaken a requirement. A lower mode is accepted only when deterministic policy explicitly
+defines a downgrade floor, and explicit verification intent, current-state requirements, trusted
+verification requirements, and context sufficiency are then re-applied as Harness-owned floors.
+
+Evidence need and acquisition are deliberately separate. An external-required target may reuse
+already-valid admitted/verified evidence instead of reacquiring it; stale or scope/policy-invalid
+evidence cannot satisfy reuse. Decisions are serializable target-local state and contain no external
+callbacks, so replay need not re-execute acquisition.
+
+The candidate contract and pre-holdout acceptance plan are documented in
+[Engine 0.6 evidence-need routing calibration v1](engine-0.6-evidence-need-routing-calibration-v1.md).
+The ownership decision is recorded in [ADR-0005](adr/0005-target-local-evidence-need-routing.md).
+
 ## Finalization boundary — implemented core
 
 Finalization is distinct from verification and from presentation style.

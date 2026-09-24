@@ -145,6 +145,16 @@ resolution implementation は、resolver が何かを返したというだけで
 
 具体的な contract と deterministic benchmark は [bounded grounded resolution and finalization](grounded-resolution.ja.md) を参照。
 
+### Candidate: acquisition前のtarget-local evidence-need routing
+
+Issue #461では、通常のresolutionより前にEngine 0.6 candidateのpre-acquisition boundaryを追加する。これはrelease済みEngine 0.5.0へadditiveな変更であり、EvidenceRequirement、EvidenceAdmissionPolicy、GroundedResolutionRuntimeの既存semanticsを書き換えない。
+
+exact Harness-owned targetごとに、Harness-owned policyとoptionalなuntrusted model proposalからEvidenceNeedDecisionをmaterializeする。modelはauthorityを作れず、requirementを自由に弱められない。lower modeはdeterministic policyが明示的なdowngrade floorを持つ場合だけ受理し、その後explicit verification intent、current-state requirement、trusted-verification requirement、context sufficiencyをHarness-owned floorとして再適用する。
+
+evidence needとacquisitionは別軸である。external-required targetでも、既存のadmitted/verified evidenceがfreshness、scope、authority、policy identityを現在も満たす場合は再取得せずreuseできる。staleまたはscope/policy invalidなevidenceはreuseできない。decisionはserializableなtarget-local stateでexternal callbackを含まないため、replayでacquisitionを再実行しない。
+
+ownership boundaryは[ADR-0005](adr/0005-target-local-evidence-need-routing.ja.md)、pre-holdout acceptanceは[Engine 0.6 evidence-need routing calibration v1](engine-0.6-evidence-need-routing-calibration-v1.ja.md)を参照。
+
 ## 最終化境界 — 実装済みコア
 
 finalization は verification や presentation style とは別である。
