@@ -12,7 +12,7 @@ permissions:
 env:
   DIAGNOSTIC_TAG: engine-0.6-google-attempt-telemetry-diagnostic-v1
   CALIBRATION_DIR: fixtures/evidence-relevance-calibration-v6
-  SURFACE_FILE: fixtures/google-attempt-telemetry-diagnostic-v1/surface.sha256
+  SURFACE_FILE: fixtures/evidence-relevance-google-attempt-telemetry-diagnostic-v1/surface.sha256
   MODEL: gemini-3.5-flash-lite
   DIAGNOSTIC_SEED: '4625701'
 

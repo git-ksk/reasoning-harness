@@ -10,13 +10,13 @@ v6でcase 01が47.2秒で成功し、case 02/03が60秒Harness timeoutになっ�
 
 ## Cases
 
-provider-attempt telemetryとcase identityを曖昧にしないため、各caseを別processで実行する。
+v6と同じrunner経路を維持し、1 processで先頭3 caseを順番に実行する。各ModelAdapter callにはtelemetry専用の`call_id`を付け、attemptを相関できるようにする。
 
 - `01_exact_name_availability`
 - `02_acronym_alias`
 - `03_expanded_alias`
 
-process間には7秒のgapを置く。modelは`gemini-3.5-flash-lite`、Harness case budgetは60,000 msのまま、semantic contractとexpected labelも変更しない。
+case間は6,100 ms、Google request pacingは6,000 msを維持する。modelは`gemini-3.5-flash-lite`、Harness case budgetは60,000 msのまま、semantic contractとexpected labelも変更しない。
 
 ## Telemetry
 
@@ -26,12 +26,12 @@ process間には7秒のgapを置く。modelは`gemini-3.5-flash-lite`、Harness 
 - HTTP headers受信時のstatus
 - response body解析後のtyped provider error class
 - structured quota window
-- provider status / high-demand message / quota ID / RetryInfoなどのbounded detail
-- 安全なrate-limit header
+- provider status（例: `RESOURCE_EXHAUSTED` / `UNAVAILABLE`）
+- safe rate-limit header
 - retry delay
 - Harness deadlineによりadapter futureがdropされた場合の`cancelled_in_flight`
 
-API key、prompt、system instruction、candidate evidence、model response本文はtelemetryへ保存しない。
+API key、prompt、system instruction、candidate evidence、model response本文、provider message本文はtelemetryへ保存しない。
 
 ## Interpretation
 
