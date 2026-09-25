@@ -1,0 +1,115 @@
+name: engine-0.6-evidence-relevance-v13-groq-postmortem-v1
+
+on:
+  push:
+    tags:
+      - engine-0.6-evidence-relevance-v13-groq-postmortem-v1
+
+permissions:
+  contents: read
+
+env:
+  DIAGNOSTIC_TAG: engine-0.6-evidence-relevance-v13-groq-postmortem-v1
+  SOURCE_FREEZE_TAG: engine-0.6-evidence-relevance-calibration-v13-freeze
+  CALIBRATION_DIR: fixtures/evidence-relevance-calibration-v13
+  MODEL: openai/gpt-oss-120b
+  SEED: '4626130'
+
+jobs:
+  groq-full-postmortem:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-v13-groq-postmortem-v1
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Verify immutable v13 source corpus
+        run: |
+          set -euo pipefail
+          test "$(git describe --tags --exact-match HEAD)" = "$DIAGNOSTIC_TAG"
+          git rev-parse "$SOURCE_FREEZE_TAG^{commit}" >/dev/null
+          EXPECTED_MANIFEST_SHA="$(
+            git show "$SOURCE_FREEZE_TAG:$CALIBRATION_DIR/surface-v13.sha256"               | awk '$2 == "fixtures/evidence-relevance-calibration-v13/manifest.json" {print $1}'
+          )"
+          test -n "$EXPECTED_MANIFEST_SHA"
+          ACTUAL_MANIFEST_SHA="$(sha256sum "$CALIBRATION_DIR/manifest.json" | awk '{print $1}')"
+          test "$ACTUAL_MANIFEST_SHA" = "$EXPECTED_MANIFEST_SHA"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study --             "$CALIBRATION_DIR"             --provider groq             --model calibration-placeholder             --validate-only             > /tmp/v13-groq-postmortem-preflight.json
+          jq -e '
+            .configuration_id == "evidence-relevance-live-calibration-v13"
+            and .suite_id == "evidence-relevance-calibration-v13"
+            and .annotation_protocol_id == "evidence-relevance-atomic-annotation-v13"
+            and .planned_cases == 81
+            and .completed_cases == 0
+            and .scorability == "validate_only_non_scorable"
+          ' /tmp/v13-groq-postmortem-preflight.json >/dev/null
+
+      - name: Check Groq credential
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: test -n "$GROQ_API_KEY"
+
+      - name: Run noncanonical full Groq postmortem
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '10000'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+          REASON_GROQ_STRUCTURED_OUTPUT_RETRIES: '0'
+        run: |
+          set -u
+          BASE=/tmp/evidence-relevance-v13-groq-postmortem
+          printf '%s
+'             "{"schema_version":"evidence-relevance-v13-groq-postmortem-v1","canonical":false,"source_freeze_tag":"$SOURCE_FREEZE_TAG","diagnostic_tag":"$DIAGNOSTIC_TAG","github_run_id":"$GITHUB_RUN_ID","github_run_attempt":"$GITHUB_RUN_ATTEMPT","model":"$MODEL"}"             > "${BASE}-marker.json"
+
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study --             "$CALIBRATION_DIR"             --provider groq             --model "$MODEL"             --seed "$SEED"             --inter-case-delay-ms 2200             --continue-after-operational-failures             --checkpoint "${BASE}-checkpoint.json"             > "${BASE}-result.json"             2> "${BASE}-stderr.log"
+          RC=$?
+          set -e
+          printf '%s
+' "$RC" > "${BASE}.rc"
+
+          if test -s "${BASE}-result.json"; then
+            jq '{
+              configuration_id,
+              suite_id,
+              candidate_commit,
+              provider,
+              model,
+              planned_cases,
+              completed_cases,
+              canonical_full_calibration,
+              scorability,
+              operational_abort,
+              metrics,
+              failed_cases: [
+                .observations[]
+                | select(.failure_class != null)
+                | {id, failure_class, failure, model_calls, provider_attempts, provider_attempts_complete, finish_reason}
+              ]
+            }' "${BASE}-result.json"
+          fi
+
+          exit 0
+
+      - name: Preserve postmortem evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-v13-groq-postmortem-v1
+          path: |
+            /tmp/evidence-relevance-v13-groq-postmortem*
+            /tmp/v13-groq-postmortem-preflight.json
+          if-no-files-found: error
+          retention-days: 90
