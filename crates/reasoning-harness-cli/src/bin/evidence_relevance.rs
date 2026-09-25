@@ -25,6 +25,7 @@ const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
 const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-atomic-annotation-v13";
 const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v13";
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
+const GROQ_STRICT_JSON_TEXT_MAX_TOKENS: u32 = 512;
 const EXPECTED_CASES: usize = 81;
 
 #[derive(Debug, Parser)]
@@ -48,6 +49,8 @@ struct Args {
     checkpoint: Option<PathBuf>,
     #[arg(long, default_value_t = 2)]
     max_consecutive_operational_failures: usize,
+    #[arg(long, default_value_t = false)]
+    continue_after_operational_failures: bool,
     #[arg(long, default_value_t = false)]
     validate_only: bool,
 }
@@ -484,7 +487,8 @@ async fn run() -> Result<StudyOutput, String> {
                 .and_then(|observation| observation.failure_class.as_deref()),
         );
 
-        if consecutive_operational_failures >= args.max_consecutive_operational_failures
+        if !args.continue_after_operational_failures
+            && consecutive_operational_failures >= args.max_consecutive_operational_failures
             && index + 1 < selected.len()
         {
             operational_abort = Some(OperationalAbort {
@@ -816,7 +820,7 @@ async fn call_model_for_proposal(
 
     let groq_text_primary = matches!(provider, Provider::Groq);
     let primary_request = if groq_text_primary {
-        let Some(text_request) = build_strict_json_text_fallback_request(&request) else {
+        let Some(mut text_request) = build_strict_json_text_fallback_request(&request) else {
             return Err(CallFailure {
                 class: "protocol".into(),
                 message: "Groq strict-JSON Text primary transport unavailable".into(),
@@ -829,6 +833,12 @@ async fn call_model_for_proposal(
                 finish_reason: last_finish_reason,
             });
         };
+        text_request.max_tokens = Some(
+            text_request
+                .max_tokens
+                .unwrap_or_default()
+                .max(GROQ_STRICT_JSON_TEXT_MAX_TOKENS),
+        );
         text_request
     } else {
         request.clone()
@@ -1080,7 +1090,7 @@ async fn call_model_for_local_qualification(
 
     let groq_text_primary = matches!(provider, Provider::Groq);
     let primary_request = if groq_text_primary {
-        let Some(text_request) = build_strict_json_text_fallback_request(&request) else {
+        let Some(mut text_request) = build_strict_json_text_fallback_request(&request) else {
             return Err(CallFailure {
                 class: "protocol".into(),
                 message: "Groq strict-JSON Text primary local qualification transport unavailable"
@@ -1094,6 +1104,12 @@ async fn call_model_for_local_qualification(
                 finish_reason: None,
             });
         };
+        text_request.max_tokens = Some(
+            text_request
+                .max_tokens
+                .unwrap_or_default()
+                .max(GROQ_STRICT_JSON_TEXT_MAX_TOKENS),
+        );
         text_request
     } else {
         request.clone()
@@ -2020,6 +2036,29 @@ mod tests {
         assert!(is_operational_provider_failure_class("rate_limit"));
         assert!(is_operational_provider_failure_class("quota"));
         assert!(!is_operational_provider_failure_class("materialization"));
+    }
+
+    #[test]
+    fn groq_strict_json_transport_budget_exceeds_semantic_schema_budget() {
+        assert_eq!(fixture_request().max_tokens, Some(192));
+        assert_eq!(local_qualification_request().max_tokens, Some(192));
+        assert_eq!(GROQ_STRICT_JSON_TEXT_MAX_TOKENS, 512);
+    }
+
+    #[test]
+    fn full_diagnostic_mode_can_disable_operational_circuit_break() {
+        let args = Args::try_parse_from([
+            "reason-evidence-relevance-study",
+            "fixtures/evidence-relevance-calibration-v13",
+            "--provider",
+            "groq",
+            "--model",
+            "openai/gpt-oss-120b",
+            "--continue-after-operational-failures",
+        ])
+        .expect("parse args");
+        assert!(args.continue_after_operational_failures);
+        assert_eq!(args.max_consecutive_operational_failures, 2);
     }
 
     #[test]
