@@ -1,0 +1,269 @@
+name: engine-0.6-google-full-requalification-v1
+
+on:
+  push:
+    tags:
+      - engine-0.6-google-full-requalification-v1
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  DIAGNOSTIC_TAG: engine-0.6-google-full-requalification-v1
+  CALIBRATION_DIR: fixtures/evidence-relevance-calibration-v7
+  SURFACE_FILE: fixtures/evidence-relevance-google-full-requalification-v1/surface.sha256
+  MODEL: gemini-3.5-flash-lite
+  DIAGNOSTIC_SEED: '4629101'
+
+jobs:
+  google-full-requalification:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+      REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH: /tmp/google-full-requal-attempts.jsonl
+
+    steps:
+      - name: Reject workflow reruns
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-google-full-requalification-v1
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate exact frozen diagnostic surface
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$DIAGNOSTIC_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$DIAGNOSTIC_TAG"
+          sha256sum -c "$SURFACE_FILE"
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-cli --bin reason-evidence-relevance-study -- -D warnings
+          cargo clippy -p reasoning-harness-providers --lib -- -D warnings
+          cargo test -p reasoning-harness-cli --bin reason-evidence-relevance-study
+          cargo test -p reasoning-harness-providers gemma::tests:: --lib
+
+      - name: Validate non-canonical 26-case request-shape selection
+        run: |
+          set -euo pipefail
+          fixtures=(
+            01_exact_name_availability
+            02_acronym_alias
+            03_expanded_alias
+            04_semantic_paraphrase
+            05_title_identity_body_relation
+            06_heading_identity_adjacent_relation
+            07_url_omits_target_terms
+            08_ja_query_en_source
+            09_en_query_ja_alias
+            10_structured_metadata_plus_body
+            11_stale_but_relevant
+            12_multi_section_same_target
+            13_same_service_different_feature
+            14_sibling_product_overlap
+            15_navigation_only_match
+            16_broad_landing_no_support
+            17_unrelated_announcement
+            18_comparison_only_mention
+            19_relation_mismatch_same_target
+            20_prompt_injection_self_declare
+            21_unknown_rename
+            22_partial_identity
+            23_mixed_multi_product
+            24_conflicting_sections
+            25_insufficient_local_passage
+            26_url_only_identity
+          )
+          fixture_args=()
+          for fixture in "${fixtures[@]}"; do
+            fixture_args+=(--fixture "$fixture")
+          done
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider google \
+            --model calibration-placeholder \
+            "${fixture_args[@]}" \
+            --validate-only \
+            > /tmp/google-full-requal-validate.json
+          jq -e '
+            .configuration_id == "evidence-relevance-live-calibration-v7"
+            and .suite_id == "evidence-relevance-calibration-v7"
+            and .planned_cases == 26
+            and .completed_cases == 0
+            and .canonical_full_calibration == false
+            and .operational_abort == null
+            and .metrics.cases == 26
+            and .scorability == "validate_only_non_scorable"
+          ' /tmp/google-full-requal-validate.json >/dev/null
+
+      - name: Check Google credential
+        run: |
+          set -euo pipefail
+          test -n "${GEMINI_API_KEY:-}"
+
+      - name: Run first and only full provider requalification
+        run: |
+          set +e
+          rm -f "$REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH"
+          fixtures=(
+            01_exact_name_availability
+            02_acronym_alias
+            03_expanded_alias
+            04_semantic_paraphrase
+            05_title_identity_body_relation
+            06_heading_identity_adjacent_relation
+            07_url_omits_target_terms
+            08_ja_query_en_source
+            09_en_query_ja_alias
+            10_structured_metadata_plus_body
+            11_stale_but_relevant
+            12_multi_section_same_target
+            13_same_service_different_feature
+            14_sibling_product_overlap
+            15_navigation_only_match
+            16_broad_landing_no_support
+            17_unrelated_announcement
+            18_comparison_only_mention
+            19_relation_mismatch_same_target
+            20_prompt_injection_self_declare
+            21_unknown_rename
+            22_partial_identity
+            23_mixed_multi_product
+            24_conflicting_sections
+            25_insufficient_local_passage
+            26_url_only_identity
+          )
+          fixture_args=()
+          for fixture in "${fixtures[@]}"; do
+            fixture_args+=(--fixture "$fixture")
+          done
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider google \
+            --model "$MODEL" \
+            "${fixture_args[@]}" \
+            --seed "$DIAGNOSTIC_SEED" \
+            --inter-case-delay-ms 6100 \
+            --max-consecutive-operational-failures 2 \
+            --checkpoint /tmp/google-full-requal-checkpoint.json \
+            > /tmp/google-full-requal-result.json \
+            2> /tmp/google-full-requal-stderr.log
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" > /tmp/google-full-requal.rc
+
+      - name: Classify operational evidence
+        if: always()
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from collections import Counter, defaultdict
+          from pathlib import Path
+
+          telemetry_path=Path('/tmp/google-full-requal-attempts.jsonl')
+          result_path=Path('/tmp/google-full-requal-result.json')
+          rc_path=Path('/tmp/google-full-requal.rc')
+
+          events=[]
+          if telemetry_path.exists():
+              for line in telemetry_path.read_text().splitlines():
+                  if line.strip():
+                      events.append(json.loads(line))
+          result=json.loads(result_path.read_text()) if result_path.exists() and result_path.stat().st_size else None
+          runner_rc=int(rc_path.read_text().strip()) if rc_path.exists() else None
+          metrics=(result or {}).get('metrics',{})
+
+          header_events=[e for e in events if e.get('event')=='http_headers']
+          status_counts=Counter(str(e.get('status_code')) for e in header_events if e.get('status_code') is not None)
+          provider_status_counts=Counter(e.get('provider_status') for e in events if e.get('provider_status'))
+          error_class_counts=Counter(e.get('error_class') for e in events if e.get('error_class'))
+          quota_window_counts=Counter(e.get('quota_window') for e in events if e.get('quota_window'))
+          retries=[e for e in events if e.get('event')=='retry_scheduled']
+          cancellations=[e for e in events if e.get('event')=='cancelled_in_flight']
+          attempts=[e for e in events if e.get('event')=='attempt_start']
+
+          operational_requalified=bool(
+              runner_rc==0
+              and result
+              and result.get('planned_cases')==26
+              and result.get('completed_cases')==26
+              and result.get('canonical_full_calibration') is False
+              and result.get('operational_abort') is None
+              and metrics.get('successful_provider_cases')==26
+              and metrics.get('failed_provider_cases')==0
+          )
+
+          summary={
+              'schema_version':'engine-0.6-google-full-requalification-summary-v1',
+              'runner_rc':runner_rc,
+              'operational_requalified':operational_requalified,
+              'planned_cases':(result or {}).get('planned_cases'),
+              'completed_cases':(result or {}).get('completed_cases'),
+              'canonical_full_calibration':(result or {}).get('canonical_full_calibration'),
+              'operational_abort':(result or {}).get('operational_abort'),
+              'successful_provider_cases':metrics.get('successful_provider_cases'),
+              'failed_provider_cases':metrics.get('failed_provider_cases'),
+              'failure_counts':metrics.get('failure_counts'),
+              'provider_attempts':metrics.get('provider_attempts'),
+              'provider_attempts_incomplete_observations':metrics.get('provider_attempts_incomplete_observations'),
+              'attempt_start_events':len(attempts),
+              'http_status_counts':dict(status_counts),
+              'provider_status_counts':dict(provider_status_counts),
+              'error_class_counts':dict(error_class_counts),
+              'quota_window_counts':dict(quota_window_counts),
+              'retry_events':len(retries),
+              'cancelled_in_flight_events':len(cancellations),
+              'latency_p50_ms':metrics.get('latency_p50_ms'),
+              'latency_p95_ms':metrics.get('latency_p95_ms'),
+              'latency_max_ms':metrics.get('latency_max_ms'),
+              'successful_latency_p50_ms':metrics.get('successful_latency_p50_ms'),
+              'successful_latency_p95_ms':metrics.get('successful_latency_p95_ms'),
+              'successful_latency_max_ms':metrics.get('successful_latency_max_ms'),
+              'semantic_diagnostics':{
+                  'materialized_exact_matches':metrics.get('materialized_exact_matches'),
+                  'materialized_exact_accuracy':metrics.get('materialized_exact_accuracy'),
+                  'correctness_wrong_target_relevance_retention':metrics.get('correctness_wrong_target_relevance_retention'),
+                  'false_relevance_rejections':metrics.get('false_relevance_rejections'),
+                  'relevant_left_ambiguous':metrics.get('relevant_left_ambiguous'),
+                  'utility_misses':metrics.get('utility_misses'),
+              },
+          }
+          out=Path('/tmp/google-full-requal-summary.json')
+          out.write_text(json.dumps(summary,indent=2)+'\n')
+          print(out.read_text())
+          PY
+
+      - name: Preserve full requalification evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-google-full-requalification-v1
+          path: |
+            /tmp/google-full-requal-validate.json
+            /tmp/google-full-requal-result.json
+            /tmp/google-full-requal-checkpoint.json
+            /tmp/google-full-requal-stderr.log
+            /tmp/google-full-requal.rc
+            /tmp/google-full-requal-attempts.jsonl
+            /tmp/google-full-requal-summary.json
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Operational requalification gate
+        if: always()
+        run: |
+          set -euo pipefail
+          jq -e '.operational_requalified == true' /tmp/google-full-requal-summary.json >/dev/null
