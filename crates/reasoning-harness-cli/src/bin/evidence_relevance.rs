@@ -8,25 +8,23 @@ use std::{
 
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
-    EvidenceNegativeSafetyDecision, EvidencePositiveSafetyDecision, EvidenceRelevanceAssessment,
-    EvidenceRelevanceBinding, EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate,
-    EvidenceRelevanceDisposition, EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy,
-    ModelAdapter, ModelError, ModelErrorKind, ModelRequest, ModelUsage,
-    build_evidence_negative_safety_decision_request,
-    build_evidence_positive_safety_decision_request,
+    EvidenceLocalQualification, EvidenceQualificationRisk, EvidenceRelevanceAssessment,
+    EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
+    EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy, ModelAdapter, ModelError,
+    ModelErrorKind, ModelRequest, ModelUsage, build_evidence_local_qualification_request,
     build_evidence_relevance_binding_proposal_request, build_json_object_fallback_request,
-    materialize_evidence_relevance_v6, parse_evidence_negative_safety_decision,
-    parse_evidence_positive_safety_decision, parse_evidence_relevance_binding_proposal,
+    materialize_evidence_relevance_v7, parse_evidence_local_qualification,
+    parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v10";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v10";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v11";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v11";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v10";
-const CONFIRMATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
-const EXPECTED_CASES: usize = 56;
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v11";
+const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
+const EXPECTED_CASES: usize = 65;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -125,10 +123,7 @@ struct CalibrationCase {
     policy: EvidenceRelevanceTargetPolicy,
     candidate: EvidenceRelevanceCandidate,
     expected_proposal: EvidenceRelevanceBindingProposal,
-    #[serde(default)]
-    expected_negative_safety_decision: Option<EvidenceNegativeSafetyDecision>,
-    #[serde(default)]
-    expected_positive_safety_decision: Option<EvidencePositiveSafetyDecision>,
+    expected_local_qualification: EvidenceLocalQualification,
     expected_disposition: EvidenceRelevanceDisposition,
 }
 
@@ -162,20 +157,12 @@ struct CaseObservation {
     observed_proposal: Option<EvidenceRelevanceBindingProposal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proposal_match: Option<bool>,
+    expected_local_qualification: EvidenceLocalQualification,
     #[serde(skip_serializing_if = "Option::is_none")]
-    expected_negative_safety_decision: Option<EvidenceNegativeSafetyDecision>,
+    observed_local_qualification: Option<EvidenceLocalQualification>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    observed_negative_safety_decision: Option<EvidenceNegativeSafetyDecision>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    negative_safety_decision_match: Option<bool>,
-    negative_safety_decision_invoked: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    expected_positive_safety_decision: Option<EvidencePositiveSafetyDecision>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    observed_positive_safety_decision: Option<EvidencePositiveSafetyDecision>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    positive_safety_decision_match: Option<bool>,
-    positive_safety_decision_invoked: bool,
+    local_qualification_match: Option<bool>,
+    local_qualification_invoked: bool,
     expected_disposition: EvidenceRelevanceDisposition,
     #[serde(skip_serializing_if = "Option::is_none")]
     materialized_disposition: Option<EvidenceRelevanceDisposition>,
@@ -183,7 +170,7 @@ struct CaseObservation {
     disposition_match: Option<bool>,
     lexical_baseline: EvidenceRelevanceDisposition,
     lexical_baseline_match: bool,
-    deterministic_safety_override: bool,
+    deterministic_guard_override: bool,
     used_json_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
@@ -209,16 +196,12 @@ struct CalibrationMetrics {
     failed_provider_cases: usize,
     proposal_exact_matches: usize,
     proposal_exact_accuracy: Option<f64>,
-    negative_safety_decision_expected_cases: usize,
-    negative_safety_decision_invocations: usize,
-    negative_safety_decision_exact_matches: usize,
-    negative_safety_decision_exact_accuracy: Option<f64>,
-    positive_safety_decision_expected_cases: usize,
-    positive_safety_decision_invocations: usize,
-    positive_safety_decision_exact_matches: usize,
-    positive_safety_decision_exact_accuracy: Option<f64>,
-    unsafe_negative_rejections: usize,
-    unsafe_positive_acceptances: usize,
+    local_qualification_expected_cases: usize,
+    local_qualification_invocations: usize,
+    local_qualification_exact_matches: usize,
+    local_qualification_exact_accuracy: Option<f64>,
+    qualification_risk_misses: usize,
+    qualification_spurious_risk_blocks: usize,
     materialized_exact_matches: usize,
     materialized_exact_accuracy: Option<f64>,
     correctness_wrong_target_relevance_retention: usize,
@@ -226,7 +209,7 @@ struct CalibrationMetrics {
     relevant_left_ambiguous: usize,
     utility_misses: usize,
     ambiguous_dispositions: usize,
-    deterministic_safety_overrides: usize,
+    deterministic_guard_overrides: usize,
     lexical_exact_matches: usize,
     lexical_exact_accuracy: Option<f64>,
     lexical_wrong_target_relevance_retention: usize,
@@ -305,19 +288,8 @@ struct CallOutcome {
 }
 
 #[derive(Debug)]
-struct NegativeSafetyCallOutcome {
-    decision: EvidenceNegativeSafetyDecision,
-    used_json_fallback: bool,
-    model_calls: u32,
-    provider_attempts: u32,
-    usage: UsageSummary,
-    provider_model: Option<String>,
-    finish_reason: Option<String>,
-}
-
-#[derive(Debug)]
-struct PositiveSafetyCallOutcome {
-    decision: EvidencePositiveSafetyDecision,
+struct QualificationCallOutcome {
+    qualification: EvidenceLocalQualification,
     used_json_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
@@ -366,42 +338,16 @@ async fn run() -> Result<StudyOutput, String> {
 
     for case in &selected {
         let expected = case.expected_proposal;
-        let expects_negative = expected.target_binding != EvidenceRelevanceBinding::Exact;
-        let expects_positive = expected.target_binding == EvidenceRelevanceBinding::Exact
-            && expected.relation_binding == EvidenceRelevanceBinding::Exact;
-
-        if expects_negative != case.expected_negative_safety_decision.is_some() {
-            return Err(format!(
-                "non-exact target case {} must freeze exactly one expected negative safety decision",
-                case.id
-            ));
-        }
-        if expects_positive != case.expected_positive_safety_decision.is_some() {
-            return Err(format!(
-                "exact/exact case {} must freeze exactly one expected positive safety decision",
-                case.id
-            ));
-        }
-        if case.expected_negative_safety_decision.is_some()
-            && case.expected_positive_safety_decision.is_some()
-        {
-            return Err(format!(
-                "case {} must not carry both negative and positive safety-decision expectations",
-                case.id
-            ));
-        }
-
-        let assessment = materialize_evidence_relevance_v6(
+        let assessment = materialize_evidence_relevance_v7(
             &case.policy,
             &case.candidate,
             Some(&expected),
-            case.expected_negative_safety_decision,
-            case.expected_positive_safety_decision,
+            Some(&case.expected_local_qualification),
         )
         .map_err(|error| format!("invalid calibration policy {}: {error}", case.id))?;
         if assessment.disposition != case.expected_disposition {
             return Err(format!(
-                "deterministic expected proposal mismatch for {}: expected {:?}, materialized {:?}",
+                "deterministic expected proposal/qualification mismatch for {}: expected {:?}, materialized {:?}",
                 case.id, case.expected_disposition, assessment.disposition
             ));
         }
@@ -618,175 +564,92 @@ async fn complete_observed_case(
     let mut usage = call.usage;
     let mut provider_model = call.provider_model;
     let mut finish_reason = call.finish_reason;
-    let mut negative_safety_decision = None;
-    let mut positive_safety_decision = None;
 
-    let confirmation_kind = if observed.target_binding != EvidenceRelevanceBinding::Exact {
-        Some("negative")
-    } else if observed.relation_binding == EvidenceRelevanceBinding::Exact {
-        Some("positive")
-    } else {
-        None
-    };
+    let remaining = Duration::from_millis(case.policy.assessment_budget.max_elapsed_ms)
+        .saturating_sub(started.elapsed());
+    if remaining.is_zero() {
+        return Ok(failure_observation(
+            case,
+            lexical_baseline,
+            ObservationFailure {
+                latency_ms: started.elapsed().as_millis(),
+                used_json_fallback,
+                model_calls,
+                provider_attempts,
+                provider_attempts_complete: true,
+                usage,
+                provider_model,
+                finish_reason,
+                class: "assessment_timeout".into(),
+                message: "local qualification had no remaining case budget".into(),
+            },
+        ));
+    }
 
-    if let Some(kind) = confirmation_kind {
-        let remaining = Duration::from_millis(case.policy.assessment_budget.max_elapsed_ms)
-            .saturating_sub(started.elapsed());
-        if remaining.is_zero() {
+    let request = build_evidence_local_qualification_request(
+        &case.policy,
+        &case.candidate,
+        case_seed.map(|seed| seed ^ 0x6a11_f1ed),
+    )
+    .map_err(|error| format!("build local qualification request {}: {error}", case.id))?;
+
+    let qualification_call = match call_model_for_local_qualification(adapter, request, remaining)
+        .await
+    {
+        Ok(call) => call,
+        Err(mut failure) => {
+            failure.used_json_fallback |= used_json_fallback;
+            failure.model_calls = failure.model_calls.saturating_add(model_calls);
+            failure.provider_attempts = failure.provider_attempts.saturating_add(provider_attempts);
+            failure.usage.add_summary(&usage);
+            if failure.provider_model.is_none() {
+                failure.provider_model = provider_model;
+            }
+            if failure.finish_reason.is_none() {
+                failure.finish_reason = finish_reason;
+            }
             return Ok(failure_observation(
                 case,
                 lexical_baseline,
                 ObservationFailure {
                     latency_ms: started.elapsed().as_millis(),
-                    used_json_fallback,
-                    model_calls,
-                    provider_attempts,
-                    provider_attempts_complete: true,
-                    usage,
-                    provider_model,
-                    finish_reason,
-                    class: "assessment_timeout".into(),
-                    message: format!("{kind} safety decision had no remaining case budget"),
+                    used_json_fallback: failure.used_json_fallback,
+                    model_calls: failure.model_calls,
+                    provider_attempts: failure.provider_attempts,
+                    provider_attempts_complete: failure.provider_attempts_complete,
+                    usage: failure.usage,
+                    provider_model: failure.provider_model,
+                    finish_reason: failure.finish_reason,
+                    class: failure.class,
+                    message: format!("local qualification failed: {}", failure.message),
                 },
             ));
         }
+    };
 
-        if kind == "negative" {
-            let request = build_evidence_negative_safety_decision_request(
-                &case.policy,
-                &case.candidate,
-                case_seed.map(|seed| seed ^ 0x51d1_57c7),
-            )
-            .map_err(|error| {
-                format!(
-                    "build negative safety-decision request {}: {error}",
-                    case.id
-                )
-            })?;
-            match call_model_for_negative_safety_decision(adapter, request, remaining).await {
-                Ok(confirmation_call) => {
-                    negative_safety_decision = Some(confirmation_call.decision);
-                    used_json_fallback |= confirmation_call.used_json_fallback;
-                    model_calls = model_calls.saturating_add(confirmation_call.model_calls);
-                    provider_attempts =
-                        provider_attempts.saturating_add(confirmation_call.provider_attempts);
-                    usage.add_summary(&confirmation_call.usage);
-                    if confirmation_call.provider_model.is_some() {
-                        provider_model = confirmation_call.provider_model;
-                    }
-                    if confirmation_call.finish_reason.is_some() {
-                        finish_reason = confirmation_call.finish_reason;
-                    }
-                }
-                Err(mut failure) => {
-                    failure.used_json_fallback |= used_json_fallback;
-                    failure.model_calls = failure.model_calls.saturating_add(model_calls);
-                    failure.provider_attempts =
-                        failure.provider_attempts.saturating_add(provider_attempts);
-                    failure.usage.add_summary(&usage);
-                    if failure.provider_model.is_none() {
-                        failure.provider_model = provider_model;
-                    }
-                    if failure.finish_reason.is_none() {
-                        failure.finish_reason = finish_reason;
-                    }
-                    return Ok(failure_observation(
-                        case,
-                        lexical_baseline,
-                        ObservationFailure {
-                            latency_ms: started.elapsed().as_millis(),
-                            used_json_fallback: failure.used_json_fallback,
-                            model_calls: failure.model_calls,
-                            provider_attempts: failure.provider_attempts,
-                            provider_attempts_complete: failure.provider_attempts_complete,
-                            usage: failure.usage,
-                            provider_model: failure.provider_model,
-                            finish_reason: failure.finish_reason,
-                            class: failure.class,
-                            message: format!(
-                                "negative safety decision failed: {}",
-                                failure.message
-                            ),
-                        },
-                    ));
-                }
-            }
-        } else {
-            let request = build_evidence_positive_safety_decision_request(
-                &case.policy,
-                &case.candidate,
-                case_seed.map(|seed| seed ^ 0xa93c_2b41),
-            )
-            .map_err(|error| {
-                format!(
-                    "build positive safety-decision request {}: {error}",
-                    case.id
-                )
-            })?;
-            match call_model_for_positive_safety_decision(adapter, request, remaining).await {
-                Ok(confirmation_call) => {
-                    positive_safety_decision = Some(confirmation_call.decision);
-                    used_json_fallback |= confirmation_call.used_json_fallback;
-                    model_calls = model_calls.saturating_add(confirmation_call.model_calls);
-                    provider_attempts =
-                        provider_attempts.saturating_add(confirmation_call.provider_attempts);
-                    usage.add_summary(&confirmation_call.usage);
-                    if confirmation_call.provider_model.is_some() {
-                        provider_model = confirmation_call.provider_model;
-                    }
-                    if confirmation_call.finish_reason.is_some() {
-                        finish_reason = confirmation_call.finish_reason;
-                    }
-                }
-                Err(mut failure) => {
-                    failure.used_json_fallback |= used_json_fallback;
-                    failure.model_calls = failure.model_calls.saturating_add(model_calls);
-                    failure.provider_attempts =
-                        failure.provider_attempts.saturating_add(provider_attempts);
-                    failure.usage.add_summary(&usage);
-                    if failure.provider_model.is_none() {
-                        failure.provider_model = provider_model;
-                    }
-                    if failure.finish_reason.is_none() {
-                        failure.finish_reason = finish_reason;
-                    }
-                    return Ok(failure_observation(
-                        case,
-                        lexical_baseline,
-                        ObservationFailure {
-                            latency_ms: started.elapsed().as_millis(),
-                            used_json_fallback: failure.used_json_fallback,
-                            model_calls: failure.model_calls,
-                            provider_attempts: failure.provider_attempts,
-                            provider_attempts_complete: failure.provider_attempts_complete,
-                            usage: failure.usage,
-                            provider_model: failure.provider_model,
-                            finish_reason: failure.finish_reason,
-                            class: failure.class,
-                            message: format!(
-                                "positive safety decision failed: {}",
-                                failure.message
-                            ),
-                        },
-                    ));
-                }
-            }
-        }
+    let observed_qualification = qualification_call.qualification;
+    used_json_fallback |= qualification_call.used_json_fallback;
+    model_calls = model_calls.saturating_add(qualification_call.model_calls);
+    provider_attempts = provider_attempts.saturating_add(qualification_call.provider_attempts);
+    usage.add_summary(&qualification_call.usage);
+    if qualification_call.provider_model.is_some() {
+        provider_model = qualification_call.provider_model;
+    }
+    if qualification_call.finish_reason.is_some() {
+        finish_reason = qualification_call.finish_reason;
     }
 
-    match materialize_evidence_relevance_v6(
+    match materialize_evidence_relevance_v7(
         &case.policy,
         &case.candidate,
         Some(&observed),
-        negative_safety_decision,
-        positive_safety_decision,
+        Some(&observed_qualification),
     ) {
         Ok(assessment) => Ok(success_observation(
             case,
             lexical_baseline,
             observed,
-            negative_safety_decision,
-            positive_safety_decision,
+            observed_qualification,
             assessment,
             started.elapsed().as_millis(),
             used_json_fallback,
@@ -833,8 +696,7 @@ fn success_observation(
     case: &CalibrationCase,
     lexical_baseline: EvidenceRelevanceDisposition,
     observed: EvidenceRelevanceBindingProposal,
-    observed_negative_safety_decision: Option<EvidenceNegativeSafetyDecision>,
-    observed_positive_safety_decision: Option<EvidencePositiveSafetyDecision>,
+    observed_local_qualification: EvidenceLocalQualification,
     assessment: EvidenceRelevanceAssessment,
     latency_ms: u128,
     used_json_fallback: bool,
@@ -851,30 +713,21 @@ fn success_observation(
         expected_proposal: case.expected_proposal,
         observed_proposal: Some(observed),
         proposal_match: Some(observed == case.expected_proposal),
-        expected_negative_safety_decision: case.expected_negative_safety_decision,
-        observed_negative_safety_decision,
-        negative_safety_decision_match: case
-            .expected_negative_safety_decision
-            .map(|expected| observed_negative_safety_decision == Some(expected)),
-        negative_safety_decision_invoked: observed_negative_safety_decision.is_some(),
-        expected_positive_safety_decision: case.expected_positive_safety_decision,
-        observed_positive_safety_decision,
-        positive_safety_decision_match: case
-            .expected_positive_safety_decision
-            .map(|expected| observed_positive_safety_decision == Some(expected)),
-        positive_safety_decision_invoked: observed_positive_safety_decision.is_some(),
+        expected_local_qualification: case.expected_local_qualification,
+        observed_local_qualification: Some(observed_local_qualification),
+        local_qualification_match: Some(
+            observed_local_qualification == case.expected_local_qualification,
+        ),
+        local_qualification_invoked: true,
         expected_disposition: case.expected_disposition,
         materialized_disposition: Some(materialized),
         disposition_match: Some(materialized == case.expected_disposition),
         lexical_baseline,
         lexical_baseline_match: lexical_baseline == case.expected_disposition,
-        deterministic_safety_override: matches!(
-            (observed.target_binding, observed.relation_binding),
-            (
-                EvidenceRelevanceBinding::Exact,
-                EvidenceRelevanceBinding::Exact
-            )
-        ) && materialized != EvidenceRelevanceDisposition::Relevant,
+        deterministic_guard_override: materialized == EvidenceRelevanceDisposition::Ambiguous
+            && (observed.target_binding != case.expected_proposal.target_binding
+                || observed.relation_binding != case.expected_proposal.relation_binding
+                || observed_local_qualification != case.expected_local_qualification),
         used_json_fallback,
         model_calls,
         provider_attempts,
@@ -894,32 +747,23 @@ fn failure_observation(
     lexical_baseline: EvidenceRelevanceDisposition,
     failure: ObservationFailure,
 ) -> CaseObservation {
-    let negative_safety_decision_invoked = failure
-        .message
-        .starts_with("negative safety decision failed:");
-    let positive_safety_decision_invoked = failure
-        .message
-        .starts_with("positive safety decision failed:");
+    let local_qualification_invoked = failure.message.starts_with("local qualification failed:");
     CaseObservation {
         id: case.id.clone(),
         family: case.family.clone(),
         expected_proposal: case.expected_proposal,
         observed_proposal: None,
         proposal_match: None,
-        expected_negative_safety_decision: case.expected_negative_safety_decision,
-        observed_negative_safety_decision: None,
-        negative_safety_decision_match: None,
-        negative_safety_decision_invoked,
-        expected_positive_safety_decision: case.expected_positive_safety_decision,
-        observed_positive_safety_decision: None,
-        positive_safety_decision_match: None,
-        positive_safety_decision_invoked,
+        expected_local_qualification: case.expected_local_qualification,
+        observed_local_qualification: None,
+        local_qualification_match: None,
+        local_qualification_invoked,
         expected_disposition: case.expected_disposition,
         materialized_disposition: None,
         disposition_match: None,
         lexical_baseline,
         lexical_baseline_match: lexical_baseline == case.expected_disposition,
-        deterministic_safety_override: false,
+        deterministic_guard_override: false,
         used_json_fallback: failure.used_json_fallback,
         model_calls: failure.model_calls,
         provider_attempts: failure.provider_attempts,
@@ -1169,16 +1013,16 @@ async fn call_fallback(
     }
 }
 
-async fn call_model_for_negative_safety_decision(
+async fn call_model_for_local_qualification(
     adapter: &dyn ModelAdapter,
     request: ModelRequest,
     max_elapsed: Duration,
-) -> Result<NegativeSafetyCallOutcome, CallFailure> {
+) -> Result<QualificationCallOutcome, CallFailure> {
     let deadline = tokio::time::Instant::now() + max_elapsed;
-    if CONFIRMATION_STAGE_MAX_MODEL_CALLS == 0 {
+    if QUALIFICATION_STAGE_MAX_MODEL_CALLS == 0 {
         return Err(CallFailure {
             class: "attempt_budget".into(),
-            message: "negative safety-decision model-call budget is zero".into(),
+            message: "local qualification model-call budget is zero".into(),
             used_json_fallback: false,
             model_calls: 0,
             provider_attempts: 0,
@@ -1188,13 +1032,14 @@ async fn call_model_for_negative_safety_decision(
             finish_reason: None,
         });
     }
+
     let primary = tokio::time::timeout_at(deadline, adapter.generate(request.clone())).await;
     let primary = match primary {
         Ok(result) => result,
         Err(_) => {
             return Err(CallFailure {
                 class: "assessment_timeout".into(),
-                message: "negative safety decision exceeded remaining case budget".into(),
+                message: "local qualification exceeded remaining case budget".into(),
                 used_json_fallback: false,
                 model_calls: 1,
                 provider_attempts: 0,
@@ -1205,6 +1050,7 @@ async fn call_model_for_negative_safety_decision(
             });
         }
     };
+
     match primary {
         Ok(response) => {
             let mut usage = UsageSummary::default();
@@ -1212,9 +1058,9 @@ async fn call_model_for_negative_safety_decision(
             let attempts = response.provider_attempts;
             let model = Some(response.model.clone());
             let finish = response.finish_reason.clone();
-            match parse_evidence_negative_safety_decision(&response.text) {
-                Ok(proposal) => Ok(NegativeSafetyCallOutcome {
-                    decision: proposal.decision,
+            match parse_evidence_local_qualification(&response.text) {
+                Ok(qualification) => Ok(QualificationCallOutcome {
+                    qualification,
                     used_json_fallback: false,
                     model_calls: 1,
                     provider_attempts: attempts,
@@ -1223,7 +1069,7 @@ async fn call_model_for_negative_safety_decision(
                     finish_reason: finish,
                 }),
                 Err(error) => {
-                    call_negative_safety_fallback(
+                    call_local_qualification_fallback(
                         adapter,
                         &request,
                         deadline,
@@ -1232,9 +1078,7 @@ async fn call_model_for_negative_safety_decision(
                         usage,
                         model,
                         finish,
-                        format!(
-                            "primary structured negative safety decision parse failed: {error}"
-                        ),
+                        format!("primary structured local qualification parse failed: {error}"),
                     )
                     .await
                 }
@@ -1242,7 +1086,7 @@ async fn call_model_for_negative_safety_decision(
         }
         Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => {
             let attempts = error.provider_attempts;
-            call_negative_safety_fallback(
+            call_local_qualification_fallback(
                 adapter,
                 &request,
                 deadline,
@@ -1251,7 +1095,7 @@ async fn call_model_for_negative_safety_decision(
                 UsageSummary::default(),
                 None,
                 None,
-                "primary negative safety JSON-Schema capability unsupported".into(),
+                "primary local qualification JSON-Schema capability unsupported".into(),
             )
             .await
         }
@@ -1271,7 +1115,7 @@ async fn call_model_for_negative_safety_decision(
 }
 
 #[allow(clippy::too_many_arguments)]
-async fn call_negative_safety_fallback(
+async fn call_local_qualification_fallback(
     adapter: &dyn ModelAdapter,
     request: &ModelRequest,
     deadline: tokio::time::Instant,
@@ -1281,8 +1125,8 @@ async fn call_negative_safety_fallback(
     prior_model: Option<String>,
     prior_finish_reason: Option<String>,
     primary_context: String,
-) -> Result<NegativeSafetyCallOutcome, CallFailure> {
-    if prior_model_calls >= CONFIRMATION_STAGE_MAX_MODEL_CALLS {
+) -> Result<QualificationCallOutcome, CallFailure> {
+    if prior_model_calls >= QUALIFICATION_STAGE_MAX_MODEL_CALLS {
         return Err(CallFailure {
             class: "attempt_budget".into(),
             message: format!(
@@ -1297,6 +1141,7 @@ async fn call_negative_safety_fallback(
             finish_reason: prior_finish_reason,
         });
     }
+
     let Some(fallback) = build_json_object_fallback_request(request) else {
         return Err(CallFailure {
             class: "protocol".into(),
@@ -1310,6 +1155,7 @@ async fn call_negative_safety_fallback(
             finish_reason: prior_finish_reason,
         });
     };
+
     let model_calls = prior_model_calls + 1;
     let result = tokio::time::timeout_at(deadline, adapter.generate(fallback)).await;
     let result = match result {
@@ -1330,15 +1176,16 @@ async fn call_negative_safety_fallback(
             });
         }
     };
+
     match result {
         Ok(response) => {
             let attempts = prior_provider_attempts.saturating_add(response.provider_attempts);
             usage.add(&response.usage);
             let model = Some(response.model.clone());
             let finish = response.finish_reason.clone();
-            match parse_evidence_negative_safety_decision(&response.text) {
-                Ok(proposal) => Ok(NegativeSafetyCallOutcome {
-                    decision: proposal.decision,
+            match parse_evidence_local_qualification(&response.text) {
+                Ok(qualification) => Ok(QualificationCallOutcome {
+                    qualification,
                     used_json_fallback: true,
                     model_calls,
                     provider_attempts: attempts,
@@ -1349,216 +1196,7 @@ async fn call_negative_safety_fallback(
                 Err(error) => Err(CallFailure {
                     class: "protocol".into(),
                     message: format!(
-                        "{primary_context}; JSON-object fallback negative safety decision parse failed: {error}"
-                    ),
-                    used_json_fallback: true,
-                    model_calls,
-                    provider_attempts: attempts,
-                    provider_attempts_complete: true,
-                    usage,
-                    provider_model: model,
-                    finish_reason: finish,
-                }),
-            }
-        }
-        Err(error) => {
-            let attempts = prior_provider_attempts.saturating_add(error.provider_attempts);
-            let mut failure = model_failure(
-                error,
-                true,
-                model_calls,
-                attempts,
-                usage,
-                prior_model,
-                prior_finish_reason,
-            );
-            failure.message = format!("{primary_context}; fallback failed: {}", failure.message);
-            Err(failure)
-        }
-    }
-}
-
-async fn call_model_for_positive_safety_decision(
-    adapter: &dyn ModelAdapter,
-    request: ModelRequest,
-    max_elapsed: Duration,
-) -> Result<PositiveSafetyCallOutcome, CallFailure> {
-    let deadline = tokio::time::Instant::now() + max_elapsed;
-    if CONFIRMATION_STAGE_MAX_MODEL_CALLS == 0 {
-        return Err(CallFailure {
-            class: "attempt_budget".into(),
-            message: "positive safety-decision model-call budget is zero".into(),
-            used_json_fallback: false,
-            model_calls: 0,
-            provider_attempts: 0,
-            provider_attempts_complete: true,
-            usage: UsageSummary::default(),
-            provider_model: None,
-            finish_reason: None,
-        });
-    }
-    let primary = tokio::time::timeout_at(deadline, adapter.generate(request.clone())).await;
-    let primary = match primary {
-        Ok(result) => result,
-        Err(_) => {
-            return Err(CallFailure {
-                class: "assessment_timeout".into(),
-                message: "positive safety decision exceeded remaining case budget".into(),
-                used_json_fallback: false,
-                model_calls: 1,
-                provider_attempts: 0,
-                provider_attempts_complete: false,
-                usage: UsageSummary::default(),
-                provider_model: None,
-                finish_reason: None,
-            });
-        }
-    };
-    match primary {
-        Ok(response) => {
-            let mut usage = UsageSummary::default();
-            usage.add(&response.usage);
-            let attempts = response.provider_attempts;
-            let model = Some(response.model.clone());
-            let finish = response.finish_reason.clone();
-            match parse_evidence_positive_safety_decision(&response.text) {
-                Ok(proposal) => Ok(PositiveSafetyCallOutcome {
-                    decision: proposal.decision,
-                    used_json_fallback: false,
-                    model_calls: 1,
-                    provider_attempts: attempts,
-                    usage,
-                    provider_model: model,
-                    finish_reason: finish,
-                }),
-                Err(error) => {
-                    call_positive_safety_fallback(
-                        adapter,
-                        &request,
-                        deadline,
-                        1,
-                        attempts,
-                        usage,
-                        model,
-                        finish,
-                        format!(
-                            "primary structured positive safety decision parse failed: {error}"
-                        ),
-                    )
-                    .await
-                }
-            }
-        }
-        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => {
-            let attempts = error.provider_attempts;
-            call_positive_safety_fallback(
-                adapter,
-                &request,
-                deadline,
-                1,
-                attempts,
-                UsageSummary::default(),
-                None,
-                None,
-                "primary positive safety JSON-Schema capability unsupported".into(),
-            )
-            .await
-        }
-        Err(error) => {
-            let attempts = error.provider_attempts;
-            Err(model_failure(
-                error,
-                false,
-                1,
-                attempts,
-                UsageSummary::default(),
-                None,
-                None,
-            ))
-        }
-    }
-}
-
-#[allow(clippy::too_many_arguments)]
-async fn call_positive_safety_fallback(
-    adapter: &dyn ModelAdapter,
-    request: &ModelRequest,
-    deadline: tokio::time::Instant,
-    prior_model_calls: u32,
-    prior_provider_attempts: u32,
-    mut usage: UsageSummary,
-    prior_model: Option<String>,
-    prior_finish_reason: Option<String>,
-    primary_context: String,
-) -> Result<PositiveSafetyCallOutcome, CallFailure> {
-    if prior_model_calls >= CONFIRMATION_STAGE_MAX_MODEL_CALLS {
-        return Err(CallFailure {
-            class: "attempt_budget".into(),
-            message: format!(
-                "{primary_context}; JSON-object fallback blocked by model-call budget"
-            ),
-            used_json_fallback: false,
-            model_calls: prior_model_calls,
-            provider_attempts: prior_provider_attempts,
-            provider_attempts_complete: true,
-            usage,
-            provider_model: prior_model,
-            finish_reason: prior_finish_reason,
-        });
-    }
-    let Some(fallback) = build_json_object_fallback_request(request) else {
-        return Err(CallFailure {
-            class: "protocol".into(),
-            message: format!("{primary_context}; structured fallback unavailable"),
-            used_json_fallback: false,
-            model_calls: prior_model_calls,
-            provider_attempts: prior_provider_attempts,
-            provider_attempts_complete: true,
-            usage,
-            provider_model: prior_model,
-            finish_reason: prior_finish_reason,
-        });
-    };
-    let model_calls = prior_model_calls + 1;
-    let result = tokio::time::timeout_at(deadline, adapter.generate(fallback)).await;
-    let result = match result {
-        Ok(result) => result,
-        Err(_) => {
-            return Err(CallFailure {
-                class: "assessment_timeout".into(),
-                message: format!(
-                    "{primary_context}; JSON-object fallback exceeded remaining case budget"
-                ),
-                used_json_fallback: true,
-                model_calls,
-                provider_attempts: prior_provider_attempts,
-                provider_attempts_complete: false,
-                usage,
-                provider_model: prior_model,
-                finish_reason: prior_finish_reason,
-            });
-        }
-    };
-    match result {
-        Ok(response) => {
-            let attempts = prior_provider_attempts.saturating_add(response.provider_attempts);
-            usage.add(&response.usage);
-            let model = Some(response.model.clone());
-            let finish = response.finish_reason.clone();
-            match parse_evidence_positive_safety_decision(&response.text) {
-                Ok(proposal) => Ok(PositiveSafetyCallOutcome {
-                    decision: proposal.decision,
-                    used_json_fallback: true,
-                    model_calls,
-                    provider_attempts: attempts,
-                    usage,
-                    provider_model: model,
-                    finish_reason: finish,
-                }),
-                Err(error) => Err(CallFailure {
-                    class: "protocol".into(),
-                    message: format!(
-                        "{primary_context}; JSON-object fallback positive safety decision parse failed: {error}"
+                        "{primary_context}; JSON-object fallback local qualification parse failed: {error}"
                     ),
                     used_json_fallback: true,
                     model_calls,
@@ -1809,47 +1447,38 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         .iter()
         .filter(|case| case.disposition_match == Some(true))
         .count();
-    let negative_safety_decision_expected_cases = observations
+    let local_qualification_expected_cases = observations.len();
+    let local_qualification_invocations = observations
         .iter()
-        .filter(|case| case.expected_negative_safety_decision.is_some())
+        .filter(|case| case.local_qualification_invoked)
         .count();
-    let negative_safety_decision_invocations = observations
+    let local_qualification_exact_matches = observations
         .iter()
-        .filter(|case| case.negative_safety_decision_invoked)
+        .filter(|case| case.local_qualification_match == Some(true))
         .count();
-    let negative_safety_decision_exact_matches = observations
-        .iter()
-        .filter(|case| case.negative_safety_decision_match == Some(true))
-        .count();
-    let positive_safety_decision_expected_cases = observations
-        .iter()
-        .filter(|case| case.expected_positive_safety_decision.is_some())
-        .count();
-    let positive_safety_decision_invocations = observations
-        .iter()
-        .filter(|case| case.positive_safety_decision_invoked)
-        .count();
-    let positive_safety_decision_exact_matches = observations
-        .iter()
-        .filter(|case| case.positive_safety_decision_match == Some(true))
-        .count();
-    let unsafe_negative_rejections = observations
+    let has_risk = |qualification: &EvidenceLocalQualification| {
+        qualification.identity_mapping_risk != EvidenceQualificationRisk::Absent
+            || qualification.ownership_scope_risk != EvidenceQualificationRisk::Absent
+            || qualification.context_completeness_risk != EvidenceQualificationRisk::Absent
+    };
+    let qualification_risk_misses = observations
         .iter()
         .filter(|case| {
-            let observed_safe = case.observed_negative_safety_decision
-                == Some(EvidenceNegativeSafetyDecision::SafeToReject);
-            let expected_safe = case.expected_negative_safety_decision
-                == Some(EvidenceNegativeSafetyDecision::SafeToReject);
-            observed_safe && !expected_safe
+            has_risk(&case.expected_local_qualification)
+                && case
+                    .observed_local_qualification
+                    .as_ref()
+                    .is_some_and(|observed| !has_risk(observed))
         })
         .count();
-    let unsafe_positive_acceptances = observations
+    let qualification_spurious_risk_blocks = observations
         .iter()
         .filter(|case| {
-            case.observed_positive_safety_decision
-                == Some(EvidencePositiveSafetyDecision::SafeToAccept)
-                && case.expected_positive_safety_decision
-                    != Some(EvidencePositiveSafetyDecision::SafeToAccept)
+            !has_risk(&case.expected_local_qualification)
+                && case
+                    .observed_local_qualification
+                    .as_ref()
+                    .is_some_and(has_risk)
         })
         .count();
     let correctness_wrong_target_relevance_retention = observations
@@ -1889,9 +1518,9 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
             case.materialized_disposition == Some(EvidenceRelevanceDisposition::Ambiguous)
         })
         .count();
-    let deterministic_safety_overrides = observations
+    let deterministic_guard_overrides = observations
         .iter()
-        .filter(|case| case.deterministic_safety_override)
+        .filter(|case| case.deterministic_guard_override)
         .count();
     let lexical_exact_matches = observations
         .iter()
@@ -1969,22 +1598,15 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         failed_provider_cases: failed,
         proposal_exact_matches,
         proposal_exact_accuracy: accuracy(proposal_exact_matches, successful),
-        negative_safety_decision_expected_cases,
-        negative_safety_decision_invocations,
-        negative_safety_decision_exact_matches,
-        negative_safety_decision_exact_accuracy: accuracy(
-            negative_safety_decision_exact_matches,
-            negative_safety_decision_expected_cases,
+        local_qualification_expected_cases,
+        local_qualification_invocations,
+        local_qualification_exact_matches,
+        local_qualification_exact_accuracy: accuracy(
+            local_qualification_exact_matches,
+            local_qualification_expected_cases,
         ),
-        positive_safety_decision_expected_cases,
-        positive_safety_decision_invocations,
-        positive_safety_decision_exact_matches,
-        positive_safety_decision_exact_accuracy: accuracy(
-            positive_safety_decision_exact_matches,
-            positive_safety_decision_expected_cases,
-        ),
-        unsafe_negative_rejections,
-        unsafe_positive_acceptances,
+        qualification_risk_misses,
+        qualification_spurious_risk_blocks,
         materialized_exact_matches,
         materialized_exact_accuracy: accuracy(materialized_exact_matches, successful),
         correctness_wrong_target_relevance_retention,
@@ -1992,7 +1614,7 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         relevant_left_ambiguous,
         utility_misses,
         ambiguous_dispositions,
-        deterministic_safety_overrides,
+        deterministic_guard_overrides,
         lexical_exact_matches,
         lexical_exact_accuracy: accuracy(lexical_exact_matches, observations.len()),
         lexical_wrong_target_relevance_retention,
@@ -2022,16 +1644,12 @@ fn empty_metrics(cases: usize) -> CalibrationMetrics {
         failed_provider_cases: 0,
         proposal_exact_matches: 0,
         proposal_exact_accuracy: None,
-        negative_safety_decision_expected_cases: 0,
-        negative_safety_decision_invocations: 0,
-        negative_safety_decision_exact_matches: 0,
-        negative_safety_decision_exact_accuracy: None,
-        positive_safety_decision_expected_cases: 0,
-        positive_safety_decision_invocations: 0,
-        positive_safety_decision_exact_matches: 0,
-        positive_safety_decision_exact_accuracy: None,
-        unsafe_negative_rejections: 0,
-        unsafe_positive_acceptances: 0,
+        local_qualification_expected_cases: 0,
+        local_qualification_invocations: 0,
+        local_qualification_exact_matches: 0,
+        local_qualification_exact_accuracy: None,
+        qualification_risk_misses: 0,
+        qualification_spurious_risk_blocks: 0,
         materialized_exact_matches: 0,
         materialized_exact_accuracy: None,
         correctness_wrong_target_relevance_retention: 0,
@@ -2039,7 +1657,7 @@ fn empty_metrics(cases: usize) -> CalibrationMetrics {
         relevant_left_ambiguous: 0,
         utility_misses: 0,
         ambiguous_dispositions: 0,
-        deterministic_safety_overrides: 0,
+        deterministic_guard_overrides: 0,
         lexical_exact_matches: 0,
         lexical_exact_accuracy: None,
         lexical_wrong_target_relevance_retention: 0,
@@ -2131,6 +1749,9 @@ fn git_head() -> Result<String, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use reasoning_harness_core::{
+        EvidenceExplicitLocalAbsence, EvidenceLocalSupport, EvidenceRelevanceBinding,
+    };
 
     fn load() -> CalibrationManifest {
         let path = repository_root()
@@ -2164,17 +1785,16 @@ mod tests {
     }
 
     #[test]
-    fn expected_proposals_materialize_all_v10_cases() {
+    fn expected_primary_and_qualification_materialize_all_v11_cases() {
         let manifest = load();
         assert_eq!(manifest.cases.len(), EXPECTED_CASES);
         for case in manifest.cases {
             let proposal = case.expected_proposal;
-            let assessment = materialize_evidence_relevance_v6(
+            let assessment = materialize_evidence_relevance_v7(
                 &case.policy,
                 &case.candidate,
                 Some(&proposal),
-                case.expected_negative_safety_decision,
-                case.expected_positive_safety_decision,
+                Some(&case.expected_local_qualification),
             )
             .unwrap();
             assert_eq!(
@@ -2310,47 +1930,48 @@ mod tests {
         assert_eq!(percentile_latency(&[], 95), None);
     }
 
-    fn negative_safety_decision_request() -> ModelRequest {
+    fn local_qualification_request() -> ModelRequest {
         let manifest = load();
-        let case = manifest
-            .cases
-            .iter()
-            .find(|case| case.expected_negative_safety_decision.is_some())
-            .expect("negative target case");
-        build_evidence_negative_safety_decision_request(&case.policy, &case.candidate, Some(463))
-            .expect("negative confirmation request")
+        let case = &manifest.cases[0];
+        build_evidence_local_qualification_request(&case.policy, &case.candidate, Some(463))
+            .expect("local qualification request")
+    }
+
+    fn qualification_json() -> &'static str {
+        r#"{"target_support":"supported","relation_support":"supported","identity_mapping_risk":"absent","ownership_scope_risk":"absent","context_completeness_risk":"absent","explicit_local_absence":"absent"}"#
     }
 
     #[test]
-    fn safety_decision_requests_use_bounded_json_schema_transport() {
-        let negative = negative_safety_decision_request();
-        let positive = positive_safety_decision_request();
+    fn local_qualification_request_uses_bounded_json_schema_transport() {
+        let request = local_qualification_request();
         assert!(matches!(
-            negative.output_format,
+            request.output_format,
             reasoning_harness_core::ModelOutputFormat::JsonSchema { .. }
         ));
-        assert!(matches!(
-            positive.output_format,
-            reasoning_harness_core::ModelOutputFormat::JsonSchema { .. }
-        ));
-        assert_eq!(negative.max_tokens, Some(192));
-        assert_eq!(positive.max_tokens, Some(192));
+        assert_eq!(request.max_tokens, Some(192));
     }
 
     #[tokio::test]
-    async fn negative_safety_decision_parser_returns_typed_state() {
-        let adapter =
-            SequenceAdapter::new(vec![model_response(r#"{"decision":"safe_to_reject"}"#)], 0);
-        let result = call_model_for_negative_safety_decision(
+    async fn local_qualification_parser_returns_typed_state() {
+        let adapter = SequenceAdapter::new(vec![model_response(qualification_json())], 0);
+        let result = call_model_for_local_qualification(
             &adapter,
-            negative_safety_decision_request(),
+            local_qualification_request(),
             Duration::from_secs(1),
         )
         .await
-        .expect("negative safety result");
+        .expect("qualification result");
         assert_eq!(
-            result.decision,
-            EvidenceNegativeSafetyDecision::SafeToReject
+            result.qualification.target_support,
+            EvidenceLocalSupport::Supported
+        );
+        assert_eq!(
+            result.qualification.relation_support,
+            EvidenceLocalSupport::Supported
+        );
+        assert_eq!(
+            result.qualification.explicit_local_absence,
+            EvidenceExplicitLocalAbsence::Absent
         );
         assert_eq!(result.model_calls, 1);
         assert_eq!(result.provider_attempts, 1);
@@ -2358,33 +1979,32 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn negative_safety_decision_uses_one_transport_fallback_on_malformed_primary() {
+    async fn local_qualification_uses_one_transport_fallback_on_malformed_primary() {
         let adapter = SequenceAdapter::new(
             vec![
                 model_response("not json"),
-                model_response(r#"{"decision":"abstain"}"#),
+                model_response(qualification_json()),
             ],
             0,
         );
-        let result = call_model_for_negative_safety_decision(
+        let result = call_model_for_local_qualification(
             &adapter,
-            negative_safety_decision_request(),
+            local_qualification_request(),
             Duration::from_secs(1),
         )
         .await
-        .expect("negative safety fallback result");
-        assert_eq!(result.decision, EvidenceNegativeSafetyDecision::Abstain);
+        .expect("qualification fallback result");
         assert_eq!(result.model_calls, 2);
         assert_eq!(result.provider_attempts, 2);
         assert!(result.used_json_fallback);
     }
 
     #[tokio::test]
-    async fn negative_safety_decision_timeout_is_operational_failure() {
-        let adapter = SequenceAdapter::new(vec![model_response(r#"{"decision":"abstain"}"#)], 50);
-        let failure = call_model_for_negative_safety_decision(
+    async fn local_qualification_timeout_is_operational_failure() {
+        let adapter = SequenceAdapter::new(vec![model_response(qualification_json())], 50);
+        let failure = call_model_for_local_qualification(
             &adapter,
-            negative_safety_decision_request(),
+            local_qualification_request(),
             Duration::from_millis(5),
         )
         .await
@@ -2393,46 +2013,39 @@ mod tests {
         assert!(!failure.provider_attempts_complete);
     }
 
-    fn positive_safety_decision_request() -> ModelRequest {
-        let manifest = load();
-        let case = manifest
-            .cases
-            .iter()
-            .find(|case| case.expected_positive_safety_decision.is_some())
-            .expect("positive target case");
-        build_evidence_positive_safety_decision_request(&case.policy, &case.candidate, Some(464))
-            .expect("positive safety request")
-    }
-
     #[tokio::test]
-    async fn positive_safety_decision_parser_returns_typed_state() {
-        let adapter =
-            SequenceAdapter::new(vec![model_response(r#"{"decision":"safe_to_accept"}"#)], 0);
-        let result = call_model_for_positive_safety_decision(
+    async fn local_qualification_unsupported_schema_uses_bounded_json_object_fallback() {
+        let adapter = SequenceAdapter::new(
+            vec![
+                Err(ModelError::new(
+                    ModelErrorKind::UnsupportedCapability,
+                    "schema unsupported",
+                )),
+                model_response(qualification_json()),
+            ],
+            0,
+        );
+        let result = call_model_for_local_qualification(
             &adapter,
-            positive_safety_decision_request(),
+            local_qualification_request(),
             Duration::from_secs(1),
         )
         .await
-        .expect("positive safety result");
-        assert_eq!(
-            result.decision,
-            EvidencePositiveSafetyDecision::SafeToAccept
-        );
-        assert_eq!(result.model_calls, 1);
-        assert_eq!(result.provider_attempts, 1);
-        assert!(!result.used_json_fallback);
+        .expect("qualification fallback result");
+        assert_eq!(result.model_calls, 2);
+        assert_eq!(result.provider_attempts, 2);
+        assert!(result.used_json_fallback);
     }
 
     #[tokio::test]
-    async fn positive_safety_malformed_primary_and_fallback_fail_closed_without_third_call() {
+    async fn local_qualification_malformed_primary_and_fallback_fail_closed_without_third_call() {
         let adapter = SequenceAdapter::new(
             vec![model_response("not json"), model_response("still not json")],
             0,
         );
-        let failure = call_model_for_positive_safety_decision(
+        let failure = call_model_for_local_qualification(
             &adapter,
-            positive_safety_decision_request(),
+            local_qualification_request(),
             Duration::from_secs(1),
         )
         .await
@@ -2444,31 +2057,45 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn positive_safety_unsupported_schema_uses_bounded_json_object_fallback() {
-        let adapter = SequenceAdapter::new(
-            vec![
-                Err(ModelError::new(
-                    ModelErrorKind::UnsupportedCapability,
-                    "schema unsupported",
-                )),
-                model_response(r#"{"decision":"safe_to_accept"}"#),
-            ],
-            0,
-        );
-        let result = call_model_for_positive_safety_decision(
+    async fn local_qualification_runs_even_when_primary_relation_is_different() {
+        let manifest = load();
+        let case = manifest
+            .cases
+            .iter()
+            .find(|case| case.expected_disposition == EvidenceRelevanceDisposition::Relevant)
+            .expect("positive case");
+        let adapter = SequenceAdapter::new(vec![model_response(qualification_json())], 0);
+        let call = CallOutcome {
+            proposal: EvidenceRelevanceBindingProposal {
+                target_binding: EvidenceRelevanceBinding::Exact,
+                relation_binding: EvidenceRelevanceBinding::Different,
+            },
+            used_json_fallback: false,
+            model_calls: 1,
+            provider_attempts: 1,
+            usage: UsageSummary::default(),
+            provider_model: Some("fixture-model".into()),
+            finish_reason: Some("stop".into()),
+        };
+        let observation = complete_observed_case(
             &adapter,
-            positive_safety_decision_request(),
-            Duration::from_secs(1),
+            case,
+            Some(462),
+            EvidenceRelevanceDisposition::Ambiguous,
+            Instant::now(),
+            call,
         )
         .await
-        .expect("positive safety fallback result");
+        .expect("observation");
+        assert!(observation.local_qualification_invoked);
         assert_eq!(
-            result.decision,
-            EvidencePositiveSafetyDecision::SafeToAccept
+            observation.materialized_disposition,
+            Some(EvidenceRelevanceDisposition::Ambiguous)
         );
-        assert_eq!(result.model_calls, 2);
-        assert_eq!(result.provider_attempts, 2);
-        assert!(result.used_json_fallback);
+        assert_ne!(
+            observation.materialized_disposition,
+            Some(EvidenceRelevanceDisposition::Irrelevant)
+        );
     }
 
     #[tokio::test]
