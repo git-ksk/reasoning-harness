@@ -377,3 +377,7 @@ native runtime、artifact、resolution、finalization contracts が成熟する�
 ## 実装上の制約
 
 すべての first-party component は Rust-only のままである。将来の デスクトップアプリケーション は、JavaScript runtime を必要としない Rust対応のnative UI stack を使用しなければならない。将来の resolver adapter、MCP adapter、embedding API はいずれも、競合する reasoning loop を所有するのではなく、同じ core authority boundary を保持しなければならない。
+
+### Engine 0.6 #462 v9 successor追記
+
+frozen v8 run `36090688415` はimmutable FAILとして維持する。v8のmissから、negative confirmationは `different` と `unresolved` の両target proposalを対象にし、`exact/exact` から `relevant` へ上げる全経路に独立positive target-local confirmationを要求する。calibration v9はmaterialization v5、fuzzy/JSON repairなしのstrict enum-only Text confirmation、従来の共有60秒case deadline内で最大1回のbounded confirmation、47 case（32 regression + 独立authorしたfresh identity/ownership 15 case）を採用する。Mistral + Groqをrequired、Googleをfull non-gating replicationとして維持する。confirmation subtype accuracyはdiagnosticとし、final materialized dispositionとfalse safe/positive confirmationをgateする。first/only frozen v9 canonical observationがPASSするまでindependent holdoutはauthorしない。

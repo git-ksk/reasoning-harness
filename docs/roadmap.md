@@ -377,3 +377,7 @@ See [ADR-0001](adr/0001-interface-and-packaging-boundaries.md).
 ## Implementation constraint
 
 All first-party components remain Rust-only. A future desktop application must use a Rust-capable native UI stack without requiring a JavaScript application runtime. Any future resolver adapter, MCP adapter, or embedding API must preserve the same core authority boundary rather than owning a competing reasoning loop.
+
+### Engine 0.6 #462 v9 successor note
+
+Frozen v8 run `36090688415` remains immutable FAIL. Its misses established two successor requirements: negative confirmation must cover both `different` and `unresolved` target proposals, and every `exact/exact` path to `relevant` must pass an independent positive target-local confirmation. Calibration v9 uses materialization v5, strict enum-only Text confirmation with no fuzzy/JSON repair, one bounded confirmation call inside the unchanged shared 60-second case deadline, and 47 cases (32 regression plus 15 independently authored fresh identity/ownership cases). Mistral + Groq remain required and Google remains full non-gating replication. Confirmation subtype accuracy is diagnostic; final materialized disposition and false safe/positive confirmation counts are gated. Independent holdout authoring remains blocked until the first/only frozen v9 canonical observation passes.
