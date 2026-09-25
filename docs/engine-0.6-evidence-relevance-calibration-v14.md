@@ -94,11 +94,12 @@ Harness final authority remains fail-closed.
 
 Ambiguous:
 - any non-`none` blocking reason;
-- CanonicalUrl-only identity floor;
+- CanonicalUrl-only identity floor when policy requires a Harness-owned anchor; semantic-equivalent policy is not blocked solely by an incidental URL identity string;
 - missing primary proposal;
 - missing compact guard;
 - strict required identity anchor missing on an otherwise positive exact/exact proposal;
-- remaining unresolved binding without explicit local absence.
+- remaining unresolved binding without explicit local absence;
+- any exact/exact proposal that conflicts with explicit local absence `present`.
 
 Relevant:
 - primary exact/exact;
@@ -108,7 +109,7 @@ Relevant:
 Irrelevant:
 - primary target `different` and blocker `none`; or
 - primary target `exact` + relation `different` and blocker `none`; or
-- primary target non-exact + explicit local absence `present` + blocker `none`.
+- any non-positive binding (anything other than exact/exact) + explicit local absence `present` + blocker `none`.
 
 No model field can override the Harness-owned strict identity floor.
 

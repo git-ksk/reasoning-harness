@@ -92,11 +92,12 @@ Harness final authorityはfail-closedのまま。
 
 Ambiguous:
 - blocking reasonが`none`以外
-- CanonicalUrl-only identity floor
+- policyがHarness-owned anchorを要求する場合のCanonicalUrl-only identity floor。semantic-equivalent policyでは incidental なURL identity stringだけを理由にblockしない
 - missing primary proposal
 - missing compact guard
 - strict required identity anchorがないpositive exact/exact
 - explicit local absenceなしでbindingがunresolved
+- exact/exact proposal と explicit local absence `present` が矛盾する場合
 
 Relevant:
 - primary exact/exact
@@ -106,7 +107,7 @@ Relevant:
 Irrelevant:
 - primary target `different` + blocker `none`
 - primary exact target + relation `different` + blocker `none`
-- primary target non-exact + explicit local absence `present` + blocker `none`
+- exact/exact以外のnon-positive binding + explicit local absence `present` + blocker `none`
 
 model fieldがHarness-owned strict identity floorを上書きすることはない。
 

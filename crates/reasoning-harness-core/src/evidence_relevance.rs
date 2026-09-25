@@ -1488,7 +1488,10 @@ pub fn materialize_evidence_relevance_v9(
         == EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor
         && !has_harness_anchor;
     let blocking_reason = qualification.blocking_reason != BlockingReason::None;
-    let url_only_hard_floor = url_only_anchor && !has_harness_anchor;
+    let url_only_hard_floor = url_only_anchor
+        && !has_harness_anchor
+        && policy.identity_requirement
+            == EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor;
 
     if blocking_reason {
         reasons.push(EvidenceRelevanceReason::LocalQualificationBlockingCuePresent);
@@ -1497,45 +1500,52 @@ pub fn materialize_evidence_relevance_v9(
         reasons.push(EvidenceRelevanceReason::UrlOnlyIdentityHardFloor);
     }
 
-    let disposition = if blocking_reason || url_only_hard_floor {
-        EvidenceRelevanceDisposition::Ambiguous
-    } else if proposal.target_binding == Binding::Exact
+    let explicit_absence_positive_conflict = proposal.target_binding == Binding::Exact
         && proposal.relation_binding == Binding::Exact
-        && !strict_identity_block
-    {
-        if policy.identity_requirement
-            == EvidenceRelevanceIdentityRequirement::AllowSemanticEquivalent
-            && !has_harness_anchor
-        {
-            reasons.push(EvidenceRelevanceReason::SemanticEquivalentAllowedByPolicy);
-        }
-        reasons.push(EvidenceRelevanceReason::ModelRelevant);
-        EvidenceRelevanceDisposition::Relevant
-    } else if proposal.target_binding == Binding::Different
-        || (proposal.target_binding == Binding::Exact
-            && proposal.relation_binding == Binding::Different)
-    {
-        reasons.push(EvidenceRelevanceReason::ModelIrrelevant);
-        EvidenceRelevanceDisposition::Irrelevant
-    } else if proposal.target_binding != Binding::Exact
-        && qualification.explicit_local_absence == LocalAbsence::Present
-    {
-        reasons.push(EvidenceRelevanceReason::ExplicitLocalAbsenceConfirmed);
-        reasons.push(EvidenceRelevanceReason::ModelIrrelevant);
-        EvidenceRelevanceDisposition::Irrelevant
-    } else {
-        if strict_identity_block {
-            reasons.push(EvidenceRelevanceReason::RequiredIdentityAnchorMissing);
-            if proposal.target_binding == Binding::Exact
-                && proposal.relation_binding == Binding::Exact
-            {
-                reasons.push(EvidenceRelevanceReason::ModelRelevantBlockedByIdentity);
-            }
-        }
+        && qualification.explicit_local_absence == LocalAbsence::Present;
+
+    if explicit_absence_positive_conflict {
         reasons.push(EvidenceRelevanceReason::LocalQualificationDisagreement);
-        reasons.push(EvidenceRelevanceReason::ModelAmbiguous);
-        EvidenceRelevanceDisposition::Ambiguous
-    };
+    }
+
+    let disposition =
+        if blocking_reason || url_only_hard_floor || explicit_absence_positive_conflict {
+            EvidenceRelevanceDisposition::Ambiguous
+        } else if proposal.target_binding == Binding::Exact
+            && proposal.relation_binding == Binding::Exact
+            && !strict_identity_block
+        {
+            if policy.identity_requirement
+                == EvidenceRelevanceIdentityRequirement::AllowSemanticEquivalent
+                && !has_harness_anchor
+            {
+                reasons.push(EvidenceRelevanceReason::SemanticEquivalentAllowedByPolicy);
+            }
+            reasons.push(EvidenceRelevanceReason::ModelRelevant);
+            EvidenceRelevanceDisposition::Relevant
+        } else if proposal.target_binding == Binding::Different
+            || (proposal.target_binding == Binding::Exact
+                && proposal.relation_binding == Binding::Different)
+        {
+            reasons.push(EvidenceRelevanceReason::ModelIrrelevant);
+            EvidenceRelevanceDisposition::Irrelevant
+        } else if qualification.explicit_local_absence == LocalAbsence::Present {
+            reasons.push(EvidenceRelevanceReason::ExplicitLocalAbsenceConfirmed);
+            reasons.push(EvidenceRelevanceReason::ModelIrrelevant);
+            EvidenceRelevanceDisposition::Irrelevant
+        } else {
+            if strict_identity_block {
+                reasons.push(EvidenceRelevanceReason::RequiredIdentityAnchorMissing);
+                if proposal.target_binding == Binding::Exact
+                    && proposal.relation_binding == Binding::Exact
+                {
+                    reasons.push(EvidenceRelevanceReason::ModelRelevantBlockedByIdentity);
+                }
+            }
+            reasons.push(EvidenceRelevanceReason::LocalQualificationDisagreement);
+            reasons.push(EvidenceRelevanceReason::ModelAmbiguous);
+            EvidenceRelevanceDisposition::Ambiguous
+        };
 
     Ok(EvidenceRelevanceAssessment {
         contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_V4_CONTRACT_ID.into(),
@@ -3749,6 +3759,114 @@ mod tests {
         )
         .unwrap();
         assert_eq!(result.disposition, EvidenceRelevanceDisposition::Irrelevant);
+    }
+
+    #[test]
+    fn v9_exact_exact_conflicting_with_explicit_absence_fails_closed() {
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let qualification = EvidenceLocalQualificationV4 {
+            blocking_reason: EvidenceLocalBlockingReason::None,
+            explicit_local_absence: EvidenceExplicitLocalAbsence::Present,
+        };
+        let local = candidate(vec![(
+            EvidenceRelevanceSignalKind::SourceTitle,
+            "Amazon CloudWatch Omni availability",
+        )]);
+
+        let result = materialize_evidence_relevance_v9(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&qualification),
+        )
+        .unwrap();
+
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Ambiguous);
+        assert!(
+            result
+                .reasons
+                .contains(&EvidenceRelevanceReason::LocalQualificationDisagreement)
+        );
+    }
+
+    #[test]
+    fn v9_explicit_requested_relation_absence_can_reject_exact_target_unresolved_relation() {
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Unresolved,
+        };
+        let qualification = EvidenceLocalQualificationV4 {
+            blocking_reason: EvidenceLocalBlockingReason::None,
+            explicit_local_absence: EvidenceExplicitLocalAbsence::Present,
+        };
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Amazon CloudWatch Omni pricing",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "This local page contains no pricing information.",
+            ),
+        ]);
+
+        let result = materialize_evidence_relevance_v9(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&qualification),
+        )
+        .unwrap();
+
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Irrelevant);
+        assert!(
+            result
+                .reasons
+                .contains(&EvidenceRelevanceReason::ExplicitLocalAbsenceConfirmed)
+        );
+    }
+
+    #[test]
+    fn v9_semantic_equivalent_policy_is_not_blocked_by_incidental_url_only_anchor() {
+        let mut policy = strict_policy();
+        policy.identity_requirement = EvidenceRelevanceIdentityRequirement::AllowSemanticEquivalent;
+
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let qualification = EvidenceLocalQualificationV4 {
+            blocking_reason: EvidenceLocalBlockingReason::None,
+            explicit_local_absence: EvidenceExplicitLocalAbsence::Absent,
+        };
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::CanonicalUrl,
+                "https://docs.example.test/amazon-cloudwatch-omni/regions",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "The hosted observability workspace is available in West.",
+            ),
+        ]);
+
+        let result = materialize_evidence_relevance_v9(
+            &policy,
+            &local,
+            Some(&proposal),
+            Some(&qualification),
+        )
+        .unwrap();
+
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Relevant);
+        assert!(
+            result
+                .reasons
+                .contains(&EvidenceRelevanceReason::SemanticEquivalentAllowedByPolicy)
+        );
     }
 
     #[test]
