@@ -3,7 +3,7 @@
   "issue": 462,
   "status": "fresh_unobserved_calibration",
   "source_rule": "fixed_core_v1_semantic_coverage_compaction_no_case_growth",
-  "annotation_protocol_id": "evidence-relevance-atomic-annotation-v13",
+  "annotation_protocol_id": "evidence-relevance-compact-guard-v14",
   "fixed_core_id": "evidence-relevance-fixed-core-v1",
   "cases": [
     {
@@ -47,11 +47,7 @@
       },
       "expected_disposition": "relevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -98,11 +94,7 @@
       },
       "expected_disposition": "relevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -143,11 +135,7 @@
       },
       "expected_disposition": "relevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -192,11 +180,7 @@
       },
       "expected_disposition": "relevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -245,11 +229,7 @@
       },
       "expected_disposition": "relevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -296,11 +276,7 @@
       },
       "expected_disposition": "relevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -345,11 +321,7 @@
       },
       "expected_disposition": "relevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -394,11 +366,7 @@
       },
       "expected_disposition": "relevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -447,11 +415,7 @@
       },
       "expected_disposition": "relevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -496,11 +460,7 @@
       },
       "expected_disposition": "relevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -544,11 +504,7 @@
         "relation_binding": "exact"
       },
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       },
       "expected_disposition": "relevant"
@@ -595,11 +551,7 @@
         "relation_binding": "exact"
       },
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       },
       "expected_disposition": "relevant"
@@ -644,11 +596,7 @@
         "relation_binding": "exact"
       },
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       },
       "expected_disposition": "relevant"
@@ -693,11 +641,7 @@
         "relation_binding": "exact"
       },
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       },
       "expected_disposition": "relevant"
@@ -743,11 +687,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "not_supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -792,11 +732,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -841,11 +777,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -890,11 +822,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "unresolved",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -939,11 +867,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -988,11 +912,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -1037,11 +957,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "not_supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -1082,11 +998,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "unresolved",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "present"
       }
     },
@@ -1131,11 +1043,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -1180,11 +1088,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "unresolved",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "present"
       }
     },
@@ -1225,11 +1129,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "unresolved",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "present"
       }
     },
@@ -1274,11 +1174,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -1323,11 +1219,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -1372,11 +1264,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "unresolved",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "present"
       }
     },
@@ -1421,11 +1309,7 @@
       },
       "expected_disposition": "irrelevant",
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       }
     },
@@ -1469,11 +1353,7 @@
         "relation_binding": "exact"
       },
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       },
       "expected_disposition": "irrelevant"
@@ -1518,11 +1398,7 @@
         "relation_binding": "different"
       },
       "expected_local_qualification": {
-        "target_support": "not_supported",
-        "relation_support": "not_supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       },
       "expected_disposition": "irrelevant"
@@ -1567,11 +1443,7 @@
         "relation_binding": "different"
       },
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "not_supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "none",
         "explicit_local_absence": "absent"
       },
       "expected_disposition": "irrelevant"
@@ -1619,11 +1491,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "present",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "identity_mapping",
         "explicit_local_absence": "absent"
       }
     },
@@ -1668,11 +1536,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "present",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "present",
+        "blocking_reason": "multiple",
         "explicit_local_absence": "absent"
       }
     },
@@ -1717,11 +1581,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "present",
-        "context_gap_cue": "present",
+        "blocking_reason": "multiple",
         "explicit_local_absence": "absent"
       }
     },
@@ -1770,11 +1630,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "present",
-        "context_gap_cue": "present",
+        "blocking_reason": "multiple",
         "explicit_local_absence": "absent"
       }
     },
@@ -1819,11 +1675,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "unresolved",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "present",
+        "blocking_reason": "context_gap",
         "explicit_local_absence": "absent"
       }
     },
@@ -1868,11 +1720,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "present",
+        "blocking_reason": "context_gap",
         "explicit_local_absence": "absent"
       }
     },
@@ -1917,11 +1765,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "present",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "identity_mapping",
         "explicit_local_absence": "absent"
       }
     },
@@ -1966,28 +1810,24 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "present",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "identity_mapping",
         "explicit_local_absence": "absent"
       }
     },
     {
-      "id": "35_shared_table_owner_ambiguous",
-      "family": "fresh_shared_table_ownership",
-      "task": "What is the Lumen Cache price in Zone A?",
+      "id": "79_v13_shared_row_same_relation",
+      "family": "v13_fresh_ownership_scope_cue",
+      "task": "Check Ember Store limit.",
       "policy": {
-        "policy_id": "relevance-policy:v9-shared_table_owner_ambiguous",
-        "target_id": "v9-shared_table_owner_ambiguous",
-        "target_question": "What is the Lumen Cache price in Zone A?",
+        "policy_id": "relevance-policy:v13-ember-store-shared-row",
+        "target_id": "v13-ember-store-shared-row",
+        "target_question": "What limit applies to Ember Store?",
         "entity": {
-          "canonical_id": "entity:v9-shared_table_owner_ambiguous",
-          "canonical_name": "Lumen Cache",
+          "canonical_id": "entity:v13-ember-store-shared-row",
+          "canonical_name": "Ember Store",
           "aliases": []
         },
-        "relation": "pricing",
+        "relation": "limit",
         "identity_requirement": "require_harness_anchor",
         "assessment_budget": {
           "max_model_attempts": 2,
@@ -1996,16 +1836,20 @@
         }
       },
       "candidate": {
-        "evidence_id": "evidence:35_shared_table_owner_ambiguous",
-        "source_id": "source:35_shared_table_owner_ambiguous",
+        "evidence_id": "evidence:79_v13_shared_row_same_relation",
+        "source_id": "source:79_v13_shared_row_same_relation",
         "signals": [
           {
             "kind": "heading",
-            "text": "Lumen Cache / Lumen Cache Edge pricing"
+            "text": "Ember Store and Ember Archive limits"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Maximum objects: 250000"
           },
           {
             "kind": "excerpt",
-            "text": "Zone A | $0.08 per GB-hour. Product cells are omitted from this clipped table."
+            "text": "The shared table does not label which of the two products owns this row."
           }
         ]
       },
@@ -2013,15 +1857,11 @@
         "target_binding": "unresolved",
         "relation_binding": "exact"
       },
-      "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "present",
-        "context_gap_cue": "present",
+        "blocking_reason": "ownership_scope",
         "explicit_local_absence": "absent"
-      }
+      },
+      "expected_disposition": "ambiguous"
     },
     {
       "id": "40_rename_unknown",
@@ -2064,11 +1904,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "present",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "identity_mapping",
         "explicit_local_absence": "absent"
       }
     },
@@ -2113,11 +1949,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "present",
+        "blocking_reason": "context_gap",
         "explicit_local_absence": "absent"
       }
     },
@@ -2162,11 +1994,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "present",
+        "blocking_reason": "context_gap",
         "explicit_local_absence": "absent"
       }
     },
@@ -2215,11 +2043,7 @@
       },
       "expected_disposition": "ambiguous",
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "present",
-        "context_gap_cue": "present",
+        "blocking_reason": "multiple",
         "explicit_local_absence": "absent"
       }
     },
@@ -2267,11 +2091,7 @@
         "relation_binding": "exact"
       },
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "supported",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "present",
-        "context_gap_cue": "present",
+        "blocking_reason": "multiple",
         "explicit_local_absence": "absent"
       },
       "expected_disposition": "ambiguous"
@@ -2316,11 +2136,7 @@
         "relation_binding": "exact"
       },
       "expected_local_qualification": {
-        "target_support": "unresolved",
-        "relation_support": "supported",
-        "identity_mapping_cue": "present",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "absent",
+        "blocking_reason": "identity_mapping",
         "explicit_local_absence": "absent"
       },
       "expected_disposition": "ambiguous"
@@ -2365,11 +2181,7 @@
         "relation_binding": "unresolved"
       },
       "expected_local_qualification": {
-        "target_support": "supported",
-        "relation_support": "unresolved",
-        "identity_mapping_cue": "absent",
-        "ownership_scope_cue": "absent",
-        "context_gap_cue": "present",
+        "blocking_reason": "context_gap",
         "explicit_local_absence": "absent"
       },
       "expected_disposition": "ambiguous"

@@ -8,25 +8,26 @@ use std::{
 
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
-    EvidenceBlockingCue, EvidenceLocalQualificationV3, EvidenceRelevanceAssessment,
+    EvidenceLocalBlockingReason, EvidenceLocalQualificationV4, EvidenceRelevanceAssessment,
     EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
     EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy, ModelAdapter, ModelError,
-    ModelErrorKind, ModelRequest, ModelUsage, build_evidence_local_qualification_v3_request,
-    build_evidence_relevance_binding_proposal_v3_request, build_strict_json_text_fallback_request,
-    materialize_evidence_relevance_v8, parse_evidence_local_qualification_v3,
+    ModelErrorKind, ModelRequest, ModelUsage, build_evidence_local_qualification_v4_request,
+    build_evidence_relevance_binding_proposal_v4_request, build_strict_json_text_fallback_request,
+    materialize_evidence_relevance_v9, parse_evidence_local_qualification_v4,
     parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v13";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v13";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v14";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v14";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-atomic-annotation-v13";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v13";
+const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-compact-guard-v14";
+const EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v1";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v14";
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
 const GROQ_STRICT_JSON_TEXT_MAX_TOKENS: u32 = 512;
-const EXPECTED_CASES: usize = 81;
+const EXPECTED_CASES: usize = 48;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -116,6 +117,7 @@ struct CalibrationManifest {
     status: String,
     source_rule: String,
     annotation_protocol_id: String,
+    fixed_core_id: String,
     cases: Vec<CalibrationCase>,
 }
 
@@ -128,7 +130,7 @@ struct CalibrationCase {
     policy: EvidenceRelevanceTargetPolicy,
     candidate: EvidenceRelevanceCandidate,
     expected_proposal: EvidenceRelevanceBindingProposal,
-    expected_local_qualification: EvidenceLocalQualificationV3,
+    expected_local_qualification: EvidenceLocalQualificationV4,
     expected_disposition: EvidenceRelevanceDisposition,
 }
 
@@ -162,9 +164,9 @@ struct CaseObservation {
     observed_proposal: Option<EvidenceRelevanceBindingProposal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proposal_match: Option<bool>,
-    expected_local_qualification: EvidenceLocalQualificationV3,
+    expected_local_qualification: EvidenceLocalQualificationV4,
     #[serde(skip_serializing_if = "Option::is_none")]
-    observed_local_qualification: Option<EvidenceLocalQualificationV3>,
+    observed_local_qualification: Option<EvidenceLocalQualificationV4>,
     #[serde(skip_serializing_if = "Option::is_none")]
     local_qualification_match: Option<bool>,
     local_qualification_invoked: bool,
@@ -205,8 +207,8 @@ struct CalibrationMetrics {
     local_qualification_invocations: usize,
     local_qualification_exact_matches: usize,
     local_qualification_exact_accuracy: Option<f64>,
-    qualification_blocking_cue_misses: usize,
-    qualification_spurious_cue_blocks: usize,
+    qualification_blocking_reason_misses: usize,
+    qualification_spurious_blocking_reasons: usize,
     materialized_exact_matches: usize,
     materialized_exact_accuracy: Option<f64>,
     correctness_wrong_target_relevance_retention: usize,
@@ -243,6 +245,7 @@ struct StudyOutput {
     issue: u64,
     source_rule: String,
     annotation_protocol_id: String,
+    fixed_core_id: String,
     corpus_status_at_observation: String,
     candidate_commit: String,
     provider: String,
@@ -295,7 +298,7 @@ struct CallOutcome {
 
 #[derive(Debug)]
 struct QualificationCallOutcome {
-    qualification: EvidenceLocalQualificationV3,
+    qualification: EvidenceLocalQualificationV4,
     used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
@@ -344,7 +347,7 @@ async fn run() -> Result<StudyOutput, String> {
 
     for case in &selected {
         let expected = case.expected_proposal;
-        let assessment = materialize_evidence_relevance_v8(
+        let assessment = materialize_evidence_relevance_v9(
             &case.policy,
             &case.candidate,
             Some(&expected),
@@ -366,6 +369,7 @@ async fn run() -> Result<StudyOutput, String> {
             issue: manifest.issue,
             source_rule: manifest.source_rule.clone(),
             annotation_protocol_id: manifest.annotation_protocol_id.clone(),
+            fixed_core_id: manifest.fixed_core_id.clone(),
             corpus_status_at_observation: manifest.status.clone(),
             candidate_commit: git_head().unwrap_or_else(|_| "unknown".into()),
             provider: args.provider.name().into(),
@@ -405,7 +409,7 @@ async fn run() -> Result<StudyOutput, String> {
 
     for (index, case) in selected.iter().enumerate() {
         let case_seed = args.seed.and_then(|base| base.checked_add(index as u64));
-        let request = build_evidence_relevance_binding_proposal_v3_request(
+        let request = build_evidence_relevance_binding_proposal_v4_request(
             &case.policy,
             &case.candidate,
             case_seed,
@@ -487,10 +491,12 @@ async fn run() -> Result<StudyOutput, String> {
                 .and_then(|observation| observation.failure_class.as_deref()),
         );
 
-        if !args.continue_after_operational_failures
-            && consecutive_operational_failures >= args.max_consecutive_operational_failures
-            && index + 1 < selected.len()
-        {
+        if should_abort_after_operational_failure(
+            args.continue_after_operational_failures,
+            consecutive_operational_failures,
+            args.max_consecutive_operational_failures,
+            index + 1 < selected.len(),
+        ) {
             operational_abort = Some(OperationalAbort {
                 reason: "consecutive_operational_failure_budget_exhausted",
                 after_case_id: case.id.clone(),
@@ -545,6 +551,7 @@ async fn run() -> Result<StudyOutput, String> {
         issue: manifest.issue,
         source_rule: manifest.source_rule.clone(),
         annotation_protocol_id: manifest.annotation_protocol_id.clone(),
+        fixed_core_id: manifest.fixed_core_id.clone(),
         corpus_status_at_observation: manifest.status.clone(),
         candidate_commit: git_head().unwrap_or_else(|_| "unknown".into()),
         provider,
@@ -598,7 +605,7 @@ async fn complete_observed_case(
         ));
     }
 
-    let request = build_evidence_local_qualification_v3_request(
+    let request = build_evidence_local_qualification_v4_request(
         &case.policy,
         &case.candidate,
         case_seed.map(|seed| seed ^ 0x6a11_f1ed),
@@ -651,7 +658,7 @@ async fn complete_observed_case(
         finish_reason = qualification_call.finish_reason;
     }
 
-    match materialize_evidence_relevance_v8(
+    match materialize_evidence_relevance_v9(
         &case.policy,
         &case.candidate,
         Some(&observed),
@@ -708,7 +715,7 @@ fn success_observation(
     case: &CalibrationCase,
     lexical_baseline: EvidenceRelevanceDisposition,
     observed: EvidenceRelevanceBindingProposal,
-    observed_local_qualification: EvidenceLocalQualificationV3,
+    observed_local_qualification: EvidenceLocalQualificationV4,
     assessment: EvidenceRelevanceAssessment,
     latency_ms: u128,
     used_structured_fallback: bool,
@@ -1140,7 +1147,7 @@ async fn call_model_for_local_qualification(
             let attempts = response.provider_attempts;
             let model = Some(response.model.clone());
             let finish = response.finish_reason.clone();
-            match parse_evidence_local_qualification_v3(&response.text) {
+            match parse_evidence_local_qualification_v4(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
                     used_structured_fallback: false,
@@ -1280,7 +1287,7 @@ async fn call_local_qualification_fallback(
             usage.add(&response.usage);
             let model = Some(response.model.clone());
             let finish = response.finish_reason.clone();
-            match parse_evidence_local_qualification_v3(&response.text) {
+            match parse_evidence_local_qualification_v4(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
                     used_structured_fallback: true,
@@ -1358,6 +1365,17 @@ fn model_error_class(kind: ModelErrorKind) -> &'static str {
     }
 }
 
+fn should_abort_after_operational_failure(
+    continue_after_operational_failures: bool,
+    consecutive_operational_failures: usize,
+    max_consecutive_operational_failures: usize,
+    has_remaining_cases: bool,
+) -> bool {
+    !continue_after_operational_failures
+        && has_remaining_cases
+        && consecutive_operational_failures >= max_consecutive_operational_failures
+}
+
 fn next_operational_failure_streak(current: usize, failure_class: Option<&str>) -> usize {
     if failure_class.is_some_and(is_operational_provider_failure_class) {
         current.saturating_add(1)
@@ -1426,6 +1444,12 @@ fn load_manifest(target: &Path) -> Result<CalibrationManifest, String> {
         return Err(format!(
             "unexpected annotation protocol id {:?}",
             manifest.annotation_protocol_id
+        ));
+    }
+    if manifest.fixed_core_id != EXPECTED_FIXED_CORE_ID {
+        return Err(format!(
+            "unexpected fixed core id {:?}",
+            manifest.fixed_core_id
         ));
     }
     if manifest.cases.len() != EXPECTED_CASES {
@@ -1559,12 +1583,10 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         .iter()
         .filter(|case| case.local_qualification_match == Some(true))
         .count();
-    let has_blocking_cue = |qualification: &EvidenceLocalQualificationV3| {
-        qualification.identity_mapping_cue == EvidenceBlockingCue::Present
-            || qualification.ownership_scope_cue == EvidenceBlockingCue::Present
-            || qualification.context_gap_cue == EvidenceBlockingCue::Present
+    let has_blocking_cue = |qualification: &EvidenceLocalQualificationV4| {
+        qualification.blocking_reason != EvidenceLocalBlockingReason::None
     };
-    let qualification_blocking_cue_misses = observations
+    let qualification_blocking_reason_misses = observations
         .iter()
         .filter(|case| {
             has_blocking_cue(&case.expected_local_qualification)
@@ -1574,7 +1596,7 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
                     .is_some_and(|observed| !has_blocking_cue(observed))
         })
         .count();
-    let qualification_spurious_cue_blocks = observations
+    let qualification_spurious_blocking_reasons = observations
         .iter()
         .filter(|case| {
             !has_blocking_cue(&case.expected_local_qualification)
@@ -1708,8 +1730,8 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
             local_qualification_exact_matches,
             local_qualification_expected_cases,
         ),
-        qualification_blocking_cue_misses,
-        qualification_spurious_cue_blocks,
+        qualification_blocking_reason_misses,
+        qualification_spurious_blocking_reasons,
         materialized_exact_matches,
         materialized_exact_accuracy: accuracy(materialized_exact_matches, successful),
         correctness_wrong_target_relevance_retention,
@@ -1751,8 +1773,8 @@ fn empty_metrics(cases: usize) -> CalibrationMetrics {
         local_qualification_invocations: 0,
         local_qualification_exact_matches: 0,
         local_qualification_exact_accuracy: None,
-        qualification_blocking_cue_misses: 0,
-        qualification_spurious_cue_blocks: 0,
+        qualification_blocking_reason_misses: 0,
+        qualification_spurious_blocking_reasons: 0,
         materialized_exact_matches: 0,
         materialized_exact_accuracy: None,
         correctness_wrong_target_relevance_retention: 0,
@@ -1853,7 +1875,7 @@ fn git_head() -> Result<String, String> {
 mod tests {
     use super::*;
     use reasoning_harness_core::{
-        EvidenceExplicitLocalAbsence, EvidenceLocalSupport, EvidenceRelevanceBinding,
+        EvidenceExplicitLocalAbsence, EvidenceLocalBlockingReason, EvidenceRelevanceBinding,
     };
 
     fn load() -> CalibrationManifest {
@@ -1888,12 +1910,12 @@ mod tests {
     }
 
     #[test]
-    fn expected_primary_and_qualification_materialize_all_v13_cases() {
+    fn expected_primary_and_qualification_materialize_all_v14_cases() {
         let manifest = load();
         assert_eq!(manifest.cases.len(), EXPECTED_CASES);
         for case in manifest.cases {
             let proposal = case.expected_proposal;
-            let assessment = materialize_evidence_relevance_v8(
+            let assessment = materialize_evidence_relevance_v9(
                 &case.policy,
                 &case.candidate,
                 Some(&proposal),
@@ -1968,7 +1990,7 @@ mod tests {
     fn fixture_request() -> ModelRequest {
         let manifest = load();
         let case = &manifest.cases[0];
-        build_evidence_relevance_binding_proposal_v3_request(
+        build_evidence_relevance_binding_proposal_v4_request(
             &case.policy,
             &case.candidate,
             Some(462),
@@ -2049,7 +2071,7 @@ mod tests {
     fn full_diagnostic_mode_can_disable_operational_circuit_break() {
         let args = Args::try_parse_from([
             "reason-evidence-relevance-study",
-            "fixtures/evidence-relevance-calibration-v13",
+            "fixtures/evidence-relevance-calibration-v14",
             "--provider",
             "groq",
             "--model",
@@ -2059,6 +2081,15 @@ mod tests {
         .expect("parse args");
         assert!(args.continue_after_operational_failures);
         assert_eq!(args.max_consecutive_operational_failures, 2);
+    }
+
+    #[test]
+    fn full_diagnostic_mode_never_opens_operational_circuit() {
+        assert!(!should_abort_after_operational_failure(true, 2, 2, true));
+        assert!(!should_abort_after_operational_failure(true, 99, 2, true));
+        assert!(should_abort_after_operational_failure(false, 2, 2, true));
+        assert!(!should_abort_after_operational_failure(false, 1, 2, true));
+        assert!(!should_abort_after_operational_failure(false, 2, 2, false));
     }
 
     #[test]
@@ -2073,12 +2104,12 @@ mod tests {
     fn local_qualification_request() -> ModelRequest {
         let manifest = load();
         let case = &manifest.cases[0];
-        build_evidence_local_qualification_v3_request(&case.policy, &case.candidate, Some(463))
+        build_evidence_local_qualification_v4_request(&case.policy, &case.candidate, Some(463))
             .expect("local qualification request")
     }
 
     fn qualification_json() -> &'static str {
-        r#"{"target_support":"supported","relation_support":"supported","identity_mapping_cue":"absent","ownership_scope_cue":"absent","context_gap_cue":"absent","explicit_local_absence":"absent"}"#
+        r#"{"blocking_reason":"none","explicit_local_absence":"absent"}"#
     }
 
     #[test]
@@ -2103,12 +2134,8 @@ mod tests {
         .await
         .expect("qualification result");
         assert_eq!(
-            result.qualification.target_support,
-            EvidenceLocalSupport::Supported
-        );
-        assert_eq!(
-            result.qualification.relation_support,
-            EvidenceLocalSupport::Supported
+            result.qualification.blocking_reason,
+            EvidenceLocalBlockingReason::None
         );
         assert_eq!(
             result.qualification.explicit_local_absence,
@@ -2202,7 +2229,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn local_qualification_runs_even_when_primary_relation_is_different() {
+    async fn local_qualification_still_runs_when_primary_relation_is_different() {
         let manifest = load();
         let case = manifest
             .cases
@@ -2235,10 +2262,6 @@ mod tests {
         .expect("observation");
         assert!(observation.local_qualification_invoked);
         assert_eq!(
-            observation.materialized_disposition,
-            Some(EvidenceRelevanceDisposition::Ambiguous)
-        );
-        assert_ne!(
             observation.materialized_disposition,
             Some(EvidenceRelevanceDisposition::Irrelevant)
         );

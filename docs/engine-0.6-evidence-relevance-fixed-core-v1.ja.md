@@ -17,7 +17,7 @@ Coverage:
 - Ambiguous: 16
 - identity-mapping cue present: 6
 - ownership-scope cue present: 5
-- context-gap cue present: 11
+- context-gap cue present: 10
 - explicit local absence present: 4
 
 positive exact / alias / paraphrase / distributed / cross-lingual / metadata / freshness / injection、negative wrong-feature / sibling / navigation / broad / unrelated / comparison / relation / injection / explicit absence、ambiguous rename / partial / mixed / conflict / insufficient / URL-only / shared ownership / context gap の代表ケースを維持する。

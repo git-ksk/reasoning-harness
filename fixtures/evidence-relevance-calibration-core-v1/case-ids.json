@@ -3,7 +3,7 @@
   "issue": 462,
   "source_suite": "evidence-relevance-calibration-v13",
   "source_freeze_tag": "engine-0.6-evidence-relevance-calibration-v13-freeze",
-  "selection_rule": "semantic-coverage compaction; selected before any v14 live observation; do not add cases in-place",
+  "selection_rule": "semantic-coverage compaction with orthogonal blocker-label coverage; selected before any v14 live observation; do not add cases in-place",
   "growth_policy": "fixed_no_new_cases",
   "case_count": 48,
   "case_ids": [
@@ -47,7 +47,7 @@
     "26_url_only_identity",
     "30_possible_alias_unconfirmed",
     "31_possible_successor_unconfirmed",
-    "35_shared_table_owner_ambiguous",
+    "79_v13_shared_row_same_relation",
     "40_rename_unknown",
     "43_partial_truncated_mapping",
     "45_url_only_identity_fresh",
