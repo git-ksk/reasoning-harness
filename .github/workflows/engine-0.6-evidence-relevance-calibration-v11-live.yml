@@ -98,6 +98,9 @@ jobs:
       cancel-in-progress: false
 
     steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
       - uses: actions/checkout@v7
         with:
           ref: engine-0.6-evidence-relevance-calibration-v11-freeze
@@ -228,6 +231,9 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
       - uses: actions/download-artifact@v8
         with:
           pattern: engine-0.6-evidence-relevance-calibration-v11-*
