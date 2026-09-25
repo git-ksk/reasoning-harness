@@ -10,7 +10,11 @@ Required Mistral completed 81/81 with no provider failures but materialized only
 
 Google replication completed 81/81 and materialized 65/81, with 3 blocking-cue misses, 4 spurious cue blocks, 3 Relevant -> Ambiguous outcomes, and 16 utility misses.
 
-The required Groq canonical arm stopped after 3/81 because strict-JSON Text local qualification was truncated at the 192-token completion budget. A separate noncanonical full-case postmortem is running with a 512-token Groq transport floor and no consecutive-failure circuit; it cannot change the v13 result and must complete before v14 is frozen.
+The required Groq canonical arm stopped after 3/81 because strict-JSON Text local qualification was truncated at the 192-token completion budget.
+
+The separate noncanonical full-case postmortem then completed all 81 cases with the 512-token Groq transport floor and no consecutive-failure circuit. It remained noncanonical and cannot change the v13 result. Operationally, only 1/81 cases succeeded and 80/81 ended as `assessment_timeout`. The postmortem logs show repeated HTTP 429 responses with provider `retry-after` values in the hundreds of seconds. The runner's 60-second shared case deadline therefore expired while the adapter was correctly waiting inside rate-limit retry handling. This establishes a second, separate Groq problem after the 192-token truncation fix: long provider-declared rate-limit waits must not be confused with semantic/model timeout.
+
+Groq documents `retry-after` as seconds and `openai/gpt-oss-120b` Free limits as 8K TPM / 200K TPD. The adapter already classifies explicit daily quota text as `Quota`; v14 hardens the 429 loop so daily quota exhaustion fails fast instead of consuming transient rate-limit retries, while ordinary transient 429s retain the existing bounded retry path.
 
 ## Successor hypothesis
 
@@ -123,7 +127,9 @@ Groq:
 - strict raw-JSON Text primary;
 - no preceding JsonSchema request;
 - transport completion floor 512 tokens for both semantic stages;
-- malformed Text remains a typed protocol failure and is not semantically repaired.
+- malformed Text remains a typed protocol failure and is not semantically repaired;
+- transient HTTP 429 keeps the existing bounded provider retry path (up to five rate-limit retries);
+- explicit daily quota exhaustion (`tokens per day`, daily limit/quota) is typed `Quota` and does not burn transient retries.
 
 All providers:
 - no JSON extraction;
@@ -132,9 +138,11 @@ All providers:
 - no fuzzy repair;
 - no semantic retry;
 - no third model call;
-- shared 60-second per-case deadline.
+- shared 60-second semantic per-case deadline remains unchanged for normal model work.
 
-v14 canonical runs use `--continue-after-operational-failures` so every fixed-core case is attempted for diagnostic completeness. This does not relax acceptance: any provider failure makes required operational completeness false.
+v14 canonical runs use `--continue-after-operational-failures` so every fixed-core case is attempted for diagnostic completeness when the provider is operational. This does not relax acceptance: any provider failure makes required operational completeness false.
+
+Before freezing v14, Groq readiness is checked by a separate synthetic transport workflow that does not read or submit any calibration fixture. It exists only to avoid consuming the first/only canonical observation while the shared Groq organization/project quota is already exhausted. A readiness probe is not a calibration observation and may be repeated.
 
 ## Canonical roles and acceptance
 

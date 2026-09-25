@@ -10,7 +10,11 @@ Required Mistral は 81/81 完走・provider failure 0 だった一方、materia
 
 Google replication は 81/81 完走、materialized exact 65/81、blocking-cue miss 3、spurious cue block 4、Relevant -> Ambiguous 3、utility miss 16。
 
-Required Groq canonical は strict-JSON Text local qualification が192-token completion budgetでtruncateし、3/81で停止した。別IDのnoncanonical full-case postmortemを512-token Groq transport floor・consecutive-failure circuitなしで実行中。このdiagnosticはv13 resultを変更せず、v14 freeze前に完走結果を確認する。
+Required Groq canonical は strict-JSON Text local qualification が192-token completion budgetでtruncateし、3/81で停止した。
+
+別IDのnoncanonical full-case postmortemは512-token Groq transport floor・consecutive-failure circuitなしで81/81まで完走した。このdiagnosticはnoncanonicalのままでv13 resultを変更しない。運用結果は成功1/81、`assessment_timeout` 80/81。ログではHTTP 429と数百秒のprovider `retry-after` が繰り返し観測され、adapterがrate-limit retry待機中にrunnerのshared 60秒case deadlineが先に切れていた。したがって192-token truncation修正後にも別のGroq課題があり、provider指定の長いrate-limit waitをsemantic/model timeoutと混同しない必要がある。
+
+Groq公式は `retry-after` を秒単位、Freeの `openai/gpt-oss-120b` を8K TPM / 200K TPDとしている。adapterは明示的なdaily quota文言を `Quota` に分類済みで、v14では429 loopもhardeningし、daily quota exhaustionはtransient retryを消費せずfail-fast、一時的429は従来のbounded retryを維持する。
 
 ## Successor hypothesis
 
@@ -122,6 +126,8 @@ Groq:
 - preceding JsonSchemaなし
 - 両semantic stageでtransport completion floor 512 tokens
 - malformed Textはtyped protocol failure。semantic repairなし
+- transient HTTP 429は従来どおりbounded provider retry（rate-limit retry最大5回）
+- `tokens per day` / daily limit・quotaの明示的枯渇はtyped `Quota` とし、transient retryを消費しない
 
 全provider:
 - JSON extractionなし
@@ -130,9 +136,11 @@ Groq:
 - fuzzy repairなし
 - semantic retryなし
 - third model callなし
-- shared per-case deadline 60秒
+- 通常のmodel workに対するshared semantic per-case deadline 60秒は維持
 
-v14 canonicalは `--continue-after-operational-failures` を使い、診断のためfixed core全caseをattemptする。ただしacceptanceは緩めない。provider failureが1件でもあればrequired operational completenessはFAIL。
+v14 canonicalは `--continue-after-operational-failures` を使い、providerがoperationalな限り診断のためfixed core全caseをattemptする。ただしacceptanceは緩めない。provider failureが1件でもあればrequired operational completenessはFAIL。
+
+v14 freeze前にはcalibration fixtureを一切読まないsynthetic Groq transport readiness workflowを別途実行する。shared organization/project quotaが既に枯れている状態でfirst/only canonical observationを消費しないためのpreflightであり、calibration observationではないためrepeat可能。
 
 ## Canonical roles / acceptance
 

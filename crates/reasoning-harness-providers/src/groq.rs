@@ -273,13 +273,26 @@ impl GroqAdapter {
             let status = response.status();
             log_rate_limit_telemetry(status, response.headers(), rate_limit_retries);
 
-            if status == StatusCode::TOO_MANY_REQUESTS
-                && rate_limit_retries < MAX_RATE_LIMIT_RETRIES
-            {
+            if status == StatusCode::TOO_MANY_REQUESTS {
+                let limit_detail = rate_limit_header_detail(response.headers());
                 let delay = rate_limit_delay(response.headers(), rate_limit_retries);
-                rate_limit_retries += 1;
-                tokio::time::sleep(delay).await;
-                continue;
+                let error_body = response.text().await.unwrap_or_default();
+                let kind = classify_http_error(status, &error_body);
+
+                if kind == ModelErrorKind::RateLimit && rate_limit_retries < MAX_RATE_LIMIT_RETRIES
+                {
+                    rate_limit_retries += 1;
+                    tokio::time::sleep(delay).await;
+                    continue;
+                }
+
+                return Err(http_error(
+                    status,
+                    &error_body,
+                    rate_limit_retries,
+                    structured_output_retries,
+                    limit_detail,
+                ));
             }
 
             if status == StatusCode::BAD_REQUEST && best_effort_structured_json {
@@ -958,6 +971,65 @@ mod tests {
         assert!(detail.contains("x-ratelimit-limit-requests=1000"));
         assert!(detail.contains("x-ratelimit-remaining-tokens=7990"));
         assert!(!detail.contains("Authorization"));
+    }
+
+    #[tokio::test]
+    async fn daily_quota_429_fails_fast_without_rate_limit_retry() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut buffer = [0u8; 4096];
+            let _ = stream.read(&mut buffer);
+            let body = r#"{"error":{"message":"Rate limit reached on tokens per day (TPD): Limit 200000, Used 199900, Requested 1000. Please try again in 500s.","type":"tokens","code":"rate_limit_exceeded"}}"#;
+            write!(
+                stream,
+                "HTTP/1.1 429 Too Many Requests
+Content-Type: application/json
+Content-Length: {}
+Retry-After: 500
+X-RateLimit-Limit-Tokens: 8000
+X-RateLimit-Remaining-Tokens: 8000
+Connection: close
+
+{body}",
+                body.len()
+            )
+            .unwrap();
+        });
+
+        let adapter = GroqAdapter::with_base_url_and_timeout(
+            "test-key",
+            "test-model",
+            &format!("http://{address}/v1/"),
+            Duration::from_secs(2),
+        )
+        .unwrap();
+
+        let started = Instant::now();
+        let error = adapter
+            .generate(ModelRequest {
+                task: "test".into(),
+                system: None,
+                output_format: ModelOutputFormat::Text,
+                max_tokens: Some(8),
+                random_seed: None,
+                reasoning_preference: None,
+            })
+            .await
+            .unwrap_err();
+
+        assert_eq!(error.kind, ModelErrorKind::Quota);
+        assert_eq!(error.provider_attempts, 1);
+        assert!(started.elapsed() < Duration::from_secs(1));
+        assert!(error.message.contains("tokens per day"));
+        server.join().unwrap();
     }
 
     #[tokio::test]
