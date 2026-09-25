@@ -70,15 +70,36 @@ jobs:
         run: |
           set -u
           BASE=/tmp/evidence-relevance-v13-groq-postmortem
-          printf '%s
-'             "{"schema_version":"evidence-relevance-v13-groq-postmortem-v1","canonical":false,"source_freeze_tag":"$SOURCE_FREEZE_TAG","diagnostic_tag":"$DIAGNOSTIC_TAG","github_run_id":"$GITHUB_RUN_ID","github_run_attempt":"$GITHUB_RUN_ATTEMPT","model":"$MODEL"}"             > "${BASE}-marker.json"
+          python3 - <<'MARKER'
+          import json, os
+          from pathlib import Path
+          Path('/tmp/evidence-relevance-v13-groq-postmortem-marker.json').write_text(
+              json.dumps({
+                  'schema_version':'evidence-relevance-v13-groq-postmortem-v1',
+                  'canonical':False,
+                  'source_freeze_tag':os.environ['SOURCE_FREEZE_TAG'],
+                  'diagnostic_tag':os.environ['DIAGNOSTIC_TAG'],
+                  'github_run_id':os.environ['GITHUB_RUN_ID'],
+                  'github_run_attempt':os.environ['GITHUB_RUN_ATTEMPT'],
+                  'model':os.environ['MODEL'],
+              }, indent=2) + '\n'
+          )
+          MARKER
 
           set +e
-          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study --             "$CALIBRATION_DIR"             --provider groq             --model "$MODEL"             --seed "$SEED"             --inter-case-delay-ms 2200             --continue-after-operational-failures             --checkpoint "${BASE}-checkpoint.json"             > "${BASE}-result.json"             2> "${BASE}-stderr.log"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider groq \
+            --model "$MODEL" \
+            --seed "$SEED" \
+            --inter-case-delay-ms 2200 \
+            --continue-after-operational-failures \
+            --checkpoint "${BASE}-checkpoint.json" \
+            > "${BASE}-result.json" \
+            2> "${BASE}-stderr.log"
           RC=$?
           set -e
-          printf '%s
-' "$RC" > "${BASE}.rc"
+          printf '%s\n' "$RC" > "${BASE}.rc"
 
           if test -s "${BASE}-result.json"; then
             jq '{
