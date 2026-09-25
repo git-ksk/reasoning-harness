@@ -31,6 +31,42 @@ pub struct ModelRequest {
     pub reasoning_preference: Option<ModelReasoningPreference>,
 }
 
+/// Builds a bounded provider-neutral strict-JSON text fallback for a JSON-Schema request.
+///
+/// This is intentionally distinct from the JSON-object fallback: providers that reject or
+/// repeatedly fail server-side structured generation can still receive the exact same task and
+/// schema without enabling a provider JSON response mode. The caller must parse the entire
+/// response against its typed contract; extraction, repair, and semantic retries remain forbidden.
+pub fn build_strict_json_text_fallback_request(request: &ModelRequest) -> Option<ModelRequest> {
+    let ModelOutputFormat::JsonSchema { schema, .. } = &request.output_format else {
+        return None;
+    };
+    let schema = serde_json::to_string_pretty(schema)
+        .expect("ModelOutputFormat::JsonSchema value must serialize");
+
+    let mut fallback = request.clone();
+    fallback.task = format!(
+        "JSON Schema:
+{schema}
+
+Original task:
+{}
+
+Return exactly one raw JSON object conforming to the supplied JSON Schema. Do not add prose, Markdown fences, commentary, or fields not allowed by the schema.",
+        request.task
+    );
+    fallback.system = Some(match request.system.as_deref() {
+        Some(system) => format!(
+            "{system}
+
+Strict-JSON text fallback constraint: return exactly one raw JSON object and no prose. Preserve the original task semantics; do not invent missing fields, facts, evidence, identities, or authority."
+        ),
+        None => "Strict-JSON text fallback constraint: return exactly one raw JSON object and no prose. Preserve the original task semantics; do not invent missing fields, facts, evidence, identities, or authority.".into(),
+    });
+    fallback.output_format = ModelOutputFormat::Text;
+    Some(fallback)
+}
+
 /// Builds a bounded provider-neutral fallback for a JSON-Schema request.
 ///
 /// The fallback changes only the structured-output transport contract:
@@ -210,5 +246,58 @@ mod tests {
             reasoning_preference: None,
         };
         assert!(build_json_object_fallback_request(&request).is_none());
+    }
+
+    #[test]
+    fn strict_json_text_fallback_preserves_schema_semantics_without_provider_json_mode() {
+        let request = ModelRequest {
+            task: "qualify the local evidence".into(),
+            system: Some("server-owned guard".into()),
+            output_format: ModelOutputFormat::JsonSchema {
+                name: "qualification_v2".into(),
+                schema: serde_json::json!({
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": { "risk": { "type": "string", "enum": ["absent", "present"] } },
+                    "required": ["risk"]
+                }),
+            },
+            max_tokens: Some(192),
+            random_seed: Some(11),
+            reasoning_preference: Some(ModelReasoningPreference::Minimize),
+        };
+
+        let fallback = build_strict_json_text_fallback_request(&request).expect("text fallback");
+
+        assert_eq!(fallback.output_format, ModelOutputFormat::Text);
+        assert_eq!(fallback.max_tokens, request.max_tokens);
+        assert_eq!(fallback.random_seed, request.random_seed);
+        assert_eq!(fallback.reasoning_preference, request.reasoning_preference);
+        assert!(
+            fallback
+                .task
+                .contains("Original task:\nqualify the local evidence")
+        );
+        assert!(fallback.task.contains("exactly one raw JSON object"));
+        assert!(
+            fallback
+                .system
+                .as_deref()
+                .unwrap()
+                .contains("Strict-JSON text fallback constraint")
+        );
+    }
+
+    #[test]
+    fn strict_json_text_fallback_is_only_available_for_json_schema_requests() {
+        let request = ModelRequest {
+            task: "plain".into(),
+            system: None,
+            output_format: ModelOutputFormat::Text,
+            max_tokens: None,
+            random_seed: None,
+            reasoning_preference: None,
+        };
+        assert!(build_strict_json_text_fallback_request(&request).is_none());
     }
 }

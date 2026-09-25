@@ -119,6 +119,7 @@ pub use evidence_relevance::{
     EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V7_ID,
     EVIDENCE_RELEVANCE_BINDING_PROPOSAL_CONTRACT_ID,
     EVIDENCE_RELEVANCE_LOCAL_QUALIFICATION_CONTRACT_ID,
+    EVIDENCE_RELEVANCE_LOCAL_QUALIFICATION_V2_CONTRACT_ID,
     EVIDENCE_RELEVANCE_MATERIALIZATION_POLICY_ID,
     EVIDENCE_RELEVANCE_NEGATIVE_SAFETY_DECISION_CONTRACT_ID,
     EVIDENCE_RELEVANCE_NEGATIVE_TARGET_CONFIRMATION_CONTRACT_ID,
@@ -197,6 +198,7 @@ pub use metamorphic::{
 pub use model::{
     ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelReasoningPreference,
     ModelRequest, ModelResponse, ModelUsage, build_json_object_fallback_request,
+    build_strict_json_text_fallback_request,
 };
 pub use reasoning_policy::{
     PolicyEscalation, PolicyEscalationAction, PolicyEvidenceConstraints, PolicyInvalidation,

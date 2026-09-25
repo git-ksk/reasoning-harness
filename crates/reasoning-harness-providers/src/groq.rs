@@ -21,6 +21,7 @@ const MAX_RATE_LIMIT_RESET_DELAY: Duration = Duration::from_secs(180);
 const MIN_REQUEST_INTERVAL_ENV: &str = "REASON_GROQ_MIN_REQUEST_INTERVAL_MS";
 const TOKENS_PER_MINUTE_ENV: &str = "REASON_GROQ_TOKENS_PER_MINUTE";
 const RATE_LIMIT_TELEMETRY_ENV: &str = "REASON_GROQ_RATE_LIMIT_TELEMETRY";
+const STRUCTURED_OUTPUT_RETRIES_ENV: &str = "REASON_GROQ_STRUCTURED_OUTPUT_RETRIES";
 
 /// GroqCloud adapter using the provider's OpenAI-compatible Chat Completions API.
 ///
@@ -33,6 +34,7 @@ pub struct GroqAdapter {
     model: String,
     min_request_interval: Duration,
     tokens_per_minute: Option<u64>,
+    structured_output_retry_limit: usize,
     pacing: tokio::sync::Mutex<PacingState>,
 }
 
@@ -57,14 +59,19 @@ impl GroqAdapter {
             .map(Duration::from_millis)
             .unwrap_or(Duration::ZERO);
         let tokens_per_minute = env_u64(TOKENS_PER_MINUTE_ENV)?.filter(|value| *value > 0);
-        Self::with_base_url_timeout_and_pacing(
+        let structured_output_retry_limit = env_u64(STRUCTURED_OUTPUT_RETRIES_ENV)?
+            .map(|value| usize::try_from(value).unwrap_or(usize::MAX))
+            .unwrap_or(MAX_STRUCTURED_OUTPUT_RETRIES);
+        let mut adapter = Self::with_base_url_timeout_and_pacing(
             api_key,
             model,
             DEFAULT_BASE_URL,
             DEFAULT_TIMEOUT,
             min_request_interval,
             tokens_per_minute,
-        )
+        )?;
+        adapter.structured_output_retry_limit = structured_output_retry_limit;
+        Ok(adapter)
     }
 
     pub fn new(api_key: impl Into<String>, model: impl Into<String>) -> Result<Self, ModelError> {
@@ -163,6 +170,7 @@ impl GroqAdapter {
             model,
             min_request_interval,
             tokens_per_minute,
+            structured_output_retry_limit: MAX_STRUCTURED_OUTPUT_RETRIES,
             pacing: tokio::sync::Mutex::new(PacingState::default()),
         })
     }
@@ -277,7 +285,7 @@ impl GroqAdapter {
             if status == StatusCode::BAD_REQUEST && best_effort_structured_json {
                 let error_body = response.text().await.unwrap_or_default();
                 if is_retryable_structured_output_error(&error_body) {
-                    if structured_output_retries < MAX_STRUCTURED_OUTPUT_RETRIES {
+                    if structured_output_retries < self.structured_output_retry_limit {
                         log_structured_output_retry(structured_output_retries);
                         structured_output_retries += 1;
                         continue;
@@ -1115,6 +1123,55 @@ mod tests {
             .unwrap_err();
         assert_eq!(error.kind, ModelErrorKind::UnsupportedCapability);
         assert_eq!(error.provider_attempts, 3);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn zero_structured_output_retry_limit_surfaces_capability_failure_after_one_attempt() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut buffer = [0u8; 8192];
+            let _ = stream.read(&mut buffer);
+            let body =
+                r#"{"error":{"message":"Failed to generate JSON. Please adjust your prompt."}}"#;
+            write!(
+                stream,
+                "HTTP/1.1 400 Bad Request\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            )
+            .unwrap();
+        });
+        let mut adapter = GroqAdapter::with_base_url_and_timeout(
+            "test-key",
+            "test-model",
+            &format!("http://{address}/v1/"),
+            Duration::from_secs(2),
+        )
+        .unwrap();
+        adapter.structured_output_retry_limit = 0;
+        let error = adapter
+            .generate(ModelRequest {
+                task: "return json".into(),
+                system: None,
+                output_format: ModelOutputFormat::JsonSchema {
+                    name: "test".into(),
+                    schema: json!({"type":"object"}),
+                },
+                max_tokens: Some(8),
+                random_seed: Some(1),
+                reasoning_preference: None,
+            })
+            .await
+            .unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::UnsupportedCapability);
+        assert_eq!(error.provider_attempts, 1);
         server.join().unwrap();
     }
 

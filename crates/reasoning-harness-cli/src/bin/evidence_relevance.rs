@@ -12,19 +12,19 @@ use reasoning_harness_core::{
     EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
     EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy, ModelAdapter, ModelError,
     ModelErrorKind, ModelRequest, ModelUsage, build_evidence_local_qualification_request,
-    build_evidence_relevance_binding_proposal_request, build_json_object_fallback_request,
+    build_evidence_relevance_binding_proposal_request, build_strict_json_text_fallback_request,
     materialize_evidence_relevance_v7, parse_evidence_local_qualification,
     parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v11";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v11";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v12";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v12";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v11";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v12";
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
-const EXPECTED_CASES: usize = 65;
+const EXPECTED_CASES: usize = 73;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -171,7 +171,7 @@ struct CaseObservation {
     lexical_baseline: EvidenceRelevanceDisposition,
     lexical_baseline_match: bool,
     deterministic_guard_override: bool,
-    used_json_fallback: bool,
+    used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
     provider_attempts_complete: bool,
@@ -279,7 +279,7 @@ struct Checkpoint<'a> {
 #[derive(Debug)]
 struct CallOutcome {
     proposal: EvidenceRelevanceBindingProposal,
-    used_json_fallback: bool,
+    used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
     usage: UsageSummary,
@@ -290,7 +290,7 @@ struct CallOutcome {
 #[derive(Debug)]
 struct QualificationCallOutcome {
     qualification: EvidenceLocalQualification,
-    used_json_fallback: bool,
+    used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
     usage: UsageSummary,
@@ -302,7 +302,7 @@ struct QualificationCallOutcome {
 struct CallFailure {
     class: String,
     message: String,
-    used_json_fallback: bool,
+    used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
     provider_attempts_complete: bool,
@@ -431,7 +431,7 @@ async fn run() -> Result<StudyOutput, String> {
                 lexical_baseline,
                 ObservationFailure {
                     latency_ms: started.elapsed().as_millis(),
-                    used_json_fallback: failure.used_json_fallback,
+                    used_structured_fallback: failure.used_structured_fallback,
                     model_calls: failure.model_calls,
                     provider_attempts: failure.provider_attempts,
                     provider_attempts_complete: failure.provider_attempts_complete,
@@ -455,7 +455,7 @@ async fn run() -> Result<StudyOutput, String> {
             observation.observed_proposal,
             observation.materialized_disposition,
             observation.lexical_baseline,
-            observation.used_json_fallback,
+            observation.used_structured_fallback,
         );
         observations.push(observation);
 
@@ -558,7 +558,7 @@ async fn complete_observed_case(
     call: CallOutcome,
 ) -> Result<CaseObservation, String> {
     let observed = call.proposal;
-    let mut used_json_fallback = call.used_json_fallback;
+    let mut used_structured_fallback = call.used_structured_fallback;
     let mut model_calls = call.model_calls;
     let mut provider_attempts = call.provider_attempts;
     let mut usage = call.usage;
@@ -573,7 +573,7 @@ async fn complete_observed_case(
             lexical_baseline,
             ObservationFailure {
                 latency_ms: started.elapsed().as_millis(),
-                used_json_fallback,
+                used_structured_fallback,
                 model_calls,
                 provider_attempts,
                 provider_attempts_complete: true,
@@ -598,7 +598,7 @@ async fn complete_observed_case(
     {
         Ok(call) => call,
         Err(mut failure) => {
-            failure.used_json_fallback |= used_json_fallback;
+            failure.used_structured_fallback |= used_structured_fallback;
             failure.model_calls = failure.model_calls.saturating_add(model_calls);
             failure.provider_attempts = failure.provider_attempts.saturating_add(provider_attempts);
             failure.usage.add_summary(&usage);
@@ -613,7 +613,7 @@ async fn complete_observed_case(
                 lexical_baseline,
                 ObservationFailure {
                     latency_ms: started.elapsed().as_millis(),
-                    used_json_fallback: failure.used_json_fallback,
+                    used_structured_fallback: failure.used_structured_fallback,
                     model_calls: failure.model_calls,
                     provider_attempts: failure.provider_attempts,
                     provider_attempts_complete: failure.provider_attempts_complete,
@@ -628,7 +628,7 @@ async fn complete_observed_case(
     };
 
     let observed_qualification = qualification_call.qualification;
-    used_json_fallback |= qualification_call.used_json_fallback;
+    used_structured_fallback |= qualification_call.used_structured_fallback;
     model_calls = model_calls.saturating_add(qualification_call.model_calls);
     provider_attempts = provider_attempts.saturating_add(qualification_call.provider_attempts);
     usage.add_summary(&qualification_call.usage);
@@ -652,7 +652,7 @@ async fn complete_observed_case(
             observed_qualification,
             assessment,
             started.elapsed().as_millis(),
-            used_json_fallback,
+            used_structured_fallback,
             model_calls,
             provider_attempts,
             usage,
@@ -664,7 +664,7 @@ async fn complete_observed_case(
             lexical_baseline,
             ObservationFailure {
                 latency_ms: started.elapsed().as_millis(),
-                used_json_fallback,
+                used_structured_fallback,
                 model_calls,
                 provider_attempts,
                 provider_attempts_complete: true,
@@ -680,7 +680,7 @@ async fn complete_observed_case(
 
 struct ObservationFailure {
     latency_ms: u128,
-    used_json_fallback: bool,
+    used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
     provider_attempts_complete: bool,
@@ -699,7 +699,7 @@ fn success_observation(
     observed_local_qualification: EvidenceLocalQualification,
     assessment: EvidenceRelevanceAssessment,
     latency_ms: u128,
-    used_json_fallback: bool,
+    used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
     usage: UsageSummary,
@@ -728,7 +728,7 @@ fn success_observation(
             && (observed.target_binding != case.expected_proposal.target_binding
                 || observed.relation_binding != case.expected_proposal.relation_binding
                 || observed_local_qualification != case.expected_local_qualification),
-        used_json_fallback,
+        used_structured_fallback,
         model_calls,
         provider_attempts,
         provider_attempts_complete: true,
@@ -764,7 +764,7 @@ fn failure_observation(
         lexical_baseline,
         lexical_baseline_match: lexical_baseline == case.expected_disposition,
         deterministic_guard_override: false,
-        used_json_fallback: failure.used_json_fallback,
+        used_structured_fallback: failure.used_structured_fallback,
         model_calls: failure.model_calls,
         provider_attempts: failure.provider_attempts,
         provider_attempts_complete: failure.provider_attempts_complete,
@@ -795,7 +795,7 @@ async fn call_model_for_proposal(
         return Err(CallFailure {
             class: "attempt_budget".into(),
             message: "model-call budget is zero".into(),
-            used_json_fallback: false,
+            used_structured_fallback: false,
             model_calls,
             provider_attempts,
             provider_attempts_complete: true,
@@ -813,7 +813,7 @@ async fn call_model_for_proposal(
             return Err(CallFailure {
                 class: "assessment_timeout".into(),
                 message: "evidence relevance assessment exceeded elapsed-time budget".into(),
-                used_json_fallback: false,
+                used_structured_fallback: false,
                 model_calls,
                 provider_attempts,
                 provider_attempts_complete: false,
@@ -833,7 +833,7 @@ async fn call_model_for_proposal(
             match parse_evidence_relevance_binding_proposal(&response.text) {
                 Ok(proposal) => Ok(CallOutcome {
                     proposal,
-                    used_json_fallback: false,
+                    used_structured_fallback: false,
                     model_calls,
                     provider_attempts,
                     usage,
@@ -841,13 +841,13 @@ async fn call_model_for_proposal(
                     finish_reason: last_finish_reason,
                 }),
                 Err(primary_parse_error) => {
-                    let Some(fallback) = build_json_object_fallback_request(&request) else {
+                    let Some(fallback) = build_strict_json_text_fallback_request(&request) else {
                         return Err(CallFailure {
                             class: "protocol".into(),
                             message: format!(
                                 "primary structured proposal parse failed and no fallback exists: {primary_parse_error}"
                             ),
-                            used_json_fallback: false,
+                            used_structured_fallback: false,
                             model_calls,
                             provider_attempts,
                             provider_attempts_complete: true,
@@ -874,7 +874,7 @@ async fn call_model_for_proposal(
         }
         Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => {
             provider_attempts = provider_attempts.saturating_add(error.provider_attempts);
-            let Some(fallback) = build_json_object_fallback_request(&request) else {
+            let Some(fallback) = build_strict_json_text_fallback_request(&request) else {
                 return Err(model_failure(
                     error,
                     false,
@@ -931,9 +931,9 @@ async fn call_fallback(
         return Err(CallFailure {
             class: "attempt_budget".into(),
             message: format!(
-                "{primary_context}; JSON-object fallback blocked by model-call budget"
+                "{primary_context}; strict-JSON text fallback blocked by model-call budget"
             ),
-            used_json_fallback: false,
+            used_structured_fallback: false,
             model_calls: prior_model_calls,
             provider_attempts: prior_provider_attempts,
             provider_attempts_complete: true,
@@ -951,9 +951,9 @@ async fn call_fallback(
             return Err(CallFailure {
                 class: "assessment_timeout".into(),
                 message: format!(
-                    "{primary_context}; JSON-object fallback exceeded elapsed-time budget"
+                    "{primary_context}; strict-JSON text fallback exceeded elapsed-time budget"
                 ),
-                used_json_fallback: true,
+                used_structured_fallback: true,
                 model_calls,
                 provider_attempts: prior_provider_attempts,
                 provider_attempts_complete: false,
@@ -974,7 +974,7 @@ async fn call_fallback(
             match parse_evidence_relevance_binding_proposal(&response.text) {
                 Ok(proposal) => Ok(CallOutcome {
                     proposal,
-                    used_json_fallback: true,
+                    used_structured_fallback: true,
                     model_calls,
                     provider_attempts,
                     usage,
@@ -984,9 +984,9 @@ async fn call_fallback(
                 Err(error) => Err(CallFailure {
                     class: "protocol".into(),
                     message: format!(
-                        "{primary_context}; JSON-object fallback proposal parse failed: {error}"
+                        "{primary_context}; strict-JSON text fallback proposal parse failed: {error}"
                     ),
-                    used_json_fallback: true,
+                    used_structured_fallback: true,
                     model_calls,
                     provider_attempts,
                     provider_attempts_complete: true,
@@ -1023,7 +1023,7 @@ async fn call_model_for_local_qualification(
         return Err(CallFailure {
             class: "attempt_budget".into(),
             message: "local qualification model-call budget is zero".into(),
-            used_json_fallback: false,
+            used_structured_fallback: false,
             model_calls: 0,
             provider_attempts: 0,
             provider_attempts_complete: true,
@@ -1040,7 +1040,7 @@ async fn call_model_for_local_qualification(
             return Err(CallFailure {
                 class: "assessment_timeout".into(),
                 message: "local qualification exceeded remaining case budget".into(),
-                used_json_fallback: false,
+                used_structured_fallback: false,
                 model_calls: 1,
                 provider_attempts: 0,
                 provider_attempts_complete: false,
@@ -1061,7 +1061,7 @@ async fn call_model_for_local_qualification(
             match parse_evidence_local_qualification(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
-                    used_json_fallback: false,
+                    used_structured_fallback: false,
                     model_calls: 1,
                     provider_attempts: attempts,
                     usage,
@@ -1130,9 +1130,9 @@ async fn call_local_qualification_fallback(
         return Err(CallFailure {
             class: "attempt_budget".into(),
             message: format!(
-                "{primary_context}; JSON-object fallback blocked by model-call budget"
+                "{primary_context}; strict-JSON text fallback blocked by model-call budget"
             ),
-            used_json_fallback: false,
+            used_structured_fallback: false,
             model_calls: prior_model_calls,
             provider_attempts: prior_provider_attempts,
             provider_attempts_complete: true,
@@ -1142,11 +1142,11 @@ async fn call_local_qualification_fallback(
         });
     }
 
-    let Some(fallback) = build_json_object_fallback_request(request) else {
+    let Some(fallback) = build_strict_json_text_fallback_request(request) else {
         return Err(CallFailure {
             class: "protocol".into(),
             message: format!("{primary_context}; structured fallback unavailable"),
-            used_json_fallback: false,
+            used_structured_fallback: false,
             model_calls: prior_model_calls,
             provider_attempts: prior_provider_attempts,
             provider_attempts_complete: true,
@@ -1164,9 +1164,9 @@ async fn call_local_qualification_fallback(
             return Err(CallFailure {
                 class: "assessment_timeout".into(),
                 message: format!(
-                    "{primary_context}; JSON-object fallback exceeded remaining case budget"
+                    "{primary_context}; strict-JSON text fallback exceeded remaining case budget"
                 ),
-                used_json_fallback: true,
+                used_structured_fallback: true,
                 model_calls,
                 provider_attempts: prior_provider_attempts,
                 provider_attempts_complete: false,
@@ -1186,7 +1186,7 @@ async fn call_local_qualification_fallback(
             match parse_evidence_local_qualification(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
-                    used_json_fallback: true,
+                    used_structured_fallback: true,
                     model_calls,
                     provider_attempts: attempts,
                     usage,
@@ -1196,9 +1196,9 @@ async fn call_local_qualification_fallback(
                 Err(error) => Err(CallFailure {
                     class: "protocol".into(),
                     message: format!(
-                        "{primary_context}; JSON-object fallback local qualification parse failed: {error}"
+                        "{primary_context}; strict-JSON text fallback local qualification parse failed: {error}"
                     ),
-                    used_json_fallback: true,
+                    used_structured_fallback: true,
                     model_calls,
                     provider_attempts: attempts,
                     provider_attempts_complete: true,
@@ -1227,7 +1227,7 @@ async fn call_local_qualification_fallback(
 
 fn model_failure(
     error: ModelError,
-    used_json_fallback: bool,
+    used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
     usage: UsageSummary,
@@ -1237,7 +1237,7 @@ fn model_failure(
     CallFailure {
         class: model_error_class(error.kind).into(),
         message: error.message,
-        used_json_fallback,
+        used_structured_fallback,
         model_calls,
         provider_attempts,
         provider_attempts_complete: true,
@@ -1785,7 +1785,7 @@ mod tests {
     }
 
     #[test]
-    fn expected_primary_and_qualification_materialize_all_v11_cases() {
+    fn expected_primary_and_qualification_materialize_all_v12_cases() {
         let manifest = load();
         assert_eq!(manifest.cases.len(), EXPECTED_CASES);
         for case in manifest.cases {
@@ -1884,7 +1884,7 @@ mod tests {
                 .unwrap_err();
         assert_eq!(failure.class, "attempt_budget");
         assert_eq!(failure.model_calls, 1);
-        assert!(!failure.used_json_fallback);
+        assert!(!failure.used_structured_fallback);
     }
 
     #[tokio::test]
@@ -1975,7 +1975,7 @@ mod tests {
         );
         assert_eq!(result.model_calls, 1);
         assert_eq!(result.provider_attempts, 1);
-        assert!(!result.used_json_fallback);
+        assert!(!result.used_structured_fallback);
     }
 
     #[tokio::test]
@@ -1996,7 +1996,7 @@ mod tests {
         .expect("qualification fallback result");
         assert_eq!(result.model_calls, 2);
         assert_eq!(result.provider_attempts, 2);
-        assert!(result.used_json_fallback);
+        assert!(result.used_structured_fallback);
     }
 
     #[tokio::test]
@@ -2014,7 +2014,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn local_qualification_unsupported_schema_uses_bounded_json_object_fallback() {
+    async fn local_qualification_unsupported_schema_uses_bounded_strict_json_text_fallback() {
         let adapter = SequenceAdapter::new(
             vec![
                 Err(ModelError::new(
@@ -2034,7 +2034,7 @@ mod tests {
         .expect("qualification fallback result");
         assert_eq!(result.model_calls, 2);
         assert_eq!(result.provider_attempts, 2);
-        assert!(result.used_json_fallback);
+        assert!(result.used_structured_fallback);
     }
 
     #[tokio::test]
@@ -2053,7 +2053,7 @@ mod tests {
         assert_eq!(failure.class, "protocol");
         assert_eq!(failure.model_calls, 2);
         assert_eq!(failure.provider_attempts, 2);
-        assert!(failure.used_json_fallback);
+        assert!(failure.used_structured_fallback);
     }
 
     #[tokio::test]
@@ -2070,7 +2070,7 @@ mod tests {
                 target_binding: EvidenceRelevanceBinding::Exact,
                 relation_binding: EvidenceRelevanceBinding::Different,
             },
-            used_json_fallback: false,
+            used_structured_fallback: false,
             model_calls: 1,
             provider_attempts: 1,
             usage: UsageSummary::default(),
@@ -2113,6 +2113,6 @@ mod tests {
                 .expect("fallback result");
         assert_eq!(result.model_calls, 2);
         assert_eq!(result.provider_attempts, 2);
-        assert!(result.used_json_fallback);
+        assert!(result.used_structured_fallback);
     }
 }
