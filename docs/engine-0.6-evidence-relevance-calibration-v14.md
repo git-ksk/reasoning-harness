@@ -144,6 +144,8 @@ v14 canonical runs use `--continue-after-operational-failures` so every fixed-co
 
 Before freezing v14, Groq readiness is checked by a separate synthetic transport workflow that does not read or submit any calibration fixture. It exists only to avoid consuming the first/only canonical observation while the shared Groq organization/project quota is already exhausted. A readiness probe is not a calibration observation and may be repeated.
 
+The first v14 readiness observation (GitHub Actions run \`36172193572\`) passed 3/3 synthetic probes: HTTP 200 on every call, no \`Retry-After\`, \`x-ratelimit-limit-tokens=8000\`, \`x-ratelimit-remaining-tokens=7840\`, and \`finish_reason=stop\`. Its artifact explicitly records \`calibration_observation=false\` and \`ready=true\`. This confirms the provider was operational after the v13 postmortem and before any v14 calibration observation.
+
 ## Canonical roles and acceptance
 
 Required:

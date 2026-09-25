@@ -142,6 +142,8 @@ v14 canonicalは `--continue-after-operational-failures` を使い、providerが
 
 v14 freeze前にはcalibration fixtureを一切読まないsynthetic Groq transport readiness workflowを別途実行する。shared organization/project quotaが既に枯れている状態でfirst/only canonical observationを消費しないためのpreflightであり、calibration observationではないためrepeat可能。
 
+最初のv14 readiness observation（GitHub Actions run \`36172193572\`）はsynthetic probe 3/3 PASS。全call HTTP 200、\`Retry-After\`なし、\`x-ratelimit-limit-tokens=8000\`、\`x-ratelimit-remaining-tokens=7840\`、\`finish_reason=stop\`。artifactには \`calibration_observation=false\` / \`ready=true\` を明示しており、v13 postmortem後かつv14 calibration観測前にproviderがoperationalであることを確認した。
+
 ## Canonical roles / acceptance
 
 Required:
