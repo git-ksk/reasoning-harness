@@ -2,6 +2,11 @@ name: engine-0.6-evidence-relevance-v14-groq-readiness
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feat/462-evidence-target-relevance-v14
+    paths:
+      - .github/workflows/engine-0.6-evidence-relevance-v14-groq-readiness.yml
 
 permissions:
   contents: read
