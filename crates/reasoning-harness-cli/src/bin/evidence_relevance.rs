@@ -8,23 +8,24 @@ use std::{
 
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
-    EvidenceLocalQualification, EvidenceQualificationRisk, EvidenceRelevanceAssessment,
+    EvidenceBlockingCue, EvidenceLocalQualificationV3, EvidenceRelevanceAssessment,
     EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
     EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy, ModelAdapter, ModelError,
-    ModelErrorKind, ModelRequest, ModelUsage, build_evidence_local_qualification_request,
-    build_evidence_relevance_binding_proposal_request, build_strict_json_text_fallback_request,
-    materialize_evidence_relevance_v7, parse_evidence_local_qualification,
+    ModelErrorKind, ModelRequest, ModelUsage, build_evidence_local_qualification_v3_request,
+    build_evidence_relevance_binding_proposal_v3_request, build_strict_json_text_fallback_request,
+    materialize_evidence_relevance_v8, parse_evidence_local_qualification_v3,
     parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v12";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v12";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v13";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v13";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v12";
+const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-atomic-annotation-v13";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v13";
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
-const EXPECTED_CASES: usize = 73;
+const EXPECTED_CASES: usize = 81;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -111,6 +112,7 @@ struct CalibrationManifest {
     issue: u64,
     status: String,
     source_rule: String,
+    annotation_protocol_id: String,
     cases: Vec<CalibrationCase>,
 }
 
@@ -123,7 +125,7 @@ struct CalibrationCase {
     policy: EvidenceRelevanceTargetPolicy,
     candidate: EvidenceRelevanceCandidate,
     expected_proposal: EvidenceRelevanceBindingProposal,
-    expected_local_qualification: EvidenceLocalQualification,
+    expected_local_qualification: EvidenceLocalQualificationV3,
     expected_disposition: EvidenceRelevanceDisposition,
 }
 
@@ -157,9 +159,9 @@ struct CaseObservation {
     observed_proposal: Option<EvidenceRelevanceBindingProposal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proposal_match: Option<bool>,
-    expected_local_qualification: EvidenceLocalQualification,
+    expected_local_qualification: EvidenceLocalQualificationV3,
     #[serde(skip_serializing_if = "Option::is_none")]
-    observed_local_qualification: Option<EvidenceLocalQualification>,
+    observed_local_qualification: Option<EvidenceLocalQualificationV3>,
     #[serde(skip_serializing_if = "Option::is_none")]
     local_qualification_match: Option<bool>,
     local_qualification_invoked: bool,
@@ -200,8 +202,8 @@ struct CalibrationMetrics {
     local_qualification_invocations: usize,
     local_qualification_exact_matches: usize,
     local_qualification_exact_accuracy: Option<f64>,
-    qualification_risk_misses: usize,
-    qualification_spurious_risk_blocks: usize,
+    qualification_blocking_cue_misses: usize,
+    qualification_spurious_cue_blocks: usize,
     materialized_exact_matches: usize,
     materialized_exact_accuracy: Option<f64>,
     correctness_wrong_target_relevance_retention: usize,
@@ -237,6 +239,7 @@ struct StudyOutput {
     suite_id: String,
     issue: u64,
     source_rule: String,
+    annotation_protocol_id: String,
     corpus_status_at_observation: String,
     candidate_commit: String,
     provider: String,
@@ -289,7 +292,7 @@ struct CallOutcome {
 
 #[derive(Debug)]
 struct QualificationCallOutcome {
-    qualification: EvidenceLocalQualification,
+    qualification: EvidenceLocalQualificationV3,
     used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
@@ -338,7 +341,7 @@ async fn run() -> Result<StudyOutput, String> {
 
     for case in &selected {
         let expected = case.expected_proposal;
-        let assessment = materialize_evidence_relevance_v7(
+        let assessment = materialize_evidence_relevance_v8(
             &case.policy,
             &case.candidate,
             Some(&expected),
@@ -359,6 +362,7 @@ async fn run() -> Result<StudyOutput, String> {
             suite_id: manifest.suite_id.clone(),
             issue: manifest.issue,
             source_rule: manifest.source_rule.clone(),
+            annotation_protocol_id: manifest.annotation_protocol_id.clone(),
             corpus_status_at_observation: manifest.status.clone(),
             candidate_commit: git_head().unwrap_or_else(|_| "unknown".into()),
             provider: args.provider.name().into(),
@@ -398,7 +402,7 @@ async fn run() -> Result<StudyOutput, String> {
 
     for (index, case) in selected.iter().enumerate() {
         let case_seed = args.seed.and_then(|base| base.checked_add(index as u64));
-        let request = build_evidence_relevance_binding_proposal_request(
+        let request = build_evidence_relevance_binding_proposal_v3_request(
             &case.policy,
             &case.candidate,
             case_seed,
@@ -409,6 +413,7 @@ async fn run() -> Result<StudyOutput, String> {
         let started = Instant::now();
         let result = call_model_for_proposal(
             generator.adapter(),
+            args.provider,
             request,
             case.policy.assessment_budget.max_model_attempts,
             Duration::from_millis(case.policy.assessment_budget.max_elapsed_ms),
@@ -418,6 +423,7 @@ async fn run() -> Result<StudyOutput, String> {
             Ok(call) => {
                 complete_observed_case(
                     generator.adapter(),
+                    args.provider,
                     case,
                     case_seed,
                     lexical_baseline,
@@ -534,6 +540,7 @@ async fn run() -> Result<StudyOutput, String> {
         suite_id: manifest.suite_id.clone(),
         issue: manifest.issue,
         source_rule: manifest.source_rule.clone(),
+        annotation_protocol_id: manifest.annotation_protocol_id.clone(),
         corpus_status_at_observation: manifest.status.clone(),
         candidate_commit: git_head().unwrap_or_else(|_| "unknown".into()),
         provider,
@@ -551,6 +558,7 @@ async fn run() -> Result<StudyOutput, String> {
 
 async fn complete_observed_case(
     adapter: &dyn ModelAdapter,
+    provider: Provider,
     case: &CalibrationCase,
     case_seed: Option<u64>,
     lexical_baseline: EvidenceRelevanceDisposition,
@@ -586,46 +594,46 @@ async fn complete_observed_case(
         ));
     }
 
-    let request = build_evidence_local_qualification_request(
+    let request = build_evidence_local_qualification_v3_request(
         &case.policy,
         &case.candidate,
         case_seed.map(|seed| seed ^ 0x6a11_f1ed),
     )
     .map_err(|error| format!("build local qualification request {}: {error}", case.id))?;
 
-    let qualification_call = match call_model_for_local_qualification(adapter, request, remaining)
-        .await
-    {
-        Ok(call) => call,
-        Err(mut failure) => {
-            failure.used_structured_fallback |= used_structured_fallback;
-            failure.model_calls = failure.model_calls.saturating_add(model_calls);
-            failure.provider_attempts = failure.provider_attempts.saturating_add(provider_attempts);
-            failure.usage.add_summary(&usage);
-            if failure.provider_model.is_none() {
-                failure.provider_model = provider_model;
+    let qualification_call =
+        match call_model_for_local_qualification(adapter, provider, request, remaining).await {
+            Ok(call) => call,
+            Err(mut failure) => {
+                failure.used_structured_fallback |= used_structured_fallback;
+                failure.model_calls = failure.model_calls.saturating_add(model_calls);
+                failure.provider_attempts =
+                    failure.provider_attempts.saturating_add(provider_attempts);
+                failure.usage.add_summary(&usage);
+                if failure.provider_model.is_none() {
+                    failure.provider_model = provider_model;
+                }
+                if failure.finish_reason.is_none() {
+                    failure.finish_reason = finish_reason;
+                }
+                return Ok(failure_observation(
+                    case,
+                    lexical_baseline,
+                    ObservationFailure {
+                        latency_ms: started.elapsed().as_millis(),
+                        used_structured_fallback: failure.used_structured_fallback,
+                        model_calls: failure.model_calls,
+                        provider_attempts: failure.provider_attempts,
+                        provider_attempts_complete: failure.provider_attempts_complete,
+                        usage: failure.usage,
+                        provider_model: failure.provider_model,
+                        finish_reason: failure.finish_reason,
+                        class: failure.class,
+                        message: format!("local qualification failed: {}", failure.message),
+                    },
+                ));
             }
-            if failure.finish_reason.is_none() {
-                failure.finish_reason = finish_reason;
-            }
-            return Ok(failure_observation(
-                case,
-                lexical_baseline,
-                ObservationFailure {
-                    latency_ms: started.elapsed().as_millis(),
-                    used_structured_fallback: failure.used_structured_fallback,
-                    model_calls: failure.model_calls,
-                    provider_attempts: failure.provider_attempts,
-                    provider_attempts_complete: failure.provider_attempts_complete,
-                    usage: failure.usage,
-                    provider_model: failure.provider_model,
-                    finish_reason: failure.finish_reason,
-                    class: failure.class,
-                    message: format!("local qualification failed: {}", failure.message),
-                },
-            ));
-        }
-    };
+        };
 
     let observed_qualification = qualification_call.qualification;
     used_structured_fallback |= qualification_call.used_structured_fallback;
@@ -639,7 +647,7 @@ async fn complete_observed_case(
         finish_reason = qualification_call.finish_reason;
     }
 
-    match materialize_evidence_relevance_v7(
+    match materialize_evidence_relevance_v8(
         &case.policy,
         &case.candidate,
         Some(&observed),
@@ -696,7 +704,7 @@ fn success_observation(
     case: &CalibrationCase,
     lexical_baseline: EvidenceRelevanceDisposition,
     observed: EvidenceRelevanceBindingProposal,
-    observed_local_qualification: EvidenceLocalQualification,
+    observed_local_qualification: EvidenceLocalQualificationV3,
     assessment: EvidenceRelevanceAssessment,
     latency_ms: u128,
     used_structured_fallback: bool,
@@ -780,6 +788,7 @@ fn failure_observation(
 
 async fn call_model_for_proposal(
     adapter: &dyn ModelAdapter,
+    provider: Provider,
     request: ModelRequest,
     max_model_calls: u32,
     max_elapsed: Duration,
@@ -805,8 +814,28 @@ async fn call_model_for_proposal(
         });
     }
 
+    let groq_text_primary = matches!(provider, Provider::Groq);
+    let primary_request = if groq_text_primary {
+        let Some(text_request) = build_strict_json_text_fallback_request(&request) else {
+            return Err(CallFailure {
+                class: "protocol".into(),
+                message: "Groq strict-JSON Text primary transport unavailable".into(),
+                used_structured_fallback: false,
+                model_calls,
+                provider_attempts,
+                provider_attempts_complete: true,
+                usage,
+                provider_model: last_model,
+                finish_reason: last_finish_reason,
+            });
+        };
+        text_request
+    } else {
+        request.clone()
+    };
+
     model_calls += 1;
-    let primary = tokio::time::timeout_at(deadline, adapter.generate(request.clone())).await;
+    let primary = tokio::time::timeout_at(deadline, adapter.generate(primary_request)).await;
     let primary = match primary {
         Ok(result) => result,
         Err(_) => {
@@ -841,6 +870,21 @@ async fn call_model_for_proposal(
                     finish_reason: last_finish_reason,
                 }),
                 Err(primary_parse_error) => {
+                    if groq_text_primary {
+                        return Err(CallFailure {
+                            class: "protocol".into(),
+                            message: format!(
+                                "Groq strict-JSON Text primary proposal parse failed: {primary_parse_error}"
+                            ),
+                            used_structured_fallback: false,
+                            model_calls,
+                            provider_attempts,
+                            provider_attempts_complete: true,
+                            usage,
+                            provider_model: last_model,
+                            finish_reason: last_finish_reason,
+                        });
+                    }
                     let Some(fallback) = build_strict_json_text_fallback_request(&request) else {
                         return Err(CallFailure {
                             class: "protocol".into(),
@@ -872,7 +916,7 @@ async fn call_model_for_proposal(
                 }
             }
         }
-        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => {
+        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability && !groq_text_primary => {
             provider_attempts = provider_attempts.saturating_add(error.provider_attempts);
             let Some(fallback) = build_strict_json_text_fallback_request(&request) else {
                 return Err(model_failure(
@@ -1015,6 +1059,7 @@ async fn call_fallback(
 
 async fn call_model_for_local_qualification(
     adapter: &dyn ModelAdapter,
+    provider: Provider,
     request: ModelRequest,
     max_elapsed: Duration,
 ) -> Result<QualificationCallOutcome, CallFailure> {
@@ -1033,7 +1078,28 @@ async fn call_model_for_local_qualification(
         });
     }
 
-    let primary = tokio::time::timeout_at(deadline, adapter.generate(request.clone())).await;
+    let groq_text_primary = matches!(provider, Provider::Groq);
+    let primary_request = if groq_text_primary {
+        let Some(text_request) = build_strict_json_text_fallback_request(&request) else {
+            return Err(CallFailure {
+                class: "protocol".into(),
+                message: "Groq strict-JSON Text primary local qualification transport unavailable"
+                    .into(),
+                used_structured_fallback: false,
+                model_calls: 0,
+                provider_attempts: 0,
+                provider_attempts_complete: true,
+                usage: UsageSummary::default(),
+                provider_model: None,
+                finish_reason: None,
+            });
+        };
+        text_request
+    } else {
+        request.clone()
+    };
+
+    let primary = tokio::time::timeout_at(deadline, adapter.generate(primary_request)).await;
     let primary = match primary {
         Ok(result) => result,
         Err(_) => {
@@ -1058,7 +1124,7 @@ async fn call_model_for_local_qualification(
             let attempts = response.provider_attempts;
             let model = Some(response.model.clone());
             let finish = response.finish_reason.clone();
-            match parse_evidence_local_qualification(&response.text) {
+            match parse_evidence_local_qualification_v3(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
                     used_structured_fallback: false,
@@ -1069,6 +1135,21 @@ async fn call_model_for_local_qualification(
                     finish_reason: finish,
                 }),
                 Err(error) => {
+                    if groq_text_primary {
+                        return Err(CallFailure {
+                            class: "protocol".into(),
+                            message: format!(
+                                "Groq strict-JSON Text primary local qualification parse failed: {error}"
+                            ),
+                            used_structured_fallback: false,
+                            model_calls: 1,
+                            provider_attempts: attempts,
+                            provider_attempts_complete: true,
+                            usage,
+                            provider_model: model,
+                            finish_reason: finish,
+                        });
+                    }
                     call_local_qualification_fallback(
                         adapter,
                         &request,
@@ -1084,7 +1165,7 @@ async fn call_model_for_local_qualification(
                 }
             }
         }
-        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => {
+        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability && !groq_text_primary => {
             let attempts = error.provider_attempts;
             call_local_qualification_fallback(
                 adapter,
@@ -1183,7 +1264,7 @@ async fn call_local_qualification_fallback(
             usage.add(&response.usage);
             let model = Some(response.model.clone());
             let finish = response.finish_reason.clone();
-            match parse_evidence_local_qualification(&response.text) {
+            match parse_evidence_local_qualification_v3(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
                     used_structured_fallback: true,
@@ -1325,6 +1406,12 @@ fn load_manifest(target: &Path) -> Result<CalibrationManifest, String> {
             manifest.status
         ));
     }
+    if manifest.annotation_protocol_id != EXPECTED_ANNOTATION_PROTOCOL_ID {
+        return Err(format!(
+            "unexpected annotation protocol id {:?}",
+            manifest.annotation_protocol_id
+        ));
+    }
     if manifest.cases.len() != EXPECTED_CASES {
         return Err(format!(
             "expected {EXPECTED_CASES} calibration cases, got {}",
@@ -1456,29 +1543,29 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         .iter()
         .filter(|case| case.local_qualification_match == Some(true))
         .count();
-    let has_risk = |qualification: &EvidenceLocalQualification| {
-        qualification.identity_mapping_risk != EvidenceQualificationRisk::Absent
-            || qualification.ownership_scope_risk != EvidenceQualificationRisk::Absent
-            || qualification.context_completeness_risk != EvidenceQualificationRisk::Absent
+    let has_blocking_cue = |qualification: &EvidenceLocalQualificationV3| {
+        qualification.identity_mapping_cue == EvidenceBlockingCue::Present
+            || qualification.ownership_scope_cue == EvidenceBlockingCue::Present
+            || qualification.context_gap_cue == EvidenceBlockingCue::Present
     };
-    let qualification_risk_misses = observations
+    let qualification_blocking_cue_misses = observations
         .iter()
         .filter(|case| {
-            has_risk(&case.expected_local_qualification)
+            has_blocking_cue(&case.expected_local_qualification)
                 && case
                     .observed_local_qualification
                     .as_ref()
-                    .is_some_and(|observed| !has_risk(observed))
+                    .is_some_and(|observed| !has_blocking_cue(observed))
         })
         .count();
-    let qualification_spurious_risk_blocks = observations
+    let qualification_spurious_cue_blocks = observations
         .iter()
         .filter(|case| {
-            !has_risk(&case.expected_local_qualification)
+            !has_blocking_cue(&case.expected_local_qualification)
                 && case
                     .observed_local_qualification
                     .as_ref()
-                    .is_some_and(has_risk)
+                    .is_some_and(has_blocking_cue)
         })
         .count();
     let correctness_wrong_target_relevance_retention = observations
@@ -1605,8 +1692,8 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
             local_qualification_exact_matches,
             local_qualification_expected_cases,
         ),
-        qualification_risk_misses,
-        qualification_spurious_risk_blocks,
+        qualification_blocking_cue_misses,
+        qualification_spurious_cue_blocks,
         materialized_exact_matches,
         materialized_exact_accuracy: accuracy(materialized_exact_matches, successful),
         correctness_wrong_target_relevance_retention,
@@ -1648,8 +1735,8 @@ fn empty_metrics(cases: usize) -> CalibrationMetrics {
         local_qualification_invocations: 0,
         local_qualification_exact_matches: 0,
         local_qualification_exact_accuracy: None,
-        qualification_risk_misses: 0,
-        qualification_spurious_risk_blocks: 0,
+        qualification_blocking_cue_misses: 0,
+        qualification_spurious_cue_blocks: 0,
         materialized_exact_matches: 0,
         materialized_exact_accuracy: None,
         correctness_wrong_target_relevance_retention: 0,
@@ -1785,12 +1872,12 @@ mod tests {
     }
 
     #[test]
-    fn expected_primary_and_qualification_materialize_all_v12_cases() {
+    fn expected_primary_and_qualification_materialize_all_v13_cases() {
         let manifest = load();
         assert_eq!(manifest.cases.len(), EXPECTED_CASES);
         for case in manifest.cases {
             let proposal = case.expected_proposal;
-            let assessment = materialize_evidence_relevance_v7(
+            let assessment = materialize_evidence_relevance_v8(
                 &case.policy,
                 &case.candidate,
                 Some(&proposal),
@@ -1865,8 +1952,12 @@ mod tests {
     fn fixture_request() -> ModelRequest {
         let manifest = load();
         let case = &manifest.cases[0];
-        build_evidence_relevance_binding_proposal_request(&case.policy, &case.candidate, Some(462))
-            .expect("request")
+        build_evidence_relevance_binding_proposal_v3_request(
+            &case.policy,
+            &case.candidate,
+            Some(462),
+        )
+        .expect("request")
     }
 
     #[tokio::test]
@@ -1878,10 +1969,15 @@ mod tests {
             ],
             0,
         );
-        let failure =
-            call_model_for_proposal(&adapter, fixture_request(), 1, Duration::from_secs(1))
-                .await
-                .unwrap_err();
+        let failure = call_model_for_proposal(
+            &adapter,
+            Provider::Mistral,
+            fixture_request(),
+            1,
+            Duration::from_secs(1),
+        )
+        .await
+        .unwrap_err();
         assert_eq!(failure.class, "attempt_budget");
         assert_eq!(failure.model_calls, 1);
         assert!(!failure.used_structured_fallback);
@@ -1895,10 +1991,15 @@ mod tests {
             )],
             50,
         );
-        let failure =
-            call_model_for_proposal(&adapter, fixture_request(), 2, Duration::from_millis(5))
-                .await
-                .unwrap_err();
+        let failure = call_model_for_proposal(
+            &adapter,
+            Provider::Mistral,
+            fixture_request(),
+            2,
+            Duration::from_millis(5),
+        )
+        .await
+        .unwrap_err();
         assert_eq!(failure.class, "assessment_timeout");
         assert_eq!(failure.model_calls, 1);
         assert!(!failure.provider_attempts_complete);
@@ -1933,12 +2034,12 @@ mod tests {
     fn local_qualification_request() -> ModelRequest {
         let manifest = load();
         let case = &manifest.cases[0];
-        build_evidence_local_qualification_request(&case.policy, &case.candidate, Some(463))
+        build_evidence_local_qualification_v3_request(&case.policy, &case.candidate, Some(463))
             .expect("local qualification request")
     }
 
     fn qualification_json() -> &'static str {
-        r#"{"target_support":"supported","relation_support":"supported","identity_mapping_risk":"absent","ownership_scope_risk":"absent","context_completeness_risk":"absent","explicit_local_absence":"absent"}"#
+        r#"{"target_support":"supported","relation_support":"supported","identity_mapping_cue":"absent","ownership_scope_cue":"absent","context_gap_cue":"absent","explicit_local_absence":"absent"}"#
     }
 
     #[test]
@@ -1956,6 +2057,7 @@ mod tests {
         let adapter = SequenceAdapter::new(vec![model_response(qualification_json())], 0);
         let result = call_model_for_local_qualification(
             &adapter,
+            Provider::Mistral,
             local_qualification_request(),
             Duration::from_secs(1),
         )
@@ -1989,6 +2091,7 @@ mod tests {
         );
         let result = call_model_for_local_qualification(
             &adapter,
+            Provider::Mistral,
             local_qualification_request(),
             Duration::from_secs(1),
         )
@@ -2004,6 +2107,7 @@ mod tests {
         let adapter = SequenceAdapter::new(vec![model_response(qualification_json())], 50);
         let failure = call_model_for_local_qualification(
             &adapter,
+            Provider::Mistral,
             local_qualification_request(),
             Duration::from_millis(5),
         )
@@ -2027,6 +2131,7 @@ mod tests {
         );
         let result = call_model_for_local_qualification(
             &adapter,
+            Provider::Mistral,
             local_qualification_request(),
             Duration::from_secs(1),
         )
@@ -2045,6 +2150,7 @@ mod tests {
         );
         let failure = call_model_for_local_qualification(
             &adapter,
+            Provider::Mistral,
             local_qualification_request(),
             Duration::from_secs(1),
         )
@@ -2079,6 +2185,7 @@ mod tests {
         };
         let observation = complete_observed_case(
             &adapter,
+            Provider::Mistral,
             case,
             Some(462),
             EvidenceRelevanceDisposition::Ambiguous,
@@ -2107,12 +2214,52 @@ mod tests {
             ],
             0,
         );
-        let result =
-            call_model_for_proposal(&adapter, fixture_request(), 2, Duration::from_secs(1))
-                .await
-                .expect("fallback result");
+        let result = call_model_for_proposal(
+            &adapter,
+            Provider::Mistral,
+            fixture_request(),
+            2,
+            Duration::from_secs(1),
+        )
+        .await
+        .expect("fallback result");
         assert_eq!(result.model_calls, 2);
         assert_eq!(result.provider_attempts, 2);
         assert!(result.used_structured_fallback);
+    }
+
+    #[tokio::test]
+    async fn groq_uses_strict_json_text_as_primary_without_second_fallback() {
+        let adapter = SequenceAdapter::new(vec![model_response("not json")], 0);
+        let failure = call_model_for_proposal(
+            &adapter,
+            Provider::Groq,
+            fixture_request(),
+            2,
+            Duration::from_secs(1),
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(failure.class, "protocol");
+        assert_eq!(failure.model_calls, 1);
+        assert_eq!(failure.provider_attempts, 1);
+        assert!(!failure.used_structured_fallback);
+    }
+
+    #[tokio::test]
+    async fn groq_local_qualification_uses_strict_json_text_as_primary_without_second_fallback() {
+        let adapter = SequenceAdapter::new(vec![model_response("not json")], 0);
+        let failure = call_model_for_local_qualification(
+            &adapter,
+            Provider::Groq,
+            local_qualification_request(),
+            Duration::from_secs(1),
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(failure.class, "protocol");
+        assert_eq!(failure.model_calls, 1);
+        assert_eq!(failure.provider_attempts, 1);
+        assert!(!failure.used_structured_fallback);
     }
 }
