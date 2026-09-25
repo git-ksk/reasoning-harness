@@ -328,7 +328,7 @@ impl GoogleAdapter {
             response_format: response_format(request.output_format),
             generation_config: GenerationConfig {
                 max_output_tokens: request.max_tokens,
-                seed: request.random_seed,
+                seed: request.random_seed.map(normalize_google_seed),
                 temperature: GOOGLE_RECOMMENDED_TEMPERATURE,
             },
             store: false,
@@ -563,8 +563,13 @@ struct GenerationConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     max_output_tokens: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    seed: Option<u64>,
+    seed: Option<u32>,
     temperature: f32,
+}
+
+fn normalize_google_seed(seed: u64) -> u32 {
+    const GOOGLE_SEED_DOMAIN: u64 = i32::MAX as u64 + 1;
+    (seed % GOOGLE_SEED_DOMAIN) as u32
 }
 
 #[derive(Debug, Serialize)]
@@ -1089,6 +1094,15 @@ mod tests {
         .unwrap();
         assert_eq!(response.text().unwrap(), "{\"claims\":[]}");
         assert_eq!(response.usage.unwrap().total_tokens, Some(14));
+    }
+
+    #[test]
+    fn normalizes_random_seed_to_google_supported_signed_32_bit_domain() {
+        assert_eq!(normalize_google_seed(0), 0);
+        assert_eq!(normalize_google_seed(i32::MAX as u64), i32::MAX as u32);
+        assert_eq!(normalize_google_seed(i32::MAX as u64 + 1), 0);
+        assert!(normalize_google_seed(0xa93c_2b41) <= i32::MAX as u32);
+        assert!(normalize_google_seed(u64::MAX) <= i32::MAX as u32);
     }
 
     #[test]
