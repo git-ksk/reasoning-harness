@@ -8,19 +8,21 @@ use std::{
 
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
-    EvidenceRelevanceAssessment, EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate,
-    EvidenceRelevanceDisposition, EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy,
-    ModelAdapter, ModelError, ModelErrorKind, ModelRequest, ModelUsage,
+    EvidenceNegativeTargetConfirmation, EvidenceRelevanceAssessment, EvidenceRelevanceBinding,
+    EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
+    EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy, ModelAdapter, ModelError,
+    ModelErrorKind, ModelRequest, ModelUsage, build_evidence_negative_target_confirmation_request,
     build_evidence_relevance_binding_proposal_request, build_json_object_fallback_request,
-    materialize_evidence_relevance_v3, parse_evidence_relevance_binding_proposal,
+    materialize_evidence_relevance_v4, parse_evidence_negative_target_confirmation,
+    parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v7";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v7";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v8";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v8";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v7";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v8";
 
 #[derive(Debug, Parser)]
 #[command(
@@ -119,6 +121,8 @@ struct CalibrationCase {
     policy: EvidenceRelevanceTargetPolicy,
     candidate: EvidenceRelevanceCandidate,
     expected_proposal: EvidenceRelevanceBindingProposal,
+    #[serde(default)]
+    expected_negative_target_confirmation: Option<EvidenceNegativeTargetConfirmation>,
     expected_disposition: EvidenceRelevanceDisposition,
 }
 
@@ -135,6 +139,12 @@ impl UsageSummary {
         self.output_tokens += usage.output_tokens.unwrap_or(0);
         self.total_tokens += usage.total_tokens.unwrap_or(0);
     }
+
+    fn add_summary(&mut self, other: &Self) {
+        self.input_tokens = self.input_tokens.saturating_add(other.input_tokens);
+        self.output_tokens = self.output_tokens.saturating_add(other.output_tokens);
+        self.total_tokens = self.total_tokens.saturating_add(other.total_tokens);
+    }
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -146,6 +156,12 @@ struct CaseObservation {
     observed_proposal: Option<EvidenceRelevanceBindingProposal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proposal_match: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    expected_negative_target_confirmation: Option<EvidenceNegativeTargetConfirmation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    observed_negative_target_confirmation: Option<EvidenceNegativeTargetConfirmation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    negative_target_confirmation_match: Option<bool>,
     expected_disposition: EvidenceRelevanceDisposition,
     #[serde(skip_serializing_if = "Option::is_none")]
     materialized_disposition: Option<EvidenceRelevanceDisposition>,
@@ -179,6 +195,9 @@ struct CalibrationMetrics {
     failed_provider_cases: usize,
     proposal_exact_matches: usize,
     proposal_exact_accuracy: Option<f64>,
+    negative_target_confirmation_cases: usize,
+    negative_target_confirmation_exact_matches: usize,
+    negative_target_confirmation_exact_accuracy: Option<f64>,
     materialized_exact_matches: usize,
     materialized_exact_accuracy: Option<f64>,
     correctness_wrong_target_relevance_retention: usize,
@@ -265,6 +284,17 @@ struct CallOutcome {
 }
 
 #[derive(Debug)]
+struct NegativeConfirmationCallOutcome {
+    confirmation: EvidenceNegativeTargetConfirmation,
+    used_json_fallback: bool,
+    model_calls: u32,
+    provider_attempts: u32,
+    usage: UsageSummary,
+    provider_model: Option<String>,
+    finish_reason: Option<String>,
+}
+
+#[derive(Debug)]
 struct CallFailure {
     class: String,
     message: String,
@@ -304,9 +334,29 @@ async fn run() -> Result<StudyOutput, String> {
 
     for case in &selected {
         let expected = case.expected_proposal;
-        let assessment =
-            materialize_evidence_relevance_v3(&case.policy, &case.candidate, Some(&expected))
-                .map_err(|error| format!("invalid calibration policy {}: {error}", case.id))?;
+        if expected.target_binding == EvidenceRelevanceBinding::Different
+            && case.expected_negative_target_confirmation.is_none()
+        {
+            return Err(format!(
+                "negative target case {} must freeze expected confirmation",
+                case.id
+            ));
+        }
+        if expected.target_binding != EvidenceRelevanceBinding::Different
+            && case.expected_negative_target_confirmation.is_some()
+        {
+            return Err(format!(
+                "non-negative target case {} must not carry negative confirmation",
+                case.id
+            ));
+        }
+        let assessment = materialize_evidence_relevance_v4(
+            &case.policy,
+            &case.candidate,
+            Some(&expected),
+            case.expected_negative_target_confirmation,
+        )
+        .map_err(|error| format!("invalid calibration policy {}: {error}", case.id))?;
         if assessment.disposition != case.expected_disposition {
             return Err(format!(
                 "deterministic expected proposal mismatch for {}: expected {:?}, materialized {:?}",
@@ -376,73 +426,195 @@ async fn run() -> Result<StudyOutput, String> {
             Duration::from_millis(case.policy.assessment_budget.max_elapsed_ms),
         )
         .await;
-        let latency_ms = started.elapsed().as_millis();
-
         let observation = match result {
             Ok(call) => {
                 let observed = call.proposal;
-                match materialize_evidence_relevance_v3(
-                    &case.policy,
-                    &case.candidate,
-                    Some(&call.proposal),
-                ) {
-                    Ok(assessment) => {
-                        let materialized = assessment.disposition;
-                        CaseObservation {
-                            id: case.id.clone(),
-                            family: case.family.clone(),
-                            expected_proposal: case.expected_proposal,
-                            observed_proposal: Some(observed),
-                            proposal_match: Some(observed == case.expected_proposal),
-                            expected_disposition: case.expected_disposition,
-                            materialized_disposition: Some(materialized),
-                            disposition_match: Some(materialized == case.expected_disposition),
+                let mut used_json_fallback = call.used_json_fallback;
+                let mut model_calls = call.model_calls;
+                let mut provider_attempts = call.provider_attempts;
+                let mut usage = call.usage;
+                let mut provider_model = call.provider_model;
+                let mut finish_reason = call.finish_reason;
+
+                if observed.target_binding == EvidenceRelevanceBinding::Different {
+                    let remaining =
+                        Duration::from_millis(case.policy.assessment_budget.max_elapsed_ms)
+                            .saturating_sub(started.elapsed());
+                    if remaining.is_zero() {
+                        failure_observation(
+                            case,
                             lexical_baseline,
-                            lexical_baseline_match: lexical_baseline == case.expected_disposition,
-                            deterministic_safety_override: matches!(
-                                (observed.target_binding, observed.relation_binding),
-                                (
-                                    reasoning_harness_core::EvidenceRelevanceBinding::Exact,
-                                    reasoning_harness_core::EvidenceRelevanceBinding::Exact
+                            ObservationFailure {
+                                latency_ms: started.elapsed().as_millis(),
+                                used_json_fallback,
+                                model_calls,
+                                provider_attempts,
+                                provider_attempts_complete: true,
+                                usage,
+                                provider_model,
+                                finish_reason,
+                                class: "assessment_timeout".into(),
+                                message:
+                                    "negative-target confirmation had no remaining case budget"
+                                        .into(),
+                            },
+                        )
+                    } else {
+                        let confirmation_request =
+                            build_evidence_negative_target_confirmation_request(
+                                &case.policy,
+                                &case.candidate,
+                                case_seed.map(|seed| seed ^ 0x51d1_57c7),
+                            )
+                            .map_err(|error| {
+                                format!(
+                                    "build negative-target confirmation request {}: {error}",
+                                    case.id
                                 )
-                            ) && materialized
-                                != EvidenceRelevanceDisposition::Relevant,
-                            used_json_fallback: call.used_json_fallback,
-                            model_calls: call.model_calls,
-                            provider_attempts: call.provider_attempts,
-                            provider_attempts_complete: true,
-                            latency_ms,
-                            usage: call.usage,
-                            provider_model: call.provider_model,
-                            finish_reason: call.finish_reason,
-                            assessment: Some(assessment),
-                            failure_class: None,
-                            failure: None,
+                            })?;
+                        match call_model_for_negative_confirmation(
+                            generator.adapter(),
+                            confirmation_request,
+                            case.policy.assessment_budget.max_model_attempts,
+                            remaining,
+                        )
+                        .await
+                        {
+                            Ok(confirmation_call) => {
+                                let observed_negative_target_confirmation =
+                                    Some(confirmation_call.confirmation);
+                                used_json_fallback |= confirmation_call.used_json_fallback;
+                                model_calls =
+                                    model_calls.saturating_add(confirmation_call.model_calls);
+                                provider_attempts = provider_attempts
+                                    .saturating_add(confirmation_call.provider_attempts);
+                                usage.add_summary(&confirmation_call.usage);
+                                if confirmation_call.provider_model.is_some() {
+                                    provider_model = confirmation_call.provider_model;
+                                }
+                                if confirmation_call.finish_reason.is_some() {
+                                    finish_reason = confirmation_call.finish_reason;
+                                }
+
+                                match materialize_evidence_relevance_v4(
+                                    &case.policy,
+                                    &case.candidate,
+                                    Some(&observed),
+                                    observed_negative_target_confirmation,
+                                ) {
+                                    Ok(assessment) => success_observation(
+                                        case,
+                                        lexical_baseline,
+                                        observed,
+                                        observed_negative_target_confirmation,
+                                        assessment,
+                                        started.elapsed().as_millis(),
+                                        used_json_fallback,
+                                        model_calls,
+                                        provider_attempts,
+                                        usage,
+                                        provider_model,
+                                        finish_reason,
+                                    ),
+                                    Err(error) => failure_observation(
+                                        case,
+                                        lexical_baseline,
+                                        ObservationFailure {
+                                            latency_ms: started.elapsed().as_millis(),
+                                            used_json_fallback,
+                                            model_calls,
+                                            provider_attempts,
+                                            provider_attempts_complete: true,
+                                            usage,
+                                            provider_model,
+                                            finish_reason,
+                                            class: "materialization".into(),
+                                            message: error.to_string(),
+                                        },
+                                    ),
+                                }
+                            }
+                            Err(mut failure) => {
+                                failure.used_json_fallback |= used_json_fallback;
+                                failure.model_calls =
+                                    failure.model_calls.saturating_add(model_calls);
+                                failure.provider_attempts =
+                                    failure.provider_attempts.saturating_add(provider_attempts);
+                                failure.usage.add_summary(&usage);
+                                if failure.provider_model.is_none() {
+                                    failure.provider_model = provider_model;
+                                }
+                                if failure.finish_reason.is_none() {
+                                    failure.finish_reason = finish_reason;
+                                }
+                                failure_observation(
+                                    case,
+                                    lexical_baseline,
+                                    ObservationFailure {
+                                        latency_ms: started.elapsed().as_millis(),
+                                        used_json_fallback: failure.used_json_fallback,
+                                        model_calls: failure.model_calls,
+                                        provider_attempts: failure.provider_attempts,
+                                        provider_attempts_complete: failure
+                                            .provider_attempts_complete,
+                                        usage: failure.usage,
+                                        provider_model: failure.provider_model,
+                                        finish_reason: failure.finish_reason,
+                                        class: failure.class,
+                                        message: format!(
+                                            "negative-target confirmation failed: {}",
+                                            failure.message
+                                        ),
+                                    },
+                                )
+                            }
                         }
                     }
-                    Err(error) => failure_observation(
-                        case,
-                        lexical_baseline,
-                        ObservationFailure {
-                            latency_ms,
-                            used_json_fallback: call.used_json_fallback,
-                            model_calls: call.model_calls,
-                            provider_attempts: call.provider_attempts,
-                            provider_attempts_complete: true,
-                            usage: call.usage,
-                            provider_model: call.provider_model,
-                            finish_reason: call.finish_reason,
-                            class: "materialization".into(),
-                            message: error.to_string(),
-                        },
-                    ),
+                } else {
+                    match materialize_evidence_relevance_v4(
+                        &case.policy,
+                        &case.candidate,
+                        Some(&observed),
+                        None,
+                    ) {
+                        Ok(assessment) => success_observation(
+                            case,
+                            lexical_baseline,
+                            observed,
+                            None,
+                            assessment,
+                            started.elapsed().as_millis(),
+                            used_json_fallback,
+                            model_calls,
+                            provider_attempts,
+                            usage,
+                            provider_model,
+                            finish_reason,
+                        ),
+                        Err(error) => failure_observation(
+                            case,
+                            lexical_baseline,
+                            ObservationFailure {
+                                latency_ms: started.elapsed().as_millis(),
+                                used_json_fallback,
+                                model_calls,
+                                provider_attempts,
+                                provider_attempts_complete: true,
+                                usage,
+                                provider_model,
+                                finish_reason,
+                                class: "materialization".into(),
+                                message: error.to_string(),
+                            },
+                        ),
+                    }
                 }
             }
             Err(failure) => failure_observation(
                 case,
                 lexical_baseline,
                 ObservationFailure {
-                    latency_ms,
+                    latency_ms: started.elapsed().as_millis(),
                     used_json_fallback: failure.used_json_fallback,
                     model_calls: failure.model_calls,
                     provider_attempts: failure.provider_attempts,
@@ -574,6 +746,59 @@ struct ObservationFailure {
     message: String,
 }
 
+#[allow(clippy::too_many_arguments)]
+fn success_observation(
+    case: &CalibrationCase,
+    lexical_baseline: EvidenceRelevanceDisposition,
+    observed: EvidenceRelevanceBindingProposal,
+    observed_negative_target_confirmation: Option<EvidenceNegativeTargetConfirmation>,
+    assessment: EvidenceRelevanceAssessment,
+    latency_ms: u128,
+    used_json_fallback: bool,
+    model_calls: u32,
+    provider_attempts: u32,
+    usage: UsageSummary,
+    provider_model: Option<String>,
+    finish_reason: Option<String>,
+) -> CaseObservation {
+    let materialized = assessment.disposition;
+    CaseObservation {
+        id: case.id.clone(),
+        family: case.family.clone(),
+        expected_proposal: case.expected_proposal,
+        observed_proposal: Some(observed),
+        proposal_match: Some(observed == case.expected_proposal),
+        expected_negative_target_confirmation: case.expected_negative_target_confirmation,
+        observed_negative_target_confirmation,
+        negative_target_confirmation_match: case
+            .expected_negative_target_confirmation
+            .map(|expected| observed_negative_target_confirmation == Some(expected)),
+        expected_disposition: case.expected_disposition,
+        materialized_disposition: Some(materialized),
+        disposition_match: Some(materialized == case.expected_disposition),
+        lexical_baseline,
+        lexical_baseline_match: lexical_baseline == case.expected_disposition,
+        deterministic_safety_override: matches!(
+            (observed.target_binding, observed.relation_binding),
+            (
+                EvidenceRelevanceBinding::Exact,
+                EvidenceRelevanceBinding::Exact
+            )
+        ) && materialized != EvidenceRelevanceDisposition::Relevant,
+        used_json_fallback,
+        model_calls,
+        provider_attempts,
+        provider_attempts_complete: true,
+        latency_ms,
+        usage,
+        provider_model,
+        finish_reason,
+        assessment: Some(assessment),
+        failure_class: None,
+        failure: None,
+    }
+}
+
 fn failure_observation(
     case: &CalibrationCase,
     lexical_baseline: EvidenceRelevanceDisposition,
@@ -585,6 +810,9 @@ fn failure_observation(
         expected_proposal: case.expected_proposal,
         observed_proposal: None,
         proposal_match: None,
+        expected_negative_target_confirmation: case.expected_negative_target_confirmation,
+        observed_negative_target_confirmation: None,
+        negative_target_confirmation_match: None,
         expected_disposition: case.expected_disposition,
         materialized_disposition: None,
         disposition_match: None,
@@ -840,6 +1068,243 @@ async fn call_fallback(
     }
 }
 
+async fn call_model_for_negative_confirmation(
+    adapter: &dyn ModelAdapter,
+    request: ModelRequest,
+    max_model_calls: u32,
+    max_elapsed: Duration,
+) -> Result<NegativeConfirmationCallOutcome, CallFailure> {
+    let deadline = tokio::time::Instant::now() + max_elapsed;
+    let mut model_calls = 0u32;
+    let mut provider_attempts = 0u32;
+    let mut usage = UsageSummary::default();
+    let mut last_model = None;
+    let mut last_finish_reason = None;
+
+    if max_model_calls == 0 {
+        return Err(CallFailure {
+            class: "attempt_budget".into(),
+            message: "negative-target confirmation model-call budget is zero".into(),
+            used_json_fallback: false,
+            model_calls,
+            provider_attempts,
+            provider_attempts_complete: true,
+            usage,
+            provider_model: last_model,
+            finish_reason: last_finish_reason,
+        });
+    }
+
+    model_calls += 1;
+    let primary = tokio::time::timeout_at(deadline, adapter.generate(request.clone())).await;
+    let primary = match primary {
+        Ok(result) => result,
+        Err(_) => {
+            return Err(CallFailure {
+                class: "assessment_timeout".into(),
+                message: "negative-target confirmation exceeded elapsed-time budget".into(),
+                used_json_fallback: false,
+                model_calls,
+                provider_attempts,
+                provider_attempts_complete: false,
+                usage,
+                provider_model: last_model,
+                finish_reason: last_finish_reason,
+            });
+        }
+    };
+
+    match primary {
+        Ok(response) => {
+            provider_attempts = provider_attempts.saturating_add(response.provider_attempts);
+            usage.add(&response.usage);
+            last_model = Some(response.model.clone());
+            last_finish_reason = response.finish_reason.clone();
+            match parse_evidence_negative_target_confirmation(&response.text) {
+                Ok(proposal) => Ok(NegativeConfirmationCallOutcome {
+                    confirmation: proposal.negative_target_confirmation,
+                    used_json_fallback: false,
+                    model_calls,
+                    provider_attempts,
+                    usage,
+                    provider_model: last_model,
+                    finish_reason: last_finish_reason,
+                }),
+                Err(primary_parse_error) => {
+                    let Some(fallback) = build_json_object_fallback_request(&request) else {
+                        return Err(CallFailure {
+                            class: "protocol".into(),
+                            message: format!(
+                                "negative-target structured confirmation parse failed and no fallback exists: {primary_parse_error}"
+                            ),
+                            used_json_fallback: false,
+                            model_calls,
+                            provider_attempts,
+                            provider_attempts_complete: true,
+                            usage,
+                            provider_model: last_model,
+                            finish_reason: last_finish_reason,
+                        });
+                    };
+                    call_negative_confirmation_fallback(
+                        adapter,
+                        fallback,
+                        deadline,
+                        max_model_calls,
+                        model_calls,
+                        provider_attempts,
+                        usage,
+                        last_model,
+                        last_finish_reason,
+                        format!(
+                            "negative-target structured confirmation parse failed: {primary_parse_error}"
+                        ),
+                    )
+                    .await
+                }
+            }
+        }
+        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability => {
+            provider_attempts = provider_attempts.saturating_add(error.provider_attempts);
+            let Some(fallback) = build_json_object_fallback_request(&request) else {
+                return Err(model_failure(
+                    error,
+                    false,
+                    model_calls,
+                    provider_attempts,
+                    usage,
+                    last_model,
+                    last_finish_reason,
+                ));
+            };
+            call_negative_confirmation_fallback(
+                adapter,
+                fallback,
+                deadline,
+                max_model_calls,
+                model_calls,
+                provider_attempts,
+                usage,
+                last_model,
+                last_finish_reason,
+                "negative-target JSON-Schema capability unsupported".into(),
+            )
+            .await
+        }
+        Err(error) => {
+            provider_attempts = provider_attempts.saturating_add(error.provider_attempts);
+            Err(model_failure(
+                error,
+                false,
+                model_calls,
+                provider_attempts,
+                usage,
+                last_model,
+                last_finish_reason,
+            ))
+        }
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn call_negative_confirmation_fallback(
+    adapter: &dyn ModelAdapter,
+    fallback: ModelRequest,
+    deadline: tokio::time::Instant,
+    max_model_calls: u32,
+    prior_model_calls: u32,
+    prior_provider_attempts: u32,
+    mut usage: UsageSummary,
+    prior_model: Option<String>,
+    prior_finish_reason: Option<String>,
+    primary_context: String,
+) -> Result<NegativeConfirmationCallOutcome, CallFailure> {
+    if prior_model_calls >= max_model_calls {
+        return Err(CallFailure {
+            class: "attempt_budget".into(),
+            message: format!(
+                "{primary_context}; JSON-object fallback blocked by model-call budget"
+            ),
+            used_json_fallback: false,
+            model_calls: prior_model_calls,
+            provider_attempts: prior_provider_attempts,
+            provider_attempts_complete: true,
+            usage,
+            provider_model: prior_model,
+            finish_reason: prior_finish_reason,
+        });
+    }
+
+    let model_calls = prior_model_calls + 1;
+    let result = tokio::time::timeout_at(deadline, adapter.generate(fallback)).await;
+    let result = match result {
+        Ok(result) => result,
+        Err(_) => {
+            return Err(CallFailure {
+                class: "assessment_timeout".into(),
+                message: format!(
+                    "{primary_context}; JSON-object fallback exceeded elapsed-time budget"
+                ),
+                used_json_fallback: true,
+                model_calls,
+                provider_attempts: prior_provider_attempts,
+                provider_attempts_complete: false,
+                usage,
+                provider_model: prior_model,
+                finish_reason: prior_finish_reason,
+            });
+        }
+    };
+
+    match result {
+        Ok(response) => {
+            let provider_attempts =
+                prior_provider_attempts.saturating_add(response.provider_attempts);
+            usage.add(&response.usage);
+            let model = Some(response.model.clone());
+            let finish_reason = response.finish_reason.clone();
+            match parse_evidence_negative_target_confirmation(&response.text) {
+                Ok(proposal) => Ok(NegativeConfirmationCallOutcome {
+                    confirmation: proposal.negative_target_confirmation,
+                    used_json_fallback: true,
+                    model_calls,
+                    provider_attempts,
+                    usage,
+                    provider_model: model,
+                    finish_reason,
+                }),
+                Err(error) => Err(CallFailure {
+                    class: "protocol".into(),
+                    message: format!(
+                        "{primary_context}; JSON-object fallback negative-target confirmation parse failed: {error}"
+                    ),
+                    used_json_fallback: true,
+                    model_calls,
+                    provider_attempts,
+                    provider_attempts_complete: true,
+                    usage,
+                    provider_model: model,
+                    finish_reason,
+                }),
+            }
+        }
+        Err(error) => {
+            let provider_attempts = prior_provider_attempts.saturating_add(error.provider_attempts);
+            let mut failure = model_failure(
+                error,
+                true,
+                model_calls,
+                provider_attempts,
+                usage,
+                prior_model,
+                prior_finish_reason,
+            );
+            failure.message = format!("{primary_context}; fallback failed: {}", failure.message);
+            Err(failure)
+        }
+    }
+}
+
 fn model_failure(
     error: ModelError,
     used_json_fallback: bool,
@@ -939,9 +1404,9 @@ fn load_manifest(target: &Path) -> Result<CalibrationManifest, String> {
             manifest.status
         ));
     }
-    if manifest.cases.len() != 26 {
+    if manifest.cases.len() != 32 {
         return Err(format!(
-            "expected 26 calibration cases, got {}",
+            "expected 32 calibration cases, got {}",
             manifest.cases.len()
         ));
     }
@@ -1061,6 +1526,16 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         .iter()
         .filter(|case| case.disposition_match == Some(true))
         .count();
+    let negative_target_confirmation_cases = observations
+        .iter()
+        .filter(|case| {
+            case.failure.is_none() && case.expected_negative_target_confirmation.is_some()
+        })
+        .count();
+    let negative_target_confirmation_exact_matches = observations
+        .iter()
+        .filter(|case| case.negative_target_confirmation_match == Some(true))
+        .count();
     let correctness_wrong_target_relevance_retention = observations
         .iter()
         .filter(|case| {
@@ -1178,6 +1653,12 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         failed_provider_cases: failed,
         proposal_exact_matches,
         proposal_exact_accuracy: accuracy(proposal_exact_matches, successful),
+        negative_target_confirmation_cases,
+        negative_target_confirmation_exact_matches,
+        negative_target_confirmation_exact_accuracy: accuracy(
+            negative_target_confirmation_exact_matches,
+            negative_target_confirmation_cases,
+        ),
         materialized_exact_matches,
         materialized_exact_accuracy: accuracy(materialized_exact_matches, successful),
         correctness_wrong_target_relevance_retention,
@@ -1215,6 +1696,9 @@ fn empty_metrics(cases: usize) -> CalibrationMetrics {
         failed_provider_cases: 0,
         proposal_exact_matches: 0,
         proposal_exact_accuracy: None,
+        negative_target_confirmation_cases: 0,
+        negative_target_confirmation_exact_matches: 0,
+        negative_target_confirmation_exact_accuracy: None,
         materialized_exact_matches: 0,
         materialized_exact_accuracy: None,
         correctness_wrong_target_relevance_retention: 0,
@@ -1347,14 +1831,18 @@ mod tests {
     }
 
     #[test]
-    fn expected_proposals_materialize_all_26_cases() {
+    fn expected_proposals_materialize_all_32_cases() {
         let manifest = load();
-        assert_eq!(manifest.cases.len(), 26);
+        assert_eq!(manifest.cases.len(), 32);
         for case in manifest.cases {
             let proposal = case.expected_proposal;
-            let assessment =
-                materialize_evidence_relevance_v3(&case.policy, &case.candidate, Some(&proposal))
-                    .unwrap();
+            let assessment = materialize_evidence_relevance_v4(
+                &case.policy,
+                &case.candidate,
+                Some(&proposal),
+                case.expected_negative_target_confirmation,
+            )
+            .unwrap();
             assert_eq!(
                 assessment.disposition, case.expected_disposition,
                 "{}",
@@ -1486,6 +1974,65 @@ mod tests {
         assert_eq!(percentile_latency(&values, 95), Some(100));
         assert_eq!(percentile_latency(&[42], 95), Some(42));
         assert_eq!(percentile_latency(&[], 95), None);
+    }
+
+    fn negative_confirmation_request() -> ModelRequest {
+        let manifest = load();
+        let case = manifest
+            .cases
+            .iter()
+            .find(|case| case.expected_negative_target_confirmation.is_some())
+            .expect("negative target case");
+        build_evidence_negative_target_confirmation_request(
+            &case.policy,
+            &case.candidate,
+            Some(463),
+        )
+        .expect("negative confirmation request")
+    }
+
+    #[tokio::test]
+    async fn negative_confirmation_parser_returns_typed_state() {
+        let adapter = SequenceAdapter::new(
+            vec![model_response(
+                r#"{"negative_target_confirmation":"confirmed_distinct_entity"}"#,
+            )],
+            0,
+        );
+        let result = call_model_for_negative_confirmation(
+            &adapter,
+            negative_confirmation_request(),
+            2,
+            Duration::from_secs(1),
+        )
+        .await
+        .expect("confirmation result");
+        assert_eq!(
+            result.confirmation,
+            EvidenceNegativeTargetConfirmation::ConfirmedDistinctEntity
+        );
+        assert_eq!(result.model_calls, 1);
+        assert_eq!(result.provider_attempts, 1);
+    }
+
+    #[tokio::test]
+    async fn negative_confirmation_timeout_is_operational_failure() {
+        let adapter = SequenceAdapter::new(
+            vec![model_response(
+                r#"{"negative_target_confirmation":"not_confirmed"}"#,
+            )],
+            50,
+        );
+        let failure = call_model_for_negative_confirmation(
+            &adapter,
+            negative_confirmation_request(),
+            2,
+            Duration::from_millis(5),
+        )
+        .await
+        .unwrap_err();
+        assert_eq!(failure.class, "assessment_timeout");
+        assert!(!failure.provider_attempts_complete);
     }
 
     #[tokio::test]
