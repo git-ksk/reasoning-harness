@@ -17,6 +17,40 @@ pub enum ModelReasoningPreference {
     Minimize,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ModelExecutionBudget {
+    pub max_active_ms: u64,
+    pub max_wait_ms: u64,
+    pub max_single_wait_ms: u64,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ModelExecutionTelemetrySnapshot {
+    pub provider_attempts_started: u64,
+    pub provider_attempts_completed: u64,
+    pub active_ms: u64,
+    pub wait_ms: u64,
+    pub pacing_wait_ms: u64,
+    pub retry_wait_ms: u64,
+}
+
+impl ModelExecutionTelemetrySnapshot {
+    pub fn saturating_delta(self, earlier: Self) -> Self {
+        Self {
+            provider_attempts_started: self
+                .provider_attempts_started
+                .saturating_sub(earlier.provider_attempts_started),
+            provider_attempts_completed: self
+                .provider_attempts_completed
+                .saturating_sub(earlier.provider_attempts_completed),
+            active_ms: self.active_ms.saturating_sub(earlier.active_ms),
+            wait_ms: self.wait_ms.saturating_sub(earlier.wait_ms),
+            pacing_wait_ms: self.pacing_wait_ms.saturating_sub(earlier.pacing_wait_ms),
+            retry_wait_ms: self.retry_wait_ms.saturating_sub(earlier.retry_wait_ms),
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ModelRequest {
     pub task: String,
@@ -181,6 +215,12 @@ pub trait ModelAdapter: Send + Sync {
         &'a self,
         request: ModelRequest,
     ) -> Pin<Box<dyn Future<Output = Result<ModelResponse, ModelError>> + Send + 'a>>;
+
+    fn configure_execution_budget(&self, _budget: Option<ModelExecutionBudget>) {}
+
+    fn execution_telemetry_snapshot(&self) -> Option<ModelExecutionTelemetrySnapshot> {
+        None
+    }
 }
 
 #[cfg(test)]

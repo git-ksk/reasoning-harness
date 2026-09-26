@@ -4,15 +4,15 @@ use std::{
     io::{ErrorKind, Write},
     path::{Path, PathBuf},
     sync::{
-        Arc,
+        Arc, Mutex,
         atomic::{AtomicU64, Ordering},
     },
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
 use reasoning_harness_core::{
-    ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
-    ModelUsage,
+    ModelAdapter, ModelError, ModelErrorKind, ModelExecutionBudget,
+    ModelExecutionTelemetrySnapshot, ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage,
 };
 use reqwest::{Client, StatusCode, Url, header::RETRY_AFTER};
 use serde::{Deserialize, Serialize};
@@ -49,6 +49,8 @@ pub struct GoogleAdapter {
     model: String,
     request_pacer: Option<Arc<RequestPacer>>,
     attempt_telemetry_path: Option<PathBuf>,
+    execution_budget: Mutex<Option<ModelExecutionBudget>>,
+    execution_telemetry: crate::network::ExecutionTelemetryCounters,
 }
 
 #[derive(Debug, Serialize)]
@@ -161,21 +163,34 @@ impl RequestPacer {
         }
     }
 
-    async fn wait(&self) -> Result<(), ModelError> {
+    async fn wait(
+        &self,
+        budget: Option<ModelExecutionBudget>,
+        used_wait: Duration,
+    ) -> Result<Duration, ModelError> {
+        let started = Instant::now();
         if let Some(path) = &self.shared_path {
-            return wait_shared_request_slot(path, self.min_interval).await;
+            wait_shared_request_slot(path, self.min_interval, budget, used_wait).await?;
+            return Ok(started.elapsed());
         }
         let mut next_start = self.next_start.lock().await;
         let now = tokio::time::Instant::now();
         if *next_start > now {
+            let requested = *next_start - now;
+            crate::network::bounded_wait(requested, used_wait, budget)?;
             tokio::time::sleep_until(*next_start).await;
         }
         *next_start = tokio::time::Instant::now() + self.min_interval;
-        Ok(())
+        Ok(started.elapsed())
     }
 }
 
-async fn wait_shared_request_slot(path: &Path, min_interval: Duration) -> Result<(), ModelError> {
+async fn wait_shared_request_slot(
+    path: &Path,
+    min_interval: Duration,
+    budget: Option<ModelExecutionBudget>,
+    used_wait: Duration,
+) -> Result<(), ModelError> {
     let lock_dir = path.with_extension("lock");
     loop {
         match fs::create_dir(&lock_dir) {
@@ -230,6 +245,7 @@ async fn wait_shared_request_slot(path: &Path, min_interval: Duration) -> Result
     })();
     let _ = fs::remove_dir(&lock_dir);
     let wait = result?;
+    crate::network::bounded_wait(wait, used_wait, budget)?;
     if !wait.is_zero() {
         tokio::time::sleep(wait).await;
     }
@@ -310,6 +326,8 @@ impl GoogleAdapter {
             model,
             request_pacer: None,
             attempt_telemetry_path: None,
+            execution_budget: Mutex::new(None),
+            execution_telemetry: crate::network::ExecutionTelemetryCounters::default(),
         })
     }
 
@@ -340,25 +358,64 @@ impl GoogleAdapter {
         let mut rate_limit_retries = 0usize;
         let mut transient_retries = 0usize;
         let mut empty_text_retries = 0usize;
+        let execution_budget = *self
+            .execution_budget
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        let mut used_wait = Duration::ZERO;
+        let mut used_active = Duration::ZERO;
 
         loop {
             if let Some(pacer) = &self.request_pacer {
-                pacer.wait().await?;
+                let waited = pacer.wait(execution_budget, used_wait).await?;
+                crate::network::bounded_wait(waited, used_wait, execution_budget)?;
+                used_wait = used_wait.saturating_add(waited);
+                self.execution_telemetry
+                    .wait_completed(crate::network::ProviderWaitKind::Pacing, waited);
             }
+
+            let active_remaining =
+                crate::network::remaining_active_budget(used_active, execution_budget)?;
             provider_attempts = provider_attempts.saturating_add(1);
+            self.execution_telemetry.attempt_started();
             let mut attempt_telemetry = GoogleAttemptTelemetryGuard::start(
                 self.attempt_telemetry_path.as_deref(),
                 &call_id,
                 &self.model,
                 provider_attempts,
             );
-            let response = self
+            let attempt_started = Instant::now();
+            let send = self
                 .client
                 .post(endpoint.clone())
                 .header("x-goog-api-key", &self.api_key)
                 .json(&body)
-                .send()
-                .await;
+                .send();
+            let response = if let Some(remaining) = active_remaining {
+                match tokio::time::timeout(remaining, send).await {
+                    Ok(result) => {
+                        let elapsed = attempt_started.elapsed();
+                        used_active = used_active.saturating_add(elapsed);
+                        self.execution_telemetry.attempt_completed(elapsed);
+                        result
+                    }
+                    Err(_) => {
+                        let elapsed = attempt_started.elapsed();
+                        self.execution_telemetry.active_elapsed(elapsed);
+                        return Err(ModelError::new(
+                            ModelErrorKind::Timeout,
+                            "Gemini provider active execution budget exhausted",
+                        )
+                        .with_provider_attempts(provider_attempts));
+                    }
+                }
+            } else {
+                let result = send.await;
+                let elapsed = attempt_started.elapsed();
+                used_active = used_active.saturating_add(elapsed);
+                self.execution_telemetry.attempt_completed(elapsed);
+                result
+            };
             let response = match response {
                 Ok(response) => response,
                 Err(error) => {
@@ -455,7 +512,13 @@ impl GoogleAdapter {
                         rate_limit_delay,
                         quota_window,
                     );
-                    tokio::time::sleep(rate_limit_delay).await;
+                    let delay =
+                        crate::network::bounded_wait(rate_limit_delay, used_wait, execution_budget)
+                            .map_err(|error| error.with_provider_attempts(provider_attempts))?;
+                    tokio::time::sleep(delay).await;
+                    used_wait = used_wait.saturating_add(delay);
+                    self.execution_telemetry
+                        .wait_completed(crate::network::ProviderWaitKind::Retry, delay);
                     continue;
                 }
 
@@ -466,7 +529,12 @@ impl GoogleAdapter {
                     let delay = transient_retry_delay(transient_retries);
                     transient_retries += 1;
                     log_retry_scheduled_telemetry(&attempt_telemetry, kind, delay, quota_window);
+                    let delay = crate::network::bounded_wait(delay, used_wait, execution_budget)
+                        .map_err(|error| error.with_provider_attempts(provider_attempts))?;
                     tokio::time::sleep(delay).await;
+                    used_wait = used_wait.saturating_add(delay);
+                    self.execution_telemetry
+                        .wait_completed(crate::network::ProviderWaitKind::Retry, delay);
                     continue;
                 }
 
@@ -514,7 +582,16 @@ impl GoogleAdapter {
                         && provider_attempts < MAX_PROVIDER_ATTEMPTS =>
                 {
                     empty_text_retries += 1;
-                    tokio::time::sleep(transient_retry_delay(0)).await;
+                    let delay = crate::network::bounded_wait(
+                        transient_retry_delay(0),
+                        used_wait,
+                        execution_budget,
+                    )
+                    .map_err(|error| error.with_provider_attempts(provider_attempts))?;
+                    tokio::time::sleep(delay).await;
+                    used_wait = used_wait.saturating_add(delay);
+                    self.execution_telemetry
+                        .wait_completed(crate::network::ProviderWaitKind::Retry, delay);
                     continue;
                 }
                 Err(error) => return Err(error.with_provider_attempts(provider_attempts)),
@@ -544,6 +621,17 @@ impl ModelAdapter for GoogleAdapter {
         Box<dyn std::future::Future<Output = Result<ModelResponse, ModelError>> + Send + 'a>,
     > {
         Box::pin(self.generate_inner(request))
+    }
+
+    fn configure_execution_budget(&self, budget: Option<ModelExecutionBudget>) {
+        *self
+            .execution_budget
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner()) = budget;
+    }
+
+    fn execution_telemetry_snapshot(&self) -> Option<ModelExecutionTelemetrySnapshot> {
+        Some(self.execution_telemetry.snapshot())
     }
 }
 
@@ -1152,7 +1240,7 @@ mod tests {
         let a = RequestPacer::new(interval, Some(path.clone()));
         let b = RequestPacer::new(interval, Some(path.clone()));
         let start = tokio::time::Instant::now();
-        let (ra, rb) = tokio::join!(a.wait(), b.wait());
+        let (ra, rb) = tokio::join!(a.wait(None, Duration::ZERO), b.wait(None, Duration::ZERO));
         ra.unwrap();
         rb.unwrap();
         assert!(start.elapsed() >= Duration::from_millis(70));
@@ -1542,6 +1630,32 @@ mod tests {
         let response = adapter.generate(test_request()).await.unwrap();
         assert_eq!(response.text, "ok");
         assert_eq!(response.provider_attempts, 2);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn execution_budget_rejects_long_short_window_retry_without_sleep() {
+        let short_window = r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"quota exceeded","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier"}]}]}}"#;
+        let (base_url, server) = spawn_sequence_server(vec![(
+            "429 Too Many Requests",
+            short_window.into(),
+            "Retry-After: 31\r\n",
+        )]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        adapter.configure_execution_budget(Some(ModelExecutionBudget {
+            max_active_ms: 60_000,
+            max_wait_ms: 45_000,
+            max_single_wait_ms: 30_000,
+        }));
+
+        let started = Instant::now();
+        let error = adapter.generate(test_request()).await.unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::RateLimit);
+        assert!(started.elapsed() < Duration::from_secs(1));
+        let telemetry = adapter.execution_telemetry_snapshot().unwrap();
+        assert_eq!(telemetry.provider_attempts_started, 1);
+        assert_eq!(telemetry.provider_attempts_completed, 1);
+        assert_eq!(telemetry.retry_wait_ms, 0);
         server.join().unwrap();
     }
 

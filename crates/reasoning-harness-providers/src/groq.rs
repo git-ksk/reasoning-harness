@@ -1,11 +1,13 @@
 use std::{
     env,
+    sync::Mutex,
     time::{Duration, Instant, SystemTime},
 };
 
 use reasoning_harness_core::{
-    ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelReasoningPreference,
-    ModelRequest, ModelResponse, ModelUsage,
+    ModelAdapter, ModelError, ModelErrorKind, ModelExecutionBudget,
+    ModelExecutionTelemetrySnapshot, ModelOutputFormat, ModelReasoningPreference, ModelRequest,
+    ModelResponse, ModelUsage,
 };
 use reqwest::{Client, StatusCode, Url, header::RETRY_AFTER};
 use serde::{Deserialize, Serialize};
@@ -36,6 +38,8 @@ pub struct GroqAdapter {
     tokens_per_minute: Option<u64>,
     structured_output_retry_limit: usize,
     pacing: tokio::sync::Mutex<PacingState>,
+    execution_budget: Mutex<Option<ModelExecutionBudget>>,
+    execution_telemetry: crate::network::ExecutionTelemetryCounters,
 }
 
 #[derive(Debug, Default)]
@@ -172,13 +176,20 @@ impl GroqAdapter {
             tokens_per_minute,
             structured_output_retry_limit: MAX_STRUCTURED_OUTPUT_RETRIES,
             pacing: tokio::sync::Mutex::new(PacingState::default()),
+            execution_budget: Mutex::new(None),
+            execution_telemetry: crate::network::ExecutionTelemetryCounters::default(),
         })
     }
 
-    async fn wait_for_request_slot(&self) {
+    async fn wait_for_request_slot(
+        &self,
+        budget: Option<ModelExecutionBudget>,
+        used_wait: Duration,
+    ) -> Result<Duration, ModelError> {
         if self.min_request_interval.is_zero() && self.tokens_per_minute.is_none() {
-            return;
+            return Ok(Duration::ZERO);
         }
+        let started = Instant::now();
         let mut pacing = self.pacing.lock().await;
         let now = Instant::now();
         let request_slot = pacing
@@ -190,10 +201,13 @@ impl GroqAdapter {
             .max();
         if let Some(target) = target {
             if target > now {
-                tokio::time::sleep(target - now).await;
+                let requested = target - now;
+                crate::network::bounded_wait(requested, used_wait, budget)?;
+                tokio::time::sleep(requested).await;
             }
         }
         pacing.last_request_started = Some(Instant::now());
+        Ok(started.elapsed())
     }
 
     async fn record_token_usage(&self, total_tokens: Option<u64>) {
@@ -254,21 +268,65 @@ impl GroqAdapter {
 
         let mut rate_limit_retries = 0usize;
         let mut structured_output_retries = 0usize;
+        let execution_budget = *self
+            .execution_budget
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        let mut used_wait = Duration::ZERO;
+        let mut used_active = Duration::ZERO;
+
         let response = loop {
-            self.wait_for_request_slot().await;
-            let response = self
+            let pacing_wait = self
+                .wait_for_request_slot(execution_budget, used_wait)
+                .await?;
+            used_wait = used_wait.saturating_add(pacing_wait);
+            self.execution_telemetry
+                .wait_completed(crate::network::ProviderWaitKind::Pacing, pacing_wait);
+
+            let active_remaining =
+                crate::network::remaining_active_budget(used_active, execution_budget)?;
+            self.execution_telemetry.attempt_started();
+            let attempt_started = Instant::now();
+            let send = self
                 .client
                 .post(endpoint.clone())
                 .bearer_auth(&self.api_key)
                 .json(&body)
-                .send()
-                .await
-                .map_err(|error| {
-                    classify_transport_error(error).with_provider_attempts(provider_attempts(
-                        rate_limit_retries,
-                        structured_output_retries,
-                    ))
-                })?;
+                .send();
+            let response = if let Some(remaining) = active_remaining {
+                match tokio::time::timeout(remaining, send).await {
+                    Ok(result) => {
+                        let elapsed = attempt_started.elapsed();
+                        used_active = used_active.saturating_add(elapsed);
+                        self.execution_telemetry.attempt_completed(elapsed);
+                        result
+                    }
+                    Err(_) => {
+                        let elapsed = attempt_started.elapsed();
+                        self.execution_telemetry.active_elapsed(elapsed);
+                        return Err(ModelError::new(
+                            ModelErrorKind::Timeout,
+                            "Groq provider active execution budget exhausted",
+                        )
+                        .with_provider_attempts(provider_attempts(
+                            rate_limit_retries,
+                            structured_output_retries,
+                        )));
+                    }
+                }
+            } else {
+                let result = send.await;
+                let elapsed = attempt_started.elapsed();
+                used_active = used_active.saturating_add(elapsed);
+                self.execution_telemetry.attempt_completed(elapsed);
+                result
+            }
+            .map_err(|error| {
+                classify_transport_error(error).with_provider_attempts(provider_attempts(
+                    rate_limit_retries,
+                    structured_output_retries,
+                ))
+            })?;
 
             let status = response.status();
             log_rate_limit_telemetry(status, response.headers(), rate_limit_retries);
@@ -282,7 +340,17 @@ impl GroqAdapter {
                 if kind == ModelErrorKind::RateLimit && rate_limit_retries < MAX_RATE_LIMIT_RETRIES
                 {
                     rate_limit_retries += 1;
+                    let delay = crate::network::bounded_wait(delay, used_wait, execution_budget)
+                        .map_err(|error| {
+                            error.with_provider_attempts(provider_attempts(
+                                rate_limit_retries,
+                                structured_output_retries,
+                            ))
+                        })?;
                     tokio::time::sleep(delay).await;
+                    used_wait = used_wait.saturating_add(delay);
+                    self.execution_telemetry
+                        .wait_completed(crate::network::ProviderWaitKind::Retry, delay);
                     continue;
                 }
 
@@ -415,6 +483,17 @@ impl ModelAdapter for GroqAdapter {
         Box<dyn std::future::Future<Output = Result<ModelResponse, ModelError>> + Send + 'a>,
     > {
         Box::pin(self.generate_inner(request))
+    }
+
+    fn configure_execution_budget(&self, budget: Option<ModelExecutionBudget>) {
+        *self
+            .execution_budget
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner()) = budget;
+    }
+
+    fn execution_telemetry_snapshot(&self) -> Option<ModelExecutionTelemetrySnapshot> {
+        Some(self.execution_telemetry.snapshot())
     }
 }
 
@@ -1029,6 +1108,64 @@ Connection: close
         assert_eq!(error.provider_attempts, 1);
         assert!(started.elapsed() < Duration::from_secs(1));
         assert!(error.message.contains("tokens per day"));
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
+    async fn execution_budget_rejects_long_transient_retry_without_sleep() {
+        use std::{
+            io::{Read, Write},
+            net::TcpListener,
+            thread,
+        };
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut buffer = [0u8; 4096];
+            let _ = stream.read(&mut buffer);
+            let body = r#"{"error":{"message":"rate limit exceeded"}}"#;
+            write!(
+                stream,
+                "HTTP/1.1 429 Too Many Requests\r\nContent-Type: application/json\r\nContent-Length: {}\r\nRetry-After: 31\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            )
+            .unwrap();
+        });
+
+        let adapter = GroqAdapter::with_base_url_and_timeout(
+            "test-key",
+            "test-model",
+            &format!("http://{address}/v1/"),
+            Duration::from_secs(2),
+        )
+        .unwrap();
+        adapter.configure_execution_budget(Some(ModelExecutionBudget {
+            max_active_ms: 60_000,
+            max_wait_ms: 45_000,
+            max_single_wait_ms: 30_000,
+        }));
+
+        let started = Instant::now();
+        let error = adapter
+            .generate(ModelRequest {
+                task: "test".into(),
+                system: None,
+                output_format: ModelOutputFormat::Text,
+                max_tokens: Some(8),
+                random_seed: None,
+                reasoning_preference: None,
+            })
+            .await
+            .unwrap_err();
+
+        assert_eq!(error.kind, ModelErrorKind::RateLimit);
+        assert!(started.elapsed() < Duration::from_secs(1));
+        let telemetry = adapter.execution_telemetry_snapshot().unwrap();
+        assert_eq!(telemetry.provider_attempts_started, 1);
+        assert_eq!(telemetry.provider_attempts_completed, 1);
+        assert_eq!(telemetry.retry_wait_ms, 0);
         server.join().unwrap();
     }
 

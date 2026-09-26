@@ -1,8 +1,139 @@
-use std::{env, error::Error as _, fs, path::PathBuf, time::Duration};
+use std::{
+    env,
+    error::Error as _,
+    fs,
+    path::PathBuf,
+    sync::atomic::{AtomicU64, Ordering},
+    time::Duration,
+};
 
+use reasoning_harness_core::{
+    ModelError, ModelErrorKind, ModelExecutionBudget, ModelExecutionTelemetrySnapshot,
+};
 use reqwest::{Certificate, Client, ClientBuilder, redirect};
 
 pub const CUSTOM_CA_BUNDLE_ENV: &str = "REASON_CA_BUNDLE";
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ProviderWaitKind {
+    Pacing,
+    Retry,
+}
+
+#[derive(Debug, Default)]
+pub struct ExecutionTelemetryCounters {
+    provider_attempts_started: AtomicU64,
+    provider_attempts_completed: AtomicU64,
+    active_ms: AtomicU64,
+    wait_ms: AtomicU64,
+    pacing_wait_ms: AtomicU64,
+    retry_wait_ms: AtomicU64,
+}
+
+impl ExecutionTelemetryCounters {
+    pub fn snapshot(&self) -> ModelExecutionTelemetrySnapshot {
+        ModelExecutionTelemetrySnapshot {
+            provider_attempts_started: self.provider_attempts_started.load(Ordering::Relaxed),
+            provider_attempts_completed: self.provider_attempts_completed.load(Ordering::Relaxed),
+            active_ms: self.active_ms.load(Ordering::Relaxed),
+            wait_ms: self.wait_ms.load(Ordering::Relaxed),
+            pacing_wait_ms: self.pacing_wait_ms.load(Ordering::Relaxed),
+            retry_wait_ms: self.retry_wait_ms.load(Ordering::Relaxed),
+        }
+    }
+
+    pub fn attempt_started(&self) {
+        self.provider_attempts_started
+            .fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub fn active_elapsed(&self, active: Duration) {
+        self.active_ms
+            .fetch_add(duration_ms_u64(active), Ordering::Relaxed);
+    }
+
+    pub fn attempt_completed(&self, active: Duration) {
+        self.provider_attempts_completed
+            .fetch_add(1, Ordering::Relaxed);
+        self.active_elapsed(active);
+    }
+
+    pub fn wait_completed(&self, kind: ProviderWaitKind, waited: Duration) {
+        let millis = duration_ms_u64(waited);
+        self.wait_ms.fetch_add(millis, Ordering::Relaxed);
+        match kind {
+            ProviderWaitKind::Pacing => {
+                self.pacing_wait_ms.fetch_add(millis, Ordering::Relaxed);
+            }
+            ProviderWaitKind::Retry => {
+                self.retry_wait_ms.fetch_add(millis, Ordering::Relaxed);
+            }
+        }
+    }
+}
+
+pub fn bounded_wait(
+    requested: Duration,
+    used_wait: Duration,
+    budget: Option<ModelExecutionBudget>,
+) -> Result<Duration, ModelError> {
+    let Some(budget) = budget else {
+        return Ok(requested);
+    };
+
+    let requested_ms = duration_ms_u64(requested);
+    if requested_ms > budget.max_single_wait_ms {
+        return Err(ModelError::new(
+            ModelErrorKind::RateLimit,
+            format!(
+                "provider wait exceeds configured single-wait budget: requested_ms={requested_ms} max_single_wait_ms={}",
+                budget.max_single_wait_ms
+            ),
+        ));
+    }
+
+    let used_ms = duration_ms_u64(used_wait);
+    if used_ms.saturating_add(requested_ms) > budget.max_wait_ms {
+        return Err(ModelError::new(
+            ModelErrorKind::RateLimit,
+            format!(
+                "provider cumulative wait budget exhausted: used_ms={used_ms} requested_ms={requested_ms} max_wait_ms={}",
+                budget.max_wait_ms
+            ),
+        ));
+    }
+
+    Ok(requested)
+}
+
+pub fn remaining_active_budget(
+    used_active: Duration,
+    budget: Option<ModelExecutionBudget>,
+) -> Result<Option<Duration>, ModelError> {
+    let Some(budget) = budget else {
+        return Ok(None);
+    };
+
+    let used_ms = duration_ms_u64(used_active);
+    if used_ms >= budget.max_active_ms {
+        return Err(ModelError::new(
+            ModelErrorKind::Timeout,
+            format!(
+                "provider active execution budget exhausted: used_ms={used_ms} max_active_ms={}",
+                budget.max_active_ms
+            ),
+        ));
+    }
+
+    Ok(Some(Duration::from_millis(
+        budget.max_active_ms.saturating_sub(used_ms),
+    )))
+}
+
+pub fn duration_ms_u64(duration: Duration) -> u64 {
+    u64::try_from(duration.as_millis()).unwrap_or(u64::MAX)
+}
+
 const MAX_CUSTOM_CA_BUNDLE_BYTES: u64 = 1024 * 1024;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -215,6 +346,63 @@ fn classify_network_error_text(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn provider_wait_budget_caps_single_and_cumulative_waits() {
+        let budget = ModelExecutionBudget {
+            max_active_ms: 60_000,
+            max_wait_ms: 45_000,
+            max_single_wait_ms: 30_000,
+        };
+        assert_eq!(
+            bounded_wait(Duration::from_secs(20), Duration::ZERO, Some(budget)).unwrap(),
+            Duration::from_secs(20)
+        );
+
+        let single = bounded_wait(Duration::from_secs(31), Duration::ZERO, Some(budget))
+            .expect_err("single wait must be capped");
+        assert_eq!(single.kind, ModelErrorKind::RateLimit);
+
+        let cumulative = bounded_wait(
+            Duration::from_secs(26),
+            Duration::from_secs(20),
+            Some(budget),
+        )
+        .expect_err("cumulative wait must be capped");
+        assert_eq!(cumulative.kind, ModelErrorKind::RateLimit);
+    }
+
+    #[test]
+    fn provider_active_budget_is_separate_from_wait_budget() {
+        let budget = ModelExecutionBudget {
+            max_active_ms: 60_000,
+            max_wait_ms: 45_000,
+            max_single_wait_ms: 30_000,
+        };
+        assert_eq!(
+            remaining_active_budget(Duration::from_secs(10), Some(budget)).unwrap(),
+            Some(Duration::from_secs(50))
+        );
+        let exhausted = remaining_active_budget(Duration::from_secs(60), Some(budget))
+            .expect_err("active budget must be finite");
+        assert_eq!(exhausted.kind, ModelErrorKind::Timeout);
+    }
+
+    #[test]
+    fn execution_telemetry_separates_attempts_active_and_wait() {
+        let counters = ExecutionTelemetryCounters::default();
+        counters.attempt_started();
+        counters.attempt_completed(Duration::from_millis(7));
+        counters.wait_completed(ProviderWaitKind::Pacing, Duration::from_millis(11));
+        counters.wait_completed(ProviderWaitKind::Retry, Duration::from_millis(13));
+        let snapshot = counters.snapshot();
+        assert_eq!(snapshot.provider_attempts_started, 1);
+        assert_eq!(snapshot.provider_attempts_completed, 1);
+        assert_eq!(snapshot.active_ms, 7);
+        assert_eq!(snapshot.wait_ms, 24);
+        assert_eq!(snapshot.pacing_wait_ms, 11);
+        assert_eq!(snapshot.retry_wait_ms, 13);
+    }
 
     #[test]
     fn network_failure_classifier_separates_dns_proxy_tls_and_connectivity() {

@@ -214,8 +214,9 @@ pub use metamorphic::{
     aggregate_metamorphic, evaluate_benchmark_metamorphic, evaluate_causal_metamorphic,
 };
 pub use model::{
-    ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelReasoningPreference,
-    ModelRequest, ModelResponse, ModelUsage, build_json_object_fallback_request,
+    ModelAdapter, ModelError, ModelErrorKind, ModelExecutionBudget,
+    ModelExecutionTelemetrySnapshot, ModelOutputFormat, ModelReasoningPreference, ModelRequest,
+    ModelResponse, ModelUsage, build_json_object_fallback_request,
     build_strict_json_text_fallback_request,
 };
 pub use reasoning_policy::{

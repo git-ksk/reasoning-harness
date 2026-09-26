@@ -11,7 +11,8 @@ use reasoning_harness_core::{
     EvidenceLocalBindingConfirmation, EvidenceLocalBlockingReason, EvidenceLocalQualificationV5,
     EvidenceRelevanceAssessment, EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate,
     EvidenceRelevanceDisposition, EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy,
-    ModelAdapter, ModelError, ModelErrorKind, ModelRequest, ModelUsage,
+    ModelAdapter, ModelError, ModelErrorKind, ModelExecutionBudget,
+    ModelExecutionTelemetrySnapshot, ModelRequest, ModelResponse, ModelUsage,
     build_evidence_local_qualification_v5_request,
     build_evidence_relevance_binding_proposal_v4_request, build_strict_json_text_fallback_request,
     materialize_evidence_relevance_v10, parse_evidence_local_qualification_v5,
@@ -29,6 +30,9 @@ const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v15
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
 const GROQ_STRICT_JSON_TEXT_MAX_TOKENS: u32 = 512;
 const EXPECTED_CASES: usize = 48;
+const PROVIDER_WAIT_BUDGET_MS: u64 = 45_000;
+const MAX_SINGLE_PROVIDER_WAIT_MS: u64 = 30_000;
+const ABSOLUTE_CASE_BUDGET_MS: u64 = 120_000;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -51,6 +55,8 @@ struct Args {
     checkpoint: Option<PathBuf>,
     #[arg(long, default_value_t = 2)]
     max_consecutive_operational_failures: usize,
+    #[arg(long, default_value_t = 2)]
+    max_consecutive_capacity_failures: usize,
     #[arg(long, default_value_t = false)]
     continue_after_operational_failures: bool,
     #[arg(long, default_value_t = false)]
@@ -135,6 +141,74 @@ struct CalibrationCase {
     expected_disposition: EvidenceRelevanceDisposition,
 }
 
+#[derive(Debug, Clone, Copy, Default, Serialize)]
+struct ExecutionSummary {
+    provider_attempts_started: u64,
+    provider_attempts_completed: u64,
+    active_ms: u64,
+    wait_ms: u64,
+    pacing_wait_ms: u64,
+    retry_wait_ms: u64,
+}
+
+impl From<ModelExecutionTelemetrySnapshot> for ExecutionSummary {
+    fn from(value: ModelExecutionTelemetrySnapshot) -> Self {
+        Self {
+            provider_attempts_started: value.provider_attempts_started,
+            provider_attempts_completed: value.provider_attempts_completed,
+            active_ms: value.active_ms,
+            wait_ms: value.wait_ms,
+            pacing_wait_ms: value.pacing_wait_ms,
+            retry_wait_ms: value.retry_wait_ms,
+        }
+    }
+}
+
+#[derive(Debug)]
+struct CaseExecutionBudget {
+    remaining_active_ms: u64,
+    remaining_wait_ms: u64,
+    max_single_wait_ms: u64,
+    absolute_deadline: tokio::time::Instant,
+}
+
+impl CaseExecutionBudget {
+    fn new(active_ms: u64) -> Self {
+        Self {
+            remaining_active_ms: active_ms,
+            remaining_wait_ms: PROVIDER_WAIT_BUDGET_MS,
+            max_single_wait_ms: MAX_SINGLE_PROVIDER_WAIT_MS,
+            absolute_deadline: tokio::time::Instant::now()
+                + Duration::from_millis(ABSOLUTE_CASE_BUDGET_MS),
+        }
+    }
+
+    fn provider_budget(&self) -> ModelExecutionBudget {
+        ModelExecutionBudget {
+            max_active_ms: self.remaining_active_ms,
+            max_wait_ms: self.remaining_wait_ms,
+            max_single_wait_ms: self.max_single_wait_ms.min(self.remaining_wait_ms),
+        }
+    }
+
+    fn consume(&mut self, execution: ExecutionSummary) {
+        self.remaining_active_ms = self.remaining_active_ms.saturating_sub(execution.active_ms);
+        self.remaining_wait_ms = self.remaining_wait_ms.saturating_sub(execution.wait_ms);
+    }
+}
+
+#[derive(Debug)]
+struct AdapterCallSuccess {
+    response: ModelResponse,
+}
+
+#[derive(Debug)]
+struct AdapterCallFailure {
+    error: Option<ModelError>,
+    execution: ExecutionSummary,
+    absolute_timeout: bool,
+}
+
 #[derive(Debug, Clone, Default, Serialize)]
 struct UsageSummary {
     input_tokens: u64,
@@ -183,6 +257,7 @@ struct CaseObservation {
     model_calls: u32,
     provider_attempts: u32,
     provider_attempts_complete: bool,
+    execution: ExecutionSummary,
     latency_ms: u128,
     usage: UsageSummary,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -226,7 +301,13 @@ struct CalibrationMetrics {
     lexical_expected_relevant_misses: usize,
     model_calls: u64,
     provider_attempts: u64,
+    provider_attempts_started: u64,
+    provider_attempts_completed: u64,
     provider_attempts_incomplete_observations: usize,
+    active_execution_ms: u64,
+    provider_wait_ms: u64,
+    pacing_wait_ms: u64,
+    retry_wait_ms: u64,
     input_tokens: u64,
     output_tokens: u64,
     total_tokens: u64,
@@ -260,6 +341,8 @@ struct StudyOutput {
     scorability: &'static str,
     #[serde(skip_serializing_if = "Option::is_none")]
     operational_abort: Option<OperationalAbort>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider_arm_latch: Option<ProviderArmLatch>,
     metrics: CalibrationMetrics,
     observations: Vec<CaseObservation>,
 }
@@ -272,6 +355,15 @@ struct OperationalAbort {
     consecutive_operational_failures: usize,
     max_consecutive_operational_failures: usize,
     remaining_cases: usize,
+}
+
+#[derive(Debug, Clone, Serialize)]
+struct ProviderArmLatch {
+    reason: &'static str,
+    triggered_after_case_id: String,
+    triggering_failure_class: String,
+    threshold: usize,
+    suppressed_cases: usize,
 }
 
 #[derive(Debug, Serialize)]
@@ -383,6 +475,7 @@ async fn run() -> Result<StudyOutput, String> {
             canonical_full_calibration: false,
             scorability: "validate_only_non_scorable",
             operational_abort: None,
+            provider_arm_latch: None,
             metrics: empty_metrics(selected.len()),
             observations: Vec::new(),
         });
@@ -391,12 +484,17 @@ async fn run() -> Result<StudyOutput, String> {
     if args.max_consecutive_operational_failures == 0 {
         return Err("--max-consecutive-operational-failures must be at least 1".into());
     }
+    if args.max_consecutive_capacity_failures == 0 {
+        return Err("--max-consecutive-capacity-failures must be at least 1".into());
+    }
 
     let generator = Generator::from_provider(args.provider, &args.model)?;
     let provider = args.provider.name().to_owned();
     let mut observations = Vec::with_capacity(selected.len());
     let mut consecutive_operational_failures = 0usize;
+    let mut consecutive_capacity_failures = 0usize;
     let mut operational_abort: Option<OperationalAbort> = None;
+    let mut provider_arm_latch: Option<ProviderArmLatch> = None;
 
     if let Some(path) = args.checkpoint.as_deref() {
         write_checkpoint(
@@ -411,6 +509,47 @@ async fn run() -> Result<StudyOutput, String> {
     }
 
     for (index, case) in selected.iter().enumerate() {
+        if provider_arm_latch.is_some() {
+            let lexical_baseline = simple_lexical_baseline(&case.policy, &case.candidate);
+            let latch_reason = provider_arm_latch
+                .as_ref()
+                .map(|latch| latch.reason)
+                .unwrap_or("provider_arm_latched");
+            observations.push(failure_observation(
+                case,
+                lexical_baseline,
+                ObservationFailure {
+                    latency_ms: 0,
+                    used_structured_fallback: false,
+                    model_calls: 0,
+                    provider_attempts: 0,
+                    provider_attempts_complete: true,
+                            usage: UsageSummary::default(),
+                    provider_model: Some(args.model.clone()),
+                    finish_reason: None,
+                    class: "provider_arm_latched".into(),
+                    message: format!(
+                        "provider arm suppressed after prior operational latch; reason={latch_reason}"
+                    ),
+                },
+            ));
+            if let Some(latch) = provider_arm_latch.as_mut() {
+                latch.suppressed_cases = latch.suppressed_cases.saturating_add(1);
+            }
+            if let Some(path) = args.checkpoint.as_deref() {
+                write_checkpoint(
+                    path,
+                    &manifest.suite_id,
+                    &provider,
+                    &args.model,
+                    selected.len(),
+                    &observations,
+                    "in_progress",
+                )?;
+            }
+            continue;
+        }
+
         let case_seed = args.seed.and_then(|base| base.checked_add(index as u64));
         let request = build_evidence_relevance_binding_proposal_v4_request(
             &case.policy,
@@ -421,15 +560,19 @@ async fn run() -> Result<StudyOutput, String> {
         let lexical_baseline = simple_lexical_baseline(&case.policy, &case.candidate);
 
         let started = Instant::now();
+        let adapter = generator.adapter();
+        let execution_before = adapter.execution_telemetry_snapshot();
+        let mut case_budget =
+            CaseExecutionBudget::new(case.policy.assessment_budget.max_elapsed_ms);
         let result = call_model_for_proposal(
-            generator.adapter(),
+            adapter,
             args.provider,
             request,
             case.policy.assessment_budget.max_model_attempts,
-            Duration::from_millis(case.policy.assessment_budget.max_elapsed_ms),
+            &mut case_budget,
         )
         .await;
-        let observation = match result {
+        let mut observation = match result {
             Ok(call) => {
                 complete_observed_case(
                     generator.adapter(),
@@ -439,6 +582,7 @@ async fn run() -> Result<StudyOutput, String> {
                     lexical_baseline,
                     started,
                     call,
+                    &mut case_budget,
                 )
                 .await?
             }
@@ -458,6 +602,21 @@ async fn run() -> Result<StudyOutput, String> {
                     message: failure.message,
                 },
             ),
+        };
+
+        let execution_after = adapter.execution_telemetry_snapshot();
+        observation.execution = match (execution_before, execution_after) {
+            (Some(before), Some(after)) => ExecutionSummary::from(after.saturating_delta(before)),
+            _ => ExecutionSummary {
+                provider_attempts_started: u64::from(observation.provider_attempts),
+                provider_attempts_completed: if observation.provider_attempts_complete {
+                    u64::from(observation.provider_attempts)
+                } else {
+                    0
+                },
+                active_ms: u64::try_from(started.elapsed().as_millis()).unwrap_or(u64::MAX),
+                ..ExecutionSummary::default()
+            },
         };
 
         eprintln!(
@@ -487,12 +646,41 @@ async fn run() -> Result<StudyOutput, String> {
             )?;
         }
 
-        consecutive_operational_failures = next_operational_failure_streak(
-            consecutive_operational_failures,
-            observations
-                .last()
-                .and_then(|observation| observation.failure_class.as_deref()),
-        );
+        let latest_failure_class = observations
+            .last()
+            .and_then(|observation| observation.failure_class.as_deref());
+        consecutive_operational_failures =
+            next_operational_failure_streak(consecutive_operational_failures, latest_failure_class);
+        consecutive_capacity_failures =
+            next_capacity_failure_streak(consecutive_capacity_failures, latest_failure_class);
+
+        if provider_arm_latch.is_none() {
+            if latest_failure_class == Some("quota") {
+                provider_arm_latch = Some(ProviderArmLatch {
+                    reason: "confirmed_quota_failure",
+                    triggered_after_case_id: case.id.clone(),
+                    triggering_failure_class: "quota".into(),
+                    threshold: 1,
+                    suppressed_cases: 0,
+                });
+                eprintln!(
+                    "[evidence-relevance-study] provider arm latched after typed quota failure; remaining external calls will be suppressed"
+                );
+            } else if consecutive_capacity_failures >= args.max_consecutive_capacity_failures
+                && index + 1 < selected.len()
+            {
+                provider_arm_latch = Some(ProviderArmLatch {
+                    reason: "correlated_capacity_failure_budget_exhausted",
+                    triggered_after_case_id: case.id.clone(),
+                    triggering_failure_class: latest_failure_class.unwrap_or("unknown").to_owned(),
+                    threshold: args.max_consecutive_capacity_failures,
+                    suppressed_cases: 0,
+                });
+                eprintln!(
+                    "[evidence-relevance-study] provider arm latched after {consecutive_capacity_failures} consecutive capacity failures; remaining external calls will be suppressed"
+                );
+            }
+        }
 
         if should_abort_after_operational_failure(
             args.continue_after_operational_failures,
@@ -565,11 +753,13 @@ async fn run() -> Result<StudyOutput, String> {
         canonical_full_calibration,
         scorability,
         operational_abort,
+        provider_arm_latch,
         metrics: summarize_metrics(&observations),
         observations,
     })
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn complete_observed_case(
     adapter: &dyn ModelAdapter,
     provider: Provider,
@@ -578,6 +768,7 @@ async fn complete_observed_case(
     lexical_baseline: EvidenceRelevanceDisposition,
     started: Instant,
     call: CallOutcome,
+    budget: &mut CaseExecutionBudget,
 ) -> Result<CaseObservation, String> {
     let observed = call.proposal;
     let mut used_structured_fallback = call.used_structured_fallback;
@@ -587,27 +778,6 @@ async fn complete_observed_case(
     let mut provider_model = call.provider_model;
     let mut finish_reason = call.finish_reason;
 
-    let remaining = Duration::from_millis(case.policy.assessment_budget.max_elapsed_ms)
-        .saturating_sub(started.elapsed());
-    if remaining.is_zero() {
-        return Ok(failure_observation(
-            case,
-            lexical_baseline,
-            ObservationFailure {
-                latency_ms: started.elapsed().as_millis(),
-                used_structured_fallback,
-                model_calls,
-                provider_attempts,
-                provider_attempts_complete: true,
-                usage,
-                provider_model,
-                finish_reason,
-                class: "assessment_timeout".into(),
-                message: "local qualification had no remaining case budget".into(),
-            },
-        ));
-    }
-
     let request = build_evidence_local_qualification_v5_request(
         &case.policy,
         &case.candidate,
@@ -616,7 +786,7 @@ async fn complete_observed_case(
     .map_err(|error| format!("build local qualification request {}: {error}", case.id))?;
 
     let qualification_call =
-        match call_model_for_local_qualification(adapter, provider, request, remaining).await {
+        match call_model_for_local_qualification(adapter, provider, request, budget).await {
             Ok(call) => call,
             Err(mut failure) => {
                 failure.used_structured_fallback |= used_structured_fallback;
@@ -754,6 +924,7 @@ fn success_observation(
         model_calls,
         provider_attempts,
         provider_attempts_complete: true,
+        execution: ExecutionSummary::default(),
         latency_ms,
         usage,
         provider_model,
@@ -790,6 +961,7 @@ fn failure_observation(
         model_calls: failure.model_calls,
         provider_attempts: failure.provider_attempts,
         provider_attempts_complete: failure.provider_attempts_complete,
+        execution: ExecutionSummary::default(),
         latency_ms: failure.latency_ms,
         usage: failure.usage,
         provider_model: failure.provider_model,
@@ -800,14 +972,172 @@ fn failure_observation(
     }
 }
 
+async fn execute_adapter_call(
+    adapter: &dyn ModelAdapter,
+    request: ModelRequest,
+    budget: &mut CaseExecutionBudget,
+) -> Result<AdapterCallSuccess, AdapterCallFailure> {
+    if budget.remaining_active_ms == 0 {
+        return Err(AdapterCallFailure {
+            error: Some(ModelError::new(
+                ModelErrorKind::Timeout,
+                "semantic active execution budget exhausted before provider call",
+            )),
+            execution: ExecutionSummary::default(),
+            absolute_timeout: false,
+        });
+    }
+
+    let before = adapter.execution_telemetry_snapshot();
+    adapter.configure_execution_budget(Some(budget.provider_budget()));
+    let started = Instant::now();
+
+    let provider_future = adapter.generate(request);
+    let no_provider_telemetry = before.is_none();
+    let call_deadline = if no_provider_telemetry {
+        let active_deadline =
+            tokio::time::Instant::now() + Duration::from_millis(budget.remaining_active_ms);
+        active_deadline.min(budget.absolute_deadline)
+    } else {
+        budget.absolute_deadline
+    };
+
+    let result = tokio::time::timeout_at(call_deadline, provider_future).await;
+    adapter.configure_execution_budget(None);
+    let after = adapter.execution_telemetry_snapshot();
+
+    let call_elapsed_ms = u64::try_from(started.elapsed().as_millis()).unwrap_or(u64::MAX);
+    let active_before_ms = budget.remaining_active_ms;
+    let mut execution = match (before, after) {
+        (Some(before), Some(after)) => ExecutionSummary::from(after.saturating_delta(before)),
+        _ => {
+            let attempts = match &result {
+                Ok(Ok(response)) => u64::from(response.provider_attempts),
+                Ok(Err(error)) => u64::from(error.provider_attempts),
+                Err(_) => 0,
+            };
+            ExecutionSummary {
+                provider_attempts_started: attempts,
+                provider_attempts_completed: attempts,
+                active_ms: call_elapsed_ms,
+                ..ExecutionSummary::default()
+            }
+        }
+    };
+    let inferred_active_ms = call_elapsed_ms.saturating_sub(execution.wait_ms);
+    execution.active_ms = execution.active_ms.max(inferred_active_ms);
+    let active_budget_exceeded = execution.active_ms > active_before_ms;
+    budget.consume(execution);
+
+    if active_budget_exceeded && result.is_ok() {
+        return Err(AdapterCallFailure {
+            error: Some(
+                ModelError::new(
+                    ModelErrorKind::Timeout,
+                    "provider active execution exceeded semantic execution budget",
+                )
+                .with_provider_attempts(
+                    u32::try_from(execution.provider_attempts_started).unwrap_or(u32::MAX),
+                ),
+            ),
+            execution,
+            absolute_timeout: false,
+        });
+    }
+
+    match result {
+        Ok(Ok(response)) => Ok(AdapterCallSuccess { response }),
+        Ok(Err(error)) => Err(AdapterCallFailure {
+            error: Some(error),
+            execution,
+            absolute_timeout: false,
+        }),
+        Err(_) => Err(AdapterCallFailure {
+            error: None,
+            execution,
+            absolute_timeout: call_deadline == budget.absolute_deadline,
+        }),
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn adapter_call_timeout_failure(
+    failure: AdapterCallFailure,
+    context: &str,
+    used_structured_fallback: bool,
+    model_calls: u32,
+    prior_provider_attempts: u32,
+    usage: UsageSummary,
+    provider_model: Option<String>,
+    finish_reason: Option<String>,
+) -> CallFailure {
+    let started = u32::try_from(failure.execution.provider_attempts_started).unwrap_or(u32::MAX);
+    let class = if failure.absolute_timeout {
+        "case_absolute_timeout"
+    } else {
+        "assessment_timeout"
+    };
+    CallFailure {
+        class: class.into(),
+        message: format!("{context}; {class}"),
+        used_structured_fallback,
+        model_calls,
+        provider_attempts: prior_provider_attempts.saturating_add(started),
+        provider_attempts_complete: false,
+        usage,
+        provider_model,
+        finish_reason,
+    }
+}
+
+fn adapter_call_model_failure(
+    failure: AdapterCallFailure,
+    used_structured_fallback: bool,
+    model_calls: u32,
+    prior_provider_attempts: u32,
+    usage: UsageSummary,
+    provider_model: Option<String>,
+    finish_reason: Option<String>,
+) -> CallFailure {
+    match failure.error {
+        Some(error) => {
+            let started =
+                u32::try_from(failure.execution.provider_attempts_started).unwrap_or(u32::MAX);
+            let completed =
+                u32::try_from(failure.execution.provider_attempts_completed).unwrap_or(u32::MAX);
+            let attempts = started.max(error.provider_attempts);
+            let mut result = model_failure(
+                error,
+                used_structured_fallback,
+                model_calls,
+                prior_provider_attempts.saturating_add(attempts),
+                usage,
+                provider_model,
+                finish_reason,
+            );
+            result.provider_attempts_complete = started == completed;
+            result
+        }
+        None => adapter_call_timeout_failure(
+            failure,
+            "provider call exceeded bounded execution budget",
+            used_structured_fallback,
+            model_calls,
+            prior_provider_attempts,
+            usage,
+            provider_model,
+            finish_reason,
+        ),
+    }
+}
+
 async fn call_model_for_proposal(
     adapter: &dyn ModelAdapter,
     provider: Provider,
     request: ModelRequest,
     max_model_calls: u32,
-    max_elapsed: Duration,
+    budget: &mut CaseExecutionBudget,
 ) -> Result<CallOutcome, CallFailure> {
-    let deadline = tokio::time::Instant::now() + max_elapsed;
     let mut model_calls = 0u32;
     let mut provider_attempts = 0u32;
     let mut usage = UsageSummary::default();
@@ -855,26 +1185,11 @@ async fn call_model_for_proposal(
     };
 
     model_calls += 1;
-    let primary = tokio::time::timeout_at(deadline, adapter.generate(primary_request)).await;
-    let primary = match primary {
-        Ok(result) => result,
-        Err(_) => {
-            return Err(CallFailure {
-                class: "assessment_timeout".into(),
-                message: "evidence relevance assessment exceeded elapsed-time budget".into(),
-                used_structured_fallback: false,
-                model_calls,
-                provider_attempts,
-                provider_attempts_complete: false,
-                usage,
-                provider_model: last_model,
-                finish_reason: last_finish_reason,
-            });
-        }
-    };
+    let primary = execute_adapter_call(adapter, primary_request, budget).await;
 
     match primary {
-        Ok(response) => {
+        Ok(call) => {
+            let response = call.response;
             provider_attempts = provider_attempts.saturating_add(response.provider_attempts);
             usage.add(&response.usage);
             last_model = Some(response.model.clone());
@@ -923,7 +1238,7 @@ async fn call_model_for_proposal(
                     call_fallback(
                         adapter,
                         fallback,
-                        deadline,
+                        budget,
                         max_model_calls,
                         model_calls,
                         provider_attempts,
@@ -936,37 +1251,42 @@ async fn call_model_for_proposal(
                 }
             }
         }
-        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability && !groq_text_primary => {
-            provider_attempts = provider_attempts.saturating_add(error.provider_attempts);
-            let Some(fallback) = build_strict_json_text_fallback_request(&request) else {
-                return Err(model_failure(
-                    error,
-                    false,
+        Err(failure) => {
+            if let Some(error) = failure.error.as_ref()
+                && error.kind == ModelErrorKind::UnsupportedCapability
+                && !groq_text_primary
+            {
+                let error = failure.error.expect("checked error");
+                let attempts = error.provider_attempts;
+                provider_attempts = provider_attempts.saturating_add(attempts);
+                let Some(fallback) = build_strict_json_text_fallback_request(&request) else {
+                    return Err(model_failure(
+                        error,
+                        false,
+                        model_calls,
+                        provider_attempts,
+                        usage,
+                        last_model,
+                        last_finish_reason,
+                    ));
+                };
+                return call_fallback(
+                    adapter,
+                    fallback,
+                    budget,
+                    max_model_calls,
                     model_calls,
                     provider_attempts,
                     usage,
                     last_model,
                     last_finish_reason,
-                ));
-            };
-            call_fallback(
-                adapter,
-                fallback,
-                deadline,
-                max_model_calls,
-                model_calls,
-                provider_attempts,
-                usage,
-                last_model,
-                last_finish_reason,
-                "primary JSON-Schema capability unsupported".into(),
-            )
-            .await
-        }
-        Err(error) => {
-            provider_attempts = provider_attempts.saturating_add(error.provider_attempts);
-            Err(model_failure(
-                error,
+                    "primary JSON-Schema capability unsupported".into(),
+                )
+                .await;
+            }
+
+            Err(adapter_call_model_failure(
+                failure,
                 false,
                 model_calls,
                 provider_attempts,
@@ -982,7 +1302,7 @@ async fn call_model_for_proposal(
 async fn call_fallback(
     adapter: &dyn ModelAdapter,
     fallback: ModelRequest,
-    deadline: tokio::time::Instant,
+    budget: &mut CaseExecutionBudget,
     max_model_calls: u32,
     prior_model_calls: u32,
     prior_provider_attempts: u32,
@@ -1008,28 +1328,9 @@ async fn call_fallback(
     }
 
     let model_calls = prior_model_calls + 1;
-    let result = tokio::time::timeout_at(deadline, adapter.generate(fallback)).await;
-    let result = match result {
-        Ok(result) => result,
-        Err(_) => {
-            return Err(CallFailure {
-                class: "assessment_timeout".into(),
-                message: format!(
-                    "{primary_context}; strict-JSON text fallback exceeded elapsed-time budget"
-                ),
-                used_structured_fallback: true,
-                model_calls,
-                provider_attempts: prior_provider_attempts,
-                provider_attempts_complete: false,
-                usage,
-                provider_model: prior_model,
-                finish_reason: prior_finish_reason,
-            });
-        }
-    };
-
-    match result {
-        Ok(response) => {
+    match execute_adapter_call(adapter, fallback, budget).await {
+        Ok(call) => {
+            let response = call.response;
             let provider_attempts =
                 prior_provider_attempts.saturating_add(response.provider_attempts);
             usage.add(&response.usage);
@@ -1060,19 +1361,18 @@ async fn call_fallback(
                 }),
             }
         }
-        Err(error) => {
-            let provider_attempts = prior_provider_attempts.saturating_add(error.provider_attempts);
-            let mut failure = model_failure(
-                error,
+        Err(failure) => {
+            let mut result = adapter_call_model_failure(
+                failure,
                 true,
                 model_calls,
-                provider_attempts,
+                prior_provider_attempts,
                 usage,
                 prior_model,
                 prior_finish_reason,
             );
-            failure.message = format!("{primary_context}; fallback failed: {}", failure.message);
-            Err(failure)
+            result.message = format!("{primary_context}; fallback failed: {}", result.message);
+            Err(result)
         }
     }
 }
@@ -1081,9 +1381,8 @@ async fn call_model_for_local_qualification(
     adapter: &dyn ModelAdapter,
     provider: Provider,
     request: ModelRequest,
-    max_elapsed: Duration,
+    budget: &mut CaseExecutionBudget,
 ) -> Result<QualificationCallOutcome, CallFailure> {
-    let deadline = tokio::time::Instant::now() + max_elapsed;
     if QUALIFICATION_STAGE_MAX_MODEL_CALLS == 0 {
         return Err(CallFailure {
             class: "attempt_budget".into(),
@@ -1125,26 +1424,9 @@ async fn call_model_for_local_qualification(
         request.clone()
     };
 
-    let primary = tokio::time::timeout_at(deadline, adapter.generate(primary_request)).await;
-    let primary = match primary {
-        Ok(result) => result,
-        Err(_) => {
-            return Err(CallFailure {
-                class: "assessment_timeout".into(),
-                message: "local qualification exceeded remaining case budget".into(),
-                used_structured_fallback: false,
-                model_calls: 1,
-                provider_attempts: 0,
-                provider_attempts_complete: false,
-                usage: UsageSummary::default(),
-                provider_model: None,
-                finish_reason: None,
-            });
-        }
-    };
-
-    match primary {
-        Ok(response) => {
+    match execute_adapter_call(adapter, primary_request, budget).await {
+        Ok(call) => {
+            let response = call.response;
             let mut usage = UsageSummary::default();
             usage.add(&response.usage);
             let attempts = response.provider_attempts;
@@ -1179,7 +1461,7 @@ async fn call_model_for_local_qualification(
                     call_local_qualification_fallback(
                         adapter,
                         &request,
-                        deadline,
+                        budget,
                         1,
                         attempts,
                         usage,
@@ -1191,28 +1473,30 @@ async fn call_model_for_local_qualification(
                 }
             }
         }
-        Err(error) if error.kind == ModelErrorKind::UnsupportedCapability && !groq_text_primary => {
-            let attempts = error.provider_attempts;
-            call_local_qualification_fallback(
-                adapter,
-                &request,
-                deadline,
-                1,
-                attempts,
-                UsageSummary::default(),
-                None,
-                None,
-                "primary local qualification JSON-Schema capability unsupported".into(),
-            )
-            .await
-        }
-        Err(error) => {
-            let attempts = error.provider_attempts;
-            Err(model_failure(
-                error,
+        Err(failure) => {
+            if let Some(error) = failure.error.as_ref()
+                && error.kind == ModelErrorKind::UnsupportedCapability
+                && !groq_text_primary
+            {
+                let error = failure.error.expect("checked error");
+                return call_local_qualification_fallback(
+                    adapter,
+                    &request,
+                    budget,
+                    1,
+                    error.provider_attempts,
+                    UsageSummary::default(),
+                    None,
+                    None,
+                    "primary local qualification JSON-Schema capability unsupported".into(),
+                )
+                .await;
+            }
+            Err(adapter_call_model_failure(
+                failure,
                 false,
                 1,
-                attempts,
+                0,
                 UsageSummary::default(),
                 None,
                 None,
@@ -1225,7 +1509,7 @@ async fn call_model_for_local_qualification(
 async fn call_local_qualification_fallback(
     adapter: &dyn ModelAdapter,
     request: &ModelRequest,
-    deadline: tokio::time::Instant,
+    budget: &mut CaseExecutionBudget,
     prior_model_calls: u32,
     prior_provider_attempts: u32,
     mut usage: UsageSummary,
@@ -1264,32 +1548,13 @@ async fn call_local_qualification_fallback(
     };
 
     let model_calls = prior_model_calls + 1;
-    let result = tokio::time::timeout_at(deadline, adapter.generate(fallback)).await;
-    let result = match result {
-        Ok(result) => result,
-        Err(_) => {
-            return Err(CallFailure {
-                class: "assessment_timeout".into(),
-                message: format!(
-                    "{primary_context}; strict-JSON text fallback exceeded remaining case budget"
-                ),
-                used_structured_fallback: true,
-                model_calls,
-                provider_attempts: prior_provider_attempts,
-                provider_attempts_complete: false,
-                usage,
-                provider_model: prior_model,
-                finish_reason: prior_finish_reason,
-            });
-        }
-    };
-
-    match result {
-        Ok(response) => {
+    match execute_adapter_call(adapter, fallback, budget).await {
+        Ok(call) => {
+            let response = call.response;
             let attempts = prior_provider_attempts.saturating_add(response.provider_attempts);
             usage.add(&response.usage);
             let model = Some(response.model.clone());
-            let finish = response.finish_reason.clone();
+            let finish_reason = response.finish_reason.clone();
             match parse_evidence_local_qualification_v5(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
@@ -1298,7 +1563,7 @@ async fn call_local_qualification_fallback(
                     provider_attempts: attempts,
                     usage,
                     provider_model: model,
-                    finish_reason: finish,
+                    finish_reason,
                 }),
                 Err(error) => Err(CallFailure {
                     class: "protocol".into(),
@@ -1311,23 +1576,22 @@ async fn call_local_qualification_fallback(
                     provider_attempts_complete: true,
                     usage,
                     provider_model: model,
-                    finish_reason: finish,
+                    finish_reason,
                 }),
             }
         }
-        Err(error) => {
-            let attempts = prior_provider_attempts.saturating_add(error.provider_attempts);
-            let mut failure = model_failure(
-                error,
+        Err(failure) => {
+            let mut result = adapter_call_model_failure(
+                failure,
                 true,
                 model_calls,
-                attempts,
+                prior_provider_attempts,
                 usage,
                 prior_model,
                 prior_finish_reason,
             );
-            failure.message = format!("{primary_context}; fallback failed: {}", failure.message);
-            Err(failure)
+            result.message = format!("{primary_context}; fallback failed: {}", result.message);
+            Err(result)
         }
     }
 }
@@ -1341,9 +1605,11 @@ fn model_failure(
     provider_model: Option<String>,
     finish_reason: Option<String>,
 ) -> CallFailure {
+    let kind = error.kind;
+    let message = sanitize_provider_failure_message(kind, &error.message);
     CallFailure {
-        class: model_error_class(error.kind).into(),
-        message: error.message,
+        class: model_error_class(kind).into(),
+        message,
         used_structured_fallback,
         model_calls,
         provider_attempts,
@@ -1352,6 +1618,48 @@ fn model_failure(
         provider_model,
         finish_reason,
     }
+}
+
+fn sanitize_provider_failure_message(kind: ModelErrorKind, message: &str) -> String {
+    match kind {
+        ModelErrorKind::Quota => {
+            let normalized = message.to_ascii_lowercase();
+            let scope = if normalized.contains("tokens per day")
+                || normalized.contains("tpd")
+                || normalized.contains("perday")
+                || normalized.contains("daily")
+            {
+                "daily"
+            } else {
+                "unspecified"
+            };
+            format!("provider quota failure; scope={scope}")
+        }
+        ModelErrorKind::RateLimit => "provider rate-limit failure".into(),
+        ModelErrorKind::Credentials => "provider credential failure".into(),
+        _ => redact_provider_message_tokens(message),
+    }
+}
+
+fn redact_provider_message_tokens(message: &str) -> String {
+    message
+        .split_whitespace()
+        .map(|token| {
+            let lower = token.to_ascii_lowercase();
+            if lower.contains("http://")
+                || lower.contains("https://")
+                || lower.contains("org_")
+                || lower.contains("organization_id")
+                || lower.contains("project_id")
+                || lower.contains("account_id")
+            {
+                "<redacted>"
+            } else {
+                token
+            }
+        })
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 fn model_error_class(kind: ModelErrorKind) -> &'static str {
@@ -1379,6 +1687,26 @@ fn should_abort_after_operational_failure(
         && consecutive_operational_failures >= max_consecutive_operational_failures
 }
 
+fn next_capacity_failure_streak(current: usize, failure_class: Option<&str>) -> usize {
+    if failure_class.is_some_and(is_capacity_failure_class) {
+        current.saturating_add(1)
+    } else {
+        0
+    }
+}
+
+fn is_capacity_failure_class(class: &str) -> bool {
+    matches!(
+        class,
+        "assessment_timeout"
+            | "case_absolute_timeout"
+            | "provider_unavailable"
+            | "rate_limit"
+            | "timeout"
+            | "transport"
+    )
+}
+
 fn next_operational_failure_streak(current: usize, failure_class: Option<&str>) -> usize {
     if failure_class.is_some_and(is_operational_provider_failure_class) {
         current.saturating_add(1)
@@ -1391,6 +1719,8 @@ fn is_operational_provider_failure_class(class: &str) -> bool {
     matches!(
         class,
         "assessment_timeout"
+            | "case_absolute_timeout"
+            | "provider_arm_latched"
             | "credentials"
             | "provider"
             | "provider_unavailable"
@@ -1704,6 +2034,27 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         .iter()
         .map(|case| case.provider_attempts as u64)
         .sum();
+    let provider_attempts_started = observations
+        .iter()
+        .map(|case| case.execution.provider_attempts_started)
+        .sum();
+    let provider_attempts_completed = observations
+        .iter()
+        .map(|case| case.execution.provider_attempts_completed)
+        .sum();
+    let active_execution_ms = observations
+        .iter()
+        .map(|case| case.execution.active_ms)
+        .sum();
+    let provider_wait_ms = observations.iter().map(|case| case.execution.wait_ms).sum();
+    let pacing_wait_ms = observations
+        .iter()
+        .map(|case| case.execution.pacing_wait_ms)
+        .sum();
+    let retry_wait_ms = observations
+        .iter()
+        .map(|case| case.execution.retry_wait_ms)
+        .sum();
     let input_tokens = observations
         .iter()
         .map(|case| case.usage.input_tokens)
@@ -1778,7 +2129,13 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         lexical_expected_relevant_misses,
         model_calls,
         provider_attempts,
+        provider_attempts_started,
+        provider_attempts_completed,
         provider_attempts_incomplete_observations,
+        active_execution_ms,
+        provider_wait_ms,
+        pacing_wait_ms,
+        retry_wait_ms,
         input_tokens,
         output_tokens,
         total_tokens,
@@ -1823,7 +2180,13 @@ fn empty_metrics(cases: usize) -> CalibrationMetrics {
         lexical_expected_relevant_misses: 0,
         model_calls: 0,
         provider_attempts: 0,
+        provider_attempts_started: 0,
+        provider_attempts_completed: 0,
         provider_attempts_incomplete_observations: 0,
+        active_execution_ms: 0,
+        provider_wait_ms: 0,
+        pacing_wait_ms: 0,
+        retry_wait_ms: 0,
         input_tokens: 0,
         output_tokens: 0,
         total_tokens: 0,
@@ -2046,7 +2409,7 @@ mod tests {
             Provider::Mistral,
             fixture_request(),
             1,
-            Duration::from_secs(1),
+            &mut CaseExecutionBudget::new(1_000),
         )
         .await
         .unwrap_err();
@@ -2068,7 +2431,7 @@ mod tests {
             Provider::Mistral,
             fixture_request(),
             2,
-            Duration::from_millis(5),
+            &mut CaseExecutionBudget::new(5),
         )
         .await
         .unwrap_err();
@@ -2115,6 +2478,7 @@ mod tests {
         .expect("parse args");
         assert!(args.continue_after_operational_failures);
         assert_eq!(args.max_consecutive_operational_failures, 2);
+        assert_eq!(args.max_consecutive_capacity_failures, 2);
     }
 
     #[test]
@@ -2124,6 +2488,36 @@ mod tests {
         assert!(should_abort_after_operational_failure(false, 2, 2, true));
         assert!(!should_abort_after_operational_failure(false, 1, 2, true));
         assert!(!should_abort_after_operational_failure(false, 2, 2, false));
+    }
+
+    #[test]
+    fn capacity_failure_streak_is_separate_from_protocol_and_quota() {
+        assert_eq!(next_capacity_failure_streak(0, Some("rate_limit")), 1);
+        assert_eq!(
+            next_capacity_failure_streak(1, Some("provider_unavailable")),
+            2
+        );
+        assert_eq!(next_capacity_failure_streak(2, Some("quota")), 0);
+        assert_eq!(next_capacity_failure_streak(2, Some("protocol")), 0);
+        assert!(is_capacity_failure_class("assessment_timeout"));
+        assert!(is_capacity_failure_class("case_absolute_timeout"));
+        assert!(!is_capacity_failure_class("quota"));
+    }
+
+    #[test]
+    fn persisted_provider_failures_redact_quota_identity_and_urls() {
+        let raw = "Rate limit reached in organization org_01secret on tokens per day (TPD). Upgrade at https://console.example/settings/billing";
+        let quota = sanitize_provider_failure_message(ModelErrorKind::Quota, raw);
+        assert_eq!(quota, "provider quota failure; scope=daily");
+        assert!(!quota.contains("org_01secret"));
+        assert!(!quota.contains("https://"));
+
+        let transport = redact_provider_message_tokens(
+            "request failed at https://api.example for org_01secret",
+        );
+        assert!(!transport.contains("https://api.example"));
+        assert!(!transport.contains("org_01secret"));
+        assert!(transport.contains("<redacted>"));
     }
 
     #[test]
@@ -2163,7 +2557,7 @@ mod tests {
             &adapter,
             Provider::Mistral,
             local_qualification_request(),
-            Duration::from_secs(1),
+            &mut CaseExecutionBudget::new(1_000),
         )
         .await
         .expect("qualification result");
@@ -2193,7 +2587,7 @@ mod tests {
             &adapter,
             Provider::Mistral,
             local_qualification_request(),
-            Duration::from_secs(1),
+            &mut CaseExecutionBudget::new(1_000),
         )
         .await
         .expect("qualification fallback result");
@@ -2209,7 +2603,7 @@ mod tests {
             &adapter,
             Provider::Mistral,
             local_qualification_request(),
-            Duration::from_millis(5),
+            &mut CaseExecutionBudget::new(5),
         )
         .await
         .unwrap_err();
@@ -2233,7 +2627,7 @@ mod tests {
             &adapter,
             Provider::Mistral,
             local_qualification_request(),
-            Duration::from_secs(1),
+            &mut CaseExecutionBudget::new(1_000),
         )
         .await
         .expect("qualification fallback result");
@@ -2252,7 +2646,7 @@ mod tests {
             &adapter,
             Provider::Mistral,
             local_qualification_request(),
-            Duration::from_secs(1),
+            &mut CaseExecutionBudget::new(1_000),
         )
         .await
         .unwrap_err();
@@ -2291,6 +2685,7 @@ mod tests {
             EvidenceRelevanceDisposition::Ambiguous,
             Instant::now(),
             call,
+            &mut CaseExecutionBudget::new(1_000),
         )
         .await
         .expect("observation");
@@ -2332,6 +2727,7 @@ mod tests {
             EvidenceRelevanceDisposition::Ambiguous,
             Instant::now(),
             call,
+            &mut CaseExecutionBudget::new(1_000),
         )
         .await
         .expect("observation");
@@ -2356,7 +2752,7 @@ mod tests {
             Provider::Mistral,
             fixture_request(),
             2,
-            Duration::from_secs(1),
+            &mut CaseExecutionBudget::new(1_000),
         )
         .await
         .expect("fallback result");
@@ -2373,7 +2769,7 @@ mod tests {
             Provider::Groq,
             fixture_request(),
             2,
-            Duration::from_secs(1),
+            &mut CaseExecutionBudget::new(1_000),
         )
         .await
         .unwrap_err();
@@ -2390,7 +2786,7 @@ mod tests {
             &adapter,
             Provider::Groq,
             local_qualification_request(),
-            Duration::from_secs(1),
+            &mut CaseExecutionBudget::new(1_000),
         )
         .await
         .unwrap_err();
