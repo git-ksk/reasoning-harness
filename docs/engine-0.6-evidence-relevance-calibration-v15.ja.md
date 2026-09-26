@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v15
 
-状態: immutable v14 FAIL の pre-freeze successor。v15 live model observation はまだ0回。independent holdout authoringは禁止継続。
+状態: immutable canonical FAIL。freeze commit `80aba233aa375fa88d4515d68c586f9f0c5f02bb` / run `36217988625` は完了済みで、rerun / rescore / relabel / retag禁止。詳細は `engine-0.6-evidence-relevance-calibration-v15-result.ja.md`。independent holdout authoringは禁止継続。
 
 ## 固定 evaluation surface
 

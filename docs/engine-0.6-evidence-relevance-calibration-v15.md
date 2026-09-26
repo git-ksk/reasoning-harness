@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v15
 
-Status: pre-freeze successor to immutable v14 FAIL. No v15 live model observation has occurred. Independent holdout authoring remains prohibited.
+Status: immutable canonical FAIL. Frozen run `36217988625` at commit `80aba233aa375fa88d4515d68c586f9f0c5f02bb` is complete and must not be rerun, rescored, relabeled, or retagged. See `engine-0.6-evidence-relevance-calibration-v15-result.md`. Independent holdout authoring remains prohibited.
 
 ## Fixed evaluation surface
 
