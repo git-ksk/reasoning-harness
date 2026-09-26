@@ -1,6 +1,6 @@
 # Engine 0.6 candidate: evidence-target relevance calibration v14
 
-Status: pre-freeze successor to immutable v13 FAIL. No v14 live model observation has occurred. Independent holdout authoring remains prohibited.
+Status: canonical v14 is immutable FAIL from run 36174639970. See engine-0.6-evidence-relevance-calibration-v14-result.md. Do not rerun, rescore, relabel, or retag v14. Independent holdout authoring remains prohibited.
 
 ## Why v14 exists
 

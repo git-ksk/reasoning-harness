@@ -1,6 +1,6 @@
 # Engine 0.6 candidate: evidence-target relevance calibration v14
 
-状態: immutable v13 FAIL の pre-freeze successor。v14 live model observation はまだ0回。independent holdout authoring は引き続き禁止。
+状態: canonical v14 は run 36174639970 で immutable FAIL。engine-0.6-evidence-relevance-calibration-v14-result.ja.md を参照。rerun / rescore / relabel / retag禁止。independent holdout authoringは引き続き禁止。
 
 ## v14 の目的
 
