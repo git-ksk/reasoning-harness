@@ -1,6 +1,6 @@
-# Engine 0.6 evidence-target relevance calibration v19 — successor design
+# Engine 0.6 evidence-target relevance calibration v19 — pre-freeze candidate
 
-Status: design only. No v19 live calibration observation has been made. The v18 canonical result remains immutable FAIL and is not rescored, rerun, relabeled, or retagged.
+Status: implementation candidate, not frozen. No v19 live calibration observation has been made. The v18 canonical result remains immutable FAIL and is not rescored, rerun, relabeled, or retagged.
 
 ## Frozen inheritance
 
@@ -74,6 +74,36 @@ Two other provider-observed negative shapes require separate property audit befo
 - complete local relation absence with no risk.
 
 They are candidates, not precommitted v19 behavior.
+
+## Pre-freeze implementation evidence
+
+The current v19 candidate implements the authority split rather than weakening the v18 gate:
+
+- Harness-owned effective qualification contract: `reason-evidence-relevance-effective-qualification-v1`;
+- materialization policy: `target-evidence-relevance-binding-materialization-v14`;
+- live-run configuration: `evidence-relevance-live-calibration-v19`;
+- calibration suite: `evidence-relevance-calibration-v19`;
+- annotation protocol: `evidence-relevance-effective-qualification-v19`;
+- the raw verifier v8 output remains persisted and scored under the existing `local_qualification_*` diagnostic metrics;
+- effective qualification is persisted separately and is the qualification-gate authority.
+
+Deterministic pre-freeze evidence on the fixed 48 is green:
+
+- typed deterministic local-risk classification: 48/48 expected;
+- effective identity/relation/risk qualification: 48/48 expected;
+- expected materialization: 48/48 expected;
+- immutable v18 Mistral mismatch replay: 48/48 effective qualification and 48/48 materialization;
+- generic boundary/property tests: 12/12 PASS;
+- v18 regression suite: 17/17 PASS;
+- calibration runner focused tests: 23/23 PASS;
+- full package test suites (`core` / `providers` / `cli`): PASS;
+- all-target Clippy with `-D warnings` for all three workspace packages: PASS;
+- `cargo fmt --all -- --check`: PASS;
+- v19 validate-only: 48 planned / 0 observed, `validate_only_non_scorable`.
+
+The replay evidence is test-only evidence from the immutable v18 observation. It does not rescore v18 and is not a new live observation.
+
+The v19 freeze workflow is prepared but cannot run before an exact annotated `engine-0.6-evidence-relevance-calibration-v19-freeze` tag exists. No v19 freeze tag exists yet.
 
 ## Operational policy
 

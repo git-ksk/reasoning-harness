@@ -1,6 +1,6 @@
-# Engine 0.6 evidence-target relevance calibration v19 — successor design
+# Engine 0.6 evidence-target relevance calibration v19 — pre-freeze candidate
 
-Status: design only。v19 live calibration observationはまだ0。v18 canonicalはimmutable FAILのままで、rescore / rerun / relabel / retagしない。
+Status: implementation candidate / 未freeze。v19 live calibration observationはまだ0件。v18 canonicalはimmutable FAILのままで、rescore / rerun / relabel / retagしない。
 
 ## Frozen inheritance
 
@@ -74,6 +74,36 @@ provider観測で見えた次の2 shapeは、採用前に別property auditを行
 - riskなしのcomplete local relation absence。
 
 個別caseを直せることだけを理由にv19へ事前採用しない。
+
+## Pre-freeze implementation evidence
+
+現在のv19 candidateはv18 gateを緩和せず、authority splitを実装している。
+
+- Harness-owned effective qualification contract: `reason-evidence-relevance-effective-qualification-v1`
+- materialization policy: `target-evidence-relevance-binding-materialization-v14`
+- live-run configuration: `evidence-relevance-live-calibration-v19`
+- calibration suite: `evidence-relevance-calibration-v19`
+- annotation protocol: `evidence-relevance-effective-qualification-v19`
+- raw verifier v8 outputは既存の `local_qualification_*` diagnostic metricsとしてそのまま保存・採点
+- effective qualificationは別フィールド・別metricsで保存し、v19 qualification gateのauthorityとする
+
+fixed 48に対するdeterministic pre-freeze evidenceはgreen。
+
+- typed deterministic local-risk classification: expected 48/48
+- effective identity/relation/risk qualification: expected 48/48
+- expected materialization: 48/48
+- immutable v18 Mistral mismatch replay: effective qualification 48/48 / materialization 48/48
+- generic boundary/property tests: 12/12 PASS
+- v18 regression suite: 17/17 PASS
+- calibration runner focused tests: 23/23 PASS
+- full package test suites (`core` / `providers` / `cli`): PASS
+- all-target Clippy with `-D warnings` for all three workspace packages: PASS
+- `cargo fmt --all -- --check`: PASS
+- v19 validate-only: 48 planned / 0 observed / `validate_only_non_scorable`
+
+replay evidenceはimmutable v18 observationを使うtest-only evidenceであり、v18のrescoreでも新規live observationでもない。
+
+v19 freeze workflowは準備済みだが、exact annotated `engine-0.6-evidence-relevance-calibration-v19-freeze` tagが存在するまで起動しない。現時点でv19 freeze tagは存在しない。
 
 ## Operational policy
 

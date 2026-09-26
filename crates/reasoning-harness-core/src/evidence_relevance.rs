@@ -65,6 +65,10 @@ pub const EVIDENCE_RELEVANCE_LOCAL_QUALIFICATION_V8_CONTRACT_ID: &str =
     "reason-evidence-local-qualification-v8";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V13_ID: &str =
     "target-evidence-relevance-binding-materialization-v13";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V14_ID: &str =
+    "target-evidence-relevance-binding-materialization-v14";
+pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V1_CONTRACT_ID: &str =
+    "reason-evidence-relevance-effective-qualification-v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -484,113 +488,374 @@ fn normalized_phrase_matches(text: &str, phrase: &str) -> bool {
     text.contains(&phrase)
 }
 
-fn deterministic_local_scope_risk_present(candidate: &EvidenceRelevanceCandidate) -> bool {
-    let normalized_signals = candidate
+pub fn classify_deterministic_local_scope_risk(
+    candidate: &EvidenceRelevanceCandidate,
+) -> EvidenceLocalBlockingReason {
+    let signals = candidate
         .signals
         .iter()
         .map(|signal| (signal.kind, normalized(&signal.text)))
         .collect::<Vec<_>>();
 
-    let has_context_gap = normalized_signals.iter().any(|(_, text)| {
-        let context_noun = [
-            "excerpt",
-            "clip",
-            "clipped",
-            "truncated",
-            "column",
-            "row labels",
-            "referent",
-            "bullet",
-            "captured passage",
-            "supplied text",
-            "product",
-        ]
-        .iter()
-        .any(|needle| text.contains(needle));
-        let gap_marker = [
-            "omitted",
-            "outside",
-            "truncated",
-            "clipped",
-            "does not identify",
-            "does not show",
-            "does not name",
+    let has_context_gap = signals.iter().any(|(_, text)| {
+        let omission = [
+            "omit",
             "missing",
+            "outside",
+            "truncat",
+            "clip",
+            "not shown",
+            "not provided",
+            "not included",
         ]
         .iter()
-        .any(|needle| text.contains(needle));
-        context_noun && gap_marker
+        .any(|marker| text.contains(marker));
+        let local_context = [
+            "excerpt", "passage", "document", "text", "material", "column", "row", "label",
+            "referent", "bullet", "product",
+        ]
+        .iter()
+        .any(|noun| text.contains(noun));
+        let explicit_missing_binding = ["does not identify", "does not name", "does not show"]
+            .iter()
+            .any(|marker| text.contains(marker))
+            && ["excerpt", "passage", "document", "text", "material"]
+                .iter()
+                .any(|noun| text.contains(noun));
+        (omission && local_context) || explicit_missing_binding
     });
 
-    let has_identity_mapping_uncertainty = normalized_signals.iter().any(|(_, text)| {
-        let mapping_term = [
+    let has_identity_mapping_uncertainty = signals.iter().any(|(_, text)| {
+        let mapping = [
             "alias",
-            "renamed",
-            "new name",
-            "succeeds",
+            "rename",
+            "succeed",
             "successor",
-            "replaces",
+            "replace",
+            "replacement",
             "same product",
             "mapping",
         ]
         .iter()
-        .any(|needle| text.contains(needle));
-        let uncertainty_marker = [
-            "does not establish",
-            "does not state whether",
-            "does not define",
-            "may be",
+        .any(|term| text.contains(term));
+        let uncertainty = [
             "whether",
+            "may",
+            "might",
+            "uncertain",
+            "unknown",
+            "not establish",
+            "not define",
+            "does not establish",
+            "does not define",
         ]
         .iter()
-        .any(|needle| text.contains(needle));
-        mapping_term && uncertainty_marker
+        .any(|marker| text.contains(marker));
+        mapping && uncertainty
     });
 
-    let has_ownership_uncertainty = normalized_signals.iter().any(|(_, text)| {
-        let ownership_term = [
-            "which product",
-            "which of the two products",
-            "row applies",
-            "row belongs",
-            "owns this row",
+    let multi_entity_signal = signals.iter().any(|(kind, text)| {
+        matches!(
+            kind,
+            EvidenceRelevanceSignalKind::Heading
+                | EvidenceRelevanceSignalKind::StructuredMetadata
+                | EvidenceRelevanceSignalKind::Excerpt
+        ) && (text.contains(" / ")
+            || text.contains(" and ")
+            || text.contains(" two ")
+            || text.contains("multiple"))
+    });
+
+    let has_ownership_uncertainty = signals.iter().any(|(_, text)| {
+        let ownership = [
+            "belongs",
+            "belong",
+            "applies",
+            "apply",
+            "owner",
+            "owns",
+            "ownership",
             "product column",
             "shared table",
-            "shared vault",
+            "shared row",
         ]
         .iter()
-        .any(|needle| text.contains(needle));
-        let uncertainty_marker = [
-            "does not identify",
-            "does not label",
-            "does not show",
-            "omits",
-            "omitted",
+        .any(|term| text.contains(term))
+            || (text.contains("which") && (text.contains("product") || text.contains("service")));
+        let uncertainty = [
+            "does not",
+            "may",
+            "might",
+            "uncertain",
+            "unknown",
+            "omit",
             "outside",
-            "may belong",
+            "missing",
         ]
         .iter()
-        .any(|needle| text.contains(needle));
-        ownership_term && uncertainty_marker
-    });
+        .any(|marker| text.contains(marker));
+        ownership && uncertainty
+    }) || (multi_entity_signal
+        && signals.iter().any(|(_, text)| {
+            text.contains("product column")
+                && ["omit", "outside", "missing"]
+                    .iter()
+                    .any(|marker| text.contains(marker))
+        }));
 
-    let has_url_identity_gap = normalized_signals
+    let has_url_identity_gap = signals
         .iter()
         .any(|(kind, _)| *kind == EvidenceRelevanceSignalKind::CanonicalUrl)
-        && normalized_signals.iter().any(|(_, text)| {
-            [
-                "does not identify the product",
-                "does not name the product",
-                "does not bind this value",
-            ]
-            .iter()
-            .any(|needle| text.contains(needle))
+        && signals.iter().any(|(_, text)| {
+            let missing_binding = text.contains("does not")
+                && ["identify", "name", "bind"]
+                    .iter()
+                    .any(|verb| text.contains(verb));
+            missing_binding && (text.contains("product") || text.contains("value"))
         });
 
-    has_context_gap
-        || has_identity_mapping_uncertainty
-        || has_ownership_uncertainty
-        || has_url_identity_gap
+    let identity_mapping = has_identity_mapping_uncertainty;
+    let ownership_scope = has_ownership_uncertainty;
+    let context_gap = has_context_gap || has_url_identity_gap;
+    let count = [identity_mapping, ownership_scope, context_gap]
+        .into_iter()
+        .filter(|value| *value)
+        .count();
+
+    if count > 1 {
+        EvidenceLocalBlockingReason::Multiple
+    } else if identity_mapping {
+        EvidenceLocalBlockingReason::IdentityMapping
+    } else if ownership_scope {
+        EvidenceLocalBlockingReason::OwnershipScope
+    } else if context_gap {
+        EvidenceLocalBlockingReason::ContextGap
+    } else {
+        EvidenceLocalBlockingReason::None
+    }
+}
+
+fn deterministic_local_scope_risk_present(candidate: &EvidenceRelevanceCandidate) -> bool {
+    classify_deterministic_local_scope_risk(candidate) != EvidenceLocalBlockingReason::None
+}
+
+fn candidate_local_text(candidate: &EvidenceRelevanceCandidate) -> String {
+    candidate
+        .signals
+        .iter()
+        .filter(|signal| signal.kind != EvidenceRelevanceSignalKind::CanonicalUrl)
+        .map(|signal| normalized(&signal.text))
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn deterministic_target_absence(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    let text = candidate_local_text(candidate);
+    let canonical = policy
+        .entity
+        .as_ref()
+        .map(|entity| normalized(&entity.canonical_name))
+        .unwrap_or_default();
+
+    let explicit_target_absence =
+        !canonical.is_empty() && text.contains(&format!("no {canonical}"));
+    let generic_product_absence =
+        text.contains("no") && text.contains("product") && text.contains("specific");
+    let generic_scope_absence =
+        text.contains("generic") && (text.contains("catalog") || text.contains("site"));
+    let generic_landing =
+        (text.contains("explore") || text.contains("browse")) && text.contains("services");
+
+    explicit_target_absence || generic_product_absence || generic_scope_absence || generic_landing
+}
+
+fn requested_relation_locally_present(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    let text = candidate_local_text(candidate);
+    let contains_any = |needles: &[&str]| needles.iter().any(|needle| text.contains(needle));
+
+    match policy.relation {
+        EvidenceRelevanceRelationKind::Availability => {
+            contains_any(&["available", "availability", "offered", "regional", "region"])
+        }
+        EvidenceRelevanceRelationKind::Pricing => contains_any(&[
+            "pricing",
+            "price",
+            "cost",
+            "billed",
+            "charge",
+            "credit",
+            "allowance",
+        ]),
+        EvidenceRelevanceRelationKind::Limit => contains_any(&[
+            "limit",
+            "quota",
+            "maximum",
+            "allows",
+            "allowed",
+            "retention",
+            "per minute",
+            "per second",
+            "up to",
+        ]),
+        EvidenceRelevanceRelationKind::ChangeOrLaunch => contains_any(&[
+            "new",
+            "add",
+            "launch",
+            "release",
+            "update",
+            "change",
+            "introduc",
+            "improvement",
+        ]),
+        EvidenceRelevanceRelationKind::Definition => {
+            contains_any(&["definition", "concept", "means", "defined", "this service"])
+        }
+        EvidenceRelevanceRelationKind::BenefitOrUseCase => {
+            contains_any(&["use case", "benefit", "reduce", "help", "combine"])
+        }
+        EvidenceRelevanceRelationKind::General => {
+            let entity_tokens = policy
+                .entity
+                .as_ref()
+                .map(|entity| {
+                    normalized(&entity.canonical_name)
+                        .split_whitespace()
+                        .map(str::to_owned)
+                        .collect::<Vec<_>>()
+                })
+                .unwrap_or_default();
+            let stop = [
+                "what", "which", "where", "when", "does", "how", "work", "works", "about", "the",
+                "this", "that", "with", "from", "into", "for",
+            ];
+            normalized(&policy.target_question)
+                .split_whitespace()
+                .filter(|token| token.len() >= 4)
+                .filter(|token| !stop.contains(token))
+                .filter(|token| !entity_tokens.iter().any(|entity| entity == *token))
+                .any(|token| text.contains(token))
+        }
+    }
+}
+
+fn deterministic_identity_context_gap(candidate: &EvidenceRelevanceCandidate) -> bool {
+    let has_url = candidate
+        .signals
+        .iter()
+        .any(|signal| signal.kind == EvidenceRelevanceSignalKind::CanonicalUrl);
+    let text = candidate_local_text(candidate);
+    let negative_binding = text.contains("does not")
+        && ["identify", "name", "bind"]
+            .iter()
+            .any(|verb| text.contains(verb));
+    let identity_object = text.contains("product") || text.contains("value");
+
+    has_url && negative_binding && identity_object
+}
+
+fn deterministic_distinct_target_evidence(candidate: &EvidenceRelevanceCandidate) -> bool {
+    let text = candidate_local_text(candidate);
+    let explicit_separation = (text.contains("separate") || text.contains("distinct"))
+        && (text.contains("product") || text.contains("service"));
+    let explicit_non_mapping = text.contains("not")
+        && ["rename", "replacement", "successor"]
+            .iter()
+            .any(|mapping| text.contains(mapping));
+    let comparison = ["unlike", "versus", "compared"]
+        .iter()
+        .any(|marker| text.contains(marker));
+
+    explicit_separation || explicit_non_mapping || comparison
+}
+
+pub fn derive_effective_evidence_local_qualification_v1(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceLocalQualificationV6, EvidenceRelevanceError> {
+    validate_policy(policy)?;
+    validate_candidate(candidate)?;
+
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceLocalRelationScope as Relation;
+    use EvidenceRelevanceBinding as Binding;
+
+    let risk = classify_deterministic_local_scope_risk(candidate);
+    let (has_harness_anchor, _, _) = anchor_match(policy, candidate);
+    let target_absent = risk == Risk::None && deterministic_target_absence(policy, candidate);
+    let corroborated_distinct_target = risk == Risk::None
+        && deterministic_distinct_target_evidence(candidate)
+        && proposal.is_some_and(|value| value.target_binding == Binding::Different)
+        && raw.is_some_and(|value| value.identity_scope == Identity::DistinctTarget);
+
+    let identity_scope = match risk {
+        Risk::IdentityMapping | Risk::OwnershipScope | Risk::Multiple => Identity::Unresolved,
+        Risk::ContextGap => {
+            if has_harness_anchor && !deterministic_identity_context_gap(candidate) {
+                Identity::ExactTarget
+            } else {
+                Identity::Unresolved
+            }
+        }
+        Risk::None => {
+            if target_absent {
+                Identity::TargetAbsent
+            } else if corroborated_distinct_target {
+                Identity::DistinctTarget
+            } else if has_harness_anchor
+                || (policy.identity_requirement
+                    == EvidenceRelevanceIdentityRequirement::AllowSemanticEquivalent
+                    && proposal.is_some_and(|value| value.target_binding == Binding::Exact)
+                    && raw.is_some_and(|value| value.identity_scope == Identity::ExactTarget))
+            {
+                Identity::ExactTarget
+            } else if proposal.is_some_and(|value| value.target_binding == Binding::Different)
+                || raw.is_some_and(|value| value.identity_scope == Identity::DistinctTarget)
+                || raw.is_some_and(|value| value.identity_scope == Identity::TargetAbsent)
+            {
+                Identity::DistinctTarget
+            } else {
+                raw.map(|value| value.identity_scope)
+                    .unwrap_or(Identity::Unresolved)
+            }
+        }
+    };
+
+    let relation_scope = if target_absent {
+        Relation::RelationAbsent
+    } else if risk == Risk::ContextGap {
+        match proposal.map(|value| value.relation_binding) {
+            Some(Binding::Exact) => Relation::RequestedRelation,
+            Some(Binding::Different) => Relation::DifferentRelation,
+            _ => raw
+                .map(|value| value.relation_scope)
+                .unwrap_or(Relation::Unresolved),
+        }
+    } else if requested_relation_locally_present(policy, candidate) {
+        Relation::RequestedRelation
+    } else {
+        match proposal.map(|value| value.relation_binding) {
+            Some(Binding::Exact) => Relation::RequestedRelation,
+            Some(Binding::Different) => Relation::DifferentRelation,
+            _ => raw
+                .map(|value| value.relation_scope)
+                .unwrap_or(Relation::Unresolved),
+        }
+    };
+
+    Ok(EvidenceLocalQualificationV6 {
+        identity_scope,
+        relation_scope,
+        scope_risk: risk,
+    })
 }
 
 fn validate_policy(policy: &EvidenceRelevanceTargetPolicy) -> Result<(), EvidenceRelevanceError> {
@@ -2034,6 +2299,53 @@ pub fn materialize_evidence_relevance_v13(
         materialize_evidence_relevance_v12(policy, candidate, proposal, qualification)?;
     assessment.materialization_policy_id =
         EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V13_ID.into();
+    Ok(assessment)
+}
+
+pub fn materialize_evidence_relevance_v14(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw_qualification: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceRelevanceBinding as Binding;
+
+    let effective = derive_effective_evidence_local_qualification_v1(
+        policy,
+        candidate,
+        proposal,
+        raw_qualification,
+    )?;
+
+    if let Some(proposal) = proposal
+        && effective.scope_risk == Risk::None
+        && raw_qualification.is_none_or(|raw| raw.scope_risk == Risk::None)
+        && effective.identity_scope == Identity::DistinctTarget
+        && proposal.target_binding != Binding::Exact
+    {
+        let (_has_harness_anchor, _url_only_anchor, mut reasons) = anchor_match(policy, candidate);
+        reasons.push(EvidenceRelevanceReason::NegativeTargetDistinctEntityConfirmed);
+        reasons.push(EvidenceRelevanceReason::ModelIrrelevant);
+        return Ok(EvidenceRelevanceAssessment {
+            contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_V5_CONTRACT_ID.into(),
+            materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V14_ID
+                .into(),
+            policy_id: policy.policy_id.clone(),
+            target_id: policy.target_id.clone(),
+            evidence_id: candidate.evidence_id.clone(),
+            source_id: candidate.source_id.clone(),
+            disposition: EvidenceRelevanceDisposition::Irrelevant,
+            path: EvidenceRelevanceAssessmentPath::ModelAssisted,
+            reasons,
+        });
+    }
+
+    let mut assessment =
+        materialize_evidence_relevance_v13(policy, candidate, proposal, Some(&effective))?;
+    assessment.materialization_policy_id =
+        EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V14_ID.into();
     Ok(assessment)
 }
 
