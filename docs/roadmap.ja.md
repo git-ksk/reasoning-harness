@@ -427,3 +427,11 @@ v14後の監査で、実装開始前に次を追加constraintとする。
 - **calibration overfitとtelemetry leakageを防ぐ。** fixed 48 caseはすでにobserved calibration data。v15実装はcase ID、synthetic entity名、fixture exact phraseでbranchしない。scored calibration coreを増やさずstructural/property/metamorphic testを追加可能とする。またpublic repoへ保存するprovider error artifactからorganization/project/account identifier、billing URL等の不要provider payloadをsanitizeする。
 
 Groq capacity preflightには追加制約がある。standard response headerで確認できるのはRPD request remainingとTPM token remainingで、TPD token remainingではない。したがってtiny probe成功だけではfull canonical armに必要なdaily token余力を証明できない。organization/project quota stateを別途確定できる場合、またはreset windowを隔離しconservativeなfull-run projected token demandをoperator gateで確保した場合だけreadyとする。authoritativeなdaily remaining capacityが不明ならpreflight FAILとし、one-shot canonicalを消費しない。
+
+### Engine 0.6 #462 v15 candidate status
+
+v15 semanticsは e760939、operational budget/circuit hardeningは 769866f で実装。fixed 48-case coreは変更しない。v15 verifierはmodel-authored explicit local absenceをone-sided local binding confirmationへ置換。materialization v10はnegative target rejection前のconfirmationを復活し、positive rescueは既存Harness identity floor下でconfirmationされた場合だけ許可する。ASCII alias anchorはboundary-aware化。required-provider retry ownershipはadapter内部のまま。
+
+Mistral/Groq/Googleはactive executionとprovider pacing/retry waitを分離。canonical budgetはactive 60s + cumulative provider wait 45s、single wait cap 30s、absolute case deadline 120s。typed quota 1件でprovider arm latch、correlated capacity failure 2件でlatchし、suppressed caseはnon-scorableのまま。public runner failureは保存前sanitizeする。
+
+first/only v15 canonicalはexact freeze向けGroq daily token headroom 160k以上の明示attestation前には開始しない。閾値はv14 Mistral実測67,610 total tokens / 96 model callsに対するconservative operator gateであり、tiny probeからの推論ではない。Mistral + Groq required、Google full non-gating replicationを維持する。
