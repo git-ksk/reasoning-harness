@@ -455,3 +455,7 @@ v17は`evidence-relevance-fixed-core-v1` 48件を維持し、primary proposal v5
 ### Engine 0.6 #462 v17 immutable result / v18 successor
 
 Frozen v17 run `36226650327`（commit `9647e70125b97dd77b1c4742004889c23fd10d58`）はimmutable FAIL。Required Mistralは48/48完走、materialized exact 44/48まで改善したが、`59_fresh_shared_owner_positive_looking`でAmbiguous -> Relevant、`25_insufficient_local_passage`でAmbiguous -> Irrelevantのsafety regressionが発生し、55/13もconservative utility missとして残った。Required Groqは最初の6 successful observationはexactだったがcase 10でtyped daily quotaとなり即latch、残り41 callを抑止。Google replicationは48/48完走、materialized exact 46/48、unsafe Relevant 0で、missは13/44。v18はfixed 48を維持し、observable clipping / omitted ownership / mapping uncertainty向けHarness-owned deterministic scope-risk floor、verifier identity/relation orthogonalityとprompt-injection handlingの再強化、independently negativeなterminal pathだけの安全な拡張を行う。v17 operational hardeningは維持。holdoutは禁止継続。
+
+### Engine 0.6 #462 v18 pre-freeze candidate
+
+v18はfixed 48件とv17 scored semanticsを変更しない。Harness-owned deterministic local-risk floorを追加し、明示clipping / omitted ownership・referent / uncertain mapping / URL identity gapを検出した場合は必ずAmbiguous。Verifier v8でidentity/relation orthogonalityとprompt-injection/clipping境界を強化し、materialization v13はsafeなnegative disagreement解消だけを拡張、positive rescue pathは増やさない。operational hardeningは変更なし。
