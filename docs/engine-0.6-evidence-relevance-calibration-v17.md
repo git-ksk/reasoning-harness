@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v17 — successor design
 
-Status: implemented pre-freeze candidate. No v17 live observation has occurred. Independent holdout authoring remains blocked.
+Status: immutable canonical FAIL. Frozen run `36226650327` at commit `9647e70125b97dd77b1c4742004889c23fd10d58` is complete and must not be rerun, rescored, relabeled, or retagged. See `engine-0.6-evidence-relevance-calibration-v17-result.md`. Independent holdout authoring remains blocked.
 
 ## Fixed evaluation surface
 
