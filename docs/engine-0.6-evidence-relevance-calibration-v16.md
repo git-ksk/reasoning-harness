@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v16 — successor design
 
-Status: implemented pre-freeze candidate. No v16 live observation has occurred. Independent holdout authoring remains blocked.
+Status: implemented pre-freeze candidate at `566a4b5a39ad937d9f43d006550ad7a84436a0f8`. No v16 live observation has occurred. Independent holdout authoring remains blocked.
 
 ## Fixed surface
 
@@ -109,16 +109,18 @@ The fixed 48 cases retain the same 14 Relevant / 18 Irrelevant / 16 Ambiguous di
 
 No case was added or relabeled from v15.
 
-## Pre-live acceptance for v16 candidate
+## Pre-live validation
 
-Before any freeze tag:
-- new v5/v6/v11 contract IDs and schemas are explicit
-- fixed-core routing tests cover every terminal rule and disagreement path
-- structural/property tests prove unresolved primary cannot become Relevant
-- structural/property tests prove scope_risk cannot become terminal Relevant/Irrelevant
-- deterministic expected v16 annotations exist for all 48 fixed cases without changing expected disposition
-- provider transport/retry tests remain green
-- workspace test/clippy/fmt/diff checks pass
-- validate-only reports 48 planned / 0 observed / no latch / non-scorable validation
+Validation at the implemented candidate is green before any freeze tag:
+- v16 fixed-core routing: 9/9 PASS
+- evidence-relevance CLI runner: 22/22 PASS
+- full workspace test: PASS; provider library final row 153 passed / 0 failed / 1 ignored
+- `cargo clippy --workspace --all-targets -- -D warnings`: PASS
+- `cargo fmt --all -- --check`: PASS
+- `git diff --check`: PASS
+- workflow YAML parse: PASS
+- validate-only: 48 planned / 0 observed / `operational_abort=null` / `provider_arm_latch=null` / `validate_only_non_scorable`
+- deterministic expected v16 annotations materialize 48/48 exactly without changing expected disposition
+- structural tests prove unresolved primary cannot become Relevant and any non-none scope risk fails closed to Ambiguous
 
 The first/only frozen v16 canonical remains one-shot and immutable. PASS is required before any independent holdout is authored.

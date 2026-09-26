@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v16 — successor design
 
-Status: implemented pre-freeze candidate。v16 live observationは0。Independent holdout authoringは禁止継続。
+Status: implemented pre-freeze candidate `566a4b5a39ad937d9f43d006550ad7a84436a0f8`。v16 live observationは0。Independent holdout authoringは禁止継続。
 
 ## Fixed surface
 
@@ -109,16 +109,18 @@ fixed 48 caseのdispositionは14 Relevant / 18 Irrelevant / 16 Ambiguousを維�
 
 v15からcase追加・relabelなし。
 
-## Pre-live acceptance for v16 candidate
+## Pre-live validation
 
-freeze tag前に:
-- v5/v6/v11 contract ID / schemaを明示
-- fixed-core routing testでterminal ruleとdisagreement pathを全てcover
-- unresolved primaryからRelevantへ到達不能をstructural/property testで証明
-- scope_riskからterminal Relevant/Irrelevantへ到達不能をstructural/property testで証明
-- expected dispositionを変更せず48件全てのdeterministic v16 annotationを用意
-- provider transport/retry test green
-- workspace test/clippy/fmt/diff green
-- validate-only 48 planned / 0 observed / latchなし / non-scorable validation
+freeze tag前のimplemented candidate validationはgreen:
+- v16 fixed-core routing: 9/9 PASS
+- evidence-relevance CLI runner: 22/22 PASS
+- full workspace test: PASS、provider library最終行 153 passed / 0 failed / 1 ignored
+- `cargo clippy --workspace --all-targets -- -D warnings`: PASS
+- `cargo fmt --all -- --check`: PASS
+- `git diff --check`: PASS
+- workflow YAML parse: PASS
+- validate-only: 48 planned / 0 observed / `operational_abort=null` / `provider_arm_latch=null` / `validate_only_non_scorable`
+- deterministic expected v16 annotationはexpected dispositionを変更せず48/48 exact materialization
+- structural testでunresolved primaryからRelevantへ到達不能、non-none scope riskは必ずAmbiguousを証明
 
 first/only frozen v16 canonicalもone-shot immutable。PASSまでindependent holdoutをauthorしない。
