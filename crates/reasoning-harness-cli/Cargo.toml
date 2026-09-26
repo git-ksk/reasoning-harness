@@ -109,3 +109,11 @@ ctrlc.workspace = true
 [[bin]]
 name = "reason-evidence-need-holdout-study"
 path = "src/bin/evidence_need_holdout.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-study"
+path = "src/bin/evidence_relevance.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-identity-probe"
+path = "src/bin/evidence_relevance_identity_probe.rs"

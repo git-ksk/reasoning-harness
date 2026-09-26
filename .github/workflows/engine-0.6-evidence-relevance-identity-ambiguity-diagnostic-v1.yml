@@ -1,0 +1,234 @@
+name: engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1
+
+on:
+  push:
+    tags:
+      - engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  DIAGNOSTIC_TAG: engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1
+  DIAGNOSTIC_DIR: fixtures/evidence-relevance-identity-ambiguity-diagnostic-v1
+  SURFACE_FILE: fixtures/evidence-relevance-identity-ambiguity-diagnostic-v1/surface.sha256
+  DIAGNOSTIC_SEED: '4628100'
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Reject workflow reruns
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate exact frozen diagnostic surface
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$DIAGNOSTIC_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$DIAGNOSTIC_TAG"
+          sha256sum -c "$SURFACE_FILE"
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-cli --bin reason-evidence-relevance-identity-probe -- -D warnings
+          cargo test -p reasoning-harness-cli --bin reason-evidence-relevance-identity-probe
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-identity-probe -- \
+            "$DIAGNOSTIC_DIR" \
+            --provider mistral \
+            --model calibration-placeholder \
+            --trials 3 \
+            --seed "$DIAGNOSTIC_SEED" \
+            --validate-only \
+            > /tmp/identity-probe-validate.json
+          jq -e '
+            .configuration_id == "evidence-relevance-identity-ambiguity-diagnostic-v1"
+            and .suite_id == "evidence-relevance-identity-ambiguity-diagnostic-v1"
+            and .status == "fresh_unobserved_diagnostic"
+            and .trials == 3
+            and (.observations | length) == 0
+          ' /tmp/identity-probe-validate.json >/dev/null
+
+      - name: Preserve preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1-preflight
+          path: /tmp/identity-probe-validate.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-latest
+            inter_case_delay_ms: 300
+          - provider: groq
+            model: openai/gpt-oss-120b
+            inter_case_delay_ms: 300
+
+    concurrency:
+      group: engine-0.6-evidence-relevance-identity-ambiguity-v1-${{ matrix.provider }}
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate frozen surface before credentials
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$DIAGNOSTIC_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$DIAGNOSTIC_TAG"
+          sha256sum -c "$SURFACE_FILE"
+
+      - name: Check provider credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            groq) test -n "$GROQ_API_KEY" ;;
+            *) exit 2 ;;
+          esac
+
+      - name: Run frozen identity ambiguity diagnostic
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          DELAY_MS: ${{ matrix.inter_case_delay_ms }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '2100'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set +e
+          BASE="/tmp/identity-probe-${PROVIDER}"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-identity-probe -- \
+            "$DIAGNOSTIC_DIR" \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --trials 3 \
+            --seed "$DIAGNOSTIC_SEED" \
+            --inter-case-delay-ms "$DELAY_MS" \
+            > "${BASE}-result.json" \
+            2> "${BASE}-stderr.log"
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" > "${BASE}.rc"
+          if test -s "${BASE}-result.json"; then
+            jq '{provider,model,trials,metrics}' "${BASE}-result.json"
+          fi
+
+      - name: Preserve provider evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1-${{ matrix.provider }}
+          path: /tmp/identity-probe-${{ matrix.provider }}*
+          if-no-files-found: error
+          retention-days: 90
+
+  final-gate:
+    needs: live
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1-*
+          path: /tmp/identity-probe-artifacts
+          merge-multiple: true
+
+      - name: Summarize precommitted one-sided candidate
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root=Path('/tmp/identity-probe-artifacts')
+          expected={'mistral':'ministral-8b-latest','groq':'openai/gpt-oss-120b'}
+          summary={
+            'schema_version':'engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-summary-v1',
+            'providers':{},
+            'candidate_gate_passed':True,
+          }
+          for provider,model in expected.items():
+              rp=root/f'identity-probe-{provider}-result.json'
+              cp=root/f'identity-probe-{provider}.rc'
+              if not rp.exists() or not cp.exists():
+                  summary['providers'][provider]={'missing':True}
+                  summary['candidate_gate_passed']=False
+                  continue
+              rc=int(cp.read_text().strip())
+              result=json.loads(rp.read_text())
+              m=result.get('metrics',{})
+              complete=(
+                  rc==0 and result.get('model')==model
+                  and m.get('observations')==36
+                  and m.get('successful_observations')==36
+                  and m.get('failed_observations')==0
+              )
+              candidate_ok=(
+                  complete
+                  and m.get('false_distinctness_confirmation_on_non_different')==0
+                  and m.get('missed_distinctness_confirmation_on_different')==0
+                  and m.get('gated_disposition_matches')==36
+              )
+              summary['providers'][provider]={
+                  'model':model,
+                  'runner_rc':rc,
+                  'complete':complete,
+                  'candidate_ok':candidate_ok,
+                  **m,
+              }
+              summary['candidate_gate_passed'] &= candidate_ok
+          out=Path('/tmp/identity-probe-summary.json')
+          out.write_text(json.dumps(summary,indent=2)+'\n')
+          print(out.read_text())
+          if not summary['candidate_gate_passed']:
+              raise SystemExit('one-sided identity candidate diagnostic gate failed')
+          PY
+
+      - name: Preserve combined summary
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-identity-ambiguity-diagnostic-v1-summary
+          path: /tmp/identity-probe-summary.json
+          if-no-files-found: error
+          retention-days: 90
