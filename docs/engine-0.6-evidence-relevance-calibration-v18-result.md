@@ -33,6 +33,10 @@ Operational:
 Semantic/materialization:
 - proposal exact: 37/48 (77.08%)
 - local qualification exact: 26/48 (54.17%)
+- qualification scope-risk misses: 11
+- qualification spurious scope risks: 0
+- qualification identity-scope misses: 14
+- qualification relation-scope misses: 14
 - materialized exact: 47/48 (97.92%)
 - wrong-target / false Relevant retention: 0
 - false relevance rejections: 0
@@ -90,15 +94,20 @@ Disposition misses were 13, 15, 16, 36, and 44, all expected Irrelevant -> Ambig
 
 v18 materially improved the required Mistral result from v17 44/48 to 47/48 while restoring zero unsafe Relevant retention. Groq's first 13 successful observations were perfect before quota exhaustion. The remaining required semantic miss is one conservative negative disagreement.
 
-The v19 successor should therefore be minimal:
-1. keep primary proposal v5 and local verifier v8 unchanged;
-2. keep the deterministic local-risk floor unchanged;
-3. add one Harness-owned target-negative terminal rule: when deterministic risk is absent, verifier `scope_risk=none`, verifier `identity_scope=distinct_target`, and primary `target_binding != exact`, materialize Irrelevant even if the primary target axis is unresolved;
-4. never apply that rule when primary target is exact, verifier risk is non-none, or deterministic local risk is present;
-5. keep all 48 scored semantics unchanged and add only unscored property controls for the new disagreement boundary;
-6. retain all v18 operational budgets, retry/latch logic, telemetry, and sanitization.
+The v18 post-result audit found an additional acceptance blocker that a materializer-only v19 patch would not solve: the required Mistral arm had 11 raw scope-risk misses, 14 raw identity-scope misses, and 14 raw relation-scope misses. The v18 final gate explicitly requires zero misses/spurious values on all verifier fields. Therefore v19 must not merely add the case-14 terminal rule while silently weakening or bypassing the qualification gate.
 
-A fixed-core audit found no expected Ambiguous case with `primary target != exact + verifier distinct_target + risk none`; every expected instance of that terminal shape is Irrelevant. This supports the v19 rule without changing scored labels.
+The v19 successor design is:
+1. keep primary proposal v5 and all 48 scored fixture semantics unchanged;
+2. preserve the v18 deterministic local-risk safety floor, but version it into a typed Harness-owned classifier (`none | identity_mapping | ownership_scope | context_gap | multiple`) rather than a boolean-only terminal override;
+3. retain raw model verifier v8 output as observable input/telemetry, and continue reporting its raw identity/relation/risk accuracy so model disagreement is never hidden;
+4. introduce a separately versioned Harness-owned **effective qualification** contract for runtime authority and canonical gating. It may combine typed deterministic local-risk facts with bounded verifier evidence, but it must not infer through clipping, ownership ambiguity, or uncertain identity mapping;
+5. require pre-freeze fixed-core replay/property validation to show effective qualification identity/relation/risk miss/spurious counts of zero across all 48 frozen expectations. If that cannot be achieved generically, v19 does not freeze; the gate is not relaxed to make the run pass;
+6. add the general target-negative rule already supported by the frozen audit: with deterministic risk absent, effective risk none, effective identity `distinct_target`, and primary `target_binding != exact`, materialize Irrelevant even when the primary target axis is unresolved;
+7. separately validate two additional axis-local negative shapes observed across providers—exact-target/different-relation disagreement and local relation absence—before deciding whether they belong in v19 materialization. They are not adopted merely because they would repair individual cases;
+8. keep strict Harness identity anchors as a positive-admission safety requirement, not a prerequisite for rejecting independently established distinct-target evidence;
+9. retain all v18 operational budgets, adapter-owned retries, quota/capacity latches, telemetry separation, sanitization, and one-shot immutability.
+
+A fixed-core audit found no expected Ambiguous case with `primary target != exact + verifier distinct_target + risk none`; every expected instance of that terminal shape is Irrelevant. This supports the target-negative rule without changing scored labels. The effective-qualification contract is a successor protocol change only; it does not rescore, repair, or reinterpret the immutable v18 canonical.
 
 ## Final decision
 

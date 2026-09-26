@@ -33,6 +33,10 @@ Operational:
 Semantic/materialization:
 - proposal exact: 37/48 (77.08%)
 - local qualification exact: 26/48 (54.17%)
+- qualification scope-risk miss: 11
+- qualification spurious scope risk: 0
+- qualification identity-scope miss: 14
+- qualification relation-scope miss: 14
 - materialized exact: 47/48 (97.92%)
 - wrong-target / false Relevant retention: 0
 - false relevance rejection: 0
@@ -90,15 +94,20 @@ Disposition missは13, 15, 16, 36, 44で、全てexpected Irrelevant -> Ambiguou
 
 v18はRequired Mistralをv17 44/48から47/48へ改善し、unsafe Relevantも0へ復帰。Groqもquota前13 successful observationは完全一致。Required semantic residualはconservative negative disagreement 1件まで絞れた。
 
-v19 successorは最小変更とする:
-1. primary proposal v5 / local verifier v8は変更しない;
-2. deterministic local-risk floorも変更しない;
-3. Harness-owned target-negative terminal ruleを1つ追加: deterministic riskなし + verifier `scope_risk=none` + verifier `identity_scope=distinct_target` + primary `target_binding != exact`なら、primary targetがunresolvedでもIrrelevantへmaterialize可能;
-4. primary target exact、verifier riskあり、deterministic local riskありでは絶対に適用しない;
-5. scored 48件のsemanticsは変更せず、新boundaryはunscored property testだけ追加;
-6. v18 operational budget / retry / latch / telemetry / sanitizationは維持。
+v18結果後の追加監査で、materializerだけを直すv19ではacceptanceを通せないことも確認した。Required Mistralはraw verifierでscope-risk miss 11、identity-scope miss 14、relation-scope miss 14があり、v18 final gateは全verifier fieldのmiss/spurious 0を明示的に要求している。したがってcase 14のterminal ruleだけを追加してqualification gateを黙って緩めることは禁止する。
 
-fixed-core監査では`primary target != exact + verifier distinct_target + risk none`を満たすexpected Ambiguousは0件で、expected instanceは全てIrrelevant。このためscored label変更なしでv19 ruleを導入できる。
+v19 successor設計:
+1. primary proposal v5と48件のscored fixture semanticsは変更しない。
+2. v18 deterministic local-risk safety floorは維持し、boolean overrideではなくHarness-owned typed classifier（`none | identity_mapping | ownership_scope | context_gap | multiple`）としてversion化する。
+3. model verifier v8のraw出力はinput/telemetryとして保持し、raw identity/relation/risk accuracyも継続記録してmodel disagreementを隠さない。
+4. runtime authority / canonical gating用に、別versionのHarness-owned **effective qualification** contractを導入する。typed deterministic riskとbounded verifier evidenceを合成できるが、clipping・ownership ambiguity・uncertain identity mappingを推測で埋めない。
+5. freeze前にfixed-core replay/property validationでeffective qualificationのidentity/relation/risk miss/spuriousが48件すべて0になることを要求する。genericに達成できない場合はv19をfreezeせず、gateを通すための緩和はしない。
+6. frozen auditで支持された一般的target-negative ruleを追加する。deterministic riskなし、effective risk none、effective identity `distinct_target`、primary `target_binding != exact` のとき、primary target axisがunresolvedでもIrrelevantへmaterialize可能とする。
+7. exact-target/different-relation disagreementとlocal relation absenceの2つのaxis-local negative shapeは、provider横断観測を基に別途property auditし、個別case修復だけを理由にv19へ入れない。
+8. strict Harness identity anchorはpositive admissionの安全要件として維持し、独立に確立したdistinct-target evidenceをrejectするための必須条件にはしない。
+9. v18 operational budget、adapter-owned retry、quota/capacity latch、telemetry分離、sanitization、one-shot immutabilityは維持する。
+
+fixed-core auditでは `primary target != exact + verifier distinct_target + risk none` にexpected Ambiguousの衝突はなく、このshapeのexpected instanceはすべてIrrelevantだった。この結果はtarget-negative ruleを支持するが、v18 canonicalをrescore / repair / reinterpretするものではない。effective qualificationはv19だけのsuccessor protocol変更とする。
 
 ## Final decision
 
