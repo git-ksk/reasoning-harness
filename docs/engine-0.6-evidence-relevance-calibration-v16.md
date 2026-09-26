@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v16 — successor design
 
-Status: design only. No v16 live observation has occurred. Independent holdout authoring remains blocked.
+Status: implemented pre-freeze candidate. No v16 live observation has occurred. Independent holdout authoring remains blocked.
 
 ## Fixed surface
 
@@ -15,6 +15,8 @@ Status: design only. No v16 live observation has occurred. Independent holdout a
 v15 failed even with a fully operational Mistral arm. The verifier both over-produced blockers and under-produced negative confirmations, while one spurious positive confirmation combined with materialization v10's unresolved-primary rescue created a wrong-target Relevant result. The next successor therefore changes the contract shape rather than tuning individual examples.
 
 ## Primary proposal v5
+
+Contract: `reason-evidence-relevance-binding-proposal-v5`.
 
 Keep the independent target/relation axes:
 - target_binding: exact | different | unresolved
@@ -31,6 +33,8 @@ Clarify the generic semantics:
 The intent is to improve atomic proposal accuracy rather than compensating later with unsafe rescue authority.
 
 ## Local verifier v6
+
+Contract: `reason-evidence-local-qualification-v6`. Annotation protocol: `evidence-relevance-scope-verifier-v16`.
 
 Replace binding_confirmation with three orthogonal fields:
 
@@ -59,6 +63,8 @@ This shape prevents one field such as confirmed_target_relation from simultaneou
 
 ## Materialization v11
 
+Policy: `target-evidence-relevance-binding-materialization-v11`.
+
 Harness-owned deterministic policy:
 
 1. If scope_risk != none, materialize Ambiguous.
@@ -71,10 +77,11 @@ Harness-owned deterministic policy:
    - existing Harness identity floor satisfied, or allow_semantic_equivalent explicitly permits the no-anchor case
 3. There is no primary-unresolved positive rescue path.
 4. Target-negative Irrelevant requires primary target_binding=different plus verifier identity_scope in {distinct_target, target_absent}, with no scope risk.
-5. Relation-negative Irrelevant requires the primary exact target plus relation_binding=different and verifier identity_scope=exact_target plus verifier relation_scope in {different_relation, relation_absent}, with no scope risk.
-6. All disagreement or unresolved combinations materialize Ambiguous.
+5. Explicit local absence may also materialize Irrelevant when neither primary axis claims exact support and the verifier independently reports identity_scope=target_absent plus relation_scope=relation_absent. This is negative fail-closed evidence, not positive rescue authority.
+6. Relation-negative Irrelevant requires the primary exact target plus relation_binding=different and verifier identity_scope=exact_target plus verifier relation_scope in {different_relation, relation_absent}, with no scope risk.
+7. All other disagreement or unresolved combinations materialize Ambiguous.
 
-The design intentionally requires agreement for both positive and negative terminal dispositions. Model disagreement loses utility but cannot manufacture authority.
+Positive terminal disposition requires complete primary/verifier agreement. Negative terminal disposition requires either matching negative scope evidence or explicit local absence; unresolved primary output never creates positive authority. Model disagreement loses utility but cannot manufacture authority.
 
 ## Operational policy
 
@@ -92,6 +99,15 @@ Carry v15 operational hardening forward unchanged:
 - provider-attempt, active/wait/pacing/retry telemetry remains separate
 
 Required providers remain Mistral ministral-8b-latest and Groq openai/gpt-oss-120b. Google gemini-3.5-flash-lite remains full non-gating replication unless separate provider evidence justifies a role change before freeze.
+
+## Deterministic v16 annotation surface
+
+The fixed 48 cases retain the same 14 Relevant / 18 Irrelevant / 16 Ambiguous disposition balance. Expected verifier coverage is precommitted as:
+- identity_scope: exact_target 19 / distinct_target 10 / target_absent 5 / unresolved 14
+- relation_scope: requested_relation 37 / different_relation 4 / relation_absent 5 / unresolved 2
+- scope_risk: none 32 / identity_mapping 5 / ownership_scope 1 / context_gap 5 / multiple 5
+
+No case was added or relabeled from v15.
 
 ## Pre-live acceptance for v16 candidate
 

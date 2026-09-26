@@ -8,25 +8,24 @@ use std::{
 
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
-    EvidenceLocalBindingConfirmation, EvidenceLocalBlockingReason, EvidenceLocalQualificationV5,
-    EvidenceRelevanceAssessment, EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate,
-    EvidenceRelevanceDisposition, EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy,
-    ModelAdapter, ModelError, ModelErrorKind, ModelExecutionBudget,
-    ModelExecutionTelemetrySnapshot, ModelRequest, ModelResponse, ModelUsage,
-    build_evidence_local_qualification_v5_request,
-    build_evidence_relevance_binding_proposal_v4_request, build_strict_json_text_fallback_request,
-    materialize_evidence_relevance_v10, parse_evidence_local_qualification_v5,
+    EvidenceLocalBlockingReason, EvidenceLocalQualificationV6, EvidenceRelevanceAssessment,
+    EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
+    EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy, ModelAdapter, ModelError,
+    ModelErrorKind, ModelExecutionBudget, ModelExecutionTelemetrySnapshot, ModelRequest,
+    ModelResponse, ModelUsage, build_evidence_local_qualification_v6_request,
+    build_evidence_relevance_binding_proposal_v5_request, build_strict_json_text_fallback_request,
+    materialize_evidence_relevance_v11, parse_evidence_local_qualification_v6,
     parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v15";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v15";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v16";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v16";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-binding-verifier-v15";
+const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-scope-verifier-v16";
 const EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v1";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v15";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v16";
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
 const GROQ_STRICT_JSON_TEXT_MAX_TOKENS: u32 = 512;
 const EXPECTED_CASES: usize = 48;
@@ -137,7 +136,7 @@ struct CalibrationCase {
     policy: EvidenceRelevanceTargetPolicy,
     candidate: EvidenceRelevanceCandidate,
     expected_proposal: EvidenceRelevanceBindingProposal,
-    expected_local_qualification: EvidenceLocalQualificationV5,
+    expected_local_qualification: EvidenceLocalQualificationV6,
     expected_disposition: EvidenceRelevanceDisposition,
 }
 
@@ -239,9 +238,9 @@ struct CaseObservation {
     observed_proposal: Option<EvidenceRelevanceBindingProposal>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proposal_match: Option<bool>,
-    expected_local_qualification: EvidenceLocalQualificationV5,
+    expected_local_qualification: EvidenceLocalQualificationV6,
     #[serde(skip_serializing_if = "Option::is_none")]
-    observed_local_qualification: Option<EvidenceLocalQualificationV5>,
+    observed_local_qualification: Option<EvidenceLocalQualificationV6>,
     #[serde(skip_serializing_if = "Option::is_none")]
     local_qualification_match: Option<bool>,
     local_qualification_invoked: bool,
@@ -283,10 +282,10 @@ struct CalibrationMetrics {
     local_qualification_invocations: usize,
     local_qualification_exact_matches: usize,
     local_qualification_exact_accuracy: Option<f64>,
-    qualification_blocking_reason_misses: usize,
-    qualification_spurious_blocking_reasons: usize,
-    qualification_binding_confirmation_misses: usize,
-    qualification_spurious_binding_confirmations: usize,
+    qualification_scope_risk_misses: usize,
+    qualification_spurious_scope_risks: usize,
+    qualification_identity_scope_misses: usize,
+    qualification_relation_scope_misses: usize,
     materialized_exact_matches: usize,
     materialized_exact_accuracy: Option<f64>,
     correctness_wrong_target_relevance_retention: usize,
@@ -393,7 +392,7 @@ struct CallOutcome {
 
 #[derive(Debug)]
 struct QualificationCallOutcome {
-    qualification: EvidenceLocalQualificationV5,
+    qualification: EvidenceLocalQualificationV6,
     used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
@@ -442,7 +441,7 @@ async fn run() -> Result<StudyOutput, String> {
 
     for case in &selected {
         let expected = case.expected_proposal;
-        let assessment = materialize_evidence_relevance_v10(
+        let assessment = materialize_evidence_relevance_v11(
             &case.policy,
             &case.candidate,
             Some(&expected),
@@ -551,7 +550,7 @@ async fn run() -> Result<StudyOutput, String> {
         }
 
         let case_seed = args.seed.and_then(|base| base.checked_add(index as u64));
-        let request = build_evidence_relevance_binding_proposal_v4_request(
+        let request = build_evidence_relevance_binding_proposal_v5_request(
             &case.policy,
             &case.candidate,
             case_seed,
@@ -778,7 +777,7 @@ async fn complete_observed_case(
     let mut provider_model = call.provider_model;
     let mut finish_reason = call.finish_reason;
 
-    let request = build_evidence_local_qualification_v5_request(
+    let request = build_evidence_local_qualification_v6_request(
         &case.policy,
         &case.candidate,
         case_seed.map(|seed| seed ^ 0x6a11_f1ed),
@@ -831,7 +830,7 @@ async fn complete_observed_case(
         finish_reason = qualification_call.finish_reason;
     }
 
-    match materialize_evidence_relevance_v10(
+    match materialize_evidence_relevance_v11(
         &case.policy,
         &case.candidate,
         Some(&observed),
@@ -888,7 +887,7 @@ fn success_observation(
     case: &CalibrationCase,
     lexical_baseline: EvidenceRelevanceDisposition,
     observed: EvidenceRelevanceBindingProposal,
-    observed_local_qualification: EvidenceLocalQualificationV5,
+    observed_local_qualification: EvidenceLocalQualificationV6,
     assessment: EvidenceRelevanceAssessment,
     latency_ms: u128,
     used_structured_fallback: bool,
@@ -1432,7 +1431,7 @@ async fn call_model_for_local_qualification(
             let attempts = response.provider_attempts;
             let model = Some(response.model.clone());
             let finish = response.finish_reason.clone();
-            match parse_evidence_local_qualification_v5(&response.text) {
+            match parse_evidence_local_qualification_v6(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
                     used_structured_fallback: false,
@@ -1555,7 +1554,7 @@ async fn call_local_qualification_fallback(
             usage.add(&response.usage);
             let model = Some(response.model.clone());
             let finish_reason = response.finish_reason.clone();
-            match parse_evidence_local_qualification_v5(&response.text) {
+            match parse_evidence_local_qualification_v6(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
                     used_structured_fallback: true,
@@ -1916,54 +1915,48 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
         .iter()
         .filter(|case| case.local_qualification_match == Some(true))
         .count();
-    let has_blocking_cue = |qualification: &EvidenceLocalQualificationV5| {
-        qualification.blocking_reason != EvidenceLocalBlockingReason::None
-    };
-    let qualification_blocking_reason_misses = observations
+    let qualification_scope_risk_misses = observations
         .iter()
         .filter(|case| {
-            has_blocking_cue(&case.expected_local_qualification)
-                && case
-                    .observed_local_qualification
-                    .as_ref()
-                    .is_some_and(|observed| !has_blocking_cue(observed))
-        })
-        .count();
-    let qualification_spurious_blocking_reasons = observations
-        .iter()
-        .filter(|case| {
-            !has_blocking_cue(&case.expected_local_qualification)
-                && case
-                    .observed_local_qualification
-                    .as_ref()
-                    .is_some_and(has_blocking_cue)
-        })
-        .count();
-    let qualification_binding_confirmation_misses = observations
-        .iter()
-        .filter(|case| {
-            case.expected_local_qualification.binding_confirmation
-                != EvidenceLocalBindingConfirmation::None
+            case.expected_local_qualification.scope_risk != EvidenceLocalBlockingReason::None
                 && case
                     .observed_local_qualification
                     .as_ref()
                     .is_some_and(|observed| {
-                        observed.binding_confirmation
-                            != case.expected_local_qualification.binding_confirmation
+                        observed.scope_risk != case.expected_local_qualification.scope_risk
                     })
         })
         .count();
-    let qualification_spurious_binding_confirmations = observations
+    let qualification_spurious_scope_risks = observations
         .iter()
         .filter(|case| {
-            case.expected_local_qualification.binding_confirmation
-                == EvidenceLocalBindingConfirmation::None
+            case.expected_local_qualification.scope_risk == EvidenceLocalBlockingReason::None
                 && case
                     .observed_local_qualification
                     .as_ref()
                     .is_some_and(|observed| {
-                        observed.binding_confirmation != EvidenceLocalBindingConfirmation::None
+                        observed.scope_risk != EvidenceLocalBlockingReason::None
                     })
+        })
+        .count();
+    let qualification_identity_scope_misses = observations
+        .iter()
+        .filter(|case| {
+            case.observed_local_qualification
+                .as_ref()
+                .is_some_and(|observed| {
+                    observed.identity_scope != case.expected_local_qualification.identity_scope
+                })
+        })
+        .count();
+    let qualification_relation_scope_misses = observations
+        .iter()
+        .filter(|case| {
+            case.observed_local_qualification
+                .as_ref()
+                .is_some_and(|observed| {
+                    observed.relation_scope != case.expected_local_qualification.relation_scope
+                })
         })
         .count();
     let correctness_wrong_target_relevance_retention = observations
@@ -2111,10 +2104,10 @@ fn summarize_metrics(observations: &[CaseObservation]) -> CalibrationMetrics {
             local_qualification_exact_matches,
             local_qualification_expected_cases,
         ),
-        qualification_blocking_reason_misses,
-        qualification_spurious_blocking_reasons,
-        qualification_binding_confirmation_misses,
-        qualification_spurious_binding_confirmations,
+        qualification_scope_risk_misses,
+        qualification_spurious_scope_risks,
+        qualification_identity_scope_misses,
+        qualification_relation_scope_misses,
         materialized_exact_matches,
         materialized_exact_accuracy: accuracy(materialized_exact_matches, successful),
         correctness_wrong_target_relevance_retention,
@@ -2162,10 +2155,10 @@ fn empty_metrics(cases: usize) -> CalibrationMetrics {
         local_qualification_invocations: 0,
         local_qualification_exact_matches: 0,
         local_qualification_exact_accuracy: None,
-        qualification_blocking_reason_misses: 0,
-        qualification_spurious_blocking_reasons: 0,
-        qualification_binding_confirmation_misses: 0,
-        qualification_spurious_binding_confirmations: 0,
+        qualification_scope_risk_misses: 0,
+        qualification_spurious_scope_risks: 0,
+        qualification_identity_scope_misses: 0,
+        qualification_relation_scope_misses: 0,
         materialized_exact_matches: 0,
         materialized_exact_accuracy: None,
         correctness_wrong_target_relevance_retention: 0,
@@ -2272,7 +2265,8 @@ fn git_head() -> Result<String, String> {
 mod tests {
     use super::*;
     use reasoning_harness_core::{
-        EvidenceLocalBindingConfirmation, EvidenceLocalBlockingReason, EvidenceRelevanceBinding,
+        EvidenceLocalBlockingReason, EvidenceLocalIdentityScope, EvidenceLocalRelationScope,
+        EvidenceRelevanceBinding,
     };
 
     fn load() -> CalibrationManifest {
@@ -2307,12 +2301,12 @@ mod tests {
     }
 
     #[test]
-    fn expected_primary_and_qualification_materialize_all_v15_cases() {
+    fn expected_primary_and_qualification_materialize_all_v16_cases() {
         let manifest = load();
         assert_eq!(manifest.cases.len(), EXPECTED_CASES);
         for case in manifest.cases {
             let proposal = case.expected_proposal;
-            let assessment = materialize_evidence_relevance_v10(
+            let assessment = materialize_evidence_relevance_v11(
                 &case.policy,
                 &case.candidate,
                 Some(&proposal),
@@ -2387,7 +2381,7 @@ mod tests {
     fn fixture_request() -> ModelRequest {
         let manifest = load();
         let case = &manifest.cases[0];
-        build_evidence_relevance_binding_proposal_v4_request(
+        build_evidence_relevance_binding_proposal_v5_request(
             &case.policy,
             &case.candidate,
             Some(462),
@@ -2468,7 +2462,7 @@ mod tests {
     fn full_diagnostic_mode_can_disable_operational_circuit_break() {
         let args = Args::try_parse_from([
             "reason-evidence-relevance-study",
-            "fixtures/evidence-relevance-calibration-v15",
+            "fixtures/evidence-relevance-calibration-v16",
             "--provider",
             "groq",
             "--model",
@@ -2532,12 +2526,12 @@ mod tests {
     fn local_qualification_request() -> ModelRequest {
         let manifest = load();
         let case = &manifest.cases[0];
-        build_evidence_local_qualification_v5_request(&case.policy, &case.candidate, Some(463))
+        build_evidence_local_qualification_v6_request(&case.policy, &case.candidate, Some(463))
             .expect("local qualification request")
     }
 
     fn qualification_json() -> &'static str {
-        r#"{"blocking_reason":"none","binding_confirmation":"confirmed_target_relation"}"#
+        r#"{"identity_scope":"exact_target","relation_scope":"requested_relation","scope_risk":"none"}"#
     }
 
     #[test]
@@ -2562,12 +2556,16 @@ mod tests {
         .await
         .expect("qualification result");
         assert_eq!(
-            result.qualification.blocking_reason,
-            EvidenceLocalBlockingReason::None
+            result.qualification.identity_scope,
+            EvidenceLocalIdentityScope::ExactTarget
         );
         assert_eq!(
-            result.qualification.binding_confirmation,
-            EvidenceLocalBindingConfirmation::ConfirmedTargetRelation
+            result.qualification.relation_scope,
+            EvidenceLocalRelationScope::RequestedRelation
+        );
+        assert_eq!(
+            result.qualification.scope_risk,
+            EvidenceLocalBlockingReason::None
         );
         assert_eq!(result.model_calls, 1);
         assert_eq!(result.provider_attempts, 1);
@@ -2706,7 +2704,7 @@ mod tests {
             .expect("relation-different case");
         let adapter = SequenceAdapter::new(
             vec![model_response(
-                r#"{"blocking_reason":"none","binding_confirmation":"confirmed_different_relation"}"#,
+                r#"{"identity_scope":"exact_target","relation_scope":"different_relation","scope_risk":"none"}"#,
             )],
             0,
         );

@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v16 — successor design
 
-Status: design only。v16 live observationは0。Independent holdout authoringは禁止継続。
+Status: implemented pre-freeze candidate。v16 live observationは0。Independent holdout authoringは禁止継続。
 
 ## Fixed surface
 
@@ -15,6 +15,8 @@ Status: design only。v16 live observationは0。Independent holdout authoring�
 v15はMistralが48/48 operational完走してもFAILした。verifierはblockerを過剰生成し、negative confirmationを不足させ、さらに1件のspurious positive confirmationとmaterialization v10のunresolved-primary rescueが組み合わさってwrong-target Relevantを生成した。v16では個別case tuningではなくcontract shapeを変更する。
 
 ## Primary proposal v5
+
+Contract: `reason-evidence-relevance-binding-proposal-v5`。
 
 target/relationの独立axisは維持:
 - target_binding: exact | different | unresolved
@@ -31,6 +33,8 @@ generic semanticsを明確化:
 unsafe rescueで補うのではなくatomic proposal accuracy自体を改善する。
 
 ## Local verifier v6
+
+Contract: `reason-evidence-local-qualification-v6`。Annotation protocol: `evidence-relevance-scope-verifier-v16`。
 
 binding_confirmationを廃止し、3つのorthogonal fieldへ分解:
 
@@ -59,6 +63,8 @@ verifierはRelevant/Irrelevant/Ambiguousを出さず、synthesized confirmation�
 
 ## Materialization v11
 
+Policy: `target-evidence-relevance-binding-materialization-v11`。
+
 Harness-owned deterministic policy:
 
 1. scope_risk != none はAmbiguous。
@@ -71,10 +77,11 @@ Harness-owned deterministic policy:
    - 既存Harness identity floorを満たす、またはallow_semantic_equivalentがno-anchorを明示許可
 3. primary unresolvedからのpositive rescue pathは設けない。
 4. target-negative Irrelevantはprimary target_binding=different + verifier identity_scope in {distinct_target, target_absent} + scope riskなし。
-5. relation-negative Irrelevantはprimary exact target + relation_binding=different + verifier identity_scope=exact_target + verifier relation_scope in {different_relation, relation_absent} + scope riskなし。
-6. disagreement / unresolved combinationは全てAmbiguous。
+5. explicit local absenceは、primaryの両axisがexact supportを主張せず、verifierがidentity_scope=target_absent + relation_scope=relation_absentを独立に返す場合もIrrelevantへmaterialize可能。これはnegative fail-closed evidenceでありpositive rescue authorityではない。
+6. relation-negative Irrelevantはprimary exact target + relation_binding=different + verifier identity_scope=exact_target + verifier relation_scope in {different_relation, relation_absent} + scope riskなし。
+7. その他のdisagreement / unresolved combinationはAmbiguous。
 
-positive/negative terminal dispositionともagreementを必須にする。model disagreementはutilityを落としてもauthorityを生成しない。
+positive terminal dispositionはprimary/verifier完全agreementを必須にする。negative terminal dispositionはmatching negative scope evidenceまたはexplicit local absenceを要求し、unresolved primaryはpositive authorityを生成しない。model disagreementはutilityを落としてもauthorityを生成しない。
 
 ## Operational policy
 
@@ -92,6 +99,15 @@ v15 operational hardeningをそのまま継承:
 - provider-attempt / active / wait / pacing / retry telemetryを分離維持
 
 Required providerはMistral ministral-8b-latest + Groq openai/gpt-oss-120bを維持。Google gemini-3.5-flash-liteは別provider evidenceでfreeze前にrole変更根拠が出ない限りfull non-gating replicationを維持。
+
+## Deterministic v16 annotation surface
+
+fixed 48 caseのdispositionは14 Relevant / 18 Irrelevant / 16 Ambiguousを維持。expected verifier coverageを事前固定:
+- identity_scope: exact_target 19 / distinct_target 10 / target_absent 5 / unresolved 14
+- relation_scope: requested_relation 37 / different_relation 4 / relation_absent 5 / unresolved 2
+- scope_risk: none 32 / identity_mapping 5 / ownership_scope 1 / context_gap 5 / multiple 5
+
+v15からcase追加・relabelなし。
 
 ## Pre-live acceptance for v16 candidate
 
