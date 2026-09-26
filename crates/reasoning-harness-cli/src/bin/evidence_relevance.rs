@@ -12,20 +12,20 @@ use reasoning_harness_core::{
     EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate, EvidenceRelevanceDisposition,
     EvidenceRelevanceSignalKind, EvidenceRelevanceTargetPolicy, ModelAdapter, ModelError,
     ModelErrorKind, ModelExecutionBudget, ModelExecutionTelemetrySnapshot, ModelRequest,
-    ModelResponse, ModelUsage, build_evidence_local_qualification_v6_request,
+    ModelResponse, ModelUsage, build_evidence_local_qualification_v7_request,
     build_evidence_relevance_binding_proposal_v5_request, build_strict_json_text_fallback_request,
-    materialize_evidence_relevance_v11, parse_evidence_local_qualification_v6,
+    materialize_evidence_relevance_v12, parse_evidence_local_qualification_v7,
     parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v16";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v16";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v17";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v17";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-scope-verifier-v16";
+const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-scope-verifier-v17";
 const EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v1";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v16";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v17";
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
 const GROQ_STRICT_JSON_TEXT_MAX_TOKENS: u32 = 512;
 const EXPECTED_CASES: usize = 48;
@@ -441,7 +441,7 @@ async fn run() -> Result<StudyOutput, String> {
 
     for case in &selected {
         let expected = case.expected_proposal;
-        let assessment = materialize_evidence_relevance_v11(
+        let assessment = materialize_evidence_relevance_v12(
             &case.policy,
             &case.candidate,
             Some(&expected),
@@ -777,7 +777,7 @@ async fn complete_observed_case(
     let mut provider_model = call.provider_model;
     let mut finish_reason = call.finish_reason;
 
-    let request = build_evidence_local_qualification_v6_request(
+    let request = build_evidence_local_qualification_v7_request(
         &case.policy,
         &case.candidate,
         case_seed.map(|seed| seed ^ 0x6a11_f1ed),
@@ -830,7 +830,7 @@ async fn complete_observed_case(
         finish_reason = qualification_call.finish_reason;
     }
 
-    match materialize_evidence_relevance_v11(
+    match materialize_evidence_relevance_v12(
         &case.policy,
         &case.candidate,
         Some(&observed),
@@ -1431,7 +1431,7 @@ async fn call_model_for_local_qualification(
             let attempts = response.provider_attempts;
             let model = Some(response.model.clone());
             let finish = response.finish_reason.clone();
-            match parse_evidence_local_qualification_v6(&response.text) {
+            match parse_evidence_local_qualification_v7(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
                     used_structured_fallback: false,
@@ -1554,7 +1554,7 @@ async fn call_local_qualification_fallback(
             usage.add(&response.usage);
             let model = Some(response.model.clone());
             let finish_reason = response.finish_reason.clone();
-            match parse_evidence_local_qualification_v6(&response.text) {
+            match parse_evidence_local_qualification_v7(&response.text) {
                 Ok(qualification) => Ok(QualificationCallOutcome {
                     qualification,
                     used_structured_fallback: true,
@@ -2301,12 +2301,12 @@ mod tests {
     }
 
     #[test]
-    fn expected_primary_and_qualification_materialize_all_v16_cases() {
+    fn expected_primary_and_qualification_materialize_all_v17_cases() {
         let manifest = load();
         assert_eq!(manifest.cases.len(), EXPECTED_CASES);
         for case in manifest.cases {
             let proposal = case.expected_proposal;
-            let assessment = materialize_evidence_relevance_v11(
+            let assessment = materialize_evidence_relevance_v12(
                 &case.policy,
                 &case.candidate,
                 Some(&proposal),
@@ -2462,7 +2462,7 @@ mod tests {
     fn full_diagnostic_mode_can_disable_operational_circuit_break() {
         let args = Args::try_parse_from([
             "reason-evidence-relevance-study",
-            "fixtures/evidence-relevance-calibration-v16",
+            "fixtures/evidence-relevance-calibration-v17",
             "--provider",
             "groq",
             "--model",
@@ -2526,7 +2526,7 @@ mod tests {
     fn local_qualification_request() -> ModelRequest {
         let manifest = load();
         let case = &manifest.cases[0];
-        build_evidence_local_qualification_v6_request(&case.policy, &case.candidate, Some(463))
+        build_evidence_local_qualification_v7_request(&case.policy, &case.candidate, Some(463))
             .expect("local qualification request")
     }
 
