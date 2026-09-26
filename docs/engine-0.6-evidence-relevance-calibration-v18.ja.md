@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v18 — successor design
 
-状態: implemented pre-freeze candidate。v18 live observationは0。Independent holdout authoringは禁止継続。
+状態: immutable canonical FAIL。freeze commit `8abb0f9b8d9b7e8a6859e6c791e7e600cdd54e9c` / run `36237860382` は完了済みで、rerun / rescore / relabel / retag禁止。詳細は `engine-0.6-evidence-relevance-calibration-v18-result.ja.md`。Independent holdout authoringは禁止継続。
 
 ## Fixed surface
 

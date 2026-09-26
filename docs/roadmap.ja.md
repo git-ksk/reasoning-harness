@@ -459,3 +459,7 @@ Frozen v17 run `36226650327`（commit `9647e70125b97dd77b1c4742004889c23fd10d58`
 ### Engine 0.6 #462 v18 pre-freeze candidate
 
 v18はfixed 48件とv17 scored semanticsを変更しない。Harness-owned deterministic local-risk floorを追加し、明示clipping / omitted ownership・referent / uncertain mapping / URL identity gapを検出した場合は必ずAmbiguous。Verifier v8でidentity/relation orthogonalityとprompt-injection/clipping境界を強化し、materialization v13はsafeなnegative disagreement解消だけを拡張、positive rescue pathは増やさない。operational hardeningは変更なし。
+
+### Engine 0.6 #462 v18 immutable result / v19 successor
+
+Frozen v18 run `36237860382`（commit `8abb0f9b8d9b7e8a6859e6c791e7e600cdd54e9c`）はimmutable FAIL。Required Mistralは48/48完走、materialized exact 47/48、wrong-target Relevant 0、Relevant utility miss 0で、残りは`14_sibling_product_overlap`のexpected Irrelevant -> Ambiguous 1件のみ。Required Groqは最初の13 successful observationが全exactだったが`74_v13_exact_target_same_relation_no_cue`でtyped daily quota、残り34件をlatch抑止。Google replicationは47 success / 42 exact / semantic timeout 1件 / unsafe Relevant 0。v19はprimary v5、verifier v8、deterministic risk floor、scored 48 semanticsを全て維持し、primary targetがnon-exactかつverifier `distinct_target` + risk noneの場合だけHarness-owned target-negative disagreement ruleを追加する。fixed-core監査ではこのshapeとexpected Ambiguousの衝突は0。holdoutは禁止継続。
