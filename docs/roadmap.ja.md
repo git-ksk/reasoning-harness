@@ -412,7 +412,7 @@ calibration caseの増加はここで止める。`evidence-relevance-fixed-core-
 
 Frozen v14 run 36174639970 は immutable FAIL、rerunしない。Required Mistralは48/48 operational完走したがmaterialized exactは35/48で、明確なpositive 6件へのfalse explicit_local_absence=present とpositive targetのprimary under-bindingが中心。Required Groqは48件すべてattemptしたが成功6、残り42件は200K TPD上限の明示的 tokens-per-day quota failure。v14 quota hardeningは意図通りtyped Quotaでfail-fastし、transient rate-limit retryを消費せずassessment timeoutへの誤変換を防いだ。Google replicationは48件attempt、成功13。成功13件は全てmaterialized exactだったが、残り35件はHTTP 429 Retry-After 待機中にouter 60秒deadlineへ到達。attempt telemetryでは20〜59秒のretry delayが繰り返され、bounded retry自体は機能している一方、provider wait/retry時間をsemantic case budgetと共有している設計が問題と確定した。
 
-v15 successorでも evidence-relevance-fixed-core-v1 48件を変更しない。(1) explicit local absenceに残るmodel authorityを削除またはdeterministicに制約、(2) Harness-owned identity floorを弱めずpositive-target under-bindingを改善、(3) provider throttle/retry waitのaccountingをsemantic executionから分離しつつfinite absolute operational deadlineとbounded retryは維持、(4) daily token quotaを持つrequired providerにはfull-run capacity preflightを要求する。first/only frozen successor canonical PASSまでholdout authoringは禁止。
+v15 successorでも evidence-relevance-fixed-core-v1 48件を変更しない。(1) explicit local absenceに残るmodel authorityを削除またはdeterministicに制約、(2) Harness-owned identity floorを弱めずpositive-target under-bindingを改善、(3) provider throttle/retry waitのaccountingをsemantic executionから分離しつつfinite absolute operational deadlineとbounded retryは維持、(4) daily token quotaを持つrequired providerはmanualな事前TPD attestationを要求せず、run中のtyped quota検出で即時provider arm latchしてfail-closedに停止する。first/only frozen successor canonical PASSまでholdout authoringは禁止。
 
 #### v15 実装前監査constraint
 
@@ -426,7 +426,7 @@ v14後の監査で、実装開始前に次を追加constraintとする。
 - **cancellation telemetryをauthoritativeにする。** 現状outer deadline cancellation時、provider telemetryにはHTTP 429 attemptがあるのにrunner resultは`provider_attempts=0`になり得る。v15ではstarted/completed attempt countと、pacing wait / retry sleep / provider HTTP / semantic execution / absolute case timeを分離して記録する。
 - **calibration overfitとtelemetry leakageを防ぐ。** fixed 48 caseはすでにobserved calibration data。v15実装はcase ID、synthetic entity名、fixture exact phraseでbranchしない。scored calibration coreを増やさずstructural/property/metamorphic testを追加可能とする。またpublic repoへ保存するprovider error artifactからorganization/project/account identifier、billing URL等の不要provider payloadをsanitizeする。
 
-Groq capacity preflightには追加制約がある。standard response headerで確認できるのはRPD request remainingとTPM token remainingで、TPD token remainingではない。したがってtiny probe成功だけではfull canonical armに必要なdaily token余力を証明できない。organization/project quota stateを別途確定できる場合、またはreset windowを隔離しconservativeなfull-run projected token demandをoperator gateで確保した場合だけreadyとする。authoritativeなdaily remaining capacityが不明ならpreflight FAILとし、one-shot canonicalを消費しない。
+Groq standard response headerで確認できるのはRPD request remainingとTPM token remainingで、TPD token remainingではないため、tiny probeからdaily headroomを推論しない。manual TPD attestationも要求しない。代わりにrun中のtyped daily-quota exhaustionをauthoritativeなstop signalとし、Groq armを即時latchして残りの確実に失敗するcallを抑止し、required armをoperational incompleteとして扱う。
 
 ### Engine 0.6 #462 v15 candidate status
 
@@ -434,4 +434,4 @@ v15 semanticsは e760939、operational budget/circuit hardeningは 769866f で�
 
 Mistral/Groq/Googleはactive executionとprovider pacing/retry waitを分離。canonical budgetはactive 60s + cumulative provider wait 45s、single wait cap 30s、absolute case deadline 120s。typed quota 1件でprovider arm latch、correlated capacity failure 2件でlatchし、suppressed caseはnon-scorableのまま。public runner failureは保存前sanitizeする。
 
-first/only v15 canonicalはexact freeze向けGroq daily token headroom 160k以上の明示attestation前には開始しない。閾値はv14 Mistral実測67,610 total tokens / 96 model callsに対するconservative operator gateであり、tiny probeからの推論ではない。Mistral + Groq required、Google full non-gating replicationを維持する。
+first/only v15 canonicalにはmanualなGroq TPD headroom start gateを置かない。run中にGroqのtyped daily quota exhaustionを検出した場合は即時arm latchし、v15をimmutable operational FAILとして記録してrerun / rescore / relabel / retagしない。次のcanonical attemptはfresh successor versionで行う。Mistral + Groq required、Google full non-gating replicationを維持する。

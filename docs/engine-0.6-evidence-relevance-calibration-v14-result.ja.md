@@ -92,7 +92,7 @@ attempt telemetryで原因は明確。GoogleはHTTP 429と20〜59秒の Retry-Af
 v15ではfixed coreを増やさず3点を分離して直す。
 1. explicit_local_absence に残るmodel authorityを削除またはdeterministicに制約し、Harness-owned identity floorを弱めずpositive-target bindingを改善。
 2. provider throttle/retry待機をsemantic execution budgetから分離。ただしbounded retryとfinite absolute operational deadlineは維持。
-3. daily quotaを持つrequired providerはtiny readiness probeではなく、full canonicalのprojected token costを考慮したcapacity preflightを行う。
+3. v14 postmortemではdaily quotaを持つrequired providerにfull-run capacity preflightを推奨していたが、v15 freeze tag作成前にこの運用方針をrun-time fail-closedへ変更した。typed daily-quota exhaustionを検出した時点でprovider armを即時latchし、残りの確実に失敗するcallを抑止し、one-shot canonicalをimmutable operational FAILとして扱う。
 
 新case追加の根拠はない。今回のsemantic failureはすべて evidence-relevance-fixed-core-v1 の既存dimension内。
 

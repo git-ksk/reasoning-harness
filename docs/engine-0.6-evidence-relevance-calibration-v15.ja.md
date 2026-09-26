@@ -44,15 +44,11 @@ run-level:
 
 public artifactへ保存するrunner failureはorganization/project/account identifierやbilling URL等をsanitizeする。
 
-## Groq full-run capacity gate
+## Groq runtime quota gate
 
-v14の48-case Mistral armは96 model callでtotal 67,610 tokensを使用した。v15 canonical前のGroq required daily headroomはconservativeに160,000 tokensとする。
+v15 canonicalは開始前のmanual TPD headroom attestationを要求しない。Groq daily capacityはone-shot run中にfail-closedで扱う。
 
-tiny probe成功だけではheadroom証明にならない。canonical preflightはrepository variableを必須とする:
-
-ENGINE_0_6_RELEVANCE_V15_GROQ_CAPACITY_ATTESTATION=engine-0.6-evidence-relevance-calibration-v15-freeze:160000
-
-これはexact freeze tag向けoperator attestation。authoritative quota stateまたは他利用を隔離したfresh reset windowで160k以上を確保した場合のみ設定する。daily remaining capacityを確定できないならcanonicalを開始しない。
+typed daily-quota failureを1件検出した時点でGroq provider armを即時latchし、以降の確実に失敗するcallを抑止する。latchが発生したrequired armはoperational incompleteとなるためcanonical PASS不可。frozen canonicalのimmutabilityは維持し、quotaで停止した結果もv15の正式結果として記録してrerunせず、次のcanonical attemptにはfresh successor versionを要求する。
 
 ## Provider set / acceptance
 

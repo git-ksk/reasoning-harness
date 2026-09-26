@@ -44,15 +44,11 @@ At the run level:
 
 Persisted runner failure messages sanitize quota/provider identity details rather than storing organization/project/account identifiers or billing URLs in public artifacts.
 
-## Groq full-run capacity gate
+## Groq runtime quota gate
 
-The v14 48-case Mistral arm consumed 67,610 total tokens for 96 model calls. v15 uses a conservative required Groq daily headroom of 160,000 tokens before the one-shot canonical begins.
+The v15 canonical does not require a manual TPD headroom attestation before start. Groq daily capacity is instead enforced fail-closed during the one-shot run.
 
-A tiny successful probe is not sufficient evidence of this headroom. The canonical preflight requires the repository variable:
-
-ENGINE_0_6_RELEVANCE_V15_GROQ_CAPACITY_ATTESTATION=engine-0.6-evidence-relevance-calibration-v15-freeze:160000
-
-This value is an operator attestation for the exact freeze tag. It must be set only after authoritative quota state or an isolated fresh reset window establishes at least that headroom. If daily remaining capacity cannot be established, the canonical must not start.
+A typed daily-quota failure latches the Groq provider arm immediately and suppresses remaining guaranteed-failure calls. Any such latch makes the required arm operationally incomplete, so the canonical cannot pass. The frozen canonical is still immutable: a quota-triggered stop is recorded as the v15 result and is not rerun; a fresh successor version is required for another canonical attempt.
 
 ## Provider set and acceptance
 

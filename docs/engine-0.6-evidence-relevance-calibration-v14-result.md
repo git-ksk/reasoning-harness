@@ -92,7 +92,7 @@ This is an operational budget-boundary defect, not evidence of semantic regressi
 v15 must address three separate issues without growing the fixed core:
 1. Remove or deterministically constrain model authority over explicit_local_absence, and improve positive-target binding without weakening the Harness-owned identity floor.
 2. Separate provider throttle/retry waiting from semantic execution budget while retaining bounded retries and a finite absolute operational deadline.
-3. For required providers with daily quotas, use a full-run capacity preflight rather than a tiny readiness probe that cannot predict whether the full canonical will cross TPD.
+3. The v14 postmortem originally recommended a full-run capacity preflight for required providers with daily quotas rather than relying on a tiny readiness probe. Before the v15 freeze tag was created, that operational recommendation was superseded for v15 by a run-time fail-closed policy: typed daily-quota exhaustion immediately latches the provider arm, suppresses remaining guaranteed-failure calls, and makes the one-shot canonical an immutable operational FAIL.
 
 No new calibration cases are justified. All observed semantic failures already fit dimensions represented in evidence-relevance-fixed-core-v1.
 
