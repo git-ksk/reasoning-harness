@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v21 — design-only successor
 
-Status: design only。v21 runtime実装、workflow、freeze tag、live observationはまだ存在しない。
+Status: pre-freeze implementation candidate。effective qualification v2、materialization v16、authority-qualified gate、frozen-core replay test、v21 one-shot workflowまで実装済み。v21 freeze tag / live observationはまだ存在しない。
 
 v21はimmutable v20 run `36283988719` のsuccessor。v20をrepair / rerun / reinterpretしない。
 
@@ -39,7 +39,7 @@ v1を黙って変更せず、`reason-evidence-relevance-effective-qualification-
 - deterministic local risk = `none`;
 - Harness identity evidenceからeffective identity = `exact_target`;
 - deterministic requested-relation presence = false;
-- raw verifierが存在し、`scope_risk=none`かつ`relation_scope=different_relation`;
+- raw verifierが存在し、`identity_scope=exact_target`、`scope_risk=none`、`relation_scope=different_relation`;
 - primary target = `exact`;
 
 primary proposalが`relation=exact`でもeffective relationを`different_relation`とする。
@@ -67,6 +67,18 @@ v21でraw verifier v8を一般的なauthorityにはしない。provider間のraw
 
 これによりv19/v20のraw/effective telemetry分離を維持し、model-to-model disagreementを無制限なauthorityへ昇格させない。
 
+## Blocking-risk qualification gate v2
+
+v20ではgateとauthorityの不整合も露出した。deterministic effective `scope_risk`がnon-noneならmaterializationは既にAmbiguousへ強制されるのに、その状態でもidentity/relation軸のmismatchがcanonical effective-qualification gateを落としている。つまりterminal authorityを持たないdiagnostic fieldがrequired provider gateを支配している。
+
+v21ではtelemetryを隠さずgateだけversion化する。
+- 全caseでeffective risk derivationを必須維持;
+- risk miss / spuriousは引き続きzero-tolerance;
+- expected/effective riskが`none`ならidentity/relationもexact必須;
+- blocking riskが正しくnon-noneならidentity/relation mismatchはdiagnostic metricとして残すが、terminal dispositionへ影響できないためauthority qualification gateからmaskする。
+
+既存all-axis effective qualification telemetryは上書きせず、別のauthority-qualified metricを追加する。case 25限定ではなく全blocking-risk categoryへ適用するgeneric dominance ruleとする。
+
 ## Context-gap normalization remains deferred
 
 v20でも`context_gap`下のrelation-scope mismatchが残った（Groq case 25、Google case 25/26/80）が、最終dispositionはAmbiguousを維持した。v21でこれらをnormalizeしたりclipped/omitted contentを推測したりしない。
@@ -80,9 +92,27 @@ v21 freeze前に必須:
 - immutable v20 Groq successful observationがmaterialization 38/39 -> 39/39、wrong-target Relevant 1 -> 0;
 - v20 Groq case 13だけが意図したterminal disposition change;
 - v20 Googleがmaterialization 48/48、wrong-target Relevant / false rejection / Relevant -> Ambiguous regression 0を維持;
-- context-gap relation mismatchはfail-closed維持、diagnosticとして残してよい;
+- context-gap relation mismatchはfail-closed維持、diagnosticとして残してよい。そのうえで新authority-qualified gateは48/48必須;
 - v18/v19/v20 regression、full package test、all-target Clippy `-D warnings`、fmt、validate-only、frozen surface checksumがgreen;
 - production ruleにcase ID、synthetic product名、exact fixture phraseを入れない。
+
+## Pre-freeze implementation evidence
+
+現在candidateはdeterministic / pre-freeze design proofを満たしている。
+- v21はfixed 48件と全frozen expected labelを変更しない;
+- effective qualification contract `reason-evidence-relevance-effective-qualification-v2` とmaterialization policy `target-evidence-relevance-binding-materialization-v16` をversioned successorとして追加;
+- immutable v20 sanitized replayはMistral successful 48件、Groq successful 39件、Google successful 48件を対象;
+- Mistral replayはauthority-qualified 48/48、materialization 48/48を維持;
+- Groq replayはv15のmaterialization 38/39からv16で39/39へ改善し、wrong-target Relevantを1 -> 0へ削減。`13_same_service_different_feature`だけが意図したv15 -> v16 terminal disposition change;
+- Google replayはmaterialization 48/48を維持。blocking-risk下のrelation-axis disagreementはall-axis telemetryに残すが、別authority-qualified gateでは正しくnon-authoritativeとして扱う;
+- v18 regression 17/17 PASS、v19 12/12 PASS、v20 16/16 PASS、v21 suite 20/20 PASS、runner focused 25/25 PASS;
+- `reasoning-harness-core` / `reasoning-harness-providers` / `reasoning-harness-cli` full package suite: PASS。providersは153 passed / 1 ignored、CLI main suiteは205 passed / 3 ignoredでintegration blockも全PASS;
+- core/providers/cli all-target Clippy `-D warnings`: PASS;
+- `cargo fmt --all -- --check`: PASS;
+- v21 validate-only: 48 planned / 0 observed、`validate_only_non_scorable`;
+- v21 canonical seedは`4626210`へversion化。provider role、operational budget、quota latch、one-shot immutabilityは変更しない。
+
+v21 candidateはまだfreezeしていない。将来tagを作る前にstandard PR CIとexact surface checksumのgreenを必須とする。
 
 ## Operational boundary
 
