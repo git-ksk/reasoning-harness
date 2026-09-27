@@ -1,6 +1,6 @@
-# Engine 0.6 evidence-target relevance calibration v20 — pre-freeze implementation candidate
+# Engine 0.6 evidence-target relevance calibration v20 — frozen historical design
 
-Status: implementation candidate、未freeze。materialization v15、v20 runner surface、frozen-core replay test、tag-triggered one-shot workflowまで実装済み。v20 freeze tag / live observationはまだ存在しない。
+Status: historical frozen design。canonical run `36283988719` はimmutable FAIL。詳細は [v20 immutable result](engine-0.6-evidence-relevance-calibration-v20-result.ja.md)。この文書はpre-freeze designの記録であり、結果をPASSさせるために後から書き換えない。
 
 v20はimmutable v19 run `36247789205` のsuccessor。replacement observationではなく、v19結果の再解釈にも使わない。
 
