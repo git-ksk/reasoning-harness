@@ -274,6 +274,8 @@ struct CaseObservation {
     failure_class: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     failure: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider_diagnostic: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -422,6 +424,7 @@ struct QualificationCallOutcome {
 struct CallFailure {
     class: String,
     message: String,
+    provider_diagnostic: Option<String>,
     used_structured_fallback: bool,
     model_calls: u32,
     provider_attempts: u32,
@@ -547,6 +550,7 @@ async fn run() -> Result<StudyOutput, String> {
                     message: format!(
                         "provider arm suppressed after prior operational latch; reason={latch_reason}"
                     ),
+                    provider_diagnostic: None,
                 },
             ));
             if let Some(latch) = provider_arm_latch.as_mut() {
@@ -616,6 +620,7 @@ async fn run() -> Result<StudyOutput, String> {
                     finish_reason: failure.finish_reason,
                     class: failure.class,
                     message: failure.message,
+                    provider_diagnostic: failure.provider_diagnostic,
                 },
             ),
         };
@@ -830,6 +835,7 @@ async fn complete_observed_case(
                         finish_reason: failure.finish_reason,
                         class: failure.class,
                         message: format!("local qualification failed: {}", failure.message),
+                        provider_diagnostic: failure.provider_diagnostic,
                     },
                 ));
             }
@@ -869,6 +875,7 @@ async fn complete_observed_case(
                     finish_reason,
                     class: "effective_qualification".into(),
                     message: error.to_string(),
+                    provider_diagnostic: None,
                 },
             ));
         }
@@ -909,6 +916,7 @@ async fn complete_observed_case(
                 finish_reason,
                 class: "materialization".into(),
                 message: error.to_string(),
+                provider_diagnostic: None,
             },
         )),
     }
@@ -925,6 +933,7 @@ struct ObservationFailure {
     finish_reason: Option<String>,
     class: String,
     message: String,
+    provider_diagnostic: Option<String>,
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -982,6 +991,7 @@ fn success_observation(
         assessment: Some(assessment),
         failure_class: None,
         failure: None,
+        provider_diagnostic: None,
     }
 }
 
@@ -1022,6 +1032,7 @@ fn failure_observation(
         assessment: None,
         failure_class: Some(failure.class),
         failure: Some(failure.message),
+        provider_diagnostic: failure.provider_diagnostic,
     }
 }
 
@@ -1133,6 +1144,7 @@ fn adapter_call_timeout_failure(
     CallFailure {
         class: class.into(),
         message: format!("{context}; {class}"),
+        provider_diagnostic: None,
         used_structured_fallback,
         model_calls,
         provider_attempts: prior_provider_attempts.saturating_add(started),
@@ -1201,6 +1213,7 @@ async fn call_model_for_proposal(
         return Err(CallFailure {
             class: "attempt_budget".into(),
             message: "model-call budget is zero".into(),
+            provider_diagnostic: None,
             used_structured_fallback: false,
             model_calls,
             provider_attempts,
@@ -1217,6 +1230,7 @@ async fn call_model_for_proposal(
             return Err(CallFailure {
                 class: "protocol".into(),
                 message: "Groq strict-JSON Text primary transport unavailable".into(),
+                provider_diagnostic: None,
                 used_structured_fallback: false,
                 model_calls,
                 provider_attempts,
@@ -1264,6 +1278,7 @@ async fn call_model_for_proposal(
                             message: format!(
                                 "Groq strict-JSON Text primary proposal parse failed: {primary_parse_error}"
                             ),
+                            provider_diagnostic: None,
                             used_structured_fallback: false,
                             model_calls,
                             provider_attempts,
@@ -1279,6 +1294,7 @@ async fn call_model_for_proposal(
                             message: format!(
                                 "primary structured proposal parse failed and no fallback exists: {primary_parse_error}"
                             ),
+                            provider_diagnostic: None,
                             used_structured_fallback: false,
                             model_calls,
                             provider_attempts,
@@ -1370,6 +1386,7 @@ async fn call_fallback(
             message: format!(
                 "{primary_context}; strict-JSON text fallback blocked by model-call budget"
             ),
+            provider_diagnostic: None,
             used_structured_fallback: false,
             model_calls: prior_model_calls,
             provider_attempts: prior_provider_attempts,
@@ -1404,6 +1421,7 @@ async fn call_fallback(
                     message: format!(
                         "{primary_context}; strict-JSON text fallback proposal parse failed: {error}"
                     ),
+                    provider_diagnostic: None,
                     used_structured_fallback: true,
                     model_calls,
                     provider_attempts,
@@ -1440,6 +1458,7 @@ async fn call_model_for_local_qualification(
         return Err(CallFailure {
             class: "attempt_budget".into(),
             message: "local qualification model-call budget is zero".into(),
+            provider_diagnostic: None,
             used_structured_fallback: false,
             model_calls: 0,
             provider_attempts: 0,
@@ -1457,6 +1476,7 @@ async fn call_model_for_local_qualification(
                 class: "protocol".into(),
                 message: "Groq strict-JSON Text primary local qualification transport unavailable"
                     .into(),
+                provider_diagnostic: None,
                 used_structured_fallback: false,
                 model_calls: 0,
                 provider_attempts: 0,
@@ -1502,6 +1522,7 @@ async fn call_model_for_local_qualification(
                             message: format!(
                                 "Groq strict-JSON Text primary local qualification parse failed: {error}"
                             ),
+                            provider_diagnostic: None,
                             used_structured_fallback: false,
                             model_calls: 1,
                             provider_attempts: attempts,
@@ -1576,6 +1597,7 @@ async fn call_local_qualification_fallback(
             message: format!(
                 "{primary_context}; strict-JSON text fallback blocked by model-call budget"
             ),
+            provider_diagnostic: None,
             used_structured_fallback: false,
             model_calls: prior_model_calls,
             provider_attempts: prior_provider_attempts,
@@ -1590,6 +1612,7 @@ async fn call_local_qualification_fallback(
         return Err(CallFailure {
             class: "protocol".into(),
             message: format!("{primary_context}; structured fallback unavailable"),
+            provider_diagnostic: None,
             used_structured_fallback: false,
             model_calls: prior_model_calls,
             provider_attempts: prior_provider_attempts,
@@ -1623,6 +1646,7 @@ async fn call_local_qualification_fallback(
                     message: format!(
                         "{primary_context}; strict-JSON text fallback local qualification parse failed: {error}"
                     ),
+                    provider_diagnostic: None,
                     used_structured_fallback: true,
                     model_calls,
                     provider_attempts: attempts,
@@ -1659,10 +1683,12 @@ fn model_failure(
     finish_reason: Option<String>,
 ) -> CallFailure {
     let kind = error.kind;
+    let provider_diagnostic = public_safe_provider_diagnostic(kind, &error.message);
     let message = sanitize_provider_failure_message(kind, &error.message);
     CallFailure {
         class: model_error_class(kind).into(),
         message,
+        provider_diagnostic,
         used_structured_fallback,
         model_calls,
         provider_attempts,
@@ -1670,6 +1696,100 @@ fn model_failure(
         usage,
         provider_model,
         finish_reason,
+    }
+}
+
+fn public_safe_provider_diagnostic(kind: ModelErrorKind, message: &str) -> Option<String> {
+    if !matches!(kind, ModelErrorKind::Quota | ModelErrorKind::RateLimit) {
+        return None;
+    }
+    let redacted = redact_provider_diagnostic(message);
+    if redacted.is_empty() {
+        None
+    } else {
+        Some(truncate_provider_diagnostic(&redacted, 1024))
+    }
+}
+
+fn redact_provider_diagnostic(message: &str) -> String {
+    let normalized = message.replace(['\r', '\n'], " ");
+    let tokens = normalized.split_whitespace().collect::<Vec<_>>();
+    let mut redact_next_identity = false;
+    let mut output = Vec::with_capacity(tokens.len());
+
+    for token in tokens {
+        let lower = token.to_ascii_lowercase();
+        let trimmed = token.trim_matches(|c: char| {
+            matches!(
+                c,
+                ',' | ';' | ':' | '(' | ')' | '[' | ']' | '{' | '}' | '"' | '\''
+            )
+        });
+        let lower_trimmed = trimmed.to_ascii_lowercase();
+        let identity_label = matches!(
+            lower_trimmed.as_str(),
+            "organization"
+                | "organisation"
+                | "project"
+                | "account"
+                | "user"
+                | "request"
+                | "key"
+                | "secret"
+                | "api_key"
+                | "apikey"
+        );
+        let looks_like_email = trimmed.contains('@') && trimmed.contains('.');
+        let looks_like_secret_prefix = ["gsk_", "sk-", "sk_", "bearer", "eyj"]
+            .iter()
+            .any(|prefix| lower_trimmed.starts_with(prefix));
+        let looks_like_sensitive_id = [
+            "org_",
+            "organization_id",
+            "organisation_id",
+            "project_id",
+            "account_id",
+            "user_id",
+            "request_id",
+        ]
+        .iter()
+        .any(|marker| lower.contains(marker));
+        let looks_like_url = lower.contains("http://") || lower.contains("https://");
+        let uuid_or_hex_identifier =
+            trimmed.len() >= 32 && trimmed.chars().all(|c| c.is_ascii_hexdigit() || c == '-');
+        let opaque_long_token = trimmed.len() >= 40
+            && trimmed
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || "_-./=".contains(c))
+            && trimmed.chars().any(|c| c.is_ascii_alphabetic())
+            && trimmed.chars().any(|c| c.is_ascii_digit());
+
+        if redact_next_identity
+            || looks_like_url
+            || looks_like_email
+            || looks_like_secret_prefix
+            || looks_like_sensitive_id
+            || uuid_or_hex_identifier
+            || opaque_long_token
+        {
+            output.push("<redacted>");
+            redact_next_identity = false;
+        } else {
+            output.push(token);
+            redact_next_identity = identity_label;
+        }
+    }
+
+    output.join(" ")
+}
+
+fn truncate_provider_diagnostic(value: &str, max_chars: usize) -> String {
+    let mut chars = value.chars();
+    let prefix = chars.by_ref().take(max_chars).collect::<String>();
+    if chars.next().is_some() {
+        format!("{prefix}…")
+    } else {
+        prefix
     }
 }
 
@@ -2675,6 +2795,75 @@ mod tests {
         assert!(is_capacity_failure_class("assessment_timeout"));
         assert!(is_capacity_failure_class("case_absolute_timeout"));
         assert!(!is_capacity_failure_class("quota"));
+    }
+
+    #[test]
+    fn public_safe_quota_diagnostic_preserves_limit_evidence_but_redacts_identity() {
+        let synthetic_secret = format!("{}{}", "gsk_", "exampletoken");
+        let raw = format!(
+            "Groq API returned HTTP 429 Too Many Requests; message=Rate limit reached in organization org_01secret on tokens per day (TPD): Limit 200000, Used 199900, Requested 1000. Please try again in 340s. Upgrade at https://console.example/settings/billing contact ops@example.com key {synthetic_secret} organization private-team project private-project account private-account request_id=123e4567-e89b-12d3-a456-426614174000 key plain-secret-value; rate_limit_headers=retry-after=340,x-ratelimit-limit-requests=1000,x-ratelimit-remaining-requests=922,x-ratelimit-limit-tokens=8000,x-ratelimit-remaining-tokens=7999,x-ratelimit-reset-tokens=7ms"
+        );
+        let diagnostic =
+            public_safe_provider_diagnostic(ModelErrorKind::Quota, &raw).expect("quota diagnostic");
+
+        assert!(diagnostic.contains("tokens per day (TPD)"));
+        assert!(diagnostic.contains("Limit 200000"));
+        assert!(diagnostic.contains("Used 199900"));
+        assert!(diagnostic.contains("Requested 1000"));
+        assert!(diagnostic.contains("try again in 340s"));
+        assert!(diagnostic.contains("retry-after=340"));
+        assert!(diagnostic.contains("x-ratelimit-remaining-tokens=7999"));
+        assert!(!diagnostic.contains("org_01secret"));
+        assert!(!diagnostic.contains("https://"));
+        assert!(!diagnostic.contains("ops@example.com"));
+        assert!(!diagnostic.contains(&synthetic_secret));
+        assert!(!diagnostic.contains("private-team"));
+        assert!(!diagnostic.contains("private-project"));
+        assert!(!diagnostic.contains("private-account"));
+        assert!(!diagnostic.contains("123e4567-e89b-12d3-a456-426614174000"));
+        assert!(!diagnostic.contains("plain-secret-value"));
+        assert!(diagnostic.contains("<redacted>"));
+    }
+
+    #[test]
+    fn public_safe_provider_diagnostic_is_limited_to_quota_and_rate_limit() {
+        assert!(
+            public_safe_provider_diagnostic(
+                ModelErrorKind::RateLimit,
+                "Groq API returned HTTP 429; message=rate limit exceeded; retry-after=3"
+            )
+            .is_some()
+        );
+        assert!(
+            public_safe_provider_diagnostic(
+                ModelErrorKind::Provider,
+                "provider failed with diagnostic details"
+            )
+            .is_none()
+        );
+    }
+
+    #[test]
+    fn model_failure_keeps_compact_classification_and_separate_safe_diagnostic() {
+        let error = ModelError::new(
+            ModelErrorKind::Quota,
+            "Groq API returned HTTP 429; message=Rate limit reached in organization org_hidden on tokens per day (TPD): Limit 200000, Used 199900, Requested 1000. Please try again in 340s.; rate_limit_headers=retry-after=340",
+        );
+        let failure = model_failure(
+            error,
+            false,
+            1,
+            1,
+            UsageSummary::default(),
+            Some("openai/gpt-oss-120b".into()),
+            None,
+        );
+        assert_eq!(failure.class, "quota");
+        assert_eq!(failure.message, "provider quota failure; scope=daily");
+        let diagnostic = failure.provider_diagnostic.expect("diagnostic");
+        assert!(diagnostic.contains("tokens per day (TPD)"));
+        assert!(diagnostic.contains("retry-after=340"));
+        assert!(!diagnostic.contains("org_hidden"));
     }
 
     #[test]

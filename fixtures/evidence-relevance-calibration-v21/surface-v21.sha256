@@ -5,7 +5,7 @@
 bef37fa97fdbe65495b90512a4305fa2c97bad215450fbe81c4ec59083137ff7  crates/reasoning-harness-core/tests/evidence_relevance_routing_v19.rs
 bf16909d685f9fb5a6614991fb210e7b97a6a5b64fee6a69b9120af32f30da8e  crates/reasoning-harness-core/tests/evidence_relevance_routing_v20.rs
 293c29935ad337536529d7f9107466c88e5d036aed4f424848dd719d9cd8d811  crates/reasoning-harness-core/tests/evidence_relevance_routing_v21.rs
-bbda5f6a0c28cc89bb21a7d79882d3e26fdcd601e77d23a90815416bd7a6af4e  crates/reasoning-harness-cli/src/bin/evidence_relevance.rs
+70d7604bbaefc46b341ce925a49224341f64603df0390a1d7979cc5665e13d3f  crates/reasoning-harness-cli/src/bin/evidence_relevance.rs
 db2712883d0fa1c81d76e7b1fbb495d6b549878789f295398fa7a53a49d45038  crates/reasoning-harness-cli/Cargo.toml
 fa0ed08c117035840451dbb4e19af6e1f3c9d88ffc83d3f2ae432cc1cb2a2d29  crates/reasoning-harness-providers/src/gemma.rs
 1e1fb75131da9daea6e2e0437585c506123867030e966c19b19c228f6e99783d  crates/reasoning-harness-providers/src/groq.rs
@@ -26,8 +26,8 @@ a6965847f5de2bf82ce0b85bff27103761a3055f54b8726337526bedf965dcef  .github/workfl
 8b05a8c77e3c3f32dbc722f1e411713b5800899210f10896c03d7278da946bfd  docs/engine-0.6-evidence-relevance-calibration-v20.ja.md
 8d50342e0356dcb55585017538dc47066b4d1008c573746af65fb2188e647c9f  docs/engine-0.6-evidence-relevance-calibration-v20-result.md
 fdba32bc56c6584de2c6443eabbbb88eb2b46c5336e6f3d5baf9ec637bcb9fc5  docs/engine-0.6-evidence-relevance-calibration-v20-result.ja.md
-fdf14821976456edcbc7e5ce366ad837fe9dfd65dfb685d7bf178410e08f2216  docs/engine-0.6-evidence-relevance-calibration-v21.md
-aa8517e5d01ec7e9ba4a37d3cd8af267a86bd23817df867b85fd1d9ac02db242  docs/engine-0.6-evidence-relevance-calibration-v21.ja.md
+e5e221140c029237b2da263c34052e662952d41d9aeb249d435dbd283d7f1481  docs/engine-0.6-evidence-relevance-calibration-v21.md
+0bc48a96e486b0c600f30570db3367e45e0a6d4e49eac4af0c58f8f7447cd56e  docs/engine-0.6-evidence-relevance-calibration-v21.ja.md
 34e9851701d6d3e73510e675b4a07387f6840574b9607f33de168c81c7ad2ec1  docs/engine-0.6-evidence-relevance-fixed-core-v1.md
 ba058c9ae282a762848cadc4a5de7a24bcd538a61ec74cb006e1eb4c77c80b33  docs/engine-0.6-evidence-relevance-fixed-core-v1.ja.md
 fb33d222436ac726056fad1e0850c145cdf232b73be5c9fb975d87e0193815c9  docs/roadmap.md

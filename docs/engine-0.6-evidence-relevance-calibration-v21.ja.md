@@ -105,12 +105,13 @@ v21 freeze前に必須:
 - Mistral replayはauthority-qualified 48/48、materialization 48/48を維持;
 - Groq replayはv15のmaterialization 38/39からv16で39/39へ改善し、wrong-target Relevantを1 -> 0へ削減。`13_same_service_different_feature`だけが意図したv15 -> v16 terminal disposition change;
 - Google replayはmaterialization 48/48を維持。blocking-risk下のrelation-axis disagreementはall-axis telemetryに残すが、別authority-qualified gateでは正しくnon-authoritativeとして扱う;
-- v18 regression 17/17 PASS、v19 12/12 PASS、v20 16/16 PASS、v21 suite 20/20 PASS、runner focused 25/25 PASS;
+- v18 regression 17/17 PASS、v19 12/12 PASS、v20 16/16 PASS、v21 suite 20/20 PASS、runner focused 28/28 PASS;
 - `reasoning-harness-core` / `reasoning-harness-providers` / `reasoning-harness-cli` full package suite: PASS。providersは153 passed / 1 ignored、CLI main suiteは205 passed / 3 ignoredでintegration blockも全PASS;
 - core/providers/cli all-target Clippy `-D warnings`: PASS;
 - `cargo fmt --all -- --check`: PASS;
 - v21 validate-only: 48 planned / 0 observed、`validate_only_non_scorable`;
 - v21 canonical seedは`4626210`へversion化。provider role、operational budget、quota latch、one-shot immutabilityは変更しない。
+- quota / rate-limit failureでは、observation / checkpoint / result JSONへ別フィールド`provider_diagnostic`を保存する。provider原文の表現とlimit / used / requested / retry / header数値は残しつつ、URL、email、organization / project / account / user / request識別子、secret系prefix、長いopaque tokenは強制的に`<redacted>`化する。既存のcompactな`failure`分類は変更しない。
 
 v21 candidateはまだfreezeしていない。将来tagを作る前にstandard PR CIとexact surface checksumのgreenを必須とする。
 

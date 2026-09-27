@@ -109,12 +109,13 @@ The current candidate satisfies the deterministic/pre-freeze design proof:
 - Mistral replay remains 48/48 authority-qualified and 48/48 materialized exact;
 - Groq replay improves materialization from 38/39 under v15 to 39/39 under v16, reducing wrong-target Relevant from 1 to 0; `13_same_service_different_feature` is the only intended v15 -> v16 terminal disposition change;
 - Google replay remains 48/48 materialized exact; its blocking-risk relation-axis disagreements remain visible in all-axis telemetry but are correctly non-authoritative under the separate authority-qualified gate;
-- v18 regression: 17/17 PASS; v19 regression: 12/12 PASS; v20 regression: 16/16 PASS; v21 suite: 20/20 PASS; runner focused tests: 25/25 PASS;
+- v18 regression: 17/17 PASS; v19 regression: 12/12 PASS; v20 regression: 16/16 PASS; v21 suite: 20/20 PASS; runner focused tests: 28/28 PASS;
 - full `reasoning-harness-core`, `reasoning-harness-providers`, and `reasoning-harness-cli` package suites: PASS; providers recorded 153 passed / 1 ignored; CLI main suite recorded 205 passed / 3 ignored and all integration blocks passed;
 - all-target Clippy with `-D warnings` for core/providers/cli: PASS;
 - `cargo fmt --all -- --check`: PASS;
 - v21 validate-only: 48 planned / 0 observed, `validate_only_non_scorable`;
 - v21 canonical seed is versioned to `4626210`; provider roles, operational budgets, quota latch behavior, and one-shot immutability are unchanged.
+- quota/rate-limit failures now persist a separate `provider_diagnostic` excerpt in the observation/checkpoint/result JSON. It preserves provider wording plus numeric limit/usage/retry/header evidence while forcibly redacting URLs, email addresses, organization/project/account/user/request identifiers, secret-like prefixes, and long opaque tokens; the compact `failure` classification remains unchanged.
 
 The v21 candidate is not yet frozen. Standard PR CI and exact surface checksum must be green before any future tag is created.
 
