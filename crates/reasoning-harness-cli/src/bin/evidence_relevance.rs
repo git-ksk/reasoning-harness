@@ -20,12 +20,12 @@ use reasoning_harness_core::{
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v21";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v21";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v22";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v22";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
 const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-qualification-v21";
 const EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v1";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v21";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v22";
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
 const GROQ_STRICT_JSON_TEXT_MAX_TOKENS: u32 = 512;
 const EXPECTED_CASES: usize = 48;
@@ -2761,7 +2761,7 @@ mod tests {
     fn full_diagnostic_mode_can_disable_operational_circuit_break() {
         let args = Args::try_parse_from([
             "reason-evidence-relevance-study",
-            "fixtures/evidence-relevance-calibration-v21",
+            "fixtures/evidence-relevance-calibration-v22",
             "--provider",
             "groq",
             "--model",
