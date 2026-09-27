@@ -50,6 +50,18 @@ historical full-arm demandはtiny readinessより大幅に大きい。
 
 v22 admission planningではconservativeに150K-token Groq headroomを目標とする。これはoperational planning boundでありsemantic thresholdではない。
 
+## Canonical self-budget guard
+
+recovery-floor admissionだけではprovider出力tokenの揺れを吸収できないため、v22はrequired Groq armに実行中のconservation guardも追加する。
+- observed provider-token budget上限: 140,000 tokens;
+- 次case開始前に必要なreserve: 4,000 tokens;
+- v20/v21で観測したGroq 1 completed caseのtotal usage最大: 2,792 tokens;
+- full armのhistorical projectionは約117K-120K。
+
+各Groq case開始前にrunnerがそれまでのprovider-reported token usageを合算し、`consumed + 4,000 > 140,000`なら次のexternal requestを送らずprovider armをlatchして残りcaseを抑止する。guard有効中に過去model callのtoken usage telemetryが欠落していれば、0消費と仮定せずfail-closedでlatchする。
+
+140K boundは150K admission targetより低く、fully recovered 200K bucketより十分小さい。organizationの同時利用が無ければ、想定外に消費が増えても約60Kを残す。guard発火時のcanonicalはimmutable FAILのままで、quota conservationのためにacceptanceを緩めない。
+
 ## TPD recovery floor
 
 v21 Groq jobはbucket near-exhaustion観測直後の`2026-09-27T05:02:01Z`に完了した。この保守的anchorから24時間cooldownした時刻は:
@@ -109,7 +121,7 @@ v22 tag前に必須:
 - annotation protocolは`evidence-relevance-effective-qualification-v21`、materializationはv16を維持し、v22でcore semantic production ruleは変更していない;
 - v22 operational-equivalence suite: 3/3 PASS;
 - regression: v18 17/17、v19 12/12、v20 16/16、v21 20/20 PASS;
-- calibration runner focused: 28/28 PASS;
+- calibration runner focused: 30/30 PASS;
 - validate-only: configuration `evidence-relevance-live-calibration-v22`、48 planned / 0 observed、`validate_only_non_scorable`;
 - core full main suite 246/246 PASS + integration block全PASS;
 - providers 153 passed / 1 ignored / 0 failed;
@@ -117,7 +129,8 @@ v22 tag前に必須:
 - core/providers/CLI all-target Clippy `-D warnings`: PASS;
 - `cargo fmt --all -- --check` / `git diff --check`: PASS;
 - v22 frozen-surface checksumは明示40 filesを対象に再検証green;
-- live workflowはcheckout/provider処理より前に`2026-09-28T05:02:01Z` recovery-floorをfail-closedで検証する。
+- live workflowはcheckout/provider処理より前に`2026-09-28T05:02:01Z` recovery-floorをfail-closedで検証する;
+- required Groq実行には140K observed-token cap + 4K pre-case reserveを追加し、usage telemetry欠損もfail-closedで扱う。
 
 exact pushed candidate上のstandard PR CIとfresh pre-freeze Groq readinessはまだ必須。recovery-floor時刻前なのでv22 freeze tag作成は禁止継続。
 

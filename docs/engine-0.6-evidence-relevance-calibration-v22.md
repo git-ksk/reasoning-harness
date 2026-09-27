@@ -50,6 +50,18 @@ Historical full-arm demand is materially larger than a tiny readiness probe:
 
 For admission planning, v22 reserves a conservative 150K-token Groq headroom target. This is an operational planning bound, not a semantic threshold.
 
+## Canonical self-budget guard
+
+Recovery-floor admission is necessary but not sufficient because provider output usage can vary. v22 therefore adds a second, in-run conservation guard for the required Groq arm:
+- maximum observed provider-token budget: 140,000 tokens;
+- reserve required before starting each next case: 4,000 tokens;
+- historical maximum observed total usage for one completed Groq case across v20/v21: 2,792 tokens;
+- historical projected full-arm demand remains approximately 117K-120K.
+
+Before every new Groq case, the runner sums provider-reported token usage from prior observations. If `consumed + 4,000 > 140,000`, it latches the provider arm before issuing another external request and suppresses the remaining cases. If a prior model call has missing token-usage telemetry while the guard is active, it also latches fail-closed rather than assuming zero usage.
+
+The 140K bound is deliberately below the 150K admission target and far below a fully recovered 200K bucket. With a fully recovered bucket and no concurrent organization use, the guard leaves roughly 60K tokens untouched even if observed demand expands. A guard-triggered canonical is still an immutable FAIL; conservation never weakens acceptance.
+
 ## TPD recovery floor
 
 The v21 Groq job completed at `2026-09-27T05:02:01Z` while the bucket had just been observed near exhaustion. A full 24-hour cooldown from that conservative anchor ends at:
@@ -109,7 +121,7 @@ The current candidate is green on the deterministic/operational pre-freeze proof
 - annotation protocol remains `evidence-relevance-effective-qualification-v21` and materialization remains v16; no core semantic production rule changed for v22;
 - v22 operational-equivalence suite: 3/3 PASS;
 - regressions: v18 17/17, v19 12/12, v20 16/16, v21 20/20 PASS;
-- calibration runner focused suite: 28/28 PASS;
+- calibration runner focused suite: 30/30 PASS;
 - validate-only: configuration `evidence-relevance-live-calibration-v22`, 48 planned / 0 observed, `validate_only_non_scorable`;
 - full core package main suite: 246/246 PASS plus all integration blocks;
 - providers: 153 passed / 1 ignored / 0 failed;
@@ -117,7 +129,8 @@ The current candidate is green on the deterministic/operational pre-freeze proof
 - all-target Clippy `-D warnings` for core/providers/CLI: PASS;
 - `cargo fmt --all -- --check` and `git diff --check`: PASS;
 - v22 frozen-surface checksum covers 40 explicit files and revalidates cleanly;
-- live workflow contains a fail-closed `2026-09-28T05:02:01Z` recovery-floor guard before checkout/provider work.
+- live workflow contains a fail-closed `2026-09-28T05:02:01Z` recovery-floor guard before checkout/provider work;
+- required Groq execution additionally uses a 140K observed-token cap with a 4K pre-case reserve and fail-closed handling for missing usage telemetry.
 
 Standard PR CI and a fresh pre-freeze Groq readiness run still must be green on the exact pushed candidate. The recovery-floor time has not yet elapsed, so creating the v22 freeze tag remains prohibited.
 

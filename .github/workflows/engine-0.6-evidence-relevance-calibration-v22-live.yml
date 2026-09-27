@@ -185,6 +185,16 @@ jobs:
             "{\"schema_version\":\"engine-0.6-evidence-relevance-calibration-attempt-v1\",\"provider\":\"$PROVIDER\",\"model\":\"$MODEL\",\"role\":\"$ROLE\",\"freeze_tag\":\"$FREEZE_TAG\",\"github_run_id\":\"$GITHUB_RUN_ID\",\"github_run_attempt\":\"$GITHUB_RUN_ATTEMPT\"}" \
             > "${BASE}-attempt.json"
 
+          TOKEN_BUDGET_ARGS=()
+          if test "$PROVIDER" = "groq"; then
+            # Preserve at least ~60K of a fully recovered 200K TPD bucket if current-run usage expands unexpectedly.
+            # Historical observed full-arm demand is ~117K-120K; 140K therefore leaves operating margin while avoiding quota exhaustion.
+            TOKEN_BUDGET_ARGS+=(
+              --max-total-provider-tokens 140000
+              --provider-token-reserve-per-case 4000
+            )
+          fi
+
           set +e
           cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
             "$CALIBRATION_DIR" \
@@ -195,6 +205,7 @@ jobs:
             --max-consecutive-operational-failures 2 \
             --max-consecutive-capacity-failures 2 \
             --continue-after-operational-failures \
+            "${TOKEN_BUDGET_ARGS[@]}" \
             --checkpoint "${BASE}-checkpoint.json" \
             > "${BASE}-result.json" \
             2> "${BASE}-stderr.log"

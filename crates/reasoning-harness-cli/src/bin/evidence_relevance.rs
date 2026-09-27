@@ -58,6 +58,10 @@ struct Args {
     max_consecutive_capacity_failures: usize,
     #[arg(long, default_value_t = false)]
     continue_after_operational_failures: bool,
+    #[arg(long)]
+    max_total_provider_tokens: Option<u64>,
+    #[arg(long, default_value_t = 0)]
+    provider_token_reserve_per_case: u64,
     #[arg(long, default_value_t = false)]
     validate_only: bool,
 }
@@ -506,6 +510,23 @@ async fn run() -> Result<StudyOutput, String> {
     if args.max_consecutive_capacity_failures == 0 {
         return Err("--max-consecutive-capacity-failures must be at least 1".into());
     }
+    if args.max_total_provider_tokens == Some(0) {
+        return Err("--max-total-provider-tokens must be greater than zero".into());
+    }
+    if args.provider_token_reserve_per_case > 0 && args.max_total_provider_tokens.is_none() {
+        return Err(
+            "--provider-token-reserve-per-case requires --max-total-provider-tokens".into(),
+        );
+    }
+    if args
+        .max_total_provider_tokens
+        .is_some_and(|limit| args.provider_token_reserve_per_case >= limit)
+    {
+        return Err(
+            "--provider-token-reserve-per-case must be smaller than --max-total-provider-tokens"
+                .into(),
+        );
+    }
 
     let generator = Generator::from_provider(args.provider, &args.model)?;
     let provider = args.provider.name().to_owned();
@@ -528,6 +549,53 @@ async fn run() -> Result<StudyOutput, String> {
     }
 
     for (index, case) in selected.iter().enumerate() {
+        if provider_arm_latch.is_none()
+            && let Some(limit) = args.max_total_provider_tokens
+        {
+            match observed_provider_token_total(&observations) {
+                Some(consumed)
+                    if provider_token_budget_blocks_next_case(
+                        consumed,
+                        args.provider_token_reserve_per_case,
+                        limit,
+                    ) =>
+                {
+                    let triggered_after_case_id = observations
+                        .last()
+                        .map(|observation| observation.id.clone())
+                        .unwrap_or_else(|| "before_first_case".into());
+                    provider_arm_latch = Some(ProviderArmLatch {
+                        reason: "provider_token_budget_guard",
+                        triggered_after_case_id,
+                        triggering_failure_class: "token_budget".into(),
+                        threshold: usize::try_from(limit).unwrap_or(usize::MAX),
+                        suppressed_cases: 0,
+                    });
+                    eprintln!(
+                        "[evidence-relevance-study] provider arm latched before external call: token budget guard consumed={consumed} reserve={} limit={limit}",
+                        args.provider_token_reserve_per_case
+                    );
+                }
+                None if !observations.is_empty() => {
+                    let triggered_after_case_id = observations
+                        .last()
+                        .map(|observation| observation.id.clone())
+                        .unwrap_or_else(|| "before_first_case".into());
+                    provider_arm_latch = Some(ProviderArmLatch {
+                        reason: "provider_token_usage_unavailable",
+                        triggered_after_case_id,
+                        triggering_failure_class: "token_budget".into(),
+                        threshold: usize::try_from(limit).unwrap_or(usize::MAX),
+                        suppressed_cases: 0,
+                    });
+                    eprintln!(
+                        "[evidence-relevance-study] provider arm latched before external call: token usage telemetry unavailable while token budget guard is active"
+                    );
+                }
+                _ => {}
+            }
+        }
+
         if provider_arm_latch.is_some() {
             let lexical_baseline = simple_lexical_baseline(&case.policy, &case.candidate);
             let latch_reason = provider_arm_latch
@@ -1880,6 +1948,20 @@ fn is_capacity_failure_class(class: &str) -> bool {
     )
 }
 
+fn provider_token_budget_blocks_next_case(consumed: u64, reserve: u64, limit: u64) -> bool {
+    consumed.saturating_add(reserve) > limit
+}
+
+fn observed_provider_token_total(observations: &[CaseObservation]) -> Option<u64> {
+    observations.iter().try_fold(0u64, |total, observation| {
+        if observation.model_calls > 0 && observation.usage.total_tokens == 0 {
+            None
+        } else {
+            Some(total.saturating_add(observation.usage.total_tokens))
+        }
+    })
+}
+
 fn next_operational_failure_streak(current: usize, failure_class: Option<&str>) -> usize {
     if failure_class.is_some_and(is_operational_provider_failure_class) {
         current.saturating_add(1)
@@ -3125,6 +3207,75 @@ mod tests {
         assert_eq!(result.model_calls, 2);
         assert_eq!(result.provider_attempts, 2);
         assert!(result.used_structured_fallback);
+    }
+
+    #[test]
+    fn provider_token_budget_guard_reserves_capacity_before_next_case() {
+        assert!(!provider_token_budget_blocks_next_case(
+            136_000, 4_000, 140_000
+        ));
+        assert!(provider_token_budget_blocks_next_case(
+            136_001, 4_000, 140_000
+        ));
+        assert!(provider_token_budget_blocks_next_case(
+            u64::MAX,
+            4_000,
+            140_000
+        ));
+    }
+
+    #[test]
+    fn provider_token_budget_totals_usage_and_fails_closed_when_usage_is_missing() {
+        let manifest = load();
+        let case = manifest
+            .cases
+            .iter()
+            .find(|case| case.expected_disposition == EvidenceRelevanceDisposition::Relevant)
+            .expect("positive case");
+        let assessment = materialize_evidence_relevance_v16(
+            &case.policy,
+            &case.candidate,
+            Some(&case.expected_proposal),
+            Some(&case.expected_local_qualification),
+        )
+        .expect("materialization");
+        let observed = success_observation(
+            case,
+            case.expected_disposition,
+            case.expected_proposal,
+            case.expected_local_qualification,
+            case.expected_local_qualification,
+            assessment.clone(),
+            1,
+            false,
+            2,
+            2,
+            UsageSummary {
+                input_tokens: 2_000,
+                output_tokens: 500,
+                total_tokens: 2_500,
+            },
+            Some("fixture-model".into()),
+            Some("stop".into()),
+        );
+        assert_eq!(observed_provider_token_total(&[observed]), Some(2_500));
+
+        let missing = success_observation(
+            case,
+            case.expected_disposition,
+            case.expected_proposal,
+            case.expected_local_qualification,
+            case.expected_local_qualification,
+            assessment,
+            1,
+            false,
+            2,
+            2,
+            UsageSummary::default(),
+            Some("fixture-model".into()),
+            Some("stop".into()),
+        );
+        assert_eq!(observed_provider_token_total(&[missing]), None);
     }
 
     #[test]
