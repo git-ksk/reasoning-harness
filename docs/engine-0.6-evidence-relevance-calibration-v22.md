@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v22 — operational TPD successor
 
-Status: pre-freeze implementation candidate. v22 preserves v21 semantics and changes canonical admission only. The fresh v22 suite/configuration, operational-equivalence tests, tag-triggered workflow, and TPD recovery-floor guard are implemented. No v22 freeze tag or live observation exists.
+Status: pre-freeze implementation candidate. v22 preserves v21 semantics and changes canonical admission only. The fresh v22 suite/configuration, operational-equivalence tests, tag-triggered workflow, and modeled TPD headroom/pacing guard are implemented. No v22 freeze tag or live observation exists.
 
 v22 follows immutable v21 run `36295631123`. It is not a rerun of v21 and must not reinterpret v21 evidence.
 
@@ -8,7 +8,7 @@ v22 follows immutable v21 run `36295631123`. It is not a rerun of v21 and must n
 
 Remove the operational failure mode demonstrated by v21 without tuning semantic labels, prompts, provider roles, or materialization behavior to the quota outcome.
 
-v21 established that a three-request tiny Groq readiness check can pass immediately before canonical while the organization has insufficient Tokens Per Day (TPD) headroom for the full required arm. v22 therefore treats tiny readiness as transport/credential/TPM/RPD evidence only and adds a conservative TPD recovery floor before any canonical tag may be consumed.
+v21 established that a three-request tiny Groq readiness check can pass immediately before canonical while the organization has insufficient Tokens Per Day (TPD) headroom for the full required arm. v22 therefore treats tiny readiness as transport/credential/TPM/RPD evidence only and adds a modeled minimum starting headroom plus slow in-run pacing before any canonical tag may be consumed.
 
 ## Frozen semantic inheritance
 
@@ -48,11 +48,11 @@ Historical full-arm demand is materially larger than a tiny readiness probe:
 - v21: 31,648 Groq tokens across 13 successful cases;
 - straight-line estimates are approximately 116.9K–119.7K tokens for 48 cases under the current runner shape.
 
-For admission planning, v22 reserves a conservative 150K-token Groq headroom target. This is an operational planning bound, not a semantic threshold.
+For admission planning, v22 does not wait for a fully recovered bucket. It requires a modeled 100K-token starting headroom, then lets the continuously replenishing bucket recover during a deliberately slow Groq arm. This is an operational planning bound, not a semantic threshold.
 
 ## Canonical self-budget guard
 
-Recovery-floor admission is necessary but not sufficient because provider output usage can vary. v22 therefore adds a second, in-run conservation guard for the required Groq arm:
+Modeled-headroom admission is necessary but not sufficient because provider output usage can vary. v22 therefore adds a second, in-run conservation guard for the required Groq arm:
 - maximum observed provider-token budget: 140,000 tokens;
 - reserve required before starting each next case: 4,000 tokens;
 - historical maximum observed total usage for one completed Groq case across v20/v21: 2,792 tokens;
@@ -60,20 +60,26 @@ Recovery-floor admission is necessary but not sufficient because provider output
 
 Before every new Groq case, the runner sums provider-reported token usage from prior observations. If `consumed + 4,000 > 140,000`, it latches the provider arm before issuing another external request and suppresses the remaining cases. If a prior model call has missing token-usage telemetry while the guard is active, it also latches fail-closed rather than assuming zero usage.
 
-The 140K bound is deliberately below the 150K admission target and far below a fully recovered 200K bucket. With a fully recovered bucket and no concurrent organization use, the guard leaves roughly 60K tokens untouched even if observed demand expands. A guard-triggered canonical is still an immutable FAIL; conservation never weakens acceptance.
+The 140K bound is deliberately below the modeled ~143.5K supply available from a 100K start plus mandatory pacing refill, while remaining above the historical ~117K-120K full-arm demand. With no concurrent organization use, the guard stops before the modeled bucket is drained even if observed demand expands. A guard-triggered canonical is still an immutable FAIL; conservation never weakens acceptance.
 
-## TPD recovery floor
+## Modeled TPD headroom and paced execution
 
-The v21 Groq job completed at `2026-09-27T05:02:01Z` while the bucket had just been observed near exhaustion. A full 24-hour cooldown from that conservative anchor ends at:
+The v21 quota observation anchored the bucket near exhaustion at `2026-09-27T05:02:01Z`, with only 702 tokens of headroom. At `200000 / 86400 = 2.314814...` tokens/second, recovering from 702 to 100,000 tokens of modeled headroom takes 42,896.736 seconds. The conservative rounded-up admission floor is therefore:
 
-- UTC: `2026-09-28T05:02:01Z`
-- JST: `2026-09-28 14:02:01 +09:00`
+- UTC: `2026-09-27T16:56:58Z`;
+- JST: `2026-09-28 01:56:58 +09:00`.
 
-No v22 freeze tag may be created before that time.
+No v22 freeze tag may be created before that time. This is **not** a full-bucket reset assumption. It is the earliest modeled point at which the known near-empty bucket has replenished 100K of headroom, assuming no material organization-level Groq usage after the anchor. Any known or suspected intervening usage invalidates the estimate and requires delaying or re-anchoring admission.
 
-The 24-hour floor is intentionally stricter than the estimated 150K-headroom recovery time (~17.9 hours from the near-full observation). It avoids pretending that the tiny readiness can directly measure TPD headroom.
+The required Groq arm is then intentionally slow:
+- inter-case delay: 390,000 ms (6.5 minutes);
+- provider minimum request interval: 10,000 ms;
+- two model calls per completed case under the frozen runner shape;
+- Groq job timeout: 360 minutes.
 
-This floor is a lower bound, not a guarantee. Any material Groq organization usage after the v21 observation consumes the same organization-level allowance and therefore invalidates the assumption of a recovered bucket. If intervening usage is known or suspected, v22 freeze must be delayed again rather than weakening the gate.
+Across 48 cases, the 47 inter-case waits alone contribute 18,330 seconds. The intra-case 10-second spacing contributes another 480 seconds, for at least 18,810 seconds (5h13m30s) of deliberate pacing before counting model execution time. At the observed TPD replenishment rate that restores about 43.5K tokens during the arm. Thus a modeled 100K start plus paced replenishment supplies about 143.5K tokens over the run, above the separate 140K self-budget cap. The margin is conservative relative to the historical ~117K-120K full-arm demand and the 2,792-token historical maximum completed case.
+
+This model is still conditional on organization-level usage. The public API does not expose TPD remaining in normal success headers, so v22 does not pretend to measure exact headroom. If an unexpected TPD 429 occurs, the preserved provider diagnostic is authoritative and the immutable canonical fails.
 
 ## Readiness semantics
 
@@ -110,9 +116,9 @@ Before the v22 tag can be created:
 - all-target Clippy `-D warnings`, fmt, validate-only, and exact surface checksum are green;
 - standard PR CI is green;
 - public-safety scan is green;
-- current time is at or after `2026-09-28T05:02:01Z`;
+- current time is at or after the modeled 100K-headroom floor `2026-09-27T16:56:58Z`;
 - a fresh synthetic Groq readiness run succeeds on the exact candidate branch;
-- no known material Groq organization usage has occurred after the recovery anchor without extending the cooldown.
+- no known material Groq organization usage has occurred after the anchor without delaying or re-anchoring the modeled headroom floor.
 
 ## Pre-freeze implementation evidence
 
@@ -129,14 +135,14 @@ The current candidate is green on the deterministic/operational pre-freeze proof
 - all-target Clippy `-D warnings` for core/providers/CLI: PASS;
 - `cargo fmt --all -- --check` and `git diff --check`: PASS;
 - v22 frozen-surface checksum covers 40 explicit files and revalidates cleanly;
-- live workflow contains a fail-closed `2026-09-28T05:02:01Z` recovery-floor guard before checkout/provider work;
-- required Groq execution additionally uses a 140K observed-token cap with a 4K pre-case reserve and fail-closed handling for missing usage telemetry.
+- live workflow contains a fail-closed `2026-09-27T16:56:58Z` modeled 100K-headroom guard before checkout/provider work;
+- required Groq execution additionally uses 390-second inter-case pacing, a 360-minute job bound, a 140K observed-token cap with a 4K pre-case reserve, and fail-closed handling for missing usage telemetry.
 
-Standard PR CI and a fresh pre-freeze Groq readiness run still must be green on the exact pushed candidate. The recovery-floor time has not yet elapsed, so creating the v22 freeze tag remains prohibited.
+Standard PR CI and a fresh pre-freeze Groq readiness run still must be green on the exact pushed candidate. The modeled 100K-headroom floor has not yet elapsed, so creating the v22 freeze tag remains prohibited.
 
 ## Canonical policy
 
-The v22 live workflow remains first/only and tag-triggered. It must reject workflow reruns and fail closed if launched before the TPD recovery floor.
+The v22 live workflow remains first/only and tag-triggered. It must reject workflow reruns and fail closed if launched before the modeled 100K-headroom floor.
 
 If required Groq still reaches TPD/RPD/TPM quota, v22 is immutable FAIL. Do not rerun the same tag. The preserved `provider_diagnostic` is successor evidence only.
 

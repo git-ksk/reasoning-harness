@@ -143,7 +143,7 @@ v21 fixes the v20 authority-conflict semantic failure on the evidence observed:
 - Groq: 13/13 exact before TPD latch, no semantic miss observed
 - Google: complete 48/48 materialization PASS with zero correctness/utility misses
 
-The canonical still fails because the required Groq arm was operationally incomplete. The failure is now directly attributable to organization-level TPD exhaustion, and the preceding three-probe readiness check is proven insufficient because it did not measure full-run TPD headroom.
+The canonical still fails because the required Groq arm was operationally incomplete. The failure is now directly attributable to organization-level TPD admission rejection from insufficient instantaneous headroom, and the preceding three-probe readiness check is proven insufficient because it did not measure full-run TPD headroom.
 
 Historical Groq token demand also shows why a small readiness canary is not enough:
 - v20 used 97,259 tokens over 39 successful cases before its later latch

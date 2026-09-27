@@ -13,7 +13,14 @@ env:
   FREEZE_TAG: engine-0.6-evidence-relevance-calibration-v22-freeze
   CALIBRATION_DIR: fixtures/evidence-relevance-calibration-v22
   CALIBRATION_SEED: '4626210'
-  GROQ_TPD_NOT_BEFORE_UTC: '2026-09-28T05:02:01Z'
+  GROQ_TPD_LIMIT: '200000'
+  GROQ_TPD_ANCHOR_USED: '199298'
+  GROQ_TPD_ANCHOR_UTC: '2026-09-27T05:02:01Z'
+  GROQ_TPD_START_HEADROOM: '100000'
+  GROQ_TPD_SELF_BUDGET: '140000'
+  GROQ_TPD_INTER_CASE_DELAY_MS: '390000'
+  GROQ_MIN_REQUEST_INTERVAL_MS: '10000'
+  GROQ_TPD_MIN_HEADROOM_NOT_BEFORE_UTC: '2026-09-27T16:56:58Z'
 
 jobs:
   preflight:
@@ -23,18 +30,48 @@ jobs:
       - name: Reject workflow reruns
         run: test "$GITHUB_RUN_ATTEMPT" = "1"
 
-      - name: Enforce Groq TPD recovery floor
+      - name: Enforce modeled Groq TPD 100K-headroom floor
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import datetime as dt, os, sys
-          floor = dt.datetime.fromisoformat(os.environ["GROQ_TPD_NOT_BEFORE_UTC"].replace("Z", "+00:00"))
+          import datetime as dt, math, os, sys
+
+          limit = int(os.environ["GROQ_TPD_LIMIT"])
+          used = int(os.environ["GROQ_TPD_ANCHOR_USED"])
+          target_headroom = int(os.environ["GROQ_TPD_START_HEADROOM"])
+          self_budget = int(os.environ["GROQ_TPD_SELF_BUDGET"])
+          inter_case_ms = int(os.environ["GROQ_TPD_INTER_CASE_DELAY_MS"])
+          min_request_ms = int(os.environ["GROQ_MIN_REQUEST_INTERVAL_MS"])
+          anchor = dt.datetime.fromisoformat(os.environ["GROQ_TPD_ANCHOR_UTC"].replace("Z", "+00:00"))
+          configured_floor = dt.datetime.fromisoformat(os.environ["GROQ_TPD_MIN_HEADROOM_NOT_BEFORE_UTC"].replace("Z", "+00:00"))
+
+          refill_per_second = limit / 86400.0
+          initial_headroom = limit - used
+          seconds_to_target = max(0.0, (target_headroom - initial_headroom) / refill_per_second)
+          derived_floor = anchor + dt.timedelta(seconds=seconds_to_target)
+          rounded_floor = derived_floor.replace(microsecond=0)
+          if derived_floor.microsecond:
+              rounded_floor += dt.timedelta(seconds=1)
+          if configured_floor < rounded_floor:
+              print(f"configured Groq floor is earlier than modeled headroom floor: configured={configured_floor.isoformat()} derived={rounded_floor.isoformat()}", file=sys.stderr)
+              raise SystemExit(8)
+
+          deliberate_pacing_seconds = ((48 - 1) * inter_case_ms + 48 * min_request_ms) / 1000.0
+          refill_during_pacing = deliberate_pacing_seconds * refill_per_second
+          modeled_supply = target_headroom + refill_during_pacing
+          if modeled_supply < self_budget:
+              print(f"Groq pacing cannot replenish enough for self-budget: supply={modeled_supply:.1f} budget={self_budget}", file=sys.stderr)
+              raise SystemExit(7)
+
           now = dt.datetime.now(dt.timezone.utc)
-          if now < floor:
-              print(f"v22 canonical is before Groq TPD recovery floor: now={now.isoformat()} floor={floor.isoformat()}", file=sys.stderr)
+          if now < configured_floor:
+              print(f"v22 canonical is before modeled Groq TPD 100K-headroom floor: now={now.isoformat()} floor={configured_floor.isoformat()}", file=sys.stderr)
               raise SystemExit(9)
-          print(f"Groq TPD recovery floor satisfied: now={now.isoformat()} floor={floor.isoformat()}")
+          print(
+              f"Modeled Groq TPD admission satisfied: now={now.isoformat()} floor={configured_floor.isoformat()} "
+              f"start_headroom={target_headroom} paced_refill={refill_during_pacing:.1f} self_budget={self_budget}"
+          )
           PY
 
       - uses: actions/checkout@v7
@@ -96,7 +133,7 @@ jobs:
   live:
     needs: preflight
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: ${{ matrix.timeout_minutes }}
     strategy:
       fail-fast: false
       max-parallel: 3
@@ -106,14 +143,17 @@ jobs:
             model: ministral-8b-latest
             role: required
             inter_case_delay_ms: 1200
+            timeout_minutes: 90
           - provider: groq
             model: openai/gpt-oss-120b
             role: required
-            inter_case_delay_ms: 2200
+            inter_case_delay_ms: 390000
+            timeout_minutes: 360
           - provider: google
             model: gemini-3.5-flash-lite
             role: replication
             inter_case_delay_ms: 6100
+            timeout_minutes: 90
 
     concurrency:
       group: engine-0.6-evidence-relevance-calibration-v22-${{ matrix.provider }}
@@ -171,7 +211,7 @@ jobs:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '10000'
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: ${{ env.GROQ_MIN_REQUEST_INTERVAL_MS }}
           REASON_GROQ_TOKENS_PER_MINUTE: '8000'
           REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
           REASON_GROQ_STRUCTURED_OUTPUT_RETRIES: '0'

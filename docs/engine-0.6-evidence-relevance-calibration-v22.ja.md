@@ -1,6 +1,6 @@
 # Engine 0.6 evidence-target relevance calibration v22 — operational TPD successor
 
-Status: pre-freeze implementation candidate。v22はv21 semanticsをそのまま維持し、canonical admissionだけを変更する。fresh v22 suite/configuration、operational-equivalence test、tag-triggered workflow、TPD recovery-floor guardまで実装済み。v22 freeze tag / live observationはまだ存在しない。
+Status: pre-freeze implementation candidate。v22はv21 semanticsをそのまま維持し、canonical admissionだけを変更する。fresh v22 suite/configuration、operational-equivalence test、tag-triggered workflow、modeled TPD headroom / pacing guardまで実装済み。v22 freeze tag / live observationはまだ存在しない。
 
 v22はimmutable v21 run `36295631123` のsuccessorであり、v21 rerunでも結果の再解釈でもない。
 
@@ -8,7 +8,7 @@ v22はimmutable v21 run `36295631123` のsuccessorであり、v21 rerunでも結
 
 v21で実測したoperational failureを、semantic label / prompt / provider role / materializationをquota結果へ合わせずに除去する。
 
-v21ではtiny Groq readiness 3発がcanonical直前にPASSしたにもかかわらず、organizationのTokens Per Day (TPD) headroomがfull required armには不足していた。したがってv22ではtiny readinessをtransport / credential / TPM / RPD evidenceに限定し、canonical tag消費前にconservativeなTPD recovery floorを追加する。
+v21ではtiny Groq readiness 3発がcanonical直前にPASSしたにもかかわらず、organizationのTokens Per Day (TPD) headroomがfull required armには不足していた。したがってv22ではtiny readinessをtransport / credential / TPM / RPD evidenceに限定し、canonical tag消費前にmodeled minimum start headroom + slow in-run pacingを追加する。
 
 ## Frozen semantic inheritance
 
@@ -48,11 +48,11 @@ historical full-arm demandはtiny readinessより大幅に大きい。
 - v21: 13 successful casesで31,648 Groq tokens;
 - 現runner shapeの48件straight-line estimateは約116.9K–119.7K tokens。
 
-v22 admission planningではconservativeに150K-token Groq headroomを目標とする。これはoperational planning boundでありsemantic thresholdではない。
+v22 admission planningではbucket満タンを待たない。modeled start headroom 100Kを要求し、その後required Groq armを意図的にslow pacingして実行中の連続補充も利用する。これはoperational planning boundでありsemantic thresholdではない。
 
 ## Canonical self-budget guard
 
-recovery-floor admissionだけではprovider出力tokenの揺れを吸収できないため、v22はrequired Groq armに実行中のconservation guardも追加する。
+modeled-headroom admissionだけではprovider出力tokenの揺れを吸収できないため、v22はrequired Groq armに実行中のconservation guardも追加する。
 - observed provider-token budget上限: 140,000 tokens;
 - 次case開始前に必要なreserve: 4,000 tokens;
 - v20/v21で観測したGroq 1 completed caseのtotal usage最大: 2,792 tokens;
@@ -60,20 +60,26 @@ recovery-floor admissionだけではprovider出力tokenの揺れを吸収でき�
 
 各Groq case開始前にrunnerがそれまでのprovider-reported token usageを合算し、`consumed + 4,000 > 140,000`なら次のexternal requestを送らずprovider armをlatchして残りcaseを抑止する。guard有効中に過去model callのtoken usage telemetryが欠落していれば、0消費と仮定せずfail-closedでlatchする。
 
-140K boundは150K admission targetより低く、fully recovered 200K bucketより十分小さい。organizationの同時利用が無ければ、想定外に消費が増えても約60Kを残す。guard発火時のcanonicalはimmutable FAILのままで、quota conservationのためにacceptanceを緩めない。
+140K boundは100K start + mandatory pacing refillで得るmodeled supply約143.5Kより低く、historical full-arm demand約117K-120Kより上に置く。organizationの同時利用が無ければ、想定外に消費が増えてもmodeled bucketを使い切る前に停止する。guard発火時のcanonicalはimmutable FAILのままで、quota conservationのためにacceptanceを緩めない。
 
-## TPD recovery floor
+## Modeled TPD headroom + paced execution
 
-v21 Groq jobはbucket near-exhaustion観測直後の`2026-09-27T05:02:01Z`に完了した。この保守的anchorから24時間cooldownした時刻は:
+v21 quota観測時点を`2026-09-27T05:02:01Z`のnear-exhaustion anchorとし、headroomは702 tokensだった。`200000 / 86400 = 2.314814... tokens/sec`で702 -> 100,000 tokensまで回復するには42,896.736秒必要なので、round-upしたadmission floorは:
 
-- UTC: `2026-09-28T05:02:01Z`
-- JST: `2026-09-28 14:02:01 +09:00`
+- UTC: `2026-09-27T16:56:58Z`;
+- JST: `2026-09-28 01:56:58 +09:00`。
 
-この時刻より前にv22 freeze tagを作成してはいけない。
+この時刻より前にv22 freeze tagを作成しない。これはfull-bucket reset待ちではなく、known near-empty bucketが100K headroomまで連続回復する最早modeled時刻。anchor後にorganization-level Groqのmaterialな追加利用が既知または疑わしい場合、この推定は無効としてdelayまたはre-anchorする。
 
-24時間floorは150K headroom推定回復時間（near-full観測から約17.9時間）より意図的に厳しい。tiny readinessでTPD headroomを直接測れたように扱わないため。
+required Groq armは意図的にslow pacingする。
+- inter-case delay: 390,000 ms（6.5分）;
+- provider minimum request interval: 10,000 ms;
+- frozen runner shapeではcompleted caseあたり2 model calls;
+- Groq job timeout: 360分。
 
-このfloorは下限であり保証ではない。v21観測後にGroq organizationでmaterialな追加利用があれば同じorganization-level allowanceを消費するため、bucket recovery assumptionは無効になる。追加利用が既知または疑わしい場合はgateを緩めずcooldownを延長する。
+48 casesでは47回のinter-case waitだけで18,330秒、case内10秒spacingがさらに480秒あり、model execution timeを含めなくても最低18,810秒（5時間13分30秒）をかける。この間にobserved TPD refill rateなら約43.5K tokens回復する。modeled start headroom 100K + run中回復約43.5K = 約143.5Kとなり、別の140K self-budget capを上回る。historical full-arm demand約117K-120K、completed case最大2,792 tokensに対しても余裕を持つ。
+
+ただしorganization-level usageが別経路で発生すればmodelはずれる。通常success headerからTPD remainingは直接取得できないため、v22はexact headroomを測定できるとは扱わない。unexpected TPD 429が出た場合は保存済みprovider diagnosticをauthoritative evidenceとし、そのcanonicalはimmutable FAIL。
 
 ## Readiness semantics
 
@@ -110,9 +116,9 @@ v22 tag前に必須:
 - all-target Clippy `-D warnings` / fmt / validate-only / exact surface checksum green;
 - standard PR CI green;
 - public-safety scan green;
-- current timeが`2026-09-28T05:02:01Z`以降;
+- current timeがmodeled 100K-headroom floor `2026-09-27T16:56:58Z`以降;
 - exact candidate branchでfresh synthetic Groq readiness PASS;
-- recovery anchor後にmaterialなGroq organization usageがある場合はcooldown延長済み。
+- anchor後にmaterialなGroq organization usageがある場合はmodeled headroom floorをdelayまたはre-anchor済み。
 
 ## Pre-freeze implementation evidence
 
@@ -129,14 +135,14 @@ v22 tag前に必須:
 - core/providers/CLI all-target Clippy `-D warnings`: PASS;
 - `cargo fmt --all -- --check` / `git diff --check`: PASS;
 - v22 frozen-surface checksumは明示40 filesを対象に再検証green;
-- live workflowはcheckout/provider処理より前に`2026-09-28T05:02:01Z` recovery-floorをfail-closedで検証する;
-- required Groq実行には140K observed-token cap + 4K pre-case reserveを追加し、usage telemetry欠損もfail-closedで扱う。
+- live workflowはcheckout/provider処理より前に`2026-09-27T16:56:58Z` modeled 100K-headroom floorをfail-closedで検証する;
+- required Groq実行にはcase間390秒 pacing + 360分job bound + 140K observed-token cap + 4K pre-case reserveを追加し、usage telemetry欠損もfail-closedで扱う。
 
-exact pushed candidate上のstandard PR CIとfresh pre-freeze Groq readinessはまだ必須。recovery-floor時刻前なのでv22 freeze tag作成は禁止継続。
+exact pushed candidate上のstandard PR CIとfresh pre-freeze Groq readinessはまだ必須。modeled 100K-headroom floor前なのでv22 freeze tag作成は禁止継続。
 
 ## Canonical policy
 
-v22 live workflowはfirst/only tag-triggeredを維持。workflow rerunを拒否し、TPD recovery floorより早く起動された場合はfail closedする。
+v22 live workflowはfirst/only tag-triggeredを維持。workflow rerunを拒否し、modeled 100K-headroom floorより早く起動された場合はfail closedする。
 
 required Groqが再度TPD/RPD/TPM quotaに達した場合、v22もimmutable FAIL。同じtagをrerunしない。保存した`provider_diagnostic`はsuccessor evidenceにのみ使う。
 

@@ -141,7 +141,7 @@ v21は観測できた範囲でv20のauthority-conflict semantic failureを解消
 - Groq: TPD latch前13/13 exact、semantic miss 0
 - Google: complete 48/48 materialization PASS、correctness/utility miss 0
 
-それでもrequired Groq armがoperationally incompleteのためcanonicalはFAIL。原因はorganization-level TPD exhaustionと直接確認でき、直前の3-probe readinessはfull-run TPD headroomを測っていなかったため不十分と確定した。
+それでもrequired Groq armがoperationally incompleteのためcanonicalはFAIL。原因はorganization-level TPD admission rejection from insufficient instantaneous headroomと直接確認でき、直前の3-probe readinessはfull-run TPD headroomを測っていなかったため不十分と確定した。
 
 Groqのhistorical token demandもtiny readinessでは不足することを示す。
 - v20: 39 successful casesまでに97,259 tokens
