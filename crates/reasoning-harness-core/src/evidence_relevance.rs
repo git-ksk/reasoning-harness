@@ -67,6 +67,8 @@ pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V13_ID: &str =
     "target-evidence-relevance-binding-materialization-v13";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V14_ID: &str =
     "target-evidence-relevance-binding-materialization-v14";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V15_ID: &str =
+    "target-evidence-relevance-binding-materialization-v15";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V1_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v1";
 
@@ -2346,6 +2348,62 @@ pub fn materialize_evidence_relevance_v14(
         materialize_evidence_relevance_v13(policy, candidate, proposal, Some(&effective))?;
     assessment.materialization_policy_id =
         EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V14_ID.into();
+    Ok(assessment)
+}
+
+pub fn materialize_evidence_relevance_v15(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw_qualification: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceLocalRelationScope as Relation;
+    use EvidenceRelevanceBinding as Binding;
+
+    let effective = derive_effective_evidence_local_qualification_v1(
+        policy,
+        candidate,
+        proposal,
+        raw_qualification,
+    )?;
+
+    if let Some(proposal) = proposal
+        && classify_deterministic_local_scope_risk(candidate) == Risk::None
+        && effective.scope_risk == Risk::None
+        && raw_qualification.is_some_and(|raw| raw.scope_risk == Risk::None)
+        && effective.identity_scope == Identity::ExactTarget
+        && effective.relation_scope == Relation::DifferentRelation
+        && proposal.target_binding == Binding::Exact
+        && proposal.relation_binding != Binding::Exact
+    {
+        let (has_harness_anchor, _url_only_anchor, mut reasons) = anchor_match(policy, candidate);
+        let strict_identity_block = policy.identity_requirement
+            == EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor
+            && !has_harness_anchor;
+        if !strict_identity_block {
+            reasons.push(EvidenceRelevanceReason::LocalQualificationRejectsRelation);
+            reasons.push(EvidenceRelevanceReason::ModelIrrelevant);
+            return Ok(EvidenceRelevanceAssessment {
+                contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_V5_CONTRACT_ID.into(),
+                materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V15_ID
+                    .into(),
+                policy_id: policy.policy_id.clone(),
+                target_id: policy.target_id.clone(),
+                evidence_id: candidate.evidence_id.clone(),
+                source_id: candidate.source_id.clone(),
+                disposition: EvidenceRelevanceDisposition::Irrelevant,
+                path: EvidenceRelevanceAssessmentPath::ModelAssisted,
+                reasons,
+            });
+        }
+    }
+
+    let mut assessment =
+        materialize_evidence_relevance_v14(policy, candidate, proposal, raw_qualification)?;
+    assessment.materialization_policy_id =
+        EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V15_ID.into();
     Ok(assessment)
 }
 

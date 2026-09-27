@@ -1,6 +1,6 @@
-# Engine 0.6 evidence-target relevance calibration v20 — design-only successor
+# Engine 0.6 evidence-target relevance calibration v20 — pre-freeze implementation candidate
 
-Status: design only。v20 runtime実装、workflow、freeze tag、live observationはまだ存在しない。
+Status: implementation candidate、未freeze。materialization v15、v20 runner surface、frozen-core replay test、tag-triggered one-shot workflowまで実装済み。v20 freeze tag / live observationはまだ存在しない。
 
 v20はimmutable v19 run `36247789205` のsuccessor。replacement observationではなく、v19結果の再解釈にも使わない。
 
@@ -26,7 +26,7 @@ required Mistralで48/48に到達したv19 authority splitを維持しつつ、G
 
 ## Proposed v20 semantic delta
 
-generic pre-freeze proofが通った場合にのみ採用する。
+materialization policy `target-evidence-relevance-binding-materialization-v15` として実装済み。採用は以下のfull pre-freeze proofを満たすことが前提。
 
 以下を全て満たす場合:
 - deterministic local risk = `none`;
@@ -47,7 +47,7 @@ primary relationがexact、identity uncertainty、context/ownership/mapping risk
 - frozen coreの`exact_target + different_relation + no risk` expectationは3件すべてIrrelevantで、Ambiguous collisionは0;
 - positive-admission pathは増えない。
 
-実装時は新しいmaterialization policy IDを与え、v14をhistoricalのまま保持する。
+新しいmaterialization policy ID `target-evidence-relevance-binding-materialization-v15` を使用し、v14はhistoricalのまま直接replayして意図したdeltaだけを証明する。
 
 ## Context-gap relation normalization: deferred
 
@@ -80,7 +80,25 @@ v20 freeze tag前に必須:
 - full workspace test、Clippy `-D warnings`、fmt、surface checksum、validate-only green;
 - public artifactにprivate-project identifier / secret / local pathがない。
 
-このdesign-only phaseではv20 live run禁止。
+v20 live runは、exact candidate commitのcommit/push、通常PR CI green、frozen surface checksum再検証、annotated v20 freeze tagの明示作成が完了するまで禁止。
+
+## Pre-freeze implementation evidence
+
+現在のdeterministic / pre-freeze evidenceはgreen:
+- v20 manifestはv19と同じ48件でcase growth / relabel 0;
+- materialization v15の追加挙動は、上記exact-target / independently-different-relation terminal rejectionのみ;
+- v20 generic / frozen-core / replay suite: 16/16 PASS;
+- immutable v19 Mistral replay: effective qualification 48/48、materialization 48/48を維持;
+- immutable v19 Groq successful replay: 10/10 exactを維持;
+- immutable v19 Google successful replay: v14の45/46からv15で46/46へ改善。v14 -> v15のdisposition変更は`13_same_service_different_feature`のAmbiguous -> Irrelevantだけ;
+- Google context-gap relation-scope disagreement 3件はdiagnosticのまま残し、最終Ambiguousも維持。v20ではnormalizeしない;
+- v18 regression 17/17 PASS、v19 regression 12/12 PASS、v20 suite 16/16 PASS、runner focused 23/23 PASS;
+- `reasoning-harness-core` / `reasoning-harness-providers` / `reasoning-harness-cli` full package test: PASS;
+- `cargo fmt --all -- --check`: PASS;
+- core/providers/cli all-target Clippy `-D warnings`: PASS;
+- v20 validate-only: 48 planned / 0 observed、`validate_only_non_scorable`。
+
+v19 replay fixtureはimmutable run `36247789205` のsanitized compressed evidence。successful case IDを明示し、frozen expectationと異なったobserved proposal / raw qualificationだけをoverrideとして保存する。provider response body、credential、private-project dataは含めない。
 
 ## Holdout boundary
 

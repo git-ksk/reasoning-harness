@@ -14,18 +14,18 @@ use reasoning_harness_core::{
     ModelErrorKind, ModelExecutionBudget, ModelExecutionTelemetrySnapshot, ModelRequest,
     ModelResponse, ModelUsage, build_evidence_local_qualification_v8_request,
     build_evidence_relevance_binding_proposal_v5_request, build_strict_json_text_fallback_request,
-    derive_effective_evidence_local_qualification_v1, materialize_evidence_relevance_v14,
+    derive_effective_evidence_local_qualification_v1, materialize_evidence_relevance_v15,
     parse_evidence_local_qualification_v8, parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v19";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v19";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v20";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v20";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-qualification-v19";
+const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-qualification-v20";
 const EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v1";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v19";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v20";
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
 const GROQ_STRICT_JSON_TEXT_MAX_TOKENS: u32 = 512;
 const EXPECTED_CASES: usize = 48;
@@ -454,7 +454,7 @@ async fn run() -> Result<StudyOutput, String> {
 
     for case in &selected {
         let expected = case.expected_proposal;
-        let assessment = materialize_evidence_relevance_v14(
+        let assessment = materialize_evidence_relevance_v15(
             &case.policy,
             &case.candidate,
             Some(&expected),
@@ -870,7 +870,7 @@ async fn complete_observed_case(
         }
     };
 
-    match materialize_evidence_relevance_v14(
+    match materialize_evidence_relevance_v15(
         &case.policy,
         &case.candidate,
         Some(&observed),
@@ -2424,12 +2424,12 @@ mod tests {
     }
 
     #[test]
-    fn expected_primary_and_effective_qualification_materialize_all_v19_cases() {
+    fn expected_primary_and_effective_qualification_materialize_all_v20_cases() {
         let manifest = load();
         assert_eq!(manifest.cases.len(), EXPECTED_CASES);
         for case in manifest.cases {
             let proposal = case.expected_proposal;
-            let assessment = materialize_evidence_relevance_v14(
+            let assessment = materialize_evidence_relevance_v15(
                 &case.policy,
                 &case.candidate,
                 Some(&proposal),
@@ -2585,7 +2585,7 @@ mod tests {
     fn full_diagnostic_mode_can_disable_operational_circuit_break() {
         let args = Args::try_parse_from([
             "reason-evidence-relevance-study",
-            "fixtures/evidence-relevance-calibration-v19",
+            "fixtures/evidence-relevance-calibration-v20",
             "--provider",
             "groq",
             "--model",
@@ -2905,7 +2905,7 @@ mod tests {
             Some(&raw),
         )
         .expect("effective qualification");
-        let assessment = materialize_evidence_relevance_v14(
+        let assessment = materialize_evidence_relevance_v15(
             &case.policy,
             &case.candidate,
             Some(&case.expected_proposal),

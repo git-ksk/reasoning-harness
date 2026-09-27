@@ -1,6 +1,6 @@
-# Engine 0.6 evidence-target relevance calibration v20 — design-only successor
+# Engine 0.6 evidence-target relevance calibration v20 — pre-freeze implementation candidate
 
-Status: design only. No v20 runtime implementation, workflow, freeze tag, or live observation exists.
+Status: implementation candidate, not frozen. Materialization v15, the v20 runner surface, frozen-core replay tests, and the tag-triggered one-shot workflow are implemented. No v20 freeze tag or live observation exists.
 
 v20 follows immutable v19 run `36247789205`. It is not a replacement observation and must not reinterpret v19.
 
@@ -26,7 +26,7 @@ Keep unchanged:
 
 ## Proposed v20 semantic delta
 
-Adopt only after generic pre-freeze proof.
+Implemented as materialization policy `target-evidence-relevance-binding-materialization-v15`, subject to the full pre-freeze proof below.
 
 When all are true:
 - deterministic local risk is `none`;
@@ -47,7 +47,7 @@ Why this candidate is allowed:
 - the frozen core contains three `exact_target + different_relation + no risk` expectations, all Irrelevant and none Ambiguous;
 - it adds no positive-admission path.
 
-Implementation must receive a new materialization policy ID; v14 remains historical.
+The implementation uses a new materialization policy ID (`target-evidence-relevance-binding-materialization-v15`); v14 remains historical and is replayed directly to prove the intended delta.
 
 ## Context-gap relation normalization: deferred
 
@@ -80,7 +80,25 @@ Before any v20 freeze tag:
 - full workspace tests, Clippy `-D warnings`, fmt, surface checksum, and validate-only are green;
 - public artifacts contain no private-project identifiers, secrets, or local paths.
 
-No v20 live run is permitted during this design-only phase.
+No v20 live run is permitted until the exact candidate commit is committed, pushed, standard PR CI is green, the frozen surface checksum revalidates, and an annotated v20 freeze tag is deliberately created.
+
+## Pre-freeze implementation evidence
+
+Current deterministic/pre-freeze evidence is green:
+- v20 manifest contains the same 48 cases as v19 with no case growth or relabeling;
+- materialization v15 adds only the exact-target / independently-different-relation terminal rejection described above;
+- v20 generic/frozen-core/replay suite: 16/16 PASS;
+- immutable v19 Mistral replay: 48/48 effective qualification and 48/48 materialization remain exact;
+- immutable v19 Groq successful replay: 10/10 remains exact;
+- immutable v19 Google successful replay: materialization improves from 45/46 under v14 to 46/46 under v15; the only v14 -> v15 disposition change is `13_same_service_different_feature`, Ambiguous -> Irrelevant;
+- the three Google context-gap relation-scope disagreements remain diagnostic and still terminate Ambiguous; v20 does not normalize them;
+- v18 regression: 17/17 PASS; v19 regression: 12/12 PASS; v20 suite: 16/16 PASS; runner focused tests: 23/23 PASS;
+- full `reasoning-harness-core`, `reasoning-harness-providers`, and `reasoning-harness-cli` package test suites: PASS;
+- `cargo fmt --all -- --check`: PASS;
+- all-target Clippy with `-D warnings` for core/providers/cli: PASS;
+- v20 validate-only: 48 planned / 0 observed, `validate_only_non_scorable`.
+
+The v19 replay fixture is a sanitized compression of immutable run `36247789205`: successful case IDs are explicit, and only observed proposal/raw-qualification values that differed from the frozen expectation are stored as overrides. It contains no provider response bodies, credentials, or private-project data.
 
 ## Holdout boundary
 
