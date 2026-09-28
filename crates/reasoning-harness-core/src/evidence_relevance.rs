@@ -899,6 +899,40 @@ pub fn derive_effective_evidence_local_qualification_v2(
     Ok(effective)
 }
 
+pub fn derive_effective_evidence_local_qualification_v3(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceLocalQualificationV6, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceLocalRelationScope as Relation;
+    use EvidenceRelevanceBinding as Binding;
+
+    let mut effective =
+        derive_effective_evidence_local_qualification_v2(policy, candidate, proposal, raw)?;
+    let risk = classify_deterministic_local_scope_risk(candidate);
+    let corroborated_distinct_target_relation_conflict = proposal.is_some_and(|value| {
+        value.target_binding == Binding::Different && value.relation_binding == Binding::Exact
+    }) && raw.is_some_and(|value| {
+        value.identity_scope == Identity::DistinctTarget
+            && value.relation_scope == Relation::DifferentRelation
+            && value.scope_risk == Risk::None
+    });
+
+    if risk == Risk::None
+        && effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::DistinctTarget
+        && !requested_relation_locally_present(policy, candidate)
+        && corroborated_distinct_target_relation_conflict
+    {
+        effective.relation_scope = Relation::DifferentRelation;
+    }
+
+    Ok(effective)
+}
+
 fn validate_policy(policy: &EvidenceRelevanceTargetPolicy) -> Result<(), EvidenceRelevanceError> {
     if policy.policy_id.trim().is_empty() {
         return Err(EvidenceRelevanceError::EmptyPolicyId);

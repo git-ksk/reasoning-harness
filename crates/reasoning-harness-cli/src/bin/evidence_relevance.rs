@@ -14,18 +14,18 @@ use reasoning_harness_core::{
     ModelErrorKind, ModelExecutionBudget, ModelExecutionTelemetrySnapshot, ModelRequest,
     ModelResponse, ModelUsage, build_evidence_local_qualification_v8_request,
     build_evidence_relevance_binding_proposal_v5_request, build_strict_json_text_fallback_request,
-    derive_effective_evidence_local_qualification_v2, materialize_evidence_relevance_v16,
+    derive_effective_evidence_local_qualification_v3, materialize_evidence_relevance_v16,
     parse_evidence_local_qualification_v8, parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
 
-const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v22";
-const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v22";
+const CONFIGURATION_ID: &str = "evidence-relevance-live-calibration-v23";
+const EXPECTED_SUITE_ID: &str = "evidence-relevance-calibration-v23";
 const EXPECTED_STATUS: &str = "fresh_unobserved_calibration";
-const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-qualification-v21";
+const EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-qualification-v23";
 const EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v1";
-const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v22";
+const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-calibration-v23";
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
 const GROQ_STRICT_JSON_TEXT_MAX_TOKENS: u32 = 512;
 const EXPECTED_CASES: usize = 48;
@@ -921,7 +921,7 @@ async fn complete_observed_case(
         finish_reason = qualification_call.finish_reason;
     }
 
-    let effective_local_qualification = match derive_effective_evidence_local_qualification_v2(
+    let effective_local_qualification = match derive_effective_evidence_local_qualification_v3(
         &case.policy,
         &case.candidate,
         Some(&observed),
@@ -3294,7 +3294,7 @@ mod tests {
             scope_risk: EvidenceLocalBlockingReason::ContextGap,
             ..case.expected_local_qualification
         };
-        let effective = derive_effective_evidence_local_qualification_v2(
+        let effective = reasoning_harness_core::derive_effective_evidence_local_qualification_v2(
             &case.policy,
             &case.candidate,
             Some(&case.expected_proposal),
@@ -3331,6 +3331,42 @@ mod tests {
         assert_eq!(metrics.effective_local_qualification_exact_matches, 1);
         assert_eq!(metrics.effective_qualification_spurious_scope_risks, 0);
         assert_eq!(metrics.materialized_exact_matches, 1);
+    }
+
+    #[test]
+    fn effective_v3_preserves_corroborated_distinct_target_different_relation() {
+        let manifest = load();
+        let case = manifest
+            .cases
+            .iter()
+            .find(|case| case.id == "76_v13_sibling_different_relation_no_cue")
+            .expect("v13 sibling different relation case");
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: reasoning_harness_core::EvidenceRelevanceBinding::Different,
+            relation_binding: reasoning_harness_core::EvidenceRelevanceBinding::Exact,
+        };
+        let raw = case.expected_local_qualification;
+
+        let v2 = reasoning_harness_core::derive_effective_evidence_local_qualification_v2(
+            &case.policy,
+            &case.candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .expect("v2 effective qualification");
+        assert_eq!(
+            v2.relation_scope,
+            reasoning_harness_core::EvidenceLocalRelationScope::RequestedRelation
+        );
+
+        let v3 = reasoning_harness_core::derive_effective_evidence_local_qualification_v3(
+            &case.policy,
+            &case.candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .expect("v3 effective qualification");
+        assert_eq!(v3, case.expected_local_qualification);
     }
 
     #[test]
