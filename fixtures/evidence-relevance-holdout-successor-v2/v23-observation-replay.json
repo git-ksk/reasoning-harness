@@ -1,0 +1,2629 @@
+{
+  "providers": [
+    {
+      "model": "ministral-8b-latest",
+      "observations": [
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "01_exact_name_availability",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "02_acronym_alias",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "04_semantic_paraphrase",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "05_title_identity_body_relation",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "07_url_omits_target_terms",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "08_ja_query_en_source",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "10_structured_metadata_plus_body",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "11_stale_but_relevant",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "12_multi_section_same_target",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "55_fresh_positive_injection_ignored",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "63_fresh_stale_contradiction_relevant",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "65_fresh_harness_alias_positive",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "69_v12_single_owner_table_no_scope_risk",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "74_v13_exact_target_same_relation_no_cue",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "13_same_service_different_feature",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "14_sibling_product_overlap",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "15_navigation_only_match",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "16_broad_landing_no_support",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "17_unrelated_announcement",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "18_comparison_only_mention",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "19_relation_mismatch_same_target",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "20_prompt_injection_self_declare",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "27_explicit_not_rename_distinct",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "28_generic_landing_target_absent",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "29_explicit_no_target_information",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "32_separate_product_table",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "36_explicit_distinct_product",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "44_prompt_injection_local_absence",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "50_fresh_sibling_local_scope",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "60_fresh_comparison_sibling",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "76_v13_sibling_different_relation_no_cue",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "81_v13_exact_target_other_relation",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "21_unknown_rename",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "22_partial_identity",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "23_mixed_multi_product",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "24_conflicting_sections",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "unresolved",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "context_gap"
+          },
+          "id": "25_insufficient_local_passage",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "id": "26_url_only_identity",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "30_possible_alias_unconfirmed",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "unresolved",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "31_possible_successor_unconfirmed",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "ownership_scope"
+          },
+          "id": "79_v13_shared_row_same_relation",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "ownership_scope"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "40_rename_unknown",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "unresolved",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "id": "43_partial_truncated_mapping",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "id": "45_url_only_identity_fresh",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "56_fresh_exact_exact_shared_row_abstain",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "59_fresh_shared_owner_positive_looking",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "68_v12_explicit_possible_rename_risk",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "context_gap"
+          },
+          "id": "80_v13_clipped_relation_context",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "exact"
+          }
+        }
+      ],
+      "provider": "mistral"
+    },
+    {
+      "model": "openai/gpt-oss-120b",
+      "observations": [
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "01_exact_name_availability",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "02_acronym_alias",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "04_semantic_paraphrase",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "05_title_identity_body_relation",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "07_url_omits_target_terms",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "08_ja_query_en_source",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "10_structured_metadata_plus_body",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "11_stale_but_relevant",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "12_multi_section_same_target",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "55_fresh_positive_injection_ignored",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "63_fresh_stale_contradiction_relevant",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "65_fresh_harness_alias_positive",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "69_v12_single_owner_table_no_scope_risk",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "74_v13_exact_target_same_relation_no_cue",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "13_same_service_different_feature",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "14_sibling_product_overlap",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "15_navigation_only_match",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "16_broad_landing_no_support",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "17_unrelated_announcement",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "18_comparison_only_mention",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "19_relation_mismatch_same_target",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "20_prompt_injection_self_declare",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "27_explicit_not_rename_distinct",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "28_generic_landing_target_absent",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "29_explicit_no_target_information",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "32_separate_product_table",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "36_explicit_distinct_product",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "44_prompt_injection_local_absence",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "50_fresh_sibling_local_scope",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "60_fresh_comparison_sibling",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "76_v13_sibling_different_relation_no_cue",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "81_v13_exact_target_other_relation",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "21_unknown_rename",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "22_partial_identity",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "23_mixed_multi_product",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "relation_absent",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "24_conflicting_sections",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "unresolved",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "id": "25_insufficient_local_passage",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "id": "26_url_only_identity",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "30_possible_alias_unconfirmed",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "31_possible_successor_unconfirmed",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "ownership_scope"
+          },
+          "id": "79_v13_shared_row_same_relation",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "40_rename_unknown",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "relation_absent",
+            "scope_risk": "identity_mapping"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "id": "43_partial_truncated_mapping",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "id": "45_url_only_identity_fresh",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "56_fresh_exact_exact_shared_row_abstain",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "59_fresh_shared_owner_positive_looking",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "68_v12_explicit_possible_rename_risk",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "id": "80_v13_clipped_relation_context",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "exact"
+          }
+        }
+      ],
+      "provider": "groq"
+    },
+    {
+      "model": "gemini-3.5-flash-lite",
+      "observations": [
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "01_exact_name_availability",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "02_acronym_alias",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "04_semantic_paraphrase",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "05_title_identity_body_relation",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "07_url_omits_target_terms",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "08_ja_query_en_source",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "10_structured_metadata_plus_body",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "11_stale_but_relevant",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "12_multi_section_same_target",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "55_fresh_positive_injection_ignored",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "63_fresh_stale_contradiction_relevant",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "65_fresh_harness_alias_positive",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "69_v12_single_owner_table_no_scope_risk",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "74_v13_exact_target_same_relation_no_cue",
+          "materialized_disposition": "relevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "13_same_service_different_feature",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "14_sibling_product_overlap",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "15_navigation_only_match",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "16_broad_landing_no_support",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "17_unrelated_announcement",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "18_comparison_only_mention",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "19_relation_mismatch_same_target",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "20_prompt_injection_self_declare",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "27_explicit_not_rename_distinct",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "28_generic_landing_target_absent",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "29_explicit_no_target_information",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "32_separate_product_table",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "36_explicit_distinct_product",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "id": "44_prompt_injection_local_absence",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "50_fresh_sibling_local_scope",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "id": "60_fresh_comparison_sibling",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "76_v13_sibling_different_relation_no_cue",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "different"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "id": "81_v13_exact_target_other_relation",
+          "materialized_disposition": "irrelevant",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "observed_proposal": {
+            "relation_binding": "different",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "21_unknown_rename",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "22_partial_identity",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "23_mixed_multi_product",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "ownership_scope"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "24_conflicting_sections",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "ownership_scope"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "id": "25_insufficient_local_passage",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "id": "26_url_only_identity",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "30_possible_alias_unconfirmed",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "31_possible_successor_unconfirmed",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "ownership_scope"
+          },
+          "id": "79_v13_shared_row_same_relation",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "ownership_scope"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "40_rename_unknown",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "relation_absent",
+            "scope_risk": "identity_mapping"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "id": "43_partial_truncated_mapping",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "id": "45_url_only_identity_fresh",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "56_fresh_exact_exact_shared_row_abstain",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "ownership_scope"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "id": "59_fresh_shared_owner_positive_looking",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "exact"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "id": "68_v12_explicit_possible_rename_risk",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "observed_proposal": {
+            "relation_binding": "exact",
+            "target_binding": "unresolved"
+          }
+        },
+        {
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "id": "80_v13_clipped_relation_context",
+          "materialized_disposition": "ambiguous",
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "observed_proposal": {
+            "relation_binding": "unresolved",
+            "target_binding": "exact"
+          }
+        }
+      ],
+      "provider": "google"
+    }
+  ],
+  "schema_version": "engine-0.6-evidence-relevance-calibration-v23-replay-v1",
+  "source": {
+    "attempt": 1,
+    "canonical_run": 36400085595,
+    "freeze_commit": "0871169303d20c464b0454dbe0a150d2fef0ec43",
+    "freeze_tag": "engine-0.6-evidence-relevance-calibration-v23-freeze"
+  },
+  "summary": {
+    "required_correctness_gate_passed": true,
+    "required_materialization_gate_passed": true,
+    "required_operationally_complete": true,
+    "required_qualification_gate_passed": true,
+    "required_utility_gate_passed": true,
+    "schema_version": "engine-0.6-evidence-relevance-calibration-summary-v23"
+  }
+}

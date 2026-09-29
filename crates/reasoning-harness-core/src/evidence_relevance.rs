@@ -71,10 +71,16 @@ pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V15_ID: &str =
     "target-evidence-relevance-binding-materialization-v15";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V16_ID: &str =
     "target-evidence-relevance-binding-materialization-v16";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V17_ID: &str =
+    "target-evidence-relevance-binding-materialization-v17";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V1_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v1";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V2_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v2";
+pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V3_CONTRACT_ID: &str =
+    "reason-evidence-relevance-effective-qualification-v3";
+pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V4_CONTRACT_ID: &str =
+    "reason-evidence-relevance-effective-qualification-v4";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -195,6 +201,7 @@ pub enum EvidenceRelevanceReason {
     NegativeTargetAbsenceConfirmed,
     NegativeLocalTargetAbsenceConfirmed,
     NegativeTargetNotConfirmed,
+    ContextOnlyTargetMention,
     PositiveTargetLocalBindingConfirmed,
     PositiveTargetLocalBindingNotConfirmed,
     NegativeCandidateSafeToReject,
@@ -780,6 +787,102 @@ fn deterministic_distinct_target_evidence(candidate: &EvidenceRelevanceCandidate
     explicit_separation || explicit_non_mapping || comparison
 }
 
+fn identity_occurrences_are_context_only(text: &str, phrases: &[String]) -> Option<bool> {
+    let text_tokens = normalized(text)
+        .split_whitespace()
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+    if text_tokens.is_empty() {
+        return None;
+    }
+
+    let mut phrase_tokens = phrases
+        .iter()
+        .map(|phrase| {
+            normalized(phrase)
+                .split_whitespace()
+                .map(str::to_owned)
+                .collect::<Vec<_>>()
+        })
+        .filter(|tokens| !tokens.is_empty() && tokens.len() <= text_tokens.len())
+        .collect::<Vec<_>>();
+    phrase_tokens.sort_by_key(|tokens| std::cmp::Reverse(tokens.len()));
+    phrase_tokens.dedup();
+
+    let mut covered = vec![false; text_tokens.len()];
+    let mut saw_occurrence = false;
+
+    for phrase in phrase_tokens {
+        for index in 0..=text_tokens.len() - phrase.len() {
+            if text_tokens[index..index + phrase.len()] != phrase {
+                continue;
+            }
+
+            let end = index + phrase.len();
+            if covered[index..end].iter().all(|covered| *covered) {
+                continue;
+            }
+
+            saw_occurrence = true;
+            let before = &text_tokens[..index];
+            let ends_with = |suffix: &[&str]| {
+                before.len() >= suffix.len()
+                    && before[before.len() - suffix.len()..]
+                        .iter()
+                        .map(String::as_str)
+                        .eq(suffix.iter().copied())
+            };
+            let context_only = ends_with(&["unlike"])
+                || ends_with(&["versus"])
+                || ends_with(&["vs"])
+                || ends_with(&["not"])
+                || ends_with(&["compared", "to"])
+                || ends_with(&["compared", "with"])
+                || ends_with(&["rather", "than"])
+                || ends_with(&["in", "contrast", "to"])
+                || ends_with(&["as", "opposed", "to"]);
+            if !context_only {
+                return Some(false);
+            }
+
+            covered[index..end].fill(true);
+        }
+    }
+
+    saw_occurrence.then_some(true)
+}
+
+fn deterministic_context_only_target_mention(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    let Some(entity) = &policy.entity else {
+        return false;
+    };
+    let mut identity_phrases = Vec::with_capacity(1 + entity.aliases.len());
+    identity_phrases.push(entity.canonical_name.clone());
+    identity_phrases.extend(entity.aliases.iter().cloned());
+
+    let mut saw_target = false;
+    for signal in candidate
+        .signals
+        .iter()
+        .filter(|signal| signal_can_anchor_identity(signal.kind))
+    {
+        let Some(context_only) =
+            identity_occurrences_are_context_only(&signal.text, &identity_phrases)
+        else {
+            continue;
+        };
+        saw_target = true;
+        if !context_only {
+            return false;
+        }
+    }
+
+    saw_target
+}
+
 pub fn derive_effective_evidence_local_qualification_v1(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -928,6 +1031,59 @@ pub fn derive_effective_evidence_local_qualification_v3(
         && corroborated_distinct_target_relation_conflict
     {
         effective.relation_scope = Relation::DifferentRelation;
+    }
+
+    Ok(effective)
+}
+
+pub fn derive_effective_evidence_local_qualification_v4(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceLocalQualificationV6, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceRelevanceBinding as Binding;
+
+    let mut effective =
+        derive_effective_evidence_local_qualification_v3(policy, candidate, proposal, raw)?;
+    let risk = classify_deterministic_local_scope_risk(candidate);
+    let context_only_target_mention = deterministic_context_only_target_mention(policy, candidate);
+
+    let exact_proposal_raw_distinct_conflict = proposal
+        .is_some_and(|value| value.target_binding == Binding::Exact)
+        && raw.is_some_and(|value| {
+            value.identity_scope == Identity::DistinctTarget && value.scope_risk == Risk::None
+        });
+
+    // A literal Harness name occurrence is identity metadata, not proposition ownership.
+    // When the advisory proposal says exact but the independent local verifier says
+    // distinct, v1-v3 could let the name anchor overwrite the verifier. v4 only
+    // resolves that conflict to distinct when Harness-owned deterministic negative
+    // evidence corroborates it; otherwise it abstains rather than manufacturing
+    // positive identity authority from the mention itself.
+    if risk == Risk::None
+        && effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::ExactTarget
+        && exact_proposal_raw_distinct_conflict
+    {
+        effective.identity_scope = if context_only_target_mention {
+            Identity::DistinctTarget
+        } else {
+            Identity::Unresolved
+        };
+    }
+
+    // Comparison-only mentions can satisfy lexical anchoring while still assigning
+    // the substantive proposition to another entity. They therefore cannot create
+    // exact-target authority on their own, even if both model calls agree.
+    if risk == Risk::None
+        && effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::ExactTarget
+        && context_only_target_mention
+    {
+        effective.identity_scope = Identity::Unresolved;
     }
 
     Ok(effective)
@@ -2533,6 +2689,95 @@ pub fn materialize_evidence_relevance_v16(
         materialize_evidence_relevance_v15(policy, candidate, proposal, raw_qualification)?;
     assessment.materialization_policy_id =
         EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V16_ID.into();
+    Ok(assessment)
+}
+
+pub fn materialize_evidence_relevance_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw_qualification: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    validate_policy(policy)?;
+    validate_candidate(candidate)?;
+
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceRelevanceBinding as Binding;
+
+    let effective = derive_effective_evidence_local_qualification_v4(
+        policy,
+        candidate,
+        proposal,
+        raw_qualification,
+    )?;
+    let deterministic_risk = classify_deterministic_local_scope_risk(candidate);
+    let context_only_target_mention = deterministic_context_only_target_mention(policy, candidate);
+    let exact_proposal_raw_distinct_conflict = proposal
+        .is_some_and(|value| value.target_binding == Binding::Exact)
+        && raw_qualification.is_some_and(|value| {
+            value.identity_scope == Identity::DistinctTarget && value.scope_risk == Risk::None
+        });
+
+    let positive_identity_authority_conflict = proposal
+        .is_some_and(|value| value.target_binding == Binding::Exact)
+        && (exact_proposal_raw_distinct_conflict
+            || (context_only_target_mention && effective.identity_scope != Identity::ExactTarget));
+
+    if deterministic_risk == Risk::None
+        && effective.scope_risk == Risk::None
+        && positive_identity_authority_conflict
+    {
+        let (_has_harness_anchor, _url_only_anchor, mut reasons) = anchor_match(policy, candidate);
+        let corroborated_distinct_target = raw_qualification.is_some_and(|raw| {
+            raw.identity_scope == Identity::DistinctTarget && raw.scope_risk == Risk::None
+        }) && context_only_target_mention;
+
+        if context_only_target_mention {
+            reasons.push(EvidenceRelevanceReason::ContextOnlyTargetMention);
+        }
+
+        if corroborated_distinct_target && effective.identity_scope == Identity::DistinctTarget {
+            reasons.push(EvidenceRelevanceReason::LocalQualificationRejectsTarget);
+            reasons.push(EvidenceRelevanceReason::NegativeTargetDistinctEntityConfirmed);
+            return Ok(EvidenceRelevanceAssessment {
+                contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_V5_CONTRACT_ID.into(),
+                materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V17_ID
+                    .into(),
+                policy_id: policy.policy_id.clone(),
+                target_id: policy.target_id.clone(),
+                evidence_id: candidate.evidence_id.clone(),
+                source_id: candidate.source_id.clone(),
+                disposition: EvidenceRelevanceDisposition::Irrelevant,
+                path: EvidenceRelevanceAssessmentPath::ModelAssisted,
+                reasons,
+            });
+        }
+
+        reasons.push(EvidenceRelevanceReason::LocalQualificationDisagreement);
+        if proposal.is_some_and(|value| value.target_binding == Binding::Exact) {
+            reasons.push(EvidenceRelevanceReason::ModelRelevantBlockedByIdentity);
+        } else {
+            reasons.push(EvidenceRelevanceReason::ModelAmbiguous);
+        }
+        return Ok(EvidenceRelevanceAssessment {
+            contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_V5_CONTRACT_ID.into(),
+            materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V17_ID
+                .into(),
+            policy_id: policy.policy_id.clone(),
+            target_id: policy.target_id.clone(),
+            evidence_id: candidate.evidence_id.clone(),
+            source_id: candidate.source_id.clone(),
+            disposition: EvidenceRelevanceDisposition::Ambiguous,
+            path: EvidenceRelevanceAssessmentPath::ConservativeFallback,
+            reasons,
+        });
+    }
+
+    let mut assessment =
+        materialize_evidence_relevance_v16(policy, candidate, proposal, raw_qualification)?;
+    assessment.materialization_policy_id =
+        EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V17_ID.into();
     Ok(assessment)
 }
 
@@ -5696,6 +5941,364 @@ mod tests {
         assert_eq!(
             result.materialization_policy_id,
             EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V11_ID
+        );
+    }
+
+    #[test]
+    fn v17_context_only_target_mention_with_raw_distinct_is_irrelevant() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Telemetry Plus availability",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Unlike Amazon CloudWatch Omni, Telemetry Plus is available in West. This page lists only Telemetry Plus regions.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::DistinctTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let effective = derive_effective_evidence_local_qualification_v4(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(
+            effective.identity_scope,
+            EvidenceLocalIdentityScope::DistinctTarget
+        );
+
+        let result = materialize_evidence_relevance_v17(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Irrelevant);
+        assert_eq!(
+            result.materialization_policy_id,
+            EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V17_ID
+        );
+        assert!(
+            result
+                .reasons
+                .contains(&EvidenceRelevanceReason::ContextOnlyTargetMention)
+        );
+        assert!(
+            result
+                .reasons
+                .contains(&EvidenceRelevanceReason::NegativeTargetDistinctEntityConfirmed)
+        );
+    }
+
+    #[test]
+    fn v17_exact_proposal_raw_distinct_without_target_local_negative_abstains() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Amazon CloudWatch Omni availability",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Amazon CloudWatch Omni is available in West.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::DistinctTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let effective = derive_effective_evidence_local_qualification_v4(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(
+            effective.identity_scope,
+            EvidenceLocalIdentityScope::Unresolved
+        );
+
+        let result = materialize_evidence_relevance_v17(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Ambiguous);
+        assert!(
+            result
+                .reasons
+                .contains(&EvidenceRelevanceReason::ModelRelevantBlockedByIdentity)
+        );
+    }
+
+    #[test]
+    fn v17_context_only_target_mention_blocks_two_exact_model_outputs() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Telemetry Plus availability",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Compared with Amazon CloudWatch Omni, Telemetry Plus is available in West.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let effective = derive_effective_evidence_local_qualification_v4(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(
+            effective.identity_scope,
+            EvidenceLocalIdentityScope::Unresolved
+        );
+
+        let result = materialize_evidence_relevance_v17(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Ambiguous);
+        assert!(
+            result
+                .reasons
+                .contains(&EvidenceRelevanceReason::ContextOnlyTargetMention)
+        );
+    }
+
+    #[test]
+    fn v17_substantive_exact_target_positive_remains_relevant() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Amazon CloudWatch Omni availability",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Amazon CloudWatch Omni is available in West.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let effective = derive_effective_evidence_local_qualification_v4(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(
+            effective.identity_scope,
+            EvidenceLocalIdentityScope::ExactTarget
+        );
+
+        let result = materialize_evidence_relevance_v17(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Relevant);
+    }
+
+    #[test]
+    fn v17_context_only_canonical_does_not_hide_later_substantive_alias_support() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Telemetry Plus comparison",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Unlike Amazon CloudWatch Omni, Telemetry Plus uses another pipeline. CloudWatch Omni is available in West.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let result = materialize_evidence_relevance_v17(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Relevant);
+        assert!(
+            !result
+                .reasons
+                .contains(&EvidenceRelevanceReason::ContextOnlyTargetMention)
+        );
+    }
+
+    #[test]
+    fn v17_context_only_frames_never_create_positive_identity_authority() {
+        let excerpts = [
+            "Unlike Amazon CloudWatch Omni, Telemetry Plus is available in West.",
+            "Versus Amazon CloudWatch Omni, Telemetry Plus is available in West.",
+            "Vs Amazon CloudWatch Omni, Telemetry Plus is available in West.",
+            "Not Amazon CloudWatch Omni, Telemetry Plus is available in West.",
+            "Compared to Amazon CloudWatch Omni, Telemetry Plus is available in West.",
+            "Compared with Amazon CloudWatch Omni, Telemetry Plus is available in West.",
+            "Rather than Amazon CloudWatch Omni, Telemetry Plus is available in West.",
+            "In contrast to Amazon CloudWatch Omni, Telemetry Plus is available in West.",
+            "As opposed to Amazon CloudWatch Omni, Telemetry Plus is available in West.",
+        ];
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        for excerpt in excerpts {
+            let local = candidate(vec![
+                (
+                    EvidenceRelevanceSignalKind::SourceTitle,
+                    "Telemetry Plus availability",
+                ),
+                (EvidenceRelevanceSignalKind::Excerpt, excerpt),
+            ]);
+            let result = materialize_evidence_relevance_v17(
+                &strict_policy(),
+                &local,
+                Some(&proposal),
+                Some(&raw),
+            )
+            .unwrap();
+            assert_eq!(
+                result.disposition,
+                EvidenceRelevanceDisposition::Ambiguous,
+                "{excerpt}"
+            );
+            assert!(
+                result
+                    .reasons
+                    .contains(&EvidenceRelevanceReason::ContextOnlyTargetMention),
+                "{excerpt}"
+            );
+        }
+    }
+
+    #[test]
+    fn v17_target_owned_clause_before_comparison_remains_relevant() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Amazon CloudWatch Omni availability",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Amazon CloudWatch Omni is available in West, unlike Telemetry Plus.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let result = materialize_evidence_relevance_v17(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Relevant);
+    }
+
+    #[test]
+    fn v17_unrelated_comparison_marker_does_not_poison_owned_target_support() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Amazon CloudWatch Omni availability",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Amazon CloudWatch Omni is available in West. Unlike Legacy Metrics, Telemetry Plus uses another pipeline.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let result = materialize_evidence_relevance_v17(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Relevant);
+        assert!(
+            !result
+                .reasons
+                .contains(&EvidenceRelevanceReason::ContextOnlyTargetMention)
         );
     }
 

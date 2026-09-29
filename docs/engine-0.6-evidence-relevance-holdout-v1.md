@@ -1,6 +1,6 @@
 # Engine 0.6 evidence relevance independent holdout v1
 
-Status: pre-freeze, unobserved. No holdout freeze tag or live observation exists.
+Status: frozen and observed. Canonical run `36495389012` attempt 1 is immutable **FAIL**. See [the result](engine-0.6-evidence-relevance-holdout-v1-result.md).
 
 ## Independence boundary
 
@@ -12,7 +12,7 @@ Holdout identity:
 - issue: #462
 - cases: 26
 - corpus: `fixtures/evidence-relevance-holdout-v1/manifest.json`
-- planned freeze tag: `engine-0.6-evidence-relevance-holdout-v1-freeze`
+- freeze tag: `engine-0.6-evidence-relevance-holdout-v1-freeze`
 - workflow: `.github/workflows/engine-0.6-evidence-relevance-holdout-v1-live.yml`
 - seed: `4629101`
 - required providers: Mistral `ministral-8b-latest`, Groq `openai/gpt-oss-120b`, Google `gemini-3.5-flash-lite`
@@ -89,7 +89,7 @@ Holdout v1 therefore uses:
 
 Known or suspected material organization-level Groq usage invalidates the model and requires delaying or re-anchoring before freeze. A fresh synthetic readiness check is required immediately before freeze, but remains transport/credential/TPM/RPD evidence only and is not TPD-headroom proof.
 
-## Freeze rule
+## Precommitted freeze rule (historical)
 
 Before the first/only holdout observation:
 
