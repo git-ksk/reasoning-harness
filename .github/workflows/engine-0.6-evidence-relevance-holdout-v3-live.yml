@@ -3,14 +3,14 @@ name: engine-0.6-evidence-relevance-holdout-v3-live
 on:
   push:
     tags:
-      - engine-0.6-evidence-relevance-holdout-v3-freeze
+      - engine-0.6-evidence-relevance-holdout-v3a-freeze
 
 permissions:
   contents: read
   actions: read
 
 env:
-  FREEZE_TAG: engine-0.6-evidence-relevance-holdout-v3-freeze
+  FREEZE_TAG: engine-0.6-evidence-relevance-holdout-v3a-freeze
   HOLDOUT_DIR: fixtures/evidence-relevance-holdout-v3
   HOLDOUT_SEED: '4629303'
   GROQ_TPD_LIMIT: '200000'
@@ -93,7 +93,7 @@ jobs:
 
       - uses: actions/checkout@v7
         with:
-          ref: engine-0.6-evidence-relevance-holdout-v3-freeze
+          ref: engine-0.6-evidence-relevance-holdout-v3a-freeze
           fetch-depth: 0
 
       - uses: dtolnay/rust-toolchain@stable
@@ -165,7 +165,7 @@ jobs:
             > /tmp/evidence-relevance-holdout-validate.json
           jq -e '
             .configuration_id == "evidence-relevance-live-holdout-v3"
-            and .suite_id == "evidence-relevance-holdout-v2"
+            and .suite_id == "evidence-relevance-holdout-v3"
             and .annotation_protocol_id == "evidence-relevance-effective-qualification-v5"
             and .fixed_core_id == "evidence-relevance-fixed-core-v3"
             and .corpus_status_at_observation == "fresh_unobserved_holdout"
@@ -227,7 +227,7 @@ jobs:
 
       - uses: actions/checkout@v7
         with:
-          ref: engine-0.6-evidence-relevance-holdout-v3-freeze
+          ref: engine-0.6-evidence-relevance-holdout-v3a-freeze
           fetch-depth: 0
 
       - uses: dtolnay/rust-toolchain@stable
@@ -442,7 +442,7 @@ jobs:
                   rc == 0
                   and result.get('model') == cfg['model']
                   and result.get('configuration_id') == 'evidence-relevance-live-holdout-v3'
-                  and result.get('suite_id') == 'evidence-relevance-holdout-v2'
+                  and result.get('suite_id') == 'evidence-relevance-holdout-v3'
                   and result.get('annotation_protocol_id') == 'evidence-relevance-effective-qualification-v5'
                   and result.get('fixed_core_id') == 'evidence-relevance-fixed-core-v3'
                   and result.get('candidate_commit') == '${{ github.sha }}'

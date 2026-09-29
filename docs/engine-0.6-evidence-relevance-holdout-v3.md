@@ -28,7 +28,7 @@ The v3 surface includes both a fresh repeated-sibling negative and explicit abst
 - materialization: v18
 - fixed core: `evidence-relevance-fixed-core-v3`
 - seed: `4629303`
-- intended freeze tag: `engine-0.6-evidence-relevance-holdout-v3-freeze`
+- intended freeze tag: `engine-0.6-evidence-relevance-holdout-v3a-freeze`
 - canonical policy: first tag-triggered run, attempt 1 only; no rerun or replacement canonical observation
 
 The runner remains backward-compatible: v1 selects v3/v16, v2 selects v4/v17, and v3 selects v5/v18.
@@ -65,6 +65,10 @@ The v3 workflow re-anchors its conservative TPD model from immutable holdout-v2 
 - earliest modeled floor: `2026-09-29T14:48:08Z` / `2026-09-29 23:48:08 JST`.
 
 Tiny readiness probes remain transport/credential/TPM/RPD evidence only and do not prove TPD headroom. Any known or suspected material organization-level Groq usage after the v2 anchor invalidates this model and requires re-anchoring before the freeze tag is pushed.
+
+## Operational preflight incident
+
+The first tag engine-0.6-evidence-relevance-holdout-v3-freeze produced run 36585464494 attempt 1 and failed operationally in preflight. The cause was a stale workflow assertion suite_id == evidence-relevance-holdout-v2. The Groq floor, independence check, and checksum all passed before that assertion stopped the job. All live provider jobs were skipped, so Mistral / Groq / Google received zero holdout-v3 observations and the semantic surface remains unobserved. The original tag/run remain immutable and are not rerun or moved. The corrected operational identity is engine-0.6-evidence-relevance-holdout-v3a-freeze; the semantic manifest, labels, and frozen v5/v18 semantics are unchanged.
 
 ## Freeze discipline
 

@@ -10,12 +10,12 @@ c3db048095d81b4ab67a61ce32510012124079f831f768dbb5a981348ef07699  fixtures/evide
 67dae80967fbc8acca97249af1ca46c7ba9c260a0c82150b116240fec282f7d9  fixtures/evidence-relevance-holdout-successor-v3/holdout-v2-observation-replay.json
 3f4c6328c7c47d9b8e28135b5ef548f5653fd9c13a94d514760b79e7f1dea7b8  fixtures/evidence-relevance-holdout-successor-v3/semantics-v3.sha256
 ce6c7d7fc142120bdfdb19dc86b6e1298123f5c4aee77fbcf34e0ba63b436c6e  fixtures/evidence-relevance-holdout-v3/manifest.json
-3ced326395daca803950f9e6d7dc4760baf8287aa39e9188b0fb9ab6b4df099e  .github/workflows/engine-0.6-evidence-relevance-holdout-v3-live.yml
+a50a7307584953a560fff3cc8df031344f7a6a1f05ce6ac5fcd024e015607732  .github/workflows/engine-0.6-evidence-relevance-holdout-v3-live.yml
 f9826865e0f157579551f687dc8cdfd49019161de378c864e7e6589a69479376  docs/engine-0.6-evidence-relevance-holdout-successor-v3.md
 ec514ea6762e149018621c3bb0efd8dbaeb7ecf87f71f47be41433786b80a0f6  docs/engine-0.6-evidence-relevance-holdout-successor-v3.ja.md
 6d6d1967c3358ee241c7b386cb4a6998693cb6d8d52a0fae0330f53348974f31  docs/engine-0.6-evidence-relevance-holdout-v2-result.md
 4c6fe9b4060d42939e731eb0b594b25f52ee64def6ae3927462186ff03735f0d  docs/engine-0.6-evidence-relevance-holdout-v2-result.ja.md
-00b1ba0f6867922b483cf5ba4c22e589095711a999ee8d25afd50b424a1b936b  docs/engine-0.6-evidence-relevance-holdout-v3.md
-6922e72eb492ff3738dcf43c2f22bf961ec78ad22a918aabef1983308e90b489  docs/engine-0.6-evidence-relevance-holdout-v3.ja.md
-e0a334bc5eac3b18ba89a72b81c8db4f8d1bd5f1a3ea88998294ecc917091a85  docs/roadmap.md
-899492ac18cf2b10382481d9f5772d198e655f9e3ef06fb3d92aed0b7a3a22ce  docs/roadmap.ja.md
+c8052c09d8ad84823e62cc500f24cb499baffb75e3ddde5cd9ce8b2988ca1318  docs/engine-0.6-evidence-relevance-holdout-v3.md
+41945cc47a4d086b42a4291bf59c87674afe176bfa15903c5108672472ede629  docs/engine-0.6-evidence-relevance-holdout-v3.ja.md
+e12060013d063b4eb5e33f1149425e1c9305ec7c747fec5f944fa0091f64f436  docs/roadmap.md
+fe3e31ef3b6c912f1f9842fd068ea3fe894d5ab5994ed8a34defec1474daaa19  docs/roadmap.ja.md

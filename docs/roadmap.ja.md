@@ -45,7 +45,7 @@ Successor v3 candidateはeffective qualification v5 + materialization v18。stri
 
 ### Engine 0.6 #462 independent holdout v3 pre-freeze
 
-Successor v3 semanticsは `8c1f02c181e2a7c4e267d10ce610e0517162004d` / `engine-0.6-evidence-relevance-successor-v3-semantics-freeze` でfreeze済み。その後にのみfresh 26-case holdout v3（Relevant 8 / Irrelevant 10 / Ambiguous 8）を新規ID・entity・candidate textで準備した。pre-freeze independenceはimmutable v1/v2両方に対してcase/entity overlap 0、candidate-signal exact 8-token overlap 0を要求する。runnerはv1=v3/v16、v2=v4/v17を維持し、v3だけv5/v18を選択する。Groq admissionはholdout-v2実測65,555 tokens / `2026-09-29T09:05:28Z`から再anchorし、55K-headroomのfail-closed最速floorを `2026-09-29T14:48:08Z` / 23:48:08 JSTとする。holdout-v3 freeze tag / live observationはまだ存在しない。詳細は [holdout v3 design](engine-0.6-evidence-relevance-holdout-v3.ja.md)。
+Successor v3 semanticsは `8c1f02c181e2a7c4e267d10ce610e0517162004d` / `engine-0.6-evidence-relevance-successor-v3-semantics-freeze` でfreeze済み。その後にのみfresh 26-case holdout v3（Relevant 8 / Irrelevant 10 / Ambiguous 8）を新規ID・entity・candidate textで準備した。pre-freeze independenceはimmutable v1/v2両方に対してcase/entity overlap 0、candidate-signal exact 8-token overlap 0を要求する。runnerはv1=v3/v16、v2=v4/v17を維持し、v3だけv5/v18を選択する。Groq admissionはholdout-v2実測65,555 tokens / `2026-09-29T09:05:28Z`から再anchorし、55K-headroomのfail-closed最速floorを `2026-09-29T14:48:08Z` / 23:48:08 JSTとする。最初のholdout-v3 tagはstaleなv2 suite-id assertionだけが原因でrun 36585464494がoperational preflight FAIL。live provider jobは全skipでsemantic surfaceは未観測のまま。元tag/runはimmutable保持。修正版operational identity engine-0.6-evidence-relevance-holdout-v3a-freeze はworkflow assertion/tag identityのみ変更し、manifest / label / v5-v18 semanticsは不変。詳細は [holdout v3 design](engine-0.6-evidence-relevance-holdout-v3.ja.md)。
 
 ### プロダクト
 

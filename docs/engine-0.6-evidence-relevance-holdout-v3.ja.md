@@ -28,7 +28,7 @@ v3 surfaceにはfresh repeated-sibling negativeに加え、single-signal near-si
 - materialization: v18
 - fixed core: `evidence-relevance-fixed-core-v3`
 - seed: `4629303`
-- intended freeze tag: `engine-0.6-evidence-relevance-holdout-v3-freeze`
+- intended freeze tag: `engine-0.6-evidence-relevance-holdout-v3a-freeze`
 - canonical policy: tag triggerのfirst run / attempt 1 only。rerun / replacement canonicalは禁止
 
 runnerは後方互換を維持し、v1=v3/v16、v2=v4/v17、v3=v5/v18を明示的に選択する。
@@ -65,6 +65,10 @@ v3 workflowはimmutable holdout-v2 actualからconservative TPD modelを再ancho
 - earliest modeled floor: `2026-09-29T14:48:08Z` / `2026-09-29 23:48:08 JST`
 
 tiny readinessはtransport / credential / TPM / RPD evidenceのみでTPD headroom proofには使わない。v2 anchor以降にmaterialなorganization-level Groq利用が既知または疑われる場合、freeze tag push前にmodelを再anchorする。
+
+## Operational preflight incident
+
+最初のtag engine-0.6-evidence-relevance-holdout-v3-freeze はrun 36585464494 attempt 1でpreflight operational FAIL。原因はworkflow内に残った suite_id == evidence-relevance-holdout-v2 assertionで、Groq floor / independence / checksumはPASS後、このassertで停止した。live provider jobはskipされ、Mistral / Groq / Google API observationは0件。semantic surfaceは未観測のまま。元tag/runはimmutableに保持し、rerun / tag移動はしない。修正後の新しいoperational identityは engine-0.6-evidence-relevance-holdout-v3a-freeze。semantic manifest / label / v5-v18 semanticsは変更しない。
 
 ## Freeze discipline
 
