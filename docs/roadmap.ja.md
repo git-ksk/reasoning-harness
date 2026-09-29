@@ -43,6 +43,10 @@ Frozen holdout v2 canonical run `36533340582` attempt 1（`c38b5f7dbfcf8c01dcaa6
 
 Successor v3 candidateはeffective qualification v5 + materialization v18。strict target anchor不在時でもmere absenceではrejectせず、SourceTitle/Heading等と別Excerpt/Fact等で同じ2-4 token sibling subject phraseが反復され、target identity tokenを一部共有しつつ別の非generic tokenを持ち、requested relationがlocalに存在し、deterministic risk/url-only ambiguityが無い場合だけHarness-owned `distinct_target` authorityを追加する。URL-only / mapping uncertainty / partial identity / single-signal near-name / semantic-equivalent policyは既存Ambiguous/positive semanticsへdelegate。generic property control 8/8、immutable replayはv23・holdout v1・holdout v2の3 providerすべてfull exact、core/providers/CLI full suite、all-target Clippy、fmt/YAML/public-safetyもgreen。semantics freeze candidate checksumは13/13。fresh holdout v3 authoringは `engine-0.6-evidence-relevance-successor-v3-semantics-freeze` 作成後にのみ開始する。
 
+### Engine 0.6 #462 independent holdout v3 pre-freeze
+
+Successor v3 semanticsは `8c1f02c181e2a7c4e267d10ce610e0517162004d` / `engine-0.6-evidence-relevance-successor-v3-semantics-freeze` でfreeze済み。その後にのみfresh 26-case holdout v3（Relevant 8 / Irrelevant 10 / Ambiguous 8）を新規ID・entity・candidate textで準備した。pre-freeze independenceはimmutable v1/v2両方に対してcase/entity overlap 0、candidate-signal exact 8-token overlap 0を要求する。runnerはv1=v3/v16、v2=v4/v17を維持し、v3だけv5/v18を選択する。Groq admissionはholdout-v2実測65,555 tokens / `2026-09-29T09:05:28Z`から再anchorし、55K-headroomのfail-closed最速floorを `2026-09-29T14:48:08Z` / 23:48:08 JSTとする。holdout-v3 freeze tag / live observationはまだ存在しない。詳細は [holdout v3 design](engine-0.6-evidence-relevance-holdout-v3.ja.md)。
+
 ### プロダクト
 
 1. **bounded resolver による target closure（#159）：** successor candidate `79ec3b44971c32f9a8847d8173672675947c7288` で実装済み。exact Harness-owned unresolved targets は、model-owned authority を介さず、既存の bounded acquisition/admission/re-verification boundary を通じて優先付けされる。
