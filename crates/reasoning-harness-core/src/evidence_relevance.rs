@@ -73,6 +73,8 @@ pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V16_ID: &str =
     "target-evidence-relevance-binding-materialization-v16";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V17_ID: &str =
     "target-evidence-relevance-binding-materialization-v17";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V18_ID: &str =
+    "target-evidence-relevance-binding-materialization-v18";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V1_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v1";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V2_CONTRACT_ID: &str =
@@ -81,6 +83,8 @@ pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V3_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v3";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V4_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v4";
+pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V5_CONTRACT_ID: &str =
+    "reason-evidence-relevance-effective-qualification-v5";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -883,6 +887,143 @@ fn deterministic_context_only_target_mention(
     saw_target
 }
 
+fn repeated_sibling_subject_noise_token(token: &str) -> bool {
+    matches!(
+        token,
+        "pricing"
+            | "price"
+            | "cost"
+            | "billing"
+            | "billed"
+            | "availability"
+            | "available"
+            | "regional"
+            | "region"
+            | "regions"
+            | "release"
+            | "released"
+            | "launch"
+            | "launches"
+            | "launched"
+            | "new"
+            | "update"
+            | "updated"
+            | "change"
+            | "changes"
+            | "limit"
+            | "limits"
+            | "quota"
+            | "overview"
+            | "guide"
+            | "deployment"
+            | "service"
+            | "services"
+            | "product"
+            | "products"
+            | "documentation"
+            | "docs"
+            | "supported"
+            | "support"
+            | "rate"
+            | "rates"
+            | "monthly"
+            | "month"
+    )
+}
+
+fn deterministic_repeated_sibling_subject(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    use EvidenceLocalBlockingReason as Risk;
+
+    if policy.identity_requirement != EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor {
+        return false;
+    }
+    let Some(entity) = &policy.entity else {
+        return false;
+    };
+    let (has_harness_anchor, url_only_anchor, _) = anchor_match(policy, candidate);
+    if has_harness_anchor
+        || url_only_anchor
+        || classify_deterministic_local_scope_risk(candidate) != Risk::None
+        || !requested_relation_locally_present(policy, candidate)
+    {
+        return false;
+    }
+
+    let mut target_tokens = normalized(&entity.canonical_name)
+        .split_whitespace()
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+    for alias in &entity.aliases {
+        target_tokens.extend(normalized(alias).split_whitespace().map(str::to_owned));
+    }
+    target_tokens.sort();
+    target_tokens.dedup();
+    if target_tokens.is_empty() {
+        return false;
+    }
+
+    let header_kind = |kind| {
+        matches!(
+            kind,
+            EvidenceRelevanceSignalKind::SourceTitle
+                | EvidenceRelevanceSignalKind::Heading
+                | EvidenceRelevanceSignalKind::StructuredMetadata
+        )
+    };
+    let body_kind = |kind| {
+        matches!(
+            kind,
+            EvidenceRelevanceSignalKind::Excerpt
+                | EvidenceRelevanceSignalKind::Fact
+                | EvidenceRelevanceSignalKind::StructuredMetadata
+        )
+    };
+
+    for (header_index, header) in candidate.signals.iter().enumerate() {
+        if !header_kind(header.kind) {
+            continue;
+        }
+        let header_tokens = normalized(&header.text)
+            .split_whitespace()
+            .map(str::to_owned)
+            .collect::<Vec<_>>();
+        let max_width = usize::min(4, header_tokens.len());
+        for width in 2..=max_width {
+            for phrase in header_tokens.windows(width) {
+                let shares_target_token = phrase.iter().any(|token| target_tokens.contains(token));
+                let has_distinguishing_token = phrase.iter().any(|token| {
+                    !target_tokens.contains(token)
+                        && !repeated_sibling_subject_noise_token(token.as_str())
+                });
+                if !shares_target_token || !has_distinguishing_token {
+                    continue;
+                }
+
+                for (body_index, body) in candidate.signals.iter().enumerate() {
+                    if body_index == header_index || !body_kind(body.kind) {
+                        continue;
+                    }
+                    let body_tokens = normalized(&body.text)
+                        .split_whitespace()
+                        .map(str::to_owned)
+                        .collect::<Vec<_>>();
+                    if body_tokens
+                        .windows(width)
+                        .any(|candidate_phrase| candidate_phrase == phrase)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    false
+}
+
 pub fn derive_effective_evidence_local_qualification_v1(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -1084,6 +1225,34 @@ pub fn derive_effective_evidence_local_qualification_v4(
         && context_only_target_mention
     {
         effective.identity_scope = Identity::Unresolved;
+    }
+
+    Ok(effective)
+}
+
+pub fn derive_effective_evidence_local_qualification_v5(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceLocalQualificationV6, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+
+    let mut effective =
+        derive_effective_evidence_local_qualification_v4(policy, candidate, proposal, raw)?;
+
+    // A strict target anchor can be absent for both truly ambiguous evidence and for
+    // a stable sibling subject. Only the latter may create negative identity authority:
+    // the sibling phrase must be repeated across separate local signals, share part of
+    // the Harness-owned identity, add a distinguishing token, carry the requested
+    // relation, and have no deterministic scope risk or URL-only target identity.
+    if proposal.is_some()
+        && raw.is_some()
+        && effective.scope_risk == Risk::None
+        && deterministic_repeated_sibling_subject(policy, candidate)
+    {
+        effective.identity_scope = Identity::DistinctTarget;
     }
 
     Ok(effective)
@@ -2778,6 +2947,59 @@ pub fn materialize_evidence_relevance_v17(
         materialize_evidence_relevance_v16(policy, candidate, proposal, raw_qualification)?;
     assessment.materialization_policy_id =
         EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V17_ID.into();
+    Ok(assessment)
+}
+
+pub fn materialize_evidence_relevance_v18(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw_qualification: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    validate_policy(policy)?;
+    validate_candidate(candidate)?;
+
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceLocalRelationScope as Relation;
+
+    let effective = derive_effective_evidence_local_qualification_v5(
+        policy,
+        candidate,
+        proposal,
+        raw_qualification,
+    )?;
+
+    if proposal.is_some()
+        && raw_qualification.is_some()
+        && classify_deterministic_local_scope_risk(candidate) == Risk::None
+        && effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::DistinctTarget
+        && effective.relation_scope == Relation::RequestedRelation
+        && deterministic_repeated_sibling_subject(policy, candidate)
+    {
+        let (_has_harness_anchor, _url_only_anchor, mut reasons) = anchor_match(policy, candidate);
+        reasons.push(EvidenceRelevanceReason::LocalQualificationRejectsTarget);
+        reasons.push(EvidenceRelevanceReason::NegativeTargetDistinctEntityConfirmed);
+        reasons.push(EvidenceRelevanceReason::NegativeCandidateSafeToReject);
+        return Ok(EvidenceRelevanceAssessment {
+            contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_V5_CONTRACT_ID.into(),
+            materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V18_ID
+                .into(),
+            policy_id: policy.policy_id.clone(),
+            target_id: policy.target_id.clone(),
+            evidence_id: candidate.evidence_id.clone(),
+            source_id: candidate.source_id.clone(),
+            disposition: EvidenceRelevanceDisposition::Irrelevant,
+            path: EvidenceRelevanceAssessmentPath::ModelAssisted,
+            reasons,
+        });
+    }
+
+    let mut assessment =
+        materialize_evidence_relevance_v17(policy, candidate, proposal, raw_qualification)?;
+    assessment.materialization_policy_id =
+        EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V18_ID.into();
     Ok(assessment)
 }
 
@@ -6300,6 +6522,289 @@ mod tests {
                 .reasons
                 .contains(&EvidenceRelevanceReason::ContextOnlyTargetMention)
         );
+    }
+
+    #[test]
+    fn v18_repeated_sibling_subject_rejects_two_exact_model_outputs() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Amazon CloudWatch Metrics availability",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Amazon CloudWatch Metrics is available in West.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let old = materialize_evidence_relevance_v17(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(old.disposition, EvidenceRelevanceDisposition::Ambiguous);
+
+        let effective = derive_effective_evidence_local_qualification_v5(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(
+            effective.identity_scope,
+            EvidenceLocalIdentityScope::DistinctTarget
+        );
+        assert_eq!(
+            effective.relation_scope,
+            EvidenceLocalRelationScope::RequestedRelation
+        );
+
+        let result = materialize_evidence_relevance_v18(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Irrelevant);
+        assert_eq!(
+            result.materialization_policy_id,
+            EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V18_ID
+        );
+        assert!(
+            result
+                .reasons
+                .contains(&EvidenceRelevanceReason::NegativeTargetDistinctEntityConfirmed)
+        );
+    }
+
+    #[test]
+    fn v18_repeated_sibling_subject_rejects_unresolved_primary_overbinding() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::Heading,
+                "Amazon CloudWatch Metrics regions",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Fact,
+                "Amazon CloudWatch Metrics is available in West.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Unresolved,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let result = materialize_evidence_relevance_v18(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Irrelevant);
+    }
+
+    #[test]
+    fn v18_url_only_identity_stays_ambiguous() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::CanonicalUrl,
+                "https://example.test/amazon-cloudwatch-omni/regions",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "West and East are listed as available, but this material does not identify the product.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::ContextGap,
+        };
+
+        let result = materialize_evidence_relevance_v18(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Ambiguous);
+    }
+
+    #[test]
+    fn v18_partial_identity_split_across_signals_stays_ambiguous() {
+        let local = candidate(vec![
+            (EvidenceRelevanceSignalKind::SourceTitle, "Amazon services"),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "CloudWatch availability is listed for West, but the product is not named.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let result = materialize_evidence_relevance_v18(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Ambiguous);
+    }
+
+    #[test]
+    fn v18_single_signal_near_sibling_stays_ambiguous() {
+        let local = candidate(vec![(
+            EvidenceRelevanceSignalKind::Excerpt,
+            "Amazon CloudWatch Metrics is available in West.",
+        )]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let result = materialize_evidence_relevance_v18(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Ambiguous);
+    }
+
+    #[test]
+    fn v18_mapping_uncertainty_blocks_repeated_sibling_rejection() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Amazon CloudWatch Metrics availability",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Amazon CloudWatch Metrics is available in West. The material does not establish whether CloudWatch Metrics is an alias for the requested service.",
+            ),
+        ]);
+        assert_eq!(
+            classify_deterministic_local_scope_risk(&local),
+            EvidenceLocalBlockingReason::IdentityMapping
+        );
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let result = materialize_evidence_relevance_v18(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Ambiguous);
+    }
+
+    #[test]
+    fn v18_generic_relation_phrase_is_not_a_sibling_subject() {
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "CloudWatch availability",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "CloudWatch availability is listed for West.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let result = materialize_evidence_relevance_v18(
+            &strict_policy(),
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(result.disposition, EvidenceRelevanceDisposition::Ambiguous);
+    }
+
+    #[test]
+    fn v18_semantic_equivalent_policy_does_not_use_sibling_rejection() {
+        let mut policy = strict_policy();
+        policy.identity_requirement = EvidenceRelevanceIdentityRequirement::AllowSemanticEquivalent;
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "Amazon CloudWatch Metrics availability",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Amazon CloudWatch Metrics is available in West.",
+            ),
+        ]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let result =
+            materialize_evidence_relevance_v18(&policy, &local, Some(&proposal), Some(&raw))
+                .unwrap();
+        assert_ne!(result.disposition, EvidenceRelevanceDisposition::Irrelevant);
     }
 
     #[test]
