@@ -14,8 +14,10 @@ use reasoning_harness_core::{
     ModelErrorKind, ModelExecutionBudget, ModelExecutionTelemetrySnapshot, ModelRequest,
     ModelResponse, ModelUsage, build_evidence_local_qualification_v8_request,
     build_evidence_relevance_binding_proposal_v5_request, build_strict_json_text_fallback_request,
-    derive_effective_evidence_local_qualification_v3, materialize_evidence_relevance_v16,
-    parse_evidence_local_qualification_v8, parse_evidence_relevance_binding_proposal,
+    derive_effective_evidence_local_qualification_v3,
+    derive_effective_evidence_local_qualification_v4, materialize_evidence_relevance_v16,
+    materialize_evidence_relevance_v17, parse_evidence_local_qualification_v8,
+    parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
@@ -29,9 +31,119 @@ const EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-holdout-v1";
 const QUALIFICATION_STAGE_MAX_MODEL_CALLS: u32 = 2;
 const GROQ_STRICT_JSON_TEXT_MAX_TOKENS: u32 = 512;
 const EXPECTED_CASES: usize = 26;
+const V2_CONFIGURATION_ID: &str = "evidence-relevance-live-holdout-v2";
+const V2_EXPECTED_SUITE_ID: &str = "evidence-relevance-holdout-v2";
+const V2_EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-qualification-v4";
+const V2_EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v2";
+const V2_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-holdout-v2";
+const V2_EXPECTED_CASES: usize = 26;
 const PROVIDER_WAIT_BUDGET_MS: u64 = 45_000;
 const MAX_SINGLE_PROVIDER_WAIT_MS: u64 = 30_000;
 const ABSOLUTE_CASE_BUDGET_MS: u64 = 120_000;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum HoldoutProfile {
+    V1,
+    V2,
+}
+
+impl HoldoutProfile {
+    fn from_target(target: &Path) -> Result<Self, String> {
+        let root = repository_root()?;
+        let target = target
+            .canonicalize()
+            .map_err(|error| format!("canonicalize target directory: {error}"))?;
+        for profile in [Self::V1, Self::V2] {
+            let expected = root
+                .join(profile.relative_dir())
+                .canonicalize()
+                .map_err(|error| {
+                    format!(
+                        "canonicalize expected holdout directory {}: {error}",
+                        profile.relative_dir()
+                    )
+                })?;
+            if target == expected {
+                return Ok(profile);
+            }
+        }
+        Err(format!(
+            "evidence-relevance holdout accepts only this checkout's {EXPECTED_RELATIVE_DIR} or {V2_EXPECTED_RELATIVE_DIR}"
+        ))
+    }
+
+    fn configuration_id(self) -> &'static str {
+        match self {
+            Self::V1 => CONFIGURATION_ID,
+            Self::V2 => V2_CONFIGURATION_ID,
+        }
+    }
+
+    fn suite_id(self) -> &'static str {
+        match self {
+            Self::V1 => EXPECTED_SUITE_ID,
+            Self::V2 => V2_EXPECTED_SUITE_ID,
+        }
+    }
+
+    fn annotation_protocol_id(self) -> &'static str {
+        match self {
+            Self::V1 => EXPECTED_ANNOTATION_PROTOCOL_ID,
+            Self::V2 => V2_EXPECTED_ANNOTATION_PROTOCOL_ID,
+        }
+    }
+
+    fn fixed_core_id(self) -> &'static str {
+        match self {
+            Self::V1 => EXPECTED_FIXED_CORE_ID,
+            Self::V2 => V2_EXPECTED_FIXED_CORE_ID,
+        }
+    }
+
+    fn relative_dir(self) -> &'static str {
+        match self {
+            Self::V1 => EXPECTED_RELATIVE_DIR,
+            Self::V2 => V2_EXPECTED_RELATIVE_DIR,
+        }
+    }
+
+    fn expected_cases(self) -> usize {
+        match self {
+            Self::V1 => EXPECTED_CASES,
+            Self::V2 => V2_EXPECTED_CASES,
+        }
+    }
+
+    fn derive_effective(
+        self,
+        policy: &EvidenceRelevanceTargetPolicy,
+        candidate: &EvidenceRelevanceCandidate,
+        proposal: Option<&EvidenceRelevanceBindingProposal>,
+        raw: Option<&EvidenceLocalQualificationV6>,
+    ) -> Result<EvidenceLocalQualificationV6, reasoning_harness_core::EvidenceRelevanceError> {
+        match self {
+            Self::V1 => {
+                derive_effective_evidence_local_qualification_v3(policy, candidate, proposal, raw)
+            }
+            Self::V2 => {
+                derive_effective_evidence_local_qualification_v4(policy, candidate, proposal, raw)
+            }
+        }
+    }
+
+    fn materialize(
+        self,
+        policy: &EvidenceRelevanceTargetPolicy,
+        candidate: &EvidenceRelevanceCandidate,
+        proposal: Option<&EvidenceRelevanceBindingProposal>,
+        raw: Option<&EvidenceLocalQualificationV6>,
+    ) -> Result<EvidenceRelevanceAssessment, reasoning_harness_core::EvidenceRelevanceError> {
+        match self {
+            Self::V1 => materialize_evidence_relevance_v16(policy, candidate, proposal, raw),
+            Self::V2 => materialize_evidence_relevance_v17(policy, candidate, proposal, raw),
+        }
+    }
+}
 
 #[derive(Debug, Parser)]
 #[command(
@@ -460,18 +572,20 @@ async fn main() -> ExitCode {
 
 async fn run() -> Result<StudyOutput, String> {
     let args = Args::parse();
-    let manifest = load_manifest(&args.target)?;
+    let profile = HoldoutProfile::from_target(&args.target)?;
+    let manifest = load_manifest(&args.target, profile)?;
     let selected = select_cases(&manifest, &args.fixture_ids)?;
 
     for case in &selected {
         let expected = case.expected_proposal;
-        let assessment = materialize_evidence_relevance_v16(
-            &case.policy,
-            &case.candidate,
-            Some(&expected),
-            Some(&case.expected_local_qualification),
-        )
-        .map_err(|error| format!("invalid holdout policy {}: {error}", case.id))?;
+        let assessment = profile
+            .materialize(
+                &case.policy,
+                &case.candidate,
+                Some(&expected),
+                Some(&case.expected_local_qualification),
+            )
+            .map_err(|error| format!("invalid holdout policy {}: {error}", case.id))?;
         if assessment.disposition != case.expected_disposition {
             return Err(format!(
                 "deterministic expected proposal/qualification mismatch for {}: expected {:?}, materialized {:?}",
@@ -482,7 +596,7 @@ async fn run() -> Result<StudyOutput, String> {
 
     if args.validate_only {
         return Ok(StudyOutput {
-            configuration_id: CONFIGURATION_ID,
+            configuration_id: profile.configuration_id(),
             suite_id: manifest.suite_id.clone(),
             issue: manifest.issue,
             source_rule: manifest.source_rule.clone(),
@@ -665,6 +779,7 @@ async fn run() -> Result<StudyOutput, String> {
                 complete_observed_case(
                     generator.adapter(),
                     args.provider,
+                    profile,
                     case,
                     case_seed,
                     lexical_baseline,
@@ -826,7 +941,7 @@ async fn run() -> Result<StudyOutput, String> {
     };
 
     Ok(StudyOutput {
-        configuration_id: CONFIGURATION_ID,
+        configuration_id: profile.configuration_id(),
         suite_id: manifest.suite_id.clone(),
         issue: manifest.issue,
         source_rule: manifest.source_rule.clone(),
@@ -852,6 +967,7 @@ async fn run() -> Result<StudyOutput, String> {
 async fn complete_observed_case(
     adapter: &dyn ModelAdapter,
     provider: Provider,
+    profile: HoldoutProfile,
     case: &HoldoutCase,
     case_seed: Option<u64>,
     lexical_baseline: EvidenceRelevanceDisposition,
@@ -921,7 +1037,7 @@ async fn complete_observed_case(
         finish_reason = qualification_call.finish_reason;
     }
 
-    let effective_local_qualification = match derive_effective_evidence_local_qualification_v3(
+    let effective_local_qualification = match profile.derive_effective(
         &case.policy,
         &case.candidate,
         Some(&observed),
@@ -949,7 +1065,7 @@ async fn complete_observed_case(
         }
     };
 
-    match materialize_evidence_relevance_v16(
+    match profile.materialize(
         &case.policy,
         &case.candidate,
         Some(&observed),
@@ -1994,9 +2110,9 @@ fn repository_root() -> Result<PathBuf, String> {
         .map_err(|error| format!("canonicalize repository root: {error}"))
 }
 
-fn load_manifest(target: &Path) -> Result<HoldoutManifest, String> {
+fn load_manifest(target: &Path, profile: HoldoutProfile) -> Result<HoldoutManifest, String> {
     let expected = repository_root()?
-        .join(EXPECTED_RELATIVE_DIR)
+        .join(profile.relative_dir())
         .canonicalize()
         .map_err(|error| format!("canonicalize expected holdout directory: {error}"))?;
     let target = target
@@ -2004,7 +2120,8 @@ fn load_manifest(target: &Path) -> Result<HoldoutManifest, String> {
         .map_err(|error| format!("canonicalize target directory: {error}"))?;
     if target != expected {
         return Err(format!(
-            "evidence-relevance study accepts only this checkout's {EXPECTED_RELATIVE_DIR}"
+            "evidence-relevance study target/profile mismatch for {}",
+            profile.relative_dir()
         ));
     }
 
@@ -2013,7 +2130,7 @@ fn load_manifest(target: &Path) -> Result<HoldoutManifest, String> {
     let manifest: HoldoutManifest =
         serde_json::from_str(&raw).map_err(|error| format!("parse holdout manifest: {error}"))?;
 
-    if manifest.suite_id != EXPECTED_SUITE_ID {
+    if manifest.suite_id != profile.suite_id() {
         return Err(format!(
             "unexpected holdout suite id {:?}",
             manifest.suite_id
@@ -2025,21 +2142,22 @@ fn load_manifest(target: &Path) -> Result<HoldoutManifest, String> {
     if manifest.status != EXPECTED_STATUS {
         return Err(format!("unexpected holdout status {:?}", manifest.status));
     }
-    if manifest.annotation_protocol_id != EXPECTED_ANNOTATION_PROTOCOL_ID {
+    if manifest.annotation_protocol_id != profile.annotation_protocol_id() {
         return Err(format!(
             "unexpected annotation protocol id {:?}",
             manifest.annotation_protocol_id
         ));
     }
-    if manifest.fixed_core_id != EXPECTED_FIXED_CORE_ID {
+    if manifest.fixed_core_id != profile.fixed_core_id() {
         return Err(format!(
             "unexpected fixed core id {:?}",
             manifest.fixed_core_id
         ));
     }
-    if manifest.cases.len() != EXPECTED_CASES {
+    if manifest.cases.len() != profile.expected_cases() {
         return Err(format!(
-            "expected {EXPECTED_CASES} holdout cases, got {}",
+            "expected {} holdout cases, got {}",
+            profile.expected_cases(),
             manifest.cases.len()
         ));
     }
@@ -2597,10 +2715,15 @@ fn write_checkpoint(
     observations: &[CaseObservation],
     run_status: &'static str,
 ) -> Result<(), String> {
+    let configuration_id = match suite_id {
+        EXPECTED_SUITE_ID => CONFIGURATION_ID,
+        V2_EXPECTED_SUITE_ID => V2_CONFIGURATION_ID,
+        other => return Err(format!("unexpected checkpoint suite id {other:?}")),
+    };
     let checkpoint = Checkpoint {
         checkpoint_version: "evidence-relevance-checkpoint-v1",
         run_status,
-        configuration_id: CONFIGURATION_ID,
+        configuration_id,
         suite_id,
         provider,
         model,
