@@ -1,0 +1,28 @@
+{
+  "schema_version": "engine-0.6-evidence-relevance-holdout-v6-immutable-result-v1",
+  "issue": 462,
+  "pr": 466,
+  "freeze_tag": "engine-0.6-evidence-relevance-holdout-v6-freeze",
+  "freeze_tag_object": "6f78293034a5394bb753f59ff88c1f3e19a84cb5",
+  "freeze_commit": "a8782eefd2609385ed7e598552aced05ddee0660",
+  "canonical_run": 36750505629,
+  "attempt": 1,
+  "result": "FAIL",
+  "failure_class": "operational_runner_checkpoint_profile",
+  "semantic_observation_consumed": false,
+  "provider_calls_started": false,
+  "failure_detail": "HoldoutProfile v6 existed but checkpoint_profile omitted the v6 suite. Every required provider arm failed before provider execution.",
+  "providers": {
+    "mistral": {"model": "ministral-8b-latest", "runner_rc": 1, "completed_cases": 0},
+    "google": {"model": "gemini-3.5-flash-lite", "runner_rc": 1, "completed_cases": 0},
+    "groq": {"model": "openai/gpt-oss-120b", "runner_rc": 1, "completed_cases": 0}
+  },
+  "final_gate": {
+    "required_operationally_complete": false,
+    "required_correctness_gate_passed": false,
+    "required_utility_gate_passed": false,
+    "required_materialization_gate_passed": false,
+    "required_qualification_gate_passed": false
+  },
+  "immutability_rule": "Do not rerun, rescore, relabel, move, delete-recreate, or reinterpret this canonical identity."
+}
