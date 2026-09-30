@@ -1,22 +1,11 @@
 name: engine-0.6-evidence-relevance-successor-v5-development
 
+# Successor-v5 semantics are frozen and its successful development observation is
+# historical development evidence. Keep this workflow available only for an
+# intentional manual diagnostic; later successor work must not re-observe v5
+# automatically through shared CLI/core/docs path changes.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - feat/462-evidence-target-relevance
-    paths:
-      - crates/reasoning-harness-core/src/evidence_relevance.rs
-      - crates/reasoning-harness-core/src/lib.rs
-      - crates/reasoning-harness-core/tests/evidence_relevance_holdout_successor_v5.rs
-      - crates/reasoning-harness-core/tests/evidence_relevance_successor_v5_controls.rs
-      - crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout.rs
-      - fixtures/evidence-relevance-holdout-successor-v5/**
-      - fixtures/evidence-relevance-successor-v5-development/**
-      - docs/engine-0.6-evidence-relevance-holdout-v4-result*
-      - docs/engine-0.6-evidence-relevance-holdout-successor-v5*
-      - docs/roadmap*
-      - .github/workflows/engine-0.6-evidence-relevance-successor-v5-development.yml
 
 permissions:
   contents: read
