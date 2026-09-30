@@ -1,6 +1,6 @@
 # Engine 0.6 evidence relevance holdout successor v5
 
-Status: immutable holdout v4 FAIL後のactive design / implementation candidate。
+Status: successor-v5 semantics freeze candidate。immutable holdout v4 FAIL後にdevelopment convergenceまで完了。
 
 ## Versioning
 
@@ -86,3 +86,25 @@ Final validation:
 - immutable holdout v4 captured observations: v7/v20で26/26 x 3
 - historical v1-v4 FAIL observation自体は書き換えず保持
 - successor replay wrong-target Relevant: 0
+
+## Pre-freeze validation
+
+- candidate commit before freeze-metadata commit: fbedfd6b8b7122273b3a4707c8165d758928127f
+- two-provider development run: 36676852262
+- Mistral ministral-8b-latest: 16/16 provider success、authority 16/16、materialization 16/16、utility miss 0、wrong-target Relevant 0、28,298 tokens
+- Google gemini-3.5-flash-lite: 16/16 provider success、authority 16/16、materialization 16/16、utility miss 0、wrong-target Relevant 0、29,149 tokens
+- development final-gate: PASS
+- exact candidate commitの通常PR workflow 9/9: PASS
+- core full suite: PASS
+- providers: 153 passed / 1 ignored / 0 failed
+- CLI: 205 passed / 3 ignored / 0 failed plus bin/integration suites PASS
+- workspace all-target Clippy -D warnings: PASS
+- rustfmt / git diff check: PASS
+- workflow YAML: 94/94 parse
+- production special-case scan: clean
+- immutable replay: v23 48/48 x3、holdout v1/v2/v3a/v4 26/26 x3
+- development failure observation run 36666145098: 改訂v7/v20でMistral 16/16 + Google 16/16 replay
+- successful development observation run 36676852262: captured as development-only regression evidence
+- Groqはこのdevelopment phaseでlive invocationしていない
+
+この証跡とsemantic surface checksumをfreeze commitへ固定した後にのみfresh independent holdout v5をauthorする。

@@ -1,6 +1,6 @@
 # Engine 0.6 evidence relevance holdout successor v5
 
-Status: active design/implementation candidate after immutable holdout v4 FAIL.
+Status: successor-v5 semantics freeze candidate after immutable holdout v4 FAIL and completed two-provider development convergence.
 
 ## Versioning
 
@@ -86,3 +86,25 @@ Final validation:
 - immutable holdout v4 captured observations: 26/26 x 3 under v7/v20 successor semantics
 - historical v1-v4 FAIL observations remain preserved rather than rewritten
 - wrong-target Relevant under successor replay: 0
+
+## Pre-freeze validation
+
+- candidate commit before freeze-metadata commit: fbedfd6b8b7122273b3a4707c8165d758928127f
+- two-provider development run: 36676852262
+- Mistral ministral-8b-latest: 16/16 provider success, authority 16/16, materialization 16/16, utility miss 0, wrong-target Relevant 0, 28,298 tokens
+- Google gemini-3.5-flash-lite: 16/16 provider success, authority 16/16, materialization 16/16, utility miss 0, wrong-target Relevant 0, 29,149 tokens
+- development final-gate: PASS
+- normal PR workflows on the exact candidate commit: 9/9 PASS
+- core full suite: PASS
+- providers: 153 passed / 1 ignored / 0 failed
+- CLI: 205 passed / 3 ignored / 0 failed plus bin/integration suites PASS
+- workspace all-target Clippy with -D warnings: PASS
+- rustfmt / git diff check: PASS
+- workflow YAML: 94/94 parse
+- production special-case scan: clean
+- immutable replay: v23 48/48 x3; holdout v1/v2/v3a/v4 26/26 x3
+- failed development observation run 36666145098: recovered to Mistral 16/16 + Google 16/16 under revised v7/v20 replay
+- successful development observation run 36676852262: captured as development-only regression evidence
+- Groq was not invoked live anywhere in this development phase
+
+Only after this evidence and the semantic-surface checksum are committed may a fresh independent holdout v5 be authored.
