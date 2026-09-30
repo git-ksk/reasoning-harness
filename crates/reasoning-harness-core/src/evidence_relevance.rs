@@ -753,6 +753,37 @@ fn target_identity_phrases(policy: &EvidenceRelevanceTargetPolicy) -> Vec<String
     phrases
 }
 
+fn normalized_factual_segments(value: &str) -> Vec<String> {
+    value
+        .split(['.', ';', '\n', '!', '?'])
+        .map(normalized)
+        .filter(|segment| !segment.is_empty())
+        .filter(|segment| {
+            ![
+                "ignore the task",
+                "ignore prior instructions",
+                "ignore previous instructions",
+                "please ignore the task",
+                "please ignore prior instructions",
+                "please ignore previous instructions",
+                "disregard the task",
+                "disregard prior instructions",
+                "disregard previous instructions",
+                "classify this candidate",
+                "classify this material",
+                "mark this candidate",
+                "mark this material",
+                "output exactly",
+                "return exactly",
+                "respond with",
+                "answer with",
+            ]
+            .iter()
+            .any(|prefix| segment.starts_with(prefix))
+        })
+        .collect()
+}
+
 fn strict_relation_terms(relation: EvidenceRelevanceRelationKind) -> &'static [&'static str] {
     match relation {
         EvidenceRelevanceRelationKind::Availability => &["availability", "available"],
@@ -834,7 +865,9 @@ fn deterministic_strict_named_target_absence(
 ) -> bool {
     candidate.signals.iter().any(|signal| {
         signal.kind != EvidenceRelevanceSignalKind::CanonicalUrl
-            && signal_has_strict_named_target_absence(policy, &normalized(&signal.text))
+            && normalized_factual_segments(&signal.text)
+                .iter()
+                .any(|text| signal_has_strict_named_target_absence(policy, text))
     })
 }
 
@@ -844,7 +877,9 @@ fn deterministic_strict_target_relation_absence(
 ) -> bool {
     candidate.signals.iter().any(|signal| {
         signal.kind != EvidenceRelevanceSignalKind::CanonicalUrl
-            && signal_has_strict_target_relation_absence(policy, &normalized(&signal.text))
+            && normalized_factual_segments(&signal.text)
+                .iter()
+                .any(|text| signal_has_strict_target_relation_absence(policy, text))
     })
 }
 
@@ -865,17 +900,20 @@ fn deterministic_positive_target_relation_fact(
         ) {
             return false;
         }
-        let text = normalized(&signal.text);
-        if signal_has_strict_named_target_absence(policy, &text)
-            || signal_has_strict_target_relation_absence(policy, &text)
-        {
-            return false;
-        }
-        let has_target = targets.iter().any(|target| text.contains(target));
-        let has_relation = positive_relation_terms(policy.relation)
+        normalized_factual_segments(&signal.text)
             .iter()
-            .any(|relation| text.contains(relation));
-        has_target && has_relation
+            .any(|text| {
+                if signal_has_strict_named_target_absence(policy, text)
+                    || signal_has_strict_target_relation_absence(policy, text)
+                {
+                    return false;
+                }
+                let has_target = targets.iter().any(|target| text.contains(target));
+                let has_relation = positive_relation_terms(policy.relation)
+                    .iter()
+                    .any(|relation| text.contains(relation));
+                has_target && has_relation
+            })
     })
 }
 

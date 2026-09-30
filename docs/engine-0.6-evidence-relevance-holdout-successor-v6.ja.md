@@ -1,6 +1,6 @@
 # Engine 0.6 evidence relevance holdout successor v6
 
-Status: immutable holdout v5 FAIL後のdesign freeze candidate。successor-v6のlive development observationはまだ消費していない。
+Status: immutable holdout v5 FAIL後のsuccessor-v6 semantics freeze surface。Mistral + Googleのreusable development observationはcapture済みで、current v8/v21 candidate上でreplayする。semantics-freeze tagが存在するまでfresh holdout v6のauthorは禁止する。
 
 ## Versioning decision
 
@@ -128,3 +128,16 @@ candidate commit `7a8ee5059079e709d82ccf962528f2e6af034853` のreusable developm
 - Groqはiterative candidate shapingには使用していない。
 
 captured observationはsemantics freeze前に `fixtures/evidence-relevance-successor-v6-development/observations-run-36728692499.json` からoffline replayする。
+
+## Freeze audit evidence
+
+宣言済みfreeze blockerはhistorical resultを書き換えずにcloseする。
+
+- generic successor-v6 controlは17/17 PASS。named-target absence、target-specific relation absence、target/relation語を含むprompt/control textのinertness、same-signal contradiction、pricing synonym、truncation、uncertain rename mapping、shared-row ownership uncertainty、URL/navigation single-near-sibling ambiguity、repeated-sibling negative authority、signal-order invariance、unrelated inert-text invarianceを含む。
+- immutable v23 + holdout v1-v5 observationはv8/v21でexact replayし、captured two-provider development observationもcurrent semantics上でexact replayする。wrong-target Relevantは0を維持。
+- frozen holdout-v5 tag内の30-file `surface-v5.sha256` はtagged blobに対して全一致。historical successor-v5 / holdout-v5 tag objectも元commitへpeelする。
+- production v8/v21 branchにprovider名、fixture ID、synthetic entity、holdout case固有分岐はない。provider選択はstudy runner policyに限定する。
+- deterministic contradiction/absence scanはimperative control clauseをfactとして扱わず、factual sentence segment単位で評価する。これによりprompt-injection textはabsence authorityやfalse positive contradictionを生成せず、control text前後のfactual propositionは評価対象に残る。
+- `reasoning-harness-core --tests`、successor-v5 controls/replay、successor-v6 replay/controls、study CLI tests、workspace Clippy `-D warnings`、rustfmt、96 workflow YAML parse、`git diff --check` は全てgreen。
+
+Freeze coordinateは `engine-0.6-evidence-relevance-successor-v6-semantics-freeze`。tag targetと `fixtures/evidence-relevance-holdout-successor-v6/semantics-v6.sha256` をfrozen semantic surfaceとする。このtagを作成・pushする前にfresh holdout v6をauthorしてはならない。

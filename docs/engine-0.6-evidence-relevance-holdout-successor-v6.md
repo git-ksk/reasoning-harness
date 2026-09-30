@@ -1,6 +1,6 @@
 # Engine 0.6 evidence relevance holdout successor v6
 
-Status: design freeze candidate after immutable holdout v5 FAIL. No successor-v6 live development observation has been consumed.
+Status: successor-v6 semantics freeze surface after immutable holdout v5 FAIL. The reusable Mistral + Google development observation is captured and replayed under the current v8/v21 candidate; fresh holdout v6 remains prohibited until the semantics-freeze tag exists.
 
 ## Versioning decision
 
@@ -128,3 +128,16 @@ Reusable development run `36728692499` at candidate commit `7a8ee5059079e709d82c
 - Groq was not used for iterative candidate shaping.
 
 The captured observations are replayed from `fixtures/evidence-relevance-successor-v6-development/observations-run-36728692499.json` before semantics freeze.
+
+## Freeze audit evidence
+
+The freeze audit closes the declared blockers without changing any historical result:
+
+- generic successor-v6 controls: 17/17 PASS, including named-target absence, target-specific relation absence, prompt/control-text inertness even when target/relation words appear, same-signal contradiction, broader pricing synonyms, truncation, uncertain rename mapping, unresolved shared-row ownership, URL/navigation single-near-sibling ambiguity, repeated-sibling negative authority, signal-order invariance, and unrelated inert-text invariance;
+- immutable v23 + holdout v1-v5 observations replay exactly under v8/v21, including the captured two-provider development observation; wrong-target Relevant remains 0;
+- the frozen holdout-v5 tag's 30-file `surface-v5.sha256` verifies exactly against the tagged blobs, and the historical successor-v5/holdout-v5 tag objects still peel to their original commits;
+- production v8/v21 branching has no provider, fixture ID, synthetic entity, or holdout-case special case. Provider selection remains study-runner policy only;
+- the deterministic contradiction/absence scan evaluates factual sentence segments rather than treating imperative control clauses as facts, so prompt-injection text cannot create absence authority or a false positive contradiction, while factual propositions before/after control text remain visible;
+- `reasoning-harness-core --tests`, successor-v5 controls/replay, successor-v6 replay/controls, the study CLI tests, workspace Clippy with `-D warnings`, rustfmt, all 96 workflow YAML parses, and `git diff --check` are green.
+
+Freeze coordinate: `engine-0.6-evidence-relevance-successor-v6-semantics-freeze`. The tag target plus `fixtures/evidence-relevance-holdout-successor-v6/semantics-v6.sha256` define the frozen semantic surface. Fresh holdout v6 authoring may begin only after that tag is created and pushed.
