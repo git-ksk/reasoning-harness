@@ -53,6 +53,12 @@ const V4_EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-q
 const V4_EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v4";
 const V4_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-holdout-v4";
 const V4_EXPECTED_CASES: usize = 26;
+const V5_CONFIGURATION_ID: &str = "evidence-relevance-live-holdout-v5";
+const V5_EXPECTED_SUITE_ID: &str = "evidence-relevance-holdout-v5";
+const V5_EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-qualification-v7";
+const V5_EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v5";
+const V5_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-holdout-v5";
+const V5_EXPECTED_CASES: usize = 26;
 const V5_DEV_CONFIGURATION_ID: &str = "evidence-relevance-successor-v5-development";
 const V5_DEV_EXPECTED_SUITE_ID: &str = "evidence-relevance-successor-v5-development";
 const V5_DEV_EXPECTED_STATUS: &str = "reusable_development_calibration";
@@ -72,6 +78,7 @@ enum HoldoutProfile {
     V2,
     V3,
     V4,
+    V5,
     V5Development,
 }
 
@@ -81,7 +88,14 @@ impl HoldoutProfile {
         let target = target
             .canonicalize()
             .map_err(|error| format!("canonicalize target directory: {error}"))?;
-        for profile in [Self::V1, Self::V2, Self::V3, Self::V4, Self::V5Development] {
+        for profile in [
+            Self::V1,
+            Self::V2,
+            Self::V3,
+            Self::V4,
+            Self::V5,
+            Self::V5Development,
+        ] {
             let expected = root
                 .join(profile.relative_dir())
                 .canonicalize()
@@ -96,7 +110,7 @@ impl HoldoutProfile {
             }
         }
         Err(format!(
-            "evidence-relevance study accepts only this checkout's frozen holdout directories or {V5_DEV_EXPECTED_RELATIVE_DIR}"
+            "evidence-relevance study accepts only this checkout's holdout/development directories through {V5_EXPECTED_RELATIVE_DIR} or {V5_DEV_EXPECTED_RELATIVE_DIR}"
         ))
     }
 
@@ -106,6 +120,7 @@ impl HoldoutProfile {
             Self::V2 => V2_CONFIGURATION_ID,
             Self::V3 => V3_CONFIGURATION_ID,
             Self::V4 => V4_CONFIGURATION_ID,
+            Self::V5 => V5_CONFIGURATION_ID,
             Self::V5Development => V5_DEV_CONFIGURATION_ID,
         }
     }
@@ -116,6 +131,7 @@ impl HoldoutProfile {
             Self::V2 => V2_EXPECTED_SUITE_ID,
             Self::V3 => V3_EXPECTED_SUITE_ID,
             Self::V4 => V4_EXPECTED_SUITE_ID,
+            Self::V5 => V5_EXPECTED_SUITE_ID,
             Self::V5Development => V5_DEV_EXPECTED_SUITE_ID,
         }
     }
@@ -126,6 +142,7 @@ impl HoldoutProfile {
             Self::V2 => V2_EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V3 => V3_EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V4 => V4_EXPECTED_ANNOTATION_PROTOCOL_ID,
+            Self::V5 => V5_EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V5Development => V5_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID,
         }
     }
@@ -136,6 +153,7 @@ impl HoldoutProfile {
             Self::V2 => V2_EXPECTED_FIXED_CORE_ID,
             Self::V3 => V3_EXPECTED_FIXED_CORE_ID,
             Self::V4 => V4_EXPECTED_FIXED_CORE_ID,
+            Self::V5 => V5_EXPECTED_FIXED_CORE_ID,
             Self::V5Development => V5_DEV_EXPECTED_FIXED_CORE_ID,
         }
     }
@@ -146,6 +164,7 @@ impl HoldoutProfile {
             Self::V2 => V2_EXPECTED_RELATIVE_DIR,
             Self::V3 => V3_EXPECTED_RELATIVE_DIR,
             Self::V4 => V4_EXPECTED_RELATIVE_DIR,
+            Self::V5 => V5_EXPECTED_RELATIVE_DIR,
             Self::V5Development => V5_DEV_EXPECTED_RELATIVE_DIR,
         }
     }
@@ -156,13 +175,14 @@ impl HoldoutProfile {
             Self::V2 => V2_EXPECTED_CASES,
             Self::V3 => V3_EXPECTED_CASES,
             Self::V4 => V4_EXPECTED_CASES,
+            Self::V5 => V5_EXPECTED_CASES,
             Self::V5Development => V5_DEV_EXPECTED_CASES,
         }
     }
 
     fn expected_status(self) -> &'static str {
         match self {
-            Self::V1 | Self::V2 | Self::V3 | Self::V4 => EXPECTED_STATUS,
+            Self::V1 | Self::V2 | Self::V3 | Self::V4 | Self::V5 => EXPECTED_STATUS,
             Self::V5Development => V5_DEV_EXPECTED_STATUS,
         }
     }
@@ -198,6 +218,9 @@ impl HoldoutProfile {
             Self::V4 => {
                 derive_effective_evidence_local_qualification_v6(policy, candidate, proposal, raw)
             }
+            Self::V5 => {
+                derive_effective_evidence_local_qualification_v7(policy, candidate, proposal, raw)
+            }
             Self::V5Development => {
                 derive_effective_evidence_local_qualification_v7(policy, candidate, proposal, raw)
             }
@@ -216,6 +239,7 @@ impl HoldoutProfile {
             Self::V2 => materialize_evidence_relevance_v17(policy, candidate, proposal, raw),
             Self::V3 => materialize_evidence_relevance_v18(policy, candidate, proposal, raw),
             Self::V4 => materialize_evidence_relevance_v19(policy, candidate, proposal, raw),
+            Self::V5 => materialize_evidence_relevance_v20(policy, candidate, proposal, raw),
             Self::V5Development => {
                 materialize_evidence_relevance_v20(policy, candidate, proposal, raw)
             }
@@ -2804,6 +2828,7 @@ fn checkpoint_profile(suite_id: &str) -> Result<(&'static str, bool), String> {
         V2_EXPECTED_SUITE_ID => Ok((V2_CONFIGURATION_ID, true)),
         V3_EXPECTED_SUITE_ID => Ok((V3_CONFIGURATION_ID, true)),
         V4_EXPECTED_SUITE_ID => Ok((V4_CONFIGURATION_ID, true)),
+        V5_EXPECTED_SUITE_ID => Ok((V5_CONFIGURATION_ID, true)),
         V5_DEV_EXPECTED_SUITE_ID => Ok((V5_DEV_CONFIGURATION_ID, false)),
         other => Err(format!("unexpected checkpoint suite id {other:?}")),
     }
@@ -2886,6 +2911,10 @@ mod tests {
         assert_eq!(
             checkpoint_profile(V4_EXPECTED_SUITE_ID).unwrap(),
             (V4_CONFIGURATION_ID, true)
+        );
+        assert_eq!(
+            checkpoint_profile(V5_EXPECTED_SUITE_ID).unwrap(),
+            (V5_CONFIGURATION_ID, true)
         );
         assert_eq!(
             checkpoint_profile(V5_DEV_EXPECTED_SUITE_ID).unwrap(),
