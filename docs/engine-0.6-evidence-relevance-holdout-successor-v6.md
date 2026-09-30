@@ -4,20 +4,20 @@ Status: design freeze candidate after immutable holdout v5 FAIL. No successor-v6
 
 ## Versioning decision
 
-- effective qualification: retain v7
+- effective qualification: introduce v8
 - materialization: introduce v21
 - historical v1-v5 qualification/materialization semantics remain unchanged
 - immutable holdout-v5 observations are replay-only regression evidence; historical artifacts and labels are never rewritten
 
-A v8 effective-qualification contract is intentionally not introduced at this stage. Canonical holdout v5 showed v7 authority exact 26/26 on Mistral, Google, and Groq, including the only terminal miss: v7 recovered `target_absent / relation_absent / none` exactly. The measured defect is therefore downstream materialization composition.
+For the only terminal miss in canonical holdout v5, v7 already recovered `target_absent / relation_absent / none` exactly, so the measured v5 defect itself is downstream materialization composition. However, code audit of the required successor-v6 generic boundary — exact target present, requested relation explicitly absent, and both advisory stages positive — shows that v7 cannot establish `relation_absent` from Harness-owned evidence alone. Successor v6 therefore introduces v8 to add strict target-specific relation-absence qualification authority while retaining the existing v7 target-absence authority.
 
 ## Successor-v6 authority rule
 
 v21 may materialize Irrelevant despite positive advisory outputs only when all of the following are true:
 
 1. both advisory stages are operationally present; their content is diagnostic, not authority;
-2. v7 effective qualification has `scope_risk = none`;
-3. the bounded local unit contains a strict Harness-detected explicit absence proposition scoped to the named target or the target-specific requested relation;
+2. v8 effective qualification has `scope_risk = none`;
+3. the bounded local unit contains a strict Harness-detected explicit absence proposition scoped to the named target or the target-specific requested relation, and v8 establishes the corresponding negative authority;
 4. the resulting effective qualification is negative on the corresponding axis;
 5. no contradictory positive factual proposition for the same target + requested relation exists in the same bounded local unit;
 6. no deterministic context gap, ownership ambiguity, identity-mapping uncertainty, URL-only ownership uncertainty, truncation, or other typed scope risk exists.

@@ -79,6 +79,8 @@ pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V19_ID: &str =
     "target-evidence-relevance-binding-materialization-v19";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V20_ID: &str =
     "target-evidence-relevance-binding-materialization-v20";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V21_ID: &str =
+    "target-evidence-relevance-binding-materialization-v21";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V1_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v1";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V2_CONTRACT_ID: &str =
@@ -93,6 +95,8 @@ pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V6_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v6";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V7_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v7";
+pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V8_CONTRACT_ID: &str =
+    "reason-evidence-relevance-effective-qualification-v8";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -735,6 +739,128 @@ fn deterministic_explicit_local_target_absence(
     .any(|pattern| text.contains(pattern));
 
     named_absence || generic_local_absence
+}
+
+fn target_identity_phrases(policy: &EvidenceRelevanceTargetPolicy) -> Vec<String> {
+    let Some(entity) = &policy.entity else {
+        return Vec::new();
+    };
+    let mut phrases = vec![normalized(&entity.canonical_name)];
+    phrases.extend(entity.aliases.iter().map(|alias| normalized(alias)));
+    phrases.retain(|phrase| !phrase.is_empty());
+    phrases.sort();
+    phrases.dedup();
+    phrases
+}
+
+fn strict_relation_terms(relation: EvidenceRelevanceRelationKind) -> &'static [&'static str] {
+    match relation {
+        EvidenceRelevanceRelationKind::Availability => &["availability", "available"],
+        EvidenceRelevanceRelationKind::Pricing => &["pricing", "price", "cost", "billing"],
+        EvidenceRelevanceRelationKind::Limit => &["limit", "quota", "maximum"],
+        EvidenceRelevanceRelationKind::ChangeOrLaunch => &["change", "launch", "release", "update"],
+        EvidenceRelevanceRelationKind::Definition => &["definition", "defined"],
+        EvidenceRelevanceRelationKind::BenefitOrUseCase => &["benefit", "use case"],
+        EvidenceRelevanceRelationKind::General => &[],
+    }
+}
+
+fn signal_has_strict_named_target_absence(
+    policy: &EvidenceRelevanceTargetPolicy,
+    text: &str,
+) -> bool {
+    target_identity_phrases(policy).iter().any(|target| {
+        [
+            format!("no {target}"),
+            format!("does not list {target}"),
+            format!("does not include {target}"),
+            format!("does not contain {target}"),
+            format!("no entry for {target}"),
+            format!("no information about {target}"),
+        ]
+        .iter()
+        .any(|pattern| text.contains(pattern))
+    })
+}
+
+fn signal_has_strict_target_relation_absence(
+    policy: &EvidenceRelevanceTargetPolicy,
+    text: &str,
+) -> bool {
+    let targets = target_identity_phrases(policy);
+    let relation_terms = strict_relation_terms(policy.relation);
+    if targets.is_empty() || relation_terms.is_empty() {
+        return false;
+    }
+    targets.iter().any(|target| {
+        relation_terms.iter().any(|relation| {
+            [
+                format!("no {target} {relation}"),
+                format!("no {relation} for {target}"),
+                format!("{target} has no {relation}"),
+                format!("{target} {relation} is not listed"),
+                format!("{target} {relation} is not included"),
+                format!("{target} {relation} is unavailable"),
+                format!("{target} does not list {relation}"),
+                format!("{target} does not include {relation}"),
+                format!("{target} does not document {relation}"),
+                format!("{target} does not describe {relation}"),
+            ]
+            .iter()
+            .any(|pattern| text.contains(pattern))
+        })
+    })
+}
+
+fn deterministic_strict_named_target_absence(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    candidate.signals.iter().any(|signal| {
+        signal.kind != EvidenceRelevanceSignalKind::CanonicalUrl
+            && signal_has_strict_named_target_absence(policy, &normalized(&signal.text))
+    })
+}
+
+fn deterministic_strict_target_relation_absence(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    candidate.signals.iter().any(|signal| {
+        signal.kind != EvidenceRelevanceSignalKind::CanonicalUrl
+            && signal_has_strict_target_relation_absence(policy, &normalized(&signal.text))
+    })
+}
+
+fn deterministic_positive_target_relation_fact(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    let targets = target_identity_phrases(policy);
+    if targets.is_empty() {
+        return false;
+    }
+    candidate.signals.iter().any(|signal| {
+        if matches!(
+            signal.kind,
+            EvidenceRelevanceSignalKind::CanonicalUrl
+                | EvidenceRelevanceSignalKind::NavigationOrFooter
+                | EvidenceRelevanceSignalKind::SourceTitle
+        ) {
+            return false;
+        }
+        let text = normalized(&signal.text);
+        if signal_has_strict_named_target_absence(policy, &text)
+            || signal_has_strict_target_relation_absence(policy, &text)
+        {
+            return false;
+        }
+        let has_target = targets.iter().any(|target| text.contains(target));
+        let has_relation = strict_relation_terms(policy.relation)
+            .iter()
+            .any(|relation| text.contains(relation));
+        has_target && has_relation
+    })
 }
 
 fn requested_relation_locally_present(
@@ -3777,6 +3903,32 @@ pub fn materialize_evidence_relevance_v19(
     Ok(assessment)
 }
 
+pub fn derive_effective_evidence_local_qualification_v8(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceLocalQualificationV6, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceLocalRelationScope as Relation;
+
+    let mut effective =
+        derive_effective_evidence_local_qualification_v7(policy, candidate, proposal, raw)?;
+
+    if proposal.is_some()
+        && raw.is_some()
+        && effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::ExactTarget
+        && deterministic_strict_target_relation_absence(policy, candidate)
+        && !deterministic_positive_target_relation_fact(policy, candidate)
+    {
+        effective.relation_scope = Relation::RelationAbsent;
+    }
+
+    Ok(effective)
+}
+
 pub fn materialize_evidence_relevance_v20(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -3932,6 +4084,70 @@ pub fn materialize_evidence_relevance_v20(
         materialize_evidence_relevance_v19(policy, candidate, proposal, raw_qualification)?;
     assessment.materialization_policy_id =
         EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V20_ID.into();
+    Ok(assessment)
+}
+
+pub fn materialize_evidence_relevance_v21(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw_qualification: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    validate_policy(policy)?;
+    validate_candidate(candidate)?;
+
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceLocalRelationScope as Relation;
+
+    let effective = derive_effective_evidence_local_qualification_v8(
+        policy,
+        candidate,
+        proposal,
+        raw_qualification,
+    )?;
+
+    if proposal.is_some()
+        && raw_qualification.is_some()
+        && effective.scope_risk == Risk::None
+        && !deterministic_positive_target_relation_fact(policy, candidate)
+    {
+        let strict_target_absence = deterministic_strict_named_target_absence(policy, candidate)
+            && effective.identity_scope == Identity::TargetAbsent
+            && effective.relation_scope == Relation::RelationAbsent;
+        let strict_relation_absence =
+            deterministic_strict_target_relation_absence(policy, candidate)
+                && effective.identity_scope == Identity::ExactTarget
+                && effective.relation_scope == Relation::RelationAbsent;
+
+        if strict_target_absence || strict_relation_absence {
+            let (_has_harness_anchor, _url_only_anchor, mut reasons) =
+                anchor_match(policy, candidate);
+            if strict_target_absence {
+                reasons.push(EvidenceRelevanceReason::NegativeLocalTargetAbsenceConfirmed);
+            } else {
+                reasons.push(EvidenceRelevanceReason::LocalQualificationRejectsRelation);
+            }
+            reasons.push(EvidenceRelevanceReason::NegativeCandidateSafeToReject);
+            return Ok(EvidenceRelevanceAssessment {
+                contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_V5_CONTRACT_ID.into(),
+                materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V21_ID
+                    .into(),
+                policy_id: policy.policy_id.clone(),
+                target_id: policy.target_id.clone(),
+                evidence_id: candidate.evidence_id.clone(),
+                source_id: candidate.source_id.clone(),
+                disposition: EvidenceRelevanceDisposition::Irrelevant,
+                path: EvidenceRelevanceAssessmentPath::ModelAssisted,
+                reasons,
+            });
+        }
+    }
+
+    let mut assessment =
+        materialize_evidence_relevance_v20(policy, candidate, proposal, raw_qualification)?;
+    assessment.materialization_policy_id =
+        EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V21_ID.into();
     Ok(assessment)
 }
 

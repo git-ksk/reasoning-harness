@@ -4,19 +4,19 @@ Status: immutable holdout v5 FAIL後のdesign freeze candidate。successor-v6の
 
 ## Versioning decision
 
-- effective qualification: v7を維持
+- effective qualification: v8を新設
 - materialization: v21を新設
 - historical v1-v5 qualification/materialization semanticsは不変
 - immutable holdout-v5 observationはregression replay専用で、historical artifact / labelは書き換えない
 
-現時点ではv8 effective-qualification contractを新設しない。canonical holdout v5ではMistral / Google / Groqの全てでv7 authorityが26/26 exactで、唯一のterminal missでもv7は `target_absent / relation_absent / none` を正しく回復した。測定されたdefectはdownstream materialization compositionに限定される。
+canonical holdout v5の唯一のterminal missではv7が `target_absent / relation_absent / none` を正しく回復しており、測定されたv5 defect自体はdownstream materialization compositionにある。一方、successor-v6のgeneric controlとして要求する「exact targetは存在するがrequested relationだけが明示的に不在で、両advisory stageがpositive」の境界をコード監査した結果、v7はHarness-owned evidenceだけでは `relation_absent` を確立できない。したがってv8を新設し、strict target-specific relation absenceをqualification authorityとして追加する。target absence側の既存v7 authorityは維持する。
 
 ## Successor-v6 authority rule
 
 v21がpositive advisory outputに反してIrrelevantをmaterializeできるのは、以下を全て満たす場合だけ:
 
 1. 2つのadvisory stageはoperationally present。内容はdiagnosticでありauthorityではない。
-2. v7 effective qualificationの `scope_risk = none`。
+2. v8 effective qualificationの `scope_risk = none`。
 3. bounded local unitに、named targetまたはtarget-specific requested relationへscopeされたstrictなHarness-detected explicit absence propositionがある。
 4. 対応するaxisでeffective qualificationがnegative。
 5. 同じbounded local unitに同じtarget + requested relationのcontradictory positive factual propositionがない。
