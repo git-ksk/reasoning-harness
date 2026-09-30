@@ -756,16 +756,7 @@ fn target_identity_phrases(policy: &EvidenceRelevanceTargetPolicy) -> Vec<String
 fn strict_relation_terms(relation: EvidenceRelevanceRelationKind) -> &'static [&'static str] {
     match relation {
         EvidenceRelevanceRelationKind::Availability => &["availability", "available"],
-        EvidenceRelevanceRelationKind::Pricing => &[
-            "pricing",
-            "price",
-            "cost",
-            "billing",
-            "billed",
-            "charge",
-            "credit",
-            "allowance",
-        ],
+        EvidenceRelevanceRelationKind::Pricing => &["pricing", "price", "cost", "billing"],
         EvidenceRelevanceRelationKind::Limit => &["limit", "quota", "maximum"],
         EvidenceRelevanceRelationKind::ChangeOrLaunch => &["change", "launch", "release", "update"],
         EvidenceRelevanceRelationKind::Definition => &["definition", "defined"],
@@ -1230,16 +1221,7 @@ fn deterministic_requested_relation_explicitly_excluded(
     let text = candidate_local_text(candidate);
     let relation_terms: &[&str] = match policy.relation {
         EvidenceRelevanceRelationKind::Availability => &["availability", "available"],
-        EvidenceRelevanceRelationKind::Pricing => &[
-            "pricing",
-            "price",
-            "cost",
-            "billing",
-            "billed",
-            "charge",
-            "credit",
-            "allowance",
-        ],
+        EvidenceRelevanceRelationKind::Pricing => &["pricing", "price", "cost", "billing"],
         EvidenceRelevanceRelationKind::Limit => &["limit", "quota"],
         EvidenceRelevanceRelationKind::ChangeOrLaunch => &["change", "launch", "release", "update"],
         EvidenceRelevanceRelationKind::Definition => &["definition", "defined"],
