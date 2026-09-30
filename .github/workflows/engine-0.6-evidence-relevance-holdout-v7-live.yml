@@ -1,0 +1,626 @@
+name: engine-0.6-evidence-relevance-holdout-v7-live
+
+on:
+  push:
+    tags:
+      - engine-0.6-evidence-relevance-holdout-v7-freeze
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  FREEZE_TAG: engine-0.6-evidence-relevance-holdout-v7-freeze
+  HOLDOUT_DIR: fixtures/evidence-relevance-holdout-v7
+  HOLDOUT_SEED: '4629707'
+  GROQ_TPD_LIMIT: '200000'
+  GROQ_V5_CONFIGURED_START_HEADROOM: '55000'
+  GROQ_V5_INTER_CASE_DELAY_MS: '300000'
+  GROQ_V5_MIN_REQUEST_INTERVAL_MS: '10000'
+  GROQ_V5_OBSERVED_TOKENS: '66423'
+  GROQ_V5_COMPLETED_UTC: '2026-09-30T11:29:25Z'
+  GROQ_TPD_START_HEADROOM: '55000'
+  GROQ_TPD_SELF_BUDGET: '70000'
+  GROQ_TPD_INTER_CASE_DELAY_MS: '300000'
+  GROQ_MIN_REQUEST_INTERVAL_MS: '10000'
+  GROQ_TPD_MIN_HEADROOM_NOT_BEFORE_UTC: '2026-09-30T17:18:20Z'
+
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - name: Enforce modeled Groq TPD 55K-headroom floor
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import datetime as dt, os, sys
+
+          limit = int(os.environ["GROQ_TPD_LIMIT"])
+          v5_start_headroom = int(os.environ["GROQ_V5_CONFIGURED_START_HEADROOM"])
+          v5_inter_case_ms = int(os.environ["GROQ_V5_INTER_CASE_DELAY_MS"])
+          v5_min_request_ms = int(os.environ["GROQ_V5_MIN_REQUEST_INTERVAL_MS"])
+          v5_tokens = int(os.environ["GROQ_V5_OBSERVED_TOKENS"])
+          v5_completed = dt.datetime.fromisoformat(os.environ["GROQ_V5_COMPLETED_UTC"].replace("Z", "+00:00"))
+          target_headroom = int(os.environ["GROQ_TPD_START_HEADROOM"])
+          self_budget = int(os.environ["GROQ_TPD_SELF_BUDGET"])
+          inter_case_ms = int(os.environ["GROQ_TPD_INTER_CASE_DELAY_MS"])
+          min_request_ms = int(os.environ["GROQ_MIN_REQUEST_INTERVAL_MS"])
+          configured_floor = dt.datetime.fromisoformat(
+              os.environ["GROQ_TPD_MIN_HEADROOM_NOT_BEFORE_UTC"].replace("Z", "+00:00")
+          )
+
+          refill_per_second = limit / 86400.0
+          v5_min_pacing_seconds = (
+              (26 - 1) * v5_inter_case_ms + 26 * v5_min_request_ms
+          ) / 1000.0
+          modeled_v5_end_headroom = (
+              v5_start_headroom + v5_min_pacing_seconds * refill_per_second - v5_tokens
+          )
+          if modeled_v5_end_headroom <= 0:
+              print(
+                  f"modeled post-v5 Groq headroom is non-positive: {modeled_v5_end_headroom:.1f}",
+                  file=sys.stderr,
+              )
+              raise SystemExit(6)
+
+          seconds_to_target = max(
+              0.0, (target_headroom - modeled_v5_end_headroom) / refill_per_second
+          )
+          derived_floor = v5_completed + dt.timedelta(seconds=seconds_to_target)
+          rounded_floor = derived_floor.replace(microsecond=0)
+          if derived_floor.microsecond:
+              rounded_floor += dt.timedelta(seconds=1)
+          if configured_floor < rounded_floor:
+              print(
+                  f"configured Groq floor is earlier than modeled headroom floor: "
+                  f"configured={configured_floor.isoformat()} derived={rounded_floor.isoformat()}",
+                  file=sys.stderr,
+              )
+              raise SystemExit(8)
+
+          holdout_pacing_seconds = (
+              (26 - 1) * inter_case_ms + 26 * min_request_ms
+          ) / 1000.0
+          refill_during_holdout = holdout_pacing_seconds * refill_per_second
+          modeled_supply = target_headroom + refill_during_holdout
+          if modeled_supply < self_budget:
+              print(
+                  f"Groq holdout pacing cannot replenish enough for self-budget: "
+                  f"supply={modeled_supply:.1f} budget={self_budget}",
+                  file=sys.stderr,
+              )
+              raise SystemExit(7)
+
+          now = dt.datetime.now(dt.timezone.utc)
+          if now < configured_floor:
+              print(
+                  f"holdout v7 is before modeled Groq TPD 55K-headroom floor: "
+                  f"now={now.isoformat()} floor={configured_floor.isoformat()}",
+                  file=sys.stderr,
+              )
+              raise SystemExit(9)
+
+          print(
+              f"Modeled Groq holdout-v7 admission satisfied: now={now.isoformat()} "
+              f"floor={configured_floor.isoformat()} post_v5_headroom={modeled_v5_end_headroom:.1f} "
+              f"start_headroom={target_headroom} paced_refill={refill_during_holdout:.1f} "
+              f"self_budget={self_budget}"
+          )
+          PY
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-holdout-v7-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate independent v7 surface
+        run: |
+          set -euo pipefail
+          python3 - <<'PY2'
+          import json, re
+          from collections import Counter
+          from pathlib import Path
+
+          prior_paths = {
+              version: Path(f"fixtures/evidence-relevance-holdout-{version}/manifest.json")
+              for version in ("v1", "v2", "v3", "v4", "v5", "v6")
+          }
+          prior_paths["successor-v5-development"] = Path(
+              "fixtures/evidence-relevance-successor-v5-development/manifest.json"
+          )
+          prior_paths["successor-v6-development"] = Path(
+              "fixtures/evidence-relevance-successor-v6-development/manifest.json"
+          )
+          priors = {name: json.loads(path.read_text()) for name, path in prior_paths.items()}
+          fresh = json.loads(Path("fixtures/evidence-relevance-holdout-v7/manifest.json").read_text())
+
+          assert len(fresh["cases"]) == 26
+          assert Counter(c["expected_disposition"] for c in fresh["cases"]) == {
+              "relevant": 8, "irrelevant": 10, "ambiguous": 8
+          }
+          assert fresh["source_rule"] == (
+              "independently_authored_after_holdout_v7_runner_freeze_"
+              "no_holdout_v1_v2_v3_v4_v5_v6_or_successor_v5_v6_development_"
+              "case_entity_task_signal_or_8token_surface_reuse"
+          )
+
+          def signal_texts(manifest):
+              return [s["text"] for c in manifest["cases"] for s in c["candidate"]["signals"]]
+          def tokens(text):
+              return re.findall(r"[a-z0-9]+", text.lower())
+          def eight_grams(manifest):
+              out = set()
+              for text in signal_texts(manifest):
+                  words = tokens(text)
+                  out.update(tuple(words[i:i+8]) for i in range(max(0, len(words)-7)))
+              return out
+
+          ids = {c["id"] for c in fresh["cases"]}
+          entities = {c["policy"]["entity"]["canonical_name"].lower() for c in fresh["cases"]}
+          tasks = {c["task"].lower() for c in fresh["cases"]}
+          signals = {text.lower() for text in signal_texts(fresh)}
+          ngrams = eight_grams(fresh)
+
+          for prior_name, prior in priors.items():
+              assert not (ids & {c["id"] for c in prior["cases"]}), prior_name
+              assert not (
+                  entities
+                  & {c["policy"]["entity"]["canonical_name"].lower() for c in prior["cases"]}
+              ), prior_name
+              assert not (tasks & {c["task"].lower() for c in prior["cases"]}), prior_name
+              assert not (
+                  signals & {text.lower() for text in signal_texts(prior)}
+              ), prior_name
+              assert not (ngrams & eight_grams(prior)), prior_name
+
+          print("independent holdout v7 surface checks passed")
+          PY2
+
+      - name: Revalidate exact frozen holdout and semantics surfaces
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          test "$(git rev-list -n 1 engine-0.6-evidence-relevance-successor-v6-semantics-freeze)" =             "092bdeac5676856e7af311e99c66d9da164cd46f"
+          test "$(git rev-list -n 1 engine-0.6-evidence-relevance-holdout-v7-runner-freeze)" =             "b6356b6db18a114c3fe3ef515a84cb99a7784257"
+          sha256sum -c fixtures/evidence-relevance-holdout-successor-v6/semantics-v6.sha256
+          sha256sum -c "$HOLDOUT_DIR/surface-v7.sha256"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-holdout-v7-study --             "$HOLDOUT_DIR"             --provider mistral             --model holdout-placeholder             --validate-only             > /tmp/evidence-relevance-holdout-validate.json
+          jq -e '
+            .configuration_id == "evidence-relevance-live-holdout-v7"
+            and .suite_id == "evidence-relevance-holdout-v7"
+            and .annotation_protocol_id == "evidence-relevance-effective-qualification-v8"
+            and .fixed_core_id == "evidence-relevance-fixed-core-v7"
+            and .corpus_status_at_observation == "fresh_unobserved_holdout"
+            and .planned_cases == 26
+            and .completed_cases == 0
+            and .operational_abort == null
+            and .provider_arm_latch == null
+            and .metrics.cases == 26
+            and .scorability == "validate_only_non_scorable"
+          ' /tmp/evidence-relevance-holdout-validate.json >/dev/null
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-core --all-targets -- -D warnings
+          cargo clippy -p reasoning-harness-cli --bin reason-evidence-relevance-holdout-v7-study -- -D warnings
+          cargo test -p reasoning-harness-core --test evidence_relevance_routing_v23
+          cargo test -p reasoning-harness-core --test evidence_relevance_holdout_successor_v6
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v6_controls
+          cargo test -p reasoning-harness-core --test evidence_relevance_holdout_v7
+          cargo test -p reasoning-harness-cli --bin reason-evidence-relevance-study
+          cargo test -p reasoning-harness-cli --bin reason-evidence-relevance-holdout-v7-study
+
+      - name: Preserve preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-holdout-v7-preflight
+          path: /tmp/evidence-relevance-holdout-validate.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-latest
+            role: required
+            inter_case_delay_ms: 1200
+            timeout_minutes: 90
+          - provider: groq
+            model: openai/gpt-oss-120b
+            role: required
+            inter_case_delay_ms: 300000
+            timeout_minutes: 180
+          - provider: google
+            model: gemini-3.5-flash-lite
+            role: required
+            inter_case_delay_ms: 6100
+            timeout_minutes: 90
+
+    concurrency:
+      group: engine-0.6-evidence-relevance-holdout-v7-${{ matrix.provider }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-holdout-v7-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate frozen surface before credentials
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          sha256sum -c "$HOLDOUT_DIR/surface-v7.sha256"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-holdout-v7-study -- \
+            "$HOLDOUT_DIR" \
+            --provider mistral \
+            --model holdout-placeholder \
+            --validate-only \
+            > /dev/null
+
+      - name: Check provider credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            groq) test -n "$GROQ_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            *) echo "unsupported frozen provider: $PROVIDER" >&2; exit 2 ;;
+          esac
+
+      - name: Run first canonical holdout v7 observation
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          ROLE: ${{ matrix.role }}
+          DELAY_MS: ${{ matrix.inter_case_delay_ms }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: ${{ env.GROQ_MIN_REQUEST_INTERVAL_MS }}
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+          REASON_GROQ_STRUCTURED_OUTPUT_RETRIES: '0'
+          # Frozen successor-v6 v8/v21 semantics retain strict raw-JSON Text as Groq primary with a 512-token transport floor.
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+          REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH: /tmp/evidence-relevance-google-attempts.jsonl
+        run: |
+          set -u
+          BASE="/tmp/evidence-relevance-${PROVIDER}"
+          printf '%s\n' \
+            "{\"schema_version\":\"engine-0.6-evidence-relevance-holdout-attempt-v2\",\"provider\":\"$PROVIDER\",\"model\":\"$MODEL\",\"role\":\"$ROLE\",\"freeze_tag\":\"$FREEZE_TAG\",\"github_run_id\":\"$GITHUB_RUN_ID\",\"github_run_attempt\":\"$GITHUB_RUN_ATTEMPT\"}" \
+            > "${BASE}-attempt.json"
+
+          TOKEN_BUDGET_ARGS=()
+          if test "$PROVIDER" = "groq"; then
+            # canonical holdout v5 consumed 66,423 observed tokens. Keep the 70K cap and reserve 4K
+            # before the next case so unexpected expansion fails closed.
+            TOKEN_BUDGET_ARGS+=(
+              --max-total-provider-tokens 70000
+              --provider-token-reserve-per-case 4000
+            )
+          fi
+
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-holdout-v7-study -- \
+            "$HOLDOUT_DIR" \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed "$HOLDOUT_SEED" \
+            --inter-case-delay-ms "$DELAY_MS" \
+            --max-consecutive-operational-failures 2 \
+            --max-consecutive-capacity-failures 2 \
+            --continue-after-operational-failures \
+            "${TOKEN_BUDGET_ARGS[@]}" \
+            --checkpoint "${BASE}-checkpoint.json" \
+            > "${BASE}-result.json" \
+            2> "${BASE}-stderr.log"
+          RC=$?
+          set -e
+          printf '%s\n' "$RC" > "${BASE}.rc"
+
+          if test -f "${BASE}-result.json"; then
+            jq '{
+              configuration_id,
+              suite_id,
+              annotation_protocol_id,
+              fixed_core_id,
+              corpus_status_at_observation,
+              candidate_commit,
+              provider,
+              model,
+              canonical_full_holdout,
+              scorability,
+              provider_arm_latch,
+              metrics,
+              mismatches: [
+                .observations[]
+                | select(
+                    .proposal_match == false
+                    or .local_qualification_match == false
+                    or .effective_local_qualification_match == false
+                    or .disposition_match == false
+                    or .failure_class != null
+                  )
+                | {
+                    id,
+                    family,
+                    expected_proposal,
+                    observed_proposal,
+                    expected_local_qualification,
+                    observed_local_qualification,
+                    effective_local_qualification,
+                    effective_local_qualification_match,
+                    expected_disposition,
+                    materialized_disposition,
+                    lexical_baseline,
+                    deterministic_guard_override,
+                    failure_class
+                  }
+              ]
+            }' "${BASE}-result.json"
+          fi
+
+          exit 0
+
+      - name: Preserve live evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-holdout-v7-${{ matrix.provider }}
+          path: |
+            /tmp/evidence-relevance-${{ matrix.provider }}*
+            /tmp/evidence-relevance-google-attempts.jsonl
+          if-no-files-found: warn
+          retention-days: 90
+
+  final-gate:
+    needs: live
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.6-evidence-relevance-holdout-v7-*
+          path: /tmp/evidence-relevance-artifacts
+          merge-multiple: true
+
+      - name: Summarize three required holdout-v7 arms
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('/tmp/evidence-relevance-artifacts')
+          expected = {
+              'mistral': {'model':'ministral-8b-latest','required':True},
+              'groq': {'model':'openai/gpt-oss-120b','required':True},
+              'google': {'model':'gemini-3.5-flash-lite','required':True},
+          }
+          summary = {
+              'schema_version':'engine-0.6-evidence-relevance-holdout-summary-v7',
+              'providers':{},
+              'required_operationally_complete':True,
+              'required_correctness_gate_passed':True,
+              'required_utility_gate_passed':True,
+              'required_materialization_gate_passed':True,
+              'required_qualification_gate_passed':True,
+          }
+
+          for provider, cfg in expected.items():
+              result_path = root / f'evidence-relevance-{provider}-result.json'
+              rc_path = root / f'evidence-relevance-{provider}.rc'
+              required = cfg['required']
+              if not result_path.exists() or not rc_path.exists():
+                  summary['providers'][provider] = {'required':required,'missing':True}
+                  if required:
+                      summary['required_operationally_complete'] = False
+                      summary['required_correctness_gate_passed'] = False
+                      summary['required_utility_gate_passed'] = False
+                      summary['required_materialization_gate_passed'] = False
+                      summary['required_qualification_gate_passed'] = False
+                  continue
+
+              rc = int(rc_path.read_text().strip())
+              try:
+                  result = json.loads(result_path.read_text())
+              except Exception as exc:
+                  summary['providers'][provider] = {
+                      'required':required,'model':cfg['model'],'runner_rc':rc,'parse_error':str(exc)
+                  }
+                  if required:
+                      summary['required_operationally_complete'] = False
+                      summary['required_correctness_gate_passed'] = False
+                      summary['required_utility_gate_passed'] = False
+                      summary['required_materialization_gate_passed'] = False
+                      summary['required_qualification_gate_passed'] = False
+                  continue
+
+              metrics = result.get('metrics', {})
+              complete = (
+                  rc == 0
+                  and result.get('model') == cfg['model']
+                  and result.get('configuration_id') == 'evidence-relevance-live-holdout-v7'
+                  and result.get('suite_id') == 'evidence-relevance-holdout-v7'
+                  and result.get('annotation_protocol_id') == 'evidence-relevance-effective-qualification-v8'
+                  and result.get('fixed_core_id') == 'evidence-relevance-fixed-core-v7'
+                  and result.get('candidate_commit') == '${{ github.sha }}'
+                  and result.get('canonical_full_holdout') is True
+                  and result.get('planned_cases') == 26
+                  and result.get('completed_cases') == 26
+                  and result.get('operational_abort') is None
+                  and result.get('provider_arm_latch') is None
+                  and result.get('scorability') == 'complete_holdout_observation'
+                  and metrics.get('successful_provider_cases') == 26
+                  and metrics.get('failed_provider_cases') == 0
+                  and metrics.get('provider_attempts_incomplete_observations') == 0
+              )
+              correctness_ok = complete and metrics.get('correctness_wrong_target_relevance_retention') == 0
+              materialization_ok = complete and metrics.get('materialized_exact_matches') == 26
+              qualification_safety_ok = (
+                  complete
+                  and metrics.get('effective_local_qualification_expected_cases') == 26
+                  and metrics.get('effective_local_qualification_derivations') == 26
+                  and metrics.get('effective_authority_qualification_exact_matches') == 26
+                  and metrics.get('effective_qualification_scope_risk_misses') == 0
+                  and metrics.get('effective_qualification_spurious_scope_risks') == 0
+                  and metrics.get('effective_authority_identity_scope_misses') == 0
+                  and metrics.get('effective_authority_relation_scope_misses') == 0
+              )
+              utility_ok = (
+                  complete
+                  and metrics.get('false_relevance_rejections') == 0
+                  and metrics.get('relevant_left_ambiguous') == 0
+                  and metrics.get('utility_misses') == 0
+              )
+              qualification_expected = metrics.get('local_qualification_expected_cases')
+              qualification_invocations = metrics.get('local_qualification_invocations')
+              qualification_exact = metrics.get('local_qualification_exact_matches')
+              qualification_scope_risk_misses = metrics.get('qualification_scope_risk_misses')
+              qualification_spurious_scope_risks = metrics.get('qualification_spurious_scope_risks')
+              qualification_identity_scope_misses = metrics.get('qualification_identity_scope_misses')
+              qualification_relation_scope_misses = metrics.get('qualification_relation_scope_misses')
+              effective_qualification_expected = metrics.get('effective_local_qualification_expected_cases')
+              effective_qualification_derivations = metrics.get('effective_local_qualification_derivations')
+              effective_qualification_exact = metrics.get('effective_local_qualification_exact_matches')
+              effective_qualification_scope_risk_misses = metrics.get('effective_qualification_scope_risk_misses')
+              effective_qualification_spurious_scope_risks = metrics.get('effective_qualification_spurious_scope_risks')
+              effective_qualification_identity_scope_misses = metrics.get('effective_qualification_identity_scope_misses')
+              effective_qualification_relation_scope_misses = metrics.get('effective_qualification_relation_scope_misses')
+              effective_authority_qualification_exact = metrics.get('effective_authority_qualification_exact_matches')
+              effective_authority_identity_scope_misses = metrics.get('effective_authority_identity_scope_misses')
+              effective_authority_relation_scope_misses = metrics.get('effective_authority_relation_scope_misses')
+
+              summary['providers'][provider] = {
+                  'required':required,
+                  'model':cfg['model'],
+                  'runner_rc':rc,
+                  'configuration_id':result.get('configuration_id'),
+                  'suite_id':result.get('suite_id'),
+                  'candidate_commit':result.get('candidate_commit'),
+                  'annotation_protocol_id':result.get('annotation_protocol_id'),
+                  'fixed_core_id':result.get('fixed_core_id'),
+                  'planned_cases':result.get('planned_cases'),
+                  'completed_cases':result.get('completed_cases'),
+                  'operational_abort':result.get('operational_abort'),
+                  'provider_arm_latch':result.get('provider_arm_latch'),
+                  'scorability':result.get('scorability'),
+                  'successful_provider_cases':metrics.get('successful_provider_cases'),
+                  'failed_provider_cases':metrics.get('failed_provider_cases'),
+                  'proposal_exact_accuracy':metrics.get('proposal_exact_accuracy'),
+                  'local_qualification_expected_cases':qualification_expected,
+                  'local_qualification_invocations':qualification_invocations,
+                  'local_qualification_exact_matches':qualification_exact,
+                  'local_qualification_exact_accuracy':metrics.get('local_qualification_exact_accuracy'),
+                  'qualification_scope_risk_misses':qualification_scope_risk_misses,
+                  'qualification_spurious_scope_risks':qualification_spurious_scope_risks,
+                  'qualification_identity_scope_misses':qualification_identity_scope_misses,
+                  'qualification_relation_scope_misses':qualification_relation_scope_misses,
+                  'effective_local_qualification_expected_cases':effective_qualification_expected,
+                  'effective_local_qualification_derivations':effective_qualification_derivations,
+                  'effective_local_qualification_exact_matches':effective_qualification_exact,
+                  'effective_local_qualification_exact_accuracy':metrics.get('effective_local_qualification_exact_accuracy'),
+                  'effective_qualification_scope_risk_misses':effective_qualification_scope_risk_misses,
+                  'effective_qualification_spurious_scope_risks':effective_qualification_spurious_scope_risks,
+                  'effective_qualification_identity_scope_misses':effective_qualification_identity_scope_misses,
+                  'effective_qualification_relation_scope_misses':effective_qualification_relation_scope_misses,
+                  'effective_authority_qualification_exact_matches':effective_authority_qualification_exact,
+                  'effective_authority_qualification_exact_accuracy':metrics.get('effective_authority_qualification_exact_accuracy'),
+                  'effective_authority_identity_scope_misses':effective_authority_identity_scope_misses,
+                  'effective_authority_relation_scope_misses':effective_authority_relation_scope_misses,
+                  'materialized_exact_matches':metrics.get('materialized_exact_matches'),
+                  'materialized_exact_accuracy':metrics.get('materialized_exact_accuracy'),
+                  'correctness_wrong_target_relevance_retention':metrics.get('correctness_wrong_target_relevance_retention'),
+                  'false_relevance_rejections':metrics.get('false_relevance_rejections'),
+                  'relevant_left_ambiguous':metrics.get('relevant_left_ambiguous'),
+                  'utility_misses':metrics.get('utility_misses'),
+                  'model_calls':metrics.get('model_calls'),
+                  'provider_attempts':metrics.get('provider_attempts'),
+                  'provider_attempts_incomplete_observations':metrics.get('provider_attempts_incomplete_observations'),
+                  'provider_attempts_started':metrics.get('provider_attempts_started'),
+                  'provider_attempts_completed':metrics.get('provider_attempts_completed'),
+                  'active_execution_ms':metrics.get('active_execution_ms'),
+                  'provider_wait_ms':metrics.get('provider_wait_ms'),
+                  'pacing_wait_ms':metrics.get('pacing_wait_ms'),
+                  'retry_wait_ms':metrics.get('retry_wait_ms'),
+                  'latency_p50_ms':metrics.get('latency_p50_ms'),
+                  'latency_p95_ms':metrics.get('latency_p95_ms'),
+                  'latency_max_ms':metrics.get('latency_max_ms'),
+                  'complete':complete,
+                  'correctness_ok':correctness_ok,
+                  'utility_ok':utility_ok,
+                  'materialization_ok':materialization_ok,
+                  'qualification_safety_ok':qualification_safety_ok,
+              }
+
+              if required:
+                  summary['required_operationally_complete'] &= complete
+                  summary['required_correctness_gate_passed'] &= correctness_ok
+                  summary['required_utility_gate_passed'] &= utility_ok
+                  summary['required_materialization_gate_passed'] &= materialization_ok
+                  summary['required_qualification_gate_passed'] &= qualification_safety_ok
+
+          out = Path('/tmp/evidence-relevance-holdout-summary.json')
+          out.write_text(json.dumps(summary, indent=2) + '\n')
+          print(out.read_text())
+
+          if not summary['required_operationally_complete']:
+              raise SystemExit('required holdout arm operationally incomplete')
+          if not summary['required_correctness_gate_passed']:
+              raise SystemExit('required correctness boundary violation observed')
+          if not summary['required_utility_gate_passed']:
+              raise SystemExit('required holdout utility miss observed')
+          if not summary['required_materialization_gate_passed']:
+              raise SystemExit('required materialized disposition gate failed')
+          if not summary['required_qualification_gate_passed']:
+              raise SystemExit('required qualification gate failed')
+          PY
+
+      - name: Preserve combined summary
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-holdout-v7-summary
+          path: /tmp/evidence-relevance-holdout-summary.json
+          if-no-files-found: warn
+          retention-days: 90
