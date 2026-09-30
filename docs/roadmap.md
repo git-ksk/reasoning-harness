@@ -49,6 +49,10 @@ Successor v3 semantics remain frozen at 8c1f02c181e2a7c4e267d10ce610e0517162004d
 
 Successor v4 is versioned as effective qualification v6 + materialization v19. It adds provider/fixture-neutral authority composition for repeated Harness-authorized positive identity, mandatory abstention on single-signal near siblings, negative ownership from context-only target mention plus a stable repeated sibling subject, separately gated explicit requested-relation exclusion, and URL-only unnamed-ownership context-gap preservation. Immutable replay preserves v23 48/48 x3, holdout v1 26/26 x3 and holdout v2 26/26 x3, while recovering v3a to 26/26 x3 under successor semantics without rewriting historical evidence. Full validation and a frozen semantic checksum are required before any fresh independent holdout v4 is authored. See the successor v4 design document.
 
+### Engine 0.6 #462 independent holdout v4 pre-freeze
+
+A fresh holdout v4 was authored only after successor-v4 semantics froze at 663ade43de96dbda511a11f351e8ce1593d85ed1 / engine-0.6-evidence-relevance-successor-v4-semantics-freeze. The suite has 26 cases = Relevant 8 / Irrelevant 10 / Ambiguous 8. Against v1/v2/v3 it requires zero overlap in case IDs, canonical entities, tasks, exact signals, and exact 8-token signal n-grams, and explicitly excludes the v3a terminal case IDs/entities. Historical runner routing stays v1=v3/v16, v2=v4/v17, v3=v5/v18; only v4 selects v6/v19. Groq admission is re-anchored from the v3a observed 65,015 tokens and conservative completion anchor 2026-09-29T17:12:55Z, producing a fail-closed 55K-headroom floor of 2026-09-29T22:51:42Z / 2026-09-30 07:51:42 JST. Any known material intervening organization usage requires re-anchoring. Full validation and a frozen surface checksum are required before the first/only canonical freeze tag and live observation.
+
 ### Product
 
 1. **Bounded resolver target closure (#159):** implemented in successor candidate `79ec3b44971c32f9a8847d8173672675947c7288`; exact Harness-owned unresolved targets are prioritized through the existing bounded acquisition/admission/re-verification boundary without model-owned authority.

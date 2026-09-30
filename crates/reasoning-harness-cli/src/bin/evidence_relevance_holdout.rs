@@ -16,9 +16,11 @@ use reasoning_harness_core::{
     build_evidence_relevance_binding_proposal_v5_request, build_strict_json_text_fallback_request,
     derive_effective_evidence_local_qualification_v3,
     derive_effective_evidence_local_qualification_v4,
-    derive_effective_evidence_local_qualification_v5, materialize_evidence_relevance_v16,
+    derive_effective_evidence_local_qualification_v5,
+    derive_effective_evidence_local_qualification_v6, materialize_evidence_relevance_v16,
     materialize_evidence_relevance_v17, materialize_evidence_relevance_v18,
-    parse_evidence_local_qualification_v8, parse_evidence_relevance_binding_proposal,
+    materialize_evidence_relevance_v19, parse_evidence_local_qualification_v8,
+    parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
@@ -44,6 +46,12 @@ const V3_EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-q
 const V3_EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v3";
 const V3_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-holdout-v3";
 const V3_EXPECTED_CASES: usize = 26;
+const V4_CONFIGURATION_ID: &str = "evidence-relevance-live-holdout-v4";
+const V4_EXPECTED_SUITE_ID: &str = "evidence-relevance-holdout-v4";
+const V4_EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-qualification-v6";
+const V4_EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v4";
+const V4_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-holdout-v4";
+const V4_EXPECTED_CASES: usize = 26;
 const PROVIDER_WAIT_BUDGET_MS: u64 = 45_000;
 const MAX_SINGLE_PROVIDER_WAIT_MS: u64 = 30_000;
 const ABSOLUTE_CASE_BUDGET_MS: u64 = 120_000;
@@ -53,6 +61,7 @@ enum HoldoutProfile {
     V1,
     V2,
     V3,
+    V4,
 }
 
 impl HoldoutProfile {
@@ -61,7 +70,7 @@ impl HoldoutProfile {
         let target = target
             .canonicalize()
             .map_err(|error| format!("canonicalize target directory: {error}"))?;
-        for profile in [Self::V1, Self::V2, Self::V3] {
+        for profile in [Self::V1, Self::V2, Self::V3, Self::V4] {
             let expected = root
                 .join(profile.relative_dir())
                 .canonicalize()
@@ -76,7 +85,7 @@ impl HoldoutProfile {
             }
         }
         Err(format!(
-            "evidence-relevance holdout accepts only this checkout's {EXPECTED_RELATIVE_DIR}, {V2_EXPECTED_RELATIVE_DIR}, or {V3_EXPECTED_RELATIVE_DIR}"
+            "evidence-relevance holdout accepts only this checkout's {EXPECTED_RELATIVE_DIR}, {V2_EXPECTED_RELATIVE_DIR}, {V3_EXPECTED_RELATIVE_DIR}, or {V4_EXPECTED_RELATIVE_DIR}"
         ))
     }
 
@@ -85,6 +94,7 @@ impl HoldoutProfile {
             Self::V1 => CONFIGURATION_ID,
             Self::V2 => V2_CONFIGURATION_ID,
             Self::V3 => V3_CONFIGURATION_ID,
+            Self::V4 => V4_CONFIGURATION_ID,
         }
     }
 
@@ -93,6 +103,7 @@ impl HoldoutProfile {
             Self::V1 => EXPECTED_SUITE_ID,
             Self::V2 => V2_EXPECTED_SUITE_ID,
             Self::V3 => V3_EXPECTED_SUITE_ID,
+            Self::V4 => V4_EXPECTED_SUITE_ID,
         }
     }
 
@@ -101,6 +112,7 @@ impl HoldoutProfile {
             Self::V1 => EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V2 => V2_EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V3 => V3_EXPECTED_ANNOTATION_PROTOCOL_ID,
+            Self::V4 => V4_EXPECTED_ANNOTATION_PROTOCOL_ID,
         }
     }
 
@@ -109,6 +121,7 @@ impl HoldoutProfile {
             Self::V1 => EXPECTED_FIXED_CORE_ID,
             Self::V2 => V2_EXPECTED_FIXED_CORE_ID,
             Self::V3 => V3_EXPECTED_FIXED_CORE_ID,
+            Self::V4 => V4_EXPECTED_FIXED_CORE_ID,
         }
     }
 
@@ -117,6 +130,7 @@ impl HoldoutProfile {
             Self::V1 => EXPECTED_RELATIVE_DIR,
             Self::V2 => V2_EXPECTED_RELATIVE_DIR,
             Self::V3 => V3_EXPECTED_RELATIVE_DIR,
+            Self::V4 => V4_EXPECTED_RELATIVE_DIR,
         }
     }
 
@@ -125,6 +139,7 @@ impl HoldoutProfile {
             Self::V1 => EXPECTED_CASES,
             Self::V2 => V2_EXPECTED_CASES,
             Self::V3 => V3_EXPECTED_CASES,
+            Self::V4 => V4_EXPECTED_CASES,
         }
     }
 
@@ -145,6 +160,9 @@ impl HoldoutProfile {
             Self::V3 => {
                 derive_effective_evidence_local_qualification_v5(policy, candidate, proposal, raw)
             }
+            Self::V4 => {
+                derive_effective_evidence_local_qualification_v6(policy, candidate, proposal, raw)
+            }
         }
     }
 
@@ -159,6 +177,7 @@ impl HoldoutProfile {
             Self::V1 => materialize_evidence_relevance_v16(policy, candidate, proposal, raw),
             Self::V2 => materialize_evidence_relevance_v17(policy, candidate, proposal, raw),
             Self::V3 => materialize_evidence_relevance_v18(policy, candidate, proposal, raw),
+            Self::V4 => materialize_evidence_relevance_v19(policy, candidate, proposal, raw),
         }
     }
 }
@@ -2737,6 +2756,7 @@ fn write_checkpoint(
         EXPECTED_SUITE_ID => CONFIGURATION_ID,
         V2_EXPECTED_SUITE_ID => V2_CONFIGURATION_ID,
         V3_EXPECTED_SUITE_ID => V3_CONFIGURATION_ID,
+        V4_EXPECTED_SUITE_ID => V4_CONFIGURATION_ID,
         other => return Err(format!("unexpected checkpoint suite id {other:?}")),
     };
     let checkpoint = Checkpoint {

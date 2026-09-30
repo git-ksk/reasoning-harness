@@ -49,6 +49,10 @@ Successor v3 semanticsは8c1f02c181e2a7c4e267d10ce610e0517162004d / engine-0.6-e
 
 Successor v4はeffective qualification v6 + materialization v19としてversion化する。provider / fixture非依存で、repeated Harness-authorized positive identity、single-signal near siblingのmandatory abstention、context-only target + stable repeated sibling subjectによるnegative ownership、明示的requested-relation exclusionの独立gate、URL-only unnamed ownershipのcontext-gap保持を追加する。immutable replayはv23 48/48 x3、holdout v1 26/26 x3、holdout v2 26/26 x3を維持し、v3aをsuccessor semantics上26/26 x3へ回復する。historical evidenceは書き換えない。full validationとsemantic checksum freeze後にのみfresh independent holdout v4をauthorする。詳細はsuccessor v4 design documentを参照。
 
+### Engine 0.6 #462 independent holdout v4 pre-freeze
+
+Successor v4 semantics freeze 663ade43de96dbda511a11f351e8ce1593d85ed1 / engine-0.6-evidence-relevance-successor-v4-semantics-freeze の後にのみfresh holdout v4をauthorした。26 case = Relevant 8 / Irrelevant 10 / Ambiguous 8。v1/v2/v3に対してcase ID・entity・task・exact signal・exact 8-token signal n-gram overlapをすべて0とし、v3a terminal case ID/entityも除外する。runnerはhistorical v1=v3/v16、v2=v4/v17、v3=v5/v18を維持し、v4だけv6/v19を選択する。Groq admissionはv3a実測65,015 tokensとconservative completion anchor 2026-09-29T17:12:55Zから再anchorし、55K headroomのfail-closed floorを2026-09-29T22:51:42Z / 2026-09-30 07:51:42 JSTとする。既知のmaterialなintervening organization usageがあれば再anchorする。live observation前にfull validation / surface checksumを固定し、first/only freeze tagのみcanonicalとする。
+
 ### プロダクト
 
 1. **bounded resolver による target closure（#159）：** successor candidate `79ec3b44971c32f9a8847d8173672675947c7288` で実装済み。exact Harness-owned unresolved targets は、model-owned authority を介さず、既存の bounded acquisition/admission/re-verification boundary を通じて優先付けされる。
