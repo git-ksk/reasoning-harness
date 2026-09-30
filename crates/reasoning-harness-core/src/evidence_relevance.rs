@@ -756,12 +756,37 @@ fn target_identity_phrases(policy: &EvidenceRelevanceTargetPolicy) -> Vec<String
 fn strict_relation_terms(relation: EvidenceRelevanceRelationKind) -> &'static [&'static str] {
     match relation {
         EvidenceRelevanceRelationKind::Availability => &["availability", "available"],
-        EvidenceRelevanceRelationKind::Pricing => &["pricing", "price", "cost", "billing"],
+        EvidenceRelevanceRelationKind::Pricing => &[
+            "pricing",
+            "price",
+            "cost",
+            "billing",
+            "billed",
+            "charge",
+            "credit",
+            "allowance",
+        ],
         EvidenceRelevanceRelationKind::Limit => &["limit", "quota", "maximum"],
         EvidenceRelevanceRelationKind::ChangeOrLaunch => &["change", "launch", "release", "update"],
         EvidenceRelevanceRelationKind::Definition => &["definition", "defined"],
         EvidenceRelevanceRelationKind::BenefitOrUseCase => &["benefit", "use case"],
         EvidenceRelevanceRelationKind::General => &[],
+    }
+}
+
+fn positive_relation_terms(relation: EvidenceRelevanceRelationKind) -> &'static [&'static str] {
+    match relation {
+        EvidenceRelevanceRelationKind::Pricing => &[
+            "pricing",
+            "price",
+            "cost",
+            "billing",
+            "billed",
+            "charge",
+            "credit",
+            "allowance",
+        ],
+        other => strict_relation_terms(other),
     }
 }
 
@@ -856,7 +881,7 @@ fn deterministic_positive_target_relation_fact(
             return false;
         }
         let has_target = targets.iter().any(|target| text.contains(target));
-        let has_relation = strict_relation_terms(policy.relation)
+        let has_relation = positive_relation_terms(policy.relation)
             .iter()
             .any(|relation| text.contains(relation));
         has_target && has_relation
@@ -1205,7 +1230,16 @@ fn deterministic_requested_relation_explicitly_excluded(
     let text = candidate_local_text(candidate);
     let relation_terms: &[&str] = match policy.relation {
         EvidenceRelevanceRelationKind::Availability => &["availability", "available"],
-        EvidenceRelevanceRelationKind::Pricing => &["pricing", "price", "cost", "billing"],
+        EvidenceRelevanceRelationKind::Pricing => &[
+            "pricing",
+            "price",
+            "cost",
+            "billing",
+            "billed",
+            "charge",
+            "credit",
+            "allowance",
+        ],
         EvidenceRelevanceRelationKind::Limit => &["limit", "quota"],
         EvidenceRelevanceRelationKind::ChangeOrLaunch => &["change", "launch", "release", "update"],
         EvidenceRelevanceRelationKind::Definition => &["definition", "defined"],

@@ -220,3 +220,21 @@ fn unrelated_inert_text_does_not_change_absence_disposition() {
     );
     assert_eq!(assess(&base), assess(&extended));
 }
+
+#[test]
+fn broader_relation_synonym_positive_fact_blocks_forced_negative_materialization() {
+    let c = candidate(
+        "contradiction-synonym",
+        vec![
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "No Silver Finch pricing is listed in this summary.",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Fact,
+                "Silver Finch charges 4 credits per workspace-hour.",
+            ),
+        ],
+    );
+    assert_ne!(assess(&c), EvidenceRelevanceDisposition::Irrelevant);
+}
