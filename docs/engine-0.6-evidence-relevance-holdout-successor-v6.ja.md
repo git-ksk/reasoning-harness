@@ -118,3 +118,13 @@ v5 development policyはv6でも妥当:
 - semantics checksum
 
 successor-v6 semantics freezeをcommit/tagする前にfresh holdout v6をauthorしてはならない。
+
+## Development convergence
+
+candidate commit `7a8ee5059079e709d82ccf962528f2e6af034853` のreusable development run `36728692499` はtwo-provider development gateをPASSした。これはcandidate shaping evidenceであり、holdout acceptance evidenceではない。
+
+- Mistral `ministral-8b-latest`: 16/16 operational、effective authority 16/16 exact、materialization 16/16 exact、wrong-target Relevant 0、utility miss 0。total token 28,300、latency p50/p95/max 1,608/4,495/4,495 ms。
+- Google `gemini-3.5-flash-lite`: 16/16 operational、effective authority 16/16 exact、materialization 16/16 exact、wrong-target Relevant 0、utility miss 0。total token 29,151、latency p50/p95/max 6,818/34,814/34,814 ms。
+- Groqはiterative candidate shapingには使用していない。
+
+captured observationはsemantics freeze前に `fixtures/evidence-relevance-successor-v6-development/observations-run-36728692499.json` からoffline replayする。

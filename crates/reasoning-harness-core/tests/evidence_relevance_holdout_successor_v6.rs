@@ -203,3 +203,69 @@ fn holdout_v5_provenance_and_historical_groq_miss_remain_immutable() {
         EvidenceRelevanceDisposition::Irrelevant
     );
 }
+
+#[derive(Debug, Deserialize)]
+struct DevelopmentReplay {
+    source: DevelopmentReplaySource,
+    providers: Vec<ProviderReplay>,
+}
+
+#[derive(Debug, Deserialize)]
+struct DevelopmentReplaySource {
+    run_id: u64,
+    candidate_commit: String,
+    holdout_acceptance_evidence: bool,
+}
+
+#[test]
+fn successor_v6_replays_converged_two_provider_development_observation() {
+    let manifest = load_manifest("evidence-relevance-successor-v6-development/manifest.json");
+    let raw = fs::read_to_string(root().join(
+        "fixtures/evidence-relevance-successor-v6-development/observations-run-36728692499.json",
+    ))
+    .unwrap();
+    let replay: DevelopmentReplay = serde_json::from_str(&raw).unwrap();
+    assert_eq!(replay.source.run_id, 36_728_692_499);
+    assert_eq!(
+        replay.source.candidate_commit,
+        "7a8ee5059079e709d82ccf962528f2e6af034853"
+    );
+    assert!(!replay.source.holdout_acceptance_evidence);
+    assert_eq!(replay.providers.len(), 2);
+    let cases = manifest
+        .cases
+        .iter()
+        .map(|c| (c.id.as_str(), c))
+        .collect::<BTreeMap<_, _>>();
+    assert_eq!(cases.len(), 16);
+    for provider in &replay.providers {
+        assert_eq!(provider.observations.len(), 16, "{}", provider.provider);
+        for observed in &provider.observations {
+            let case = cases.get(observed.id.as_str()).unwrap();
+            let effective = derive_effective_evidence_local_qualification_v8(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap();
+            assert_eq!(
+                effective, case.expected_local_qualification,
+                "{} {} authority",
+                provider.provider, observed.id
+            );
+            let assessment = materialize_evidence_relevance_v21(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap();
+            assert_eq!(
+                assessment.disposition, case.expected_disposition,
+                "{} {} disposition",
+                provider.provider, observed.id
+            );
+        }
+    }
+}

@@ -118,3 +118,13 @@ Do not freeze successor-v6 semantics until all of the following are green:
 - semantics checksum
 
 Fresh holdout v6 authoring is prohibited until the successor-v6 semantics freeze is committed and tagged.
+
+## Development convergence
+
+Reusable development run `36728692499` at candidate commit `7a8ee5059079e709d82ccf962528f2e6af034853` passed the two-provider development gate. This is candidate-shaping evidence only, not holdout acceptance evidence.
+
+- Mistral `ministral-8b-latest`: 16/16 operational, effective authority 16/16 exact, materialization 16/16 exact, wrong-target Relevant 0, utility miss 0; 28,300 total tokens; latency p50/p95/max 1,608/4,495/4,495 ms.
+- Google `gemini-3.5-flash-lite`: 16/16 operational, effective authority 16/16 exact, materialization 16/16 exact, wrong-target Relevant 0, utility miss 0; 29,151 total tokens; latency p50/p95/max 6,818/34,814/34,814 ms.
+- Groq was not used for iterative candidate shaping.
+
+The captured observations are replayed from `fixtures/evidence-relevance-successor-v6-development/observations-run-36728692499.json` before semantics freeze.
