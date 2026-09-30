@@ -389,7 +389,7 @@
         "target_id": "d09-negative_exact_target_relation_absence",
         "target_question": "How is Kestrel Store priced?",
         "entity": {
-          "canonical_id": "entity:d09-negative_exact_target_different_relation",
+          "canonical_id": "entity:d09-negative_exact_target_relation_absence",
           "canonical_name": "Kestrel Store",
           "aliases": []
         },
