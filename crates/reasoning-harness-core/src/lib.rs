@@ -14,6 +14,7 @@ pub mod corpus;
 pub mod decision;
 pub mod diagnostic_stability;
 pub mod eval;
+pub mod evidence_authority;
 pub mod evidence_need;
 pub mod evidence_qualification;
 pub mod evidence_qualification_benchmark;
@@ -91,6 +92,12 @@ pub use diagnostic_stability::{
     RepeatedDiagnosticReport, aggregate_repeated_diagnostics, observe_diagnostics, wilson_95,
 };
 pub use eval::{EvalMetrics, evaluate};
+pub use evidence_authority::{
+    EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V20_ID,
+    EVIDENCE_RELEVANCE_LOCAL_AUTHORITY_V1_CONTRACT_ID, EvidenceAuthoritySource,
+    EvidenceLocalAuthorityV1, materialize_evidence_relevance_v20,
+    resolve_evidence_local_authority_v1,
+};
 pub use evidence_need::{
     ContextSufficiency, EVIDENCE_NEED_MATERIALIZATION_POLICY_ID,
     EVIDENCE_NEED_PROPOSAL_CONTRACT_ID, EvidenceAcquisitionDisposition, EvidenceNeedDecision,
