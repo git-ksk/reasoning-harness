@@ -97,8 +97,8 @@ jobs:
       - name: Test unchanged safety boundaries and v4 compile
         run: |
           set -euo pipefail
-          cargo test --locked -p reasoning-harness-providers mcp_readonly -- --nocapture --test-threads=1
-          cargo test --locked -p reasoning-harness-providers external_admission -- --nocapture --test-threads=1
+          cargo test --locked -p reasoning-harness-providers mcp_readonly -- --nocapture
+          cargo test --locked -p reasoning-harness-providers external_admission -- --nocapture
           cargo test --locked -p reasoning-harness-core finalization -- --nocapture
           cargo test --locked -p reasoning-harness-cli --bin reason-product-external-info-v4
           cargo check --locked -p reasoning-harness-cli --bin reason-product-external-info-v4
