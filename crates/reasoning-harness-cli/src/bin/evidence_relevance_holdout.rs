@@ -18,10 +18,12 @@ use reasoning_harness_core::{
     derive_effective_evidence_local_qualification_v4,
     derive_effective_evidence_local_qualification_v5,
     derive_effective_evidence_local_qualification_v6,
-    derive_effective_evidence_local_qualification_v7, materialize_evidence_relevance_v16,
+    derive_effective_evidence_local_qualification_v7,
+    derive_effective_evidence_local_qualification_v8, materialize_evidence_relevance_v16,
     materialize_evidence_relevance_v17, materialize_evidence_relevance_v18,
     materialize_evidence_relevance_v19, materialize_evidence_relevance_v20,
-    parse_evidence_local_qualification_v8, parse_evidence_relevance_binding_proposal,
+    materialize_evidence_relevance_v21, parse_evidence_local_qualification_v8,
+    parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
@@ -68,6 +70,15 @@ const V5_DEV_EXPECTED_FIXED_CORE_ID: &str =
     "evidence-relevance-fixed-core-successor-v5-development-v1";
 const V5_DEV_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-successor-v5-development";
 const V5_DEV_EXPECTED_CASES: usize = 16;
+const V6_DEV_CONFIGURATION_ID: &str = "evidence-relevance-successor-v6-development";
+const V6_DEV_EXPECTED_SUITE_ID: &str = "evidence-relevance-successor-v6-development";
+const V6_DEV_EXPECTED_STATUS: &str = "reusable_development_calibration";
+const V6_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID: &str =
+    "evidence-relevance-effective-qualification-v8";
+const V6_DEV_EXPECTED_FIXED_CORE_ID: &str =
+    "evidence-relevance-fixed-core-successor-v6-development-v1";
+const V6_DEV_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-successor-v6-development";
+const V6_DEV_EXPECTED_CASES: usize = 17;
 const PROVIDER_WAIT_BUDGET_MS: u64 = 45_000;
 const MAX_SINGLE_PROVIDER_WAIT_MS: u64 = 30_000;
 const ABSOLUTE_CASE_BUDGET_MS: u64 = 120_000;
@@ -80,6 +91,7 @@ enum HoldoutProfile {
     V4,
     V5,
     V5Development,
+    V6Development,
 }
 
 impl HoldoutProfile {
@@ -95,6 +107,7 @@ impl HoldoutProfile {
             Self::V4,
             Self::V5,
             Self::V5Development,
+            Self::V6Development,
         ] {
             let expected = root
                 .join(profile.relative_dir())
@@ -122,6 +135,7 @@ impl HoldoutProfile {
             Self::V4 => V4_CONFIGURATION_ID,
             Self::V5 => V5_CONFIGURATION_ID,
             Self::V5Development => V5_DEV_CONFIGURATION_ID,
+            Self::V6Development => V6_DEV_CONFIGURATION_ID,
         }
     }
 
@@ -133,6 +147,7 @@ impl HoldoutProfile {
             Self::V4 => V4_EXPECTED_SUITE_ID,
             Self::V5 => V5_EXPECTED_SUITE_ID,
             Self::V5Development => V5_DEV_EXPECTED_SUITE_ID,
+            Self::V6Development => V6_DEV_EXPECTED_SUITE_ID,
         }
     }
 
@@ -144,6 +159,7 @@ impl HoldoutProfile {
             Self::V4 => V4_EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V5 => V5_EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V5Development => V5_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID,
+            Self::V6Development => V6_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID,
         }
     }
 
@@ -155,6 +171,7 @@ impl HoldoutProfile {
             Self::V4 => V4_EXPECTED_FIXED_CORE_ID,
             Self::V5 => V5_EXPECTED_FIXED_CORE_ID,
             Self::V5Development => V5_DEV_EXPECTED_FIXED_CORE_ID,
+            Self::V6Development => V6_DEV_EXPECTED_FIXED_CORE_ID,
         }
     }
 
@@ -166,6 +183,7 @@ impl HoldoutProfile {
             Self::V4 => V4_EXPECTED_RELATIVE_DIR,
             Self::V5 => V5_EXPECTED_RELATIVE_DIR,
             Self::V5Development => V5_DEV_EXPECTED_RELATIVE_DIR,
+            Self::V6Development => V6_DEV_EXPECTED_RELATIVE_DIR,
         }
     }
 
@@ -177,6 +195,7 @@ impl HoldoutProfile {
             Self::V4 => V4_EXPECTED_CASES,
             Self::V5 => V5_EXPECTED_CASES,
             Self::V5Development => V5_DEV_EXPECTED_CASES,
+            Self::V6Development => V6_DEV_EXPECTED_CASES,
         }
     }
 
@@ -184,16 +203,19 @@ impl HoldoutProfile {
         match self {
             Self::V1 | Self::V2 | Self::V3 | Self::V4 | Self::V5 => EXPECTED_STATUS,
             Self::V5Development => V5_DEV_EXPECTED_STATUS,
+            Self::V6Development => V6_DEV_EXPECTED_STATUS,
         }
     }
 
     fn is_holdout(self) -> bool {
-        !matches!(self, Self::V5Development)
+        !matches!(self, Self::V5Development | Self::V6Development)
     }
 
     fn allows_live_provider(self, provider: Provider) -> bool {
         match self {
-            Self::V5Development => matches!(provider, Provider::Mistral | Provider::Google),
+            Self::V5Development | Self::V6Development => {
+                matches!(provider, Provider::Mistral | Provider::Google)
+            }
             _ => true,
         }
     }
@@ -224,6 +246,9 @@ impl HoldoutProfile {
             Self::V5Development => {
                 derive_effective_evidence_local_qualification_v7(policy, candidate, proposal, raw)
             }
+            Self::V6Development => {
+                derive_effective_evidence_local_qualification_v8(policy, candidate, proposal, raw)
+            }
         }
     }
 
@@ -242,6 +267,9 @@ impl HoldoutProfile {
             Self::V5 => materialize_evidence_relevance_v20(policy, candidate, proposal, raw),
             Self::V5Development => {
                 materialize_evidence_relevance_v20(policy, candidate, proposal, raw)
+            }
+            Self::V6Development => {
+                materialize_evidence_relevance_v21(policy, candidate, proposal, raw)
             }
         }
     }
