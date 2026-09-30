@@ -2798,6 +2798,17 @@ fn accuracy(matches: usize, denominator: usize) -> Option<f64> {
     (denominator > 0).then(|| matches as f64 / denominator as f64)
 }
 
+fn checkpoint_profile(suite_id: &str) -> Result<(&'static str, bool), String> {
+    match suite_id {
+        EXPECTED_SUITE_ID => Ok((CONFIGURATION_ID, true)),
+        V2_EXPECTED_SUITE_ID => Ok((V2_CONFIGURATION_ID, true)),
+        V3_EXPECTED_SUITE_ID => Ok((V3_CONFIGURATION_ID, true)),
+        V4_EXPECTED_SUITE_ID => Ok((V4_CONFIGURATION_ID, true)),
+        V5_DEV_EXPECTED_SUITE_ID => Ok((V5_DEV_CONFIGURATION_ID, false)),
+        other => Err(format!("unexpected checkpoint suite id {other:?}")),
+    }
+}
+
 fn write_checkpoint(
     path: &Path,
     suite_id: &str,
@@ -2807,13 +2818,7 @@ fn write_checkpoint(
     observations: &[CaseObservation],
     run_status: &'static str,
 ) -> Result<(), String> {
-    let configuration_id = match suite_id {
-        EXPECTED_SUITE_ID => CONFIGURATION_ID,
-        V2_EXPECTED_SUITE_ID => V2_CONFIGURATION_ID,
-        V3_EXPECTED_SUITE_ID => V3_CONFIGURATION_ID,
-        V4_EXPECTED_SUITE_ID => V4_CONFIGURATION_ID,
-        other => return Err(format!("unexpected checkpoint suite id {other:?}")),
-    };
+    let (configuration_id, is_holdout) = checkpoint_profile(suite_id)?;
     let checkpoint = Checkpoint {
         checkpoint_version: "evidence-relevance-checkpoint-v1",
         run_status,
@@ -2827,7 +2832,11 @@ fn write_checkpoint(
             && observations.len() == expected_cases
             && observations.iter().all(|case| case.failure.is_none())
         {
-            "complete_holdout_observation"
+            if is_holdout {
+                "complete_holdout_observation"
+            } else {
+                "complete_development_observation"
+            }
         } else if run_status == "completed" {
             "operationally_incomplete_non_scorable"
         } else {
@@ -2870,6 +2879,19 @@ mod tests {
             .join("../../fixtures/evidence-relevance-holdout-v1/manifest.json");
         serde_json::from_slice(&fs::read(path).expect("read holdout manifest"))
             .expect("parse holdout manifest")
+    }
+
+    #[test]
+    fn checkpoint_profile_distinguishes_holdout_and_development_suites() {
+        assert_eq!(
+            checkpoint_profile(V4_EXPECTED_SUITE_ID).unwrap(),
+            (V4_CONFIGURATION_ID, true)
+        );
+        assert_eq!(
+            checkpoint_profile(V5_DEV_EXPECTED_SUITE_ID).unwrap(),
+            (V5_DEV_CONFIGURATION_ID, false)
+        );
+        assert!(checkpoint_profile("unknown-suite").is_err());
     }
 
     #[test]
