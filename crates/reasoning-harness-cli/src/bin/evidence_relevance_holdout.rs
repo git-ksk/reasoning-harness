@@ -17,10 +17,11 @@ use reasoning_harness_core::{
     derive_effective_evidence_local_qualification_v3,
     derive_effective_evidence_local_qualification_v4,
     derive_effective_evidence_local_qualification_v5,
-    derive_effective_evidence_local_qualification_v6, materialize_evidence_relevance_v16,
+    derive_effective_evidence_local_qualification_v6,
+    derive_effective_evidence_local_qualification_v7, materialize_evidence_relevance_v16,
     materialize_evidence_relevance_v17, materialize_evidence_relevance_v18,
-    materialize_evidence_relevance_v19, parse_evidence_local_qualification_v8,
-    parse_evidence_relevance_binding_proposal,
+    materialize_evidence_relevance_v19, materialize_evidence_relevance_v20,
+    parse_evidence_local_qualification_v8, parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
 use serde::{Deserialize, Serialize};
@@ -52,6 +53,15 @@ const V4_EXPECTED_ANNOTATION_PROTOCOL_ID: &str = "evidence-relevance-effective-q
 const V4_EXPECTED_FIXED_CORE_ID: &str = "evidence-relevance-fixed-core-v4";
 const V4_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-holdout-v4";
 const V4_EXPECTED_CASES: usize = 26;
+const V5_DEV_CONFIGURATION_ID: &str = "evidence-relevance-successor-v5-development";
+const V5_DEV_EXPECTED_SUITE_ID: &str = "evidence-relevance-successor-v5-development";
+const V5_DEV_EXPECTED_STATUS: &str = "reusable_development_calibration";
+const V5_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID: &str =
+    "evidence-relevance-effective-qualification-v7";
+const V5_DEV_EXPECTED_FIXED_CORE_ID: &str =
+    "evidence-relevance-fixed-core-successor-v5-development-v1";
+const V5_DEV_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-successor-v5-development";
+const V5_DEV_EXPECTED_CASES: usize = 16;
 const PROVIDER_WAIT_BUDGET_MS: u64 = 45_000;
 const MAX_SINGLE_PROVIDER_WAIT_MS: u64 = 30_000;
 const ABSOLUTE_CASE_BUDGET_MS: u64 = 120_000;
@@ -62,6 +72,7 @@ enum HoldoutProfile {
     V2,
     V3,
     V4,
+    V5Development,
 }
 
 impl HoldoutProfile {
@@ -70,7 +81,7 @@ impl HoldoutProfile {
         let target = target
             .canonicalize()
             .map_err(|error| format!("canonicalize target directory: {error}"))?;
-        for profile in [Self::V1, Self::V2, Self::V3, Self::V4] {
+        for profile in [Self::V1, Self::V2, Self::V3, Self::V4, Self::V5Development] {
             let expected = root
                 .join(profile.relative_dir())
                 .canonicalize()
@@ -85,7 +96,7 @@ impl HoldoutProfile {
             }
         }
         Err(format!(
-            "evidence-relevance holdout accepts only this checkout's {EXPECTED_RELATIVE_DIR}, {V2_EXPECTED_RELATIVE_DIR}, {V3_EXPECTED_RELATIVE_DIR}, or {V4_EXPECTED_RELATIVE_DIR}"
+            "evidence-relevance study accepts only this checkout's frozen holdout directories or {V5_DEV_EXPECTED_RELATIVE_DIR}"
         ))
     }
 
@@ -95,6 +106,7 @@ impl HoldoutProfile {
             Self::V2 => V2_CONFIGURATION_ID,
             Self::V3 => V3_CONFIGURATION_ID,
             Self::V4 => V4_CONFIGURATION_ID,
+            Self::V5Development => V5_DEV_CONFIGURATION_ID,
         }
     }
 
@@ -104,6 +116,7 @@ impl HoldoutProfile {
             Self::V2 => V2_EXPECTED_SUITE_ID,
             Self::V3 => V3_EXPECTED_SUITE_ID,
             Self::V4 => V4_EXPECTED_SUITE_ID,
+            Self::V5Development => V5_DEV_EXPECTED_SUITE_ID,
         }
     }
 
@@ -113,6 +126,7 @@ impl HoldoutProfile {
             Self::V2 => V2_EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V3 => V3_EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V4 => V4_EXPECTED_ANNOTATION_PROTOCOL_ID,
+            Self::V5Development => V5_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID,
         }
     }
 
@@ -122,6 +136,7 @@ impl HoldoutProfile {
             Self::V2 => V2_EXPECTED_FIXED_CORE_ID,
             Self::V3 => V3_EXPECTED_FIXED_CORE_ID,
             Self::V4 => V4_EXPECTED_FIXED_CORE_ID,
+            Self::V5Development => V5_DEV_EXPECTED_FIXED_CORE_ID,
         }
     }
 
@@ -131,6 +146,7 @@ impl HoldoutProfile {
             Self::V2 => V2_EXPECTED_RELATIVE_DIR,
             Self::V3 => V3_EXPECTED_RELATIVE_DIR,
             Self::V4 => V4_EXPECTED_RELATIVE_DIR,
+            Self::V5Development => V5_DEV_EXPECTED_RELATIVE_DIR,
         }
     }
 
@@ -140,6 +156,25 @@ impl HoldoutProfile {
             Self::V2 => V2_EXPECTED_CASES,
             Self::V3 => V3_EXPECTED_CASES,
             Self::V4 => V4_EXPECTED_CASES,
+            Self::V5Development => V5_DEV_EXPECTED_CASES,
+        }
+    }
+
+    fn expected_status(self) -> &'static str {
+        match self {
+            Self::V1 | Self::V2 | Self::V3 | Self::V4 => EXPECTED_STATUS,
+            Self::V5Development => V5_DEV_EXPECTED_STATUS,
+        }
+    }
+
+    fn is_holdout(self) -> bool {
+        !matches!(self, Self::V5Development)
+    }
+
+    fn allows_live_provider(self, provider: Provider) -> bool {
+        match self {
+            Self::V5Development => matches!(provider, Provider::Mistral | Provider::Google),
+            _ => true,
         }
     }
 
@@ -163,6 +198,9 @@ impl HoldoutProfile {
             Self::V4 => {
                 derive_effective_evidence_local_qualification_v6(policy, candidate, proposal, raw)
             }
+            Self::V5Development => {
+                derive_effective_evidence_local_qualification_v7(policy, candidate, proposal, raw)
+            }
         }
     }
 
@@ -178,6 +216,9 @@ impl HoldoutProfile {
             Self::V2 => materialize_evidence_relevance_v17(policy, candidate, proposal, raw),
             Self::V3 => materialize_evidence_relevance_v18(policy, candidate, proposal, raw),
             Self::V4 => materialize_evidence_relevance_v19(policy, candidate, proposal, raw),
+            Self::V5Development => {
+                materialize_evidence_relevance_v20(policy, candidate, proposal, raw)
+            }
         }
     }
 }
@@ -185,7 +226,7 @@ impl HoldoutProfile {
 #[derive(Debug, Parser)]
 #[command(
     name = "reason-evidence-relevance-holdout-study",
-    about = "Fresh independent model-backed holdout for evidence-target semantic relevance"
+    about = "Model-backed evidence-target relevance study for frozen holdouts and reusable development profiles"
 )]
 struct Args {
     target: PathBuf,
@@ -613,6 +654,13 @@ async fn run() -> Result<StudyOutput, String> {
     let manifest = load_manifest(&args.target, profile)?;
     let selected = select_cases(&manifest, &args.fixture_ids)?;
 
+    if !args.validate_only && !profile.allows_live_provider(args.provider) {
+        return Err(format!(
+            "profile {} permits live development only on Mistral and Google; Groq/Nvidia are reserved from candidate-shaping iterations",
+            profile.configuration_id()
+        ));
+    }
+
     for case in &selected {
         let expected = case.expected_proposal;
         let assessment = profile
@@ -966,13 +1014,16 @@ async fn run() -> Result<StudyOutput, String> {
         )?;
     }
 
-    let canonical_full_holdout =
+    let complete_profile_run =
         args.fixture_ids.is_empty() && selected.len() == manifest.cases.len();
+    let canonical_full_holdout = profile.is_holdout() && complete_profile_run;
     let operationally_complete = operational_abort.is_none()
         && observations.len() == selected.len()
         && observations.iter().all(|case| case.failure.is_none());
     let scorability = if canonical_full_holdout && operationally_complete {
         "complete_holdout_observation"
+    } else if !profile.is_holdout() && complete_profile_run && operationally_complete {
+        "complete_development_observation"
     } else {
         "non_canonical_or_operationally_incomplete"
     };
@@ -2176,8 +2227,12 @@ fn load_manifest(target: &Path, profile: HoldoutProfile) -> Result<HoldoutManife
     if manifest.issue != 462 {
         return Err(format!("unexpected issue binding {}", manifest.issue));
     }
-    if manifest.status != EXPECTED_STATUS {
-        return Err(format!("unexpected holdout status {:?}", manifest.status));
+    if manifest.status != profile.expected_status() {
+        return Err(format!(
+            "unexpected study status {:?} for profile {}",
+            manifest.status,
+            profile.configuration_id()
+        ));
     }
     if manifest.annotation_protocol_id != profile.annotation_protocol_id() {
         return Err(format!(
