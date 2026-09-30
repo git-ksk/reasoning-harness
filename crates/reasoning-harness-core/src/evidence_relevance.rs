@@ -1421,26 +1421,13 @@ fn deterministic_explicit_separation_repeated_sibling_subject(
         && deterministic_repeated_sibling_phrase(policy, candidate)
 }
 
-fn deterministic_single_signal_near_sibling_ambiguity(
+fn deterministic_single_signal_near_sibling_shape(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
 ) -> bool {
-    use EvidenceLocalBlockingReason as Risk;
-
-    if policy.identity_requirement != EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor
-        || classify_deterministic_local_scope_risk(candidate) != Risk::None
-        || deterministic_distinct_target_evidence(candidate)
-        || !requested_relation_locally_present(policy, candidate)
-    {
-        return false;
-    }
     let Some(entity) = &policy.entity else {
         return false;
     };
-    let (has_harness_anchor, url_only_anchor, _) = anchor_match(policy, candidate);
-    if has_harness_anchor || url_only_anchor {
-        return false;
-    }
 
     let local_signals = candidate
         .signals
@@ -1475,6 +1462,65 @@ fn deterministic_single_signal_near_sibling_ambiguity(
     });
 
     shares_identity_token && has_distinguishing_token
+}
+
+fn deterministic_single_signal_near_sibling_ambiguity(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    use EvidenceLocalBlockingReason as Risk;
+
+    if policy.identity_requirement != EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor
+        || classify_deterministic_local_scope_risk(candidate) != Risk::None
+        || deterministic_distinct_target_evidence(candidate)
+        || !requested_relation_locally_present(policy, candidate)
+    {
+        return false;
+    }
+    let (has_harness_anchor, url_only_anchor, _) = anchor_match(policy, candidate);
+    if has_harness_anchor || url_only_anchor {
+        return false;
+    }
+
+    deterministic_single_signal_near_sibling_shape(policy, candidate)
+}
+
+fn deterministic_navigation_only_single_signal_near_sibling_ambiguity(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    use EvidenceLocalBlockingReason as Risk;
+
+    policy.identity_requirement == EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor
+        && classify_deterministic_local_scope_risk(candidate) == Risk::None
+        && !deterministic_distinct_target_evidence(candidate)
+        && requested_relation_locally_present(policy, candidate)
+        && deterministic_navigation_only_target_mention(policy, candidate)
+        && deterministic_single_signal_near_sibling_shape(policy, candidate)
+}
+
+fn deterministic_url_only_single_signal_near_sibling_ambiguity(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    use EvidenceLocalBlockingReason as Risk;
+
+    let (has_harness_anchor, _, _) = anchor_match(policy, candidate);
+    policy.identity_requirement == EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor
+        && classify_deterministic_local_scope_risk(candidate) == Risk::None
+        && !deterministic_distinct_target_evidence(candidate)
+        && requested_relation_locally_present(policy, candidate)
+        && !has_harness_anchor
+        && canonical_url_identity_match(policy, candidate)
+        && deterministic_single_signal_near_sibling_shape(policy, candidate)
+}
+
+fn deterministic_non_owning_single_signal_near_sibling_ambiguity(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    deterministic_navigation_only_single_signal_near_sibling_ambiguity(policy, candidate)
+        || deterministic_url_only_single_signal_near_sibling_ambiguity(policy, candidate)
 }
 
 fn deterministic_url_only_ownership_context_gap_v2(
@@ -1818,6 +1864,17 @@ pub fn derive_effective_evidence_local_qualification_v7(
         })
     {
         effective.identity_scope = Identity::ExactTarget;
+        effective.relation_scope = Relation::RequestedRelation;
+    }
+
+    // URL/navigation-only target text is non-owning context. If the remaining
+    // bounded unit contains exactly one near-sibling identity signal, that single
+    // signal is insufficient to establish either exact-target or distinct-target
+    // authority even when advisory model stages agree in either direction.
+    if effective.scope_risk == Risk::None
+        && deterministic_non_owning_single_signal_near_sibling_ambiguity(policy, candidate)
+    {
+        effective.identity_scope = Identity::Unresolved;
         effective.relation_scope = Relation::RequestedRelation;
     }
 
@@ -3740,6 +3797,34 @@ pub fn materialize_evidence_relevance_v20(
         proposal,
         raw_qualification,
     )?;
+
+    // Preserve the ambiguity floor for URL/navigation-only target context plus a
+    // single near-sibling local signal. v19 cannot enforce this floor because its
+    // historical anchor bucket intentionally conflates URL and navigation context.
+    if proposal.is_some()
+        && raw_qualification.is_some()
+        && effective.scope_risk == Risk::None
+        && deterministic_non_owning_single_signal_near_sibling_ambiguity(policy, candidate)
+    {
+        let (_has_harness_anchor, _url_or_navigation_anchor, mut reasons) =
+            anchor_match(policy, candidate);
+        reasons.push(EvidenceRelevanceReason::RequiredIdentityAnchorMissing);
+        reasons.push(EvidenceRelevanceReason::NegativeTargetNotConfirmed);
+        reasons.push(EvidenceRelevanceReason::LocalQualificationDisagreement);
+        reasons.push(EvidenceRelevanceReason::ModelAmbiguous);
+        return Ok(EvidenceRelevanceAssessment {
+            contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_V5_CONTRACT_ID.into(),
+            materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V20_ID
+                .into(),
+            policy_id: policy.policy_id.clone(),
+            target_id: policy.target_id.clone(),
+            evidence_id: candidate.evidence_id.clone(),
+            source_id: candidate.source_id.clone(),
+            disposition: EvidenceRelevanceDisposition::Ambiguous,
+            path: EvidenceRelevanceAssessmentPath::ConservativeFallback,
+            reasons,
+        });
+    }
 
     // v1-v6 used broad generic catalog/landing wording as a conservative absence
     // cue. If v7 proves that cue was over-broad from an exact local anchor, local

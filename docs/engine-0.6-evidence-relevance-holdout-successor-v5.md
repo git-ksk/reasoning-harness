@@ -43,8 +43,9 @@ Status: active design/implementation candidate after immutable holdout v4 FAIL.
 
 5. Existing positive and ambiguity floors remain:
    - repeated authorized positive identity from successor v4 is unchanged
-   - single-signal near sibling remains Ambiguous
+   - a single near-sibling local signal remains Ambiguous when target identity is absent or appears only in non-owning URL/navigation context
    - URL-only unnamed ownership remains Ambiguous
+   - URL/navigation context is never proposition ownership by itself
    - model output cannot create authority or bypass deterministic scope risk
 
 No additional model stage is introduced.
@@ -76,7 +77,8 @@ Final validation:
 
 ## Current offline regression evidence
 
-- generic successor-v5 controls: 8/8 PASS
+- generic successor-v5 controls: 8/8 PASS, including URL/navigation-only single-sibling ambiguity under conflicting advisory votes
+- failed development run 36666145098 captured observations replay to 16/16 on Mistral + 16/16 on Google under the revised v7/v20 semantics; this remains development evidence, not holdout acceptance
 - immutable v23 replay: 48/48 x 3
 - immutable holdout v1 replay: 26/26 x 3
 - immutable holdout v2 replay: 26/26 x 3

@@ -107,33 +107,80 @@ fn navigation_only_target_cannot_override_repeated_sibling_ownership() {
 }
 
 #[test]
-fn navigation_only_target_with_single_near_subject_still_abstains() {
+fn non_owning_target_context_with_single_near_subject_still_abstains() {
     let policy = policy("Amber Relay", EvidenceRelevanceRelationKind::Pricing);
-    let candidate = candidate(
-        "navigation-single-sibling",
-        vec![
-            (
-                EvidenceRelevanceSignalKind::NavigationOrFooter,
-                "Amber Relay",
-            ),
-            (
-                EvidenceRelevanceSignalKind::Excerpt,
-                "Cedar Relay costs 7 credits per connection-hour.",
-            ),
-        ],
-    );
+    let candidates = [
+        candidate(
+            "navigation-single-sibling",
+            vec![
+                (
+                    EvidenceRelevanceSignalKind::NavigationOrFooter,
+                    "Amber Relay",
+                ),
+                (
+                    EvidenceRelevanceSignalKind::Excerpt,
+                    "Cedar Relay costs 7 credits per connection-hour.",
+                ),
+            ],
+        ),
+        candidate(
+            "url-single-sibling",
+            vec![
+                (
+                    EvidenceRelevanceSignalKind::CanonicalUrl,
+                    "https://docs.example.test/amber-relay/pricing",
+                ),
+                (
+                    EvidenceRelevanceSignalKind::Excerpt,
+                    "Cedar Relay costs 7 credits per connection-hour.",
+                ),
+            ],
+        ),
+    ];
 
-    let assessment = materialize_evidence_relevance_v20(
-        &policy,
-        &candidate,
-        Some(&exact_exact()),
-        Some(&raw_exact_requested()),
-    )
-    .unwrap();
-    assert_eq!(
-        assessment.disposition,
-        EvidenceRelevanceDisposition::Ambiguous
-    );
+    let advisory_pairs = [
+        (exact_exact(), raw_exact_requested()),
+        (
+            EvidenceRelevanceBindingProposal {
+                target_binding: EvidenceRelevanceBinding::Different,
+                relation_binding: EvidenceRelevanceBinding::Unresolved,
+            },
+            EvidenceLocalQualificationV6 {
+                identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+                relation_scope: EvidenceLocalRelationScope::RelationAbsent,
+                scope_risk: EvidenceLocalBlockingReason::ContextGap,
+            },
+        ),
+    ];
+
+    for candidate in candidates {
+        for (proposal, raw) in &advisory_pairs {
+            let effective = derive_effective_evidence_local_qualification_v7(
+                &policy,
+                &candidate,
+                Some(proposal),
+                Some(raw),
+            )
+            .unwrap();
+            assert_eq!(
+                effective.identity_scope,
+                EvidenceLocalIdentityScope::Unresolved
+            );
+            assert_eq!(
+                effective.relation_scope,
+                EvidenceLocalRelationScope::RequestedRelation
+            );
+            assert_eq!(effective.scope_risk, EvidenceLocalBlockingReason::None);
+
+            let assessment =
+                materialize_evidence_relevance_v20(&policy, &candidate, Some(proposal), Some(raw))
+                    .unwrap();
+            assert_eq!(
+                assessment.disposition,
+                EvidenceRelevanceDisposition::Ambiguous
+            );
+        }
+    }
 }
 
 #[test]

@@ -36,6 +36,19 @@ struct ReplaySource {
 }
 
 #[derive(Debug, Deserialize)]
+struct DevelopmentReplay {
+    source: DevelopmentReplaySource,
+    providers: Vec<ProviderReplay>,
+}
+
+#[derive(Debug, Deserialize)]
+struct DevelopmentReplaySource {
+    run_id: u64,
+    candidate_commit: String,
+    holdout_acceptance_evidence: bool,
+}
+
+#[derive(Debug, Deserialize)]
 struct ProviderReplay {
     provider: String,
     observations: Vec<Observation>,
@@ -66,6 +79,13 @@ fn load_replay_at(path: &str) -> Replay {
     let raw = fs::read_to_string(repository_root().join("fixtures").join(path))
         .unwrap_or_else(|error| panic!("read replay {path}: {error}"));
     serde_json::from_str(&raw).unwrap_or_else(|error| panic!("parse replay {path}: {error}"))
+}
+
+fn load_development_replay_at(path: &str) -> DevelopmentReplay {
+    let raw = fs::read_to_string(repository_root().join("fixtures").join(path))
+        .unwrap_or_else(|error| panic!("read development replay {path}: {error}"));
+    serde_json::from_str(&raw)
+        .unwrap_or_else(|error| panic!("parse development replay {path}: {error}"))
 }
 
 fn load_manifest() -> Manifest {
@@ -296,6 +316,72 @@ fn successor_v5_preserves_all_pre_v4_immutable_replay_surfaces() {
         "evidence-relevance-holdout-successor-v4/holdout-v3a-observation-replay.json",
         26,
     );
+}
+
+#[test]
+fn successor_v5_recovers_the_failed_two_provider_development_observation() {
+    let manifest = load_manifest_at("evidence-relevance-successor-v5-development/manifest.json");
+    let replay = load_development_replay_at(
+        "evidence-relevance-successor-v5-development/observations-run-36666145098.json",
+    );
+    assert_eq!(replay.source.run_id, 36_666_145_098);
+    assert_eq!(
+        replay.source.candidate_commit,
+        "dabb7fba665e1f939f452753c587c8811288d3ef"
+    );
+    assert!(!replay.source.holdout_acceptance_evidence);
+    assert_eq!(replay.providers.len(), 2);
+
+    let cases = manifest
+        .cases
+        .iter()
+        .map(|case| (case.id.as_str(), case))
+        .collect::<BTreeMap<_, _>>();
+    assert_eq!(cases.len(), 16);
+
+    for provider in &replay.providers {
+        assert_eq!(provider.observations.len(), 16, "{}", provider.provider);
+        for observed in &provider.observations {
+            let case = cases
+                .get(observed.id.as_str())
+                .unwrap_or_else(|| panic!("{} missing {}", provider.provider, observed.id));
+            let effective = derive_effective_evidence_local_qualification_v7(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap_or_else(|error| {
+                panic!(
+                    "{} {} development qualification: {error}",
+                    provider.provider, observed.id
+                )
+            });
+            assert_eq!(
+                effective, case.expected_local_qualification,
+                "{} {} development authority mismatch",
+                provider.provider, observed.id
+            );
+
+            let assessment = materialize_evidence_relevance_v20(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap_or_else(|error| {
+                panic!(
+                    "{} {} development materialization: {error}",
+                    provider.provider, observed.id
+                )
+            });
+            assert_eq!(
+                assessment.disposition, case.expected_disposition,
+                "{} {} development disposition mismatch; historical {:?}",
+                provider.provider, observed.id, observed.materialized_disposition
+            );
+        }
+    }
 }
 
 #[test]

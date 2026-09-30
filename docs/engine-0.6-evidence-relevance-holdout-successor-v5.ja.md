@@ -43,8 +43,9 @@ Status: immutable holdout v4 FAIL後のactive design / implementation candidate�
 
 5. 既存positive / ambiguity floor:
    - successor v4のrepeated authorized positive identityは維持
-   - single-signal near siblingはAmbiguous
+   - target identityが無い、またはnon-owningなURL/navigation contextにしか無い状態でsingle near-sibling local signalしかない場合はAmbiguous
    - URL-only unnamed ownershipはAmbiguous
+   - URL/navigation context単独ではproposition ownershipを作らない
    - model outputはauthorityを作らずdeterministic scope riskを迂回できない
 
 model stageは追加しない。
@@ -76,7 +77,8 @@ Final validation:
 
 ## Current offline regression evidence
 
-- generic successor-v5 controls: 8/8 PASS
+- generic successor-v5 controls: 8/8 PASS。conflicting advisory vote下のURL/navigation-only single-sibling ambiguityも含む
+- failed development run 36666145098のcaptured observationは改訂v7/v20でMistral 16/16 + Google 16/16へreplay回復。これはdevelopment evidenceでありholdout acceptanceではない
 - immutable v23 replay: 48/48 x 3
 - immutable holdout v1 replay: 26/26 x 3
 - immutable holdout v2 replay: 26/26 x 3
