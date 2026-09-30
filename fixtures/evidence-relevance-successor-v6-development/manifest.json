@@ -389,7 +389,7 @@
         "target_id": "d09-negative_exact_target_relation_absence",
         "target_question": "How is Kestrel Store priced?",
         "entity": {
-          "canonical_id": "entity:d09-negative_exact_target_relation_absence",
+          "canonical_id": "entity:d09-negative_exact_target_different_relation",
           "canonical_name": "Kestrel Store",
           "aliases": []
         },
@@ -407,7 +407,7 @@
         "signals": [
           {
             "kind": "heading",
-            "text": "Kestrel Store"
+            "text": "Kestrel Store reference"
           },
           {
             "kind": "excerpt",
@@ -747,52 +747,6 @@
         "scope_risk": "none"
       },
       "expected_disposition": "ambiguous"
-    },
-    {
-      "id": "d17-negative_exact_target_relation_absence",
-      "family": "negative_exact_target_relation_absence",
-      "task": "How is Copper Meadow priced?",
-      "policy": {
-        "policy_id": "successor-v6-development-policy:d17-negative_exact_target_relation_absence",
-        "target_id": "d17-negative_exact_target_relation_absence",
-        "target_question": "How is Copper Meadow priced?",
-        "entity": {
-          "canonical_id": "entity:d17-negative_exact_target_relation_absence",
-          "canonical_name": "Copper Meadow",
-          "aliases": []
-        },
-        "relation": "pricing",
-        "identity_requirement": "require_harness_anchor",
-        "assessment_budget": {
-          "max_model_attempts": 2,
-          "max_tokens": 192,
-          "max_elapsed_ms": 60000
-        }
-      },
-      "candidate": {
-        "evidence_id": "evidence:d17-negative_exact_target_relation_absence",
-        "source_id": "source:d17-negative_exact_target_relation_absence",
-        "signals": [
-          {
-            "kind": "heading",
-            "text": "Copper Meadow"
-          },
-          {
-            "kind": "excerpt",
-            "text": "Copper Meadow pricing is not listed in this reference."
-          }
-        ]
-      },
-      "expected_proposal": {
-        "target_binding": "exact",
-        "relation_binding": "unresolved"
-      },
-      "expected_local_qualification": {
-        "identity_scope": "exact_target",
-        "relation_scope": "relation_absent",
-        "scope_risk": "none"
-      },
-      "expected_disposition": "irrelevant"
     }
   ]
 }

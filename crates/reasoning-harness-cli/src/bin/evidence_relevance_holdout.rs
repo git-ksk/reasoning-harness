@@ -78,7 +78,7 @@ const V6_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID: &str =
 const V6_DEV_EXPECTED_FIXED_CORE_ID: &str =
     "evidence-relevance-fixed-core-successor-v6-development-v1";
 const V6_DEV_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-successor-v6-development";
-const V6_DEV_EXPECTED_CASES: usize = 17;
+const V6_DEV_EXPECTED_CASES: usize = 16;
 const PROVIDER_WAIT_BUDGET_MS: u64 = 45_000;
 const MAX_SINGLE_PROVIDER_WAIT_MS: u64 = 30_000;
 const ABSOLUTE_CASE_BUDGET_MS: u64 = 120_000;

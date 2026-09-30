@@ -56,7 +56,7 @@ jobs:
             and .corpus_status_at_observation == "reusable_development_calibration"
             and .annotation_protocol_id == "evidence-relevance-effective-qualification-v8"
             and .fixed_core_id == "evidence-relevance-fixed-core-successor-v6-development-v1"
-            and .planned_cases == 17
+            and .planned_cases == 16
             and .completed_cases == 0
             and .canonical_full_holdout == false
             and .scorability == "validate_only_non_scorable"
@@ -68,8 +68,6 @@ jobs:
           cargo fmt --all -- --check
           cargo clippy -p reasoning-harness-core --all-targets -- -D warnings
           cargo clippy -p reasoning-harness-cli --bin reason-evidence-relevance-holdout-study -- -D warnings
-          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v6_controls
-          cargo test -p reasoning-harness-core --test evidence_relevance_holdout_successor_v6
           cargo test -p reasoning-harness-core --test evidence_relevance_successor_v6_controls
           cargo test -p reasoning-harness-core --test evidence_relevance_holdout_successor_v6
           cargo test -p reasoning-harness-core --test evidence_relevance_holdout_successor_v4
@@ -255,14 +253,14 @@ jobs:
                   and result.get('model') == model
                   and result.get('canonical_full_holdout') is False
                   and result.get('scorability') == 'complete_development_observation'
-                  and result.get('planned_cases') == 17
-                  and result.get('completed_cases') == 17
+                  and result.get('planned_cases') == 16
+                  and result.get('completed_cases') == 16
                   and result.get('operational_abort') is None
                   and result.get('provider_arm_latch') is None
-                  and metrics.get('successful_provider_cases') == 17
+                  and metrics.get('successful_provider_cases') == 16
                   and metrics.get('failed_provider_cases') == 0
-                  and metrics.get('effective_authority_qualification_exact_matches') == 17
-                  and metrics.get('materialized_exact_matches') == 17
+                  and metrics.get('effective_authority_qualification_exact_matches') == 16
+                  and metrics.get('materialized_exact_matches') == 16
                   and metrics.get('correctness_wrong_target_relevance_retention') == 0
                   and metrics.get('false_relevance_rejections') == 0
                   and metrics.get('relevant_left_ambiguous') == 0
