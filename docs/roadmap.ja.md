@@ -59,6 +59,14 @@ Groq TPDをiteration bottleneckにしないため、successor-v5のlive developm
 
 fresh independent holdout v5はそのsemantics freeze後にのみauthorした。26 case = Relevant 8 / Irrelevant 10 / Ambiguous 8。holdout v1-v4 + successor-v5 development corpusに対してcase ID / canonical entity / task / exact signal / exact 8-token candidate-signal n-gram overlapを全て0とし、no-target / navigation-only / URL-onlyのsingle near-sibling ambiguity floorを別caseで持つ。final canonical workflowではrequired providerをMistral + Google + Groqへ戻す。Groqはdevelopmentには戻さず、ここでのみ最終cross-provider validationとして使用する。canonical holdout-v4実績から再計算したv5のconservative 55K-headroom fail-closed floorは2026-09-30T08:33:10Z / 17:33:10 JST。holdout-v5 freeze tagはこのfloor前にはpushせず、canonical workflowはrerunを拒否する。
 
+### Engine 0.6 #462 independent holdout v5 immutable FAIL / successor v6
+
+Canonical holdout v5は `engine-0.6-evidence-relevance-holdout-v5-freeze`、commit `270c1907103c8ef85fa72875b47ff883feec9a86`、run `36694957246` attempt 1でimmutable FAIL。Mistral / Google / Groqは全て26/26完走、provider failure 0、effective authority qualification 26/26、wrong-target Relevant 0。Mistral / Googleはmaterialized 26/26 exact。Groqは25/26でutility miss 1件、`v5h15_negative_prompt_injection_absence` がv7 deterministic authorityで `target_absent / relation_absent / none` へ正しく回復したにもかかわらずAmbiguousに残った。required correctness / qualification gateはPASS、utility / materializationはFAIL。run/tag/artifactはrerun / rescore / relabel / move / delete-recreate / PASSへの再解釈を禁止する。
+
+Successor v6は、別のqualification defectが実装中に見つからない限りeffective qualification v7を維持し、materializationのみv21としてversionする。v21はstrictなnamed-targetまたはtarget-specific-relationのexplicit local absenceを、両advisory stageがpositiveでも使えるようにする。ただしdeterministic scope riskがnoneで、同じbounded unitにcontradictory positive target/relation factual propositionがない場合だけ。broad generic absence wording、prompt-injection/control text、truncation/context gap、ownership/mapping uncertainty、URL/navigation-only identity、single near-sibling signalはnegative authorityを作らない。historical v1-v5 semanticsはimmutable。canonical v5 observationはsuccessor-v6 offline replay evidenceとして使う。candidate-shaping live developmentはMistral + Googleのみを継続し、Groqはiteration中offline、semantics freeze後のfresh one-shot three-provider holdout v6でのみ戻す。successor-v6 semantics freeze前のfresh holdout v6 authoringは禁止する。
+
+[holdout v5 immutable result](engine-0.6-evidence-relevance-holdout-v5-result.ja.md) と [successor v6 design](engine-0.6-evidence-relevance-holdout-successor-v6.ja.md) を参照。
+
 ### プロダクト
 
 1. **bounded resolver による target closure（#159）：** successor candidate `79ec3b44971c32f9a8847d8173672675947c7288` で実装済み。exact Harness-owned unresolved targets は、model-owned authority を介さず、既存の bounded acquisition/admission/re-verification boundary を通じて優先付けされる。
