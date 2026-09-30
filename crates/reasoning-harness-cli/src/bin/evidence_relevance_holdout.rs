@@ -2858,6 +2858,7 @@ fn checkpoint_profile(suite_id: &str) -> Result<(&'static str, bool), String> {
         V4_EXPECTED_SUITE_ID => Ok((V4_CONFIGURATION_ID, true)),
         V5_EXPECTED_SUITE_ID => Ok((V5_CONFIGURATION_ID, true)),
         V5_DEV_EXPECTED_SUITE_ID => Ok((V5_DEV_CONFIGURATION_ID, false)),
+        V6_DEV_EXPECTED_SUITE_ID => Ok((V6_DEV_CONFIGURATION_ID, false)),
         other => Err(format!("unexpected checkpoint suite id {other:?}")),
     }
 }
@@ -2947,6 +2948,10 @@ mod tests {
         assert_eq!(
             checkpoint_profile(V5_DEV_EXPECTED_SUITE_ID).unwrap(),
             (V5_DEV_CONFIGURATION_ID, false)
+        );
+        assert_eq!(
+            checkpoint_profile(V6_DEV_EXPECTED_SUITE_ID).unwrap(),
+            (V6_DEV_CONFIGURATION_ID, false)
         );
         assert!(checkpoint_profile("unknown-suite").is_err());
     }
