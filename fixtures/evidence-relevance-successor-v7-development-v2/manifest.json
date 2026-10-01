@@ -1,0 +1,548 @@
+{
+  "suite_id": "evidence-relevance-successor-v7-development-v2",
+  "issue": 462,
+  "status": "reusable_development_calibration",
+  "source_rule": "fresh_development_surface_after_independence_audit_zero_case_entity_task_signal_and_8token_overlap_against_holdout_v1_v2_v3_v4_v5_v6_v7_and_successor_v5_v6_v7_development_v1",
+  "annotation_protocol_id": "evidence-relevance-effective-qualification-v9",
+  "fixed_core_id": "evidence-relevance-fixed-core-successor-v7-development-v2",
+  "cases": [
+    {
+      "id": "sv7d2_01_positive_exact_availability",
+      "family": "positive_exact_availability_paraphrase",
+      "task": "In which locations is Cardinal Mesh offered?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_01_positive_exact_availability",
+        "target_id": "sv7d2_01_positive_exact_availability",
+        "target_question": "In which locations is Cardinal Mesh offered?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_01_positive_exact_availability",
+          "canonical_name": "Cardinal Mesh",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_01_positive_exact_availability",
+        "source_id": "source:sv7d2_01_positive_exact_availability",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Cardinal Mesh coverage footprint"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Cardinal Mesh is offered across Ridge and Estuary regions."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "relevant"
+    },
+    {
+      "id": "sv7d2_02_positive_exact_pricing",
+      "family": "positive_exact_pricing_paraphrase",
+      "task": "What billing applies to Graphite Ledger?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_02_positive_exact_pricing",
+        "target_id": "sv7d2_02_positive_exact_pricing",
+        "target_question": "What billing applies to Graphite Ledger?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_02_positive_exact_pricing",
+          "canonical_name": "Graphite Ledger",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_02_positive_exact_pricing",
+        "source_id": "source:sv7d2_02_positive_exact_pricing",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Graphite Ledger billing guide"
+          },
+          {
+            "kind": "fact",
+            "text": "Graphite Ledger is billed at 5 credits per workspace-hour."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "relevant"
+    },
+    {
+      "id": "sv7d2_03_positive_alias_limit",
+      "family": "positive_authorized_alias_limit",
+      "task": "What quota applies to Magnolia Vault?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_03_positive_alias_limit",
+        "target_id": "sv7d2_03_positive_alias_limit",
+        "target_question": "What quota applies to Magnolia Vault?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_03_positive_alias_limit",
+          "canonical_name": "Magnolia Vault",
+          "aliases": [
+            "MV"
+          ]
+        },
+        "relation": "limit",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_03_positive_alias_limit",
+        "source_id": "source:sv7d2_03_positive_alias_limit",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "MV snapshot policy"
+          },
+          {
+            "kind": "excerpt",
+            "text": "MV allows up to 96 retained restore points."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "relevant"
+    },
+    {
+      "id": "sv7d2_04_negative_unrelated_target",
+      "family": "negative_distinct_unrelated_availability_paraphrase",
+      "task": "In which locations is Persimmon Bridge offered?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_04_negative_unrelated_target",
+        "target_id": "sv7d2_04_negative_unrelated_target",
+        "target_question": "In which locations is Persimmon Bridge offered?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_04_negative_unrelated_target",
+          "canonical_name": "Persimmon Bridge",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_04_negative_unrelated_target",
+        "source_id": "source:sv7d2_04_negative_unrelated_target",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Cerulean Harbor is offered throughout Ridge and Estuary regions."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "different",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv7d2_05_negative_explicit_separation",
+      "family": "negative_explicit_distinct_single_signal",
+      "task": "In which locations is Tessellate Relay offered?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_05_negative_explicit_separation",
+        "target_id": "sv7d2_05_negative_explicit_separation",
+        "target_question": "In which locations is Tessellate Relay offered?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_05_negative_explicit_separation",
+          "canonical_name": "Tessellate Relay",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_05_negative_explicit_separation",
+        "source_id": "source:sv7d2_05_negative_explicit_separation",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tessellate Link is a distinct service from Tessellate Relay; it is offered in Ridge and Estuary regions."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "different",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv7d2_06_negative_repeated_sibling",
+      "family": "negative_repeated_sibling_availability",
+      "task": "In which locations is Cirrus Cache offered?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_06_negative_repeated_sibling",
+        "target_id": "sv7d2_06_negative_repeated_sibling",
+        "target_question": "In which locations is Cirrus Cache offered?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_06_negative_repeated_sibling",
+          "canonical_name": "Cirrus Cache",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_06_negative_repeated_sibling",
+        "source_id": "source:sv7d2_06_negative_repeated_sibling",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Cirrus Store coverage"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Cirrus Store is offered in Ridge and Estuary regions."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "different",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv7d2_07_ambiguous_url_single_sibling",
+      "family": "ambiguous_url_single_sibling_relation_paraphrase",
+      "task": "In which locations is Peony Relay offered?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_07_ambiguous_url_single_sibling",
+        "target_id": "sv7d2_07_ambiguous_url_single_sibling",
+        "target_question": "In which locations is Peony Relay offered?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_07_ambiguous_url_single_sibling",
+          "canonical_name": "Peony Relay",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_07_ambiguous_url_single_sibling",
+        "source_id": "source:sv7d2_07_ambiguous_url_single_sibling",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://docs.example.test/peony-relay/coverage"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Peony Link serves Ridge and Estuary zones."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv7d2_08_ambiguous_navigation_single_sibling",
+      "family": "ambiguous_navigation_single_sibling_relation_paraphrase",
+      "task": "In which locations is Basalt Cache offered?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_08_ambiguous_navigation_single_sibling",
+        "target_id": "sv7d2_08_ambiguous_navigation_single_sibling",
+        "target_question": "In which locations is Basalt Cache offered?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_08_ambiguous_navigation_single_sibling",
+          "canonical_name": "Basalt Cache",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_08_ambiguous_navigation_single_sibling",
+        "source_id": "source:sv7d2_08_ambiguous_navigation_single_sibling",
+        "signals": [
+          {
+            "kind": "navigation_or_footer",
+            "text": "Basalt Cache"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Basalt Store can be deployed in Ridge and Estuary zones."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv7d2_09_ambiguous_no_target_single_sibling",
+      "family": "ambiguous_no_target_single_sibling_relation_paraphrase",
+      "task": "In which locations is Feldspar Mesh offered?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_09_ambiguous_no_target_single_sibling",
+        "target_id": "sv7d2_09_ambiguous_no_target_single_sibling",
+        "target_question": "In which locations is Feldspar Mesh offered?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_09_ambiguous_no_target_single_sibling",
+          "canonical_name": "Feldspar Mesh",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_09_ambiguous_no_target_single_sibling",
+        "source_id": "source:sv7d2_09_ambiguous_no_target_single_sibling",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Feldspar Link has service coverage spanning Ridge and Estuary territories."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv7d2_10_ambiguous_url_single_sibling_other_relation",
+      "family": "ambiguous_url_single_sibling_different_relation",
+      "task": "In which locations is Carmine Queue offered?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_10_ambiguous_url_single_sibling_other_relation",
+        "target_id": "sv7d2_10_ambiguous_url_single_sibling_other_relation",
+        "target_question": "In which locations is Carmine Queue offered?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_10_ambiguous_url_single_sibling_other_relation",
+          "canonical_name": "Carmine Queue",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_10_ambiguous_url_single_sibling_other_relation",
+        "source_id": "source:sv7d2_10_ambiguous_url_single_sibling_other_relation",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://docs.example.test/carmine-queue/coverage"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Carmine Stream is billed at 9 credits per worker-hour."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv7d2_11_ambiguous_url_single_sibling_relation_unresolved",
+      "family": "ambiguous_url_single_sibling_relation_unresolved",
+      "task": "In which locations is Spinel Vault offered?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_11_ambiguous_url_single_sibling_relation_unresolved",
+        "target_id": "sv7d2_11_ambiguous_url_single_sibling_relation_unresolved",
+        "target_question": "In which locations is Spinel Vault offered?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_11_ambiguous_url_single_sibling_relation_unresolved",
+          "canonical_name": "Spinel Vault",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_11_ambiguous_url_single_sibling_relation_unresolved",
+        "source_id": "source:sv7d2_11_ambiguous_url_single_sibling_relation_unresolved",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://docs.example.test/spinel-vault/coverage"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Spinel Store appears in the maintenance index."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv7d2_12_ambiguous_identity_mapping",
+      "family": "ambiguous_identity_mapping_availability",
+      "task": "In which locations is Sepia Proxy offered?",
+      "policy": {
+        "policy_id": "successor-v7-development-v2-policy:sv7d2_12_ambiguous_identity_mapping",
+        "target_id": "sv7d2_12_ambiguous_identity_mapping",
+        "target_question": "In which locations is Sepia Proxy offered?",
+        "entity": {
+          "canonical_id": "entity:sv7d2_12_ambiguous_identity_mapping",
+          "canonical_name": "Sepia Proxy",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:sv7d2_12_ambiguous_identity_mapping",
+        "source_id": "source:sv7d2_12_ambiguous_identity_mapping",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Sepia Link might be the successor name for Sepia Proxy; service is offered in coastal districts."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "identity_mapping"
+      },
+      "expected_disposition": "ambiguous"
+    }
+  ]
+}

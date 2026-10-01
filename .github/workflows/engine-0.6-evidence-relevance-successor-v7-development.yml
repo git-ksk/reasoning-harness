@@ -1,18 +1,26 @@
-name: engine-0.6-evidence-relevance-successor-v7-development
+name: engine-0.6-evidence-relevance-successor-v7-development-v2
 
-# The converged two-provider development observation is captured in-repo.
-# Keep later live development re-observation intentional/manual so capture, audit,
-# freeze, and roadmap-only commits do not spend provider calls or create a moving
-# development target. If successor-v7 semantics change before freeze, dispatch a
-# fresh development run explicitly.
+# Fresh development-v2 passed offline independence/self-consistency checks.
+# Keep push enabled only for its first two-provider observation. After capture,
+# return this workflow to manual-only before semantics freeze.
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feat/462-evidence-target-relevance
+    paths:
+      - crates/reasoning-harness-core/tests/evidence_relevance_successor_v7_development.rs
+      - crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v7_development.rs
+      - fixtures/evidence-relevance-successor-v7-development-v2/**
+      - docs/engine-0.6-evidence-relevance-holdout-successor-v7*
+      - docs/roadmap*
+      - .github/workflows/engine-0.6-evidence-relevance-successor-v7-development.yml
 
 permissions:
   contents: read
 
 env:
-  DEVELOPMENT_DIR: fixtures/evidence-relevance-successor-v7-development
+  DEVELOPMENT_DIR: fixtures/evidence-relevance-successor-v7-development-v2
   DEVELOPMENT_SEED: '4629501'
 
 jobs:
@@ -41,11 +49,11 @@ jobs:
             --validate-only \
             > /tmp/evidence-relevance-successor-v7-development-validate.json
           jq -e '
-            .configuration_id == "evidence-relevance-successor-v7-development"
-            and .suite_id == "evidence-relevance-successor-v7-development"
+            .configuration_id == "evidence-relevance-successor-v7-development-v2"
+            and .suite_id == "evidence-relevance-successor-v7-development-v2"
             and .corpus_status_at_observation == "reusable_development_calibration"
             and .annotation_protocol_id == "evidence-relevance-effective-qualification-v9"
-            and .fixed_core_id == "evidence-relevance-fixed-core-successor-v7-development-v1"
+            and .fixed_core_id == "evidence-relevance-fixed-core-successor-v7-development-v2"
             and .planned_cases == 12
             and .completed_cases == 0
             and .canonical_full_holdout == false
@@ -219,7 +227,7 @@ jobs:
               'google': 'gemini-3.5-flash-lite',
           }
           summary = {
-              'schema_version': 'engine-0.6-evidence-relevance-successor-v7-development-summary-v2',
+              'schema_version': 'engine-0.6-evidence-relevance-successor-v7-development-v2-summary-v1',
               'holdout_acceptance_evidence': False,
               'providers': {},
               'development_gate_passed': True,
@@ -237,8 +245,8 @@ jobs:
               rc = int(rc_path.read_text().strip())
               ok = (
                   rc == 0
-                  and result.get('configuration_id') == 'evidence-relevance-successor-v7-development'
-                  and result.get('suite_id') == 'evidence-relevance-successor-v7-development'
+                  and result.get('configuration_id') == 'evidence-relevance-successor-v7-development-v2'
+                  and result.get('suite_id') == 'evidence-relevance-successor-v7-development-v2'
                   and result.get('corpus_status_at_observation') == 'reusable_development_calibration'
                   and result.get('provider') == provider
                   and result.get('model') == model

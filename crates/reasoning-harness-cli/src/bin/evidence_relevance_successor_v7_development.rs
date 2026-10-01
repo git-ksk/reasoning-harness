@@ -92,14 +92,15 @@ const V6_DEV_EXPECTED_FIXED_CORE_ID: &str =
     "evidence-relevance-fixed-core-successor-v6-development-v1";
 const V6_DEV_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-successor-v6-development";
 const V6_DEV_EXPECTED_CASES: usize = 16;
-const V7_DEV_CONFIGURATION_ID: &str = "evidence-relevance-successor-v7-development";
-const V7_DEV_EXPECTED_SUITE_ID: &str = "evidence-relevance-successor-v7-development";
+const V7_DEV_CONFIGURATION_ID: &str = "evidence-relevance-successor-v7-development-v2";
+const V7_DEV_EXPECTED_SUITE_ID: &str = "evidence-relevance-successor-v7-development-v2";
 const V7_DEV_EXPECTED_STATUS: &str = "reusable_development_calibration";
 const V7_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID: &str =
     "evidence-relevance-effective-qualification-v9";
 const V7_DEV_EXPECTED_FIXED_CORE_ID: &str =
-    "evidence-relevance-fixed-core-successor-v7-development-v1";
-const V7_DEV_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-successor-v7-development";
+    "evidence-relevance-fixed-core-successor-v7-development-v2";
+const V7_DEV_EXPECTED_RELATIVE_DIR: &str =
+    "fixtures/evidence-relevance-successor-v7-development-v2";
 const V7_DEV_EXPECTED_CASES: usize = 12;
 const PROVIDER_WAIT_BUDGET_MS: u64 = 45_000;
 const MAX_SINGLE_PROVIDER_WAIT_MS: u64 = 30_000;

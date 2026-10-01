@@ -99,6 +99,12 @@ candidate commit `41d853080a991b3a9f3a976b758d8b338ce2c784` の2回目のreusabl
 
 成功runのraw observationとv2 gate summaryは `fixtures/evidence-relevance-successor-v7-development/` にcaptureし、offline replayする。replayではcaptured provider inputに対してv9がv8のrelation scope / scope riskを保存すること、successor-owned identity軸がdevelopment labelと一致すること、v22が全caseを期待どおりmaterializeすることを確認する。capture後、live development workflowは再びmanual-onlyとする。
 
+### Development surface independence audit
+
+freeze前監査でdevelopment-v1はidentity-freshではないことが判明した。`Juniper Vault`、`Ruby Queue`、`Saffron Bridge` のcanonical entity名が過去holdoutから再利用され、Ruby Queueはtask textも再利用されていた。development corpusはimmutable holdout v7観測後に作成した非holdout evidenceなのでholdout v7を汚染しないが、docsのfresh identity主張とは不一致であり、最終pre-freeze development surfaceとしては採用しない。
+
+live v2 provider観測前に、独立した `evidence-relevance-successor-v7-development-v2` surfaceを別途authorした。12 caseはholdout v1-v7、successor-v5/v6 development、development-v1に対してcase ID / canonical entity / task / exact signal / exact 8-token signal n-gram overlapがすべて0。5指標のzero-overlapをdeterministic CI testで固定する。v2は同じgeneric semantic familyとv9/v22 expected labelを保つsurface/provenance correctionであり、production semantic changeではない。
+
 ## Freeze blocker
 
 以下がすべてgreenになるまで successor-v7 semantics をfreezeしない。

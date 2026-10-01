@@ -99,6 +99,12 @@ A second reusable run at candidate commit `41d853080a991b3a9f3a976b758d8b338ce2c
 
 The successful raw observations and v2 gate summary are captured under `fixtures/evidence-relevance-successor-v7-development/` and replayed offline. The replay verifies that v9 preserves the v8 relation scope/scope risk for the captured provider inputs, that the successor-owned identity axis matches the development labels, and that v22 materializes every case as expected. After this capture the live development workflow is manual-only again.
 
+### Development surface independence audit
+
+The pre-freeze audit found that development-v1 was not actually identity-fresh: `Juniper Vault`, `Ruby Queue`, and `Saffron Bridge` reused canonical entity names from prior holdouts, and the Ruby Queue task text was also reused. This does not contaminate holdout v7 because the development corpus was authored only after the immutable v7 observation and is not holdout acceptance evidence, but it contradicts the documented fresh-identity claim and is therefore not used as the final pre-freeze development surface.
+
+A separate `evidence-relevance-successor-v7-development-v2` surface was authored before any live v2 provider observation. Its 12 cases have zero overlap against holdout v1-v7, successor-v5/v6 development, and development-v1 in case IDs, canonical entities, tasks, exact signals, and exact 8-token signal n-grams. A deterministic CI test enforces those five zero-overlap properties. v2 preserves the same generic semantic families and v9/v22 expected labels; it is a surface/provenance correction, not a production semantic change.
+
 ## Freeze blockers
 
 Do not freeze successor-v7 semantics until all are green:
