@@ -93,6 +93,12 @@ The first reusable run at candidate commit `57b29326f7499f62e24c9d01d16074c00b6d
 
 That observation does not justify relation-lexicon or provider-specific tuning. Successor v7 changes only identity authority. The generic control therefore requires v9 to preserve the exact relation scope and scope risk produced by v8 for the same proposal/raw inputs while changing only the single-near-sibling identity axis. Live development convergence gates that successor-owned axis plus materialization/correctness/utility and continues to record full relation-scope mismatch metrics diagnostically. Full qualification remains part of the future fresh holdout v8 observation after semantics freeze.
 
+### Development convergence 36890934124
+
+A second reusable run at candidate commit `41d853080a991b3a9f3a976b758d8b338ce2c784` passed the successor-owned development gate. Both providers completed 12/12 with identity-scope misses 0, scope-risk misses/spurious risks 0, materialization 12/12, wrong-target Relevant 0, false relevance rejections 0, relevant-left-Ambiguous 0, and utility misses 0. Mistral retained 3 relation-scope-only diagnostic misses (full qualification 9/12); Google retained 1 (11/12). No production semantic change was made in response to either relation-only pattern.
+
+The successful raw observations and v2 gate summary are captured under `fixtures/evidence-relevance-successor-v7-development/` and replayed offline. The replay verifies that v9 preserves the v8 relation scope/scope risk for the captured provider inputs, that the successor-owned identity axis matches the development labels, and that v22 materializes every case as expected. After this capture the live development workflow is manual-only again.
+
 ## Freeze blockers
 
 Do not freeze successor-v7 semantics until all are green:

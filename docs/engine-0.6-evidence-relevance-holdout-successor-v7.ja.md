@@ -93,6 +93,12 @@ candidate commit `57b29326f7499f62e24c9d01d16074c00b6d85cf` の最初のreusable
 
 この観測を理由にrelation lexiconやprovider固有の調整は行わない。Successor v7が変更するのはidentity authorityのみである。generic controlでは同一proposal/raw入力に対してv9がv8のrelation scopeとscope riskを完全に保存し、single-near-sibling identity軸だけを変更することを固定する。live development convergenceはsuccessor-owned axis + materialization / correctness / utilityをgateし、full relation-scope mismatchは診断値として記録し続ける。full qualificationはsemantics freeze後のfresh holdout v8でも引き続き観測する。
 
+### Development convergence 36890934124
+
+candidate commit `41d853080a991b3a9f3a976b758d8b338ce2c784` の2回目のreusable runはsuccessor-owned development gateをPASSした。両providerとも12/12完走、identity-scope miss 0、scope-risk miss / spurious risk 0、materialization 12/12、wrong-target Relevant 0、false relevance rejection 0、relevant-left-Ambiguous 0、utility miss 0。relation-scopeのみの診断missはMistral 3件（full qualification 9/12）、Google 1件（11/12）のままだが、これを理由とするproduction semantics変更は行っていない。
+
+成功runのraw observationとv2 gate summaryは `fixtures/evidence-relevance-successor-v7-development/` にcaptureし、offline replayする。replayではcaptured provider inputに対してv9がv8のrelation scope / scope riskを保存すること、successor-owned identity軸がdevelopment labelと一致すること、v22が全caseを期待どおりmaterializeすることを確認する。capture後、live development workflowは再びmanual-onlyとする。
+
 ## Freeze blocker
 
 以下がすべてgreenになるまで successor-v7 semantics をfreezeしない。

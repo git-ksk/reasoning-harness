@@ -1,27 +1,12 @@
 name: engine-0.6-evidence-relevance-successor-v7-development
 
-# Keep push enabled only until the first successor-owned two-provider convergence
-# is captured in-repo. After capture, switch this workflow back to manual-only so
-# audit/freeze/documentation commits do not spend provider calls or move the
-# development target.
+# The converged two-provider development observation is captured in-repo.
+# Keep later live development re-observation intentional/manual so capture, audit,
+# freeze, and roadmap-only commits do not spend provider calls or create a moving
+# development target. If successor-v7 semantics change before freeze, dispatch a
+# fresh development run explicitly.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - feat/462-evidence-target-relevance
-    paths:
-      - crates/reasoning-harness-core/src/evidence_relevance.rs
-      - crates/reasoning-harness-core/src/lib.rs
-      - crates/reasoning-harness-core/tests/evidence_relevance_holdout_successor_v7.rs
-      - crates/reasoning-harness-core/tests/evidence_relevance_successor_v7_controls.rs
-      - crates/reasoning-harness-core/tests/evidence_relevance_successor_v7_development.rs
-      - crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v7_development.rs
-      - crates/reasoning-harness-cli/Cargo.toml
-      - fixtures/evidence-relevance-holdout-successor-v7/**
-      - fixtures/evidence-relevance-successor-v7-development/**
-      - docs/engine-0.6-evidence-relevance-holdout-successor-v7*
-      - docs/roadmap*
-      - .github/workflows/engine-0.6-evidence-relevance-successor-v7-development.yml
 
 permissions:
   contents: read

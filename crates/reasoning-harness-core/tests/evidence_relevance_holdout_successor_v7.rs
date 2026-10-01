@@ -3,6 +3,7 @@ use std::{collections::BTreeMap, fs, path::PathBuf};
 use reasoning_harness_core::{
     EvidenceLocalBlockingReason, EvidenceLocalQualificationV6, EvidenceRelevanceBindingProposal,
     EvidenceRelevanceCandidate, EvidenceRelevanceDisposition, EvidenceRelevanceTargetPolicy,
+    derive_effective_evidence_local_qualification_v8,
     derive_effective_evidence_local_qualification_v9, materialize_evidence_relevance_v22,
 };
 use serde::Deserialize;
@@ -220,10 +221,12 @@ struct DevelopmentReplaySource {
     run_id: u64,
     candidate_commit: String,
     holdout_acceptance_evidence: bool,
+    #[serde(default)]
+    development_gate: Option<String>,
 }
 
 #[test]
-fn successor_v7_replays_converged_two_provider_development_observation() {
+fn successor_v7_replays_prior_successor_v6_development_observation() {
     let manifest = load_manifest("evidence-relevance-successor-v6-development/manifest.json");
     let raw = fs::read_to_string(root().join(
         "fixtures/evidence-relevance-successor-v6-development/observations-run-36728692499.json",
@@ -272,6 +275,139 @@ fn successor_v7_replays_converged_two_provider_development_observation() {
                 provider.provider, observed.id
             );
         }
+    }
+}
+
+#[test]
+fn successor_v7_replays_converged_two_provider_development_observation() {
+    let manifest = load_manifest("evidence-relevance-successor-v7-development/manifest.json");
+    let raw = fs::read_to_string(root().join(
+        "fixtures/evidence-relevance-successor-v7-development/observations-run-36890934124.json",
+    ))
+    .unwrap();
+    let replay: DevelopmentReplay = serde_json::from_str(&raw).unwrap();
+    assert_eq!(replay.source.run_id, 36_890_934_124);
+    assert_eq!(
+        replay.source.candidate_commit,
+        "41d853080a991b3a9f3a976b758d8b338ce2c784"
+    );
+    assert!(!replay.source.holdout_acceptance_evidence);
+    assert_eq!(
+        replay.source.development_gate.as_deref(),
+        Some("successor_owned_identity_scope_v2")
+    );
+    assert_eq!(replay.providers.len(), 2);
+
+    let summary_raw =
+        fs::read_to_string(root().join(
+            "fixtures/evidence-relevance-successor-v7-development/summary-run-36890934124.json",
+        ))
+        .unwrap();
+    let summary: serde_json::Value = serde_json::from_str(&summary_raw).unwrap();
+    assert_eq!(
+        summary["schema_version"],
+        "engine-0.6-evidence-relevance-successor-v7-development-summary-v2"
+    );
+    assert_eq!(summary["holdout_acceptance_evidence"], false);
+    assert_eq!(summary["development_gate_passed"], true);
+    for provider in ["mistral", "google"] {
+        let metrics = &summary["providers"][provider];
+        assert_eq!(metrics["passed"], true, "{provider}");
+        assert_eq!(
+            metrics["effective_authority_identity_scope_misses"], 0,
+            "{provider}"
+        );
+        assert_eq!(
+            metrics["effective_qualification_scope_risk_misses"], 0,
+            "{provider}"
+        );
+        assert_eq!(
+            metrics["effective_qualification_spurious_scope_risks"], 0,
+            "{provider}"
+        );
+        assert_eq!(metrics["materialized_exact_matches"], 12, "{provider}");
+        assert_eq!(metrics["wrong_target_relevance_retention"], 0, "{provider}");
+        assert_eq!(metrics["utility_misses"], 0, "{provider}");
+    }
+
+    let cases = manifest
+        .cases
+        .iter()
+        .map(|c| (c.id.as_str(), c))
+        .collect::<BTreeMap<_, _>>();
+    assert_eq!(cases.len(), 12);
+
+    for provider in &replay.providers {
+        assert_eq!(provider.observations.len(), 12, "{}", provider.provider);
+        let mut wrong_target_relevant = 0;
+        for observed in &provider.observations {
+            let case = cases.get(observed.id.as_str()).unwrap();
+            let historical = derive_effective_evidence_local_qualification_v8(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap();
+            let successor = derive_effective_evidence_local_qualification_v9(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap();
+
+            assert_eq!(
+                successor.relation_scope, historical.relation_scope,
+                "{} {} relation preservation",
+                provider.provider, observed.id
+            );
+            assert_eq!(
+                successor.scope_risk, historical.scope_risk,
+                "{} {} risk preservation",
+                provider.provider, observed.id
+            );
+            assert_eq!(
+                successor.identity_scope, case.expected_local_qualification.identity_scope,
+                "{} {} successor-owned identity",
+                provider.provider, observed.id
+            );
+            assert_eq!(
+                successor.scope_risk, case.expected_local_qualification.scope_risk,
+                "{} {} successor-owned risk",
+                provider.provider, observed.id
+            );
+
+            assert_eq!(
+                observed.materialized_disposition,
+                Some(case.expected_disposition),
+                "{} {} captured disposition",
+                provider.provider,
+                observed.id
+            );
+            let assessment = materialize_evidence_relevance_v22(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap();
+            assert_eq!(
+                assessment.disposition, case.expected_disposition,
+                "{} {} disposition",
+                provider.provider, observed.id
+            );
+            if case.expected_disposition != EvidenceRelevanceDisposition::Relevant
+                && assessment.disposition == EvidenceRelevanceDisposition::Relevant
+            {
+                wrong_target_relevant += 1;
+            }
+        }
+        assert_eq!(
+            wrong_target_relevant, 0,
+            "{} wrong-target Relevant",
+            provider.provider
+        );
     }
 }
 
