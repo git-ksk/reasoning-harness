@@ -105,6 +105,12 @@ freeze前監査でdevelopment-v1はidentity-freshではないことが判明し�
 
 live v2 provider観測前に、独立した `evidence-relevance-successor-v7-development-v2` surfaceを別途authorした。12 caseはholdout v1-v7、successor-v5/v6 development、development-v1に対してcase ID / canonical entity / task / exact signal / exact 8-token signal n-gram overlapがすべて0。5指標のzero-overlapをdeterministic CI testで固定する。v2は同じgeneric semantic familyとv9/v22 expected labelを保つsurface/provenance correctionであり、production semantic changeではない。
 
+### Independent development-v2 convergence 36937880336
+
+独立development-v2 surfaceの最初のlive observationはcandidate commit `8021a37b22da3d7176f641da2821417db93b08b4` で実行し、successor-owned two-provider gateをPASSした。両providerとも12/12完走、identity-scope miss 0、scope-risk miss / spurious risk 0、materialization 12/12、wrong-target Relevant 0、false relevance rejection 0、relevant-left-Ambiguous 0、utility miss 0。Mistralはfull effective-authority qualificationも12/12、Googleはrelation-scopeのみの診断miss 2件を残して10/12だった。この結果を理由とするproduction semantic changeは行っていない。
+
+v2のraw observationとsummaryは `fixtures/evidence-relevance-successor-v7-development-v2/` にcaptureし、unchanged v9/v22 semanticsに対してoffline replayする。capture後、live development workflowは再びmanual-onlyとする。
+
 ## Freeze blocker
 
 以下がすべてgreenになるまで successor-v7 semantics をfreezeしない。

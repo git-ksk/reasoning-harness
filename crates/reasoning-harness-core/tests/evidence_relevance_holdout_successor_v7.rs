@@ -412,6 +412,137 @@ fn successor_v7_replays_converged_two_provider_development_observation() {
 }
 
 #[test]
+fn successor_v7_replays_independent_development_v2_observation() {
+    let manifest = load_manifest("evidence-relevance-successor-v7-development-v2/manifest.json");
+    let raw = fs::read_to_string(root().join(
+        "fixtures/evidence-relevance-successor-v7-development-v2/observations-run-36937880336.json",
+    ))
+    .unwrap();
+    let replay: DevelopmentReplay = serde_json::from_str(&raw).unwrap();
+    assert_eq!(replay.source.run_id, 36_937_880_336);
+    assert_eq!(
+        replay.source.candidate_commit,
+        "8021a37b22da3d7176f641da2821417db93b08b4"
+    );
+    assert!(!replay.source.holdout_acceptance_evidence);
+    assert_eq!(
+        replay.source.development_gate.as_deref(),
+        Some("successor_owned_identity_scope_v2_independent_surface")
+    );
+    assert_eq!(replay.providers.len(), 2);
+
+    let summary_raw = fs::read_to_string(root().join(
+        "fixtures/evidence-relevance-successor-v7-development-v2/summary-run-36937880336.json",
+    ))
+    .unwrap();
+    let summary: serde_json::Value = serde_json::from_str(&summary_raw).unwrap();
+    assert_eq!(
+        summary["schema_version"],
+        "engine-0.6-evidence-relevance-successor-v7-development-v2-summary-v1"
+    );
+    assert_eq!(summary["holdout_acceptance_evidence"], false);
+    assert_eq!(summary["development_gate_passed"], true);
+    for provider in ["mistral", "google"] {
+        let metrics = &summary["providers"][provider];
+        assert_eq!(metrics["passed"], true, "{provider}");
+        assert_eq!(
+            metrics["effective_authority_identity_scope_misses"], 0,
+            "{provider}"
+        );
+        assert_eq!(
+            metrics["effective_qualification_scope_risk_misses"], 0,
+            "{provider}"
+        );
+        assert_eq!(
+            metrics["effective_qualification_spurious_scope_risks"], 0,
+            "{provider}"
+        );
+        assert_eq!(metrics["materialized_exact_matches"], 12, "{provider}");
+        assert_eq!(metrics["wrong_target_relevance_retention"], 0, "{provider}");
+        assert_eq!(metrics["utility_misses"], 0, "{provider}");
+    }
+
+    let cases = manifest
+        .cases
+        .iter()
+        .map(|c| (c.id.as_str(), c))
+        .collect::<BTreeMap<_, _>>();
+    assert_eq!(cases.len(), 12);
+
+    for provider in &replay.providers {
+        assert_eq!(provider.observations.len(), 12, "{}", provider.provider);
+        let mut wrong_target_relevant = 0;
+        for observed in &provider.observations {
+            let case = cases.get(observed.id.as_str()).unwrap();
+            let historical = derive_effective_evidence_local_qualification_v8(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap();
+            let successor = derive_effective_evidence_local_qualification_v9(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap();
+
+            assert_eq!(
+                successor.relation_scope, historical.relation_scope,
+                "{} {} relation preservation",
+                provider.provider, observed.id
+            );
+            assert_eq!(
+                successor.scope_risk, historical.scope_risk,
+                "{} {} risk preservation",
+                provider.provider, observed.id
+            );
+            assert_eq!(
+                successor.identity_scope, case.expected_local_qualification.identity_scope,
+                "{} {} successor-owned identity",
+                provider.provider, observed.id
+            );
+            assert_eq!(
+                successor.scope_risk, case.expected_local_qualification.scope_risk,
+                "{} {} successor-owned risk",
+                provider.provider, observed.id
+            );
+            assert_eq!(
+                observed.materialized_disposition,
+                Some(case.expected_disposition),
+                "{} {} captured disposition",
+                provider.provider,
+                observed.id
+            );
+            let assessment = materialize_evidence_relevance_v22(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap();
+            assert_eq!(
+                assessment.disposition, case.expected_disposition,
+                "{} {} disposition",
+                provider.provider, observed.id
+            );
+            if case.expected_disposition != EvidenceRelevanceDisposition::Relevant
+                && assessment.disposition == EvidenceRelevanceDisposition::Relevant
+            {
+                wrong_target_relevant += 1;
+            }
+        }
+        assert_eq!(
+            wrong_target_relevant, 0,
+            "{} wrong-target Relevant",
+            provider.provider
+        );
+    }
+}
+
+#[test]
 fn holdout_v7_provenance_and_historical_groq_miss_remain_immutable() {
     let replay =
         load_replay("evidence-relevance-holdout-successor-v7/holdout-v7-observation-replay.json");

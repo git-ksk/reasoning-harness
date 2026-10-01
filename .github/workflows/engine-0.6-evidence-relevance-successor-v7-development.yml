@@ -1,20 +1,10 @@
 name: engine-0.6-evidence-relevance-successor-v7-development-v2
 
-# Fresh development-v2 passed offline independence/self-consistency checks.
-# Keep push enabled only for its first two-provider observation. After capture,
-# return this workflow to manual-only before semantics freeze.
+# The independent development-v2 convergence is captured in-repo.
+# Keep future re-observation intentional/manual so capture, audit, freeze, and
+# roadmap-only commits do not spend provider calls or move the development target.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - feat/462-evidence-target-relevance
-    paths:
-      - crates/reasoning-harness-core/tests/evidence_relevance_successor_v7_development.rs
-      - crates/reasoning-harness-cli/src/bin/evidence_relevance_successor_v7_development.rs
-      - fixtures/evidence-relevance-successor-v7-development-v2/**
-      - docs/engine-0.6-evidence-relevance-holdout-successor-v7*
-      - docs/roadmap*
-      - .github/workflows/engine-0.6-evidence-relevance-successor-v7-development.yml
 
 permissions:
   contents: read

@@ -105,6 +105,12 @@ The pre-freeze audit found that development-v1 was not actually identity-fresh: 
 
 A separate `evidence-relevance-successor-v7-development-v2` surface was authored before any live v2 provider observation. Its 12 cases have zero overlap against holdout v1-v7, successor-v5/v6 development, and development-v1 in case IDs, canonical entities, tasks, exact signals, and exact 8-token signal n-grams. A deterministic CI test enforces those five zero-overlap properties. v2 preserves the same generic semantic families and v9/v22 expected labels; it is a surface/provenance correction, not a production semantic change.
 
+### Independent development-v2 convergence 36937880336
+
+The first live observation of the independent development-v2 surface ran at candidate commit `8021a37b22da3d7176f641da2821417db93b08b4` and passed the successor-owned two-provider gate. Both providers completed 12/12 with identity-scope misses 0, scope-risk misses/spurious risks 0, materialization 12/12, wrong-target Relevant 0, false relevance rejections 0, relevant-left-Ambiguous 0, and utility misses 0. Mistral also reached full effective-authority qualification 12/12; Google retained two relation-scope-only diagnostic misses and was 10/12 on full qualification. No production semantic change was made in response.
+
+The raw v2 observations and summary are captured under `fixtures/evidence-relevance-successor-v7-development-v2/` and replayed offline against the unchanged v9/v22 semantics. The live development workflow is manual-only again after capture.
+
 ## Freeze blockers
 
 Do not freeze successor-v7 semantics until all are green:
