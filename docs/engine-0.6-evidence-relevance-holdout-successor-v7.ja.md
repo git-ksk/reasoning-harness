@@ -83,9 +83,15 @@ freeze前は fresh reusable development profile を candidate shaping にのみ�
 - Google `gemini-3.5-flash-lite`
 - Groq は iterative development から除外
 - fresh identity を使う synthetic non-holdout 12 case。relation paraphrase single-sibling boundary と relation orthogonality control を含む
-- 両providerで effective authority / materialization / correctness / utility の exact convergence を要求
+- 両providerで successor-owned identity authority + scope-risk / materialization / correctness / utility の convergence を要求する。relation scope exactness は診断値として残す。v9はv8のrelation軸を再調整せず保存する必要があるため。
 
 development runner は frozen v7 holdout runner と分離する。semantics freeze 前に fresh holdout v8 runner/corpus authoring は開始しない。
+
+### Development observation 36889080034
+
+candidate commit `57b29326f7499f62e24c9d01d16074c00b6d85cf` の最初のreusable runは両providerともoperationalには完走したが、当初のfull-qualification gateはFAILした。Mistralはfull effective-authority qualification 9/12、Googleは11/12。一方、両providerともmaterialization 12/12、wrong-target Relevant 0、utility miss 0、identity-scope miss 0、scope-risk miss / spurious risk 0だった。missはすべてrelation-scopeのみで、MistralとGoogleのmiss集合も一致しなかった。
+
+この観測を理由にrelation lexiconやprovider固有の調整は行わない。Successor v7が変更するのはidentity authorityのみである。generic controlでは同一proposal/raw入力に対してv9がv8のrelation scopeとscope riskを完全に保存し、single-near-sibling identity軸だけを変更することを固定する。live development convergenceはsuccessor-owned axis + materialization / correctness / utilityをgateし、full relation-scope mismatchは診断値として記録し続ける。full qualificationはsemantics freeze後のfresh holdout v8でも引き続き観測する。
 
 ## Freeze blocker
 

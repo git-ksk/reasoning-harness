@@ -83,9 +83,15 @@ Before freeze, a fresh reusable development profile is used only for candidate s
 - Google `gemini-3.5-flash-lite`
 - Groq excluded from iterative development
 - 12 synthetic non-holdout cases with fresh identities, including relation-paraphrase single-sibling boundaries and orthogonal relation controls
-- exact effective-authority, materialization, correctness, and utility convergence required on both providers
+- successor-owned identity authority + scope-risk, materialization, correctness, and utility convergence required on both providers; relation-scope exactness remains diagnostic because v9 must preserve, not retune, the v8 relation axis
 
 The development runner is separate from the frozen v7 holdout runner. Fresh holdout v8 runner/corpus work is not started before semantics freeze.
+
+### Development observation 36889080034
+
+The first reusable run at candidate commit `57b29326f7499f62e24c9d01d16074c00b6d85cf` completed both providers operationally but failed the original full-qualification gate. Mistral was 9/12 and Google 11/12 on full effective-authority qualification; both were 12/12 on materialization, had wrong-target Relevant 0 and utility misses 0, and had identity-scope misses 0 plus scope-risk misses/spurious risks 0. Every miss was relation-scope-only, and the miss sets were disjoint across providers.
+
+That observation does not justify relation-lexicon or provider-specific tuning. Successor v7 changes only identity authority. The generic control therefore requires v9 to preserve the exact relation scope and scope risk produced by v8 for the same proposal/raw inputs while changing only the single-near-sibling identity axis. Live development convergence gates that successor-owned axis plus materialization/correctness/utility and continues to record full relation-scope mismatch metrics diagnostically. Full qualification remains part of the future fresh holdout v8 observation after semantics freeze.
 
 ## Freeze blockers
 

@@ -254,7 +254,7 @@ fn content_bearing_target_anchor_is_not_downgraded() {
 }
 
 #[test]
-fn identity_floor_does_not_manufacture_relation_scope() {
+fn identity_floor_changes_only_identity_and_preserves_v8_relation_and_risk() {
     let policy = availability_policy("Indigo Mesh");
     let candidate = candidate(
         "relation-orthogonality",
@@ -272,12 +272,20 @@ fn identity_floor_does_not_manufacture_relation_scope() {
 
     for (proposal_relation, raw_relation) in [
         (
+            EvidenceRelevanceBinding::Exact,
+            EvidenceLocalRelationScope::RequestedRelation,
+        ),
+        (
             EvidenceRelevanceBinding::Different,
             EvidenceLocalRelationScope::DifferentRelation,
         ),
         (
             EvidenceRelevanceBinding::Unresolved,
             EvidenceLocalRelationScope::Unresolved,
+        ),
+        (
+            EvidenceRelevanceBinding::Unresolved,
+            EvidenceLocalRelationScope::RelationAbsent,
         ),
     ] {
         let proposal = EvidenceRelevanceBindingProposal {
@@ -289,6 +297,13 @@ fn identity_floor_does_not_manufacture_relation_scope() {
             relation_scope: raw_relation,
             scope_risk: EvidenceLocalBlockingReason::None,
         };
+        let historical = derive_effective_evidence_local_qualification_v8(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
         let successor = derive_effective_evidence_local_qualification_v9(
             &policy,
             &candidate,
@@ -296,11 +311,13 @@ fn identity_floor_does_not_manufacture_relation_scope() {
             Some(&raw),
         )
         .unwrap();
+
         assert_eq!(
             successor.identity_scope,
             EvidenceLocalIdentityScope::Unresolved
         );
-        assert_eq!(successor.relation_scope, raw_relation);
+        assert_eq!(successor.relation_scope, historical.relation_scope);
+        assert_eq!(successor.scope_risk, historical.scope_risk);
         assert_eq!(
             materialize_evidence_relevance_v22(&policy, &candidate, Some(&proposal), Some(&raw))
                 .unwrap()

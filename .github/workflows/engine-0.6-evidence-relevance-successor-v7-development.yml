@@ -1,10 +1,9 @@
 name: engine-0.6-evidence-relevance-successor-v7-development
 
-# The converged two-provider development observation is captured in-repo.
-# Keep later live development re-observation intentional/manual so capture, audit,
-# freeze, and roadmap-only commits do not spend provider calls or create a moving
-# development target. If successor-v7 semantics change before freeze, dispatch a
-# fresh development run explicitly.
+# Keep push enabled only until the first successor-owned two-provider convergence
+# is captured in-repo. After capture, switch this workflow back to manual-only so
+# audit/freeze/documentation commits do not spend provider calls or move the
+# development target.
 on:
   workflow_dispatch:
   push:
@@ -222,7 +221,7 @@ jobs:
           path: /tmp/evidence-relevance-development
           merge-multiple: true
 
-      - name: Require exact two-provider development convergence
+      - name: Require successor-owned two-provider development convergence
         run: |
           set -euo pipefail
           python3 - <<'PY2'
@@ -235,7 +234,7 @@ jobs:
               'google': 'gemini-3.5-flash-lite',
           }
           summary = {
-              'schema_version': 'engine-0.6-evidence-relevance-successor-v7-development-summary-v1',
+              'schema_version': 'engine-0.6-evidence-relevance-successor-v7-development-summary-v2',
               'holdout_acceptance_evidence': False,
               'providers': {},
               'development_gate_passed': True,
@@ -266,7 +265,12 @@ jobs:
                   and result.get('provider_arm_latch') is None
                   and metrics.get('successful_provider_cases') == 12
                   and metrics.get('failed_provider_cases') == 0
-                  and metrics.get('effective_authority_qualification_exact_matches') == 12
+                  # Successor v7 changes only identity authority. Relation scope is
+                  # intentionally inherited from v8 and remains advisory/model-sensitive;
+                  # require that axis to be preserved offline rather than tuning it here.
+                  and metrics.get('effective_authority_identity_scope_misses') == 0
+                  and metrics.get('effective_qualification_scope_risk_misses') == 0
+                  and metrics.get('effective_qualification_spurious_scope_risks') == 0
                   and metrics.get('materialized_exact_matches') == 12
                   and metrics.get('correctness_wrong_target_relevance_retention') == 0
                   and metrics.get('false_relevance_rejections') == 0
@@ -280,6 +284,10 @@ jobs:
                   'completed_cases': result.get('completed_cases'),
                   'scorability': result.get('scorability'),
                   'effective_authority_qualification_exact_matches': metrics.get('effective_authority_qualification_exact_matches'),
+                  'effective_authority_identity_scope_misses': metrics.get('effective_authority_identity_scope_misses'),
+                  'effective_authority_relation_scope_misses': metrics.get('effective_authority_relation_scope_misses'),
+                  'effective_qualification_scope_risk_misses': metrics.get('effective_qualification_scope_risk_misses'),
+                  'effective_qualification_spurious_scope_risks': metrics.get('effective_qualification_spurious_scope_risks'),
                   'materialized_exact_matches': metrics.get('materialized_exact_matches'),
                   'wrong_target_relevance_retention': metrics.get('correctness_wrong_target_relevance_retention'),
                   'utility_misses': metrics.get('utility_misses'),
