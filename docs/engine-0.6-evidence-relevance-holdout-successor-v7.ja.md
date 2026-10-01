@@ -1,6 +1,6 @@
 # Engine 0.6 evidence relevance holdout successor v7
 
-状態: immutable holdout v7 FAIL 後の pre-freeze successor candidate。effective qualification v9 + materialization v22 を generic control、immutable replay、Mistral + Google development で検証中。successor-v7 semantics freeze を commit/tag するまで fresh holdout v8 の authoring は禁止する。
+状態: immutable holdout v7 FAIL 後の successor-v7 semantics-freeze surface。effective qualification v9 + materialization v22 は generic control、immutable replay、independent development-v2、freeze audit を完了した。successor-v7 semantics-freeze tag をpushするまで fresh holdout v8 の authoring は禁止する。
 
 ## 観測された境界
 
@@ -130,5 +130,19 @@ v2のraw observationとsummaryは `fixtures/evidence-relevance-successor-v7-deve
 - rustfmt
 - workflow YAML validation
 - semantics checksum
+
+## Freeze audit evidence
+
+capture commit `c0778d452a027b20ea8db2841b3fa9dfa892f2fc` のpre-freeze auditで、development-v2観測後にproduction semanticsを変更せず宣言済みblockerをcloseした。
+
+- core tests、affected CLI tests、all-target Clippy `-D warnings`、rustfmt、workflow YAML、diff check はgreen
+- exact-head GitHub CI は9/9 green
+- v8 effective qualification / v21 materialization はsuccessor-v6 semantics freeze commit `092bdeac5676856e7af311e99c66d9da164cd46f` とbyte-for-byte同一
+- frozen holdout-v7 runner / corpus / workflow はfreeze commit `962709535a09de80246e2f9e7e626f508bf18230` から差分0
+- production semantic sourceのprovider / fixture ID / development entity special-case scanは0件
+- holdout v7までのimmutable replayとcaptured successor-v6 / development-v1 / independent development-v2 observationでwrong-target Relevant 0を維持
+- development-v2 independenceは宣言済みprior corpusに対するcase/entity/task/signal/8-token overlap 0をCI固定
+
+freeze coordinateは `engine-0.6-evidence-relevance-successor-v7-semantics-freeze`。tag targetと `fixtures/evidence-relevance-holdout-successor-v7/semantics-v7.sha256` の組でfrozen successor-v7 semantic evidence surfaceを定義する。
 
 semantics freeze tag をpushした後にのみ fresh independent holdout v8 authoringを開始できる。

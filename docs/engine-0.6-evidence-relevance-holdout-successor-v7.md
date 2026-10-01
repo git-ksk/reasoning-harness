@@ -1,6 +1,6 @@
 # Engine 0.6 evidence relevance holdout successor v7
 
-Status: pre-freeze successor candidate after immutable holdout v7 FAIL. Effective qualification v9 + materialization v22 are under generic-control, immutable-replay, and two-provider development validation. Fresh holdout v8 is prohibited until the successor-v7 semantics freeze is committed and tagged.
+Status: successor-v7 semantics-freeze surface after immutable holdout v7 FAIL. Effective qualification v9 + materialization v22 have completed generic-control, immutable-replay, independent development-v2, and freeze-audit validation. Fresh holdout v8 remains prohibited until the successor-v7 semantics-freeze tag is pushed.
 
 ## Observed boundary
 
@@ -130,5 +130,19 @@ Do not freeze successor-v7 semantics until all are green:
 - rustfmt;
 - workflow YAML validation;
 - semantics checksum.
+
+## Freeze audit evidence
+
+The pre-freeze audit at capture commit `c0778d452a027b20ea8db2841b3fa9dfa892f2fc` closes the declared blockers without changing production semantics after development-v2 observation:
+
+- core tests, affected CLI tests, all-target Clippy with `-D warnings`, rustfmt, workflow YAML and diff checks are green;
+- exact-head GitHub CI is 9/9 green;
+- v8 effective qualification and v21 materialization are byte-for-byte identical to successor-v6 semantics freeze commit `092bdeac5676856e7af311e99c66d9da164cd46f`;
+- frozen holdout-v7 runner, corpus and workflow have no diff from freeze commit `962709535a09de80246e2f9e7e626f508bf18230`;
+- provider / fixture ID / development entity special-case scan of production semantic source is empty;
+- immutable replay through holdout v7 plus captured successor-v6, development-v1 and independent development-v2 observations retains wrong-target Relevant 0;
+- development-v2 independence is CI-enforced at zero case/entity/task/signal/8-token overlap against all declared prior corpora.
+
+Freeze coordinate: `engine-0.6-evidence-relevance-successor-v7-semantics-freeze`. The tag target together with `fixtures/evidence-relevance-holdout-successor-v7/semantics-v7.sha256` defines the frozen successor-v7 semantic evidence surface.
 
 Only after the semantics freeze tag is pushed may a fresh independent holdout v8 be authored.
