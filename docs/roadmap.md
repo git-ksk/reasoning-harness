@@ -69,6 +69,17 @@ Successor-v6 development run `36728692499` passed the reusable Mistral + Google 
 
 See [holdout v5 immutable result](engine-0.6-evidence-relevance-holdout-v5-result.md) and [successor v6 design](engine-0.6-evidence-relevance-holdout-successor-v6.md).
 
+
+### Engine 0.6 #462 holdout v6 operational FAIL / holdout v7 semantic FAIL / successor v7
+
+Holdout v6 canonical run `36750505629` attempt 1 is immutable operational FAIL: the frozen v8/v21 semantics were never observed because every provider arm stopped before provider execution on the missing `evidence-relevance-holdout-v6` checkpoint mapping. The failure is not semantic evidence and is never rerun/rescored/relabelled. Runner wiring was fixed and frozen independently before a fresh holdout v7 was authored.
+
+Holdout v7 froze at commit `962709535a09de80246e2f9e7e626f508bf18230` / `engine-0.6-evidence-relevance-holdout-v7-freeze`; canonical run `36800959088` attempt 1 is immutable semantic/gate FAIL. Mistral, Google, and Groq all completed 26/26 with provider failures 0 and wrong-target Relevant 0, so required correctness passed. All three were 25/26 on effective authority qualification on the same URL-only-target + single-near-sibling boundary. Mistral and Google still materialized 26/26; Groq materialized 25/26 and had one utility miss by rejecting that boundary as Irrelevant.
+
+Successor v7 is pre-freeze as effective qualification v9 + materialization v22. Root cause is generic cross-axis coupling: the single-near-sibling identity floor depended on a bounded lexical requested-relation helper, so a relation paraphrase could remove identity abstention. v9 makes that identity floor relation-orthogonal and preserves the independently derived relation scope; v22 enforces the same Ambiguous floor before historical negative materialization can leak through. Frozen v8/v21 functions and historical v1-v7 artifacts remain unchanged. Immutable replay through holdout v7 is exact under the successor, generic controls are green, and a fresh 12-case Mistral + Google development profile is prepared. Groq remains excluded from iterative development and returns only after semantics freeze for a fresh one-shot holdout v8. Fresh holdout v8 authoring is prohibited before the successor-v7 semantics freeze.
+
+See [successor v7 design](engine-0.6-evidence-relevance-holdout-successor-v7.md).
+
 ### Product
 
 1. **Bounded resolver target closure (#159):** implemented in successor candidate `79ec3b44971c32f9a8847d8173672675947c7288`; exact Harness-owned unresolved targets are prioritized through the existing bounded acquisition/admission/re-verification boundary without model-owned authority.

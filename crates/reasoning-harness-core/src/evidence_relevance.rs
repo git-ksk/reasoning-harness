@@ -81,6 +81,8 @@ pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V20_ID: &str =
     "target-evidence-relevance-binding-materialization-v20";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V21_ID: &str =
     "target-evidence-relevance-binding-materialization-v21";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V22_ID: &str =
+    "target-evidence-relevance-binding-materialization-v22";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V1_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v1";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V2_CONTRACT_ID: &str =
@@ -97,6 +99,8 @@ pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V7_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v7";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V8_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v8";
+pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V9_CONTRACT_ID: &str =
+    "reason-evidence-relevance-effective-qualification-v9";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -1701,6 +1705,23 @@ fn deterministic_non_owning_single_signal_near_sibling_ambiguity(
 ) -> bool {
     deterministic_navigation_only_single_signal_near_sibling_ambiguity(policy, candidate)
         || deterministic_url_only_single_signal_near_sibling_ambiguity(policy, candidate)
+}
+
+fn deterministic_single_signal_near_sibling_identity_ambiguity_v2(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    use EvidenceLocalBlockingReason as Risk;
+
+    if policy.identity_requirement != EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor
+        || classify_deterministic_local_scope_risk(candidate) != Risk::None
+        || deterministic_distinct_target_evidence(candidate)
+    {
+        return false;
+    }
+
+    let (has_harness_anchor, _, _) = anchor_match(policy, candidate);
+    !has_harness_anchor && deterministic_single_signal_near_sibling_shape(policy, candidate)
 }
 
 fn deterministic_url_only_ownership_context_gap_v2(
@@ -3983,6 +4004,32 @@ pub fn derive_effective_evidence_local_qualification_v8(
     Ok(effective)
 }
 
+pub fn derive_effective_evidence_local_qualification_v9(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceLocalQualificationV6, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+
+    let mut effective =
+        derive_effective_evidence_local_qualification_v8(policy, candidate, proposal, raw)?;
+
+    // Identity ownership is orthogonal to relation wording. A strict target that
+    // appears only in non-owning context (or not at all) cannot be rejected merely
+    // because one near-sibling substantive signal exists, even when advisory stages
+    // agree that the sibling is distinct. Stronger deterministic distinct-identity
+    // evidence remains authoritative and is excluded by the helper above.
+    if effective.scope_risk == Risk::None
+        && deterministic_single_signal_near_sibling_identity_ambiguity_v2(policy, candidate)
+    {
+        effective.identity_scope = Identity::Unresolved;
+    }
+
+    Ok(effective)
+}
+
 pub fn materialize_evidence_relevance_v20(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -4202,6 +4249,59 @@ pub fn materialize_evidence_relevance_v21(
         materialize_evidence_relevance_v20(policy, candidate, proposal, raw_qualification)?;
     assessment.materialization_policy_id =
         EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V21_ID.into();
+    Ok(assessment)
+}
+
+pub fn materialize_evidence_relevance_v22(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw_qualification: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    validate_policy(policy)?;
+    validate_candidate(candidate)?;
+
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+
+    let effective = derive_effective_evidence_local_qualification_v9(
+        policy,
+        candidate,
+        proposal,
+        raw_qualification,
+    )?;
+
+    // Enforce the same relation-orthogonal identity floor before delegating to
+    // historical materialization. Older negative paths may otherwise treat a
+    // model-confirmed sibling as rejectable when target identity exists only in
+    // URL/navigation context and the relation uses wording outside lexical helpers.
+    if effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::Unresolved
+        && deterministic_single_signal_near_sibling_identity_ambiguity_v2(policy, candidate)
+    {
+        let (_has_harness_anchor, _non_owning_anchor, mut reasons) =
+            anchor_match(policy, candidate);
+        reasons.push(EvidenceRelevanceReason::RequiredIdentityAnchorMissing);
+        reasons.push(EvidenceRelevanceReason::NegativeTargetNotConfirmed);
+        reasons.push(EvidenceRelevanceReason::ModelAmbiguous);
+        return Ok(EvidenceRelevanceAssessment {
+            contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_V5_CONTRACT_ID.into(),
+            materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V22_ID
+                .into(),
+            policy_id: policy.policy_id.clone(),
+            target_id: policy.target_id.clone(),
+            evidence_id: candidate.evidence_id.clone(),
+            source_id: candidate.source_id.clone(),
+            disposition: EvidenceRelevanceDisposition::Ambiguous,
+            path: EvidenceRelevanceAssessmentPath::ConservativeFallback,
+            reasons,
+        });
+    }
+
+    let mut assessment =
+        materialize_evidence_relevance_v21(policy, candidate, proposal, raw_qualification)?;
+    assessment.materialization_policy_id =
+        EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V22_ID.into();
     Ok(assessment)
 }
 

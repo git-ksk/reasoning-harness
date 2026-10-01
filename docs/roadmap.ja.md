@@ -69,6 +69,17 @@ Successor-v6 development run `36728692499` はreusable Mistral + Googleのauthor
 
 [holdout v5 immutable result](engine-0.6-evidence-relevance-holdout-v5-result.ja.md) と [successor v6 design](engine-0.6-evidence-relevance-holdout-successor-v6.ja.md) を参照。
 
+
+### Engine 0.6 #462 holdout v6 operational FAIL / holdout v7 semantic FAIL / successor v7
+
+Holdout v6 canonical run `36750505629` attempt 1 は immutable operational FAIL。frozen v8/v21 semantics はproviderに一度も観測されず、全provider armが `evidence-relevance-holdout-v6` のcheckpoint mapping欠落によりprovider execution前で停止した。この失敗はsemantic evidenceではなく、rerun / rescore / relabelしない。runner wiringだけを独立修正・freezeした後にfresh holdout v7をauthorした。
+
+Holdout v7はcommit `962709535a09de80246e2f9e7e626f508bf18230` / `engine-0.6-evidence-relevance-holdout-v7-freeze` でfreezeし、canonical run `36800959088` attempt 1 は immutable semantic/gate FAIL。Mistral / Google / Groq は全て26/26完走、provider failure 0、wrong-target Relevant 0でrequired correctnessはPASS。3 provider共通で、URL-only target + single near-sibling境界の1件だけeffective authority qualificationが25/26。Mistral / Googleはmaterialization 26/26を維持したが、Groqはその境界をIrrelevantへ落として25/26・utility miss 1となった。
+
+Successor v7はeffective qualification v9 + materialization v22のpre-freeze candidate。generic root causeはcross-axis couplingで、single-near-sibling identity floorがbounded lexical requested-relation helperに依存していたため、relation paraphraseだけでidentity abstentionが消えていた。v9はidentity floorをrelation-orthogonalにし、independently derived relation scopeは保持する。v22はhistorical negative materializationへfall-throughする前に同じAmbiguous floorを適用する。frozen v8/v21 functionとhistorical v1-v7 artifactは変更しない。holdout v7までのimmutable replayはsuccessor上exact、generic controlはgreen、fresh 12-case Mistral + Google development profileを準備済み。Groqはiterative developmentから除外し、semantics freeze後のfresh one-shot holdout v8でのみ戻す。successor-v7 semantics freeze前のfresh holdout v8 authoringは禁止する。
+
+[successor v7 design](engine-0.6-evidence-relevance-holdout-successor-v7.ja.md) を参照。
+
 ### プロダクト
 
 1. **bounded resolver による target closure（#159）：** successor candidate `79ec3b44971c32f9a8847d8173672675947c7288` で実装済み。exact Harness-owned unresolved targets は、model-owned authority を介さず、既存の bounded acquisition/admission/re-verification boundary を通じて優先付けされる。
