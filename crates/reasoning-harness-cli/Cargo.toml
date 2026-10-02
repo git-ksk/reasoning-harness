@@ -139,5 +139,9 @@ name = "reason-evidence-relevance-successor-v8-development-study"
 path = "src/bin/evidence_relevance_successor_v8_development.rs"
 
 [[bin]]
+name = "reason-evidence-relevance-successor-v9-development-study"
+path = "src/bin/evidence_relevance_successor_v9_development.rs"
+
+[[bin]]
 name = "reason-evidence-relevance-identity-probe"
 path = "src/bin/evidence_relevance_identity_probe.rs"
