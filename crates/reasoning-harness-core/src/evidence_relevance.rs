@@ -83,6 +83,8 @@ pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V21_ID: &str =
     "target-evidence-relevance-binding-materialization-v21";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V22_ID: &str =
     "target-evidence-relevance-binding-materialization-v22";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V23_ID: &str =
+    "target-evidence-relevance-binding-materialization-v23";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V1_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v1";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V2_CONTRACT_ID: &str =
@@ -769,12 +771,16 @@ fn normalized_factual_segments(value: &str) -> Vec<String> {
                 "ignore the task",
                 "ignore prior instructions",
                 "ignore previous instructions",
+                "ignore prior directions",
+                "ignore previous directions",
                 "please ignore the task",
                 "please ignore prior instructions",
                 "please ignore previous instructions",
                 "disregard the task",
                 "disregard prior instructions",
                 "disregard previous instructions",
+                "disregard prior directions",
+                "disregard previous directions",
                 "classify this candidate",
                 "classify this material",
                 "mark this candidate",
@@ -982,6 +988,8 @@ fn semantic_relation_frame_present_in_segment(
                 "locations",
                 "geography",
                 "geographies",
+                "territory",
+                "territories",
             ];
             let deployment_triggers = [
                 "operate",
@@ -996,19 +1004,69 @@ fn semantic_relation_frame_present_in_segment(
                 "deployed",
                 "deploys",
                 "deployment",
+                "provision",
+                "provisioned",
+                "provisions",
+                "provisioning",
+                "activate",
+                "activated",
+                "activates",
+                "activation",
+                "deployable",
             ];
             let scoped_deployment =
                 token_followed_by_any_within(&tokens, &deployment_triggers, &geography_slots, 7);
-            let supports_scope = token_followed_by_any_within(
-                &tokens,
-                &["support", "supports"],
-                &geography_slots,
-                5,
-            ) && !has_token(&["in", "across", "within", "throughout"]);
+            let supports_scope = tokens.iter().enumerate().any(|(index, token)| {
+                if !["support", "supports"].contains(token) {
+                    return false;
+                }
+                let tail = tokens
+                    .iter()
+                    .skip(index + 1)
+                    .take(5)
+                    .copied()
+                    .collect::<Vec<_>>();
+                let blockers = [
+                    "feature",
+                    "features",
+                    "flag",
+                    "flags",
+                    "api",
+                    "apis",
+                    "protocol",
+                    "protocols",
+                    "format",
+                    "formats",
+                    "mode",
+                    "modes",
+                    "plugin",
+                    "plugins",
+                    "extension",
+                    "extensions",
+                    "label",
+                    "labels",
+                    "tag",
+                    "tags",
+                    "in",
+                    "across",
+                    "within",
+                    "throughout",
+                ];
+                let Some(slot_index) = tail
+                    .iter()
+                    .position(|candidate| geography_slots.contains(candidate))
+                else {
+                    return false;
+                };
+                !tail[..slot_index]
+                    .iter()
+                    .any(|candidate| blockers.contains(candidate))
+            });
             let coverage_scope = has_token(&["coverage"])
                 && has_token(&geography_slots)
                 && (has_token(&["include", "includes", "cover", "covers"])
-                    || contains_phrase("coverage extends to"));
+                    || contains_phrase("coverage extends to")
+                    || contains_phrase("coverage spanning"));
 
             scoped_deployment || supports_scope || coverage_scope
         }
@@ -1022,7 +1080,12 @@ fn semantic_relation_frame_present_in_segment(
                 "per", "monthly", "month", "hourly", "hour", "daily", "day", "annually", "year",
                 "yearly",
             ]);
-            (has_currency && has_number && has_rate_basis)
+            let has_commercial_predicate = has_token(&[
+                "price", "priced", "pricing", "cost", "costs", "charge", "charges", "charged",
+                "billing", "billed", "fee", "fees", "pay", "pays", "paid", "require", "requires",
+                "required",
+            ]);
+            (has_currency && has_number && has_rate_basis && has_commercial_predicate)
                 || contains_phrase("priced at")
                 || contains_phrase("monthly fee")
                 || contains_phrase("usage fee")
@@ -1036,7 +1099,23 @@ fn semantic_relation_frame_present_in_segment(
                 || contains_phrase("ceiling of")
         }
         EvidenceRelevanceRelationKind::ChangeOrLaunch => {
-            contains_phrase("rolled out")
+            let rollout_audience = [
+                "customer",
+                "customers",
+                "user",
+                "users",
+                "tenant",
+                "tenants",
+                "team",
+                "teams",
+                "organization",
+                "organizations",
+                "production",
+                "public",
+                "globally",
+                "worldwide",
+            ];
+            (contains_phrase("rolled out") && has_token(&rollout_audience))
                 || contains_phrase("went live")
                 || contains_phrase("became generally available")
                 || contains_phrase("is now generally available")
@@ -1048,9 +1127,37 @@ fn semantic_relation_frame_present_in_segment(
                 || contains_phrase("is the term for")
                 || contains_phrase("denotes")
                 || contains_phrase("is described as")
+                || contains_phrase("is a managed")
         }
         EvidenceRelevanceRelationKind::BenefitOrUseCase => {
-            contains_phrase("designed to")
+            token_followed_by_any_within(
+                &tokens,
+                &[
+                    "lower",
+                    "lowers",
+                    "lowered",
+                    "reduce",
+                    "reduces",
+                    "reduced",
+                    "decrease",
+                    "decreases",
+                    "decreased",
+                    "cut",
+                    "cuts",
+                ],
+                &[
+                    "work",
+                    "effort",
+                    "latency",
+                    "cost",
+                    "costs",
+                    "overhead",
+                    "duplication",
+                    "duplicates",
+                    "time",
+                ],
+                6,
+            ) || contains_phrase("designed to")
                 || contains_phrase("intended to")
                 || contains_phrase("can be used to")
                 || contains_phrase("is used to")
@@ -1068,6 +1175,36 @@ fn requested_relation_semantic_frame_present(
     semantic_relation_segments(candidate)
         .iter()
         .any(|segment| semantic_relation_frame_present_in_segment(policy.relation, segment))
+}
+
+fn conflicting_semantic_relation_frame_present(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    let coarse_relations = [
+        EvidenceRelevanceRelationKind::Availability,
+        EvidenceRelevanceRelationKind::Pricing,
+        EvidenceRelevanceRelationKind::Limit,
+        EvidenceRelevanceRelationKind::Definition,
+        EvidenceRelevanceRelationKind::ChangeOrLaunch,
+        EvidenceRelevanceRelationKind::BenefitOrUseCase,
+    ];
+
+    semantic_relation_segments(candidate).iter().any(|segment| {
+        coarse_relations.iter().copied().any(|relation| {
+            relation != policy.relation
+                && semantic_relation_frame_present_in_segment(relation, segment)
+        })
+    })
+}
+
+fn requested_relation_harness_authority_present(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    requested_relation_semantic_frame_present(policy, candidate)
+        || (requested_relation_locally_present(policy, candidate)
+            && !conflicting_semantic_relation_frame_present(policy, candidate))
 }
 
 fn requested_relation_locally_present(
@@ -1112,7 +1249,7 @@ fn requested_relation_locally_present(
             "improvement",
         ]),
         EvidenceRelevanceRelationKind::Definition => {
-            contains_any(&["definition", "concept", "means", "defined", "this service"])
+            contains_any(&["definition", "means", "defined", "this service"])
         }
         EvidenceRelevanceRelationKind::BenefitOrUseCase => {
             contains_any(&["use case", "benefit", "reduce", "help", "combine"])
@@ -4207,6 +4344,37 @@ pub fn derive_effective_evidence_local_qualification_v10(
     Ok(effective)
 }
 
+pub fn derive_effective_evidence_local_qualification_v11(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceLocalQualificationV6, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalRelationScope as Relation;
+
+    let mut effective =
+        derive_effective_evidence_local_qualification_v10(policy, candidate, proposal, raw)?;
+
+    // v10 added positive semantic-frame recall but still inherited v1's model-only
+    // RequestedRelation fallback. v11 makes that authority boundary explicit:
+    // advisory model agreement cannot manufacture positive relation authority when
+    // the Harness has neither a requested-relation frame nor an unconflicted
+    // historical lexical cue. Abstain instead of guessing. Existing deterministic
+    // DifferentRelation / RelationAbsent decisions, identity, and scope-risk remain
+    // untouched.
+    if effective.scope_risk == Risk::None
+        && effective.relation_scope == Relation::RequestedRelation
+        && !requested_relation_harness_authority_present(policy, candidate)
+        && !deterministic_strict_named_target_absence(policy, candidate)
+        && !deterministic_strict_target_relation_absence(policy, candidate)
+    {
+        effective.relation_scope = Relation::Unresolved;
+    }
+
+    Ok(effective)
+}
+
 pub fn materialize_evidence_relevance_v20(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -4479,6 +4647,58 @@ pub fn materialize_evidence_relevance_v22(
         materialize_evidence_relevance_v21(policy, candidate, proposal, raw_qualification)?;
     assessment.materialization_policy_id =
         EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V22_ID.into();
+    Ok(assessment)
+}
+
+pub fn materialize_evidence_relevance_v23(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw_qualification: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    validate_policy(policy)?;
+    validate_candidate(candidate)?;
+
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalRelationScope as Relation;
+
+    let effective = derive_effective_evidence_local_qualification_v11(
+        policy,
+        candidate,
+        proposal,
+        raw_qualification,
+    )?;
+    let mut assessment =
+        materialize_evidence_relevance_v22(policy, candidate, proposal, raw_qualification)?;
+
+    // v22 is frozen to v9 qualification semantics. Successor relation authority
+    // adds a positive materialization floor without rewriting v22: model-only
+    // relation Exact cannot produce Relevant when v11 abstains.
+    if assessment.disposition == EvidenceRelevanceDisposition::Relevant
+        && effective.scope_risk == Risk::None
+        && effective.relation_scope != Relation::RequestedRelation
+    {
+        let (_has_harness_anchor, _non_owning_anchor, mut reasons) =
+            anchor_match(policy, candidate);
+        reasons.push(EvidenceRelevanceReason::LocalQualificationDisagreement);
+        reasons.push(EvidenceRelevanceReason::PositiveCandidateSafetyAbstained);
+        reasons.push(EvidenceRelevanceReason::ModelAmbiguous);
+        return Ok(EvidenceRelevanceAssessment {
+            contract_id: EVIDENCE_RELEVANCE_BINDING_PROPOSAL_V5_CONTRACT_ID.into(),
+            materialization_policy_id: EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V23_ID
+                .into(),
+            policy_id: policy.policy_id.clone(),
+            target_id: policy.target_id.clone(),
+            evidence_id: candidate.evidence_id.clone(),
+            source_id: candidate.source_id.clone(),
+            disposition: EvidenceRelevanceDisposition::Ambiguous,
+            path: EvidenceRelevanceAssessmentPath::ConservativeFallback,
+            reasons,
+        });
+    }
+
+    assessment.materialization_policy_id =
+        EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V23_ID.into();
     Ok(assessment)
 }
 
