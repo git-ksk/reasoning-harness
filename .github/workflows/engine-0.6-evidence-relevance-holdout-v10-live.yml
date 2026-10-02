@@ -164,6 +164,22 @@ jobs:
           assert Counter(c["expected_disposition"] for c in fresh["cases"]) == {
               "relevant": 8, "irrelevant": 10, "ambiguous": 8
           }
+          assert Counter(c["authority_expectation"] for c in fresh["cases"]) == {
+              "require_requested": 15,
+              "forbid_requested": 6,
+              "preserve_risk": 5,
+          }
+          for case in fresh["cases"]:
+              local = case["expected_local_qualification"]
+              mode = case["authority_expectation"]
+              if mode == "require_requested":
+                  assert local["relation_scope"] == "requested_relation", case["id"]
+              elif mode == "forbid_requested":
+                  assert local["relation_scope"] != "requested_relation", case["id"]
+              elif mode == "preserve_risk":
+                  assert local["scope_risk"] != "none", case["id"]
+              else:
+                  raise AssertionError(f"unknown authority mode {mode!r}: {case['id']}")
           assert fresh["source_rule"] == (
               "independently_authored_after_holdout_v10_runner_freeze_"
               "no_holdout_v1_v2_v3_v4_v5_v6_v7_v8_v9_or_successor_v5_v6_v7_v8_v9_development_"
@@ -441,6 +457,11 @@ jobs:
       - name: Reject workflow reruns
         run: test "$GITHUB_RUN_ATTEMPT" = "1"
 
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-holdout-v10-freeze
+          fetch-depth: 0
+
       - uses: actions/download-artifact@v8
         with:
           pattern: engine-0.6-evidence-relevance-holdout-v10-*
@@ -455,6 +476,11 @@ jobs:
           from pathlib import Path
 
           root = Path('/tmp/evidence-relevance-artifacts')
+          manifest = json.loads(
+              Path('fixtures/evidence-relevance-holdout-v10/manifest.json').read_text()
+          )
+          cases = {case['id']: case for case in manifest['cases']}
+          assert len(cases) == 26
           expected = {
               'mistral': {'model':'ministral-8b-latest','required':True},
               'groq': {'model':'openai/gpt-oss-120b','required':True},
@@ -462,6 +488,7 @@ jobs:
           }
           summary = {
               'schema_version':'engine-0.6-evidence-relevance-holdout-summary-v10',
+              'authority_contract':'v11_selective_relation_authority_v23_exact_materialization',
               'providers':{},
               'required_operationally_complete':True,
               'required_correctness_gate_passed':True,
@@ -500,6 +527,53 @@ jobs:
                   continue
 
               metrics = result.get('metrics', {})
+              observations = {item['id']: item for item in result.get('observations', [])}
+              authority_failures = []
+              identity_risk_failures = []
+
+              for case_id, case in cases.items():
+                  obs = observations.get(case_id)
+                  if obs is None:
+                      authority_failures.append({'id': case_id, 'reason': 'missing_observation'})
+                      continue
+                  effective = obs.get('effective_local_qualification') or {}
+                  expected_local = case['expected_local_qualification']
+                  mode = case['authority_expectation']
+                  relation = effective.get('relation_scope')
+
+                  if effective.get('identity_scope') != expected_local['identity_scope']:
+                      identity_risk_failures.append({
+                          'id': case_id,
+                          'axis': 'identity_scope',
+                          'expected': expected_local['identity_scope'],
+                          'actual': effective.get('identity_scope'),
+                      })
+                  if effective.get('scope_risk') != expected_local['scope_risk']:
+                      identity_risk_failures.append({
+                          'id': case_id,
+                          'axis': 'scope_risk',
+                          'expected': expected_local['scope_risk'],
+                          'actual': effective.get('scope_risk'),
+                      })
+
+                  if mode == 'require_requested':
+                      if relation != 'requested_relation':
+                          authority_failures.append({
+                              'id': case_id, 'mode': mode, 'actual': relation,
+                          })
+                  elif mode == 'forbid_requested':
+                      if relation == 'requested_relation':
+                          authority_failures.append({
+                              'id': case_id, 'mode': mode, 'actual': relation,
+                          })
+                  elif mode == 'preserve_risk':
+                      pass
+                  else:
+                      authority_failures.append({
+                          'id': case_id,
+                          'reason': f'unknown_authority_expectation:{mode}',
+                      })
+
               complete = (
                   rc == 0
                   and result.get('model') == cfg['model']
@@ -525,11 +599,8 @@ jobs:
                   complete
                   and metrics.get('effective_local_qualification_expected_cases') == 26
                   and metrics.get('effective_local_qualification_derivations') == 26
-                  and metrics.get('effective_authority_qualification_exact_matches') == 26
-                  and metrics.get('effective_qualification_scope_risk_misses') == 0
-                  and metrics.get('effective_qualification_spurious_scope_risks') == 0
-                  and metrics.get('effective_authority_identity_scope_misses') == 0
-                  and metrics.get('effective_authority_relation_scope_misses') == 0
+                  and not authority_failures
+                  and not identity_risk_failures
               )
               utility_ok = (
                   complete
@@ -593,6 +664,9 @@ jobs:
                   'effective_authority_qualification_exact_accuracy':metrics.get('effective_authority_qualification_exact_accuracy'),
                   'effective_authority_identity_scope_misses':effective_authority_identity_scope_misses,
                   'effective_authority_relation_scope_misses':effective_authority_relation_scope_misses,
+                  'authority_contract':'v11_selective_relation_authority_v23_exact_materialization',
+                  'authority_failures':authority_failures,
+                  'identity_risk_failures':identity_risk_failures,
                   'materialized_exact_matches':metrics.get('materialized_exact_matches'),
                   'materialized_exact_accuracy':metrics.get('materialized_exact_accuracy'),
                   'correctness_wrong_target_relevance_retention':metrics.get('correctness_wrong_target_relevance_retention'),

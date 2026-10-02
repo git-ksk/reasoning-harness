@@ -1,6 +1,6 @@
 # Engine 0.6 evidence relevance holdout v10
 
-Status: runner-freeze preparation only。semantic contract は engine-0.6-evidence-relevance-successor-v9-semantics-freeze の frozen v11 + v23 をそのまま使う。holdout-v10 corpus はまだ author / observe しない。
+Status: fresh corpus prepared / still unobserved。semantic contract は engine-0.6-evidence-relevance-successor-v9-semantics-freeze の frozen v11 + v23 をそのまま使う。holdout-v10 corpus と live workflow は準備済みだが、provider observation はまだ行っていない。
 
 ## Why v10 exists
 
@@ -29,7 +29,7 @@ V10 profile:
 - issue: 468
 - 全case観測時のみ complete holdout
 
-runner freeze 時点では holdout-v10 directory を作らない。
+runner freeze 時点では holdout-v10 directory は存在せず、runner-freeze tag push 後にのみ fresh corpus を author した。
 
 ## Evaluation-contract guard
 
@@ -37,8 +37,18 @@ corpus freeze 前に relation expectation を frozen successor-v9 development co
 
 canonical v9 label は編集しない。この guard は fresh surface のみ対象。
 
+acceptance の relation-authority contract は v11 freeze 時と同じ selective contract とする。
+
+- require_requested: effective relation scope は requested_relation 必須
+- forbid_requested: effective relation scope が requested_relation であってはならない
+- preserve_risk: deterministic scope risk を exact に維持
+
+identity scope / scope risk は全26caseで exact 必須。materialized disposition も全26caseで exact 必須。forbid_requested case での different_relation と保守的な relation_absent / unresolved の差は diagnostic とし、acceptance failure にはしない。v11 はこれら advisory negative label を Harness-owned exact authority として freeze していないため。
+
+v10 の固定分布は require_requested 15 / forbid_requested 6 / preserve_risk 5。
+
 ## Runner freeze
 
 freeze coordinate: engine-0.6-evidence-relevance-holdout-v10-runner-freeze。
 
-この tag push 後にのみ fresh 26-case corpus を author する。holdout v1-v9 と全 prior successor development surface に対して case/entity/task/signal/exact-8-token reuse 0 を要求する。corpus 自体の freeze 前は provider observation 禁止。
+runner-freeze tag push 後に fresh 26-case corpus を author 済み。holdout v1-v9 と全 prior successor development surface に対して case/entity/task/signal/exact-8-token reuse 0。corpus freeze と Groq admission floor 成立前は provider observation 禁止。per-case semantic active budget は90秒、absolute case deadline は120秒のまま。

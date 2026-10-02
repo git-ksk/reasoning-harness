@@ -50,7 +50,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "relevant"
+      "expected_disposition": "relevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h02_positive_alias_pricing",
@@ -98,7 +99,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "relevant"
+      "expected_disposition": "relevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h03_positive_exact_limit",
@@ -144,7 +146,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "relevant"
+      "expected_disposition": "relevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h04_positive_exact_change",
@@ -190,7 +193,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "relevant"
+      "expected_disposition": "relevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h05_positive_exact_definition",
@@ -236,7 +240,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "relevant"
+      "expected_disposition": "relevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h06_positive_exact_benefit",
@@ -282,7 +287,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "relevant"
+      "expected_disposition": "relevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h07_positive_alias_availability",
@@ -330,7 +336,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "relevant"
+      "expected_disposition": "relevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h08_positive_exact_pricing_with_peer",
@@ -376,7 +383,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "relevant"
+      "expected_disposition": "relevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h09_negative_exact_target_wrong_relation",
@@ -422,7 +430,8 @@
         "relation_scope": "different_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "irrelevant"
+      "expected_disposition": "irrelevant",
+      "authority_expectation": "forbid_requested"
     },
     {
       "id": "v10h10_negative_distinct_pricing_frame",
@@ -468,7 +477,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "irrelevant"
+      "expected_disposition": "irrelevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h11_negative_distinct_limit_frame",
@@ -514,7 +524,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "irrelevant"
+      "expected_disposition": "irrelevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h12_negative_distinct_change_frame",
@@ -560,7 +571,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "irrelevant"
+      "expected_disposition": "irrelevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h13_negative_distinct_definition_frame",
@@ -606,7 +618,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "irrelevant"
+      "expected_disposition": "irrelevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h14_negative_distinct_benefit_frame",
@@ -652,7 +665,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "irrelevant"
+      "expected_disposition": "irrelevant",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h15_negative_availability_feature_support_non_frame",
@@ -698,7 +712,8 @@
         "relation_scope": "different_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "irrelevant"
+      "expected_disposition": "irrelevant",
+      "authority_expectation": "forbid_requested"
     },
     {
       "id": "v10h16_negative_exact_relation_absence",
@@ -744,7 +759,8 @@
         "relation_scope": "relation_absent",
         "scope_risk": "none"
       },
-      "expected_disposition": "irrelevant"
+      "expected_disposition": "irrelevant",
+      "authority_expectation": "forbid_requested"
     },
     {
       "id": "v10h17_negative_explicit_target_absence_injection",
@@ -790,7 +806,8 @@
         "relation_scope": "relation_absent",
         "scope_risk": "none"
       },
-      "expected_disposition": "irrelevant"
+      "expected_disposition": "irrelevant",
+      "authority_expectation": "forbid_requested"
     },
     {
       "id": "v10h18_negative_exact_target_numeric_non_frame",
@@ -836,7 +853,8 @@
         "relation_scope": "different_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "irrelevant"
+      "expected_disposition": "irrelevant",
+      "authority_expectation": "forbid_requested"
     },
     {
       "id": "v10h19_ambiguous_possible_rename",
@@ -882,7 +900,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "identity_mapping"
       },
-      "expected_disposition": "ambiguous"
+      "expected_disposition": "ambiguous",
+      "authority_expectation": "preserve_risk"
     },
     {
       "id": "v10h20_ambiguous_url_only_unnamed_owner",
@@ -928,7 +947,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "context_gap"
       },
-      "expected_disposition": "ambiguous"
+      "expected_disposition": "ambiguous",
+      "authority_expectation": "preserve_risk"
     },
     {
       "id": "v10h21_ambiguous_shared_ownership",
@@ -974,7 +994,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "multiple"
       },
-      "expected_disposition": "ambiguous"
+      "expected_disposition": "ambiguous",
+      "authority_expectation": "preserve_risk"
     },
     {
       "id": "v10h22_ambiguous_truncated_relation",
@@ -1020,7 +1041,8 @@
         "relation_scope": "unresolved",
         "scope_risk": "context_gap"
       },
-      "expected_disposition": "ambiguous"
+      "expected_disposition": "ambiguous",
+      "authority_expectation": "preserve_risk"
     },
     {
       "id": "v10h23_ambiguous_unconfirmed_alias",
@@ -1066,7 +1088,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "identity_mapping"
       },
-      "expected_disposition": "ambiguous"
+      "expected_disposition": "ambiguous",
+      "authority_expectation": "preserve_risk"
     },
     {
       "id": "v10h24_ambiguous_single_signal_near_sibling",
@@ -1108,7 +1131,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "ambiguous"
+      "expected_disposition": "ambiguous",
+      "authority_expectation": "require_requested"
     },
     {
       "id": "v10h25_ambiguous_cross_frame_general_availability",
@@ -1154,7 +1178,8 @@
         "relation_scope": "unresolved",
         "scope_risk": "none"
       },
-      "expected_disposition": "ambiguous"
+      "expected_disposition": "ambiguous",
+      "authority_expectation": "forbid_requested"
     },
     {
       "id": "v10h26_ambiguous_navigation_single_sibling",
@@ -1200,7 +1225,8 @@
         "relation_scope": "requested_relation",
         "scope_risk": "none"
       },
-      "expected_disposition": "ambiguous"
+      "expected_disposition": "ambiguous",
+      "authority_expectation": "require_requested"
     }
   ]
 }

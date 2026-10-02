@@ -92,7 +92,7 @@ Canonical holdout v9 run `37037497486` / freeze commit `1b50e5c54cdff4bd850bb0b1
 
 ### Engine 0.6 #468 holdout v10 preparation
 
-Holdout-v10 は frozen effective qualification v11 / materialization v23 を変更せず継続する。Dedicated runner は commit `c0354dfccdbb78b9008565431b11e5abe666f989` / tag `engine-0.6-evidence-relevance-holdout-v10-runner-freeze` で freeze 済み、exact-head CI 8/8 PASS。fresh 26-case 8/10/8 corpus は holdout v1-v9 と successor-v5/v6/v7/v8/v9 development surface に対する case/entity/task/signal/8-token overlap 0。holdout-v9 で drift した non-frame `different_relation` contract は authoring guard で明示固定する。独立した Google timeout リスク低減のため per-case semantic execution budget は90秒とし、relation semantics は変更しない。corpus freeze 前の provider observation は禁止し、Groq は modeled 55K-headroom floor `2026-10-03T01:01:23Z` も満たすまで live 実行しない。
+Holdout-v10 は frozen effective qualification v11 / materialization v23 を変更せず継続する。Dedicated runner は commit `c0354dfccdbb78b9008565431b11e5abe666f989` / tag `engine-0.6-evidence-relevance-holdout-v10-runner-freeze` で freeze 済み、exact-head CI 8/8 PASS。fresh 26-case 8/10/8 corpus は holdout v1-v9 と successor-v5/v6/v7/v8/v9 development surface に対する case/entity/task/signal/8-token overlap 0。pre-observation label は frozen non-frame `different_relation` contract を保持しつつ、acceptance は v11 freeze 時と同じ selective relation-authority contract（15 `require_requested` / 6 `forbid_requested` / 5 `preserve_risk`）に整合させる。identity / scope-risk と final materialized disposition は全case exact 必須。独立した Google timeout リスク低減のため per-case semantic execution budget は90秒とし、relation semantics は変更しない。corpus freeze 前の provider observation は禁止し、Groq は modeled 55K-headroom floor `2026-10-03T01:01:23Z` も満たすまで live 実行しない。
 
 ### プロダクト
 

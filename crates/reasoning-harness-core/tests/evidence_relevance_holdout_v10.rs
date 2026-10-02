@@ -22,6 +22,7 @@ struct Manifest {
 #[derive(Debug, Deserialize)]
 struct Case {
     id: String,
+    authority_expectation: String,
     policy: EvidenceRelevanceTargetPolicy,
     candidate: EvidenceRelevanceCandidate,
     expected_proposal: EvidenceRelevanceBindingProposal,
@@ -80,6 +81,26 @@ fn holdout_v10_identity_and_distribution_are_frozen_preobservation() {
         .filter(|case| case.expected_disposition == EvidenceRelevanceDisposition::Ambiguous)
         .count();
     assert_eq!((relevant, irrelevant, ambiguous), (8, 10, 8));
+
+    let require_requested = manifest
+        .cases
+        .iter()
+        .filter(|case| case.authority_expectation == "require_requested")
+        .count();
+    let forbid_requested = manifest
+        .cases
+        .iter()
+        .filter(|case| case.authority_expectation == "forbid_requested")
+        .count();
+    let preserve_risk = manifest
+        .cases
+        .iter()
+        .filter(|case| case.authority_expectation == "preserve_risk")
+        .count();
+    assert_eq!(
+        (require_requested, forbid_requested, preserve_risk),
+        (15, 6, 5)
+    );
 }
 
 #[test]
@@ -254,6 +275,27 @@ fn holdout_v10_preserves_frozen_non_frame_relation_contract_and_operational_budg
             "{} operational budget",
             case.id
         );
+        match case.authority_expectation.as_str() {
+            "require_requested" => assert_eq!(
+                case.expected_local_qualification.relation_scope,
+                reasoning_harness_core::EvidenceLocalRelationScope::RequestedRelation,
+                "{} authority mode",
+                case.id
+            ),
+            "forbid_requested" => assert_ne!(
+                case.expected_local_qualification.relation_scope,
+                reasoning_harness_core::EvidenceLocalRelationScope::RequestedRelation,
+                "{} authority mode",
+                case.id
+            ),
+            "preserve_risk" => assert_ne!(
+                case.expected_local_qualification.scope_risk,
+                reasoning_harness_core::EvidenceLocalBlockingReason::None,
+                "{} authority mode",
+                case.id
+            ),
+            other => panic!("{} unknown authority mode {other}", case.id),
+        }
     }
 
     let frozen_dev: Value =
