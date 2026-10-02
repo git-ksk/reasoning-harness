@@ -131,6 +131,10 @@ name = "reason-evidence-relevance-holdout-v8-study"
 path = "src/bin/evidence_relevance_holdout_v8.rs"
 
 [[bin]]
+name = "reason-evidence-relevance-holdout-v9-study"
+path = "src/bin/evidence_relevance_holdout_v9.rs"
+
+[[bin]]
 name = "reason-evidence-relevance-successor-v7-development-study"
 path = "src/bin/evidence_relevance_successor_v7_development.rs"
 
