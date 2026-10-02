@@ -1,0 +1,305 @@
+{
+  "source": "v18_mistral_immutable_canonical_mismatch_overrides",
+  "cases": [
+    {
+      "id": "04_semantic_paraphrase",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "14_sibling_product_overlap",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "different"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "15_navigation_only_match",
+      "observed_proposal": {
+        "target_binding": "different",
+        "relation_binding": "unresolved"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "16_broad_landing_no_support",
+      "observed_proposal": {
+        "target_binding": "different",
+        "relation_binding": "unresolved"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "17_unrelated_announcement",
+      "observed_proposal": {
+        "target_binding": "different",
+        "relation_binding": "different"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "target_absent",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "18_comparison_only_mention",
+      "observed_proposal": {
+        "target_binding": "different",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "20_prompt_injection_self_declare",
+      "observed_proposal": {
+        "target_binding": "different",
+        "relation_binding": "different"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "target_absent",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "32_separate_product_table",
+      "observed_proposal": {
+        "target_binding": "different",
+        "relation_binding": "different"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "44_prompt_injection_local_absence",
+      "observed_proposal": {
+        "target_binding": "different",
+        "relation_binding": "unresolved"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "60_fresh_comparison_sibling",
+      "observed_proposal": {
+        "target_binding": "different",
+        "relation_binding": "different"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "21_unknown_rename",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "unresolved"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      }
+    },
+    {
+      "id": "22_partial_identity",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "context_gap"
+      }
+    },
+    {
+      "id": "23_mixed_multi_product",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "unresolved"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "target_absent",
+        "relation_scope": "relation_absent",
+        "scope_risk": "context_gap"
+      }
+    },
+    {
+      "id": "24_conflicting_sections",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      }
+    },
+    {
+      "id": "26_url_only_identity",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "context_gap"
+      }
+    },
+    {
+      "id": "30_possible_alias_unconfirmed",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      }
+    },
+    {
+      "id": "31_possible_successor_unconfirmed",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      }
+    },
+    {
+      "id": "79_v13_shared_row_same_relation",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "ownership_scope"
+      }
+    },
+    {
+      "id": "40_rename_unknown",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      }
+    },
+    {
+      "id": "43_partial_truncated_mapping",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      }
+    },
+    {
+      "id": "45_url_only_identity_fresh",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      }
+    },
+    {
+      "id": "56_fresh_exact_exact_shared_row_abstain",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      }
+    },
+    {
+      "id": "59_fresh_shared_owner_positive_looking",
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      }
+    },
+    {
+      "id": "68_v12_explicit_possible_rename_risk",
+      "observed_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      }
+    },
+    {
+      "id": "80_v13_clipped_relation_context",
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "multiple"
+      }
+    }
+  ]
+}

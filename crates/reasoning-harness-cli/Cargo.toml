@@ -109,3 +109,31 @@ ctrlc.workspace = true
 [[bin]]
 name = "reason-evidence-need-holdout-study"
 path = "src/bin/evidence_need_holdout.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-study"
+path = "src/bin/evidence_relevance.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-holdout-study"
+path = "src/bin/evidence_relevance_holdout.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-holdout-v6-study"
+path = "src/bin/evidence_relevance_holdout_v6.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-holdout-v7-study"
+path = "src/bin/evidence_relevance_holdout_v7.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-holdout-v8-study"
+path = "src/bin/evidence_relevance_holdout_v8.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-successor-v7-development-study"
+path = "src/bin/evidence_relevance_successor_v7_development.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-identity-probe"
+path = "src/bin/evidence_relevance_identity_probe.rs"

@@ -1,14 +1,18 @@
 use std::{
     env, fs,
-    io::ErrorKind,
+    fs::OpenOptions,
+    io::{ErrorKind, Write},
     path::{Path, PathBuf},
-    sync::Arc,
-    time::{Duration, SystemTime, UNIX_EPOCH},
+    sync::{
+        Arc, Mutex,
+        atomic::{AtomicU64, Ordering},
+    },
+    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
 use reasoning_harness_core::{
-    ModelAdapter, ModelError, ModelErrorKind, ModelOutputFormat, ModelRequest, ModelResponse,
-    ModelUsage,
+    ModelAdapter, ModelError, ModelErrorKind, ModelExecutionBudget,
+    ModelExecutionTelemetrySnapshot, ModelOutputFormat, ModelRequest, ModelResponse, ModelUsage,
 };
 use reqwest::{Client, StatusCode, Url, header::RETRY_AFTER};
 use serde::{Deserialize, Serialize};
@@ -29,8 +33,10 @@ const TRANSIENT_BACKOFF_SCHEDULE: [Duration; 3] = [
 const GOOGLE_RECOMMENDED_TEMPERATURE: f32 = 1.0;
 const GOOGLE_MIN_REQUEST_INTERVAL_MS_ENV: &str = "REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS";
 const GOOGLE_SHARED_PACER_PATH_ENV: &str = "REASON_GOOGLE_SHARED_PACER_PATH";
+const GOOGLE_ATTEMPT_TELEMETRY_PATH_ENV: &str = "REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH";
 const MAX_CONFIGURED_REQUEST_INTERVAL: Duration = Duration::from_secs(60);
 const MAX_STRUCTURED_SHORT_RETRY_DELAY: Duration = Duration::from_secs(120);
+static GOOGLE_ATTEMPT_TELEMETRY_CALL_SEQUENCE: AtomicU64 = AtomicU64::new(1);
 
 /// Google Gemini API / AI Studio adapter for Google-hosted text models.
 ///
@@ -42,6 +48,104 @@ pub struct GoogleAdapter {
     base_url: Url,
     model: String,
     request_pacer: Option<Arc<RequestPacer>>,
+    attempt_telemetry_path: Option<PathBuf>,
+    execution_budget: Mutex<Option<ModelExecutionBudget>>,
+    execution_telemetry: crate::network::ExecutionTelemetryCounters,
+}
+
+#[derive(Debug, Serialize)]
+struct GoogleAttemptTelemetryEvent<'a> {
+    schema_version: &'static str,
+    event: &'a str,
+    call_id: &'a str,
+    model: &'a str,
+    attempt: u32,
+    elapsed_ms: u128,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    status_code: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    error_class: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    retry_delay_ms: Option<u128>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    quota_window: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider_status: Option<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    rate_limit_headers: Option<&'a str>,
+}
+
+struct GoogleAttemptTelemetryGuard<'a> {
+    path: Option<&'a Path>,
+    call_id: &'a str,
+    model: &'a str,
+    attempt: u32,
+    started: Instant,
+    completed: bool,
+}
+
+impl<'a> GoogleAttemptTelemetryGuard<'a> {
+    fn start(path: Option<&'a Path>, call_id: &'a str, model: &'a str, attempt: u32) -> Self {
+        let guard = Self {
+            path,
+            call_id,
+            model,
+            attempt,
+            started: Instant::now(),
+            completed: false,
+        };
+        log_google_attempt_telemetry(
+            path,
+            GoogleAttemptTelemetryEvent {
+                schema_version: "reason-google-attempt-telemetry-v1",
+                event: "attempt_start",
+                call_id,
+                model,
+                attempt,
+                elapsed_ms: 0,
+                status_code: None,
+                error_class: None,
+                retry_delay_ms: None,
+                quota_window: None,
+                provider_status: None,
+                rate_limit_headers: None,
+            },
+        );
+        guard
+    }
+
+    fn elapsed(&self) -> Duration {
+        self.started.elapsed()
+    }
+
+    fn complete(&mut self) {
+        self.completed = true;
+    }
+}
+
+impl Drop for GoogleAttemptTelemetryGuard<'_> {
+    fn drop(&mut self) {
+        if self.completed {
+            return;
+        }
+        log_google_attempt_telemetry(
+            self.path,
+            GoogleAttemptTelemetryEvent {
+                schema_version: "reason-google-attempt-telemetry-v1",
+                event: "cancelled_in_flight",
+                call_id: self.call_id,
+                model: self.model,
+                attempt: self.attempt,
+                elapsed_ms: self.elapsed().as_millis(),
+                status_code: None,
+                error_class: Some("cancelled_before_response"),
+                retry_delay_ms: None,
+                quota_window: None,
+                provider_status: None,
+                rate_limit_headers: None,
+            },
+        );
+    }
 }
 
 struct RequestPacer {
@@ -59,21 +163,34 @@ impl RequestPacer {
         }
     }
 
-    async fn wait(&self) -> Result<(), ModelError> {
+    async fn wait(
+        &self,
+        budget: Option<ModelExecutionBudget>,
+        used_wait: Duration,
+    ) -> Result<Duration, ModelError> {
+        let started = Instant::now();
         if let Some(path) = &self.shared_path {
-            return wait_shared_request_slot(path, self.min_interval).await;
+            wait_shared_request_slot(path, self.min_interval, budget, used_wait).await?;
+            return Ok(started.elapsed());
         }
         let mut next_start = self.next_start.lock().await;
         let now = tokio::time::Instant::now();
         if *next_start > now {
+            let requested = *next_start - now;
+            crate::network::bounded_wait(requested, used_wait, budget)?;
             tokio::time::sleep_until(*next_start).await;
         }
         *next_start = tokio::time::Instant::now() + self.min_interval;
-        Ok(())
+        Ok(started.elapsed())
     }
 }
 
-async fn wait_shared_request_slot(path: &Path, min_interval: Duration) -> Result<(), ModelError> {
+async fn wait_shared_request_slot(
+    path: &Path,
+    min_interval: Duration,
+    budget: Option<ModelExecutionBudget>,
+    used_wait: Duration,
+) -> Result<(), ModelError> {
     let lock_dir = path.with_extension("lock");
     loop {
         match fs::create_dir(&lock_dir) {
@@ -128,6 +245,7 @@ async fn wait_shared_request_slot(path: &Path, min_interval: Duration) -> Result
     })();
     let _ = fs::remove_dir(&lock_dir);
     let wait = result?;
+    crate::network::bounded_wait(wait, used_wait, budget)?;
     if !wait.is_zero() {
         tokio::time::sleep(wait).await;
     }
@@ -151,6 +269,7 @@ impl GoogleAdapter {
             let shared_path = configured_shared_pacer_path_from_env()?;
             adapter.request_pacer = Some(Arc::new(RequestPacer::new(interval, shared_path)));
         }
+        adapter.attempt_telemetry_path = configured_attempt_telemetry_path_from_env()?;
         Ok(adapter)
     }
 
@@ -206,6 +325,9 @@ impl GoogleAdapter {
             base_url,
             model,
             request_pacer: None,
+            attempt_telemetry_path: None,
+            execution_budget: Mutex::new(None),
+            execution_telemetry: crate::network::ExecutionTelemetryCounters::default(),
         })
     }
 
@@ -224,48 +346,159 @@ impl GoogleAdapter {
             response_format: response_format(request.output_format),
             generation_config: GenerationConfig {
                 max_output_tokens: request.max_tokens,
-                seed: request.random_seed,
+                seed: request.random_seed.map(normalize_google_seed),
                 temperature: GOOGLE_RECOMMENDED_TEMPERATURE,
             },
             store: false,
         };
 
+        let call_sequence = GOOGLE_ATTEMPT_TELEMETRY_CALL_SEQUENCE.fetch_add(1, Ordering::Relaxed);
+        let call_id = format!("g{}-{call_sequence}", std::process::id());
         let mut provider_attempts = 0u32;
         let mut rate_limit_retries = 0usize;
         let mut transient_retries = 0usize;
         let mut empty_text_retries = 0usize;
+        let execution_budget = *self
+            .execution_budget
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        let mut used_wait = Duration::ZERO;
+        let mut used_active = Duration::ZERO;
 
         loop {
             if let Some(pacer) = &self.request_pacer {
-                pacer.wait().await?;
+                let waited = pacer.wait(execution_budget, used_wait).await?;
+                crate::network::bounded_wait(waited, used_wait, execution_budget)?;
+                used_wait = used_wait.saturating_add(waited);
+                self.execution_telemetry
+                    .wait_completed(crate::network::ProviderWaitKind::Pacing, waited);
             }
+
+            let active_remaining =
+                crate::network::remaining_active_budget(used_active, execution_budget)?;
             provider_attempts = provider_attempts.saturating_add(1);
-            let response = self
+            self.execution_telemetry.attempt_started();
+            let mut attempt_telemetry = GoogleAttemptTelemetryGuard::start(
+                self.attempt_telemetry_path.as_deref(),
+                &call_id,
+                &self.model,
+                provider_attempts,
+            );
+            let attempt_started = Instant::now();
+            let send = self
                 .client
                 .post(endpoint.clone())
                 .header("x-goog-api-key", &self.api_key)
                 .json(&body)
-                .send()
-                .await
-                .map_err(|error| {
+                .send();
+            let response = if let Some(remaining) = active_remaining {
+                match tokio::time::timeout(remaining, send).await {
+                    Ok(result) => {
+                        let elapsed = attempt_started.elapsed();
+                        used_active = used_active.saturating_add(elapsed);
+                        self.execution_telemetry.attempt_completed(elapsed);
+                        result
+                    }
+                    Err(_) => {
+                        let elapsed = attempt_started.elapsed();
+                        self.execution_telemetry.active_elapsed(elapsed);
+                        return Err(ModelError::new(
+                            ModelErrorKind::Timeout,
+                            "Gemini provider active execution budget exhausted",
+                        )
+                        .with_provider_attempts(provider_attempts));
+                    }
+                }
+            } else {
+                let result = send.await;
+                let elapsed = attempt_started.elapsed();
+                used_active = used_active.saturating_add(elapsed);
+                self.execution_telemetry.attempt_completed(elapsed);
+                result
+            };
+            let response = match response {
+                Ok(response) => response,
+                Err(error) => {
                     let kind = if error.is_timeout() {
                         ModelErrorKind::Timeout
                     } else {
                         ModelErrorKind::Transport
                     };
+                    attempt_telemetry.complete();
+                    log_google_attempt_telemetry(
+                        self.attempt_telemetry_path.as_deref(),
+                        GoogleAttemptTelemetryEvent {
+                            schema_version: "reason-google-attempt-telemetry-v1",
+                            event: "transport_error",
+                            call_id: &call_id,
+                            model: &self.model,
+                            attempt: provider_attempts,
+                            elapsed_ms: attempt_telemetry.elapsed().as_millis(),
+                            status_code: None,
+                            error_class: Some(model_error_kind_name(kind)),
+                            retry_delay_ms: None,
+                            quota_window: None,
+                            provider_status: None,
+                            rate_limit_headers: None,
+                        },
+                    );
                     let detail = if error.is_timeout() {
                         "Gemini API request timed out".to_string()
                     } else {
                         format!("Gemini API request failed: {error}")
                     };
-                    ModelError::new(kind, detail).with_provider_attempts(provider_attempts)
-                })?;
+                    return Err(
+                        ModelError::new(kind, detail).with_provider_attempts(provider_attempts)
+                    );
+                }
+            };
 
             let status = response.status();
+            let rate_limit_headers = google_rate_limit_header_summary(response.headers());
+            log_google_attempt_telemetry(
+                self.attempt_telemetry_path.as_deref(),
+                GoogleAttemptTelemetryEvent {
+                    schema_version: "reason-google-attempt-telemetry-v1",
+                    event: "http_headers",
+                    call_id: &call_id,
+                    model: &self.model,
+                    attempt: provider_attempts,
+                    elapsed_ms: attempt_telemetry.elapsed().as_millis(),
+                    status_code: Some(status.as_u16()),
+                    error_class: None,
+                    retry_delay_ms: None,
+                    quota_window: None,
+                    provider_status: None,
+                    rate_limit_headers: (!rate_limit_headers.is_empty())
+                        .then_some(rate_limit_headers.as_str()),
+                },
+            );
             if !status.is_success() {
                 let rate_limit_delay = rate_limit_delay(response.headers(), rate_limit_retries);
                 let body = response.text().await.unwrap_or_default();
                 let kind = classify_http_error(status, &body);
+                let quota_window = structured_google_quota_window(&body).map(quota_window_name);
+                let provider_status = google_provider_status(&body);
+                let detail = google_error_detail(&body);
+                log_google_attempt_telemetry(
+                    self.attempt_telemetry_path.as_deref(),
+                    GoogleAttemptTelemetryEvent {
+                        schema_version: "reason-google-attempt-telemetry-v1",
+                        event: "http_response",
+                        call_id: &call_id,
+                        model: &self.model,
+                        attempt: provider_attempts,
+                        elapsed_ms: attempt_telemetry.elapsed().as_millis(),
+                        status_code: Some(status.as_u16()),
+                        error_class: Some(model_error_kind_name(kind)),
+                        retry_delay_ms: None,
+                        quota_window,
+                        provider_status: provider_status.as_deref(),
+                        rate_limit_headers: (!rate_limit_headers.is_empty())
+                            .then_some(rate_limit_headers.as_str()),
+                    },
+                );
+                attempt_telemetry.complete();
 
                 if status == StatusCode::TOO_MANY_REQUESTS
                     && kind == ModelErrorKind::RateLimit
@@ -273,7 +506,19 @@ impl GoogleAdapter {
                     && provider_attempts < MAX_PROVIDER_ATTEMPTS
                 {
                     rate_limit_retries += 1;
-                    tokio::time::sleep(rate_limit_delay).await;
+                    log_retry_scheduled_telemetry(
+                        &attempt_telemetry,
+                        kind,
+                        rate_limit_delay,
+                        quota_window,
+                    );
+                    let delay =
+                        crate::network::bounded_wait(rate_limit_delay, used_wait, execution_budget)
+                            .map_err(|error| error.with_provider_attempts(provider_attempts))?;
+                    tokio::time::sleep(delay).await;
+                    used_wait = used_wait.saturating_add(delay);
+                    self.execution_telemetry
+                        .wait_completed(crate::network::ProviderWaitKind::Retry, delay);
                     continue;
                 }
 
@@ -283,11 +528,16 @@ impl GoogleAdapter {
                 {
                     let delay = transient_retry_delay(transient_retries);
                     transient_retries += 1;
+                    log_retry_scheduled_telemetry(&attempt_telemetry, kind, delay, quota_window);
+                    let delay = crate::network::bounded_wait(delay, used_wait, execution_budget)
+                        .map_err(|error| error.with_provider_attempts(provider_attempts))?;
                     tokio::time::sleep(delay).await;
+                    used_wait = used_wait.saturating_add(delay);
+                    self.execution_telemetry
+                        .wait_completed(crate::network::ProviderWaitKind::Retry, delay);
                     continue;
                 }
 
-                let detail = google_error_detail(&body);
                 return Err(ModelError::new(
                     kind,
                     format!(
@@ -296,6 +546,26 @@ impl GoogleAdapter {
                 )
                 .with_provider_attempts(provider_attempts));
             }
+
+            log_google_attempt_telemetry(
+                self.attempt_telemetry_path.as_deref(),
+                GoogleAttemptTelemetryEvent {
+                    schema_version: "reason-google-attempt-telemetry-v1",
+                    event: "http_response",
+                    call_id: &call_id,
+                    model: &self.model,
+                    attempt: provider_attempts,
+                    elapsed_ms: attempt_telemetry.elapsed().as_millis(),
+                    status_code: Some(status.as_u16()),
+                    error_class: None,
+                    retry_delay_ms: None,
+                    quota_window: None,
+                    provider_status: None,
+                    rate_limit_headers: (!rate_limit_headers.is_empty())
+                        .then_some(rate_limit_headers.as_str()),
+                },
+            );
+            attempt_telemetry.complete();
 
             let response: InteractionResponse = response.json().await.map_err(|error| {
                 ModelError::new(
@@ -312,7 +582,16 @@ impl GoogleAdapter {
                         && provider_attempts < MAX_PROVIDER_ATTEMPTS =>
                 {
                     empty_text_retries += 1;
-                    tokio::time::sleep(transient_retry_delay(0)).await;
+                    let delay = crate::network::bounded_wait(
+                        transient_retry_delay(0),
+                        used_wait,
+                        execution_budget,
+                    )
+                    .map_err(|error| error.with_provider_attempts(provider_attempts))?;
+                    tokio::time::sleep(delay).await;
+                    used_wait = used_wait.saturating_add(delay);
+                    self.execution_telemetry
+                        .wait_completed(crate::network::ProviderWaitKind::Retry, delay);
                     continue;
                 }
                 Err(error) => return Err(error.with_provider_attempts(provider_attempts)),
@@ -343,6 +622,17 @@ impl ModelAdapter for GoogleAdapter {
     > {
         Box::pin(self.generate_inner(request))
     }
+
+    fn configure_execution_budget(&self, budget: Option<ModelExecutionBudget>) {
+        *self
+            .execution_budget
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner()) = budget;
+    }
+
+    fn execution_telemetry_snapshot(&self) -> Option<ModelExecutionTelemetrySnapshot> {
+        Some(self.execution_telemetry.snapshot())
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -361,8 +651,13 @@ struct GenerationConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     max_output_tokens: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    seed: Option<u64>,
+    seed: Option<u32>,
     temperature: f32,
+}
+
+fn normalize_google_seed(seed: u64) -> u32 {
+    const GOOGLE_SEED_DOMAIN: u64 = i32::MAX as u64 + 1;
+    (seed % GOOGLE_SEED_DOMAIN) as u32
 }
 
 #[derive(Debug, Serialize)]
@@ -393,6 +688,43 @@ fn configured_shared_pacer_path_from_env() -> Result<Option<PathBuf>, ModelError
         ));
     }
     Ok(Some(path))
+}
+
+fn configured_attempt_telemetry_path_from_env() -> Result<Option<PathBuf>, ModelError> {
+    let Ok(raw) = env::var(GOOGLE_ATTEMPT_TELEMETRY_PATH_ENV) else {
+        return Ok(None);
+    };
+    if raw.trim().is_empty() {
+        return Ok(None);
+    }
+    let path = PathBuf::from(raw);
+    if !path.is_absolute() {
+        return Err(ModelError::new(
+            ModelErrorKind::Protocol,
+            format!("{GOOGLE_ATTEMPT_TELEMETRY_PATH_ENV} must be an absolute path"),
+        ));
+    }
+    Ok(Some(path))
+}
+
+fn log_google_attempt_telemetry(path: Option<&Path>, event: GoogleAttemptTelemetryEvent<'_>) {
+    let Some(path) = path else {
+        return;
+    };
+    let Ok(line) = serde_json::to_string(&event) else {
+        eprintln!("[google-attempt-telemetry-error] failed to serialize event");
+        return;
+    };
+    match OpenOptions::new().create(true).append(true).open(path) {
+        Ok(mut file) => {
+            if let Err(error) = writeln!(file, "{line}") {
+                eprintln!("[google-attempt-telemetry-error] failed to append event: {error}");
+            }
+        }
+        Err(error) => {
+            eprintln!("[google-attempt-telemetry-error] failed to open telemetry path: {error}");
+        }
+    }
 }
 
 fn parse_request_interval_ms(raw: &str) -> Result<Option<Duration>, ModelError> {
@@ -497,6 +829,82 @@ fn structured_google_quota_window(body: &str) -> Option<GoogleQuotaWindow> {
     }
 }
 
+fn quota_window_name(window: GoogleQuotaWindow) -> &'static str {
+    match window {
+        GoogleQuotaWindow::ShortWindow => "short_window",
+        GoogleQuotaWindow::Daily => "daily",
+        GoogleQuotaWindow::Ambiguous => "ambiguous",
+    }
+}
+
+fn model_error_kind_name(kind: ModelErrorKind) -> &'static str {
+    match kind {
+        ModelErrorKind::Credentials => "credentials",
+        ModelErrorKind::Transport => "transport",
+        ModelErrorKind::Provider => "provider",
+        ModelErrorKind::RateLimit => "rate_limit",
+        ModelErrorKind::Quota => "quota",
+        ModelErrorKind::ProviderUnavailable => "provider_unavailable",
+        ModelErrorKind::Timeout => "timeout",
+        ModelErrorKind::Protocol => "protocol",
+        ModelErrorKind::UnsupportedCapability => "unsupported_capability",
+    }
+}
+
+fn google_rate_limit_header_summary(headers: &reqwest::header::HeaderMap) -> String {
+    const SAFE_HEADERS: &[&str] = &[
+        "retry-after",
+        "ratelimit-limit",
+        "ratelimit-remaining",
+        "ratelimit-reset",
+        "x-ratelimit-limit",
+        "x-ratelimit-remaining",
+        "x-ratelimit-reset",
+        "x-ratelimit-limit-requests",
+        "x-ratelimit-remaining-requests",
+        "x-ratelimit-reset-requests",
+        "x-ratelimit-limit-tokens",
+        "x-ratelimit-remaining-tokens",
+        "x-ratelimit-reset-tokens",
+    ];
+
+    SAFE_HEADERS
+        .iter()
+        .filter_map(|name| {
+            headers
+                .get(*name)
+                .and_then(|value| value.to_str().ok())
+                .map(|value| format!("{name}={}", truncate_diagnostic(value, 96)))
+        })
+        .collect::<Vec<_>>()
+        .join(",")
+}
+
+fn log_retry_scheduled_telemetry(
+    attempt: &GoogleAttemptTelemetryGuard<'_>,
+    kind: ModelErrorKind,
+    delay: Duration,
+    quota_window: Option<&str>,
+) {
+    log_google_attempt_telemetry(
+        attempt.path,
+        GoogleAttemptTelemetryEvent {
+            schema_version: "reason-google-attempt-telemetry-v1",
+            event: "retry_scheduled",
+            call_id: attempt.call_id,
+            model: attempt.model,
+            attempt: attempt.attempt,
+            elapsed_ms: attempt.elapsed().as_millis(),
+            status_code: None,
+            error_class: Some(model_error_kind_name(kind)),
+            retry_delay_ms: Some(delay.as_millis()),
+            quota_window,
+            provider_status: None,
+            rate_limit_headers: None,
+        },
+    );
+}
+
 fn classify_http_error(status: StatusCode, body: &str) -> ModelErrorKind {
     if status == StatusCode::TOO_MANY_REQUESTS {
         match structured_google_quota_window(body) {
@@ -539,7 +947,7 @@ fn is_transient_http_status(status: StatusCode) -> bool {
     matches!(status.as_u16(), 500 | 502 | 503 | 504)
 }
 
-fn transient_retry_delay(retry_index: usize) -> Duration {
+fn transient_retry_base_delay(retry_index: usize) -> Duration {
     TRANSIENT_BACKOFF_SCHEDULE
         .get(retry_index)
         .copied()
@@ -548,6 +956,34 @@ fn transient_retry_delay(retry_index: usize) -> Duration {
                 .last()
                 .expect("non-empty schedule")
         })
+}
+
+fn retry_delay_with_equal_jitter(base: Duration) -> Duration {
+    retry_delay_with_equal_jitter_entropy(base, rand::random::<u64>())
+}
+
+fn retry_delay_with_equal_jitter_entropy(base: Duration, entropy: u64) -> Duration {
+    let base_ms = u64::try_from(base.as_millis()).unwrap_or(u64::MAX);
+    if base_ms <= 1 {
+        return base;
+    }
+    let floor_ms = base_ms / 2;
+    let jitter_span_ms = base_ms.saturating_sub(floor_ms);
+    let jitter_ms = entropy % jitter_span_ms.saturating_add(1);
+    Duration::from_millis(floor_ms.saturating_add(jitter_ms))
+}
+
+fn transient_retry_delay(retry_index: usize) -> Duration {
+    retry_delay_with_equal_jitter(transient_retry_base_delay(retry_index))
+}
+
+fn google_provider_status(body: &str) -> Option<String> {
+    serde_json::from_str::<Value>(body)
+        .ok()?
+        .get("error")?
+        .get("status")?
+        .as_str()
+        .map(|value| truncate_diagnostic(value, 64))
 }
 
 fn google_error_detail(body: &str) -> String {
@@ -632,9 +1068,10 @@ fn rate_limit_delay(headers: &reqwest::header::HeaderMap, retry_index: usize) ->
     }
 
     let multiplier = 1u32.checked_shl(retry_index as u32).unwrap_or(u32::MAX);
-    INITIAL_RATE_LIMIT_BACKOFF
+    let base = INITIAL_RATE_LIMIT_BACKOFF
         .checked_mul(multiplier)
-        .unwrap_or(Duration::MAX)
+        .unwrap_or(Duration::MAX);
+    retry_delay_with_equal_jitter(base)
 }
 
 fn response_format(format: ModelOutputFormat) -> ResponseFormat {
@@ -748,6 +1185,15 @@ mod tests {
     }
 
     #[test]
+    fn normalizes_random_seed_to_google_supported_signed_32_bit_domain() {
+        assert_eq!(normalize_google_seed(0), 0);
+        assert_eq!(normalize_google_seed(i32::MAX as u64), i32::MAX as u32);
+        assert_eq!(normalize_google_seed(i32::MAX as u64 + 1), 0);
+        assert!(normalize_google_seed(0xa93c_2b41) <= i32::MAX as u32);
+        assert!(normalize_google_seed(u64::MAX) <= i32::MAX as u32);
+    }
+
+    #[test]
     fn uses_google_recommended_sampling_temperature() {
         let value = serde_json::to_value(GenerationConfig {
             max_output_tokens: Some(4096),
@@ -794,7 +1240,7 @@ mod tests {
         let a = RequestPacer::new(interval, Some(path.clone()));
         let b = RequestPacer::new(interval, Some(path.clone()));
         let start = tokio::time::Instant::now();
-        let (ra, rb) = tokio::join!(a.wait(), b.wait());
+        let (ra, rb) = tokio::join!(a.wait(None, Duration::ZERO), b.wait(None, Duration::ZERO));
         ra.unwrap();
         rb.unwrap();
         assert!(start.elapsed() >= Duration::from_millis(70));
@@ -815,11 +1261,27 @@ mod tests {
     }
 
     #[test]
-    fn transient_5xx_backoff_spans_the_high_demand_window() {
-        assert_eq!(transient_retry_delay(0), Duration::from_secs(2));
-        assert_eq!(transient_retry_delay(1), Duration::from_secs(5));
-        assert_eq!(transient_retry_delay(2), Duration::from_secs(10));
-        assert_eq!(transient_retry_delay(3), Duration::from_secs(10));
+    fn transient_5xx_backoff_keeps_bounded_base_schedule() {
+        assert_eq!(transient_retry_base_delay(0), Duration::from_secs(2));
+        assert_eq!(transient_retry_base_delay(1), Duration::from_secs(5));
+        assert_eq!(transient_retry_base_delay(2), Duration::from_secs(10));
+        assert_eq!(transient_retry_base_delay(3), Duration::from_secs(10));
+    }
+
+    #[test]
+    fn retry_delay_uses_bounded_equal_jitter() {
+        let base = Duration::from_secs(10);
+        assert_eq!(
+            retry_delay_with_equal_jitter_entropy(base, 0),
+            Duration::from_secs(5)
+        );
+        assert_eq!(
+            retry_delay_with_equal_jitter_entropy(base, 5_000),
+            Duration::from_secs(10)
+        );
+        let sampled = retry_delay_with_equal_jitter(base);
+        assert!(sampled >= Duration::from_secs(5));
+        assert!(sampled <= Duration::from_secs(10));
     }
 
     #[test]
@@ -830,11 +1292,13 @@ mod tests {
     }
 
     #[test]
-    fn rate_limit_delay_uses_bounded_exponential_fallback() {
+    fn rate_limit_delay_uses_bounded_jittered_exponential_fallback() {
         let headers = reqwest::header::HeaderMap::new();
-        assert_eq!(rate_limit_delay(&headers, 0), Duration::from_secs(10));
-        assert_eq!(rate_limit_delay(&headers, 1), Duration::from_secs(20));
-        assert_eq!(rate_limit_delay(&headers, 2), Duration::from_secs(40));
+        for (retry_index, base_secs) in [(0, 10), (1, 20), (2, 40)] {
+            let delay = rate_limit_delay(&headers, retry_index);
+            assert!(delay >= Duration::from_secs(base_secs / 2));
+            assert!(delay <= Duration::from_secs(base_secs));
+        }
     }
 
     #[test]
@@ -1170,6 +1634,32 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn execution_budget_rejects_long_short_window_retry_without_sleep() {
+        let short_window = r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"quota exceeded","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier"}]}]}}"#;
+        let (base_url, server) = spawn_sequence_server(vec![(
+            "429 Too Many Requests",
+            short_window.into(),
+            "Retry-After: 31\r\n",
+        )]);
+        let adapter = GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        adapter.configure_execution_budget(Some(ModelExecutionBudget {
+            max_active_ms: 60_000,
+            max_wait_ms: 45_000,
+            max_single_wait_ms: 30_000,
+        }));
+
+        let started = Instant::now();
+        let error = adapter.generate(test_request()).await.unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::RateLimit);
+        assert!(started.elapsed() < Duration::from_secs(1));
+        let telemetry = adapter.execution_telemetry_snapshot().unwrap();
+        assert_eq!(telemetry.provider_attempts_started, 1);
+        assert_eq!(telemetry.provider_attempts_completed, 1);
+        assert_eq!(telemetry.retry_wait_ms, 0);
+        server.join().unwrap();
+    }
+
+    #[tokio::test]
     async fn structured_per_day_quota_remains_non_retryable() {
         let daily = r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"quota exceeded","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}]}}"#;
         let (base_url, server) =
@@ -1179,6 +1669,102 @@ mod tests {
         assert_eq!(error.kind, ModelErrorKind::Quota);
         assert_eq!(error.provider_attempts, 1);
         server.join().unwrap();
+    }
+
+    fn temp_telemetry_path(label: &str) -> PathBuf {
+        std::env::temp_dir().join(format!(
+            "reason-google-telemetry-{label}-{}-{}.jsonl",
+            std::process::id(),
+            SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_nanos()
+        ))
+    }
+
+    fn read_telemetry(path: &Path) -> Vec<Value> {
+        fs::read_to_string(path)
+            .expect("read telemetry")
+            .lines()
+            .map(|line| serde_json::from_str(line).expect("parse telemetry line"))
+            .collect()
+    }
+
+    #[tokio::test]
+    async fn attempt_telemetry_records_structured_quota_without_request_content() {
+        let daily = r#"{"error":{"status":"RESOURCE_EXHAUSTED","message":"quota exceeded","details":[{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier"}]}]}}"#;
+        let (base_url, server) =
+            spawn_sequence_server(vec![("429 Too Many Requests", daily.into(), "")]);
+        let path = temp_telemetry_path("quota");
+        let mut adapter =
+            GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        adapter.attempt_telemetry_path = Some(path.clone());
+        let error = adapter.generate(test_request()).await.unwrap_err();
+        assert_eq!(error.kind, ModelErrorKind::Quota);
+        server.join().unwrap();
+
+        let events = read_telemetry(&path);
+        assert_eq!(events[0]["event"], "attempt_start");
+        let response = events
+            .iter()
+            .find(|event| event["event"] == "http_response")
+            .expect("http response event");
+        assert_eq!(response["status_code"], 429);
+        assert_eq!(response["error_class"], "quota");
+        assert_eq!(response["quota_window"], "daily");
+        assert_eq!(response["provider_status"], "RESOURCE_EXHAUSTED");
+        let raw = fs::read_to_string(&path).unwrap();
+        assert!(!raw.contains("test-key"));
+        assert!(!raw.contains("Return exactly one"));
+        assert!(!raw.contains("quota exceeded"));
+        let _ = fs::remove_file(path);
+    }
+
+    #[tokio::test]
+    async fn attempt_telemetry_records_503_retry_then_success() {
+        let busy = r#"{"error":{"status":"UNAVAILABLE","message":"high demand"}}"#;
+        let (base_url, server) = spawn_sequence_server(vec![
+            ("503 Service Unavailable", busy.into(), ""),
+            ("200 OK", success_body("ok"), ""),
+        ]);
+        let path = temp_telemetry_path("503");
+        let mut adapter =
+            GoogleAdapter::with_base_url("test-key", "test-model", &base_url).unwrap();
+        adapter.attempt_telemetry_path = Some(path.clone());
+        let response = adapter.generate(test_request()).await.unwrap();
+        assert_eq!(response.provider_attempts, 2);
+        server.join().unwrap();
+
+        let events = read_telemetry(&path);
+        assert!(events.iter().any(|event| {
+            event["event"] == "http_response"
+                && event["status_code"] == 503
+                && event["error_class"] == "provider_unavailable"
+        }));
+        assert!(events.iter().any(|event| {
+            event["event"] == "retry_scheduled" && event["error_class"] == "provider_unavailable"
+        }));
+        assert!(
+            events
+                .iter()
+                .any(|event| { event["event"] == "http_response" && event["status_code"] == 200 })
+        );
+        let _ = fs::remove_file(path);
+    }
+
+    #[test]
+    fn attempt_telemetry_guard_records_in_flight_cancellation() {
+        let path = temp_telemetry_path("cancel");
+        {
+            let _guard =
+                GoogleAttemptTelemetryGuard::start(Some(&path), "test-call", "test-model", 1);
+        }
+        let events = read_telemetry(&path);
+        assert_eq!(events.len(), 2);
+        assert_eq!(events[0]["event"], "attempt_start");
+        assert_eq!(events[1]["event"], "cancelled_in_flight");
+        assert_eq!(events[1]["error_class"], "cancelled_before_response");
+        let _ = fs::remove_file(path);
     }
 
     #[tokio::test]

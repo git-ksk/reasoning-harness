@@ -1,0 +1,347 @@
+name: engine-0.6-evidence-relevance-calibration-v7-live
+
+on:
+  push:
+    tags:
+      - engine-0.6-evidence-relevance-calibration-v7-freeze
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  FREEZE_TAG: engine-0.6-evidence-relevance-calibration-v7-freeze
+  CALIBRATION_DIR: fixtures/evidence-relevance-calibration-v7
+  CALIBRATION_SEED: '4625607'
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-calibration-v7-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate exact frozen calibration surface
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          sha256sum -c "$CALIBRATION_DIR/surface-v7.sha256"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider mistral \
+            --model calibration-placeholder \
+            --validate-only \
+            > /tmp/evidence-relevance-calibration-validate.json
+          jq -e '
+            .configuration_id == "evidence-relevance-live-calibration-v7"
+            and .suite_id == "evidence-relevance-calibration-v7"
+            and .corpus_status_at_observation == "fresh_unobserved_calibration"
+            and .planned_cases == 26
+            and .completed_cases == 0
+            and .operational_abort == null
+            and .metrics.cases == 26
+            and .scorability == "validate_only_non_scorable"
+          ' /tmp/evidence-relevance-calibration-validate.json >/dev/null
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-core --all-targets -- -D warnings
+          cargo clippy -p reasoning-harness-cli --bin reason-evidence-relevance-study -- -D warnings
+          cargo test -p reasoning-harness-core --test evidence_relevance_routing_v7
+          cargo test -p reasoning-harness-cli --bin reason-evidence-relevance-study
+
+      - name: Preserve preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-calibration-v7-preflight
+          path: /tmp/evidence-relevance-calibration-validate.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-latest
+            inter_case_delay_ms: 1200
+          - provider: groq
+            model: openai/gpt-oss-120b
+            inter_case_delay_ms: 2200
+
+    concurrency:
+      group: engine-0.6-evidence-relevance-calibration-v7-${{ matrix.provider }}
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-calibration-v7-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate frozen surface before credentials
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          sha256sum -c "$CALIBRATION_DIR/surface-v7.sha256"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider mistral \
+            --model calibration-placeholder \
+            --validate-only \
+            > /dev/null
+
+      - name: Check provider credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            groq) test -n "$GROQ_API_KEY" ;;
+            *) echo "unsupported frozen provider: $PROVIDER" >&2; exit 2 ;;
+          esac
+
+      - name: Run first canonical 26-case live calibration observation
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          DELAY_MS: ${{ matrix.inter_case_delay_ms }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '2100'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+        run: |
+          set -u
+          BASE="/tmp/evidence-relevance-${PROVIDER}"
+          printf '%s\n' \
+            "{\"schema_version\":\"engine-0.6-evidence-relevance-calibration-attempt-v1\",\"provider\":\"$PROVIDER\",\"model\":\"$MODEL\",\"freeze_tag\":\"$FREEZE_TAG\",\"github_run_id\":\"$GITHUB_RUN_ID\",\"github_run_attempt\":\"$GITHUB_RUN_ATTEMPT\"}" \
+            > "${BASE}-attempt.json"
+
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed "$CALIBRATION_SEED" \
+            --inter-case-delay-ms "$DELAY_MS" \
+            --max-consecutive-operational-failures 2 \
+            --checkpoint "${BASE}-checkpoint.json" \
+            > "${BASE}-result.json" \
+            2> "${BASE}-stderr.log"
+          RC=$?
+          set -e
+          printf '%s\n' "$RC" > "${BASE}.rc"
+
+          if test -f "${BASE}-result.json"; then
+            jq '{
+              configuration_id,
+              suite_id,
+              corpus_status_at_observation,
+              candidate_commit,
+              provider,
+              model,
+              canonical_full_calibration,
+              scorability,
+              metrics,
+              mismatches: [
+                .observations[]
+                | select(
+                    .proposal_match == false
+                    or .disposition_match == false
+                    or .failure_class != null
+                  )
+                | {
+                    id,
+                    family,
+                    expected_proposal,
+                    observed_proposal,
+                    expected_disposition,
+                    materialized_disposition,
+                    lexical_baseline,
+                    deterministic_safety_override,
+                    failure_class
+                  }
+              ]
+            }' "${BASE}-result.json"
+          fi
+
+          exit 0
+
+      - name: Preserve canonical live evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-calibration-v7-${{ matrix.provider }}
+          path: /tmp/evidence-relevance-${{ matrix.provider }}*
+          if-no-files-found: error
+          retention-days: 90
+
+  final-gate:
+    needs: live
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.6-evidence-relevance-calibration-v7-*
+          path: /tmp/evidence-relevance-artifacts
+          merge-multiple: true
+
+      - name: Summarize frozen calibration arms
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path("/tmp/evidence-relevance-artifacts")
+          expected = {
+              "mistral": "ministral-8b-latest",
+              "groq": "openai/gpt-oss-120b",
+          }
+          summary = {
+              "schema_version": "engine-0.6-evidence-relevance-calibration-summary-v7",
+              "providers": {},
+              "operationally_complete": True,
+              "correctness_gate_passed": True,
+              "utility_gate_passed": True,
+          }
+
+          for provider, model in expected.items():
+              result_path = root / f"evidence-relevance-{provider}-result.json"
+              rc_path = root / f"evidence-relevance-{provider}.rc"
+              if not result_path.exists() or not rc_path.exists():
+                  summary["providers"][provider] = {"missing": True}
+                  summary["operationally_complete"] = False
+                  summary["correctness_gate_passed"] = False
+                  summary["utility_gate_passed"] = False
+                  continue
+
+              rc = int(rc_path.read_text().strip())
+              try:
+                  result = json.loads(result_path.read_text())
+              except Exception as exc:
+                  summary["providers"][provider] = {
+                      "model": model,
+                      "runner_rc": rc,
+                      "parse_error": str(exc),
+                  }
+                  summary["operationally_complete"] = False
+                  summary["correctness_gate_passed"] = False
+                  summary["utility_gate_passed"] = False
+                  continue
+
+              metrics = result.get("metrics", {})
+              complete = (
+                  rc == 0
+                  and result.get("model") == model
+                  and result.get("canonical_full_calibration") is True
+                  and result.get("planned_cases") == 26
+                  and result.get("completed_cases") == 26
+                  and result.get("operational_abort") is None
+                  and result.get("scorability") == "complete_calibration_observation"
+                  and metrics.get("successful_provider_cases") == 26
+                  and metrics.get("failed_provider_cases") == 0
+              )
+              unsafe_relevance_admissions = metrics.get("correctness_wrong_target_relevance_retention")
+              correctness_ok = (
+                  complete
+                  and unsafe_relevance_admissions == 0
+              )
+              utility_ok = (
+                  complete
+                  and metrics.get("false_relevance_rejections") == 0
+                  and metrics.get("relevant_left_ambiguous") == 0
+                  and metrics.get("utility_misses") == 0
+              )
+
+              summary["providers"][provider] = {
+                  "model": model,
+                  "runner_rc": rc,
+                  "scorability": result.get("scorability"),
+                  "planned_cases": result.get("planned_cases"),
+                  "completed_cases": result.get("completed_cases"),
+                  "operational_abort": result.get("operational_abort"),
+                  "successful_provider_cases": metrics.get("successful_provider_cases"),
+                  "failed_provider_cases": metrics.get("failed_provider_cases"),
+                  "proposal_exact_accuracy": metrics.get("proposal_exact_accuracy"),
+                  "materialized_exact_accuracy": metrics.get("materialized_exact_accuracy"),
+                  "correctness_wrong_target_relevance_retention": metrics.get("correctness_wrong_target_relevance_retention"),
+                  "unsafe_relevance_admissions": unsafe_relevance_admissions,
+                  "false_relevance_rejections": metrics.get("false_relevance_rejections"),
+                  "relevant_left_ambiguous": metrics.get("relevant_left_ambiguous"),
+                  "utility_misses": metrics.get("utility_misses"),
+                  "ambiguous_dispositions": metrics.get("ambiguous_dispositions"),
+                  "deterministic_safety_overrides": metrics.get("deterministic_safety_overrides"),
+                  "lexical_exact_accuracy": metrics.get("lexical_exact_accuracy"),
+                  "lexical_wrong_target_relevance_retention": metrics.get("lexical_wrong_target_relevance_retention"),
+                  "lexical_expected_relevant_misses": metrics.get("lexical_expected_relevant_misses"),
+                  "model_calls": metrics.get("model_calls"),
+                  "provider_attempts": metrics.get("provider_attempts"),
+                  "provider_attempts_incomplete_observations": metrics.get("provider_attempts_incomplete_observations"),
+                  "total_tokens": metrics.get("total_tokens"),
+                  "total_latency_ms": metrics.get("total_latency_ms"),
+                  "latency_p50_ms": metrics.get("latency_p50_ms"),
+                  "latency_p95_ms": metrics.get("latency_p95_ms"),
+                  "latency_max_ms": metrics.get("latency_max_ms"),
+                  "successful_latency_p50_ms": metrics.get("successful_latency_p50_ms"),
+                  "successful_latency_p95_ms": metrics.get("successful_latency_p95_ms"),
+                  "successful_latency_max_ms": metrics.get("successful_latency_max_ms"),
+                  "complete": complete,
+                  "correctness_ok": correctness_ok,
+                  "utility_ok": utility_ok,
+              }
+              summary["operationally_complete"] &= complete
+              summary["correctness_gate_passed"] &= correctness_ok
+              summary["utility_gate_passed"] &= utility_ok
+
+          out = Path("/tmp/evidence-relevance-calibration-summary.json")
+          out.write_text(json.dumps(summary, indent=2) + "\n")
+          print(out.read_text())
+
+          if not summary["operationally_complete"]:
+              raise SystemExit("canonical calibration was operationally incomplete")
+          if not summary["correctness_gate_passed"]:
+              raise SystemExit("correctness boundary violation observed")
+          if not summary["utility_gate_passed"]:
+              raise SystemExit("calibration utility miss observed")
+          PY
+
+      - name: Preserve combined summary
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-calibration-v7-summary
+          path: /tmp/evidence-relevance-calibration-summary.json
+          if-no-files-found: warn
+          retention-days: 90

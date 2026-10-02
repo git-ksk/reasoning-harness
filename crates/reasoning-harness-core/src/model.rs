@@ -17,6 +17,40 @@ pub enum ModelReasoningPreference {
     Minimize,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ModelExecutionBudget {
+    pub max_active_ms: u64,
+    pub max_wait_ms: u64,
+    pub max_single_wait_ms: u64,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ModelExecutionTelemetrySnapshot {
+    pub provider_attempts_started: u64,
+    pub provider_attempts_completed: u64,
+    pub active_ms: u64,
+    pub wait_ms: u64,
+    pub pacing_wait_ms: u64,
+    pub retry_wait_ms: u64,
+}
+
+impl ModelExecutionTelemetrySnapshot {
+    pub fn saturating_delta(self, earlier: Self) -> Self {
+        Self {
+            provider_attempts_started: self
+                .provider_attempts_started
+                .saturating_sub(earlier.provider_attempts_started),
+            provider_attempts_completed: self
+                .provider_attempts_completed
+                .saturating_sub(earlier.provider_attempts_completed),
+            active_ms: self.active_ms.saturating_sub(earlier.active_ms),
+            wait_ms: self.wait_ms.saturating_sub(earlier.wait_ms),
+            pacing_wait_ms: self.pacing_wait_ms.saturating_sub(earlier.pacing_wait_ms),
+            retry_wait_ms: self.retry_wait_ms.saturating_sub(earlier.retry_wait_ms),
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ModelRequest {
     pub task: String,
@@ -29,6 +63,42 @@ pub struct ModelRequest {
     pub random_seed: Option<u64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reasoning_preference: Option<ModelReasoningPreference>,
+}
+
+/// Builds a bounded provider-neutral strict-JSON text fallback for a JSON-Schema request.
+///
+/// This is intentionally distinct from the JSON-object fallback: providers that reject or
+/// repeatedly fail server-side structured generation can still receive the exact same task and
+/// schema without enabling a provider JSON response mode. The caller must parse the entire
+/// response against its typed contract; extraction, repair, and semantic retries remain forbidden.
+pub fn build_strict_json_text_fallback_request(request: &ModelRequest) -> Option<ModelRequest> {
+    let ModelOutputFormat::JsonSchema { schema, .. } = &request.output_format else {
+        return None;
+    };
+    let schema = serde_json::to_string_pretty(schema)
+        .expect("ModelOutputFormat::JsonSchema value must serialize");
+
+    let mut fallback = request.clone();
+    fallback.task = format!(
+        "JSON Schema:
+{schema}
+
+Original task:
+{}
+
+Return exactly one raw JSON object conforming to the supplied JSON Schema. Do not add prose, Markdown fences, commentary, or fields not allowed by the schema.",
+        request.task
+    );
+    fallback.system = Some(match request.system.as_deref() {
+        Some(system) => format!(
+            "{system}
+
+Strict-JSON text fallback constraint: return exactly one raw JSON object and no prose. Preserve the original task semantics; do not invent missing fields, facts, evidence, identities, or authority."
+        ),
+        None => "Strict-JSON text fallback constraint: return exactly one raw JSON object and no prose. Preserve the original task semantics; do not invent missing fields, facts, evidence, identities, or authority.".into(),
+    });
+    fallback.output_format = ModelOutputFormat::Text;
+    Some(fallback)
 }
 
 /// Builds a bounded provider-neutral fallback for a JSON-Schema request.
@@ -145,6 +215,12 @@ pub trait ModelAdapter: Send + Sync {
         &'a self,
         request: ModelRequest,
     ) -> Pin<Box<dyn Future<Output = Result<ModelResponse, ModelError>> + Send + 'a>>;
+
+    fn configure_execution_budget(&self, _budget: Option<ModelExecutionBudget>) {}
+
+    fn execution_telemetry_snapshot(&self) -> Option<ModelExecutionTelemetrySnapshot> {
+        None
+    }
 }
 
 #[cfg(test)]
@@ -210,5 +286,58 @@ mod tests {
             reasoning_preference: None,
         };
         assert!(build_json_object_fallback_request(&request).is_none());
+    }
+
+    #[test]
+    fn strict_json_text_fallback_preserves_schema_semantics_without_provider_json_mode() {
+        let request = ModelRequest {
+            task: "qualify the local evidence".into(),
+            system: Some("server-owned guard".into()),
+            output_format: ModelOutputFormat::JsonSchema {
+                name: "qualification_v2".into(),
+                schema: serde_json::json!({
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": { "risk": { "type": "string", "enum": ["absent", "present"] } },
+                    "required": ["risk"]
+                }),
+            },
+            max_tokens: Some(192),
+            random_seed: Some(11),
+            reasoning_preference: Some(ModelReasoningPreference::Minimize),
+        };
+
+        let fallback = build_strict_json_text_fallback_request(&request).expect("text fallback");
+
+        assert_eq!(fallback.output_format, ModelOutputFormat::Text);
+        assert_eq!(fallback.max_tokens, request.max_tokens);
+        assert_eq!(fallback.random_seed, request.random_seed);
+        assert_eq!(fallback.reasoning_preference, request.reasoning_preference);
+        assert!(
+            fallback
+                .task
+                .contains("Original task:\nqualify the local evidence")
+        );
+        assert!(fallback.task.contains("exactly one raw JSON object"));
+        assert!(
+            fallback
+                .system
+                .as_deref()
+                .unwrap()
+                .contains("Strict-JSON text fallback constraint")
+        );
+    }
+
+    #[test]
+    fn strict_json_text_fallback_is_only_available_for_json_schema_requests() {
+        let request = ModelRequest {
+            task: "plain".into(),
+            system: None,
+            output_format: ModelOutputFormat::Text,
+            max_tokens: None,
+            random_seed: None,
+            reasoning_preference: None,
+        };
+        assert!(build_strict_json_text_fallback_request(&request).is_none());
     }
 }

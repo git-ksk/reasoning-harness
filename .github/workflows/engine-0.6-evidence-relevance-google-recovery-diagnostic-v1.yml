@@ -1,0 +1,131 @@
+name: engine-0.6-evidence-relevance-google-recovery-diagnostic-v1
+
+on:
+  push:
+    tags:
+      - engine-0.6-evidence-relevance-google-recovery-diagnostic-v1
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  DIAGNOSTIC_TAG: engine-0.6-evidence-relevance-google-recovery-diagnostic-v1
+  CALIBRATION_DIR: fixtures/evidence-relevance-calibration-v5
+  DIAGNOSTIC_SEED: '4625801'
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+
+    steps:
+      - name: Reject workflow reruns
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-google-recovery-diagnostic-v1
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate unchanged v5 frozen surface
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$DIAGNOSTIC_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$DIAGNOSTIC_TAG"
+          sha256sum -c "$CALIBRATION_DIR/surface-v5.sha256"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider google \
+            --model calibration-placeholder \
+            --fixture 01_exact_name_availability \
+            --fixture 09_en_query_ja_alias \
+            --fixture 10_structured_metadata_plus_body \
+            --fixture 16_broad_landing_no_support \
+            --fixture 21_unknown_rename \
+            --fixture 26_url_only_identity \
+            --validate-only \
+            > /tmp/evidence-relevance-google-recovery-validate.json
+          jq -e '
+            .configuration_id == "evidence-relevance-live-calibration-v5"
+            and .suite_id == "evidence-relevance-calibration-v5"
+            and .corpus_status_at_observation == "fresh_unobserved_calibration"
+            and .metrics.cases == 6
+            and .canonical_full_calibration == false
+            and .scorability == "validate_only_non_scorable"
+          ' /tmp/evidence-relevance-google-recovery-validate.json
+
+      - name: Check Google credential
+        run: |
+          set -euo pipefail
+          test -n "${GEMINI_API_KEY:-}"
+
+      - name: Run first and only recovery diagnostic
+        shell: bash
+        run: |
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider google \
+            --model gemini-3.5-flash-lite \
+            --fixture 01_exact_name_availability \
+            --fixture 09_en_query_ja_alias \
+            --fixture 10_structured_metadata_plus_body \
+            --fixture 16_broad_landing_no_support \
+            --fixture 21_unknown_rename \
+            --fixture 26_url_only_identity \
+            --seed "$DIAGNOSTIC_SEED" \
+            --inter-case-delay-ms 6100 \
+            --checkpoint /tmp/evidence-relevance-google-recovery-checkpoint.json \
+            > /tmp/evidence-relevance-google-recovery-result.json \
+            2> /tmp/evidence-relevance-google-recovery-stderr.log
+          rc=$?
+          printf '%s\n' "$rc" > /tmp/evidence-relevance-google-recovery.rc
+          exit 0
+
+      - name: Summarize diagnostic
+        if: always()
+        run: |
+          set -euo pipefail
+          rc="$(cat /tmp/evidence-relevance-google-recovery.rc)"
+          jq -n \
+            --argjson runner_rc "$rc" \
+            --slurpfile result /tmp/evidence-relevance-google-recovery-result.json \
+            '{
+              schema_version: "engine-0.6-evidence-relevance-google-recovery-diagnostic-v1",
+              runner_rc: $runner_rc,
+              result: $result[0],
+              operationally_complete: (
+                $runner_rc == 0
+                and $result[0].metrics.cases == 6
+                and $result[0].metrics.successful_provider_cases == 6
+                and $result[0].metrics.failed_provider_cases == 0
+              )
+            }' > /tmp/evidence-relevance-google-recovery-summary.json
+          cat /tmp/evidence-relevance-google-recovery-summary.json
+
+      - name: Preserve recovery evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-google-recovery-diagnostic-v1
+          path: |
+            /tmp/evidence-relevance-google-recovery-validate.json
+            /tmp/evidence-relevance-google-recovery-result.json
+            /tmp/evidence-relevance-google-recovery-checkpoint.json
+            /tmp/evidence-relevance-google-recovery-stderr.log
+            /tmp/evidence-relevance-google-recovery.rc
+            /tmp/evidence-relevance-google-recovery-summary.json
+          if-no-files-found: warn
+          retention-days: 90

@@ -1,0 +1,466 @@
+{
+  "suite_id": "evidence-relevance-identity-ambiguity-diagnostic-v1",
+  "issue": 462,
+  "status": "fresh_unobserved_diagnostic",
+  "source_rule": "synthetic_only_case21_wording_and_entities_excluded",
+  "cases": [
+    {
+      "id": "01_possible_rename_unconfirmed",
+      "family": "unknown_rename",
+      "policy": {
+        "policy_id": "identity-probe:01",
+        "target_id": "target:01",
+        "target_question": "Is Orchid Relay available after a possible rename?",
+        "entity": {
+          "canonical_id": "entity:01",
+          "canonical_name": "Orchid Relay",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:01",
+        "source_id": "source:01",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Lumen Relay regional availability"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Lumen Relay is offered in East and West. The supplied notice does not establish whether Lumen Relay is a rename of Orchid Relay."
+          }
+        ]
+      },
+      "expected_target_binding": "unresolved",
+      "expected_distinctness_confirmation": "not_confirmed",
+      "expected_gated_disposition": "ambiguous"
+    },
+    {
+      "id": "02_possible_successor_unconfirmed",
+      "family": "unknown_successor",
+      "policy": {
+        "policy_id": "identity-probe:02",
+        "target_id": "target:02",
+        "target_question": "Where is Harbor Cache available after the transition?",
+        "entity": {
+          "canonical_id": "entity:02",
+          "canonical_name": "Harbor Cache",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:02",
+        "source_id": "source:02",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Solace Cache availability"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Solace Cache appears in the new regional table. The excerpt says migration guidance is elsewhere and does not establish whether it succeeds Harbor Cache or is a separate service."
+          }
+        ]
+      },
+      "expected_target_binding": "unresolved",
+      "expected_distinctness_confirmation": "not_confirmed",
+      "expected_gated_disposition": "ambiguous"
+    },
+    {
+      "id": "03_unregistered_acronym",
+      "family": "unknown_alias",
+      "policy": {
+        "policy_id": "identity-probe:03",
+        "target_id": "target:03",
+        "target_question": "What is the Copper Stream limit?",
+        "entity": {
+          "canonical_id": "entity:03",
+          "canonical_name": "Copper Stream",
+          "aliases": []
+        },
+        "relation": "limit",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:03",
+        "source_id": "source:03",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "CS quotas"
+          },
+          {
+            "kind": "excerpt",
+            "text": "CS supports 500 concurrent readers. The supplied material does not define CS or connect that abbreviation to Copper Stream."
+          }
+        ]
+      },
+      "expected_target_binding": "unresolved",
+      "expected_distinctness_confirmation": "not_confirmed",
+      "expected_gated_disposition": "ambiguous"
+    },
+    {
+      "id": "04_cross_language_name_unregistered",
+      "family": "unknown_cross_language",
+      "policy": {
+        "policy_id": "identity-probe:04",
+        "target_id": "target:04",
+        "target_question": "What does Maple Vault cost?",
+        "entity": {
+          "canonical_id": "entity:04",
+          "canonical_name": "Maple Vault",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:04",
+        "source_id": "source:04",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "コウヨウ保管庫 料金"
+          },
+          {
+            "kind": "excerpt",
+            "text": "「コウヨウ保管庫」の月額料金を説明する。Maple Vaultとの名称対応は supplied material では示されていない。"
+          }
+        ]
+      },
+      "expected_target_binding": "unresolved",
+      "expected_distinctness_confirmation": "not_confirmed",
+      "expected_gated_disposition": "ambiguous"
+    },
+    {
+      "id": "05_truncated_identity_mapping",
+      "family": "unknown_truncated",
+      "policy": {
+        "policy_id": "identity-probe:05",
+        "target_id": "target:05",
+        "target_question": "Is Quartz Jobs available in South?",
+        "entity": {
+          "canonical_id": "entity:05",
+          "canonical_name": "Quartz Jobs",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:05",
+        "source_id": "source:05",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Nova Jobs regional matrix"
+          },
+          {
+            "kind": "excerpt",
+            "text": "South is listed as available. The identity-mapping paragraph that could relate Nova Jobs to Quartz Jobs is omitted from the supplied excerpt."
+          }
+        ]
+      },
+      "expected_target_binding": "unresolved",
+      "expected_distinctness_confirmation": "not_confirmed",
+      "expected_gated_disposition": "ambiguous"
+    },
+    {
+      "id": "06_version_lineage_unknown",
+      "family": "unknown_lineage",
+      "policy": {
+        "policy_id": "identity-probe:06",
+        "target_id": "target:06",
+        "target_question": "Where is Pine Search available?",
+        "entity": {
+          "canonical_id": "entity:06",
+          "canonical_name": "Pine Search",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:06",
+        "source_id": "source:06",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Pine Search Next availability"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Pine Search Next is listed in three regions. The excerpt does not state whether Next is the same service, a rename, or a distinct successor to Pine Search."
+          }
+        ]
+      },
+      "expected_target_binding": "unresolved",
+      "expected_distinctness_confirmation": "not_confirmed",
+      "expected_gated_disposition": "ambiguous"
+    },
+    {
+      "id": "07_explicit_separate_product",
+      "family": "explicit_different",
+      "policy": {
+        "policy_id": "identity-probe:07",
+        "target_id": "target:07",
+        "target_question": "Where is Amber Queue available?",
+        "entity": {
+          "canonical_id": "entity:07",
+          "canonical_name": "Amber Queue",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:07",
+        "source_id": "source:07",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Saffron Queue availability"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Saffron Queue and Amber Queue are separate products with independent regional availability lists. This page lists Saffron Queue only."
+          }
+        ]
+      },
+      "expected_target_binding": "different",
+      "expected_distinctness_confirmation": "confirmed_different",
+      "expected_gated_disposition": "irrelevant"
+    },
+    {
+      "id": "08_explicit_comparison_distinct",
+      "family": "explicit_different",
+      "policy": {
+        "policy_id": "identity-probe:08",
+        "target_id": "target:08",
+        "target_question": "What does River Trace cost?",
+        "entity": {
+          "canonical_id": "entity:08",
+          "canonical_name": "River Trace",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:08",
+        "source_id": "source:08",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Summit Trace pricing"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Unlike River Trace, Summit Trace is a separate tracing product billed by retained span. This page contains only Summit Trace prices."
+          }
+        ]
+      },
+      "expected_target_binding": "different",
+      "expected_distinctness_confirmation": "confirmed_different",
+      "expected_gated_disposition": "irrelevant"
+    },
+    {
+      "id": "09_explicit_not_rename",
+      "family": "explicit_different",
+      "policy": {
+        "policy_id": "identity-probe:09",
+        "target_id": "target:09",
+        "target_question": "Is Elm Metrics available in North?",
+        "entity": {
+          "canonical_id": "entity:09",
+          "canonical_name": "Elm Metrics",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:09",
+        "source_id": "source:09",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Birch Metrics regions"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Birch Metrics is not a rename, alias, or replacement for Elm Metrics; it is a distinct product. North availability below applies to Birch Metrics."
+          }
+        ]
+      },
+      "expected_target_binding": "different",
+      "expected_distinctness_confirmation": "confirmed_different",
+      "expected_gated_disposition": "irrelevant"
+    },
+    {
+      "id": "10_explicit_sibling_identity",
+      "family": "explicit_different",
+      "policy": {
+        "policy_id": "identity-probe:10",
+        "target_id": "target:10",
+        "target_question": "What is the Cobalt Store limit?",
+        "entity": {
+          "canonical_id": "entity:10",
+          "canonical_name": "Cobalt Store",
+          "aliases": []
+        },
+        "relation": "limit",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:10",
+        "source_id": "source:10",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "product_name=Indigo Store; product_family=storage; distinct_from=Cobalt Store"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Indigo Store has a 40 TiB object limit. The metadata identifies it as distinct from Cobalt Store."
+          }
+        ]
+      },
+      "expected_target_binding": "different",
+      "expected_distinctness_confirmation": "confirmed_different",
+      "expected_gated_disposition": "irrelevant"
+    },
+    {
+      "id": "11_canonical_exact_control",
+      "family": "exact_control",
+      "policy": {
+        "policy_id": "identity-probe:11",
+        "target_id": "target:11",
+        "target_question": "Where is Willow Bus available?",
+        "entity": {
+          "canonical_id": "entity:11",
+          "canonical_name": "Willow Bus",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:11",
+        "source_id": "source:11",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Willow Bus availability"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Willow Bus is available in Central and Coast regions."
+          }
+        ]
+      },
+      "expected_target_binding": "exact",
+      "expected_distinctness_confirmation": "not_confirmed",
+      "expected_gated_disposition": "relevant"
+    },
+    {
+      "id": "12_registered_alias_exact_control",
+      "family": "exact_control",
+      "policy": {
+        "policy_id": "identity-probe:12",
+        "target_id": "target:12",
+        "target_question": "What is the Silver Functions limit?",
+        "entity": {
+          "canonical_id": "entity:12",
+          "canonical_name": "Silver Functions",
+          "aliases": [
+            "SFN"
+          ]
+        },
+        "relation": "limit",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:12",
+        "source_id": "source:12",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "SFN quotas"
+          },
+          {
+            "kind": "excerpt",
+            "text": "SFN permits 1,000 concurrent executions per account."
+          }
+        ]
+      },
+      "expected_target_binding": "exact",
+      "expected_distinctness_confirmation": "not_confirmed",
+      "expected_gated_disposition": "relevant"
+    }
+  ]
+}

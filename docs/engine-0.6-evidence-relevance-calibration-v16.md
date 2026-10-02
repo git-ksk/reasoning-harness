@@ -1,0 +1,126 @@
+# Engine 0.6 evidence-target relevance calibration v16 — successor design
+
+Status: implemented pre-freeze candidate at `566a4b5a39ad937d9f43d006550ad7a84436a0f8`. No v16 live observation has occurred. Independent holdout authoring remains blocked.
+
+## Fixed surface
+
+- fixed core: evidence-relevance-fixed-core-v1
+- cases: 48, unchanged
+- dispositions remain the same semantic labels selected before v14
+- no case-ID, synthetic-entity, or exact-fixture-phrase branching
+- v15 remains immutable and is not rescored under v16
+
+## Why v16 exists
+
+v15 failed even with a fully operational Mistral arm. The verifier both over-produced blockers and under-produced negative confirmations, while one spurious positive confirmation combined with materialization v10's unresolved-primary rescue created a wrong-target Relevant result. The next successor therefore changes the contract shape rather than tuning individual examples.
+
+## Primary proposal v5
+
+Contract: `reason-evidence-relevance-binding-proposal-v5`.
+
+Keep the independent target/relation axes:
+- target_binding: exact | different | unresolved
+- relation_binding: exact | different | unresolved
+
+Clarify the generic semantics:
+- Harness canonical names and declared aliases are authoritative identity metadata when the substantive local material is scoped to them.
+- Cross-language query wording does not weaken an explicit canonical/alias binding in the candidate.
+- Staleness, factual disagreement, downstream authority, and untrusted candidate instructions do not downgrade target/relation binding.
+- Multiple adjacent signals from one candidate may jointly establish one same-target relation.
+- allow_semantic_equivalent may still classify a locally specific semantic equivalent as exact without a literal anchor.
+- shared ownership, omitted product columns/referents, uncertain rename/alias/successor mappings, and visibly clipped identity remain unresolved.
+
+The intent is to improve atomic proposal accuracy rather than compensating later with unsafe rescue authority.
+
+## Local verifier v6
+
+Contract: `reason-evidence-local-qualification-v6`. Annotation protocol: `evidence-relevance-scope-verifier-v16`.
+
+Replace binding_confirmation with three orthogonal fields:
+
+identity_scope:
+- exact_target
+- distinct_target
+- target_absent
+- unresolved
+
+relation_scope:
+- requested_relation
+- different_relation
+- relation_absent
+- unresolved
+
+scope_risk:
+- none
+- identity_mapping
+- ownership_scope
+- context_gap
+- multiple
+
+The verifier does not emit Relevant/Irrelevant/Ambiguous and does not emit a synthesized confirmation. It reports only local scope facts. Candidate instructions remain untrusted. Freshness, truth, authority, and sufficiency remain downstream.
+
+This shape prevents one field such as confirmed_target_relation from simultaneously hiding ownership ambiguity and granting positive rescue authority.
+
+## Materialization v11
+
+Policy: `target-evidence-relevance-binding-materialization-v11`.
+
+Harness-owned deterministic policy:
+
+1. If scope_risk != none, materialize Ambiguous.
+2. Relevant requires all of:
+   - primary target_binding=exact
+   - primary relation_binding=exact
+   - verifier identity_scope=exact_target
+   - verifier relation_scope=requested_relation
+   - no scope risk
+   - existing Harness identity floor satisfied, or allow_semantic_equivalent explicitly permits the no-anchor case
+3. There is no primary-unresolved positive rescue path.
+4. Target-negative Irrelevant requires primary target_binding=different plus verifier identity_scope in {distinct_target, target_absent}, with no scope risk.
+5. Explicit local absence may also materialize Irrelevant when neither primary axis claims exact support and the verifier independently reports identity_scope=target_absent plus relation_scope=relation_absent. This is negative fail-closed evidence, not positive rescue authority.
+6. Relation-negative Irrelevant requires the primary exact target plus relation_binding=different and verifier identity_scope=exact_target plus verifier relation_scope in {different_relation, relation_absent}, with no scope risk.
+7. All other disagreement or unresolved combinations materialize Ambiguous.
+
+Positive terminal disposition requires complete primary/verifier agreement. Negative terminal disposition requires either matching negative scope evidence or explicit local absence; unresolved primary output never creates positive authority. Model disagreement loses utility but cannot manufacture authority.
+
+## Operational policy
+
+Carry v15 operational hardening forward unchanged:
+- active semantic/provider execution: 60,000 ms per case
+- cumulative provider wait/retry: 45,000 ms
+- single provider wait cap: 30,000 ms
+- absolute case wall-clock deadline: 120,000 ms
+- provider adapter retains retry ownership
+- typed quota: latch after 1
+- correlated capacity failures: latch after 2
+- suppressed cases remain operational failures
+- no manual Groq TPD attestation start gate
+- public provider failures remain sanitized
+- provider-attempt, active/wait/pacing/retry telemetry remains separate
+
+Required providers remain Mistral ministral-8b-latest and Groq openai/gpt-oss-120b. Google gemini-3.5-flash-lite remains full non-gating replication unless separate provider evidence justifies a role change before freeze.
+
+## Deterministic v16 annotation surface
+
+The fixed 48 cases retain the same 14 Relevant / 18 Irrelevant / 16 Ambiguous disposition balance. Expected verifier coverage is precommitted as:
+- identity_scope: exact_target 19 / distinct_target 10 / target_absent 5 / unresolved 14
+- relation_scope: requested_relation 37 / different_relation 4 / relation_absent 5 / unresolved 2
+- scope_risk: none 32 / identity_mapping 5 / ownership_scope 1 / context_gap 5 / multiple 5
+
+No case was added or relabeled from v15.
+
+## Pre-live validation
+
+Validation at the implemented candidate is green before any freeze tag:
+- v16 fixed-core routing: 9/9 PASS
+- evidence-relevance CLI runner: 22/22 PASS
+- full workspace test: PASS; provider library final row 153 passed / 0 failed / 1 ignored
+- `cargo clippy --workspace --all-targets -- -D warnings`: PASS
+- `cargo fmt --all -- --check`: PASS
+- `git diff --check`: PASS
+- workflow YAML parse: PASS
+- validate-only: 48 planned / 0 observed / `operational_abort=null` / `provider_arm_latch=null` / `validate_only_non_scorable`
+- deterministic expected v16 annotations materialize 48/48 exactly without changing expected disposition
+- structural tests prove unresolved primary cannot become Relevant and any non-none scope risk fails closed to Ambiguous
+
+The first/only frozen v16 canonical remains one-shot and immutable. PASS is required before any independent holdout is authored.
