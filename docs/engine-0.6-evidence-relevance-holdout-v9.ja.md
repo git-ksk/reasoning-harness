@@ -30,6 +30,8 @@ runner completeness test は V9 を含む全 profile を coverage する。runne
 
 ## Runner freeze
 
-freeze coordinate: `engine-0.6-evidence-relevance-holdout-v9-runner-freeze`。
+最初の runner freeze `engine-0.6-evidence-relevance-holdout-v9-runner-freeze` / `17ea49bc6b332bb985971b661830c80665ad5dd4` は、provider 観測前の validate-only 監査で v8 由来の `issue == 462` binding を引き継いでいることが判明した。tag は immutable evidence として保持し、移動・削除しない。この v1 runner では #468 corpus を受理できないため acceptance runner としては使用しない。
 
-この annotated tag を push した後にのみ holdout-v9 corpus authoring を開始する。corpus は holdout v1-v8 と successor-v5/v6/v7/v8/v9 development surface に対して case ID / canonical entity / task / exact signal / exact 8-token candidate-signal n-gram overlap 0 の fresh independent surface とする。corpus 自体を freeze するまでは provider observation を禁止する。
+修正版は V9 のみ `issue == 468`、historical V1-V8 / development profiles は `issue == 462` を明示する。新しい freeze coordinate は `engine-0.6-evidence-relevance-holdout-v9-runner-freeze-v2`。
+
+この v2 annotated tag を push した後にのみ holdout-v9 corpus authoring を開始する。corpus は holdout v1-v8 と successor-v5/v6/v7/v8/v9 development surface に対して case ID / canonical entity / task / exact signal / exact 8-token candidate-signal n-gram overlap 0 の fresh independent surface とする。corpus 自体を freeze するまでは provider observation を禁止する。

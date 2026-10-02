@@ -258,6 +258,22 @@ impl HoldoutProfile {
         }
     }
 
+    fn expected_issue(self) -> u64 {
+        match self {
+            Self::V9 => 468,
+            Self::V1
+            | Self::V2
+            | Self::V3
+            | Self::V4
+            | Self::V5
+            | Self::V6
+            | Self::V7
+            | Self::V8
+            | Self::V5Development
+            | Self::V6Development => 462,
+        }
+    }
+
     fn expected_status(self) -> &'static str {
         match self {
             Self::V1
@@ -2359,8 +2375,12 @@ fn load_manifest(target: &Path, profile: HoldoutProfile) -> Result<HoldoutManife
             manifest.suite_id
         ));
     }
-    if manifest.issue != 462 {
-        return Err(format!("unexpected issue binding {}", manifest.issue));
+    if manifest.issue != profile.expected_issue() {
+        return Err(format!(
+            "unexpected issue binding {} for profile {}",
+            manifest.issue,
+            profile.configuration_id()
+        ));
     }
     if manifest.status != profile.expected_status() {
         return Err(format!(
@@ -3044,6 +3064,25 @@ mod tests {
             );
         }
         assert!(checkpoint_profile("unknown-suite").is_err());
+    }
+
+    #[test]
+    fn issue_binding_is_explicit_per_profile() {
+        assert_eq!(HoldoutProfile::V9.expected_issue(), 468);
+        for profile in [
+            HoldoutProfile::V1,
+            HoldoutProfile::V2,
+            HoldoutProfile::V3,
+            HoldoutProfile::V4,
+            HoldoutProfile::V5,
+            HoldoutProfile::V6,
+            HoldoutProfile::V7,
+            HoldoutProfile::V8,
+            HoldoutProfile::V5Development,
+            HoldoutProfile::V6Development,
+        ] {
+            assert_eq!(profile.expected_issue(), 462, "{profile:?}");
+        }
     }
 
     #[test]
