@@ -80,6 +80,12 @@ Successor v7はeffective qualification v9 + materialization v22のpre-freeze can
 
 [successor v7 design](engine-0.6-evidence-relevance-holdout-successor-v7.ja.md) を参照。 successor-v7 semantics freeze後、V8 runnerをcorpus未作成状態でv9/v22へwiringし、commit `924617edf2a6a50ef131ea5c04af729547c0c22e` / tag `engine-0.6-evidence-relevance-holdout-v8-runner-freeze` でfreeze、exact-head CI 9/9 greenを確認した。その後にfresh holdout-v8 26 case (8/10/8)をauthorし、holdout v1-v7 + successor-v5/v6 development + successor-v7 development v1/v2に対しるcase/entity/task/signal/8-token overlap 0とfrozen v9/v22 offline exactを確認済み。Groq admissionはcanonical v7 actual 66,922 tokens / completion `2026-10-01T03:37:52Z` から再計算し、55K headroom floorは `2026-10-01T09:30:23Z`。
 
+### Engine 0.6 #468 holdout v8 relation FAIL / successor v9
+
+Canonical holdout v8 run 36946457925 は relation axis のみで immutable FAIL。3 provider 全て26/26完走・provider failure 0・materialization 26/26だったが、v8h15_negative_explicit_separate_service の availability/deployment-coverage paraphraseを Mistral / Google が各1件missした。#468 は identity ownership と relation を直交のまま保持して bounded coarse semantic frame を導入。最初の v10 development observation 36978705359 は Google が non-frame control で model-only requested-relation authority false positive 3件を露出したため FAIL のまま保持する。v11 は Harness-owned frame または conflict のない lexical evidence がある場合だけ positive requested-relation authority を許可し、それ以外は abstain。v23 は model-only positive authority が Relevant になることを防ぐ。fresh independent 19-case run 37015407859 は Mistral + Google の two-provider selective-authority gate を PASSし、authority / identity-risk / materialization failure 0、wrong-target Relevant 0、utility miss 0。captured replay は fixtures/evidence-relevance-successor-v9-development/ に固定。capture commit 842b6f4b07fc99c3ee0add823f279df0b295eda8 の pre-freeze audit は workspace tests、Clippy、fmt/YAML/diff、frozen v9/v22 invariance、production special-case scan が green。capture commit の exact-head CI は 8/8 green。intended freeze coordinate は engine-0.6-evidence-relevance-successor-v9-semantics-freeze で、この tag push まで fresh holdout v9 authoring を禁止する。
+
+successor v9 design: engine-0.6-evidence-relevance-holdout-successor-v9.ja.md を参照。
+
 ### プロダクト
 
 1. **bounded resolver による target closure（#159）：** successor candidate `79ec3b44971c32f9a8847d8173672675947c7288` で実装済み。exact Harness-owned unresolved targets は、model-owned authority を介さず、既存の bounded acquisition/admission/re-verification boundary を通じて優先付けされる。
