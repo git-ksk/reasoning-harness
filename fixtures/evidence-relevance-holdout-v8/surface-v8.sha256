@@ -7,7 +7,7 @@ e063d72f5cfb344199a4e32c7c652958930e42391a8241c2e09077f167bb6417  crates/reasoni
 2d0ee1d97a8a90ad2c0a9c154523c44c8dac85c314d0d4b31957c83cbe2a3f47  crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v8.rs
 8a669c813ad9e3dd8ba2a9284795db4574bdba639605061969baa8ba90f6dead  crates/reasoning-harness-core/tests/evidence_relevance_holdout_v8.rs
 5cc3ad30c22b636b0ae143d91f9bcd75cd9e055acf37764ce792604d836f9da8  fixtures/evidence-relevance-holdout-v8/manifest.json
-2ce28a83e3c28abbc20c186e6419d9173a9cb04694b64ff2bf0261f65c2c9a77  .github/workflows/engine-0.6-evidence-relevance-holdout-v8-live.yml
+5e1d94e429b06656fc4af1268ce33aa4b43a084e37d8e85599fdf15e4d94766d  .github/workflows/engine-0.6-evidence-relevance-holdout-v8-live.yml
 f3357bc09f41224fdbce743a7ab52d44112308009ff8107494f54fe92d4a6990  docs/engine-0.6-evidence-relevance-holdout-v8.md
 a9fa541d80e51cfa5ab08163933a5ce1424db7fb04d4eb1317d4a3fdffb6c74e  docs/engine-0.6-evidence-relevance-holdout-v8.ja.md
 0f1c296ec41e723ebafef25aa8f0290f4775ee1d9be6e0d59bd651b56605b565  docs/roadmap.md

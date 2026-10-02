@@ -329,7 +329,7 @@ jobs:
           REASON_GROQ_TOKENS_PER_MINUTE: '8000'
           REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
           REASON_GROQ_STRUCTURED_OUTPUT_RETRIES: '0'
-          # Frozen successor-v6 v8/v21 semantics retain strict raw-JSON Text as Groq primary with a 512-token transport floor.
+          # Frozen successor-v7 v9/v22 semantics retain strict raw-JSON Text as Groq primary with a 512-token transport floor.
           REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
           REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH: /tmp/evidence-relevance-google-attempts.jsonl
         run: |
