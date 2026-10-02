@@ -1,4 +1,8 @@
-use std::{collections::BTreeSet, fs, path::PathBuf};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    fs,
+    path::PathBuf,
+};
 
 use reasoning_harness_core::{
     EvidenceLocalQualificationV6, EvidenceLocalRelationScope, EvidenceRelevanceBindingProposal,
@@ -305,6 +309,189 @@ fn successor_v9_development_is_surface_independent_from_prior_holdouts_and_devel
                     gram.join(" ")
                 );
             }
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
+struct CapturedDevelopmentReplay {
+    source: CapturedDevelopmentSource,
+    providers: Vec<CapturedProviderReplay>,
+}
+
+#[derive(Debug, Deserialize)]
+struct CapturedDevelopmentSource {
+    run_id: u64,
+    candidate_commit: String,
+    holdout_acceptance_evidence: bool,
+    development_gate: String,
+    historical_result: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct CapturedProviderReplay {
+    provider: String,
+    model: String,
+    observations: Vec<CapturedObservationReplay>,
+}
+
+#[derive(Debug, Deserialize)]
+struct CapturedObservationReplay {
+    id: String,
+    observed_proposal: Option<EvidenceRelevanceBindingProposal>,
+    observed_local_qualification: Option<EvidenceLocalQualificationV6>,
+    effective_local_qualification: EvidenceLocalQualificationV6,
+    materialized_disposition: EvidenceRelevanceDisposition,
+}
+
+#[test]
+fn successor_v9_captured_live_observation_replays_under_v11_v23() {
+    let manifest = load();
+    let replay: CapturedDevelopmentReplay = serde_json::from_slice(
+        &fs::read(
+            root().join(
+                "fixtures/evidence-relevance-successor-v9-development/observations-run-37015407859.json",
+            ),
+        )
+        .expect("read successor v9 captured development replay"),
+    )
+    .expect("parse successor v9 captured development replay");
+
+    assert_eq!(replay.source.run_id, 37_015_407_859);
+    assert_eq!(
+        replay.source.candidate_commit,
+        "78e635e1aea485e3f13fe78e01fa3a7f5ddd5e90"
+    );
+    assert!(!replay.source.holdout_acceptance_evidence);
+    assert_eq!(
+        replay.source.development_gate,
+        "v11_selective_relation_authority_v23_positive_materialization_floor"
+    );
+    assert_eq!(replay.source.historical_result, "success");
+
+    let summary: Value = serde_json::from_slice(
+        &fs::read(root().join(
+            "fixtures/evidence-relevance-successor-v9-development/summary-run-37015407859.json",
+        ))
+        .expect("read successor v9 development summary"),
+    )
+    .expect("parse successor v9 development summary");
+    assert_eq!(summary["development_gate_passed"], true);
+    assert_eq!(summary["holdout_acceptance_evidence"], false);
+
+    let cases = manifest
+        .cases
+        .iter()
+        .map(|case| (case.id.as_str(), case))
+        .collect::<BTreeMap<_, _>>();
+    assert_eq!(cases.len(), 19);
+    assert_eq!(replay.providers.len(), 2);
+
+    for provider in &replay.providers {
+        assert!(matches!(provider.provider.as_str(), "mistral" | "google"));
+        assert!(!provider.model.is_empty());
+        assert_eq!(provider.observations.len(), 19, "{}", provider.provider);
+
+        let provider_summary = &summary["providers"][provider.provider.as_str()];
+        assert_eq!(provider_summary["passed"], true, "{}", provider.provider);
+        assert_eq!(provider_summary["runner_rc"], 0, "{}", provider.provider);
+        assert_eq!(
+            provider_summary["completed_cases"], 19,
+            "{} completed cases",
+            provider.provider
+        );
+        assert_eq!(
+            provider_summary["authority_failures"]
+                .as_array()
+                .unwrap()
+                .len(),
+            0,
+            "{} authority failures",
+            provider.provider
+        );
+        assert_eq!(
+            provider_summary["identity_risk_failures"]
+                .as_array()
+                .unwrap()
+                .len(),
+            0,
+            "{} identity/risk failures",
+            provider.provider
+        );
+        assert_eq!(
+            provider_summary["materialization_failures"]
+                .as_array()
+                .unwrap()
+                .len(),
+            0,
+            "{} materialization failures",
+            provider.provider
+        );
+
+        for observed in &provider.observations {
+            let case = cases
+                .get(observed.id.as_str())
+                .unwrap_or_else(|| panic!("unknown captured case {}", observed.id));
+
+            let effective = derive_effective_evidence_local_qualification_v11(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap_or_else(|error| {
+                panic!("{} {} v11 replay: {error}", provider.provider, observed.id)
+            });
+            assert_eq!(
+                effective, observed.effective_local_qualification,
+                "{} {} captured effective qualification",
+                provider.provider, observed.id
+            );
+
+            match case.authority_expectation.as_str() {
+                "require_requested" => assert_eq!(
+                    effective.relation_scope,
+                    EvidenceLocalRelationScope::RequestedRelation,
+                    "{} {} requested authority",
+                    provider.provider,
+                    observed.id
+                ),
+                "forbid_requested" => assert_ne!(
+                    effective.relation_scope,
+                    EvidenceLocalRelationScope::RequestedRelation,
+                    "{} {} forbidden requested authority",
+                    provider.provider,
+                    observed.id
+                ),
+                "preserve_risk" => {
+                    assert_eq!(
+                        effective.scope_risk, case.expected_local_qualification.scope_risk,
+                        "{} {} preserved risk",
+                        provider.provider, observed.id
+                    );
+                }
+                other => panic!("{} unknown authority expectation {other}", observed.id),
+            }
+
+            let assessment = materialize_evidence_relevance_v23(
+                &case.policy,
+                &case.candidate,
+                observed.observed_proposal.as_ref(),
+                observed.observed_local_qualification.as_ref(),
+            )
+            .unwrap_or_else(|error| {
+                panic!("{} {} v23 replay: {error}", provider.provider, observed.id)
+            });
+            assert_eq!(
+                assessment.disposition, observed.materialized_disposition,
+                "{} {} captured materialization",
+                provider.provider, observed.id
+            );
+            assert_eq!(
+                assessment.disposition, case.expected_disposition,
+                "{} {} expected materialization",
+                provider.provider, observed.id
+            );
         }
     }
 }
