@@ -101,6 +101,8 @@ pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V8_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v8";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V9_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v9";
+pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V10_CONTRACT_ID: &str =
+    "reason-evidence-relevance-effective-qualification-v10";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -919,6 +921,153 @@ fn deterministic_positive_target_relation_fact(
                 has_target && has_relation
             })
     })
+}
+
+fn semantic_relation_segments(candidate: &EvidenceRelevanceCandidate) -> Vec<String> {
+    candidate
+        .signals
+        .iter()
+        .filter(|signal| {
+            matches!(
+                signal.kind,
+                EvidenceRelevanceSignalKind::Excerpt
+                    | EvidenceRelevanceSignalKind::StructuredMetadata
+                    | EvidenceRelevanceSignalKind::Fact
+            )
+        })
+        .flat_map(|signal| normalized_factual_segments(&signal.text))
+        .collect()
+}
+
+fn token_is_numeric(token: &str) -> bool {
+    !token.is_empty() && token.chars().all(|character| character.is_ascii_digit())
+}
+
+fn token_followed_by_any_within(
+    tokens: &[&str],
+    triggers: &[&str],
+    slots: &[&str],
+    max_distance: usize,
+) -> bool {
+    tokens.iter().enumerate().any(|(index, token)| {
+        triggers.contains(token)
+            && tokens
+                .iter()
+                .skip(index + 1)
+                .take(max_distance)
+                .any(|candidate| slots.contains(candidate))
+    })
+}
+
+fn semantic_relation_frame_present_in_segment(
+    relation: EvidenceRelevanceRelationKind,
+    segment: &str,
+) -> bool {
+    let tokens = segment.split_whitespace().collect::<Vec<_>>();
+    let contains_phrase = |phrase: &str| normalized_phrase_matches(segment, phrase);
+    let has_token = |values: &[&str]| tokens.iter().any(|token| values.contains(token));
+
+    match relation {
+        EvidenceRelevanceRelationKind::Availability => {
+            let geography_slots = [
+                "zone",
+                "zones",
+                "area",
+                "areas",
+                "market",
+                "markets",
+                "country",
+                "countries",
+                "location",
+                "locations",
+                "geography",
+                "geographies",
+            ];
+            let deployment_triggers = [
+                "operate",
+                "operates",
+                "operated",
+                "operating",
+                "serve",
+                "serves",
+                "served",
+                "serving",
+                "deploy",
+                "deployed",
+                "deploys",
+                "deployment",
+            ];
+            let scoped_deployment =
+                token_followed_by_any_within(&tokens, &deployment_triggers, &geography_slots, 7);
+            let supports_scope = token_followed_by_any_within(
+                &tokens,
+                &["support", "supports"],
+                &geography_slots,
+                5,
+            ) && !has_token(&["in", "across", "within", "throughout"]);
+            let coverage_scope = has_token(&["coverage"])
+                && has_token(&geography_slots)
+                && (has_token(&["include", "includes", "cover", "covers"])
+                    || contains_phrase("coverage extends to"));
+
+            scoped_deployment || supports_scope || coverage_scope
+        }
+        EvidenceRelevanceRelationKind::Pricing => {
+            let has_currency = has_token(&[
+                "usd", "eur", "gbp", "jpy", "cad", "aud", "dollar", "dollars", "euro", "euros",
+                "yen",
+            ]);
+            let has_number = tokens.iter().any(|token| token_is_numeric(token));
+            let has_rate_basis = has_token(&[
+                "per", "monthly", "month", "hourly", "hour", "daily", "day", "annually", "year",
+                "yearly",
+            ]);
+            (has_currency && has_number && has_rate_basis)
+                || contains_phrase("priced at")
+                || contains_phrase("monthly fee")
+                || contains_phrase("usage fee")
+        }
+        EvidenceRelevanceRelationKind::Limit => {
+            contains_phrase("no more than")
+                || contains_phrase("at most")
+                || contains_phrase("cannot exceed")
+                || contains_phrase("may not exceed")
+                || contains_phrase("capped at")
+                || contains_phrase("ceiling of")
+        }
+        EvidenceRelevanceRelationKind::ChangeOrLaunch => {
+            contains_phrase("rolled out")
+                || contains_phrase("went live")
+                || contains_phrase("became generally available")
+                || contains_phrase("is now generally available")
+                || contains_phrase("was introduced")
+                || contains_phrase("has been introduced")
+        }
+        EvidenceRelevanceRelationKind::Definition => {
+            contains_phrase("refers to")
+                || contains_phrase("is the term for")
+                || contains_phrase("denotes")
+                || contains_phrase("is described as")
+        }
+        EvidenceRelevanceRelationKind::BenefitOrUseCase => {
+            contains_phrase("designed to")
+                || contains_phrase("intended to")
+                || contains_phrase("can be used to")
+                || contains_phrase("is used to")
+                || contains_phrase("enables teams to")
+                || contains_phrase("enables users to")
+        }
+        EvidenceRelevanceRelationKind::General => false,
+    }
+}
+
+fn requested_relation_semantic_frame_present(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    semantic_relation_segments(candidate)
+        .iter()
+        .any(|segment| semantic_relation_frame_present_in_segment(policy.relation, segment))
 }
 
 fn requested_relation_locally_present(
@@ -4025,6 +4174,34 @@ pub fn derive_effective_evidence_local_qualification_v9(
         && deterministic_single_signal_near_sibling_identity_ambiguity_v2(policy, candidate)
     {
         effective.identity_scope = Identity::Unresolved;
+    }
+
+    Ok(effective)
+}
+
+pub fn derive_effective_evidence_local_qualification_v10(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceLocalQualificationV6, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalRelationScope as Relation;
+
+    let mut effective =
+        derive_effective_evidence_local_qualification_v9(policy, candidate, proposal, raw)?;
+
+    // Successor relation semantics use bounded semantic frames rather than extending
+    // the historical lexical list one synonym at a time. The frame is positive-only:
+    // it may recover RequestedRelation, but it cannot manufacture DifferentRelation
+    // or RelationAbsent. Concrete scope-risk and explicit target/relation absence
+    // remain authoritative, so uncertain or conflicting cases continue to abstain.
+    if effective.scope_risk == Risk::None
+        && requested_relation_semantic_frame_present(policy, candidate)
+        && !deterministic_strict_named_target_absence(policy, candidate)
+        && !deterministic_strict_target_relation_absence(policy, candidate)
+    {
+        effective.relation_scope = Relation::RequestedRelation;
     }
 
     Ok(effective)
