@@ -112,6 +112,6 @@ jobs:
       - name: Test unchanged MCP and admission safety boundaries
         run: |
           set -euo pipefail
-          cargo test --locked -p reasoning-harness-providers mcp_readonly -- --nocapture
+          cargo test --locked -p reasoning-harness-providers mcp_readonly -- --nocapture --test-threads=1
           cargo test --locked -p reasoning-harness-providers external_admission -- --nocapture
           cargo test --locked -p reasoning-harness-core canonical_verified_target -- --nocapture
