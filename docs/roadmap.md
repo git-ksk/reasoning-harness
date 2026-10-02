@@ -86,6 +86,10 @@ Canonical holdout v8 run 36946457925 is immutable FAIL only on the relation axis
 
 See successor v9 design: engine-0.6-evidence-relevance-holdout-successor-v9.md.
 
+### Engine 0.6 #468 canonical holdout v9 FAIL
+
+Canonical holdout v9 run `37037497486` at freeze commit `1b50e5c54cdff4bd850bb0b1c58cfc66ce46d8bf` is immutable FAIL. Mistral and Groq completed 26/26; Google had one operational timeout on `v9h07_positive_alias_availability`. Mistral/Groq each recorded relation-scope misses on `v9h18` and `v9h26`, with `v9h26` also materializing Irrelevant instead of the holdout's expected Ambiguous. Post-run adjudication found those two holdout expectations had drifted from the already frozen successor-v9 development contract: analogous pre-freeze non-frame controls expected `different_relation` / Irrelevant, including exact-target numeric observation `sv9d_19`. A local v12/v24 negative-authority symmetry experiment regressed numerous historical correct `different_relation` cases and was rejected before commit. Frozen v11/v23 remain unchanged. The next evaluation generation is a fresh holdout v10 under the same frozen semantics with stricter expectation-contract review and operational timeout handling kept separate. See `engine-0.6-evidence-relevance-holdout-v9-result.md`.
+
 ### Product
 
 1. **Bounded resolver target closure (#159):** implemented in successor candidate `79ec3b44971c32f9a8847d8173672675947c7288`; exact Harness-owned unresolved targets are prioritized through the existing bounded acquisition/admission/re-verification boundary without model-owned authority.

@@ -86,6 +86,10 @@ Canonical holdout v8 run 36946457925 は relation axis のみで immutable FAIL�
 
 successor v9 design: engine-0.6-evidence-relevance-holdout-successor-v9.ja.md を参照。
 
+### Engine 0.6 #468 canonical holdout v9 FAIL
+
+Canonical holdout v9 run `37037497486` / freeze commit `1b50e5c54cdff4bd850bb0b1c58cfc66ce46d8bf` は immutable FAIL。Mistral / Groq は26/26完走、Google は `v9h07_positive_alias_availability` で operational timeout 1件。Mistral / Groq は `v9h18` と `v9h26` で relation-scope miss、`v9h26` は holdout expectation Ambiguous に対し Irrelevant を materialize。事後 adjudication で、この2 expectation は既に freeze 済みの successor-v9 development contract から drift していたことを確認した。pre-freeze の同型 non-frame control は `different_relation` / Irrelevant を期待し、exact-target numeric observation `sv9d_19` も同じ。negative authority を全面対称化する v12/v24 ローカル実験は過去の正当な `different_relation` を多数 regression させたため未commitで破棄。frozen v11/v23 は unchanged。次は同じ frozen semantics で fresh holdout v10 を作成し、expectation-contract review を強化、operational timeout は semantic と分離する。詳細は `engine-0.6-evidence-relevance-holdout-v9-result.ja.md`。
+
 ### プロダクト
 
 1. **bounded resolver による target closure（#159）：** successor candidate `79ec3b44971c32f9a8847d8173672675947c7288` で実装済み。exact Harness-owned unresolved targets は、model-owned authority を介さず、既存の bounded acquisition/admission/re-verification boundary を通じて優先付けされる。
