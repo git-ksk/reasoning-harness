@@ -1,0 +1,301 @@
+name: engine-0.6-evidence-relevance-successor-v8-development
+
+# Fresh #468 development surface authored after the v10 implementation checkpoint.
+# Manual-only: provider observation is intentional and never triggered by ordinary pushes.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DEVELOPMENT_DIR: fixtures/evidence-relevance-successor-v8-development
+  DEVELOPMENT_SEED: '4681001'
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Validate successor v8 development surface
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-successor-v8-development-study -- \
+            "$DEVELOPMENT_DIR" \
+            --provider mistral \
+            --model development-placeholder \
+            --validate-only \
+            > /tmp/evidence-relevance-successor-v8-development-validate.json
+          jq -e '
+            .configuration_id == "evidence-relevance-successor-v8-development"
+            and .suite_id == "evidence-relevance-successor-v8-development"
+            and .corpus_status_at_observation == "reusable_development_calibration"
+            and .annotation_protocol_id == "evidence-relevance-effective-qualification-v10"
+            and .fixed_core_id == "evidence-relevance-fixed-core-successor-v8-development-v1"
+            and .planned_cases == 14
+            and .completed_cases == 0
+            and .canonical_full_holdout == false
+            and .scorability == "validate_only_non_scorable"
+          ' /tmp/evidence-relevance-successor-v8-development-validate.json >/dev/null
+
+      - name: Validate offline successor semantics
+        run: |
+          set -euo pipefail
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-core --all-targets -- -D warnings
+          cargo clippy -p reasoning-harness-cli --bin reason-evidence-relevance-successor-v8-development-study -- -D warnings
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v8_relation_controls
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v8_development
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v7_controls
+          cargo test -p reasoning-harness-core --test evidence_relevance_holdout_v8
+          cargo test -p reasoning-harness-core --test evidence_relevance_holdout_successor_v7
+          cargo test -p reasoning-harness-cli --bin reason-evidence-relevance-successor-v8-development-study
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-latest
+            inter_case_delay_ms: 1200
+            timeout_minutes: 60
+          - provider: google
+            model: gemini-3.5-flash-lite
+            inter_case_delay_ms: 6100
+            timeout_minutes: 60
+
+    concurrency:
+      group: engine-0.6-evidence-relevance-successor-v8-development-${{ matrix.provider }}
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate development profile before credentials
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-successor-v8-development-study -- \
+            "$DEVELOPMENT_DIR" \
+            --provider mistral \
+            --model development-placeholder \
+            --validate-only \
+            > /dev/null
+
+      - name: Check provider credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            *) echo "development profile only permits Mistral and Google" >&2; exit 2 ;;
+          esac
+
+      - name: Run reusable development observation
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          DELAY_MS: ${{ matrix.inter_case_delay_ms }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+          REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH: /tmp/evidence-relevance-google-attempts.jsonl
+        run: |
+          set -u
+          BASE="/tmp/evidence-relevance-${PROVIDER}"
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-successor-v8-development-study -- \
+            "$DEVELOPMENT_DIR" \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed "$DEVELOPMENT_SEED" \
+            --inter-case-delay-ms "$DELAY_MS" \
+            --max-consecutive-operational-failures 2 \
+            --max-consecutive-capacity-failures 2 \
+            --continue-after-operational-failures \
+            --checkpoint "${BASE}-checkpoint.json" \
+            > "${BASE}-result.json" \
+            2> "${BASE}-stderr.log"
+          RC=$?
+          set -e
+          printf '%s\n' "$RC" > "${BASE}.rc"
+          if test -f "${BASE}-result.json"; then
+            jq '{
+              configuration_id,
+              suite_id,
+              corpus_status_at_observation,
+              candidate_commit,
+              provider,
+              model,
+              canonical_full_holdout,
+              scorability,
+              operational_abort,
+              provider_arm_latch,
+              metrics,
+              mismatches: [
+                .observations[]
+                | select(
+                    .effective_local_qualification_match == false
+                    or .disposition_match == false
+                    or .failure_class != null
+                  )
+                | {
+                    id,
+                    family,
+                    expected_local_qualification,
+                    observed_local_qualification,
+                    effective_local_qualification,
+                    expected_disposition,
+                    materialized_disposition,
+                    failure_class
+                  }
+              ]
+            }' "${BASE}-result.json"
+          fi
+          exit 0
+
+      - name: Preserve development evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-successor-v8-development-${{ matrix.provider }}
+          path: |
+            /tmp/evidence-relevance-${{ matrix.provider }}*
+            /tmp/evidence-relevance-google-attempts.jsonl
+          if-no-files-found: warn
+          retention-days: 30
+
+  final-gate:
+    needs: live
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.6-evidence-relevance-successor-v8-development-*
+          path: /tmp/evidence-relevance-development
+          merge-multiple: true
+
+      - name: Require successor-owned two-provider development convergence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY2'
+          import json
+          from pathlib import Path
+
+          root = Path('/tmp/evidence-relevance-development')
+          expected = {
+              'mistral': 'ministral-8b-latest',
+              'google': 'gemini-3.5-flash-lite',
+          }
+          summary = {
+              'schema_version': 'engine-0.6-evidence-relevance-successor-v8-development-summary-v1',
+              'holdout_acceptance_evidence': False,
+              'providers': {},
+              'development_gate_passed': True,
+          }
+
+          for provider, model in expected.items():
+              result_path = root / f'evidence-relevance-{provider}-result.json'
+              rc_path = root / f'evidence-relevance-{provider}.rc'
+              if not result_path.exists() or not rc_path.exists():
+                  summary['providers'][provider] = {'missing': True}
+                  summary['development_gate_passed'] = False
+                  continue
+              result = json.loads(result_path.read_text())
+              metrics = result.get('metrics', {})
+              rc = int(rc_path.read_text().strip())
+              ok = (
+                  rc == 0
+                  and result.get('configuration_id') == 'evidence-relevance-successor-v8-development'
+                  and result.get('suite_id') == 'evidence-relevance-successor-v8-development'
+                  and result.get('corpus_status_at_observation') == 'reusable_development_calibration'
+                  and result.get('provider') == provider
+                  and result.get('model') == model
+                  and result.get('canonical_full_holdout') is False
+                  and result.get('scorability') == 'complete_development_observation'
+                  and result.get('planned_cases') == 14
+                  and result.get('completed_cases') == 14
+                  and result.get('operational_abort') is None
+                  and result.get('provider_arm_latch') is None
+                  and metrics.get('successful_provider_cases') == 14
+                  and metrics.get('failed_provider_cases') == 0
+                  # Successor v8 owns the relation axis. Development convergence
+                  # therefore requires full effective qualification exactness, including
+                  # zero relation misses, while preserving identity and risk invariants.
+                  and metrics.get('effective_authority_qualification_exact_matches') == 14
+                  and metrics.get('effective_authority_identity_scope_misses') == 0
+                  and metrics.get('effective_authority_relation_scope_misses') == 0
+                  and metrics.get('effective_qualification_scope_risk_misses') == 0
+                  and metrics.get('effective_qualification_spurious_scope_risks') == 0
+                  and metrics.get('materialized_exact_matches') == 14
+                  and metrics.get('correctness_wrong_target_relevance_retention') == 0
+                  and metrics.get('false_relevance_rejections') == 0
+                  and metrics.get('relevant_left_ambiguous') == 0
+                  and metrics.get('utility_misses') == 0
+              )
+              summary['providers'][provider] = {
+                  'model': model,
+                  'runner_rc': rc,
+                  'planned_cases': result.get('planned_cases'),
+                  'completed_cases': result.get('completed_cases'),
+                  'scorability': result.get('scorability'),
+                  'effective_authority_qualification_exact_matches': metrics.get('effective_authority_qualification_exact_matches'),
+                  'effective_authority_identity_scope_misses': metrics.get('effective_authority_identity_scope_misses'),
+                  'effective_authority_relation_scope_misses': metrics.get('effective_authority_relation_scope_misses'),
+                  'effective_qualification_scope_risk_misses': metrics.get('effective_qualification_scope_risk_misses'),
+                  'effective_qualification_spurious_scope_risks': metrics.get('effective_qualification_spurious_scope_risks'),
+                  'materialized_exact_matches': metrics.get('materialized_exact_matches'),
+                  'wrong_target_relevance_retention': metrics.get('correctness_wrong_target_relevance_retention'),
+                  'utility_misses': metrics.get('utility_misses'),
+                  'total_tokens': metrics.get('total_tokens'),
+                  'latency_p50_ms': metrics.get('latency_p50_ms'),
+                  'latency_p95_ms': metrics.get('latency_p95_ms'),
+                  'latency_max_ms': metrics.get('latency_max_ms'),
+                  'passed': ok,
+              }
+              summary['development_gate_passed'] &= ok
+
+          out = Path('/tmp/evidence-relevance-successor-v8-development-summary.json')
+          out.write_text(json.dumps(summary, indent=2) + '\n')
+          print(out.read_text())
+          if not summary['development_gate_passed']:
+              raise SystemExit(1)
+          PY2
+
+      - name: Preserve development summary
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-successor-v8-development-summary
+          path: /tmp/evidence-relevance-successor-v8-development-summary.json
+          if-no-files-found: warn
+          retention-days: 30
