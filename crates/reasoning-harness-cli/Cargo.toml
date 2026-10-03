@@ -151,6 +151,10 @@ name = "reason-evidence-relevance-successor-v9-development-study"
 path = "src/bin/evidence_relevance_successor_v9_development.rs"
 
 [[bin]]
+name = "reason-evidence-relevance-successor-v10-development-v2-study"
+path = "src/bin/evidence_relevance_successor_v10_development_v2.rs"
+
+[[bin]]
 name = "reason-evidence-relevance-negative-relation-probe"
 path = "src/bin/evidence_relevance_negative_relation_probe.rs"
 
