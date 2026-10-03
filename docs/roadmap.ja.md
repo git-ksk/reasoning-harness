@@ -96,6 +96,10 @@ Holdout-v10 は frozen effective qualification v11 / materialization v23 を変�
 
 Canonical holdout-v10 run 37085574010 / freeze commit 4aa3aac37ea1a4110e4bf69b498661bc3599a36a は immutable FAIL。3 provider すべて operational 26/26 完走、provider failure 0、unsafe requested-relation promotion 0、identity/risk failure 0、wrong-target Relevant 0。Mistral / Google は materialized 26/26 exact。Groq は 25/26 exact で、v10h18_negative_exact_target_numeric_non_frame が exact_target / relation_absent となり、同一targetの単なる daily telemetry observation を Ambiguous に残した。freeze前の successor-v9 development case sv9d_19 は同型を different_relation / Irrelevant と固定済みなので、v9と違い holdout-label drift ではなく residual utility / coverage robustness gap。v10 は rerun / retune しない。詳細は engine-0.6-evidence-relevance-holdout-v10-result.ja.md。
 
+### Engine 0.6 #468 successor-v10 negative-relation development
+
+holdout-v10 後の successor は、破棄済み broad v12/v24 symmetry experiment の番号を再利用せず effective v13 / materialization v25 とする。candidate は exact-target / risk-none / non-positive relation に限定し、Harness-owned observable cue と one-sided confirmed_different_relation verifier の2-keyが揃った場合だけ DifferentRelation / Irrelevant を回復する。RequestedRelation authority は生成せず、context gap / generic absence / explicit absence / true requested relation は維持する。fresh 16-case development surface は confirm 8 / not-confirm 8、holdout-v10 case/entity/task/signal/8-token overlap 0。pre-observation deterministic suite と historical replay は green。次は Mistral / Google / Groq 各3 trial（48 observations/provider）で false-confirm 0 / missed-confirm 0 / operational failure 0 を必須gateとして観測し、3 provider PASS後のみ semantics freeze と fresh independent holdoutへ進む。詳細は engine-0.6-evidence-relevance-successor-v10-development.ja.md。
+
 ### プロダクト
 
 1. **bounded resolver による target closure（#159）：** successor candidate `79ec3b44971c32f9a8847d8173672675947c7288` で実装済み。exact Harness-owned unresolved targets は、model-owned authority を介さず、既存の bounded acquisition/admission/re-verification boundary を通じて優先付けされる。
