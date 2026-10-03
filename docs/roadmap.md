@@ -529,3 +529,7 @@ Frozen v4 development run `37111376390` at `d9a5bd49d3c6f3ee5e79f9ba6704f0dc502a
 ### Engine 0.6 #468 successor-v10 semantics freeze preparation
 
 Development v4 one-shot run `37111376390` is immutable PASS under effective v15 / materialization v28, with Mistral and Google both final-exact 24/24 and zero authority, identity/risk, or materialization failures. Groq remains unobserved. The next boundary is `engine-0.6-evidence-relevance-successor-v10-semantics-freeze`: freeze evidence may add documentation/checksums only and must not change the observed v15/v28 candidate. Fresh independent acceptance-holdout authoring remains blocked until that annotated tag is pushed.
+
+### Engine 0.6 #468 holdout v11 runner preparation
+
+Successor-v10 semantics are frozen at 2d75c2d8f1710c0553c8b2993cad201566be7d5c / engine-0.6-evidence-relevance-successor-v10-semantics-freeze. A dedicated holdout-v11 runner now binds the new V11 profile to effective qualification v15 and materialization v28 while leaving historical V1-V10 bindings unchanged. No holdout-v11 corpus exists yet. The runner must receive exact-head CI and the annotated engine-0.6-evidence-relevance-holdout-v11-runner-freeze tag before any fresh acceptance corpus is authored.

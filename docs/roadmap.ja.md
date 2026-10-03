@@ -523,3 +523,7 @@ Frozen v4 development run `37111376390` は `d9a5bd49d3c6f3ee5e79f9ba6704f0dc502
 ### Engine 0.6 #468 successor-v10 semantics freeze preparation
 
 Development v4 one-shot run `37111376390` は effective v15 / materialization v28 の immutable PASS。Mistral / Google とも final exact 24/24、authority / identity-risk / materialization failure 0。Groq は未観測のまま保持。次の境界は `engine-0.6-evidence-relevance-successor-v10-semantics-freeze`。freeze evidence では documentation/checksum 以外を変更せず、observed v15/v28 candidate を固定する。annotated tag push までは fresh independent acceptance holdout の authoring を禁止する。
+
+### Engine 0.6 #468 holdout v11 runner preparation
+
+Successor-v10 semantics は 2d75c2d8f1710c0553c8b2993cad201566be7d5c / engine-0.6-evidence-relevance-successor-v10-semantics-freeze で固定済み。専用 holdout-v11 runner は新しい V11 profile を effective qualification v15 / materialization v28 に束縛し、historical V1-V10 binding は変更しない。holdout-v11 corpus はまだ存在しない。fresh acceptance corpus の authoring 前に runner exact-head CI と annotated engine-0.6-evidence-relevance-holdout-v11-runner-freeze tag を必須とする。
