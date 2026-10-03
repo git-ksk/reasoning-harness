@@ -37,7 +37,10 @@ jobs:
           test "$(git rev-list -n1 engine-0.6-evidence-relevance-successor-v10-development-v1-freeze)" = "7c21f3e3d207da72027924114009795b7508e167"
           test "$(git rev-list -n1 engine-0.6-evidence-relevance-successor-v10-development-v2-freeze)" = "44796d470fdbb359ea1356dad121aa9417a98cb7"
           test "$(git rev-list -n1 engine-0.6-evidence-relevance-holdout-v10-freeze)" = "4aa3aac37ea1a4110e4bf69b498661bc3599a36a"
-          git diff --exit-code be1657b..HEAD --             fixtures/evidence-relevance-successor-v10-development-v2-result             docs/engine-0.6-evidence-relevance-successor-v10-development-v2-result.md             docs/engine-0.6-evidence-relevance-successor-v10-development-v2-result.ja.md
+          git diff --exit-code be1657b..HEAD -- \
+            fixtures/evidence-relevance-successor-v10-development-v2-result \
+            docs/engine-0.6-evidence-relevance-successor-v10-development-v2-result.md \
+            docs/engine-0.6-evidence-relevance-successor-v10-development-v2-result.ja.md
       - name: Revalidate frozen v3 surface
         run: |
           set -euo pipefail
