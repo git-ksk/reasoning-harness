@@ -26,6 +26,8 @@ First, model-only DifferentRelation is demoted to Unresolved when:
 
 Instruction/control text is therefore inert. A separate clean factual segment may still carry bounded negative-relation evidence.
 
+v15 keeps the frozen v14 marker vocabulary unchanged and adds a successor-only control-schema detector for model-facing labels/fields such as `relation_binding`, `relation_scope`, `final disposition`, and imperative outcome labels. This closes the case where control text can request `different_relation` / `irrelevant` without using the older natural-language injection phrases. The detector is deliberately one-sided: it can only remove model-only negative authority; a separate clean Harness-owned factual cue still survives.
+
 Second, v15 adds a successor-only direct Definition cue. A target-owned substantive segment containing "is defined as" / "defined as" can establish Definition as another relation when the requested relation is not Definition and the ordinary v14 safety restrictions hold.
 
 This does not modify the frozen global semantic frames used by v10/v11/v14.
@@ -92,6 +94,9 @@ Before provider observation:
 - every require_different v4 case is forced through conservative model outputs and must still recover DifferentRelation / Irrelevant from Harness cues;
 - prompt-injection controls are forced through adversarial model DifferentRelation votes and must remain Ambiguous;
 - context-gap controls cannot be recovered to DifferentRelation;
+- control-schema injection, comparison-only target mentions, distinct-target Definition text, and strict requested-relation absence cannot create exact-target negative relation authority;
+- validate-only must report 24 planned / 0 completed with zero model/provider calls;
+- the v4 workflow gates on v4 configuration/suite identifiers (not the predecessor v3 identifiers);
 - frozen successor-v9, holdout-v10, v1, v2, and v3 tests remain green;
 - fmt / Clippy / checksum / validate-only are green.
 

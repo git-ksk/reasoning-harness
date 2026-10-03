@@ -26,6 +26,8 @@ v15 は v14 からderiveする。
 
 instruction/control text はinert。別のclean factual segmentがあれば、そのsegmentのbounded negative-relation evidenceは維持できる。
 
+v15では frozen v14 のmarker vocabulary自体は変更せず、successor-onlyで `relation_binding` / `relation_scope` / `final disposition` などのmodel-facing fieldや、`different_relation` / `irrelevant` 等の結果ラベルを命令するcontrol-schema textも検出する。旧来の自然言語prompt-injection phraseを使わないcontrol textがmodel-only negative authorityを残す境界を閉じる。この検出はone-sidedで、model-only negative authorityを除去するだけであり、別clean segmentのHarness-owned factual cueは維持する。
+
 さらに successor-only direct Definition cueを追加する。target-owned substantive segmentの "is defined as" / "defined as" は、requested relationがDefinitionでなく通常のv14 safety restrictionを満たす場合に別relationのDefinition evidenceとして扱える。
 
 frozen v10/v11/v14のglobal semantic frameは変更しない。
@@ -92,6 +94,9 @@ provider observation前に:
 - require_different 全caseをconservative model outputで強制してもHarness cueで DifferentRelation / Irrelevantを回収
 - prompt-injection controlへ adversarial model DifferentRelation を入れても Ambiguous維持
 - context-gapを DifferentRelationへ回収しない
+- control-schema injection / comparison-only target mention / distinct-target Definition / strict requested-relation absenceから exact-target negative relation authorityを生成しない
+- validate-onlyは24 planned / 0 completedかつmodel/provider call 0
+- v4 workflowはpredecessor v3ではなくv4 configuration/suite IDを検証する
 - frozen successor-v9 / holdout-v10 / v1 / v2 / v3 test green
 - fmt / Clippy / checksum / validate-only green
 

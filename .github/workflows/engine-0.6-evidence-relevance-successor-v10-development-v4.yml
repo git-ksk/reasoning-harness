@@ -56,8 +56,8 @@ jobs:
             --seed "$DEVELOPMENT_SEED" --validate-only \
             > /tmp/evidence-relevance-successor-v10-v4-validate.json
           jq -e '
-            .configuration_id == "evidence-relevance-successor-v10-development-v3"
-            and .suite_id == "evidence-relevance-successor-v10-development-v3"
+            .configuration_id == "evidence-relevance-successor-v10-development-v4"
+            and .suite_id == "evidence-relevance-successor-v10-development-v4"
             and .issue == 468
             and .annotation_protocol_id == "evidence-relevance-effective-qualification-v15-materialization-v28"
             and .fixed_core_id == "evidence-relevance-fixed-core-successor-v10-development-v4"
@@ -286,8 +286,8 @@ jobs:
 
               complete = (
                   rc == 0
-                  and result.get('configuration_id') == 'evidence-relevance-successor-v10-development-v3'
-                  and result.get('suite_id') == 'evidence-relevance-successor-v10-development-v3'
+                  and result.get('configuration_id') == 'evidence-relevance-successor-v10-development-v4'
+                  and result.get('suite_id') == 'evidence-relevance-successor-v10-development-v4'
                   and result.get('issue') == 468
                   and result.get('annotation_protocol_id') == 'evidence-relevance-effective-qualification-v15-materialization-v28'
                   and result.get('fixed_core_id') == 'evidence-relevance-fixed-core-successor-v10-development-v4'
