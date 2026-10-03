@@ -516,3 +516,7 @@ v18後監査で、case 14のmaterializer修正だけでは不十分と確認し�
 ### Engine 0.6 #462 v19 pre-freeze implementation
 
 v19ではversioned Harness-owned effective-qualification authorityとmaterialization v14を実装し、raw verifier v8 telemetryは別系統で保持する。fixed 48 replayはtyped local risk / effective qualification / materializationがすべて48/48、immutable v18 Mistral mismatch replayもeffective qualification / materializationとも48/48。generic boundary/property test、v18 regression、runner testに加え、workspace 3 packageのfull testとall-target Clippyもgreenで、validate-onlyは48 planned / 0 observed。v19 one-shot workflowは準備済みだが、freeze tagもlive v19 observationもまだ存在しない。Holdoutは禁止継続。
+
+### Engine 0.6 #468 successor-v10 development v4 PASS
+
+Frozen v4 development run `37111376390` は `d9a5bd49d3c6f3ee5e79f9ba6704f0dc502a00c0` / `engine-0.6-evidence-relevance-successor-v10-development-v4-freeze` に固定した immutable PASS development evidence。Mistral / Google とも 24/24 完走、authority / identity-risk / materialization failure 0、final v28 exact 24/24。effective v15 qualification は Mistral 24/24、Google 23/24 exact だが final v28 は 24/24 を維持。Groq は未観測のまま fresh independent holdout 用に保持する。この development corpus は holdout acceptance evidence ではない。次は v15/v28 successor semantics を別途 freeze し、その後 observed surface を再利用しない fresh independent holdout を author する。
