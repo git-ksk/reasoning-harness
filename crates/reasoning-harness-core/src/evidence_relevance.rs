@@ -91,6 +91,8 @@ pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V25_ID: &str =
     "target-evidence-relevance-binding-materialization-v25";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V26_ID: &str =
     "target-evidence-relevance-binding-materialization-v26";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V27_ID: &str =
+    "target-evidence-relevance-binding-materialization-v27";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V1_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v1";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V2_CONTRACT_ID: &str =
@@ -5065,6 +5067,33 @@ pub fn materialize_evidence_relevance_v26(
 
     assessment.materialization_policy_id =
         EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V26_ID.into();
+    Ok(assessment)
+}
+
+pub fn materialize_evidence_relevance_v27(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw_qualification: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    validate_policy(policy)?;
+    validate_candidate(candidate)?;
+
+    let effective = derive_effective_evidence_local_qualification_v14(
+        policy,
+        candidate,
+        proposal,
+        raw_qualification,
+    )?;
+
+    // v27 is composition-only. v14 owns the corrected effective qualification;
+    // v23 remains the frozen final relevance policy. Re-feed the effective local
+    // qualification into v23 so a repaired RequestedRelation cannot be shadowed
+    // by the provider's stale raw DifferentRelation (and vice versa).
+    let mut assessment =
+        materialize_evidence_relevance_v23(policy, candidate, proposal, Some(&effective))?;
+    assessment.materialization_policy_id =
+        EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V27_ID.into();
     Ok(assessment)
 }
 

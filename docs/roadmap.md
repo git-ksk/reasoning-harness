@@ -104,6 +104,8 @@ Development v2 removes the failed model verifier and introduces effective qualif
 
 Development v2 run 37100490212 is immutable FAIL. Google passed 18/18; Mistral was operationally complete with zero authority or identity/risk failures but materialized 17/18. On sv10v2_18, v14 correctly repaired Mistral raw different_relation to requested_relation, while v26 still delegated to v23 with the uncorrected raw qualification and terminally produced Irrelevant. The next candidate keeps v14 unchanged and fixes only materialization composition, with replay over canonical holdout-v10 and immutable v2 observations before any fresh v3 provider observation. See engine-0.6-evidence-relevance-successor-v10-development-v2-result.md.
 
+Development v3 keeps v14 unchanged and introduces composition-only materialization v27. Replay over 114 immutable observations changes exactly the two known terminal defects—Groq holdout-v10 v10h18 Ambiguous -> Irrelevant and Mistral development-v2 sv10v2_18 Irrelevant -> Relevant—while all other 112 terminal dispositions remain unchanged. A fresh 20-case v3 surface has zero case/entity/task/signal/8-token reuse against the 60 previously observed v10/v1/v2 cases. The next one-shot development gate is Mistral + Google only; Groq remains reserved for a later independent holdout. See engine-0.6-evidence-relevance-successor-v10-development-v3.md.
+
 ### Product
 
 1. **Bounded resolver target closure (#159):** implemented in successor candidate `79ec3b44971c32f9a8847d8173672675947c7288`; exact Harness-owned unresolved targets are prioritized through the existing bounded acquisition/admission/re-verification boundary without model-owned authority.
