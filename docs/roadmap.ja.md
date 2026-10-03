@@ -520,3 +520,6 @@ v19ではversioned Harness-owned effective-qualification authorityとmaterializa
 ### Engine 0.6 #468 successor-v10 development v4 PASS
 
 Frozen v4 development run `37111376390` は `d9a5bd49d3c6f3ee5e79f9ba6704f0dc502a00c0` / `engine-0.6-evidence-relevance-successor-v10-development-v4-freeze` に固定した immutable PASS development evidence。Mistral / Google とも 24/24 完走、authority / identity-risk / materialization failure 0、final v28 exact 24/24。effective v15 qualification は Mistral 24/24、Google 23/24 exact だが final v28 は 24/24 を維持。Groq は未観測のまま fresh independent holdout 用に保持する。この development corpus は holdout acceptance evidence ではない。次は v15/v28 successor semantics を別途 freeze し、その後 observed surface を再利用しない fresh independent holdout を author する。
+### Engine 0.6 #468 successor-v10 semantics freeze preparation
+
+Development v4 one-shot run `37111376390` は effective v15 / materialization v28 の immutable PASS。Mistral / Google とも final exact 24/24、authority / identity-risk / materialization failure 0。Groq は未観測のまま保持。次の境界は `engine-0.6-evidence-relevance-successor-v10-semantics-freeze`。freeze evidence では documentation/checksum 以外を変更せず、observed v15/v28 candidate を固定する。annotated tag push までは fresh independent acceptance holdout の authoring を禁止する。
