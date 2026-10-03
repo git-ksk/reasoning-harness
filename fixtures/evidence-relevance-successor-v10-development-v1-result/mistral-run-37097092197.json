@@ -1,0 +1,501 @@
+{
+  "configuration_id": "evidence-relevance-successor-v10-negative-relation-probe",
+  "suite_id": "evidence-relevance-successor-v10-development",
+  "issue": 468,
+  "status": "fresh_independent_development",
+  "source_rule": "independently_authored_after_holdout_v10_result_no_holdout_v10_case_entity_task_signal_or_8token_surface_reuse",
+  "provider": "mistral",
+  "model": "ministral-8b-latest",
+  "trials": 3,
+  "seed": 4681000,
+  "metrics": {
+    "observations": 48,
+    "successful_observations": 48,
+    "failed_observations": 0,
+    "confirmation_matches": 21,
+    "false_confirmations": 3,
+    "missed_confirmations": 24
+  },
+  "observations": [
+    {
+      "case_id": "sv10d_01_limit_throughput_observation",
+      "family": "limit_observed_throughput",
+      "trial": 0,
+      "seed": 4681000,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_02_limit_latency_measurement",
+      "family": "limit_observed_latency",
+      "trial": 0,
+      "seed": 4681001,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_03_availability_feature_support",
+      "family": "availability_feature_support",
+      "trial": 0,
+      "seed": 4681002,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_04_availability_pricing",
+      "family": "availability_pricing",
+      "trial": 0,
+      "seed": 4681003,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_05_pricing_limit",
+      "family": "pricing_limit",
+      "trial": 0,
+      "seed": 4681004,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_06_definition_launch",
+      "family": "definition_launch",
+      "trial": 0,
+      "seed": 4681005,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_07_benefit_pricing",
+      "family": "benefit_pricing",
+      "trial": 0,
+      "seed": 4681006,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_08_launch_definition",
+      "family": "launch_definition",
+      "trial": 0,
+      "seed": 4681007,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_09_limit_requested_cap",
+      "family": "limit_requested_relation",
+      "trial": 0,
+      "seed": 4681008,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_10_generic_overview",
+      "family": "generic_no_relation",
+      "trial": 0,
+      "seed": 4681009,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_11_explicit_requested_absence",
+      "family": "explicit_requested_relation_absence",
+      "trial": 0,
+      "seed": 4681010,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_12_clipped_relation_context",
+      "family": "clipped_relation_context",
+      "trial": 0,
+      "seed": 4681011,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_13_same_requested_pricing",
+      "family": "same_requested_relation",
+      "trial": 0,
+      "seed": 4681012,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_14_prompt_injection_only",
+      "family": "prompt_injection_no_relation",
+      "trial": 0,
+      "seed": 4681013,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "confirmed_different_relation",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_15_omitted_ownership_context",
+      "family": "ambiguous_omitted_context",
+      "trial": 0,
+      "seed": 4681014,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_16_same_requested_definition",
+      "family": "same_requested_definition",
+      "trial": 0,
+      "seed": 4681015,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_01_limit_throughput_observation",
+      "family": "limit_observed_throughput",
+      "trial": 1,
+      "seed": 4681016,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_02_limit_latency_measurement",
+      "family": "limit_observed_latency",
+      "trial": 1,
+      "seed": 4681017,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_03_availability_feature_support",
+      "family": "availability_feature_support",
+      "trial": 1,
+      "seed": 4681018,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_04_availability_pricing",
+      "family": "availability_pricing",
+      "trial": 1,
+      "seed": 4681019,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_05_pricing_limit",
+      "family": "pricing_limit",
+      "trial": 1,
+      "seed": 4681020,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_06_definition_launch",
+      "family": "definition_launch",
+      "trial": 1,
+      "seed": 4681021,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_07_benefit_pricing",
+      "family": "benefit_pricing",
+      "trial": 1,
+      "seed": 4681022,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_08_launch_definition",
+      "family": "launch_definition",
+      "trial": 1,
+      "seed": 4681023,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_09_limit_requested_cap",
+      "family": "limit_requested_relation",
+      "trial": 1,
+      "seed": 4681024,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_10_generic_overview",
+      "family": "generic_no_relation",
+      "trial": 1,
+      "seed": 4681025,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_11_explicit_requested_absence",
+      "family": "explicit_requested_relation_absence",
+      "trial": 1,
+      "seed": 4681026,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_12_clipped_relation_context",
+      "family": "clipped_relation_context",
+      "trial": 1,
+      "seed": 4681027,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_13_same_requested_pricing",
+      "family": "same_requested_relation",
+      "trial": 1,
+      "seed": 4681028,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_14_prompt_injection_only",
+      "family": "prompt_injection_no_relation",
+      "trial": 1,
+      "seed": 4681029,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "confirmed_different_relation",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_15_omitted_ownership_context",
+      "family": "ambiguous_omitted_context",
+      "trial": 1,
+      "seed": 4681030,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_16_same_requested_definition",
+      "family": "same_requested_definition",
+      "trial": 1,
+      "seed": 4681031,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_01_limit_throughput_observation",
+      "family": "limit_observed_throughput",
+      "trial": 2,
+      "seed": 4681032,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_02_limit_latency_measurement",
+      "family": "limit_observed_latency",
+      "trial": 2,
+      "seed": 4681033,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_03_availability_feature_support",
+      "family": "availability_feature_support",
+      "trial": 2,
+      "seed": 4681034,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_04_availability_pricing",
+      "family": "availability_pricing",
+      "trial": 2,
+      "seed": 4681035,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_05_pricing_limit",
+      "family": "pricing_limit",
+      "trial": 2,
+      "seed": 4681036,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_06_definition_launch",
+      "family": "definition_launch",
+      "trial": 2,
+      "seed": 4681037,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_07_benefit_pricing",
+      "family": "benefit_pricing",
+      "trial": 2,
+      "seed": 4681038,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_08_launch_definition",
+      "family": "launch_definition",
+      "trial": 2,
+      "seed": 4681039,
+      "expected_confirmation": "confirmed_different_relation",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_09_limit_requested_cap",
+      "family": "limit_requested_relation",
+      "trial": 2,
+      "seed": 4681040,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_10_generic_overview",
+      "family": "generic_no_relation",
+      "trial": 2,
+      "seed": 4681041,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_11_explicit_requested_absence",
+      "family": "explicit_requested_relation_absence",
+      "trial": 2,
+      "seed": 4681042,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_12_clipped_relation_context",
+      "family": "clipped_relation_context",
+      "trial": 2,
+      "seed": 4681043,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_13_same_requested_pricing",
+      "family": "same_requested_relation",
+      "trial": 2,
+      "seed": 4681044,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_14_prompt_injection_only",
+      "family": "prompt_injection_no_relation",
+      "trial": 2,
+      "seed": 4681045,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "confirmed_different_relation",
+      "confirmation_match": false,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_15_omitted_ownership_context",
+      "family": "ambiguous_omitted_context",
+      "trial": 2,
+      "seed": 4681046,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    },
+    {
+      "case_id": "sv10d_16_same_requested_definition",
+      "family": "same_requested_definition",
+      "trial": 2,
+      "seed": 4681047,
+      "expected_confirmation": "not_confirmed",
+      "observed_confirmation": "not_confirmed",
+      "confirmation_match": true,
+      "provider_attempts": 1
+    }
+  ]
+}

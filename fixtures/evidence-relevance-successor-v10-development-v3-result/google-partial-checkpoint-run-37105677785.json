@@ -1,0 +1,744 @@
+{
+  "checkpoint_version": "evidence-relevance-checkpoint-v1",
+  "run_status": "in_progress",
+  "configuration_id": "evidence-relevance-successor-v10-development-v3",
+  "suite_id": "evidence-relevance-successor-v10-development-v3",
+  "provider": "google",
+  "model": "gemini-3.5-flash-lite",
+  "expected_cases": 20,
+  "completed_cases": 10,
+  "scorability": "non_scorable_in_progress",
+  "observations": [
+    {
+      "id": "sv10v3_01_limit_throughput",
+      "family": "limit_throughput",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1395,
+        "wait_ms": 5272,
+        "pacing_wait_ms": 5272,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 6680,
+      "usage": {
+        "input_tokens": 1696,
+        "output_tokens": 60,
+        "total_tokens": 1756
+      },
+      "provider_model": "gemini-3.5-flash-lite",
+      "finish_reason": "completed",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:1",
+        "target_id": "successor-v10-v3-target:1",
+        "evidence_id": "evidence:successor-v10-v3:1",
+        "source_id": "source:successor-v10-v3:1",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_02_limit_latency",
+      "family": "limit_latency",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1377,
+        "wait_ms": 5297,
+        "pacing_wait_ms": 5297,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 6689,
+      "usage": {
+        "input_tokens": 1696,
+        "output_tokens": 60,
+        "total_tokens": 1756
+      },
+      "provider_model": "gemini-3.5-flash-lite",
+      "finish_reason": "completed",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:2",
+        "target_id": "successor-v10-v3-target:2",
+        "evidence_id": "evidence:successor-v10-v3:2",
+        "source_id": "source:successor-v10-v3:2",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_03_availability_feature",
+      "family": "availability_feature",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1412,
+        "wait_ms": 5306,
+        "pacing_wait_ms": 5306,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 6730,
+      "usage": {
+        "input_tokens": 1686,
+        "output_tokens": 61,
+        "total_tokens": 1747
+      },
+      "provider_model": "gemini-3.5-flash-lite",
+      "finish_reason": "completed",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:3",
+        "target_id": "successor-v10-v3-target:3",
+        "evidence_id": "evidence:successor-v10-v3:3",
+        "source_id": "source:successor-v10-v3:3",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_04_availability_protocol",
+      "family": "availability_protocol",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1352,
+        "wait_ms": 5341,
+        "pacing_wait_ms": 5341,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 6709,
+      "usage": {
+        "input_tokens": 1688,
+        "output_tokens": 62,
+        "total_tokens": 1750
+      },
+      "provider_model": "gemini-3.5-flash-lite",
+      "finish_reason": "completed",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:4",
+        "target_id": "successor-v10-v3-target:4",
+        "evidence_id": "evidence:successor-v10-v3:4",
+        "source_id": "source:successor-v10-v3:4",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_05_pricing_limit",
+      "family": "pricing_limit",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1281,
+        "wait_ms": 5298,
+        "pacing_wait_ms": 5298,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 6591,
+      "usage": {
+        "input_tokens": 1690,
+        "output_tokens": 60,
+        "total_tokens": 1750
+      },
+      "provider_model": "gemini-3.5-flash-lite",
+      "finish_reason": "completed",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:5",
+        "target_id": "successor-v10-v3-target:5",
+        "evidence_id": "evidence:successor-v10-v3:5",
+        "source_id": "source:successor-v10-v3:5",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_06_definition_launch",
+      "family": "definition_launch",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1292,
+        "wait_ms": 5272,
+        "pacing_wait_ms": 5272,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 6578,
+      "usage": {
+        "input_tokens": 1688,
+        "output_tokens": 60,
+        "total_tokens": 1748
+      },
+      "provider_model": "gemini-3.5-flash-lite",
+      "finish_reason": "completed",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:6",
+        "target_id": "successor-v10-v3-target:6",
+        "evidence_id": "evidence:successor-v10-v3:6",
+        "source_id": "source:successor-v10-v3:6",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_07_benefit_pricing",
+      "family": "benefit_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1187,
+        "wait_ms": 5442,
+        "pacing_wait_ms": 5442,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 6641,
+      "usage": {
+        "input_tokens": 1706,
+        "output_tokens": 60,
+        "total_tokens": 1766
+      },
+      "provider_model": "gemini-3.5-flash-lite",
+      "finish_reason": "completed",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:7",
+        "target_id": "successor-v10-v3-target:7",
+        "evidence_id": "evidence:successor-v10-v3:7",
+        "source_id": "source:successor-v10-v3:7",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_08_launch_definition",
+      "family": "launch_definition",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": false,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": false,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": true,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1320,
+        "wait_ms": 5357,
+        "pacing_wait_ms": 5357,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 6693,
+      "usage": {
+        "input_tokens": 1694,
+        "output_tokens": 61,
+        "total_tokens": 1755
+      },
+      "provider_model": "gemini-3.5-flash-lite",
+      "finish_reason": "completed",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:8",
+        "target_id": "successor-v10-v3-target:8",
+        "evidence_id": "evidence:successor-v10-v3:8",
+        "source_id": "source:successor-v10-v3:8",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_disagreement",
+          "positive_candidate_safety_abstained",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_09_requested_availability_with_feature",
+      "family": "requested_availability_with_feature",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1291,
+        "wait_ms": 5457,
+        "pacing_wait_ms": 5457,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 6766,
+      "usage": {
+        "input_tokens": 1696,
+        "output_tokens": 60,
+        "total_tokens": 1756
+      },
+      "provider_model": "gemini-3.5-flash-lite",
+      "finish_reason": "completed",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:9",
+        "target_id": "successor-v10-v3-target:9",
+        "evidence_id": "evidence:successor-v10-v3:9",
+        "source_id": "source:successor-v10-v3:9",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_10_requested_limit_with_pricing",
+      "family": "requested_limit_with_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 12373,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 12388,
+      "usage": {
+        "input_tokens": 1716,
+        "output_tokens": 60,
+        "total_tokens": 1776
+      },
+      "provider_model": "gemini-3.5-flash-lite",
+      "finish_reason": "completed",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:10",
+        "target_id": "successor-v10-v3-target:10",
+        "evidence_id": "evidence:successor-v10-v3:10",
+        "source_id": "source:successor-v10-v3:10",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    }
+  ]
+}

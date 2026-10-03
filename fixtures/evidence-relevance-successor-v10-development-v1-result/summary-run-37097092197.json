@@ -1,0 +1,27 @@
+{
+  "schema_version": "engine-0.6-evidence-relevance-successor-v10-development-summary-v1",
+  "holdout_acceptance_evidence": false,
+  "candidate_semantics": "effective-v13-materialization-v25-one-sided-two-key",
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-latest",
+      "runner_rc": 0,
+      "observations": 48,
+      "successful_observations": 48,
+      "failed_observations": 0,
+      "confirmation_matches": 21,
+      "false_confirmations": 3,
+      "missed_confirmations": 24,
+      "passed": false
+    },
+    "google": {
+      "missing": true,
+      "passed": false
+    },
+    "groq": {
+      "missing": true,
+      "passed": false
+    }
+  },
+  "development_gate_passed": false
+}

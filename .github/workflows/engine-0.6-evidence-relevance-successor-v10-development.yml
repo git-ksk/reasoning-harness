@@ -1,0 +1,252 @@
+name: engine-0.6-evidence-relevance-successor-v10-development
+
+on:
+  push:
+    tags:
+      - engine-0.6-evidence-relevance-successor-v10-development-v1-freeze
+
+permissions:
+  contents: read
+
+env:
+  DEVELOPMENT_DIR: fixtures/evidence-relevance-successor-v10-development
+  DEVELOPMENT_SEED: '4681000'
+  FREEZE_TAG: engine-0.6-evidence-relevance-successor-v10-development-v1-freeze
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Reject reruns and enforce frozen tag
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$GITHUB_REF_NAME" = "$FREEZE_TAG"
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Revalidate frozen development surface
+        run: |
+          set -euo pipefail
+          sha256sum -c "$DEVELOPMENT_DIR/surface-v10.sha256"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-negative-relation-probe -- \
+            "$DEVELOPMENT_DIR" --provider mistral --model development-placeholder \
+            --trials 3 --seed "$DEVELOPMENT_SEED" --validate-only \
+            > /tmp/evidence-relevance-successor-v10-validate.json
+          jq -e '
+            .configuration_id == "evidence-relevance-successor-v10-negative-relation-probe"
+            and .suite_id == "evidence-relevance-successor-v10-development"
+            and .issue == 468
+            and .status == "fresh_independent_development"
+            and .trials == 3
+            and .metrics.observations == 0
+          ' /tmp/evidence-relevance-successor-v10-validate.json >/dev/null
+      - name: Validate deterministic and historical boundaries
+        run: |
+          set -euo pipefail
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-core --all-targets -- -D warnings
+          cargo clippy -p reasoning-harness-cli --bin reason-evidence-relevance-negative-relation-probe -- -D warnings
+          cargo test -p reasoning-harness-core --lib
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v10_development
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v9_relation_controls
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v9_historical_replay
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v9_development
+          cargo test -p reasoning-harness-core --test evidence_relevance_holdout_v10
+          cargo test -p reasoning-harness-cli --bin reason-evidence-relevance-negative-relation-probe
+      - name: Preserve preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-successor-v10-development-preflight
+          path: /tmp/evidence-relevance-successor-v10-validate.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-latest
+            inter_case_delay_ms: 1200
+            timeout_minutes: 45
+          - provider: google
+            model: gemini-3.5-flash-lite
+            inter_case_delay_ms: 6100
+            timeout_minutes: 60
+          - provider: groq
+            model: openai/gpt-oss-120b
+            inter_case_delay_ms: 60000
+            timeout_minutes: 90
+    concurrency:
+      group: engine-0.6-evidence-relevance-successor-v10-development-${{ matrix.provider }}
+      cancel-in-progress: false
+    steps:
+      - name: Reject reruns and enforce frozen tag
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$GITHUB_REF_NAME" = "$FREEZE_TAG"
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+      - name: Revalidate surface before credentials
+        run: |
+          set -euo pipefail
+          sha256sum -c "$DEVELOPMENT_DIR/surface-v10.sha256"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-negative-relation-probe -- \
+            "$DEVELOPMENT_DIR" --provider mistral --model development-placeholder \
+            --trials 3 --seed "$DEVELOPMENT_SEED" --validate-only > /dev/null
+      - name: Check provider credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            groq) test -n "$GROQ_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            *) exit 2 ;;
+          esac
+      - name: Run fresh one-sided observation
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          DELAY_MS: ${{ matrix.inter_case_delay_ms }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '10000'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+          REASON_GROQ_STRUCTURED_OUTPUT_RETRIES: '0'
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+          REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH: /tmp/evidence-relevance-google-attempts.jsonl
+        run: |
+          set -u
+          BASE="/tmp/evidence-relevance-${PROVIDER}"
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-negative-relation-probe -- \
+            "$DEVELOPMENT_DIR" --provider "$PROVIDER" --model "$MODEL" --trials 3 \
+            --seed "$DEVELOPMENT_SEED" --inter-case-delay-ms "$DELAY_MS" \
+            > "${BASE}-result.json" 2> "${BASE}-stderr.log"
+          RC=$?
+          set -e
+          printf '%s\n' "$RC" > "${BASE}.rc"
+          if test -f "${BASE}-result.json"; then
+            jq '{configuration_id,suite_id,issue,status,provider,model,trials,metrics,mismatches:[.observations[]|select(.confirmation_match == false or .failure_class != null)|{case_id,family,trial,expected_confirmation,observed_confirmation,failure_class}]}' "${BASE}-result.json"
+          fi
+          exit 0
+      - name: Preserve development evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-successor-v10-development-${{ matrix.provider }}
+          path: |
+            /tmp/evidence-relevance-${{ matrix.provider }}*
+            /tmp/evidence-relevance-google-attempts.jsonl
+          if-no-files-found: warn
+          retention-days: 30
+
+  final-gate:
+    needs: live
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.6-evidence-relevance-successor-v10-development-*
+          path: /tmp/evidence-relevance-development
+          merge-multiple: true
+      - name: Require three-provider convergence
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('/tmp/evidence-relevance-development')
+          expected = {
+              'mistral': 'ministral-8b-latest',
+              'google': 'gemini-3.5-flash-lite',
+              'groq': 'openai/gpt-oss-120b',
+          }
+          summary = {
+              'schema_version': 'engine-0.6-evidence-relevance-successor-v10-development-summary-v1',
+              'holdout_acceptance_evidence': False,
+              'candidate_semantics': 'effective-v13-materialization-v25-one-sided-two-key',
+              'providers': {},
+              'development_gate_passed': True,
+          }
+          for provider, model in expected.items():
+              result_path = root / f'evidence-relevance-{provider}-result.json'
+              rc_path = root / f'evidence-relevance-{provider}.rc'
+              if not result_path.exists() or not rc_path.exists():
+                  summary['providers'][provider] = {'missing': True, 'passed': False}
+                  summary['development_gate_passed'] = False
+                  continue
+              result = json.loads(result_path.read_text())
+              rc = int(rc_path.read_text().strip())
+              metrics = result.get('metrics', {})
+              passed = (
+                  rc == 0
+                  and result.get('configuration_id') == 'evidence-relevance-successor-v10-negative-relation-probe'
+                  and result.get('suite_id') == 'evidence-relevance-successor-v10-development'
+                  and result.get('issue') == 468
+                  and result.get('status') == 'fresh_independent_development'
+                  and result.get('provider') == provider
+                  and result.get('model') == model
+                  and result.get('trials') == 3
+                  and metrics.get('observations') == 48
+                  and metrics.get('successful_observations') == 48
+                  and metrics.get('failed_observations') == 0
+                  and metrics.get('confirmation_matches') == 48
+                  and metrics.get('false_confirmations') == 0
+                  and metrics.get('missed_confirmations') == 0
+              )
+              summary['providers'][provider] = {
+                  'model': model,
+                  'runner_rc': rc,
+                  'observations': metrics.get('observations'),
+                  'successful_observations': metrics.get('successful_observations'),
+                  'failed_observations': metrics.get('failed_observations'),
+                  'confirmation_matches': metrics.get('confirmation_matches'),
+                  'false_confirmations': metrics.get('false_confirmations'),
+                  'missed_confirmations': metrics.get('missed_confirmations'),
+                  'passed': passed,
+              }
+              summary['development_gate_passed'] &= passed
+          out = Path('/tmp/evidence-relevance-successor-v10-development-summary.json')
+          out.write_text(json.dumps(summary, indent=2) + '\n')
+          print(out.read_text())
+          if not summary['development_gate_passed']:
+              raise SystemExit(1)
+          PY
+      - name: Preserve development summary
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-successor-v10-development-summary
+          path: /tmp/evidence-relevance-successor-v10-development-summary.json
+          if-no-files-found: warn
+          retention-days: 30

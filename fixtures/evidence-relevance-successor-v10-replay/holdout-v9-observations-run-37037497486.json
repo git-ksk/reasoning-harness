@@ -1,0 +1,1579 @@
+{
+  "source": {
+    "canonical_run": 37037497486,
+    "attempt": 1,
+    "freeze_commit": "1b50e5c54cdff4bd850bb0b1c58cfc66ce46d8bf",
+    "freeze_tag": "engine-0.6-evidence-relevance-holdout-v9-freeze",
+    "historical_result": "failure",
+    "holdout_acceptance_evidence": true
+  },
+  "providers": [
+    {
+      "provider": "mistral",
+      "model": "ministral-8b-latest",
+      "observations": [
+        {
+          "id": "v9h01_positive_exact_availability",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h02_positive_alias_pricing",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h03_positive_exact_limit",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h04_positive_exact_change",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h05_positive_exact_definition",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h06_positive_exact_benefit",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h07_positive_alias_availability",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h08_positive_exact_pricing_with_peer",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h09_negative_exact_target_wrong_relation",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "different"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h10_negative_distinct_availability_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h11_negative_distinct_pricing_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h12_negative_distinct_limit_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "different"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h13_negative_distinct_change_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h14_negative_distinct_definition_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "different"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h15_negative_distinct_benefit_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "different"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h16_negative_exact_relation_absence",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h17_negative_explicit_target_absence_injection",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h18_negative_distinct_availability_lookalike",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "different"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h19_ambiguous_possible_rename",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "unresolved",
+            "scope_risk": "multiple"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h20_ambiguous_url_only_unnamed_owner",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h21_ambiguous_shared_ownership",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h22_ambiguous_truncated_relation",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "multiple"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "context_gap"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h23_ambiguous_unconfirmed_alias",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "unresolved",
+            "scope_risk": "multiple"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h24_ambiguous_single_signal_near_sibling",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h25_ambiguous_cross_frame_general_availability",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h26_ambiguous_exact_target_numeric_observation",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        }
+      ]
+    },
+    {
+      "provider": "google",
+      "model": "gemini-3.5-flash-lite",
+      "observations": [
+        {
+          "id": "v9h01_positive_exact_availability",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h02_positive_alias_pricing",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h03_positive_exact_limit",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h04_positive_exact_change",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h05_positive_exact_definition",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h06_positive_exact_benefit",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h07_positive_alias_availability",
+          "observed_proposal": null,
+          "observed_local_qualification": null,
+          "effective_local_qualification": null,
+          "materialized_disposition": null,
+          "failure_class": "timeout",
+          "failure": "local qualification failed: provider active execution exceeded semantic execution budget"
+        },
+        {
+          "id": "v9h08_positive_exact_pricing_with_peer",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h09_negative_exact_target_wrong_relation",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "different"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h10_negative_distinct_availability_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h11_negative_distinct_pricing_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h12_negative_distinct_limit_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h13_negative_distinct_change_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h14_negative_distinct_definition_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h15_negative_distinct_benefit_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h16_negative_exact_relation_absence",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h17_negative_explicit_target_absence_injection",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h18_negative_distinct_availability_lookalike",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h19_ambiguous_possible_rename",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h20_ambiguous_url_only_unnamed_owner",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "ownership_scope"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h21_ambiguous_shared_ownership",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h22_ambiguous_truncated_relation",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "context_gap"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "context_gap"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h23_ambiguous_unconfirmed_alias",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h24_ambiguous_single_signal_near_sibling",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h25_ambiguous_cross_frame_general_availability",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h26_ambiguous_exact_target_numeric_observation",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        }
+      ]
+    },
+    {
+      "provider": "groq",
+      "model": "openai/gpt-oss-120b",
+      "observations": [
+        {
+          "id": "v9h01_positive_exact_availability",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h02_positive_alias_pricing",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h03_positive_exact_limit",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h04_positive_exact_change",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h05_positive_exact_definition",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h06_positive_exact_benefit",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h07_positive_alias_availability",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h08_positive_exact_pricing_with_peer",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "relevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h09_negative_exact_target_wrong_relation",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "different"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h10_negative_distinct_availability_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h11_negative_distinct_pricing_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h12_negative_distinct_limit_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h13_negative_distinct_change_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h14_negative_distinct_definition_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "different"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h15_negative_distinct_benefit_frame",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h16_negative_exact_relation_absence",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h17_negative_explicit_target_absence_injection",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "target_absent",
+            "relation_scope": "relation_absent",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h18_negative_distinct_availability_lookalike",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h19_ambiguous_possible_rename",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "unresolved",
+            "scope_risk": "identity_mapping"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h20_ambiguous_url_only_unnamed_owner",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "context_gap"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h21_ambiguous_shared_ownership",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "multiple"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h22_ambiguous_truncated_relation",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "context_gap"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "context_gap"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h23_ambiguous_unconfirmed_alias",
+          "observed_proposal": {
+            "target_binding": "unresolved",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "identity_mapping"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h24_ambiguous_single_signal_near_sibling",
+          "observed_proposal": {
+            "target_binding": "different",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "distinct_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "unresolved",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h25_ambiguous_cross_frame_general_availability",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "exact"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "requested_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "unresolved",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "ambiguous",
+          "failure_class": null,
+          "failure": null
+        },
+        {
+          "id": "v9h26_ambiguous_exact_target_numeric_observation",
+          "observed_proposal": {
+            "target_binding": "exact",
+            "relation_binding": "unresolved"
+          },
+          "observed_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "effective_local_qualification": {
+            "identity_scope": "exact_target",
+            "relation_scope": "different_relation",
+            "scope_risk": "none"
+          },
+          "materialized_disposition": "irrelevant",
+          "failure_class": null,
+          "failure": null
+        }
+      ]
+    }
+  ]
+}

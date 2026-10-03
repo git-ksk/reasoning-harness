@@ -20,10 +20,16 @@ use reasoning_harness_core::{
     derive_effective_evidence_local_qualification_v6,
     derive_effective_evidence_local_qualification_v7,
     derive_effective_evidence_local_qualification_v8,
-    derive_effective_evidence_local_qualification_v9, materialize_evidence_relevance_v16,
+    derive_effective_evidence_local_qualification_v9,
+    derive_effective_evidence_local_qualification_v10,
+    derive_effective_evidence_local_qualification_v11,
+    derive_effective_evidence_local_qualification_v14,
+    derive_effective_evidence_local_qualification_v15, materialize_evidence_relevance_v16,
     materialize_evidence_relevance_v17, materialize_evidence_relevance_v18,
     materialize_evidence_relevance_v19, materialize_evidence_relevance_v20,
     materialize_evidence_relevance_v21, materialize_evidence_relevance_v22,
+    materialize_evidence_relevance_v23, materialize_evidence_relevance_v26,
+    materialize_evidence_relevance_v27, materialize_evidence_relevance_v28,
     parse_evidence_local_qualification_v8, parse_evidence_relevance_binding_proposal,
 };
 use reasoning_harness_providers::{GoogleAdapter, GroqAdapter, MistralAdapter, NvidiaAdapter};
@@ -102,6 +108,54 @@ const V7_DEV_EXPECTED_FIXED_CORE_ID: &str =
 const V7_DEV_EXPECTED_RELATIVE_DIR: &str =
     "fixtures/evidence-relevance-successor-v7-development-v2";
 const V7_DEV_EXPECTED_CASES: usize = 12;
+const V8_DEV_CONFIGURATION_ID: &str = "evidence-relevance-successor-v8-development";
+const V8_DEV_EXPECTED_SUITE_ID: &str = "evidence-relevance-successor-v8-development";
+const V8_DEV_EXPECTED_STATUS: &str = "reusable_development_calibration";
+const V8_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID: &str =
+    "evidence-relevance-effective-qualification-v10";
+const V8_DEV_EXPECTED_FIXED_CORE_ID: &str =
+    "evidence-relevance-fixed-core-successor-v8-development-v1";
+const V8_DEV_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-successor-v8-development";
+const V8_DEV_EXPECTED_CASES: usize = 14;
+const V9_DEV_CONFIGURATION_ID: &str = "evidence-relevance-successor-v9-development";
+const V9_DEV_EXPECTED_SUITE_ID: &str = "evidence-relevance-successor-v9-development";
+const V9_DEV_EXPECTED_STATUS: &str = "fresh_independent_development";
+const V9_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID: &str =
+    "evidence-relevance-effective-qualification-v11-materialization-v23";
+const V9_DEV_EXPECTED_FIXED_CORE_ID: &str =
+    "evidence-relevance-fixed-core-successor-v9-development-v1";
+const V9_DEV_EXPECTED_RELATIVE_DIR: &str = "fixtures/evidence-relevance-successor-v9-development";
+const V9_DEV_EXPECTED_CASES: usize = 19;
+const V10_DEV_V2_CONFIGURATION_ID: &str = "evidence-relevance-successor-v10-development-v2";
+const V10_DEV_V2_EXPECTED_SUITE_ID: &str = "evidence-relevance-successor-v10-development-v2";
+const V10_DEV_V2_EXPECTED_STATUS: &str = "fresh_independent_development";
+const V10_DEV_V2_EXPECTED_ANNOTATION_PROTOCOL_ID: &str =
+    "evidence-relevance-effective-qualification-v14-materialization-v26";
+const V10_DEV_V2_EXPECTED_FIXED_CORE_ID: &str =
+    "evidence-relevance-fixed-core-successor-v10-development-v2";
+const V10_DEV_V2_EXPECTED_RELATIVE_DIR: &str =
+    "fixtures/evidence-relevance-successor-v10-development-v2";
+const V10_DEV_V2_EXPECTED_CASES: usize = 18;
+const V10_DEV_V3_CONFIGURATION_ID: &str = "evidence-relevance-successor-v10-development-v3";
+const V10_DEV_V3_EXPECTED_SUITE_ID: &str = "evidence-relevance-successor-v10-development-v3";
+const V10_DEV_V3_EXPECTED_STATUS: &str = "fresh_independent_development";
+const V10_DEV_V3_EXPECTED_ANNOTATION_PROTOCOL_ID: &str =
+    "evidence-relevance-effective-qualification-v14-materialization-v27";
+const V10_DEV_V3_EXPECTED_FIXED_CORE_ID: &str =
+    "evidence-relevance-fixed-core-successor-v10-development-v3";
+const V10_DEV_V3_EXPECTED_RELATIVE_DIR: &str =
+    "fixtures/evidence-relevance-successor-v10-development-v3";
+const V10_DEV_V3_EXPECTED_CASES: usize = 20;
+const V10_DEV_V4_CONFIGURATION_ID: &str = "evidence-relevance-successor-v10-development-v4";
+const V10_DEV_V4_EXPECTED_SUITE_ID: &str = "evidence-relevance-successor-v10-development-v4";
+const V10_DEV_V4_EXPECTED_STATUS: &str = "fresh_independent_development";
+const V10_DEV_V4_EXPECTED_ANNOTATION_PROTOCOL_ID: &str =
+    "evidence-relevance-effective-qualification-v15-materialization-v28";
+const V10_DEV_V4_EXPECTED_FIXED_CORE_ID: &str =
+    "evidence-relevance-fixed-core-successor-v10-development-v4";
+const V10_DEV_V4_EXPECTED_RELATIVE_DIR: &str =
+    "fixtures/evidence-relevance-successor-v10-development-v4";
+const V10_DEV_V4_EXPECTED_CASES: usize = 24;
 const PROVIDER_WAIT_BUDGET_MS: u64 = 45_000;
 const MAX_SINGLE_PROVIDER_WAIT_MS: u64 = 30_000;
 const ABSOLUTE_CASE_BUDGET_MS: u64 = 120_000;
@@ -118,6 +172,11 @@ enum HoldoutProfile {
     V5Development,
     V6Development,
     V7Development,
+    V8Development,
+    V9Development,
+    V10DevelopmentV2,
+    V10DevelopmentV3,
+    V10DevelopmentV4,
 }
 
 impl HoldoutProfile {
@@ -137,6 +196,11 @@ impl HoldoutProfile {
             Self::V5Development,
             Self::V6Development,
             Self::V7Development,
+            Self::V8Development,
+            Self::V9Development,
+            Self::V10DevelopmentV2,
+            Self::V10DevelopmentV3,
+            Self::V10DevelopmentV4,
         ] {
             let expected = root
                 .join(profile.relative_dir())
@@ -152,7 +216,7 @@ impl HoldoutProfile {
             }
         }
         Err(format!(
-            "evidence-relevance study accepts only this checkout's holdout/development directories through {V7_EXPECTED_RELATIVE_DIR} or {V7_DEV_EXPECTED_RELATIVE_DIR}"
+            "evidence-relevance study accepts only this checkout's declared holdout/development directories through {V10_DEV_V4_EXPECTED_RELATIVE_DIR}"
         ))
     }
 
@@ -168,6 +232,11 @@ impl HoldoutProfile {
             Self::V5Development => V5_DEV_CONFIGURATION_ID,
             Self::V6Development => V6_DEV_CONFIGURATION_ID,
             Self::V7Development => V7_DEV_CONFIGURATION_ID,
+            Self::V8Development => V8_DEV_CONFIGURATION_ID,
+            Self::V9Development => V9_DEV_CONFIGURATION_ID,
+            Self::V10DevelopmentV2 => V10_DEV_V2_CONFIGURATION_ID,
+            Self::V10DevelopmentV3 => V10_DEV_V3_CONFIGURATION_ID,
+            Self::V10DevelopmentV4 => V10_DEV_V4_CONFIGURATION_ID,
         }
     }
 
@@ -183,6 +252,11 @@ impl HoldoutProfile {
             Self::V5Development => V5_DEV_EXPECTED_SUITE_ID,
             Self::V6Development => V6_DEV_EXPECTED_SUITE_ID,
             Self::V7Development => V7_DEV_EXPECTED_SUITE_ID,
+            Self::V8Development => V8_DEV_EXPECTED_SUITE_ID,
+            Self::V9Development => V9_DEV_EXPECTED_SUITE_ID,
+            Self::V10DevelopmentV2 => V10_DEV_V2_EXPECTED_SUITE_ID,
+            Self::V10DevelopmentV3 => V10_DEV_V3_EXPECTED_SUITE_ID,
+            Self::V10DevelopmentV4 => V10_DEV_V4_EXPECTED_SUITE_ID,
         }
     }
 
@@ -198,6 +272,11 @@ impl HoldoutProfile {
             Self::V5Development => V5_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V6Development => V6_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID,
             Self::V7Development => V7_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID,
+            Self::V8Development => V8_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID,
+            Self::V9Development => V9_DEV_EXPECTED_ANNOTATION_PROTOCOL_ID,
+            Self::V10DevelopmentV2 => V10_DEV_V2_EXPECTED_ANNOTATION_PROTOCOL_ID,
+            Self::V10DevelopmentV3 => V10_DEV_V3_EXPECTED_ANNOTATION_PROTOCOL_ID,
+            Self::V10DevelopmentV4 => V10_DEV_V4_EXPECTED_ANNOTATION_PROTOCOL_ID,
         }
     }
 
@@ -213,6 +292,11 @@ impl HoldoutProfile {
             Self::V5Development => V5_DEV_EXPECTED_FIXED_CORE_ID,
             Self::V6Development => V6_DEV_EXPECTED_FIXED_CORE_ID,
             Self::V7Development => V7_DEV_EXPECTED_FIXED_CORE_ID,
+            Self::V8Development => V8_DEV_EXPECTED_FIXED_CORE_ID,
+            Self::V9Development => V9_DEV_EXPECTED_FIXED_CORE_ID,
+            Self::V10DevelopmentV2 => V10_DEV_V2_EXPECTED_FIXED_CORE_ID,
+            Self::V10DevelopmentV3 => V10_DEV_V3_EXPECTED_FIXED_CORE_ID,
+            Self::V10DevelopmentV4 => V10_DEV_V4_EXPECTED_FIXED_CORE_ID,
         }
     }
 
@@ -228,6 +312,11 @@ impl HoldoutProfile {
             Self::V5Development => V5_DEV_EXPECTED_RELATIVE_DIR,
             Self::V6Development => V6_DEV_EXPECTED_RELATIVE_DIR,
             Self::V7Development => V7_DEV_EXPECTED_RELATIVE_DIR,
+            Self::V8Development => V8_DEV_EXPECTED_RELATIVE_DIR,
+            Self::V9Development => V9_DEV_EXPECTED_RELATIVE_DIR,
+            Self::V10DevelopmentV2 => V10_DEV_V2_EXPECTED_RELATIVE_DIR,
+            Self::V10DevelopmentV3 => V10_DEV_V3_EXPECTED_RELATIVE_DIR,
+            Self::V10DevelopmentV4 => V10_DEV_V4_EXPECTED_RELATIVE_DIR,
         }
     }
 
@@ -243,6 +332,22 @@ impl HoldoutProfile {
             Self::V5Development => V5_DEV_EXPECTED_CASES,
             Self::V6Development => V6_DEV_EXPECTED_CASES,
             Self::V7Development => V7_DEV_EXPECTED_CASES,
+            Self::V8Development => V8_DEV_EXPECTED_CASES,
+            Self::V9Development => V9_DEV_EXPECTED_CASES,
+            Self::V10DevelopmentV2 => V10_DEV_V2_EXPECTED_CASES,
+            Self::V10DevelopmentV3 => V10_DEV_V3_EXPECTED_CASES,
+            Self::V10DevelopmentV4 => V10_DEV_V4_EXPECTED_CASES,
+        }
+    }
+
+    fn expected_issue(self) -> u64 {
+        match self {
+            Self::V8Development
+            | Self::V9Development
+            | Self::V10DevelopmentV2
+            | Self::V10DevelopmentV3
+            | Self::V10DevelopmentV4 => 468,
+            _ => 462,
         }
     }
 
@@ -254,19 +359,38 @@ impl HoldoutProfile {
             Self::V5Development => V5_DEV_EXPECTED_STATUS,
             Self::V6Development => V6_DEV_EXPECTED_STATUS,
             Self::V7Development => V7_DEV_EXPECTED_STATUS,
+            Self::V8Development => V8_DEV_EXPECTED_STATUS,
+            Self::V9Development => V9_DEV_EXPECTED_STATUS,
+            Self::V10DevelopmentV2 => V10_DEV_V2_EXPECTED_STATUS,
+            Self::V10DevelopmentV3 => V10_DEV_V3_EXPECTED_STATUS,
+            Self::V10DevelopmentV4 => V10_DEV_V4_EXPECTED_STATUS,
         }
     }
 
     fn is_holdout(self) -> bool {
         !matches!(
             self,
-            Self::V5Development | Self::V6Development | Self::V7Development
+            Self::V5Development
+                | Self::V6Development
+                | Self::V7Development
+                | Self::V8Development
+                | Self::V9Development
+                | Self::V10DevelopmentV2
+                | Self::V10DevelopmentV3
+                | Self::V10DevelopmentV4
         )
     }
 
     fn allows_live_provider(self, provider: Provider) -> bool {
         match self {
-            Self::V5Development | Self::V6Development | Self::V7Development => {
+            Self::V5Development
+            | Self::V6Development
+            | Self::V7Development
+            | Self::V8Development
+            | Self::V9Development
+            | Self::V10DevelopmentV2
+            | Self::V10DevelopmentV3
+            | Self::V10DevelopmentV4 => {
                 matches!(provider, Provider::Mistral | Provider::Google)
             }
             _ => true,
@@ -311,6 +435,21 @@ impl HoldoutProfile {
             Self::V7Development => {
                 derive_effective_evidence_local_qualification_v9(policy, candidate, proposal, raw)
             }
+            Self::V8Development => {
+                derive_effective_evidence_local_qualification_v10(policy, candidate, proposal, raw)
+            }
+            Self::V9Development => {
+                derive_effective_evidence_local_qualification_v11(policy, candidate, proposal, raw)
+            }
+            Self::V10DevelopmentV2 => {
+                derive_effective_evidence_local_qualification_v14(policy, candidate, proposal, raw)
+            }
+            Self::V10DevelopmentV3 => {
+                derive_effective_evidence_local_qualification_v14(policy, candidate, proposal, raw)
+            }
+            Self::V10DevelopmentV4 => {
+                derive_effective_evidence_local_qualification_v15(policy, candidate, proposal, raw)
+            }
         }
     }
 
@@ -337,6 +476,21 @@ impl HoldoutProfile {
             }
             Self::V7Development => {
                 materialize_evidence_relevance_v22(policy, candidate, proposal, raw)
+            }
+            Self::V8Development => {
+                materialize_evidence_relevance_v22(policy, candidate, proposal, raw)
+            }
+            Self::V9Development => {
+                materialize_evidence_relevance_v23(policy, candidate, proposal, raw)
+            }
+            Self::V10DevelopmentV2 => {
+                materialize_evidence_relevance_v26(policy, candidate, proposal, raw)
+            }
+            Self::V10DevelopmentV3 => {
+                materialize_evidence_relevance_v27(policy, candidate, proposal, raw)
+            }
+            Self::V10DevelopmentV4 => {
+                materialize_evidence_relevance_v28(policy, candidate, proposal, raw)
             }
         }
     }
@@ -2343,8 +2497,13 @@ fn load_manifest(target: &Path, profile: HoldoutProfile) -> Result<HoldoutManife
             manifest.suite_id
         ));
     }
-    if manifest.issue != 462 {
-        return Err(format!("unexpected issue binding {}", manifest.issue));
+    if manifest.issue != profile.expected_issue() {
+        return Err(format!(
+            "unexpected issue binding {} for {:?}; expected {}",
+            manifest.issue,
+            profile,
+            profile.expected_issue()
+        ));
     }
     if manifest.status != profile.expected_status() {
         return Err(format!(
@@ -2929,6 +3088,11 @@ fn checkpoint_profile(suite_id: &str) -> Result<(&'static str, bool), String> {
         V5_DEV_EXPECTED_SUITE_ID => Ok((V5_DEV_CONFIGURATION_ID, false)),
         V6_DEV_EXPECTED_SUITE_ID => Ok((V6_DEV_CONFIGURATION_ID, false)),
         V7_DEV_EXPECTED_SUITE_ID => Ok((V7_DEV_CONFIGURATION_ID, false)),
+        V8_DEV_EXPECTED_SUITE_ID => Ok((V8_DEV_CONFIGURATION_ID, false)),
+        V9_DEV_EXPECTED_SUITE_ID => Ok((V9_DEV_CONFIGURATION_ID, false)),
+        V10_DEV_V2_EXPECTED_SUITE_ID => Ok((V10_DEV_V2_CONFIGURATION_ID, false)),
+        V10_DEV_V3_EXPECTED_SUITE_ID => Ok((V10_DEV_V3_CONFIGURATION_ID, false)),
+        V10_DEV_V4_EXPECTED_SUITE_ID => Ok((V10_DEV_V4_CONFIGURATION_ID, false)),
         other => Err(format!("unexpected checkpoint suite id {other:?}")),
     }
 }
@@ -3018,6 +3182,11 @@ mod tests {
             HoldoutProfile::V5Development,
             HoldoutProfile::V6Development,
             HoldoutProfile::V7Development,
+            HoldoutProfile::V8Development,
+            HoldoutProfile::V9Development,
+            HoldoutProfile::V10DevelopmentV2,
+            HoldoutProfile::V10DevelopmentV3,
+            HoldoutProfile::V10DevelopmentV4,
         ] {
             assert_eq!(
                 checkpoint_profile(profile.suite_id()).unwrap(),

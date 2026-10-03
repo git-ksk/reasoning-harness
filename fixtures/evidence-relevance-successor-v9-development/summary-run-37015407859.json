@@ -1,0 +1,46 @@
+{
+  "schema_version": "engine-0.6-evidence-relevance-successor-v9-development-summary-v1",
+  "holdout_acceptance_evidence": false,
+  "authority_contract": "v11_selective_relation_authority_v23_positive_materialization_floor",
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-latest",
+      "runner_rc": 0,
+      "planned_cases": 19,
+      "completed_cases": 19,
+      "scorability": "complete_development_observation",
+      "authority_failures": [],
+      "identity_risk_failures": [],
+      "materialization_failures": [],
+      "wrong_target_relevance_retention": 0,
+      "false_relevance_rejections": 0,
+      "relevant_left_ambiguous": 0,
+      "utility_misses": 0,
+      "total_tokens": 34008,
+      "latency_p50_ms": 1270,
+      "latency_p95_ms": 3222,
+      "latency_max_ms": 3222,
+      "passed": true
+    },
+    "google": {
+      "model": "gemini-3.5-flash-lite",
+      "runner_rc": 0,
+      "planned_cases": 19,
+      "completed_cases": 19,
+      "scorability": "complete_development_observation",
+      "authority_failures": [],
+      "identity_risk_failures": [],
+      "materialization_failures": [],
+      "wrong_target_relevance_retention": 0,
+      "false_relevance_rejections": 0,
+      "relevant_left_ambiguous": 0,
+      "utility_misses": 0,
+      "total_tokens": 35058,
+      "latency_p50_ms": 6748,
+      "latency_p95_ms": 22385,
+      "latency_max_ms": 22385,
+      "passed": true
+    }
+  },
+  "development_gate_passed": true
+}

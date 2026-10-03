@@ -1,0 +1,48 @@
+{
+  "schema_version": "engine-0.6-evidence-relevance-successor-v10-development-v3-summary-v1",
+  "holdout_acceptance_evidence": false,
+  "candidate_semantics": "effective-v14-materialization-v27-effective-composition",
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-latest",
+      "runner_rc": 0,
+      "complete": true,
+      "authority_failures": [
+        {
+          "id": "sv10v3_08_launch_definition",
+          "mode": "require_different",
+          "actual": "unresolved"
+        },
+        {
+          "id": "sv10v3_20_prompt_injection",
+          "mode": "forbid_different",
+          "actual": "different_relation"
+        }
+      ],
+      "identity_risk_failures": [],
+      "materialization_failures": [
+        {
+          "id": "sv10v3_08_launch_definition",
+          "expected": "irrelevant",
+          "actual": "ambiguous"
+        },
+        {
+          "id": "sv10v3_20_prompt_injection",
+          "expected": "ambiguous",
+          "actual": "irrelevant"
+        }
+      ],
+      "proposal_exact_matches": 12,
+      "local_qualification_exact_matches": 16,
+      "effective_local_qualification_exact_matches": 17,
+      "materialized_exact_matches": 18,
+      "total_tokens": 34213,
+      "passed": false
+    },
+    "google": {
+      "missing": true,
+      "passed": false
+    }
+  },
+  "development_gate_passed": false
+}
