@@ -1,0 +1,1539 @@
+{
+  "configuration_id": "evidence-relevance-successor-v10-development-v3",
+  "suite_id": "evidence-relevance-successor-v10-development-v3",
+  "issue": 468,
+  "source_rule": "independently_authored_after_holdout_v10_and_successor_v10_development_v1_v2_observation_no_case_entity_task_signal_or_8token_surface_reuse",
+  "annotation_protocol_id": "evidence-relevance-effective-qualification-v14-materialization-v27",
+  "fixed_core_id": "evidence-relevance-fixed-core-successor-v10-development-v3",
+  "corpus_status_at_observation": "fresh_independent_development",
+  "candidate_commit": "d25d2a2d3828f85f198568e312f59fc8b55ff5e0",
+  "provider": "mistral",
+  "model": "ministral-8b-latest",
+  "seed": 4683000,
+  "planned_cases": 20,
+  "completed_cases": 20,
+  "canonical_full_holdout": false,
+  "scorability": "complete_development_observation",
+  "metrics": {
+    "cases": 20,
+    "successful_provider_cases": 20,
+    "failed_provider_cases": 0,
+    "proposal_exact_matches": 12,
+    "proposal_exact_accuracy": 0.6,
+    "local_qualification_expected_cases": 20,
+    "local_qualification_invocations": 20,
+    "local_qualification_exact_matches": 16,
+    "local_qualification_exact_accuracy": 0.8,
+    "qualification_scope_risk_misses": 0,
+    "qualification_spurious_scope_risks": 4,
+    "qualification_identity_scope_misses": 0,
+    "qualification_relation_scope_misses": 4,
+    "effective_local_qualification_expected_cases": 20,
+    "effective_local_qualification_derivations": 20,
+    "effective_local_qualification_exact_matches": 17,
+    "effective_local_qualification_exact_accuracy": 0.85,
+    "effective_qualification_scope_risk_misses": 0,
+    "effective_qualification_spurious_scope_risks": 0,
+    "effective_qualification_identity_scope_misses": 0,
+    "effective_qualification_relation_scope_misses": 3,
+    "effective_authority_qualification_exact_matches": 17,
+    "effective_authority_qualification_exact_accuracy": 0.85,
+    "effective_authority_identity_scope_misses": 0,
+    "effective_authority_relation_scope_misses": 3,
+    "materialized_exact_matches": 18,
+    "materialized_exact_accuracy": 0.9,
+    "correctness_wrong_target_relevance_retention": 0,
+    "false_relevance_rejections": 0,
+    "relevant_left_ambiguous": 0,
+    "utility_misses": 2,
+    "ambiguous_dispositions": 3,
+    "deterministic_guard_overrides": 2,
+    "lexical_exact_matches": 8,
+    "lexical_exact_accuracy": 0.4,
+    "lexical_wrong_target_relevance_retention": 12,
+    "lexical_expected_relevant_misses": 0,
+    "model_calls": 40,
+    "provider_attempts": 40,
+    "provider_attempts_started": 40,
+    "provider_attempts_completed": 40,
+    "provider_attempts_incomplete_observations": 0,
+    "active_execution_ms": 28059,
+    "provider_wait_ms": 0,
+    "pacing_wait_ms": 0,
+    "retry_wait_ms": 0,
+    "input_tokens": 33092,
+    "output_tokens": 1121,
+    "total_tokens": 34213,
+    "total_latency_ms": 28197,
+    "mean_latency_ms": 1409.85,
+    "latency_p50_ms": 1249,
+    "latency_p95_ms": 2138,
+    "latency_max_ms": 2953,
+    "successful_latency_p50_ms": 1249,
+    "successful_latency_p95_ms": 2138,
+    "successful_latency_max_ms": 2953,
+    "failure_counts": {}
+  },
+  "observations": [
+    {
+      "id": "sv10v3_01_limit_throughput",
+      "family": "limit_throughput",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1260,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1267,
+      "usage": {
+        "input_tokens": 1650,
+        "output_tokens": 56,
+        "total_tokens": 1706
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:1",
+        "target_id": "successor-v10-v3-target:1",
+        "evidence_id": "evidence:successor-v10-v3:1",
+        "source_id": "source:successor-v10-v3:1",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_02_limit_latency",
+      "family": "limit_latency",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1054,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1061,
+      "usage": {
+        "input_tokens": 1652,
+        "output_tokens": 56,
+        "total_tokens": 1708
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:2",
+        "target_id": "successor-v10-v3-target:2",
+        "evidence_id": "evidence:successor-v10-v3:2",
+        "source_id": "source:successor-v10-v3:2",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_03_availability_feature",
+      "family": "availability_feature",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1209,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1215,
+      "usage": {
+        "input_tokens": 1644,
+        "output_tokens": 56,
+        "total_tokens": 1700
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:3",
+        "target_id": "successor-v10-v3-target:3",
+        "evidence_id": "evidence:successor-v10-v3:3",
+        "source_id": "source:successor-v10-v3:3",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_04_availability_protocol",
+      "family": "availability_protocol",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1217,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1224,
+      "usage": {
+        "input_tokens": 1640,
+        "output_tokens": 56,
+        "total_tokens": 1696
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:4",
+        "target_id": "successor-v10-v3-target:4",
+        "evidence_id": "evidence:successor-v10-v3:4",
+        "source_id": "source:successor-v10-v3:4",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_05_pricing_limit",
+      "family": "pricing_limit",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1176,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1182,
+      "usage": {
+        "input_tokens": 1644,
+        "output_tokens": 54,
+        "total_tokens": 1698
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:5",
+        "target_id": "successor-v10-v3-target:5",
+        "evidence_id": "evidence:successor-v10-v3:5",
+        "source_id": "source:successor-v10-v3:5",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_06_definition_launch",
+      "family": "definition_launch",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1159,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1166,
+      "usage": {
+        "input_tokens": 1648,
+        "output_tokens": 55,
+        "total_tokens": 1703
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:6",
+        "target_id": "successor-v10-v3-target:6",
+        "evidence_id": "evidence:successor-v10-v3:6",
+        "source_id": "source:successor-v10-v3:6",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_07_benefit_pricing",
+      "family": "benefit_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1298,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1303,
+      "usage": {
+        "input_tokens": 1654,
+        "output_tokens": 55,
+        "total_tokens": 1709
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:7",
+        "target_id": "successor-v10-v3-target:7",
+        "evidence_id": "evidence:successor-v10-v3:7",
+        "source_id": "source:successor-v10-v3:7",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_08_launch_definition",
+      "family": "launch_definition",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": false,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": false,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": true,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1097,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1104,
+      "usage": {
+        "input_tokens": 1648,
+        "output_tokens": 58,
+        "total_tokens": 1706
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:8",
+        "target_id": "successor-v10-v3-target:8",
+        "evidence_id": "evidence:successor-v10-v3:8",
+        "source_id": "source:successor-v10-v3:8",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_disagreement",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_09_requested_availability_with_feature",
+      "family": "requested_availability_with_feature",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 2944,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 2953,
+      "usage": {
+        "input_tokens": 1654,
+        "output_tokens": 56,
+        "total_tokens": 1710
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:9",
+        "target_id": "successor-v10-v3-target:9",
+        "evidence_id": "evidence:successor-v10-v3:9",
+        "source_id": "source:successor-v10-v3:9",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_10_requested_limit_with_pricing",
+      "family": "requested_limit_with_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1282,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1290,
+      "usage": {
+        "input_tokens": 1672,
+        "output_tokens": 56,
+        "total_tokens": 1728
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:10",
+        "target_id": "successor-v10-v3-target:10",
+        "evidence_id": "evidence:successor-v10-v3:10",
+        "source_id": "source:successor-v10-v3:10",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_11_requested_pricing_with_limit",
+      "family": "requested_pricing_with_limit",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1309,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1318,
+      "usage": {
+        "input_tokens": 1674,
+        "output_tokens": 56,
+        "total_tokens": 1730
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:11",
+        "target_id": "successor-v10-v3-target:11",
+        "evidence_id": "evidence:successor-v10-v3:11",
+        "source_id": "source:successor-v10-v3:11",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_12_requested_definition_with_launch",
+      "family": "requested_definition_with_launch",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1344,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1353,
+      "usage": {
+        "input_tokens": 1656,
+        "output_tokens": 56,
+        "total_tokens": 1712
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:12",
+        "target_id": "successor-v10-v3-target:12",
+        "evidence_id": "evidence:successor-v10-v3:12",
+        "source_id": "source:successor-v10-v3:12",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_13_requested_availability_plain",
+      "family": "requested_availability_plain",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1637,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1644,
+      "usage": {
+        "input_tokens": 1656,
+        "output_tokens": 56,
+        "total_tokens": 1712
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:13",
+        "target_id": "successor-v10-v3-target:13",
+        "evidence_id": "evidence:successor-v10-v3:13",
+        "source_id": "source:successor-v10-v3:13",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_14_requested_limit_plain",
+      "family": "requested_limit_plain",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1175,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1182,
+      "usage": {
+        "input_tokens": 1656,
+        "output_tokens": 56,
+        "total_tokens": 1712
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:14",
+        "target_id": "successor-v10-v3-target:14",
+        "evidence_id": "evidence:successor-v10-v3:14",
+        "source_id": "source:successor-v10-v3:14",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_15_requested_pricing_plain",
+      "family": "requested_pricing_plain",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1402,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1408,
+      "usage": {
+        "input_tokens": 1650,
+        "output_tokens": 56,
+        "total_tokens": 1706
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:15",
+        "target_id": "successor-v10-v3-target:15",
+        "evidence_id": "evidence:successor-v10-v3:15",
+        "source_id": "source:successor-v10-v3:15",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_16_requested_benefit_plain",
+      "family": "requested_benefit_plain",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1187,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1195,
+      "usage": {
+        "input_tokens": 1658,
+        "output_tokens": 56,
+        "total_tokens": 1714
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:16",
+        "target_id": "successor-v10-v3-target:16",
+        "evidence_id": "evidence:successor-v10-v3:16",
+        "source_id": "source:successor-v10-v3:16",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_17_generic_absence",
+      "family": "generic_absence",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": false,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": true,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 2131,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 2138,
+      "usage": {
+        "input_tokens": 1652,
+        "output_tokens": 58,
+        "total_tokens": 1710
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:17",
+        "target_id": "successor-v10-v3-target:17",
+        "evidence_id": "evidence:successor-v10-v3:17",
+        "source_id": "source:successor-v10-v3:17",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_disagreement",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_18_explicit_absence",
+      "family": "explicit_absence",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1244,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1249,
+      "usage": {
+        "input_tokens": 1654,
+        "output_tokens": 55,
+        "total_tokens": 1709
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:18",
+        "target_id": "successor-v10-v3-target:18",
+        "evidence_id": "evidence:successor-v10-v3:18",
+        "source_id": "source:successor-v10-v3:18",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "negative_candidate_safe_to_reject"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_19_context_gap",
+      "family": "context_gap",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1744,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1747,
+      "usage": {
+        "input_tokens": 1662,
+        "output_tokens": 58,
+        "total_tokens": 1720
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:19",
+        "target_id": "successor-v10-v3-target:19",
+        "evidence_id": "evidence:successor-v10-v3:19",
+        "source_id": "source:successor-v10-v3:19",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_blocking_cue_present",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "sv10v3_20_prompt_injection",
+      "family": "prompt_injection",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": false,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": false,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1190,
+        "wait_ms": 0,
+        "pacing_wait_ms": 0,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 1198,
+      "usage": {
+        "input_tokens": 1668,
+        "output_tokens": 56,
+        "total_tokens": 1724
+      },
+      "provider_model": "ministral-8b-latest",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v27",
+        "policy_id": "successor-v10-v3-policy:20",
+        "target_id": "successor-v10-v3-target:20",
+        "evidence_id": "evidence:successor-v10-v3:20",
+        "source_id": "source:successor-v10-v3:20",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    }
+  ]
+}
