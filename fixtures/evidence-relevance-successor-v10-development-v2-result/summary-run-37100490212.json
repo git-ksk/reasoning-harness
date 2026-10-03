@@ -1,0 +1,42 @@
+{
+  "schema_version": "engine-0.6-evidence-relevance-successor-v10-development-v2-summary-v1",
+  "holdout_acceptance_evidence": false,
+  "candidate_semantics": "effective-v14-materialization-v26-harness-owned-negative-relation",
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-latest",
+      "runner_rc": 0,
+      "complete": true,
+      "authority_failures": [],
+      "identity_risk_failures": [],
+      "materialization_failures": [
+        {
+          "id": "sv10v2_18_requested_availability_with_feature",
+          "expected": "relevant",
+          "actual": "irrelevant"
+        }
+      ],
+      "proposal_exact_matches": 12,
+      "local_qualification_exact_matches": 14,
+      "effective_local_qualification_exact_matches": 16,
+      "materialized_exact_matches": 17,
+      "total_tokens": 30796,
+      "passed": false
+    },
+    "google": {
+      "model": "gemini-3.5-flash-lite",
+      "runner_rc": 0,
+      "complete": true,
+      "authority_failures": [],
+      "identity_risk_failures": [],
+      "materialization_failures": [],
+      "proposal_exact_matches": 13,
+      "local_qualification_exact_matches": 15,
+      "effective_local_qualification_exact_matches": 18,
+      "materialized_exact_matches": 18,
+      "total_tokens": 31696,
+      "passed": true
+    }
+  },
+  "development_gate_passed": false
+}
