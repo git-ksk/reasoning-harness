@@ -1,0 +1,956 @@
+{
+  "suite_id": "evidence-relevance-successor-v11-development",
+  "issue": 468,
+  "status": "fresh_independent_development",
+  "source_rule": "independently_authored_after_holdout_v11_observation_no_holdout_v1_v2_v3_v4_v5_v6_v7_v8_v9_v10_v11_or_successor_v5_v6_v7_v8_v9_v10_development_case_entity_task_signal_or_8token_surface_reuse",
+  "annotation_protocol_id": "evidence-relevance-effective-qualification-v16-materialization-v29",
+  "fixed_core_id": "evidence-relevance-fixed-core-successor-v11-development-v1",
+  "cases": [
+    {
+      "id": "sv11d_01_pricing_limit_limited_to",
+      "family": "pricing_limit_limited_to",
+      "task": "How is Amber Relay priced?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:1",
+        "target_id": "successor-v11-development-target:1",
+        "target_question": "How is Amber Relay priced?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:1",
+          "canonical_name": "Amber Relay",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:1",
+        "source_id": "source:successor-v11-development:1",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Amber Relay is limited to 720 sessions per tenant."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11d_02_definition_launch_direct",
+      "family": "definition_launch_direct",
+      "task": "What is Quartz Ledger?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:2",
+        "target_id": "successor-v11-development-target:2",
+        "target_question": "What is Quartz Ledger?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:2",
+          "canonical_name": "Quartz Ledger",
+          "aliases": []
+        },
+        "relation": "definition",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:2",
+        "source_id": "source:successor-v11-development:2",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Quartz Ledger launched for enterprise workspaces during the spring rollout."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11d_03_availability_pricing_monthly",
+      "family": "availability_pricing_monthly",
+      "task": "Where is Willow Harbor available?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:3",
+        "target_id": "successor-v11-development-target:3",
+        "target_question": "Where is Willow Harbor available?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:3",
+          "canonical_name": "Willow Harbor",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:3",
+        "source_id": "source:successor-v11-development:3",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Willow Harbor carries a monthly fee of 14 USD per workspace."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11d_04_limit_definition_refers",
+      "family": "limit_definition_refers",
+      "task": "What hard cap applies to Marble Index?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:4",
+        "target_id": "successor-v11-development-target:4",
+        "target_question": "What hard cap applies to Marble Index?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:4",
+          "canonical_name": "Marble Index",
+          "aliases": []
+        },
+        "relation": "limit",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:4",
+        "source_id": "source:successor-v11-development:4",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Marble Index refers to the archival index used by the service."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11d_05_launch_availability_operates",
+      "family": "launch_availability_operates",
+      "task": "When did Kestrel Vault launch?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:5",
+        "target_id": "successor-v11-development-target:5",
+        "target_question": "When did Kestrel Vault launch?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:5",
+          "canonical_name": "Kestrel Vault",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:5",
+        "source_id": "source:successor-v11-development:5",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Kestrel Vault operates in four countries for production tenants."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11d_06_benefit_pricing_priced_at",
+      "family": "benefit_pricing_priced_at",
+      "task": "What benefit does Indigo Mesh provide?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:6",
+        "target_id": "successor-v11-development-target:6",
+        "target_question": "What benefit does Indigo Mesh provide?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:6",
+          "canonical_name": "Indigo Mesh",
+          "aliases": []
+        },
+        "relation": "benefit_or_use_case",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:6",
+        "source_id": "source:successor-v11-development:6",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Indigo Mesh is priced at 9 USD per month."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11d_07_pricing_benefit_reduces_effort",
+      "family": "pricing_benefit_reduces_effort",
+      "task": "What does Saffron Node cost?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:7",
+        "target_id": "successor-v11-development-target:7",
+        "target_question": "What does Saffron Node cost?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:7",
+          "canonical_name": "Saffron Node",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:7",
+        "source_id": "source:successor-v11-development:7",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Saffron Node reduces operator effort during incident review."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11d_08_definition_limit_capped_at",
+      "family": "definition_limit_capped_at",
+      "task": "What does Birch Console mean?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:8",
+        "target_id": "successor-v11-development-target:8",
+        "target_question": "What does Birch Console mean?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:8",
+          "canonical_name": "Birch Console",
+          "aliases": []
+        },
+        "relation": "definition",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:8",
+        "source_id": "source:successor-v11-development:8",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Birch Console is capped at 300 dashboards per organization."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11d_09_generic_account_navigation",
+      "family": "generic_account_navigation",
+      "task": "What monthly fee applies to Cobalt Slate?",
+      "authority_expectation": "forbid_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:9",
+        "target_id": "successor-v11-development-target:9",
+        "target_question": "What monthly fee applies to Cobalt Slate?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:9",
+          "canonical_name": "Cobalt Slate",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:9",
+        "source_id": "source:successor-v11-development:9",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Cobalt Slate documentation covers account setup and dashboard navigation."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11d_10_generic_profile_preferences",
+      "family": "generic_profile_preferences",
+      "task": "What hard limit applies to Ember Atlas?",
+      "authority_expectation": "forbid_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:10",
+        "target_id": "successor-v11-development-target:10",
+        "target_question": "What hard limit applies to Ember Atlas?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:10",
+          "canonical_name": "Ember Atlas",
+          "aliases": []
+        },
+        "relation": "limit",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:10",
+        "source_id": "source:successor-v11-development:10",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ember Atlas guide organizes sign in settings and profile preferences."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11d_11_generic_admin_glossary",
+      "family": "generic_admin_glossary",
+      "task": "Where is Lumen Gate available?",
+      "authority_expectation": "forbid_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:11",
+        "target_id": "successor-v11-development-target:11",
+        "target_question": "Where is Lumen Gate available?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:11",
+          "canonical_name": "Lumen Gate",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:11",
+        "source_id": "source:successor-v11-development:11",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Lumen Gate reference page lists administration topics and glossary links."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11d_12_generic_troubleshooting_shortcuts",
+      "family": "generic_troubleshooting_shortcuts",
+      "task": "What is Tundra Panel?",
+      "authority_expectation": "forbid_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:12",
+        "target_id": "successor-v11-development-target:12",
+        "target_question": "What is Tundra Panel?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:12",
+          "canonical_name": "Tundra Panel",
+          "aliases": []
+        },
+        "relation": "definition",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:12",
+        "source_id": "source:successor-v11-development:12",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tundra Panel manual contains troubleshooting steps and keyboard shortcuts."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11d_13_generic_workspace_access",
+      "family": "generic_workspace_access",
+      "task": "When did Nimbus Ledger launch?",
+      "authority_expectation": "forbid_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:13",
+        "target_id": "successor-v11-development-target:13",
+        "target_question": "When did Nimbus Ledger launch?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:13",
+          "canonical_name": "Nimbus Ledger",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:13",
+        "source_id": "source:successor-v11-development:13",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Nimbus Ledger documentation describes workspace setup and access controls."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11d_14_generic_tutorial_index",
+      "family": "generic_tutorial_index",
+      "task": "What benefit does Granite Echo provide?",
+      "authority_expectation": "forbid_different",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:14",
+        "target_id": "successor-v11-development-target:14",
+        "target_question": "What benefit does Granite Echo provide?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:14",
+          "canonical_name": "Granite Echo",
+          "aliases": []
+        },
+        "relation": "benefit_or_use_case",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:14",
+        "source_id": "source:successor-v11-development:14",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Granite Echo index groups tutorials by product area and audience."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11d_15_requested_pricing",
+      "family": "requested_pricing",
+      "task": "How is Lilac Meter priced?",
+      "authority_expectation": "require_requested",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:15",
+        "target_id": "successor-v11-development-target:15",
+        "target_question": "How is Lilac Meter priced?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:15",
+          "canonical_name": "Lilac Meter",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:15",
+        "source_id": "source:successor-v11-development:15",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Lilac Meter is priced at 18 USD per month."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "relevant"
+    },
+    {
+      "id": "sv11d_16_requested_availability",
+      "family": "requested_availability",
+      "task": "Where is Mica Stream available?",
+      "authority_expectation": "require_requested",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:16",
+        "target_id": "successor-v11-development-target:16",
+        "target_question": "Where is Mica Stream available?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:16",
+          "canonical_name": "Mica Stream",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:16",
+        "source_id": "source:successor-v11-development:16",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Mica Stream operates in three countries for production customers."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "relevant"
+    },
+    {
+      "id": "sv11d_17_requested_limit",
+      "family": "requested_limit",
+      "task": "What hard limit applies to Ashen Queue?",
+      "authority_expectation": "require_requested",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:17",
+        "target_id": "successor-v11-development-target:17",
+        "target_question": "What hard limit applies to Ashen Queue?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:17",
+          "canonical_name": "Ashen Queue",
+          "aliases": []
+        },
+        "relation": "limit",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:17",
+        "source_id": "source:successor-v11-development:17",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ashen Queue cannot exceed 450 jobs per minute."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "relevant"
+    },
+    {
+      "id": "sv11d_18_requested_definition",
+      "family": "requested_definition",
+      "task": "What is Velvet Bridge?",
+      "authority_expectation": "require_requested",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:18",
+        "target_id": "successor-v11-development-target:18",
+        "target_question": "What is Velvet Bridge?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:18",
+          "canonical_name": "Velvet Bridge",
+          "aliases": []
+        },
+        "relation": "definition",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:18",
+        "source_id": "source:successor-v11-development:18",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Velvet Bridge refers to the managed synchronization channel."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "relevant"
+    },
+    {
+      "id": "sv11d_19_risk_clipped_column",
+      "family": "risk_clipped_column",
+      "task": "How is Topaz Grid priced?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:19",
+        "target_id": "successor-v11-development-target:19",
+        "target_question": "How is Topaz Grid priced?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:19",
+          "canonical_name": "Topaz Grid",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:19",
+        "source_id": "source:successor-v11-development:19",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Topaz Grid pricing row is clipped before the product column, so ownership is not shown."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11d_20_risk_uncertain_rename",
+      "family": "risk_uncertain_rename",
+      "task": "What is Rosewood Beam?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:20",
+        "target_id": "successor-v11-development-target:20",
+        "target_question": "What is Rosewood Beam?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:20",
+          "canonical_name": "Rosewood Beam",
+          "aliases": []
+        },
+        "relation": "definition",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:20",
+        "source_id": "source:successor-v11-development:20",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Rosewood Beam may be a renamed form of another service, but the local note does not resolve the mapping."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "identity_mapping"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11d_21_strict_launch_absence",
+      "family": "strict_launch_absence",
+      "task": "When did Ochre Portal launch?",
+      "authority_expectation": "preserve_absence",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:21",
+        "target_id": "successor-v11-development-target:21",
+        "target_question": "When did Ochre Portal launch?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:21",
+          "canonical_name": "Ochre Portal",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:21",
+        "source_id": "source:successor-v11-development:21",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ochre Portal launch is not listed in this local release index."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11d_22_strict_pricing_absence",
+      "family": "strict_pricing_absence",
+      "task": "How is Coral Matrix priced?",
+      "authority_expectation": "preserve_absence",
+      "policy": {
+        "policy_id": "successor-v11-development-policy:22",
+        "target_id": "successor-v11-development-target:22",
+        "target_question": "How is Coral Matrix priced?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development:22",
+          "canonical_name": "Coral Matrix",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development:22",
+        "source_id": "source:successor-v11-development:22",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Coral Matrix does not list pricing in this local billing index."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    }
+  ]
+}

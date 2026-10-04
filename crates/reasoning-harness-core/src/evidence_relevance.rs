@@ -95,6 +95,8 @@ pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V27_ID: &str =
     "target-evidence-relevance-binding-materialization-v27";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V28_ID: &str =
     "target-evidence-relevance-binding-materialization-v28";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V29_ID: &str =
+    "target-evidence-relevance-binding-materialization-v29";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V1_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v1";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V2_CONTRACT_ID: &str =
@@ -1608,6 +1610,55 @@ fn deterministic_nonrequested_relation_observable_cue_v3(
 
         has_number && has_observation_predicate && has_observation_context
     })
+}
+
+fn deterministic_nonrequested_relation_observable_cue_v4(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    if deterministic_nonrequested_relation_observable_cue_v3(policy, candidate) {
+        return true;
+    }
+
+    let targets = target_identity_phrases(policy);
+    if targets.is_empty() {
+        return false;
+    }
+
+    let target_owned_segments = semantic_relation_segments(candidate)
+        .into_iter()
+        .filter(|segment| !text_has_untrusted_instruction_marker_v15(segment))
+        .filter(|segment| identity_occurrences_are_context_only(segment, &targets) == Some(false))
+        .collect::<Vec<_>>();
+
+    // Successor-only Limit wording. Do not broaden the frozen global semantic
+    // frame: a target-owned "limited to <number>" proposition is affirmative
+    // limit evidence when the requested relation is some other coarse relation.
+    if policy.relation != EvidenceRelevanceRelationKind::Limit
+        && target_owned_segments.iter().any(|segment| {
+            let tokens = segment.split_whitespace().collect::<Vec<_>>();
+            normalized_phrase_matches(segment, "limited to")
+                && tokens.iter().any(|token| token_is_numeric(token))
+        })
+    {
+        return true;
+    }
+
+    // Successor-only launch wording that is affirmative but narrower than the
+    // frozen global frame. A direct target-owned launch/release event is another
+    // relation when the requested relation is not change/launch.
+    if policy.relation != EvidenceRelevanceRelationKind::ChangeOrLaunch
+        && target_owned_segments.iter().any(|segment| {
+            let tokens = segment.split_whitespace().collect::<Vec<_>>();
+            tokens
+                .iter()
+                .any(|token| ["launched", "launches", "released", "rollout"].contains(token))
+        })
+    {
+        return true;
+    }
+
+    false
 }
 
 fn requested_relation_locally_present(
@@ -4916,6 +4967,62 @@ pub fn derive_effective_evidence_local_qualification_v15(
     Ok(effective)
 }
 
+pub fn derive_effective_evidence_local_qualification_v16(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceLocalQualificationV6, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceLocalRelationScope as Relation;
+
+    let mut effective =
+        derive_effective_evidence_local_qualification_v15(policy, candidate, proposal, raw)?;
+    let (has_harness_anchor, _, _) = anchor_match(policy, candidate);
+
+    // v16 makes negative relation authority symmetric with the v11 positive
+    // authority floor. Advisory model output alone cannot manufacture a terminal
+    // DifferentRelation decision for an exact target when the Harness cannot
+    // identify any affirmative target-owned alternate-relation proposition.
+    //
+    // The successor-only v4 cue vocabulary also recognizes bounded affirmative
+    // alternate-relation wording that the frozen v14/v15 vocabulary intentionally
+    // did not cover. This can create DifferentRelation only from Harness-owned,
+    // target-owned factual structure; it never creates RequestedRelation, identity,
+    // or scope-risk authority.
+    if effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::ExactTarget
+        && effective.relation_scope == Relation::DifferentRelation
+        && !deterministic_nonrequested_relation_observable_cue_v4(policy, candidate)
+        && !requested_relation_harness_authority_present(policy, candidate)
+        && !deterministic_strict_named_target_absence(policy, candidate)
+        && !deterministic_strict_target_relation_absence(policy, candidate)
+    {
+        effective.relation_scope = Relation::Unresolved;
+    }
+
+    if proposal.is_some()
+        && raw.is_some()
+        && effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::ExactTarget
+        && matches!(
+            effective.relation_scope,
+            Relation::RelationAbsent | Relation::Unresolved
+        )
+        && has_harness_anchor
+        && deterministic_nonrequested_relation_observable_cue_v4(policy, candidate)
+        && !requested_relation_locally_present(policy, candidate)
+        && !requested_relation_harness_authority_present(policy, candidate)
+        && !deterministic_strict_named_target_absence(policy, candidate)
+        && !deterministic_strict_target_relation_absence(policy, candidate)
+    {
+        effective.relation_scope = Relation::DifferentRelation;
+    }
+
+    Ok(effective)
+}
+
 pub fn materialize_evidence_relevance_v20(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -5420,6 +5527,53 @@ pub fn materialize_evidence_relevance_v28(
     )?;
     assessment.materialization_policy_id =
         EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V28_ID.into();
+    Ok(assessment)
+}
+
+pub fn materialize_evidence_relevance_v29(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw_qualification: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    validate_policy(policy)?;
+    validate_candidate(candidate)?;
+
+    let effective = derive_effective_evidence_local_qualification_v16(
+        policy,
+        candidate,
+        proposal,
+        raw_qualification,
+    )?;
+
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceLocalRelationScope as Relation;
+    use EvidenceRelevanceBinding as Binding;
+
+    // Keep the v28 full-composition rule: synchronize advisory proposal bindings
+    // to the Harness-owned effective state so a stale model vote cannot recreate
+    // authority that v16 has removed.
+    let effective_proposal = proposal.map(|_| EvidenceRelevanceBindingProposal {
+        target_binding: match effective.identity_scope {
+            Identity::ExactTarget => Binding::Exact,
+            Identity::DistinctTarget => Binding::Different,
+            Identity::TargetAbsent | Identity::Unresolved => Binding::Unresolved,
+        },
+        relation_binding: match effective.relation_scope {
+            Relation::RequestedRelation => Binding::Exact,
+            Relation::DifferentRelation => Binding::Different,
+            Relation::RelationAbsent | Relation::Unresolved => Binding::Unresolved,
+        },
+    });
+
+    let mut assessment = materialize_evidence_relevance_v23(
+        policy,
+        candidate,
+        effective_proposal.as_ref(),
+        Some(&effective),
+    )?;
+    assessment.materialization_policy_id =
+        EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V29_ID.into();
     Ok(assessment)
 }
 

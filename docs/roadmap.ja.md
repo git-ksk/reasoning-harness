@@ -535,3 +535,7 @@ successor-v10 semantics と holdout-v11 runner は `2d75c2d` / `63e3e1b` で固�
 ### Engine 0.6 #468 holdout v11 immutable FAIL
 
 Canonical holdout-v11 run 37182677114（4343e7939e964e91d466a0788358733d629e92f2 / engine-0.6-evidence-relevance-holdout-v11-freeze）は immutable FAIL。3 required provider は全て26/26 operational完走、provider failure 0、wrong-target Relevant 0。Mistral は完全PASS、Google も final 26/26でPASS。Groqのみ25/26で、v11h21_ambiguous_generic_no_relation の target-owned generic documentation を relation_absent/Ambiguous ではなく different_relation/Irrelevant に harden して utility/qualification miss 1件。successor は affirmative な別relation proposition と requested-relation の単なる欠如/generic documentation を一般則で分離し、positive authority は増やさない。
+
+### Engine 0.6 #468 successor-v11 development candidate
+
+immutable holdout-v11 FAIL を受け、successor v11 は effective qualification v16 + materialization v29 を導入する。Harness-owned affirmative alternate-relation cue が無い model-only DifferentRelation authority を削除しつつ、successor-only cue v4 で historical true-negative contract に必要な target-owned Limit / launch wording を限定的に保持する。recent immutable provider observation replay では terminal change は Groq v11h21 の修復のみで新規 terminal miss 0。fresh independent 22-case development surface を準備し、candidate shaping は Mistral + Google のみ、Groq は semantics freeze 後の fresh holdout まで温存する。
