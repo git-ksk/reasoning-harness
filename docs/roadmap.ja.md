@@ -567,3 +567,7 @@ Successor-v11 semantics は d8d9459d9bd225a16442e0ce32de55aa7563a08f / engine-0.
 ### Engine 0.6 #468 holdout v12 corpus prepared
 
 runner freeze `920e3d9` 後に fresh 26-case acceptance corpus をauthorした。Relevant 8 / Irrelevant 9 / Ambiguous 9、authority は require_different 7 / require_requested 9 / forbid_different 3 / preserve_risk 6 / preserve_absence 1。observed holdout-v1-v11 / successor-development の case/entity/task/exact-signal/8-token reuse を禁止し、v17 ownership floor、paired relation-only control、前回Groq generic-no-relation failure classを直接coverする。canonical acceptanceはMistral + Google + Groqをrequiredに復帰。Groq admissionはholdout-v11実測63,218 tokens / `2026-10-04T08:36:18Z`から再anchorし、保守的55K floorは`2026-10-04T14:02:09Z`。v12 freeze tag前のprovider observationは禁止。
+
+### Engine 0.6 #468 holdout v12 acceptance PASS
+
+freeze 78c6894 の canonical run 37218652869 attempt 1 は required Mistral / Google / Groq と final gate を全PASS。各provider 26/26完走、authority failure 0、identity/risk failure 0、materialization 26/26、wrong-target Relevant 0、false relevance rejection 0、Relevant-left-Ambiguous 0、utility miss 0。effective qualification v17 / materialization v30 の immutable acceptance evidence とし、rerun / reinterpretation は行わない。
