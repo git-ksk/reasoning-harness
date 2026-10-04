@@ -551,3 +551,7 @@ successor-v11 development-v1 run 37212349800 は b97bf46 / engine-0.6-evidence-r
 ### Engine 0.6 #468 successor-v11 development v2 candidate
 
 development-v1 run 37212349800 は immutable FAIL のまま維持する。Mistral / Google はともに final exact 22/22、authority/materialization/utility failure 0 だったが、`sv11d_19_risk_clipped_column` で同一の identity mismatch を露出した。successor v2 は v16 negative-relation semantics を維持し、effective qualification v17 / materialization v30 を追加。explicit omitted-ownership local context の場合だけ ExactTarget を Unresolved に降格し、distinct/absent identity の生成、relation authority の変更、scope risk の弱化は行わない。immutable replay では両providerの当該 identity state だけが変わり terminal outcome は全て維持。fresh independent 22-case v2 surface では ownership gap 6件と relation-only context-gap control 4件を中心に generic/different/requested/absence family も検証する。development observation は Mistral + Google のみ、Groq は semantics freeze 後の fresh holdout まで温存する。
+
+### Engine 0.6 #468 successor-v11 development v2 PASS
+
+Frozen one-shot development-v2 run 37215152913（db38a7eb525a07208bfeb467cfa4d9d8a8a59f51 / engine-0.6-evidence-relevance-successor-v11-development-v2-freeze）は immutable PASS development evidence。Mistral / Google とも22/22完走、provider / authority / identity-risk / materialization failure 0、final v30 exact 22/22、wrong-target Relevant 0、utility miss 0。両providerで effective identity miss 0となり、context-gap全般を過剰降格せず v1 omitted-ownership failure を修復した。relation label差分は保守的/non-terminal。Groq は未観測。次は observed v17/v30 semantics を別途freezeし、その後next-holdout専用runnerをfreezeしてから fresh acceptance data をauthorする。
