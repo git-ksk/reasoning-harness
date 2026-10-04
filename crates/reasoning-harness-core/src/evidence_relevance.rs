@@ -97,6 +97,8 @@ pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V28_ID: &str =
     "target-evidence-relevance-binding-materialization-v28";
 pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V29_ID: &str =
     "target-evidence-relevance-binding-materialization-v29";
+pub const EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V30_ID: &str =
+    "target-evidence-relevance-binding-materialization-v30";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V1_CONTRACT_ID: &str =
     "reason-evidence-relevance-effective-qualification-v1";
 pub const EVIDENCE_RELEVANCE_EFFECTIVE_QUALIFICATION_V2_CONTRACT_ID: &str =
@@ -1746,6 +1748,57 @@ fn deterministic_identity_context_gap(candidate: &EvidenceRelevanceCandidate) ->
     let identity_object = text.contains("product") || text.contains("value");
 
     has_url && negative_binding && identity_object
+}
+
+fn deterministic_omitted_ownership_identity_gap(candidate: &EvidenceRelevanceCandidate) -> bool {
+    candidate
+        .signals
+        .iter()
+        .filter(|signal| {
+            !matches!(
+                signal.kind,
+                EvidenceRelevanceSignalKind::CanonicalUrl
+                    | EvidenceRelevanceSignalKind::NavigationOrFooter
+            )
+        })
+        .map(|signal| normalized(&signal.text))
+        .any(|text| {
+            let ownership_object = [
+                "product column",
+                "owner column",
+                "ownership",
+                "owner",
+                "row owner",
+                "referent",
+            ]
+            .iter()
+            .any(|marker| text.contains(marker));
+            let omitted_or_hidden = [
+                "omit",
+                "missing",
+                "outside",
+                "clip",
+                "truncat",
+                "not shown",
+                "not visible",
+                "not provided",
+                "not included",
+            ]
+            .iter()
+            .any(|marker| text.contains(marker));
+            let unresolved_binding = [
+                "ownership is not shown",
+                "owner is not shown",
+                "owner is not visible",
+                "does not show ownership",
+                "does not identify the owner",
+                "does not identify ownership",
+            ]
+            .iter()
+            .any(|marker| text.contains(marker));
+
+            ownership_object && (omitted_or_hidden || unresolved_binding)
+        })
 }
 
 fn deterministic_distinct_target_evidence(candidate: &EvidenceRelevanceCandidate) -> bool {
@@ -5023,6 +5076,36 @@ pub fn derive_effective_evidence_local_qualification_v16(
     Ok(effective)
 }
 
+pub fn derive_effective_evidence_local_qualification_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceLocalQualificationV6, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+
+    let mut effective =
+        derive_effective_evidence_local_qualification_v16(policy, candidate, proposal, raw)?;
+
+    // v17 adds a one-sided identity authority floor for explicit local ownership
+    // omissions. A canonical target name can describe a clipped row or omitted
+    // owner/product column without owning the unseen value. In that bounded case
+    // ExactTarget is unsupported; abstain on identity while preserving the
+    // already-typed scope risk and independent relation classification.
+    //
+    // This cannot create DistinctTarget/TargetAbsent, cannot clear a blocking
+    // risk, and does not manufacture relation authority.
+    if matches!(effective.scope_risk, Risk::ContextGap | Risk::Multiple)
+        && effective.identity_scope == Identity::ExactTarget
+        && deterministic_omitted_ownership_identity_gap(candidate)
+    {
+        effective.identity_scope = Identity::Unresolved;
+    }
+
+    Ok(effective)
+}
+
 pub fn materialize_evidence_relevance_v20(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -5574,6 +5657,53 @@ pub fn materialize_evidence_relevance_v29(
     )?;
     assessment.materialization_policy_id =
         EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V29_ID.into();
+    Ok(assessment)
+}
+
+pub fn materialize_evidence_relevance_v30(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw_qualification: Option<&EvidenceLocalQualificationV6>,
+) -> Result<EvidenceRelevanceAssessment, EvidenceRelevanceError> {
+    validate_policy(policy)?;
+    validate_candidate(candidate)?;
+
+    let effective = derive_effective_evidence_local_qualification_v17(
+        policy,
+        candidate,
+        proposal,
+        raw_qualification,
+    )?;
+
+    use EvidenceLocalIdentityScope as Identity;
+    use EvidenceLocalRelationScope as Relation;
+    use EvidenceRelevanceBinding as Binding;
+
+    // Preserve v29 full composition while synchronizing to the v17 effective
+    // identity floor. A stale advisory Exact binding cannot recreate target
+    // ownership removed by explicit omitted-ownership evidence.
+    let effective_proposal = proposal.map(|_| EvidenceRelevanceBindingProposal {
+        target_binding: match effective.identity_scope {
+            Identity::ExactTarget => Binding::Exact,
+            Identity::DistinctTarget => Binding::Different,
+            Identity::TargetAbsent | Identity::Unresolved => Binding::Unresolved,
+        },
+        relation_binding: match effective.relation_scope {
+            Relation::RequestedRelation => Binding::Exact,
+            Relation::DifferentRelation => Binding::Different,
+            Relation::RelationAbsent | Relation::Unresolved => Binding::Unresolved,
+        },
+    });
+
+    let mut assessment = materialize_evidence_relevance_v23(
+        policy,
+        candidate,
+        effective_proposal.as_ref(),
+        Some(&effective),
+    )?;
+    assessment.materialization_policy_id =
+        EVIDENCE_RELEVANCE_BINDING_MATERIALIZATION_POLICY_V30_ID.into();
     Ok(assessment)
 }
 
