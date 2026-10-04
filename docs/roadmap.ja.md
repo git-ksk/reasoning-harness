@@ -559,3 +559,7 @@ Frozen one-shot development-v2 run 37215152913（db38a7eb525a07208bfeb467cfa4d9d
 ### Engine 0.6 #468 successor-v11 semantics freeze preparation
 
 Development-v2 run 37215152913 は effective v17 / materialization v30 の immutable PASS。Mistral + Google は final exact 22/22、authority / identity-risk / materialization / correctness / utility failure 0。Groq は未観測。freeze evidence は documentation/checksum のみに限定し、implementation と observed development surface は変更しない。annotated successor-v11 semantics-freeze tag と別途 frozen next-holdout runner が成立するまで fresh acceptance authoring を禁止する。
+
+### Engine 0.6 #468 holdout v12 runner preparation
+
+Successor-v11 semantics は d8d9459d9bd225a16442e0ce32de55aa7563a08f / engine-0.6-evidence-relevance-successor-v11-semantics-freeze で固定済み。専用 holdout-v12 runner は新規 V12 profile のみを effective qualification v17 / materialization v30 に束縛し、historical V1-V11 binding は維持する。holdout-v12 corpus はまだ存在しない。fresh acceptance authoring 前に exact-head CI と annotated holdout-v12 runner-freeze tag を必須とし、Groq は frozen acceptance run まで未使用のまま保持する。
