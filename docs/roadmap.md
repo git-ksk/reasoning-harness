@@ -533,3 +533,7 @@ Development v4 one-shot run `37111376390` is immutable PASS under effective v15 
 ### Engine 0.6 #468 holdout v11 runner preparation
 
 Successor-v10 semantics are frozen at 2d75c2d8f1710c0553c8b2993cad201566be7d5c / engine-0.6-evidence-relevance-successor-v10-semantics-freeze. A dedicated holdout-v11 runner now binds the new V11 profile to effective qualification v15 and materialization v28 while leaving historical V1-V10 bindings unchanged. No holdout-v11 corpus exists yet. The runner must receive exact-head CI and the annotated engine-0.6-evidence-relevance-holdout-v11-runner-freeze tag before any fresh acceptance corpus is authored.
+
+### Engine 0.6 #468 holdout v11 corpus prepared
+
+The successor-v10 semantics and holdout-v11 runner are frozen at `2d75c2d` and `63e3e1b`. A fresh 26-case acceptance corpus is now prepared only after runner freeze: Relevant 8 / Irrelevant 10 / Ambiguous 8, with authority modes require_different 9 / require_requested 8 / forbid_different 4 / preserve_risk 4 / preserve_absence 1. Freshness excludes case/entity/task/exact-signal/8-token reuse against observed holdout-v1-v10 and successor development surfaces. The one-shot acceptance workflow restores Mistral + Google + Groq, with Groq admission re-anchored from holdout-v10 actual 65,889 tokens and completion `2026-10-03T03:31:56Z`, yielding a conservative 55K-headroom floor of `2026-10-03T09:17:01Z`. No provider observation is allowed until exact-head pre-freeze checks pass and `engine-0.6-evidence-relevance-holdout-v11-freeze` is pushed.

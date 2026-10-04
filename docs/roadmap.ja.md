@@ -527,3 +527,7 @@ Development v4 one-shot run `37111376390` は effective v15 / materialization v2
 ### Engine 0.6 #468 holdout v11 runner preparation
 
 Successor-v10 semantics は 2d75c2d8f1710c0553c8b2993cad201566be7d5c / engine-0.6-evidence-relevance-successor-v10-semantics-freeze で固定済み。専用 holdout-v11 runner は新しい V11 profile を effective qualification v15 / materialization v28 に束縛し、historical V1-V10 binding は変更しない。holdout-v11 corpus はまだ存在しない。fresh acceptance corpus の authoring 前に runner exact-head CI と annotated engine-0.6-evidence-relevance-holdout-v11-runner-freeze tag を必須とする。
+
+### Engine 0.6 #468 holdout v11 corpus prepared
+
+successor-v10 semantics と holdout-v11 runner は `2d75c2d` / `63e3e1b` で固定済み。runner freeze 後にのみ fresh 26-case acceptance corpus を作成した。Relevant 8 / Irrelevant 10 / Ambiguous 8、authority mode は require_different 9 / require_requested 8 / forbid_different 4 / preserve_risk 4 / preserve_absence 1。observed holdout-v1-v10 / successor development に対する case/entity/task/exact-signal/8-token reuse を禁止する。one-shot acceptance workflow では Mistral + Google + Groq を required に復帰。Groq admission は holdout-v10 実測 65,889 tokens / `2026-10-03T03:31:56Z` completion から再計算し、55K-headroom floor は `2026-10-03T09:17:01Z`。exact-head pre-freeze checks と `engine-0.6-evidence-relevance-holdout-v11-freeze` push 前の provider observation は禁止する。
