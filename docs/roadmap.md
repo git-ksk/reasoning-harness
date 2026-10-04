@@ -569,3 +569,7 @@ Development-v2 run 37215152913 is immutable PASS under effective v17 / materiali
 ### Engine 0.6 #468 holdout v12 runner preparation
 
 Successor-v11 semantics are frozen at d8d9459d9bd225a16442e0ce32de55aa7563a08f / engine-0.6-evidence-relevance-successor-v11-semantics-freeze. A dedicated holdout-v12 runner now binds only the new V12 profile to effective qualification v17 / materialization v30 while preserving historical V1-V11 bindings. No holdout-v12 corpus exists yet. Exact-head CI and the annotated holdout-v12 runner-freeze tag are required before fresh acceptance authoring; Groq remains untouched until the frozen acceptance run.
+
+### Engine 0.6 #468 holdout v12 corpus prepared
+
+After runner freeze `920e3d9`, a fresh 26-case acceptance corpus was authored: Relevant 8 / Irrelevant 9 / Ambiguous 9; authority require_different 7 / require_requested 9 / forbid_different 3 / preserve_risk 6 / preserve_absence 1. Freshness excludes observed holdout-v1-v11 and successor-development case/entity/task/exact-signal/8-token reuse. The surface directly covers the v17 ownership floor, paired relation-only controls, and the prior Groq generic-no-relation failure class. Canonical acceptance restores Mistral + Google + Groq. Groq admission is re-anchored from holdout-v11 actual 63,218 tokens / `2026-10-04T08:36:18Z`, giving a conservative 55K floor of `2026-10-04T14:02:09Z`. No provider observation before the v12 freeze tag.
