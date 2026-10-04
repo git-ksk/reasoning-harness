@@ -539,3 +539,7 @@ Canonical holdout-v11 run 37182677114（4343e7939e964e91d466a0788358733d629e92f2
 ### Engine 0.6 #468 successor-v11 development candidate
 
 immutable holdout-v11 FAIL を受け、successor v11 は effective qualification v16 + materialization v29 を導入する。Harness-owned affirmative alternate-relation cue が無い model-only DifferentRelation authority を削除しつつ、successor-only cue v4 で historical true-negative contract に必要な target-owned Limit / launch wording を限定的に保持する。recent immutable provider observation replay では terminal change は Groq v11h21 の修復のみで新規 terminal miss 0。fresh independent 22-case development surface を準備し、candidate shaping は Mistral + Google のみ、Groq は semantics freeze 後の fresh holdout まで温存する。
+
+### Engine 0.6 #468 successor-v11 development v1 immutable FAIL
+
+Frozen development-v1 run 37212349800（b97bf46f5e0badf434e5fccd8e3581fc8e77450f / engine-0.6-evidence-relevance-successor-v11-development-v1-freeze）は immutable FAIL。Mistral / Google とも22/22完走、authority failure 0、materialization 22/22、wrong-target Relevant 0、utility miss 0で、元の generic-no-relation negative-authority defect は修復できた。一方、両providerが sv11d_19_risk_clipped_column で同じ identity-axis mismatch を露出。explicit clipped product-column / ownership-not-shown に対し frozen expectation unresolved ではなく exact_target を維持した。context_gap / final Ambiguous は安全に維持。successor-v2 は v16/v29 のnegative-relation behaviorを維持し、narrow Harness-owned ownership/identity floorだけを追加し、fresh independent development surfaceで検証する。
