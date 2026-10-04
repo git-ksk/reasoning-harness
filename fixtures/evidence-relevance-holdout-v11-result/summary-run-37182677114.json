@@ -1,0 +1,79 @@
+{
+  "schema_version": "engine-0.6-evidence-relevance-holdout-summary-v11",
+  "holdout_acceptance_evidence": true,
+  "candidate_semantics": "effective-v15-materialization-v28",
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-latest",
+      "runner_rc": 0,
+      "complete": true,
+      "authority_failures": [],
+      "identity_risk_failures": [],
+      "materialization_failures": [],
+      "proposal_exact_matches": 16,
+      "local_qualification_exact_matches": 17,
+      "effective_local_qualification_exact_matches": 26,
+      "materialized_exact_matches": 26,
+      "correctness_wrong_target_relevance_retention": 0,
+      "false_relevance_rejections": 0,
+      "relevant_left_ambiguous": 0,
+      "utility_misses": 0,
+      "total_tokens": 45287,
+      "passed": true
+    },
+    "groq": {
+      "model": "openai/gpt-oss-120b",
+      "runner_rc": 0,
+      "complete": true,
+      "authority_failures": [
+        {
+          "id": "v11h21_ambiguous_generic_no_relation",
+          "mode": "forbid_different",
+          "actual": "different_relation"
+        }
+      ],
+      "identity_risk_failures": [],
+      "materialization_failures": [
+        {
+          "id": "v11h21_ambiguous_generic_no_relation",
+          "expected": "ambiguous",
+          "actual": "irrelevant"
+        }
+      ],
+      "proposal_exact_matches": 21,
+      "local_qualification_exact_matches": 15,
+      "effective_local_qualification_exact_matches": 24,
+      "materialized_exact_matches": 25,
+      "correctness_wrong_target_relevance_retention": 0,
+      "false_relevance_rejections": 0,
+      "relevant_left_ambiguous": 0,
+      "utility_misses": 1,
+      "total_tokens": 63218,
+      "passed": false
+    },
+    "google": {
+      "model": "gemini-3.5-flash-lite",
+      "runner_rc": 0,
+      "complete": true,
+      "authority_failures": [],
+      "identity_risk_failures": [],
+      "materialization_failures": [],
+      "proposal_exact_matches": 18,
+      "local_qualification_exact_matches": 20,
+      "effective_local_qualification_exact_matches": 25,
+      "materialized_exact_matches": 26,
+      "correctness_wrong_target_relevance_retention": 0,
+      "false_relevance_rejections": 0,
+      "relevant_left_ambiguous": 0,
+      "utility_misses": 0,
+      "total_tokens": 46611,
+      "passed": true
+    }
+  },
+  "required_operationally_complete": true,
+  "required_correctness_gate_passed": true,
+  "required_utility_gate_passed": false,
+  "required_materialization_gate_passed": false,
+  "required_qualification_gate_passed": false,
+  "acceptance_gate_passed": false
+}
