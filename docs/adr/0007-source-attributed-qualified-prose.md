@@ -96,3 +96,7 @@ The immutable v4 result remains FAIL. The v5 successor changes only this generic
 Immutable development v5 retained full utility and citation coverage on both required providers, but Google produced one hard-gate failure on the mention-only safety boundary. Review found a generic request-contract contradiction: the assessor system instruction required independent per-binding attribution, atomic support, and semantic-preservation verdicts, while the task suffix said to assess semantic preservation only.
 
 V6 removes only that contradictory narrowing. The task explicitly requests all three existing assessment dimensions independently. The structured output, per-binding AIS rule, Harness-owned binding/citation/authority semantics, support and preservation requirements, materialization gates, and replay validation remain unchanged. No case-specific phrase, fixture identity, or expected label is introduced into production logic.
+
+## Independent holdout after v6 semantics freeze
+
+Development v6 passed immutably at run `37294100665` and freezes the development semantics. Acceptance therefore uses a separately frozen runner and a fresh 18-case holdout authored only after that runner freeze. The holdout requires Mistral, Google, and the previously reserved Groq arm; development observations are not acceptance evidence. Freshness excludes development case IDs, canonical entities, tasks, exact source text, and exact 8-token windows. Any canonical holdout miss is immutable and must not be repaired by changing or rerunning the observed corpus.
