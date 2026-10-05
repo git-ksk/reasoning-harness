@@ -10,6 +10,24 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 - Issue #355 decouples the user-facing Reason CLI package version from the Harness Engine (`reasoning-harness-core`) package version. `v0.4.2` remains the final unified historical release; future CLI releases use `reason-vX.Y.Z` tags. Machine contract IDs remain independent compatibility coordinates, and provider crate versions remain internal implementation coordinates rather than a third user-facing product version.
 
+## Harness Engine [0.6.0] - 2026-10-06
+
+Second independently versioned Harness Engine source release under the split `engine-v*` namespace. The published Reason CLI remains `reason-v0.5.3` on Harness Engine 0.5.0 until a separate CLI adoption release.
+
+### Added / Changed
+
+- #461 adds Harness-owned target-local evidence-need routing before acquisition, including explicit floors for context-local, external-required, and trusted-verification work; model proposals cannot weaken those floors or create authority.
+- #462 plus #468 add provider-neutral evidence-target semantic relevance and coarse relation qualification with Harness-owned identity/relation/risk composition, preserving wrong-target fail-closed behavior while reducing lexical false rejection.
+- #463 adds source-attributed qualified prose with exact target/evidence/source/span binding, authority ceilings, conflict preservation, canonical cited exposure, and no promotion of attributed prose into external-world `Known`/`Supported` truth.
+- #460 adds a bounded provider-neutral JSON-Schema -> JSON-object transport fallback builder; callers still parse/validate the typed contract and fail closed, so fallback transport never creates evidence or authority.
+
+### Release acceptance
+
+- #461 independent holdout v1: `engine-0.6-evidence-need-holdout-v1-freeze`, run `35965160995`; Mistral + Google 26/26, correctness violations 0, utility misses 0, provider failures 0.
+- #462/#468 final independent relevance holdout: `engine-0.6-evidence-relevance-holdout-v12-freeze`, run `37218652869` attempt 1; Mistral / Google / Groq 26/26, authority and identity/risk failures 0, wrong-target Relevant 0, false relevance rejection 0, utility misses 0.
+- #463 independent source-attribution holdout v2: `engine-0.6-source-attribution-holdout-v2-freeze`, run `37326666360` attempt 1; Mistral / Google / Groq 18/18, useful attribution 6/6, citation coverage 100%, provider failures 0, every hard gate 0.
+- Historical FAIL/operational observations and all freeze tags remain immutable; release promotion does not rerun, rescore, relabel, or rewrite them.
+
 ## [0.5.3] - 2026-09-20
 
 Patch release that formally adopts the independently released Harness Engine 0.5.0 into the Reason CLI distribution line. Published `reason-v0.5.2` artifacts remain immutable on Engine 0.4.2.

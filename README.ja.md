@@ -71,7 +71,7 @@ HTTP 503とconnection error 7件は観測されていますが、それだけで
 
 ## クイックスタート
 
-現在公開済みのsplit CLIは **Reason CLI 0.5.3 / Harness Engine 0.5.0** です。`reason-v0.5.3`が独立release済みの`engine-v0.5.0`を正式にadoptしました。既に公開済みの`reason-v0.5.2` artifactはEngine 0.4.2のままimmutableです。published native installerが通常のend-user pathです（provenance verificationのためGitHub CLI 2.93+が必要です）。
+現在公開済みのsplit CLIは **Reason CLI 0.5.3 / Harness Engine 0.5.0** のままです。最新の独立Engine source releaseは **Harness Engine 0.6.0**（`engine-v0.6.0`）で、既存CLIへretrofitしません。`reason-v0.5.3`は別のCLI adoption releaseまでEngine 0.5.0のままimmutableです。published native installerが通常のend-user pathです（provenance verificationのためGitHub CLI 2.93+が必要です）。
 
 macOS / Linux:
 
@@ -330,6 +330,18 @@ v4とは別に、`v0.4.2`最終release gateのv36から、raw modelと意味を�
 
 freeze座標、metric、run ID、pacing policy、provenanceは[v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.ja.md)に固定しています。失敗・inconclusiveを都合よく消して再測定するのではなく、freezeしたevaluationを履歴として残し、現在のclaimを再現可能な実測へ結びつけています。
 
+### Harness Engine 0.6.0 release acceptance
+
+Harness Engine 0.6.0は、3本のEngine trackがfreeze済みindependent acceptanceを完了した後、`engine-v0.6.0`として独立releaseします。release promotion自体ではaccepted runtime semanticsを変更しません。
+
+| Track | freeze済みindependent evidence | required result |
+| --- | --- | --- |
+| **#461 evidence need** | run `35965160995` | Mistral + Google 26/26、correctness 0、utility miss 0 |
+| **#462/#468 relevance + relation** | run `37218652869` attempt 1 | Mistral / Google / Groq 26/26、wrong-target Relevant 0、false rejection 0、utility miss 0 |
+| **#463 source attribution** | run `37326666360` attempt 1 | Mistral / Google / Groq 18/18、citation 100%、全hard gate 0 |
+
+accepted runtimeはHarness-owned target-local evidence-need routing、evidence-target relevance/relation qualification、外部truthへ自己昇格できないsource-attributed qualified proseを追加します。historical FAIL / operational observationはimmutableのままrescoreしません。詳細は[Engine 0.6.0 release notes](docs/engine-0.6.0-release.ja.md)を参照してください。
+
 ### Harness Engine 0.5.0 release acceptance
 
 Harness Engine 0.5.0はfreshな `engine-0.5-final-v3-freeze` surfaceでfinal hardeningを完了し、`engine-v0.5.0` として独立releaseします。release candidateにはexplicit-fact session continuityの決定論化（#446）、admitted exact-fact investigation materializationの決定論化（#450）、planner target-recall utilityとfinalization correctnessの分離（#445）が含まれます。
@@ -359,7 +371,7 @@ exact coordinateと保存済みraw evidenceは[Engine 0.5.0 final-v3 result](doc
 - **Harness Engine** — reasoning / correctness behaviorをversioning。
 - **Machine contract ID** — wire/schema compatibilityを独立してversioning。
 
-公開済みsplit CLIは **Reason CLI 0.5.3 + Harness Engine 0.5.0** です。Harness Engine 0.5.0はaccepted semantic lineから`engine-v0.5.0`として独立versioning / releaseされ、`reason-v0.5.3`がそれをadoptする別のCLI releaseです。`reason-v0.5.2`を含む既存artifactはimmutableのままです。
+公開済みsplit CLIは **Reason CLI 0.5.3 + Harness Engine 0.5.0** のままです。最新の独立Engine source releaseはHarness Engine 0.6.0（`engine-v0.6.0`）で、CLI adoptionは別releaseとして分離します。したがって`reason-v0.5.3`を書き換えず、`reason-v0.5.2`を含む既存artifactもimmutableのままです。
 
 詳しくは[バージョニング](docs/versioning.ja.md)と[Reason CLI 0.5.0 ロードマップ](docs/reason-cli-0.5-roadmap.ja.md)を参照してください。
 

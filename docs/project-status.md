@@ -8,11 +8,11 @@ For the preserved long-form provenance ledger, see [Project status history](proj
 
 ## Current release
 
-**Reason CLI 0.5.3 on Harness Engine 0.5.0** is the current published CLI preview. Harness Engine 0.5.0 remains independently released from the accepted semantic line as `engine-v0.5.0`; `reason-v0.5.3` is the distribution release that adopts it.
+**Reason CLI 0.5.3 on Harness Engine 0.5.0** remains the current published CLI preview. **Harness Engine 0.6.0** is independently released from the accepted semantic line as `engine-v0.6.0`; Reason CLI adoption of Engine 0.6.0 is a separate future release decision.
 
 ```text
 Published CLI: Reason CLI 0.5.3 / Harness Engine 0.5.0
-Latest Engine source release: Harness Engine 0.5.0
+Latest Engine source release: Harness Engine 0.6.0 (`engine-v0.6.0`)
 ```
 
 `v0.4.2` remains the immutable final release where the CLI and Engine shared one SemVer coordinate. `reason-v0.5.0` shipped the first split general-use CLI, followed by the 0.5.1/0.5.2 patch line on Engine 0.4.2. `reason-v0.5.3` then adopted the independently accepted Engine 0.5.0 under a new CLI coordinate.
@@ -61,13 +61,15 @@ The 0.5.0-0.5.2 productization line delivered ordinary terminal usability on the
 
 The detailed acceptance plan is in the [Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md).
 
-## Separate engine track: Harness Engine 0.5.0
+## Separate engine track: Harness Engine 0.6.0
 
 Reasoning/correctness changes are intentionally separated from CLI product UX work.
 
-Harness Engine 0.5.0 is release-complete. Final-v3 canonical run `35457038163` passed all six independently required rows and all 18 fresh cases with zero correctness-boundary violations and zero session external replay. The release includes deterministic explicit-fact correction continuity, deterministic admitted exact-fact investigation materialization, and the finalization-correctness/planner-utility evaluator separation. See [Engine 0.5.0 final-v3 result](engine-0.5-final-v3-result.md).
+Harness Engine 0.6.0 is release-complete. The accepted delta adds target-local evidence-need routing (#461), evidence-target relevance and relation qualification (#462/#468), and source-attributed qualified prose without truth promotion (#463). The supporting bounded structured-output fallback (#460) changes transport compatibility only and does not create authority.
 
-`reason-v0.5.3` release provenance binds CLI 0.5.3, Engine 0.5.0, and merge commit `e9148c737c6f9bf29ce7c9258d549f5c526dfb4a`. Supported-platform package/no-Rust/lifecycle acceptance passed, and live 0.5.2 <-> 0.5.3 update/rollback acceptance verified fail-closed Engine-change consent. See [Product, engine, and contract versioning](versioning.md) and the [product roadmap](product-roadmap.md).
+Independent frozen acceptance completed before promotion: #461 holdout run `35965160995` passed Mistral + Google 26/26 with zero correctness/utility failures; #462/#468 holdout-v12 run `37218652869` passed Mistral / Google / Groq 26/26 with zero authority, wrong-target, false-rejection, or utility failures; #463 holdout-v2 run `37326666360` passed Mistral / Google / Groq 18/18 with citation coverage 100% and every hard gate at zero. Historical failures remain immutable.
+
+`engine-v0.6.0` is an independent Engine source release. Published `reason-v0.5.3` binaries remain immutable on Engine 0.5.0 until a separate CLI adoption coordinate is released. See [Engine 0.6.0 release notes](engine-0.6.0-release.md), [Product, engine, and contract versioning](versioning.md), and the [product roadmap](product-roadmap.md).
 
 ## Current trust boundary
 
@@ -86,7 +88,7 @@ The general-use CLI productization work is shipped. Native installation, guided 
 
 The remaining product-side distribution follow-up is #375: Homebrew 0.5.3 physical upgrade/test acceptance is complete; the WinGet community manifest has passed Microsoft validation and CLA checks and is waiting for community moderator approval. This external review does not block Harness Engine work.
 
-Harness Engine 0.5.0 is implementation-, acceptance-, and release-complete. Final hardening #445/#446/#450 was validated by `engine-0.5-final-v3-freeze`; canonical run `35457038163` passed all six independently required rows and all 18 fresh cases with zero correctness-boundary violations and zero session external replay. See the [Engine 0.5.0 final-v3 result](engine-0.5-final-v3-result.md). The independent Engine source release is `engine-v0.5.0`; Reason CLI 0.5.3 now distributes it, while Reason CLI 0.5.2 remains immutable on Engine 0.4.2.
+Harness Engine 0.6.0 is implementation-, acceptance-, and release-complete through #461/#462/#468/#463 and is published independently as `engine-v0.6.0`. The current distributed CLI remains Reason CLI 0.5.3 / Engine 0.5.0; adopting Engine 0.6.0 is intentionally a separate product release. #465 remains a non-semantic CI-fixture reliability follow-up rather than an Engine correctness blocker.
 
 ## Research posture
 

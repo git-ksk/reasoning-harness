@@ -14,7 +14,7 @@ Published split CLI:
   Harness Engine 0.5.0
 
 Latest independent Engine source release:
-  Harness Engine 0.5.0 (`engine-v0.5.0`)
+  Harness Engine 0.6.0 (`engine-v0.6.0`)
 
 Latest completed integration:
   Reason CLI 0.5.3 -> Harness Engine 0.5.0 (#455)
@@ -116,6 +116,16 @@ Current status/order:
 
 Engine 0.5.0 is now a closed release baseline and is distributed by Reason CLI 0.5.3. Further semantic Engine work requires a new measured gap and a new Engine identity; completed #455 adoption did not reopen or rewrite the 0.5.0 evidence.
 
+## Track C — Harness Engine 0.6.0: target-local evidence semantics — release complete
+
+Engine 0.6.0 promotes the measured production-gap sequence #461 -> #462/#468 -> #463 without rewriting Engine 0.5.0 or any frozen historical observation.
+
+- **#460 structured-output transport helper:** bounded JSON-Schema -> JSON-object fallback preserves task/budget identity and does not create evidence or authority.
+- **#461 evidence need:** independent holdout run `35965160995` passed Mistral + Google 26/26 with correctness violations 0, utility misses 0, and provider failures 0.
+- **#462/#468 relevance + relation:** final independent holdout-v12 run `37218652869` passed Mistral / Google / Groq 26/26 with authority failures 0, wrong-target Relevant 0, false relevance rejection 0, and utility misses 0.
+- **#463 source attribution:** independent holdout-v2 run `37326666360` passed Mistral / Google / Groq 18/18 with useful attribution 6/6, citation coverage 100%, provider failures 0, and every hard gate 0.
+- **#472 release closeout:** `reasoning-harness-core` advances to 0.6.0 under `engine-v0.6.0`; release promotion changes no accepted runtime semantics. Published `reason-v0.5.3` remains on Engine 0.5.0 until a separate CLI adoption release.
+
 ## Promotion rule
 
 A new reasoning mechanism does not become a supported product behavior merely because it looks promising in one experiment.
@@ -149,7 +159,3 @@ Those would require separate product and authority designs.
 For v0.1.0 through v0.4.2 implementation chronology, completed milestone details, old evaluation coordinates, and historical research provenance, use [Product roadmap history](product-roadmap-history.md).
 
 For what is currently released and the main user-facing gaps, use [Project status](project-status.md). For the full document map, use the [documentation index](README.md).
-
-### Engine 0.6 #463 source-attributed qualified prose
-
-#463 adds a separate Harness-owned source-attribution lane after admitted/relevant evidence. It does not promote attributed prose into external-world Known/Supported truth and cannot satisfy hard-verification targets. Exact target/evidence/source/span binding, authority ceiling, materialization policy identity, transform assessment, conflict state, canonical cited exposure, and replay-safe persistence are core-owned. Development converged at frozen v6 with Mistral + Google passing the 18-case surface. Fresh independent holdout v2 then passed 18/18 on Mistral, Google, and the reserved Groq provider with useful attribution 6/6, citation coverage 100%, provider failures 0, and every hard gate at zero (canonical run `37326666360`, attempt 1). The earlier holdout-v1 Groq operational failure remains immutable evidence and was not rerun or relabelled. #463 acceptance does not itself authorize Engine 0.6 release; release promotion remains a separate explicit Engine-coordinate decision.
