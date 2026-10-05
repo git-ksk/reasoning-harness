@@ -90,3 +90,16 @@ A non-scorable Mistral structured-output smoke was run before semantic freeze at
 - scorability: non_scorable_operational_diagnostic
 
 The diagnostic only verifies adapter/provider compatibility with the simplified v2 structured-output shape. It contributes no development or acceptance score and does not alter the fixed 18-case surface.
+
+## Development v3 successor
+
+Development v3 keeps the exact same 18 semantic cases, family counts, utility denominator, provider/model coordinates, hard gates, and utility floors as v2. It exists only because the generic source-attribution assessment contract changed after the immutable v2 observation.
+
+The v3 semantic contract follows the research-backed ADR amendment:
+- deterministic rejection is reserved for mechanically provable violations;
+- model semantic assessment returns independent atomic-source-support and no-strengthening verdicts;
+- Harness-owned target, binding, statement, authority, citations, and finalization remain unchanged;
+- both fully-supported and preserved are required before transformed content can materialize;
+- operational/protocol failure remains separate from semantic failure.
+
+No v1/v2 case is relabelled, replaced, or rescored. Groq remains reserved for fresh independent acceptance after development semantics freeze.

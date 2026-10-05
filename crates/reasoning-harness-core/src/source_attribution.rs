@@ -422,7 +422,6 @@ pub fn deterministic_transform_guard(
         "現在",
         "現時点",
         "提供中",
-        "利用可能",
     ];
     if !contains_any(&source, CURRENT) && contains_any(statement, CURRENT) {
         return Err(SourceAttributionGuardReason::CurrentStateExpansion);
@@ -1942,6 +1941,20 @@ mod tests {
             issues
                 .iter()
                 .any(|issue| issue.code == "source_attribution_invalid_span")
+        );
+    }
+
+    #[test]
+    fn translated_availability_is_not_itself_a_current_state_marker() {
+        assert_eq!(
+            deterministic_transform_guard(
+                &[
+                    "Lyris Queue may be available to selected teams during the preview period."
+                        .into()
+                ],
+                "Lyris Queue はプレビュー期間中、一部のチームで利用可能な場合があります。"
+            ),
+            Ok(())
         );
     }
 
