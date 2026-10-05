@@ -104,9 +104,19 @@ struct Manifest {
     required_development_providers: Vec<String>,
     required_provider_models: BTreeMap<String, String>,
     acceptance_provider_reserved: String,
+    predecessor: Predecessor,
     utility_floor: UtilityFloor,
     hard_gate_zero: Vec<String>,
     cases: Vec<Case>,
+}
+
+#[derive(Debug, Deserialize)]
+struct Predecessor {
+    configuration_id: String,
+    run_id: u64,
+    run_attempt: u64,
+    result: String,
+    freeze_tag: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -444,6 +454,14 @@ fn validate_manifest(target: &Path, manifest: &Manifest) -> Result<(), String> {
         || manifest.cases.len() != EXPECTED_CASES
     {
         return Err("frozen development manifest identity mismatch".into());
+    }
+    if manifest.predecessor.configuration_id != "engine-0.6-source-attribution-development-v1"
+        || manifest.predecessor.run_id != 37259012643
+        || manifest.predecessor.run_attempt != 1
+        || manifest.predecessor.result != "FAIL"
+        || manifest.predecessor.freeze_tag != "engine-0.6-source-attribution-development-v1-freeze"
+    {
+        return Err("v2 predecessor lineage mismatch".into());
     }
     if manifest.required_development_providers != ["mistral", "google"]
         || manifest.acceptance_provider_reserved != "groq"
@@ -1431,6 +1449,13 @@ mod tests {
             vec!["mistral", "google"]
         );
         assert_eq!(manifest.acceptance_provider_reserved, "groq");
+        assert_eq!(
+            manifest.predecessor.configuration_id,
+            "engine-0.6-source-attribution-development-v1"
+        );
+        assert_eq!(manifest.predecessor.run_id, 37259012643);
+        assert_eq!(manifest.predecessor.run_attempt, 1);
+        assert_eq!(manifest.predecessor.result, "FAIL");
         assert_eq!(
             manifest
                 .required_provider_models

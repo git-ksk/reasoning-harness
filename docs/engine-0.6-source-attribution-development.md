@@ -75,3 +75,18 @@ Only these generic corrections are permitted before v2 freeze:
 6. Mistral client-side 400/404/422 request rejection is classified as protocol/client-contract failure rather than provider availability failure.
 
 A separate Mistral structured-output smoke may be run before v2 semantic freeze. It is non-scorable, uses zero development cases, exposes no source-attribution acceptance evidence, and exists only to verify provider/adapter contract compatibility.
+
+
+## V2 pre-freeze provider compatibility diagnostic
+
+A non-scorable Mistral structured-output smoke was run before semantic freeze at commit c5de91b337c2486c74c93c934d152d6c2a84cf1a.
+
+- tag: engine-0.6-source-attribution-v2-mistral-smoke
+- Actions run: 37261099278, attempt 1
+- result: PASS
+- provider/model: Mistral / ministral-8b-2512
+- provider attempts: 1
+- semantic cases observed: 0
+- scorability: non_scorable_operational_diagnostic
+
+The diagnostic only verifies adapter/provider compatibility with the simplified v2 structured-output shape. It contributes no development or acceptance score and does not alter the fixed 18-case surface.
