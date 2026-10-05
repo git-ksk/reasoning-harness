@@ -1,0 +1,613 @@
+name: engine-0.6-evidence-relevance-holdout-v11-live
+
+on:
+  push:
+    tags:
+      - engine-0.6-evidence-relevance-holdout-v11-freeze
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  FREEZE_TAG: engine-0.6-evidence-relevance-holdout-v11-freeze
+  HOLDOUT_DIR: fixtures/evidence-relevance-holdout-v11
+  HOLDOUT_SEED: '4681110'
+  GROQ_TPD_LIMIT: '200000'
+  GROQ_V10_CONFIGURED_START_HEADROOM: '55000'
+  GROQ_V10_INTER_CASE_DELAY_MS: '300000'
+  GROQ_V10_MIN_REQUEST_INTERVAL_MS: '10000'
+  GROQ_V10_OBSERVED_TOKENS: '65889'
+  GROQ_V10_COMPLETED_UTC: '2026-10-03T03:31:56Z'
+  GROQ_TPD_START_HEADROOM: '55000'
+  GROQ_TPD_SELF_BUDGET: '70000'
+  GROQ_TPD_INTER_CASE_DELAY_MS: '300000'
+  GROQ_MIN_REQUEST_INTERVAL_MS: '10000'
+  GROQ_TPD_MIN_HEADROOM_NOT_BEFORE_UTC: '2026-10-03T09:17:01Z'
+
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - name: Enforce modeled Groq TPD 55K-headroom floor
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import datetime as dt, os, sys
+
+          limit = int(os.environ["GROQ_TPD_LIMIT"])
+          v10_start_headroom = int(os.environ["GROQ_V10_CONFIGURED_START_HEADROOM"])
+          v10_inter_case_ms = int(os.environ["GROQ_V10_INTER_CASE_DELAY_MS"])
+          v10_min_request_ms = int(os.environ["GROQ_V10_MIN_REQUEST_INTERVAL_MS"])
+          v10_tokens = int(os.environ["GROQ_V10_OBSERVED_TOKENS"])
+          v10_completed = dt.datetime.fromisoformat(os.environ["GROQ_V10_COMPLETED_UTC"].replace("Z", "+00:00"))
+          target_headroom = int(os.environ["GROQ_TPD_START_HEADROOM"])
+          self_budget = int(os.environ["GROQ_TPD_SELF_BUDGET"])
+          inter_case_ms = int(os.environ["GROQ_TPD_INTER_CASE_DELAY_MS"])
+          min_request_ms = int(os.environ["GROQ_MIN_REQUEST_INTERVAL_MS"])
+          configured_floor = dt.datetime.fromisoformat(
+              os.environ["GROQ_TPD_MIN_HEADROOM_NOT_BEFORE_UTC"].replace("Z", "+00:00")
+          )
+
+          refill_per_second = limit / 86400.0
+          v10_min_pacing_seconds = (
+              (26 - 1) * v10_inter_case_ms + 26 * v10_min_request_ms
+          ) / 1000.0
+          modeled_v10_end_headroom = (
+              v10_start_headroom + v10_min_pacing_seconds * refill_per_second - v10_tokens
+          )
+          if modeled_v10_end_headroom <= 0:
+              print(
+                  f"modeled post-v10 Groq headroom is non-positive: {modeled_v10_end_headroom:.1f}",
+                  file=sys.stderr,
+              )
+              raise SystemExit(6)
+
+          seconds_to_target = max(
+              0.0, (target_headroom - modeled_v10_end_headroom) / refill_per_second
+          )
+          derived_floor = v10_completed + dt.timedelta(seconds=seconds_to_target)
+          rounded_floor = derived_floor.replace(microsecond=0)
+          if derived_floor.microsecond:
+              rounded_floor += dt.timedelta(seconds=1)
+          if configured_floor < rounded_floor:
+              print(
+                  f"configured Groq floor is earlier than modeled headroom floor: "
+                  f"configured={configured_floor.isoformat()} derived={rounded_floor.isoformat()}",
+                  file=sys.stderr,
+              )
+              raise SystemExit(8)
+
+          holdout_pacing_seconds = (
+              (26 - 1) * inter_case_ms + 26 * min_request_ms
+          ) / 1000.0
+          refill_during_holdout = holdout_pacing_seconds * refill_per_second
+          modeled_supply = target_headroom + refill_during_holdout
+          if modeled_supply < self_budget:
+              print(
+                  f"Groq holdout pacing cannot replenish enough for self-budget: "
+                  f"supply={modeled_supply:.1f} budget={self_budget}",
+                  file=sys.stderr,
+              )
+              raise SystemExit(7)
+
+          now = dt.datetime.now(dt.timezone.utc)
+          if now < configured_floor:
+              print(
+                  f"holdout v11 is before modeled Groq TPD 55K-headroom floor: "
+                  f"now={now.isoformat()} floor={configured_floor.isoformat()}",
+                  file=sys.stderr,
+              )
+              raise SystemExit(9)
+
+          print(
+              f"Modeled Groq holdout-v11 admission satisfied: now={now.isoformat()} "
+              f"floor={configured_floor.isoformat()} post_v10_headroom={modeled_v10_end_headroom:.1f} "
+              f"start_headroom={target_headroom} paced_refill={refill_during_holdout:.1f} "
+              f"self_budget={self_budget}"
+          )
+          PY
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-holdout-v11-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate independent v11 surface
+        run: |
+          set -euo pipefail
+          cargo test -p reasoning-harness-core --test evidence_relevance_holdout_v11             holdout_v11_manifest_is_fresh_and_precommitted
+          python3 - <<'PY2'
+          import json
+          from collections import Counter
+          from pathlib import Path
+          fresh = json.loads(Path("fixtures/evidence-relevance-holdout-v11/manifest.json").read_text())
+          assert fresh["suite_id"] == "evidence-relevance-holdout-v11"
+          assert fresh["issue"] == 468
+          assert fresh["status"] == "fresh_unobserved_holdout"
+          assert fresh["annotation_protocol_id"] == "evidence-relevance-effective-qualification-v15-materialization-v28"
+          assert fresh["fixed_core_id"] == "evidence-relevance-fixed-core-v11"
+          assert len(fresh["cases"]) == 26
+          assert Counter(c["expected_disposition"] for c in fresh["cases"]) == {
+              "relevant": 8, "irrelevant": 10, "ambiguous": 8
+          }
+          assert Counter(c["authority_expectation"] for c in fresh["cases"]) == {
+              "require_different": 9,
+              "require_requested": 8,
+              "forbid_different": 4,
+              "preserve_risk": 4,
+              "preserve_absence": 1,
+          }
+          print("independent holdout v11 surface checks passed")
+          PY2
+
+      - name: Revalidate exact frozen holdout and semantics surfaces
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          test "$(git rev-list -n 1 engine-0.6-evidence-relevance-successor-v10-semantics-freeze)" =             "2d75c2d8f1710c0553c8b2993cad201566be7d5c"
+          test "$(git rev-list -n 1 engine-0.6-evidence-relevance-holdout-v11-runner-freeze)" =             "63e3e1bc5a319d2dccbbbaf2fcf643bc3a32dba5"
+
+          rm -rf /tmp/evidence-relevance-successor-v10-semantics
+          mkdir -p /tmp/evidence-relevance-successor-v10-semantics
+          git archive engine-0.6-evidence-relevance-successor-v10-semantics-freeze |             tar -x -C /tmp/evidence-relevance-successor-v10-semantics
+          (
+            cd /tmp/evidence-relevance-successor-v10-semantics
+            sha256sum -c fixtures/evidence-relevance-holdout-successor-v10/semantics-v10.sha256
+          )
+
+          git diff --exit-code engine-0.6-evidence-relevance-successor-v10-semantics-freeze --             crates/reasoning-harness-core/src/evidence_relevance.rs             crates/reasoning-harness-core/src/lib.rs             crates/reasoning-harness-core/tests/evidence_relevance_successor_v10_development_v4.rs             crates/reasoning-harness-core/tests/evidence_relevance_successor_v10_materialization_v28_replay.rs
+          git diff --exit-code engine-0.6-evidence-relevance-holdout-v11-runner-freeze --             crates/reasoning-harness-cli/Cargo.toml             crates/reasoning-harness-cli/src/bin/evidence_relevance_holdout_v11.rs
+
+          sha256sum -c "$HOLDOUT_DIR/surface-v11.sha256"
+          cargo run -q --locked -p reasoning-harness-cli             --bin reason-evidence-relevance-holdout-v11-study --             "$HOLDOUT_DIR" --provider mistral --model holdout-placeholder             --seed "$HOLDOUT_SEED" --validate-only             > /tmp/evidence-relevance-holdout-validate.json
+          jq -e '
+            .configuration_id == "evidence-relevance-live-holdout-v11"
+            and .suite_id == "evidence-relevance-holdout-v11"
+            and .issue == 468
+            and .annotation_protocol_id == "evidence-relevance-effective-qualification-v15-materialization-v28"
+            and .fixed_core_id == "evidence-relevance-fixed-core-v11"
+            and .corpus_status_at_observation == "fresh_unobserved_holdout"
+            and .planned_cases == 26
+            and .completed_cases == 0
+            and .operational_abort == null
+            and .provider_arm_latch == null
+            and .metrics.cases == 26
+            and .scorability == "validate_only_non_scorable"
+          ' /tmp/evidence-relevance-holdout-validate.json >/dev/null
+
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-core --all-targets -- -D warnings
+          cargo clippy -p reasoning-harness-cli             --bin reason-evidence-relevance-holdout-v11-study -- -D warnings
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v10_development_v4
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v10_materialization_v28_replay
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v10_development_v3
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v10_development_v2
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v10_development
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v9_relation_controls
+          cargo test -p reasoning-harness-core --test evidence_relevance_successor_v9_historical_replay
+          cargo test -p reasoning-harness-core --test evidence_relevance_holdout_v10
+          cargo test -p reasoning-harness-core --test evidence_relevance_holdout_v11
+          cargo test -p reasoning-harness-cli --bin reason-evidence-relevance-holdout-v11-study
+
+      - name: Preserve preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-holdout-v11-preflight
+          path: /tmp/evidence-relevance-holdout-validate.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-latest
+            role: required
+            inter_case_delay_ms: 1200
+            timeout_minutes: 90
+          - provider: groq
+            model: openai/gpt-oss-120b
+            role: required
+            inter_case_delay_ms: 300000
+            timeout_minutes: 180
+          - provider: google
+            model: gemini-3.5-flash-lite
+            role: required
+            inter_case_delay_ms: 6100
+            timeout_minutes: 90
+
+    concurrency:
+      group: engine-0.6-evidence-relevance-holdout-v11-${{ matrix.provider }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-holdout-v11-freeze
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Revalidate frozen surface before credentials
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          sha256sum -c "$HOLDOUT_DIR/surface-v11.sha256"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-holdout-v11-study -- \
+            "$HOLDOUT_DIR" \
+            --provider mistral \
+            --model holdout-placeholder \
+            --validate-only \
+            > /dev/null
+
+      - name: Check provider credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            groq) test -n "$GROQ_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            *) echo "unsupported frozen provider: $PROVIDER" >&2; exit 2 ;;
+          esac
+
+      - name: Run first canonical holdout v11 observation
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          ROLE: ${{ matrix.role }}
+          DELAY_MS: ${{ matrix.inter_case_delay_ms }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: ${{ env.GROQ_MIN_REQUEST_INTERVAL_MS }}
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_RATE_LIMIT_TELEMETRY: '1'
+          REASON_GROQ_STRUCTURED_OUTPUT_RETRIES: '0'
+          # Frozen successor-v10 v15/v28 semantics retain strict raw-JSON Text as Groq primary with a 512-token transport floor.
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+          REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH: /tmp/evidence-relevance-google-attempts.jsonl
+        run: |
+          set -u
+          BASE="/tmp/evidence-relevance-${PROVIDER}"
+          printf '%s\n' \
+            "{\"schema_version\":\"engine-0.6-evidence-relevance-holdout-attempt-v2\",\"provider\":\"$PROVIDER\",\"model\":\"$MODEL\",\"role\":\"$ROLE\",\"freeze_tag\":\"$FREEZE_TAG\",\"github_run_id\":\"$GITHUB_RUN_ID\",\"github_run_attempt\":\"$GITHUB_RUN_ATTEMPT\"}" \
+            > "${BASE}-attempt.json"
+
+          TOKEN_BUDGET_ARGS=()
+          if test "$PROVIDER" = "groq"; then
+            # canonical holdout v10 consumed 65,889 observed tokens. Keep the 70K cap and reserve 4K
+            # before the next case so unexpected expansion fails closed.
+            TOKEN_BUDGET_ARGS+=(
+              --max-total-provider-tokens 70000
+              --provider-token-reserve-per-case 4000
+            )
+          fi
+
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-holdout-v11-study -- \
+            "$HOLDOUT_DIR" \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed "$HOLDOUT_SEED" \
+            --inter-case-delay-ms "$DELAY_MS" \
+            --max-consecutive-operational-failures 2 \
+            --max-consecutive-capacity-failures 2 \
+            --continue-after-operational-failures \
+            "${TOKEN_BUDGET_ARGS[@]}" \
+            --checkpoint "${BASE}-checkpoint.json" \
+            > "${BASE}-result.json" \
+            2> "${BASE}-stderr.log"
+          RC=$?
+          set -e
+          printf '%s\n' "$RC" > "${BASE}.rc"
+
+          if test -f "${BASE}-result.json"; then
+            jq '{
+              configuration_id,
+              suite_id,
+              annotation_protocol_id,
+              fixed_core_id,
+              corpus_status_at_observation,
+              candidate_commit,
+              provider,
+              model,
+              canonical_full_holdout,
+              scorability,
+              provider_arm_latch,
+              metrics,
+              mismatches: [
+                .observations[]
+                | select(
+                    .proposal_match == false
+                    or .local_qualification_match == false
+                    or .effective_local_qualification_match == false
+                    or .disposition_match == false
+                    or .failure_class != null
+                  )
+                | {
+                    id,
+                    family,
+                    expected_proposal,
+                    observed_proposal,
+                    expected_local_qualification,
+                    observed_local_qualification,
+                    effective_local_qualification,
+                    effective_local_qualification_match,
+                    expected_disposition,
+                    materialized_disposition,
+                    lexical_baseline,
+                    deterministic_guard_override,
+                    failure_class
+                  }
+              ]
+            }' "${BASE}-result.json"
+          fi
+
+          exit 0
+
+      - name: Preserve live evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-holdout-v11-${{ matrix.provider }}
+          path: |
+            /tmp/evidence-relevance-${{ matrix.provider }}*
+            /tmp/evidence-relevance-google-attempts.jsonl
+          if-no-files-found: warn
+          retention-days: 90
+
+  final-gate:
+    needs: live
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Reject workflow reruns
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$GITHUB_REF_NAME" = "$FREEZE_TAG"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-holdout-v11-freeze
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.6-evidence-relevance-holdout-v11-*
+          path: /tmp/evidence-relevance-artifacts
+          merge-multiple: true
+
+      - name: Summarize three required holdout-v11 arms
+        run: |
+          set -euo pipefail
+          python3 - <<'PY2'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path('/tmp/evidence-relevance-artifacts')
+          manifest = json.loads(
+              Path('fixtures/evidence-relevance-holdout-v11/manifest.json').read_text()
+          )
+          cases = {case['id']: case for case in manifest['cases']}
+          assert len(cases) == 26
+          expected = {
+              'mistral': 'ministral-8b-latest',
+              'groq': 'openai/gpt-oss-120b',
+              'google': 'gemini-3.5-flash-lite',
+          }
+          summary = {
+              'schema_version': 'engine-0.6-evidence-relevance-holdout-summary-v11',
+              'holdout_acceptance_evidence': True,
+              'candidate_semantics': 'effective-v15-materialization-v28',
+              'providers': {},
+              'required_operationally_complete': True,
+              'required_correctness_gate_passed': True,
+              'required_utility_gate_passed': True,
+              'required_materialization_gate_passed': True,
+              'required_qualification_gate_passed': True,
+              'acceptance_gate_passed': True,
+          }
+
+          for provider, model in expected.items():
+              result_path = root / f'evidence-relevance-{provider}-result.json'
+              rc_path = root / f'evidence-relevance-{provider}.rc'
+              if not result_path.exists() or not rc_path.exists():
+                  summary['providers'][provider] = {'model': model, 'missing': True, 'passed': False}
+                  summary['acceptance_gate_passed'] = False
+                  summary['required_operationally_complete'] = False
+                  summary['required_correctness_gate_passed'] = False
+                  summary['required_utility_gate_passed'] = False
+                  summary['required_materialization_gate_passed'] = False
+                  summary['required_qualification_gate_passed'] = False
+                  continue
+
+              rc = int(rc_path.read_text().strip())
+              try:
+                  result = json.loads(result_path.read_text())
+              except Exception as exc:
+                  summary['providers'][provider] = {
+                      'model': model, 'runner_rc': rc, 'parse_error': str(exc), 'passed': False
+                  }
+                  summary['acceptance_gate_passed'] = False
+                  summary['required_operationally_complete'] = False
+                  summary['required_correctness_gate_passed'] = False
+                  summary['required_utility_gate_passed'] = False
+                  summary['required_materialization_gate_passed'] = False
+                  summary['required_qualification_gate_passed'] = False
+                  continue
+
+              metrics = result.get('metrics', {})
+              observations = {item['id']: item for item in result.get('observations', [])}
+              authority_failures = []
+              identity_risk_failures = []
+              materialization_failures = []
+
+              for case_id, case in cases.items():
+                  obs = observations.get(case_id)
+                  if obs is None:
+                      authority_failures.append({'id': case_id, 'reason': 'missing_observation'})
+                      materialization_failures.append({'id': case_id, 'reason': 'missing_observation'})
+                      continue
+                  effective = obs.get('effective_local_qualification') or {}
+                  expected_local = case['expected_local_qualification']
+                  relation = effective.get('relation_scope')
+                  mode = case['authority_expectation']
+
+                  if effective.get('identity_scope') != expected_local['identity_scope']:
+                      identity_risk_failures.append({
+                          'id': case_id, 'axis': 'identity_scope',
+                          'expected': expected_local['identity_scope'],
+                          'actual': effective.get('identity_scope'),
+                      })
+                  if effective.get('scope_risk') != expected_local['scope_risk']:
+                      identity_risk_failures.append({
+                          'id': case_id, 'axis': 'scope_risk',
+                          'expected': expected_local['scope_risk'],
+                          'actual': effective.get('scope_risk'),
+                      })
+
+                  if mode == 'require_different':
+                      if relation != 'different_relation':
+                          authority_failures.append({'id': case_id, 'mode': mode, 'actual': relation})
+                  elif mode == 'require_requested':
+                      if relation != 'requested_relation':
+                          authority_failures.append({'id': case_id, 'mode': mode, 'actual': relation})
+                  elif mode == 'forbid_different':
+                      if relation == 'different_relation':
+                          authority_failures.append({'id': case_id, 'mode': mode, 'actual': relation})
+                  elif mode == 'preserve_risk':
+                      pass
+                  elif mode == 'preserve_absence':
+                      if relation != 'relation_absent':
+                          authority_failures.append({'id': case_id, 'mode': mode, 'actual': relation})
+                  else:
+                      authority_failures.append({
+                          'id': case_id, 'reason': f'unknown_authority_expectation:{mode}'
+                      })
+
+                  if obs.get('materialized_disposition') != case['expected_disposition']:
+                      materialization_failures.append({
+                          'id': case_id,
+                          'expected': case['expected_disposition'],
+                          'actual': obs.get('materialized_disposition'),
+                      })
+
+              complete = (
+                  rc == 0
+                  and result.get('provider') == provider
+                  and result.get('model') == model
+                  and result.get('configuration_id') == 'evidence-relevance-live-holdout-v11'
+                  and result.get('suite_id') == 'evidence-relevance-holdout-v11'
+                  and result.get('issue') == 468
+                  and result.get('annotation_protocol_id') == 'evidence-relevance-effective-qualification-v15-materialization-v28'
+                  and result.get('fixed_core_id') == 'evidence-relevance-fixed-core-v11'
+                  and result.get('candidate_commit') == os.environ['GITHUB_SHA']
+                  and result.get('canonical_full_holdout') is True
+                  and result.get('planned_cases') == 26
+                  and result.get('completed_cases') == 26
+                  and result.get('operational_abort') is None
+                  and result.get('provider_arm_latch') is None
+                  and result.get('scorability') == 'complete_holdout_observation'
+                  and metrics.get('successful_provider_cases') == 26
+                  and metrics.get('failed_provider_cases') == 0
+                  and metrics.get('provider_attempts_incomplete_observations') == 0
+              )
+              correctness_ok = complete and metrics.get('correctness_wrong_target_relevance_retention') == 0
+              utility_ok = (
+                  complete
+                  and metrics.get('false_relevance_rejections') == 0
+                  and metrics.get('relevant_left_ambiguous') == 0
+                  and metrics.get('utility_misses') == 0
+              )
+              materialization_ok = (
+                  complete
+                  and not materialization_failures
+                  and metrics.get('materialized_exact_matches') == 26
+              )
+              qualification_ok = (
+                  complete
+                  and metrics.get('effective_local_qualification_expected_cases') == 26
+                  and metrics.get('effective_local_qualification_derivations') == 26
+                  and not authority_failures
+                  and not identity_risk_failures
+              )
+              passed = correctness_ok and utility_ok and materialization_ok and qualification_ok
+
+              summary['providers'][provider] = {
+                  'model': model,
+                  'runner_rc': rc,
+                  'complete': complete,
+                  'authority_failures': authority_failures,
+                  'identity_risk_failures': identity_risk_failures,
+                  'materialization_failures': materialization_failures,
+                  'proposal_exact_matches': metrics.get('proposal_exact_matches'),
+                  'local_qualification_exact_matches': metrics.get('local_qualification_exact_matches'),
+                  'effective_local_qualification_exact_matches': metrics.get('effective_local_qualification_exact_matches'),
+                  'materialized_exact_matches': metrics.get('materialized_exact_matches'),
+                  'correctness_wrong_target_relevance_retention': metrics.get('correctness_wrong_target_relevance_retention'),
+                  'false_relevance_rejections': metrics.get('false_relevance_rejections'),
+                  'relevant_left_ambiguous': metrics.get('relevant_left_ambiguous'),
+                  'utility_misses': metrics.get('utility_misses'),
+                  'total_tokens': metrics.get('total_tokens'),
+                  'passed': passed,
+              }
+              summary['required_operationally_complete'] &= complete
+              summary['required_correctness_gate_passed'] &= correctness_ok
+              summary['required_utility_gate_passed'] &= utility_ok
+              summary['required_materialization_gate_passed'] &= materialization_ok
+              summary['required_qualification_gate_passed'] &= qualification_ok
+              summary['acceptance_gate_passed'] &= passed
+
+          out = Path('/tmp/evidence-relevance-holdout-v11-summary.json')
+          out.write_text(json.dumps(summary, indent=2) + '\n')
+          print(out.read_text())
+          if not summary['acceptance_gate_passed']:
+              raise SystemExit(1)
+          PY2
+
+      - name: Preserve combined summary
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-holdout-v11-summary
+          path: /tmp/evidence-relevance-holdout-v11-summary.json
+          if-no-files-found: warn
+          retention-days: 90

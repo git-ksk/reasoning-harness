@@ -1,0 +1,36 @@
+{
+  "schema_version": "engine-0.6-evidence-relevance-successor-v10-development-v4-summary-v1",
+  "holdout_acceptance_evidence": false,
+  "candidate_semantics": "effective-v15-materialization-v28-instruction-floor-and-full-composition",
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-latest",
+      "runner_rc": 0,
+      "complete": true,
+      "authority_failures": [],
+      "identity_risk_failures": [],
+      "materialization_failures": [],
+      "proposal_exact_matches": 16,
+      "local_qualification_exact_matches": 14,
+      "effective_local_qualification_exact_matches": 24,
+      "materialized_exact_matches": 24,
+      "total_tokens": 41237,
+      "passed": true
+    },
+    "google": {
+      "model": "gemini-3.5-flash-lite",
+      "runner_rc": 0,
+      "complete": true,
+      "authority_failures": [],
+      "identity_risk_failures": [],
+      "materialization_failures": [],
+      "proposal_exact_matches": 16,
+      "local_qualification_exact_matches": 17,
+      "effective_local_qualification_exact_matches": 23,
+      "materialized_exact_matches": 24,
+      "total_tokens": 42426,
+      "passed": true
+    }
+  },
+  "development_gate_passed": true
+}

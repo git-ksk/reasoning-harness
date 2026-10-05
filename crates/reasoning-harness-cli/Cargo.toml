@@ -131,8 +131,56 @@ name = "reason-evidence-relevance-holdout-v8-study"
 path = "src/bin/evidence_relevance_holdout_v8.rs"
 
 [[bin]]
+name = "reason-evidence-relevance-holdout-v9-study"
+path = "src/bin/evidence_relevance_holdout_v9.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-holdout-v10-study"
+path = "src/bin/evidence_relevance_holdout_v10.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-holdout-v11-study"
+path = "src/bin/evidence_relevance_holdout_v11.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-holdout-v12-study"
+path = "src/bin/evidence_relevance_holdout_v12.rs"
+
+[[bin]]
 name = "reason-evidence-relevance-successor-v7-development-study"
 path = "src/bin/evidence_relevance_successor_v7_development.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-successor-v8-development-study"
+path = "src/bin/evidence_relevance_successor_v8_development.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-successor-v9-development-study"
+path = "src/bin/evidence_relevance_successor_v9_development.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-successor-v10-development-v2-study"
+path = "src/bin/evidence_relevance_successor_v10_development_v2.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-successor-v10-development-v3-study"
+path = "src/bin/evidence_relevance_successor_v10_development_v3.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-successor-v10-development-v4-study"
+path = "src/bin/evidence_relevance_successor_v10_development_v4.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-successor-v11-development-study"
+path = "src/bin/evidence_relevance_successor_v11_development.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-successor-v11-development-v2-study"
+path = "src/bin/evidence_relevance_successor_v11_development_v2.rs"
+
+[[bin]]
+name = "reason-evidence-relevance-negative-relation-probe"
+path = "src/bin/evidence_relevance_negative_relation_probe.rs"
 
 [[bin]]
 name = "reason-evidence-relevance-identity-probe"

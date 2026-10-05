@@ -1,0 +1,50 @@
+{
+  "schema_version": "engine-0.6-evidence-relevance-successor-v11-development-summary-v1",
+  "holdout_acceptance_evidence": false,
+  "candidate_semantics": "effective-v16-materialization-v29-symmetric-negative-authority",
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-latest",
+      "runner_rc": 0,
+      "complete": true,
+      "authority_failures": [],
+      "identity_risk_failures": [
+        {
+          "id": "sv11d_19_risk_clipped_column",
+          "axis": "identity_scope",
+          "expected": "unresolved",
+          "actual": "exact_target"
+        }
+      ],
+      "materialization_failures": [],
+      "proposal_exact_matches": 13,
+      "local_qualification_exact_matches": 12,
+      "effective_local_qualification_exact_matches": 15,
+      "materialized_exact_matches": 22,
+      "total_tokens": 37659,
+      "passed": false
+    },
+    "google": {
+      "model": "gemini-3.5-flash-lite",
+      "runner_rc": 0,
+      "complete": true,
+      "authority_failures": [],
+      "identity_risk_failures": [
+        {
+          "id": "sv11d_19_risk_clipped_column",
+          "axis": "identity_scope",
+          "expected": "unresolved",
+          "actual": "exact_target"
+        }
+      ],
+      "materialization_failures": [],
+      "proposal_exact_matches": 15,
+      "local_qualification_exact_matches": 16,
+      "effective_local_qualification_exact_matches": 18,
+      "materialized_exact_matches": 22,
+      "total_tokens": 38531,
+      "passed": false
+    }
+  },
+  "development_gate_passed": false
+}

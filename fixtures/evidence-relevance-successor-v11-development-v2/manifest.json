@@ -1,0 +1,956 @@
+{
+  "suite_id": "evidence-relevance-successor-v11-development-v2",
+  "issue": 468,
+  "status": "fresh_independent_development",
+  "source_rule": "independently_authored_after_successor_v11_development_v1_observation_no_holdout_v1_v2_v3_v4_v5_v6_v7_v8_v9_v10_v11_or_successor_v5_v6_v7_v8_v9_v10_v11_development_v1_case_entity_task_signal_or_8token_surface_reuse",
+  "annotation_protocol_id": "evidence-relevance-effective-qualification-v17-materialization-v30",
+  "fixed_core_id": "evidence-relevance-fixed-core-successor-v11-development-v2",
+  "cases": [
+    {
+      "id": "sv11v2_01_pricing_clipped_product_column",
+      "family": "ownership_gap_pricing",
+      "task": "How is Copper Basin priced?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:1",
+        "target_id": "successor-v11-development-v2-target:1",
+        "target_question": "How is Copper Basin priced?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:1",
+          "canonical_name": "Copper Basin",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:1",
+        "source_id": "source:successor-v11-development-v2:1",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Copper Basin pricing row ends at a clipped boundary; ownership is not visible."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_02_availability_omitted_owner_column",
+      "family": "ownership_gap_availability",
+      "task": "Where is Juniper Arc available?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:2",
+        "target_id": "successor-v11-development-v2-target:2",
+        "target_question": "Where is Juniper Arc available?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:2",
+          "canonical_name": "Juniper Arc",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:2",
+        "source_id": "source:successor-v11-development-v2:2",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Juniper Arc availability row omits the owner column, so the owner is not visible."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_03_limit_owner_outside_excerpt",
+      "family": "ownership_gap_limit",
+      "task": "What quota applies to Linen Forge?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:3",
+        "target_id": "successor-v11-development-v2-target:3",
+        "target_question": "What quota applies to Linen Forge?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:3",
+          "canonical_name": "Linen Forge",
+          "aliases": []
+        },
+        "relation": "limit",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:3",
+        "source_id": "source:successor-v11-development-v2:3",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Linen Forge quota row is visible, but the row owner is outside this excerpt."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_04_launch_truncated_product_column",
+      "family": "ownership_gap_launch",
+      "task": "When did Opal Bridge launch?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:4",
+        "target_id": "successor-v11-development-v2-target:4",
+        "target_question": "When did Opal Bridge launch?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:4",
+          "canonical_name": "Opal Bridge",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:4",
+        "source_id": "source:successor-v11-development-v2:4",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Opal Bridge launch timeline is truncated before the product column; ownership is not shown."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_05_definition_omitted_referent",
+      "family": "ownership_gap_definition",
+      "task": "What is Pine Loom?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:5",
+        "target_id": "successor-v11-development-v2-target:5",
+        "target_question": "What is Pine Loom?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:5",
+          "canonical_name": "Pine Loom",
+          "aliases": []
+        },
+        "relation": "definition",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:5",
+        "source_id": "source:successor-v11-development-v2:5",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Pine Loom definition entry has its referent omitted from the supplied excerpt."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_06_benefit_missing_owner_column",
+      "family": "ownership_gap_benefit",
+      "task": "What use case does Ruby Canal support?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:6",
+        "target_id": "successor-v11-development-v2-target:6",
+        "target_question": "What use case does Ruby Canal support?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:6",
+          "canonical_name": "Ruby Canal",
+          "aliases": []
+        },
+        "relation": "benefit_or_use_case",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:6",
+        "source_id": "source:successor-v11-development-v2:6",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ruby Canal use case card has the owner column missing from this excerpt."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "unresolved",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_07_pricing_relation_truncation",
+      "family": "relation_gap_pricing",
+      "task": "How is Silver Meadow priced?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:7",
+        "target_id": "successor-v11-development-v2-target:7",
+        "target_question": "How is Silver Meadow priced?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:7",
+          "canonical_name": "Silver Meadow",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:7",
+        "source_id": "source:successor-v11-development-v2:7",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Silver Meadow pricing excerpt is truncated after the monthly fee heading."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_08_availability_relation_clipping",
+      "family": "relation_gap_availability",
+      "task": "Where is Umber Key available?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:8",
+        "target_id": "successor-v11-development-v2-target:8",
+        "target_question": "Where is Umber Key available?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:8",
+          "canonical_name": "Umber Key",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:8",
+        "source_id": "source:successor-v11-development-v2:8",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Umber Key availability passage is clipped after the regional coverage sentence."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_09_limit_missing_numeric_value",
+      "family": "relation_gap_limit",
+      "task": "What quota applies to Violet Dock?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:9",
+        "target_id": "successor-v11-development-v2-target:9",
+        "target_question": "What quota applies to Violet Dock?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:9",
+          "canonical_name": "Violet Dock",
+          "aliases": []
+        },
+        "relation": "limit",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:9",
+        "source_id": "source:successor-v11-development-v2:9",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Violet Dock quota excerpt is missing the numeric ceiling value."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_10_definition_truncated_phrase",
+      "family": "relation_gap_definition",
+      "task": "What is Wheat Signal?",
+      "authority_expectation": "preserve_risk",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:10",
+        "target_id": "successor-v11-development-v2-target:10",
+        "target_question": "What is Wheat Signal?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:10",
+          "canonical_name": "Wheat Signal",
+          "aliases": []
+        },
+        "relation": "definition",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:10",
+        "source_id": "source:successor-v11-development-v2:10",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Wheat Signal definition text is truncated after the phrase Wheat Signal refers to."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_11_generic_account_setup",
+      "family": "generic_no_relation_pricing",
+      "task": "What monthly fee applies to Azure Mill?",
+      "authority_expectation": "forbid_different",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:11",
+        "target_id": "successor-v11-development-v2-target:11",
+        "target_question": "What monthly fee applies to Azure Mill?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:11",
+          "canonical_name": "Azure Mill",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:11",
+        "source_id": "source:successor-v11-development-v2:11",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Azure Mill documentation explains account creation, profile settings, and navigation menus."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_12_generic_keyboard_guide",
+      "family": "generic_no_relation_availability",
+      "task": "Where is Birch Quay available?",
+      "authority_expectation": "forbid_different",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:12",
+        "target_id": "successor-v11-development-v2-target:12",
+        "target_question": "Where is Birch Quay available?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:12",
+          "canonical_name": "Birch Quay",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:12",
+        "source_id": "source:successor-v11-development-v2:12",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Birch Quay help pages cover keyboard shortcuts, saved views, and workspace preferences."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_13_generic_troubleshooting_index",
+      "family": "generic_no_relation_definition",
+      "task": "What is Coral Stack?",
+      "authority_expectation": "forbid_different",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:13",
+        "target_id": "successor-v11-development-v2-target:13",
+        "target_question": "What is Coral Stack?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:13",
+          "canonical_name": "Coral Stack",
+          "aliases": []
+        },
+        "relation": "definition",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:13",
+        "source_id": "source:successor-v11-development-v2:13",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Coral Stack support material lists troubleshooting categories, search tips, and navigation links."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_14_generic_admin_roles",
+      "family": "generic_no_relation_launch",
+      "task": "When did Drift Harbor launch?",
+      "authority_expectation": "forbid_different",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:14",
+        "target_id": "successor-v11-development-v2-target:14",
+        "target_question": "When did Drift Harbor launch?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:14",
+          "canonical_name": "Drift Harbor",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:14",
+        "source_id": "source:successor-v11-development-v2:14",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Drift Harbor administrator guidance describes role assignment, team invitations, and dashboard layout."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "ambiguous"
+    },
+    {
+      "id": "sv11v2_15_pricing_limit_limited_to",
+      "family": "pricing_limit",
+      "task": "How is Ember Field priced?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:15",
+        "target_id": "successor-v11-development-v2-target:15",
+        "target_question": "How is Ember Field priced?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:15",
+          "canonical_name": "Ember Field",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:15",
+        "source_id": "source:successor-v11-development-v2:15",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ember Field is limited to 480 active sessions per organization."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11v2_16_definition_launch_released",
+      "family": "definition_launch",
+      "task": "What is Frost Ledger?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:16",
+        "target_id": "successor-v11-development-v2-target:16",
+        "target_question": "What is Frost Ledger?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:16",
+          "canonical_name": "Frost Ledger",
+          "aliases": []
+        },
+        "relation": "definition",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:16",
+        "source_id": "source:successor-v11-development-v2:16",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Frost Ledger was released to production teams during the autumn rollout."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11v2_17_availability_monthly_pricing",
+      "family": "availability_pricing",
+      "task": "Where is Garnet Path available?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:17",
+        "target_id": "successor-v11-development-v2-target:17",
+        "target_question": "Where is Garnet Path available?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:17",
+          "canonical_name": "Garnet Path",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:17",
+        "source_id": "source:successor-v11-development-v2:17",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Garnet Path has a monthly fee of 17 USD per workspace."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11v2_18_limit_definition_refers",
+      "family": "limit_definition",
+      "task": "What hard quota applies to Hazel Port?",
+      "authority_expectation": "require_different",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:18",
+        "target_id": "successor-v11-development-v2-target:18",
+        "target_question": "What hard quota applies to Hazel Port?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:18",
+          "canonical_name": "Hazel Port",
+          "aliases": []
+        },
+        "relation": "limit",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:18",
+        "source_id": "source:successor-v11-development-v2:18",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Hazel Port refers to the managed synchronization index used by the platform."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11v2_19_requested_pricing",
+      "family": "requested_pricing",
+      "task": "How is Ivory Garden priced?",
+      "authority_expectation": "require_requested",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:19",
+        "target_id": "successor-v11-development-v2-target:19",
+        "target_question": "How is Ivory Garden priced?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:19",
+          "canonical_name": "Ivory Garden",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:19",
+        "source_id": "source:successor-v11-development-v2:19",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ivory Garden carries a monthly fee of 18 USD per workspace."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "relevant"
+    },
+    {
+      "id": "sv11v2_20_requested_availability",
+      "family": "requested_availability",
+      "task": "Where is Jade Tunnel available?",
+      "authority_expectation": "require_requested",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:20",
+        "target_id": "successor-v11-development-v2-target:20",
+        "target_question": "Where is Jade Tunnel available?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:20",
+          "canonical_name": "Jade Tunnel",
+          "aliases": []
+        },
+        "relation": "availability",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:20",
+        "source_id": "source:successor-v11-development-v2:20",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Jade Tunnel operates in six countries for production customers."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "relevant"
+    },
+    {
+      "id": "sv11v2_21_strict_launch_absence",
+      "family": "strict_launch_absence",
+      "task": "When did Khaki Ridge launch?",
+      "authority_expectation": "preserve_absence",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:21",
+        "target_id": "successor-v11-development-v2-target:21",
+        "target_question": "When did Khaki Ridge launch?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:21",
+          "canonical_name": "Khaki Ridge",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:21",
+        "source_id": "source:successor-v11-development-v2:21",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "No launch for Khaki Ridge is listed in this local release note."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    },
+    {
+      "id": "sv11v2_22_distinct_target_same_pricing",
+      "family": "distinct_target_pricing",
+      "task": "How is Yarrow Lake priced?",
+      "authority_expectation": "require_requested",
+      "policy": {
+        "policy_id": "successor-v11-development-v2-policy:22",
+        "target_id": "successor-v11-development-v2-target:22",
+        "target_question": "How is Yarrow Lake priced?",
+        "entity": {
+          "canonical_id": "entity:successor-v11-development-v2:22",
+          "canonical_name": "Yarrow Lake",
+          "aliases": []
+        },
+        "relation": "pricing",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 60000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence:successor-v11-development-v2:22",
+        "source_id": "source:successor-v11-development-v2:22",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Unlike Yarrow Lake, Zinc Lake has a monthly fee of 21 USD per workspace."
+          }
+        ]
+      },
+      "expected_proposal": {
+        "target_binding": "different",
+        "relation_binding": "exact"
+      },
+      "expected_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected_disposition": "irrelevant"
+    }
+  ]
+}

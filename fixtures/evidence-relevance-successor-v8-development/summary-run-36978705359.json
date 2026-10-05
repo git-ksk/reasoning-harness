@@ -1,0 +1,47 @@
+{
+  "schema_version": "engine-0.6-evidence-relevance-successor-v8-development-summary-v1",
+  "holdout_acceptance_evidence": false,
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-latest",
+      "runner_rc": 0,
+      "planned_cases": 14,
+      "completed_cases": 14,
+      "scorability": "complete_development_observation",
+      "effective_authority_qualification_exact_matches": 14,
+      "effective_authority_identity_scope_misses": 0,
+      "effective_authority_relation_scope_misses": 0,
+      "effective_qualification_scope_risk_misses": 0,
+      "effective_qualification_spurious_scope_risks": 0,
+      "materialized_exact_matches": 14,
+      "wrong_target_relevance_retention": 0,
+      "utility_misses": 0,
+      "total_tokens": 24938,
+      "latency_p50_ms": 1547,
+      "latency_p95_ms": 2875,
+      "latency_max_ms": 2875,
+      "passed": true
+    },
+    "google": {
+      "model": "gemini-3.5-flash-lite",
+      "runner_rc": 0,
+      "planned_cases": 14,
+      "completed_cases": 14,
+      "scorability": "complete_development_observation",
+      "effective_authority_qualification_exact_matches": 11,
+      "effective_authority_identity_scope_misses": 0,
+      "effective_authority_relation_scope_misses": 3,
+      "effective_qualification_scope_risk_misses": 0,
+      "effective_qualification_spurious_scope_risks": 0,
+      "materialized_exact_matches": 14,
+      "wrong_target_relevance_retention": 0,
+      "utility_misses": 0,
+      "total_tokens": 25707,
+      "latency_p50_ms": 6717,
+      "latency_p95_ms": 46834,
+      "latency_max_ms": 46834,
+      "passed": false
+    }
+  },
+  "development_gate_passed": false
+}

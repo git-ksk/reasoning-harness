@@ -28,8 +28,10 @@ jobs:
         run: cargo fmt --check
       - name: Clippy
         run: cargo clippy --locked --workspace --all-targets -- -D warnings
-      - name: Test
-        run: cargo test --locked --workspace
+      - name: Test non-provider workspace
+        run: cargo test --locked --workspace --exclude reasoning-harness-providers
+      - name: Test provider package with isolated subprocess fixtures
+        run: cargo test --locked -p reasoning-harness-providers -- --test-threads=1
       - name: Validate cross-model concurrency policy
         run: python3 scripts/validate_cross_model_concurrency_policy.py
       - name: Validate Google canonical pacing policy

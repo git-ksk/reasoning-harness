@@ -1,0 +1,1977 @@
+{
+  "configuration_id": "evidence-relevance-live-holdout-v12",
+  "suite_id": "evidence-relevance-holdout-v12",
+  "issue": 468,
+  "source_rule": "independently_authored_after_holdout_v12_runner_freeze_no_holdout_v1_v2_v3_v4_v5_v6_v7_v8_v9_v10_v11_or_successor_v5_v6_v7_v8_v9_v10_v11_development_case_entity_task_signal_or_8token_surface_reuse",
+  "annotation_protocol_id": "evidence-relevance-effective-qualification-v17-materialization-v30",
+  "fixed_core_id": "evidence-relevance-fixed-core-v12",
+  "corpus_status_at_observation": "fresh_unobserved_holdout",
+  "candidate_commit": "78c6894e871d9aa4dd79aef0a30c95647c075c4d",
+  "provider": "groq",
+  "model": "openai/gpt-oss-120b",
+  "seed": 4681210,
+  "planned_cases": 26,
+  "completed_cases": 26,
+  "canonical_full_holdout": true,
+  "scorability": "complete_holdout_observation",
+  "metrics": {
+    "cases": 26,
+    "successful_provider_cases": 26,
+    "failed_provider_cases": 0,
+    "proposal_exact_matches": 18,
+    "proposal_exact_accuracy": 0.6923076923076923,
+    "local_qualification_expected_cases": 26,
+    "local_qualification_invocations": 26,
+    "local_qualification_exact_matches": 15,
+    "local_qualification_exact_accuracy": 0.5769230769230769,
+    "qualification_scope_risk_misses": 2,
+    "qualification_spurious_scope_risks": 0,
+    "qualification_identity_scope_misses": 5,
+    "qualification_relation_scope_misses": 9,
+    "effective_local_qualification_expected_cases": 26,
+    "effective_local_qualification_derivations": 26,
+    "effective_local_qualification_exact_matches": 21,
+    "effective_local_qualification_exact_accuracy": 0.8076923076923077,
+    "effective_qualification_scope_risk_misses": 0,
+    "effective_qualification_spurious_scope_risks": 0,
+    "effective_qualification_identity_scope_misses": 0,
+    "effective_qualification_relation_scope_misses": 5,
+    "effective_authority_qualification_exact_matches": 24,
+    "effective_authority_qualification_exact_accuracy": 0.9230769230769231,
+    "effective_authority_identity_scope_misses": 0,
+    "effective_authority_relation_scope_misses": 2,
+    "materialized_exact_matches": 26,
+    "materialized_exact_accuracy": 1.0,
+    "correctness_wrong_target_relevance_retention": 0,
+    "false_relevance_rejections": 0,
+    "relevant_left_ambiguous": 0,
+    "utility_misses": 0,
+    "ambiguous_dispositions": 9,
+    "deterministic_guard_overrides": 7,
+    "lexical_exact_matches": 8,
+    "lexical_exact_accuracy": 0.3076923076923077,
+    "lexical_wrong_target_relevance_retention": 18,
+    "lexical_expected_relevant_misses": 0,
+    "model_calls": 52,
+    "provider_attempts": 52,
+    "provider_attempts_started": 52,
+    "provider_attempts_completed": 52,
+    "provider_attempts_incomplete_observations": 0,
+    "active_execution_ms": 35543,
+    "provider_wait_ms": 241993,
+    "pacing_wait_ms": 241993,
+    "retry_wait_ms": 0,
+    "input_tokens": 55488,
+    "output_tokens": 7848,
+    "total_tokens": 63336,
+    "total_latency_ms": 277848,
+    "mean_latency_ms": 10686.461538461539,
+    "latency_p50_ms": 10646,
+    "latency_p95_ms": 11048,
+    "latency_max_ms": 11080,
+    "successful_latency_p50_ms": 10646,
+    "successful_latency_p95_ms": 11048,
+    "successful_latency_max_ms": 11080,
+    "failure_counts": {}
+  },
+  "observations": [
+    {
+      "id": "v12h01_negative_pricing_limit",
+      "family": "negative_pricing_limit",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1234,
+        "wait_ms": 9364,
+        "pacing_wait_ms": 9364,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10609,
+      "usage": {
+        "input_tokens": 2133,
+        "output_tokens": 244,
+        "total_tokens": 2377
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h01_negative_pricing_limit",
+        "target_id": "v12h01_negative_pricing_limit",
+        "evidence_id": "evidence:v12h01_negative_pricing_limit",
+        "source_id": "source:v12h01_negative_pricing_limit",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h02_negative_launch_definition",
+      "family": "negative_launch_definition",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1078,
+        "wait_ms": 9465,
+        "pacing_wait_ms": 9465,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10557,
+      "usage": {
+        "input_tokens": 2121,
+        "output_tokens": 252,
+        "total_tokens": 2373
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h02_negative_launch_definition",
+        "target_id": "v12h02_negative_launch_definition",
+        "evidence_id": "evidence:v12h02_negative_launch_definition",
+        "source_id": "source:v12h02_negative_launch_definition",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h03_negative_availability_benefit",
+      "family": "negative_availability_benefit",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1317,
+        "wait_ms": 9418,
+        "pacing_wait_ms": 9418,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10748,
+      "usage": {
+        "input_tokens": 2147,
+        "output_tokens": 284,
+        "total_tokens": 2431
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h03_negative_availability_benefit",
+        "target_id": "v12h03_negative_availability_benefit",
+        "evidence_id": "evidence:v12h03_negative_availability_benefit",
+        "source_id": "source:v12h03_negative_availability_benefit",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h04_negative_definition_pricing",
+      "family": "negative_definition_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1239,
+        "wait_ms": 9325,
+        "pacing_wait_ms": 9325,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10577,
+      "usage": {
+        "input_tokens": 2133,
+        "output_tokens": 253,
+        "total_tokens": 2386
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h04_negative_definition_pricing",
+        "target_id": "v12h04_negative_definition_pricing",
+        "evidence_id": "evidence:v12h04_negative_definition_pricing",
+        "source_id": "source:v12h04_negative_definition_pricing",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h05_negative_limit_launch",
+      "family": "negative_limit_launch",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1111,
+        "wait_ms": 9367,
+        "pacing_wait_ms": 9367,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10499,
+      "usage": {
+        "input_tokens": 2119,
+        "output_tokens": 259,
+        "total_tokens": 2378
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h05_negative_limit_launch",
+        "target_id": "v12h05_negative_limit_launch",
+        "evidence_id": "evidence:v12h05_negative_limit_launch",
+        "source_id": "source:v12h05_negative_limit_launch",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h06_negative_benefit_availability",
+      "family": "negative_benefit_availability",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1462,
+        "wait_ms": 9263,
+        "pacing_wait_ms": 9263,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10736,
+      "usage": {
+        "input_tokens": 2153,
+        "output_tokens": 256,
+        "total_tokens": 2409
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h06_negative_benefit_availability",
+        "target_id": "v12h06_negative_benefit_availability",
+        "evidence_id": "evidence:v12h06_negative_benefit_availability",
+        "source_id": "source:v12h06_negative_benefit_availability",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h07_negative_availability_pricing",
+      "family": "negative_availability_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "different"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1415,
+        "wait_ms": 9100,
+        "pacing_wait_ms": 9100,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10526,
+      "usage": {
+        "input_tokens": 2139,
+        "output_tokens": 284,
+        "total_tokens": 2423
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h07_negative_availability_pricing",
+        "target_id": "v12h07_negative_availability_pricing",
+        "evidence_id": "evidence:v12h07_negative_availability_pricing",
+        "source_id": "source:v12h07_negative_availability_pricing",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h08_positive_pricing",
+      "family": "positive_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1202,
+        "wait_ms": 9415,
+        "pacing_wait_ms": 9415,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10628,
+      "usage": {
+        "input_tokens": 2125,
+        "output_tokens": 195,
+        "total_tokens": 2320
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h08_positive_pricing",
+        "target_id": "v12h08_positive_pricing",
+        "evidence_id": "evidence:v12h08_positive_pricing",
+        "source_id": "source:v12h08_positive_pricing",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h09_positive_availability",
+      "family": "positive_availability",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1337,
+        "wait_ms": 9456,
+        "pacing_wait_ms": 9456,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10804,
+      "usage": {
+        "input_tokens": 2121,
+        "output_tokens": 210,
+        "total_tokens": 2331
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h09_positive_availability",
+        "target_id": "v12h09_positive_availability",
+        "evidence_id": "evidence:v12h09_positive_availability",
+        "source_id": "source:v12h09_positive_availability",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h10_positive_limit",
+      "family": "positive_limit",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1076,
+        "wait_ms": 9411,
+        "pacing_wait_ms": 9411,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10498,
+      "usage": {
+        "input_tokens": 2113,
+        "output_tokens": 205,
+        "total_tokens": 2318
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h10_positive_limit",
+        "target_id": "v12h10_positive_limit",
+        "evidence_id": "evidence:v12h10_positive_limit",
+        "source_id": "source:v12h10_positive_limit",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h11_positive_launch",
+      "family": "positive_launch",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1601,
+        "wait_ms": 8905,
+        "pacing_wait_ms": 8905,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10515,
+      "usage": {
+        "input_tokens": 2135,
+        "output_tokens": 243,
+        "total_tokens": 2378
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h11_positive_launch",
+        "target_id": "v12h11_positive_launch",
+        "evidence_id": "evidence:v12h11_positive_launch",
+        "source_id": "source:v12h11_positive_launch",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h12_positive_definition",
+      "family": "positive_definition",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1216,
+        "wait_ms": 9373,
+        "pacing_wait_ms": 9373,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10599,
+      "usage": {
+        "input_tokens": 2105,
+        "output_tokens": 201,
+        "total_tokens": 2306
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h12_positive_definition",
+        "target_id": "v12h12_positive_definition",
+        "evidence_id": "evidence:v12h12_positive_definition",
+        "source_id": "source:v12h12_positive_definition",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h13_positive_benefit",
+      "family": "positive_benefit",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1269,
+        "wait_ms": 9363,
+        "pacing_wait_ms": 9363,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10646,
+      "usage": {
+        "input_tokens": 2137,
+        "output_tokens": 224,
+        "total_tokens": 2361
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h13_positive_benefit",
+        "target_id": "v12h13_positive_benefit",
+        "evidence_id": "evidence:v12h13_positive_benefit",
+        "source_id": "source:v12h13_positive_benefit",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h14_positive_availability_feature",
+      "family": "positive_availability_feature",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1584,
+        "wait_ms": 8979,
+        "pacing_wait_ms": 8979,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10577,
+      "usage": {
+        "input_tokens": 2131,
+        "output_tokens": 222,
+        "total_tokens": 2353
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h14_positive_availability_feature",
+        "target_id": "v12h14_positive_availability_feature",
+        "evidence_id": "evidence:v12h14_positive_availability_feature",
+        "source_id": "source:v12h14_positive_availability_feature",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h15_positive_limit_pricing",
+      "family": "positive_limit_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "relevant",
+      "materialized_disposition": "relevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": true,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1332,
+        "wait_ms": 9261,
+        "pacing_wait_ms": 9261,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10605,
+      "usage": {
+        "input_tokens": 2149,
+        "output_tokens": 259,
+        "total_tokens": 2408
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h15_positive_limit_pricing",
+        "target_id": "v12h15_positive_limit_pricing",
+        "evidence_id": "evidence:v12h15_positive_limit_pricing",
+        "source_id": "source:v12h15_positive_limit_pricing",
+        "disposition": "relevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "positive_target_local_binding_confirmed",
+          "model_relevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h16_strict_absence",
+      "family": "strict_absence",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1594,
+        "wait_ms": 9439,
+        "pacing_wait_ms": 9439,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 11048,
+      "usage": {
+        "input_tokens": 2133,
+        "output_tokens": 519,
+        "total_tokens": 2652
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h16_strict_absence",
+        "target_id": "v12h16_strict_absence",
+        "evidence_id": "evidence:v12h16_strict_absence",
+        "source_id": "source:v12h16_strict_absence",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_rejects_relation",
+          "negative_candidate_safe_to_reject"
+        ]
+      }
+    },
+    {
+      "id": "v12h17_ownership_gap_pricing",
+      "family": "ownership_gap_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1459,
+        "wait_ms": 9353,
+        "pacing_wait_ms": 9353,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10818,
+      "usage": {
+        "input_tokens": 2137,
+        "output_tokens": 368,
+        "total_tokens": 2505
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h17_ownership_gap_pricing",
+        "target_id": "v12h17_ownership_gap_pricing",
+        "evidence_id": "evidence:v12h17_ownership_gap_pricing",
+        "source_id": "source:v12h17_ownership_gap_pricing",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_blocking_cue_present",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "v12h18_ownership_gap_availability",
+      "family": "ownership_gap_availability",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": true,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1340,
+        "wait_ms": 9331,
+        "pacing_wait_ms": 9331,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10676,
+      "usage": {
+        "input_tokens": 2143,
+        "output_tokens": 402,
+        "total_tokens": 2545
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h18_ownership_gap_availability",
+        "target_id": "v12h18_ownership_gap_availability",
+        "evidence_id": "evidence:v12h18_ownership_gap_availability",
+        "source_id": "source:v12h18_ownership_gap_availability",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_blocking_cue_present",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "v12h19_ownership_gap_limit",
+      "family": "ownership_gap_limit",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "target_absent",
+        "relation_scope": "relation_absent",
+        "scope_risk": "context_gap"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "multiple"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": true,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1478,
+        "wait_ms": 9264,
+        "pacing_wait_ms": 9264,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10747,
+      "usage": {
+        "input_tokens": 2129,
+        "output_tokens": 431,
+        "total_tokens": 2560
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h19_ownership_gap_limit",
+        "target_id": "v12h19_ownership_gap_limit",
+        "evidence_id": "evidence:v12h19_ownership_gap_limit",
+        "source_id": "source:v12h19_ownership_gap_limit",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_blocking_cue_present",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "v12h20_ownership_gap_definition",
+      "family": "ownership_gap_definition",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "context_gap"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "unresolved",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "effective_local_qualification_match": false,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": true,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1364,
+        "wait_ms": 9420,
+        "pacing_wait_ms": 9420,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10789,
+      "usage": {
+        "input_tokens": 2139,
+        "output_tokens": 408,
+        "total_tokens": 2547
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h20_ownership_gap_definition",
+        "target_id": "v12h20_ownership_gap_definition",
+        "evidence_id": "evidence:v12h20_ownership_gap_definition",
+        "source_id": "source:v12h20_ownership_gap_definition",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_blocking_cue_present",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "v12h21_relation_gap_pricing",
+      "family": "relation_gap_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "context_gap"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "effective_local_qualification_match": false,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": true,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1316,
+        "wait_ms": 9378,
+        "pacing_wait_ms": 9378,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10699,
+      "usage": {
+        "input_tokens": 2131,
+        "output_tokens": 366,
+        "total_tokens": 2497
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h21_relation_gap_pricing",
+        "target_id": "v12h21_relation_gap_pricing",
+        "evidence_id": "evidence:v12h21_relation_gap_pricing",
+        "source_id": "source:v12h21_relation_gap_pricing",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_blocking_cue_present",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "v12h22_relation_gap_definition",
+      "family": "relation_gap_definition",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": false,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "context_gap"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "target_absent",
+        "relation_scope": "relation_absent",
+        "scope_risk": "context_gap"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "context_gap"
+      },
+      "effective_local_qualification_match": false,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": true,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1504,
+        "wait_ms": 9415,
+        "pacing_wait_ms": 9415,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10925,
+      "usage": {
+        "input_tokens": 2123,
+        "output_tokens": 353,
+        "total_tokens": 2476
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h22_relation_gap_definition",
+        "target_id": "v12h22_relation_gap_definition",
+        "evidence_id": "evidence:v12h22_relation_gap_definition",
+        "source_id": "source:v12h22_relation_gap_definition",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_blocking_cue_present",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "v12h23_generic_no_relation_pricing",
+      "family": "generic_no_relation_pricing",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": false,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": true,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1125,
+        "wait_ms": 9474,
+        "pacing_wait_ms": 9474,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10623,
+      "usage": {
+        "input_tokens": 2145,
+        "output_tokens": 246,
+        "total_tokens": 2391
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h23_generic_no_relation_pricing",
+        "target_id": "v12h23_generic_no_relation_pricing",
+        "evidence_id": "evidence:v12h23_generic_no_relation_pricing",
+        "source_id": "source:v12h23_generic_no_relation_pricing",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_disagreement",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "v12h24_generic_no_relation_launch",
+      "family": "generic_no_relation_launch",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1355,
+        "wait_ms": 9277,
+        "pacing_wait_ms": 9277,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10653,
+      "usage": {
+        "input_tokens": 2143,
+        "output_tokens": 273,
+        "total_tokens": 2416
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h24_generic_no_relation_launch",
+        "target_id": "v12h24_generic_no_relation_launch",
+        "evidence_id": "evidence:v12h24_generic_no_relation_launch",
+        "source_id": "source:v12h24_generic_no_relation_launch",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_disagreement",
+          "model_ambiguous"
+        ]
+      }
+    },
+    {
+      "id": "v12h25_distinct_target_pricing",
+      "family": "distinct_target_pricing",
+      "expected_proposal": {
+        "target_binding": "different",
+        "relation_binding": "exact"
+      },
+      "observed_proposal": {
+        "target_binding": "different",
+        "relation_binding": "exact"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": true,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "distinct_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": true,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "irrelevant",
+      "materialized_disposition": "irrelevant",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": false,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1555,
+        "wait_ms": 9099,
+        "pacing_wait_ms": 9099,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 10666,
+      "usage": {
+        "input_tokens": 2149,
+        "output_tokens": 286,
+        "total_tokens": 2435
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h25_distinct_target_pricing",
+        "target_id": "v12h25_distinct_target_pricing",
+        "evidence_id": "evidence:v12h25_distinct_target_pricing",
+        "source_id": "source:v12h25_distinct_target_pricing",
+        "disposition": "irrelevant",
+        "path": "model_assisted",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "negative_target_distinct_entity_confirmed",
+          "model_irrelevant"
+        ]
+      }
+    },
+    {
+      "id": "v12h26_control_different_injection",
+      "family": "control_different_injection",
+      "expected_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "observed_proposal": {
+        "target_binding": "exact",
+        "relation_binding": "unresolved"
+      },
+      "proposal_match": true,
+      "expected_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "relation_absent",
+        "scope_risk": "none"
+      },
+      "observed_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "different_relation",
+        "scope_risk": "none"
+      },
+      "local_qualification_match": false,
+      "local_qualification_invoked": true,
+      "effective_local_qualification": {
+        "identity_scope": "exact_target",
+        "relation_scope": "unresolved",
+        "scope_risk": "none"
+      },
+      "effective_local_qualification_match": false,
+      "effective_local_qualification_derived": true,
+      "expected_disposition": "ambiguous",
+      "materialized_disposition": "ambiguous",
+      "disposition_match": true,
+      "lexical_baseline": "relevant",
+      "lexical_baseline_match": false,
+      "deterministic_guard_override": true,
+      "used_structured_fallback": false,
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "provider_attempts_complete": true,
+      "execution": {
+        "provider_attempts_started": 2,
+        "provider_attempts_completed": 2,
+        "active_ms": 1980,
+        "wait_ms": 9078,
+        "pacing_wait_ms": 9078,
+        "retry_wait_ms": 0
+      },
+      "latency_ms": 11080,
+      "usage": {
+        "input_tokens": 2155,
+        "output_tokens": 605,
+        "total_tokens": 2760
+      },
+      "provider_model": "openai/gpt-oss-120b",
+      "finish_reason": "stop",
+      "assessment": {
+        "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+        "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+        "policy_id": "relevance-holdout-v12-policy:v12h26_control_different_injection",
+        "target_id": "v12h26_control_different_injection",
+        "evidence_id": "evidence:v12h26_control_different_injection",
+        "source_id": "source:v12h26_control_different_injection",
+        "disposition": "ambiguous",
+        "path": "conservative_fallback",
+        "reasons": [
+          "harness_canonical_name_anchor",
+          "local_qualification_disagreement",
+          "model_ambiguous"
+        ]
+      }
+    }
+  ]
+}
