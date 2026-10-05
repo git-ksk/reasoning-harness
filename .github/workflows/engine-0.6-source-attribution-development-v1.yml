@@ -1,0 +1,241 @@
+name: engine-0.6-source-attribution-development-v1
+
+on:
+  push:
+    tags:
+      - engine-0.6-source-attribution-development-v1-freeze
+
+permissions:
+  contents: read
+
+env:
+  DEVELOPMENT_DIR: fixtures/source-attribution-development-v1
+  DEVELOPMENT_SEED: '463001'
+  FREEZE_TAG: engine-0.6-source-attribution-development-v1-freeze
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Enforce immutable first run
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$GITHUB_REF_NAME" = "$FREEZE_TAG"
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Validate frozen surface
+        run: |
+          set -euo pipefail
+          sha256sum -c "$DEVELOPMENT_DIR/surface-v1.sha256"
+          cargo run -q --locked -p reasoning-harness-cli \
+            --bin reason-source-attribution-development-study -- \
+            "$DEVELOPMENT_DIR" \
+            --provider mistral \
+            --model ministral-8b-2512 \
+            --seed "$DEVELOPMENT_SEED" \
+            --validate-only > /tmp/source-attribution-validate.json
+          jq -e '
+            .configuration_id == "engine-0.6-source-attribution-development-v1"
+            and .suite_id == "source-attribution-fixed-development-v1"
+            and .fixed_core_id == "source-attribution-fixed-core-v1"
+            and .issue == 463
+            and .planned_cases == 18
+            and .completed_cases == 0
+            and .scorability == "validate_only_non_scorable"
+            and .holdout_acceptance_evidence == false
+            and .acceptance_provider_reserved == "groq"
+          ' /tmp/source-attribution-validate.json >/dev/null
+      - name: Validate deterministic boundaries
+        run: |
+          set -euo pipefail
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-core --all-targets -- -D warnings
+          cargo clippy -p reasoning-harness-cli \
+            --bin reason-source-attribution-development-study -- -D warnings
+          cargo test -p reasoning-harness-core source_attribution::tests
+          cargo test -p reasoning-harness-core --test reasoning_thread_replay
+          cargo test -p reasoning-harness-cli \
+            --bin reason-source-attribution-development-study
+      - name: Preserve preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-source-attribution-development-v1-preflight
+          path: /tmp/source-attribution-validate.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-2512
+            delay_ms: 1200
+            timeout_minutes: 45
+          - provider: google
+            model: gemini-3.5-flash-lite
+            delay_ms: 6100
+            timeout_minutes: 60
+    concurrency:
+      group: engine-0.6-source-attribution-development-v1-${{ matrix.provider }}
+      cancel-in-progress: false
+    steps:
+      - name: Enforce immutable first run
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$GITHUB_REF_NAME" = "$FREEZE_TAG"
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+      - name: Revalidate surface before credentials
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+        run: |
+          set -euo pipefail
+          sha256sum -c "$DEVELOPMENT_DIR/surface-v1.sha256"
+          cargo run -q --locked -p reasoning-harness-cli \
+            --bin reason-source-attribution-development-study -- \
+            "$DEVELOPMENT_DIR" \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed "$DEVELOPMENT_SEED" \
+            --validate-only >/dev/null
+      - name: Check credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            *) exit 2 ;;
+          esac
+      - name: Run canonical observation
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          DELAY_MS: ${{ matrix.delay_ms }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+          REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH: /tmp/source-attribution-google-attempts.jsonl
+        run: |
+          set -euo pipefail
+          BASE="/tmp/source-attribution-$PROVIDER"
+          cargo run -q --locked -p reasoning-harness-cli \
+            --bin reason-source-attribution-development-study -- \
+            "$DEVELOPMENT_DIR" \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed "$DEVELOPMENT_SEED" \
+            --inter-case-delay-ms "$DELAY_MS" \
+            --checkpoint "$BASE-checkpoint.json" \
+            > "$BASE-result.json"
+          jq '{configuration_id,provider,model,candidate_commit,planned_cases,completed_cases,scorability,development_gate_passed,operational_abort,metrics}' "$BASE-result.json"
+      - name: Preserve canonical evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-source-attribution-development-v1-live-${{ matrix.provider }}
+          path: |
+            /tmp/source-attribution-${{ matrix.provider }}*
+            /tmp/source-attribution-google-attempts.jsonl
+          if-no-files-found: warn
+          retention-days: 30
+
+  final-gate:
+    needs: live
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.6-source-attribution-development-v1-live-*
+          path: /tmp/source-attribution
+          merge-multiple: true
+      - name: Evaluate frozen development gate
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("/tmp/source-attribution")
+          expected = {
+              "mistral": "ministral-8b-2512",
+              "google": "gemini-3.5-flash-lite",
+          }
+          summary = {
+              "schema_version": "engine-0.6-source-attribution-development-v1-summary",
+              "issue": 463,
+              "holdout_acceptance_evidence": False,
+              "candidate_commit": os.environ["EXPECTED_SHA"],
+              "providers": {},
+              "development_gate_passed": True,
+          }
+          for provider, model in expected.items():
+              path = root / f"source-attribution-{provider}-result.json"
+              if not path.exists():
+                  summary["providers"][provider] = {"missing": True, "passed": False}
+                  summary["development_gate_passed"] = False
+                  continue
+              result = json.loads(path.read_text())
+              passed = (
+                  result.get("candidate_commit") == os.environ["EXPECTED_SHA"]
+                  and result.get("provider") == provider
+                  and result.get("model") == model
+                  and result.get("planned_cases") == 18
+                  and result.get("completed_cases") == 18
+                  and result.get("scorability") == "canonical_development"
+                  and result.get("holdout_acceptance_evidence") is False
+                  and result.get("acceptance_provider_reserved") == "groq"
+                  and result.get("operational_abort") is None
+                  and result.get("development_gate_passed") is True
+              )
+              summary["providers"][provider] = {
+                  "model": model,
+                  "passed": passed,
+                  "metrics": result.get("metrics"),
+              }
+              summary["development_gate_passed"] = summary["development_gate_passed"] and passed
+
+          out = Path("/tmp/source-attribution-development-summary.json")
+          out.write_text(json.dumps(summary, indent=2) + "\n")
+          print(out.read_text())
+          if not summary["development_gate_passed"]:
+              raise SystemExit(1)
+          PY
+      - name: Preserve final gate
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-source-attribution-development-v1-final-gate
+          path: /tmp/source-attribution-development-summary.json
+          if-no-files-found: warn
+          retention-days: 30

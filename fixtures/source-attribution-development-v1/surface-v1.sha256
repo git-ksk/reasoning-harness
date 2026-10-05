@@ -1,0 +1,7 @@
+d483bc4f5ef9b33dcb04e2a320a6e6a5824ef1dda5775ce1d39d4fa4ccd509c5  fixtures/source-attribution-development-v1/manifest.json
+747ce7ef428c81637bf145809f38b3561d7389cb049f2d1be46ad0069028d6e5  crates/reasoning-harness-core/src/source_attribution.rs
+a1bef7a7c54d2087ea38e22dfef00c6d768ffb0aa4624201ffc923ca80dbfedd  crates/reasoning-harness-cli/src/bin/source_attribution_development.rs
+899b5b024f7ba875014d09a7ce24b260f8e5d7f696b67f2355fe1f8e2f03b21b  crates/reasoning-harness-cli/Cargo.toml
+92eae45aaa5cd342bc935559fc7634b8c3683040c41cef1c241d5df37f8e9359  docs/engine-0.6-source-attribution-development.md
+b1b00f7d91e71429bd9bcde93051ca20f3661e0fe9d95174aa83c6c64fb6b4ab  docs/adr/0007-source-attributed-qualified-prose.md
+1940ebeeed127fd8a8b8e077e9b4673fbfbc0079f2a8220b3c836767b27fb0cd  .github/workflows/engine-0.6-source-attribution-development-v1.yml

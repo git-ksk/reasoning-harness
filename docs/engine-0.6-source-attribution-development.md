@@ -40,3 +40,10 @@ Development providers are Mistral and Google. Groq is not executed on this surfa
 The first canonical observation at the frozen exact head is the only canonical development observation. FAIL is immutable. No rerun, rescore, relabel, fixture replacement, or result-driven case addition. Operational provider failure is reported separately from semantic disposition but still prevents a development PASS.
 
 Acceptance fixtures are not authored until this development observation completes and the semantics are explicitly frozen.
+
+## Frozen development model coordinates
+
+- Mistral: ministral-8b-2512 (pinned Ministral 3 8B coordinate; do not use the mutable -latest alias for the canonical observation)
+- Google: gemini-3.5-flash-lite (stable Gemini 3.5 Flash-Lite API model ID)
+
+The runner rejects a canonical live invocation whose provider/model pair differs from these frozen coordinates.
