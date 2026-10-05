@@ -12,9 +12,10 @@ use reasoning_harness_core::{
     ReasoningArtifact, SourceAttributionAuthorityCeiling, SourceAttributionBinding,
     SourceAttributionError, SourceAttributionFinalization, SourceAttributionFinalizationStatus,
     SourceAttributionLocator, SourceAttributionProposal, SourceAttributionState,
-    SourceAttributionTargetPolicy, SourceAttributionTransformAssessmentProposal,
-    SourceAttributionTransformDisposition, SourceAttributionTransformKind, SourceTextSpan,
-    append_source_attributed_claim, build_source_attribution_proposal_request,
+    SourceAttributionSupportDisposition, SourceAttributionTargetPolicy,
+    SourceAttributionTransformAssessmentProposal, SourceAttributionTransformDisposition,
+    SourceAttributionTransformKind, SourceTextSpan, append_source_attributed_claim,
+    build_source_attribution_proposal_request,
     build_source_attribution_transform_assessment_request, compose_qualified_finalization,
     finalize_source_attributed_answer, materialize_source_attributed_claim,
     parse_source_attribution_proposal, parse_source_attribution_transform_assessment,
@@ -1078,6 +1079,7 @@ fn preserved_assessment(
         target_id: proposal.target_id.clone(),
         binding_ids: proposal.binding_ids.clone(),
         statement: proposal.transformed_statement.clone().unwrap_or_default(),
+        support: SourceAttributionSupportDisposition::FullySupported,
         disposition: SourceAttributionTransformDisposition::Preserved,
     }
 }

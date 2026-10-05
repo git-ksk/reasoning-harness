@@ -36,3 +36,23 @@ A development FAIL is immutable: no rerun, rescore, relabel, or result-driven ca
 The first frozen development run showed that asking a model to echo Harness-owned target IDs, binding IDs, and the exact statement under assessment creates avoidable protocol/utility failure without adding authority. The contract is therefore tightened: model-facing proposal output contains transform content only, and assessment output contains disposition only. Harness code injects the exact target, binding set, statement, and requested translation output language after parsing.
 
 This is a strengthening of the original ownership decision, not an expansion of model authority. The frozen v1 result remains immutable.
+
+## Research-backed semantic gate amendment
+
+The v2 development result showed that the remaining utility loss was dominated by a lexical modality heuristic rather than provider transport or citation binding. The successor design was cross-checked against established attribution/evaluation work before changing semantics:
+
+- AIS (Measuring Attribution in Natural Language Generation Models) motivates evaluating whether a statement is attributable to an identified source independently from whether that statement is externally true.
+- ALCE (Enabling Large Language Models to Generate Text with Citations) motivates keeping claim support, citation support/completeness, and multi-source citation precision as separate evaluation dimensions rather than one undifferentiated verdict.
+- FActScore motivates evaluating support at atomic-proposition granularity so that one unsupported clause cannot hide inside an otherwise supported sentence.
+- Inspect AI scoring policy motivates keeping task/grader semantics separate from operational/protocol failure so evaluation machinery does not silently become a semantic label.
+
+Accordingly, transformed source-attributed claims now require two independent semantic conditions:
+
+1. every atomic factual proposition in the transformed statement is fully supported by the jointly bound source excerpts; and
+2. the transformation preserves modality, conditions, tense, quantity, scope, timing, causality, availability, benefits, and authority without strengthening.
+
+Both conditions are advisory model verdicts bound to Harness-owned target/source/statement identity, and both must pass before materialization. They create no external-world authority.
+
+Deterministic hard rejection remains for mechanically provable violations such as invalid target/source/span binding, non-canonical exact quotes, unsupported numeric precision, explicit current-state/causality/scope expansion, and hard-verification lane crossing. Cross-lingual or paraphrastic hedge-token disappearance is not itself treated as a proof of modality strengthening; semantic strengthening remains a hard gate, but is evaluated in the semantic assessment lane when it cannot be established mechanically.
+
+This amendment does not change the immutable v1/v2 observations. Any successor development surface exists because the generic semantic/materialization contract changed, not because failed cases were relabelled or replaced.
