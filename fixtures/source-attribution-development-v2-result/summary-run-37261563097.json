@@ -1,0 +1,75 @@
+{
+  "schema_version": "engine-0.6-source-attribution-development-v2-summary",
+  "issue": 463,
+  "holdout_acceptance_evidence": false,
+  "candidate_commit": "5ac14bea939804b2869f1815185dd78a0ad4bad0",
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-2512",
+      "passed": false,
+      "metrics": {
+        "planned_cases": 18,
+        "completed_cases": 18,
+        "utility_eligible_cases": 7,
+        "useful_attribution_cases": 5,
+        "avoidable_abstention_cases": 2,
+        "exposed_cases": 10,
+        "fully_cited_exposed_cases": 10,
+        "useful_retention": 0.7142857142857143,
+        "avoidable_abstention": 0.2857142857142857,
+        "citation_coverage": 1.0,
+        "model_calls": 10,
+        "provider_attempts": 10,
+        "usage": {
+          "input_tokens": 3887,
+          "output_tokens": 315,
+          "total_tokens": 4202
+        },
+        "provider_failures": 0,
+        "hard_gates": {
+          "source_binding_violation": 0,
+          "external_truth_promotion": 0,
+          "renderer_only_unsupported_factual_exposure": 0,
+          "semantic_strengthening": 0,
+          "wrong_target_attributed_claim": 0,
+          "missing_citation_binding": 0,
+          "replay_external_refetch": 0
+        }
+      }
+    },
+    "google": {
+      "model": "gemini-3.5-flash-lite",
+      "passed": false,
+      "metrics": {
+        "planned_cases": 18,
+        "completed_cases": 18,
+        "utility_eligible_cases": 7,
+        "useful_attribution_cases": 5,
+        "avoidable_abstention_cases": 2,
+        "exposed_cases": 11,
+        "fully_cited_exposed_cases": 11,
+        "useful_retention": 0.7142857142857143,
+        "avoidable_abstention": 0.2857142857142857,
+        "citation_coverage": 1.0,
+        "model_calls": 11,
+        "provider_attempts": 11,
+        "usage": {
+          "input_tokens": 4424,
+          "output_tokens": 343,
+          "total_tokens": 4767
+        },
+        "provider_failures": 0,
+        "hard_gates": {
+          "source_binding_violation": 0,
+          "external_truth_promotion": 0,
+          "renderer_only_unsupported_factual_exposure": 0,
+          "semantic_strengthening": 1,
+          "wrong_target_attributed_claim": 0,
+          "missing_citation_binding": 0,
+          "replay_external_refetch": 0
+        }
+      }
+    }
+  },
+  "development_gate_passed": false
+}
