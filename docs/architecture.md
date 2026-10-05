@@ -167,6 +167,16 @@ The candidate contract and pre-holdout acceptance plan are documented in
 [Engine 0.6 evidence-need routing calibration v1](engine-0.6-evidence-need-routing-calibration-v1.md).
 The ownership decision is recorded in [ADR-0005](adr/0005-target-local-evidence-need-routing.md).
 
+### Candidate post-acquisition evidence-target semantic relevance
+
+Issue #462 introduces an Engine 0.6 candidate boundary after acquisition and before ordinary admission. `relevant` means only that acquired material remains eligible for downstream consideration; it does not establish provenance, freshness, authority, verification, truth, or answer sufficiency.
+
+The Harness owns the exact target ID/question, optional canonical entity identity, approved aliases/localized names, typed relation kind, strict-vs-semantic identity requirement, and bounded assessment budget. The model-facing proposal contains only `relevant` / `irrelevant` / `ambiguous`; model output cannot replace target/source/evidence identity or create authority.
+
+Under strict identity, canonical URL or navigation/footer token matches cannot authorize relevance. A content-bearing canonical/alias anchor is required before model `relevant` can survive materialization. Policy may explicitly permit semantic-equivalent identity for paraphrase/cross-lingual cases. Missing proposal fails closed to typed `ambiguous`.
+
+Relevance remains separate from freshness: a stale document can be relevant-yet-stale and must be handled later by existing qualification/admission policy. The candidate contract is recorded in [ADR-0006](adr/0006-evidence-target-semantic-relevance.md), with fresh evaluation in [evidence relevance calibration v1](engine-0.6-evidence-relevance-calibration-v1.md).
+
 ## Finalization boundary — implemented core
 
 Finalization is distinct from verification and from presentation style.

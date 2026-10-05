@@ -155,6 +155,16 @@ evidence needとacquisitionは別軸である。external-required targetでも�
 
 ownership boundaryは[ADR-0005](adr/0005-target-local-evidence-need-routing.ja.md)、pre-holdout acceptanceは[Engine 0.6 evidence-need routing calibration v1](engine-0.6-evidence-need-routing-calibration-v1.ja.md)を参照。
 
+### Candidate: acquisition後のevidence-target semantic relevance
+
+Issue #462では、acquisition後・通常admission前にEngine 0.6 candidate boundaryを追加する。`relevant`はacquired materialがdownstream considerationへ進めるという意味だけで、provenance、freshness、authority、verification、truth、answer sufficiencyを確定しない。
+
+Harnessはexact target ID/question、optional canonical entity identity、approved alias/localized name、typed relation kind、strict-vs-semantic identity requirement、bounded assessment budgetを所有する。model-facing proposalは`relevant` / `irrelevant` / `ambiguous`だけで、target/source/evidence identityやauthorityをmodel outputで置換できない。
+
+strict identityではcanonical URLやnavigation/footerのtoken一致だけではrelevanceを許可しない。content-bearing canonical/alias anchorが無ければmodel `relevant`はmaterializationでblockされる。policyが明示的にsemantic-equivalent identityを許可する場合だけparaphrase/cross-lingual pathを使用できる。proposal欠落はtyped `ambiguous`へfail closedする。
+
+relevanceとfreshnessは分離する。stale documentでもsemantic relevanceは成立し得るため、relevant-yet-staleとして後段の既存qualification/admission policyへ渡す。candidate contractは[ADR-0006](adr/0006-evidence-target-semantic-relevance.ja.md)、fresh evaluationは[evidence relevance calibration v1](engine-0.6-evidence-relevance-calibration-v1.ja.md)を参照。
+
 ## 最終化境界 — 実装済みコア
 
 finalization は verification や presentation style とは別である。

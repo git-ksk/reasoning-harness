@@ -1,0 +1,206 @@
+name: engine-0.6-evidence-relevance-google-model-diagnostic-v1
+
+on:
+  push:
+    tags:
+      - engine-0.6-evidence-relevance-google-model-diagnostic-v1
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  DIAGNOSTIC_TAG: engine-0.6-evidence-relevance-google-model-diagnostic-v1
+  CALIBRATION_DIR: fixtures/evidence-relevance-calibration-v4
+  DIAGNOSTIC_SEED: '4625105'
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        model:
+          - gemini-3.5-flash-lite
+          - gemini-3.1-flash-lite
+    concurrency:
+      group: engine-0.6-evidence-relevance-google-model-diagnostic-v1-${{ matrix.model }}
+      cancel-in-progress: false
+    steps:
+      - name: Reject workflow reruns
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+
+      - uses: actions/checkout@v7
+        with:
+          ref: engine-0.6-evidence-relevance-google-model-diagnostic-v1
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Validate diagnostic identity and frozen v4 contract
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$DIAGNOSTIC_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$DIAGNOSTIC_TAG"
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider google \
+            --model calibration-placeholder \
+            --fixture 04_semantic_paraphrase \
+            --fixture 16_broad_landing_no_support \
+            --fixture 19_relation_mismatch_same_target \
+            --fixture 20_prompt_injection_self_declare \
+            --fixture 21_unknown_rename \
+            --validate-only \
+            > /tmp/evidence-relevance-google-model-diagnostic-validate.json
+          jq -e '
+            .configuration_id == "evidence-relevance-live-calibration-v4"
+            and .suite_id == "evidence-relevance-calibration-v4"
+            and .corpus_status_at_observation == "fresh_unobserved_calibration"
+            and .metrics.cases == 5
+            and .scorability == "validate_only_non_scorable"
+          ' /tmp/evidence-relevance-google-model-diagnostic-validate.json >/dev/null
+
+      - name: Check Google credential
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: test -n "$GEMINI_API_KEY"
+
+      - name: Run five-case noncanonical model diagnostic
+        env:
+          MODEL: ${{ matrix.model }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+        run: |
+          set -u
+          SLUG=$(printf '%s' "$MODEL" | tr -c 'A-Za-z0-9._-' '-')
+          BASE="/tmp/evidence-relevance-google-diagnostic-${SLUG}"
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-evidence-relevance-study -- \
+            "$CALIBRATION_DIR" \
+            --provider google \
+            --model "$MODEL" \
+            --fixture 04_semantic_paraphrase \
+            --fixture 16_broad_landing_no_support \
+            --fixture 19_relation_mismatch_same_target \
+            --fixture 20_prompt_injection_self_declare \
+            --fixture 21_unknown_rename \
+            --seed "$DIAGNOSTIC_SEED" \
+            --inter-case-delay-ms 6100 \
+            --checkpoint "${BASE}-checkpoint.json" \
+            > "${BASE}-result.json" \
+            2> "${BASE}-stderr.log"
+          RC=$?
+          set -e
+          printf '%s\n' "$RC" > "${BASE}.rc"
+          if test -s "${BASE}-result.json"; then
+            jq '{
+              provider,
+              model,
+              canonical_full_calibration,
+              scorability,
+              metrics,
+              observations: [.observations[] | {
+                id,
+                expected_proposal,
+                observed_proposal,
+                expected_disposition,
+                materialized_disposition,
+                latency_ms,
+                provider_attempts,
+                failure_class
+              }]
+            }' "${BASE}-result.json"
+          fi
+          exit 0
+
+      - name: Preserve diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-google-model-diagnostic-v1-${{ matrix.model }}
+          path: /tmp/evidence-relevance-google-diagnostic-*
+          if-no-files-found: error
+          retention-days: 90
+
+  summary:
+    needs: diagnostic
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.6-evidence-relevance-google-model-diagnostic-v1-*
+          path: /tmp/diagnostic
+          merge-multiple: true
+
+      - name: Summarize model comparison
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('/tmp/diagnostic')
+          models = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']
+          out = {
+              'schema_version': 'engine-0.6-evidence-relevance-google-model-diagnostic-v1',
+              'purpose': 'calibration_tuning_noncanonical',
+              'models': {},
+          }
+          for model in models:
+              slug = model
+              result_path = root / f'evidence-relevance-google-diagnostic-{slug}-result.json'
+              rc_path = root / f'evidence-relevance-google-diagnostic-{slug}.rc'
+              if not result_path.exists() or not rc_path.exists():
+                  out['models'][model] = {'missing': True}
+                  continue
+              rc = int(rc_path.read_text().strip())
+              try:
+                  result = json.loads(result_path.read_text())
+              except Exception as exc:
+                  out['models'][model] = {'runner_rc': rc, 'parse_error': str(exc)}
+                  continue
+              metrics = result.get('metrics', {})
+              out['models'][model] = {
+                  'runner_rc': rc,
+                  'successful_provider_cases': metrics.get('successful_provider_cases'),
+                  'failed_provider_cases': metrics.get('failed_provider_cases'),
+                  'proposal_exact_accuracy': metrics.get('proposal_exact_accuracy'),
+                  'materialized_exact_accuracy': metrics.get('materialized_exact_accuracy'),
+                  'correctness_wrong_target_relevance_retention': metrics.get('correctness_wrong_target_relevance_retention'),
+                  'utility_misses': metrics.get('utility_misses'),
+                  'total_tokens': metrics.get('total_tokens'),
+                  'total_latency_ms': metrics.get('total_latency_ms'),
+                  'failure_counts': metrics.get('failure_counts'),
+                  'cases': [
+                      {
+                          'id': case.get('id'),
+                          'observed_proposal': case.get('observed_proposal'),
+                          'expected_disposition': case.get('expected_disposition'),
+                          'materialized_disposition': case.get('materialized_disposition'),
+                          'latency_ms': case.get('latency_ms'),
+                          'failure_class': case.get('failure_class'),
+                      }
+                      for case in result.get('observations', [])
+                  ],
+              }
+          path = Path('/tmp/evidence-relevance-google-model-diagnostic-v1-summary.json')
+          path.write_text(json.dumps(out, indent=2) + '\n')
+          print(path.read_text())
+          PY
+
+      - name: Preserve comparison summary
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-evidence-relevance-google-model-diagnostic-v1-summary
+          path: /tmp/evidence-relevance-google-model-diagnostic-v1-summary.json
+          if-no-files-found: error
+          retention-days: 90
