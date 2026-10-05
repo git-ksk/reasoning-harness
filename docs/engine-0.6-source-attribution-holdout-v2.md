@@ -1,6 +1,6 @@
 # Engine 0.6 source-attribution holdout v2
 
-Status: fresh independent holdout v2 corpus prepared and still unobserved. No v2 acceptance provider generation has occurred.
+Status: frozen and observed. Canonical run `37326666360` attempt 1 is immutable PASS; see `engine-0.6-source-attribution-holdout-v2-result.md`.
 
 ## Why v2 exists
 
