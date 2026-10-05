@@ -1,0 +1,552 @@
+{
+  "configuration_id": "engine-0.6-source-attribution-development-v1",
+  "suite_id": "source-attribution-fixed-development-v1",
+  "fixed_core_id": "source-attribution-fixed-core-v1",
+  "issue": 463,
+  "corpus_status_at_observation": "fresh_unobserved_development",
+  "source_rule": "synthetic_fresh_no_production_content",
+  "provider": "google",
+  "model": "gemini-3.5-flash-lite",
+  "seed": 463001,
+  "candidate_commit": "afe0b4c0a68e43586c85ec8a1c1416a2cc5b2bba",
+  "planned_cases": 18,
+  "completed_cases": 18,
+  "scorability": "canonical_development",
+  "holdout_acceptance_evidence": false,
+  "acceptance_provider_reserved": "groq",
+  "required_development_providers": [
+    "mistral",
+    "google"
+  ],
+  "metrics": {
+    "planned_cases": 18,
+    "completed_cases": 18,
+    "utility_eligible_cases": 7,
+    "useful_attribution_cases": 3,
+    "avoidable_abstention_cases": 4,
+    "exposed_cases": 9,
+    "fully_cited_exposed_cases": 9,
+    "useful_retention": 0.42857142857142855,
+    "avoidable_abstention": 0.5714285714285714,
+    "citation_coverage": 1.0,
+    "model_calls": 11,
+    "provider_attempts": 11,
+    "usage": {
+      "input_tokens": 3839,
+      "output_tokens": 669,
+      "total_tokens": 4508
+    },
+    "provider_failures": 0,
+    "hard_gates": {
+      "source_binding_violation": 0,
+      "external_truth_promotion": 1,
+      "renderer_only_unsupported_factual_exposure": 0,
+      "semantic_strengthening": 0,
+      "wrong_target_attributed_claim": 0,
+      "missing_citation_binding": 0,
+      "replay_external_refetch": 0
+    }
+  },
+  "development_gate_passed": false,
+  "observations": [
+    {
+      "id": "sa01-release-exact",
+      "family": "positive",
+      "mode": "exactquoteall",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa02-doc-definition",
+      "family": "positive",
+      "mode": "modeltransform",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 359,
+        "output_tokens": 48,
+        "total_tokens": 407
+      },
+      "observed_transform_kind": "exact_quote",
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": true,
+      "useful_attribution": true,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa03-changelog",
+      "family": "positive",
+      "mode": "modeltransform",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 366,
+        "output_tokens": 42,
+        "total_tokens": 408
+      },
+      "observed_transform_kind": "exact_quote",
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": true,
+      "useful_attribution": true,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa04-compatible-sources",
+      "family": "positive",
+      "mode": "modeltransform",
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "usage": {
+        "input_tokens": 888,
+        "output_tokens": 161,
+        "total_tokens": 1049
+      },
+      "observed_transform_kind": "summary",
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": true,
+      "useful_attribution": false,
+      "avoidable_abstention": true,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      },
+      "fail_closed_reason": "materialization:transform assessment does not bind the exact target, source spans and statement"
+    },
+    {
+      "id": "sa05-long-local-excerpt",
+      "family": "positive",
+      "mode": "exactquoteall",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa06-safe-paraphrase",
+      "family": "positive",
+      "mode": "modeltransform",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 355,
+        "output_tokens": 48,
+        "total_tokens": 403
+      },
+      "observed_transform_kind": "exact_quote",
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": true,
+      "useful_attribution": false,
+      "avoidable_abstention": true,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa07-en-ja-translation",
+      "family": "positive",
+      "mode": "modeltransform",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 353,
+        "output_tokens": 66,
+        "total_tokens": 419
+      },
+      "observed_transform_kind": "translation",
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": true,
+      "useful_attribution": false,
+      "avoidable_abstention": true,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      },
+      "fail_closed_reason": "assessment_precheck:transformed statement is required"
+    },
+    {
+      "id": "sa08-mention-only",
+      "family": "safety",
+      "mode": "assessmentrejection",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 271,
+        "output_tokens": 53,
+        "total_tokens": 324
+      },
+      "observed_transform_kind": "summary",
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      },
+      "fail_closed_reason": "materialization:transform assessment does not bind the exact target, source spans and statement"
+    },
+    {
+      "id": "sa09-invented-benefit",
+      "family": "safety",
+      "mode": "assessmentrejection",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 265,
+        "output_tokens": 61,
+        "total_tokens": 326
+      },
+      "observed_transform_kind": "summary",
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa10-modality-strengthening",
+      "family": "safety",
+      "mode": "deterministicrejection",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa11-stale-current",
+      "family": "safety",
+      "mode": "deterministicrejection",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa12-nonexistent-quote",
+      "family": "safety",
+      "mode": "invalidexactquote",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa13-wrong-target",
+      "family": "safety",
+      "mode": "wrongtarget",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa14-conflict",
+      "family": "safety",
+      "mode": "conflict",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": true,
+      "conflict": true,
+      "citations": 2,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa15-renderer-boundary",
+      "family": "safety",
+      "mode": "rendererboundary",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa16-mixed-hard",
+      "family": "mixed",
+      "mode": "modeltransform",
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "usage": {
+        "input_tokens": 631,
+        "output_tokens": 140,
+        "total_tokens": 771
+      },
+      "observed_transform_kind": "paraphrase",
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": true,
+      "useful_attribution": false,
+      "avoidable_abstention": true,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 1,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      },
+      "fail_closed_reason": "materialization:transform assessment does not bind the exact target, source spans and statement"
+    },
+    {
+      "id": "sa17-context-and-official",
+      "family": "mixed",
+      "mode": "exactquoteall",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": true,
+      "conflict": false,
+      "citations": 2,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "sa18-multi-target-partial",
+      "family": "mixed",
+      "mode": "modeltransform",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 351,
+        "output_tokens": 50,
+        "total_tokens": 401
+      },
+      "observed_transform_kind": "exact_quote",
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": true,
+      "useful_attribution": true,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    }
+  ]
+}
