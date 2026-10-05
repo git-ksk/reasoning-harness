@@ -63,6 +63,7 @@ pub fn materialize_candidate(
         adversarial_findings: Vec::new(),
         assumption_findings: Vec::new(),
         evidence_qualification_findings: Vec::new(),
+        source_attribution: Default::default(),
         claims,
         inferences,
     }

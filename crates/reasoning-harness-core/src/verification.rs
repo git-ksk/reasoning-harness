@@ -335,6 +335,7 @@ mod tests {
             adversarial_findings: vec![],
             assumption_findings: vec![],
             evidence_qualification_findings: vec![],
+            source_attribution: Default::default(),
             claims: vec![claim("503")],
             inferences: vec![],
         };

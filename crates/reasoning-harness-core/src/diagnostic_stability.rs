@@ -606,6 +606,7 @@ mod tests {
                 evidence_ids: vec![],
                 message: "fixture".into(),
             }],
+            source_attribution: Default::default(),
             claims: vec![crate::Claim {
                 id: "c1".into(),
                 statement: "test".into(),

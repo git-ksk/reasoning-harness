@@ -214,6 +214,11 @@ pub struct ReasoningArtifact {
     pub assumption_findings: Vec<crate::AssumptionFinding>,
     #[serde(default)]
     pub evidence_qualification_findings: Vec<crate::EvidenceQualificationFinding>,
+    #[serde(
+        default,
+        skip_serializing_if = "crate::SourceAttributionState::is_empty"
+    )]
+    pub source_attribution: crate::SourceAttributionState,
     #[serde(default)]
     pub claims: Vec<Claim>,
     #[serde(default)]

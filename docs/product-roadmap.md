@@ -149,3 +149,7 @@ Those would require separate product and authority designs.
 For v0.1.0 through v0.4.2 implementation chronology, completed milestone details, old evaluation coordinates, and historical research provenance, use [Product roadmap history](product-roadmap-history.md).
 
 For what is currently released and the main user-facing gaps, use [Project status](project-status.md). For the full document map, use the [documentation index](README.md).
+
+### Engine 0.6 #463 source-attributed qualified prose
+
+#463 adds a separate Harness-owned source-attribution lane after admitted/relevant evidence. It does not promote attributed prose into external-world Known/Supported truth and cannot satisfy hard-verification targets. Exact target/evidence/source/span binding, authority ceiling, materialization policy identity, transform assessment, conflict state, canonical cited exposure, and replay-safe persistence are core-owned. Development is frozen to one 18-case surface with Mistral + Google only; Groq remains reserved for fresh independent acceptance after semantics freeze. A #463 PASS does not itself authorize Engine 0.6 release.

@@ -808,6 +808,7 @@ mod tests {
             adversarial_findings: vec![],
             assumption_findings: vec![],
             evidence_qualification_findings: vec![],
+            source_attribution: Default::default(),
             claims: vec![Claim {
                 id: "c1".into(),
                 statement: "feature.enabled = true".into(),

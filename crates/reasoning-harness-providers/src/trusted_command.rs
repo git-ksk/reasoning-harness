@@ -417,6 +417,7 @@ mod tests {
                 ranks: BTreeMap::from([("primary".into(), 10)]),
             },
             candidate_diagnostics: vec![],
+            source_attribution: Default::default(),
             claims: vec![],
             verification_receipts: vec![],
             adversarial_findings: vec![],
