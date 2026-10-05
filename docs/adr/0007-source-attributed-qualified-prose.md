@@ -72,3 +72,21 @@ Materialization now requires all three conditions:
 A negative semantic verdict is a normal rejection, not an operational/grader failure. Parse/provider failures remain separately unscored/operational. This preserves the distinction used by evaluation harnesses such as Inspect between task semantics and grading machinery failure.
 
 The immutable v3 result remains FAIL. This amendment is generic and does not introduce fixture IDs, entity names, or source-phrase branches into production code.
+
+## Per-binding AIS amendment after development v4
+
+Development v4 fixed the mention-only/prompt-injection safety failure and produced zero hard-gate violations on both required providers. Google passed the development gate. Mistral had one avoidable abstention on the compatible two-source case because one aggregate attribution verdict collapsed two distinct cited sources into a single AIS decision.
+
+The successor applies the AIS “According to P, s” test independently to every exact bound source/citation. The model returns only an ordered vector of attribution verdicts, one per Harness-provided source excerpt, in the exact presented order. The Harness retains and injects binding identities and maps verdicts positionally; the model still cannot select or invent binding IDs, citations, evidence identity, or authority.
+
+Materialization requires:
+- the attribution verdict vector length exactly equals the Harness-owned binding set length;
+- every cited binding is individually attributable;
+- the jointly bound excerpts fully support every atomic proposition; and
+- semantic preservation remains preserved.
+
+This is also closer to ALCE-style citation correctness/precision: citation support is checked per citation instead of assuming that a jointly supported statement makes every cited source valid.
+
+Replay/state validation rechecks the same per-binding attribution invariant. A persisted assessment whose verdict count differs from the binding count, or whose cited binding is no longer attributable, is invalid even if the original materialization path would have rejected it.
+
+The immutable v4 result remains FAIL. The v5 successor changes only this generic multi-source attribution contract and replay invariant; it does not add fixture-specific branches or relabel observed cases.

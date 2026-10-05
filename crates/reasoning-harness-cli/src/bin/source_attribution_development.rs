@@ -970,7 +970,11 @@ async fn run_assessment_rejection(
     let response = call(adapter, request, run_stats).await?;
     let assessment = parse_source_attribution_transform_assessment(&response, &proposal)
         .map_err(|_| RunCaseError::Provider("protocol".into()))?;
-    if assessment.attribution != SourceAttributionAttributionDisposition::Attributable
+    if assessment.binding_attributions.len() != proposal.binding_ids.len()
+        || assessment
+            .binding_attributions
+            .iter()
+            .any(|value| *value != SourceAttributionAttributionDisposition::Attributable)
         || assessment.support != SourceAttributionSupportDisposition::FullySupported
         || assessment.disposition != SourceAttributionTransformDisposition::Preserved
     {
@@ -1082,7 +1086,10 @@ fn preserved_assessment(
         target_id: proposal.target_id.clone(),
         binding_ids: proposal.binding_ids.clone(),
         statement: proposal.transformed_statement.clone().unwrap_or_default(),
-        attribution: SourceAttributionAttributionDisposition::Attributable,
+        binding_attributions: vec![
+            SourceAttributionAttributionDisposition::Attributable;
+            proposal.binding_ids.len()
+        ],
         support: SourceAttributionSupportDisposition::FullySupported,
         disposition: SourceAttributionTransformDisposition::Preserved,
     }
