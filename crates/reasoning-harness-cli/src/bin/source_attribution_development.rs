@@ -23,11 +23,11 @@ use reasoning_harness_core::{
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter};
 use serde::{Deserialize, Serialize};
 
-const EXPECTED_DIR: &str = "fixtures/source-attribution-development-v1";
-const EXPECTED_SUITE_ID: &str = "source-attribution-fixed-development-v1";
-const EXPECTED_CONFIGURATION_ID: &str = "engine-0.6-source-attribution-development-v1";
-const EXPECTED_FIXED_CORE_ID: &str = "source-attribution-fixed-core-v1";
-const EXPECTED_STATUS: &str = "fresh_unobserved_development";
+const EXPECTED_DIR: &str = "fixtures/source-attribution-development-v2";
+const EXPECTED_SUITE_ID: &str = "source-attribution-fixed-development-v2";
+const EXPECTED_CONFIGURATION_ID: &str = "engine-0.6-source-attribution-development-v2";
+const EXPECTED_FIXED_CORE_ID: &str = "source-attribution-fixed-core-v2";
+const EXPECTED_STATUS: &str = "fresh_unobserved_development_successor_v2";
 const EXPECTED_CASES: usize = 18;
 
 #[derive(Debug, Parser)]
@@ -417,6 +417,25 @@ fn load_manifest(target: &Path) -> Result<Manifest, String> {
 }
 
 fn validate_manifest(target: &Path, manifest: &Manifest) -> Result<(), String> {
+    let predecessor_path = target
+        .parent()
+        .ok_or_else(|| "development target has no fixture parent".to_string())?
+        .join("source-attribution-development-v1")
+        .join("manifest.json");
+    let predecessor: serde_json::Value = serde_json::from_slice(
+        &fs::read(&predecessor_path)
+            .map_err(|error| format!("read predecessor {predecessor_path:?}: {error}"))?,
+    )
+    .map_err(|error| format!("parse predecessor {predecessor_path:?}: {error}"))?;
+    let current_path = target.join("manifest.json");
+    let current: serde_json::Value = serde_json::from_slice(
+        &fs::read(&current_path)
+            .map_err(|error| format!("read current {current_path:?}: {error}"))?,
+    )
+    .map_err(|error| format!("parse current {current_path:?}: {error}"))?;
+    if predecessor.get("cases") != current.get("cases") {
+        return Err("v2 successor must preserve the exact frozen v1 semantic cases".into());
+    }
     if manifest.suite_id != EXPECTED_SUITE_ID
         || manifest.configuration_id != EXPECTED_CONFIGURATION_ID
         || manifest.fixed_core_id != EXPECTED_FIXED_CORE_ID
@@ -494,8 +513,8 @@ fn validate_manifest(target: &Path, manifest: &Manifest) -> Result<(), String> {
         }
         build_artifact(case)?;
     }
-    if !target.join("surface-v1.sha256").exists() {
-        return Err("missing surface-v1.sha256".into());
+    if !target.join("surface-v2.sha256").exists() {
+        return Err("missing surface-v2.sha256".into());
     }
     Ok(())
 }
@@ -577,6 +596,7 @@ fn validate_case_surface(case: &Case, max_tokens: u32, seed: Option<u64>) -> Res
                 &artifact,
                 target_id,
                 binding_ids,
+                &case.allowed_transform_kinds,
                 case.desired_output_language.as_deref(),
                 Some(max_tokens),
                 seed,
@@ -799,23 +819,7 @@ async fn execute_case(
 
     if let Some(hard_text) = case.hard_verified_text.as_deref() {
         if let Some(source) = finalization.clone() {
-            let hard = FinalizationResult {
-                status: FinalizationStatus::GroundedAnswer,
-                text: Some(hard_text.into()),
-                factual_claims: 1,
-                covered_claims: 1,
-                factual_claim_coverage: 1.0,
-                uncovered_propositions: vec![],
-            };
-            let composed = compose_qualified_finalization(Some(&hard), source);
-            if composed.status != FinalizationStatus::QualifiedPartialAnswer
-                || composed
-                    .text
-                    .as_deref()
-                    .is_none_or(|text| !text.contains(hard_text))
-            {
-                gates.external_truth_promotion += 1;
-            }
+            score_mixed_hard_composition(hard_text, source, &mut gates);
         }
     }
 
@@ -878,14 +882,21 @@ async fn run_model_transform(
         artifact,
         target_id,
         binding_ids,
+        &case.allowed_transform_kinds,
         case.desired_output_language.as_deref(),
         Some(max_tokens),
         seed,
     )
     .map_err(|error| RunCaseError::Invalid(error.to_string()))?;
     let response = call(adapter, request, run_stats).await?;
-    let proposal = parse_source_attribution_proposal(&response)
-        .map_err(|_| RunCaseError::Provider("protocol".into()))?;
+    let proposal = parse_source_attribution_proposal(
+        &response,
+        target_id,
+        binding_ids,
+        &case.allowed_transform_kinds,
+        case.desired_output_language.as_deref(),
+    )
+    .map_err(|_| RunCaseError::Provider("protocol".into()))?;
     run_stats.observed_transform_kind = Some(proposal.transform_kind);
 
     let assessment = if proposal.transform_kind == SourceAttributionTransformKind::ExactQuote {
@@ -900,7 +911,7 @@ async fn run_model_transform(
         .map_err(|error| RunCaseError::FailClosed(format!("assessment_precheck:{error}")))?;
         let response = call(adapter, request, run_stats).await?;
         Some(
-            parse_source_attribution_transform_assessment(&response)
+            parse_source_attribution_transform_assessment(&response, &proposal)
                 .map_err(|_| RunCaseError::Provider("protocol".into()))?,
         )
     };
@@ -938,7 +949,7 @@ async fn run_assessment_rejection(
     )
     .map_err(|error| RunCaseError::Invalid(error.to_string()))?;
     let response = call(adapter, request, run_stats).await?;
-    let assessment = parse_source_attribution_transform_assessment(&response)
+    let assessment = parse_source_attribution_transform_assessment(&response, &proposal)
         .map_err(|_| RunCaseError::Provider("protocol".into()))?;
     if assessment.disposition != SourceAttributionTransformDisposition::Preserved {
         return Ok(false);
@@ -1188,6 +1199,43 @@ fn inspect_hard_gates(
     gates
 }
 
+fn score_mixed_hard_composition(
+    hard_text: &str,
+    source: SourceAttributionFinalization,
+    gates: &mut HardGates,
+) {
+    let source_available = matches!(
+        source.status,
+        SourceAttributionFinalizationStatus::Qualified
+            | SourceAttributionFinalizationStatus::Conflict
+    ) && source.text.is_some();
+    let hard = FinalizationResult {
+        status: FinalizationStatus::GroundedAnswer,
+        text: Some(hard_text.into()),
+        factual_claims: 1,
+        covered_claims: 1,
+        factual_claim_coverage: 1.0,
+        uncovered_propositions: vec![],
+    };
+    let composed = compose_qualified_finalization(Some(&hard), source);
+    if source_available {
+        if composed.status == FinalizationStatus::GroundedAnswer {
+            gates.external_truth_promotion += 1;
+        } else if composed.status != FinalizationStatus::QualifiedPartialAnswer
+            || composed
+                .text
+                .as_deref()
+                .is_none_or(|text| !text.contains(hard_text))
+        {
+            gates.source_binding_violation += 1;
+        }
+    } else if composed.status != FinalizationStatus::GroundedAnswer
+        || composed.text.as_deref() != Some(hard_text)
+    {
+        gates.source_binding_violation += 1;
+    }
+}
+
 fn transform_utility_matches(case: &Case, artifact: &ReasoningArtifact) -> bool {
     let Some(target_id) = case.model_target_id.as_deref() else {
         return false;
@@ -1370,7 +1418,7 @@ mod tests {
 
     fn load() -> Manifest {
         let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../fixtures/source-attribution-development-v1");
+            .join("../../fixtures/source-attribution-development-v2");
         load_manifest(&root).expect("load frozen manifest")
     }
 
@@ -1433,6 +1481,36 @@ mod tests {
                 validate_case_surface(case, 256, Some(463)).expect(&case.id);
             }
         }
+    }
+
+    #[test]
+    fn unresolved_source_does_not_false_positive_as_truth_promotion_for_verified_hard_fact() {
+        let source = SourceAttributionFinalization {
+            exposed_text_policy_id: "test".into(),
+            status: SourceAttributionFinalizationStatus::Unresolved,
+            text: None,
+            claim_ids: vec![],
+            citations: vec![],
+            conflict_target_ids: vec![],
+        };
+        let mut gates = HardGates::default();
+        score_mixed_hard_composition("Verified maximum batch count: 20.", source, &mut gates);
+        assert!(gates.all_zero());
+    }
+
+    #[test]
+    fn qualified_source_plus_verified_hard_fact_stays_qualified_not_grounded() {
+        let source = SourceAttributionFinalization {
+            exposed_text_policy_id: "test".into(),
+            status: SourceAttributionFinalizationStatus::Qualified,
+            text: Some("According to source: qualified explanation".into()),
+            claim_ids: vec!["c1".into()],
+            citations: vec![],
+            conflict_target_ids: vec![],
+        };
+        let mut gates = HardGates::default();
+        score_mixed_hard_composition("Verified maximum batch count: 20.", source, &mut gates);
+        assert!(gates.all_zero());
     }
 
     #[test]

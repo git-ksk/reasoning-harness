@@ -1,6 +1,6 @@
 # Engine 0.6 #463 fixed source-attribution development surface
 
-Freeze state: pre-observation candidate. No model result may be observed before this specification, the 18-case fixture, and runner scoring contract are committed at one exact head.
+Development v1 is an observed immutable FAIL. Development v2 is the current pre-observation successor. No v2 semantic model result may be observed before this specification, the unchanged 18-case fixture, and runner scoring contract are committed at one exact head.
 
 ## Fixed 18 semantic cases
 
@@ -47,3 +47,31 @@ Acceptance fixtures are not authored until this development observation complete
 - Google: gemini-3.5-flash-lite (stable Gemini 3.5 Flash-Lite API model ID)
 
 The runner rejects a canonical live invocation whose provider/model pair differs from these frozen coordinates.
+
+
+## Development v1 immutable result
+
+Canonical run 37259012643, attempt 1, at freeze head afe0b4c0a68e43586c85ec8a1c1416a2cc5b2bba is immutable FAIL.
+
+- preflight passed;
+- Mistral stopped after case 2 with an operational/provider failure; recorded hard gates were zero;
+- Google completed 18/18 with citation coverage 100%, useful retention 3/7 (42.9%), avoidable abstention 4/7 (57.1%);
+- the reported Google external-truth-promotion count in sa16 was a scorer false positive: source attribution had failed closed while the separately verified hard fact remained GroundedAnswer;
+- v1 is not rerun, rescored, relabelled, or modified.
+
+The v1 result record is retained under fixtures/source-attribution-development-v1-result.
+
+## Development v2 successor boundary
+
+V2 preserves the exact v1 cases JSON. The runner rejects v2 if any semantic case differs from v1. Provider coordinates, utility floors, hard gates, and the 18-case denominator are unchanged.
+
+Only these generic corrections are permitted before v2 freeze:
+
+1. model-facing transform proposal output no longer contains Harness-owned target or binding identities; the Harness injects those identities after parsing;
+2. semantic-assessment output contains only the disposition; the Harness injects the exact target, binding set, and statement under assessment;
+3. allowed transform kinds are Harness-owned request constraints, preventing an exact quote from substituting for a required paraphrase/summary/translation calibration opportunity;
+4. translation output language is Harness-owned request policy rather than model-authored metadata;
+5. mixed hard-fact scoring treats an unresolved/fail-closed source lane plus an intact verified hard fact as GroundedAnswer rather than a truth-promotion violation;
+6. Mistral client-side 400/404/422 request rejection is classified as protocol/client-contract failure rather than provider availability failure.
+
+A separate Mistral structured-output smoke may be run before v2 semantic freeze. It is non-scorable, uses zero development cases, exposes no source-attribution acceptance evidence, and exists only to verify provider/adapter contract compatibility.

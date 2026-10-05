@@ -361,8 +361,13 @@ fn classify_http_error(status: StatusCode, body: &str) -> ModelErrorKind {
         ModelErrorKind::Timeout
     } else if matches!(status.as_u16(), 502 | 503) || status.is_server_error() {
         ModelErrorKind::ProviderUnavailable
-    } else if status == StatusCode::UNAUTHORIZED {
+    } else if status == StatusCode::UNAUTHORIZED || status == StatusCode::FORBIDDEN {
         ModelErrorKind::Credentials
+    } else if matches!(
+        status,
+        StatusCode::BAD_REQUEST | StatusCode::NOT_FOUND | StatusCode::UNPROCESSABLE_ENTITY
+    ) {
+        ModelErrorKind::Protocol
     } else {
         ModelErrorKind::Provider
     }
@@ -716,6 +721,20 @@ mod tests {
             ),
             ModelErrorKind::RateLimit
         );
+    }
+
+    #[test]
+    fn classifies_client_request_rejections_as_protocol() {
+        for status in [
+            StatusCode::BAD_REQUEST,
+            StatusCode::NOT_FOUND,
+            StatusCode::UNPROCESSABLE_ENTITY,
+        ] {
+            assert_eq!(
+                classify_http_error(status, r#"{"message":"invalid request"}"#),
+                ModelErrorKind::Protocol
+            );
+        }
     }
 
     #[test]

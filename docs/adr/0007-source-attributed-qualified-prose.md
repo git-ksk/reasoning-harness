@@ -29,3 +29,10 @@ Before live model observation, freeze one 18-case development surface and its sc
 Per required provider, useful attributed-answer retention must be >= 90%, avoidable abstention <= 10%, and citation/source-binding coverage = 100%. Exact quotes use zero transform-model calls; transformed cases allow at most two model attempts. Token/latency/provider overhead is diagnostic only.
 
 A development FAIL is immutable: no rerun, rescore, relabel, or result-driven case addition. Acceptance holdout authoring starts only after development observation and semantics freeze. A #463 PASS does not authorize Engine 0.6 release.
+
+
+## Development v1 feedback amendment
+
+The first frozen development run showed that asking a model to echo Harness-owned target IDs, binding IDs, and the exact statement under assessment creates avoidable protocol/utility failure without adding authority. The contract is therefore tightened: model-facing proposal output contains transform content only, and assessment output contains disposition only. Harness code injects the exact target, binding set, statement, and requested translation output language after parsing.
+
+This is a strengthening of the original ownership decision, not an expansion of model authority. The frozen v1 result remains immutable.

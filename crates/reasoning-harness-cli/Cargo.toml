@@ -189,3 +189,7 @@ path = "src/bin/evidence_relevance_identity_probe.rs"
 [[bin]]
 name = "reason-source-attribution-development-study"
 path = "src/bin/source_attribution_development.rs"
+
+[[bin]]
+name = "reason-source-attribution-provider-smoke"
+path = "src/bin/source_attribution_provider_smoke.rs"

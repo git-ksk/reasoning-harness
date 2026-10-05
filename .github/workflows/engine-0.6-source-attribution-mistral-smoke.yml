@@ -1,0 +1,54 @@
+name: engine-0.6-source-attribution-mistral-smoke
+
+on:
+  push:
+    tags:
+      - engine-0.6-source-attribution-v2-mistral-smoke
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Enforce diagnostic first run
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$GITHUB_REF_NAME" = "engine-0.6-source-attribution-v2-mistral-smoke"
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+      - name: Check credential
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: test -n "$MISTRAL_API_KEY"
+      - name: Run non-scorable structured-output smoke
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          cargo run -q --locked -p reasoning-harness-cli \
+            --bin reason-source-attribution-provider-smoke -- \
+            --model ministral-8b-2512 \
+            > /tmp/source-attribution-mistral-smoke.json
+          jq -e '
+            .issue == 463
+            and .scorability == "non_scorable_operational_diagnostic"
+            and .semantic_cases_observed == 0
+            and .provider == "mistral"
+            and .model == "ministral-8b-2512"
+            and .status == "ok"
+          ' /tmp/source-attribution-mistral-smoke.json >/dev/null
+      - name: Preserve smoke result
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-source-attribution-v2-mistral-smoke
+          path: /tmp/source-attribution-mistral-smoke.json
+          if-no-files-found: warn
+          retention-days: 30
