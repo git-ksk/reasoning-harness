@@ -1,0 +1,29 @@
+{
+  "schema_version": "engine-0.6-source-attribution-development-v3-result-record-v1",
+  "issue": 463,
+  "run_id": 37279111589,
+  "run_attempt": 1,
+  "conclusion": "failure",
+  "candidate_commit": "186ac629da0e0fe967895d7b9c33caad45677d3c",
+  "freeze_tag": "engine-0.6-source-attribution-development-v3-freeze",
+  "holdout_acceptance_evidence": false,
+  "immutable_result": "FAIL",
+  "files": {
+    "mistral-run-37279111589.json": {
+      "sha256": "1178525da38f1695b22be9e332add6eb29fa5243bc5424d85342d45f8229991d",
+      "bytes": 15858
+    },
+    "google-run-37279111589.json": {
+      "sha256": "c6caa65d7b4bf3a18815896de3ecf490bbf4aca97a2160ca16f9469a56122f4e",
+      "bytes": 15862
+    },
+    "summary-run-37279111589.json": {
+      "sha256": "fe51c2f06c92a34c67bc1fb2df2afb2915076e56b623ca3dd7a5ada007046c55",
+      "bytes": 2297
+    },
+    "google-attempt-telemetry-run-37279111589.jsonl": {
+      "sha256": "4aceddf49d299cd380ddf763e32fd5d136ec8c552dacd3edfe4b75df044ec207",
+      "bytes": 6205
+    }
+  }
+}
