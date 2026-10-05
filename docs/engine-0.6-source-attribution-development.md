@@ -114,3 +114,17 @@ The v4 assessment contract requires three independent verdicts before transforme
 - preservation: modality, conditions, tense, quantity, scope, timing, causality, availability, benefits, and authority must not be strengthened.
 
 Negative semantic verdicts are normal rejection, not grader/operational failure. Parse/provider failures remain separate. No v1/v2/v3 result is rescored or relabelled. Groq remains reserved for fresh independent acceptance.
+
+
+## Development v5 successor
+
+Development v5 preserves the exact same 18 semantic cases, family counts, utility denominator, provider/model coordinates, hard gates, and utility floors as v4. It exists only because the aggregate AIS attribution verdict caused one avoidable multi-source false negative in immutable v4.
+
+The v5 assessment contract applies attribution per exact Harness-owned source binding:
+- the model returns one attribution verdict per bound source excerpt, in the exact presented order;
+- the Harness maps those verdicts positionally to its own binding IDs, so the model cannot choose or invent citations;
+- every cited binding must independently satisfy the AIS “According to P, statement” test;
+- joint atomic support and semantic-preservation verdicts remain independently required;
+- replay/state validation rechecks attribution-vector cardinality and that every persisted cited binding remains attributable.
+
+The v4 Google PASS is not reused as v5 evidence. Both Mistral and Google must independently pass one fresh immutable v5 development observation. Groq remains reserved for fresh acceptance after development semantics freeze.
