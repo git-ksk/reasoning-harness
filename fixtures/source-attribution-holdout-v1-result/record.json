@@ -1,0 +1,39 @@
+{
+  "schema_version": "engine-0.6-source-attribution-holdout-v1-result-record-v1",
+  "issue": 463,
+  "run_id": 37300354564,
+  "run_attempt": 1,
+  "conclusion": "failure",
+  "candidate_commit": "96340c7677a2b33bd524cf1a3981b9a0cd3944be",
+  "freeze_tag": "engine-0.6-source-attribution-holdout-v1-freeze",
+  "holdout_acceptance_evidence": true,
+  "immutable_result": "FAIL",
+  "failure_summary": "Mistral and Google passed 18/18; Groq aborted at h07-mention-only with provider_error_kind=unsupportedcapability after 7/18 completed; all observed hard gates remained zero.",
+  "files": [
+    {
+      "file": "google-attempt-telemetry-run-37300354564.jsonl",
+      "sha256": "b09d3f9815b7cbd090f34862b4cbec51aa44a2e5543a3d065952cf96bf655125",
+      "bytes": 5167
+    },
+    {
+      "file": "google-run-37300354564.json",
+      "sha256": "1c53ffacae8e0ebc52e30a5a80ec0b66e46eb7ac97c12e2a3b4a68fc32006342",
+      "bytes": 15940
+    },
+    {
+      "file": "groq-run-37300354564.json",
+      "sha256": "0b3c536145d75e968ca5901056dcf83eee229687b1a91557892c6fa00ca2c4c5",
+      "bytes": 7504
+    },
+    {
+      "file": "mistral-run-37300354564.json",
+      "sha256": "8f744329b0d2c0e1689e1b7c9eb8cf8be479e017474ac1af4717dfe9309c1675",
+      "bytes": 15936
+    },
+    {
+      "file": "summary-run-37300354564.json",
+      "sha256": "5f930995d4eb1abdf534a01e49d2d5eb861de1b14ffb2652a6150cafa4f01b3e",
+      "bytes": 3302
+    }
+  ]
+}
