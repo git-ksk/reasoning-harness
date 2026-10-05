@@ -100,3 +100,11 @@ V6 removes only that contradictory narrowing. The task explicitly requests all t
 ## Independent holdout after v6 semantics freeze
 
 Development v6 passed immutably at run `37294100665` and freezes the development semantics. Acceptance therefore uses a separately frozen runner and a fresh 18-case holdout authored only after that runner freeze. The holdout requires Mistral, Google, and the previously reserved Groq arm; development observations are not acceptance evidence. Freshness excludes development case IDs, canonical entities, tasks, exact source text, and exact 8-token windows. Any canonical holdout miss is immutable and must not be repaired by changing or rerunning the observed corpus.
+
+## Independent holdout v1 operational failure and v2 transport successor
+
+Independent holdout v1 is an immutable FAIL at canonical run `37300354564` attempt 1. Mistral and Google passed 18/18. Groq completed 7/18 and then surfaced typed `UnsupportedCapability` from a provider-side best-effort structured-JSON generation HTTP 400; all observed source-attribution hard gates remained zero.
+
+Postmortem found an evaluation-wiring mismatch. The v1 workflow forced the Groq adapter's structured-output retry limit to zero. That zero-retry convention originated in the evidence-relevance line, where an `UnsupportedCapability` result deliberately transfers control to a separate strict-Text JSON fallback. Source attribution has no equivalent fallback: the same typed condition terminates the case operationally. The v1 setting therefore disabled an already-generic bounded provider recovery without the compensating fallback that justified it elsewhere.
+
+The v1 result remains immutable and is not reinterpreted. A fresh successor holdout v2 may restore the Groq adapter's existing bounded structured-generation retry policy, explicitly frozen at two retries, while keeping the exact request, schema, prompt, parser, Harness-owned identity/binding/citation/authority rules, materialization, scoring, thresholds, and hard gates unchanged. These retries are operational provider attempts, not semantic retries or alternative labels; quota/rate-limit classification remains separate and fail-closed. The v2 runner must be frozen before any v2 corpus is authored, and the v2 corpus must be independently fresh before a one-shot canonical observation.

@@ -195,5 +195,9 @@ name = "reason-source-attribution-holdout-study"
 path = "src/bin/source_attribution_holdout.rs"
 
 [[bin]]
+name = "reason-source-attribution-holdout-v2-study"
+path = "src/bin/source_attribution_holdout_v2.rs"
+
+[[bin]]
 name = "reason-source-attribution-provider-smoke"
 path = "src/bin/source_attribution_provider_smoke.rs"
