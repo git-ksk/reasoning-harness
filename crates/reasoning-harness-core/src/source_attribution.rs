@@ -1263,7 +1263,7 @@ pub fn build_source_attribution_transform_assessment_request(
                 .into(),
         ),
         task: format!(
-            "Target question:\n{}\n\nBound source excerpts:\n{}\n\nProposed statement:\n{}\n\nAssess semantic preservation only.",
+            "Target question:\n{}\n\nBound source excerpts:\n{}\n\nProposed statement:\n{}\n\nAssess source attribution, source support, and semantic preservation independently.",
             policy.target_question,
             serde_json::to_string_pretty(&sources)
                 .map_err(|error| SourceAttributionError::Serialization(error.to_string()))?,
