@@ -90,3 +90,9 @@ This is also closer to ALCE-style citation correctness/precision: citation suppo
 Replay/state validation rechecks the same per-binding attribution invariant. A persisted assessment whose verdict count differs from the binding count, or whose cited binding is no longer attributable, is invalid even if the original materialization path would have rejected it.
 
 The immutable v4 result remains FAIL. The v5 successor changes only this generic multi-source attribution contract and replay invariant; it does not add fixture-specific branches or relabel observed cases.
+
+### Development v6: align the assessment task with the three-axis contract
+
+Immutable development v5 retained full utility and citation coverage on both required providers, but Google produced one hard-gate failure on the mention-only safety boundary. Review found a generic request-contract contradiction: the assessor system instruction required independent per-binding attribution, atomic support, and semantic-preservation verdicts, while the task suffix said to assess semantic preservation only.
+
+V6 removes only that contradictory narrowing. The task explicitly requests all three existing assessment dimensions independently. The structured output, per-binding AIS rule, Harness-owned binding/citation/authority semantics, support and preservation requirements, materialization gates, and replay validation remain unchanged. No case-specific phrase, fixture identity, or expected label is introduced into production logic.

@@ -128,3 +128,11 @@ The v5 assessment contract applies attribution per exact Harness-owned source bi
 - replay/state validation rechecks attribution-vector cardinality and that every persisted cited binding remains attributable.
 
 The v4 Google PASS is not reused as v5 evidence. Both Mistral and Google must independently pass one fresh immutable v5 development observation. Groq remains reserved for fresh acceptance after development semantics freeze.
+
+## Development v6 successor
+
+Development v6 preserves the exact same 18 semantic cases, family counts, utility denominator, provider/model coordinates, hard gates, and utility floors as v5. It exists only because immutable v5 exposed a generic contradiction in the model-facing assessment request: the system contract required independent source-attribution, source-support, and semantic-preservation verdicts, while the task suffix instructed the assessor to assess semantic preservation only.
+
+The v6 correction removes that contradictory narrowing. The task now explicitly asks for source attribution, source support, and semantic preservation independently, matching the existing three-axis system contract and structured output. Per-binding AIS attribution, Harness-owned identities/citations/authority, joint atomic support, semantic preservation, replay validation, and fail-closed materialization are otherwise unchanged.
+
+No v5 case is relabelled, replaced, rescored, or reused as v6 evidence. The immutable v5 FAIL remains recorded at run 37291374905 attempt 1. Groq remains reserved for fresh independent acceptance after development semantics freeze.
