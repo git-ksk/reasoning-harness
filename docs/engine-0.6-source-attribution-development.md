@@ -103,3 +103,14 @@ The v3 semantic contract follows the research-backed ADR amendment:
 - operational/protocol failure remains separate from semantic failure.
 
 No v1/v2 case is relabelled, replaced, or rescored. Groq remains reserved for fresh independent acceptance after development semantics freeze.
+
+## Development v4 successor
+
+Development v4 preserves the exact same 18 semantic cases, family counts, utility denominator, provider/model coordinates, hard gates, and utility floors as v3. It exists only because the generic semantic assessment contract changed after immutable v3.
+
+The v4 assessment contract requires three independent verdicts before transformed source-attributed content can materialize:
+- attribution: the AIS-style “According to the bound source, statement” test must hold; commands, requests, quotations attributed elsewhere, hypotheticals, and mere mentions do not count as source assertions;
+- support: every atomic factual proposition must be fully supported by the jointly bound excerpts;
+- preservation: modality, conditions, tense, quantity, scope, timing, causality, availability, benefits, and authority must not be strengthened.
+
+Negative semantic verdicts are normal rejection, not grader/operational failure. Parse/provider failures remain separate. No v1/v2/v3 result is rescored or relabelled. Groq remains reserved for fresh independent acceptance.

@@ -24,11 +24,11 @@ use reasoning_harness_core::{
 use reasoning_harness_providers::{GoogleAdapter, MistralAdapter};
 use serde::{Deserialize, Serialize};
 
-const EXPECTED_DIR: &str = "fixtures/source-attribution-development-v3";
-const EXPECTED_SUITE_ID: &str = "source-attribution-fixed-development-v3";
-const EXPECTED_CONFIGURATION_ID: &str = "engine-0.6-source-attribution-development-v3";
-const EXPECTED_FIXED_CORE_ID: &str = "source-attribution-fixed-core-v3";
-const EXPECTED_STATUS: &str = "fresh_unobserved_development_successor_v3";
+const EXPECTED_DIR: &str = "fixtures/source-attribution-development-v4";
+const EXPECTED_SUITE_ID: &str = "source-attribution-fixed-development-v4";
+const EXPECTED_CONFIGURATION_ID: &str = "engine-0.6-source-attribution-development-v4";
+const EXPECTED_FIXED_CORE_ID: &str = "source-attribution-fixed-core-v4";
+const EXPECTED_STATUS: &str = "fresh_unobserved_development_successor_v4";
 const EXPECTED_CASES: usize = 18;
 
 #[derive(Debug, Parser)]
@@ -431,7 +431,7 @@ fn validate_manifest(target: &Path, manifest: &Manifest) -> Result<(), String> {
     let predecessor_path = target
         .parent()
         .ok_or_else(|| "development target has no fixture parent".to_string())?
-        .join("source-attribution-development-v2")
+        .join("source-attribution-development-v3")
         .join("manifest.json");
     let predecessor: serde_json::Value = serde_json::from_slice(
         &fs::read(&predecessor_path)
@@ -445,7 +445,7 @@ fn validate_manifest(target: &Path, manifest: &Manifest) -> Result<(), String> {
     )
     .map_err(|error| format!("parse current {current_path:?}: {error}"))?;
     if predecessor.get("cases") != current.get("cases") {
-        return Err("v3 successor must preserve the exact frozen v2 semantic cases".into());
+        return Err("v4 successor must preserve the exact frozen v3 semantic cases".into());
     }
     if manifest.suite_id != EXPECTED_SUITE_ID
         || manifest.configuration_id != EXPECTED_CONFIGURATION_ID
@@ -456,13 +456,13 @@ fn validate_manifest(target: &Path, manifest: &Manifest) -> Result<(), String> {
     {
         return Err("frozen development manifest identity mismatch".into());
     }
-    if manifest.predecessor.configuration_id != "engine-0.6-source-attribution-development-v2"
-        || manifest.predecessor.run_id != 37261563097
+    if manifest.predecessor.configuration_id != "engine-0.6-source-attribution-development-v3"
+        || manifest.predecessor.run_id != 37279111589
         || manifest.predecessor.run_attempt != 1
         || manifest.predecessor.result != "FAIL"
-        || manifest.predecessor.freeze_tag != "engine-0.6-source-attribution-development-v2-freeze"
+        || manifest.predecessor.freeze_tag != "engine-0.6-source-attribution-development-v3-freeze"
     {
-        return Err("v3 predecessor lineage mismatch".into());
+        return Err("v4 predecessor lineage mismatch".into());
     }
     if manifest.required_development_providers != ["mistral", "google"]
         || manifest.acceptance_provider_reserved != "groq"
@@ -532,8 +532,8 @@ fn validate_manifest(target: &Path, manifest: &Manifest) -> Result<(), String> {
         }
         build_artifact(case)?;
     }
-    if !target.join("surface-v3.sha256").exists() {
-        return Err("missing surface-v3.sha256".into());
+    if !target.join("surface-v4.sha256").exists() {
+        return Err("missing surface-v4.sha256".into());
     }
     Ok(())
 }
@@ -1442,7 +1442,7 @@ mod tests {
 
     fn load() -> Manifest {
         let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../fixtures/source-attribution-development-v3");
+            .join("../../fixtures/source-attribution-development-v4");
         load_manifest(&root).expect("load frozen manifest")
     }
 
@@ -1457,9 +1457,9 @@ mod tests {
         assert_eq!(manifest.acceptance_provider_reserved, "groq");
         assert_eq!(
             manifest.predecessor.configuration_id,
-            "engine-0.6-source-attribution-development-v2"
+            "engine-0.6-source-attribution-development-v3"
         );
-        assert_eq!(manifest.predecessor.run_id, 37261563097);
+        assert_eq!(manifest.predecessor.run_id, 37279111589);
         assert_eq!(manifest.predecessor.run_attempt, 1);
         assert_eq!(manifest.predecessor.result, "FAIL");
         assert_eq!(
