@@ -8,6 +8,24 @@
 
 - Issue #355で、ユーザー向けReason CLI package versionとHarness Engine（`reasoning-harness-core`）package versionを分離。`v0.4.2`は最後のunified historical releaseとして保持し、今後のCLI release tagは`reason-vX.Y.Z`を使う。machine contract IDは独立したcompatibility座標のまま、provider crate versionは第3のユーザー向けversionにはせず内部実装座標として扱う。
 
+## Harness Engine [0.6.0] - 2026-10-06
+
+`engine-v*` namespaceで2つ目の独立Harness Engine source release。公開済みReason CLIは別のadoption releaseを行うまで`reason-v0.5.3` / Harness Engine 0.5.0のまま保持する。
+
+### 追加 / 変更
+
+- #461: acquisition前のtarget-local evidence-need routingをHarness-owned contractとして追加。context-local / external-required / trusted-verification等のhard floorをmodel proposalが弱めたりauthorityを生成したりできない。
+- #462 + #468: provider-neutralなevidence-target semantic relevance / coarse relation qualificationを追加。identity / relation / risk compositionをHarnessが所有し、wrong-target fail-closedを維持しつつlexical false rejectionを削減。
+- #463: target/evidence/source/spanの厳密binding、authority ceiling、conflict preservation、canonical citation exposureを持つsource-attributed qualified proseを追加。attributed prose単独で外部世界の`Known`/`Supported` truthへ昇格しない。
+- #460: boundedなprovider-neutral JSON-Schema -> JSON-object transport fallback builderを追加。caller側のtyped parse/validationとfail-closedは必須で、fallback transportはevidence/authorityを生成しない。
+
+### Release acceptance
+
+- #461 independent holdout v1: `engine-0.6-evidence-need-holdout-v1-freeze`, run `35965160995`; Mistral + Google 26/26、correctness violation 0、utility miss 0、provider failure 0。
+- #462/#468 final independent relevance holdout: `engine-0.6-evidence-relevance-holdout-v12-freeze`, run `37218652869` attempt 1; Mistral / Google / Groq 26/26、authority / identity-risk failure 0、wrong-target Relevant 0、false relevance rejection 0、utility miss 0。
+- #463 independent source-attribution holdout v2: `engine-0.6-source-attribution-holdout-v2-freeze`, run `37326666360` attempt 1; Mistral / Google / Groq 18/18、useful attribution 6/6、citation coverage 100%、provider failure 0、全hard gate 0。
+- historical FAIL / operational observationとfreeze tagはすべてimmutableのまま保持し、release promotionではrerun / rescore / relabel / rewriteしない。
+
 ## Harness Engine [0.5.0] - 2026-09-20
 
 `engine-v*` namespaceで初めて独立versioningするHarness Engine source release。既存Reason CLI 0.5.2 release artifactはEngine 0.4.2のまま保持する。

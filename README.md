@@ -71,7 +71,7 @@ That distinction is the product: **useful AI output without letting model confid
 
 ## Quickstart
 
-The current published split CLI is **Reason CLI 0.5.3 on Harness Engine 0.5.0**. `reason-v0.5.3` formally adopts the independently released `engine-v0.5.0`; the already-published `reason-v0.5.2` artifacts remain immutable on Engine 0.4.2. Published native installers are the normal end-user path (GitHub CLI 2.93+ is required for provenance verification).
+The current published split CLI is **Reason CLI 0.5.3 on Harness Engine 0.5.0**. The latest independent Engine source release is **Harness Engine 0.6.0** under `engine-v0.6.0`; it is not retrofitted into the published CLI. `reason-v0.5.3` remains immutable on Engine 0.5.0 until a separate CLI adoption release. Published native installers are the normal end-user path (GitHub CLI 2.93+ is required for provenance verification).
 
 macOS / Linux:
 
@@ -316,6 +316,18 @@ The final `v0.4.2` release gate serves a different purpose: it checks the produc
 
 The exact frozen coordinates, metrics, run IDs, pacing policy, and provenance are in [v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.md). Failed or inconclusive observations remain part of the research record rather than being overwritten by nicer reruns.
 
+### Harness Engine 0.6.0 release acceptance
+
+Harness Engine 0.6.0 is independently released under `engine-v0.6.0` after three measured Engine tracks completed frozen independent acceptance. The release promotion itself changes no accepted runtime semantics.
+
+| Track | Frozen independent evidence | Required result |
+| --- | --- | --- |
+| **#461 evidence need** | run `35965160995` | Mistral + Google 26/26; correctness 0; utility misses 0 |
+| **#462/#468 relevance + relation** | run `37218652869` attempt 1 | Mistral / Google / Groq 26/26; wrong-target Relevant 0; false rejection 0; utility misses 0 |
+| **#463 source attribution** | run `37326666360` attempt 1 | Mistral / Google / Groq 18/18; citation 100%; all hard gates 0 |
+
+The accepted runtime adds Harness-owned target-local evidence-need routing, evidence-target relevance/relation qualification, and source-attributed qualified prose that cannot self-promote to external truth. Historical failed/operational observations remain immutable and are not rescored. See [Engine 0.6.0 release notes](docs/engine-0.6.0-release.md).
+
 ### Harness Engine 0.5.0 release acceptance
 
 Harness Engine 0.5.0 completed final hardening on the fresh `engine-0.5-final-v3-freeze` surface and is released independently under `engine-v0.5.0`. The release candidate combines deterministic session explicit-fact continuity (#446), deterministic admitted exact-fact investigation materialization (#450), and evaluator separation of planner target-recall utility from finalization correctness (#445).
@@ -345,7 +357,7 @@ From the next product line onward:
 - **Harness Engine** versions reasoning/correctness behavior.
 - **Machine contract IDs** version wire/schema compatibility independently.
 
-The published split CLI line is now **Reason CLI 0.5.3 on Harness Engine 0.5.0**. Harness Engine 0.5.0 remains independently versioned and released as `engine-v0.5.0`; `reason-v0.5.3` is the separate CLI release that adopts it. Earlier CLI artifacts, including `reason-v0.5.2` on Engine 0.4.2, remain immutable.
+The published split CLI line remains **Reason CLI 0.5.3 on Harness Engine 0.5.0**. The latest independent Engine source release is Harness Engine 0.6.0 under `engine-v0.6.0`; CLI adoption is deliberately separate, so `reason-v0.5.3` is not rewritten. Earlier CLI artifacts, including `reason-v0.5.2` on Engine 0.4.2, remain immutable.
 
 See [versioning](docs/versioning.md) and the [Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md).
 
