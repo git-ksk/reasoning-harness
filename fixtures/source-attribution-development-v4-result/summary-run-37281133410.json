@@ -1,0 +1,75 @@
+{
+  "schema_version": "engine-0.6-source-attribution-development-v4-summary",
+  "issue": 463,
+  "holdout_acceptance_evidence": false,
+  "candidate_commit": "d98c0ebb43c8193b9039474b50831565143cc2f2",
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-2512",
+      "passed": false,
+      "metrics": {
+        "planned_cases": 18,
+        "completed_cases": 18,
+        "utility_eligible_cases": 7,
+        "useful_attribution_cases": 6,
+        "avoidable_abstention_cases": 1,
+        "exposed_cases": 11,
+        "fully_cited_exposed_cases": 11,
+        "useful_retention": 0.8571428571428571,
+        "avoidable_abstention": 0.14285714285714285,
+        "citation_coverage": 1.0,
+        "model_calls": 12,
+        "provider_attempts": 12,
+        "usage": {
+          "input_tokens": 5178,
+          "output_tokens": 432,
+          "total_tokens": 5610
+        },
+        "provider_failures": 0,
+        "hard_gates": {
+          "source_binding_violation": 0,
+          "external_truth_promotion": 0,
+          "renderer_only_unsupported_factual_exposure": 0,
+          "semantic_strengthening": 0,
+          "wrong_target_attributed_claim": 0,
+          "missing_citation_binding": 0,
+          "replay_external_refetch": 0
+        }
+      }
+    },
+    "google": {
+      "model": "gemini-3.5-flash-lite",
+      "passed": true,
+      "metrics": {
+        "planned_cases": 18,
+        "completed_cases": 18,
+        "utility_eligible_cases": 7,
+        "useful_attribution_cases": 7,
+        "avoidable_abstention_cases": 0,
+        "exposed_cases": 12,
+        "fully_cited_exposed_cases": 12,
+        "useful_retention": 1.0,
+        "avoidable_abstention": 0.0,
+        "citation_coverage": 1.0,
+        "model_calls": 13,
+        "provider_attempts": 13,
+        "usage": {
+          "input_tokens": 5841,
+          "output_tokens": 495,
+          "total_tokens": 6336
+        },
+        "provider_failures": 0,
+        "hard_gates": {
+          "source_binding_violation": 0,
+          "external_truth_promotion": 0,
+          "renderer_only_unsupported_factual_exposure": 0,
+          "semantic_strengthening": 0,
+          "wrong_target_attributed_claim": 0,
+          "missing_citation_binding": 0,
+          "replay_external_refetch": 0
+        }
+      }
+    }
+  },
+  "development_gate_passed": false
+}

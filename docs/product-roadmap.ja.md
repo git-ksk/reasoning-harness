@@ -149,3 +149,7 @@ historical FAIL / INCONCLUSIVEは、後続fix後に書き換えてPASS扱いし�
 v0.1.0〜v0.4.2のimplementation chronology、completed milestone、旧evaluation coordinate、research provenanceは[Product roadmap history](product-roadmap-history.ja.md)を参照してください。
 
 現在release済みの内容とuser-facing gapは[Project status](project-status.ja.md)、全docsの入口は[Documentation index](README.ja.md)です。
+
+### Engine 0.6 #463 出典帰属付き qualified prose
+
+#463 は admitted/relevant evidence の後段に Harness 所有の独立 source-attribution lane を追加する。attributed prose を外部世界の Known/Supported truth に昇格させず、hard-verification target を満たす用途にも使わない。target/evidence/source/span の厳密 binding、authority ceiling、materialization policy identity、transform assessment、conflict state、canonical citation exposure、replay-safe persistenceを core が所有する。development は frozen v6 で Mistral + Google が固定18ケースを通過した。続く fresh independent holdout v2 は Mistral / Google / 予約済み Groq の全providerで18/18、useful attribution 6/6、citation coverage 100%、provider failure 0、全hard gate 0でPASSした（canonical run `37326666360`, attempt 1）。先行holdout-v1のGroq operational failureはimmutable evidenceとして保持し、rerun/relabelしていない。#463 acceptance単独ではEngine 0.6 releaseを承認せず、release promotionは別途明示的なEngine coordinate判断とする。

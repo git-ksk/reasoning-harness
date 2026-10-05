@@ -1,0 +1,45 @@
+{
+  "schema_version": "engine-0.6-source-attribution-holdout-v2-result-record-v1",
+  "issue": 463,
+  "run_id": 37326666360,
+  "run_attempt": 1,
+  "conclusion": "success",
+  "candidate_commit": "bb8d43616ee60370c099db6dda35f9a7f6d209f4",
+  "freeze_tag": "engine-0.6-source-attribution-holdout-v2-freeze",
+  "holdout_acceptance_evidence": true,
+  "immutable_result": "PASS",
+  "result_summary": "Mistral, Google, and Groq each completed 18/18; useful attribution 6/6; avoidable abstention 0/6; citation coverage 100%; provider failures 0; all seven hard gates zero for every provider.",
+  "groq_operational_note": "Groq completed 18/18 with 13 model calls and 13 provider attempts. No structured-output retry was consumed; all observed HTTP statuses in retained operational telemetry were 200. This supports the v1 failure being transient rather than quota exhaustion or a persistent semantic capability defect.",
+  "files": [
+    {
+      "file": "google-attempt-telemetry-run-37326666360.jsonl",
+      "sha256": "ab4f0b125e29b82ceaa82127b2aaafd6f20c2f8c2fb0730086235b236cccdcd2",
+      "bytes": 5692
+    },
+    {
+      "file": "google-run-37326666360.json",
+      "sha256": "a6f8291049dc3cc819f3aa69b2416ffd84c36f716fac5ae57e0fd722429b1fb7",
+      "bytes": 16012
+    },
+    {
+      "file": "groq-operational-telemetry-run-37326666360.log",
+      "sha256": "694a9955b9b5dca996330baf8bfc401cd47477c0c90791382d89f9f57dc705da",
+      "bytes": 3131
+    },
+    {
+      "file": "groq-run-37326666360.json",
+      "sha256": "b587ce14ed4a0cf3e72dd5fe22764e71d52d7c6cfa6a8e0d774e72bf7e544ab8",
+      "bytes": 16020
+    },
+    {
+      "file": "mistral-run-37326666360.json",
+      "sha256": "e9c96f1047c9afa6558d67558407d1a9642d05d80a319d87e84d706ec1b8f2cb",
+      "bytes": 16005
+    },
+    {
+      "file": "summary-run-37326666360.json",
+      "sha256": "d9902d1f2cbb3d56712039c145de8469fc649771a83c87f60cfc23324d9c093d",
+      "bytes": 3306
+    }
+  ]
+}

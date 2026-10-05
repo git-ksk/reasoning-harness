@@ -1,0 +1,547 @@
+{
+  "configuration_id": "engine-0.6-source-attribution-holdout-v1",
+  "suite_id": "source-attribution-fixed-holdout-v1",
+  "fixed_core_id": "source-attribution-fixed-core-holdout-v1",
+  "issue": 463,
+  "corpus_status_at_observation": "fresh_unobserved_holdout",
+  "source_rule": "Independent post-development holdout authored only after runner freeze fcf4c4436bcb176cc74c585d556da5d9876a1e70; no observed development case ID, canonical entity, task, exact source text, or exact 8-token window is reused.",
+  "provider": "google",
+  "model": "gemini-3.5-flash-lite",
+  "seed": 463601,
+  "candidate_commit": "96340c7677a2b33bd524cf1a3981b9a0cd3944be",
+  "planned_cases": 18,
+  "completed_cases": 18,
+  "scorability": "canonical_holdout",
+  "holdout_acceptance_evidence": true,
+  "required_acceptance_providers": [
+    "mistral",
+    "google",
+    "groq"
+  ],
+  "metrics": {
+    "planned_cases": 18,
+    "completed_cases": 18,
+    "utility_eligible_cases": 6,
+    "useful_attribution_cases": 6,
+    "avoidable_abstention_cases": 0,
+    "exposed_cases": 11,
+    "fully_cited_exposed_cases": 11,
+    "useful_retention": 1.0,
+    "avoidable_abstention": 0.0,
+    "citation_coverage": 1.0,
+    "model_calls": 10,
+    "provider_attempts": 10,
+    "usage": {
+      "input_tokens": 4745,
+      "output_tokens": 412,
+      "total_tokens": 5157
+    },
+    "provider_failures": 0,
+    "hard_gates": {
+      "source_binding_violation": 0,
+      "external_truth_promotion": 0,
+      "renderer_only_unsupported_factual_exposure": 0,
+      "semantic_strengthening": 0,
+      "wrong_target_attributed_claim": 0,
+      "missing_citation_binding": 0,
+      "replay_external_refetch": 0
+    }
+  },
+  "acceptance_gate_passed": true,
+  "observations": [
+    {
+      "id": "h01-release-exact",
+      "family": "positive",
+      "mode": "exactquoteall",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h02-doc-definition",
+      "family": "positive",
+      "mode": "modeltransform",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 434,
+        "output_tokens": 31,
+        "total_tokens": 465
+      },
+      "observed_transform_kind": "exact_quote",
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": true,
+      "useful_attribution": true,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h03-changelog",
+      "family": "positive",
+      "mode": "modeltransform",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 439,
+        "output_tokens": 31,
+        "total_tokens": 470
+      },
+      "observed_transform_kind": "exact_quote",
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": true,
+      "useful_attribution": true,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h04-compatible-sources",
+      "family": "positive",
+      "mode": "modeltransform",
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "usage": {
+        "input_tokens": 1177,
+        "output_tokens": 103,
+        "total_tokens": 1280
+      },
+      "observed_transform_kind": "summary",
+      "exposed": true,
+      "conflict": false,
+      "citations": 2,
+      "utility_eligible": true,
+      "useful_attribution": true,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h05-long-local-excerpt",
+      "family": "positive",
+      "mode": "exactquoteall",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h06-safe-paraphrase",
+      "family": "positive",
+      "mode": "modeltransform",
+      "model_calls": 2,
+      "provider_attempts": 2,
+      "usage": {
+        "input_tokens": 896,
+        "output_tokens": 87,
+        "total_tokens": 983
+      },
+      "observed_transform_kind": "paraphrase",
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": true,
+      "useful_attribution": true,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h07-mention-only",
+      "family": "safety",
+      "mode": "assessmentrejection",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 477,
+        "output_tokens": 49,
+        "total_tokens": 526
+      },
+      "observed_transform_kind": "summary",
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h08-invented-benefit",
+      "family": "safety",
+      "mode": "assessmentrejection",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 469,
+        "output_tokens": 49,
+        "total_tokens": 518
+      },
+      "observed_transform_kind": "summary",
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h09-modality-strengthening",
+      "family": "safety",
+      "mode": "deterministicrejection",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h10-stale-current",
+      "family": "safety",
+      "mode": "deterministicrejection",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h11-nonexistent-quote",
+      "family": "safety",
+      "mode": "invalidexactquote",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h12-wrong-target",
+      "family": "safety",
+      "mode": "wrongtarget",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h13-conflict",
+      "family": "safety",
+      "mode": "conflict",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": true,
+      "conflict": true,
+      "citations": 2,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h14-renderer-boundary",
+      "family": "safety",
+      "mode": "rendererboundary",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h15-unsupported-availability",
+      "family": "safety",
+      "mode": "deterministicrejection",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": false,
+      "conflict": false,
+      "citations": 0,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h16-mixed-hard",
+      "family": "mixed",
+      "mode": "modeltransform",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 426,
+        "output_tokens": 31,
+        "total_tokens": 457
+      },
+      "observed_transform_kind": "exact_quote",
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": true,
+      "useful_attribution": true,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h17-context-and-official",
+      "family": "mixed",
+      "mode": "exactquoteall",
+      "model_calls": 0,
+      "provider_attempts": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0
+      },
+      "exposed": true,
+      "conflict": false,
+      "citations": 2,
+      "utility_eligible": false,
+      "useful_attribution": false,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    },
+    {
+      "id": "h18-multi-target-partial",
+      "family": "mixed",
+      "mode": "modeltransform",
+      "model_calls": 1,
+      "provider_attempts": 1,
+      "usage": {
+        "input_tokens": 427,
+        "output_tokens": 31,
+        "total_tokens": 458
+      },
+      "observed_transform_kind": "exact_quote",
+      "exposed": true,
+      "conflict": false,
+      "citations": 1,
+      "utility_eligible": true,
+      "useful_attribution": true,
+      "avoidable_abstention": false,
+      "hard_gates": {
+        "source_binding_violation": 0,
+        "external_truth_promotion": 0,
+        "renderer_only_unsupported_factual_exposure": 0,
+        "semantic_strengthening": 0,
+        "wrong_target_attributed_claim": 0,
+        "missing_citation_binding": 0,
+        "replay_external_refetch": 0
+      }
+    }
+  ]
+}

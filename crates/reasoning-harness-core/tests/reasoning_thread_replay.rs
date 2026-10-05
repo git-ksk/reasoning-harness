@@ -8,7 +8,10 @@ use reasoning_harness_core::{
     ReasoningThreadError, ReasoningThreadEvent, ReasoningThreadEventKind, ReasoningThreadStatus,
     ResolutionAttempt, ResolutionAttemptStatus, ResolutionCost, ResolutionReason,
     ResolutionRequest, ResolutionRequestBudget, ResolutionTarget, ResolverClass, SoftJudgeDecision,
-    SoftJudgeIdentity, SoftJudgeObservation, TemporalValidity, ThreadInputChange, Verdict,
+    SoftJudgeIdentity, SoftJudgeObservation, SourceAttributedClaim,
+    SourceAttributionAuthorityCeiling, SourceAttributionBinding, SourceAttributionConflictState,
+    SourceAttributionState, SourceAttributionTargetPolicy, SourceAttributionTransformKind,
+    SourceAttributionTransformRecord, SourceTextSpan, TemporalValidity, ThreadInputChange, Verdict,
     VerificationConclusion, VerificationReceipt, apply_reasoning_policy, compose_reasoning_policy,
     replay_thread, validate_thread,
 };
@@ -69,6 +72,46 @@ fn artifact() -> ReasoningArtifact {
         adversarial_findings: vec![],
         assumption_findings: vec![],
         evidence_qualification_findings: vec![],
+        source_attribution: SourceAttributionState {
+            targets: vec![SourceAttributionTargetPolicy {
+                policy_id: "thread-source-attribution-v1".into(),
+                target_id: "source-summary".into(),
+                target_question: "What does the admitted source say?".into(),
+                authority_ceiling: SourceAttributionAuthorityCeiling::SourceLocal,
+                hard_verification_required: false,
+            }],
+            bindings: vec![SourceAttributionBinding {
+                id: "source-binding-1".into(),
+                target_id: "source-summary".into(),
+                evidence_id: "e1".into(),
+                source_id: "fixture".into(),
+                source_url: Some("https://example.invalid/source".into()),
+                locator: None,
+                retrieved_at_unix_seconds: Some(123),
+                source_version: Some("fixture-v1".into()),
+                span: SourceTextSpan {
+                    start_byte: 0,
+                    end_byte: "enabled".len(),
+                },
+            }],
+            transform_assessments: vec![],
+            claims: vec![SourceAttributedClaim {
+                id: "source-claim-1".into(),
+                target_id: "source-summary".into(),
+                statement: "enabled".into(),
+                binding_ids: vec!["source-binding-1".into()],
+                materialization_policy_id:
+                    reasoning_harness_core::SOURCE_ATTRIBUTION_MATERIALIZATION_POLICY_ID.into(),
+                transform: SourceAttributionTransformRecord {
+                    kind: SourceAttributionTransformKind::ExactQuote,
+                    source_language: Some("en".into()),
+                    output_language: Some("en".into()),
+                    assessment_id: None,
+                },
+                authority_ceiling: SourceAttributionAuthorityCeiling::SourceLocal,
+                conflict_state: SourceAttributionConflictState::None,
+            }],
+        },
         claims: vec![Claim {
             id: "c1".into(),
             statement: "feature.enabled = true".into(),
@@ -200,6 +243,16 @@ fn checkpoint_interrupt_resume_reconstructs_equivalent_harness_state_without_rep
     assert_eq!(
         resumed.snapshot.resolution_attempts[0].cost.cost_microusd,
         Some(7)
+    );
+    let replayed_artifact = resumed.snapshot.artifact.as_ref().unwrap().clone();
+    assert_eq!(replayed_artifact.source_attribution.claims.len(), 1);
+    assert_eq!(
+        replayed_artifact.source_attribution.claims[0].statement,
+        "enabled"
+    );
+    assert_eq!(
+        replayed_artifact.source_attribution.bindings[0].retrieved_at_unix_seconds,
+        Some(123)
     );
 }
 

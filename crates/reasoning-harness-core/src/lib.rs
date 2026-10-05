@@ -37,6 +37,7 @@ pub mod semantic_materialization;
 pub mod semantic_runtime;
 pub mod semantic_stability;
 pub mod semantic_sufficiency;
+pub mod source_attribution;
 pub mod types;
 pub mod validate;
 pub mod verification;
@@ -366,6 +367,26 @@ pub use semantic_sufficiency::{
     build_evidence_sufficiency_json_fallback_request, build_evidence_sufficiency_model_request,
     evidence_sufficiency_output_schema, parse_evidence_sufficiency_output,
     run_model_backed_evidence_sufficiency, validate_evidence_sufficiency_fixture,
+};
+pub use source_attribution::{
+    ComposedQualifiedFinalization, SOURCE_ATTRIBUTION_EXPOSED_TEXT_POLICY_ID,
+    SOURCE_ATTRIBUTION_MATERIALIZATION_POLICY_ID, SOURCE_ATTRIBUTION_PROPOSAL_CONTRACT_ID,
+    SOURCE_ATTRIBUTION_TRANSFORM_ASSESSMENT_CONTRACT_ID, SourceAttributedClaim,
+    SourceAttributionAttributionDisposition, SourceAttributionAuthorityCeiling,
+    SourceAttributionBinding, SourceAttributionCitation, SourceAttributionConflictState,
+    SourceAttributionError, SourceAttributionFinalization, SourceAttributionFinalizationStatus,
+    SourceAttributionGuardReason, SourceAttributionLocator, SourceAttributionProposal,
+    SourceAttributionState, SourceAttributionSupportDisposition, SourceAttributionTargetPolicy,
+    SourceAttributionTransformAssessment, SourceAttributionTransformAssessmentProposal,
+    SourceAttributionTransformDisposition, SourceAttributionTransformKind,
+    SourceAttributionTransformRecord, SourceAttributionValidationIssue, SourceTextSpan,
+    append_source_attributed_claim, build_source_attribution_proposal_request,
+    build_source_attribution_transform_assessment_request, compose_qualified_finalization,
+    deterministic_transform_guard, finalize_source_attributed_answer,
+    materialize_source_attributed_claim, parse_source_attribution_proposal,
+    parse_source_attribution_transform_assessment, refresh_conflict_states,
+    source_attribution_binding_excerpt, source_attribution_proposal_schema,
+    source_attribution_transform_assessment_schema, validate_source_attribution_state,
 };
 pub use types::{
     AdversarialFinding, AdversarialFindingKind, ApplicabilityScope, CandidateClaim,

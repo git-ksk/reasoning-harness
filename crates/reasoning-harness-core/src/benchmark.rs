@@ -196,6 +196,7 @@ fn naive_materialize(input: HarnessInput, candidate: ReasoningCandidate) -> Reas
         adversarial_findings: Vec::new(),
         assumption_findings: Vec::new(),
         evidence_qualification_findings: Vec::new(),
+        source_attribution: Default::default(),
         claims: candidate
             .claims
             .into_iter()

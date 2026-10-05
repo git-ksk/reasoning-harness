@@ -594,6 +594,15 @@ pub fn validate_artifact(artifact: &ReasoningArtifact) -> ValidationReport {
         }
     }
 
+    diagnostics.extend(
+        crate::validate_source_attribution_state(artifact)
+            .into_iter()
+            .map(|issue| Diagnostic {
+                code: issue.code,
+                message: issue.message,
+            }),
+    );
+
     let inferred_conclusions: HashSet<&str> = artifact
         .inferences
         .iter()

@@ -185,3 +185,19 @@ path = "src/bin/evidence_relevance_negative_relation_probe.rs"
 [[bin]]
 name = "reason-evidence-relevance-identity-probe"
 path = "src/bin/evidence_relevance_identity_probe.rs"
+
+[[bin]]
+name = "reason-source-attribution-development-study"
+path = "src/bin/source_attribution_development.rs"
+
+[[bin]]
+name = "reason-source-attribution-holdout-study"
+path = "src/bin/source_attribution_holdout.rs"
+
+[[bin]]
+name = "reason-source-attribution-holdout-v2-study"
+path = "src/bin/source_attribution_holdout_v2.rs"
+
+[[bin]]
+name = "reason-source-attribution-provider-smoke"
+path = "src/bin/source_attribution_provider_smoke.rs"

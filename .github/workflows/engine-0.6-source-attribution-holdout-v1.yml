@@ -1,0 +1,256 @@
+name: engine-0.6-source-attribution-holdout-v1
+
+on:
+  push:
+    tags:
+      - engine-0.6-source-attribution-holdout-v1-freeze
+
+permissions:
+  contents: read
+
+env:
+  HOLDOUT_DIR: fixtures/source-attribution-holdout-v1
+  HOLDOUT_SEED: '463601'
+  FREEZE_TAG: engine-0.6-source-attribution-holdout-v1-freeze
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Enforce immutable first run
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$GITHUB_REF_NAME" = "$FREEZE_TAG"
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Validate frozen surface
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$FREEZE_TAG")"
+          test "$(git describe --tags --exact-match HEAD)" = "$FREEZE_TAG"
+          test "$(git rev-list -n 1 engine-0.6-source-attribution-holdout-v1-runner-freeze)" = "fcf4c4436bcb176cc74c585d556da5d9876a1e70"
+          git diff --exit-code engine-0.6-source-attribution-holdout-v1-runner-freeze -- \
+            crates/reasoning-harness-cli/Cargo.toml \
+            crates/reasoning-harness-cli/src/bin/source_attribution_holdout.rs
+          sha256sum -c "$HOLDOUT_DIR/surface-v1.sha256"
+          python3 "$HOLDOUT_DIR/check_freshness.py"
+          cargo run -q --locked -p reasoning-harness-cli \
+            --bin reason-source-attribution-holdout-study -- \
+            "$HOLDOUT_DIR" \
+            --provider mistral \
+            --model ministral-8b-2512 \
+            --seed "$HOLDOUT_SEED" \
+            --validate-only > /tmp/source-attribution-validate.json
+          jq -e '
+            .configuration_id == "engine-0.6-source-attribution-holdout-v1"
+            and .suite_id == "source-attribution-fixed-holdout-v1"
+            and .fixed_core_id == "source-attribution-fixed-core-holdout-v1"
+            and .issue == 463
+            and .planned_cases == 18
+            and .completed_cases == 0
+            and .scorability == "validate_only_non_scorable"
+            and .holdout_acceptance_evidence == true
+          ' /tmp/source-attribution-validate.json >/dev/null
+      - name: Validate deterministic boundaries
+        run: |
+          set -euo pipefail
+          cargo fmt --all -- --check
+          cargo clippy -p reasoning-harness-core --all-targets -- -D warnings
+          cargo clippy -p reasoning-harness-cli \
+            --bin reason-source-attribution-holdout-study -- -D warnings
+          cargo test -p reasoning-harness-core source_attribution::tests
+          cargo test -p reasoning-harness-core --test reasoning_thread_replay
+          cargo test -p reasoning-harness-cli \
+            --bin reason-source-attribution-holdout-study
+      - name: Preserve preflight
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-source-attribution-holdout-v1-preflight
+          path: /tmp/source-attribution-validate.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-2512
+            delay_ms: 1200
+            timeout_minutes: 45
+          - provider: google
+            model: gemini-3.5-flash-lite
+            delay_ms: 6100
+            timeout_minutes: 60
+          - provider: groq
+            model: openai/gpt-oss-120b
+            delay_ms: 10000
+            timeout_minutes: 60
+    concurrency:
+      group: engine-0.6-source-attribution-holdout-v1-${{ matrix.provider }}
+      cancel-in-progress: false
+    steps:
+      - name: Enforce immutable first run
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$GITHUB_REF_NAME" = "$FREEZE_TAG"
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+      - name: Revalidate surface before credentials
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+        run: |
+          set -euo pipefail
+          sha256sum -c "$HOLDOUT_DIR/surface-v1.sha256"
+          cargo run -q --locked -p reasoning-harness-cli \
+            --bin reason-source-attribution-holdout-study -- \
+            "$HOLDOUT_DIR" \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed "$HOLDOUT_SEED" \
+            --validate-only >/dev/null
+      - name: Check credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            groq) test -n "$GROQ_API_KEY" ;;
+            *) exit 2 ;;
+          esac
+      - name: Run canonical observation
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          DELAY_MS: ${{ matrix.delay_ms }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '10000'
+          REASON_GROQ_STRUCTURED_OUTPUT_RETRIES: '0'
+          REASON_GOOGLE_ATTEMPT_TELEMETRY_PATH: /tmp/source-attribution-google-attempts.jsonl
+        run: |
+          set -euo pipefail
+          BASE="/tmp/source-attribution-$PROVIDER"
+          cargo run -q --locked -p reasoning-harness-cli \
+            --bin reason-source-attribution-holdout-study -- \
+            "$HOLDOUT_DIR" \
+            --provider "$PROVIDER" \
+            --model "$MODEL" \
+            --seed "$HOLDOUT_SEED" \
+            --inter-case-delay-ms "$DELAY_MS" \
+            --checkpoint "$BASE-checkpoint.json" \
+            > "$BASE-result.json"
+          jq '{configuration_id,provider,model,candidate_commit,planned_cases,completed_cases,scorability,acceptance_gate_passed,operational_abort,metrics}' "$BASE-result.json"
+      - name: Preserve canonical evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-source-attribution-holdout-v1-live-${{ matrix.provider }}
+          path: |
+            /tmp/source-attribution-${{ matrix.provider }}*
+            /tmp/source-attribution-google-attempts.jsonl
+          if-no-files-found: warn
+          retention-days: 30
+
+  final-gate:
+    needs: live
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-0.6-source-attribution-holdout-v1-live-*
+          path: /tmp/source-attribution
+          merge-multiple: true
+      - name: Evaluate frozen holdout gate
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("/tmp/source-attribution")
+          expected = {
+              "mistral": "ministral-8b-2512",
+              "google": "gemini-3.5-flash-lite",
+              "groq": "openai/gpt-oss-120b",
+          }
+          summary = {
+              "schema_version": "engine-0.6-source-attribution-holdout-v1-summary",
+              "issue": 463,
+              "holdout_acceptance_evidence": True,
+              "candidate_commit": os.environ["EXPECTED_SHA"],
+              "providers": {},
+              "acceptance_gate_passed": True,
+          }
+          for provider, model in expected.items():
+              path = root / f"source-attribution-{provider}-result.json"
+              if not path.exists():
+                  summary["providers"][provider] = {"missing": True, "passed": False}
+                  summary["acceptance_gate_passed"] = False
+                  continue
+              result = json.loads(path.read_text())
+              passed = (
+                  result.get("candidate_commit") == os.environ["EXPECTED_SHA"]
+                  and result.get("provider") == provider
+                  and result.get("model") == model
+                  and result.get("planned_cases") == 18
+                  and result.get("completed_cases") == 18
+                  and result.get("scorability") == "canonical_holdout"
+                  and result.get("holdout_acceptance_evidence") is True
+                  and result.get("operational_abort") is None
+                  and result.get("acceptance_gate_passed") is True
+              )
+              summary["providers"][provider] = {
+                  "model": model,
+                  "passed": passed,
+                  "metrics": result.get("metrics"),
+              }
+              summary["acceptance_gate_passed"] = summary["acceptance_gate_passed"] and passed
+
+          out = Path("/tmp/source-attribution-holdout-summary.json")
+          out.write_text(json.dumps(summary, indent=2) + "\n")
+          print(out.read_text())
+          if not summary["acceptance_gate_passed"]:
+              raise SystemExit(1)
+          PY
+      - name: Preserve final gate
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-0.6-source-attribution-holdout-v1-final-gate
+          path: /tmp/source-attribution-holdout-summary.json
+          if-no-files-found: warn
+          retention-days: 30
