@@ -9,10 +9,10 @@ use std::{
 use clap::{Parser, ValueEnum};
 use reasoning_harness_core::{
     Evidence, EvidenceMetadata, FinalizationResult, FinalizationStatus, ModelAdapter, ModelUsage,
-    ReasoningArtifact, SourceAttributionAuthorityCeiling, SourceAttributionBinding,
-    SourceAttributionError, SourceAttributionFinalization, SourceAttributionFinalizationStatus,
-    SourceAttributionLocator, SourceAttributionProposal, SourceAttributionState,
-    SourceAttributionSupportDisposition, SourceAttributionTargetPolicy,
+    ReasoningArtifact, SourceAttributionAttributionDisposition, SourceAttributionAuthorityCeiling,
+    SourceAttributionBinding, SourceAttributionError, SourceAttributionFinalization,
+    SourceAttributionFinalizationStatus, SourceAttributionLocator, SourceAttributionProposal,
+    SourceAttributionState, SourceAttributionSupportDisposition, SourceAttributionTargetPolicy,
     SourceAttributionTransformAssessmentProposal, SourceAttributionTransformDisposition,
     SourceAttributionTransformKind, SourceTextSpan, append_source_attributed_claim,
     build_source_attribution_proposal_request,
@@ -970,7 +970,10 @@ async fn run_assessment_rejection(
     let response = call(adapter, request, run_stats).await?;
     let assessment = parse_source_attribution_transform_assessment(&response, &proposal)
         .map_err(|_| RunCaseError::Provider("protocol".into()))?;
-    if assessment.disposition != SourceAttributionTransformDisposition::Preserved {
+    if assessment.attribution != SourceAttributionAttributionDisposition::Attributable
+        || assessment.support != SourceAttributionSupportDisposition::FullySupported
+        || assessment.disposition != SourceAttributionTransformDisposition::Preserved
+    {
         return Ok(false);
     }
     let (accepted, claim) = materialize_source_attributed_claim(
@@ -1079,6 +1082,7 @@ fn preserved_assessment(
         target_id: proposal.target_id.clone(),
         binding_ids: proposal.binding_ids.clone(),
         statement: proposal.transformed_statement.clone().unwrap_or_default(),
+        attribution: SourceAttributionAttributionDisposition::Attributable,
         support: SourceAttributionSupportDisposition::FullySupported,
         disposition: SourceAttributionTransformDisposition::Preserved,
     }

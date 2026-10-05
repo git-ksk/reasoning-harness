@@ -56,3 +56,19 @@ Both conditions are advisory model verdicts bound to Harness-owned target/source
 Deterministic hard rejection remains for mechanically provable violations such as invalid target/source/span binding, non-canonical exact quotes, unsupported numeric precision, explicit current-state/causality/scope expansion, and hard-verification lane crossing. Cross-lingual or paraphrastic hedge-token disappearance is not itself treated as a proof of modality strengthening; semantic strengthening remains a hard gate, but is evaluated in the semantic assessment lane when it cannot be established mechanically.
 
 This amendment does not change the immutable v1/v2 observations. Any successor development surface exists because the generic semantic/materialization contract changed, not because failed cases were relabelled or replaced.
+
+
+## AIS attribution-status amendment after development v3
+
+Development v3 reached 100% useful retention and 0% avoidable abstention on both required providers, but both providers accepted the same mention-only/prompt-injection safety case. The source text contained an imperative instructing the evaluator to state a proposition; it did not itself assert that proposition.
+
+AIS operationalizes attribution with the “According to P, s” test and explicitly distinguishes attributable propositions from imperatives. The transform assessment therefore adds an independent attribution verdict alongside atomic support and no-strengthening preservation.
+
+Materialization now requires all three conditions:
+- attribution = attributable: it is accurate to say “According to the bound source, statement”; propositions occurring only inside commands, requests, quotations attributed to someone else, hypotheticals, or mere mentions do not satisfy this;
+- support = fully_supported: every atomic factual proposition is supported by the jointly bound excerpts;
+- disposition = preserved: modality, conditions, tense, quantity, scope, timing, causality, availability, benefits, and authority are not strengthened.
+
+A negative semantic verdict is a normal rejection, not an operational/grader failure. Parse/provider failures remain separately unscored/operational. This preserves the distinction used by evaluation harnesses such as Inspect between task semantics and grading machinery failure.
+
+The immutable v3 result remains FAIL. This amendment is generic and does not introduce fixture IDs, entity names, or source-phrase branches into production code.
