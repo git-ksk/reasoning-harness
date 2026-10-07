@@ -1138,10 +1138,15 @@ fn semantic_relation_frame_present_in_segment(
                 "globally",
                 "worldwide",
             ];
+            let made_generally_available = contains_phrase("has made")
+                && contains_phrase("generally available")
+                && !contains_phrase("has not made")
+                && !contains_phrase("hasn't made");
             (contains_phrase("rolled out") && has_token(&rollout_audience))
                 || contains_phrase("went live")
                 || contains_phrase("became generally available")
                 || contains_phrase("is now generally available")
+                || made_generally_available
                 || contains_phrase("was introduced")
                 || contains_phrase("has been introduced")
         }
@@ -10488,6 +10493,78 @@ mod tests {
             identity_requirement: EvidenceRelevanceIdentityRequirement::RequireHarnessAnchor,
             assessment_budget: EvidenceRelevanceAssessmentBudget::default(),
         }
+    }
+
+    #[test]
+    fn v30_accepts_target_owned_has_made_generally_available_launch_frame() {
+        let policy = launch_policy_for_v28();
+        let local = candidate(vec![(
+            EvidenceRelevanceSignalKind::Excerpt,
+            "Amazon Bedrock has made Silver Lens generally available to customers.",
+        )]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let effective = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_eq!(
+            effective.relation_scope,
+            EvidenceLocalRelationScope::RequestedRelation
+        );
+        assert_eq!(
+            materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition,
+            EvidenceRelevanceDisposition::Relevant
+        );
+    }
+
+    #[test]
+    fn v30_does_not_promote_negated_has_not_made_generally_available() {
+        let policy = launch_policy_for_v28();
+        let local = candidate(vec![(
+            EvidenceRelevanceSignalKind::Excerpt,
+            "Amazon Bedrock has not made Silver Lens generally available to customers.",
+        )]);
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        let effective = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &local,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_ne!(
+            effective.relation_scope,
+            EvidenceLocalRelationScope::RequestedRelation
+        );
+        assert_ne!(
+            materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition,
+            EvidenceRelevanceDisposition::Relevant
+        );
     }
 
     #[test]
