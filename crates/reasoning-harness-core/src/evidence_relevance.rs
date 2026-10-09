@@ -1121,30 +1121,9 @@ fn semantic_relation_frame_present_in_segment(
                 || contains_phrase("capped at")
                 || contains_phrase("ceiling of")
         }
-        EvidenceRelevanceRelationKind::ChangeOrLaunch => {
-            let rollout_audience = [
-                "customer",
-                "customers",
-                "user",
-                "users",
-                "tenant",
-                "tenants",
-                "team",
-                "teams",
-                "organization",
-                "organizations",
-                "production",
-                "public",
-                "globally",
-                "worldwide",
-            ];
-            (contains_phrase("rolled out") && has_token(&rollout_audience))
-                || contains_phrase("went live")
-                || contains_phrase("became generally available")
-                || contains_phrase("is now generally available")
-                || contains_phrase("was introduced")
-                || contains_phrase("has been introduced")
-        }
+        // Positive launch predicates must be owned by the requested entity.
+        // Generic phrase presence alone is not sufficient evidence authority.
+        EvidenceRelevanceRelationKind::ChangeOrLaunch => false,
         EvidenceRelevanceRelationKind::Definition => {
             contains_phrase("refers to")
                 || contains_phrase("is the term for")
@@ -1205,8 +1184,32 @@ fn target_owned_made_generally_available(
     }
     let tokens = segment.split_whitespace().collect::<Vec<_>>();
     let blocking_words = [
-        "not", "never", "plan", "plans", "planning", "intends", "intended", "proposal", "proposed",
-        "while", "whereas", "although", "though", "but", "however", "unless", "until", "instead",
+        "not",
+        "never",
+        "plan",
+        "plans",
+        "planning",
+        "intends",
+        "intended",
+        "proposal",
+        "proposed",
+        "while",
+        "whereas",
+        "although",
+        "though",
+        "but",
+        "however",
+        "unless",
+        "until",
+        "instead",
+        "if",
+        "whether",
+        "denied",
+        "denies",
+        "disputed",
+        "disputes",
+        "hypothetically",
+        "assuming",
     ];
     if tokens.iter().any(|word| blocking_words.contains(word))
         || tokens
@@ -1243,6 +1246,74 @@ fn target_owned_made_generally_available(
     })
 }
 
+fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &str) -> bool {
+    let targets = target_identity_phrases(policy);
+    let tokens = segment.split_whitespace().collect::<Vec<_>>();
+    if tokens.is_empty() || targets.is_empty() {
+        return false;
+    }
+    let blockers = [
+        "if",
+        "unless",
+        "whether",
+        "hypothetically",
+        "suppose",
+        "assuming",
+        "denied",
+        "denies",
+        "disputed",
+        "disputes",
+        "allegedly",
+        "reportedly",
+        "not",
+        "never",
+        "no",
+        "plans",
+        "planning",
+        "planned",
+        "intends",
+        "while",
+        "whereas",
+        "although",
+        "but",
+        "however",
+        "until",
+        "instead",
+        "preview",
+        "proposed",
+        "proposal",
+        "might",
+        "could",
+        "would",
+    ];
+    if tokens.iter().any(|word| blockers.contains(word)) {
+        return false;
+    }
+    let predicates: &[&[&str]] = &[
+        &["is", "now", "generally", "available"],
+        &["became", "generally", "available"],
+        &["went", "live"],
+        &["was", "introduced"],
+        &["has", "been", "introduced"],
+        &["rolled", "out"],
+    ];
+    targets.iter().any(|target| {
+        let name = target.split_whitespace().collect::<Vec<_>>();
+        !name.is_empty()
+            && tokens.windows(name.len()).enumerate().any(|(i, words)| {
+                if words != name {
+                    return false;
+                }
+                predicates.iter().any(|predicate| {
+                    let tail = &tokens[i + name.len()..];
+                    tail.windows(predicate.len())
+                        .position(|window| window == *predicate)
+                        .is_some_and(|distance| distance <= 7)
+                })
+            })
+    })
+}
+
 fn requested_relation_semantic_frame_present(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -1250,7 +1321,8 @@ fn requested_relation_semantic_frame_present(
     semantic_relation_segments(candidate).iter().any(|segment| {
         semantic_relation_frame_present_in_segment(policy.relation, segment)
             || (policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
-                && target_owned_made_generally_available(policy, segment))
+                && (target_owned_made_generally_available(policy, segment)
+                    || target_owned_launch_frame(policy, segment)))
     })
 }
 
@@ -10526,6 +10598,55 @@ mod tests {
             effective.relation_scope,
             EvidenceLocalRelationScope::DifferentRelation
         );
+    }
+
+    #[test]
+    fn v30_launch_frames_require_target_and_established_fact() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        for (statement, expected) in [
+            (
+                "Maple Queue is now generally available, while Silver Lens remains in preview.",
+                false,
+            ),
+            (
+                "Maple Queue became generally available while Silver Lens remains in private preview.",
+                false,
+            ),
+            (
+                "If the vendor has made Silver Lens generally available, customers can sign up.",
+                false,
+            ),
+            (
+                "The provider denied that it has made Silver Lens generally available.",
+                false,
+            ),
+            ("Silver Lens is now generally available to customers.", true),
+            ("Silver Lens became generally available yesterday.", true),
+            (
+                "The vendor has made Silver Lens generally available to customers.",
+                true,
+            ),
+        ] {
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, statement)]);
+            let disposition =
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition;
+            assert_eq!(
+                disposition == EvidenceRelevanceDisposition::Relevant,
+                expected,
+                "{statement}"
+            );
+        }
     }
 
     fn launch_policy_for_v28() -> EvidenceRelevanceTargetPolicy {
