@@ -1121,9 +1121,30 @@ fn semantic_relation_frame_present_in_segment(
                 || contains_phrase("capped at")
                 || contains_phrase("ceiling of")
         }
-        // Positive launch predicates must be owned by the requested entity.
-        // Generic phrase presence alone is not sufficient evidence authority.
-        EvidenceRelevanceRelationKind::ChangeOrLaunch => false,
+        EvidenceRelevanceRelationKind::ChangeOrLaunch => {
+            let rollout_audience = [
+                "customer",
+                "customers",
+                "user",
+                "users",
+                "tenant",
+                "tenants",
+                "team",
+                "teams",
+                "organization",
+                "organizations",
+                "production",
+                "public",
+                "globally",
+                "worldwide",
+            ];
+            (contains_phrase("rolled out") && has_token(&rollout_audience))
+                || contains_phrase("went live")
+                || contains_phrase("became generally available")
+                || contains_phrase("is now generally available")
+                || contains_phrase("was introduced")
+                || contains_phrase("has been introduced")
+        }
         EvidenceRelevanceRelationKind::Definition => {
             contains_phrase("refers to")
                 || contains_phrase("is the term for")
@@ -5213,6 +5234,20 @@ pub fn derive_effective_evidence_local_qualification_v17(
 
     let mut effective =
         derive_effective_evidence_local_qualification_v16(policy, candidate, proposal, raw)?;
+
+    // Post-v16 positive launch authority must be target-owned and affirmative.
+    // Older historical v11/v23 semantics still consume the immutable coarse
+    // frames; this guard applies only to the current successor path (v17/v30).
+    if policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
+        && effective.scope_risk == Risk::None
+        && effective.relation_scope == EvidenceLocalRelationScope::RequestedRelation
+        && !semantic_relation_segments(candidate).iter().any(|segment| {
+            target_owned_made_generally_available(policy, segment)
+                || target_owned_launch_frame(policy, segment)
+        })
+    {
+        effective.relation_scope = EvidenceLocalRelationScope::Unresolved;
+    }
 
     // v17 adds a one-sided identity authority floor for explicit local ownership
     // omissions. A canonical target name can describe a clipped row or omitted
