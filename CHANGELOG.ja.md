@@ -8,9 +8,10 @@
 
 - Issue #355で、ユーザー向けReason CLI package versionとHarness Engine（`reasoning-harness-core`）package versionを分離。`v0.4.2`は最後のunified historical releaseとして保持し、今後のCLI release tagは`reason-vX.Y.Z`を使う。machine contract IDは独立したcompatibility座標のまま、provider crate versionは第3のユーザー向けversionにはせず内部実装座標として扱う。
 
-### Harness Engine 0.6.1 source patch予定（未リリース）
+## Harness Engine [0.6.1] - 2026-10-09
 
 - #476: `has made … generally available`の肯定的なlaunch判定を対象エンティティ自身に結び付け、他対象・別節・計画表現・否定表現で誤って`Relevant`に昇格しないよう修正。
+- #479: v17/v30の提供開始根拠を対象自身の肯定的事実に限定。条件・否定・疑問・架空・未検証の主張をFail-closedとする。独立評価v1は3件FAILとして保持し、独立v2は30/30 deterministic PASS。
 - #477: 旧MCP v1のstdin書き込みタイムアウト問題を明示し、履歴評価用に凍結されたv1実装は変更しません。期限管理された後継v2に入力停止時の回帰テストを追加し、現行CLIが使用するv3の安全な実装を維持します。v1利用者はv2/v3への移行が必要です。
 - 公開済み`engine-v0.6.0`、過去のfreeze観測、`reason-v0.5.3`は変更しない。公開前の独立acceptanceとrelease判定は#475（milestone #9）で管理。
 
