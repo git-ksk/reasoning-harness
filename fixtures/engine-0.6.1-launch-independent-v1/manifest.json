@@ -1,0 +1,363 @@
+{
+  "suite_id": "engine-0.6.1-launch-independent-v1",
+  "issue": 479,
+  "status": "fresh_unobserved_holdout",
+  "protocol": "effective_v17_materialize_v30",
+  "precommitted_expected_positive": 13,
+  "precommitted_expected_negative": 18,
+  "cases": [
+    {
+      "id": "p01",
+      "target": "Copper Finch",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Copper Finch is now generally available across four regions."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p02",
+      "target": "Quartz Field",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Quartz Field became generally available for customers on May 7."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p03",
+      "target": "Saffron Gate",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Saffron Gate went live for enterprise accounts in July."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p04",
+      "target": "Juniper Fleet",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Juniper Fleet was introduced as a managed service."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p05",
+      "target": "Cedar Harbor",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cedar Harbor has been introduced to the public service catalog."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p06",
+      "target": "Willow Arcade",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Willow Arcade rolled out to customer organizations."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p07",
+      "target": "Bramble Cove",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The platform has made Bramble Cove generally available in three regions."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p08",
+      "target": "Lumen Pond",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The platform has made Lumen Pond generally available with no new charges."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p09",
+      "target": "Iris Transit",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Iris Transit went live and now serves commercial customers."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p10",
+      "target": "Nimbus Vale",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nimbus Vale became generally available to subscribers."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p11",
+      "target": "Orchid Forge",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Orchid Forge is now generally available to registered tenants."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p12",
+      "target": "Amber Satellite",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Amber Satellite was introduced in September."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p13",
+      "target": "Topaz River",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Topaz River has been introduced to subscription customers."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "n01",
+      "target": "Coral Cove",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Blue Finch is now generally available, while Coral Cove remains in a private pilot."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n02",
+      "target": "Moss Beacon",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cobalt Fleet became generally available, whereas Moss Beacon is still experimental."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n03",
+      "target": "Lemon Orbit",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Blue Atlas went live yesterday; Lemon Orbit appears in the support index."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n04",
+      "target": "Oyster Platform",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Crimson Gate was introduced and Oyster Platform is mentioned in the index."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n05",
+      "target": "Pine Relay",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "If the vendor has made Pine Relay generally available, customers can apply."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n06",
+      "target": "Sage Explorer",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The company denied that it has made Sage Explorer generally available."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n07",
+      "target": "Violet Dock",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Violet Dock might be now generally available to users."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n08",
+      "target": "Amber Registry",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Amber Registry is not now generally available to customers."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n09",
+      "target": "Silver Range",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Draft notes say Silver Range is now generally available, but the official announcement is pending."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n10",
+      "target": "Opal Beacon",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Opal Beacon is now generally available?"
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n11",
+      "target": "Mint Corridor",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Mint Corridor is now generally available, reportedly."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n12",
+      "target": "Maple Ridge",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The vendor has made Maple Ridge generally available in a proposed deployment plan."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n13",
+      "target": "Granite Vale",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Granite Vale was introduced in a fictional scenario."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n14",
+      "target": "Coral Sphere",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The vendor disputed that Coral Sphere went live."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n15",
+      "target": "Lilac Harbor",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Lilac Harbor was introduced according to an unverified rumor."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n16",
+      "target": "Aurora Cavern",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Aurora Cavern availability"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Verdant Queue is now generally available to paying users."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n17",
+      "target": "Marble Hollow",
+      "signals": [
+        {
+          "kind": "navigation_or_footer",
+          "text": "Marble Hollow roadmap"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Peacock Relay became generally available this morning."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n18",
+      "target": "Golden Grove",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Golden Grove is mentioned in the glossary."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Summer Beacon went live for commercial customers."
+        }
+      ],
+      "expected_relevant": false
+    }
+  ]
+}
