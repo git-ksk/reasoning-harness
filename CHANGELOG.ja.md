@@ -8,6 +8,23 @@
 
 - Issue #355で、ユーザー向けReason CLI package versionとHarness Engine（`reasoning-harness-core`）package versionを分離。`v0.4.2`は最後のunified historical releaseとして保持し、今後のCLI release tagは`reason-vX.Y.Z`を使う。machine contract IDは独立したcompatibility座標のまま、provider crate versionは第3のユーザー向けversionにはせず内部実装座標として扱う。
 
+## [0.5.4] - 2026-10-09
+
+Reason CLI 0.5.4で独立release済みHarness Engine 0.6.1を正式採用します。旧`reason-v0.5.3`の公開済みartifact（Engine 0.5.0）は変更しません。
+
+### 変更
+
+- #484: CLI、doctor、署名されたrelease provenance、native配布をCLI 0.5.4 / Engine 0.6.1の組み合わせに更新。
+- Engine 0.6系のevidence need、relation qualification、source-attributed prose、0.6.1のlaunch事実性修正を採用。未評価の新しいEngine semanticsは追加しない。
+- 更新・rollbackの両方向で`--allow-engine-change`が必要です。`--yes`だけでは許可しません。
+- Homebrew / WinGet管理下のbinaryをself-updateしない制限は維持します。
+
+### 検証
+
+- Engine独立評価v2はdeterministic 30/30、Mistral・Google・Groq liveは36/36 PASS（run 37935245178）。旧v1 FAILは履歴として保持。
+- CLI専用の全workspace・各OS native package・fresh install・lifecycle・署名provenanceは#484で追跡。
+- 凍結済み旧MCP v1は直接修正せず、期限管理されたv2/v3へ移行が必要です。
+
 ## Harness Engine [0.6.1] - 2026-10-09
 
 - #476: `has made … generally available`の肯定的なlaunch判定を対象エンティティ自身に結び付け、他対象・別節・計画表現・否定表現で誤って`Relevant`に昇格しないよう修正。

@@ -10,6 +10,23 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 - Issue #355 decouples the user-facing Reason CLI package version from the Harness Engine (`reasoning-harness-core`) package version. `v0.4.2` remains the final unified historical release; future CLI releases use `reason-vX.Y.Z` tags. Machine contract IDs remain independent compatibility coordinates, and provider crate versions remain internal implementation coordinates rather than a third user-facing product version.
 
+## [0.5.4] - 2026-10-09
+
+Reason CLI patch release adopting the independently released Harness Engine 0.6.1. Previously published `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0.
+
+### Changed
+
+- #484: Package and expose Reason CLI 0.5.4 / Harness Engine 0.6.1 in the CLI, doctor, signed provenance and native release metadata.
+- Preserve Harness-owned evidence-need routing, relevance qualification, source-attributed prose and the 0.6.1 launch-factuality safety patch without introducing new unaccepted Engine semantics.
+- Explicit `--allow-engine-change` consent remains mandatory in both 0.5.0 -> 0.6.1 update and 0.6.1 -> 0.5.0 rollback; `--yes` is not a replacement for consent.
+- Package-manager-owned installs remain controlled by Homebrew or WinGet instead of the native self-updater.
+
+### Acceptance boundary
+
+- Independent Engine 0.6.1 evidence: fresh v2 deterministic 30/30 and Mistral/Google/Groq live 36/36 PASS (run 37935245178). Initial failed v1 evaluation remains preserved.
+- CLI-specific locked workspace, platform packaging, no-Rust consumer, lifecycle and signed provenance acceptance are tracked under #484.
+- Frozen legacy MCP v1 cannot be patched in place; direct v1 integrations must migrate to deadline-bounded v2/v3 successors.
+
 ## Harness Engine [0.6.1] - 2026-10-09
 
 - #476 fixes positive ChangeOrLaunch relation authority for `has made … generally available` by requiring the *requested* target in the local affirmative predicate; other-subject, cross-clause, planned, and negated statements fail closed.

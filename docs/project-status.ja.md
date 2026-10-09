@@ -8,10 +8,10 @@
 
 ## 現在のリリース
 
-現在公開済みのtagged split CLI previewは **Reason CLI 0.5.3 / Harness Engine 0.5.0** のままです。**Harness Engine 0.6.1** を`engine-v0.6.1`として独立source releaseしました。CLIへのEngine採用は別リリースです。
+現在公開済みのsplit CLI previewは **Reason CLI 0.5.4 / Harness Engine 0.6.1** です。従来の0.5.3 / Engine 0.5.0を変更しません。**Harness Engine 0.6.1** を`engine-v0.6.1`として独立source releaseしました。CLIへのEngine採用は別リリースです。
 
 ```text
-公開済みCLI: Reason CLI 0.5.3 / Harness Engine 0.5.0
+公開済みCLI: Reason CLI 0.5.4 / Harness Engine 0.6.1
 最新Engine source release: Harness Engine 0.6.1 (`engine-v0.6.1`)
 ```
 
@@ -60,6 +60,10 @@ Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapter�
 - supported platformでのfresh-install acceptance。
 
 詳細なacceptance planは[Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md)にあります。
+
+## 最新product統合: Reason CLI 0.5.4
+
+CLI 0.5.4は#484で独立release済みEngine 0.6.1を採用します。各OSの署名付きnative配布とEngine-changeの明示許可を維持し、公開済み0.5.3のEngine 0.5.0は不変です。
 
 ## 最新Engineパッチ: Harness Engine 0.6.1
 

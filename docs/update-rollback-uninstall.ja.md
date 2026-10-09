@@ -20,7 +20,7 @@ reason update --check --format json
 明示versionも確認できます。
 
 ```bash
-reason update --check --version 0.5.3
+reason update --check --version 0.5.4
 ```
 
 ## updateを適用する
@@ -44,6 +44,22 @@ apply pathは次を順に検証します。
 5. archive entryを`SHA256SUMS`とも照合;
 6. Unixではarchive path safety、さらに展開後`reason --version` identity;
 7. Unixでは同一directoryでatomic replacement、Windowsではprocess終了直後のstaged replacement。
+
+Reason CLI 0.5.3 / Engine 0.5.0からCLI 0.5.4 / Engine 0.6.1への更新には明示Engine-change許可が必要です。
+
+```bash
+reason update --check --version 0.5.4
+reason update --version 0.5.4 --allow-engine-change
+reason update --version 0.5.4 --allow-engine-change --yes --format json
+```
+
+CLI 0.5.3 / Engine 0.5.0へ戻すrollbackも明示許可が必要です。
+
+```bash
+reason update --rollback 0.5.3 --allow-engine-change
+```
+
+`--yes`だけではEngineの変更を許可しません。以下の0.5.2 -> 0.5.3は歴史的な例です。
 
 Harness Engine SemVerが変わる場合は、明示的にacknowledgeしない限りapplyを拒否します。`reason-v0.5.2`（Engine 0.4.2）から`reason-v0.5.3`（Engine 0.5.0）へadoptする場合は次です。
 

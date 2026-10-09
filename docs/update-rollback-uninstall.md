@@ -20,7 +20,7 @@ Automatic discovery considers only stable SemVer `reason-v*` releases. `-beta` /
 For an explicit target:
 
 ```bash
-reason update --check --version 0.5.3
+reason update --check --version 0.5.4
 ```
 
 ## Apply an update
@@ -44,6 +44,22 @@ The apply path verifies, in order:
 5. the archive entry against `SHA256SUMS`;
 6. archive path safety on Unix and the extracted `reason --version` identity;
 7. an atomic same-directory replacement on Unix, or a staged replacement immediately after process exit on Windows.
+
+Reason CLI 0.5.3 / Engine 0.5.0 -> CLI 0.5.4 / Engine 0.6.1 requires explicit Engine-change permission:
+
+```bash
+reason update --check --version 0.5.4
+reason update --version 0.5.4 --allow-engine-change
+reason update --version 0.5.4 --allow-engine-change --yes --format json
+```
+
+Reversing to CLI 0.5.3 / Engine 0.5.0 also requires the separate Engine-change consent:
+
+```bash
+reason update --rollback 0.5.3 --allow-engine-change
+```
+
+The no-consent path must fail closed in both directions, even with `--yes`. The older 0.5.2 -> 0.5.3 example below remains historical documentation.
 
 If the Harness Engine SemVer changes, apply fails until the user explicitly acknowledges it. For the `reason-v0.5.2` (Engine 0.4.2) -> `reason-v0.5.3` (Engine 0.5.0) adoption:
 

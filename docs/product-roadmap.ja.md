@@ -10,14 +10,14 @@
 
 ```text
 公開済みsplit CLI:
-  Reason CLI 0.5.3
-  Harness Engine 0.5.0
+  Reason CLI 0.5.4
+  Harness Engine 0.6.1
 
 最新の独立Engine source release:
-  Harness Engine 0.6.0 (`engine-v0.6.0`)
+  Harness Engine 0.6.1 (`engine-v0.6.0`)
 
 直近完了した統合:
-  Reason CLI 0.5.3 -> Harness Engine 0.5.0 (#455)
+  Reason CLI 0.5.4 -> Harness Engine 0.6.1 (#484)
 
 最後のunified historical release:
   Reason CLI 0.4.2
@@ -38,6 +38,10 @@ Reasoning Harnessはgeneral-purpose agent frameworkより意図的に狭いprodu
 model proposes
 Harness verifies / qualifies / abstains
 ```
+
+### Engine 0.6.1正式採用 — Reason CLI 0.5.4 (#484)
+
+独立acceptance済みEngine 0.6.1を新しいCLI 0.5.4で配布します。署名provenance、更新とrollback時の明示Engine-change許可、既存CLI 0.5.3のimmutabilityを維持します。
 
 ## トラックA — Reason CLI 0.5.x: 一般利用向け製品化
 
