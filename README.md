@@ -71,7 +71,7 @@ That distinction is the product: **useful AI output without letting model confid
 
 ## Quickstart
 
-The current published split CLI is **Reason CLI 0.5.3 on Harness Engine 0.5.0**. The latest independent Engine source release is **Harness Engine 0.6.0** under `engine-v0.6.0`; it is not retrofitted into the published CLI. `reason-v0.5.3` remains immutable on Engine 0.5.0 until a separate CLI adoption release. Published native installers are the normal end-user path (GitHub CLI 2.93+ is required for provenance verification).
+The current published split CLI is **Reason CLI 0.5.3 on Harness Engine 0.5.0**. The latest independent Engine source release is **Harness Engine 0.6.1** under `engine-v0.6.1`; it is not retrofitted into the published CLI. `reason-v0.5.3` remains immutable on Engine 0.5.0 until a separate CLI adoption release. Published native installers are the normal end-user path (GitHub CLI 2.93+ is required for provenance verification).
 
 macOS / Linux:
 
@@ -316,6 +316,12 @@ The final `v0.4.2` release gate serves a different purpose: it checks the produc
 
 The exact frozen coordinates, metrics, run IDs, pacing policy, and provenance are in [v0.4.2 v36 release acceptance](docs/natural-language-e2e-v36-result.md). Failed or inconclusive observations remain part of the research record rather than being overwritten by nicer reruns.
 
+### Harness Engine 0.6.1 source patch acceptance
+
+Harness Engine 0.6.1 is independently released under `engine-v0.6.1` after fixing wrong-target and nonfactual launch-relevance authority in successor v17/v30. Historical Engine 0.6.0, frozen relation contracts, and published Reason CLI 0.5.3 artifacts remain unchanged.
+
+The first precommitted independent v1 acceptance failed 3 cases and remains a permanent FAIL. A separate independent v2 passed **30/30 deterministic** cases. On [live run 37935245178](https://github.com/git-ksk/reasoning-harness/actions/runs/37935245178), Mistral, Google and Groq passed **12/12 each (36/36 total)** with zero wrong-target Relevant, positive utility misses and provider failures. Release PR #482 passed 23/23 CI checks. See [Engine 0.6.1 release notes](docs/engine-0.6.1-release.md).
+
 ### Harness Engine 0.6.0 release acceptance
 
 Harness Engine 0.6.0 is independently released under `engine-v0.6.0` after three measured Engine tracks completed frozen independent acceptance. The release promotion itself changes no accepted runtime semantics.
@@ -357,7 +363,7 @@ From the next product line onward:
 - **Harness Engine** versions reasoning/correctness behavior.
 - **Machine contract IDs** version wire/schema compatibility independently.
 
-The published split CLI line remains **Reason CLI 0.5.3 on Harness Engine 0.5.0**. The latest independent Engine source release is Harness Engine 0.6.0 under `engine-v0.6.0`; CLI adoption is deliberately separate, so `reason-v0.5.3` is not rewritten. Earlier CLI artifacts, including `reason-v0.5.2` on Engine 0.4.2, remain immutable.
+The published split CLI line remains **Reason CLI 0.5.3 on Harness Engine 0.5.0**. The latest independent Engine source release is Harness Engine 0.6.1 under `engine-v0.6.1`; CLI adoption is deliberately separate, so `reason-v0.5.3` is not rewritten. Earlier CLI artifacts, including `reason-v0.5.2` on Engine 0.4.2, remain immutable.
 
 See [versioning](docs/versioning.md) and the [Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md).
 

@@ -79,7 +79,8 @@ Start from the current release evidence, then move backward only if you need pro
 
 - [Planner reliability v1 result](planner-reliability-v1-result.md) — frozen #282 repeated-trial baseline before #283 action-materialization changes.
 - [v0.4.2 final v36 release acceptance](natural-language-e2e-v36-result.md) — immutable final unified / Engine 0.4.2 release evidence.
-- [Harness Engine 0.6.0 release](engine-0.6.0-release.md) — latest independent Engine coordinate and the frozen #461/#462/#468/#463 acceptance boundary.
+- [Harness Engine 0.6.1 release](engine-0.6.1-release.md) — latest independent source patch, fresh cross-provider launch safety acceptance, and the residual legacy v1 limitation.
+- [Harness Engine 0.6.0 release](engine-0.6.0-release.md) — historical 0.6.0 baseline and the frozen #461/#462/#468/#463 acceptance boundary.
 - [Harness Engine 0.5.0 release](engine-0.5.0-release.md) — previous independent Engine coordinate, release boundary, and accepted semantic delta.
 - [Harness Engine 0.5.0 final cross-model acceptance](engine-0.5-final-v3-result.md) — fresh final semantic-delta gate across the current curated model catalog.
 - [Product dogfood](product-dogfood.md) — product-oriented comparative evaluation.

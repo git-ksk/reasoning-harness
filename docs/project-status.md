@@ -8,11 +8,11 @@ For the preserved long-form provenance ledger, see [Project status history](proj
 
 ## Current release
 
-**Reason CLI 0.5.3 on Harness Engine 0.5.0** remains the current published CLI preview. **Harness Engine 0.6.0** is independently released from the accepted semantic line as `engine-v0.6.0`; Reason CLI adoption of Engine 0.6.0 is a separate future release decision.
+**Reason CLI 0.5.3 on Harness Engine 0.5.0** remains the current published CLI preview. **Harness Engine 0.6.1** is the latest independent source release under `engine-v0.6.1`; CLI adoption is a separate future release decision.
 
 ```text
 Published CLI: Reason CLI 0.5.3 / Harness Engine 0.5.0
-Latest Engine source release: Harness Engine 0.6.0 (`engine-v0.6.0`)
+Latest Engine source release: Harness Engine 0.6.1 (`engine-v0.6.1`)
 ```
 
 `v0.4.2` remains the immutable final release where the CLI and Engine shared one SemVer coordinate. `reason-v0.5.0` shipped the first split general-use CLI, followed by the 0.5.1/0.5.2 patch line on Engine 0.4.2. `reason-v0.5.3` then adopted the independently accepted Engine 0.5.0 under a new CLI coordinate.
@@ -60,6 +60,10 @@ The 0.5.0-0.5.2 productization line delivered ordinary terminal usability on the
 - fresh-install acceptance across supported platforms.
 
 The detailed acceptance plan is in the [Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md).
+
+## Current Engine patch: Harness Engine 0.6.1
+
+The source-only `engine-v0.6.1` release fixes target-owned positive ChangeOrLaunch authority in v17/v30. The original independent v1 FAIL is preserved; separate v2 deterministic acceptance passed 30/30, and Mistral/Google/Groq live acceptance passed 12/12 each (wrong-target Relevant 0, utility miss 0, provider failure 0; [run 37935245178](https://github.com/git-ksk/reasoning-harness/actions/runs/37935245178)). Release PR #482 passed 23/23 CI checks. Frozen MCP v1 retains its stdin-write limitation; supported v2/v3 successors are deadline-bounded. Published CLI still contains Engine 0.5.0. See [release notes](engine-0.6.1-release.md).
 
 ## Separate engine track: Harness Engine 0.6.0
 

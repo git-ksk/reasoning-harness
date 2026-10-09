@@ -8,11 +8,11 @@
 
 ## 現在のリリース
 
-現在公開済みのtagged split CLI previewは **Reason CLI 0.5.3 / Harness Engine 0.5.0** のままです。**Harness Engine 0.6.0** はaccepted semantic lineから`engine-v0.6.0`として独立releaseし、Reason CLIによるEngine 0.6.0 adoptionは別の将来releaseとして扱います。
+現在公開済みのtagged split CLI previewは **Reason CLI 0.5.3 / Harness Engine 0.5.0** のままです。**Harness Engine 0.6.1** を`engine-v0.6.1`として独立source releaseしました。CLIへのEngine採用は別リリースです。
 
 ```text
 公開済みCLI: Reason CLI 0.5.3 / Harness Engine 0.5.0
-最新Engine source release: Harness Engine 0.6.0 (`engine-v0.6.0`)
+最新Engine source release: Harness Engine 0.6.1 (`engine-v0.6.1`)
 ```
 
 `v0.4.2`はCLI / Engineが同じSemVerを共有したimmutableな最後のunified releaseです。`reason-v0.5.0`で最初のsplit general-use CLIをreleaseし、0.5.1 / 0.5.2 patch lineはEngine 0.4.2で進めました。`reason-v0.5.3`では独立acceptance済みのEngine 0.5.0を新しいCLI coordinateでadoptしました。
@@ -60,6 +60,10 @@ Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapter�
 - supported platformでのfresh-install acceptance。
 
 詳細なacceptance planは[Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md)にあります。
+
+## 最新Engineパッチ: Harness Engine 0.6.1
+
+`engine-v0.6.1`はv17/v30のlaunch関連性判定で別対象・条件・否定・疑問・架空・未検証の記述からの誤昇格を防ぎます。歴史的なfreeze評価は変更しません。独立v2は30/30、Mistral・Google・Groqのlive acceptanceは各12/12 PASS（誤Relevant 0、utility miss 0、provider failure 0、[run 37935245178](https://github.com/git-ksk/reasoning-harness/actions/runs/37935245178)）。リリースPR #482は23/23 CI PASS。旧MCP v1のstdin-write制限は残り、v2/v3への移行が必要です。公開済みCLI 0.5.3はEngine 0.5.0を維持します。[0.6.1リリースノート](engine-0.6.1-release.ja.md)を参照してください。
 
 ## 別系統のエンジン開発: Harness Engine 0.6.0
 
