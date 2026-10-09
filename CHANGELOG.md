@@ -13,7 +13,7 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 ### Pending Harness Engine 0.6.1 source patch (not released)
 
 - #476 fixes positive ChangeOrLaunch relation authority for `has made … generally available` by requiring the *requested* target in the local affirmative predicate; other-subject, cross-clause, planned, and negated statements fail closed.
-- #477 makes the legacy MCP v1 adapter use the common subprocess whole-invocation deadline for input writes and output reads while preserving read-only evidence acquisition and protocol checks.
+- #477 documents the legacy MCP v1 subprocess deadline limitation, preserves the historically frozen v1 implementation, and adds a blocked-stdin whole-invocation regression for the supported v2 successor; current product CLI uses deadline-bounded v3. Consumers of v1 must migrate to v2/v3.
 - Published `engine-v0.6.0`, historical frozen observations, and `reason-v0.5.3` remain unchanged. Release and independent acceptance are tracked in #475 (milestone #9).
 
 ## Harness Engine [0.6.0] - 2026-10-06

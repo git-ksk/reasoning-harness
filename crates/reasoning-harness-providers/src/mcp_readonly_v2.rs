@@ -25,9 +25,9 @@ const MCP_CLIENT_NAME: &str = "reasoning-harness";
 const MCP_PROVENANCE_META_KEY: &str = "git-ksk/reasoning-harness/provenance";
 
 #[derive(Debug)]
-/// v0.4 operational successor that preserves the stateless/read-only MCP contract while
-/// applying the shared whole-invocation subprocess deadline. Historical release tags
-/// remain immutable; newer source maintenance may also harden the legacy v1 transport.
+/// v0.4 operational successor that preserves the v1 stateless/read-only semantics while
+/// applying the shared whole-invocation subprocess deadline. The frozen `mcp_readonly_v1`
+/// implementation remains untouched for historical replay/evaluation compatibility.
 pub struct McpReadOnlyResolverV2 {
     config: McpReadOnlyResolverConfig,
     config_id: String,
@@ -521,6 +521,35 @@ printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:resolution:service.regio
         fs::remove_file(path).ok();
         assert_eq!(error.kind, ResolutionAdapterErrorKind::Timeout);
         assert!(wall.elapsed() < Duration::from_millis(500));
+    }
+
+    // Legacy v1 is frozen for historical evaluation. Production-facing
+    // integrations must use this deadline-bounded successor (or v3).
+    #[cfg(unix)]
+    #[test]
+    fn successor_stdin_block_does_not_exceed_whole_invocation_deadline() {
+        let path = script("#!/bin/sh\nsleep 2\n", "blocked-stdin");
+        let mut config = McpReadOnlyResolverConfig::with_defaults(
+            "fixture-server",
+            path.clone(),
+            "lookup",
+            "mcp:fixture:lookup",
+        );
+        config.timeout_ms = 80;
+        config
+            .fixed_arguments
+            .insert("large".into(), json!("a".repeat(256 * 1024)));
+        let started = Instant::now();
+        let failure = McpReadOnlyResolverV2::new(config)
+            .resolve(&request(), 0)
+            .unwrap_err();
+        fs::remove_file(path).ok();
+        assert_eq!(failure.kind, ResolutionAdapterErrorKind::Timeout);
+        assert!(
+            started.elapsed() < Duration::from_millis(1000),
+            "deadline overrun: {:?}",
+            started.elapsed()
+        );
     }
 
     #[cfg(unix)]

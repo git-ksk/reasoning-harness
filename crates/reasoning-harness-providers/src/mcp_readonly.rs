@@ -1,7 +1,10 @@
 use std::{
     collections::{BTreeMap, BTreeSet},
+    io::{BufRead, BufReader, Write},
     path::PathBuf,
-    process::Command,
+    process::{Command, Stdio},
+    sync::mpsc,
+    thread,
     time::{Duration, Instant},
 };
 
@@ -13,10 +16,7 @@ use reasoning_harness_core::{
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
-use crate::{
-    config_identity::stable_config_id, subprocess_deadline::run_until_line,
-    subprocess_environment::isolate_subprocess_environment,
-};
+use crate::config_identity::stable_config_id;
 
 pub const MCP_READONLY_RESOLVER_ID: &str = "mcp_readonly_v1";
 pub const MCP_PROTOCOL_VERSION: &str = "2026-07-28";
@@ -128,6 +128,47 @@ struct McpAcquisitionPayload {
     acquisition_metadata: AcquiredEvidenceMetadata,
 }
 
+#[derive(Debug)]
+enum LineReadError {
+    Io,
+    TooLarge,
+    Eof,
+}
+
+fn read_one_bounded_line(
+    stdout: impl std::io::Read,
+    max_bytes: usize,
+) -> Result<Vec<u8>, LineReadError> {
+    let mut reader = BufReader::new(stdout);
+    let mut bytes = Vec::new();
+    loop {
+        let available = reader.fill_buf().map_err(|_| LineReadError::Io)?;
+        if available.is_empty() {
+            return if bytes.is_empty() {
+                Err(LineReadError::Eof)
+            } else {
+                Ok(bytes)
+            };
+        }
+        let newline = available.iter().position(|byte| *byte == b'\n');
+        let take = newline.map_or(available.len(), |index| index + 1);
+        if bytes.len().saturating_add(take) > max_bytes {
+            return Err(LineReadError::TooLarge);
+        }
+        bytes.extend_from_slice(&available[..take]);
+        reader.consume(take);
+        if newline.is_some() {
+            while bytes
+                .last()
+                .is_some_and(|byte| *byte == b'\n' || *byte == b'\r')
+            {
+                bytes.pop();
+            }
+            return Ok(bytes);
+        }
+    }
+}
+
 fn measured_cost(started: Instant) -> ResolutionCost {
     ResolutionCost {
         elapsed_ms: u64::try_from(started.elapsed().as_millis()).unwrap_or(u64::MAX),
@@ -140,6 +181,14 @@ fn error(kind: ResolutionAdapterErrorKind, started: Instant) -> ResolutionAdapte
     ResolutionAdapterError {
         kind,
         cost: measured_cost(started),
+    }
+}
+
+fn spawn_error_kind(error: &std::io::Error) -> ResolutionAdapterErrorKind {
+    match error.kind() {
+        std::io::ErrorKind::NotFound => ResolutionAdapterErrorKind::Unavailable,
+        std::io::ErrorKind::PermissionDenied => ResolutionAdapterErrorKind::PermissionDenied,
+        _ => ResolutionAdapterErrorKind::Transport,
     }
 }
 
@@ -273,40 +322,83 @@ impl ResolutionResolver for McpReadOnlyResolver {
             .map_err(|_| error(ResolutionAdapterErrorKind::Protocol, started))?;
         payload.push(b'\n');
 
-        // One absolute deadline must cover stdin writes as well as stdout reads.
-        // The shared subprocess helper also terminates/reaps a stalled child.
-        let mut command = Command::new(&self.config.program);
-        command.args(&self.config.args);
-        isolate_subprocess_environment(&mut command);
-        let line = run_until_line(
-            &mut command,
-            payload,
-            started,
-            Duration::from_millis(self.config.timeout_ms),
-            self.config.max_response_bytes,
-            None,
-        )
-        .map_err(|kind| error(kind, started))?;
-        let response: JsonRpcResponse = serde_json::from_slice(&line)
-            .map_err(|_| error(ResolutionAdapterErrorKind::Protocol, started))?;
-        if response.jsonrpc != "2.0" || response.id != Value::String(request_id) {
-            return Err(error(ResolutionAdapterErrorKind::Protocol, started));
+        let mut child = Command::new(&self.config.program)
+            .args(&self.config.args)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .map_err(|spawn| error(spawn_error_kind(&spawn), started))?;
+        let write_result = child
+            .stdin
+            .as_mut()
+            .ok_or_else(|| error(ResolutionAdapterErrorKind::Transport, started))?
+            .write_all(&payload);
+        drop(child.stdin.take());
+        if write_result.is_err() {
+            let _ = child.kill();
+            let _ = child.wait();
+            return Err(error(ResolutionAdapterErrorKind::Transport, started));
         }
-        match (response.result, response.error) {
-            (Some(result), None) if result.is_error.unwrap_or(false) => {
-                Err(error(ResolutionAdapterErrorKind::ToolExecution, started))
+
+        let stdout = child
+            .stdout
+            .take()
+            .ok_or_else(|| error(ResolutionAdapterErrorKind::Transport, started))?;
+        let max_response_bytes = self.config.max_response_bytes;
+        let (tx, rx) = mpsc::sync_channel(1);
+        let reader = thread::spawn(move || {
+            let _ = tx.send(read_one_bounded_line(stdout, max_response_bytes));
+        });
+        let received = rx.recv_timeout(Duration::from_millis(self.config.timeout_ms));
+        match received {
+            Err(mpsc::RecvTimeoutError::Timeout) => {
+                let _ = child.kill();
+                let _ = child.wait();
+                drop(reader);
+                Err(error(ResolutionAdapterErrorKind::Timeout, started))
             }
-            (Some(result), None) => Ok(ResolutionResolverOutput {
-                contribution: contribution_from_result(
-                    &self.config,
-                    request,
-                    attempt_index,
-                    result,
-                ),
-                cost: measured_cost(started),
-            }),
-            (None, Some(rpc_error)) => Err(error(rpc_error_kind(&rpc_error), started)),
-            _ => Err(error(ResolutionAdapterErrorKind::Protocol, started)),
+            Err(mpsc::RecvTimeoutError::Disconnected) => {
+                let _ = child.kill();
+                let _ = child.wait();
+                let _ = reader.join();
+                Err(error(ResolutionAdapterErrorKind::Transport, started))
+            }
+            Ok(line) => {
+                let _ = child.kill();
+                let _ = child.wait();
+                let _ = reader.join();
+                let line = match line {
+                    Ok(line) => line,
+                    Err(LineReadError::TooLarge) => {
+                        return Err(error(ResolutionAdapterErrorKind::Protocol, started));
+                    }
+                    Err(LineReadError::Io) | Err(LineReadError::Eof) => {
+                        return Err(error(ResolutionAdapterErrorKind::Transport, started));
+                    }
+                };
+                let response: JsonRpcResponse = serde_json::from_slice(&line)
+                    .map_err(|_| error(ResolutionAdapterErrorKind::Protocol, started))?;
+                if response.jsonrpc != "2.0" || response.id != Value::String(request_id) {
+                    return Err(error(ResolutionAdapterErrorKind::Protocol, started));
+                }
+                match (response.result, response.error) {
+                    (Some(result), None) if result.is_error.unwrap_or(false) => {
+                        Err(error(ResolutionAdapterErrorKind::ToolExecution, started))
+                    }
+                    (Some(result), None) => Ok(ResolutionResolverOutput {
+                        contribution: contribution_from_result(
+                            &self.config,
+                            request,
+                            attempt_index,
+                            result,
+                        ),
+                        cost: measured_cost(started),
+                    }),
+                    (None, Some(rpc_error)) => Err(error(rpc_error_kind(&rpc_error), started)),
+                    _ => Err(error(ResolutionAdapterErrorKind::Protocol, started)),
+                }
+            }
         }
     }
 }
@@ -540,33 +632,6 @@ printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:resolution:service.regio
         let failure = failed.resolve(&request(), 0).unwrap_err();
         fs::remove_file(error_path).ok();
         assert_eq!(failure.kind, ResolutionAdapterErrorKind::ToolExecution);
-    }
-
-    #[cfg(unix)]
-    #[test]
-    fn blocked_stdin_respects_whole_invocation_deadline() {
-        let path = script("#!/bin/sh\nsleep 2\n", "blocked-stdin");
-        let mut config = McpReadOnlyResolverConfig::with_defaults(
-            "fixture-server",
-            path.clone(),
-            "lookup",
-            "mcp:fixture:lookup",
-        );
-        config.timeout_ms = 80;
-        config
-            .fixed_arguments
-            .insert("large".into(), json!("a".repeat(256 * 1024)));
-        let started = Instant::now();
-        let failure = McpReadOnlyResolver::new(config)
-            .resolve(&request(), 0)
-            .unwrap_err();
-        fs::remove_file(path).ok();
-        assert_eq!(failure.kind, ResolutionAdapterErrorKind::Timeout);
-        assert!(
-            started.elapsed() < Duration::from_millis(1000),
-            "deadline overrun: {:?}",
-            started.elapsed()
-        );
     }
 
     #[cfg(unix)]
