@@ -1,0 +1,126 @@
+name: engine-0.6.1-launch-live-acceptance
+
+on:
+  push:
+    branches:
+      - acceptance/engine-061-launch-v2
+    paths:
+      - 'crates/reasoning-harness-core/**'
+      - 'crates/reasoning-harness-cli/src/bin/engine_0_6_1_launch_live.rs'
+      - 'crates/reasoning-harness-cli/Cargo.toml'
+      - 'fixtures/engine-0.6.1-launch-independent-v2/**'
+      - '.github/workflows/engine-0.6.1-launch-live-acceptance.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: No reruns of precommitted observations
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Check corpus, frozen v1, tests, and runner
+        run: |
+          set -euo pipefail
+          (cd fixtures/engine-0.6.1-launch-independent-v2 && sha256sum -c manifest.sha256)
+          git diff --exit-code engine-v0.6.0 -- crates/reasoning-harness-providers/src/mcp_readonly.rs
+          cargo fmt --all -- --check
+          cargo test --locked -p reasoning-harness-core --test engine_0_6_1_launch_independent_v2
+          cargo clippy --locked -p reasoning-harness-core --all-targets -- -D warnings
+          cargo clippy --locked -p reasoning-harness-cli --bin reason-engine-061-launch-live -- -D warnings
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-engine-061-launch-live -- \
+            --provider mistral --model ministral-8b-latest --validate-only \
+            > /tmp/engine-061-preflight.json
+          jq -e '.suite_id=="engine-0.6.1-launch-independent-v2" and .expected_cases==12 and .completed_cases==0 and .validate_only==true' /tmp/engine-061-preflight.json >/dev/null
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-latest
+            delay_ms: 1500
+          - provider: google
+            model: gemini-3.5-flash-lite
+            delay_ms: 6100
+          - provider: groq
+            model: openai/gpt-oss-120b
+            delay_ms: 10000
+    concurrency:
+      group: engine-061-live-${{ matrix.provider }}
+      cancel-in-progress: false
+    steps:
+      - name: Reject rerun
+        run: test "$GITHUB_RUN_ATTEMPT" = "1"
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+      - name: Verify configured provider credentials without logging them
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            groq) test -n "$GROQ_API_KEY" ;;
+            *) exit 2 ;;
+          esac
+      - name: Observe model-backed exact materialization
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          DELAY_MS: ${{ matrix.delay_ms }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '10000'
+          REASON_GROQ_TOKENS_PER_MINUTE: '8000'
+          REASON_GROQ_STRUCTURED_OUTPUT_RETRIES: '0'
+        run: |
+          set -u
+          set +e
+          cargo run -q --locked -p reasoning-harness-cli --bin reason-engine-061-launch-live -- \
+            --provider "$PROVIDER" --model "$MODEL" \
+            --seed 13047 --inter-case-delay-ms "$DELAY_MS" \
+            > "/tmp/engine-061-$PROVIDER.json" \
+            2> "/tmp/engine-061-$PROVIDER.stderr.log"
+          rc=$?
+          set -e
+          echo "$rc" > "/tmp/engine-061-$PROVIDER.exit"
+          if test -f "/tmp/engine-061-$PROVIDER.json"; then
+            jq '{provider,model,completed_cases,expected_cases,false_positive_relevant,positive_utility_miss,operational_failures}' "/tmp/engine-061-$PROVIDER.json"
+          fi
+          test "$rc" -eq 0
+          jq -e '.suite_id=="engine-0.6.1-launch-independent-v2" and .validate_only==false and .completed_cases==12 and .false_positive_relevant==0 and .positive_utility_miss==0 and .operational_failures==0' "/tmp/engine-061-$PROVIDER.json" >/dev/null
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: engine-061-live-${{ matrix.provider }}
+          path: |
+            /tmp/engine-061-${{ matrix.provider }}.json
+            /tmp/engine-061-${{ matrix.provider }}.stderr.log
+            /tmp/engine-061-${{ matrix.provider }}.exit
+          if-no-files-found: warn
+          retention-days: 30

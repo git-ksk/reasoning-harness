@@ -201,3 +201,7 @@ path = "src/bin/source_attribution_holdout_v2.rs"
 [[bin]]
 name = "reason-source-attribution-provider-smoke"
 path = "src/bin/source_attribution_provider_smoke.rs"
+
+[[bin]]
+name = "reason-engine-061-launch-live"
+path = "src/bin/engine_0_6_1_launch_live.rs"
