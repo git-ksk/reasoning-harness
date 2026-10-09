@@ -1,0 +1,44 @@
+{
+  "schema": "engine-0.7-independent-v1-runner-protocol",
+  "issue": 492,
+  "status": "frozen_before_independent_corpus",
+  "baseline_engine_tag": "engine-v0.6.1",
+  "baseline_unchanged_source_path": "crates/reasoning-harness-core/src/source_attribution.rs",
+  "candidate_commit": "4cae9326bcc3e210c3250f05772d84f00e41b645",
+  "candidate_output_contract": "harness-source-reconciliation-target-answer-v1",
+  "required_providers": {
+    "mistral": "ministral-8b-2512",
+    "google": "gemini-3.5-flash-lite",
+    "groq": "openai/gpt-oss-120b"
+  },
+  "required_cases": 12,
+  "minimum_compatible_targets": 4,
+  "minimum_negative_targets": 6,
+  "per_provider_minimum_net_useful_answer_gain": 1,
+  "per_target_incremental_model_calls": 1,
+  "per_target_max_provider_attempts": 2,
+  "per_provider_max_operational_failures": 0,
+  "hard_gate_violations_max": 0,
+  "negative_target_regressions_max": 0,
+  "replay_external_calls_max": 0,
+  "new_quote_citations_max": 0,
+  "unsupported_truth_promotions_max": 0,
+  "freshness_constraints": {
+    "corpus_must_be_created_after_runner_freeze": true,
+    "different_case_ids_and_source_ids": true,
+    "disjoint_eight_word_quote_windows": true,
+    "do_not_reuse_prior_development_passages": true
+  },
+  "oracle_boundary": "Independently precommitted holdout expected relations are a harness-owned controlled evaluation oracle, never model self-approval or externally verified truth.",
+  "provider_operations": {
+    "one_model_text_json_advisory_call_per_nontrivial_target": true,
+    "no_provider_switch": true,
+    "no_explicit_retry": true,
+    "no_adapter_internal_waits": true,
+    "timeout_seconds_per_model_call": 100,
+    "case_delay_milliseconds": 10500,
+    "provider_failures_are_not_semantic_unknown": true
+  },
+  "immutable_first_observation": true,
+  "no_engine_release_on_partial_or_failed_provider_observations": true
+}

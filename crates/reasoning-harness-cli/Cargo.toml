@@ -14,6 +14,10 @@ name = "reason"
 path = "src/main.rs"
 
 [[bin]]
+name = "reason-engine-070-independent-holdout"
+path = "src/bin/engine_0_7_independent.rs"
+
+[[bin]]
 name = "reason-source-review-local"
 path = "src/bin/source_review_local.rs"
 
