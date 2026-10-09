@@ -1,0 +1,340 @@
+{
+  "suite_id": "engine-0.6.1-launch-independent-v2",
+  "issue": 479,
+  "status": "fresh_unobserved_holdout",
+  "protocol": "effective_v17_materialize_v30",
+  "precommitted_expected_positive": 12,
+  "precommitted_expected_negative": 18,
+  "cases": [
+    {
+      "id": "p01",
+      "target": "Banyan Ledger",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Banyan Ledger is now generally available to paying customers."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p02",
+      "target": "Harbor Forge",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Harbor Forge became generally available for enterprise customers."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p03",
+      "target": "Starlight Dock",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Starlight Dock went live for public access."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p04",
+      "target": "Azure Room",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Azure Room was introduced to the management portal."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p05",
+      "target": "Fable Circuit",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Fable Circuit has been introduced to engineers."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p06",
+      "target": "Aqua Rail",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Aqua Rail rolled out to partner customers."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p07",
+      "target": "Dawn Silo",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The provider has made Dawn Silo generally available to all workspaces."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p08",
+      "target": "Tidal Junction",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The provider has made Tidal Junction generally available with no extra fees."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p09",
+      "target": "Raven Cloud",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Raven Cloud went live in the coastal market."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p10",
+      "target": "Clover Run",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Clover Run is now generally available to members."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p11",
+      "target": "Onyx Plaza",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Onyx Plaza became generally available to organizations."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "p12",
+      "target": "Ivy Ledger",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ivy Ledger was introduced this year."
+        }
+      ],
+      "expected_relevant": true
+    },
+    {
+      "id": "n01",
+      "target": "Fossil Port",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "No team has confirmed that Fossil Port is now generally available."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n02",
+      "target": "Coral Badge",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The documentation asks whether Coral Badge went live."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n03",
+      "target": "Cedar Bell",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "It is unclear whether Cedar Bell was introduced this month."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n04",
+      "target": "Aster Terrace",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Aster Terrace was introduced in a fictional product announcement."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n05",
+      "target": "Summer Axis",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Draft notes claim that Summer Axis is now generally available without authoritative confirmation."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n06",
+      "target": "Cherry Ferry",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "In a tutorial, Cherry Ferry was introduced as a sample service."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n07",
+      "target": "Beryl Frame",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Beryl Frame is now generally available? Please confirm."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n08",
+      "target": "Cobalt Farm",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cobalt Farm is now generally available, according to unverified reports."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n09",
+      "target": "Copper Rail",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "A startup disputed that Copper Rail became generally available."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n10",
+      "target": "Twilight Reach",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The provider has made Twilight Reach generally available, the rumor says."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n11",
+      "target": "Golden Harbor",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Another service is now generally available; Golden Harbor has no announced release."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n12",
+      "target": "Violet Peak",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Violet Peak was introduced in a hypothetical scenario."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n13",
+      "target": "Silver Gate",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Silver Gate was introduced in a what-if exercise."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n14",
+      "target": "Marble Room",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Could the company have made Marble Room generally available?"
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n15",
+      "target": "Mint Column",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Mint Column is listed in navigation. Amber Hub went live for users."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n16",
+      "target": "Olive Route",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Olive Route went live? The note presents only a question."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n17",
+      "target": "Pine Dock",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Pine Dock was introduced in a sandbox-only demonstration."
+        }
+      ],
+      "expected_relevant": false
+    },
+    {
+      "id": "n18",
+      "target": "Autumn Shelf",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The magazine reported that Autumn Shelf went live."
+        }
+      ],
+      "expected_relevant": false
+    }
+  ]
+}
