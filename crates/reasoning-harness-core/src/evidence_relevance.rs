@@ -1138,10 +1138,23 @@ fn semantic_relation_frame_present_in_segment(
                 "globally",
                 "worldwide",
             ];
-            let made_generally_available = contains_phrase("has made")
-                && contains_phrase("generally available")
-                && !contains_phrase("has not made")
-                && !contains_phrase("hasn't made");
+            // The affirmative verb and availability phrase must be local and ordered.
+            // Negation within the predicate cannot supply positive launch authority.
+            let made_generally_available =
+                !contains_phrase("not generally available")
+                    && !contains_phrase("no longer generally available")
+                    && tokens.windows(2).enumerate().any(|(start, words)| {
+                        words == ["has", "made"]
+                            && tokens.iter().enumerate().skip(start + 2).take(24).any(
+                                |(end, word)| {
+                                    *word == "generally"
+                                        && tokens.get(end + 1) == Some(&"available")
+                                        && !tokens[start + 2..end]
+                                            .iter()
+                                            .any(|word| ["not", "never"].contains(word))
+                                },
+                            )
+                    });
             (contains_phrase("rolled out") && has_token(&rollout_audience))
                 || contains_phrase("went live")
                 || contains_phrase("became generally available")
@@ -10565,6 +10578,47 @@ mod tests {
                 .disposition,
             EvidenceRelevanceDisposition::Relevant
         );
+    }
+
+    #[test]
+    fn v30_has_made_launch_frame_does_not_promote_other_negations_or_unrelated_clauses() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        for text in [
+            "The provider has made Silver Lens not generally available to customers.",
+            "The provider has made Silver Lens no longer generally available to customers.",
+            "Silver Lens is not generally available although the provider has made plans.",
+            "The provider has made Silver Lens never generally available to customers.",
+        ] {
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, text)]);
+            let effective = derive_effective_evidence_local_qualification_v17(
+                &policy,
+                &local,
+                Some(&proposal),
+                Some(&raw),
+            )
+            .unwrap();
+            assert_ne!(
+                effective.relation_scope,
+                EvidenceLocalRelationScope::RequestedRelation,
+                "{text}"
+            );
+            assert_ne!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+        }
     }
 
     #[test]
