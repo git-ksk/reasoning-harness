@@ -8,10 +8,10 @@ For the preserved long-form provenance ledger, see [Project status history](proj
 
 ## Current release
 
-**Reason CLI 0.5.3 on Harness Engine 0.5.0** remains the current published CLI preview. **Harness Engine 0.6.1** is the latest independent source release under `engine-v0.6.1`; CLI adoption is a separate future release decision.
+**Reason CLI 0.5.4 on Harness Engine 0.6.1** is the current published CLI preview; previous `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0. **Harness Engine 0.6.1** is the latest independent source release under `engine-v0.6.1`; CLI adoption is a separate future release decision.
 
 ```text
-Published CLI: Reason CLI 0.5.3 / Harness Engine 0.5.0
+Published CLI: Reason CLI 0.5.4 / Harness Engine 0.6.1
 Latest Engine source release: Harness Engine 0.6.1 (`engine-v0.6.1`)
 ```
 
@@ -60,6 +60,10 @@ The 0.5.0-0.5.2 productization line delivered ordinary terminal usability on the
 - fresh-install acceptance across supported platforms.
 
 The detailed acceptance plan is in the [Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md).
+
+## Latest product integration: Reason CLI 0.5.4
+
+Reason CLI 0.5.4 adopts independently released Harness Engine 0.6.1 under #484, with separate signed four-platform native artifacts and explicit Engine-change consent on 0.5.3 -> 0.5.4 upgrade and reverse rollback. Existing 0.5.3 binaries remain unchanged on Engine 0.5.0.
 
 ## Current Engine patch: Harness Engine 0.6.1
 

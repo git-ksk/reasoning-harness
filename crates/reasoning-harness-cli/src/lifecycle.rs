@@ -1445,6 +1445,27 @@ mod tests {
     }
 
     #[test]
+    fn engine_061_adoption_and_engine_050_rollback_require_separate_explicit_consent() {
+        let previous = Version::parse("0.5.0").unwrap();
+        let adopting = Version::parse("0.6.1").unwrap();
+
+        assert!(enforce_engine_change_policy(true, false, &previous, &adopting).unwrap());
+        assert!(enforce_engine_change_policy(true, false, &adopting, &previous).unwrap());
+
+        for (current, target, expected) in [
+            (&previous, &adopting, "0.5.0 -> 0.6.1"),
+            (&adopting, &previous, "0.6.1 -> 0.5.0"),
+        ] {
+            let error = enforce_engine_change_policy(false, false, current, target)
+                .expect_err("Engine-change mutation must require explicit consent");
+            assert_eq!(error.failure_class, "engine_change_confirmation_required");
+            assert!(error.message.contains(expected), "{error:?}");
+            assert!(error.message.contains("--allow-engine-change"));
+            assert!(enforce_engine_change_policy(false, true, current, target).unwrap());
+        }
+    }
+
+    #[test]
     fn unchanged_engine_does_not_require_engine_change_consent() {
         let engine = Version::parse("0.5.0").unwrap();
         assert!(!enforce_engine_change_policy(false, false, &engine, &engine).unwrap());

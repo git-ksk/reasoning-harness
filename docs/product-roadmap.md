@@ -10,14 +10,14 @@ The project now separates product UX work from reasoning/correctness changes so 
 
 ```text
 Published split CLI:
-  Reason CLI 0.5.3
-  Harness Engine 0.5.0
+  Reason CLI 0.5.4
+  Harness Engine 0.6.1
 
 Latest independent Engine source release:
-  Harness Engine 0.6.0 (`engine-v0.6.0`)
+  Harness Engine 0.6.1 (`engine-v0.6.0`)
 
 Latest completed integration:
-  Reason CLI 0.5.3 -> Harness Engine 0.5.0 (#455)
+  Reason CLI 0.5.4 -> Harness Engine 0.6.1 (#484)
 
 Final unified historical release:
   Reason CLI 0.4.2
@@ -38,6 +38,10 @@ The core product rule is unchanged:
 model proposes
 Harness verifies / qualifies / abstains
 ```
+
+### Engine 0.6.1 adoption — Reason CLI 0.5.4 (#484)
+
+The independently accepted Engine 0.6.1 is adopted under the new CLI 0.5.4 coordinate, with signed native archives, verified update/rollback, and immutable prior CLI 0.5.3 artifacts.
 
 ## Track A — Reason CLI 0.5.x: general-use productization
 

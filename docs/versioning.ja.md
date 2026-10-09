@@ -44,3 +44,5 @@ CLI 0.5.0 productization milestoneはEngine 0.4.2上でsetup、secure credential
 過去のunified tag `v0.1.0`〜`v0.4.2`はimmutableのまま保持します。新しいCLI releaseは`reason-v*` namespace、独立したHarness Engine source releaseは`engine-v*` namespaceを使います。Harness Engine 0.5.0は最初のsplit Engine releaseとして`engine-v0.5.0`を使い、Harness Engine 0.6.0はfreeze済み#461/#462/#468/#463 acceptance後に`engine-v0.6.0`として独立promotionします。公開済み`reason-v0.5.3` artifactは、別のCLI releaseがEngine 0.6.0を明示adoptするまでEngine 0.5.0のままimmutableです。
 
 Harness Engine 0.6.1は最新の独立source releaseで、tagは`engine-v0.6.1`です。公開済み`reason-v0.5.3`バイナリはEngine 0.5.0を継続し、0.6.1へのadoptionは別CLIリリースで行います。
+
+現在の公開済みproduct pairはReason CLI 0.5.4 / Engine 0.6.1（`reason-v0.5.4`）です。以前の0.5.3 / Engine 0.5.0はimmutableのまま維持します。上記の旧座標は過去の経緯です。

@@ -71,18 +71,18 @@ That distinction is the product: **useful AI output without letting model confid
 
 ## Quickstart
 
-The current published split CLI is **Reason CLI 0.5.3 on Harness Engine 0.5.0**. The latest independent Engine source release is **Harness Engine 0.6.1** under `engine-v0.6.1`; it is not retrofitted into the published CLI. `reason-v0.5.3` remains immutable on Engine 0.5.0 until a separate CLI adoption release. Published native installers are the normal end-user path (GitHub CLI 2.93+ is required for provenance verification).
+The current published split CLI is **Reason CLI 0.5.4 on Harness Engine 0.6.1**. The separate Engine source release is `engine-v0.6.1`; previously published `reason-v0.5.3` remains immutable on Engine 0.5.0. Published native installers are the normal end-user path (GitHub CLI 2.93+ is required for provenance verification).
 
 macOS / Linux:
 
 ```bash
-curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.sh | sh
+curl -fsSL https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.4/install.sh | sh
 ```
 
 Windows PowerShell:
 
 ```powershell
-irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.3/install.ps1 | iex
+irm https://github.com/git-ksk/reasoning-harness/releases/download/reason-v0.5.4/install.ps1 | iex
 ```
 
 Once the installer directory is on `PATH` (the installer prints guidance when it is not), run:
@@ -95,10 +95,10 @@ With Rust 1.88+ you can also install the CLI directly:
 
 ```bash
 cargo install --git https://github.com/git-ksk/reasoning-harness \
-  --tag reason-v0.5.3 --locked reasoning-harness-cli --bin reason
+  --tag reason-v0.5.4 --locked reasoning-harness-cli --bin reason
 ```
 
-Standalone native archives, installers, `SHA256SUMS`, and release provenance metadata are available from the [Reason CLI v0.5.3 release](https://github.com/git-ksk/reasoning-harness/releases/tag/reason-v0.5.3). `v0.4.2` remains the immutable final unified CLI/Engine historical release.
+Standalone native archives, installers, `SHA256SUMS`, and release provenance metadata are available from the [Reason CLI v0.5.4 release](https://github.com/git-ksk/reasoning-harness/releases/tag/reason-v0.5.4). `v0.4.2` remains the immutable final unified CLI/Engine historical release.
 
 Give `reason` a natural-language task plus evidence you actually want the Harness to treat as a structured fact:
 
@@ -363,7 +363,7 @@ From the next product line onward:
 - **Harness Engine** versions reasoning/correctness behavior.
 - **Machine contract IDs** version wire/schema compatibility independently.
 
-The published split CLI line remains **Reason CLI 0.5.3 on Harness Engine 0.5.0**. The latest independent Engine source release is Harness Engine 0.6.1 under `engine-v0.6.1`; CLI adoption is deliberately separate, so `reason-v0.5.3` is not rewritten. Earlier CLI artifacts, including `reason-v0.5.2` on Engine 0.4.2, remain immutable.
+The published split CLI line remains **Reason CLI 0.5.4 on Harness Engine 0.6.1**. The independent source Engine was adopted under a separate CLI release; `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0. Earlier CLI artifacts, including `reason-v0.5.2` on Engine 0.4.2, remain immutable.
 
 See [versioning](docs/versioning.md) and the [Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md).
 
