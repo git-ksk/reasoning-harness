@@ -523,6 +523,35 @@ printf '%s\n' '{"jsonrpc":"2.0","id":"reasoning-harness:resolution:service.regio
         assert!(wall.elapsed() < Duration::from_millis(500));
     }
 
+    // Legacy v1 is frozen for historical evaluation. Production-facing
+    // integrations must use this deadline-bounded successor (or v3).
+    #[cfg(unix)]
+    #[test]
+    fn successor_stdin_block_does_not_exceed_whole_invocation_deadline() {
+        let path = script("#!/bin/sh\nsleep 2\n", "blocked-stdin");
+        let mut config = McpReadOnlyResolverConfig::with_defaults(
+            "fixture-server",
+            path.clone(),
+            "lookup",
+            "mcp:fixture:lookup",
+        );
+        config.timeout_ms = 80;
+        config
+            .fixed_arguments
+            .insert("large".into(), json!("a".repeat(256 * 1024)));
+        let started = Instant::now();
+        let failure = McpReadOnlyResolverV2::new(config)
+            .resolve(&request(), 0)
+            .unwrap_err();
+        fs::remove_file(path).ok();
+        assert_eq!(failure.kind, ResolutionAdapterErrorKind::Timeout);
+        assert!(
+            started.elapsed() < Duration::from_millis(1000),
+            "deadline overrun: {:?}",
+            started.elapsed()
+        );
+    }
+
     #[cfg(unix)]
     #[test]
     fn allowlist_timeout_and_protocol_errors_fail_closed() {

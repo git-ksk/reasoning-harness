@@ -1138,28 +1138,10 @@ fn semantic_relation_frame_present_in_segment(
                 "globally",
                 "worldwide",
             ];
-            // The affirmative verb and availability phrase must be local and ordered.
-            // Negation within the predicate cannot supply positive launch authority.
-            let made_generally_available =
-                !contains_phrase("not generally available")
-                    && !contains_phrase("no longer generally available")
-                    && tokens.windows(2).enumerate().any(|(start, words)| {
-                        words == ["has", "made"]
-                            && tokens.iter().enumerate().skip(start + 2).take(24).any(
-                                |(end, word)| {
-                                    *word == "generally"
-                                        && tokens.get(end + 1) == Some(&"available")
-                                        && !tokens[start + 2..end]
-                                            .iter()
-                                            .any(|word| ["not", "never"].contains(word))
-                                },
-                            )
-                    });
             (contains_phrase("rolled out") && has_token(&rollout_audience))
                 || contains_phrase("went live")
                 || contains_phrase("became generally available")
                 || contains_phrase("is now generally available")
-                || made_generally_available
                 || contains_phrase("was introduced")
                 || contains_phrase("has been introduced")
         }
@@ -1209,13 +1191,67 @@ fn semantic_relation_frame_present_in_segment(
     }
 }
 
+// Unlike generic launch phrases, "has made … generally available" requires
+// target ownership inside the predicate. A mention elsewhere in the sentence
+// (for example a plan for the target and another product's launch) is not
+// evidence that the requested target was launched.
+fn target_owned_made_generally_available(
+    policy: &EvidenceRelevanceTargetPolicy,
+    segment: &str,
+) -> bool {
+    let targets = target_identity_phrases(policy);
+    if targets.is_empty() {
+        return false;
+    }
+    let tokens = segment.split_whitespace().collect::<Vec<_>>();
+    let blocking_words = [
+        "not", "never", "plan", "plans", "planning", "intends", "intended", "proposal", "proposed",
+        "while", "whereas", "although", "though", "but", "however", "unless", "until", "instead",
+    ];
+    if tokens.iter().any(|word| blocking_words.contains(word))
+        || tokens
+            .windows(4)
+            .any(|window| window == ["no", "longer", "generally", "available"])
+    {
+        return false;
+    }
+    tokens.windows(2).enumerate().any(|(start, words)| {
+        if words != ["has", "made"] {
+            return false;
+        }
+        tokens
+            .iter()
+            .enumerate()
+            .skip(start + 2)
+            .take(24)
+            .any(|(end, word)| {
+                if *word != "generally" || tokens.get(end + 1) != Some(&"available") {
+                    return false;
+                }
+                let predicate = &tokens[start + 2..end];
+                if predicate.iter().any(|word| blocking_words.contains(word)) {
+                    return false;
+                }
+                targets.iter().any(|target| {
+                    let target_tokens = target.split_whitespace().collect::<Vec<_>>();
+                    !target_tokens.is_empty()
+                        && predicate
+                            .windows(target_tokens.len())
+                            .any(|window| window == target_tokens)
+                })
+            })
+    })
+}
+
 fn requested_relation_semantic_frame_present(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
 ) -> bool {
-    semantic_relation_segments(candidate)
-        .iter()
-        .any(|segment| semantic_relation_frame_present_in_segment(policy.relation, segment))
+    semantic_relation_segments(candidate).iter().any(|segment| {
+        semantic_relation_frame_present_in_segment(policy.relation, segment)
+            || (policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
+                && target_owned_made_generally_available(policy, segment))
+    })
 }
 
 fn conflicting_semantic_relation_frame_present(
@@ -10616,6 +10652,70 @@ mod tests {
                     .unwrap()
                     .disposition,
                 EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+        }
+    }
+
+    #[test]
+    fn v30_made_available_requires_target_owned_affirmative_predicate() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+
+        for text in [
+            "The vendor has made plans for Silver Lens while Maple Queue is generally available to customers.",
+            "The vendor has made Maple Queue generally available to Silver Lens customers.",
+            "The vendor has made Maple Queue generally available while Silver Lens remains in preview.",
+            "The vendor has made plans to make Silver Lens generally available.",
+            "The vendor has made Silver Lens not generally available.",
+            "The vendor has made Silver Lens generally available only in a proposed plan.",
+        ] {
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, text)]);
+            let effective = derive_effective_evidence_local_qualification_v17(
+                &policy,
+                &local,
+                Some(&proposal),
+                Some(&raw),
+            )
+            .unwrap();
+            assert_ne!(
+                effective.relation_scope,
+                EvidenceLocalRelationScope::RequestedRelation,
+                "{text}"
+            );
+            assert_ne!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+        }
+
+        for text in [
+            "The vendor has made Silver Lens generally available to customers.",
+            "The vendor has made the Silver Lens service generally available in all regions.",
+            "The vendor has made Silver Lens generally available with no usage restrictions.",
+        ] {
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, text)]);
+            assert_eq!(
+                derive_effective_evidence_local_qualification_v17(
+                    &policy,
+                    &local,
+                    Some(&proposal),
+                    Some(&raw)
+                )
+                .unwrap()
+                .relation_scope,
+                EvidenceLocalRelationScope::RequestedRelation,
                 "{text}"
             );
         }
