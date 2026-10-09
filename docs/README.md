@@ -68,6 +68,7 @@ Use the short current views:
 - [Project status](project-status.md) — what is released, what is active, and the main known product gaps.
 - [Product roadmap](product-roadmap.md) — current forward product/engine tracks.
 - [Harness Engine 0.7.0 roadmap](engine-0.7.0-roadmap.md) — **planned, unreleased** evidence reconciliation, dependencies, independent evaluation and release gates.
+- [Engine 0.7 local reviewer host development v1](engine-0.7-local-reviewer-v1.md) — manual interactive OS-keyring reviewer bridge, frozen 18-case development report; no independent acceptance or released CLI integration.
 - [Engine 0.7 source reconciliation development v1](engine-0.7-source-reconciliation-v1.md) — **development-only** trusted-review overlay.
 - [Engine 0.7.0 baseline v1 result](engine-0.7-baseline-v1-result.md) — frozen 0.6.1 residual baseline (29 deterministic development cases, not independent holdout acceptance).
 - [Product roadmap](product-roadmap.md) — current forward product/engine tracks.
