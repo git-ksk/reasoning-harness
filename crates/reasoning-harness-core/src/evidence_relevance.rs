@@ -1240,6 +1240,24 @@ fn target_owned_made_generally_available(
         "speculation",
         "speculative",
         "alleged",
+        "allegation",
+        "claimed",
+        "claims",
+        "claim",
+        "unclear",
+        "unconfirmed",
+        "reported",
+        "reports",
+        "tutorial",
+        "sample",
+        "placeholder",
+        "sandbox",
+        "hypothetical",
+        "according",
+        "another",
+        "unrelated",
+        "other",
+        "and",
     ];
     if tokens.iter().any(|word| blocking_words.contains(word))
         || tokens
@@ -1324,6 +1342,24 @@ fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &s
         "speculation",
         "speculative",
         "alleged",
+        "allegation",
+        "claimed",
+        "claims",
+        "claim",
+        "unclear",
+        "unconfirmed",
+        "reported",
+        "reports",
+        "tutorial",
+        "sample",
+        "placeholder",
+        "sandbox",
+        "hypothetical",
+        "according",
+        "another",
+        "unrelated",
+        "other",
+        "and",
     ];
     if tokens.iter().any(|word| blockers.contains(word)) {
         return false;
@@ -1347,7 +1383,7 @@ fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &s
                     let tail = &tokens[i + name.len()..];
                     tail.windows(predicate.len())
                         .position(|window| window == *predicate)
-                        .is_some_and(|distance| distance <= 7)
+                        .is_some_and(|distance| distance <= 2)
                 })
             })
     })
@@ -10773,6 +10809,35 @@ mod tests {
                 .disposition,
             EvidenceRelevanceDisposition::Relevant
         );
+    }
+
+    #[test]
+    fn v30_launch_authority_never_borrows_sibling_predicate() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        for text in [
+            "Silver Lens appears in navigation and Maple Queue went live for customers.",
+            "The provider has made Silver Lens documentation available and Maple Queue generally available.",
+            "Silver Lens was introduced in a hypothetical training scenario.",
+            "Silver Lens was introduced according to unconfirmed reports.",
+        ] {
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, text)]);
+            assert_ne!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+        }
     }
 
     fn launch_policy_for_v28() -> EvidenceRelevanceTargetPolicy {
