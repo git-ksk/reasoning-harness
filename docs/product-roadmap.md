@@ -126,6 +126,15 @@ Engine 0.6.0 promotes the measured production-gap sequence #461 -> #462/#468 -> 
 - **#463 source attribution:** independent holdout-v2 run `37326666360` passed Mistral / Google / Groq 18/18 with useful attribution 6/6, citation coverage 100%, provider failures 0, and every hard gate 0.
 - **#472 release closeout:** `reasoning-harness-core` advances to 0.6.0 under `engine-v0.6.0`; release promotion changes no accepted runtime semantics. Published `reason-v0.5.3` remains on Engine 0.5.0 until a separate CLI adoption release.
 
+## Track D — Post-0.6.0 maintenance (unreleased)
+
+The Engine 0.6.0 milestone and `engine-v0.6.0` release are closed and immutable. Work merged after that tag is **not** part of the already-published Engine 0.6.0 source release.
+
+- **#474 bounded launch-language regression:** recognize the affirmative `has made … generally available` frame only with ordered, local wording and preserve fail-closed handling of negation. Regression tests cover the affirmative and multiple negative forms; this is post-release Engine source maintenance, not a retroactive 0.6.0 acceptance change.
+- **#465 CI fixture reliability:** the intermittent legacy MCP subprocess transport test remains tracked separately from semantic correctness and frozen evaluation.
+- **#467 / #470 dependency maintenance:** routine Cargo dependency updates are independent of the Engine semantic acceptance record.
+- **Next Engine source release:** choose a new version and tag, require fresh regression/acceptance evidence appropriate to any changed semantics, and preserve all historical freeze tags, outcomes, and release artifacts. No release is implied by merging a maintenance PR. Published Reason CLI artifacts continue to use their originally packaged Engine versions; CLI adoption requires its own release.
+
 ## Promotion rule
 
 A new reasoning mechanism does not become a supported product behavior merely because it looks promising in one experiment.

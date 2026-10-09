@@ -126,6 +126,15 @@ Engine 0.6.0は、Engine 0.5.0やfreeze済みhistorical observationを書き換�
 - **#463 source attribution:** independent holdout-v2 run `37326666360`でMistral / Google / Groq 18/18、useful attribution 6/6、citation coverage 100%、provider failure 0、全hard gate 0。
 - **#472 release closeout:** `reasoning-harness-core`を0.6.0へ進め`engine-v0.6.0`でreleaseする。release promotionではaccepted runtime semanticsを変更しない。公開済み`reason-v0.5.3`は別のCLI adoption releaseまでEngine 0.5.0のまま保持する。
 
+## トラックD — Engine 0.6.0以降の保守（未リリース）
+
+Engine 0.6.0のmilestoneと`engine-v0.6.0` releaseは完了済みで、変更しません。そのtag以降にmainへmergeした変更は、**公開済みEngine 0.6.0のsource releaseには含まれません**。
+
+- **#474 launch表現の限定的な修正:** 肯定形`has made … generally available`を順序・局所性がある場合にのみ認識し、否定形は引き続きfail closed。肯定形と複数の否定形を回帰テストで保護します。過去の0.6.0 acceptanceを遡及変更しません。
+- **#465 CI fixture安定化:** legacy MCP subprocess transport testの断続的な失敗は、semantic correctnessやfreeze済みevaluationと分けて追跡します。
+- **#467 / #470 依存関係保守:** 通常のCargo依存更新はEngineのsemantic acceptance記録とは別に管理します。
+- **次のEngine source release:** 新しいversion/tagを決定し、semantics変更に応じた新規regression/acceptance evidenceを要求します。既存freeze tag・結果・release artifactは不変とし、保守PRのmerge自体はreleaseを意味しません。公開済みReason CLIは元のEngine組み合わせを維持し、CLI adoptionは別releaseで行います。
+
 ## 昇格ルール
 
 新しいreasoning mechanismは、1回良いexperiment結果が出ただけではsupported product behaviorへ昇格しません。
