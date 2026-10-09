@@ -10,9 +10,10 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 - Issue #355 decouples the user-facing Reason CLI package version from the Harness Engine (`reasoning-harness-core`) package version. `v0.4.2` remains the final unified historical release; future CLI releases use `reason-vX.Y.Z` tags. Machine contract IDs remain independent compatibility coordinates, and provider crate versions remain internal implementation coordinates rather than a third user-facing product version.
 
-### Pending Harness Engine 0.6.1 source patch (not released)
+## Harness Engine [0.6.1] - 2026-10-09
 
 - #476 fixes positive ChangeOrLaunch relation authority for `has made … generally available` by requiring the *requested* target in the local affirmative predicate; other-subject, cross-clause, planned, and negated statements fail closed.
+- #479 requires target-owned affirmative ChangeOrLaunch predicates in current v17/v30; conditional, denied, questioned, fictional, and unverified statements fail closed. Independent v1 retained a 3-case FAIL; fresh independent v2 passed 30/30 deterministic cases.
 - #477 documents the legacy MCP v1 subprocess deadline limitation, preserves the historically frozen v1 implementation, and adds a blocked-stdin whole-invocation regression for the supported v2 successor; current product CLI uses deadline-bounded v3. Consumers of v1 must migrate to v2/v3.
 - Published `engine-v0.6.0`, historical frozen observations, and `reason-v0.5.3` remain unchanged. Release and independent acceptance are tracked in #475 (milestone #9).
 
