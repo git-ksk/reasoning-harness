@@ -1,12 +1,11 @@
-use std::{fs, path::PathBuf};
+use reasoning_harness_core::{
+    EvidenceLocalQualificationV6, EvidenceLocalRelationScope, EvidenceRelevanceBindingProposal,
+    EvidenceRelevanceCandidate, EvidenceRelevanceDisposition, EvidenceRelevanceTargetPolicy,
+    derive_effective_evidence_local_qualification_v17, materialize_evidence_relevance_v30,
+};
 use serde::Deserialize;
 use serde_json::json;
-use reasoning_harness_core::{
-    EvidenceLocalQualificationV6, EvidenceRelevanceBindingProposal, EvidenceRelevanceCandidate,
-    EvidenceRelevanceDisposition, EvidenceRelevanceTargetPolicy,
-    derive_effective_evidence_local_qualification_v17, materialize_evidence_relevance_v30,
-    EvidenceLocalRelationScope,
-};
+use std::{fs, path::PathBuf};
 
 #[derive(Deserialize)]
 struct Corpus {
@@ -41,10 +40,12 @@ fn independently_fixed_launch_authority_matrix_v2() {
     assert_eq!(corpus.precommitted_expected_negative, 18);
     let proposal: EvidenceRelevanceBindingProposal = serde_json::from_value(json!({
         "target_binding": "exact", "relation_binding": "exact"
-    })).unwrap();
+    }))
+    .unwrap();
     let raw: EvidenceLocalQualificationV6 = serde_json::from_value(json!({
         "identity_scope":"exact_target","relation_scope":"requested_relation","scope_risk":"none"
-    })).unwrap();
+    }))
+    .unwrap();
     let mut mismatches = Vec::new();
     for case in corpus.cases {
         let policy: EvidenceRelevanceTargetPolicy = serde_json::from_value(json!({
@@ -59,22 +60,39 @@ fn independently_fixed_launch_authority_matrix_v2() {
             "relation":"change_or_launch",
             "identity_requirement":"require_harness_anchor",
             "assessment_budget":{"max_model_attempts":2,"max_tokens":192,"max_elapsed_ms":90000}
-        })).unwrap();
+        }))
+        .unwrap();
         let candidate: EvidenceRelevanceCandidate = serde_json::from_value(json!({
             "evidence_id":format!("evidence:{}",case.id),
             "source_id":format!("source:{}",case.id),
             "signals":case.signals,
-        })).unwrap();
+        }))
+        .unwrap();
         let effective = derive_effective_evidence_local_qualification_v17(
-            &policy,&candidate,Some(&proposal),Some(&raw)).unwrap();
-        let disposition = materialize_evidence_relevance_v30(
-            &policy,&candidate,Some(&proposal),Some(&raw)).unwrap().disposition;
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let disposition =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition;
         let positive = disposition == EvidenceRelevanceDisposition::Relevant;
-        if positive != case.expected_relevant ||
-           (case.expected_relevant && effective.relation_scope != EvidenceLocalRelationScope::RequestedRelation) {
-            mismatches.push(format!("{} expected_relevant={} observed={:?} relation={:?}",
-                case.id,case.expected_relevant,disposition,effective.relation_scope));
+        if positive != case.expected_relevant
+            || (case.expected_relevant
+                && effective.relation_scope != EvidenceLocalRelationScope::RequestedRelation)
+        {
+            mismatches.push(format!(
+                "{} expected_relevant={} observed={:?} relation={:?}",
+                case.id, case.expected_relevant, disposition, effective.relation_scope
+            ));
         }
     }
-    assert!(mismatches.is_empty(), "precommitted holdout misses:\n{}",mismatches.join("\n"));
+    assert!(
+        mismatches.is_empty(),
+        "precommitted holdout misses:\n{}",
+        mismatches.join("\n")
+    );
 }
