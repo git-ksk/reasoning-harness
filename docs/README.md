@@ -68,6 +68,7 @@ Use the short current views:
 - [Project status](project-status.md) — what is released, what is active, and the main known product gaps.
 - [Product roadmap](product-roadmap.md) — current forward product/engine tracks.
 - [Harness Engine 0.7.0 roadmap](engine-0.7.0-roadmap.md) — **planned, unreleased** evidence reconciliation, dependencies, independent evaluation and release gates.
+- [Engine 0.7.0 baseline v1 result](engine-0.7-baseline-v1-result.md) — frozen 0.6.1 residual baseline (29 deterministic development cases, not independent holdout acceptance).
 - [Product roadmap](product-roadmap.md) — current forward product/engine tracks.
 - [Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md) — general-use terminal productization.
 - [Provider/model retirement and fallback policy](model-retirement-policy.md) — explicit lifecycle state, no silent identity switching, and session pinning.

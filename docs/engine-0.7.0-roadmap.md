@@ -34,6 +34,8 @@ Audit the existing runtime and deterministic tests. Precommit fixtures and a sco
 
 Deliverable: reproducible gap matrix marking each proposed feature *demonstrated*, *already handled*, *unproven*, or *out of scope*. Stop or narrow 0.7.0 if no meaningful gap is observed.
 
+**Phase 0 measurement (2026-10-10):** [Frozen Engine 0.6.1 development baseline v1](engine-0.7-baseline-v1-result.md) measured **29/29** precommitted deterministic predictions after pre-observation specification tag `engine-0.7-baseline-v1-spec-freeze`; both integration/ordering tests pass. One conservative equivalent-wording Conflict was observed in `src-04`, supporting narrow #490 development; no untrusted truth promotion was observed in this source-only path. Origin-lineage and supersession were found unrepresented rather than proven safety failures, and no new #491 complete-task failure was measured. Numeric safety/utility/efficiency candidate gates are in the baseline report; independently fresh holdout and live utility remain future work.
+
 ### Phase 1 — P1: Provenance lineage / corroboration ([#488](https://github.com/git-ksk/reasoning-harness/issues/488))
 
 Conditional on #487. Distinguish evidence and citations from **independent originating sources**. Proven common-origin items may collapse into one corroboration origin; unknown lineage must never receive independent-support credit. Provenance relationships require Harness-owned validated inputs, not a model's guess, a URL count, a copied article or domain heuristics. Retain every original citation and do not promote corroboration to trusted verification.

@@ -81,7 +81,7 @@ Independent frozen acceptance completed before promotion: #461 holdout run `3596
 
 ## Planned Engine 0.7.0 — not yet released
 
-[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) / [Engine 0.7.0 detailed roadmap](engine-0.7.0-roadmap.md) begin with a frozen Engine 0.6.1 cross-source residual baseline. Conditional workstreams cover trusted provenance lineage, explicit temporal revision relationships, conflict-preserving source synthesis, and target-local answerability. None is promoted into the released Engine until measurable benefit, separate fresh independent acceptance, and exact-head release gates pass. Existing Engine and CLI versions remain unchanged.
+[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) / [Engine 0.7.0 detailed roadmap](engine-0.7.0-roadmap.md) begin with a frozen Engine 0.6.1 cross-source residual baseline. The [development baseline v1 result](engine-0.7-baseline-v1-result.md) reproduced 29/29 precommitted behavior predictions and one conservative equivalent-wording Conflict without claiming an unsafe hard verdict. Conditional workstreams cover trusted provenance lineage, explicit temporal revision relationships, conflict-preserving source synthesis, and target-local answerability. None is promoted into the released Engine until measurable benefit, separate fresh independent acceptance, and exact-head release gates pass. Existing Engine and CLI versions remain unchanged.
 
 ## Current trust boundary
 

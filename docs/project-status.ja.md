@@ -81,7 +81,7 @@ promotion前に独立freeze済みacceptanceを完了しています。#461 holdo
 
 ## 次期Engine 0.7.0計画 — 未リリース
 
-[マイルストーン #10](https://github.com/git-ksk/reasoning-harness/milestone/10) / [詳細ロードマップ](engine-0.7.0-roadmap.ja.md)では、まずEngine 0.6.1の複数ソースに関する実測baselineを固定します。その結果に応じて、出典の系譜、明示改訂時点、矛盾を保つ統合、target別回答充足性を段階的に検証します。改善効果・独立評価・exact-head release gateを満たすまでは未実装候補を公開済みEngineに昇格しません。
+[マイルストーン #10](https://github.com/git-ksk/reasoning-harness/milestone/10) / [詳細ロードマップ](engine-0.7.0-roadmap.ja.md)では、まずEngine 0.6.1の複数ソースに関する実測baselineを固定します。[開発用baseline v1結果](engine-0.7-baseline-v1-result.ja.md)では29/29の事前予測一致と、同義表現が保守的にConflict扱いされる1例を確認していますが、hardな誤判定を発見したとは主張しません。その結果に応じて、出典の系譜、明示改訂時点、矛盾を保つ統合、target別回答充足性を段階的に検証します。改善効果・独立評価・exact-head release gateを満たすまでは未実装候補を公開済みEngineに昇格しません。
 
 ## 現在の信頼境界
 

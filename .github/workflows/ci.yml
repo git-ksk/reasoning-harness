@@ -28,6 +28,25 @@ jobs:
         run: cargo fmt --check
       - name: Clippy
         run: cargo clippy --locked --workspace --all-targets -- -D warnings
+      - name: Verify frozen Engine 0.7 development baseline
+        run: |
+          set -euo pipefail
+          git fetch --force origin refs/tags/engine-0.7-baseline-v1-spec-freeze:refs/tags/engine-0.7-baseline-v1-spec-freeze
+          test "$(git rev-parse 'engine-0.7-baseline-v1-spec-freeze^{commit}')" = 'd874bd3a98618a1d61ed3de50e9376d79d07dfa8'
+          cmp fixtures/engine-0.7-baseline-v1/manifest.json \
+            <(git show engine-0.7-baseline-v1-spec-freeze:fixtures/engine-0.7-baseline-v1/manifest.json)
+          cmp fixtures/engine-0.7-baseline-v1/manifest.sha256 \
+            <(git show engine-0.7-baseline-v1-spec-freeze:fixtures/engine-0.7-baseline-v1/manifest.sha256)
+          if grep -Eq '^version = "0.6.1"$' crates/reasoning-harness-core/Cargo.toml; then
+            cargo test --locked -p reasoning-harness-core --test engine_0_7_dev_baseline_v1 -- \
+              --test-threads=1 --nocapture > /tmp/engine-0.7-baseline-v1.log 2>&1
+            python3 scripts/engine-0.7-baseline-v1-report.py \
+              --log /tmp/engine-0.7-baseline-v1.log --output /tmp/engine-0.7-baseline-v1-result.json
+            cmp evaluation/engine-0.7-baseline-v1-result.json /tmp/engine-0.7-baseline-v1-result.json
+            python3 -m unittest -v scripts/test_engine_0_7_baseline_v1_report.py
+          else
+            echo 'Historical Engine 0.6.1 baseline is immutable; run candidate-specific evaluation separately.'
+          fi
       - name: Test non-provider workspace
         run: cargo test --locked --workspace --exclude reasoning-harness-providers
       - name: Test provider package with isolated subprocess fixtures
