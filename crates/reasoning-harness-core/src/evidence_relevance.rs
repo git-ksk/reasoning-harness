@@ -1231,6 +1231,15 @@ fn target_owned_made_generally_available(
         "disputes",
         "hypothetically",
         "assuming",
+        "fiction",
+        "fictional",
+        "scenario",
+        "rumor",
+        "rumour",
+        "unverified",
+        "speculation",
+        "speculative",
+        "alleged",
     ];
     if tokens.iter().any(|word| blocking_words.contains(word))
         || tokens
@@ -1306,6 +1315,15 @@ fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &s
         "might",
         "could",
         "would",
+        "fiction",
+        "fictional",
+        "scenario",
+        "rumor",
+        "rumour",
+        "unverified",
+        "speculation",
+        "speculative",
+        "alleged",
     ];
     if tokens.iter().any(|word| blockers.contains(word)) {
         return false;
@@ -1333,6 +1351,34 @@ fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &s
                 })
             })
     })
+}
+
+// Normalization removes question marks. Keep original fact-bearing signals
+// available for a narrow uncertainty guard on latest ChangeOrLaunch authority.
+// A source title may itself be a question while the actual excerpt is factual;
+// navigation/title signals are intentionally excluded.
+fn launch_has_target_question_in_factual_signal(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    let targets = target_identity_phrases(policy);
+    candidate
+        .signals
+        .iter()
+        .filter(|signal| {
+            matches!(
+                signal.kind,
+                EvidenceRelevanceSignalKind::Excerpt
+                    | EvidenceRelevanceSignalKind::Fact
+                    | EvidenceRelevanceSignalKind::StructuredMetadata
+            )
+        })
+        .any(|signal| {
+            signal.text.contains('?')
+                && targets
+                    .iter()
+                    .any(|target| normalized(&signal.text).contains(target))
+        })
 }
 
 fn requested_relation_semantic_frame_present(
@@ -5241,10 +5287,11 @@ pub fn derive_effective_evidence_local_qualification_v17(
     if policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
         && effective.scope_risk == Risk::None
         && effective.relation_scope == EvidenceLocalRelationScope::RequestedRelation
-        && !semantic_relation_segments(candidate).iter().any(|segment| {
-            target_owned_made_generally_available(policy, segment)
-                || target_owned_launch_frame(policy, segment)
-        })
+        && (launch_has_target_question_in_factual_signal(policy, candidate)
+            || !semantic_relation_segments(candidate).iter().any(|segment| {
+                target_owned_made_generally_available(policy, segment)
+                    || target_owned_launch_frame(policy, segment)
+            }))
     {
         effective.relation_scope = EvidenceLocalRelationScope::Unresolved;
     }
@@ -10682,6 +10729,50 @@ mod tests {
                 "{statement}"
             );
         }
+    }
+
+    #[test]
+    fn v30_does_not_accept_question_fiction_or_unverified_rumor_as_launch_fact() {
+        let policy = launch_policy_for_v28();
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        for text in [
+            "Silver Lens is now generally available?",
+            "Silver Lens was introduced in a fictional scenario.",
+            "Silver Lens was introduced according to an unverified rumor.",
+        ] {
+            let local = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, text)]);
+            assert_ne!(
+                materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                    .unwrap()
+                    .disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{text}"
+            );
+        }
+        let local = candidate(vec![
+            (
+                EvidenceRelevanceSignalKind::SourceTitle,
+                "When was Silver Lens launched?",
+            ),
+            (
+                EvidenceRelevanceSignalKind::Excerpt,
+                "Silver Lens went live for paying customers.",
+            ),
+        ]);
+        assert_eq!(
+            materialize_evidence_relevance_v30(&policy, &local, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition,
+            EvidenceRelevanceDisposition::Relevant
+        );
     }
 
     fn launch_policy_for_v28() -> EvidenceRelevanceTargetPolicy {
