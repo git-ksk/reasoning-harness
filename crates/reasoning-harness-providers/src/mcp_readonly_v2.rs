@@ -25,9 +25,9 @@ const MCP_CLIENT_NAME: &str = "reasoning-harness";
 const MCP_PROVENANCE_META_KEY: &str = "git-ksk/reasoning-harness/provenance";
 
 #[derive(Debug)]
-/// v0.4 operational successor that preserves the v1 stateless/read-only semantics while
-/// applying the shared whole-invocation subprocess deadline. The frozen `mcp_readonly_v1`
-/// implementation remains untouched for historical replay/evaluation compatibility.
+/// v0.4 operational successor that preserves the stateless/read-only MCP contract while
+/// applying the shared whole-invocation subprocess deadline. Historical release tags
+/// remain immutable; newer source maintenance may also harden the legacy v1 transport.
 pub struct McpReadOnlyResolverV2 {
     config: McpReadOnlyResolverConfig,
     config_id: String,

@@ -131,6 +131,9 @@ Engine 0.6.0は、Engine 0.5.0やfreeze済みhistorical observationを書き換�
 Engine 0.6.0のmilestoneと`engine-v0.6.0` releaseは完了済みで、変更しません。そのtag以降にmainへmergeした変更は、**公開済みEngine 0.6.0のsource releaseには含まれません**。
 
 - **#474 launch表現の限定的な修正:** 肯定形`has made … generally available`を順序・局所性がある場合にのみ認識し、否定形は引き続きfail closed。肯定形と複数の否定形を回帰テストで保護します。過去の0.6.0 acceptanceを遡及変更しません。
+- **#475 / milestone #9 Engine 0.6.1 patch acceptance:** 次の独立Engine source patchは未公開です。#476と#477のexact-head回帰テストと必要な新規acceptanceを完了するまで、Engine 0.6.1のrelease tagを作りません。
+- **#476 wrong-target launch binding:** `has made … generally available`を対象自身に結び付け、他対象・節またぎ・否定の表現からadvisory model判断による誤昇格を防ぎます。
+- **#477 legacy MCP timeout:** stateless MCP v1のstdin書き込み・stdout読み込みを同じwhole-invocation期限で制御し、opaque evidenceのfail-closed挙動を維持します。このprovider修正も0.6.1 **source release**の対象に含めますが、Reason CLIのreleaseは別です。
 - **#465 CI fixture安定化:** legacy MCP subprocess transport testの断続的な失敗は、semantic correctnessやfreeze済みevaluationと分けて追跡します。
 - **#467 / #470 依存関係保守:** 通常のCargo依存更新はEngineのsemantic acceptance記録とは別に管理します。
 - **次のEngine source release:** 新しいversion/tagを決定し、semantics変更に応じた新規regression/acceptance evidenceを要求します。既存freeze tag・結果・release artifactは不変とし、保守PRのmerge自体はreleaseを意味しません。公開済みReason CLIは元のEngine組み合わせを維持し、CLI adoptionは別releaseで行います。
