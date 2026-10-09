@@ -68,6 +68,8 @@ Engine 0.6.1は、個々の根拠のtarget関連性、時点・スコープ・�
 
 モデルの「十分」という提案が、hard verification、古い根拠、スコープ・対象の不一致、ソースの信頼境界や衝突状態を上書きしてはいけません。セッションreplayで外部処理を再実行せず、quotaやtransport障害を事実上の`unknown`へすり替えません。
 
+**#492 独立評価の準備：** [採点と実行の凍結設計](engine-0.7-independent-v1-runner-freeze.ja.md)で、開発ケースと別のholdoutを凍結後に作成する順序を固定。3社の初回結果を保全し、合格前のリリースは行いません。
+
 ### フェーズ5 / P0 — 独立評価・source release判定（[#492](https://github.com/git-ksk/reasoning-harness/issues/492)）
 
 実装候補・採点・評価runner・合格基準を固定し、開発ケースと異なる対象・文面・引用を使う**新規の独立holdout**をその後に作成します。Mistral / Google / Groqをそれぞれ独立に評価し、意味的な誤りとAPI・quota・provider失敗を混ぜません。初回FAILは上書きせず、後続候補は別IDで検証します。

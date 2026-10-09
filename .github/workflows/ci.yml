@@ -62,6 +62,24 @@ jobs:
             --log /tmp/engine-0.7-reconciliation-dev-v1.log --output /tmp/engine-0.7-reconciliation-dev-v1-result.json
           cmp evaluation/engine-0.7-reconciliation-dev-v1-result.json /tmp/engine-0.7-reconciliation-dev-v1-result.json
           python3 -m unittest -v scripts/test_engine_0_7_reconciliation_dev_v1_report.py
+      - name: Validate Engine 0.7 independent runner before corpus authoring
+        run: |
+          set -euo pipefail
+          git diff --exit-code 4cae9326bcc3e210c3250f05772d84f00e41b645 -- \
+            crates/reasoning-harness-core/src/source_attribution.rs \
+            crates/reasoning-harness-core/src/source_reconciliation.rs \
+            crates/reasoning-harness-core/src/lib.rs \
+            crates/reasoning-harness-cli/src/bin/source_review_local.rs
+          cargo test --locked -p reasoning-harness-cli \
+            --bin reason-engine-070-independent-holdout -- --test-threads=1
+          python3 -m unittest -v \
+            scripts/test_engine_0_7_independent_v1_score.py \
+            scripts/test_engine_0_7_independent_v1_freshness.py
+          python3 -m py_compile \
+            scripts/engine_0_7_independent_v1_score.py \
+            scripts/check_engine_0_7_independent_v1_freshness.py
+          test ! -e fixtures/engine-0.7-independent-holdout-v1/manifest.json
+
       - name: Verify frozen Engine 0.7 target-local source presentation
         run: |
           set -euo pipefail

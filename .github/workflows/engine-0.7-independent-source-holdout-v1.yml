@@ -1,0 +1,207 @@
+name: engine-0.7-independent-source-holdout-v1
+
+on:
+  push:
+    tags:
+      - engine-0.7-independent-v1-corpus-freeze
+
+permissions:
+  contents: read
+
+env:
+  HOLDOUT_DIR: fixtures/engine-0.7-independent-holdout-v1
+  RUNNER_FREEZE_TAG: engine-0.7-independent-v1-runner-freeze
+  CORPUS_FREEZE_TAG: engine-0.7-independent-v1-corpus-freeze
+  CANDIDATE_SHA: 4cae9326bcc3e210c3250f05772d84f00e41b645
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Enforce one immutable canonical trigger
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$GITHUB_REF_NAME" = "$CORPUS_FREEZE_TAG"
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Recheck runner/candidate and post-freeze corpus
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$CORPUS_FREEZE_TAG")"
+          git merge-base --is-ancestor "$RUNNER_FREEZE_TAG" HEAD
+          git diff --exit-code "$RUNNER_FREEZE_TAG" HEAD -- \
+            crates/reasoning-harness-cli/Cargo.toml \
+            crates/reasoning-harness-cli/src/bin/engine_0_7_independent.rs \
+            scripts/engine_0_7_independent_v1_score.py \
+            scripts/check_engine_0_7_independent_v1_freshness.py \
+            scripts/test_engine_0_7_independent_v1_score.py \
+            evaluation/engine-0.7-independent-v1-protocol.json \
+            .github/workflows/engine-0.7-independent-source-holdout-v1.yml
+          git diff --exit-code "$CANDIDATE_SHA" HEAD -- \
+            crates/reasoning-harness-core/src/source_attribution.rs \
+            crates/reasoning-harness-core/src/source_reconciliation.rs \
+            crates/reasoning-harness-core/src/lib.rs \
+            crates/reasoning-harness-cli/src/bin/source_review_local.rs
+          sha256sum -c "$HOLDOUT_DIR/manifest.sha256"
+          python3 scripts/check_engine_0_7_independent_v1_freshness.py \
+            --corpus "$HOLDOUT_DIR/manifest.json"
+          expected_hash="$(awk '{print $1}' "$HOLDOUT_DIR/manifest.sha256")"
+          for provider_model in "mistral ministral-8b-2512" \
+                                "google gemini-3.5-flash-lite" \
+                                "groq openai/gpt-oss-120b"; do
+            read -r provider model <<< "$provider_model"
+            cargo run --quiet --locked -p reasoning-harness-cli \
+              --bin reason-engine-070-independent-holdout -- \
+              --corpus "$HOLDOUT_DIR/manifest.json" \
+              --expected-sha256 "$expected_hash" \
+              --provider "$provider" --model "$model" --validate-only \
+              > "/tmp/engine-070-independent-$provider-validate.json"
+            jq -e '.status == "validated_no_model_observation"
+              and .planned_cases == 12
+              and .positive_targets >= 4
+              and .negative_targets >= 6
+              and .model_calls == 0
+              and .provider_attempts == 0' \
+              "/tmp/engine-070-independent-$provider-validate.json" >/dev/null
+          done
+      - name: Validate frozen code and strict scorecard
+        run: |
+          set -euo pipefail
+          cargo fmt --all -- --check
+          cargo clippy --locked -p reasoning-harness-cli \
+            --bin reason-engine-070-independent-holdout -- -D warnings
+          cargo test --locked -p reasoning-harness-cli \
+            --bin reason-engine-070-independent-holdout
+          python3 -m unittest -v scripts/test_engine_0_7_independent_v1_score.py
+      - name: Preserve preflight proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-070-independent-v1-preflight
+          path: /tmp/engine-070-independent-*-validate.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  live:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - provider: mistral
+            model: ministral-8b-2512
+          - provider: google
+            model: gemini-3.5-flash-lite
+          - provider: groq
+            model: openai/gpt-oss-120b
+    concurrency:
+      group: engine-070-independent-v1-${{ matrix.provider }}
+      cancel-in-progress: false
+    steps:
+      - name: Enforce first observation only
+        run: |
+          set -euo pipefail
+          test "$GITHUB_RUN_ATTEMPT" = "1"
+          test "$GITHUB_REF_NAME" = "$CORPUS_FREEZE_TAG"
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+      - name: Check exact immutable evaluation surface
+        run: |
+          set -euo pipefail
+          git diff --exit-code "$RUNNER_FREEZE_TAG" HEAD -- \
+            crates/reasoning-harness-cli/Cargo.toml \
+            crates/reasoning-harness-cli/src/bin/engine_0_7_independent.rs \
+            scripts/engine_0_7_independent_v1_score.py \
+            evaluation/engine-0.7-independent-v1-protocol.json
+          sha256sum -c "$HOLDOUT_DIR/manifest.sha256"
+      - name: Check configured provider credential
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -euo pipefail
+          case "$PROVIDER" in
+            mistral) test -n "$MISTRAL_API_KEY" ;;
+            google) test -n "$GEMINI_API_KEY" ;;
+            groq) test -n "$GROQ_API_KEY" ;;
+            *) exit 2 ;;
+          esac
+      - name: Run and permanently capture first paired observation
+        env:
+          PROVIDER: ${{ matrix.provider }}
+          MODEL: ${{ matrix.model }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          REASON_GOOGLE_MIN_REQUEST_INTERVAL_MS: '6000'
+          REASON_GROQ_MIN_REQUEST_INTERVAL_MS: '10000'
+          REASON_GROQ_STRUCTURED_OUTPUT_RETRIES: '0'
+        run: |
+          set -euo pipefail
+          expected_hash="$(awk '{print $1}' "$HOLDOUT_DIR/manifest.sha256")"
+          BASE="/tmp/engine-070-independent-$PROVIDER"
+          cargo run --quiet --locked -p reasoning-harness-cli \
+            --bin reason-engine-070-independent-holdout -- \
+            --corpus "$HOLDOUT_DIR/manifest.json" \
+            --expected-sha256 "$expected_hash" \
+            --provider "$PROVIDER" --model "$MODEL" \
+            --delay-ms 10500 \
+            --checkpoint "$BASE-checkpoint.jsonl" \
+            --output "$BASE-result.json" \
+            > "$BASE-summary.json"
+          jq '{provider,model,status,completed_cases,net_useful_answer_gain,operational_failures,provider_attempts}' \
+            "$BASE-summary.json"
+      - name: Preserve first-run and failed/partial evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-070-independent-v1-${{ matrix.provider }}
+          path: /tmp/engine-070-independent-${{ matrix.provider }}-*
+          if-no-files-found: warn
+          retention-days: 90
+
+  final-gate:
+    needs: [preflight, live]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: engine-070-independent-v1-*
+          path: /tmp/engine-070-independent-v1
+          merge-multiple: true
+      - name: Apply frozen three-provider scorecard
+        run: |
+          set -euo pipefail
+          python3 scripts/engine_0_7_independent_v1_score.py \
+            --corpus "$HOLDOUT_DIR/manifest.json" \
+            --provider-dir /tmp/engine-070-independent-v1 \
+            --output /tmp/engine-070-independent-v1-cross-provider-summary.json
+      - name: Preserve immutable cross-provider result
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine-070-independent-v1-cross-provider-score
+          path: /tmp/engine-070-independent-v1-cross-provider-summary.json
+          if-no-files-found: warn
+          retention-days: 90

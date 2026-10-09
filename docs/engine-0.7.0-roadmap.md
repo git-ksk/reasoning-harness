@@ -58,6 +58,8 @@ Conditional on #487 and any adopted lineage/temporal controls. Combine only stat
 
 Conditional on #487 and any adopted source modules. An exact target's **required-information coverage** and the existing acquisition/verifier policy determine whether to (a) provide an attributable/qualified answer, (b) acquire additional read-only evidence within explicit budgets, or (c) preserve a partial/mixed/unknown result. An advisory model sufficiency label cannot relax hard verification, scope, freshness, conflict or source-identity floors. Replaying a stored answer must not redo side effects.
 
+**#492 independent acceptance preparation:** [Evaluator and first-run freeze protocol](engine-0.7-independent-v1-runner-freeze.md) precommits the three-provider gate before independently authoring any new holdout.
+
 ### Phase 5 — P0: Independent holdout and Engine source release ([#492](https://github.com/git-ksk/reasoning-harness/issues/492))
 
 Freeze candidate/runtime identity, scoring, evaluator and thresholds, then author a *separately fresh* holdout with no reused development cases/targets/passages or exact quote windows. Run deterministic and live **Mistral, Google and Groq** acceptance independently; separate provider/protocol/quota failure from semantic scoring. Preserve any first-run FAIL immutably and use a fresh successor identity if remediation is needed.
