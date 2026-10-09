@@ -68,6 +68,7 @@
 - [プロジェクト状況](project-status.ja.md) — release済み、active work、主要gap。
 - [製品ロードマップ](product-roadmap.ja.md) — 現在のproduct / engine前進track。
 - [Harness Engine 0.7.0計画](engine-0.7.0-roadmap.ja.md) — **計画段階・未リリース**。複数根拠の整合、評価、依存関係、release gate。
+- [Engine 0.7出典互換性の開発候補v1](engine-0.7-source-reconciliation-v1.ja.md) — 信頼済みホストの追加view、開発用22件の凍結評価。未リリース。
 - [Engine 0.7.0 baseline v1評価](engine-0.7-baseline-v1-result.ja.md) — 凍結した0.6.1の29件の決定論的な開発用測定。独立holdout合格ではありません。
 - [製品ロードマップ](product-roadmap.ja.md) — 現在のproduct / engine前進track。
 - [Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md) — 一般向けterminal productization。

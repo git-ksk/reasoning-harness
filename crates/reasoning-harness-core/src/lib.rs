@@ -38,6 +38,7 @@ pub mod semantic_runtime;
 pub mod semantic_stability;
 pub mod semantic_sufficiency;
 pub mod source_attribution;
+pub mod source_reconciliation;
 pub mod types;
 pub mod validate;
 pub mod verification;
@@ -387,6 +388,13 @@ pub use source_attribution::{
     parse_source_attribution_transform_assessment, refresh_conflict_states,
     source_attribution_binding_excerpt, source_attribution_proposal_schema,
     source_attribution_transform_assessment_schema, validate_source_attribution_state,
+};
+pub use source_reconciliation::{
+    SOURCE_RECONCILIATION_REVIEW_CONTRACT_ID, SOURCE_RECONCILIATION_VIEW_CONTRACT_ID,
+    SourceReconciliationError, SourceReconciliationStatus, SourceReconciliationView,
+    SourceReviewAnchor, TrustedSourceCompatibilityReview, TrustedSourceReviewAuthority,
+    capture_source_review_anchor, reconcile_source_attributed_answer,
+    record_trusted_source_equivalence,
 };
 pub use types::{
     AdversarialFinding, AdversarialFindingKind, ApplicabilityScope, CandidateClaim,

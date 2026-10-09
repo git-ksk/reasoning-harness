@@ -48,6 +48,8 @@ Conditional on #487, and #488 when origin lineage is required. Keep `effective_f
 
 Conditional on #487 and any adopted lineage/temporal controls. Combine only statements whose target/scope/time and per-binding atomic source support are demonstrably compatible; distinguish paraphrase from opposition while retaining conflicting source statements and citations separately. Advisory semantic comparison cannot erase a conflict, create provenance, strengthen claim modality, or yield `Known`/`Supported` without the existing trusted verification boundary.
 
+**#490 candidate v1 (not released):** [Opt-in host-trusted compatibility overlay](engine-0.7-source-reconciliation-v1.md), pre-frozen 22/22 deterministic development controls. No automatic model review, v1 conflict mutation, CLI wiring or independent Mistral/Google/Groq holdout. #490 remains open.
+
 ### Phase 4 — P1: Answerability / bounded reacquisition ([#491](https://github.com/git-ksk/reasoning-harness/issues/491))
 
 Conditional on #487 and any adopted source modules. An exact target's **required-information coverage** and the existing acquisition/verifier policy determine whether to (a) provide an attributable/qualified answer, (b) acquire additional read-only evidence within explicit budgets, or (c) preserve a partial/mixed/unknown result. An advisory model sufficiency label cannot relax hard verification, scope, freshness, conflict or source-identity floors. Replaying a stored answer must not redo side effects.

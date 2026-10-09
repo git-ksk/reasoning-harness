@@ -47,6 +47,21 @@ jobs:
           else
             echo 'Historical Engine 0.6.1 baseline is immutable; run candidate-specific evaluation separately.'
           fi
+      - name: Verify frozen Engine 0.7 reconciliation development controls
+        run: |
+          set -euo pipefail
+          git fetch --force origin refs/tags/engine-0.7-reconciliation-dev-v1-spec-freeze:refs/tags/engine-0.7-reconciliation-dev-v1-spec-freeze
+          test "$(git rev-parse 'engine-0.7-reconciliation-dev-v1-spec-freeze^{commit}')" = '426b70195623d1b4d7196c5d6a1ab4a2272741c6'
+          cmp fixtures/engine-0.7-source-reconciliation-development-v1/manifest.json \
+            <(git show engine-0.7-reconciliation-dev-v1-spec-freeze:fixtures/engine-0.7-source-reconciliation-development-v1/manifest.json)
+          cmp fixtures/engine-0.7-source-reconciliation-development-v1/manifest.sha256 \
+            <(git show engine-0.7-reconciliation-dev-v1-spec-freeze:fixtures/engine-0.7-source-reconciliation-development-v1/manifest.sha256)
+          cargo test --locked -p reasoning-harness-core --test source_reconciliation_development_v1 -- \
+            --test-threads=1 --nocapture > /tmp/engine-0.7-reconciliation-dev-v1.log 2>&1
+          python3 scripts/engine-0.7-reconciliation-dev-v1-report.py \
+            --log /tmp/engine-0.7-reconciliation-dev-v1.log --output /tmp/engine-0.7-reconciliation-dev-v1-result.json
+          cmp evaluation/engine-0.7-reconciliation-dev-v1-result.json /tmp/engine-0.7-reconciliation-dev-v1-result.json
+          python3 -m unittest -v scripts/test_engine_0_7_reconciliation_dev_v1_report.py
       - name: Test non-provider workspace
         run: cargo test --locked --workspace --exclude reasoning-harness-providers
       - name: Test provider package with isolated subprocess fixtures

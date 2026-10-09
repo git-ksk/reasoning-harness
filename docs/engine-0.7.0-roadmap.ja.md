@@ -56,6 +56,8 @@ Engine 0.6.1は、個々の根拠のtarget関連性、時点・スコープ・�
 
 単なる言い換えと真の対立を区別しつつ、**矛盾する主張は引用先ごと保持**します。semantic classifierは補助的な判断だけを返し、衝突の隠蔽、根拠や引用の捏造、主張の強化、`Known`/`Supported`への昇格はできません。
 
+**#490開発候補v1（未リリース）：** [ホストによる信頼済み照合view](engine-0.7-source-reconciliation-v1.ja.md)の凍結開発用22件はPASS。旧v1 Conflictや本文は変更せず、自動モデルレビュー・CLI接続・独立live評価はまだ。#490はOPEN。
+
 ### フェーズ4 / P1 — 回答可否・上限付き再調査（[#491](https://github.com/git-ksk/reasoning-harness/issues/491)）
 
 実測された不足がある場合だけ、既存のevidence need・検証・finalizationに接続します。targetごとの**回答に必要な事項の充足状況**で、(a) 出典付きの限定回答、(b) 予算内の追加読み取り調査、(c) 一部回答・保留・不明を選びます。
