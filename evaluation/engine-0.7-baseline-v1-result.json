@@ -1,0 +1,562 @@
+{
+  "baseline": {
+    "core_commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+    "engine_version": "0.6.1",
+    "frozen_fixture_sha256": "3bf35129ab786e7b069c6b8805b92c42a9e1b9cd10e3752c0b60f8f7fe66b268",
+    "spec_freeze_tag": "engine-0.7-baseline-v1-spec-freeze",
+    "tag": "engine-v0.6.1"
+  },
+  "case_results": [
+    {
+      "diagnostics": {
+        "exposed_text_len": 222,
+        "hard_verification_receipts": 0,
+        "oracle_origin_count": 2,
+        "origin_oracle_passed_to_engine": false,
+        "source_local_only": true
+      },
+      "family": "source",
+      "gap_hypothesis": "none",
+      "id": "src-01",
+      "observed": {
+        "citations": 2,
+        "conflict_targets": 0,
+        "status": "qualified"
+      }
+    },
+    {
+      "diagnostics": {
+        "exposed_text_len": 206,
+        "hard_verification_receipts": 0,
+        "oracle_origin_count": 1,
+        "origin_oracle_passed_to_engine": false,
+        "source_local_only": true
+      },
+      "family": "source",
+      "gap_hypothesis": "lineage_not_encoded",
+      "id": "src-02",
+      "observed": {
+        "citations": 2,
+        "conflict_targets": 0,
+        "status": "qualified"
+      }
+    },
+    {
+      "diagnostics": {
+        "exposed_text_len": 210,
+        "hard_verification_receipts": 0,
+        "oracle_origin_count": null,
+        "origin_oracle_passed_to_engine": false,
+        "source_local_only": true
+      },
+      "family": "source",
+      "gap_hypothesis": "lineage_not_encoded",
+      "id": "src-03",
+      "observed": {
+        "citations": 2,
+        "conflict_targets": 0,
+        "status": "qualified"
+      }
+    },
+    {
+      "diagnostics": {
+        "exposed_text_len": 264,
+        "hard_verification_receipts": 0,
+        "oracle_origin_count": 2,
+        "origin_oracle_passed_to_engine": false,
+        "source_local_only": true
+      },
+      "family": "source",
+      "gap_hypothesis": "wording_difference_false_conflict_candidate",
+      "id": "src-04",
+      "observed": {
+        "citations": 2,
+        "conflict_targets": 1,
+        "status": "conflict"
+      }
+    },
+    {
+      "diagnostics": {
+        "exposed_text_len": 252,
+        "hard_verification_receipts": 0,
+        "oracle_origin_count": 2,
+        "origin_oracle_passed_to_engine": false,
+        "source_local_only": true
+      },
+      "family": "source",
+      "gap_hypothesis": "none",
+      "id": "src-05",
+      "observed": {
+        "citations": 2,
+        "conflict_targets": 1,
+        "status": "conflict"
+      }
+    },
+    {
+      "diagnostics": {
+        "exposed_text_len": 252,
+        "hard_verification_receipts": 0,
+        "oracle_origin_count": 1,
+        "origin_oracle_passed_to_engine": false,
+        "source_local_only": true
+      },
+      "family": "source",
+      "gap_hypothesis": "supersession_not_encoded",
+      "id": "src-06",
+      "observed": {
+        "citations": 2,
+        "conflict_targets": 1,
+        "status": "conflict"
+      }
+    },
+    {
+      "diagnostics": {
+        "exposed_text_len": 245,
+        "hard_verification_receipts": 0,
+        "oracle_origin_count": 2,
+        "origin_oracle_passed_to_engine": false,
+        "source_local_only": true
+      },
+      "family": "source",
+      "gap_hypothesis": "none",
+      "id": "src-07",
+      "observed": {
+        "citations": 2,
+        "conflict_targets": 1,
+        "status": "conflict"
+      }
+    },
+    {
+      "diagnostics": {
+        "exposed_text_len": 111,
+        "hard_verification_receipts": 0,
+        "oracle_origin_count": 2,
+        "origin_oracle_passed_to_engine": false,
+        "source_local_only": true
+      },
+      "family": "source",
+      "gap_hypothesis": "none",
+      "id": "src-08",
+      "observed": {
+        "citations": 1,
+        "conflict_targets": 0,
+        "status": "qualified"
+      }
+    },
+    {
+      "diagnostics": {
+        "exposed_text_len": 165,
+        "hard_verification_receipts": 0,
+        "oracle_origin_count": 1,
+        "origin_oracle_passed_to_engine": false,
+        "source_local_only": true
+      },
+      "family": "source",
+      "gap_hypothesis": "none",
+      "id": "src-09",
+      "observed": {
+        "citations": 1,
+        "conflict_targets": 0,
+        "status": "qualified"
+      }
+    },
+    {
+      "diagnostics": {
+        "exposed_text_len": 232,
+        "hard_verification_receipts": 0,
+        "oracle_origin_count": 1,
+        "origin_oracle_passed_to_engine": false,
+        "source_local_only": true
+      },
+      "family": "source",
+      "gap_hypothesis": "lineage_not_encoded",
+      "id": "src-10",
+      "observed": {
+        "citations": 2,
+        "conflict_targets": 0,
+        "status": "qualified"
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 0,
+        "qualified_records": 2,
+        "receipt_evidence_ids": [
+          "e1",
+          "e2"
+        ],
+        "soft_findings": 0
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-01",
+      "observed": {
+        "conflict": false,
+        "receipt": "supported",
+        "statuses": [
+          "qualified",
+          "qualified"
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 1,
+        "qualified_records": 2,
+        "receipt_evidence_ids": [],
+        "soft_findings": 0
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-02",
+      "observed": {
+        "conflict": true,
+        "receipt": "none",
+        "statuses": [
+          "qualified",
+          "qualified"
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 1,
+        "qualified_records": 1,
+        "receipt_evidence_ids": [
+          "old"
+        ],
+        "soft_findings": 0
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-03",
+      "observed": {
+        "conflict": false,
+        "receipt": "supported",
+        "statuses": [
+          "qualified",
+          "disqualified"
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 1,
+        "qualified_records": 1,
+        "receipt_evidence_ids": [
+          "current"
+        ],
+        "soft_findings": 0
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-04",
+      "observed": {
+        "conflict": false,
+        "receipt": "supported",
+        "statuses": [
+          "disqualified",
+          "qualified"
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 1,
+        "qualified_records": 0,
+        "receipt_evidence_ids": [],
+        "soft_findings": 0
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-05",
+      "observed": {
+        "conflict": false,
+        "receipt": "none",
+        "statuses": [
+          "disqualified"
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 0,
+        "qualified_records": 0,
+        "receipt_evidence_ids": [],
+        "soft_findings": 1
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-06",
+      "observed": {
+        "conflict": false,
+        "receipt": "none",
+        "statuses": [
+          "unknown"
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 0,
+        "qualified_records": 0,
+        "receipt_evidence_ids": [],
+        "soft_findings": 1
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-07",
+      "observed": {
+        "conflict": false,
+        "receipt": "none",
+        "statuses": [
+          "unknown"
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 1,
+        "qualified_records": 0,
+        "receipt_evidence_ids": [],
+        "soft_findings": 0
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-08",
+      "observed": {
+        "conflict": false,
+        "receipt": "none",
+        "statuses": [
+          "disqualified"
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 1,
+        "qualified_records": 0,
+        "receipt_evidence_ids": [],
+        "soft_findings": 0
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-09",
+      "observed": {
+        "conflict": false,
+        "receipt": "none",
+        "statuses": [
+          "disqualified"
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 0,
+        "qualified_records": 1,
+        "receipt_evidence_ids": [
+          "jp"
+        ],
+        "soft_findings": 0
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-10",
+      "observed": {
+        "conflict": false,
+        "receipt": "supported",
+        "statuses": [
+          "qualified"
+        ]
+      }
+    },
+    {
+      "diagnostics": {
+        "hard_findings": 0,
+        "qualified_records": 0,
+        "receipt_evidence_ids": [],
+        "soft_findings": 0
+      },
+      "family": "qualification",
+      "gap_hypothesis": "none",
+      "id": "qual-11",
+      "observed": {
+        "conflict": false,
+        "receipt": "none",
+        "statuses": []
+      }
+    },
+    {
+      "diagnostics": {
+        "mode": "external_required",
+        "no_external_acquisition_executed": true,
+        "reasons": [
+          "baseline",
+          "existing_evidence_reuse"
+        ],
+        "target_id": "baseline-target"
+      },
+      "family": "need",
+      "gap_hypothesis": "none",
+      "id": "need-01",
+      "observed": {
+        "acquisition": "reuse_existing"
+      }
+    },
+    {
+      "diagnostics": {
+        "mode": "external_required",
+        "no_external_acquisition_executed": true,
+        "reasons": [
+          "baseline",
+          "existing_evidence_not_reusable"
+        ],
+        "target_id": "baseline-target"
+      },
+      "family": "need",
+      "gap_hypothesis": "none",
+      "id": "need-02",
+      "observed": {
+        "acquisition": "external_required"
+      }
+    },
+    {
+      "diagnostics": {
+        "mode": "external_required",
+        "no_external_acquisition_executed": true,
+        "reasons": [
+          "baseline",
+          "existing_evidence_not_reusable"
+        ],
+        "target_id": "baseline-target"
+      },
+      "family": "need",
+      "gap_hypothesis": "none",
+      "id": "need-03",
+      "observed": {
+        "acquisition": "external_required"
+      }
+    },
+    {
+      "diagnostics": {
+        "mode": "trusted_verification_required",
+        "no_external_acquisition_executed": true,
+        "reasons": [
+          "baseline",
+          "trusted_verification_floor",
+          "policy_minimum",
+          "model_downgrade_blocked"
+        ],
+        "target_id": "baseline-target"
+      },
+      "family": "need",
+      "gap_hypothesis": "none",
+      "id": "need-04",
+      "observed": {
+        "acquisition": "trusted_verification_required"
+      }
+    },
+    {
+      "diagnostics": {
+        "mode": "external_required",
+        "no_external_acquisition_executed": true,
+        "reasons": [
+          "baseline",
+          "context_sufficiency_escalation"
+        ],
+        "target_id": "baseline-target"
+      },
+      "family": "need",
+      "gap_hypothesis": "none",
+      "id": "need-05",
+      "observed": {
+        "acquisition": "external_required"
+      }
+    },
+    {
+      "diagnostics": {
+        "mode": "context_only",
+        "no_external_acquisition_executed": true,
+        "reasons": [
+          "baseline"
+        ],
+        "target_id": "baseline-target"
+      },
+      "family": "need",
+      "gap_hypothesis": "none",
+      "id": "need-06",
+      "observed": {
+        "acquisition": "context_only"
+      }
+    },
+    {
+      "diagnostics": {
+        "mode": "external_required",
+        "no_external_acquisition_executed": true,
+        "reasons": [
+          "baseline",
+          "existing_evidence_not_reusable"
+        ],
+        "target_id": "baseline-target"
+      },
+      "family": "need",
+      "gap_hypothesis": "none",
+      "id": "need-07",
+      "observed": {
+        "acquisition": "external_required"
+      }
+    },
+    {
+      "diagnostics": {
+        "mode": "trusted_verification_required",
+        "no_external_acquisition_executed": true,
+        "reasons": [
+          "baseline",
+          "trusted_verification_floor",
+          "policy_minimum"
+        ],
+        "target_id": "baseline-target"
+      },
+      "family": "need",
+      "gap_hypothesis": "none",
+      "id": "need-08",
+      "observed": {
+        "acquisition": "trusted_verification_required"
+      }
+    }
+  ],
+  "interpretation": {
+    "answerability": "Eight evidence-need cases behaved as predicted, including stale and ambiguous reacquisition. Broader end-to-end required-information integration needs further controlled evaluation before new mechanism work is justified.",
+    "limits": "No live LLM or complete CLI task was exercised. The 29/29 metric indicates deterministic baseline reproducibility, not future Engine 0.7.0 utility, general-world reliability or independent holdout success.",
+    "lineage": "Three oracle-labeled source scenarios cannot pass their origin lineage into the existing typed attribution contract. Two citations are NOT an assertion of two independent sources; no false-corroboration violation is claimed.",
+    "paraphrase": "An oracle-labeled semantically equivalent wording pair generates source-local Conflict and two exact citations. This supports investigating avoidable qualified-output conflict; no incorrect Known/Supported conclusion was generated.",
+    "temporal_revision": "Different version strings / later retrieval times do not establish trusted supersession. The observed conflict is safe, and this spec alone does not demonstrate a release-blocking temporal bug."
+  },
+  "schema": "engine-0.7-development-baseline-result-v1",
+  "scope": "deterministic development only; no independent provider/semantic acceptance",
+  "scorecard": {
+    "candidate_gap_scenarios": {
+      "lineage_not_encoded": 3,
+      "supersession_not_encoded": 1,
+      "wording_difference_false_conflict_candidate": 1
+    },
+    "cases": 29,
+    "confirmed_conservative_paraphrase_conflict_case_ids": [
+      "src-04"
+    ],
+    "external_acquisition_calls": 0,
+    "family_counts": {
+      "need": 8,
+      "qualification": 11,
+      "source": 10
+    },
+    "measured_unsupported_truth_promotions_in_source_only_path": 0,
+    "model_calls": 0,
+    "no_claimed_real_world_utility_score": true,
+    "predicted_behavior_matches": 29,
+    "provider_attempts": 0,
+    "provider_failures": 0,
+    "unchanged_behavior_negative_controls": 24
+  },
+  "status": "PASS_PRECOMMITTED_0_6_1_PREDICTIONS"
+}

@@ -149,7 +149,7 @@ The Engine 0.6.0 milestone and `engine-v0.6.0` release are closed and immutable.
 
 Engine 0.6.1 already has temporal/scope/authority qualification, structured-fact conflict withholding, target-local evidence need, exact source attribution and advisory sufficiency. The **hypothesis** for 0.7.0 is that verified multi-source lineage, temporal revision handling, conflict-safe synthesis and target-level answerability could recover more useful responses *without unsupported truth promotion*. These are not confirmed gaps yet.
 
-1. **P0 [#487](https://github.com/git-ksk/reasoning-harness/issues/487):** Freeze a reproducible 0.6.1 baseline, residual gap cases and scoring contract **before** implementing new semantics.
+1. **P0 [#487](https://github.com/git-ksk/reasoning-harness/issues/487):** **Development baseline measured:** [frozen 0.6.1 v1 result](engine-0.7-baseline-v1-result.md), 29/29 precommitted predictions, 2/2 tests; one observed conservative paraphrase conflict. Release/independent acceptance remains pending.
 2. **P1 [#488](https://github.com/git-ksk/reasoning-harness/issues/488):** If justified, distinguish independent originating evidence from duplicated/unknown source lineage without inventing provenance.
 3. **P1 [#489](https://github.com/git-ksk/reasoning-harness/issues/489):** If justified, reconcile explicit source revisions with as-of/validity windows without newest-wins heuristics.
 4. **P1 [#490](https://github.com/git-ksk/reasoning-harness/issues/490):** If justified, distinguish compatible attribution from disagreement; preserve every material conflict, citation and authority ceiling.

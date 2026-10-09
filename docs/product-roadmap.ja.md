@@ -149,7 +149,7 @@ Engine 0.6.0のmilestoneと`engine-v0.6.0` releaseは完了済みで、変更し
 
 Engine 0.6.1には、時点・scope・権威による適合判定、構造化事実の矛盾時のhard receipt保留、target別の根拠取得要否、厳密な出典付き説明、advisoryな充足性判定があります。0.7.0では**出典の系譜、明示的な改訂履歴、矛盾を維持する統合、target別の回答可否**が有用性を高めるかを検証します。現時点では実証済みの欠落ではありません。
 
-1. **P0 [#487](https://github.com/git-ksk/reasoning-harness/issues/487)：** 0.6.1のbaseline・不足の事例・採点ルールを、新semantic実装の**前**に固定。
+1. **P0 [#487](https://github.com/git-ksk/reasoning-harness/issues/487)：** **開発用baseline実測済み。** [事前freezeした0.6.1評価v1](engine-0.7-baseline-v1-result.ja.md)で29/29予測一致、テスト2/2 PASS。意味の近い表現をConflict扱いする例を1件再現。独立・liveのrelease評価は未実施。
 2. **P1 [#488](https://github.com/git-ksk/reasoning-harness/issues/488)：** 必要性が確認できた場合、転載元・独立した出所・由来不明を区別。出典の独立性を捏造しない。
 3. **P1 [#489](https://github.com/git-ksk/reasoning-harness/issues/489)：** 必要性が確認できた場合、明示的な改訂関係とas-of・有効時刻を突き合わせる。「新しい方が正しい」は禁止。
 4. **P1 [#490](https://github.com/git-ksk/reasoning-harness/issues/490)：** 必要性が確認できた場合、互換的な説明と不一致を区別し、衝突・引用・authority ceilingを保持。
