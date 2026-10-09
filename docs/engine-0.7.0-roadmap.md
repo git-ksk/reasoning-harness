@@ -50,7 +50,9 @@ Conditional on #487 and any adopted lineage/temporal controls. Combine only stat
 
 **#490 candidate v1 (not released):** [Opt-in host-trusted compatibility overlay](engine-0.7-source-reconciliation-v1.md), pre-frozen 22/22 deterministic development controls. No automatic model review, v1 conflict mutation, CLI wiring or independent Mistral/Google/Groq holdout. #490 remains open.
 
-**#496 development-only reviewer host:** [Local authenticated reviewer bridge](engine-0.7-local-reviewer-v1.md) adds a separate interactive OS-keyring review CLI, versioned HMAC approvals and replay validation. Precommitted 18/18 deterministic cases pass, but physical user approval and independent Mistral/Google/Groq utility evidence remain OPEN. The ordinary reason command is unchanged.
+**#490 additional target-local candidate:** [Versioned, opt-in per-target source-qualified answers](engine-0.7-target-presentation-v1.md) preserve the global original Conflict/text/citations while exposing review status and original quotations for each requested target. Precommitted 14/14 synthetic development cases PASS; independent provider evaluation remains pending.
+
+**#496 completed reviewer host:** [Local OS-keyring-based reviewer bridge](engine-0.7-local-reviewer-v1.md) adds a separate interactive review CLI, versioned HMAC approvals and replay validation. Frozen 18/18 development tests and the on-device enrollment/approval/revocation E2E PASS; issue closed. Independent Mistral/Google/Groq utility evidence remains tracked under #492. The ordinary reason command is unchanged.
 
 ### Phase 4 — P1: Answerability / bounded reacquisition ([#491](https://github.com/git-ksk/reasoning-harness/issues/491))
 

@@ -62,6 +62,29 @@ jobs:
             --log /tmp/engine-0.7-reconciliation-dev-v1.log --output /tmp/engine-0.7-reconciliation-dev-v1-result.json
           cmp evaluation/engine-0.7-reconciliation-dev-v1-result.json /tmp/engine-0.7-reconciliation-dev-v1-result.json
           python3 -m unittest -v scripts/test_engine_0_7_reconciliation_dev_v1_report.py
+      - name: Verify frozen Engine 0.7 target-local source presentation
+        run: |
+          set -euo pipefail
+          git fetch --force origin refs/tags/engine-0.7-target-presentation-dev-v1-spec-freeze:refs/tags/engine-0.7-target-presentation-dev-v1-spec-freeze
+          test "$(git rev-parse 'engine-0.7-target-presentation-dev-v1-spec-freeze^{commit}')" = 'f5c098b2f5df2c93f5385a96bde1719c5e313a37'
+          cmp fixtures/engine-0.7-target-presentation-dev-v1/manifest.json \
+            <(git show engine-0.7-target-presentation-dev-v1-spec-freeze:fixtures/engine-0.7-target-presentation-dev-v1/manifest.json)
+          cmp fixtures/engine-0.7-target-presentation-dev-v1/manifest.sha256 \
+            <(git show engine-0.7-target-presentation-dev-v1-spec-freeze:fixtures/engine-0.7-target-presentation-dev-v1/manifest.sha256)
+          cargo test --locked -p reasoning-harness-core --test target_presentation_development_v1 -- \
+            --test-threads=1 --nocapture > /tmp/engine-0.7-target-presentation-v1.log 2>&1
+          python3 scripts/engine-0.7-target-presentation-dev-v1-report.py \
+            --log /tmp/engine-0.7-target-presentation-v1.log \
+            --output /tmp/engine-0.7-target-presentation-v1-result.json
+          cmp evaluation/engine-0.7-target-presentation-dev-v1-result.json /tmp/engine-0.7-target-presentation-v1-result.json
+          python3 -m unittest -v scripts/test_engine_0_7_target_presentation_dev_v1_report.py
+          demo_dir="$(mktemp -d)"
+          cargo run --quiet --locked -p reasoning-harness-cli \
+            --bin reason-source-review-local -- demo --output "$demo_dir/demo.json"
+          cargo run --quiet --locked -p reasoning-harness-cli \
+            --bin reason-source-review-local -- show-targets \
+            --artifact "$demo_dir/demo.json" --target demo-target --json > "$demo_dir/result.json"
+          python3 -c 'import json,sys; v=json.load(open(sys.argv[1])); assert v["contract_id"]=="harness-source-reconciliation-target-answer-v1"; assert v["original"]["status"]=="conflict"; assert v["target_answers"][0]["status"]=="conflict"; assert len(v["target_answers"][0]["original"]["citations"])==2' "$demo_dir/result.json"
       - name: Verify frozen Engine 0.7 local reviewer development controls
         run: |
           set -euo pipefail

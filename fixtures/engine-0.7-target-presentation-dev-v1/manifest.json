@@ -1,0 +1,179 @@
+{
+  "schema": "engine-0.7-target-presentation-dev-v1-spec",
+  "issue": 490,
+  "baseline": "engine-v0.6.1",
+  "kind": "synthetic_development_only",
+  "precommit": true,
+  "non_goals": [
+    "No external provider calls",
+    "No automatic semantic equivalence",
+    "No original v1 conflict/citation mutation",
+    "No promotion to verified external truth"
+  ],
+  "cases": [
+    {
+      "id": "reviewed_single",
+      "scenario": "single_compatible",
+      "expected_target_statuses": [
+        "reviewed_compatible"
+      ],
+      "expected_original_status": "conflict",
+      "expected_target_citations": [
+        2
+      ],
+      "expected_result": "ok"
+    },
+    {
+      "id": "reviewed_with_opposition",
+      "scenario": "mixed",
+      "expected_target_statuses": [
+        "reviewed_compatible",
+        "conflict"
+      ],
+      "expected_original_status": "conflict",
+      "expected_target_citations": [
+        2,
+        2
+      ],
+      "expected_result": "ok"
+    },
+    {
+      "id": "no_review_mixed",
+      "scenario": "mixed_unreviewed",
+      "expected_target_statuses": [
+        "conflict",
+        "conflict"
+      ],
+      "expected_original_status": "conflict",
+      "expected_target_citations": [
+        2,
+        2
+      ],
+      "expected_result": "ok"
+    },
+    {
+      "id": "qualified_and_reviewed",
+      "scenario": "qualified_plus_reviewed",
+      "expected_target_statuses": [
+        "qualified",
+        "reviewed_compatible"
+      ],
+      "expected_original_status": "conflict",
+      "expected_target_citations": [
+        2,
+        2
+      ],
+      "expected_result": "ok"
+    },
+    {
+      "id": "both_reviewed",
+      "scenario": "both_compatible",
+      "expected_target_statuses": [
+        "reviewed_compatible",
+        "reviewed_compatible"
+      ],
+      "expected_original_status": "conflict",
+      "expected_target_citations": [
+        2,
+        2
+      ],
+      "expected_result": "ok"
+    },
+    {
+      "id": "selection_reversed",
+      "scenario": "mixed_reverse",
+      "expected_target_statuses": [
+        "conflict",
+        "reviewed_compatible"
+      ],
+      "expected_original_status": "conflict",
+      "expected_target_citations": [
+        2,
+        2
+      ],
+      "expected_result": "ok"
+    },
+    {
+      "id": "no_review_conflict",
+      "scenario": "single_conflict",
+      "expected_target_statuses": [
+        "conflict"
+      ],
+      "expected_original_status": "conflict",
+      "expected_target_citations": [
+        2
+      ],
+      "expected_result": "ok"
+    },
+    {
+      "id": "identical_qualified",
+      "scenario": "single_qualified",
+      "expected_target_statuses": [
+        "qualified"
+      ],
+      "expected_original_status": "qualified",
+      "expected_target_citations": [
+        2
+      ],
+      "expected_result": "ok"
+    },
+    {
+      "id": "unresolved_selection",
+      "scenario": "unresolved",
+      "expected_target_statuses": [
+        "unresolved"
+      ],
+      "expected_original_status": "unresolved",
+      "expected_target_citations": [
+        0
+      ],
+      "expected_result": "ok"
+    },
+    {
+      "id": "empty_selection",
+      "scenario": "empty",
+      "expected_target_statuses": [],
+      "expected_original_status": "unresolved",
+      "expected_target_citations": [],
+      "expected_result": "ok"
+    },
+    {
+      "id": "duplicate_selection",
+      "scenario": "duplicate",
+      "expected_target_statuses": [],
+      "expected_original_status": "none",
+      "expected_target_citations": [],
+      "expected_result": "reject"
+    },
+    {
+      "id": "cross_target_review",
+      "scenario": "extraneous",
+      "expected_target_statuses": [],
+      "expected_original_status": "none",
+      "expected_target_citations": [],
+      "expected_result": "reject"
+    },
+    {
+      "id": "tampered_source_after_review",
+      "scenario": "stale",
+      "expected_target_statuses": [],
+      "expected_original_status": "none",
+      "expected_target_citations": [],
+      "expected_result": "reject"
+    },
+    {
+      "id": "replay_exact",
+      "scenario": "replay",
+      "expected_target_statuses": [
+        "reviewed_compatible",
+        "conflict"
+      ],
+      "expected_original_status": "conflict",
+      "expected_target_citations": [
+        2,
+        2
+      ],
+      "expected_result": "ok"
+    }
+  ]
+}

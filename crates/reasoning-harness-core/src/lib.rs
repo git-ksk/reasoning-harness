@@ -390,11 +390,12 @@ pub use source_attribution::{
     source_attribution_transform_assessment_schema, validate_source_attribution_state,
 };
 pub use source_reconciliation::{
-    SOURCE_RECONCILIATION_REVIEW_CONTRACT_ID, SOURCE_RECONCILIATION_VIEW_CONTRACT_ID,
-    SourceReconciliationError, SourceReconciliationStatus, SourceReconciliationView,
-    SourceReviewAnchor, TrustedSourceCompatibilityReview, TrustedSourceReviewAuthority,
-    capture_source_review_anchor, reconcile_source_attributed_answer,
-    record_trusted_source_equivalence,
+    SOURCE_RECONCILIATION_REVIEW_CONTRACT_ID, SOURCE_RECONCILIATION_TARGET_ANSWER_CONTRACT_ID,
+    SOURCE_RECONCILIATION_VIEW_CONTRACT_ID, SourceReconciliationError, SourceReconciliationStatus,
+    SourceReconciliationTargetAnswer, SourceReconciliationTargetPresentation,
+    SourceReconciliationView, SourceReviewAnchor, TrustedSourceCompatibilityReview,
+    TrustedSourceReviewAuthority, capture_source_review_anchor, reconcile_source_attributed_answer,
+    reconcile_source_attributed_targets, record_trusted_source_equivalence,
 };
 pub use types::{
     AdversarialFinding, AdversarialFindingKind, ApplicabilityScope, CandidateClaim,
