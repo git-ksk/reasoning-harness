@@ -126,13 +126,14 @@ Engine 0.6.0 promotes the measured production-gap sequence #461 -> #462/#468 -> 
 - **#463 source attribution:** independent holdout-v2 run `37326666360` passed Mistral / Google / Groq 18/18 with useful attribution 6/6, citation coverage 100%, provider failures 0, and every hard gate 0.
 - **#472 release closeout:** `reasoning-harness-core` advances to 0.6.0 under `engine-v0.6.0`; release promotion changes no accepted runtime semantics. Published `reason-v0.5.3` remains on Engine 0.5.0 until a separate CLI adoption release.
 
-## Track D — Post-0.6.0 maintenance (unreleased)
+## Track D — Post-0.6.0 maintenance (Engine 0.6.1 released)
 
 The Engine 0.6.0 milestone and `engine-v0.6.0` release are closed and immutable. Work merged after that tag is **not** part of the already-published Engine 0.6.0 source release.
 
 - **#474 bounded launch-language regression:** recognize the affirmative `has made … generally available` frame only with ordered, local wording and preserve fail-closed handling of negation. Regression tests cover the affirmative and multiple negative forms; this is post-release Engine source maintenance, not a retroactive 0.6.0 acceptance change.
-- **#475 / milestone #9 Engine 0.6.1 patch acceptance:** the next independent source patch is not yet released. Both #476 and #477 must complete exact-head regression and appropriate fresh acceptance before the Engine 0.6.1 release coordinate can be tagged.
+- **#475 / milestone #9 Engine 0.6.1 closeout:** `engine-v0.6.1` is independently published. PRs #480/#481/#482 passed exact-head CI, including the release 23/23 checks. Independently precommitted v2 passed 30/30 deterministic, and Mistral/Google/Groq live 36/36 on run 37935245178; original independent v1 FAIL remains preserved.
 - **#476 wrong-target launch binding:** require target-owned `has made … generally available` evidence, and reject cross-clause, other-subject, and negated wording without trusting advisory model classification.
+- **#479 launch factuality:** latest v17/v30 requires target-owned affirmative launch evidence; conditional, denied, interrogative, fictional, and unverified statements fail closed while historical frozen relation semantics stay unchanged.
 - **#477 legacy MCP timeout:** preserve the historically frozen v1 adapter and mitigate its unbounded stdin-write limitation by steering supported integrations to the already deadline-bounded v2/v3 successors; add a reproducible v2 blocked-stdin regression. This provider safety follow-up is included in the 0.6.1 **source release** scope. The v1 limitation itself remains a documented migration concern.
 - **#465 CI fixture reliability:** the intermittent legacy MCP subprocess transport test remains tracked separately from semantic correctness and frozen evaluation.
 - **#467 / #470 dependency maintenance:** routine Cargo dependency updates are independent of the Engine semantic acceptance record.
