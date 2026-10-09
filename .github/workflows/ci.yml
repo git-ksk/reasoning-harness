@@ -81,7 +81,8 @@ jobs:
           python3 -m py_compile \
             scripts/engine_0_7_independent_v1_score.py \
             scripts/check_engine_0_7_independent_v1_freshness.py
-          test ! -e fixtures/engine-0.7-independent-holdout-v1/manifest.json
+          # The corpus is authored only after runner freeze; later CI runs
+          # must accept its existence. The corpus tag workflow verifies ordering.
 
       - name: Verify frozen Engine 0.7 target-local source presentation
         run: |
