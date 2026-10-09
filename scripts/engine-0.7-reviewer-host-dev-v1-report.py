@@ -43,7 +43,7 @@ def parse(log):
             else:
                 summaries.append(item)
     assert len(summaries) == 1
-    assert "test result: ok. 4 passed; 0 failed;" in log
+    assert any(f"test result: ok. {count} passed; 0 failed;" in log for count in (4, 6)), "Rust suite did not pass"
     return cases, summaries[0]
 
 def score(spec, observations, summary):

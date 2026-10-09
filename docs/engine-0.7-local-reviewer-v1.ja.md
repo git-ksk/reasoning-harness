@@ -46,6 +46,25 @@ cargo run --locked -p reasoning-harness-cli --bin reason-source-review-local -- 
 
 3件以上の出典で互換性を承認するには、各ペアを個別にレビューして複数の`--approval`を指定します。必要な全ペアの審査が完了しなければ`Conflict`のまま。`show --json`で追加viewの構造化結果を確認できます。
 
+## 人間の承認前に行う実機QAの準備
+
+OSキーチェーンの登録や外部モデル呼出を**まったく行わない**、専用の2コマンドを追加しました。
+
+```bash
+cargo run --locked -p reasoning-harness-cli --bin reason-source-review-local -- \
+  demo --output "$HOME/reason-review-synthetic-demo.json"
+
+cargo run --locked -p reasoning-harness-cli --bin reason-source-review-local -- \
+  inspect --artifact "$HOME/reason-review-synthetic-demo.json" \
+  --target demo-target --first-claim demo-claim-0 --second-claim demo-claim-1
+```
+
+`demo`は架空の2引用を含む合成artifactを**秘密権限で新規保存**し、既存ファイルの上書きを拒否します。`inspect`は原文・target・claim・binding・evidence・SHA-256を**読み取り専用で**表示し、「承認ではない」と明示します。取得元の制御文字はJSONエスケープし、ターミナル操作の乗っ取りを防ぎます。どちらもキーチェーンを読み書きせず、承認・署名は発生しません。
+
+開発用Macでは`/tmp/reason-source-review-demo-496.json`（権限0600）の生成と読み取り専用プレビューがPASS。続く`enroll`→`approve`→`show`→`revoke`は**実際の利用者自身が対話的に**行う必要があります。新viewが`reviewed_compatible`でも旧v1の`Conflict`が維持されること、鍵の失効後は昔の承認ファイルが拒否されることを確認します。AIやCIが本人に代わり承認することは禁止です。
+
+凍結時のRustテスト4本と18ケースの採点は不変。凍結**後**にデモ生成・秘密権限と制御文字の安全性の2本を追加し、現在はRustテスト6本です。旧4本のログと新6本のログをそれぞれ再現可能にし、凍結18件の結果を書き換えません。
+
 ## 事前固定した開発評価
 
 - 実装前の凍結タグ：`engine-0.7-reviewer-host-dev-v1-spec-freeze`（`fa87aac3c6fc602c2874b604f6e027a4d093784a`）

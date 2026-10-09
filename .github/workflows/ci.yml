@@ -77,6 +77,19 @@ jobs:
             --log /tmp/engine-0.7-reviewer-host-v1.log --output /tmp/engine-0.7-reviewer-host-v1-result.json
           cmp evaluation/engine-0.7-reviewer-host-dev-v1-result.json /tmp/engine-0.7-reviewer-host-v1-result.json
           python3 -m unittest -v scripts/test_engine_0_7_reviewer_host_dev_v1_report.py
+          reviewer_demo_dir="$(mktemp -d)"
+          cargo run --quiet --locked -p reasoning-harness-cli \
+            --bin reason-source-review-local -- demo \
+            --output "$reviewer_demo_dir/demo.json"
+          test "$(stat -c '%a' "$reviewer_demo_dir/demo.json")" = "600"
+          cargo run --quiet --locked -p reasoning-harness-cli \
+            --bin reason-source-review-local -- inspect \
+            --artifact "$reviewer_demo_dir/demo.json" \
+            --target demo-target --first-claim demo-claim-0 \
+            --second-claim demo-claim-1 \
+            > "$reviewer_demo_dir/preview.txt"
+          grep -F "READ-ONLY PREVIEW: not an approval" "$reviewer_demo_dir/preview.txt"
+          grep -F "Snapshot SHA-256:" "$reviewer_demo_dir/preview.txt"
           if echo piped | cargo run --quiet --locked -p reasoning-harness-cli \
             --bin reason-source-review-local -- enroll --reviewer ci-headless-deny \
             > /tmp/engine-0.7-reviewer-headless-denial.log 2>&1; then
