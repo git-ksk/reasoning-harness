@@ -67,6 +67,8 @@
 
 - [プロジェクト状況](project-status.ja.md) — release済み、active work、主要gap。
 - [製品ロードマップ](product-roadmap.ja.md) — 現在のproduct / engine前進track。
+- [Harness Engine 0.7.0計画](engine-0.7.0-roadmap.ja.md) — **計画段階・未リリース**。複数根拠の整合、評価、依存関係、release gate。
+- [製品ロードマップ](product-roadmap.ja.md) — 現在のproduct / engine前進track。
 - [Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md) — 一般向けterminal productization。
 - [Provider / model retirement と fallback policy](model-retirement-policy.ja.md) — lifecycle state、silent identity switch禁止、session pinning。
 - [バージョニング](versioning.ja.md) — Reason CLI / Harness Engine / machine contractの分離。

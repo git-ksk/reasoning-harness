@@ -8,7 +8,7 @@
 
 ## 現在のリリース
 
-現在公開済みのsplit CLI previewは **Reason CLI 0.5.4 / Harness Engine 0.6.1** です。従来の0.5.3 / Engine 0.5.0を変更しません。**Harness Engine 0.6.1** を`engine-v0.6.1`として独立source releaseしました。CLIへのEngine採用は別リリースです。
+現在公開済みのsplit CLI previewは **Reason CLI 0.5.4 / Harness Engine 0.6.1** です。従来の0.5.3 / Engine 0.5.0を変更しません。**Harness Engine 0.6.1** を`engine-v0.6.1`として独立source releaseしました。CLI 0.5.4への採用は独立した別リリースとして完了済みです。
 
 ```text
 公開済みCLI: Reason CLI 0.5.4 / Harness Engine 0.6.1
@@ -42,9 +42,9 @@ Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapter�
 
 ## 現在の製品ライン: Reason CLI 0.5.x
 
-最初のsplit general-use release `reason-v0.5.0` はrelease済みで、現在のpatch coordinateは `reason-v0.5.3`、Harness Engineは0.5.0です。`reason-v0.5.2`はEngine 0.4.2のままimmutableで、新しいEngineは0.5.3という別releaseでのみadoptしています。
+最初のsplit general-use release `reason-v0.5.0` はrelease済みで、現在のpatch coordinateは `reason-v0.5.4` / Harness Engine 0.6.1です。旧`reason-v0.5.3`はEngine 0.5.0、`reason-v0.5.2`はEngine 0.4.2のままimmutableです。
 
-0.5.0〜0.5.2のproductization artifactでは、固定Engine 0.4.2 baseline上で一般利用向けterminal UXを提供しました。Reason CLI 0.5.3はそのproduct surfaceを維持しつつ、別trackでaccept済みのEngine 0.5.0をadoptしています。
+0.5.0〜0.5.2のproductization artifactでは、固定Engine 0.4.2 baseline上で一般利用向けterminal UXを提供しました。CLI 0.5.3がそのproduct surfaceを維持しつつEngine 0.5.0を採用し、CLI 0.5.4ではさらにEngine 0.6.1を採用済みです。
 
 - Rust toolchain不要のnative install;
 - verified distributionとupdate / rollback / uninstall lifecycle;
@@ -63,11 +63,11 @@ Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapter�
 
 ## 最新product統合: Reason CLI 0.5.4
 
-CLI 0.5.4は#484で独立release済みEngine 0.6.1を採用します。各OSの署名付きnative配布とEngine-changeの明示許可を維持し、公開済み0.5.3のEngine 0.5.0は不変です。
+CLI 0.5.4は#484で独立release済みEngine 0.6.1を採用しました。各OSの署名付きnative配布とEngine-changeの明示許可を維持し、公開済み0.5.3のEngine 0.5.0は不変です。
 
 ## 最新Engineパッチ: Harness Engine 0.6.1
 
-`engine-v0.6.1`はv17/v30のlaunch関連性判定で別対象・条件・否定・疑問・架空・未検証の記述からの誤昇格を防ぎます。歴史的なfreeze評価は変更しません。独立v2は30/30、Mistral・Google・Groqのlive acceptanceは各12/12 PASS（誤Relevant 0、utility miss 0、provider failure 0、[run 37935245178](https://github.com/git-ksk/reasoning-harness/actions/runs/37935245178)）。リリースPR #482は23/23 CI PASS。旧MCP v1のstdin-write制限は残り、v2/v3への移行が必要です。公開済みCLI 0.5.3はEngine 0.5.0を維持します。[0.6.1リリースノート](engine-0.6.1-release.ja.md)を参照してください。
+`engine-v0.6.1`はv17/v30のlaunch関連性判定で別対象・条件・否定・疑問・架空・未検証の記述からの誤昇格を防ぎます。歴史的なfreeze評価は変更しません。独立v2は30/30、Mistral・Google・Groqのlive acceptanceは各12/12 PASS（誤Relevant 0、utility miss 0、provider failure 0、[run 37935245178](https://github.com/git-ksk/reasoning-harness/actions/runs/37935245178)）。リリースPR #482は23/23 CI PASS。旧MCP v1のstdin-write制限は残り、v2/v3への移行が必要です。公開済みCLI 0.5.4はEngine 0.6.1を搭載し、旧0.5.3はEngine 0.5.0を保持します。[0.6.1リリースノート](engine-0.6.1-release.ja.md)を参照してください。
 
 ## 別系統のエンジン開発: Harness Engine 0.6.0
 
@@ -77,7 +77,11 @@ Harness Engine 0.6.0はrelease-completeです。accepted deltaはtarget-local ev
 
 promotion前に独立freeze済みacceptanceを完了しています。#461 holdout run `35965160995`はMistral + Google 26/26・correctness/utility failure 0、#462/#468 holdout-v12 run `37218652869`はMistral / Google / Groq 26/26・authority / wrong-target / false-rejection / utility failure 0、#463 holdout-v2 run `37326666360`はMistral / Google / Groq 18/18・citation coverage 100%・全hard gate 0でした。historical failureはimmutableのまま保持します。
 
-`engine-v0.6.0`は独立Engine source releaseです。公開済み`reason-v0.5.3` binaryは別のCLI adoption coordinateをreleaseするまでEngine 0.5.0のままimmutableです。[Engine 0.6.0 release notes](engine-0.6.0-release.ja.md)、[バージョニング](versioning.ja.md)、[製品ロードマップ](product-roadmap.ja.md)を参照してください。
+`engine-v0.6.0`は独立Engine source releaseです。公開済み`reason-v0.5.3` binaryはEngine 0.5.0のままimmutableで、その後CLI 0.5.4がEngine 0.6.1を別releaseで採用しました。[Engine 0.6.0 release notes](engine-0.6.0-release.ja.md)、[バージョニング](versioning.ja.md)、[製品ロードマップ](product-roadmap.ja.md)を参照してください。
+
+## 次期Engine 0.7.0計画 — 未リリース
+
+[マイルストーン #10](https://github.com/git-ksk/reasoning-harness/milestone/10) / [詳細ロードマップ](engine-0.7.0-roadmap.ja.md)では、まずEngine 0.6.1の複数ソースに関する実測baselineを固定します。その結果に応じて、出典の系譜、明示改訂時点、矛盾を保つ統合、target別回答充足性を段階的に検証します。改善効果・独立評価・exact-head release gateを満たすまでは未実装候補を公開済みEngineに昇格しません。
 
 ## 現在の信頼境界
 
@@ -96,7 +100,7 @@ general-use CLI productizationはrelease済みです。native install、guided s
 
 product側で残るdistribution follow-upは#375です。Homebrew 0.5.3 physical upgrade/test acceptanceは完了し、WinGet community manifestもMicrosoft validation / CLAを通過してcommunity moderator approval待ちです。この外部reviewはHarness Engine開発をblockしません。
 
-Harness Engine 0.6.0は#461/#462/#468/#463まで実装・acceptance・release完了で、`engine-v0.6.0`として独立公開します。現在distribution済みCLIはReason CLI 0.5.3 / Engine 0.5.0のままで、Engine 0.6.0 adoptionは意図的に別product releaseとします。#465はEngine correctness blockerではなく、non-semanticなCI fixture reliability follow-upとして継続します。
+Harness Engine 0.6.0は#461/#462/#468/#463まで実装・acceptance・release完了で、`engine-v0.6.0`として独立公開します。現在配布中のCLIはReason CLI 0.5.4 / Engine 0.6.1です。旧CLI 0.5.3のEngine 0.5.0は保持します。#465はEngine correctness blockerではなく、non-semanticなCI fixture reliability follow-upとして継続します。
 
 ## 研究方針
 
