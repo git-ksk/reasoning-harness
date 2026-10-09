@@ -351,7 +351,7 @@ All six required provider/model rows passed independently on canonical Actions r
 
 The grounded Averiq case required a supported exact `harness_investigation_admitted_fact_*` claim, and the Orivane correction case required a supported exact `harness_session_correction_target_*` claim, so the deterministic hardening paths had to be exercised rather than merely coinciding with a model-generated answer. The Vardelis no-result case remained fail-closed on every row.
 
-See the [Engine 0.5.0 final-v3 result](docs/engine-0.5-final-v3-result.md) and [Engine 0.5.0 release notes](docs/engine-0.5.0-release.md) for exact coordinates and preserved raw evidence. Reason CLI 0.5.3 now distributes that accepted Engine 0.5.0, while the already-published Reason CLI 0.5.2 binaries remain immutable on Engine 0.4.2.
+See the [Engine 0.5.0 final-v3 result](docs/engine-0.5-final-v3-result.md) and [Engine 0.5.0 release notes](docs/engine-0.5.0-release.md) for exact coordinates and preserved raw evidence. Reason CLI 0.5.3 distributed that accepted Engine 0.5.0, while the already-published Reason CLI 0.5.2 binaries remain immutable on Engine 0.4.2. The later CLI 0.5.4 separately adopts Engine 0.6.1.
 
 ## Product, engine, and research are separate
 
@@ -365,7 +365,7 @@ From the next product line onward:
 
 The published split CLI line remains **Reason CLI 0.5.4 on Harness Engine 0.6.1**. The independent source Engine was adopted under a separate CLI release; `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0. Earlier CLI artifacts, including `reason-v0.5.2` on Engine 0.4.2, remain immutable.
 
-See [versioning](docs/versioning.md) and the [Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md).
+See [versioning](docs/versioning.md), the [Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md), and the [planned Engine 0.7.0 roadmap](docs/engine-0.7.0-roadmap.md) (not implemented or released).
 
 ## Documentation
 

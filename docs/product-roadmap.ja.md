@@ -14,7 +14,7 @@
   Harness Engine 0.6.1
 
 最新の独立Engine source release:
-  Harness Engine 0.6.1 (`engine-v0.6.0`)
+  Harness Engine 0.6.1 (`engine-v0.6.1`)
 
 直近完了した統合:
   Reason CLI 0.5.4 -> Harness Engine 0.6.1 (#484)
@@ -24,7 +24,7 @@
   Harness Engine 0.4.2
 ```
 
-`v0.4.2`が最後のunified historical releaseです。split CLI lineは`reason-v0.5.3`まで進み、CLI / Engine / machine-contract identityは独立して進みます。`reason-v0.5.2`はEngine 0.4.2のままimmutableで、`reason-v0.5.3`が独立release済みEngine 0.5.0をadoptしました。[バージョニング](versioning.ja.md)を参照してください。
+`v0.4.2`が最後のunified historical releaseです。split CLI lineは`reason-v0.5.4`（Harness Engine 0.6.1）まで進み、CLI / Engine / machine-contract identityは独立して進みます。`reason-v0.5.2`はEngine 0.4.2のままimmutableで、`reason-v0.5.3`が独立release済みEngine 0.5.0をadoptしました。[バージョニング](versioning.ja.md)を参照してください。
 
 ## 製品目標
 
@@ -45,9 +45,9 @@ Harness verifies / qualifies / abstains
 
 ## トラックA — Reason CLI 0.5.x: 一般利用向け製品化
 
-**現在の公開pairは`reason-v0.5.3` / Harness Engine 0.5.0。** 以前の`reason-v0.5.2`はEngine 0.4.2のままimmutableで、#455は新しいCLI coordinateでadoptionを完了しました。
+**現在の公開pairは`reason-v0.5.4` / Harness Engine 0.6.1。** 以前の`reason-v0.5.3`はEngine 0.5.0、`reason-v0.5.2`はEngine 0.4.2のままimmutableで、#455・#484が別々のCLI coordinateでadoptionを完了しました。
 
-base `reason-v0.5.0` と0.5.1 / 0.5.2 patch lineはEngine 0.4.2でrelease済みで、`reason-v0.5.3`はaccepted Engine 0.5.0をdistributionします。P0 release gateと#455 Engine adoptionは完了しました。残るP1はdistribution follow-up #375のみです。Homebrew 0.5.3 physical upgrade/test acceptanceは完了、WinGet community manifestはvalidation / CLAを通過してcommunity moderator approval待ちです。
+base `reason-v0.5.0` と0.5.1 / 0.5.2 patch lineはEngine 0.4.2でrelease済みで、`reason-v0.5.3`はaccepted Engine 0.5.0を配布し、`reason-v0.5.4`ではEngine 0.6.1を配布しています。P0 release gateと#455 Engine adoptionは完了しました。残るP1はdistribution follow-up #375のみです。Homebrew 0.5.3 physical upgrade/test acceptanceは完了、WinGet community manifestはvalidation / CLAを通過してcommunity moderator approval待ちです。
 
 underlying authority semanticsを変えず、`reason`を成熟したterminal productとして使える状態にします。
 
@@ -128,7 +128,7 @@ Engine 0.6.0は、Engine 0.5.0やfreeze済みhistorical observationを書き換�
 - **#461 evidence need:** independent holdout run `35965160995`でMistral + Google 26/26、correctness violation 0、utility miss 0、provider failure 0。
 - **#462/#468 relevance + relation:** final independent holdout-v12 run `37218652869`でMistral / Google / Groq 26/26、authority failure 0、wrong-target Relevant 0、false relevance rejection 0、utility miss 0。
 - **#463 source attribution:** independent holdout-v2 run `37326666360`でMistral / Google / Groq 18/18、useful attribution 6/6、citation coverage 100%、provider failure 0、全hard gate 0。
-- **#472 release closeout:** `reasoning-harness-core`を0.6.0へ進め`engine-v0.6.0`でreleaseする。release promotionではaccepted runtime semanticsを変更しない。公開済み`reason-v0.5.3`は別のCLI adoption releaseまでEngine 0.5.0のまま保持する。
+- **#472 release closeout:** `reasoning-harness-core`を0.6.0へ進め`engine-v0.6.0`でreleaseする。release promotionではaccepted runtime semanticsを変更しない。公開済み`reason-v0.5.3`はEngine 0.5.0のまま保持し、その後別CLIの`reason-v0.5.4`がEngine 0.6.1を採用した。
 
 ## トラックD — Engine 0.6.0以降の保守（0.6.1公開済み）
 
@@ -141,7 +141,24 @@ Engine 0.6.0のmilestoneと`engine-v0.6.0` releaseは完了済みで、変更し
 - **#477 legacy MCP timeout:** 歴史的な評価に必要な凍結済みv1実装を変更せず、期限管理された後継v2/v3への移行を推奨します。v2のblocked-stdin回帰テストを追加し、旧v1の期限超過リスクは明示して管理します。この対応は0.6.1 **source release**の対象ですが、Reason CLIリリースは別です。
 - **#465 CI fixture安定化:** legacy MCP subprocess transport testの断続的な失敗は、semantic correctnessやfreeze済みevaluationと分けて追跡します。
 - **#467 / #470 依存関係保守:** 通常のCargo依存更新はEngineのsemantic acceptance記録とは別に管理します。
-- **次のEngine source release:** 新しいversion/tagを決定し、semantics変更に応じた新規regression/acceptance evidenceを要求します。既存freeze tag・結果・release artifactは不変とし、保守PRのmerge自体はreleaseを意味しません。公開済みReason CLIは元のEngine組み合わせを維持し、CLI adoptionは別releaseで行います。
+- **次のEngine source release（0.7.0計画）:** Track Eで#487のbaselineと#492の独立acceptanceを要求し、過去のfreeze tag・結果・release artifactを保持します。CLI adoptionは別releaseで行います。
+
+## トラックE — Harness Engine 0.7.0: 複数根拠の整合（計画段階・未リリース）
+
+**[マイルストーン #10](https://github.com/git-ksk/reasoning-harness/milestone/10) · [親Issue #486](https://github.com/git-ksk/reasoning-harness/issues/486) · [詳細ロードマップ](engine-0.7.0-roadmap.ja.md)。** 現在公開済みのEngineは引き続き **0.6.1** です。
+
+Engine 0.6.1には、時点・scope・権威による適合判定、構造化事実の矛盾時のhard receipt保留、target別の根拠取得要否、厳密な出典付き説明、advisoryな充足性判定があります。0.7.0では**出典の系譜、明示的な改訂履歴、矛盾を維持する統合、target別の回答可否**が有用性を高めるかを検証します。現時点では実証済みの欠落ではありません。
+
+1. **P0 [#487](https://github.com/git-ksk/reasoning-harness/issues/487)：** 0.6.1のbaseline・不足の事例・採点ルールを、新semantic実装の**前**に固定。
+2. **P1 [#488](https://github.com/git-ksk/reasoning-harness/issues/488)：** 必要性が確認できた場合、転載元・独立した出所・由来不明を区別。出典の独立性を捏造しない。
+3. **P1 [#489](https://github.com/git-ksk/reasoning-harness/issues/489)：** 必要性が確認できた場合、明示的な改訂関係とas-of・有効時刻を突き合わせる。「新しい方が正しい」は禁止。
+4. **P1 [#490](https://github.com/git-ksk/reasoning-harness/issues/490)：** 必要性が確認できた場合、互換的な説明と不一致を区別し、衝突・引用・authority ceilingを保持。
+5. **P1 [#491](https://github.com/git-ksk/reasoning-harness/issues/491)：** 必要性が確認できた場合、target別の必要情報で限定回答・予算内再取得・保留を制御。
+6. **P0 [#492](https://github.com/git-ksk/reasoning-harness/issues/492)：** candidate/runnerを固定してから新規独立holdoutを作り、deterministicとMistral/Google/Groqの個別評価、exact-head CIをリリース条件にする。
+
+**重大違反の許容数は0：** 根拠なしの`Known`/`Supported`、独立ソース・引用の捏造、対象・scope・時点の混線、未証明の新版優先、衝突の隠蔽、replayの外部副作用。実用性・コストの数値基準は#487後、独立評価の**前**に固定します。非互換なmachine/session contractは別IDと互換テストを必要とします。
+
+これは**Engineの計画のみ**で、CLI 0.5.4の公開済みbinaryや過去のEngine評価は変更しません。実測で有用性を示せない機能候補は見送ります。
 
 ## 昇格ルール
 

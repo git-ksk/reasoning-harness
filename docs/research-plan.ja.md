@@ -31,7 +31,7 @@ product follow-up lineは新しいreasoning researchと分離して進める。v
 - **#90 完了:** CLI の外部contract、install / release compatibility、process-level observability、readiness gate を整備
 - **#126 完了:** bounded transient retry、provider-attempt telemetry、exact-identity resume を追加。過去の研究結果は変更していない
 - **#139 完了:** six-case Ministral 8B product workload で coverage / withholding gap を再検証し、authority boundary を保ったまま改善を確認
-- **Current release coordinate:** 公開済みReason CLI 0.5.3はHarness Engine 0.5.0のままimmutableに保持し、Harness Engine 0.6.0は`engine-v0.6.0`として独立releaseします。Engine 0.6 promotionは#461（run `35965160995`）、#462/#468（run `37218652869`）、#463（run `37326666360`）のfreeze済みindependent acceptanceに基づき、historical FAILはimmutableのまま保持します。将来の別CLI releaseが`reason-v0.5.3`を書き換えずEngine 0.6.0を明示adoptできます。
+- **Current release coordinate:** 公開済みReason CLI 0.5.4は独立release済みHarness Engine 0.6.1（`engine-v0.6.1`）を採用済みです。旧CLI 0.5.3はEngine 0.5.0のままimmutableです。Engine 0.6 promotionは#461（run `35965160995`）、#462/#468（run `37218652869`）、#463（run `37326666360`）のfreeze済みindependent acceptanceに基づき、historical FAILはimmutableのまま保持します。次期Engine 0.7.0は複数ソースの残存gapを新たに実測した上で独立source promotionし、将来のCLI採用は別releaseで行います。
 - **#173 完了:** v0.3.0 milestone。#174 / #175 / #178 で external-resolution lane、#176 で read-only MCP acquisition、#177 で trusted external verification、#179 で non-frozen open-world acceptance、#180 で optional `reason-mcp` surface を追加
 
 つまり、**研究の成功 = 即リリース**ではありません。研究は研究 identity のまま凍結し、製品化は別の変更として行います。
