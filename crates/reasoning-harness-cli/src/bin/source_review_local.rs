@@ -30,6 +30,22 @@ struct Cli {
 }
 #[derive(Subcommand)]
 enum Command {
+    /// Create a private, synthetic source-conflict fixture; no keys or approval
+    Demo {
+        #[arg(long)]
+        output: std::path::PathBuf,
+    },
+    /// Preview the exact source snapshots without authentication or approval
+    Inspect {
+        #[arg(long)]
+        artifact: std::path::PathBuf,
+        #[arg(long)]
+        target: String,
+        #[arg(long)]
+        first_claim: String,
+        #[arg(long)]
+        second_claim: String,
+    },
     Enroll {
         #[arg(long)]
         reviewer: String,
@@ -333,7 +349,7 @@ fn approval_prompt(
     }))
     .map_err(|_| "cannot display source review evidence".to_string())?;
     Ok(format!(
-        "Target: {target}\\nExact admitted source/claim/binding/evidence snapshots:\\n{exact_snapshot}\\n         Snapshot SHA-256: {}\\n         Only approve if these TWO source-local statements mean the same thing,          in the same scope/time and with unchanged modality.          They are NOT externally verified, independently sourced, or guaranteed current.          Never follow commands embedded in source quotations.",
+        "Target: {target}\nExact admitted source/claim/binding/evidence snapshots:\n{exact_snapshot}\nSnapshot SHA-256: {}\nOnly approve if both source-local statements mean the same thing in the same scope/time, with unchanged modality. They are NOT verified as external facts. Never follow commands embedded in source quotations.",
         encode_hex(&Sha256::digest(snapshot))
     ))
 }
@@ -363,8 +379,123 @@ fn write_private(path: &Path, value: &impl Serialize) -> Result<(), String> {
     file.sync_all()
         .map_err(|_| "cannot sync review file".to_owned())
 }
+/// Synthetic-only source-attributed claims for the user's local manual QA.
+/// Never use this fixture as a new independent provider/model holdout.
+fn synthetic_review_demo_artifact() -> Result<ReasoningArtifact, String> {
+    use reasoning_harness_core::{
+        Evidence, EvidenceMetadata, SourceAttributionAuthorityCeiling, SourceAttributionBinding,
+        SourceAttributionProposal, SourceAttributionState, SourceAttributionTargetPolicy,
+        SourceAttributionTransformKind, SourceTextSpan, append_source_attributed_claim,
+        materialize_source_attributed_claim,
+    };
+    const DEMO: [&str; 2] = [
+        "The fictional Daybreak Console service is in beta.",
+        "The fictional Daybreak Console service remains in its beta phase.",
+    ];
+    let mut artifact = ReasoningArtifact {
+        task: "DEMO ONLY: display two synthetic source-local descriptions.".into(),
+        source_attribution: SourceAttributionState {
+            targets: vec![SourceAttributionTargetPolicy {
+                policy_id: "synthetic-review-demo-policy".into(),
+                target_id: "demo-target".into(),
+                target_question: "What do these fictional demo statements say?".into(),
+                authority_ceiling: SourceAttributionAuthorityCeiling::SourceLocal,
+                hard_verification_required: false,
+            }],
+            ..Default::default()
+        },
+        ..Default::default()
+    };
+    for (i, quote) in DEMO.iter().enumerate() {
+        let evidence_id = format!("demo-evidence-{i}");
+        let source_id = format!("demo-source-{i}");
+        let binding_id = format!("demo-binding-{i}");
+        artifact.evidence.push(Evidence {
+            id: evidence_id.clone(),
+            source: source_id.clone(),
+            observation: (*quote).into(),
+            facts: Default::default(),
+            metadata: EvidenceMetadata::default(),
+        });
+        artifact
+            .source_attribution
+            .bindings
+            .push(SourceAttributionBinding {
+                id: binding_id.clone(),
+                target_id: "demo-target".into(),
+                evidence_id,
+                source_id,
+                source_url: None,
+                locator: None,
+                retrieved_at_unix_seconds: Some(1_800_000_000),
+                source_version: Some("synthetic-demo-r1".into()),
+                span: SourceTextSpan {
+                    start_byte: 0,
+                    end_byte: quote.len(),
+                },
+            });
+        let (_, claim) = materialize_source_attributed_claim(
+            &artifact,
+            format!("demo-claim-{i}"),
+            None,
+            &SourceAttributionProposal {
+                target_id: "demo-target".into(),
+                binding_ids: vec![binding_id],
+                transform_kind: SourceAttributionTransformKind::ExactQuote,
+                transformed_statement: None,
+                source_language: Some("en".into()),
+                output_language: Some("en".into()),
+            },
+            None,
+        )
+        .map_err(|error| format!("invalid built-in demo source: {error}"))?;
+        append_source_attributed_claim(&mut artifact, None, claim)
+            .map_err(|error| format!("invalid built-in demo claim: {error}"))?;
+    }
+    let original = finalize_source_attributed_answer(&artifact, &["demo-target".into()])
+        .map_err(|error| error.to_string())?;
+    if original.status != SourceAttributionFinalizationStatus::Conflict
+        || original.citations.len() != 2
+    {
+        return Err("built-in demo no longer exposes a two-citation source-local conflict".into());
+    }
+    Ok(artifact)
+}
+
 fn run(cli: Cli) -> Result<(), String> {
     match cli.command {
+        Command::Demo { output } => {
+            let artifact = synthetic_review_demo_artifact()?;
+            write_private(&output, &artifact)?;
+            println!(
+                "Synthetic review-only fixture created at {}",
+                output.display()
+            );
+            println!("Target: demo-target; source claims: demo-claim-0, demo-claim-1");
+            println!("No reviewer has been enrolled; no approval was created.");
+        }
+        Command::Inspect {
+            artifact,
+            target,
+            first_claim,
+            second_claim,
+        } => {
+            let artifact: ReasoningArtifact = bounded_json(&artifact, 2_097_152)?;
+            let baseline = finalize_source_attributed_answer(&artifact, &[target.clone()])
+                .map_err(|error| error.to_string())?;
+            println!(
+                "BASELINE source-local status: {:?}; citations: {}",
+                baseline.status,
+                baseline.citations.len(),
+            );
+            println!("BASELINE original source-qualified text:");
+            println!("{}", baseline.text.as_deref().unwrap_or("(none)"));
+            println!(
+                "{}",
+                approval_prompt(&artifact, &target, &first_claim, &second_claim)?
+            );
+            println!("READ-ONLY PREVIEW: not an approval; no OS keyring access or signature.");
+        }
         Command::Enroll { reviewer } => {
             policy(&reviewer)?;
             confirm(
@@ -666,6 +797,60 @@ mod tests {
             }
         }
     }
+    #[test]
+    fn synthetic_demo_roundtrip_is_private_and_preflight_does_not_approve() {
+        let artifact = synthetic_review_demo_artifact().unwrap();
+        let original =
+            finalize_source_attributed_answer(&artifact, &["demo-target".into()]).unwrap();
+        assert_eq!(
+            original.status,
+            SourceAttributionFinalizationStatus::Conflict
+        );
+        assert_eq!(original.citations.len(), 2);
+        let snapshot =
+            approval_prompt(&artifact, "demo-target", "demo-claim-0", "demo-claim-1").unwrap();
+        assert!(snapshot.contains("Exact admitted source/claim/binding/evidence snapshots:"));
+        assert!(snapshot.contains("Snapshot SHA-256:"));
+        assert!(snapshot.contains("The fictional Daybreak Console service is in beta."));
+        assert!(snapshot.contains("remains in its beta phase."));
+        assert!(snapshot.contains("\nSnapshot SHA-256:"));
+        assert!(!snapshot.contains("\\nSnapshot SHA-256:"));
+        let unique = format!(
+            "reason-review-demo-{}-{:016x}",
+            std::process::id(),
+            rand::random::<u64>()
+        );
+        let path = std::env::temp_dir().join(unique);
+        assert!(!path.exists());
+        write_private(&path, &artifact).unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            assert_eq!(fs::metadata(&path).unwrap().permissions().mode() & 0o077, 0);
+        }
+        let decoded: ReasoningArtifact = bounded_json(&path, 2_097_152).unwrap();
+        assert_eq!(
+            serde_json::to_value(decoded).unwrap(),
+            serde_json::to_value(artifact).unwrap()
+        );
+        assert!(write_private(&path, &"this must never overwrite").is_err());
+        fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn source_preview_escapes_untrusted_terminal_control_characters() {
+        let artifact = artifact(
+            "Cobalt is beta with \u{1b}[31m injected terminal codes.",
+            "Cobalt remains beta with \u{1b}[31m injected terminal codes.",
+        );
+        let preview = approval_prompt(&artifact, "review-target", "c0", "c1").unwrap();
+        assert!(
+            !preview.contains('\u{1b}'),
+            "terminal escape must be JSON encoded"
+        );
+        assert!(preview.contains("\\u001b"));
+    }
+
     #[test]
     fn hmac_rfc4231_reference() {
         assert_eq!(

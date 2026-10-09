@@ -46,6 +46,25 @@ cargo run --locked -p reasoning-harness-cli --bin reason-source-review-local -- 
 
 Multiple approval files may be supplied with repeated `--approval` when all source pairs have been independently reviewed; incomplete pairwise review remains `Conflict`. JSON output is opt-in via `show --json`. Signed records alone **never** authorize replay.
 
+## Local QA rehearsal before any human approval
+
+The standalone binary now has two **non-authorizing** commands. Neither uses the OS keyring, a model, or an external API:
+
+```bash
+cargo run --locked -p reasoning-harness-cli --bin reason-source-review-local -- \
+  demo --output "$HOME/reason-review-synthetic-demo.json"
+
+cargo run --locked -p reasoning-harness-cli --bin reason-source-review-local -- \
+  inspect --artifact "$HOME/reason-review-synthetic-demo.json" \
+  --target demo-target --first-claim demo-claim-0 --second-claim demo-claim-1
+```
+
+`demo` creates a **fictional synthetic** two-source Conflict in a private new JSON file, refusing to overwrite existing files. `inspect` presents the complete source, target, binding, evidence and SHA-256, with an explicit **READ-ONLY / NOT AN APPROVAL** notice. Control characters in source text are JSON-escaped rather than interpreted by the terminal. No reviewer identity is enrolled, no key is fetched and no approval record is created.
+
+On the development Mac, this read-only smoke passed with `/tmp/reason-source-review-demo-496.json` (0600) and exact source preview. The **real user** must run `enroll` → `approve` → `show` → `revoke` interactively if physical credential acceptance is required. Expected: the new view has a reviewed-compatible label while legacy v1 remains Conflict, and replay of the signed approval fails after key revocation. Do not have an AI agent impersonate the reviewer.
+
+The frozen v1 suite originally comprised four Rust tests and 18 precommitted semantic cases. Two **post-freeze** operational tests cover synthetic demo roundtrip/permissions and safe terminal preview, making six tests. Report reproduction accepts both the historical four-test log and current six-test log **without** changing the frozen 18-case denominator or score.
+
 ## Frozen development evidence
 
 | Evidence | Identity |
