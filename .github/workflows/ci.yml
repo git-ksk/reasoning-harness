@@ -65,6 +65,9 @@ jobs:
       - name: Validate Engine 0.7 independent runner before corpus authoring
         run: |
           set -euo pipefail
+          # CI uses a shallow checkout; fetch the pinned baseline from main.
+          git fetch --no-tags --depth=20 origin main
+          git cat-file -e '4cae9326bcc3e210c3250f05772d84f00e41b645^{commit}'
           git diff --exit-code 4cae9326bcc3e210c3250f05772d84f00e41b645 -- \
             crates/reasoning-harness-core/src/source_attribution.rs \
             crates/reasoning-harness-core/src/source_reconciliation.rs \
