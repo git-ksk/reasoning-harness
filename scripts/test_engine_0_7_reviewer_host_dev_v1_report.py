@@ -39,6 +39,12 @@ class ReviewerHostReportTests(unittest.TestCase):
                                     "test result: ok. 6 passed; 0 failed;")
         self.assertEqual(SCORE(spec, *PARSE(enhanced)), expected)
 
+    def test_eight_test_post_freeze_log_preserves_frozen_score(self):
+        spec, expected, original = reconstruct()
+        enhanced = original.replace("test result: ok. 4 passed; 0 failed;",
+                                    "test result: ok. 8 passed; 0 failed;")
+        self.assertEqual(SCORE(spec, *PARSE(enhanced)), expected)
+
     def test_missing_or_duplicated_case_fails(self):
         spec, _, text = reconstruct()
         lines = [x for x in text.splitlines() if '"id": "human-equivalent"' not in x]

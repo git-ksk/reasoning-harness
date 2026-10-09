@@ -1,0 +1,237 @@
+{
+  "baseline": "engine-v0.6.1",
+  "case_results": [
+    {
+      "detail": {
+        "legacy_citations": 2,
+        "legacy_status": "conflict",
+        "replay_equal": true,
+        "target_citations": [
+          2
+        ],
+        "target_statuses": [
+          "reviewed_compatible"
+        ]
+      },
+      "expected": "ok",
+      "id": "reviewed_single",
+      "observed": "ok"
+    },
+    {
+      "detail": {
+        "legacy_citations": 4,
+        "legacy_status": "conflict",
+        "replay_equal": true,
+        "target_citations": [
+          2,
+          2
+        ],
+        "target_statuses": [
+          "reviewed_compatible",
+          "conflict"
+        ]
+      },
+      "expected": "ok",
+      "id": "reviewed_with_opposition",
+      "observed": "ok"
+    },
+    {
+      "detail": {
+        "legacy_citations": 4,
+        "legacy_status": "conflict",
+        "replay_equal": true,
+        "target_citations": [
+          2,
+          2
+        ],
+        "target_statuses": [
+          "conflict",
+          "conflict"
+        ]
+      },
+      "expected": "ok",
+      "id": "no_review_mixed",
+      "observed": "ok"
+    },
+    {
+      "detail": {
+        "legacy_citations": 4,
+        "legacy_status": "conflict",
+        "replay_equal": true,
+        "target_citations": [
+          2,
+          2
+        ],
+        "target_statuses": [
+          "qualified",
+          "reviewed_compatible"
+        ]
+      },
+      "expected": "ok",
+      "id": "qualified_and_reviewed",
+      "observed": "ok"
+    },
+    {
+      "detail": {
+        "legacy_citations": 4,
+        "legacy_status": "conflict",
+        "replay_equal": true,
+        "target_citations": [
+          2,
+          2
+        ],
+        "target_statuses": [
+          "reviewed_compatible",
+          "reviewed_compatible"
+        ]
+      },
+      "expected": "ok",
+      "id": "both_reviewed",
+      "observed": "ok"
+    },
+    {
+      "detail": {
+        "legacy_citations": 4,
+        "legacy_status": "conflict",
+        "replay_equal": true,
+        "target_citations": [
+          2,
+          2
+        ],
+        "target_statuses": [
+          "conflict",
+          "reviewed_compatible"
+        ]
+      },
+      "expected": "ok",
+      "id": "selection_reversed",
+      "observed": "ok"
+    },
+    {
+      "detail": {
+        "legacy_citations": 2,
+        "legacy_status": "conflict",
+        "replay_equal": true,
+        "target_citations": [
+          2
+        ],
+        "target_statuses": [
+          "conflict"
+        ]
+      },
+      "expected": "ok",
+      "id": "no_review_conflict",
+      "observed": "ok"
+    },
+    {
+      "detail": {
+        "legacy_citations": 2,
+        "legacy_status": "qualified",
+        "replay_equal": true,
+        "target_citations": [
+          2
+        ],
+        "target_statuses": [
+          "qualified"
+        ]
+      },
+      "expected": "ok",
+      "id": "identical_qualified",
+      "observed": "ok"
+    },
+    {
+      "detail": {
+        "legacy_citations": 0,
+        "legacy_status": "unresolved",
+        "replay_equal": true,
+        "target_citations": [
+          0
+        ],
+        "target_statuses": [
+          "unresolved"
+        ]
+      },
+      "expected": "ok",
+      "id": "unresolved_selection",
+      "observed": "ok"
+    },
+    {
+      "detail": {
+        "legacy_citations": 0,
+        "legacy_status": "unresolved",
+        "replay_equal": true,
+        "target_citations": [],
+        "target_statuses": []
+      },
+      "expected": "ok",
+      "id": "empty_selection",
+      "observed": "ok"
+    },
+    {
+      "detail": {
+        "rejected": true
+      },
+      "expected": "reject",
+      "id": "duplicate_selection",
+      "observed": "reject"
+    },
+    {
+      "detail": {
+        "rejected": true
+      },
+      "expected": "reject",
+      "id": "cross_target_review",
+      "observed": "reject"
+    },
+    {
+      "detail": {
+        "rejected": true
+      },
+      "expected": "reject",
+      "id": "tampered_source_after_review",
+      "observed": "reject"
+    },
+    {
+      "detail": {
+        "legacy_citations": 4,
+        "legacy_status": "conflict",
+        "replay_equal": true,
+        "target_citations": [
+          2,
+          2
+        ],
+        "target_statuses": [
+          "reviewed_compatible",
+          "conflict"
+        ]
+      },
+      "expected": "ok",
+      "id": "replay_exact",
+      "observed": "ok"
+    }
+  ],
+  "limitations": [
+    "Source-local target display only; not evidence of independent external truth.",
+    "Development examples are synthetic and cannot be reused for the independent holdout.",
+    "Host-authenticated reviewer input is needed to mark a target reviewed compatible.",
+    "No published Engine or CLI release is changed."
+  ],
+  "manifest_sha256": "fe27ecc6704992109e8da100235bc4ba5ffbafec1073ebc4fa572993304b4214",
+  "precommit_commit": "f5c098b2f5df2c93f5385a96bde1719c5e313a37",
+  "precommit_tag": "engine-0.7-target-presentation-dev-v1-spec-freeze",
+  "schema": "engine-0.7-target-presentation-dev-v1-result",
+  "scorecard": {
+    "cases": 14,
+    "external_acquisition": 0,
+    "independent_provider_holdout": "NOT_EXECUTED",
+    "legacy_conflict_with_reviewed_target": 6,
+    "model_calls": 0,
+    "original_citations_preserved": true,
+    "passed": 14,
+    "provider_attempts": 0,
+    "rejected": 3,
+    "replay_preserved": true,
+    "truth_promotions": 0
+  },
+  "status": "PASS_SYNTHETIC_DEVELOPMENT_ONLY"
+}

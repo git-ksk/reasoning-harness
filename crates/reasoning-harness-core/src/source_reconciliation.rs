@@ -19,6 +19,10 @@ pub const SOURCE_RECONCILIATION_VIEW_CONTRACT_ID: &str = "harness-source-reconci
 pub const SOURCE_RECONCILIATION_REVIEW_CONTRACT_ID: &str =
     "harness-source-compatibility-trusted-review-v1";
 
+/// Independently versioned, opt-in presentation; never changes old view/v1 data.
+pub const SOURCE_RECONCILIATION_TARGET_ANSWER_CONTRACT_ID: &str =
+    "harness-source-reconciliation-target-answer-v1";
+
 /// Capability from a trusted host, never recovered from a persisted review or model output.
 /// The host, not this library, is responsible for authenticating its reviewer policy.
 #[derive(Debug, Clone)]
@@ -78,6 +82,27 @@ pub struct SourceReconciliationView {
     pub reviewed_compatible_target_ids: Vec<String>,
     pub remaining_conflict_target_ids: Vec<String>,
     pub accepted_review_policy_ids: Vec<String>,
+}
+
+/// One target's exact source-qualified output, without invented paraphrases.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+pub struct SourceReconciliationTargetAnswer {
+    pub target_id: String,
+    /// Additional reviewed-compatible metadata; does not promote truth.
+    pub status: SourceReconciliationStatus,
+    /// The *original* v1 source-specific prose and citations for this target.
+    pub original: SourceAttributionFinalization,
+}
+
+/// Mixed turns no longer hide safe target-local compatible wording behind
+/// a global Conflict label. Preserves the entire original global finalization.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+pub struct SourceReconciliationTargetPresentation {
+    pub contract_id: String,
+    pub original: SourceAttributionFinalization,
+    pub target_answers: Vec<SourceReconciliationTargetAnswer>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -429,5 +454,87 @@ pub fn reconcile_source_attributed_answer(
                     .into(),
             ]
         },
+    })
+}
+
+/// Opt-in target-local presentation of already authorized source reviews.
+///
+/// This never creates or approves a review. It rechecks every exact source
+/// snapshot and policy through the existing reconciliation gate, then emits
+/// only the legacy canonical per-source text and original citations. Mixed
+/// turns can expose which target has reviewed-compatible wording, without
+/// clearing the global legacy Conflict or contaminating other targets.
+pub fn reconcile_source_attributed_targets(
+    artifact: &ReasoningArtifact,
+    target_ids: &[String],
+    authority: Option<&TrustedSourceReviewAuthority>,
+    reviews: &[TrustedSourceCompatibilityReview],
+) -> Result<SourceReconciliationTargetPresentation, SourceReconciliationError> {
+    let global = reconcile_source_attributed_answer(artifact, target_ids, authority, reviews)?;
+    let reviewed = global
+        .reviewed_compatible_target_ids
+        .iter()
+        .map(String::as_str)
+        .collect::<BTreeSet<_>>();
+    let unresolved_conflicts = global
+        .remaining_conflict_target_ids
+        .iter()
+        .map(String::as_str)
+        .collect::<BTreeSet<_>>();
+    let mut target_answers = Vec::with_capacity(target_ids.len());
+    let mut combined_citations = Vec::new();
+    let mut combined_claim_ids = Vec::new();
+
+    for target_id in target_ids {
+        // The global gate has already authenticated every review and checked
+        // the exact source/target binding. Do not repeat deep review validation
+        // per target or infer approval from model-provided data.
+        let original = finalize_source_attributed_answer(artifact, std::slice::from_ref(target_id))
+            .map_err(|error| SourceReconciliationError::InvalidSource(error.to_string()))?;
+        let status = match original.status {
+            SourceAttributionFinalizationStatus::Qualified => SourceReconciliationStatus::Qualified,
+            SourceAttributionFinalizationStatus::Unresolved => {
+                SourceReconciliationStatus::Unresolved
+            }
+            SourceAttributionFinalizationStatus::Conflict
+                if reviewed.contains(target_id.as_str())
+                    && !unresolved_conflicts.contains(target_id.as_str()) =>
+            {
+                SourceReconciliationStatus::ReviewedCompatible
+            }
+            SourceAttributionFinalizationStatus::Conflict
+                if unresolved_conflicts.contains(target_id.as_str())
+                    && !reviewed.contains(target_id.as_str()) =>
+            {
+                SourceReconciliationStatus::Conflict
+            }
+            _ => {
+                return Err(SourceReconciliationError::InvalidSource(
+                    "target-local disposition differs from checked global review state".into(),
+                ));
+            }
+        };
+        combined_citations.extend(original.citations.iter().cloned());
+        combined_claim_ids.extend(original.claim_ids.iter().cloned());
+        target_answers.push(SourceReconciliationTargetAnswer {
+            target_id: target_id.clone(),
+            status,
+            original,
+        });
+    }
+
+    // Fail-closed if a change to either canonical finalizer ever causes
+    // target-local citation/claim aggregation to diverge from legacy output.
+    if combined_citations != global.original.citations
+        || combined_claim_ids != global.original.claim_ids
+    {
+        return Err(SourceReconciliationError::InvalidSource(
+            "target-local output no longer matches original citation order".into(),
+        ));
+    }
+    Ok(SourceReconciliationTargetPresentation {
+        contract_id: SOURCE_RECONCILIATION_TARGET_ANSWER_CONTRACT_ID.into(),
+        original: global.original,
+        target_answers,
     })
 }

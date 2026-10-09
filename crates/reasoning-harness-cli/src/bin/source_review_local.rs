@@ -2,9 +2,10 @@ use clap::{Parser, Subcommand};
 use keyring::{Entry, Error as KeyringError};
 use reasoning_harness_core::{
     ReasoningArtifact, SourceAttributionFinalizationStatus, SourceReconciliationStatus,
-    SourceReconciliationView, TrustedSourceCompatibilityReview, TrustedSourceReviewAuthority,
-    capture_source_review_anchor, finalize_source_attributed_answer,
-    reconcile_source_attributed_answer, record_trusted_source_equivalence,
+    SourceReconciliationTargetPresentation, SourceReconciliationView,
+    TrustedSourceCompatibilityReview, TrustedSourceReviewAuthority, capture_source_review_anchor,
+    finalize_source_attributed_answer, reconcile_source_attributed_answer,
+    reconcile_source_attributed_targets, record_trusted_source_equivalence,
 };
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -75,6 +76,19 @@ enum Command {
         target: String,
         #[arg(long)]
         reviewer: String,
+        #[arg(long)]
+        approval: Vec<std::path::PathBuf>,
+        #[arg(long, default_value_t = false)]
+        json: bool,
+    },
+    /// Opt-in per-target source-qualified answer; no key needed without reviews.
+    ShowTargets {
+        #[arg(long)]
+        artifact: std::path::PathBuf,
+        #[arg(long, required = true)]
+        target: Vec<String>,
+        #[arg(long)]
+        reviewer: Option<String>,
         #[arg(long)]
         approval: Vec<std::path::PathBuf>,
         #[arg(long, default_value_t = false)]
@@ -293,6 +307,51 @@ fn render_view(view: &SourceReconciliationView) -> String {
         view.original.text.as_deref().unwrap_or(""),
         view.original.citations.len()
     )
+}
+
+/// Canonical source text is untrusted input. Escape terminal control and
+/// bidi reordering characters before rendering identifiers and source quotes.
+fn escape_untrusted_terminal(value: &str) -> String {
+    use std::fmt::Write;
+    let mut escaped = String::new();
+    for ch in value.chars() {
+        if ch.is_control()
+            || ('\u{202a}'..='\u{202e}').contains(&ch)
+            || ('\u{2066}'..='\u{2069}').contains(&ch)
+        {
+            write!(&mut escaped, "\\u{:04x}", ch as u32).expect("writing to String cannot fail");
+        } else {
+            escaped.push(ch);
+        }
+    }
+    escaped
+}
+
+fn render_target_presentation(view: &SourceReconciliationTargetPresentation) -> String {
+    let mut output = format!(
+        "Global original source status: {:?} (unchanged); total original citations: {}\n",
+        view.original.status,
+        view.original.citations.len(),
+    );
+    for local in &view.target_answers {
+        let description = match local.status {
+            SourceReconciliationStatus::ReviewedCompatible => "reviewed compatible",
+            SourceReconciliationStatus::Conflict => "unresolved source conflict",
+            SourceReconciliationStatus::Qualified => "qualified",
+            SourceReconciliationStatus::Unresolved => "unresolved",
+        };
+        output.push_str(&format!(
+            "Target {}: {description} (original {:?}; {} citations)\n",
+            escape_untrusted_terminal(&local.target_id),
+            local.original.status,
+            local.original.citations.len(),
+        ));
+        if let Some(text) = &local.original.text {
+            output.push_str(&escape_untrusted_terminal(text));
+            output.push('\n');
+        }
+    }
+    output
 }
 
 fn bounded_json<T: serde::de::DeserializeOwned>(path: &Path, limit: u64) -> Result<T, String> {
@@ -565,6 +624,55 @@ fn run(cli: Cli) -> Result<(), String> {
                 );
             } else {
                 print!("{}", render_view(&view));
+            }
+        }
+        Command::ShowTargets {
+            artifact,
+            target,
+            reviewer,
+            approval,
+            json,
+        } => {
+            let artifact: ReasoningArtifact = bounded_json(&artifact, 2_097_152)?;
+            if target.len() > 128 || approval.len() > 256 {
+                return Err("too many targets or approval records".into());
+            }
+            let signed = approval
+                .iter()
+                .map(|p| bounded_json(p, 1_048_576))
+                .collect::<Result<Vec<SignedReview>, _>>()?;
+            let mut admitted = Vec::new();
+            let authority = match reviewer.as_deref() {
+                Some(id) => Some(
+                    TrustedSourceReviewAuthority::new(policy(id)?)
+                        .map_err(|error| error.to_string())?,
+                ),
+                None => None,
+            };
+            if !signed.is_empty() {
+                let reviewer = reviewer
+                    .as_deref()
+                    .ok_or("signed approvals require an enrolled --reviewer")?;
+                let key = retrieve_key(reviewer)?;
+                for record in &signed {
+                    admitted.push(verify(record, reviewer, &key, utc_now()?)?);
+                }
+            }
+            let presentation = reconcile_source_attributed_targets(
+                &artifact,
+                &target,
+                authority.as_ref(),
+                &admitted,
+            )
+            .map_err(|error| error.to_string())?;
+            if json {
+                println!(
+                    "{}",
+                    serde_json::to_string_pretty(&presentation)
+                        .map_err(|_| "cannot serialize source target presentation")?
+                );
+            } else {
+                print!("{}", render_target_presentation(&presentation));
             }
         }
     }
@@ -849,6 +957,66 @@ mod tests {
             "terminal escape must be JSON encoded"
         );
         assert!(preview.contains("\\u001b"));
+    }
+
+    #[test]
+    fn target_local_cli_preserves_conflict_and_quote_citations() {
+        let artifact = synthetic_review_demo_artifact().unwrap();
+        let key = [0x42u8; 32];
+        let signed = approve_in_host(
+            &artifact,
+            "local-reviewer",
+            "demo-claim-0",
+            "demo-claim-1",
+            &key,
+            1_800_000_000,
+        )
+        .unwrap();
+        let host = TrustedSourceReviewAuthority::new(policy("local-reviewer").unwrap()).unwrap();
+        let record = verify(&signed, "local-reviewer", &key, 1_800_000_001).unwrap();
+        let result = reconcile_source_attributed_targets(
+            &artifact,
+            &["demo-target".into()],
+            Some(&host),
+            &[record],
+        )
+        .unwrap();
+        assert_eq!(
+            result.original.status,
+            SourceAttributionFinalizationStatus::Conflict
+        );
+        assert_eq!(result.original.citations.len(), 2);
+        assert_eq!(
+            result.target_answers[0].status,
+            SourceReconciliationStatus::ReviewedCompatible
+        );
+        assert_eq!(
+            result.target_answers[0].original.citations,
+            result.original.citations
+        );
+        let output = render_target_presentation(&result);
+        assert!(output.contains("Target demo-target: reviewed compatible"));
+        assert!(output.contains("Global original source status: Conflict (unchanged)"));
+        assert!(output.contains("source:demo-source-0"));
+        assert!(output.contains("source:demo-source-1"));
+        assert!(!output.contains('\u{1b}'));
+    }
+
+    #[test]
+    fn target_local_cli_escapes_untrusted_control_and_bidi() {
+        let artifact = artifact(
+            "Fictional stage \u{1b}[31m and \u{202e} is beta.",
+            "Fictional stage remains in beta.",
+        );
+        let presentation =
+            reconcile_source_attributed_targets(&artifact, &["review-target".into()], None, &[])
+                .unwrap();
+        let displayed = render_target_presentation(&presentation);
+        assert!(!displayed.contains('\u{1b}'));
+        assert!(!displayed.contains('\u{202e}'));
+        assert!(displayed.contains("\\u001b"));
+        assert!(displayed.contains("\\u202e"));
+        assert_eq!(presentation.original.citations.len(), 2);
     }
 
     #[test]
