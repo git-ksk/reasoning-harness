@@ -153,6 +153,8 @@ Engine 0.6.1には、時点・scope・権威による適合判定、構造化事
 2. **P1 [#488](https://github.com/git-ksk/reasoning-harness/issues/488)：** 必要性が確認できた場合、転載元・独立した出所・由来不明を区別。出典の独立性を捏造しない。
 3. **P1 [#489](https://github.com/git-ksk/reasoning-harness/issues/489)：** 必要性が確認できた場合、明示的な改訂関係とas-of・有効時刻を突き合わせる。「新しい方が正しい」は禁止。
 4. **P1 [#490](https://github.com/git-ksk/reasoning-harness/issues/490)：** 必要性が確認できた場合、互換的な説明と不一致を区別し、衝突・引用・authority ceilingを保持。
+**#490の開発進捗：** [信頼済みホストレビューを使う追加view](engine-0.7-source-reconciliation-v1.ja.md)の開発用凍結22件をPASS。公開済みEngineへの採用・独立live評価・CLI利用価値の検証は未完了。
+
 5. **P1 [#491](https://github.com/git-ksk/reasoning-harness/issues/491)：** 必要性が確認できた場合、target別の必要情報で限定回答・予算内再取得・保留を制御。
 6. **P0 [#492](https://github.com/git-ksk/reasoning-harness/issues/492)：** candidate/runnerを固定してから新規独立holdoutを作り、deterministicとMistral/Google/Groqの個別評価、exact-head CIをリリース条件にする。
 

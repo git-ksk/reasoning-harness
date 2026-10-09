@@ -153,6 +153,8 @@ Engine 0.6.1 already has temporal/scope/authority qualification, structured-fact
 2. **P1 [#488](https://github.com/git-ksk/reasoning-harness/issues/488):** If justified, distinguish independent originating evidence from duplicated/unknown source lineage without inventing provenance.
 3. **P1 [#489](https://github.com/git-ksk/reasoning-harness/issues/489):** If justified, reconcile explicit source revisions with as-of/validity windows without newest-wins heuristics.
 4. **P1 [#490](https://github.com/git-ksk/reasoning-harness/issues/490):** If justified, distinguish compatible attribution from disagreement; preserve every material conflict, citation and authority ceiling.
+**#490 development status:** [Trusted host-review overlay candidate](engine-0.7-source-reconciliation-v1.md) passes frozen 22-case deterministic development controls, without changing released Engine semantics. Independent live quality and CLI utility have not yet been demonstrated.
+
 5. **P1 [#491](https://github.com/git-ksk/reasoning-harness/issues/491):** If justified, gate source-qualified answers vs bounded acquisition/withholding against target-local required information.
 6. **P0 [#492](https://github.com/git-ksk/reasoning-harness/issues/492):** Freeze candidate and evaluation runner, then write a fresh independent holdout and require deterministic plus separate Mistral/Google/Groq acceptance and exact-head CI before any source tag.
 
