@@ -58,6 +58,8 @@ Engine 0.6.1は、個々の根拠のtarget関連性、時点・スコープ・�
 
 **#490開発候補v1（未リリース）：** [ホストによる信頼済み照合view](engine-0.7-source-reconciliation-v1.ja.md)の凍結開発用22件はPASS。旧v1 Conflictや本文は変更せず、自動モデルレビュー・CLI接続・独立live評価はまだ。#490はOPEN。
 
+**#496の開発用レビュー主体：** [ローカルOSキーチェーン＋人間の明示承認](engine-0.7-local-reviewer-v1.ja.md)を専用CLIとして追加。署名・失効・再生の凍結18件はPASS。ただし実際のユーザー承認とMistral/Google/Groq独立評価は未完了。通常のreasonコマンドは不変。
+
 ### フェーズ4 / P1 — 回答可否・上限付き再調査（[#491](https://github.com/git-ksk/reasoning-harness/issues/491)）
 
 実測された不足がある場合だけ、既存のevidence need・検証・finalizationに接続します。targetごとの**回答に必要な事項の充足状況**で、(a) 出典付きの限定回答、(b) 予算内の追加読み取り調査、(c) 一部回答・保留・不明を選びます。

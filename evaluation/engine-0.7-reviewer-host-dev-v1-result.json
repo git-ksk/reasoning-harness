@@ -1,0 +1,144 @@
+{
+  "case_results": [
+    {
+      "expected": "reviewed_compatible",
+      "id": "human-equivalent",
+      "observed": "reviewed_compatible",
+      "scenario": "opt-in authenticated human approval"
+    },
+    {
+      "expected": "conflict",
+      "id": "no-review",
+      "observed": "conflict",
+      "scenario": "no authentically reviewed pair"
+    },
+    {
+      "expected": "reject",
+      "id": "opposed-claims",
+      "observed": "reject",
+      "scenario": "real factual contradiction"
+    },
+    {
+      "expected": "reject",
+      "id": "modal-upgrade",
+      "observed": "reject",
+      "scenario": "possible cannot become certain"
+    },
+    {
+      "expected": "reject",
+      "id": "conditional-upgrade",
+      "observed": "reject",
+      "scenario": "conditional claim cannot become unqualified"
+    },
+    {
+      "expected": "reject",
+      "id": "wrong-target",
+      "observed": "reject",
+      "scenario": "review selected wrong target"
+    },
+    {
+      "expected": "reject",
+      "id": "tamper-source",
+      "observed": "reject",
+      "scenario": "review cannot survive source mutation"
+    },
+    {
+      "expected": "reject",
+      "id": "tamper-review",
+      "observed": "reject",
+      "scenario": "signed payload tamper must reject"
+    },
+    {
+      "expected": "reject",
+      "id": "wrong-principal",
+      "observed": "reject",
+      "scenario": "another reviewer identity must reject"
+    },
+    {
+      "expected": "reject",
+      "id": "revocation",
+      "observed": "reject",
+      "scenario": "key rotation prevents old review replay"
+    },
+    {
+      "expected": "reject",
+      "id": "expired",
+      "observed": "reject",
+      "scenario": "old approval expires"
+    },
+    {
+      "expected": "reviewed_compatible",
+      "id": "replay",
+      "observed": "reviewed_compatible",
+      "scenario": "same exact signed approval produces identical output with zero calls"
+    },
+    {
+      "expected": "conflict",
+      "id": "prompt-injection",
+      "observed": "conflict",
+      "scenario": "untrusted source text cannot enroll or review"
+    },
+    {
+      "expected": "reject",
+      "id": "duplicate-review",
+      "observed": "reject",
+      "scenario": "duplicate approval payloads reject"
+    },
+    {
+      "expected": "qualified",
+      "id": "identical",
+      "observed": "qualified",
+      "scenario": "same exact source text works without review"
+    },
+    {
+      "expected": "reject",
+      "id": "scope-mismatch",
+      "observed": "reject",
+      "scenario": "disjoint scope fails closed"
+    },
+    {
+      "expected": "reject",
+      "id": "headless",
+      "observed": "reject",
+      "scenario": "noninteractive review cannot approve"
+    },
+    {
+      "expected": "reject",
+      "id": "model-spoof",
+      "observed": "reject",
+      "scenario": "provider JSON cannot impersonate keyring reviewer"
+    }
+  ],
+  "hard_limitations": [
+    "Keys were injected into deterministic tests; no real user's OS keyring was enrolled.",
+    "The local logged-in OS account is the trust boundary; malicious programs running as the same user are not excluded.",
+    "The host receives deliberate human input, not an external authenticator or independent model semantic evaluator.",
+    "A local manually approved compatible wording classification does not verify source accuracy or independent corroboration.",
+    "Reason CLI 0.5.4 public binaries and Engine source release 0.6.1 remain unchanged.",
+    "No independent Mistral, Google or Groq live acceptance has yet occurred."
+  ],
+  "precommit_spec_commit": "fa87aac3c6fc602c2874b604f6e027a4d093784a",
+  "precommit_spec_freeze_tag": "engine-0.7-reviewer-host-dev-v1-spec-freeze",
+  "schema": "engine-0.7-local-reviewer-host-development-v1-result",
+  "scorecard": {
+    "cases": 18,
+    "development_display_improvements": 1,
+    "external_acquisition_calls": 0,
+    "external_model_calls": 0,
+    "hard_truth_promotions": 0,
+    "independent_model_holdout": "NOT_STARTED",
+    "other_compatible_case_is_replay_control": true,
+    "outcomes": {
+      "conflict": 2,
+      "qualified": 1,
+      "reject": 13,
+      "reviewed_compatible": 2
+    },
+    "passed_precommitted_expectations": 18,
+    "physical_keyring_enrollment": "NOT_EXECUTED",
+    "provider_attempts": 0
+  },
+  "source_baseline": "engine-v0.6.1",
+  "spec_sha256": "cc0b0acc4bb53ac94eaeb0d60489b225691f2ec5427a5bbf5398da3e7e35bee4",
+  "status": "PASS_DETERMINISTIC_DEVELOPMENT_ONLY"
+}

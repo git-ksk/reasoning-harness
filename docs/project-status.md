@@ -83,6 +83,8 @@ Independent frozen acceptance completed before promotion: #461 holdout run `3596
 
 [Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) / [Engine 0.7.0 detailed roadmap](engine-0.7.0-roadmap.md) begin with a frozen Engine 0.6.1 cross-source residual baseline. The [development baseline v1 result](engine-0.7-baseline-v1-result.md) reproduced 29/29 precommitted behavior predictions and one conservative equivalent-wording Conflict without claiming an unsafe hard verdict. Conditional workstreams cover trusted provenance lineage, explicit temporal revision relationships, conflict-preserving source synthesis, and target-local answerability. None is promoted into the released Engine until measurable benefit, separate fresh independent acceptance, and exact-head release gates pass. Existing Engine and CLI versions remain unchanged.
 
+**#496 reviewer host candidate:** [Local interactive OS-keyring approval](engine-0.7-local-reviewer-v1.md) is in source form with 18/18 synthetic development controls. It is not a universal identity provider, automatic model review, published CLI change, or independently accepted Engine release. Actual OS-keyring user acceptance remains outstanding.
+
 **#490 development candidate:** [Source reconciliation overlay](engine-0.7-source-reconciliation-v1.md) is additive, host-review-gated, and deterministically tested. Original persisted v1 conflicts, citations and verification remain unchanged; neither CLI integration nor independent provider acceptance has happened.
 
 ## Current trust boundary

@@ -50,6 +50,8 @@ Conditional on #487 and any adopted lineage/temporal controls. Combine only stat
 
 **#490 candidate v1 (not released):** [Opt-in host-trusted compatibility overlay](engine-0.7-source-reconciliation-v1.md), pre-frozen 22/22 deterministic development controls. No automatic model review, v1 conflict mutation, CLI wiring or independent Mistral/Google/Groq holdout. #490 remains open.
 
+**#496 development-only reviewer host:** [Local authenticated reviewer bridge](engine-0.7-local-reviewer-v1.md) adds a separate interactive OS-keyring review CLI, versioned HMAC approvals and replay validation. Precommitted 18/18 deterministic cases pass, but physical user approval and independent Mistral/Google/Groq utility evidence remain OPEN. The ordinary reason command is unchanged.
+
 ### Phase 4 — P1: Answerability / bounded reacquisition ([#491](https://github.com/git-ksk/reasoning-harness/issues/491))
 
 Conditional on #487 and any adopted source modules. An exact target's **required-information coverage** and the existing acquisition/verifier policy determine whether to (a) provide an attributable/qualified answer, (b) acquire additional read-only evidence within explicit budgets, or (c) preserve a partial/mixed/unknown result. An advisory model sufficiency label cannot relax hard verification, scope, freshness, conflict or source-identity floors. Replaying a stored answer must not redo side effects.
