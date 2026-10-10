@@ -29,7 +29,7 @@ Windows Package Managerのidentifierは次です。
 git-ksk.Reason
 ```
 
-default WinGet sourceへcommunity manifestが反映された後は次を使います。
+公式community manifestはdefault WinGet sourceで公開済みです（2026-10-10にWindows実機でReason CLI 0.5.4を確認）。install / update / uninstallはWinGet経由で行います。
 
 ```powershell
 winget install --id git-ksk.Reason --exact
@@ -50,4 +50,4 @@ package managerがinstallしたexecutableは、そのpackage managerが唯一の
 
 これによりReasonのself-updaterがHomebrew CellarやWinGet portable-package stateをpackage managerの管理外で変更することを防ぎます。`install.sh` / `install.ps1`によるdirect installは、従来どおりReason自身のprovenance-verified self-update lifecycleを使います。
 
-package-manager definitionはdistribution convenienceのみを追加します。package manager metadataがHarness Engine内部のevidence / correctness authorityになることはなく、current Engine 0.5.0でも同じです。
+package-manager definitionはdistribution convenienceのみを追加します。package manager metadataがHarness Engine内部のevidence / correctness authorityになることはなく、current Engine 0.6.1でも同じです。

@@ -102,7 +102,7 @@ promotion前に独立freeze済みacceptanceを完了しています。#461 holdo
 
 general-use CLI productizationはrelease済みです。native install、guided setup/auth、interactive / continue / resume、config/model/MCP discovery、progress/cancellation、diagnostics、private local state、lifecycle managementは現在の0.5.x product lineに含まれます。
 
-product側で残るdistribution follow-upは#375です。Homebrew 0.5.3 physical upgrade/test acceptanceは完了し、WinGet community manifestもMicrosoft validation / CLAを通過してcommunity moderator approval待ちです。この外部reviewはHarness Engine開発をblockしません。
+package-manager distribution #375は実機acceptanceを完了しました。Homebrew 0.5.3のupgrade / testはPASSし、WinGet community manifestもReason CLI 0.5.2（初回）と0.5.4（更新）がmoderator承認・merge・publish済みです。Windows実機ではdefault WinGet indexから0.5.4を取得でき、fresh install・SHA-256照合・`reason --version`・provenance付き非破壊update checkをPASSしました。`doctor`のalias path診断修正は別途#504で追跡し、既存0.5.4 binaryには未反映です。
 
 Harness Engine 0.6.0は#461/#462/#468/#463まで実装・acceptance・release完了で、`engine-v0.6.0`として独立公開します。現在配布中のCLIはReason CLI 0.5.4 / Engine 0.6.1です。旧CLI 0.5.3のEngine 0.5.0は保持します。#465はEngine correctness blockerではなく、non-semanticなCI fixture reliability follow-upとして継続します。
 

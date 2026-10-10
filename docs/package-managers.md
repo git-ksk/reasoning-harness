@@ -29,7 +29,7 @@ The Windows Package Manager identifier is:
 git-ksk.Reason
 ```
 
-After the community manifest is available from the default WinGet source:
+The official community manifest is published in the default WinGet source (Reason CLI 0.5.4 verified on Windows on 2026-10-10). Install, update and uninstall through WinGet:
 
 ```powershell
 winget install --id git-ksk.Reason --exact
@@ -50,4 +50,4 @@ Package managers remain authoritative for the executable they install. Reason in
 
 This behavior prevents Reason's self-updater from mutating Homebrew Cellar state or WinGet portable-package state behind the package manager's back. Direct installs from `install.sh` / `install.ps1` continue to use Reason's provenance-verified self-update lifecycle.
 
-The package-manager definitions add distribution convenience only. They do not grant package-manager metadata any evidence or correctness authority inside Harness Engine, including the current Engine 0.5.0 runtime.
+The package-manager definitions add distribution convenience only. They do not grant package-manager metadata any evidence or correctness authority inside Harness Engine, including the current Engine 0.6.1 runtime.
