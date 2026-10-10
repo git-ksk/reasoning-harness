@@ -47,7 +47,7 @@ The independently accepted Engine 0.6.1 is adopted under the new CLI 0.5.4 coord
 
 **Current published pair: `reason-v0.5.4` / Harness Engine 0.6.1.** `reason-v0.5.3` remains immutable on Engine 0.5.0 and `reason-v0.5.2` on Engine 0.4.2; #455 and #484 completed the separate Engine-adoption releases.
 
-The base `reason-v0.5.0` release and the 0.5.1/0.5.2 patch line shipped on Engine 0.4.2; `reason-v0.5.3` shipped the accepted Engine 0.5.0, and `reason-v0.5.4` now ships Engine 0.6.1. The milestone P0 release gate and #455 Engine adoption are complete. The only remaining P1 item is #375 distribution follow-up: Homebrew 0.5.3 physical upgrade/test acceptance is complete, while the WinGet community manifest has passed validation and CLA checks and is waiting for community moderator approval.
+The base `reason-v0.5.0` release and the 0.5.1/0.5.2 patch line shipped on Engine 0.4.2; `reason-v0.5.3` shipped the accepted Engine 0.5.0, and `reason-v0.5.4` now ships Engine 0.6.1. The milestone P0 release gate and #455 Engine adoption are complete. The #375 P1 distribution acceptance criteria are now verified: Homebrew 0.5.3 physical tests passed and Microsoft published WinGet package `git-ksk.Reason` (latest 0.5.4), including physical Windows fresh-install acceptance. The remaining `doctor` link-detection correction is independently tracked in #504.
 
 This track makes `reason` a mature terminal product without changing the underlying authority semantics.
 

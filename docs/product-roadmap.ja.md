@@ -47,7 +47,7 @@ Harness verifies / qualifies / abstains
 
 **現在の公開pairは`reason-v0.5.4` / Harness Engine 0.6.1。** 以前の`reason-v0.5.3`はEngine 0.5.0、`reason-v0.5.2`はEngine 0.4.2のままimmutableで、#455・#484が別々のCLI coordinateでadoptionを完了しました。
 
-base `reason-v0.5.0` と0.5.1 / 0.5.2 patch lineはEngine 0.4.2でrelease済みで、`reason-v0.5.3`はaccepted Engine 0.5.0を配布し、`reason-v0.5.4`ではEngine 0.6.1を配布しています。P0 release gateと#455 Engine adoptionは完了しました。残るP1はdistribution follow-up #375のみです。Homebrew 0.5.3 physical upgrade/test acceptanceは完了、WinGet community manifestはvalidation / CLAを通過してcommunity moderator approval待ちです。
+base `reason-v0.5.0` と0.5.1 / 0.5.2 patch lineはEngine 0.4.2でrelease済みで、`reason-v0.5.3`はaccepted Engine 0.5.0を配布し、`reason-v0.5.4`ではEngine 0.6.1を配布しています。P0 release gateと#455 Engine adoptionは完了しました。#375 P1 distribution acceptance条件も検証済みです。Homebrew 0.5.3の実機testはPASSし、MicrosoftはWinGet package `git-ksk.Reason`（最新0.5.4）を公開、Windows実機でのfresh installもPASSしました。`doctor`のlink検出補正は別途#504で追跡します。
 
 underlying authority semanticsを変えず、`reason`を成熟したterminal productとして使える状態にします。
 
