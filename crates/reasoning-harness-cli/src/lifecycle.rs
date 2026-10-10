@@ -67,6 +67,16 @@ fn external_package_manager(path: &Path) -> Option<ExternalPackageManager> {
     })
 }
 
+/// Keep diagnosis aligned with the same link-aware ownership guard used by
+/// `reason update` and `reason uninstall`.
+pub(crate) fn package_manager_installation_method(path: &Path) -> Option<&'static str> {
+    match external_package_manager(path) {
+        Some(ExternalPackageManager::Homebrew) => Some("homebrew"),
+        Some(ExternalPackageManager::Winget) => Some("winget"),
+        None => None,
+    }
+}
+
 fn classify_package_manager_path(path: &Path) -> Option<ExternalPackageManager> {
     let value = path.to_string_lossy().replace('\\', "/");
     let lower = value.to_ascii_lowercase();
