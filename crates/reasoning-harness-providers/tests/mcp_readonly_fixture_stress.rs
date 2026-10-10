@@ -40,12 +40,7 @@ impl Fixture {
             .mode(0o700)
             .open(&path)
             .unwrap();
-        writeln!(
-            script,
-            "#!/bin/sh\nread request\nprintf '%s\\n' '{}'",
-            reply
-        )
-        .unwrap();
+        writeln!(script, "#!/bin/sh\nread request\nprintf '%s\\n' '{reply}'").unwrap();
         drop(script);
         Self(path)
     }
