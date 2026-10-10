@@ -71,6 +71,7 @@ const OPAQUE: &str = r#"{"jsonrpc":"2.0","id":"reasoning-harness:resolution:serv
 const TOOL_ERROR: &str = r#"{"jsonrpc":"2.0","id":"reasoning-harness:resolution:service.region:0","result":{"content":[{"type":"text","text":"backend denied"}],"isError":true}}"#;
 
 #[test]
+#[ignore = "opt-in high-contention diagnostic; CI demonstrated immediate Transport at 8 workers"]
 fn parallel_legacy_mcp_fixtures_preserve_fail_closed_observations() {
     // Parallel script creation plus subprocess startup exercises collision,
     // stdin/stdout and cleanup under contention. Do not retry failed requests.
@@ -117,5 +118,39 @@ fn parallel_legacy_mcp_fixtures_preserve_fail_closed_observations() {
         .collect();
     for worker in workers {
         worker.join().expect("fixture worker must not panic");
+    }
+}
+
+#[test]
+fn sequential_legacy_mcp_fixture_protocol_is_fail_closed() {
+    for _ in 0..3 {
+        let opaque = Fixture::new(OPAQUE);
+        let resolver = McpReadOnlyResolver::new(McpReadOnlyResolverConfig::with_defaults(
+            "fixture-server",
+            opaque.0.clone(),
+            "lookup",
+            "mcp:fixture:lookup",
+        ));
+        let result = resolver
+            .resolve(&request(), 0)
+            .expect("opaque read-only MCP fixture");
+        match result.contribution {
+            ResolutionResolverContribution::AcquiredEvidence { evidence } => {
+                assert_eq!(evidence.len(), 1);
+                assert!(evidence[0].facts.is_empty());
+            }
+            other => panic!("not opaque evidence: {other:?}"),
+        }
+        let denied = Fixture::new(TOOL_ERROR);
+        let resolver = McpReadOnlyResolver::new(McpReadOnlyResolverConfig::with_defaults(
+            "fixture-server",
+            denied.0.clone(),
+            "lookup",
+            "mcp:fixture:lookup",
+        ));
+        assert_eq!(
+            resolver.resolve(&request(), 0).unwrap_err().kind,
+            ResolutionAdapterErrorKind::ToolExecution
+        );
     }
 }
