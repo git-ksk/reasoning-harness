@@ -1,0 +1,60 @@
+{
+  "candidate_commit": "4cae9326bcc3e210c3250f05772d84f00e41b645",
+  "corpus_sha256": "d3ce38ee2ef06310afb6a247d3762fc408b93cb49bd602a52d8ce1b8bcf7fa0b",
+  "immutable_first_result": true,
+  "providers": {
+    "google": {
+      "compatible_advisory_misses": 0,
+      "compatible_targets": 6,
+      "completed_cases": 12,
+      "hard_gate_violations": 0,
+      "input_tokens": 3989,
+      "model_calls": 14,
+      "negative_or_unknown_false_positive_advisories": 1,
+      "negative_targets": 8,
+      "net_useful_answer_gain": 6,
+      "operational_failures": 0,
+      "output_tokens": 70,
+      "passed": true,
+      "provider_attempts": 14,
+      "targets": 15,
+      "total_advisory_latency_ms": 8170
+    },
+    "groq": {
+      "compatible_advisory_misses": 0,
+      "compatible_targets": 6,
+      "completed_cases": 12,
+      "hard_gate_violations": 0,
+      "input_tokens": 4653,
+      "model_calls": 14,
+      "negative_or_unknown_false_positive_advisories": 2,
+      "negative_targets": 8,
+      "net_useful_answer_gain": 6,
+      "operational_failures": 0,
+      "output_tokens": 786,
+      "passed": true,
+      "provider_attempts": 14,
+      "targets": 15,
+      "total_advisory_latency_ms": 4966
+    },
+    "mistral": {
+      "compatible_advisory_misses": 3,
+      "compatible_targets": 6,
+      "completed_cases": 12,
+      "hard_gate_violations": 0,
+      "input_tokens": 3922,
+      "model_calls": 14,
+      "negative_or_unknown_false_positive_advisories": 0,
+      "negative_targets": 8,
+      "net_useful_answer_gain": 3,
+      "operational_failures": 0,
+      "output_tokens": 84,
+      "passed": true,
+      "provider_attempts": 14,
+      "targets": 15,
+      "total_advisory_latency_ms": 5419
+    }
+  },
+  "release_gate_passed": true,
+  "schema": "engine-0.7-independent-holdout-v1-cross-provider-score"
+}
