@@ -46,3 +46,5 @@ Historical unified tags `v0.1.0` through `v0.4.2` remain immutable. New CLI rele
 Harness Engine 0.6.1 is the latest independently released source coordinate under `engine-v0.6.1`. Published `reason-v0.5.3` binaries still contain Engine 0.5.0; adoption of 0.6.1 requires a separate CLI release, never a retag of existing artifacts.
 
 Current published product pair: Reason CLI 0.5.4 / Harness Engine 0.6.1 under `reason-v0.5.4`. The prior CLI 0.5.3 / Engine 0.5.0 remains immutable; earlier paragraphs document the historical progression.
+
+CLI 0.5.5 is a maintenance patch derived from `reason-v0.5.4` and retaining Engine 0.6.1. Its separate patch lineage must pass four-platform pre-release acceptance and be linked into `main` history solely for the release workflow ancestry gate; a merge marker must **not** replace Engine 0.7.0 on the main tree.

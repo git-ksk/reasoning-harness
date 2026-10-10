@@ -46,3 +46,5 @@ CLI 0.5.0 productization milestoneはEngine 0.4.2上でsetup、secure credential
 Harness Engine 0.6.1は最新の独立source releaseで、tagは`engine-v0.6.1`です。公開済み`reason-v0.5.3`バイナリはEngine 0.5.0を継続し、0.6.1へのadoptionは別CLIリリースで行います。
 
 現在の公開済みproduct pairはReason CLI 0.5.4 / Engine 0.6.1（`reason-v0.5.4`）です。以前の0.5.3 / Engine 0.5.0はimmutableのまま維持します。上記の旧座標は過去の経緯です。
+
+CLI 0.5.5は`reason-v0.5.4`から派生するEngine 0.6.1維持の保守patchです。4 OSの事前検証を通過してから、release workflowの先祖判定を満たすためのmerge記録のみ`main`履歴にリンクします。`main`のEngine 0.7.0を上書きしません。
