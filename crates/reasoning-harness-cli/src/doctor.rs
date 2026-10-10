@@ -693,6 +693,11 @@ fn file_path_status(path: &Path) -> &'static str {
 }
 
 fn installation_method(path: &Path) -> &'static str {
+    // A WinGet/Homebrew command alias can be a symlink outside the manager's
+    // package root. Prefer lifecycle's canonicalized ownership classification.
+    if let Some(manager) = lifecycle::package_manager_installation_method(path) {
+        return manager;
+    }
     let value = path.to_string_lossy().replace('\\', "/");
     if value.contains("/target/debug/") || value.contains("/target/release/") {
         "development_build"
@@ -793,5 +798,52 @@ fn emit(output: &DoctorOutput, format: OutputFormat) -> Result<(), CliError> {
             }
             Ok(())
         }
+    }
+}
+
+#[cfg(test)]
+mod installation_method_tests {
+    use super::installation_method;
+    use std::path::Path;
+
+    #[test]
+    fn recognizes_managed_package_paths_and_direct_install() {
+        assert_eq!(
+            installation_method(Path::new(
+                r"C:\Users\u\AppData\Local\Microsoft\WinGet\Packages\git-ksk.Reason_Microsoft.Winget.Source_8wekyb3d8bbwe\reason.exe"
+            )),
+            "winget"
+        );
+        assert_eq!(
+            installation_method(Path::new("/opt/homebrew/Cellar/reason/0.5.4/bin/reason")),
+            "homebrew"
+        );
+        assert_eq!(
+            installation_method(Path::new("/usr/local/bin/reason")),
+            "unknown"
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn resolves_winget_link_to_package_root() {
+        use std::{
+            fs,
+            os::unix::fs::symlink,
+            time::{SystemTime, UNIX_EPOCH},
+        };
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let root = std::env::temp_dir().join(format!("reason-doctor-winget-{nonce}"));
+        let package = root.join("git-ksk.Reason_Microsoft.Winget.Source_8wekyb3d8bbwe");
+        fs::create_dir_all(&package).unwrap();
+        let binary = package.join("reason.exe");
+        fs::write(&binary, b"fixture").unwrap();
+        let link = root.join("reason-link.exe");
+        symlink(&binary, &link).unwrap();
+        assert_eq!(installation_method(&link), "winget");
+        fs::remove_dir_all(root).unwrap();
     }
 }
