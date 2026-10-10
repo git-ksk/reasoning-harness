@@ -1,0 +1,91 @@
+name: cli-maintenance-acceptance
+
+# An immutable-Engine maintenance release can be built from an earlier CLI tag
+# without silently adopting a newer Engine already present on main.
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_ref:
+        description: 'Existing release branch ref to validate (no publication)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-cli:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            label: linux-x86_64
+            executable: target/debug/reason
+          - os: macos-15
+            label: macos-aarch64
+            executable: target/debug/reason
+          - os: macos-15-intel
+            label: macos-x86_64
+            executable: target/debug/reason
+          - os: windows-2025
+            label: windows-x86_64
+            executable: target/debug/reason.exe
+    runs-on: ${{ matrix.os }}
+    name: validate (${{ matrix.label }})
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.candidate_ref }}
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.88.0
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Verify CLI-only provenance and exact versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin refs/tags/reason-v0.5.4:refs/tags/reason-v0.5.4
+          git merge-base --is-ancestor reason-v0.5.4 HEAD
+          git diff --exit-code reason-v0.5.4 HEAD -- crates/reasoning-harness-core crates/reasoning-harness-providers
+          cargo metadata --locked --no-deps --format-version 1 > metadata.json
+          python3 - <<'PY'
+          import json
+          packages = {p['name']: p['version'] for p in json.load(open('metadata.json'))['packages']}
+          assert packages['reasoning-harness-cli'] == '0.5.5', packages
+          assert packages['reasoning-harness-core'] == '0.6.1', packages
+          print('Verified Reason CLI 0.5.5 / Harness Engine 0.6.1')
+          PY
+      - name: Format and Clippy
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy --locked -p reasoning-harness-cli --bin reason -- -D warnings
+      - name: Doctor and lifecycle regression
+        shell: bash
+        run: |
+          cargo test --locked -p reasoning-harness-cli --bin reason doctor::installation_method_tests -- --test-threads=1
+          cargo test --locked -p reasoning-harness-cli --bin reason lifecycle::tests -- --test-threads=1
+      - name: Build and smoke CLI product contract
+        shell: bash
+        run: |
+          cargo build --locked -p reasoning-harness-cli --bin reason
+          "${{ matrix.executable }}" --version > version.txt
+          grep -F 'reason 0.5.5' version.txt
+          "${{ matrix.executable }}" doctor --format json > doctor.json
+          "${{ matrix.executable }}" schema artifact > schema.json
+          python3 - <<'PY'
+          import json
+          doc = json.load(open('doctor.json'))
+          schema = json.load(open('schema.json'))
+          assert doc['cli_version'] == '0.5.5', doc
+          assert schema['result']['contract_id'] == 'reasoning-artifact-v1', schema
+          print('CLI/doctor/contract smoke passed')
+          PY
+      - name: Installer contract
+        if: runner.os != 'Windows'
+        shell: bash
+        run: python3 scripts/test_installer_contract.py
