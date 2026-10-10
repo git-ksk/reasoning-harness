@@ -406,7 +406,11 @@ impl ResolutionResolver for McpReadOnlyResolver {
 #[cfg(test)]
 mod tests {
     #[cfg(unix)]
-    use std::{fs, os::unix::fs::PermissionsExt};
+    use std::{
+        fs::{self, OpenOptions},
+        os::unix::fs::OpenOptionsExt,
+        sync::atomic::{AtomicU64, Ordering},
+    };
 
     use reasoning_harness_core::{
         EvidenceAdmissionPolicy, EvidenceAuthorityPolicy, EvidenceRequirement,
@@ -438,15 +442,41 @@ mod tests {
 
     #[cfg(unix)]
     fn script(body: &str, name: &str) -> PathBuf {
+        static NEXT_SCRIPT_ID: AtomicU64 = AtomicU64::new(0);
+        // Never truncate/reuse a fixture executable. Parallel tests and a
+        // stale temp resource must not change another child process's script.
         let path = std::env::temp_dir().join(format!(
-            "reason-mcp-readonly-{}-{name}.sh",
-            std::process::id()
+            "reason-mcp-readonly-{}-{}-{name}.sh",
+            std::process::id(),
+            NEXT_SCRIPT_ID.fetch_add(1, Ordering::Relaxed)
         ));
-        fs::write(&path, body).unwrap();
-        let mut permissions = fs::metadata(&path).unwrap().permissions();
-        permissions.set_mode(0o700);
-        fs::set_permissions(&path, permissions).unwrap();
+        let mut file = OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .mode(0o700)
+            .open(&path)
+            .unwrap();
+        file.write_all(body.as_bytes()).unwrap();
+        drop(file);
         path
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn fixture_scripts_never_reuse_or_truncate_a_live_executable() {
+        let one = script("#!/bin/sh\nprintf 'first\n'\n", "shared-name");
+        let two = script("#!/bin/sh\nprintf 'second\n'\n", "shared-name");
+        assert_ne!(one, two);
+        assert_eq!(
+            fs::read_to_string(&one).unwrap(),
+            "#!/bin/sh\nprintf 'first\n'\n"
+        );
+        assert_eq!(
+            fs::read_to_string(&two).unwrap(),
+            "#!/bin/sh\nprintf 'second\n'\n"
+        );
+        fs::remove_file(one).unwrap();
+        fs::remove_file(two).unwrap();
     }
 
     #[cfg(unix)]
