@@ -1,0 +1,78 @@
+{
+  "artifacts": [
+    {
+      "name": "engine-070-independent-google-checkpoint.jsonl",
+      "sha256": "e37274744f7fcac13871cc792d6caf3c0809c3c3c9b03894940cbb4c8f25bb57",
+      "size_bytes": 9083
+    },
+    {
+      "name": "engine-070-independent-google-result.json",
+      "sha256": "c3e7142fa2141e1a65e26528185a3d41f45c261827efee884e760cb7d44311d5",
+      "size_bytes": 13916
+    },
+    {
+      "name": "engine-070-independent-google-summary.json",
+      "sha256": "1010a6442de61dd38eaa450f48a18d1fc7d52ad53d625c92e144cec3f2375590",
+      "size_bytes": 508
+    },
+    {
+      "name": "engine-070-independent-google-validate.json",
+      "sha256": "2583ecf6b31d5d0de6e8b390fc2261c99015084215999f9b909a0eb109d922ab",
+      "size_bytes": 379
+    },
+    {
+      "name": "engine-070-independent-groq-checkpoint.jsonl",
+      "sha256": "c9511e39bd19afc2d9ff28fd0636faa23ede57f2243f24c9cadf8217eae860c2",
+      "size_bytes": 9097
+    },
+    {
+      "name": "engine-070-independent-groq-result.json",
+      "sha256": "e223a27d1dceaa7878d04d4f40831c0a5cbb593081657eef8f1f64bf7a8f8036",
+      "size_bytes": 13927
+    },
+    {
+      "name": "engine-070-independent-groq-summary.json",
+      "sha256": "2b616eeaf3225a1c6018136a73aeace75693196565c08a5cc90211127f75476a",
+      "size_bytes": 504
+    },
+    {
+      "name": "engine-070-independent-groq-validate.json",
+      "sha256": "2583ecf6b31d5d0de6e8b390fc2261c99015084215999f9b909a0eb109d922ab",
+      "size_bytes": 379
+    },
+    {
+      "name": "engine-070-independent-mistral-checkpoint.jsonl",
+      "sha256": "36aa503816c3961ff94128aed4565d1c09c63ccb3e3ab176e01f6a595f63e7a2",
+      "size_bytes": 9057
+    },
+    {
+      "name": "engine-070-independent-mistral-result.json",
+      "sha256": "7c66db4e796003fa0b2e39741b0bdb011df40da994550bd7648ada3c779bfc30",
+      "size_bytes": 13887
+    },
+    {
+      "name": "engine-070-independent-mistral-summary.json",
+      "sha256": "003d1ea7ca9e87b5e712b0afb5a7f26a4290fadbf37d678746d7a98c8a522dce",
+      "size_bytes": 505
+    },
+    {
+      "name": "engine-070-independent-mistral-validate.json",
+      "sha256": "2583ecf6b31d5d0de6e8b390fc2261c99015084215999f9b909a0eb109d922ab",
+      "size_bytes": 379
+    },
+    {
+      "name": "engine-070-independent-v1-cross-provider-summary.json",
+      "sha256": "5d7dea1a963eef5a08e7acef8fcf8fb866a749e10222187bd939d6e0b2cdb8ed",
+      "size_bytes": 1824
+    }
+  ],
+  "candidate_commit": "4cae9326bcc3e210c3250f05772d84f00e41b645",
+  "corpus_freeze_commit": "78f99559bf044013e66025bde1a612895f2d41e6",
+  "corpus_sha256": "d3ce38ee2ef06310afb6a247d3762fc408b93cb49bd602a52d8ce1b8bcf7fa0b",
+  "first_run_result": "PASS_INDEPENDENT_SYNTHETIC_PROVIDER_GATE",
+  "issue": 492,
+  "runner_freeze_commit": "1124e5a7c34e42c088d81908c3cdc75aae2db309",
+  "schema": "engine-0.7-independent-v1-first-observation-archive",
+  "source_run_id": 38013006323,
+  "source_run_url": "https://github.com/git-ksk/reasoning-harness/actions/runs/38013006323"
+}

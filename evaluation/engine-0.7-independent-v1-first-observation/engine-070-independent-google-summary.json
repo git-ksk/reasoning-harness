@@ -1,0 +1,15 @@
+{
+  "candidate_commit": "4cae9326bcc3e210c3250f05772d84f00e41b645",
+  "completed_cases": 12,
+  "corpus_sha256": "d3ce38ee2ef06310afb6a247d3762fc408b93cb49bd602a52d8ce1b8bcf7fa0b",
+  "hard_gate_violations": 0,
+  "model": "gemini-3.5-flash-lite",
+  "model_calls": 14,
+  "net_useful_answer_gain": 6,
+  "operational_failures": 0,
+  "provider": "google",
+  "provider_attempts": 14,
+  "result_file_created": true,
+  "status": "PASS_FROZEN_PROVIDER_GATE",
+  "suite_id": "engine-0.7-independent-source-holdout-v1"
+}
