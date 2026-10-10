@@ -10,6 +10,14 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 - Issue #355 decouples the user-facing Reason CLI package version from the Harness Engine (`reasoning-harness-core`) package version. `v0.4.2` remains the final unified historical release; future CLI releases use `reason-vX.Y.Z` tags. Machine contract IDs remain independent compatibility coordinates, and provider crate versions remain internal implementation coordinates rather than a third user-facing product version.
 
+## [0.5.5] - 2026-10-10
+
+CLI-only patch based on immutable `reason-v0.5.4`, retaining Harness Engine **0.6.1**. This release does not adopt Engine 0.7.0 or Dependabot updates merged after the 0.5.4 tag.
+
+- #506 / #504: detect WinGet `Links/reason.exe` aliases via the canonicalized package-manager ownership classification shared with lifecycle safety checks.
+- Preserve external package manager refusal for native update/rollback/uninstall, independent release provenance, and legacy machine contract identifiers.
+- Validate four-platform installation/packaging and physical Windows WinGet doctor before closing #506. Existing WinGet 0.5.4 installation remains functional until the community manifest for 0.5.5 is published.
+
 ## [0.5.4] - 2026-10-09
 
 Reason CLI patch release adopting the independently released Harness Engine 0.6.1. Previously published `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0.

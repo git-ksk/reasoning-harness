@@ -8,6 +8,14 @@
 
 - Issue #355で、ユーザー向けReason CLI package versionとHarness Engine（`reasoning-harness-core`）package versionを分離。`v0.4.2`は最後のunified historical releaseとして保持し、今後のCLI release tagは`reason-vX.Y.Z`を使う。machine contract IDは独立したcompatibility座標のまま、provider crate versionは第3のユーザー向けversionにはせず内部実装座標として扱う。
 
+## [0.5.5] - 2026-10-10
+
+公開済み`reason-v0.5.4`を基点としたCLI専用パッチ。Harness Engine **0.6.1**を維持し、Engine 0.7.0や0.5.4以降のDependabot更新は採用しません。
+
+- #506 / #504: WinGetの`Links/reason.exe` aliasも、lifecycleと共有するcanonicalize済み所有権判定で正しく認識。
+- 外部パッケージマネージャ管理下のnative update / rollback / uninstall拒否、release provenance、旧machine contract IDを維持。
+- #506をクローズする前に4 OS packagingとWindows実機のWinGet doctorを検証する。WinGet community manifestに0.5.5が公開されるまでは既存0.5.4が引き続き利用可能。
+
 ## [0.5.4] - 2026-10-09
 
 Reason CLI 0.5.4で独立release済みHarness Engine 0.6.1を正式採用します。旧`reason-v0.5.3`の公開済みartifact（Engine 0.5.0）は変更しません。
