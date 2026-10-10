@@ -4,6 +4,13 @@ All notable product-facing changes to the `reason` CLI are recorded here. Resear
 
 The project follows semantic versioning for the executable, with the usual v0.x caveat that product interfaces are still being hardened. Machine-readable contract identities provide a stricter compatibility boundary than the executable version alone.
 
+## Harness Engine [0.7.0] - Release candidate
+
+- #490: additive opt-in, host-reviewed target-local compatible source presentation while retaining original Conflict, quotations and citations. No automatic published CLI adoption.
+- Frozen independent fictional-source holdout: Mistral +3 / Google +6 / Groq +6 attributed compatible targets; zero hard gate violations and zero provider failures. First results archived immutably.
+- #488 / #489 / #491 additional mechanisms deferred pending a measured product requirement.
+- Engine-only source release; published Reason CLI 0.5.4 / Engine 0.6.1 unchanged. See [release candidate](docs/engine-0.7.0-release.md).
+
 ## [Unreleased]
 
 ### Changed

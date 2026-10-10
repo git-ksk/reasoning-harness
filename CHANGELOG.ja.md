@@ -2,6 +2,13 @@
 
 `reason` CLI に関する、製品向けの注目すべき変更を記録する。research-only binary と fixture study の変更は research note に記載する。実行可能ファイルは semantic versioning に従うが、v0.x では product interface を引き続き hardening 中である。machine-readable contract identity は executable version より厳密な compatibility boundary である。
 
+## Harness Engine [0.7.0] - リリース候補
+
+- #490: hostの明示的な出典レビューに基づく、原文Conflict・全引用を保持する対象別の出典互換表示を追加。通常CLIへの自動適用はしない。
+- 独立した架空の出典12ケースでMistral +3 / Google +6 / Groq +6の根拠付き表示の純増、hard gate違反0、provider失敗0。初回観測は固定したまま保存。
+- #488 / #489 / #491の追加機構は採用せず、別の実測要件が得られるまで継続。
+- Engine-only source release。公開済みReason CLI 0.5.4 / Engine 0.6.1は不変。詳細は[リリース候補](docs/engine-0.7.0-release.ja.md)。
+
 ## [Unreleased]
 
 ### Changed
