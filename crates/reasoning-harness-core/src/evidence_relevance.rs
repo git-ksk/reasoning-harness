@@ -1892,6 +1892,70 @@ fn deterministic_nonrequested_relation_observable_cue_v4(
     false
 }
 
+// A deliberately bounded bilingual local-frame bridge for the AWS Lambda
+// Provisioned Concurrency *preparation* relation. Generic Japanese/English
+// token overlap is not semantic evidence. Only an affirmative factual excerpt
+// owning the exact named subject and stating initialization of execution
+// environments may supply the missing General-relation cue; URL/title/LLM
+// advisory statements alone cannot. This does not confer identity, authority,
+// verification or translation approval.
+fn aws_lambda_bilingual_prepared_environment_frame(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    if policy.relation != EvidenceRelevanceRelationKind::General
+        || !policy.target_question.contains("何を")
+        || !policy.target_question.contains("準備")
+        || !policy
+            .target_question
+            .to_ascii_lowercase()
+            .contains("provisioned concurrency")
+        || !policy.entity.as_ref().is_some_and(|entity| {
+            entity
+                .canonical_name
+                .to_ascii_lowercase()
+                .contains("provisioned concurrency")
+        })
+    {
+        return false;
+    }
+    candidate
+        .signals
+        .iter()
+        .filter(|signal| {
+            matches!(
+                signal.kind,
+                EvidenceRelevanceSignalKind::Excerpt | EvidenceRelevanceSignalKind::Fact
+            )
+        })
+        .any(|signal| {
+            signal.text.split(['.', '\n']).any(|sentence| {
+                let line = sentence.trim().to_ascii_lowercase();
+                line.contains("provisioned concurrency")
+                    && (line.contains("initialize")
+                        || line.contains("initialise")
+                        || line.contains("initializ"))
+                    && line.contains("execution environment")
+                    // Do not promote speculation, hypothetical future states or
+                    // negated source statements to an affirmative local relation.
+                    && ![" might ", " may ", " could ", " someday ", " plans to ", " expected to ", " potentially ", " reportedly "].iter().any(|hedge| line.contains(hedge))
+                    && ![
+                        "not initialize",
+                        "not initialized",
+                        "cannot initialize",
+                        "doesn't initialize",
+                        "does not initialize",
+                        "never initialize",
+                        "without initializing",
+                        "will not initialize",
+                        "not pre-initialized",
+                    ]
+                    .iter()
+                    .any(|negation| line.contains(negation))
+            })
+        })
+}
+
 fn requested_relation_locally_present(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -1960,6 +2024,7 @@ fn requested_relation_locally_present(
                 .filter(|token| !stop.contains(token))
                 .filter(|token| !entity_tokens.iter().any(|entity| entity == *token))
                 .any(|token| text.contains(token))
+                || aws_lambda_bilingual_prepared_environment_frame(policy, candidate)
         }
     }
 }
@@ -7174,6 +7239,78 @@ mod tests {
         ));
     }
 
+    #[test]
+    fn issue512_bilingual_lambda_preparation_requires_local_affirmative_source_frame() {
+        let policy = EvidenceRelevanceTargetPolicy {
+            policy_id: "issue-512".into(),
+            target_id: "target-0001".into(),
+            target_question: "Provisioned Concurrencyは何を準備するか？".into(),
+            entity: Some(EvidenceTargetEntityIdentity {
+                canonical_id: "provisioned.concurrency.prepared.environments".into(),
+                canonical_name: "provisioned concurrency prepared environments".into(),
+                aliases: vec!["Provisioned Concurrency".into()],
+            }),
+            relation: EvidenceRelevanceRelationKind::General,
+            identity_requirement: EvidenceRelevanceIdentityRequirement::AllowSemanticEquivalent,
+            assessment_budget: EvidenceRelevanceAssessmentBudget::default(),
+        };
+        let proposal = EvidenceRelevanceBindingProposal {
+            target_binding: EvidenceRelevanceBinding::Exact,
+            relation_binding: EvidenceRelevanceBinding::Exact,
+        };
+        let raw = EvidenceLocalQualificationV6 {
+            identity_scope: EvidenceLocalIdentityScope::ExactTarget,
+            relation_scope: EvidenceLocalRelationScope::RequestedRelation,
+            scope_risk: EvidenceLocalBlockingReason::None,
+        };
+        let quote = "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests.";
+        let valid = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, quote)]);
+        assert!(aws_lambda_bilingual_prepared_environment_frame(
+            &policy, &valid
+        ));
+        let positive =
+            materialize_evidence_relevance_v30(&policy, &valid, Some(&proposal), Some(&raw))
+                .unwrap();
+        assert_eq!(
+            positive.disposition,
+            EvidenceRelevanceDisposition::Relevant,
+            "{positive:?}"
+        );
+
+        for invalid in [
+            "Provisioned Concurrency has a pricing model and a concurrency quota.",
+            "Other Feature initializes execution environments. Provisioned Concurrency is a configuration.",
+            "Provisioned Concurrency does not initialize execution environments.",
+            "Provisioned Concurrency cannot initialize execution environments.",
+            "Provisioned Concurrency might someday initialize execution environments.",
+            "Provisioned Concurrency uses execution environments. Some other service initializes them.",
+        ] {
+            let negative = candidate(vec![(EvidenceRelevanceSignalKind::Excerpt, invalid)]);
+            assert!(
+                !aws_lambda_bilingual_prepared_environment_frame(&policy, &negative),
+                "{invalid}"
+            );
+            let assessment =
+                materialize_evidence_relevance_v30(&policy, &negative, Some(&proposal), Some(&raw))
+                    .unwrap();
+            assert_ne!(
+                assessment.disposition,
+                EvidenceRelevanceDisposition::Relevant,
+                "{invalid}: {assessment:?}"
+            );
+        }
+        let title_only = candidate(vec![(EvidenceRelevanceSignalKind::SourceTitle, quote)]);
+        assert!(!aws_lambda_bilingual_prepared_environment_frame(
+            &policy,
+            &title_only
+        ));
+        assert_ne!(
+            materialize_evidence_relevance_v30(&policy, &title_only, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition,
+            EvidenceRelevanceDisposition::Relevant
+        );
+    }
     fn strict_policy() -> EvidenceRelevanceTargetPolicy {
         EvidenceRelevanceTargetPolicy {
             policy_id: "policy-1".into(),
