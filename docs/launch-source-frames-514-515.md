@@ -59,8 +59,35 @@ cargo run --offline --locked -q -p reasoning-harness-cli --bin reason -- eval fi
 python3 scripts/verify_engine_0_7_independent_v1_archive.py
 ```
 
+Final local results on Rust 1.88 / macOS: format, strict locked workspace Clippy,
+and diff checks PASS; workspace tests 1,449 PASS / 0 FAIL / 6 existing ignored;
+the standard 20-case fixture evaluation has accuracy 1.000 and zero unsupported
+accepted claims. The original independent observation archive retains all 13
+exact SHA-256 checks and its frozen score. OAuth loopback tests required running
+outside the sandbox's local-listener restriction, with Cargo kept offline.
+
 The additional controls were authored by the implementer. They are not an
 independently authored, frozen holdout, a new live-provider acceptance run, or
 evidence of a published patch. Independent regression review, a fresh holdout,
 and exact-head cross-platform CI remain prerequisites for promotion/merge.
 The separate #512 / PR #513 General-relation candidate is not included here.
+
+## #512 alignment review
+
+A temporary copy combined this candidate with PR #513 (`0cc3e06`), leaving the
+tracked branch unchanged. For the General target `Provisioned Concurrency`, the
+Japanese question `Provisioned Concurrencyは何を準備するか？`, exact advisory
+bindings, and exact-target/requested-relation/no-risk local qualification, both
+of these adversarial excerpts incorrectly materialized as `Relevant` under v30:
+
+| Excerpt | Expected | Observed |
+| --- | --- | --- |
+| `Provisioned Concurrency is a pricing option, while Other Feature initializes execution environments.` | non-Relevant | Relevant |
+| `Provisioned Concurrency does not actually initialize execution environments.` | non-Relevant | Relevant |
+
+The bilingual helper checks sentence-level token co-occurrence and a limited
+negation substring list. Those checks do not establish predicate ownership or
+exclude an intervening adverb in the negation. PR #513 needs separate corrective
+work and regression evidence before integration; its current safety claims are
+not accepted by this review. These findings do not affect the ChangeOrLaunch
+fixes in this branch.
