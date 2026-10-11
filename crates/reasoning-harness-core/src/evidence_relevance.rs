@@ -1295,6 +1295,27 @@ fn target_owned_made_generally_available(
 }
 
 fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &str) -> bool {
+    target_owned_launch_frame_with_predicates(
+        policy,
+        segment,
+        &[
+            &["is", "now", "generally", "available"],
+            &["became", "generally", "available"],
+            &["went", "live"],
+            &["was", "introduced"],
+            &["has", "been", "introduced"],
+            &["rolled", "out"],
+        ],
+        2,
+    )
+}
+
+fn target_owned_launch_frame_with_predicates(
+    policy: &EvidenceRelevanceTargetPolicy,
+    segment: &str,
+    predicates: &[&[&str]],
+    max_distance: usize,
+) -> bool {
     let targets = target_identity_phrases(policy);
     let tokens = segment.split_whitespace().collect::<Vec<_>>();
     if tokens.is_empty() || targets.is_empty() {
@@ -1364,14 +1385,6 @@ fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &s
     if tokens.iter().any(|word| blockers.contains(word)) {
         return false;
     }
-    let predicates: &[&[&str]] = &[
-        &["is", "now", "generally", "available"],
-        &["became", "generally", "available"],
-        &["went", "live"],
-        &["was", "introduced"],
-        &["has", "been", "introduced"],
-        &["rolled", "out"],
-    ];
     targets.iter().any(|target| {
         let name = target.split_whitespace().collect::<Vec<_>>();
         !name.is_empty()
@@ -1383,9 +1396,227 @@ fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &s
                     let tail = &tokens[i + name.len()..];
                     tail.windows(predicate.len())
                         .position(|window| window == *predicate)
-                        .is_some_and(|distance| distance <= 2)
+                        .is_some_and(|distance| distance <= max_distance)
                 })
             })
+    })
+}
+
+// Keep the historical tokenizer and frame vocabulary unchanged. Only the
+// v17/v30 launch floor uses these successor segments. Periods inside an exact
+// policy-owned name, decimal versions, or a single dotted alphabetic token
+// (e.g. Z.ai) are not sentence terminators. A period at a target's edge, a
+// trailing abbreviation period, or an uppercase continuation remains a boundary.
+fn launch_factual_segments_v17(policy: &EvidenceRelevanceTargetPolicy, value: &str) -> Vec<String> {
+    let folded = value.to_ascii_lowercase();
+    let names = policy
+        .entity
+        .iter()
+        .flat_map(|entity| std::iter::once(&entity.canonical_name).chain(entity.aliases.iter()));
+    let mut name_spans = Vec::new();
+    for name in names {
+        let name = name.to_ascii_lowercase();
+        if name.is_empty() {
+            continue;
+        }
+        for (start, _) in folded.match_indices(&name) {
+            let end = start + name.len();
+            if !folded[..start]
+                .chars()
+                .next_back()
+                .is_some_and(char::is_alphanumeric)
+                && !folded[end..]
+                    .chars()
+                    .next()
+                    .is_some_and(char::is_alphanumeric)
+            {
+                name_spans.push(start..end);
+            }
+        }
+    }
+    let mut prepared = String::with_capacity(value.len());
+    for (index, character) in value.char_indices() {
+        let keep_period = if character == '.' {
+            let inside_name = name_spans
+                .iter()
+                .any(|span| span.contains(&index) && index + 1 < span.end);
+            let name_edge = name_spans.iter().any(|span| span.end == index);
+            let decimal = value[..index]
+                .chars()
+                .next_back()
+                .is_some_and(|c| c.is_ascii_digit())
+                && value[index + 1..]
+                    .chars()
+                    .next()
+                    .is_some_and(|c| c.is_ascii_digit());
+            let token_start = value[..index]
+                .char_indices()
+                .rev()
+                .find(|(_, c)| !c.is_ascii_alphabetic() && *c != '.')
+                .map_or(0, |(position, c)| position + c.len_utf8());
+            let token_end = value[index + 1..]
+                .find(|c: char| !c.is_ascii_alphabetic() && c != '.')
+                .map_or(value.len(), |position| index + 1 + position);
+            let token = value[token_start..token_end].trim_end_matches('.');
+            let dotted_name = token.split_once('.').is_some_and(|(left, right)| {
+                !left.is_empty()
+                    && left.chars().all(|c| c.is_ascii_alphabetic())
+                    && right.len() >= 2
+                    && right.chars().all(|c| c.is_ascii_lowercase())
+                    && index + 1 < token_start + token.len()
+            });
+            inside_name || (!name_edge && (decimal || dotted_name))
+        } else {
+            false
+        };
+        prepared.push(if keep_period {
+            ' '
+        } else {
+            match character {
+                '。' | '！' | '？' => '.',
+                '\r' => '\n',
+                other => other,
+            }
+        });
+    }
+    normalized_factual_segments(&prepared)
+}
+
+fn target_owned_launch_fact_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    candidate
+        .signals
+        .iter()
+        .filter(|signal| {
+            matches!(
+                signal.kind,
+                EvidenceRelevanceSignalKind::Excerpt
+                    | EvidenceRelevanceSignalKind::Fact
+                    | EvidenceRelevanceSignalKind::StructuredMetadata
+            )
+        })
+        .flat_map(|signal| {
+            normalized_factual_segments(&signal.text)
+                .into_iter()
+                .map(|segment| (segment, false))
+                .chain(
+                    launch_factual_segments_v17(policy, &signal.text)
+                        .into_iter()
+                        .map(|segment| (segment, true)),
+                )
+        })
+        .any(|(segment, successor)| {
+            if segment.split_whitespace().any(|word| {
+                [
+                    "may",
+                    "might",
+                    "could",
+                    "would",
+                    "maybe",
+                    "perhaps",
+                    "possibly",
+                    "potentially",
+                    "supposedly",
+                    "rumored",
+                    "rumoured",
+                    "allegedly",
+                    "reportedly",
+                    "expected",
+                ]
+                .contains(&word)
+            }) {
+                return false;
+            }
+            if !successor {
+                return target_owned_made_generally_available(policy, &segment)
+                    || target_owned_launch_frame(policy, &segment);
+            }
+            // Newly recovered frames require an adjacent exact subject, or a
+            // bounded direct object. A product's documentation or a sibling
+            // mentioned after its name cannot borrow launch authority.
+            target_owned_made_generally_available_v17(policy, &segment)
+                || target_owned_launch_frame_with_predicates(
+                    policy,
+                    &segment,
+                    &[
+                        &["was", "launched"],
+                        &["has", "been", "launched"],
+                        &["is", "now", "generally", "available"],
+                        &["became", "generally", "available"],
+                        &["went", "live"],
+                        &["was", "introduced"],
+                        &["has", "been", "introduced"],
+                        &["rolled", "out"],
+                    ],
+                    0,
+                )
+        })
+}
+
+fn target_owned_made_generally_available_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    segment: &str,
+) -> bool {
+    if !target_owned_made_generally_available(policy, segment) {
+        return false;
+    }
+    let targets = target_identity_phrases(policy);
+    let tokens = segment.split_whitespace().collect::<Vec<_>>();
+    tokens.windows(2).enumerate().any(|(start, words)| {
+        words == ["has", "made"]
+            && tokens
+                .windows(2)
+                .enumerate()
+                .skip(start + 2)
+                .take(24)
+                .any(|(end, words)| {
+                    if words != ["generally", "available"] {
+                        return false;
+                    }
+                    let object = &tokens[start + 2..end];
+                    targets.iter().any(|target| {
+                        let name = target.split_whitespace().collect::<Vec<_>>();
+                        !name.is_empty()
+                            && object.windows(name.len()).enumerate().any(|(i, words)| {
+                                if words != name {
+                                    return false;
+                                }
+                                let prefix = &object[..i];
+                                let suffix = &object[i + name.len()..];
+                                let direct_object = prefix.iter().all(|word| {
+                                    [
+                                        "the", "latest", "version", "of", "model", "service",
+                                        "product",
+                                    ]
+                                    .contains(word)
+                                });
+                                let owned_suffix = suffix.is_empty()
+                                    || (suffix.len() == 1
+                                        && ["model", "service", "product"].contains(&suffix[0]))
+                                    || (suffix.first() == Some(&"from")
+                                        && (2..=5).contains(&suffix.len())
+                                        && !suffix.iter().any(|word| {
+                                            [
+                                                "documentation",
+                                                "docs",
+                                                "manual",
+                                                "guide",
+                                                "pricing",
+                                                "rival",
+                                                "is",
+                                                "was",
+                                                "has",
+                                                "generally",
+                                                "available",
+                                            ]
+                                            .contains(word)
+                                        }));
+                                direct_object && owned_suffix
+                            })
+                    })
+                })
     })
 }
 
@@ -1410,7 +1641,7 @@ fn launch_has_target_question_in_factual_signal(
             )
         })
         .any(|signal| {
-            signal.text.contains('?')
+            signal.text.contains(['?', '？'])
                 && targets
                     .iter()
                     .any(|target| normalized(&signal.text).contains(target))
@@ -5317,6 +5548,31 @@ pub fn derive_effective_evidence_local_qualification_v17(
     let mut effective =
         derive_effective_evidence_local_qualification_v16(policy, candidate, proposal, raw)?;
 
+    // Recover only a locally proven launch from exact independent bindings and
+    // an anchored exact identity. Never clear a risk, explicit absence, or an
+    // alternate relation. This is successor-only; v16/v29 stay frozen.
+    if policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
+        && effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::ExactTarget
+        && effective.relation_scope == EvidenceLocalRelationScope::Unresolved
+        && proposal.is_some_and(|value| {
+            value.target_binding == EvidenceRelevanceBinding::Exact
+                && value.relation_binding == EvidenceRelevanceBinding::Exact
+        })
+        && raw.is_some_and(|value| {
+            value.identity_scope == Identity::ExactTarget
+                && value.relation_scope == EvidenceLocalRelationScope::RequestedRelation
+                && value.scope_risk == Risk::None
+        })
+        && anchor_match(policy, candidate).0
+        && !deterministic_strict_named_target_absence(policy, candidate)
+        && !deterministic_strict_target_relation_absence(policy, candidate)
+        && !launch_has_target_question_in_factual_signal(policy, candidate)
+        && target_owned_launch_fact_v17(policy, candidate)
+    {
+        effective.relation_scope = EvidenceLocalRelationScope::RequestedRelation;
+    }
+
     // Post-v16 positive launch authority must be target-owned and affirmative.
     // Older historical v11/v23 semantics still consume the immutable coarse
     // frames; this guard applies only to the current successor path (v17/v30).
@@ -5324,10 +5580,7 @@ pub fn derive_effective_evidence_local_qualification_v17(
         && effective.scope_risk == Risk::None
         && effective.relation_scope == EvidenceLocalRelationScope::RequestedRelation
         && (launch_has_target_question_in_factual_signal(policy, candidate)
-            || !semantic_relation_segments(candidate).iter().any(|segment| {
-                target_owned_made_generally_available(policy, segment)
-                    || target_owned_launch_frame(policy, segment)
-            }))
+            || !target_owned_launch_fact_v17(policy, candidate))
     {
         effective.relation_scope = EvidenceLocalRelationScope::Unresolved;
     }
@@ -5940,7 +6193,19 @@ pub fn materialize_evidence_relevance_v30(
         },
     });
 
-    let mut assessment = materialize_evidence_relevance_v23(
+    let materialize = if policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
+        && effective.scope_risk == EvidenceLocalBlockingReason::None
+        && effective.relation_scope == Relation::RequestedRelation
+        && target_owned_launch_fact_v17(policy, candidate)
+    {
+        // v17 supplies the source-local positive floor for this launch path.
+        // Reapplying v23's historical v11 vocabulary would erase the recovered
+        // dotted-name frame. All v22 identity/scope/materialization gates remain.
+        materialize_evidence_relevance_v22
+    } else {
+        materialize_evidence_relevance_v23
+    };
+    let mut assessment = materialize(
         policy,
         candidate,
         effective_proposal.as_ref(),
