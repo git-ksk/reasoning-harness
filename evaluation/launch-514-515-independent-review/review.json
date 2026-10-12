@@ -218,9 +218,129 @@
       "findings": [],
       "validation": "Eight public groups pass; all 115 prior probes replayed and every reported failure fixed. Added 59 passing isolation checks covering ASCII/fullwidth boundaries, LF/CR/CRLF, sentence order, separate factual signals, titles and true positives. Exact source bytes verified; isolated build target. Independent corpora untouched.",
       "recall_limits": "Compound audience/region tails, trailing and-registration-opened wording, and multiword makers confirmed only in another sentence abstain."
+    },
+    {
+      "source_sha": "21ae38ecea8d6194354386301f836b8d04e9e205",
+      "findings": [],
+      "validation": "Eight public groups pass, 115 prior probes and 59 isolation assertions replayed. Fourteen qualifier checks pass, including exact legacy positive, negative, simulated, wrong-owner, punctuation and cross-sentence controls. Exact source bytes verified, isolated builds, no independent corpus inspection.",
+      "recall_limits": "Previously documented bounded recall limits unchanged."
+    },
+    {
+      "source_sha": "4d4142c416f53924794bd456499a77ce0d0d8c03",
+      "findings": [],
+      "validation": "Both compatibility positives Relevant. Eight public groups pass; 115 prior probes replayed, 59 isolation and 28 qualifier/safety assertions pass. Exact source bytes verified in isolated target; no independent corpus access.",
+      "recall_limits": "Previously documented bounded recall limits unchanged."
+    },
+    {
+      "source_sha": "d1b76ba2a30a492e129c787416d9ff7d6c2cbc45",
+      "findings": [],
+      "validation": "Eight public groups pass; 202 prior inputs/checks replayed. Thirty new assertions pass for arbitrary suffix casing, copper.Works ownership, punctuation, target-edge periods, and multi-dot boundaries. Exact source bytes matched SHA256 in isolated review target. Independent corpora not inspected; repository unchanged.",
+      "recall_limits": "Previously documented bounded recall limits unchanged."
+    },
+    {
+      "source_sha": "23284e2c40dabbcec4d436ff5250c17cf2452fdc",
+      "reviewer": "independent_launch_review_v8 subagent, fork_turns=none",
+      "findings": [
+        {
+          "class": "As-of May date parser and modal guard disagree",
+          "origin": "Root code review before v8 observation; independently reproduced by reviewer",
+          "reproductions": [
+            "As of May 6, 2026, Silver Lens is generally available."
+          ],
+          "candidate": "Unresolved / Ambiguous",
+          "expected": "RequestedRelation / Relevant",
+          "correction_sha": "836cd0cc7e4168aa3bdf0c7ab37609f0955c768d"
+        }
+      ]
+    },
+    {
+      "source_sha": "836cd0cc7e4168aa3bdf0c7ab37609f0955c768d",
+      "reviewer": "independent_launch_review_v8 subagent, fork_turns=none",
+      "findings": [],
+      "validation": "Exact frozen snapshot: 9 public groups PASS; 107 independent temporary probes PASS (77 positive, 30 negative). Compared with 23284e2, d1b76ba and main a48a33d. Checked predicate ownership, actual statement boundaries, denial/questions/uncertainty, raw made-object fences, delayed objects, complete time/region/add-on tails, and modal May. Only core source/public tests inspected; no independent corpus/fixture/manifest/results/docs/evaluation access. Repository unchanged.",
+      "recall_limits": "Bounded feature grammar and existing documented abstentions remain."
+    },
+    {
+      "source_sha": "506e7b1c07012f519f21cf9c1344cffd10809632",
+      "reviewer": "independent_launch_review_v8 subagent, fork_turns=none",
+      "findings": [],
+      "validation": "Exact snapshot public suite 9/9 PASS. Reviewer probes 165/166 matched initial expectations; v16/v29 outputs unchanged across all 166. Scoped no exemption preserves preceding no/not, indirect-subject, delayed-object and actual-boundary rejection. No independent corpus/results/docs/evaluation access; repository unchanged.",
+      "verification_limit": {
+        "text": "-1:00 UTC today, Silver Lens is generally available with no extra fees.",
+        "observed": "Relevant",
+        "interpretation": "Normalization removes the clock minus sign. Reviewer classified this as low severity, not P1/P2: explicit target-owned affirmative GA remains; no foreign predicate is borrowed. Clock validation is bounded normalized text recognition, not strict raw timestamp parsing."
+      }
     }
   ],
-  "final_source_sha": "9077f84a90e664ce004d35dce7baa9d55659fa07",
-  "final_review": "No introduced P1/P2 findings in focused source review and deterministic probes. Full workspace and fresh-holdout acceptance verified separately.",
-  "final_source_file_sha256": "2cc2717abd11ed3a006f2e9ae667c4cd61d79e3a4f28f63ac52fdaf82e7e27d4"
+  "final_source_sha": "506e7b1c07012f519f21cf9c1344cffd10809632",
+  "final_review": "No introduced P1/P2 findings in focused source review and deterministic probes; full workspace and fresh holdout verified separately.",
+  "final_source_file_sha256": "91c318894d57a4248f64729ef3460806578550f2cbec6ddf5800e1c38208737c",
+  "post_review_workspace_regressions": [
+    {
+      "source_sha": "9077f84a90e664ce004d35dce7baa9d55659fa07",
+      "existing_test": "v30_made_available_requires_target_owned_affirmative_predicate",
+      "text": "The vendor has made Silver Lens generally available with no usage restrictions.",
+      "expected": "RequestedRelation",
+      "observed": "Unresolved",
+      "correction_sha": "21ae38ecea8d6194354386301f836b8d04e9e205",
+      "change": "Exact affirmative with-no-usage-restrictions tail permitted; no test/label changed."
+    },
+    {
+      "source_sha": "21ae38ecea8d6194354386301f836b8d04e9e205",
+      "existing_test": "independently_fixed_launch_authority_matrix_v2",
+      "cases": [
+        "p07",
+        "p08"
+      ],
+      "texts": [
+        "The provider has made Dawn Silo generally available to all workspaces.",
+        "The provider has made Tidal Junction generally available with no extra fees."
+      ],
+      "expected": "Relevant / RequestedRelation",
+      "observed": "Ambiguous / Unresolved",
+      "correction_sha": "4d4142c416f53924794bd456499a77ce0d0d8c03",
+      "change": "Add plural workspaces audience noun and exact with-no-extra-fees tail. Frozen tests/labels unchanged."
+    }
+  ],
+  "post_review_holdout_regressions": [
+    {
+      "source_sha": "4d4142c416f53924794bd456499a77ce0d0d8c03",
+      "suite": "launch-514-515-independent-v6",
+      "case": "v6-t07",
+      "expected": "Relevant / RequestedRelation",
+      "observed": "Ambiguous / Unresolved",
+      "correction_sha": "d1b76ba2a30a492e129c787416d9ff7d6c2cbc45",
+      "change": "Recognize single-dot ASCII alphabetic maker suffix of at least two letters independently of casing; retain full raw-object, complete-tail, and same-segment authority checks. Original partial first observation and all labels retained."
+    },
+    {
+      "source_sha": "d1b76ba2a30a492e129c787416d9ff7d6c2cbc45",
+      "suite": "launch-514-515-independent-v7",
+      "cases": [
+        "v7-driftloom-ga",
+        "v7-kestrelmint-region",
+        "v7-mossdial-direct",
+        "v7-nacrecoil-uppercase",
+        "v7-orin-dot-names",
+        "v7-quillbasin-time",
+        "v7-saffronwake-combination"
+      ],
+      "expected": "Relevant / RequestedRelation",
+      "observed": "Ambiguous / Unresolved",
+      "correction_sha": "23284e2c40dabbcec4d436ff5250c17cf2452fdc",
+      "change": "Add bounded direct-GA, confirmed prefix, temporal date/clock, finite region and complete included-feature adjuncts. Require complete new GA tail and owned subject/object. Original first observation and labels retained."
+    },
+    {
+      "source_sha": "836cd0cc7e4168aa3bdf0c7ab37609f0955c768d",
+      "suite": "launch-514-515-independent-v8",
+      "cases": [
+        "v8-p11-caldrivo",
+        "v8-p12-vensori"
+      ],
+      "expected": "Relevant / RequestedRelation",
+      "observed": "Ambiguous / Unresolved",
+      "correction_sha": "506e7b1c07012f519f21cf9c1344cffd10809632",
+      "change": "Permit exact terminal affirmative no-fee/no-restriction tails for successor direct-subject frames and bounded numeric clock plus timezone/day prefix. Historical behavior and all original labels/results retained."
+    }
+  ],
+  "final_public_test_sha256": "e1c35ca3c801730d349ba376dd1ea3807715e5897e10b3b39aaf070a2935a869"
 }
