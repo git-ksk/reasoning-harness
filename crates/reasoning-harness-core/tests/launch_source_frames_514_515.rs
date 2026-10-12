@@ -371,6 +371,11 @@ fn issue515_dotted_names_and_decimal_versions() {
         ),
         (
             "Birch 4.2",
+            "Orchid Research Labs has made Birch 4.2 from Orchid Research Labs generally available.",
+            true,
+        ),
+        (
+            "Birch 4.2",
             "Orchid.Labs has made Birch 4.2 from Orchid.Labs. Maple Queue is generally available.",
             false,
         ),
@@ -390,6 +395,21 @@ fn issue515_dotted_names_and_decimal_versions() {
 #[test]
 fn issue515_punctuation_must_not_borrow_predicates() {
     assert_cases(&[
+        (
+            "Gear 4.2",
+            "The vendor has made Gear 4.2 from copper.Labs offer generally available equipment.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 from Ruzani.Labs stay generally available.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "Acme.Services has made tools. The vendor has made GLM 5.3 from Acme.Services stay generally available.",
+            false,
+        ),
         (
             "Gear 4.2",
             "The vendor has made Gear 4.2 from copper.Labs are generally available for rental.",

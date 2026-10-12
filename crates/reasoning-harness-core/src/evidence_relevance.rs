@@ -1539,8 +1539,13 @@ fn target_owned_launch_fact_v17(
                     | EvidenceRelevanceSignalKind::StructuredMetadata
             )
         })
-        .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
-        .any(|segment| {
+        .flat_map(|signal| {
+            let makers = launch_maker_phrases_v17(&signal.text);
+            launch_factual_segments_v17(policy, &signal.text)
+                .into_iter()
+                .map(move |segment| (segment, makers.clone()))
+        })
+        .any(|(segment, makers)| {
             let tokens = segment.split_whitespace().collect::<Vec<_>>();
             if tokens.iter().enumerate().any(|(index, word)| {
                 let month_may = *word == "may"
@@ -1647,7 +1652,7 @@ fn target_owned_launch_fact_v17(
             // Every current frame needs an owned subject or direct object.
             // Reusing the historical permissive path would let "documentation
             // for TARGET" borrow authority even with an adjacent predicate.
-            target_owned_made_generally_available_v17(policy, &segment)
+            target_owned_made_generally_available_v17(policy, &segment, &makers)
                 || target_owned_launch_frame_with_predicates(
                     policy,
                     &segment,
@@ -1813,6 +1818,7 @@ fn intransitive_launch_tail_v17(tail: &[&str]) -> bool {
 fn target_owned_made_generally_available_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     segment: &str,
+    makers: &[String],
 ) -> bool {
     if !target_owned_made_generally_available_with_tail_conjunction(policy, segment, true) {
         return false;
@@ -1849,10 +1855,9 @@ fn target_owned_made_generally_available_v17(
                                         && ["model", "service", "product"].contains(&suffix[0]))
                                     || (suffix.first() == Some(&"from")
                                         && (2..=5).contains(&suffix.len())
-                                        // This must remain a nominal maker modifier.
-                                        // A preserved dotted name can hide an unspaced
-                                        // sentence boundary, so a finite clause here
-                                        // cannot lend its availability to the target.
+                                        // Match the complete original lexical maker,
+                                        // not arbitrary words after a flattened dot.
+                                        && makers.contains(&suffix[1..].join(" "))
                                         && !suffix.iter().any(|word| {
                                             [
                                                 "documentation",
@@ -1861,34 +1866,9 @@ fn target_owned_made_generally_available_v17(
                                                 "guide",
                                                 "pricing",
                                                 "rival",
-                                                "am",
                                                 "is",
-                                                "are",
                                                 "was",
-                                                "were",
-                                                "be",
-                                                "been",
-                                                "being",
-                                                "become",
-                                                "becomes",
-                                                "became",
-                                                "get",
-                                                "gets",
-                                                "got",
-                                                "remain",
-                                                "remains",
-                                                "remained",
                                                 "has",
-                                                "have",
-                                                "had",
-                                                "do",
-                                                "does",
-                                                "did",
-                                                "will",
-                                                "shall",
-                                                "should",
-                                                "can",
-                                                "must",
                                                 "generally",
                                                 "available",
                                             ]
@@ -1899,6 +1879,38 @@ fn target_owned_made_generally_available_v17(
                     })
                 })
     })
+}
+
+// Retain lexical maker extent before normalization erases internal dots. A
+// single opaque token after "from" is sufficient. A multiword maker must also
+// occur as a bounded proper-name subject before "has made" in the raw signal;
+// otherwise an unsupported modifier abstains rather than absorbing a clause.
+fn launch_maker_phrases_v17(value: &str) -> Vec<String> {
+    let words = value.split_whitespace().collect::<Vec<_>>();
+    let mut makers = Vec::new();
+    for (index, pair) in words.windows(2).enumerate() {
+        if pair[0].eq_ignore_ascii_case("from") {
+            makers.push(normalized(pair[1]));
+        }
+        if pair[0].eq_ignore_ascii_case("has") && pair[1].eq_ignore_ascii_case("made") {
+            for count in 2..=index.min(4) {
+                let name = &words[index - count..index];
+                if name.iter().all(|word| {
+                    word.chars().next().is_some_and(char::is_uppercase)
+                        && word
+                            .chars()
+                            .all(|c| c.is_alphanumeric() || ['.', '-', '&'].contains(&c))
+                        && !word.ends_with('.')
+                }) {
+                    makers.push(normalized(&name.join(" ")));
+                }
+            }
+        }
+    }
+    makers.retain(|maker| !maker.is_empty());
+    makers.sort();
+    makers.dedup();
+    makers
 }
 
 // Normalization removes question marks. Keep original fact-bearing signals
