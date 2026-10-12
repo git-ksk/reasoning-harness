@@ -1,0 +1,14 @@
+{
+  "reason": "Original author used title as source_title synonym; original corpus and labels retained byte-for-byte.",
+  "input_sha256": "8eb6f206c1e11c9b6a60e2868a95885aeee726b3470caa36e7c8a2eeddc0855a",
+  "output_sha256": "bc99ffaf00072e95ded5328eb8c414182ad9165e022eb05d01e53ebe00b52d99",
+  "changes": [
+    {
+      "case_id": "ind-v3-30",
+      "field": "signals[0].kind",
+      "before": "title",
+      "after": "source_title"
+    }
+  ],
+  "expected_labels_changed": false
+}

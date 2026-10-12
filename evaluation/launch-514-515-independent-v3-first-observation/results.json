@@ -1,0 +1,250 @@
+{
+  "suite_id": "launch-514-515-independent-v3",
+  "candidate_sha": "48c97d9e61204fb018d825066fbcb37e902ecd20",
+  "frozen_corpus_commit": "1e296ce",
+  "evaluator_sha": "558e78ec063fe32afb710af243b99cce16d98bdc",
+  "manifest_sha256": "8eb6f206c1e11c9b6a60e2868a95885aeee726b3470caa36e7c8a2eeddc0855a",
+  "first_observation": true,
+  "passed": 28,
+  "evaluated": 29,
+  "total": 32,
+  "runner_error": "Case ind-v3-30 author used title rather than source_title; engine adapter rejected the invalid enum before cases 30-32 evaluation.",
+  "false_positives": [],
+  "false_negatives": [
+    "ind-v3-09"
+  ],
+  "cases": [
+    {
+      "id": "ind-v3-01",
+      "category": "affirmative_passive_today_decimal",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-02",
+      "category": "vendor_general_availability_dotted_names",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-03",
+      "category": "latest_version_completed_launch",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-04",
+      "category": "intransitive_launch_leading_year",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-05",
+      "category": "affirmative_launch_leading_may_date",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-06",
+      "category": "current_general_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-07",
+      "category": "completed_general_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-08",
+      "category": "completed_passive_launch_with_users",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-09",
+      "category": "intransitive_launch_completed_preview",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "ind-v3-10",
+      "category": "factual_metadata_vendor_general_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-11",
+      "category": "latest_version_general_availability_decimal",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-12",
+      "category": "affirmative_launch_trailing_customer_information",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-13",
+      "category": "indirect_documentation_subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-14",
+      "category": "indirect_competitor_subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-15",
+      "category": "enclosing_falsification",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-16",
+      "category": "enclosing_denial",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-17",
+      "category": "enclosing_disproved_claim",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-18",
+      "category": "indirect_announcement_subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-19",
+      "category": "uncertain_launch_status",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-20",
+      "category": "conditional_general_availability",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-21",
+      "category": "future_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-22",
+      "category": "launch_question",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-23",
+      "category": "target_launches_another_product",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-24",
+      "category": "preview_only_availability",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-25",
+      "category": "sibling_product_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-26",
+      "category": "ascii_sentence_boundary_wrong_owner",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-27",
+      "category": "fullwidth_sentence_boundary_wrong_owner",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-28",
+      "category": "clause_boundary_wrong_owner",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v3-29",
+      "category": "cross_signal_ownership",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    }
+  ]
+}
