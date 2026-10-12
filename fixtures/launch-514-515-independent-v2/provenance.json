@@ -1,0 +1,14 @@
+{
+  "suite_id": "launch-514-515-independent-v2",
+  "candidate_sha": "d10cbadb046100b885ae5b5975b7cc29e0ae4499",
+  "evaluator_frozen_sha": "1699c56d158bf1fbdb822c61a1a69f4c52a14c50",
+  "author": "independent_launch_corpus_v2 subagent with fork_turns=none",
+  "independence": "Author used only task specification and confirmed no implementation, repository, prior corpus, agent or engine-result access; no evaluation performed.",
+  "authorship": "synthetic deterministic controls, not live-provider observations or external human review",
+  "case_count": 32,
+  "positive_count": 12,
+  "negative_count": 20,
+  "manifest_sha256": "6eaa04189332d7c1e943b4b5c0b18075bc0d6e14e9e4334b7cbbd6114f0f1248",
+  "frozen_at_utc": "2026-10-12T00:26:12.116955+00:00",
+  "protocol": "Source and evaluator frozen before authoring; exact corpus committed before first evaluation; preserve first outcome and labels. A tuned corpus becomes regression, not fresh acceptance."
+}
