@@ -272,6 +272,21 @@ fn issue514_launch_negatives() {
             false,
         ),
         (
+            "GLM 5.3",
+            "GLM 5.3 was launched only in a simulation.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens was launched in a simulated environment.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 generally available in a simulated exercise.",
+            false,
+        ),
+        (
             "Silver Lens",
             "Silver Lens was launched after its preview ended, but that assertion is untrue.",
             false,
@@ -344,6 +359,26 @@ fn issue515_dotted_names_and_decimal_versions() {
             true,
         ),
         ("U.S. Forge", "U.S. Forge was launched in 2026.", true),
+        (
+            "Birch 4.2",
+            "Orchid.Labs has made the latest version of Birch 4.2 from Orchid.Labs generally available.",
+            true,
+        ),
+        (
+            "Birch 4.2",
+            "The vendor has made Birch 4.2 from Orchid.Labs generally available.",
+            true,
+        ),
+        (
+            "Birch 4.2",
+            "Orchid.Labs has made Birch 4.2 from Orchid.Labs. Maple Queue is generally available.",
+            false,
+        ),
+        (
+            "Birch 4.2",
+            "Orchid.Labs has made Birch 4.2 from Orchid.Labs.Maple Queue is generally available.",
+            false,
+        ),
         (
             "GLM 5.3",
             "注記：Z.ai has made GLM 5.3 generally available.",

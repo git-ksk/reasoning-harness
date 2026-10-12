@@ -1427,18 +1427,35 @@ fn target_owned_launch_frame_with_predicates(
 
 // Keep the historical tokenizer and frame vocabulary unchanged. Only the
 // v17/v30 launch floor uses these successor segments. Periods inside an exact
-// policy-owned name, decimal versions, or a single dotted alphabetic token
-// (e.g. Z.ai) are not sentence terminators. A period at a target's edge, a
-// trailing abbreviation period, or an uppercase continuation remains a boundary.
+// policy-owned name, a recognized maker, decimal versions, or bounded dotted
+// organization tokens are not sentence terminators. A period at a target's edge,
+// a trailing abbreviation period, or an unknown uppercase continuation stays
+// a boundary.
 fn launch_factual_segments_v17(policy: &EvidenceRelevanceTargetPolicy, value: &str) -> Vec<String> {
     let folded = value.to_ascii_lowercase();
-    let names = policy
+    let mut names = policy
         .entity
         .iter()
-        .flat_map(|entity| std::iter::once(&entity.canonical_name).chain(entity.aliases.iter()));
+        .flat_map(|entity| std::iter::once(&entity.canonical_name).chain(entity.aliases.iter()))
+        .map(|name| name.to_ascii_lowercase())
+        .collect::<Vec<_>>();
+    // An exact dotted maker token before "has made" can be repeated in the
+    // target's "from MAKER" modifier. Preserve that same opaque token, even
+    // with an uppercase suffix, without joining an unknown continuation.
+    for (start, _) in folded.match_indices(" has made ") {
+        if let Some(maker) = folded[..start].split_whitespace().next_back()
+            && maker.split_once('.').is_some_and(|(left, right)| {
+                !left.is_empty()
+                    && left.chars().all(|c| c.is_ascii_alphabetic())
+                    && right.len() >= 2
+                    && right.chars().all(|c| c.is_ascii_alphabetic())
+            })
+        {
+            names.push(maker.to_owned());
+        }
+    }
     let mut name_spans = Vec::new();
     for name in names {
-        let name = name.to_ascii_lowercase();
         if name.is_empty() {
             continue;
         }
@@ -1485,7 +1502,9 @@ fn launch_factual_segments_v17(policy: &EvidenceRelevanceTargetPolicy, value: &s
                 !left.is_empty()
                     && left.chars().all(|c| c.is_ascii_alphabetic())
                     && right.len() >= 2
-                    && right.chars().all(|c| c.is_ascii_lowercase())
+                    && (right.chars().all(|c| c.is_ascii_lowercase())
+                        || ["ai", "lab", "labs", "cloud", "systems", "tech"]
+                            .contains(&right.to_ascii_lowercase().as_str()))
                     && index + 1 < token_start + token.len()
             });
             inside_name || (!name_edge && (decimal || dotted_name))
@@ -1580,6 +1599,24 @@ fn target_owned_launch_fact_v17(
                     "unsure",
                     "unsubstantiated",
                     "disproved",
+                    "simulation",
+                    "simulations",
+                    "simulated",
+                    "imaginary",
+                    "imagined",
+                    "pretend",
+                    "pretended",
+                    "mock",
+                    "mocked",
+                    "rehearsal",
+                    "counterfactual",
+                    "fictitious",
+                    "fake",
+                    "bogus",
+                    "hoax",
+                    "lie",
+                    "lies",
+                    "fraudulent",
                 ]
                 .contains(word)
                     && !month_may
