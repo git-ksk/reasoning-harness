@@ -200,11 +200,7 @@ fn issue514_launch_negatives() {
             "The assertion that GLM 5.3 was launched in 2026 is false.",
             false,
         ),
-        (
-            "GLM 5.3",
-            "GLM 5.3 was launched in 2026 is false.",
-            false,
-        ),
+        ("GLM 5.3", "GLM 5.3 was launched in 2026 is false.", false),
         (
             "GLM 5.3",
             "GLM 5.3 was launched in a fabricated announcement.",
