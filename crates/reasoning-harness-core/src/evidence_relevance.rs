@@ -1950,7 +1950,12 @@ fn launch_maker_objects_v17(value: &str) -> Vec<String> {
 // Availability must be a predicate of the made-object, not an adjective on
 // another owner's equipment or an aside followed by a separate finite clause.
 fn made_available_tail_v17(tail: &[&str]) -> bool {
-    if intransitive_launch_tail_v17(tail) || matches!(tail, ["worldwide" | "globally" | "now"]) {
+    if intransitive_launch_tail_v17(tail)
+        || matches!(
+            tail,
+            ["worldwide" | "globally" | "now"] | ["with", "no", "usage", "restrictions"]
+        )
+    {
         return true;
     }
     let (head, rest) = match tail {
