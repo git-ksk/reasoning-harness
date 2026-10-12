@@ -1953,7 +1953,9 @@ fn made_available_tail_v17(tail: &[&str]) -> bool {
     if intransitive_launch_tail_v17(tail)
         || matches!(
             tail,
-            ["worldwide" | "globally" | "now"] | ["with", "no", "usage", "restrictions"]
+            ["worldwide" | "globally" | "now"]
+                | ["with", "no", "usage", "restrictions"]
+                | ["with", "no", "extra", "fees"]
         )
     {
         return true;
@@ -1995,6 +1997,7 @@ fn made_available_tail_v17(tail: &[&str]) -> bool {
                     "organization",
                     "organizations",
                     "workspace",
+                    "workspaces",
                     "owner",
                     "owners",
                     "students",
