@@ -1,0 +1,51 @@
+   Compiling reasoning-harness-core v0.7.0 (/Users/sawadakousuke/x-code/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.68s
+     Running tests/launch_independent_514_515_v7.rs (/private/tmp/cloud-review-cargo-target/debug/deps/launch_independent_514_515_v7-517d8354096e8466)
+
+running 1 test
+test independently_authored_launch_source_controls_v7 ... v7-copperfin-release category=direct-date expected_relevant=true disposition=Relevant relation=RequestedRelation
+v7-driftloom-ga category=audience-ga expected_relevant=true disposition=Ambiguous relation=Unresolved
+v7-ivoryspur-vendor category=latest-from expected_relevant=true disposition=Relevant relation=RequestedRelation
+v7-kestrelmint-region category=regional-ga expected_relevant=true disposition=Ambiguous relation=Unresolved
+v7-lumenquay-maker category=confirmed-maker expected_relevant=true disposition=Relevant relation=RequestedRelation
+v7-mossdial-direct category=launch-with expected_relevant=true disposition=Ambiguous relation=Unresolved
+v7-nacrecoil-uppercase category=casing-ga expected_relevant=true disposition=Ambiguous relation=Unresolved
+v7-orin-dot-names category=dotted-maker expected_relevant=true disposition=Ambiguous relation=Unresolved
+v7-pebblearc-quoted category=sentence-launch expected_relevant=true disposition=Relevant relation=RequestedRelation
+v7-quillbasin-time category=temporal-ga expected_relevant=true disposition=Ambiguous relation=Unresolved
+v7-rillforge-latest category=vendor-audience expected_relevant=true disposition=Relevant relation=RequestedRelation
+v7-saffronwake-combination category=from-with-ga expected_relevant=true disposition=Ambiguous relation=Unresolved
+v7-thistleport-other-owner category=other-launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-umberrail-integration category=other-ga expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-velvetfen-guide category=guide-subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-willowfacet-documentation category=documentation expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-xantheloop-deadline category=deadline-subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-yarrowdock-status category=status-subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-zephyrplate-denial category=explicit-denial expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-amberflume-doubt category=doubt expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-birchhelm-question category=question expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-cairnpetal-condition category=conditional expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-dewspindle-simulation category=simulation expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-elmprism-rehearsal category=rehearsal expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-frostharbor-sentence category=sentence-boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-garnetdrift-newline category=newline-boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-hollowcrest-semicolon category=semicolon-boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-indigoquill-url category=url-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-juniperturn-navigation category=navigation-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-kilnmeadow-metadata category=metadata-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-larchsocket-nonfactual category=nonfactual-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v7-marblecanopy-maker-split category=maker-other-target expected_relevant=false disposition=Ambiguous relation=Unresolved
+
+thread 'independently_authored_launch_source_controls_v7' panicked at crates/reasoning-harness-core/tests/launch_independent_514_515_v7.rs:97:5:
+independent control failures: ["v7-driftloom-ga", "v7-kestrelmint-region", "v7-mossdial-direct", "v7-nacrecoil-uppercase", "v7-orin-dot-names", "v7-quillbasin-time", "v7-saffronwake-combination"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    independently_authored_launch_source_controls_v7
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.57s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_independent_514_515_v7`
