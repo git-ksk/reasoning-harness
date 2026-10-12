@@ -74,7 +74,7 @@ negative/uncertain/simulated/question cases, same-name other-provider and docume
 subjects, statement/signal isolation, nonfactual-only signals, missing or
 conflicting bindings, identity/scope risks, and question/entity boundaries.
 
-Final source `91f93990e6e248a00aa594ff31006889ebd7c15b` passed the full locked
+Previously reviewed source `91f93990e6e248a00aa594ff31006889ebd7c15b` passed the full locked
 offline workspace on Rust 1.88 / macOS: **1,466 passed, 0 failed, 6 existing
 ignored**, including all 288 existing #514/#515 v1-v9 regression controls.
 Format, diff checks and strict all-target workspace Clippy pass. The standard
@@ -97,3 +97,49 @@ hashes, commands, counts and verification limits are in the adjacent
 `local-validation.json`. Exact-head cross-platform GitHub checks are a separate
 merge gate. This record does not claim live-provider, integration or release
 acceptance.
+
+## Follow-up: raw punctuation and documentary context
+
+The continuation review reproduced 21 newly introduced false positives on that
+previous source: six unsupported raw forms, twelve denial/simulation/retraction
+contexts in headings, titles or structured metadata, and three alternate-service
+Lambda naming contexts in those same signal kinds. All 21 were `Ambiguous`
+under historical v29 and incorrectly `Relevant` under the previous v30. Exact
+inputs and original outputs are preserved in
+`evaluation/bilingual-preparation-512-followup/`.
+
+The successor proof now validates raw source punctuation before normalization.
+Only alphabetic source words, whitespace, supported statement boundaries,
+hyphenated pre-initialization spellings and commas at the supported setup/leading
+adjunct boundary can enter the bounded grammar. Strikethrough, negation symbols,
+quotes, arbitrary comma joins and other unsupported syntax cannot be erased into
+an affirmative predicate. The public AWS setup condition and supported owned
+pre-initialization variants still recover.
+
+Titles, headings and structured metadata remain unable to supply positive proof.
+Explicit bounded English denial, uncertainty, simulation and retraction cues,
+common negation/strikethrough symbols, instruction markers and explicit local
+service/product naming frames can now withhold the successor recovery. These
+checks never establish an absent or different relation. Ordinary FAQ/configuration
+titles remain allowed; URL and navigation wording do not govern the excerpt.
+This is still bounded recognition, not arbitrary discourse or multilingual
+context understanding. Neutral documentary text containing a blocking word may
+conservatively abstain.
+
+The prior independent reviewer corpus and report remain unchanged. Its row 118
+contains `This claim is false.` as structured metadata but originally expected
+`Relevant`. This continuation deliberately abstains on that explicit disclaimer;
+it does not rewrite the old expectation or describe a replay as fresh independent
+review. Updated source/test hashes and final validation are recorded separately
+in `evaluation/bilingual-preparation-512-followup/validation.json`. The earlier
+independent review applies to the earlier source, not to these follow-up edits.
+
+Follow-up source `a058277` passes the full locked offline workspace: **1,468
+passed, 0 failed, 6 existing ignored**. The eight public #512 test groups, all
+288 existing Launch controls, strict workspace Clippy, formatting, the 20 standard
+fixtures and the 13-file historical archive verification pass. All 21 new
+regressions now remain `Ambiguous`. Prior reviewer expectations match on 132/133
+rows, with only the intentional row 118 difference above; historical v16/v29
+outputs match on all 133 rows, and four Launch control outputs are unchanged.
+These follow-up checks are local deterministic validation, not new independent
+review, live-provider acceptance or a release.

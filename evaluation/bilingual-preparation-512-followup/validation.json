@@ -1,0 +1,117 @@
+{
+  "schema": "reasoning-harness-local-validation-v1",
+  "source_commit": "a058277fc71db7afef84b2dadf78851e813ddbdd",
+  "verified_at_utc": "2026-10-12T23:12:10.958088+00:00",
+  "source": {
+    "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "sha256": "e2b78736033a236778581ccdaa3d2d5137b599f9b76d4a4cb54b37914c58a76b"
+  },
+  "public_test": {
+    "path": "crates/reasoning-harness-core/tests/bilingual_preparation_512.rs",
+    "sha256": "2db3103fd53163c04dd59f096005474c94905336051f0e5b2886cac1719d4bfc",
+    "passed_groups": 8
+  },
+  "base_main": "2bfd31f78008f11fe48b634ffa6e630a058c3e15",
+  "before": {
+    "reviewed_source_commit": "91f93990e6e248a00aa594ff31006889ebd7c15b",
+    "branch_head": "48a437f4345bc756459848ee5e3ee813b1237170",
+    "source_sha256": "6bca09c427073c0bf49cccf3440812e020483814c99ced72a87adefcf107ff9c",
+    "regression_cases": 21,
+    "v29_relevant": 0,
+    "v30_relevant": 21,
+    "method": "Root-authored development probes replayed against the byte-verified previous source; not independent holdout."
+  },
+  "after": {
+    "regression_cases": 21,
+    "v30_ambiguous": 21,
+    "v30_relevant": 0
+  },
+  "environment": {
+    "platform": "macOS",
+    "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+    "cargo_offline": true,
+    "oauth_loopback_tests": "Full workspace ran outside sandbox local-listener restriction."
+  },
+  "commands": [
+    "cargo fmt --all --check",
+    "git diff --check",
+    "CARGO_BUILD_JOBS=2 CARGO_INCREMENTAL=0 cargo test --offline --locked --workspace --no-fail-fast -- --test-threads=1",
+    "CARGO_BUILD_JOBS=2 CARGO_INCREMENTAL=0 cargo clippy --offline --locked --workspace --all-targets -- -D warnings",
+    "cargo run --offline --locked -q -p reasoning-harness-cli --bin reason -- eval fixtures --format json",
+    "python3 scripts/verify_engine_0_7_independent_v1_archive.py"
+  ],
+  "workspace": {
+    "passed": 1468,
+    "failed": 0,
+    "existing_ignored": 6,
+    "filtered_out": 0,
+    "test_binaries_including_doc_tests": 157,
+    "log_sha256": "fc74799c74ccf473c2efc5aa6ca3b74a0c5f47846b841ca03c4ec0cd43880c9e"
+  },
+  "format": "PASS",
+  "diff_check": "PASS",
+  "strict_workspace_all_targets_clippy": {
+    "status": "PASS",
+    "log_sha256": "48bf2e84f8d0707fff247effa74a3f5026abff250bb5b0e22a4f15ff55d34101"
+  },
+  "fixtures": {
+    "cases": 20,
+    "harness_accuracy": 1.0,
+    "unsupported_accepted_claims": 0,
+    "log_sha256": "808579a083c50b2fb107df3e87e19332825af73367981cc629e5d162fce4ffdf"
+  },
+  "existing_launch_v1_v9_regressions": {
+    "controls": 288,
+    "passed": 288,
+    "fresh_for_this_candidate": false
+  },
+  "prior_reviewer_replay": {
+    "rows": 133,
+    "original_expectation_matches": 132,
+    "historical_v16_v29_differences": 0,
+    "launch_controls_unchanged": 4,
+    "intentional_difference": {
+      "id": 118,
+      "original_expected_relevant": true,
+      "before_v30": "relevant",
+      "after_v30": "ambiguous",
+      "reason": "Explicit This claim is false. structured metadata now withholds successor recovery. Original input and expectation are unchanged."
+    },
+    "fresh_independent_review": false
+  },
+  "frozen_archive": {
+    "archive_verified": true,
+    "files_with_exact_sha256": 13,
+    "frozen_score_recomputed": true,
+    "independent_synthetic_gate_pass": true,
+    "providers": {
+      "google": 6,
+      "groq": 6,
+      "mistral": 3
+    },
+    "run_id": 38013006323
+  },
+  "byte_identical_to_base_main": [
+    "normalized",
+    "requested_relation_locally_present",
+    "derive_effective_evidence_local_qualification_v16",
+    "materialize_evidence_relevance_v29",
+    "Cargo.toml",
+    "Cargo.lock",
+    "crates/reasoning-harness-core/Cargo.toml",
+    "crates/reasoning-harness-cli/Cargo.toml"
+  ],
+  "artifacts": {
+    "previous-review-cases.json": "e05f9e20f42f1bf777f10c28f3b8cbf12a2cbad7332ecf3746082e45d77534b2",
+    "previous-review-replay.json": "ccfd44d62c4f2cd9fce79e4d9c960212ea3923ea0bcd80fa50cadc15374c50cf",
+    "before-results.jsonl": "42c6bf2b70e570059612104ad5b4291e3af2f308e110c3d4f8ecd18e259122f4",
+    "regression-cases.json": "885e0c6f5aa40706f78a7615695d8a1e1581530a266be21cf9e202b5facb0172",
+    "after-results.jsonl": "09ab6142ec24305b168ac20449d2e14ddd321ce09d3fccf0a8968b3ef9b16132"
+  },
+  "scope_limits": [
+    "Development probes and regression replays only; no new independent review or unseen holdout. Earlier independent review applies to its earlier source.",
+    "Documentary guards recognize bounded English terms and naming frames; unsupported or neutral blocking-word context can conservatively abstain.",
+    "No live-provider, external integration, deployment or release acceptance.",
+    "Latest-head cross-platform CI is recorded separately in GitHub PR checks; local validation does not assert CI status."
+  ]
+}
