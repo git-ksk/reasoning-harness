@@ -1,0 +1,398 @@
+{
+  "suite_id": "launch-514-515-independent-v8",
+  "candidate_sha": "23284e2c40dabbcec4d436ff5250c17cf2452fdc",
+  "cases": [
+    {
+      "id": "v8-p01-velqora",
+      "target": "Velqora 4.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Velqora 4.2 was launched."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct-past-launch"
+    },
+    {
+      "id": "v8-p02-nesvanta",
+      "target": "Nesvanta 6.0",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Today, Nesvanta 6.0 has been launched globally."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "present-perfect-global"
+    },
+    {
+      "id": "v8-p03-ildren",
+      "target": "Ildren 2.7",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "As of 2026-09-04, Ildren 2.7 is generally available to all registered customers."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "dated-customer-ga"
+    },
+    {
+      "id": "v8-p04-quorvessa",
+      "target": "Quorvessa 5.1",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "On 2026-08-19, Quorvessa 5.1 is now generally available in all supported regions."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "dated-regional-ga"
+    },
+    {
+      "id": "v8-p05-zelmori",
+      "target": "Zelmori 8.4",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zelmori 8.4 became generally available in Europe."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "became-geographic-ga"
+    },
+    {
+      "id": "v8-p06-avenquix",
+      "target": "Avenquix 3.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vendor has made Avenquix 3.8 generally available to all developers."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-developer-ga"
+    },
+    {
+      "id": "v8-p07-draxivel",
+      "target": "Draxivel 7.0",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vendor has made the latest version of Draxivel 7.0 from Norqet.Labs generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-dotted-maker"
+    },
+    {
+      "id": "v8-p08-torvemi",
+      "target": "Torvemi.Core 1.4",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Torvemi.Core 1.4 is now generally available worldwide."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "dotted-target-worldwide"
+    },
+    {
+      "id": "v8-p09-elnovar",
+      "target": "Elnovar 9.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Release confirmed: Elnovar 9.2 was launched with import tools included."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "confirmed-import-tools"
+    },
+    {
+      "id": "v8-p10-urvexa",
+      "target": "Urvexa 2.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Urvexa 2.6 has been launched with migration assistance included."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "launch-migration-assistance"
+    },
+    {
+      "id": "v8-p11-caldrivo",
+      "target": "Caldrivo 4.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Caldrivo 4.8 is generally available with no extra fees."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "ga-no-extra-fees"
+    },
+    {
+      "id": "v8-p12-vensori",
+      "target": "Vensori 6.3",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "11:35 UTC today, Vensori 6.3 became generally available to all workspaces."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "clock-workspace-ga"
+    },
+    {
+      "id": "v8-n01-ravonel",
+      "target": "Ravonel 2.4",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The document titled \"Ravonel 2.4 Launch Notes\" is now generally available to all users. Ravonel 2.4 itself remains in a staff-only build channel."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "document-subject"
+    },
+    {
+      "id": "v8-n02-morvexa",
+      "target": "Morvexa 8.2",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Morvexa 8.2 comparison bulletin"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Brinel 5.3 is now generally available worldwide. The comparison table also lists Morvexa 8.2, whose release remains pending."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "competitor-launch"
+    },
+    {
+      "id": "v8-n03-nadvora",
+      "target": "Nadvora 3.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Nadvora 3.6 has not been launched. The editor removed the false sentence \"Nadvora 3.6 was launched\" from yesterday's draft."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "explicit-denial"
+    },
+    {
+      "id": "v8-n04-selvion",
+      "target": "Selvion 9.1",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Whether Selvion 9.1 is generally available is still unverified. This bulletin records an unresolved rumor and offers no release confirmation."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "unresolved-doubt"
+    },
+    {
+      "id": "v8-n05-talvera",
+      "target": "Talvera 6.4",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "If Talvera 6.4 is generally available, the procurement team may begin enrollment. The condition has not been met: enrollment is closed and the release gate is pending."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "unmet-condition"
+    },
+    {
+      "id": "v8-n06-povarek",
+      "target": "Povarek 1.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Povarek 1.8 will be launched on 2027-02-16. Until that scheduled date, the stable release remains unavailable to customers."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "future-plan"
+    },
+    {
+      "id": "v8-n07-orvessa",
+      "target": "Orvessa 7.5",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The Orvessa 7.5 preview is now generally available to all developers. This announcement covers the preview channel only; the stable Orvessa 7.5 release has not launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "preview-only"
+    },
+    {
+      "id": "v8-n08-jenqora",
+      "target": "Jenqora 4.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "This recovery simulation uses an invented announcement: \"Jenqora 4.6 has been launched worldwide.\" The sentence is exercise data, and no product availability changed."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "simulation-quote"
+    },
+    {
+      "id": "v8-n09-denvora",
+      "target": "Denvora 2.9",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Is Denvora 2.9 now generally available? Has Denvora 2.9 been launched? These questions remain unanswered in the support thread."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "unanswered-questions"
+    },
+    {
+      "id": "v8-n10-yalvix",
+      "target": "Yalvix 4.1",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Yalvix 4.1"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Yalvix 4.1 remains under internal testing. Separate product update: Cenvarel 2.0 was launched globally."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "statement-boundary-borrowing"
+    },
+    {
+      "id": "v8-n11-iscora",
+      "target": "Iscora 3.7",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Iscora 3.7 was launched"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "title-only"
+    },
+    {
+      "id": "v8-n12-felnix",
+      "target": "Felnix 8.0",
+      "signals": [
+        {
+          "kind": "navigation_or_footer",
+          "text": "Home | Felnix 8.0 is generally available | Account | Contact"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "navigation-only"
+    },
+    {
+      "id": "v8-n13-winora",
+      "target": "Winora 5.6",
+      "signals": [
+        {
+          "kind": "canonical_url",
+          "text": "https://bulletin.example.invalid/winora-5.6-is-now-generally-available"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "url-only"
+    },
+    {
+      "id": "v8-n14-olvendi",
+      "target": "Olvendi 1.9",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The proposed conference session title is \"Olvendi 1.9 is now generally available.\" The organizers selected it as a discussion prompt; the agenda makes no factual release claim."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "agenda-title-quotation"
+    },
+    {
+      "id": "v8-n15-sarquel",
+      "target": "Sarquel 7.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "If Sarquel 7.2 had been launched in September, customers would already have received invitations. That counterfactual does not describe the actual release status, which remains pending."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "counterfactual-release"
+    },
+    {
+      "id": "v8-n16-brelvani",
+      "target": "Brelvani 3.1",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The requested future outcome is: \"Brelvani 3.1 is generally available to all users.\" This is an aspiration in the planning memo; the product is currently restricted to staff."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "aspirational-outcome"
+    },
+    {
+      "id": "v8-n17-qelmora",
+      "target": "Qelmora 6.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Unapproved announcement draft: \"Qelmora 6.8 was launched with import tools included.\" The draft is held for a future release, and the launch gate is still closed."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "unapproved-future-draft"
+    },
+    {
+      "id": "v8-n18-norizan",
+      "target": "Norizan 4.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Norizan 4.1 is generally available worldwide. Its successor, Norizan 4.2, remains in private testing and has no announced launch date."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "adjacent-version-mismatch"
+    },
+    {
+      "id": "v8-n19-marovia",
+      "target": "Marovia 9.4",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The user guide for Marovia 9.4 was launched today. The guide is a public documentation resource; Marovia 9.4 remains an internal product build."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "guide-object-launch"
+    },
+    {
+      "id": "v8-n20-renlora",
+      "target": "Renlora 2.5",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Vendor has made the Renlora 2.5 evaluation questionnaire generally available to all customers. Renlora 2.5 itself is still available only to staff."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "vendor-object-mismatch"
+    }
+  ]
+}

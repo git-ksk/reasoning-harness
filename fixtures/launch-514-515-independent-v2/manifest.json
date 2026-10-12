@@ -1,0 +1,402 @@
+{
+  "suite_id": "launch-514-515-independent-v2",
+  "candidate_sha": "d10cbadb046100b885ae5b5975b7cc29e0ae4499",
+  "cases": [
+    {
+      "id": "ind-v2-01",
+      "target": "Velunara Studio",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Velunara Studio launched this morning after the final service checks completed."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_launch"
+    },
+    {
+      "id": "ind-v2-02",
+      "target": "Asterwick Grid",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Asterwick Grid has been launched, and all existing customer accounts can enable it."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_present_perfect_launch"
+    },
+    {
+      "id": "ind-v2-03",
+      "target": "Noremba Canvas",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Noremba Canvas is now generally available to every workspace owner."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_current_general_availability"
+    },
+    {
+      "id": "ind-v2-04",
+      "target": "Tesselune Vault",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Tesselune Vault became generally available on 8 September after its preview ended."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_past_general_availability"
+    },
+    {
+      "id": "ind-v2-05",
+      "target": "Quindara Relay",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The vendor has made Quindara Relay generally available across all supported regions."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_vendor_made_available"
+    },
+    {
+      "id": "ind-v2-06",
+      "target": "Cindova.Mesh",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Cindova.Mesh launched today with its standard commercial plan."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_dotted_target"
+    },
+    {
+      "id": "ind-v2-07",
+      "target": "Falunex Harbor",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Toravel.Systems has made Falunex Harbor generally available to new and existing customers."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_dotted_vendor"
+    },
+    {
+      "id": "ind-v2-08",
+      "target": "Braskora 4.7",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Braskora 4.7 launched on Tuesday, replacing the previous stable release."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_numeric_version"
+    },
+    {
+      "id": "ind-v2-09",
+      "target": "Elnavera.Core 2.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Elnavera.Core 2.6 has been launched for production use."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_dotted_target_with_numeric_version"
+    },
+    {
+      "id": "ind-v2-10",
+      "target": "Pruvenca Atlas",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The latest version of Pruvenca Atlas launched this week following a completed public preview."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_bounded_latest_version_launch"
+    },
+    {
+      "id": "ind-v2-11",
+      "target": "Jorulith Desk",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The latest version of Jorulith Desk is now generally available to all subscribers."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_bounded_latest_version_availability"
+    },
+    {
+      "id": "ind-v2-12",
+      "target": "Vesparin.Signal 5.2",
+      "signals": [
+        {
+          "kind": "structured_metadata",
+          "text": "Availability statement: Novatrixa.Labs has made the latest version of Vesparin.Signal 5.2 generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_metadata_dotted_vendor_target_and_version"
+    },
+    {
+      "id": "ind-v2-13",
+      "target": "Grevona Loom",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The Grevona Loom documentation portal launched on Monday; the application itself remains in a private trial."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "target_modifier_documentation_subject"
+    },
+    {
+      "id": "ind-v2-14",
+      "target": "Beldorin Forge",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Beldorin Forge rival Cevunza Engine launched yesterday with a free starter tier."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "target_modifier_competitor_subject"
+    },
+    {
+      "id": "ind-v2-15",
+      "target": "Mavrelia Point",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The statement that Mavrelia Point launched on Friday is false; the team is still running closed tests."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "falsified_embedded_target_launch_claim"
+    },
+    {
+      "id": "ind-v2-16",
+      "target": "Ostravex Dock",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The vendor denied the report that Ostravex Dock has been launched and confirmed that no release has occurred."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "denied_embedded_target_launch_report"
+    },
+    {
+      "id": "ind-v2-17",
+      "target": "Pendulora Arc",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The claim that the Pendulora Arc documentation launched yesterday was fabricated; even that documentation remains unpublished."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "falsified_claim_with_documentation_subject"
+    },
+    {
+      "id": "ind-v2-18",
+      "target": "Nivorune Frame",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The report that Nivorune Frame competitor Talvexa Board launched this week was denied by both vendors."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "denied_report_with_competitor_subject"
+    },
+    {
+      "id": "ind-v2-19",
+      "target": "Kelvoria Trace",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The announcement saying that the Kelvoria Trace training package has been launched was inaccurate and has been withdrawn."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "falsified_announcement_with_training_package_subject"
+    },
+    {
+      "id": "ind-v2-20",
+      "target": "Dornavelle Hub",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Editors retracted the assertion that the Dornavelle Hub migration helper is now generally available because the helper is still undergoing internal review."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "retracted_availability_claim_with_helper_subject"
+    },
+    {
+      "id": "ind-v2-21",
+      "target": "Sorevian Flow",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Analysts think Sorevian Flow may have launched, but its vendor says it has not launched and remains in testing."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "speculation_and_explicit_negation"
+    },
+    {
+      "id": "ind-v2-22",
+      "target": "Zelmora Panel",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Has Zelmora Panel launched, or is the team still preparing its public release?"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "launch_question"
+    },
+    {
+      "id": "ind-v2-23",
+      "target": "Calveriq Stack",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Suppose the latest version of Calveriq Stack launched next week: the support team would need a larger onboarding rota."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "hypothetical_latest_version_launch"
+    },
+    {
+      "id": "ind-v2-24",
+      "target": "Arvenica Switch",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "If customer trials finish successfully, Arvenica Switch will become generally available in December."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "conditional_future_availability"
+    },
+    {
+      "id": "ind-v2-25",
+      "target": "Firvanta Kit",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ordelune Kit launched for enterprise customers, while its sibling Firvanta Kit remains restricted to invited testers."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "sibling_product_launch"
+    },
+    {
+      "id": "ind-v2-26",
+      "target": "Dexalune Sync",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Dexalune Sync is undergoing a closed evaluation with six customers."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Its competitor, Lumivex Portal, launched after completing its own public preview."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "crossed_signal_subject_ownership"
+    },
+    {
+      "id": "ind-v2-27",
+      "target": "Varelinx Queue",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Varelinx Queue remains invite-only. Noscadra Desk launched on Monday for all customers."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "crossed_sentence_subject_ownership"
+    },
+    {
+      "id": "ind-v2-28",
+      "target": "Huvoria Beacon",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Huvoria Beacon was demonstrated to a small research group, and Pelunex Beacon is now generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "crossed_clause_subject_ownership"
+    },
+    {
+      "id": "ind-v2-29",
+      "target": "Talveniq",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "TalveniqHub launched on Wednesday with a desktop installer."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "ascii_target_boundary"
+    },
+    {
+      "id": "ind-v2-30",
+      "target": "Fenrila",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "FenrilaＡ launched on Wednesday with a desktop installer."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "full_width_target_boundary"
+    },
+    {
+      "id": "ind-v2-31",
+      "target": "Yoventra Field",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Yoventra Field launched today"
+        },
+        {
+          "kind": "excerpt",
+          "text": "This page collects archived design studies and supplies no release status."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "source_title_only_launch_authority"
+    },
+    {
+      "id": "ind-v2-32",
+      "target": "Ulnavera Node",
+      "signals": [
+        {
+          "kind": "navigation_or_footer",
+          "text": "Ulnavera Node is now generally available"
+        },
+        {
+          "kind": "fact",
+          "text": "Ulnavera Node remains in an invitation-only research trial."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "navigation_only_launch_authority"
+    }
+  ]
+}

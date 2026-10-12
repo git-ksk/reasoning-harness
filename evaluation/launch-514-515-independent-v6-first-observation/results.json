@@ -1,0 +1,263 @@
+{
+  "suite_id": "launch-514-515-independent-v6",
+  "candidate_sha": "4d4142c416f53924794bd456499a77ce0d0d8c03",
+  "corpus_declared_candidate_sha": "21ae38ecea8d6194354386301f836b8d04e9e205",
+  "frozen_corpus_commit": "e66b539",
+  "evaluator_sha": "f7cb9d89ad76b7870739f55c7da69cdfc691a727",
+  "manifest_sha256": "45953cc0417bcdd362f2abcc8c1a9fb9bfe8400858a29076a3431db5f3c8e54b",
+  "first_observation": true,
+  "evaluated": 30,
+  "passed": 29,
+  "total": 32,
+  "unexecuted": [
+    "v6-f19",
+    "v6-f20"
+  ],
+  "execution_error": "Unsupported navigation enum supplied by authoring task specification; evaluator aborted before final two cases. Original result is partial and not a successful acceptance gate.",
+  "false_positives": [],
+  "false_negatives": [
+    "v6-t07"
+  ],
+  "cases": [
+    {
+      "id": "v6-t01",
+      "category": "direct_completed_launch",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-t02",
+      "category": "direct_completed_launch_dotted_target",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-t03",
+      "category": "direct_current_general_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-t04",
+      "category": "direct_completed_general_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-t05",
+      "category": "vendor_made_target_generally_available",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-t06",
+      "category": "vendor_made_latest_version_generally_available",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-t07",
+      "category": "vendor_made_target_from_maker_generally_available",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "v6-t08",
+      "category": "vendor_made_latest_target_from_maker_generally_available",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-t09",
+      "category": "direct_target_launch_with_vendor",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-t10",
+      "category": "direct_target_has_been_launched_with_vendor",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-t11",
+      "category": "direct_target_general_availability_with_vendor",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-t12",
+      "category": "direct_target_completed_general_availability_with_rollout",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v6-f01",
+      "category": "documentation_is_launched_subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f02",
+      "category": "competitor_launch_target_is_object",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f03",
+      "category": "guide_launch_target_is_document_topic",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f04",
+      "category": "unrelated_sibling_predicate",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f05",
+      "category": "explicit_denial",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f06",
+      "category": "launch_claim_marked_false",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f07",
+      "category": "doubtful_unconfirmed_availability",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f08",
+      "category": "speculative_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f09",
+      "category": "conditional_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f10",
+      "category": "future_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f11",
+      "category": "private_preview_only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f12",
+      "category": "simulated_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f13",
+      "category": "question_only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f14",
+      "category": "separate_sentence_borrowed_predicate",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f15",
+      "category": "separate_clause_borrowed_predicate",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f16",
+      "category": "separate_signal_borrowed_predicate",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f17",
+      "category": "source_title_only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v6-f18",
+      "category": "heading_only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    }
+  ]
+}

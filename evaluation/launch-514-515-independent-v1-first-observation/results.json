@@ -1,0 +1,273 @@
+{
+  "suite_id": "launch-514-515-independent-v1",
+  "candidate_sha": "a6b6f94e93672409727ea5f6224f8c6ccfa41d58",
+  "frozen_corpus_commit": "32b67df",
+  "evaluator_sha": "e3959f59a046532fcf8c3c1dc3ccc8a1e93ca4a5",
+  "manifest_sha256": "50175147fb8583071be99e69fef965c480693bad82c5a45b4fd7097be101efe3",
+  "first_observation": true,
+  "passed": 30,
+  "total": 32,
+  "false_positives": [
+    "lc-020",
+    "lc-021"
+  ],
+  "false_negatives": [],
+  "cases": [
+    {
+      "id": "lc-001",
+      "category": "direct_launch",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-002",
+      "category": "completed_launch",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-003",
+      "category": "current_general_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-004",
+      "category": "completed_general_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-005",
+      "category": "vendor_made_available",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-006",
+      "category": "dotted_product_launch",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-007",
+      "category": "dotted_vendor_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-008",
+      "category": "decimal_version_launch",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-009",
+      "category": "decimal_version_completed_launch",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-010",
+      "category": "dotted_product_decimal_version",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-011",
+      "category": "dated_general_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-012",
+      "category": "dotted_vendor_decimal_version",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "lc-013",
+      "category": "question",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-014",
+      "category": "negated_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-015",
+      "category": "negated_general_availability",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-016",
+      "category": "uncertainty",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-017",
+      "category": "rumor",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-018",
+      "category": "conditional_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-019",
+      "category": "sibling_product_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-020",
+      "category": "documentation_launch",
+      "expected_relevant": false,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": false
+    },
+    {
+      "id": "lc-021",
+      "category": "documentation_availability",
+      "expected_relevant": false,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": false
+    },
+    {
+      "id": "lc-022",
+      "category": "mixed_clause_owners",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-023",
+      "category": "split_sentence_owners",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-024",
+      "category": "semicolon_clause_boundary",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-025",
+      "category": "full_width_sentence_boundary",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-026",
+      "category": "full_width_exclamation_boundary",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-027",
+      "category": "title_only_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-028",
+      "category": "navigation_only_availability",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-029",
+      "category": "cross_signal_owner_borrowing",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-030",
+      "category": "cross_signal_split_evidence",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-031",
+      "category": "canceled_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "lc-032",
+      "category": "future_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    }
+  ]
+}

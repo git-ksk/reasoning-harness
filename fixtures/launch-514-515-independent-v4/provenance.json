@@ -1,0 +1,14 @@
+{
+  "suite_id": "launch-514-515-independent-v4",
+  "candidate_sha": "6c5f9140e885da5dc75733b47d0adae4468e23a9",
+  "evaluator_frozen_sha": "94083cd104be6880688ef07ef586c40e292eeca4",
+  "author": "independent_launch_corpus_v4 subagent with fork_turns=none",
+  "independence": "Author used only task specification and confirmed no repository, implementation, prior corpus, agent or engine-result access; no evaluation performed.",
+  "authorship": "synthetic deterministic controls, not live-provider observations or external human review",
+  "case_count": 32,
+  "positive_count": 12,
+  "negative_count": 20,
+  "manifest_sha256": "faf392ac7913451281da6f70d698dbe76d299ae71e049cac1dd544623f100010",
+  "frozen_at_utc": "2026-10-12T00:41:50.824058+00:00",
+  "protocol": "Source and evaluator frozen before authoring; exact corpus committed before first evaluation; preserve first outcome and labels. Positive frame families are confined to the original passive launch and general-availability feature contract, with temporal/dotted variants; adversarial ownership/denial controls remain fresh."
+}

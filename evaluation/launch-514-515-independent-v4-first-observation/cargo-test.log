@@ -1,0 +1,52 @@
+    Blocking waiting for file lock on build directory
+   Compiling reasoning-harness-core v0.7.0 (/Users/sawadakousuke/x-code/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 3m 07s
+     Running tests/launch_independent_514_515_v4.rs (/private/tmp/cloud-review-cargo-target/debug/deps/launch_independent_514_515_v4-be547e5f868c6fe5)
+
+running 1 test
+positive-01 category=direct_target_was_launched expected_relevant=true disposition=Relevant relation=RequestedRelation
+positive-02 category=direct_target_has_been_launched_decimal expected_relevant=true disposition=Relevant relation=RequestedRelation
+positive-03 category=direct_target_now_generally_available_decimal expected_relevant=true disposition=Relevant relation=RequestedRelation
+positive-04 category=direct_target_became_generally_available_dated expected_relevant=true disposition=Relevant relation=RequestedRelation
+positive-05 category=direct_target_leading_year_adjunct expected_relevant=true disposition=Relevant relation=RequestedRelation
+positive-06 category=direct_target_on_may_date expected_relevant=true disposition=Relevant relation=RequestedRelation
+positive-07 category=vendor_has_made_target_generally_available expected_relevant=true disposition=Relevant relation=RequestedRelation
+positive-08 category=vendor_has_made_latest_version_generally_available expected_relevant=true disposition=Relevant relation=RequestedRelation
+positive-09 category=vendor_has_made_target_from_vendor_generally_available expected_relevant=true disposition=Relevant relation=RequestedRelation
+positive-10 category=dotted_vendor_and_target_generally_available expected_relevant=true disposition=Relevant relation=RequestedRelation
+positive-11 category=dotted_vendor_latest_decimal_version_from_vendor expected_relevant=true disposition=Ambiguous relation=Unresolved
+positive-12 category=direct_target_was_launched_decimal_dated expected_relevant=true disposition=Relevant relation=RequestedRelation
+negative-01 category=indirect_documentation_subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-02 category=indirect_competitor_subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-03 category=enclosing_falsification_of_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-04 category=enclosing_denial_of_has_made expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-05 category=enclosing_denial_of_latest_version_has_made expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-06 category=following_falsification_of_has_made_claim expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-07 category=speculative_may_near_decimal_and_year expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-08 category=explicit_negative_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-09 category=conditional_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-10 category=future_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-11 category=question_about_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-12 category=target_launches_another_product expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-13 category=preview_only_status expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-14 category=sibling_service_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-15 category=unrelated_predicate expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-16 category=true_ascii_sentence_boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-17 category=true_fullwidth_sentence_boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-18 category=unrelated_split_signals expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-19 category=title_heading_navigation_without_factual_authority expected_relevant=false disposition=Ambiguous relation=Unresolved
+negative-20 category=merely_advisory_metadata expected_relevant=false disposition=Ambiguous relation=Unresolved
+
+thread 'independently_authored_launch_source_controls_v4' panicked at crates/reasoning-harness-core/tests/launch_independent_514_515_v4.rs:97:5:
+independent control failures: ["positive-11"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test independently_authored_launch_source_controls_v4 ... FAILED
+
+failures:
+
+failures:
+    independently_authored_launch_source_controls_v4
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_independent_514_515_v4`

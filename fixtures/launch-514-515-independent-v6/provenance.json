@@ -1,0 +1,14 @@
+{
+  "suite_id": "launch-514-515-independent-v6",
+  "candidate_sha": "21ae38ecea8d6194354386301f836b8d04e9e205",
+  "evaluator_frozen_sha": "f7cb9d89ad76b7870739f55c7da69cdfc691a727",
+  "author": "independent_launch_corpus_v6 subagent fork_turns=none",
+  "independence": "Only supplied task specification, no repository, implementation, tests, history, prior corpus/results, browsing, other agents or Engine evaluation. Root validated schema/counts/hash only before observation.",
+  "authorship": "Synthetic controls, not live provider or external human review.",
+  "case_count": 32,
+  "positive_count": 12,
+  "negative_count": 20,
+  "manifest_sha256": "45953cc0417bcdd362f2abcc8c1a9fb9bfe8400858a29076a3431db5f3c8e54b",
+  "frozen_at_utc": "2026-10-12T09:54:59.802030+00:00",
+  "protocol": "Defer first engine evaluation until full legacy workspace and independent review pass. Any source correction based solely on legacy tests/review before first observation is recorded separately with actual source SHA; never rewrite raw corpus metadata/text/labels. If v6 observations tune source, require a new unseen corpus."
+}

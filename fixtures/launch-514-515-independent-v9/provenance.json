@@ -1,0 +1,14 @@
+{
+  "suite_id": "launch-514-515-independent-v9",
+  "candidate_sha": "506e7b1c07012f519f21cf9c1344cffd10809632",
+  "evaluator_frozen_sha": "51c40b019adec85bca67525e160ecc67c16cb6e1",
+  "author": "independent_launch_corpus_v9 subagent fork_turns=none",
+  "independence": "Only supplied public bounded feature contract, no repository, implementation, tests, documentation, history, memory, prior corpora/results, web, other agents/models or Engine evaluation. Root validated schema/counts/enums/hash only before observation.",
+  "authorship": "Synthetic deterministic controls, not live provider or external human review.",
+  "case_count": 32,
+  "positive_count": 12,
+  "negative_count": 20,
+  "manifest_sha256": "96f4c99d9f02dc2d7cfcc90489d00060fc0886c265b72f80d833057c6fa18b68",
+  "frozen_at_utc": "2026-10-12T15:01:08.420828+00:00",
+  "protocol": "Evaluator frozen before authoring; exact raw corpus committed before first Engine observation. Defer observation until independent review and full legacy regression pass. No source changes or case-content inspection since candidate freeze. Labels remain unchanged. Any correction informed by v9 requires a new unseen holdout."
+}

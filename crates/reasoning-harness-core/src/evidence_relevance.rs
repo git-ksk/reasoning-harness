@@ -1199,6 +1199,14 @@ fn target_owned_made_generally_available(
     policy: &EvidenceRelevanceTargetPolicy,
     segment: &str,
 ) -> bool {
+    target_owned_made_generally_available_with_tail_conjunction(policy, segment, false)
+}
+
+fn target_owned_made_generally_available_with_tail_conjunction(
+    policy: &EvidenceRelevanceTargetPolicy,
+    segment: &str,
+    allow_tail_conjunction: bool,
+) -> bool {
     let targets = target_identity_phrases(policy);
     if targets.is_empty() {
         return false;
@@ -1259,7 +1267,9 @@ fn target_owned_made_generally_available(
         "other",
         "and",
     ];
-    if tokens.iter().any(|word| blocking_words.contains(word))
+    if tokens
+        .iter()
+        .any(|word| blocking_words.contains(word) && (!allow_tail_conjunction || *word != "and"))
         || tokens
             .windows(4)
             .any(|window| window == ["no", "longer", "generally", "available"])
@@ -1295,6 +1305,29 @@ fn target_owned_made_generally_available(
 }
 
 fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &str) -> bool {
+    target_owned_launch_frame_with_predicates(
+        policy,
+        segment,
+        &[
+            &["is", "now", "generally", "available"],
+            &["became", "generally", "available"],
+            &["went", "live"],
+            &["was", "introduced"],
+            &["has", "been", "introduced"],
+            &["rolled", "out"],
+        ],
+        2,
+        false,
+    )
+}
+
+fn target_owned_launch_frame_with_predicates(
+    policy: &EvidenceRelevanceTargetPolicy,
+    segment: &str,
+    predicates: &[&[&str]],
+    max_distance: usize,
+    require_direct_subject: bool,
+) -> bool {
     let targets = target_identity_phrases(policy);
     let tokens = segment.split_whitespace().collect::<Vec<_>>();
     if tokens.is_empty() || targets.is_empty() {
@@ -1361,17 +1394,20 @@ fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &s
         "other",
         "and",
     ];
-    if tokens.iter().any(|word| blockers.contains(word)) {
+    if tokens.iter().enumerate().any(|(index, word)| {
+        let affirmative_no_tail = require_direct_subject
+            && index > 0
+            && tokens[index - 1] == "with"
+            && matches!(
+                &tokens[index..],
+                ["no", "usage", "restrictions"] | ["no", "extra", "fees"]
+            );
+        blockers.contains(word)
+            && (!require_direct_subject || *word != "and")
+            && !affirmative_no_tail
+    }) {
         return false;
     }
-    let predicates: &[&[&str]] = &[
-        &["is", "now", "generally", "available"],
-        &["became", "generally", "available"],
-        &["went", "live"],
-        &["was", "introduced"],
-        &["has", "been", "introduced"],
-        &["rolled", "out"],
-    ];
     targets.iter().any(|target| {
         let name = target.split_whitespace().collect::<Vec<_>>();
         !name.is_empty()
@@ -1379,14 +1415,666 @@ fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &s
                 if words != name {
                     return false;
                 }
+                if require_direct_subject && !launch_subject_prefix_v17(&tokens[..i]) {
+                    return false;
+                }
                 predicates.iter().any(|predicate| {
                     let tail = &tokens[i + name.len()..];
                     tail.windows(predicate.len())
                         .position(|window| window == *predicate)
-                        .is_some_and(|distance| distance <= 2)
+                        .is_some_and(|distance| {
+                            distance <= max_distance
+                                && (!require_direct_subject
+                                    || *predicate != ["launched"]
+                                    || intransitive_launch_tail_v17(&tail[distance + 1..]))
+                                && (!require_direct_subject
+                                    || *predicate != ["is", "generally", "available"]
+                                    || made_available_tail_v17(&tail[distance + predicate.len()..]))
+                        })
                 })
             })
     })
+}
+
+// Keep the historical tokenizer and frame vocabulary unchanged. Only the
+// v17/v30 launch floor uses these successor segments. Periods inside an exact
+// policy-owned name, a recognized maker, decimal versions, or bounded dotted
+// organization tokens are not sentence terminators. A period at a target's edge,
+// a trailing abbreviation period, or an unrecognized multi-dot continuation stays
+// a boundary.
+fn launch_factual_segments_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    value: &str,
+) -> Vec<(String, Vec<String>)> {
+    let folded = value.to_ascii_lowercase();
+    let mut names = policy
+        .entity
+        .iter()
+        .flat_map(|entity| std::iter::once(&entity.canonical_name).chain(entity.aliases.iter()))
+        .map(|name| name.to_ascii_lowercase())
+        .collect::<Vec<_>>();
+    // An exact dotted maker token before "has made" can be repeated in the
+    // target's "from MAKER" modifier. Preserve that same opaque token, even
+    // with an uppercase suffix, without joining an unknown continuation.
+    for (start, _) in folded.match_indices(" has made ") {
+        if let Some(maker) = folded[..start].split_whitespace().next_back()
+            && maker.split_once('.').is_some_and(|(left, right)| {
+                !left.is_empty()
+                    && left.chars().all(|c| c.is_ascii_alphabetic())
+                    && right.len() >= 2
+                    && right.chars().all(|c| c.is_ascii_alphabetic())
+            })
+        {
+            names.push(maker.to_owned());
+        }
+    }
+    let mut name_spans = Vec::new();
+    for name in names {
+        if name.is_empty() {
+            continue;
+        }
+        for (start, _) in folded.match_indices(&name) {
+            let end = start + name.len();
+            if !folded[..start]
+                .chars()
+                .next_back()
+                .is_some_and(char::is_alphanumeric)
+                && !folded[end..]
+                    .chars()
+                    .next()
+                    .is_some_and(char::is_alphanumeric)
+            {
+                name_spans.push(start..end);
+            }
+        }
+    }
+    let mut prepared = String::with_capacity(value.len());
+    let mut raw_segment = String::with_capacity(value.len());
+    let mut segments = Vec::new();
+    let mut finish_segment = |prepared: &mut String, raw: &mut String| {
+        let makers = launch_maker_objects_v17(raw);
+        segments.extend(
+            normalized_factual_segments(prepared)
+                .into_iter()
+                .map(|segment| (segment, makers.clone())),
+        );
+        prepared.clear();
+        raw.clear();
+    };
+    for (index, character) in value.char_indices() {
+        let keep_period = if character == '.' {
+            let inside_name = name_spans
+                .iter()
+                .any(|span| span.contains(&index) && index + 1 < span.end);
+            let name_edge = name_spans.iter().any(|span| span.end == index);
+            let decimal = value[..index]
+                .chars()
+                .next_back()
+                .is_some_and(|c| c.is_ascii_digit())
+                && value[index + 1..]
+                    .chars()
+                    .next()
+                    .is_some_and(|c| c.is_ascii_digit());
+            let token_start = value[..index]
+                .char_indices()
+                .rev()
+                .find(|(_, c)| !c.is_ascii_alphabetic() && *c != '.')
+                .map_or(0, |(position, c)| position + c.len_utf8());
+            let token_end = value[index + 1..]
+                .find(|c: char| !c.is_ascii_alphabetic() && c != '.')
+                .map_or(value.len(), |position| index + 1 + position);
+            let token = value[token_start..token_end].trim_end_matches('.');
+            let dotted_name = token.split_once('.').is_some_and(|(left, right)| {
+                !left.is_empty()
+                    && left.chars().all(|c| c.is_ascii_alphabetic())
+                    && right.len() >= 2
+                    && right.chars().all(|c| c.is_ascii_alphabetic())
+                    && index + 1 < token_start + token.len()
+            });
+            inside_name || (!name_edge && (decimal || dotted_name))
+        } else {
+            false
+        };
+        if !keep_period && ['.', ';', '\n', '\r', '!', '?', '。', '！', '？'].contains(&character)
+        {
+            finish_segment(&mut prepared, &mut raw_segment);
+        } else {
+            prepared.push(if keep_period { ' ' } else { character });
+            raw_segment.push(character);
+        }
+    }
+    finish_segment(&mut prepared, &mut raw_segment);
+    segments
+}
+
+fn target_owned_launch_fact_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    candidate
+        .signals
+        .iter()
+        .filter(|signal| {
+            matches!(
+                signal.kind,
+                EvidenceRelevanceSignalKind::Excerpt
+                    | EvidenceRelevanceSignalKind::Fact
+                    | EvidenceRelevanceSignalKind::StructuredMetadata
+            )
+        })
+        .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
+        .any(|(segment, makers)| {
+            let tokens = segment.split_whitespace().collect::<Vec<_>>();
+            if tokens.iter().enumerate().any(|(index, word)| {
+                let month_may = *word == "may"
+                    && (index == 0
+                        || ["on", "in", "since", "during", "from"].contains(&tokens[index - 1])
+                        || (index >= 2 && tokens[index - 2..index] == ["as", "of"]))
+                    && tokens.get(index + 1).is_some_and(|next| {
+                        next.parse::<u32>()
+                            .is_ok_and(|number| (1..=9999).contains(&number))
+                    })
+                    && !tokens.get(index + 2).is_some_and(|next| {
+                        ["days", "weeks", "months", "years", "hours", "minutes"].contains(next)
+                    });
+                [
+                    "may",
+                    "might",
+                    "could",
+                    "would",
+                    "maybe",
+                    "perhaps",
+                    "possibly",
+                    "potentially",
+                    "supposedly",
+                    "rumored",
+                    "rumoured",
+                    "allegedly",
+                    "reportedly",
+                    "expected",
+                    "false",
+                    "falsely",
+                    "falsehood",
+                    "untrue",
+                    "incorrect",
+                    "incorrectly",
+                    "fabricated",
+                    "fabrication",
+                    "debunked",
+                    "refuted",
+                    "refutes",
+                    "rejected",
+                    "rejects",
+                    "retracted",
+                    "retracts",
+                    "disavowed",
+                    "recanted",
+                    "inaccurate",
+                    "denial",
+                    "wrong",
+                    "erroneous",
+                    "doubt",
+                    "doubts",
+                    "doubted",
+                    "questioned",
+                    "questions",
+                    "disbelieves",
+                    "uncertain",
+                    "unsure",
+                    "unsubstantiated",
+                    "disproved",
+                    "simulation",
+                    "simulations",
+                    "simulated",
+                    "imaginary",
+                    "imagined",
+                    "pretend",
+                    "pretended",
+                    "mock",
+                    "mocked",
+                    "rehearsal",
+                    "counterfactual",
+                    "fictitious",
+                    "fake",
+                    "bogus",
+                    "hoax",
+                    "lie",
+                    "lies",
+                    "fraudulent",
+                ]
+                .contains(word)
+                    && !month_may
+            }) {
+                return false;
+            }
+            // A completed preview is temporal context for a present launch,
+            // unlike a product that is still only available in preview.
+            let segment = [
+                "after its preview ended",
+                "after the preview ended",
+                "after public preview ended",
+                "after the public preview ended",
+                "following a completed public preview",
+                "following the completed public preview",
+                "following a completed preview",
+                "after completing its preview",
+                "after completing its private preview",
+                "after completing its public preview",
+                "after completing the private preview",
+                "after completing the public preview",
+            ]
+            .iter()
+            .fold(segment, |text, context| text.replace(context, " "));
+            if segment.split_whitespace().any(|word| word == "preview") {
+                return false;
+            }
+            // Every current frame needs an owned subject or direct object.
+            // Reusing the historical permissive path would let "documentation
+            // for TARGET" borrow authority even with an adjacent predicate.
+            target_owned_made_generally_available_v17(policy, &segment, &makers)
+                || target_owned_launch_frame_with_predicates(
+                    policy,
+                    &segment,
+                    &[
+                        &["launched"],
+                        &["was", "launched"],
+                        &["has", "been", "launched"],
+                        &["is", "generally", "available"],
+                        &["is", "now", "generally", "available"],
+                        &["became", "generally", "available"],
+                        &["went", "live"],
+                        &["was", "introduced"],
+                        &["has", "been", "introduced"],
+                        &["rolled", "out"],
+                    ],
+                    0,
+                    true,
+                )
+        })
+}
+
+fn launch_product_prefix_v17(prefix: &[&str]) -> bool {
+    matches!(
+        prefix,
+        [] | ["the"]
+            | ["the", "model" | "service" | "product"]
+            | ["model" | "service" | "product"]
+            | ["the", "latest" | "new", "version", "of"]
+            | ["latest" | "new", "version", "of"]
+            | ["the", "version", "of"]
+            | ["version", "of"]
+    )
+}
+
+fn launch_subject_prefix_v17(prefix: &[&str]) -> bool {
+    if launch_product_prefix_v17(prefix) {
+        return true;
+    }
+    if let ["release", "confirmed", rest @ ..] = prefix {
+        return launch_product_prefix_v17(rest);
+    }
+    let temporal_end = launch_temporal_prefix_len_v17(prefix);
+    temporal_end > 0 && launch_product_prefix_v17(&prefix[temporal_end..])
+}
+
+fn launch_temporal_prefix_len_v17(tokens: &[&str]) -> usize {
+    let (offset, allow_clock) = match tokens {
+        [hour, minute, "utc" | "gmt", "today" | "yesterday", ..]
+            if hour.parse::<u8>().is_ok_and(|hour| hour < 24)
+                && minute.parse::<u8>().is_ok_and(|minute| minute < 60) =>
+        {
+            return 4;
+        }
+        ["today" | "yesterday" | "recently", ..] => return 1,
+        [
+            "this" | "last",
+            "morning" | "week" | "month" | "year" | "quarter",
+            ..,
+        ] => {
+            return 2;
+        }
+        ["in" | "on" | "at", ..] => (1, false),
+        ["as", "of", ..] => (2, true),
+        _ => return 0,
+    };
+    let count = tokens[offset..]
+        .iter()
+        .take_while(|word| {
+            launch_date_token_v17(word)
+                || (allow_clock && ["utc", "gmt", "today", "yesterday"].contains(word))
+        })
+        .count();
+    if count == 0 { 0 } else { offset + count }
+}
+
+fn launch_date_token_v17(token: &str) -> bool {
+    token.chars().all(|c| c.is_ascii_digit())
+        || [
+            "january",
+            "february",
+            "march",
+            "april",
+            "may",
+            "june",
+            "july",
+            "august",
+            "september",
+            "october",
+            "november",
+            "december",
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
+        ]
+        .contains(&token)
+}
+
+// Recognize the complete adjunct tail: an active launch can otherwise take a
+// delayed direct object, as in "launched in 2026 a documentation portal".
+fn intransitive_launch_tail_v17(tail: &[&str]) -> bool {
+    let temporal_end = match tail {
+        [] => return true,
+        ["for" | "with" | "after" | "replacing", ..] => 0,
+        _ => {
+            let count = launch_temporal_prefix_len_v17(tail);
+            if count == 0 {
+                return false;
+            }
+            count
+        }
+    };
+    match &tail[temporal_end..] {
+        [] => true,
+        ["for", rest @ ..] => {
+            !rest.is_empty()
+                && rest.iter().all(|word| {
+                    [
+                        "production",
+                        "use",
+                        "general",
+                        "customer",
+                        "commercial",
+                        "enterprise",
+                        "paying",
+                        "customers",
+                        "users",
+                    ]
+                    .contains(word)
+                })
+        }
+        ["with", rest @ ..] => {
+            launch_included_addon_v17(rest)
+                || (!rest.is_empty()
+                    && rest.iter().all(|word| {
+                        [
+                            "its",
+                            "the",
+                            "standard",
+                            "commercial",
+                            "plan",
+                            "subscription",
+                            "pricing",
+                            "tier",
+                        ]
+                        .contains(word)
+                    }))
+        }
+        ["after", rest @ ..] => {
+            matches!(rest.last(), Some(&("completed" | "ended")))
+                && rest.iter().all(|word| {
+                    [
+                        "the",
+                        "its",
+                        "final",
+                        "service",
+                        "checks",
+                        "testing",
+                        "completed",
+                        "ended",
+                    ]
+                    .contains(word)
+                })
+        }
+        ["replacing", rest @ ..] => {
+            matches!(rest.last(), Some(&("release" | "version" | "build")))
+                && rest.iter().all(|word| {
+                    ["the", "previous", "stable", "release", "version", "build"].contains(word)
+                })
+        }
+        _ => false,
+    }
+}
+
+fn launch_included_addon_v17(tokens: &[&str]) -> bool {
+    matches!(
+        tokens,
+        [
+            "import" | "export" | "migration",
+            "tools" | "assistance" | "support",
+            "included"
+        ]
+    )
+}
+
+fn target_owned_made_generally_available_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    segment: &str,
+    makers: &[String],
+) -> bool {
+    if !target_owned_made_generally_available_with_tail_conjunction(policy, segment, true) {
+        return false;
+    }
+    let targets = target_identity_phrases(policy);
+    let tokens = segment.split_whitespace().collect::<Vec<_>>();
+    tokens.windows(2).enumerate().any(|(start, words)| {
+        words == ["has", "made"]
+            // An embedded proposition cannot acquire affirmative authority
+            // merely because its inner object is the exact target.
+            && !tokens[..start].contains(&"that")
+            && tokens
+                .windows(2)
+                .enumerate()
+                .skip(start + 2)
+                .take(24)
+                .any(|(end, words)| {
+                    if words != ["generally", "available"]
+                        || !made_available_tail_v17(&tokens[end + 2..])
+                    {
+                        return false;
+                    }
+                    let object = &tokens[start + 2..end];
+                    targets.iter().any(|target| {
+                        let name = target.split_whitespace().collect::<Vec<_>>();
+                        !name.is_empty()
+                            && object.windows(name.len()).enumerate().any(|(i, words)| {
+                                if words != name {
+                                    return false;
+                                }
+                                let prefix = &object[..i];
+                                let suffix = &object[i + name.len()..];
+                                let direct_object = launch_product_prefix_v17(prefix);
+                                let owned_suffix = suffix.is_empty()
+                                    || (suffix.len() == 1
+                                        && ["model", "service", "product"].contains(&suffix[0]))
+                                    || (suffix.first() == Some(&"from")
+                                        && (2..=5).contains(&suffix.len())
+                                        // Match this complete raw made-object and
+                                        // its bare predicate, not another frame's
+                                        // maker or a flattened parenthetical.
+                                        && makers.contains(&object.join(" "))
+                                        && !suffix.iter().any(|word| {
+                                            [
+                                                "documentation",
+                                                "docs",
+                                                "manual",
+                                                "guide",
+                                                "pricing",
+                                                "rival",
+                                                "is",
+                                                "was",
+                                                "has",
+                                                "generally",
+                                                "available",
+                                            ]
+                                            .contains(word)
+                                        }));
+                                direct_object && owned_suffix
+                            })
+                    })
+                })
+    })
+}
+
+// Retain the complete raw object and bare predicate before normalization erases
+// ownership punctuation. A multiword maker must also occur as a bounded proper
+// subject before "has made"; unsupported modifiers abstain.
+fn launch_maker_objects_v17(value: &str) -> Vec<String> {
+    let words = value.split_whitespace().collect::<Vec<_>>();
+    let maker_lexeme =
+        |word: &str| !word.is_empty() && word.chars().all(|c| c.is_alphanumeric() || c == '.');
+    let mut makers = Vec::new();
+    for (index, pair) in words.windows(2).enumerate() {
+        if pair[0].eq_ignore_ascii_case("has") && pair[1].eq_ignore_ascii_case("made") {
+            for count in 2..=index.min(4) {
+                let name = &words[index - count..index];
+                if name.iter().all(|word| {
+                    word.chars().next().is_some_and(char::is_uppercase)
+                        && maker_lexeme(word)
+                        && !word.ends_with('.')
+                }) {
+                    makers.push(normalized(&name.join(" ")));
+                }
+            }
+        }
+    }
+    let mut objects = Vec::new();
+    for (end, pair) in words.windows(2).enumerate() {
+        if !pair[0].eq_ignore_ascii_case("generally")
+            || !pair[1]
+                .trim_end_matches(['.', ',', ';', '!', '?'])
+                .eq_ignore_ascii_case("available")
+        {
+            continue;
+        }
+        let Some(start) = words[..end].windows(2).rposition(|pair| {
+            pair[0].eq_ignore_ascii_case("has") && pair[1].eq_ignore_ascii_case("made")
+        }) else {
+            continue;
+        };
+        let object = &words[start + 2..end];
+        let Some(from) = object
+            .iter()
+            .rposition(|word| word.eq_ignore_ascii_case("from"))
+        else {
+            continue;
+        };
+        let maker = &object[from + 1..];
+        if (1..=4).contains(&maker.len())
+            && maker.iter().all(|word| maker_lexeme(word))
+            && (maker.len() == 1 || makers.contains(&normalized(&maker.join(" "))))
+        {
+            objects.push(normalized(&object.join(" ")));
+        }
+    }
+    objects
+}
+
+// Availability must be a predicate of the made-object, not an adjective on
+// another owner's equipment or an aside followed by a separate finite clause.
+fn made_available_tail_v17(tail: &[&str]) -> bool {
+    // A complete included-feature adjunct can follow a complete region or
+    // temporal adjunct. It cannot hide an additional object or finite clause.
+    let tail = if let Some(index) = tail.iter().position(|word| *word == "with") {
+        if index > 0 && launch_included_addon_v17(&tail[index + 1..]) {
+            &tail[..index]
+        } else {
+            tail
+        }
+    } else {
+        tail
+    };
+    if intransitive_launch_tail_v17(tail)
+        || matches!(
+            tail,
+            ["worldwide" | "globally" | "now"]
+                | ["with", "no", "usage", "restrictions"]
+                | ["with", "no", "extra", "fees"]
+        )
+    {
+        return true;
+    }
+    let (head, rest) = match tail {
+        [head, rest @ ..] => (*head, rest),
+        [] => return true,
+    };
+    !rest.is_empty()
+        && match head {
+            "to" | "for" => rest.iter().all(|word| {
+                [
+                    "all",
+                    "every",
+                    "new",
+                    "existing",
+                    "and",
+                    "registered",
+                    "supported",
+                    "public",
+                    "general",
+                    "production",
+                    "use",
+                    "commercial",
+                    "enterprise",
+                    "paying",
+                    "customer",
+                    "customers",
+                    "user",
+                    "users",
+                    "subscriber",
+                    "subscribers",
+                    "developer",
+                    "developers",
+                    "team",
+                    "teams",
+                    "tenant",
+                    "tenants",
+                    "organization",
+                    "organizations",
+                    "workspace",
+                    "workspaces",
+                    "owner",
+                    "owners",
+                    "students",
+                ]
+                .contains(word)
+            }),
+            "across" | "in" => {
+                matches!(
+                    rest,
+                    ["japan" | "europe" | "asia" | "africa" | "oceania" | "australia"]
+                        | ["north" | "south", "america"]
+                        | ["united", "states" | "kingdom"]
+                ) || rest.iter().all(|word| {
+                    [
+                        "all",
+                        "every",
+                        "supported",
+                        "region",
+                        "regions",
+                        "worldwide",
+                        "globally",
+                    ]
+                    .contains(word)
+                })
+            }
+            "through" | "via" => rest
+                .iter()
+                .all(|word| ["the", "customer", "portal", "console", "api"].contains(word)),
+            _ => false,
+        }
 }
 
 // Normalization removes question marks. Keep original fact-bearing signals
@@ -1410,7 +2098,7 @@ fn launch_has_target_question_in_factual_signal(
             )
         })
         .any(|signal| {
-            signal.text.contains('?')
+            signal.text.contains(['?', '？'])
                 && targets
                     .iter()
                     .any(|target| normalized(&signal.text).contains(target))
@@ -5317,6 +6005,31 @@ pub fn derive_effective_evidence_local_qualification_v17(
     let mut effective =
         derive_effective_evidence_local_qualification_v16(policy, candidate, proposal, raw)?;
 
+    // Recover only a locally proven launch from exact independent bindings and
+    // an anchored exact identity. Never clear a risk, explicit absence, or an
+    // alternate relation. This is successor-only; v16/v29 stay frozen.
+    if policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
+        && effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::ExactTarget
+        && effective.relation_scope == EvidenceLocalRelationScope::Unresolved
+        && proposal.is_some_and(|value| {
+            value.target_binding == EvidenceRelevanceBinding::Exact
+                && value.relation_binding == EvidenceRelevanceBinding::Exact
+        })
+        && raw.is_some_and(|value| {
+            value.identity_scope == Identity::ExactTarget
+                && value.relation_scope == EvidenceLocalRelationScope::RequestedRelation
+                && value.scope_risk == Risk::None
+        })
+        && anchor_match(policy, candidate).0
+        && !deterministic_strict_named_target_absence(policy, candidate)
+        && !deterministic_strict_target_relation_absence(policy, candidate)
+        && !launch_has_target_question_in_factual_signal(policy, candidate)
+        && target_owned_launch_fact_v17(policy, candidate)
+    {
+        effective.relation_scope = EvidenceLocalRelationScope::RequestedRelation;
+    }
+
     // Post-v16 positive launch authority must be target-owned and affirmative.
     // Older historical v11/v23 semantics still consume the immutable coarse
     // frames; this guard applies only to the current successor path (v17/v30).
@@ -5324,10 +6037,7 @@ pub fn derive_effective_evidence_local_qualification_v17(
         && effective.scope_risk == Risk::None
         && effective.relation_scope == EvidenceLocalRelationScope::RequestedRelation
         && (launch_has_target_question_in_factual_signal(policy, candidate)
-            || !semantic_relation_segments(candidate).iter().any(|segment| {
-                target_owned_made_generally_available(policy, segment)
-                    || target_owned_launch_frame(policy, segment)
-            }))
+            || !target_owned_launch_fact_v17(policy, candidate))
     {
         effective.relation_scope = EvidenceLocalRelationScope::Unresolved;
     }
@@ -5940,7 +6650,19 @@ pub fn materialize_evidence_relevance_v30(
         },
     });
 
-    let mut assessment = materialize_evidence_relevance_v23(
+    let materialize = if policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
+        && effective.scope_risk == EvidenceLocalBlockingReason::None
+        && effective.relation_scope == Relation::RequestedRelation
+        && target_owned_launch_fact_v17(policy, candidate)
+    {
+        // v17 supplies the source-local positive floor for this launch path.
+        // Reapplying v23's historical v11 vocabulary would erase the recovered
+        // dotted-name frame. All v22 identity/scope/materialization gates remain.
+        materialize_evidence_relevance_v22
+    } else {
+        materialize_evidence_relevance_v23
+    };
+    let mut assessment = materialize(
         policy,
         candidate,
         effective_proposal.as_ref(),

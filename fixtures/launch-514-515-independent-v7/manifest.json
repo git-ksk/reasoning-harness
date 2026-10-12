@@ -1,0 +1,414 @@
+{
+  "suite_id": "launch-514-515-independent-v7",
+  "candidate_sha": "d1b76ba2a30a492e129c787416d9ff7d6c2cbc45",
+  "cases": [
+    {
+      "id": "v7-copperfin-release",
+      "target": "Copperfin 2.4",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Copperfin release bulletin"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Copperfin 2.4 was launched on October 2, 2026."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct-date"
+    },
+    {
+      "id": "v7-driftloom-ga",
+      "target": "Driftloom 6.1",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Driftloom 6.1 is generally available to all registered customers."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "audience-ga"
+    },
+    {
+      "id": "v7-ivoryspur-vendor",
+      "target": "Ivoryspur 3.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The vendor has made the latest version of Ivoryspur 3.8 from Olvexa generally available today."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "latest-from"
+    },
+    {
+      "id": "v7-kestrelmint-region",
+      "target": "Kestrelmint 7.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Aunrix has made Kestrelmint 7.2 generally available in North America."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "regional-ga"
+    },
+    {
+      "id": "v7-lumenquay-maker",
+      "target": "Lumenquay 5.9",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Tavren Harbor Technologies has made Lumenquay 5.9 from Tavren Harbor Technologies generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "confirmed-maker"
+    },
+    {
+      "id": "v7-mossdial-direct",
+      "target": "Mossdial 1.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Mossdial 1.6 launched on 2026-09-23, with import tools included."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "launch-with"
+    },
+    {
+      "id": "v7-nacrecoil-uppercase",
+      "target": "Nacrecoil 8.3",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Release confirmed: Nacrecoil 8.3 IS GENERALLY AVAILABLE."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "casing-ga"
+    },
+    {
+      "id": "v7-orin-dot-names",
+      "target": "Orin.47 4.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The vendor has made Orin.47 4.2 from Voreli.Labs generally available as of October 6, 2026."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "dotted-maker"
+    },
+    {
+      "id": "v7-pebblearc-quoted",
+      "target": "Pebblearc 9.5",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Product update. Pebblearc 9.5 was launched on 4 October 2026. The release includes a new search panel."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "sentence-launch"
+    },
+    {
+      "id": "v7-quillbasin-time",
+      "target": "Quillbasin 2.9",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "As of 09:00 UTC today, Quillbasin 2.9 is generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "temporal-ga"
+    },
+    {
+      "id": "v7-rillforge-latest",
+      "target": "Rillforge 6.7",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zunavo has made the latest version of Rillforge 6.7 generally available to enterprise customers."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-audience"
+    },
+    {
+      "id": "v7-saffronwake-combination",
+      "target": "Saffronwake 3.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The vendor has made Saffronwake 3.2 from Dovrien generally available in Japan, with migration assistance included."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "from-with-ga"
+    },
+    {
+      "id": "v7-thistleport-other-owner",
+      "target": "Thistleport 4.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Thistleport 4.6 appears in the comparison table. Brindlehour 1.0 was launched on October 5, 2026."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "other-launch"
+    },
+    {
+      "id": "v7-umberrail-integration",
+      "target": "Umberrail 7.4",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jorvexa has made Finchrelay 2.0 generally available with an integration for Umberrail 7.4."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "other-ga"
+    },
+    {
+      "id": "v7-velvetfen-guide",
+      "target": "Velvetfen 5.3",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The deployment guide for Velvetfen 5.3 is generally available to partners."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "guide-subject"
+    },
+    {
+      "id": "v7-willowfacet-documentation",
+      "target": "Willowfacet 1.9",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The vendor has made Willowfacet 1.9 documentation generally available today."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "documentation"
+    },
+    {
+      "id": "v7-xantheloop-deadline",
+      "target": "Xantheloop 8.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The launch deadline for Xantheloop 8.6 is October 30, 2026. The product is still in internal testing."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "deadline-subject"
+    },
+    {
+      "id": "v7-yarrowdock-status",
+      "target": "Yarrowdock 2.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The status page for Yarrowdock 2.8 was launched on October 1, 2026."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "status-subject"
+    },
+    {
+      "id": "v7-zephyrplate-denial",
+      "target": "Zephyrplate 6.4",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Zephyrplate 6.4 is not generally available, and its launch has not taken place."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "explicit-denial"
+    },
+    {
+      "id": "v7-amberflume-doubt",
+      "target": "Amberflume 3.7",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Reviewers doubt that Amberflume 3.7 is generally available; no release confirmation has been received."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "doubt"
+    },
+    {
+      "id": "v7-birchhelm-question",
+      "target": "Birchhelm 9.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Has the vendor made Birchhelm 9.2 from Tavolix generally available?"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "question"
+    },
+    {
+      "id": "v7-cairnpetal-condition",
+      "target": "Cairnpetal 4.9",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "If Cairnpetal 4.9 is generally available on Friday, the support desk will extend its hours."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "conditional"
+    },
+    {
+      "id": "v7-dewspindle-simulation",
+      "target": "Dewspindle 7.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "In this simulation, Dewspindle 7.8 was launched on October 8, 2026. The real product remains unreleased."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "simulation"
+    },
+    {
+      "id": "v7-elmprism-rehearsal",
+      "target": "Elmprism 5.1",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The rehearsal script says: Elmprism 5.1 is generally available. This line is practice copy for a future announcement."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "rehearsal"
+    },
+    {
+      "id": "v7-frostharbor-sentence",
+      "target": "Frostharbor 1.7",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The vendor has made Frostharbor 1.7 from Norvulo. Its unrelated calendar widget is generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "sentence-boundary"
+    },
+    {
+      "id": "v7-garnetdrift-newline",
+      "target": "Garnetdrift 8.9",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The vendor has made Garnetdrift 8.9 from Pelvori\nThe event registration service is generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "newline-boundary"
+    },
+    {
+      "id": "v7-hollowcrest-semicolon",
+      "target": "Hollowcrest 2.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The vendor has made Hollowcrest 2.6 from Zervali; the separate invoice exporter is generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "semicolon-boundary"
+    },
+    {
+      "id": "v7-indigoquill-url",
+      "target": "Indigoquill 6.8",
+      "signals": [
+        {
+          "kind": "canonical_url",
+          "text": "https://releases.vanqora.example/indigoquill-6-8-is-generally-available"
+        },
+        {
+          "kind": "excerpt",
+          "text": "This page lists contact information for the preview program."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "url-only"
+    },
+    {
+      "id": "v7-juniperturn-navigation",
+      "target": "Juniperturn 3.6",
+      "signals": [
+        {
+          "kind": "navigation_or_footer",
+          "text": "Juniperturn 3.6 launched today | Products | Support | Legal"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The main page explains how to request an evaluation account."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "navigation-only"
+    },
+    {
+      "id": "v7-kilnmeadow-metadata",
+      "target": "Kilnmeadow 9.4",
+      "signals": [
+        {
+          "kind": "structured_metadata",
+          "text": "{\"product\":\"Kilnmeadow 9.4\",\"description\":\"Kilnmeadow 9.4 is generally available\"}"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The article discusses design goals without announcing a release."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "metadata-only"
+    },
+    {
+      "id": "v7-larchsocket-nonfactual",
+      "target": "Larchsocket 4.1",
+      "signals": [
+        {
+          "kind": "canonical_url",
+          "text": "https://alvuron.example/larchsocket-4-1-launch"
+        },
+        {
+          "kind": "navigation_or_footer",
+          "text": "Larchsocket 4.1 — Generally Available"
+        },
+        {
+          "kind": "structured_metadata",
+          "text": "launchProduct: Larchsocket 4.1; launchStatus: generally available"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "nonfactual-only"
+    },
+    {
+      "id": "v7-marblecanopy-maker-split",
+      "target": "Marblecanopy 7.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Havrel Stone Systems maintains Marblecanopy 7.6. The vendor has made the latest version of Cinderpost 2.3 from Havrel Stone Systems generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "maker-other-target"
+    }
+  ]
+}

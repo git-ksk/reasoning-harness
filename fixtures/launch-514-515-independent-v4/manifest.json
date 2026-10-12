@@ -1,0 +1,406 @@
+{
+  "suite_id": "launch-514-515-independent-v4",
+  "candidate_sha": "6c5f9140e885da5dc75733b47d0adae4468e23a9",
+  "cases": [
+    {
+      "id": "positive-01",
+      "target": "Lunivex",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Lunivex was launched."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_was_launched"
+    },
+    {
+      "id": "positive-02",
+      "target": "Ordravia 2.4",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Ordravia 2.4 has been launched."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_has_been_launched_decimal"
+    },
+    {
+      "id": "positive-03",
+      "target": "Myravel 3.7",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Myravel 3.7 is now generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_now_generally_available_decimal"
+    },
+    {
+      "id": "positive-04",
+      "target": "Voxelune 1.8",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Voxelune 1.8 became generally available on September 14, 2025."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_became_generally_available_dated"
+    },
+    {
+      "id": "positive-05",
+      "target": "Kespara",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "In 2025, Kespara was launched."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_leading_year_adjunct"
+    },
+    {
+      "id": "positive-06",
+      "target": "Selvanta",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Selvanta was launched on May 8, 2025."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_on_may_date"
+    },
+    {
+      "id": "positive-07",
+      "target": "Plenova",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Nareli has made Plenova generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor_has_made_target_generally_available"
+    },
+    {
+      "id": "positive-08",
+      "target": "Tervalon",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Umevia has made the latest version of Tervalon generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor_has_made_latest_version_generally_available"
+    },
+    {
+      "id": "positive-09",
+      "target": "Cendala",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Dovari has made Cendala from Dovari generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor_has_made_target_from_vendor_generally_available"
+    },
+    {
+      "id": "positive-10",
+      "target": "Avori.Suite",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Meriva.Cloud has made Avori.Suite generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "dotted_vendor_and_target_generally_available"
+    },
+    {
+      "id": "positive-11",
+      "target": "Kestavo 4.2",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Ruzani.Labs has made the latest version of Kestavo 4.2 from Ruzani.Labs generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "dotted_vendor_latest_decimal_version_from_vendor"
+    },
+    {
+      "id": "positive-12",
+      "target": "Vesmora 0.9",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Vesmora 0.9 was launched on October 2, 2025."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_was_launched_decimal_dated"
+    },
+    {
+      "id": "negative-01",
+      "target": "Darselin",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The Darselin integration guide was launched on June 12, 2025."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "indirect_documentation_subject"
+    },
+    {
+      "id": "negative-02",
+      "target": "Virelto",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Virelto's competitor, Palumet, was launched on August 3, 2025."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "indirect_competitor_subject"
+    },
+    {
+      "id": "negative-03",
+      "target": "Jalvori",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The report that Jalvori was launched is false."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "enclosing_falsification_of_launch"
+    },
+    {
+      "id": "negative-04",
+      "target": "Sondarel",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "It is not true that Vireva has made Sondarel generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "enclosing_denial_of_has_made"
+    },
+    {
+      "id": "negative-05",
+      "target": "Brontavi",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The vendor denied the claim that Orevix has made the latest version of Brontavi from Orevix generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "enclosing_denial_of_latest_version_has_made"
+    },
+    {
+      "id": "negative-06",
+      "target": "Terzila",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Nolvare has made Terzila generally available, but the statement was fabricated."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "following_falsification_of_has_made_claim"
+    },
+    {
+      "id": "negative-07",
+      "target": "Ulvenor 2.6",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Ulvenor 2.6 may become generally available in November 2025."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "speculative_may_near_decimal_and_year"
+    },
+    {
+      "id": "negative-08",
+      "target": "Cevrani",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Cevrani has not been launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "explicit_negative_launch"
+    },
+    {
+      "id": "negative-09",
+      "target": "Faltorin",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "If Faltorin is launched, the migration window will begin."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "conditional_launch"
+    },
+    {
+      "id": "negative-10",
+      "target": "Pervali",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Pervali will be launched on May 19, 2027."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "future_launch"
+    },
+    {
+      "id": "negative-11",
+      "target": "Denvaro",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Has Denvaro been launched?"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "question_about_launch"
+    },
+    {
+      "id": "negative-12",
+      "target": "Mirelva",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Mirelva launched the account monitor Luspani."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "target_launches_another_product"
+    },
+    {
+      "id": "negative-13",
+      "target": "Grelvani",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Grelvani entered a private preview on May 6, 2025; general availability has not been announced."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "preview_only_status"
+    },
+    {
+      "id": "negative-14",
+      "target": "Nesvoli",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Nesvoli's sibling service Arvekin was launched on July 10, 2025."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "sibling_service_launch"
+    },
+    {
+      "id": "negative-15",
+      "target": "Tarluve",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Tarluve is now compatible with single sign-on and has a public changelog."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "unrelated_predicate"
+    },
+    {
+      "id": "negative-16",
+      "target": "Omelvra",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Omelvra was audited. Pranivo was launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "true_ascii_sentence_boundary"
+    },
+    {
+      "id": "negative-17",
+      "target": "Veldora",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Veldora passed its security review。The export utility was launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "true_fullwidth_sentence_boundary"
+    },
+    {
+      "id": "negative-18",
+      "target": "Zeravon",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Zeravon was audited on April 11, 2025."
+        },
+        {
+          "kind": "fact",
+          "text": "The deployment dashboard was launched on April 11, 2025."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "unrelated_split_signals"
+    },
+    {
+      "id": "negative-19",
+      "target": "Talvori",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Talvori was launched"
+        },
+        {
+          "kind": "canonical_url",
+          "text": "https://talvori.invalid/launch"
+        },
+        {
+          "kind": "heading",
+          "text": "Talvori general availability"
+        },
+        {
+          "kind": "navigation_or_footer",
+          "text": "Launch Talvori | General availability | Product notes"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "title_heading_navigation_without_factual_authority"
+    },
+    {
+      "id": "negative-20",
+      "target": "Ervoni",
+      "signals": [
+        {
+          "kind": "structured_metadata",
+          "text": "{\"page_type\":\"announcement-template\",\"target\":\"Ervoni\",\"advisory_claim\":\"Ervoni is now generally available\",\"evidence_status\":\"unverified\"}"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "merely_advisory_metadata"
+    }
+  ]
+}

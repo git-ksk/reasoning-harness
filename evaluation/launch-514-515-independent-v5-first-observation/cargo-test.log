@@ -1,0 +1,41 @@
+   Compiling reasoning-harness-core v0.7.0 (/Users/sawadakousuke/x-code/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.88s
+     Running tests/launch_independent_514_515_v5.rs (/private/tmp/cloud-review-cargo-target/debug/deps/launch_independent_514_515_v5-621d8dcb247e1606)
+
+running 1 test
+test independently_authored_launch_source_controls_v5 ... ilv5-p01 category=target-passive-decimal expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p02 category=target-perfect-passive-decimal expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p03 category=target-current-general-availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p04 category=target-became-general-availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p05 category=vendor-dotted-lowercase-suffix expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p06 category=vendor-dotted-labs-latest-version expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p07 category=vendor-dotted-cloud-target-from-vendor expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p08 category=vendor-dotted-systems-latest-version-from-vendor expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p09 category=vendor-subject-today-adjunct expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p10 category=target-passive-calendar-date expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p11 category=target-dotted-name-and-decimal expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-p12 category=target-ordinary-general-availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+ilv5-n01 category=indirect-documentation-subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n02 category=indirect-competitor-subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n03 category=enclosing-falsification-with-that expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n04 category=enclosing-denial-without-that expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n05 category=simulated-launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n06 category=fictional-launch-report expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n07 category=speculative-may-near-numbers expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n08 category=negated-target-launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n09 category=conditional-target-launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n10 category=future-target-launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n11 category=target-launch-question expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n12 category=target-launches-another-object expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n13 category=private-preview-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n14 category=sibling-launch-unrelated-target-predicate expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n15 category=crossed-signal-ownership expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n16 category=crossed-sentence-ownership expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n17 category=crossed-clause-ownership-fullwidth-punctuation expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n18 category=metadata-only-launch-authority expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n19 category=title-and-url-only-launch-authority expected_relevant=false disposition=Ambiguous relation=Unresolved
+ilv5-n20 category=navigation-only-launch-authority expected_relevant=false disposition=Ambiguous relation=Unresolved
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s
+

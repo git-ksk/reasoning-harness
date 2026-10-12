@@ -1,0 +1,49 @@
+   Compiling reasoning-harness-core v0.7.0 (/Users/sawadakousuke/x-code/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.37s
+     Running tests/launch_independent_514_515_v6.rs (/private/tmp/cloud-review-cargo-target/debug/deps/launch_independent_514_515_v6-60185b9df8a4c6c5)
+
+running 1 test
+test independently_authored_launch_source_controls_v6 ... v6-t01 category=direct_completed_launch expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-t02 category=direct_completed_launch_dotted_target expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-t03 category=direct_current_general_availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-t04 category=direct_completed_general_availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-t05 category=vendor_made_target_generally_available expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-t06 category=vendor_made_latest_version_generally_available expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-t07 category=vendor_made_target_from_maker_generally_available expected_relevant=true disposition=Ambiguous relation=Unresolved
+v6-t08 category=vendor_made_latest_target_from_maker_generally_available expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-t09 category=direct_target_launch_with_vendor expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-t10 category=direct_target_has_been_launched_with_vendor expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-t11 category=direct_target_general_availability_with_vendor expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-t12 category=direct_target_completed_general_availability_with_rollout expected_relevant=true disposition=Relevant relation=RequestedRelation
+v6-f01 category=documentation_is_launched_subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f02 category=competitor_launch_target_is_object expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f03 category=guide_launch_target_is_document_topic expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f04 category=unrelated_sibling_predicate expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f05 category=explicit_denial expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f06 category=launch_claim_marked_false expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f07 category=doubtful_unconfirmed_availability expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f08 category=speculative_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f09 category=conditional_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f10 category=future_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f11 category=private_preview_only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f12 category=simulated_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f13 category=question_only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f14 category=separate_sentence_borrowed_predicate expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f15 category=separate_clause_borrowed_predicate expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f16 category=separate_signal_borrowed_predicate expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f17 category=source_title_only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v6-f18 category=heading_only expected_relevant=false disposition=Ambiguous relation=Unresolved
+
+thread 'independently_authored_launch_source_controls_v6' panicked at crates/reasoning-harness-core/tests/launch_independent_514_515_v6.rs:70:10:
+called `Result::unwrap()` on an `Err` value: Error("unknown variant `navigation`, expected one of `source_title`, `canonical_url`, `heading`, `excerpt`, `structured_metadata`, `navigation_or_footer`, `fact`", line: 0, column: 0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    independently_authored_launch_source_controls_v6
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.40s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_independent_514_515_v6`

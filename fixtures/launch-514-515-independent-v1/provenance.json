@@ -1,0 +1,14 @@
+{
+  "suite_id": "launch-514-515-independent-v1",
+  "candidate_sha": "a6b6f94e93672409727ea5f6224f8c6ccfa41d58",
+  "evaluator_frozen_sha": "e3959f59a046532fcf8c3c1dc3ccc8a1e93ca4a5",
+  "author": "independent_launch_corpus subagent with fork_turns=none",
+  "independence": "Author instructed not to inspect implementation, tests, documentation, history, other agents or engine results; author confirmed compliance and no evaluation.",
+  "authorship": "synthetic deterministic controls; not live-provider observations or human external review",
+  "case_count": 32,
+  "positive_count": 12,
+  "negative_count": 20,
+  "manifest_sha256": "50175147fb8583071be99e69fef965c480693bad82c5a45b4fd7097be101efe3",
+  "frozen_at_utc": "2026-10-12T00:17:49.689977+00:00",
+  "protocol": "Freeze candidate and evaluator before authoring; commit exact corpus before first evaluation; retain first result and labels regardless of outcome. If used to tune source, treat v1 as regression and create a fresh independent successor holdout for acceptance."
+}
