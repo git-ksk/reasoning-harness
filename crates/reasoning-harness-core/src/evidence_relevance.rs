@@ -1429,7 +1429,7 @@ fn target_owned_launch_frame_with_predicates(
 // v17/v30 launch floor uses these successor segments. Periods inside an exact
 // policy-owned name, a recognized maker, decimal versions, or bounded dotted
 // organization tokens are not sentence terminators. A period at a target's edge,
-// a trailing abbreviation period, or an unknown uppercase continuation stays
+// a trailing abbreviation period, or an unrecognized multi-dot continuation stays
 // a boundary.
 fn launch_factual_segments_v17(
     policy: &EvidenceRelevanceTargetPolicy,
@@ -1517,9 +1517,7 @@ fn launch_factual_segments_v17(
                 !left.is_empty()
                     && left.chars().all(|c| c.is_ascii_alphabetic())
                     && right.len() >= 2
-                    && (right.chars().all(|c| c.is_ascii_lowercase())
-                        || ["ai", "lab", "labs", "cloud", "systems", "tech"]
-                            .contains(&right.to_ascii_lowercase().as_str()))
+                    && right.chars().all(|c| c.is_ascii_alphabetic())
                     && index + 1 < token_start + token.len()
             });
             inside_name || (!name_edge && (decimal || dotted_name))

@@ -333,6 +333,11 @@ fn issue514_launch_negatives() {
 fn issue515_dotted_names_and_decimal_versions() {
     assert_cases(&[
         (
+            "Avenqor Engine 2.9",
+            "Morvessa Cloud has made Avenqor Engine 2.9 from Delyrith.Works generally available.",
+            true,
+        ),
+        (
             "GLM 5.3",
             "Amazon Bedrock has made the latest version of GLM 5.3 from Z.ai generally available. This model is a powerful option.",
             true,
@@ -395,6 +400,11 @@ fn issue515_dotted_names_and_decimal_versions() {
 #[test]
 fn issue515_punctuation_must_not_borrow_predicates() {
     assert_cases(&[
+        (
+            "Gear 4.2",
+            "The vendor has made Gear 4.2 from copper.Works are generally available to students.",
+            false,
+        ),
         (
             "Gear 4.2",
             "The vendor has made Gear 4.2 from copper.Labs, generally available to students. It is false that the vendor has made Gear 4.2 from copper.Labs generally available to students.",
