@@ -1419,6 +1419,9 @@ fn target_owned_launch_frame_with_predicates(
                                 && (!require_direct_subject
                                     || *predicate != ["launched"]
                                     || intransitive_launch_tail_v17(&tail[distance + 1..]))
+                                && (!require_direct_subject
+                                    || *predicate != ["is", "generally", "available"]
+                                    || made_available_tail_v17(&tail[distance + predicate.len()..]))
                         })
                 })
             })
@@ -1667,6 +1670,7 @@ fn target_owned_launch_fact_v17(
                         &["launched"],
                         &["was", "launched"],
                         &["has", "been", "launched"],
+                        &["is", "generally", "available"],
                         &["is", "now", "generally", "available"],
                         &["became", "generally", "available"],
                         &["went", "live"],
@@ -1697,18 +1701,35 @@ fn launch_subject_prefix_v17(prefix: &[&str]) -> bool {
     if launch_product_prefix_v17(prefix) {
         return true;
     }
-    let temporal_end = match prefix.first() {
-        Some(&("today" | "yesterday" | "recently")) => 1,
-        Some(&("in" | "on")) => {
-            1 + prefix[1..]
-                .iter()
-                .take_while(|token| launch_date_token_v17(token))
-                .count()
+    if let ["release", "confirmed", rest @ ..] = prefix {
+        return launch_product_prefix_v17(rest);
+    }
+    let temporal_end = launch_temporal_prefix_len_v17(prefix);
+    temporal_end > 0 && launch_product_prefix_v17(&prefix[temporal_end..])
+}
+
+fn launch_temporal_prefix_len_v17(tokens: &[&str]) -> usize {
+    let (offset, allow_clock) = match tokens {
+        ["today" | "yesterday" | "recently", ..] => return 1,
+        [
+            "this" | "last",
+            "morning" | "week" | "month" | "year" | "quarter",
+            ..,
+        ] => {
+            return 2;
         }
-        _ => 0,
+        ["in" | "on" | "at", ..] => (1, false),
+        ["as", "of", ..] => (2, true),
+        _ => return 0,
     };
-    temporal_end > usize::from(matches!(prefix.first(), Some(&("in" | "on"))))
-        && launch_product_prefix_v17(&prefix[temporal_end..])
+    let count = tokens[offset..]
+        .iter()
+        .take_while(|word| {
+            launch_date_token_v17(word)
+                || (allow_clock && ["utc", "gmt", "today", "yesterday"].contains(word))
+        })
+        .count();
+    if count == 0 { 0 } else { offset + count }
 }
 
 fn launch_date_token_v17(token: &str) -> bool {
@@ -1742,24 +1763,14 @@ fn launch_date_token_v17(token: &str) -> bool {
 fn intransitive_launch_tail_v17(tail: &[&str]) -> bool {
     let temporal_end = match tail {
         [] => return true,
-        ["today" | "yesterday", ..] => 1,
-        [
-            "this" | "last",
-            "morning" | "week" | "month" | "year" | "quarter",
-            ..,
-        ] => 2,
-        ["in" | "on" | "at", rest @ ..] => {
-            let count = rest
-                .iter()
-                .take_while(|token| launch_date_token_v17(token))
-                .count();
+        ["for" | "with" | "after" | "replacing", ..] => 0,
+        _ => {
+            let count = launch_temporal_prefix_len_v17(tail);
             if count == 0 {
                 return false;
             }
-            count + 1
+            count
         }
-        ["for" | "with" | "after" | "replacing", ..] => 0,
-        _ => return false,
     };
     match &tail[temporal_end..] {
         [] => true,
@@ -1781,20 +1792,21 @@ fn intransitive_launch_tail_v17(tail: &[&str]) -> bool {
                 })
         }
         ["with", rest @ ..] => {
-            !rest.is_empty()
-                && rest.iter().all(|word| {
-                    [
-                        "its",
-                        "the",
-                        "standard",
-                        "commercial",
-                        "plan",
-                        "subscription",
-                        "pricing",
-                        "tier",
-                    ]
-                    .contains(word)
-                })
+            launch_included_addon_v17(rest)
+                || (!rest.is_empty()
+                    && rest.iter().all(|word| {
+                        [
+                            "its",
+                            "the",
+                            "standard",
+                            "commercial",
+                            "plan",
+                            "subscription",
+                            "pricing",
+                            "tier",
+                        ]
+                        .contains(word)
+                    }))
         }
         ["after", rest @ ..] => {
             matches!(rest.last(), Some(&("completed" | "ended")))
@@ -1820,6 +1832,17 @@ fn intransitive_launch_tail_v17(tail: &[&str]) -> bool {
         }
         _ => false,
     }
+}
+
+fn launch_included_addon_v17(tokens: &[&str]) -> bool {
+    matches!(
+        tokens,
+        [
+            "import" | "export" | "migration",
+            "tools" | "assistance" | "support",
+            "included"
+        ]
+    )
 }
 
 fn target_owned_made_generally_available_v17(
@@ -1948,6 +1971,17 @@ fn launch_maker_objects_v17(value: &str) -> Vec<String> {
 // Availability must be a predicate of the made-object, not an adjective on
 // another owner's equipment or an aside followed by a separate finite clause.
 fn made_available_tail_v17(tail: &[&str]) -> bool {
+    // A complete included-feature adjunct can follow a complete region or
+    // temporal adjunct. It cannot hide an additional object or finite clause.
+    let tail = if let Some(index) = tail.iter().position(|word| *word == "with") {
+        if index > 0 && launch_included_addon_v17(&tail[index + 1..]) {
+            &tail[..index]
+        } else {
+            tail
+        }
+    } else {
+        tail
+    };
     if intransitive_launch_tail_v17(tail)
         || matches!(
             tail,
@@ -2002,18 +2036,25 @@ fn made_available_tail_v17(tail: &[&str]) -> bool {
                 ]
                 .contains(word)
             }),
-            "across" | "in" => rest.iter().all(|word| {
-                [
-                    "all",
-                    "every",
-                    "supported",
-                    "region",
-                    "regions",
-                    "worldwide",
-                    "globally",
-                ]
-                .contains(word)
-            }),
+            "across" | "in" => {
+                matches!(
+                    rest,
+                    ["japan" | "europe" | "asia" | "africa" | "oceania" | "australia"]
+                        | ["north" | "south", "america"]
+                        | ["united", "states" | "kingdom"]
+                ) || rest.iter().all(|word| {
+                    [
+                        "all",
+                        "every",
+                        "supported",
+                        "region",
+                        "regions",
+                        "worldwide",
+                        "globally",
+                    ]
+                    .contains(word)
+                })
+            }
             "through" | "via" => rest
                 .iter()
                 .all(|word| ["the", "customer", "portal", "console", "api"].contains(word)),

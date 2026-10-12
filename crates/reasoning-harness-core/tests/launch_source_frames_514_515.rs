@@ -76,6 +76,97 @@ fn assert_cases(cases: &[(&str, &str, bool)]) {
 }
 
 #[test]
+fn affirmative_ga_adjuncts_require_complete_owned_frames() {
+    assert_cases(&[
+        (
+            "Silver Lens",
+            "Silver Lens is generally available to all registered customers.",
+            true,
+        ),
+        (
+            "Silver Lens",
+            "Release confirmed: Silver Lens IS GENERALLY AVAILABLE.",
+            true,
+        ),
+        (
+            "Silver Lens",
+            "As of 09:00 UTC today, Silver Lens is generally available.",
+            true,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens launched on 2026-09-23, with import tools included.",
+            true,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 from Z.ai generally available as of October 6, 2026.",
+            true,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 from Z.ai generally available in Japan, with migration assistance included.",
+            true,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 generally available in North America.",
+            true,
+        ),
+        (
+            "Silver Lens",
+            "Release confirmed: documentation for Silver Lens is generally available.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "As of 09:00 UTC today, a competitor to Silver Lens is generally available.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens is generally available equipment for students.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens is generally available in Japan a documentation portal.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens launched on 2026-09-23, with import tools included a documentation portal.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 from copper.Works are generally available in Japan, with migration assistance included.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 generally available as of October 6, 2026 a documentation portal.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Release confirmed: Silver Lens. Other Product is generally available.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "As of 09:00 UTC today, Silver Lens may be generally available.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Release confirmed: it is false that Silver Lens is generally available.",
+            false,
+        ),
+    ]);
+}
+
+#[test]
 fn issue514_affirmative_launch_predicates() {
     assert_cases(&[
         (
