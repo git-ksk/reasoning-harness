@@ -1,0 +1,242 @@
+[
+  {
+    "id": "raw-0",
+    "text": "~~AWS Lambda Provisioned Concurrency initializes execution environments~~",
+    "expected": false
+  },
+  {
+    "id": "raw-1",
+    "text": "❌ AWS Lambda Provisioned Concurrency initializes execution environments.",
+    "expected": false
+  },
+  {
+    "id": "raw-2",
+    "text": "AWS Lambda Provisioned Concurrency initializes execution environments ❌",
+    "expected": false
+  },
+  {
+    "id": "raw-3",
+    "text": "AWS Lambda Provisioned Concurrency ≠ initializes execution environments.",
+    "expected": false
+  },
+  {
+    "id": "raw-4",
+    "text": "「AWS Lambda Provisioned Concurrency initializes execution environments」",
+    "expected": false
+  },
+  {
+    "id": "raw-5",
+    "text": "`AWS Lambda Provisioned Concurrency initializes execution environments`",
+    "expected": false
+  },
+  {
+    "id": "heading-In this simulation",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "heading-The following statement is false",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "The following statement is false"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "heading-Hypothetical behavior",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "Hypothetical behavior"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "heading-Retracted claim",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "Retracted claim"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "source_title-In this simulation",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "source_title-The following statement is false",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "The following statement is false"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "source_title-Hypothetical behavior",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "Hypothetical behavior"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "source_title-Retracted claim",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "Retracted claim"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "structured_metadata-In this simulation",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "structured_metadata-The following statement is false",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "The following statement is false"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "structured_metadata-Hypothetical behavior",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "Hypothetical behavior"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "structured_metadata-Retracted claim",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "Retracted claim"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "alternate-owner-heading",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "OtherCloud names its service Lambda"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Lambda Provisioned Concurrency initializes execution environments."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "alternate-owner-source_title",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "OtherCloud names its service Lambda"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Lambda Provisioned Concurrency initializes execution environments."
+      }
+    ],
+    "expected": false
+  },
+  {
+    "id": "alternate-owner-structured_metadata",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "OtherCloud names its service Lambda"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Lambda Provisioned Concurrency initializes execution environments."
+      }
+    ],
+    "expected": false
+  }
+]

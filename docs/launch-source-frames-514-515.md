@@ -288,3 +288,7 @@ exclude an intervening adverb in the negation. PR #513 needs separate corrective
 work and regression evidence before integration; its current safety claims are
 not accepted by this review. These findings do not affect the ChangeOrLaunch
 fixes in this branch.
+
+The subsequent #512 correction and its validation are tracked in
+`docs/bilingual-preparation-512.md`; the table above records the earlier
+`0cc3e06` candidate rather than a result on that successor.
