@@ -1,0 +1,14 @@
+{
+  "suite_id": "launch-514-515-independent-v5",
+  "candidate_sha": "b73559853134887d9b077baa7433fb3c6a886629",
+  "evaluator_frozen_sha": "8cc89090d30c5e5932c0f13fadf30a1c6ef43595",
+  "author": "independent_launch_corpus_v5 subagent with fork_turns=none",
+  "independence": "Author confirmed only task-specification access, no repository, implementation, previous corpus, agents or results, and no engine evaluation. Root only validated schema/counts/hash before first execution.",
+  "authorship": "synthetic deterministic controls, not live-provider observations or external human review",
+  "case_count": 32,
+  "positive_count": 12,
+  "negative_count": 20,
+  "manifest_sha256": "edd097b458777fac2f0fc33e1a076cfbb25c571aba67963f1041108c12d9586d",
+  "frozen_at_utc": "2026-10-12T00:53:01.136788+00:00",
+  "protocol": "Freeze raw corpus and labels before execution. Defer all v5 engine evaluation until independent source review finishes. Any review-only correction before first v5 observation is recorded with the actually evaluated source SHA; corpus text/labels are not used for that correction or rewritten. If v5 results tune source, v5 becomes regression and a new holdout is required."
+}
