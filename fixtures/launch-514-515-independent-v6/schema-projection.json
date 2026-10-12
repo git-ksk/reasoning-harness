@@ -1,0 +1,25 @@
+{
+  "raw_sha256": "45953cc0417bcdd362f2abcc8c1a9fb9bfe8400858a29076a3431db5f3c8e54b",
+  "projected_sha256": "392a5dd60cb4ec762e8a787a4648a7552a0df4faaec43cf444b9d11ba567279f",
+  "reason": "Authoring task supplied three unsupported Engine signal kind names; schema-only adapter maps navigation/url to their exact Engine counterparts and a non-factual Topic scope hint to heading. Source text, targets, categories, ordering and labels unchanged.",
+  "changes": [
+    {
+      "case_id": "v6-f19",
+      "signal_index": 0,
+      "from": "navigation",
+      "to": "navigation_or_footer"
+    },
+    {
+      "case_id": "v6-f20",
+      "signal_index": 1,
+      "from": "url",
+      "to": "canonical_url"
+    },
+    {
+      "case_id": "v6-f20",
+      "signal_index": 2,
+      "from": "scope_hint",
+      "to": "heading"
+    }
+  ]
+}

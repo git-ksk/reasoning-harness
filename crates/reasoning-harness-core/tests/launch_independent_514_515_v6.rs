@@ -27,7 +27,7 @@ struct Case {
 #[test]
 fn independently_authored_launch_source_controls_v6() {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../fixtures/launch-514-515-independent-v6/manifest.json");
+        .join("../../fixtures/launch-514-515-independent-v6/manifest.engine.json");
     let corpus: Corpus = serde_json::from_slice(&fs::read(path).expect("read frozen corpus"))
         .expect("parse independent corpus");
     assert_eq!(corpus.suite_id, "launch-514-515-independent-v6");
