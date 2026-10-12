@@ -1540,7 +1540,7 @@ fn target_owned_launch_fact_v17(
             )
         })
         .flat_map(|signal| {
-            let makers = launch_maker_phrases_v17(&signal.text);
+            let makers = launch_maker_objects_v17(&signal.text);
             launch_factual_segments_v17(policy, &signal.text)
                 .into_iter()
                 .map(move |segment| (segment, makers.clone()))
@@ -1836,7 +1836,9 @@ fn target_owned_made_generally_available_v17(
                 .skip(start + 2)
                 .take(24)
                 .any(|(end, words)| {
-                    if words != ["generally", "available"] {
+                    if words != ["generally", "available"]
+                        || !made_available_tail_v17(&tokens[end + 2..])
+                    {
                         return false;
                     }
                     let object = &tokens[start + 2..end];
@@ -1855,9 +1857,10 @@ fn target_owned_made_generally_available_v17(
                                         && ["model", "service", "product"].contains(&suffix[0]))
                                     || (suffix.first() == Some(&"from")
                                         && (2..=5).contains(&suffix.len())
-                                        // Match the complete original lexical maker,
-                                        // not arbitrary words after a flattened dot.
-                                        && makers.contains(&suffix[1..].join(" "))
+                                        // Match this complete raw made-object and
+                                        // its bare predicate, not another frame's
+                                        // maker or a flattened parenthetical.
+                                        && makers.contains(&object.join(" "))
                                         && !suffix.iter().any(|word| {
                                             [
                                                 "documentation",
@@ -1881,21 +1884,15 @@ fn target_owned_made_generally_available_v17(
     })
 }
 
-// Retain lexical maker extent before normalization erases internal dots. A
-// single opaque token after "from" is sufficient. A multiword maker must also
-// occur as a bounded proper-name subject before "has made" in the raw signal;
-// otherwise an unsupported modifier abstains rather than absorbing a clause.
-fn launch_maker_phrases_v17(value: &str) -> Vec<String> {
+// Retain the complete raw object and bare predicate before normalization erases
+// ownership punctuation. A multiword maker must also occur as a bounded proper
+// subject before "has made"; unsupported modifiers abstain.
+fn launch_maker_objects_v17(value: &str) -> Vec<String> {
     let words = value.split_whitespace().collect::<Vec<_>>();
-    let maker_lexeme = |word: &str| {
-        let word = word.trim_matches(|c: char| !c.is_alphanumeric());
-        !word.is_empty() && word.chars().all(|c| c.is_alphanumeric() || c == '.')
-    };
+    let maker_lexeme =
+        |word: &str| !word.is_empty() && word.chars().all(|c| c.is_alphanumeric() || c == '.');
     let mut makers = Vec::new();
     for (index, pair) in words.windows(2).enumerate() {
-        if pair[0].eq_ignore_ascii_case("from") && maker_lexeme(pair[1]) {
-            makers.push(normalized(pair[1]));
-        }
         if pair[0].eq_ignore_ascii_case("has") && pair[1].eq_ignore_ascii_case("made") {
             for count in 2..=index.min(4) {
                 let name = &words[index - count..index];
@@ -1909,10 +1906,104 @@ fn launch_maker_phrases_v17(value: &str) -> Vec<String> {
             }
         }
     }
-    makers.retain(|maker| !maker.is_empty());
-    makers.sort();
-    makers.dedup();
-    makers
+    let mut objects = Vec::new();
+    for (end, pair) in words.windows(2).enumerate() {
+        if !pair[0].eq_ignore_ascii_case("generally")
+            || !pair[1]
+                .trim_end_matches(['.', ',', ';', '!', '?'])
+                .eq_ignore_ascii_case("available")
+        {
+            continue;
+        }
+        let Some(start) = words[..end].windows(2).rposition(|pair| {
+            pair[0].eq_ignore_ascii_case("has") && pair[1].eq_ignore_ascii_case("made")
+        }) else {
+            continue;
+        };
+        let object = &words[start + 2..end];
+        let Some(from) = object
+            .iter()
+            .rposition(|word| word.eq_ignore_ascii_case("from"))
+        else {
+            continue;
+        };
+        let maker = &object[from + 1..];
+        if (1..=4).contains(&maker.len())
+            && maker.iter().all(|word| maker_lexeme(word))
+            && (maker.len() == 1 || makers.contains(&normalized(&maker.join(" "))))
+        {
+            objects.push(normalized(&object.join(" ")));
+        }
+    }
+    objects
+}
+
+// Availability must be a predicate of the made-object, not an adjective on
+// another owner's equipment or an aside followed by a separate finite clause.
+fn made_available_tail_v17(tail: &[&str]) -> bool {
+    if intransitive_launch_tail_v17(tail) || matches!(tail, ["worldwide" | "globally" | "now"]) {
+        return true;
+    }
+    let (head, rest) = match tail {
+        [head, rest @ ..] => (*head, rest),
+        [] => return true,
+    };
+    !rest.is_empty()
+        && match head {
+            "to" | "for" => rest.iter().all(|word| {
+                [
+                    "all",
+                    "every",
+                    "new",
+                    "existing",
+                    "and",
+                    "registered",
+                    "supported",
+                    "public",
+                    "general",
+                    "production",
+                    "use",
+                    "commercial",
+                    "enterprise",
+                    "paying",
+                    "customer",
+                    "customers",
+                    "user",
+                    "users",
+                    "subscriber",
+                    "subscribers",
+                    "developer",
+                    "developers",
+                    "team",
+                    "teams",
+                    "tenant",
+                    "tenants",
+                    "organization",
+                    "organizations",
+                    "workspace",
+                    "owner",
+                    "owners",
+                    "students",
+                ]
+                .contains(word)
+            }),
+            "across" | "in" => rest.iter().all(|word| {
+                [
+                    "all",
+                    "every",
+                    "supported",
+                    "region",
+                    "regions",
+                    "worldwide",
+                    "globally",
+                ]
+                .contains(word)
+            }),
+            "through" | "via" => rest
+                .iter()
+                .all(|word| ["the", "customer", "portal", "console", "api"].contains(word)),
+            _ => false,
+        }
 }
 
 // Normalization removes question marks. Keep original fact-bearing signals
