@@ -1,0 +1,280 @@
+{
+  "suite_id": "launch-514-515-independent-v7",
+  "candidate_sha": "d1b76ba2a30a492e129c787416d9ff7d6c2cbc45",
+  "corpus_declared_candidate_sha": "d1b76ba2a30a492e129c787416d9ff7d6c2cbc45",
+  "pre_observation_source_change": "None. Exact candidate source unchanged between source freeze and first engine observation.",
+  "frozen_corpus_commit": "6935cd0dc99a5e1252417d3847ec05d07ce230e2",
+  "evaluator_sha": "730a36ad9639377fa1074154893712aadd0b6036",
+  "manifest_sha256": "e3f5eef0505178acb4f7673b23243b97d158a89bafe3d28c0f555da006483664",
+  "first_observation": true,
+  "passed": 25,
+  "total": 32,
+  "false_positives": [],
+  "false_negatives": [
+    "v7-driftloom-ga",
+    "v7-kestrelmint-region",
+    "v7-mossdial-direct",
+    "v7-nacrecoil-uppercase",
+    "v7-orin-dot-names",
+    "v7-quillbasin-time",
+    "v7-saffronwake-combination"
+  ],
+  "cases": [
+    {
+      "id": "v7-copperfin-release",
+      "category": "direct-date",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v7-driftloom-ga",
+      "category": "audience-ga",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "v7-ivoryspur-vendor",
+      "category": "latest-from",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v7-kestrelmint-region",
+      "category": "regional-ga",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "v7-lumenquay-maker",
+      "category": "confirmed-maker",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v7-mossdial-direct",
+      "category": "launch-with",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "v7-nacrecoil-uppercase",
+      "category": "casing-ga",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "v7-orin-dot-names",
+      "category": "dotted-maker",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "v7-pebblearc-quoted",
+      "category": "sentence-launch",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v7-quillbasin-time",
+      "category": "temporal-ga",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "v7-rillforge-latest",
+      "category": "vendor-audience",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v7-saffronwake-combination",
+      "category": "from-with-ga",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "v7-thistleport-other-owner",
+      "category": "other-launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-umberrail-integration",
+      "category": "other-ga",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-velvetfen-guide",
+      "category": "guide-subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-willowfacet-documentation",
+      "category": "documentation",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-xantheloop-deadline",
+      "category": "deadline-subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-yarrowdock-status",
+      "category": "status-subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-zephyrplate-denial",
+      "category": "explicit-denial",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-amberflume-doubt",
+      "category": "doubt",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-birchhelm-question",
+      "category": "question",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-cairnpetal-condition",
+      "category": "conditional",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-dewspindle-simulation",
+      "category": "simulation",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-elmprism-rehearsal",
+      "category": "rehearsal",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-frostharbor-sentence",
+      "category": "sentence-boundary",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-garnetdrift-newline",
+      "category": "newline-boundary",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-hollowcrest-semicolon",
+      "category": "semicolon-boundary",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-indigoquill-url",
+      "category": "url-only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-juniperturn-navigation",
+      "category": "navigation-only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-kilnmeadow-metadata",
+      "category": "metadata-only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-larchsocket-nonfactual",
+      "category": "nonfactual-only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v7-marblecanopy-maker-split",
+      "category": "maker-other-target",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    }
+  ]
+}

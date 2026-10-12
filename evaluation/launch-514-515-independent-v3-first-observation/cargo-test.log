@@ -1,0 +1,48 @@
+   Compiling reasoning-harness-core v0.7.0 (/Users/sawadakousuke/x-code/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.61s
+     Running tests/launch_independent_514_515_v3.rs (/private/tmp/cloud-review-cargo-target/debug/deps/launch_independent_514_515_v3-31b1f9055cc2eacf)
+
+running 1 test
+ind-v3-01 category=affirmative_passive_today_decimal expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-02 category=vendor_general_availability_dotted_names expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-03 category=latest_version_completed_launch expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-04 category=intransitive_launch_leading_year expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-05 category=affirmative_launch_leading_may_date expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-06 category=current_general_availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-07 category=completed_general_availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-08 category=completed_passive_launch_with_users expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-09 category=intransitive_launch_completed_preview expected_relevant=true disposition=Ambiguous relation=Unresolved
+ind-v3-10 category=factual_metadata_vendor_general_availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-11 category=latest_version_general_availability_decimal expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-12 category=affirmative_launch_trailing_customer_information expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v3-13 category=indirect_documentation_subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-14 category=indirect_competitor_subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-15 category=enclosing_falsification expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-16 category=enclosing_denial expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-17 category=enclosing_disproved_claim expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-18 category=indirect_announcement_subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-19 category=uncertain_launch_status expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-20 category=conditional_general_availability expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-21 category=future_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-22 category=launch_question expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-23 category=target_launches_another_product expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-24 category=preview_only_availability expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-25 category=sibling_product_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-26 category=ascii_sentence_boundary_wrong_owner expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-27 category=fullwidth_sentence_boundary_wrong_owner expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-28 category=clause_boundary_wrong_owner expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v3-29 category=cross_signal_ownership expected_relevant=false disposition=Ambiguous relation=Unresolved
+
+thread 'independently_authored_launch_source_controls_v3' panicked at crates/reasoning-harness-core/tests/launch_independent_514_515_v3.rs:70:10:
+called `Result::unwrap()` on an `Err` value: Error("unknown variant `title`, expected one of `source_title`, `canonical_url`, `heading`, `excerpt`, `structured_metadata`, `navigation_or_footer`, `fact`", line: 0, column: 0)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test independently_authored_launch_source_controls_v3 ... FAILED
+
+failures:
+
+failures:
+    independently_authored_launch_source_controls_v3
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_independent_514_515_v3`

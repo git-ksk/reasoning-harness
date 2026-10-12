@@ -1,0 +1,41 @@
+   Compiling reasoning-harness-core v0.7.0 (/Users/sawadakousuke/x-code/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.10s
+     Running tests/launch_independent_514_515_v9.rs (/private/tmp/cloud-review-cargo-target/debug/deps/launch_independent_514_515_v9-d76b76b4aa53bbd9)
+
+running 1 test
+test independently_authored_launch_source_controls_v9 ... ind-v9-01 category=direct-today expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-02 category=direct-date expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-03 category=confirmed-availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-04 category=asof-availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-05 category=clock-became expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-06 category=clock-launched expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-07 category=global-unrestricted expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-08 category=became-iso expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-09 category=vendor-workspaces expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-10 category=vendor-latest-import expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-11 category=vendor-dotted-maker expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-12 category=vendor-maker-migration expected_relevant=true disposition=Relevant relation=RequestedRelation
+ind-v9-13 category=document-subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-14 category=competitor-subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-15 category=status-subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-16 category=adjacent-sibling expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-17 category=explicit-denial expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-18 category=claim-rejection expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-19 category=claim-falsification expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-20 category=availability-doubt expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-21 category=conditional-launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-22 category=future-launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-23 category=private-preview expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-24 category=simulation-launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-25 category=availability-question expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-26 category=period-boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-27 category=newline-boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-28 category=semicolon-boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-29 category=signal-boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-30 category=title-template-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-31 category=navigation-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+ind-v9-32 category=url-metadata-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+

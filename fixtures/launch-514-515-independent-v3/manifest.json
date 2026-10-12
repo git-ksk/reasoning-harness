@@ -1,0 +1,406 @@
+{
+  "suite_id": "launch-514-515-independent-v3",
+  "candidate_sha": "48c97d9e61204fb018d825066fbcb37e902ecd20",
+  "cases": [
+    {
+      "id": "ind-v3-01",
+      "target": "Velkora 2.4",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Today, Velkora 2.4 was launched and customers on every plan can enable it from their workspace settings."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_passive_today_decimal"
+    },
+    {
+      "id": "ind-v3-02",
+      "target": "Nuvexa.Cloud",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Teralis.Works has made Nuvexa.Cloud generally available to all customers."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor_general_availability_dotted_names"
+    },
+    {
+      "id": "ind-v3-03",
+      "target": "Yavrel 3.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The latest version of Yavrel 3.8 has been launched for teams using the hosted service."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "latest_version_completed_launch"
+    },
+    {
+      "id": "ind-v3-04",
+      "target": "Solvani",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "In 2025, Solvani launched for general customer use."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "intransitive_launch_leading_year"
+    },
+    {
+      "id": "ind-v3-05",
+      "target": "Pellux 1.7",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "On May 18, 2026, Pellux 1.7 was launched for all subscribing organizations."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_launch_leading_may_date"
+    },
+    {
+      "id": "ind-v3-06",
+      "target": "Drenova",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Drenova is now generally available to every registered customer."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "current_general_availability"
+    },
+    {
+      "id": "ind-v3-07",
+      "target": "Ostriva",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ostriva became generally available on September 9, 2026."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "completed_general_availability"
+    },
+    {
+      "id": "ind-v3-08",
+      "target": "Melquor",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Melquor has been launched for organizations of every size."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "completed_passive_launch_with_users"
+    },
+    {
+      "id": "ind-v3-09",
+      "target": "Caldrin",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Caldrin launched in July 2026 after completing its private preview."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "intransitive_launch_completed_preview"
+    },
+    {
+      "id": "ind-v3-10",
+      "target": "Ulmavi",
+      "signals": [
+        {
+          "kind": "structured_metadata",
+          "text": "Vostrena has made Ulmavi generally available for new and existing customers."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "factual_metadata_vendor_general_availability"
+    },
+    {
+      "id": "ind-v3-11",
+      "target": "Zorvane 6.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The latest version of Zorvane 6.2 is now generally available through the customer portal."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "latest_version_general_availability_decimal"
+    },
+    {
+      "id": "ind-v3-12",
+      "target": "Eploris",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Eploris was launched at the start of June 2026; customers can activate it without joining a waiting list."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "affirmative_launch_trailing_customer_information"
+    },
+    {
+      "id": "ind-v3-13",
+      "target": "Trenavia",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The documentation for Trenavia was launched in April 2026."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "indirect_documentation_subject"
+    },
+    {
+      "id": "ind-v3-14",
+      "target": "Qelvori",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "A competitor to Qelvori was launched last month for small businesses."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "indirect_competitor_subject"
+    },
+    {
+      "id": "ind-v3-15",
+      "target": "Ruvessa",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "It is false that Ruvessa was launched for customers yesterday."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "enclosing_falsification"
+    },
+    {
+      "id": "ind-v3-16",
+      "target": "Nolquar",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The vendor denied that Nolquar is now generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "enclosing_denial"
+    },
+    {
+      "id": "ind-v3-17",
+      "target": "Velduni",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The claim that Velduni has been launched was disproved by the release team."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "enclosing_disproved_claim"
+    },
+    {
+      "id": "ind-v3-18",
+      "target": "Parlovi",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The announcement about Parlovi was launched as an internal communications campaign; Parlovi remains unavailable to customers."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "indirect_announcement_subject"
+    },
+    {
+      "id": "ind-v3-19",
+      "target": "Xelvanta",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "It remains uncertain whether Xelvanta has been launched for public use."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "uncertain_launch_status"
+    },
+    {
+      "id": "ind-v3-20",
+      "target": "Brevuli",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "If Brevuli is now generally available, the procurement team will begin its assessment."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "conditional_general_availability"
+    },
+    {
+      "id": "ind-v3-21",
+      "target": "Tavrena",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Tavrena will be launched on October 29, 2026, pending completion of the security review."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "future_launch"
+    },
+    {
+      "id": "ind-v3-22",
+      "target": "Ordelva",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Has Ordelva been launched for all customers?"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "launch_question"
+    },
+    {
+      "id": "ind-v3-23",
+      "target": "Minqora",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Minqora launched a new companion application this morning."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "target_launches_another_product"
+    },
+    {
+      "id": "ind-v3-24",
+      "target": "Sylvato",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Sylvato is now available in a closed preview for twelve invited design partners."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "preview_only_availability"
+    },
+    {
+      "id": "ind-v3-25",
+      "target": "Kervani",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Kervani Studio was launched for creative teams yesterday, while Kervani remains in private preview."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "sibling_product_launch"
+    },
+    {
+      "id": "ind-v3-26",
+      "target": "Dalvexa",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Dalvexa remains in preview. The export toolkit was launched yesterday for all customers."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "ascii_sentence_boundary_wrong_owner"
+    },
+    {
+      "id": "ind-v3-27",
+      "target": "Gorvessa",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Gorvessa remains in preview。The public training portal was launched last week。"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "fullwidth_sentence_boundary_wrong_owner"
+    },
+    {
+      "id": "ind-v3-28",
+      "target": "Felnora",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "While Felnora is awaiting approval, the documentation site was launched for reviewers."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "clause_boundary_wrong_owner"
+    },
+    {
+      "id": "ind-v3-29",
+      "target": "Urvani",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Urvani is an unreleased service for coordinating field inspections."
+        },
+        {
+          "kind": "fact",
+          "text": "The customer advisory board was launched yesterday."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "cross_signal_ownership"
+    },
+    {
+      "id": "ind-v3-30",
+      "target": "Peldora",
+      "signals": [
+        {
+          "kind": "title",
+          "text": "Peldora was launched for all customers"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Peldora access is limited to invited evaluators during the ongoing private preview."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "title_without_factual_launch_support"
+    },
+    {
+      "id": "ind-v3-31",
+      "target": "Varkeli",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Varkeli is now generally available"
+        },
+        {
+          "kind": "navigation_or_footer",
+          "text": "Launch Varkeli | Availability | Contact sales"
+        },
+        {
+          "kind": "fact",
+          "text": "Varkeli remains restricted to the closed preview cohort."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "heading_and_navigation_without_factual_support"
+    },
+    {
+      "id": "ind-v3-32",
+      "target": "Zelmira",
+      "signals": [
+        {
+          "kind": "structured_metadata",
+          "text": "ExactTarget: Zelmira | RequestedRelation: ChangeOrLaunch | advisory: no-risk"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "raw_advisory_metadata_without_launch_event"
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "source_sha": "506e7b1c07012f519f21cf9c1344cffd10809632",
+  "source_file_sha256": "91c318894d57a4248f64729ef3460806578550f2cbec6ddf5800e1c38208737c",
+  "verified_at_utc": "2026-10-12T15:02:18.079035+00:00",
+  "platform": "macOS",
+  "rust": "1.88.0",
+  "workspace": {
+    "command": "cargo test --offline --locked --workspace --no-fail-fast -- --test-threads=1 --skip independently_authored_launch_source_controls_v9",
+    "status": "PASS",
+    "source_sha": "506e7b1c07012f519f21cf9c1344cffd10809632",
+    "test_binaries": 156,
+    "passed": 1458,
+    "failed": 0,
+    "ignored": 6,
+    "filtered": 1,
+    "filter": "independently_authored_launch_source_controls_v9",
+    "independent_regression_cases": 256,
+    "log_sha256": "dbbe8f99e7220e21ea85b82675e20392e8354f6d818962b3f0a7b0e40c0656ba"
+  },
+  "fresh_holdout": {
+    "suite": "launch-514-515-independent-v9",
+    "command": "cargo test --offline --locked -p reasoning-harness-core --test launch_independent_514_515_v9 -- --test-threads=1 --nocapture",
+    "passed": 32,
+    "total": 32,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "first_observation": true,
+    "engine_source_changed_after_corpus_observation": false
+  },
+  "aggregated_test_results": {
+    "passed": 1459,
+    "failed": 0,
+    "existing_ignored": 6,
+    "note": "Workspace with v9 filtered, then the v9 integration test separately on identical source; 32 controls are within one integration test."
+  },
+  "format": "PASS",
+  "diff_check": "PASS",
+  "clippy": {
+    "command": "cargo clippy --offline --locked --workspace --all-targets -- -D warnings",
+    "status": "PASS",
+    "log_sha256": "ff03bdb9c19e2cc8341157d38b09627d0a649d171fb087c2eb52b54b7aa5579b"
+  },
+  "standard_fixtures": {
+    "cases": 20,
+    "accuracy": 1.0,
+    "unsupported_accepted_claims": 0,
+    "status": "PASS"
+  },
+  "independent_review": "No introduced P1/P2; review.json retains all findings, corrections and malformed-clock limit.",
+  "corpora_exact_hash_checks": [
+    {
+      "suite": 1,
+      "sha256": "50175147fb8583071be99e69fef965c480693bad82c5a45b4fd7097be101efe3"
+    },
+    {
+      "suite": 2,
+      "sha256": "6eaa04189332d7c1e943b4b5c0b18075bc0d6e14e9e4334b7cbbd6114f0f1248"
+    },
+    {
+      "suite": 3,
+      "sha256": "8eb6f206c1e11c9b6a60e2868a95885aeee726b3470caa36e7c8a2eeddc0855a"
+    },
+    {
+      "suite": 4,
+      "sha256": "faf392ac7913451281da6f70d698dbe76d299ae71e049cac1dd544623f100010"
+    },
+    {
+      "suite": 5,
+      "sha256": "edd097b458777fac2f0fc33e1a076cfbb25c571aba67963f1041108c12d9586d"
+    },
+    {
+      "suite": 6,
+      "sha256": "45953cc0417bcdd362f2abcc8c1a9fb9bfe8400858a29076a3431db5f3c8e54b"
+    },
+    {
+      "suite": 7,
+      "sha256": "e3f5eef0505178acb4f7673b23243b97d158a89bafe3d28c0f555da006483664"
+    },
+    {
+      "suite": 8,
+      "sha256": "f91138d1b80d5232a8437ede2be4f86f538a2f464d05d3f6120972689d7ec492"
+    },
+    {
+      "suite": 9,
+      "sha256": "96f4c99d9f02dc2d7cfcc90489d00060fc0886c265b72f80d833057c6fa18b68"
+    }
+  ],
+  "historical_observation_archive": {
+    "files_sha256_verified": 13,
+    "frozen_score_recomputed": true
+  },
+  "package_versions_and_lock_unchanged": true,
+  "cross_platform_ci": "Required separately on final pushed HEAD before merge."
+}

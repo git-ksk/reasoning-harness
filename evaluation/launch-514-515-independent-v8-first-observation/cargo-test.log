@@ -1,0 +1,51 @@
+   Compiling reasoning-harness-core v0.7.0 (/Users/sawadakousuke/x-code/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 11.35s
+     Running tests/launch_independent_514_515_v8.rs (/private/tmp/cloud-review-cargo-target/debug/deps/launch_independent_514_515_v8-530afb86bd9f70a8)
+
+running 1 test
+test independently_authored_launch_source_controls_v8 ... v8-p01-velqora category=direct-past-launch expected_relevant=true disposition=Relevant relation=RequestedRelation
+v8-p02-nesvanta category=present-perfect-global expected_relevant=true disposition=Relevant relation=RequestedRelation
+v8-p03-ildren category=dated-customer-ga expected_relevant=true disposition=Relevant relation=RequestedRelation
+v8-p04-quorvessa category=dated-regional-ga expected_relevant=true disposition=Relevant relation=RequestedRelation
+v8-p05-zelmori category=became-geographic-ga expected_relevant=true disposition=Relevant relation=RequestedRelation
+v8-p06-avenquix category=vendor-developer-ga expected_relevant=true disposition=Relevant relation=RequestedRelation
+v8-p07-draxivel category=vendor-dotted-maker expected_relevant=true disposition=Relevant relation=RequestedRelation
+v8-p08-torvemi category=dotted-target-worldwide expected_relevant=true disposition=Relevant relation=RequestedRelation
+v8-p09-elnovar category=confirmed-import-tools expected_relevant=true disposition=Relevant relation=RequestedRelation
+v8-p10-urvexa category=launch-migration-assistance expected_relevant=true disposition=Relevant relation=RequestedRelation
+v8-p11-caldrivo category=ga-no-extra-fees expected_relevant=true disposition=Ambiguous relation=Unresolved
+v8-p12-vensori category=clock-workspace-ga expected_relevant=true disposition=Ambiguous relation=Unresolved
+v8-n01-ravonel category=document-subject expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n02-morvexa category=competitor-launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n03-nadvora category=explicit-denial expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n04-selvion category=unresolved-doubt expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n05-talvera category=unmet-condition expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n06-povarek category=future-plan expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n07-orvessa category=preview-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n08-jenqora category=simulation-quote expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n09-denvora category=unanswered-questions expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n10-yalvix category=statement-boundary-borrowing expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n11-iscora category=title-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n12-felnix category=navigation-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n13-winora category=url-only expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n14-olvendi category=agenda-title-quotation expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n15-sarquel category=counterfactual-release expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n16-brelvani category=aspirational-outcome expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n17-qelmora category=unapproved-future-draft expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n18-norizan category=adjacent-version-mismatch expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n19-marovia category=guide-object-launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+v8-n20-renlora category=vendor-object-mismatch expected_relevant=false disposition=Ambiguous relation=Unresolved
+
+thread 'independently_authored_launch_source_controls_v8' panicked at crates/reasoning-harness-core/tests/launch_independent_514_515_v8.rs:97:5:
+independent control failures: ["v8-p11-caldrivo", "v8-p12-vensori"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+
+failures:
+
+failures:
+    independently_authored_launch_source_controls_v8
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.54s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_independent_514_515_v8`

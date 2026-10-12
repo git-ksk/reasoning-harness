@@ -1,0 +1,406 @@
+{
+  "suite_id": "launch-514-515-independent-v6",
+  "candidate_sha": "21ae38ecea8d6194354386301f836b8d04e9e205",
+  "cases": [
+    {
+      "id": "v6-t01",
+      "target": "Neralith Engine 2.4",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Neralith Engine 2.4 was launched on 7 September 2026 by Quenvora.Systems."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_completed_launch"
+    },
+    {
+      "id": "v6-t02",
+      "target": "Velmora.Core 3.7",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Velmora.Core 3.7 has been launched. Customers can obtain the production release from Ulvessa Labs."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_completed_launch_dotted_target"
+    },
+    {
+      "id": "v6-t03",
+      "target": "Qadelyn Engine 1.6",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Qadelyn Engine 1.6 is now generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_current_general_availability"
+    },
+    {
+      "id": "v6-t04",
+      "target": "Rovessa.Runtime 6.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Rovessa.Runtime 6.2 became generally available on 9 September 2026."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_completed_general_availability"
+    },
+    {
+      "id": "v6-t05",
+      "target": "Teralune Engine 4.3",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Yovarin.Systems has made Teralune Engine 4.3 generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor_made_target_generally_available"
+    },
+    {
+      "id": "v6-t06",
+      "target": "Zenvora.Engine 5.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Pelvani Labs has made the latest version of Zenvora.Engine 5.8 generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor_made_latest_version_generally_available"
+    },
+    {
+      "id": "v6-t07",
+      "target": "Avenqor Engine 2.9",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Morvessa Cloud has made Avenqor Engine 2.9 from Delyrith.Works generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor_made_target_from_maker_generally_available"
+    },
+    {
+      "id": "v6-t08",
+      "target": "Brenuvi.Core 7.1",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Havorel Systems has made the latest version of Brenuvi.Core 7.1 from Qerunai.Labs generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor_made_latest_target_from_maker_generally_available"
+    },
+    {
+      "id": "v6-t09",
+      "target": "Cavoriq Engine 8.6",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Selvarin.Technologies product update"
+        },
+        {
+          "kind": "fact",
+          "text": "Cavoriq Engine 8.6 was launched by Selvarin.Technologies on 11 September 2026."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_launch_with_vendor"
+    },
+    {
+      "id": "v6-t10",
+      "target": "Denvira.Runtime 3.5",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Denvira.Runtime 3.5 has been launched by Ulorven.Labs."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_has_been_launched_with_vendor"
+    },
+    {
+      "id": "v6-t11",
+      "target": "Envariq Engine 9.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Envariq Engine 9.2 is now generally available through Ferolyn.Systems."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_general_availability_with_vendor"
+    },
+    {
+      "id": "v6-t12",
+      "target": "Falenq.Core 4.7",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Falenq.Core 4.7 became generally available on 14 September 2026, completing Varelon.Systems production rollout."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct_target_completed_general_availability_with_rollout"
+    },
+    {
+      "id": "v6-f01",
+      "target": "Genvoriq Engine 2.3",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Documentation for Genvoriq Engine 2.3 was launched by Nalvessa.Works on 15 September 2026."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "documentation_is_launched_subject"
+    },
+    {
+      "id": "v6-f02",
+      "target": "Havunel.Core 3.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jorvani Engine 1.4 was launched as a competitor to Havunel.Core 3.6."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "competitor_launch_target_is_object"
+    },
+    {
+      "id": "v6-f03",
+      "target": "Irvessa Engine 5.2",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Kelvori Labs launched a migration guide for Irvessa Engine 5.2."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "guide_launch_target_is_document_topic"
+    },
+    {
+      "id": "v6-f04",
+      "target": "Jalenvi.Runtime 6.4",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jalenvi.Runtime 6.4 received a new logo, and Lurvessa Studio 2.1 was launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "unrelated_sibling_predicate"
+    },
+    {
+      "id": "v6-f05",
+      "target": "Kenvori Engine 1.8",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Kenvori Engine 1.8 was not launched on 16 September 2026."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "explicit_denial"
+    },
+    {
+      "id": "v6-f06",
+      "target": "Ladivor.Core 7.3",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The claim that Ladivor.Core 7.3 has been launched is false."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "launch_claim_marked_false"
+    },
+    {
+      "id": "v6-f07",
+      "target": "Mervanil Engine 4.6",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Whether Mervanil Engine 4.6 is now generally available remains unconfirmed."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "doubtful_unconfirmed_availability"
+    },
+    {
+      "id": "v6-f08",
+      "target": "Nuvessa.Runtime 2.7",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Analysts speculate that Nuvessa.Runtime 2.7 may have been launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "speculative_launch"
+    },
+    {
+      "id": "v6-f09",
+      "target": "Orenviq Engine 8.4",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "If Orenviq Engine 8.4 has been launched, the connector can be enabled."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "conditional_launch"
+    },
+    {
+      "id": "v6-f10",
+      "target": "Paldorin.Core 5.9",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Paldorin.Core 5.9 will be launched on 3 December 2026."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "future_launch"
+    },
+    {
+      "id": "v6-f11",
+      "target": "Qenvora Engine 3.4",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Qenvora Engine 3.4 is now available in private preview only; general availability has not begun."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "private_preview_only"
+    },
+    {
+      "id": "v6-f12",
+      "target": "Ruvanel.Runtime 9.1",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "In a simulated press release, Ruvanel.Runtime 9.1 was launched; no real launch occurred."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "simulated_launch"
+    },
+    {
+      "id": "v6-f13",
+      "target": "Salenvi Engine 6.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Has Salenvi Engine 6.8 been launched?"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "question_only"
+    },
+    {
+      "id": "v6-f14",
+      "target": "Tervoriq.Core 4.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Tervoriq.Core 4.2 remains in development. Unvelar Engine 2.5 has been launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "separate_sentence_borrowed_predicate"
+    },
+    {
+      "id": "v6-f15",
+      "target": "Ulaveni Engine 7.6",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Ulaveni Engine 7.6 remains internal while Varnessa Runtime 1.3 became generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "separate_clause_borrowed_predicate"
+    },
+    {
+      "id": "v6-f16",
+      "target": "Venvori.Runtime 2.8",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Venvori.Runtime 2.8 is the internal compiler maintained by Weralin.Systems."
+        },
+        {
+          "kind": "fact",
+          "text": "Xalvessa Engine 5.1 was launched on 18 September 2026."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "separate_signal_borrowed_predicate"
+    },
+    {
+      "id": "v6-f17",
+      "target": "Welvani Engine 3.9",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Welvani Engine 3.9 was launched"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "source_title_only"
+    },
+    {
+      "id": "v6-f18",
+      "target": "Xervora.Core 8.2",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Xervora.Core 8.2 is now generally available"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "heading_only"
+    },
+    {
+      "id": "v6-f19",
+      "target": "Yalenvi Engine 4.9",
+      "signals": [
+        {
+          "kind": "navigation_or_footer",
+          "text": "Yalenvi Engine 4.9 launch | Generally available products | Home"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "navigation_only"
+    },
+    {
+      "id": "v6-f20",
+      "target": "Zeruvani.Runtime 6.5",
+      "signals": [
+        {
+          "kind": "structured_metadata",
+          "text": "{\"page_type\":\"draft_template\",\"proposed_headline\":\"Zeruvani.Runtime 6.5 was launched\"}"
+        },
+        {
+          "kind": "canonical_url",
+          "text": "https://naverliq.example/drafts/zeruvani-runtime-6.5/launch"
+        },
+        {
+          "kind": "heading",
+          "text": "Topic: Zeruvani.Runtime 6.5"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "nonfactual_template_metadata_url_and_scope"
+    }
+  ]
+}

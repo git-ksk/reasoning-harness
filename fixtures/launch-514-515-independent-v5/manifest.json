@@ -1,0 +1,414 @@
+{
+  "suite_id": "launch-514-515-independent-v5",
+  "candidate_sha": "b73559853134887d9b077baa7433fb3c6a886629",
+  "cases": [
+    {
+      "id": "ilv5-p01",
+      "target": "Velunara 4.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Velunara 4.2 was launched."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "target-passive-decimal"
+    },
+    {
+      "id": "ilv5-p02",
+      "target": "VesperDesk 7.3",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "VesperDesk 7.3 has been launched."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "target-perfect-passive-decimal"
+    },
+    {
+      "id": "ilv5-p03",
+      "target": "OrielVector 2.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "OrielVector 2.8 is now generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "target-current-general-availability"
+    },
+    {
+      "id": "ilv5-p04",
+      "target": "BrindleCanvas 5.1",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "BrindleCanvas 5.1 became generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "target-became-general-availability"
+    },
+    {
+      "id": "ilv5-p05",
+      "target": "NacreRoute",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "harbor.works has made NacreRoute generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-dotted-lowercase-suffix"
+    },
+    {
+      "id": "ilv5-p06",
+      "target": "QuillOrbit",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Elm.Labs has made the latest version of QuillOrbit generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-dotted-labs-latest-version"
+    },
+    {
+      "id": "ilv5-p07",
+      "target": "AsterGauge",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Opal.Cloud has made AsterGauge from Opal.Cloud generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-dotted-cloud-target-from-vendor"
+    },
+    {
+      "id": "ilv5-p08",
+      "target": "CinderMesh",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Sable.Systems has made the latest version of CinderMesh from Sable.Systems generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-dotted-systems-latest-version-from-vendor"
+    },
+    {
+      "id": "ilv5-p09",
+      "target": "WillowTrace",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Tern.Labs today has made WillowTrace generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-subject-today-adjunct"
+    },
+    {
+      "id": "ilv5-p10",
+      "target": "MirthLedger",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "MirthLedger was launched on May 17 2026."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "target-passive-calendar-date"
+    },
+    {
+      "id": "ilv5-p11",
+      "target": "Trellis.Core 3.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Trellis.Core 3.6 has been launched."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "target-dotted-name-and-decimal"
+    },
+    {
+      "id": "ilv5-p12",
+      "target": "FableArchive",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "FableArchive is now generally available."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "target-ordinary-general-availability"
+    },
+    {
+      "id": "ilv5-n01",
+      "target": "FernSignal",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The deployment guide for FernSignal was launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "indirect-documentation-subject"
+    },
+    {
+      "id": "ilv5-n02",
+      "target": "CopperHelix",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "ValeSpan, a competitor to CopperHelix, was launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "indirect-competitor-subject"
+    },
+    {
+      "id": "ilv5-n03",
+      "target": "JuniperIndex",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "It is false that Alder.Labs has made JuniperIndex generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "enclosing-falsification-with-that"
+    },
+    {
+      "id": "ilv5-n04",
+      "target": "MallowGrid",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The claim Hazel.Cloud has made MallowGrid generally available is untrue."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "enclosing-denial-without-that"
+    },
+    {
+      "id": "ilv5-n05",
+      "target": "KestrelBloom",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "In a simulated launch exercise, KestrelBloom was launched; the real product remains unavailable."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "simulated-launch"
+    },
+    {
+      "id": "ilv5-n06",
+      "target": "TidalLedger",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The fictional press release in the training packet says TidalLedger has been launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "fictional-launch-report"
+    },
+    {
+      "id": "ilv5-n07",
+      "target": "RookCanvas 6.4",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "RookCanvas 6.4 may be launched on May 21, 2027."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "speculative-may-near-numbers"
+    },
+    {
+      "id": "ilv5-n08",
+      "target": "BrambleForge",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "BrambleForge has not been launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "negated-target-launch"
+    },
+    {
+      "id": "ilv5-n09",
+      "target": "PipestoneArray",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "If PipestoneArray is launched, existing subscribers will receive an upgrade notice."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "conditional-target-launch"
+    },
+    {
+      "id": "ilv5-n10",
+      "target": "SaffronVault",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "SaffronVault will be launched after the external review."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "future-target-launch"
+    },
+    {
+      "id": "ilv5-n11",
+      "target": "GladeRelay",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Has GladeRelay been launched?"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "target-launch-question"
+    },
+    {
+      "id": "ilv5-n12",
+      "target": "HearthPivot",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "HearthPivot has launched a customer discussion board."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "target-launches-another-object"
+    },
+    {
+      "id": "ilv5-n13",
+      "target": "SilverbellView",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "SilverbellView is available only in private preview; general availability has not begun."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "private-preview-only"
+    },
+    {
+      "id": "ilv5-n14",
+      "target": "WrenArchive",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "WrenArchive gained offline search, while its sibling FinchAtlas was launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "sibling-launch-unrelated-target-predicate"
+    },
+    {
+      "id": "ilv5-n15",
+      "target": "MosslineSuite",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "MosslineSuite"
+        },
+        {
+          "kind": "excerpt",
+          "text": "The new developer portal has been launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "crossed-signal-ownership"
+    },
+    {
+      "id": "ilv5-n16",
+      "target": "CobaltSprig",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "CobaltSprig is still under internal review. The public status page is now generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "crossed-sentence-ownership"
+    },
+    {
+      "id": "ilv5-n17",
+      "target": "DunlinConsole",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "DunlinConsole remains unreleased； meanwhile, the sample gallery was launched。"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "crossed-clause-ownership-fullwidth-punctuation"
+    },
+    {
+      "id": "ilv5-n18",
+      "target": "ElderQueue",
+      "signals": [
+        {
+          "kind": "structured_metadata",
+          "text": "{\"product\":\"ElderQueue\",\"releaseStatus\":\"launched\",\"availability\":\"general\"}"
+        },
+        {
+          "kind": "excerpt",
+          "text": "ElderQueue is awaiting its first public release."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "metadata-only-launch-authority"
+    },
+    {
+      "id": "ilv5-n19",
+      "target": "LanternDelta",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "LanternDelta has been launched"
+        },
+        {
+          "kind": "canonical_url",
+          "text": "https://updates.lantern-delta.example/launched"
+        },
+        {
+          "kind": "excerpt",
+          "text": "This page outlines a proposed announcement and does not report a release."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "title-and-url-only-launch-authority"
+    },
+    {
+      "id": "ilv5-n20",
+      "target": "OrchardThread",
+      "signals": [
+        {
+          "kind": "navigation_or_footer",
+          "text": "OrchardThread is now generally available"
+        },
+        {
+          "kind": "heading",
+          "text": "Planned release materials"
+        },
+        {
+          "kind": "excerpt",
+          "text": "OrchardThread remains in development."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "navigation-only-launch-authority"
+    }
+  ]
+}
