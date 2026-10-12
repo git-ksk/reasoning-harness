@@ -1849,6 +1849,10 @@ fn target_owned_made_generally_available_v17(
                                         && ["model", "service", "product"].contains(&suffix[0]))
                                     || (suffix.first() == Some(&"from")
                                         && (2..=5).contains(&suffix.len())
+                                        // This must remain a nominal maker modifier.
+                                        // A preserved dotted name can hide an unspaced
+                                        // sentence boundary, so a finite clause here
+                                        // cannot lend its availability to the target.
                                         && !suffix.iter().any(|word| {
                                             [
                                                 "documentation",
@@ -1857,9 +1861,34 @@ fn target_owned_made_generally_available_v17(
                                                 "guide",
                                                 "pricing",
                                                 "rival",
+                                                "am",
                                                 "is",
+                                                "are",
                                                 "was",
+                                                "were",
+                                                "be",
+                                                "been",
+                                                "being",
+                                                "become",
+                                                "becomes",
+                                                "became",
+                                                "get",
+                                                "gets",
+                                                "got",
+                                                "remain",
+                                                "remains",
+                                                "remained",
                                                 "has",
+                                                "have",
+                                                "had",
+                                                "do",
+                                                "does",
+                                                "did",
+                                                "will",
+                                                "shall",
+                                                "should",
+                                                "can",
+                                                "must",
                                                 "generally",
                                                 "available",
                                             ]

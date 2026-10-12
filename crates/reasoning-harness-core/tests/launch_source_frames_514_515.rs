@@ -391,6 +391,36 @@ fn issue515_dotted_names_and_decimal_versions() {
 fn issue515_punctuation_must_not_borrow_predicates() {
     assert_cases(&[
         (
+            "Gear 4.2",
+            "The vendor has made Gear 4.2 from copper.Labs are generally available for rental.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 from Ruzani.Labs are generally available.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 from Ruzani.Labs were generally available.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 from Ruzani.Labs became generally available.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 from Ruzani.Labs have become generally available.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "Acme.Services has made tools. The vendor has made GLM 5.3 from Acme.Services are generally available.",
+            false,
+        ),
+        (
             "GLM 5.3",
             "GLM 5.3 documentation was introduced in 2026.",
             false,
