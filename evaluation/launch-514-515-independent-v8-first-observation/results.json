@@ -1,0 +1,275 @@
+{
+  "suite_id": "launch-514-515-independent-v8",
+  "candidate_sha": "836cd0cc7e4168aa3bdf0c7ab37609f0955c768d",
+  "corpus_declared_candidate_sha": "23284e2c40dabbcec4d436ff5250c17cf2452fdc",
+  "pre_observation_source_change": "Only root code review identified the as-of May inconsistency before any v8 case-content inspection or engine evaluation. Source correction836cd0c was frozen before first observation; original corpus metadata, text and labels unchanged.",
+  "frozen_corpus_commit": "a4f307ecc2bc57b334b19e8f8938c4e74e9304e6",
+  "evaluator_sha": "c8cd13f8425a68217935ec09b27c4d5f3cf2f5e0",
+  "manifest_sha256": "f91138d1b80d5232a8437ede2be4f86f538a2f464d05d3f6120972689d7ec492",
+  "first_observation": true,
+  "passed": 30,
+  "total": 32,
+  "false_positives": [],
+  "false_negatives": [
+    "v8-p11-caldrivo",
+    "v8-p12-vensori"
+  ],
+  "cases": [
+    {
+      "id": "v8-p01-velqora",
+      "category": "direct-past-launch",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v8-p02-nesvanta",
+      "category": "present-perfect-global",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v8-p03-ildren",
+      "category": "dated-customer-ga",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v8-p04-quorvessa",
+      "category": "dated-regional-ga",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v8-p05-zelmori",
+      "category": "became-geographic-ga",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v8-p06-avenquix",
+      "category": "vendor-developer-ga",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v8-p07-draxivel",
+      "category": "vendor-dotted-maker",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v8-p08-torvemi",
+      "category": "dotted-target-worldwide",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v8-p09-elnovar",
+      "category": "confirmed-import-tools",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v8-p10-urvexa",
+      "category": "launch-migration-assistance",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "v8-p11-caldrivo",
+      "category": "ga-no-extra-fees",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "v8-p12-vensori",
+      "category": "clock-workspace-ga",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "v8-n01-ravonel",
+      "category": "document-subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n02-morvexa",
+      "category": "competitor-launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n03-nadvora",
+      "category": "explicit-denial",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n04-selvion",
+      "category": "unresolved-doubt",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n05-talvera",
+      "category": "unmet-condition",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n06-povarek",
+      "category": "future-plan",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n07-orvessa",
+      "category": "preview-only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n08-jenqora",
+      "category": "simulation-quote",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n09-denvora",
+      "category": "unanswered-questions",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n10-yalvix",
+      "category": "statement-boundary-borrowing",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n11-iscora",
+      "category": "title-only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n12-felnix",
+      "category": "navigation-only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n13-winora",
+      "category": "url-only",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n14-olvendi",
+      "category": "agenda-title-quotation",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n15-sarquel",
+      "category": "counterfactual-release",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n16-brelvani",
+      "category": "aspirational-outcome",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n17-qelmora",
+      "category": "unapproved-future-draft",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n18-norizan",
+      "category": "adjacent-version-mismatch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n19-marovia",
+      "category": "guide-object-launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "v8-n20-renlora",
+      "category": "vendor-object-mismatch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    }
+  ]
+}
