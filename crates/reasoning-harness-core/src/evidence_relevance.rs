@@ -1307,6 +1307,7 @@ fn target_owned_launch_frame(policy: &EvidenceRelevanceTargetPolicy, segment: &s
             &["rolled", "out"],
         ],
         2,
+        false,
     )
 }
 
@@ -1315,6 +1316,7 @@ fn target_owned_launch_frame_with_predicates(
     segment: &str,
     predicates: &[&[&str]],
     max_distance: usize,
+    require_direct_subject: bool,
 ) -> bool {
     let targets = target_identity_phrases(policy);
     let tokens = segment.split_whitespace().collect::<Vec<_>>();
@@ -1390,6 +1392,9 @@ fn target_owned_launch_frame_with_predicates(
         !name.is_empty()
             && tokens.windows(name.len()).enumerate().any(|(i, words)| {
                 if words != name {
+                    return false;
+                }
+                if require_direct_subject && !launch_product_prefix_v17(&tokens[..i]) {
                     return false;
                 }
                 predicates.iter().any(|predicate| {
@@ -1497,17 +1502,8 @@ fn target_owned_launch_fact_v17(
                     | EvidenceRelevanceSignalKind::StructuredMetadata
             )
         })
-        .flat_map(|signal| {
-            normalized_factual_segments(&signal.text)
-                .into_iter()
-                .map(|segment| (segment, false))
-                .chain(
-                    launch_factual_segments_v17(policy, &signal.text)
-                        .into_iter()
-                        .map(|segment| (segment, true)),
-                )
-        })
-        .any(|(segment, successor)| {
+        .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
+        .any(|segment| {
             if segment.split_whitespace().any(|word| {
                 [
                     "may",
@@ -1524,18 +1520,24 @@ fn target_owned_launch_fact_v17(
                     "allegedly",
                     "reportedly",
                     "expected",
+                    "false",
+                    "falsely",
+                    "falsehood",
+                    "untrue",
+                    "incorrect",
+                    "incorrectly",
+                    "fabricated",
+                    "fabrication",
+                    "debunked",
+                    "refuted",
                 ]
                 .contains(&word)
             }) {
                 return false;
             }
-            if !successor {
-                return target_owned_made_generally_available(policy, &segment)
-                    || target_owned_launch_frame(policy, &segment);
-            }
-            // Newly recovered frames require an adjacent exact subject, or a
-            // bounded direct object. A product's documentation or a sibling
-            // mentioned after its name cannot borrow launch authority.
+            // Every current frame needs an owned subject or direct object.
+            // Reusing the historical permissive path would let "documentation
+            // for TARGET" borrow authority even with an adjacent predicate.
             target_owned_made_generally_available_v17(policy, &segment)
                 || target_owned_launch_frame_with_predicates(
                     policy,
@@ -1551,8 +1553,22 @@ fn target_owned_launch_fact_v17(
                         &["rolled", "out"],
                     ],
                     0,
+                    true,
                 )
         })
+}
+
+fn launch_product_prefix_v17(prefix: &[&str]) -> bool {
+    matches!(
+        prefix,
+        [] | ["the"]
+            | ["the", "model" | "service" | "product"]
+            | ["model" | "service" | "product"]
+            | ["the", "latest" | "new", "version", "of"]
+            | ["latest" | "new", "version", "of"]
+            | ["the", "version", "of"]
+            | ["version", "of"]
+    )
 }
 
 fn target_owned_made_generally_available_v17(
@@ -1585,13 +1601,7 @@ fn target_owned_made_generally_available_v17(
                                 }
                                 let prefix = &object[..i];
                                 let suffix = &object[i + name.len()..];
-                                let direct_object = prefix.iter().all(|word| {
-                                    [
-                                        "the", "latest", "version", "of", "model", "service",
-                                        "product",
-                                    ]
-                                    .contains(word)
-                                });
+                                let direct_object = launch_product_prefix_v17(prefix);
                                 let owned_suffix = suffix.is_empty()
                                     || (suffix.len() == 1
                                         && ["model", "service", "product"].contains(&suffix[0]))
