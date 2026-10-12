@@ -1,0 +1,278 @@
+{
+  "suite_id": "launch-514-515-independent-v2",
+  "candidate_sha": "d10cbadb046100b885ae5b5975b7cc29e0ae4499",
+  "frozen_corpus_commit": "3fd9727",
+  "evaluator_sha": "1699c56d158bf1fbdb822c61a1a69f4c52a14c50",
+  "manifest_sha256": "6eaa04189332d7c1e943b4b5c0b18075bc0d6e14e9e4334b7cbbd6114f0f1248",
+  "first_observation": true,
+  "passed": 25,
+  "total": 32,
+  "false_positives": [],
+  "false_negatives": [
+    "ind-v2-01",
+    "ind-v2-02",
+    "ind-v2-04",
+    "ind-v2-06",
+    "ind-v2-07",
+    "ind-v2-08",
+    "ind-v2-10"
+  ],
+  "cases": [
+    {
+      "id": "ind-v2-01",
+      "category": "affirmative_launch",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "ind-v2-02",
+      "category": "affirmative_present_perfect_launch",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "ind-v2-03",
+      "category": "affirmative_current_general_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-04",
+      "category": "affirmative_past_general_availability",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "ind-v2-05",
+      "category": "affirmative_vendor_made_available",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-06",
+      "category": "affirmative_dotted_target",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "ind-v2-07",
+      "category": "affirmative_dotted_vendor",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "ind-v2-08",
+      "category": "affirmative_numeric_version",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "ind-v2-09",
+      "category": "affirmative_dotted_target_with_numeric_version",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-10",
+      "category": "affirmative_bounded_latest_version_launch",
+      "expected_relevant": true,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": false
+    },
+    {
+      "id": "ind-v2-11",
+      "category": "affirmative_bounded_latest_version_availability",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-12",
+      "category": "affirmative_metadata_dotted_vendor_target_and_version",
+      "expected_relevant": true,
+      "disposition": "Relevant",
+      "relation_scope": "RequestedRelation",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-13",
+      "category": "target_modifier_documentation_subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-14",
+      "category": "target_modifier_competitor_subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-15",
+      "category": "falsified_embedded_target_launch_claim",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-16",
+      "category": "denied_embedded_target_launch_report",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-17",
+      "category": "falsified_claim_with_documentation_subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-18",
+      "category": "denied_report_with_competitor_subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-19",
+      "category": "falsified_announcement_with_training_package_subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-20",
+      "category": "retracted_availability_claim_with_helper_subject",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-21",
+      "category": "speculation_and_explicit_negation",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-22",
+      "category": "launch_question",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-23",
+      "category": "hypothetical_latest_version_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-24",
+      "category": "conditional_future_availability",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-25",
+      "category": "sibling_product_launch",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-26",
+      "category": "crossed_signal_subject_ownership",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-27",
+      "category": "crossed_sentence_subject_ownership",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-28",
+      "category": "crossed_clause_subject_ownership",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-29",
+      "category": "ascii_target_boundary",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-30",
+      "category": "full_width_target_boundary",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-31",
+      "category": "source_title_only_launch_authority",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    },
+    {
+      "id": "ind-v2-32",
+      "category": "navigation_only_launch_authority",
+      "expected_relevant": false,
+      "disposition": "Ambiguous",
+      "relation_scope": "Unresolved",
+      "correct": true
+    }
+  ]
+}
