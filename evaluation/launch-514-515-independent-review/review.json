@@ -1,0 +1,226 @@
+{
+  "independence": "Reviewer did not implement fixes and was instructed not to inspect independent corpora or communicate with corpus authors. Read-only review; no additional agents/models.",
+  "scope": "Focused core code review and deterministic probes, not external human review, live-provider acceptance, or complete workspace validation.",
+  "base_sha": "a48a33dfe1d6d128417e157c5e34d160d8f2c8a2",
+  "reviews": [
+    {
+      "source_sha": "a6b6f94e93672409727ea5f6224f8c6ccfa41d58",
+      "reviewer": "independent_launch_review subagent, fork_turns=none",
+      "findings": [
+        {
+          "priority": "P2",
+          "class": "Indirect subject borrows adjacent launch predicate",
+          "target": "GLM 5.3",
+          "reproductions": [
+            "Documentation for GLM 5.3 was launched in 2026.",
+            "A competitor to GLM 5.3 was launched in 2026."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        },
+        {
+          "priority": "P2",
+          "class": "Explicit falsification supplies positive launch authority",
+          "target": "GLM 5.3",
+          "reproductions": [
+            "It is false that GLM 5.3 was launched in 2026.",
+            "The assertion that GLM 5.3 was launched in 2026 is false."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        }
+      ]
+    },
+    {
+      "source_sha": "d10cbadb046100b885ae5b5975b7cc29e0ae4499",
+      "original_four_reproductions": "All correctly Unresolved / Ambiguous",
+      "findings": [
+        {
+          "priority": "P2",
+          "class": "Enclosing rejection still supplies made-available authority",
+          "target": "GLM 5.3",
+          "reproductions": [
+            "The vendor rejected the assertion that it has made GLM 5.3 generally available."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        },
+        {
+          "priority": "P2",
+          "class": "Harmless leading date adjunct loses owned subject",
+          "target": "Silver Lens",
+          "reproductions": [
+            "In 2026, Silver Lens became generally available."
+          ],
+          "candidate": "Unresolved / Ambiguous",
+          "base": "RequestedRelation / Relevant"
+        },
+        {
+          "priority": "P2",
+          "class": "Month May treated as modal uncertainty",
+          "target": "Silver Lens",
+          "reproductions": [
+            "Silver Lens was introduced on May 1, 2026."
+          ],
+          "candidate": "Unresolved / Ambiguous",
+          "base": "RequestedRelation / Relevant"
+        }
+      ],
+      "validation": "23 custom inputs compared across base and both candidates with separate Cargo target directories; exact d10cbad source SHA256 checked against Git."
+    },
+    {
+      "source_sha": "48c97d9e61204fb018d825066fbcb37e902ecd20",
+      "previous_reproductions": "Previously reported inputs fixed",
+      "findings": [
+        {
+          "priority": "P2",
+          "class": "Active launch permits a delayed direct object",
+          "target": "Silver Lens",
+          "reproductions": [
+            "Silver Lens launched on its website a new documentation portal.",
+            "Silver Lens launched, in 2026, a new documentation portal."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        },
+        {
+          "priority": "P2",
+          "class": "Numeric May exception can exempt a speculative modal",
+          "target": "GLM 5.3",
+          "reproductions": [
+            "The vendor may, 2 days from now, announce it has made GLM 5.3 generally available."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        },
+        {
+          "priority": "P2",
+          "class": "Omission of optional that bypasses enclosing doubt guard",
+          "target": "GLM 5.3",
+          "reproductions": [
+            "The vendor doubts it has made GLM 5.3 generally available."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        }
+      ],
+      "validation": "33 custom inputs compared across candidate, d10cbad and original base with isolated Cargo targets; exact source SHA256 checked against Git."
+    },
+    {
+      "source_sha": "6c5f9140e885da5dc75733b47d0adae4468e23a9",
+      "previous_reproductions": "All previously reported findings fixed",
+      "findings": [
+        {
+          "priority": "P2",
+          "class": "Explicit simulations acquire factual launch authority",
+          "reproductions": [
+            "GLM 5.3 was launched only in a simulation.",
+            "Silver Lens was launched in a simulated environment.",
+            "The vendor has made GLM 5.3 generally available in a simulated exercise."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        }
+      ],
+      "validation": "36 focused inputs exercised previous findings, active-tail ownership, temporal prefixes, May disambiguation and preview handling in an isolated build; exact source SHA256 checked against Git."
+    },
+    {
+      "source_sha": "b73559853134887d9b077baa7433fb3c6a886629",
+      "previous_reproductions": "All previous findings including simulations fixed",
+      "findings": [
+        {
+          "priority": "P2",
+          "class": "Dotted maker joins a separate finite clause that supplies availability",
+          "reproductions": [
+            "The vendor has made Gear 4.2 from copper.Labs are generally available for rental.",
+            "The vendor has made GLM 5.3 from Ruzani.Labs are generally available.",
+            "Acme.Services has made tools. The vendor has made GLM 5.3 from Acme.Services are generally available."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        }
+      ],
+      "validation": "Previous 36 focused inputs and eight maker-boundary probes replayed using isolated Cargo targets. Source SHA256 verified against Git."
+    },
+    {
+      "source_sha": "2cf7add86a1fe0d1a9f9dcbd26bd40d3b971e2ae",
+      "previous_reproductions": "Exact prior finite-copula cases fixed; genuine dotted-maker and previous non-maker controls pass",
+      "findings": [
+        {
+          "priority": "P2",
+          "class": "Maker modifier admits an unlisted finite verb",
+          "reproductions": [
+            "The vendor has made Gear 4.2 from copper.Labs offer generally available equipment.",
+            "The vendor has made GLM 5.3 from Ruzani.Labs stay generally available.",
+            "Acme.Services has made tools. The vendor has made GLM 5.3 from Acme.Services stay generally available."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        }
+      ],
+      "validation": "Eight public groups and 47 probes replayed against candidate, b735598 and original base, with isolated Cargo targets. Raw corpus uninspected."
+    },
+    {
+      "source_sha": "7658e6bd18afabd9ba7b23260d674fe3d0ef39ba",
+      "previous_reproductions": "Prior whitespace-separated finite-clause cases fixed; genuine dotted and confirmed multiword makers pass",
+      "findings": [
+        {
+          "priority": "P2",
+          "class": "Whitespace-token maker absorbs a dash-separated finite clause",
+          "reproductions": [
+            "The vendor has made Gear 4.2 from copper.Labs\u2014today\u2014offer generally available equipment.",
+            "The vendor has made Gear 4.2 from copper.Labs\u2014now\u2014offer generally available equipment.",
+            "The vendor has made GLM 5.3 from Ruzani.Labs\u2014today\u2014stay generally available."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        }
+      ],
+      "validation": "Eight public groups, 47 prior probes and 20 additional maker-boundary/control inputs checked with isolated targets. Exact source bytes verified. Raw corpus uninspected."
+    },
+    {
+      "source_sha": "5c15e00446c4998ba43bc9942cc62418b3b7514d",
+      "previous_reproductions": "All earlier maker/dash cases fixed",
+      "findings": [
+        {
+          "priority": "P2",
+          "class": "Possessive or parenthetical availability lends another owner authority",
+          "reproductions": [
+            "The vendor has made Gear 4.2 from copper.Labs\u2019 generally available equipment includes microscopes.",
+            "The vendor has made Gear 4.2 from copper.Labs (generally available to students) offer equipment.",
+            "The vendor has made Gear 4.2 from copper.Labs \u2014 generally available to students \u2014 offer equipment."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        }
+      ],
+      "validation": "Eight public groups, 47 prior probes, 20 additional maker probes and 12 edge probes checked in isolated builds; no independent corpus access."
+    },
+    {
+      "source_sha": "32486c4a46249243224f12f72479045bb2b722d0",
+      "previous_reproductions": "All prior possessive/parenthetical cases fixed",
+      "findings": [
+        {
+          "priority": "P2",
+          "class": "Signal-wide raw object from denied sentence authorizes an equal object in another segment",
+          "reproductions": [
+            "The vendor has made Gear 4.2 from copper.Labs, generally available to students. It is false that the vendor has made Gear 4.2 from copper.Labs generally available to students."
+          ],
+          "candidate": "RequestedRelation / Relevant",
+          "base": "Unresolved / Ambiguous"
+        }
+      ],
+      "validation": "Eight public groups, 79 prior and 36 broad variants replayed. Reversed order, doubt, quote, parenthesis and dash variants reproduce. No independent corpus access.",
+      "recall_limits": "Bounded tail may abstain on compound audience/region wording and and-registration-opened wording; these were not classified as additional introduced findings."
+    },
+    {
+      "source_sha": "9077f84a90e664ce004d35dce7baa9d55659fa07",
+      "findings": [],
+      "validation": "Eight public groups pass; all 115 prior probes replayed and every reported failure fixed. Added 59 passing isolation checks covering ASCII/fullwidth boundaries, LF/CR/CRLF, sentence order, separate factual signals, titles and true positives. Exact source bytes verified; isolated build target. Independent corpora untouched.",
+      "recall_limits": "Compound audience/region tails, trailing and-registration-opened wording, and multiword makers confirmed only in another sentence abstain."
+    }
+  ],
+  "final_source_sha": "9077f84a90e664ce004d35dce7baa9d55659fa07",
+  "final_review": "No introduced P1/P2 findings in focused source review and deterministic probes. Full workspace and fresh-holdout acceptance verified separately.",
+  "final_source_file_sha256": "2cc2717abd11ed3a006f2e9ae667c4cd61d79e3a4f28f63ac52fdaf82e7e27d4"
+}

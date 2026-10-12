@@ -1,0 +1,73 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.24
+   Compiling serde_core v1.0.229
+   Compiling syn v3.0.4
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling serde v1.0.229
+   Compiling ref-cast v1.0.27
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive v1.0.229
+   Compiling serde_derive_internals v0.30.0
+   Compiling thiserror v2.0.21
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling schemars_derive v1.2.2
+   Compiling thiserror-impl v2.0.21
+   Compiling dyn-clone v1.0.20
+   Compiling schemars v1.2.2
+   Compiling tokio-macros v2.7.2
+   Compiling pin-project-lite v0.2.17
+   Compiling tokio v1.53.2
+   Compiling reasoning-harness-core v0.7.0 (/private/tmp/rh-516-base-holdout/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.71s
+     Running tests/launch_independent_514_515.rs (/private/tmp/rh516-baseline-target/debug/deps/launch_independent_514_515-57f902dc8e8e87aa)
+
+running 1 test
+lc-001 category=direct_launch expected_relevant=true disposition=Ambiguous relation=Unresolved
+lc-002 category=completed_launch expected_relevant=true disposition=Ambiguous relation=Unresolved
+lc-003 category=current_general_availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+lc-004 category=completed_general_availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+lc-005 category=vendor_made_available expected_relevant=true disposition=Relevant relation=RequestedRelation
+lc-006 category=dotted_product_launch expected_relevant=true disposition=Ambiguous relation=Unresolved
+lc-007 category=dotted_vendor_availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+lc-008 category=decimal_version_launch expected_relevant=true disposition=Ambiguous relation=Unresolved
+lc-009 category=decimal_version_completed_launch expected_relevant=true disposition=Ambiguous relation=Unresolved
+lc-010 category=dotted_product_decimal_version expected_relevant=true disposition=Ambiguous relation=Unresolved
+lc-011 category=dated_general_availability expected_relevant=true disposition=Relevant relation=RequestedRelation
+lc-012 category=dotted_vendor_decimal_version expected_relevant=true disposition=Ambiguous relation=Unresolved
+lc-013 category=question expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-014 category=negated_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-015 category=negated_general_availability expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-016 category=uncertainty expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-017 category=rumor expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-018 category=conditional_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-019 category=sibling_product_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-020 category=documentation_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-021 category=documentation_availability expected_relevant=false disposition=Relevant relation=RequestedRelation
+lc-022 category=mixed_clause_owners expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-023 category=split_sentence_owners expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-024 category=semicolon_clause_boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-025 category=full_width_sentence_boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-026 category=full_width_exclamation_boundary expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-027 category=title_only_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-028 category=navigation_only_availability expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-029 category=cross_signal_owner_borrowing expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-030 category=cross_signal_split_evidence expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-031 category=canceled_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+lc-032 category=future_launch expected_relevant=false disposition=Ambiguous relation=Unresolved
+
+thread 'independently_authored_launch_source_controls' panicked at crates/reasoning-harness-core/tests/launch_independent_514_515.rs:97:5:
+independent control failures: ["lc-001", "lc-002", "lc-006", "lc-008", "lc-009", "lc-010", "lc-012", "lc-021"]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test independently_authored_launch_source_controls ... FAILED
+
+failures:
+
+failures:
+    independently_authored_launch_source_controls
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.32s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_independent_514_515`
