@@ -151,6 +151,98 @@ fn preparation_bridge_requires_one_complete_lambda_owned_statement() {
 }
 
 #[test]
+fn preparation_bridge_preserves_enclosing_factual_context() {
+    let affirmative = "AWS Lambda Provisioned Concurrency initializes execution environments.";
+    for context in [
+        "The following claim is false",
+        "In this simulation",
+        "If the proposed behavior were implemented",
+        "Whether this happens is unclear",
+        "The vendor denies the following statement",
+        "OtherCloud names its service Lambda",
+        "This is a question about a hypothetical service",
+    ] {
+        for separator in [":\n", ". ", "; ", "\n", "。"] {
+            for assertion in [affirmative, QUOTE] {
+                for text in [
+                    format!("{context}{separator}{assertion}"),
+                    format!("{assertion}{separator}{context}"),
+                ] {
+                    assert_ne!(
+                        materialize_evidence_relevance_v30(
+                            &policy(),
+                            &candidate(&text),
+                            Some(&proposal()),
+                            Some(&raw())
+                        )
+                        .unwrap()
+                        .disposition,
+                        EvidenceRelevanceDisposition::Relevant,
+                        "{text}"
+                    );
+                }
+                for kinds in [["excerpt", "fact"], ["fact", "excerpt"]] {
+                    let c: EvidenceRelevanceCandidate = serde_json::from_value(json!({
+                        "evidence_id":"e", "source_id":"s", "signals":[
+                            {"kind":kinds[0], "text":context},
+                            {"kind":kinds[1], "text":assertion}
+                        ]
+                    }))
+                    .unwrap();
+                    assert_ne!(
+                        materialize_evidence_relevance_v30(
+                            &policy(),
+                            &c,
+                            Some(&proposal()),
+                            Some(&raw())
+                        )
+                        .unwrap()
+                        .disposition,
+                        EvidenceRelevanceDisposition::Relevant,
+                        "{context} / {assertion}"
+                    );
+                }
+            }
+        }
+    }
+    for text in [
+        "OtherCloud names its service Lambda. Lambda Provisioned Concurrency initializes execution environments.",
+        "AWS Lambda Provisioned Concurrency initializes execution environments. This statement is false.",
+        "AWS Lambda Provisioned Concurrency initializes execution environments. Is this true?",
+        "AWS Lambda Provisioned Concurrency initializes execution environments. This only happens in a simulation.",
+    ] {
+        assert_ne!(
+            materialize_evidence_relevance_v30(
+                &policy(),
+                &candidate(text),
+                Some(&proposal()),
+                Some(&raw())
+            )
+            .unwrap()
+            .disposition,
+            EvidenceRelevanceDisposition::Relevant,
+            "{text}"
+        );
+    }
+    // Multiple affirmative frames are allowed, while other factual context
+    // conservatively abstains. A nonfactual FAQ title does not govern proof.
+    let c: EvidenceRelevanceCandidate = serde_json::from_value(json!({
+        "evidence_id":"e", "source_id":"s", "signals":[
+            {"kind":"source_title", "text":"What does Provisioned Concurrency prepare?"},
+            {"kind":"excerpt", "text":QUOTE},
+            {"kind":"fact", "text":affirmative}
+        ]
+    }))
+    .unwrap();
+    assert_eq!(
+        materialize_evidence_relevance_v30(&policy(), &c, Some(&proposal()), Some(&raw()))
+            .unwrap()
+            .disposition,
+        EvidenceRelevanceDisposition::Relevant
+    );
+}
+
+#[test]
 fn preparation_bridge_preserves_signal_and_qualification_boundaries() {
     let p = policy();
     let b = proposal();

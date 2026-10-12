@@ -2626,32 +2626,43 @@ fn aws_lambda_bilingual_prepared_environment_frame(
     if !aws_lambda_preparation_policy_v17(policy) {
         return false;
     }
-    candidate
-        .signals
-        .iter()
-        .filter(|signal| {
-            matches!(
-                signal.kind,
-                EvidenceRelevanceSignalKind::Excerpt | EvidenceRelevanceSignalKind::Fact
-            )
-        })
-        .any(|signal| {
-            signal
-                .text
-                .split(['.', ';', '\n', '\r', '!', '。', '！', '；'])
-                .any(|sentence| {
-                    if sentence.contains([
-                        '?', '？', '"', '\'', '“', '”', '‘', '’', '(', ')', '[', ']', '{', '}',
-                        '—', '–',
-                    ]) || text_has_untrusted_instruction_marker_v15(sentence)
-                    {
-                        return false;
-                    }
-                    let line = normalized(sentence);
-                    let words = line.split_whitespace().collect::<Vec<_>>();
-                    lambda_preparation_sentence_v17(&words)
-                })
-        })
+    // This bounded bridge cannot resolve governing context in other statements
+    // or factual signals. Require every factual statement to be a supported
+    // owned frame: selecting an isolated affirmative fragment could discard a
+    // denial, hypothetical heading, retraction or same-name alternate owner.
+    let mut found_fact = false;
+    for signal in candidate.signals.iter().filter(|signal| {
+        matches!(
+            signal.kind,
+            EvidenceRelevanceSignalKind::Excerpt | EvidenceRelevanceSignalKind::Fact
+        )
+    }) {
+        if signal.text.contains([
+            '?', '？', '"', '\'', '“', '”', '‘', '’', '(', ')', '[', ']', '{', '}', '—', '–', ':',
+            '：',
+        ]) || text_has_untrusted_instruction_marker_v15(&signal.text)
+        {
+            return false;
+        }
+        let mut found_statement = false;
+        for sentence in signal
+            .text
+            .split(['.', ';', '\n', '\r', '!', '。', '！', '；'])
+            .filter(|sentence| !sentence.trim().is_empty())
+        {
+            let line = normalized(sentence);
+            let words = line.split_whitespace().collect::<Vec<_>>();
+            if !lambda_preparation_sentence_v17(&words) {
+                return false;
+            }
+            found_statement = true;
+        }
+        if !found_statement {
+            return false;
+        }
+        found_fact = true;
+    }
+    found_fact
 }
 
 fn lambda_preparation_sentence_v17(words: &[&str]) -> bool {
