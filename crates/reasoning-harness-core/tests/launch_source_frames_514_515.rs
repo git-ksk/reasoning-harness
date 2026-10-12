@@ -397,6 +397,26 @@ fn issue515_punctuation_must_not_borrow_predicates() {
     assert_cases(&[
         (
             "Gear 4.2",
+            "The vendor has made Gear 4.2 from copper.Labs—today—offer generally available equipment.",
+            false,
+        ),
+        (
+            "Gear 4.2",
+            "The vendor has made Gear 4.2 from copper.Labs—now—offer generally available equipment.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 from Ruzani.Labs—today—stay generally available.",
+            false,
+        ),
+        (
+            "Gear 4.2",
+            "The vendor has made Gear 4.2 from copper.Labs-today-offer generally available equipment.",
+            false,
+        ),
+        (
+            "Gear 4.2",
             "The vendor has made Gear 4.2 from copper.Labs offer generally available equipment.",
             false,
         ),

@@ -1887,9 +1887,13 @@ fn target_owned_made_generally_available_v17(
 // otherwise an unsupported modifier abstains rather than absorbing a clause.
 fn launch_maker_phrases_v17(value: &str) -> Vec<String> {
     let words = value.split_whitespace().collect::<Vec<_>>();
+    let maker_lexeme = |word: &str| {
+        let word = word.trim_matches(|c: char| !c.is_alphanumeric());
+        !word.is_empty() && word.chars().all(|c| c.is_alphanumeric() || c == '.')
+    };
     let mut makers = Vec::new();
     for (index, pair) in words.windows(2).enumerate() {
-        if pair[0].eq_ignore_ascii_case("from") {
+        if pair[0].eq_ignore_ascii_case("from") && maker_lexeme(pair[1]) {
             makers.push(normalized(pair[1]));
         }
         if pair[0].eq_ignore_ascii_case("has") && pair[1].eq_ignore_ascii_case("made") {
@@ -1897,9 +1901,7 @@ fn launch_maker_phrases_v17(value: &str) -> Vec<String> {
                 let name = &words[index - count..index];
                 if name.iter().all(|word| {
                     word.chars().next().is_some_and(char::is_uppercase)
-                        && word
-                            .chars()
-                            .all(|c| c.is_alphanumeric() || ['.', '-', '&'].contains(&c))
+                        && maker_lexeme(word)
                         && !word.ends_with('.')
                 }) {
                     makers.push(normalized(&name.join(" ")));
