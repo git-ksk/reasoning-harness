@@ -2626,6 +2626,19 @@ fn aws_lambda_bilingual_prepared_environment_frame(
     if !aws_lambda_preparation_policy_v17(policy) {
         return false;
     }
+    // Documentary context cannot prove the preparation predicate, but explicit
+    // simulation, denial or retraction there still governs the local excerpt.
+    // Ignore URL/navigation text, where such words do not describe the excerpt.
+    if candidate.signals.iter().any(|signal| {
+        matches!(
+            signal.kind,
+            EvidenceRelevanceSignalKind::SourceTitle
+                | EvidenceRelevanceSignalKind::Heading
+                | EvidenceRelevanceSignalKind::StructuredMetadata
+        ) && lambda_preparation_context_blocks_v17(&signal.text)
+    }) {
+        return false;
+    }
     // This bounded bridge cannot resolve governing context in other statements
     // or factual signals. Require every factual statement to be a supported
     // owned frame: selecting an isolated affirmative fragment could discard a
@@ -2637,11 +2650,7 @@ fn aws_lambda_bilingual_prepared_environment_frame(
             EvidenceRelevanceSignalKind::Excerpt | EvidenceRelevanceSignalKind::Fact
         )
     }) {
-        if signal.text.contains([
-            '?', '？', '"', '\'', '“', '”', '‘', '’', '(', ')', '[', ']', '{', '}', '—', '–', ':',
-            '：',
-        ]) || text_has_untrusted_instruction_marker_v15(&signal.text)
-        {
+        if text_has_untrusted_instruction_marker_v15(&signal.text) {
             return false;
         }
         let mut found_statement = false;
@@ -2650,7 +2659,11 @@ fn aws_lambda_bilingual_prepared_environment_frame(
             .split(['.', ';', '\n', '\r', '!', '。', '！', '；'])
             .filter(|sentence| !sentence.trim().is_empty())
         {
-            let line = normalized(sentence);
+            // Do not let normalization erase a denial symbol, strikethrough,
+            // quote delimiter or unsupported punctuation into affirmative proof.
+            let Some(line) = lambda_preparation_source_line_v17(sentence) else {
+                return false;
+            };
             let words = line.split_whitespace().collect::<Vec<_>>();
             if !lambda_preparation_sentence_v17(&words) {
                 return false;
@@ -2663,6 +2676,126 @@ fn aws_lambda_bilingual_prepared_environment_frame(
         found_fact = true;
     }
     found_fact
+}
+
+fn lambda_preparation_context_blocks_v17(text: &str) -> bool {
+    if text_has_untrusted_instruction_marker_v15(text)
+        || ["~~", "≠", "¬", "❌", "✗", "✘", "\u{0336}"]
+            .iter()
+            .any(|marker| text.contains(marker))
+    {
+        return true;
+    }
+    let text = normalized(text);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    // An explicit local naming statement can bind the abbreviated Lambda
+    // subject to another service. Documentary placement does not erase it.
+    if words.windows(4).any(|phrase| {
+        matches!(
+            phrase,
+            [
+                "names" | "calls",
+                "its" | "their",
+                "service" | "product",
+                "lambda"
+            ]
+        )
+    }) || words.windows(3).any(|phrase| {
+        matches!(
+            phrase,
+            ["service" | "product", "named" | "called", "lambda"]
+        )
+    }) {
+        return true;
+    }
+    words.iter().any(|word| {
+        [
+            "not",
+            "never",
+            "false",
+            "falsehood",
+            "untrue",
+            "incorrect",
+            "wrong",
+            "denial",
+            "denies",
+            "denied",
+            "rejects",
+            "rejected",
+            "refuted",
+            "retraction",
+            "retracts",
+            "retracted",
+            "withdrawn",
+            "unverified",
+            "uncertain",
+            "unclear",
+            "unconfirmed",
+            "hypothetical",
+            "hypothetically",
+            "counterfactual",
+            "simulation",
+            "simulations",
+            "simulated",
+            "fiction",
+            "fictional",
+            "fictitious",
+            "imaginary",
+            "pretend",
+            "mock",
+            "rehearsal",
+        ]
+        .contains(word)
+    })
+}
+
+fn lambda_preparation_source_line_v17(sentence: &str) -> Option<String> {
+    let mut line = sentence.to_ascii_lowercase();
+    // These are the only supported word-internal separators. Other punctuation
+    // has no affirmative meaning in this bounded source grammar.
+    for (from, to) in [
+        ("pre-initializes", "preinitializes"),
+        ("pre-initialises", "preinitialises"),
+        ("pre-initialize", "preinitialize"),
+        ("pre-initialise", "preinitialise"),
+    ] {
+        line = line.replace(from, to);
+    }
+    if line
+        .chars()
+        .any(|c| !c.is_ascii_alphabetic() && !c.is_whitespace() && c != ',')
+    {
+        return None;
+    }
+    if let Some((prefix, rest)) = line.split_once(',') {
+        let prefix = prefix.split_whitespace().collect::<Vec<_>>();
+        let prefix = prefix.strip_prefix(&["the"]).unwrap_or(&prefix);
+        if rest.contains(',')
+            || !(matches!(
+                prefix,
+                ["for" | "in", "aws", "lambda"] | ["with", "provisioned", "concurrency"]
+            ) || lambda_preparation_setup_condition_v17(prefix))
+        {
+            return None;
+        }
+    }
+    Some(normalized(&line))
+}
+
+fn lambda_preparation_setup_condition_v17(words: &[&str]) -> bool {
+    matches!(
+        words,
+        [
+            "if" | "when",
+            "you",
+            "set" | "configure" | "enable",
+            "provisioned",
+            "concurrency",
+            "on" | "for",
+            "a" | "the",
+            "function"
+        ]
+    )
 }
 
 fn lambda_preparation_sentence_v17(words: &[&str]) -> bool {
@@ -2697,24 +2830,14 @@ fn lambda_preparation_sentence_v17(words: &[&str]) -> bool {
     }
     // The public AWS documentation's setup condition binds the named feature
     // to Lambda's initialization. Arbitrary conditionals and other actors do not.
-    matches!(
-        words,
-        [
-            "if" | "when",
-            "you",
-            "set" | "configure" | "enable",
-            "provisioned",
-            "concurrency",
-            "on" | "for",
-            "a" | "the",
-            "function",
-            ..
-        ]
-    ) && words.get(8..).is_some_and(|tail| {
-        tail.strip_prefix(&["lambda"])
-            .or_else(|| tail.strip_prefix(&["aws", "lambda"]))
-            .is_some_and(|tail| lambda_initialization_predicate_v17(tail, false))
-    })
+    words
+        .get(..8)
+        .is_some_and(lambda_preparation_setup_condition_v17)
+        && words.get(8..).is_some_and(|tail| {
+            tail.strip_prefix(&["lambda"])
+                .or_else(|| tail.strip_prefix(&["aws", "lambda"]))
+                .is_some_and(|tail| lambda_initialization_predicate_v17(tail, false))
+        })
 }
 
 fn lambda_initialization_predicate_v17(words: &[&str], infinitive: bool) -> bool {
