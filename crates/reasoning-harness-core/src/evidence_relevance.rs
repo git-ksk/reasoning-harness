@@ -2580,31 +2580,50 @@ fn deterministic_nonrequested_relation_observable_cue_v4(
     false
 }
 
-// A deliberately bounded bilingual local-frame bridge for the AWS Lambda
-// Provisioned Concurrency *preparation* relation. Generic Japanese/English
-// token overlap is not semantic evidence. Only an affirmative factual excerpt
-// owning the exact named subject and stating initialization of execution
-// environments may supply the missing General-relation cue; URL/title/LLM
-// advisory statements alone cannot. This does not confer identity, authority,
-// verification or translation approval.
+// Successor-only bilingual preparation contract. Neither question translation
+// nor sentence-wide token co-occurrence establishes a source-owned predicate.
+fn aws_lambda_preparation_policy_v17(policy: &EvidenceRelevanceTargetPolicy) -> bool {
+    let question = policy
+        .target_question
+        .chars()
+        .filter(|c| !c.is_whitespace())
+        .collect::<String>()
+        .to_ascii_lowercase();
+    let question = question.trim_end_matches(['?', '？', '。', '.']);
+    let question_matches = [
+        "provisionedconcurrency",
+        "awslambdaのprovisionedconcurrency",
+        "lambdaのprovisionedconcurrency",
+    ]
+    .iter()
+    .any(|prefix| {
+        question.strip_prefix(prefix).is_some_and(|tail| {
+            [
+                "は何を準備するか",
+                "は何を準備しますか",
+                "は何を準備するのか",
+            ]
+            .contains(&tail)
+        })
+    });
+    policy.relation == EvidenceRelevanceRelationKind::General
+        && question_matches
+        && policy.entity.as_ref().is_some_and(|entity| {
+            [
+                "provisioned concurrency",
+                "aws lambda provisioned concurrency",
+                "lambda provisioned concurrency",
+                "provisioned concurrency prepared environments",
+            ]
+            .contains(&normalized(&entity.canonical_name).as_str())
+        })
+}
+
 fn aws_lambda_bilingual_prepared_environment_frame(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
 ) -> bool {
-    if policy.relation != EvidenceRelevanceRelationKind::General
-        || !policy.target_question.contains("何を")
-        || !policy.target_question.contains("準備")
-        || !policy
-            .target_question
-            .to_ascii_lowercase()
-            .contains("provisioned concurrency")
-        || !policy.entity.as_ref().is_some_and(|entity| {
-            entity
-                .canonical_name
-                .to_ascii_lowercase()
-                .contains("provisioned concurrency")
-        })
-    {
+    if !aws_lambda_preparation_policy_v17(policy) {
         return false;
     }
     candidate
@@ -2617,31 +2636,146 @@ fn aws_lambda_bilingual_prepared_environment_frame(
             )
         })
         .any(|signal| {
-            signal.text.split(['.', '\n']).any(|sentence| {
-                let line = sentence.trim().to_ascii_lowercase();
-                line.contains("provisioned concurrency")
-                    && (line.contains("initialize")
-                        || line.contains("initialise")
-                        || line.contains("initializ"))
-                    && line.contains("execution environment")
-                    // Do not promote speculation, hypothetical future states or
-                    // negated source statements to an affirmative local relation.
-                    && ![" might ", " may ", " could ", " someday ", " plans to ", " expected to ", " potentially ", " reportedly "].iter().any(|hedge| line.contains(hedge))
-                    && ![
-                        "not initialize",
-                        "not initialized",
-                        "cannot initialize",
-                        "doesn't initialize",
-                        "does not initialize",
-                        "never initialize",
-                        "without initializing",
-                        "will not initialize",
-                        "not pre-initialized",
-                    ]
-                    .iter()
-                    .any(|negation| line.contains(negation))
-            })
+            signal
+                .text
+                .split(['.', ';', '\n', '\r', '!', '。', '！', '；'])
+                .any(|sentence| {
+                    if sentence.contains([
+                        '?', '？', '"', '\'', '“', '”', '‘', '’', '(', ')', '[', ']', '{', '}',
+                        '—', '–',
+                    ]) || text_has_untrusted_instruction_marker_v15(sentence)
+                    {
+                        return false;
+                    }
+                    let line = normalized(sentence);
+                    let words = line.split_whitespace().collect::<Vec<_>>();
+                    lambda_preparation_sentence_v17(&words)
+                })
         })
+}
+
+fn lambda_preparation_sentence_v17(words: &[&str]) -> bool {
+    let words = words.strip_prefix(&["the"]).unwrap_or(words);
+    let direct = [
+        &["aws", "lambda", "provisioned", "concurrency"][..],
+        &["lambda", "provisioned", "concurrency"][..],
+        &["provisioned", "concurrency", "in", "aws", "lambda"][..],
+        &["provisioned", "concurrency", "on", "aws", "lambda"][..],
+        &["for", "aws", "lambda", "provisioned", "concurrency"][..],
+        &["in", "aws", "lambda", "provisioned", "concurrency"][..],
+        &["with", "provisioned", "concurrency", "aws", "lambda"][..],
+        &["with", "provisioned", "concurrency", "lambda"][..],
+    ]
+    .iter()
+    .any(|subject| {
+        words
+            .strip_prefix(*subject)
+            .is_some_and(|tail| lambda_initialization_predicate_v17(tail, false))
+    });
+    if direct {
+        return true;
+    }
+    for subject in [&["aws", "lambda"][..], &["lambda"][..]] {
+        if words
+            .strip_prefix(subject)
+            .and_then(|tail| tail.strip_prefix(&["uses", "provisioned", "concurrency", "to"]))
+            .is_some_and(|tail| lambda_initialization_predicate_v17(tail, true))
+        {
+            return true;
+        }
+    }
+    // The public AWS documentation's setup condition binds the named feature
+    // to Lambda's initialization. Arbitrary conditionals and other actors do not.
+    matches!(
+        words,
+        [
+            "if" | "when",
+            "you",
+            "set" | "configure" | "enable",
+            "provisioned",
+            "concurrency",
+            "on" | "for",
+            "a" | "the",
+            "function",
+            ..
+        ]
+    ) && words.get(8..).is_some_and(|tail| {
+        tail.strip_prefix(&["lambda"])
+            .or_else(|| tail.strip_prefix(&["aws", "lambda"]))
+            .is_some_and(|tail| lambda_initialization_predicate_v17(tail, false))
+    })
+}
+
+fn lambda_initialization_predicate_v17(words: &[&str], infinitive: bool) -> bool {
+    let predicate_end = match words {
+        [
+            "initialize" | "initialise" | "preinitialize" | "preinitialise",
+            ..,
+        ] if infinitive => 1,
+        [
+            "initializes" | "initialises" | "preinitializes" | "preinitialises",
+            ..,
+        ] if !infinitive => 1,
+        ["pre", "initialize" | "initialise", ..] if infinitive => 2,
+        ["pre", "initializes" | "initialises", ..] if !infinitive => 2,
+        _ => return false,
+    };
+    let object = &words[predicate_end..];
+    [
+        &["execution", "environments"][..],
+        &["the", "execution", "environments"][..],
+        &["that", "number", "of", "execution", "environments"][..],
+        &[
+            "the",
+            "configured",
+            "number",
+            "of",
+            "execution",
+            "environments",
+        ][..],
+        &[
+            "the",
+            "requested",
+            "number",
+            "of",
+            "execution",
+            "environments",
+        ][..],
+        &[
+            "the",
+            "specified",
+            "number",
+            "of",
+            "execution",
+            "environments",
+        ][..],
+    ]
+    .iter()
+    .any(|prefix| {
+        object.strip_prefix(*prefix).is_some_and(|tail| {
+            matches!(
+                tail,
+                [] | [
+                    "so",
+                    "that",
+                    "they",
+                    "are",
+                    "prepared",
+                    "to",
+                    "respond",
+                    "immediately",
+                    "to",
+                    "function",
+                    "requests"
+                ] | ["before", "invocation" | "invocations"]
+                    | ["before", "requests", "arrive"]
+                    | ["in", "advance"]
+                    | ["ahead", "of", "requests"]
+                    | ["for", "incoming", "requests"]
+                    | ["to", "serve", "requests"]
+            )
+        })
+    })
 }
 
 fn requested_relation_locally_present(
@@ -2712,7 +2846,6 @@ fn requested_relation_locally_present(
                 .filter(|token| !stop.contains(token))
                 .filter(|token| !entity_tokens.iter().any(|entity| entity == *token))
                 .any(|token| text.contains(token))
-                || aws_lambda_bilingual_prepared_environment_frame(policy, candidate)
         }
     }
 }
@@ -6095,6 +6228,30 @@ pub fn derive_effective_evidence_local_qualification_v17(
         effective.relation_scope = EvidenceLocalRelationScope::RequestedRelation;
     }
 
+    // Recover only a locally proven bilingual preparation relation from exact
+    // independent bindings and an anchored exact identity. Never clear a risk, explicit absence, or an
+    // alternate relation. This is successor-only; v16/v29 stay frozen.
+    if aws_lambda_preparation_policy_v17(policy)
+        && effective.scope_risk == Risk::None
+        && effective.identity_scope == Identity::ExactTarget
+        && effective.relation_scope == EvidenceLocalRelationScope::Unresolved
+        && proposal.is_some_and(|value| {
+            value.target_binding == EvidenceRelevanceBinding::Exact
+                && value.relation_binding == EvidenceRelevanceBinding::Exact
+        })
+        && raw.is_some_and(|value| {
+            value.identity_scope == Identity::ExactTarget
+                && value.relation_scope == EvidenceLocalRelationScope::RequestedRelation
+                && value.scope_risk == Risk::None
+        })
+        && anchor_match(policy, candidate).0
+        && !deterministic_strict_named_target_absence(policy, candidate)
+        && !deterministic_strict_target_relation_absence(policy, candidate)
+        && aws_lambda_bilingual_prepared_environment_frame(policy, candidate)
+    {
+        effective.relation_scope = EvidenceLocalRelationScope::RequestedRelation;
+    }
+
     // Post-v16 positive launch authority must be target-owned and affirmative.
     // Older historical v11/v23 semantics still consume the immutable coarse
     // frames; this guard applies only to the current successor path (v17/v30).
@@ -6715,14 +6872,16 @@ pub fn materialize_evidence_relevance_v30(
         },
     });
 
-    let materialize = if policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
-        && effective.scope_risk == EvidenceLocalBlockingReason::None
+    let locally_proven_successor_relation = (policy.relation
+        == EvidenceRelevanceRelationKind::ChangeOrLaunch
+        && target_owned_launch_fact_v17(policy, candidate))
+        || aws_lambda_bilingual_prepared_environment_frame(policy, candidate);
+    let materialize = if effective.scope_risk == EvidenceLocalBlockingReason::None
         && effective.relation_scope == Relation::RequestedRelation
-        && target_owned_launch_fact_v17(policy, candidate)
+        && locally_proven_successor_relation
     {
-        // v17 supplies the source-local positive floor for this launch path.
-        // Reapplying v23's historical v11 vocabulary would erase the recovered
-        // dotted-name frame. All v22 identity/scope/materialization gates remain.
+        // The exact local successor proof supplies relation authority; historical
+        // v23/v11 vocabulary would discard it. Keep v22 identity/scope gates.
         materialize_evidence_relevance_v22
     } else {
         materialize_evidence_relevance_v23
