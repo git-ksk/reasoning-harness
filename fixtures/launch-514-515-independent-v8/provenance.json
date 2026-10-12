@@ -1,0 +1,14 @@
+{
+  "suite_id": "launch-514-515-independent-v8",
+  "candidate_sha": "23284e2c40dabbcec4d436ff5250c17cf2452fdc",
+  "evaluator_frozen_sha": "c8cd13f8425a68217935ec09b27c4d5f3cf2f5e0",
+  "author": "independent_launch_corpus_v8 subagent fork_turns=none",
+  "independence": "Only supplied public bounded feature contract, no repository, implementation, tests, documentation, history, memory, prior corpora/results, web, other agents/models or Engine evaluation. Root validated schema/counts/enums/hash only before observation.",
+  "authorship": "Synthetic deterministic controls, not live provider or external human review.",
+  "case_count": 32,
+  "positive_count": 12,
+  "negative_count": 20,
+  "manifest_sha256": "f91138d1b80d5232a8437ede2be4f86f538a2f464d05d3f6120972689d7ec492",
+  "frozen_at_utc": "2026-10-12T14:49:10.445966+00:00",
+  "protocol": "Evaluator frozen before authoring; exact raw corpus committed before first Engine observation. Defer observation until independent review and full legacy regression pass. Root code review identified an as-of May consistency fix before any v8 case-content inspection/evaluation; record actual source SHA separately without rewriting metadata/text/labels. Any source correction informed by v8 requires a new unseen holdout."
+}
