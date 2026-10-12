@@ -1,0 +1,410 @@
+{
+  "suite_id": "launch-514-515-independent-v9",
+  "candidate_sha": "506e7b1c07012f519f21cf9c1344cffd10809632",
+  "cases": [
+    {
+      "id": "ind-v9-01",
+      "target": "Qorali Ledger 2.4",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Today, Qorali Ledger 2.4 was launched."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct-today"
+    },
+    {
+      "id": "ind-v9-02",
+      "target": "Ventari Studio 7.1",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "On 8 February 2028, the Ventari Studio 7.1 was launched in Europe."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "direct-date"
+    },
+    {
+      "id": "ind-v9-03",
+      "target": "Halvoro Queue 1.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Release confirmed: Halvoro Queue 1.6 is generally available to all developers."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "confirmed-availability"
+    },
+    {
+      "id": "ind-v9-04",
+      "target": "Nexalune Board 4.9",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "As of 4 June 2029, Nexalune Board 4.9 is now generally available in Japan."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "asof-availability"
+    },
+    {
+      "id": "ind-v9-05",
+      "target": "Umeriq Canvas 8.0",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "As of 09:15 UTC today, Umeriq Canvas 8.0 became generally available with no extra fees."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "clock-became"
+    },
+    {
+      "id": "ind-v9-06",
+      "target": "Seruvin Hub 6.5",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "18:20 UTC today, the Seruvin Hub 6.5 has been launched worldwide."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "clock-launched"
+    },
+    {
+      "id": "ind-v9-07",
+      "target": "Drovella Core 11.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The Drovella Core 11.2 was launched globally with no usage restrictions."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "global-unrestricted"
+    },
+    {
+      "id": "ind-v9-08",
+      "target": "Zelquora Mail 3.3",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Zelquora Mail 3.3 became generally available on 2030-03-19."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "became-iso"
+    },
+    {
+      "id": "ind-v9-09",
+      "target": "Orvani Notes 3.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Talunex has made Orvani Notes 3.8 generally available to all workspaces."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-workspaces"
+    },
+    {
+      "id": "ind-v9-10",
+      "target": "Velqis Sync 6.2",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "As of 21 September 2029, Brimora has made the latest version of Velqis Sync 6.2 generally available with import tools included."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-latest-import"
+    },
+    {
+      "id": "ind-v9-11",
+      "target": "Avendo Relay 10.3",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Release confirmed: Cyrelia has made Avendo Relay 10.3 from Zorva.Cloud generally available in all supported regions."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-dotted-maker"
+    },
+    {
+      "id": "ind-v9-12",
+      "target": "Quendil Flow 5.7",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "15:40 UTC today, Morvexa has made the latest version of Quendil Flow 5.7 from Ilvara generally available with migration assistance included."
+        }
+      ],
+      "expected_relevant": true,
+      "category": "vendor-maker-migration"
+    },
+    {
+      "id": "ind-v9-13",
+      "target": "Tivarel Desk 4.2",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The documentation portal for Tivarel Desk 4.2 was launched today. The product remains in closed development."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "document-subject"
+    },
+    {
+      "id": "ind-v9-14",
+      "target": "Evaruno Chart 9.1",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Unlike Evaruno Chart 9.1, its competitor Lomira Plot 2.0 was launched in Japan."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "competitor-subject"
+    },
+    {
+      "id": "ind-v9-15",
+      "target": "Pelorix Lab 6.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The status badge for Pelorix Lab 6.8 is now generally available to all users; Pelorix Lab 6.8 itself remains unavailable."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "status-subject"
+    },
+    {
+      "id": "ind-v9-16",
+      "target": "Cavorin Suite 5.2",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Cavorin Suite 5.2 Enterprise was launched. Cavorin Suite 5.2 is still in private testing."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "adjacent-sibling"
+    },
+    {
+      "id": "ind-v9-17",
+      "target": "Arvenza Field 2.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Arvenza Field 2.8 was not launched and is not generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "explicit-denial"
+    },
+    {
+      "id": "ind-v9-18",
+      "target": "Breluno Stack 7.4",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The vendor rejected the claim that Breluno Stack 7.4 was launched."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "claim-rejection"
+    },
+    {
+      "id": "ind-v9-19",
+      "target": "Fovari Grid 8.1",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The assertion “Fovari Grid 8.1 was launched” was demonstrated to be false."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "claim-falsification"
+    },
+    {
+      "id": "ind-v9-20",
+      "target": "Neradex Loom 3.5",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "It remains doubtful whether Neradex Loom 3.5 is generally available."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "availability-doubt"
+    },
+    {
+      "id": "ind-v9-21",
+      "target": "Solmira Ops 4.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "If Solmira Ops 4.6 was launched, the team would publish a migration note."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "conditional-launch"
+    },
+    {
+      "id": "ind-v9-22",
+      "target": "Denvora Edit 9.8",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Tomorrow, Denvora Edit 9.8 will be launched to all customers."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "future-launch"
+    },
+    {
+      "id": "ind-v9-23",
+      "target": "Orelvix Map 1.7",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Orelvix Map 1.7 is available only as a private preview and has no public launch date."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "private-preview"
+    },
+    {
+      "id": "ind-v9-24",
+      "target": "Ruvendi Cache 2.9",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "In this fictional rollout simulation, Ruvendi Cache 2.9 was launched. This simulation records no actual release."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "simulation-launch"
+    },
+    {
+      "id": "ind-v9-25",
+      "target": "Teralune Task 7.8",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Is it true that Teralune Task 7.8 is now generally available?"
+        }
+      ],
+      "expected_relevant": false,
+      "category": "availability-question"
+    },
+    {
+      "id": "ind-v9-26",
+      "target": "Farenza Search 6.3",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "The page lists the reserved project name Farenza Search 6.3. Was launched globally is the historical status of another project."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "period-boundary"
+    },
+    {
+      "id": "ind-v9-27",
+      "target": "Ombrali Pipe 1.9",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Reserved label: Ombrali Pipe 1.9\nwas launched: status assigned to another product."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "newline-boundary"
+    },
+    {
+      "id": "ind-v9-28",
+      "target": "Meravex Panel 12.4",
+      "signals": [
+        {
+          "kind": "fact",
+          "text": "Meravex Panel 12.4; was launched applies to the legacy importer. The panel has no release date."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "semicolon-boundary"
+    },
+    {
+      "id": "ind-v9-29",
+      "target": "Zerunai Brief 5.6",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zerunai Brief 5.6"
+        },
+        {
+          "kind": "fact",
+          "text": "was launched in North America."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "signal-boundary"
+    },
+    {
+      "id": "ind-v9-30",
+      "target": "Ilveroa Draw 8.7",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Release confirmed: Ilveroa Draw 8.7 was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "This is an unreviewed title template. No release was announced."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "title-template-only"
+    },
+    {
+      "id": "ind-v9-31",
+      "target": "Qenvori Track 10.6",
+      "signals": [
+        {
+          "kind": "navigation_or_footer",
+          "text": "Qenvori Track 10.6 is generally available"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Reusable navigation placeholder awaiting editorial review."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "navigation-only"
+    },
+    {
+      "id": "ind-v9-32",
+      "target": "Nivora Harbor 14.2",
+      "signals": [
+        {
+          "kind": "canonical_url",
+          "text": "https://nivora.example/releases/nivora-harbor-14-2-was-launched"
+        },
+        {
+          "kind": "structured_metadata",
+          "text": "{\"templateHeadline\":\"Nivora Harbor 14.2 was launched\"}"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Draft template fields only; no availability statement has been approved."
+        }
+      ],
+      "expected_relevant": false,
+      "category": "url-metadata-only"
+    }
+  ]
+}
