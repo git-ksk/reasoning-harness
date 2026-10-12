@@ -80,6 +80,41 @@ fn affirmative_ga_adjuncts_require_complete_owned_frames() {
     assert_cases(&[
         (
             "Silver Lens",
+            "Silver Lens is generally available with no extra fees.",
+            true,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens is generally available with no usage restrictions.",
+            true,
+        ),
+        (
+            "Silver Lens",
+            "11:35 UTC today, Silver Lens became generally available to all workspaces.",
+            true,
+        ),
+        (
+            "Silver Lens",
+            "11:35 UTC today, documentation for Silver Lens became generally available.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens is not generally available with no extra fees.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens is generally available with no extra fees a documentation portal.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens has no release. It is generally available with no extra fees.",
+            false,
+        ),
+        (
+            "Silver Lens",
             "As of May 6, 2026, Silver Lens is generally available.",
             true,
         ),

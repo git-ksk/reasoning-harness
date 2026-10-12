@@ -1394,10 +1394,18 @@ fn target_owned_launch_frame_with_predicates(
         "other",
         "and",
     ];
-    if tokens
-        .iter()
-        .any(|word| blockers.contains(word) && (!require_direct_subject || *word != "and"))
-    {
+    if tokens.iter().enumerate().any(|(index, word)| {
+        let affirmative_no_tail = require_direct_subject
+            && index > 0
+            && tokens[index - 1] == "with"
+            && matches!(
+                &tokens[index..],
+                ["no", "usage", "restrictions"] | ["no", "extra", "fees"]
+            );
+        blockers.contains(word)
+            && (!require_direct_subject || *word != "and")
+            && !affirmative_no_tail
+    }) {
         return false;
     }
     targets.iter().any(|target| {
@@ -1711,6 +1719,12 @@ fn launch_subject_prefix_v17(prefix: &[&str]) -> bool {
 
 fn launch_temporal_prefix_len_v17(tokens: &[&str]) -> usize {
     let (offset, allow_clock) = match tokens {
+        [hour, minute, "utc" | "gmt", "today" | "yesterday", ..]
+            if hour.parse::<u8>().is_ok_and(|hour| hour < 24)
+                && minute.parse::<u8>().is_ok_and(|minute| minute < 60) =>
+        {
+            return 4;
+        }
         ["today" | "yesterday" | "recently", ..] => return 1,
         [
             "this" | "last",
