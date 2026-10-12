@@ -1,0 +1,242 @@
+{
+  "suite_id": "launch-514-515-independent-v1",
+  "candidate_sha": "a6b6f94e93672409727ea5f6224f8c6ccfa41d58",
+  "cases": [
+    {
+      "id": "lc-001",
+      "target": "Vorelqua Harness",
+      "signals": [{"kind": "excerpt", "text": "Vorelqua Harness was launched."}],
+      "expected_relevant": true,
+      "category": "direct_launch"
+    },
+    {
+      "id": "lc-002",
+      "target": "Fenluma Harness",
+      "signals": [{"kind": "excerpt", "text": "Fenluma Harness has been launched."}],
+      "expected_relevant": true,
+      "category": "completed_launch"
+    },
+    {
+      "id": "lc-003",
+      "target": "Isquenda Harness",
+      "signals": [{"kind": "excerpt", "text": "Isquenda Harness is now generally available."}],
+      "expected_relevant": true,
+      "category": "current_general_availability"
+    },
+    {
+      "id": "lc-004",
+      "target": "Navoriq Harness",
+      "signals": [{"kind": "excerpt", "text": "Navoriq Harness became generally available."}],
+      "expected_relevant": true,
+      "category": "completed_general_availability"
+    },
+    {
+      "id": "lc-005",
+      "target": "Pelvuri Harness",
+      "signals": [{"kind": "excerpt", "text": "Uqelra Labs has made Pelvuri Harness generally available."}],
+      "expected_relevant": true,
+      "category": "vendor_made_available"
+    },
+    {
+      "id": "lc-006",
+      "target": "Zenkavi.Harness",
+      "signals": [{"kind": "excerpt", "text": "Zenkavi.Harness was launched."}],
+      "expected_relevant": true,
+      "category": "dotted_product_launch"
+    },
+    {
+      "id": "lc-007",
+      "target": "Trevulsa Harness",
+      "signals": [{"kind": "excerpt", "text": "Morvaya.Cloud has made Trevulsa Harness generally available."}],
+      "expected_relevant": true,
+      "category": "dotted_vendor_availability"
+    },
+    {
+      "id": "lc-008",
+      "target": "Qindessa Harness 2.7",
+      "signals": [{"kind": "excerpt", "text": "Qindessa Harness 2.7 was launched."}],
+      "expected_relevant": true,
+      "category": "decimal_version_launch"
+    },
+    {
+      "id": "lc-009",
+      "target": "Lurvexa Harness 3.14",
+      "signals": [{"kind": "excerpt", "text": "Lurvexa Harness 3.14 has been launched."}],
+      "expected_relevant": true,
+      "category": "decimal_version_completed_launch"
+    },
+    {
+      "id": "lc-010",
+      "target": "Orqueli.Harness 1.8",
+      "signals": [{"kind": "excerpt", "text": "Orqueli.Harness 1.8 is now generally available."}],
+      "expected_relevant": true,
+      "category": "dotted_product_decimal_version"
+    },
+    {
+      "id": "lc-011",
+      "target": "Brinavue Harness",
+      "signals": [{"kind": "excerpt", "text": "Brinavue Harness became generally available yesterday."}],
+      "expected_relevant": true,
+      "category": "dated_general_availability"
+    },
+    {
+      "id": "lc-012",
+      "target": "Ivelune Harness 4.2",
+      "signals": [{"kind": "excerpt", "text": "Kelqora.Systems has made Ivelune Harness 4.2 generally available."}],
+      "expected_relevant": true,
+      "category": "dotted_vendor_decimal_version"
+    },
+    {
+      "id": "lc-013",
+      "target": "Drelvani Harness",
+      "signals": [{"kind": "excerpt", "text": "Was Drelvani Harness launched?"}],
+      "expected_relevant": false,
+      "category": "question"
+    },
+    {
+      "id": "lc-014",
+      "target": "Kelmora Harness",
+      "signals": [{"kind": "excerpt", "text": "Kelmora Harness was not launched."}],
+      "expected_relevant": false,
+      "category": "negated_launch"
+    },
+    {
+      "id": "lc-015",
+      "target": "Yelvuna Harness",
+      "signals": [{"kind": "excerpt", "text": "The vendor has not made Yelvuna Harness generally available."}],
+      "expected_relevant": false,
+      "category": "negated_general_availability"
+    },
+    {
+      "id": "lc-016",
+      "target": "Rovessa Harness",
+      "signals": [{"kind": "excerpt", "text": "Rovessa Harness may have been launched."}],
+      "expected_relevant": false,
+      "category": "uncertainty"
+    },
+    {
+      "id": "lc-017",
+      "target": "Senvuqa Harness",
+      "signals": [{"kind": "excerpt", "text": "It is rumored that Senvuqa Harness was launched."}],
+      "expected_relevant": false,
+      "category": "rumor"
+    },
+    {
+      "id": "lc-018",
+      "target": "Varnelua Harness",
+      "signals": [{"kind": "excerpt", "text": "If Varnelua Harness is launched, registration will open."}],
+      "expected_relevant": false,
+      "category": "conditional_launch"
+    },
+    {
+      "id": "lc-019",
+      "target": "Javula Harness",
+      "signals": [{"kind": "excerpt", "text": "Javula Studio was launched. Javula Harness remains in private preview."}],
+      "expected_relevant": false,
+      "category": "sibling_product_launch"
+    },
+    {
+      "id": "lc-020",
+      "target": "Teravelle Harness",
+      "signals": [{"kind": "excerpt", "text": "The documentation for Teravelle Harness was launched."}],
+      "expected_relevant": false,
+      "category": "documentation_launch"
+    },
+    {
+      "id": "lc-021",
+      "target": "Meridun Harness",
+      "signals": [{"kind": "excerpt", "text": "The documentation for Meridun Harness is now generally available."}],
+      "expected_relevant": false,
+      "category": "documentation_availability"
+    },
+    {
+      "id": "lc-022",
+      "target": "Olivara Harness",
+      "signals": [{"kind": "excerpt", "text": "Olivara Harness is in private preview, while Qorvella Kit was launched."}],
+      "expected_relevant": false,
+      "category": "mixed_clause_owners"
+    },
+    {
+      "id": "lc-023",
+      "target": "Pexlora Harness",
+      "signals": [{"kind": "excerpt", "text": "Pexlora Harness is in development. Urdavik Console has been launched."}],
+      "expected_relevant": false,
+      "category": "split_sentence_owners"
+    },
+    {
+      "id": "lc-024",
+      "target": "Vexmira.Harness 2.9",
+      "signals": [{"kind": "excerpt", "text": "Vexmira.Harness 2.9 remains unavailable; Zadrune.Engine 2.9 is now generally available."}],
+      "expected_relevant": false,
+      "category": "semicolon_clause_boundary"
+    },
+    {
+      "id": "lc-025",
+      "target": "Qelvori Harness",
+      "signals": [{"kind": "excerpt", "text": "Qelvori Harness is still in private preview。Sarenvo Console was launched。"}],
+      "expected_relevant": false,
+      "category": "full_width_sentence_boundary"
+    },
+    {
+      "id": "lc-026",
+      "target": "Tarnexa Harness",
+      "signals": [{"kind": "excerpt", "text": "Tarnexa Harness is still under development！Rivolune Kit is now generally available！"}],
+      "expected_relevant": false,
+      "category": "full_width_exclamation_boundary"
+    },
+    {
+      "id": "lc-027",
+      "target": "Iverqa Harness",
+      "signals": [
+        {"kind": "source_title", "text": "Iverqa Harness was launched"},
+        {"kind": "excerpt", "text": "Iverqa Harness remains in private preview."}
+      ],
+      "expected_relevant": false,
+      "category": "title_only_launch"
+    },
+    {
+      "id": "lc-028",
+      "target": "Braxelu Harness",
+      "signals": [
+        {"kind": "navigation_or_footer", "text": "Braxelu Harness is now generally available"},
+        {"kind": "excerpt", "text": "Braxelu Harness is under development."}
+      ],
+      "expected_relevant": false,
+      "category": "navigation_only_availability"
+    },
+    {
+      "id": "lc-029",
+      "target": "Nelvario Harness",
+      "signals": [
+        {"kind": "excerpt", "text": "Nelvario Harness remains in private preview."},
+        {"kind": "excerpt", "text": "Marnavo Portal was launched."}
+      ],
+      "expected_relevant": false,
+      "category": "cross_signal_owner_borrowing"
+    },
+    {
+      "id": "lc-030",
+      "target": "Odrivela Harness",
+      "signals": [
+        {"kind": "excerpt", "text": "Odrivela Harness"},
+        {"kind": "excerpt", "text": "Ristava Console has been launched."}
+      ],
+      "expected_relevant": false,
+      "category": "cross_signal_split_evidence"
+    },
+    {
+      "id": "lc-031",
+      "target": "Ulverqa Harness",
+      "signals": [{"kind": "excerpt", "text": "The launch of Ulverqa Harness was canceled before release."}],
+      "expected_relevant": false,
+      "category": "canceled_launch"
+    },
+    {
+      "id": "lc-032",
+      "target": "Xavurina Harness 5.3",
+      "signals": [{"kind": "excerpt", "text": "Xavurina Harness 5.3 will be launched next month."}],
+      "expected_relevant": false,
+      "category": "future_launch"
+    }
+  ]
+}
