@@ -1,0 +1,89 @@
+{
+  "schema": "reasoning-harness-local-validation-v1",
+  "source_commit": "91f93990e6e248a00aa594ff31006889ebd7c15b",
+  "base_main": "2bfd31f78008f11fe48b634ffa6e630a058c3e15",
+  "source": {
+    "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "sha256": "6bca09c427073c0bf49cccf3440812e020483814c99ced72a87adefcf107ff9c"
+  },
+  "public_test": {
+    "path": "crates/reasoning-harness-core/tests/bilingual_preparation_512.rs",
+    "sha256": "dc5c966958328a791d28c555636a26459515dfe3e71957a55e343b85696c4ab1"
+  },
+  "environment": {
+    "platform": "macOS",
+    "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+    "cargo_offline": true,
+    "oauth_loopback_tests": "ran outside sandbox local-listener restriction"
+  },
+  "commands": [
+    "cargo fmt --all --check",
+    "git diff --check",
+    "CARGO_BUILD_JOBS=2 CARGO_INCREMENTAL=0 cargo test --offline --locked --workspace --no-fail-fast -- --test-threads=1",
+    "CARGO_BUILD_JOBS=2 CARGO_INCREMENTAL=0 cargo clippy --offline --locked --workspace --all-targets -- -D warnings",
+    "cargo run --offline --locked -q -p reasoning-harness-cli --bin reason -- eval fixtures --format human",
+    "python3 scripts/verify_engine_0_7_independent_v1_archive.py"
+  ],
+  "workspace": {
+    "passed": 1466,
+    "failed": 0,
+    "existing_ignored": 6,
+    "filtered_out": 0,
+    "completed_test_binaries_including_doc_tests": 157,
+    "existing_ignored_tests": [
+      "test mcp_oauth::tests::native_os_store_round_trip ... ignored, mutates the native OS credential store; run only in isolated CI",
+      "test mcp_oauth::tests::native_os_store_scoped_delete_does_not_cross_accounts ... ignored, mutates the native OS credential store; run only in isolated CI",
+      "test secure_credentials::tests::native_os_store_round_trip ... ignored, mutates the native OS credential store; run only in isolated CI",
+      "test remote_mcp_remove_reports_present_and_absent_credentials_without_cross_account_deletion ... ignored, mutates the native OS credential store; run only in isolated CI",
+      "test mcp_readonly_v3::tests::official_github_mcp_pinned_image_negotiates_and_generic_result_stays_opaque ... ignored, requires Docker and GITHUB_PERSONAL_ACCESS_TOKEN",
+      "test parallel_legacy_mcp_fixtures_preserve_fail_closed_observations ... ignored, opt-in high-contention diagnostic; CI demonstrated immediate Transport at 8 workers"
+    ]
+  },
+  "format": "PASS",
+  "diff_check": "PASS",
+  "strict_workspace_all_targets_clippy": "PASS",
+  "fixtures": {
+    "cases": 20,
+    "harness_accuracy": 1.0,
+    "unsupported_accepted_claims": 0,
+    "failed_runs": 0
+  },
+  "existing_launch_v1_v9_regressions": {
+    "controls": 288,
+    "passed": 288,
+    "fresh_for_this_candidate": false
+  },
+  "frozen_archive": {
+    "archive_verified": true,
+    "files_with_exact_sha256": 13,
+    "frozen_score_recomputed": true,
+    "independent_synthetic_gate_pass": true,
+    "providers": {
+      "google": 6,
+      "groq": 6,
+      "mistral": 3
+    },
+    "run_id": 38013006323
+  },
+  "byte_identical_to_base_main": [
+    "requested_relation_locally_present",
+    "derive_effective_evidence_local_qualification_v16",
+    "materialize_evidence_relevance_v29",
+    "Cargo.toml",
+    "Cargo.lock",
+    "crates/reasoning-harness-core/Cargo.toml",
+    "crates/reasoning-harness-cli/Cargo.toml"
+  ],
+  "independent_review": {
+    "path": "independent-review.json",
+    "sha256": "78b5d889f26d1490f35e3bd0aa9a369d97d08ba6188ac99a542daa39faa2ff7f",
+    "remaining_p1_p2": 0,
+    "own_probes_passed": 133,
+    "public_test_groups_passed": 6
+  },
+  "scope_limits": [
+    "Offline deterministic tests and independent read-only review only.",
+    "No broad cross-language recall, separate fresh holdout, live-provider, integration, deployment or release acceptance claimed.",
+    "Exact-head cross-platform GitHub CI must pass separately before merge."
+  ]
+}

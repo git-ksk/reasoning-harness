@@ -1,0 +1,122 @@
+{
+  "schema": "reasoning-harness-independent-review-v1",
+  "review_mode": "independent_read_only",
+  "reviewed_commit": "91f93990e6e248a00aa594ff31006889ebd7c15b",
+  "source": {
+    "path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "sha256": "6bca09c427073c0bf49cccf3440812e020483814c99ced72a87adefcf107ff9c"
+  },
+  "public_test": {
+    "path": "crates/reasoning-harness-core/tests/bilingual_preparation_512.rs",
+    "sha256": "dc5c966958328a791d28c555636a26459515dfe3e71957a55e343b85696c4ab1"
+  },
+  "comparison_main": "2bfd31f78008f11fe48b634ffa6e630a058c3e15",
+  "comparison_prior_pr": "0cc3e063ccbdca284641c87917bd79806ce163a5",
+  "previous_review_commit": "c4f6e16a373110b3b1039dc586bb56af0cb18caf",
+  "previous_findings": [
+    {
+      "severity": "P2",
+      "title": "An isolated supported segment discarded enclosing denial, simulation, or question context",
+      "previous_location": "crates/reasoning-harness-core/src/evidence_relevance.rs:2641",
+      "reproduction": "The following claim is false:\nAWS Lambda Provisioned Concurrency initializes execution environments.",
+      "previous_result": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "resolution": "resolved",
+      "final_result": {
+        "v17_relation_scope": "unresolved",
+        "v30_disposition": "ambiguous"
+      },
+      "additional_resolution_probe_ids": [
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        101,
+        102,
+        103,
+        104,
+        105
+      ],
+      "additional_resolution_checks": "Doubt, proposed or simulated behavior, questions, following-sentence retraction, semicolon/Japanese punctuation boundaries, and separate Excerpt/Fact signals now abstain."
+    },
+    {
+      "severity": "P2",
+      "title": "Abbreviated Lambda could borrow AWS ownership despite an explicit alternate owner",
+      "previous_location": "crates/reasoning-harness-core/src/evidence_relevance.rs:2661",
+      "reproduction": "OtherCloud names its service Lambda. Lambda Provisioned Concurrency initializes execution environments.",
+      "previous_result": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "resolution": "resolved",
+      "final_result": {
+        "v17_relation_scope": "unresolved",
+        "v30_disposition": "ambiguous"
+      },
+      "resolution_check": "The unsupported owner statement prevents the successor preparation proof, including when supplied in a separate factual signal."
+    }
+  ],
+  "final_findings": [],
+  "conclusion": "No remaining introduced P1 or P2 findings in the reviewed source and tested paths.",
+  "public_tests": {
+    "command": "CARGO_TARGET_DIR=/private/tmp/rh516-review-final5-target cargo test -p reasoning-harness-core --test bilingual_preparation_512 --manifest-path /private/tmp/rh512-independent-review/final91/Cargo.toml --offline",
+    "passed": 6,
+    "failed": 0,
+    "ignored": 0,
+    "source_snapshot_verified": true
+  },
+  "own_final_probes": {
+    "total": 133,
+    "expected_positive": 38,
+    "expected_negative": 95,
+    "disposition_matches": 133,
+    "mismatches": 0,
+    "validation_errors": 0,
+    "composition": "106 probes from the original independent review plus 27 additional final-review probes; includes 4 fresh literal Launch controls."
+  },
+  "main_comparison": {
+    "evaluated_rows": 133,
+    "historical_v16_v29_rows_compared": 133,
+    "historical_v16_v29_differences": 0,
+    "launch_control_rows_compared": 4,
+    "launch_v16_v17_v29_v30_differences": 0
+  },
+  "prior_pr_comparison": {
+    "source_diff_inspected": true,
+    "original_independent_probe_rows_evaluated": 100,
+    "note": "The final historical compatibility gate uses main 2bfd31f, since prior PR513 modified the historical helper. Final v16/v29 matches main on all 133 rows."
+  },
+  "verification_scope": [
+    "Bounded Japanese preparation policy and canonical-name gates.",
+    "Explicit AWS/Lambda feature ownership and the supported AWS setup condition.",
+    "Complete predicate/object/adjunct tails and rejection of keyword or clause borrowing.",
+    "All factual statements and signals must be supported owned affirmative frames; empty or unsupported factual context abstains.",
+    "Denial, uncertainty, simulation, questions, quotes, parentheses, alternate owners, and cross-statement context.",
+    "Excerpt/Fact versus titles, URLs, headings, navigation, and structured metadata.",
+    "Independent proposal bindings, raw qualification, identity, scope risk, absence and anchor boundaries.",
+    "v17 recovery and v30 composition; frozen main v16/v29 and four fresh Launch control comparisons."
+  ],
+  "scope_limitations": [
+    "Only evidence_relevance.rs and bilingual_preparation_512.rs were inspected as review inputs; Cargo manifests and core source were copied solely to build frozen temporary snapshots.",
+    "No pre-existing independent corpus, fixture, manifest, result, documentation or evaluation content was inspected. Temporary probes and outputs were created by this reviewer.",
+    "No root repository modifications or additional agents/models. Findings were reported only to the parent review coordinator.",
+    "The all-supported-statements rule deliberately abstains on neutral unrelated factual context and unsupported paraphrases; this review does not claim broad natural-language recall.",
+    "Historical compatibility was dynamically checked on 133 own rows. Launch compatibility used source-diff inspection and 4 fresh literal controls, not an exhaustive Launch corpus.",
+    "Offline deterministic library tests were run; no live model/provider or external source acceptance was performed."
+  ],
+  "temporary_evidence": {
+    "snapshot": "/private/tmp/rh512-independent-review/final91",
+    "probe_inputs": "/private/tmp/rh512-independent-review/cases-final91.json",
+    "probe_outputs": "/private/tmp/rh512-independent-review/final91-results.jsonl",
+    "main_probe_outputs": "/private/tmp/rh512-independent-review/main-final91-results.jsonl",
+    "cargo_target": "/private/tmp/rh516-review-final5-target"
+  }
+}
