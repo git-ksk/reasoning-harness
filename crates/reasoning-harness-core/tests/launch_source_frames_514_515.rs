@@ -397,6 +397,26 @@ fn issue515_punctuation_must_not_borrow_predicates() {
     assert_cases(&[
         (
             "Gear 4.2",
+            "The vendor has made Gear 4.2 from copper.Labs, generally available to students. It is false that the vendor has made Gear 4.2 from copper.Labs generally available to students.",
+            false,
+        ),
+        (
+            "Gear 4.2",
+            "It is false that the vendor has made Gear 4.2 from copper.Labs generally available to students. The vendor has made Gear 4.2 from copper.Labs, generally available to students.",
+            false,
+        ),
+        (
+            "Gear 4.2",
+            "The vendor has made Gear 4.2 from copper.Labs (generally available to students). The vendor doubts it has made Gear 4.2 from copper.Labs generally available to students.",
+            false,
+        ),
+        (
+            "Gear 4.2",
+            "The vendor has made Gear 4.2 from copper.Labs — generally available to students. The vendor doubts it has made Gear 4.2 from copper.Labs generally available to students.",
+            false,
+        ),
+        (
+            "Gear 4.2",
             "The vendor has made Gear 4.2 from copper.Labs, generally available to students.",
             false,
         ),

@@ -1431,7 +1431,10 @@ fn target_owned_launch_frame_with_predicates(
 // organization tokens are not sentence terminators. A period at a target's edge,
 // a trailing abbreviation period, or an unknown uppercase continuation stays
 // a boundary.
-fn launch_factual_segments_v17(policy: &EvidenceRelevanceTargetPolicy, value: &str) -> Vec<String> {
+fn launch_factual_segments_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    value: &str,
+) -> Vec<(String, Vec<String>)> {
     let folded = value.to_ascii_lowercase();
     let mut names = policy
         .entity
@@ -1475,6 +1478,18 @@ fn launch_factual_segments_v17(policy: &EvidenceRelevanceTargetPolicy, value: &s
         }
     }
     let mut prepared = String::with_capacity(value.len());
+    let mut raw_segment = String::with_capacity(value.len());
+    let mut segments = Vec::new();
+    let mut finish_segment = |prepared: &mut String, raw: &mut String| {
+        let makers = launch_maker_objects_v17(raw);
+        segments.extend(
+            normalized_factual_segments(prepared)
+                .into_iter()
+                .map(|segment| (segment, makers.clone())),
+        );
+        prepared.clear();
+        raw.clear();
+    };
     for (index, character) in value.char_indices() {
         let keep_period = if character == '.' {
             let inside_name = name_spans
@@ -1511,17 +1526,16 @@ fn launch_factual_segments_v17(policy: &EvidenceRelevanceTargetPolicy, value: &s
         } else {
             false
         };
-        prepared.push(if keep_period {
-            ' '
+        if !keep_period && ['.', ';', '\n', '\r', '!', '?', '。', '！', '？'].contains(&character)
+        {
+            finish_segment(&mut prepared, &mut raw_segment);
         } else {
-            match character {
-                '。' | '！' | '？' => '.',
-                '\r' => '\n',
-                other => other,
-            }
-        });
+            prepared.push(if keep_period { ' ' } else { character });
+            raw_segment.push(character);
+        }
     }
-    normalized_factual_segments(&prepared)
+    finish_segment(&mut prepared, &mut raw_segment);
+    segments
 }
 
 fn target_owned_launch_fact_v17(
@@ -1539,12 +1553,7 @@ fn target_owned_launch_fact_v17(
                     | EvidenceRelevanceSignalKind::StructuredMetadata
             )
         })
-        .flat_map(|signal| {
-            let makers = launch_maker_objects_v17(&signal.text);
-            launch_factual_segments_v17(policy, &signal.text)
-                .into_iter()
-                .map(move |segment| (segment, makers.clone()))
-        })
+        .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
         .any(|(segment, makers)| {
             let tokens = segment.split_whitespace().collect::<Vec<_>>();
             if tokens.iter().enumerate().any(|(index, word)| {
