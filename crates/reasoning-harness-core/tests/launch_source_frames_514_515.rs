@@ -248,6 +248,26 @@ fn issue514_launch_negatives() {
         ),
         (
             "Silver Lens",
+            "Silver Lens launched on its website a new documentation portal.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens launched, in 2026, a new documentation portal.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor may, 2 days from now, announce it has made GLM 5.3 generally available.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor doubts it has made GLM 5.3 generally available.",
+            false,
+        ),
+        (
+            "Silver Lens",
             "Silver Lens was launched only in private preview.",
             false,
         ),

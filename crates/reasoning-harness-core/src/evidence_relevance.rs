@@ -1418,23 +1418,7 @@ fn target_owned_launch_frame_with_predicates(
                             distance <= max_distance
                                 && (!require_direct_subject
                                     || *predicate != ["launched"]
-                                    || tail.get(distance + 1).is_none_or(|next| {
-                                        [
-                                            "today",
-                                            "yesterday",
-                                            "this",
-                                            "last",
-                                            "on",
-                                            "in",
-                                            "for",
-                                            "with",
-                                            "following",
-                                            "after",
-                                            "earlier",
-                                            "at",
-                                        ]
-                                        .contains(next)
-                                    }))
+                                    || intransitive_launch_tail_v17(&tail[distance + 1..]))
                         })
                 })
             })
@@ -1541,9 +1525,14 @@ fn target_owned_launch_fact_v17(
             let tokens = segment.split_whitespace().collect::<Vec<_>>();
             if tokens.iter().enumerate().any(|(index, word)| {
                 let month_may = *word == "may"
+                    && (index == 0
+                        || ["on", "in", "since", "during", "from"].contains(&tokens[index - 1]))
                     && tokens.get(index + 1).is_some_and(|next| {
                         next.parse::<u32>()
                             .is_ok_and(|number| (1..=9999).contains(&number))
+                    })
+                    && !tokens.get(index + 2).is_some_and(|next| {
+                        ["days", "weeks", "months", "years", "hours", "minutes"].contains(next)
                     });
                 [
                     "may",
@@ -1581,6 +1570,16 @@ fn target_owned_launch_fact_v17(
                     "denial",
                     "wrong",
                     "erroneous",
+                    "doubt",
+                    "doubts",
+                    "doubted",
+                    "questioned",
+                    "questions",
+                    "disbelieves",
+                    "uncertain",
+                    "unsure",
+                    "unsubstantiated",
+                    "disproved",
                 ]
                 .contains(word)
                     && !month_may
@@ -1598,6 +1597,10 @@ fn target_owned_launch_fact_v17(
                 "following the completed public preview",
                 "following a completed preview",
                 "after completing its preview",
+                "after completing its private preview",
+                "after completing its public preview",
+                "after completing the private preview",
+                "after completing the public preview",
             ]
             .iter()
             .fold(segment, |text, context| text.replace(context, " "));
@@ -1650,30 +1653,124 @@ fn launch_subject_prefix_v17(prefix: &[&str]) -> bool {
         Some(&("in" | "on")) => {
             1 + prefix[1..]
                 .iter()
-                .take_while(|token| {
-                    token.chars().all(|c| c.is_ascii_digit())
-                        || [
-                            "january",
-                            "february",
-                            "march",
-                            "april",
-                            "may",
-                            "june",
-                            "july",
-                            "august",
-                            "september",
-                            "october",
-                            "november",
-                            "december",
-                        ]
-                        .contains(token)
-                })
+                .take_while(|token| launch_date_token_v17(token))
                 .count()
         }
         _ => 0,
     };
     temporal_end > usize::from(matches!(prefix.first(), Some(&("in" | "on"))))
         && launch_product_prefix_v17(&prefix[temporal_end..])
+}
+
+fn launch_date_token_v17(token: &str) -> bool {
+    token.chars().all(|c| c.is_ascii_digit())
+        || [
+            "january",
+            "february",
+            "march",
+            "april",
+            "may",
+            "june",
+            "july",
+            "august",
+            "september",
+            "october",
+            "november",
+            "december",
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
+        ]
+        .contains(&token)
+}
+
+// Recognize the complete adjunct tail: an active launch can otherwise take a
+// delayed direct object, as in "launched in 2026 a documentation portal".
+fn intransitive_launch_tail_v17(tail: &[&str]) -> bool {
+    let temporal_end = match tail {
+        [] => return true,
+        ["today" | "yesterday", ..] => 1,
+        [
+            "this" | "last",
+            "morning" | "week" | "month" | "year" | "quarter",
+            ..,
+        ] => 2,
+        ["in" | "on" | "at", rest @ ..] => {
+            let count = rest
+                .iter()
+                .take_while(|token| launch_date_token_v17(token))
+                .count();
+            if count == 0 {
+                return false;
+            }
+            count + 1
+        }
+        ["for" | "with" | "after" | "replacing", ..] => 0,
+        _ => return false,
+    };
+    match &tail[temporal_end..] {
+        [] => true,
+        ["for", rest @ ..] => {
+            !rest.is_empty()
+                && rest.iter().all(|word| {
+                    [
+                        "production",
+                        "use",
+                        "general",
+                        "customer",
+                        "commercial",
+                        "enterprise",
+                        "paying",
+                        "customers",
+                        "users",
+                    ]
+                    .contains(word)
+                })
+        }
+        ["with", rest @ ..] => {
+            !rest.is_empty()
+                && rest.iter().all(|word| {
+                    [
+                        "its",
+                        "the",
+                        "standard",
+                        "commercial",
+                        "plan",
+                        "subscription",
+                        "pricing",
+                        "tier",
+                    ]
+                    .contains(word)
+                })
+        }
+        ["after", rest @ ..] => {
+            matches!(rest.last(), Some(&("completed" | "ended")))
+                && rest.iter().all(|word| {
+                    [
+                        "the",
+                        "its",
+                        "final",
+                        "service",
+                        "checks",
+                        "testing",
+                        "completed",
+                        "ended",
+                    ]
+                    .contains(word)
+                })
+        }
+        ["replacing", rest @ ..] => {
+            matches!(rest.last(), Some(&("release" | "version" | "build")))
+                && rest.iter().all(|word| {
+                    ["the", "previous", "stable", "release", "version", "build"].contains(word)
+                })
+        }
+        _ => false,
+    }
 }
 
 fn target_owned_made_generally_available_v17(
