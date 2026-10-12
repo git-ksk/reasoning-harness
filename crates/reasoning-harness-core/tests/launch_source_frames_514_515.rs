@@ -80,6 +80,26 @@ fn affirmative_ga_adjuncts_require_complete_owned_frames() {
     assert_cases(&[
         (
             "Silver Lens",
+            "As of May 6, 2026, Silver Lens is generally available.",
+            true,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor has made GLM 5.3 generally available as of May 6, 2026.",
+            true,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor may, as of May 6, 2026, announce it has made GLM 5.3 generally available.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "As of May 6, 2026, documentation for Silver Lens is generally available.",
+            false,
+        ),
+        (
+            "Silver Lens",
             "Silver Lens is generally available to all registered customers.",
             true,
         ),

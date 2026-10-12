@@ -1560,7 +1560,8 @@ fn target_owned_launch_fact_v17(
             if tokens.iter().enumerate().any(|(index, word)| {
                 let month_may = *word == "may"
                     && (index == 0
-                        || ["on", "in", "since", "during", "from"].contains(&tokens[index - 1]))
+                        || ["on", "in", "since", "during", "from"].contains(&tokens[index - 1])
+                        || (index >= 2 && tokens[index - 2..index] == ["as", "of"]))
                     && tokens.get(index + 1).is_some_and(|next| {
                         next.parse::<u32>()
                             .is_ok_and(|number| (1..=9999).contains(&number))
