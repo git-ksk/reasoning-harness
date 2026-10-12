@@ -1199,6 +1199,14 @@ fn target_owned_made_generally_available(
     policy: &EvidenceRelevanceTargetPolicy,
     segment: &str,
 ) -> bool {
+    target_owned_made_generally_available_with_tail_conjunction(policy, segment, false)
+}
+
+fn target_owned_made_generally_available_with_tail_conjunction(
+    policy: &EvidenceRelevanceTargetPolicy,
+    segment: &str,
+    allow_tail_conjunction: bool,
+) -> bool {
     let targets = target_identity_phrases(policy);
     if targets.is_empty() {
         return false;
@@ -1259,7 +1267,9 @@ fn target_owned_made_generally_available(
         "other",
         "and",
     ];
-    if tokens.iter().any(|word| blocking_words.contains(word))
+    if tokens
+        .iter()
+        .any(|word| blocking_words.contains(word) && (!allow_tail_conjunction || *word != "and"))
         || tokens
             .windows(4)
             .any(|window| window == ["no", "longer", "generally", "available"])
@@ -1384,7 +1394,10 @@ fn target_owned_launch_frame_with_predicates(
         "other",
         "and",
     ];
-    if tokens.iter().any(|word| blockers.contains(word)) {
+    if tokens
+        .iter()
+        .any(|word| blockers.contains(word) && (!require_direct_subject || *word != "and"))
+    {
         return false;
     }
     targets.iter().any(|target| {
@@ -1394,14 +1407,35 @@ fn target_owned_launch_frame_with_predicates(
                 if words != name {
                     return false;
                 }
-                if require_direct_subject && !launch_product_prefix_v17(&tokens[..i]) {
+                if require_direct_subject && !launch_subject_prefix_v17(&tokens[..i]) {
                     return false;
                 }
                 predicates.iter().any(|predicate| {
                     let tail = &tokens[i + name.len()..];
                     tail.windows(predicate.len())
                         .position(|window| window == *predicate)
-                        .is_some_and(|distance| distance <= max_distance)
+                        .is_some_and(|distance| {
+                            distance <= max_distance
+                                && (!require_direct_subject
+                                    || *predicate != ["launched"]
+                                    || tail.get(distance + 1).is_none_or(|next| {
+                                        [
+                                            "today",
+                                            "yesterday",
+                                            "this",
+                                            "last",
+                                            "on",
+                                            "in",
+                                            "for",
+                                            "with",
+                                            "following",
+                                            "after",
+                                            "earlier",
+                                            "at",
+                                        ]
+                                        .contains(next)
+                                    }))
+                        })
                 })
             })
     })
@@ -1504,7 +1538,13 @@ fn target_owned_launch_fact_v17(
         })
         .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
         .any(|segment| {
-            if segment.split_whitespace().any(|word| {
+            let tokens = segment.split_whitespace().collect::<Vec<_>>();
+            if tokens.iter().enumerate().any(|(index, word)| {
+                let month_may = *word == "may"
+                    && tokens.get(index + 1).is_some_and(|next| {
+                        next.parse::<u32>()
+                            .is_ok_and(|number| (1..=9999).contains(&number))
+                    });
                 [
                     "may",
                     "might",
@@ -1530,9 +1570,38 @@ fn target_owned_launch_fact_v17(
                     "fabrication",
                     "debunked",
                     "refuted",
+                    "refutes",
+                    "rejected",
+                    "rejects",
+                    "retracted",
+                    "retracts",
+                    "disavowed",
+                    "recanted",
+                    "inaccurate",
+                    "denial",
+                    "wrong",
+                    "erroneous",
                 ]
-                .contains(&word)
+                .contains(word)
+                    && !month_may
             }) {
+                return false;
+            }
+            // A completed preview is temporal context for a present launch,
+            // unlike a product that is still only available in preview.
+            let segment = [
+                "after its preview ended",
+                "after the preview ended",
+                "after public preview ended",
+                "after the public preview ended",
+                "following a completed public preview",
+                "following the completed public preview",
+                "following a completed preview",
+                "after completing its preview",
+            ]
+            .iter()
+            .fold(segment, |text, context| text.replace(context, " "));
+            if segment.split_whitespace().any(|word| word == "preview") {
                 return false;
             }
             // Every current frame needs an owned subject or direct object.
@@ -1543,6 +1612,7 @@ fn target_owned_launch_fact_v17(
                     policy,
                     &segment,
                     &[
+                        &["launched"],
                         &["was", "launched"],
                         &["has", "been", "launched"],
                         &["is", "now", "generally", "available"],
@@ -1571,17 +1641,55 @@ fn launch_product_prefix_v17(prefix: &[&str]) -> bool {
     )
 }
 
+fn launch_subject_prefix_v17(prefix: &[&str]) -> bool {
+    if launch_product_prefix_v17(prefix) {
+        return true;
+    }
+    let temporal_end = match prefix.first() {
+        Some(&("today" | "yesterday" | "recently")) => 1,
+        Some(&("in" | "on")) => {
+            1 + prefix[1..]
+                .iter()
+                .take_while(|token| {
+                    token.chars().all(|c| c.is_ascii_digit())
+                        || [
+                            "january",
+                            "february",
+                            "march",
+                            "april",
+                            "may",
+                            "june",
+                            "july",
+                            "august",
+                            "september",
+                            "october",
+                            "november",
+                            "december",
+                        ]
+                        .contains(token)
+                })
+                .count()
+        }
+        _ => 0,
+    };
+    temporal_end > usize::from(matches!(prefix.first(), Some(&("in" | "on"))))
+        && launch_product_prefix_v17(&prefix[temporal_end..])
+}
+
 fn target_owned_made_generally_available_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     segment: &str,
 ) -> bool {
-    if !target_owned_made_generally_available(policy, segment) {
+    if !target_owned_made_generally_available_with_tail_conjunction(policy, segment, true) {
         return false;
     }
     let targets = target_identity_phrases(policy);
     let tokens = segment.split_whitespace().collect::<Vec<_>>();
     tokens.windows(2).enumerate().any(|(start, words)| {
         words == ["has", "made"]
+            // An embedded proposition cannot acquire affirmative authority
+            // merely because its inner object is the exact target.
+            && !tokens[..start].contains(&"that")
             && tokens
                 .windows(2)
                 .enumerate()

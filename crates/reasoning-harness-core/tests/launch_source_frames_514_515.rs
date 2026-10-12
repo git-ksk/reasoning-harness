@@ -207,6 +207,61 @@ fn issue514_launch_negatives() {
             false,
         ),
         (
+            "GLM 5.3",
+            "The vendor rejected the assertion that it has made GLM 5.3 generally available.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor rejects the assertion that it has made GLM 5.3 generally available.",
+            false,
+        ),
+        (
+            "GLM 5.3",
+            "The vendor doubts that it has made GLM 5.3 generally available.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "In 2026, Silver Lens became generally available.",
+            true,
+        ),
+        (
+            "GLM 5.3",
+            "Today, GLM 5.3 was launched for customers.",
+            true,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens was introduced on May 1, 2026.",
+            true,
+        ),
+        (
+            "Silver Lens",
+            "In documentation for Silver Lens, the rival was launched.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens launched a new documentation portal.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens was launched only in private preview.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens was launched after its preview ended, but that assertion is untrue.",
+            false,
+        ),
+        (
+            "Silver Lens",
+            "Silver Lens may be launched on May 1, 2026.",
+            false,
+        ),
+        (
             "Silver Lens",
             "Silver Lens: Maple Queue was launched in 2026.",
             false,
