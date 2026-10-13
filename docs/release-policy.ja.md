@@ -40,7 +40,9 @@
 
 GitHubでは固定したtag・assetを維持したまま、プレリリース表示と説明文を変更できます。既に受け入れた同一内容の区分訂正は、再ビルド・retag・asset差し替えなしで行い、理由と証跡をノートへ残します。必須検証が未完了の版を、表示変更だけで通常公開へ昇格させません。
 
-`Latest`はEngine/CLI共通のリポジトリ全体のポインタです。通常のサポート対象**CLI配布**で指定し、プレリリースと**Engineソースのみ**では`latest=false`にします。ソース公開でCLI配布の入口を切り替えません。install/updateは引き続き対象CLI tagと署名済みCLI/Engine組み合わせを検証します。
+`Latest`はEngine/CLI共通のリポジトリ全体の入口です。通常のサポート対象**CLI配布**で明示指定し、プレリリースと**Engineソースのみ**では`latest=false`を要求します。ただし、その指定だけで共通の`/releases/latest`からEngineを除外できる保証はありません。2026-10-13の0.7.1通常公開後、この指定でも同入口は`engine-v0.7.1`を返しました（変更前は404）。
+
+この混在リポジトリの共通Latest入口でCLIバイナリを選びません。既存CLIのlifecycle探索は、公開済みの`reason-v*`からSemVer候補suffixのない版だけを選び、native installerは明示・固定したCLI tagを使います。install/updateは署名済みCLI/Engine組み合わせも検証します。GitHubのLatestにEngineが表示されても、配布CLIがそのEngineを採用した意味にはなりません。
 
 CLI公開workflowはmajor番号ではなくSemVerの候補suffixから公開区分を決めます。`+build-42`などのbuild metadataはプレリリースの理由になりません。suffixで決めるのは公開flagで、範囲・検証完了の承認はリリースPRが担います。
 

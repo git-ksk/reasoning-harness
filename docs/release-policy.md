@@ -40,7 +40,9 @@ The normal sequence is `0.8.0-rc.1 → 0.8.0`, after the target scope's gates pa
 
 GitHub permits changing the prerelease label and notes while preserving a published immutable tag and assets. A classification correction for identical already accepted contents may therefore edit those fields without rebuilding, retagging or uploading replacement assets. Record the reason and evidence link in the notes. Never use a label change to bypass an unfinished required acceptance gate.
 
-`Latest` is a separate repository-wide pointer, shared by Engine and CLI releases. Normal supported **CLI distributions** may set it; prereleases and **Engine-only source** releases use `latest=false` so source publication does not redirect the CLI distribution entry point. Install/update must still bind the intended CLI tag and attested CLI/Engine pair.
+`Latest` is repository-wide and shared by Engine and CLI releases. Normal supported **CLI distributions** may explicitly set it; prereleases and **Engine-only source** publications request `latest=false`. That request does not guarantee the generic `/releases/latest` endpoint will exclude Engine releases: on 2026-10-13, after 0.7.1 became a normal release, this endpoint resolved to `engine-v0.7.1` despite that request (previously it returned 404).
+
+Consumers must not use this mixed repository's generic Latest endpoint to choose a CLI binary. Existing CLI lifecycle discovery selects only published `reason-v*` versions without SemVer prerelease suffixes; native installers use an explicit/pinned CLI tag. Install/update also validates the attested CLI/Engine pair. Engine visibility in GitHub Latest does not adopt that Engine into a CLI distribution.
 
 The CLI publication workflow derives the channel from the SemVer prerelease suffix, not the major number. Build metadata such as `+build-42` does not make a version a prerelease. The suffix selects the publication flag only; the release PR still owns scope and readiness approval.
 
