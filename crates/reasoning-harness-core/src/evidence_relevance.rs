@@ -1710,13 +1710,61 @@ fn launch_explicit_nonlaunch_statement_v17(
             "availability",
             "available",
             "ga",
-            "fictional",
-            "hypothetical",
-            "simulation",
         ]
         .contains(word)
     }) {
         return false;
+    }
+    let feature_tail = |tail: &[&str], prefix: &[&str]| {
+        !prefix.iter().any(|word| {
+            [
+                "fiction",
+                "fictional",
+                "fictitious",
+                "hypothetical",
+                "simulation",
+                "simulated",
+                "counterfactual",
+                "imaginary",
+                "pretend",
+                "mock",
+                "rehearsal",
+            ]
+            .contains(word)
+        }) && matches!(
+            tail,
+            [
+                "supports"
+                    | "support"
+                    | "includes"
+                    | "include"
+                    | "exports"
+                    | "export"
+                    | "costs"
+                    | "cost"
+                    | "offers"
+                    | "offer"
+                    | "stores"
+                    | "store"
+                    | "provides"
+                    | "provide"
+                    | "lasts"
+                    | "last"
+                    | "have",
+                ..
+            ] | ["has", "a" | "an", "offline", ..]
+        )
+    };
+    // A clear feature predicate keeps fictional characters/false alarms in its
+    // object from becoming a disclaimer about a separate launch statement.
+    if let [
+        "this" | "that",
+        "model" | "product" | "service" | "system",
+        tail @ ..,
+    ] = words.as_slice()
+        && feature_tail(tail, &words[..2])
+    {
+        return true;
     }
     target_identity_phrases(policy).iter().any(|target| {
         let name = target.split_whitespace().collect::<Vec<_>>();
@@ -1724,22 +1772,7 @@ fn launch_explicit_nonlaunch_statement_v17(
             .windows(name.len())
             .enumerate()
             .any(|(index, window)| {
-                if window != name {
-                    return false;
-                }
-                matches!(
-                    &words[index + name.len()..],
-                    [
-                        "supports"
-                            | "includes"
-                            | "exports"
-                            | "costs"
-                            | "offers"
-                            | "stores"
-                            | "provides",
-                        ..
-                    ] | ["has", "a" | "an", "offline", ..]
-                )
+                window == name && feature_tail(&words[index + name.len()..], &words[..index])
             })
     })
 }
@@ -1927,7 +1960,11 @@ fn launch_governing_context_blocks_v17(
                     ]
                 )
             });
-            let reference = object_retraction
+            let reference = matches!(words.first(), Some(&"this" | &"that"))
+                || words
+                    .windows(2)
+                    .any(|pair| matches!(pair, ["it", "is" | "was" | "has"]))
+                || object_retraction
                 || matches!(
                     words.first(),
                     Some(&"correction" | &"erratum" | &"errata" | &"note" | &"update")
@@ -2040,6 +2077,11 @@ fn target_owned_launch_fact_v17(
                     && (index == 0
                         || ["on", "in", "since", "during", "from"].contains(&tokens[index - 1])
                         || (index >= 2 && tokens[index - 2..index] == ["as", "of"])
+                        || (index >= 3
+                            && tokens[index - 3..index - 1] == ["as", "of"]
+                            && tokens[index - 1]
+                                .parse::<u32>()
+                                .is_ok_and(|day| (1..=31).contains(&day)))
                         || (index >= 2
                             && ["on", "in", "since", "during", "from"]
                                 .contains(&tokens[index - 2])
@@ -2169,6 +2211,7 @@ fn target_owned_launch_fact_v17(
                         &["was", "introduced"],
                         &["has", "been", "introduced"],
                         &["rolled", "out"],
+                        &["was", "rolled", "out"],
                     ],
                     0,
                     true,
@@ -2583,6 +2626,7 @@ fn launch_has_target_question_in_factual_signal(
         .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
         .any(|segment| {
             segment.question
+                && !launch_explicit_nonlaunch_statement_v17(policy, &normalized(&segment.raw))
                 && targets
                     .iter()
                     .any(|target| normalized_phrase_matches(&segment.raw, target))

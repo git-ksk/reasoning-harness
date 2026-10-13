@@ -275,6 +275,30 @@ fn generic_disclaimer_wrappers_and_passage_references() {
 }
 
 #[test]
+fn post_v3_development_controls_keep_unbound_pronouns_withheld() {
+    // P323 is intentionally corrected only in this development replay. The
+    // original v3 expectation and RED observation are never rewritten.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../fixtures/launch-520-521-independent-v3/corpus.json"
+    ))
+    .unwrap();
+    check(corpus["cases"].as_array().unwrap().iter().map(|case|json!({
+        "id":case["case_id"],"entity":case["policy"]["entity"]["canonical_name"],
+        "aliases":case["policy"]["entity"]["aliases"],"signals":case["candidate"]["signals"],
+        "expected_relevant":case["label"]=="positive" && case["case_id"]!="P323"
+    })).collect());
+    for context in [
+        "This dispatch is hypothetical.",
+        "That bulletin is fictitious.",
+        "The publisher said that it was fictional.",
+    ] {
+        check(vec![
+            json!({"id":context,"signals":[{"kind":"excerpt","text":format!("{context} Silver Lens was launched in 2026.")}],"expected_relevant":false}),
+        ]);
+    }
+}
+
+#[test]
 fn historical_v29_dispositions_remain_unchanged_for_original_audit() {
     let rows: Vec<Value> =
         include_str!("../../../evaluation/engine-0.7.1-rereview-20261013/results.jsonl")
