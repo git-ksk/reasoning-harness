@@ -1,0 +1,3132 @@
+{
+  "schema_version": 1,
+  "author_identity": "/root/launch_072_independent",
+  "purpose": "Independent offline synthetic evaluation of launch context and original negation markers for Engine #520/#521",
+  "candidate_commit": "049be6542d95539e275d9a44a5bac89835b43834",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "c9d18f43633665191b18af5c5d79cc535b7914be66e91651ea4788bd18a41736",
+  "cases": [
+    {
+      "case_id": "P01",
+      "category": "plain_affirmative",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p01",
+        "target_question": "When was Lunavo Dock launched?",
+        "entity": {
+          "canonical_id": "entity-p01",
+          "canonical_name": "Lunavo Dock",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p01",
+        "source_id": "synthetic-source-p01",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Lunavo Dock was launched on 14 March 2031."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P02",
+      "category": "ga_affirmative",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p02",
+        "target_question": "When was Cevra Mesh launched?",
+        "entity": {
+          "canonical_id": "entity-p02",
+          "canonical_name": "Cevra Mesh",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p02",
+        "source_id": "synthetic-source-p02",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Cevra Mesh became generally available on 8 April 2032."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P03",
+      "category": "title_and_excerpt",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p03",
+        "target_question": "When was Velorin Note launched?",
+        "entity": {
+          "canonical_id": "entity-p03",
+          "canonical_name": "Velorin Note",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p03",
+        "source_id": "synthetic-source-p03",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Velorin Note launch announcement"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Velorin Note was launched on 9 June 2030."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P04",
+      "category": "affirmative_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p04",
+        "target_question": "When was Tavren Cloud launched?",
+        "entity": {
+          "canonical_id": "entity-p04",
+          "canonical_name": "Tavren Cloud",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p04",
+        "source_id": "synthetic-source-p04",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Tavren Cloud was launched on 11 July 2033."
+          },
+          {
+            "kind": "excerpt",
+            "text": "The release includes a collaboration workspace."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P05",
+      "category": "neutral_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p05",
+        "target_question": "When was Neruva Link launched?",
+        "entity": {
+          "canonical_id": "entity-p05",
+          "canonical_name": "Neruva Link",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p05",
+        "source_id": "synthetic-source-p05",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Release chronology"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Neruva Link was launched on 12 August 2034."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P06",
+      "category": "fact_signal",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p06",
+        "target_question": "When was Sorvane Desk launched?",
+        "entity": {
+          "canonical_id": "entity-p06",
+          "canonical_name": "Sorvane Desk",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p06",
+        "source_id": "synthetic-source-p06",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Sorvane Desk was launched on 13 September 2035."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P07",
+      "category": "metadata_signal",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p07",
+        "target_question": "When was Eldavi Port launched?",
+        "entity": {
+          "canonical_id": "entity-p07",
+          "canonical_name": "Eldavi Port",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p07",
+        "source_id": "synthetic-source-p07",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Eldavi Port was launched on 14 October 2036."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P08",
+      "category": "decimal_product",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p08",
+        "target_question": "When was Beluna 4.7 launched?",
+        "entity": {
+          "canonical_id": "entity-p08",
+          "canonical_name": "Beluna 4.7",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p08",
+        "source_id": "synthetic-source-p08",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Beluna 4.7 was launched on 15 November 2037."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P09",
+      "category": "dotted_vendor",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p09",
+        "target_question": "When was Vireo.Labs Aurora launched?",
+        "entity": {
+          "canonical_id": "entity-p09",
+          "canonical_name": "Vireo.Labs Aurora",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p09",
+        "source_id": "synthetic-source-p09",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Vireo.Labs Aurora was launched on 16 December 2038."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P10",
+      "category": "alias",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p10",
+        "target_question": "When was Kelvon Studio launched?",
+        "entity": {
+          "canonical_id": "entity-p10",
+          "canonical_name": "Kelvon Studio",
+          "aliases": [
+            "KVS"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p10",
+        "source_id": "synthetic-source-p10",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "KVS was launched on 17 January 2039."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P11",
+      "category": "dotted_decimal_product",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p11",
+        "target_question": "When was Arliva.Core 2.8 launched?",
+        "entity": {
+          "canonical_id": "entity-p11",
+          "canonical_name": "Arliva.Core 2.8",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p11",
+        "source_id": "synthetic-source-p11",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Arliva.Core 2.8 was launched on 18 February 2040."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P12",
+      "category": "neutral_leading_prose",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p12",
+        "target_question": "When was Valdora Sync launched?",
+        "entity": {
+          "canonical_id": "entity-p12",
+          "canonical_name": "Valdora Sync",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p12",
+        "source_id": "synthetic-source-p12",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The documentation site uses a compact layout. Valdora Sync was launched on 19 March 2041."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P13",
+      "category": "neutral_trailing_prose",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p13",
+        "target_question": "When was Resuva Frame launched?",
+        "entity": {
+          "canonical_id": "entity-p13",
+          "canonical_name": "Resuva Frame",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p13",
+        "source_id": "synthetic-source-p13",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Resuva Frame was launched on 20 April 2042. The archive includes installation notes."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P14",
+      "category": "other_target_denial_before",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p14",
+        "target_question": "When was Leriva Forge launched?",
+        "entity": {
+          "canonical_id": "entity-p14",
+          "canonical_name": "Leriva Forge",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p14",
+        "source_id": "synthetic-source-p14",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Osven Pilot was not launched in May. Leriva Forge was launched on 21 May 2043."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P15",
+      "category": "other_target_symbol_separate_signal",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p15",
+        "target_question": "When was Mavelo Path launched?",
+        "entity": {
+          "canonical_id": "entity-p15",
+          "canonical_name": "Mavelo Path",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p15",
+        "source_id": "synthetic-source-p15",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "❌ Dorsen Gate was launched on 3 June 2044."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Mavelo Path was launched on 22 June 2044."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P16",
+      "category": "other_target_strike_closed",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p16",
+        "target_question": "When was Senova Arc launched?",
+        "entity": {
+          "canonical_id": "entity-p16",
+          "canonical_name": "Senova Arc",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p16",
+        "source_id": "synthetic-source-p16",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Gavren Unit was launched on 2 July 2045.~~ Senova Arc was launched on 23 July 2045."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P17",
+      "category": "other_target_hypothetical_after",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p17",
+        "target_question": "When was Avrelis Hub launched?",
+        "entity": {
+          "canonical_id": "entity-p17",
+          "canonical_name": "Avrelis Hub",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p17",
+        "source_id": "synthetic-source-p17",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Avrelis Hub was launched on 24 August 2046. In a hypothetical scenario, Jorven Map would launch next year."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P18",
+      "category": "navigation_cannot_veto_fact",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p18",
+        "target_question": "When was Quenari Wire launched?",
+        "entity": {
+          "canonical_id": "entity-p18",
+          "canonical_name": "Quenari Wire",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p18",
+        "source_id": "synthetic-source-p18",
+        "signals": [
+          {
+            "kind": "navigation_or_footer",
+            "text": "Fictional releases and retracted entries"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Quenari Wire was launched on 25 September 2047."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P19",
+      "category": "url_cannot_veto_fact",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p19",
+        "target_question": "When was Orvella Peak launched?",
+        "entity": {
+          "canonical_id": "entity-p19",
+          "canonical_name": "Orvella Peak",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p19",
+        "source_id": "synthetic-source-p19",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://archive.example.invalid/fictional/withdrawn/orvella-peak"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Orvella Peak was launched on 26 October 2048."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P20",
+      "category": "fact_and_neutral_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p20",
+        "target_question": "When was Devoria Leaf launched?",
+        "entity": {
+          "canonical_id": "entity-p20",
+          "canonical_name": "Devoria Leaf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p20",
+        "source_id": "synthetic-source-p20",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Monthly engineering bulletin"
+          },
+          {
+            "kind": "fact",
+            "text": "Devoria Leaf was launched on 27 November 2049."
+          },
+          {
+            "kind": "excerpt",
+            "text": "The bulletin also covers system maintenance."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P21",
+      "category": "ga_full_phrase",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p21",
+        "target_question": "When was Talvori Kit launched?",
+        "entity": {
+          "canonical_id": "entity-p21",
+          "canonical_name": "Talvori Kit",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p21",
+        "source_id": "synthetic-source-p21",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Talvori Kit entered general availability on 28 December 2050."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P22",
+      "category": "ga_short_form",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p22",
+        "target_question": "When was Cenora Grid launched?",
+        "entity": {
+          "canonical_id": "entity-p22",
+          "canonical_name": "Cenora Grid",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p22",
+        "source_id": "synthetic-source-p22",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Cenora Grid reached GA on 29 January 2051."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P23",
+      "category": "case_insensitive_identity",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p23",
+        "target_question": "When was Avenro Lab launched?",
+        "entity": {
+          "canonical_id": "entity-p23",
+          "canonical_name": "Avenro Lab",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p23",
+        "source_id": "synthetic-source-p23",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "AVENRO LAB was launched on 1 February 2052."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "P24",
+      "category": "other_target_retraction_after",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-p24",
+        "target_question": "When was Zeriva Stream launched?",
+        "entity": {
+          "canonical_id": "entity-p24",
+          "canonical_name": "Zeriva Stream",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-p24",
+        "source_id": "synthetic-source-p24",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Zeriva Stream was launched on 2 March 2053. The claim about Norvex Stack was retracted."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N01",
+      "category": "hypothetical_title",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n01",
+        "target_question": "When was Solvani Dock launched?",
+        "entity": {
+          "canonical_id": "entity-n01",
+          "canonical_name": "Solvani Dock",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n01",
+        "source_id": "synthetic-source-n01",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Hypothetical release chronology"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Solvani Dock was launched on 3 April 2031."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N02",
+      "category": "fictional_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n02",
+        "target_question": "When was Merava Loom launched?",
+        "entity": {
+          "canonical_id": "entity-n02",
+          "canonical_name": "Merava Loom",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n02",
+        "source_id": "synthetic-source-n02",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Fictional release story"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Merava Loom was launched on 4 May 2032."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N03",
+      "category": "false_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n03",
+        "target_question": "When was Tovari Desk launched?",
+        "entity": {
+          "canonical_id": "entity-n03",
+          "canonical_name": "Tovari Desk",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n03",
+        "source_id": "synthetic-source-n03",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "False claim"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Tovari Desk was launched on 5 June 2033."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N04",
+      "category": "denied_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n04",
+        "target_question": "When was Ralven Port launched?",
+        "entity": {
+          "canonical_id": "entity-n04",
+          "canonical_name": "Ralven Port",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n04",
+        "source_id": "synthetic-source-n04",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Denied launch claim"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Ralven Port was launched on 6 July 2034."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N05",
+      "category": "retracted_title",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n05",
+        "target_question": "When was Covari Path launched?",
+        "entity": {
+          "canonical_id": "entity-n05",
+          "canonical_name": "Covari Path",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n05",
+        "source_id": "synthetic-source-n05",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Retracted launch announcement"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Covari Path was launched on 7 August 2035."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N06",
+      "category": "withdrawn_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n06",
+        "target_question": "When was Nelvori Edge launched?",
+        "entity": {
+          "canonical_id": "entity-n06",
+          "canonical_name": "Nelvori Edge",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n06",
+        "source_id": "synthetic-source-n06",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Withdrawn release statement"
+          },
+          {
+            "kind": "fact",
+            "text": "Nelvori Edge was launched on 8 September 2036."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N07",
+      "category": "fictional_leading_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n07",
+        "target_question": "When was Veldani Wave launched?",
+        "entity": {
+          "canonical_id": "entity-n07",
+          "canonical_name": "Veldani Wave",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n07",
+        "source_id": "synthetic-source-n07",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This is a fictional release story. Veldani Wave was launched on 9 October 2037."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N08",
+      "category": "fictional_trailing_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n08",
+        "target_question": "When was Koravi Tide launched?",
+        "entity": {
+          "canonical_id": "entity-n08",
+          "canonical_name": "Koravi Tide",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n08",
+        "source_id": "synthetic-source-n08",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Koravi Tide was launched on 10 November 2038. This release story is fictional."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N09",
+      "category": "hypothetical_leading_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n09",
+        "target_question": "When was Cevoni Park launched?",
+        "entity": {
+          "canonical_id": "entity-n09",
+          "canonical_name": "Cevoni Park",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n09",
+        "source_id": "synthetic-source-n09",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The following is a hypothetical release scenario. Cevoni Park was launched on 11 December 2039."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N10",
+      "category": "hypothetical_trailing_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n10",
+        "target_question": "When was Ardeli Beam launched?",
+        "entity": {
+          "canonical_id": "entity-n10",
+          "canonical_name": "Ardeli Beam",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n10",
+        "source_id": "synthetic-source-n10",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ardeli Beam was launched on 12 January 2040. This is only a hypothetical scenario."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N11",
+      "category": "false_leading_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n11",
+        "target_question": "When was Luneri Axis launched?",
+        "entity": {
+          "canonical_id": "entity-n11",
+          "canonical_name": "Luneri Axis",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n11",
+        "source_id": "synthetic-source-n11",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The following launch statement is false. Luneri Axis was launched on 13 February 2041."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N12",
+      "category": "false_trailing_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n12",
+        "target_question": "When was Jovari Canvas launched?",
+        "entity": {
+          "canonical_id": "entity-n12",
+          "canonical_name": "Jovari Canvas",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n12",
+        "source_id": "synthetic-source-n12",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Jovari Canvas was launched on 14 March 2042. That launch statement is false."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N13",
+      "category": "denied_leading_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n13",
+        "target_question": "When was Evarni Link launched?",
+        "entity": {
+          "canonical_id": "entity-n13",
+          "canonical_name": "Evarni Link",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n13",
+        "source_id": "synthetic-source-n13",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The following launch claim was denied. Evarni Link was launched on 15 April 2043."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N14",
+      "category": "denied_trailing_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n14",
+        "target_question": "When was Revalis Core launched?",
+        "entity": {
+          "canonical_id": "entity-n14",
+          "canonical_name": "Revalis Core",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n14",
+        "source_id": "synthetic-source-n14",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Revalis Core was launched on 16 May 2044. The publisher denied that launch claim."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N15",
+      "category": "withdrawn_leading_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n15",
+        "target_question": "When was Orenvi Lens launched?",
+        "entity": {
+          "canonical_id": "entity-n15",
+          "canonical_name": "Orenvi Lens",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n15",
+        "source_id": "synthetic-source-n15",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This release statement has been withdrawn. Orenvi Lens was launched on 17 June 2045."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N16",
+      "category": "retracted_trailing_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n16",
+        "target_question": "When was Tervani Wire launched?",
+        "entity": {
+          "canonical_id": "entity-n16",
+          "canonical_name": "Tervani Wire",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n16",
+        "source_id": "synthetic-source-n16",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tervani Wire was launched on 18 July 2046. The publisher retracted this release statement."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N17",
+      "category": "hypothetical_multi_signal",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n17",
+        "target_question": "When was Melvori Grid launched?",
+        "entity": {
+          "canonical_id": "entity-n17",
+          "canonical_name": "Melvori Grid",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n17",
+        "source_id": "synthetic-source-n17",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Hypothetical scenario"
+          },
+          {
+            "kind": "excerpt",
+            "text": "The project uses a modular architecture."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Melvori Grid was launched on 19 August 2047."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N18",
+      "category": "false_title_metadata",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n18",
+        "target_question": "When was Cavrani Leaf launched?",
+        "entity": {
+          "canonical_id": "entity-n18",
+          "canonical_name": "Cavrani Leaf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n18",
+        "source_id": "synthetic-source-n18",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "False launch report"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Cavrani Leaf was launched on 20 September 2048."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N19",
+      "category": "fictional_title_neutral_heading_fact",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n19",
+        "target_question": "When was Zarvoni Forge launched?",
+        "entity": {
+          "canonical_id": "entity-n19",
+          "canonical_name": "Zarvoni Forge",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n19",
+        "source_id": "synthetic-source-n19",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Fictional technology chronicle"
+          },
+          {
+            "kind": "heading",
+            "text": "Product timeline"
+          },
+          {
+            "kind": "fact",
+            "text": "Zarvoni Forge was launched on 21 October 2049."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N20",
+      "category": "url_only",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n20",
+        "target_question": "When was Eldora Sync launched?",
+        "entity": {
+          "canonical_id": "entity-n20",
+          "canonical_name": "Eldora Sync",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n20",
+        "source_id": "synthetic-source-n20",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://releases.example.invalid/Eldora-Sync-was-launched-on-22-November-2050"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N21",
+      "category": "navigation_only",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n21",
+        "target_question": "When was Vereni Map launched?",
+        "entity": {
+          "canonical_id": "entity-n21",
+          "canonical_name": "Vereni Map",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n21",
+        "source_id": "synthetic-source-n21",
+        "signals": [
+          {
+            "kind": "navigation_or_footer",
+            "text": "Vereni Map was launched on 23 December 2051."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N22",
+      "category": "url_and_navigation_no_factual_proof",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n22",
+        "target_question": "When was Lorvani Kit launched?",
+        "entity": {
+          "canonical_id": "entity-n22",
+          "canonical_name": "Lorvani Kit",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n22",
+        "source_id": "synthetic-source-n22",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/Lorvani-Kit/launched/2052-01-24"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Lorvani Kit release timeline"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N23",
+      "category": "wrong_target",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n23",
+        "target_question": "When was Kervani Cloud launched?",
+        "entity": {
+          "canonical_id": "entity-n23",
+          "canonical_name": "Kervani Cloud",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n23",
+        "source_id": "synthetic-source-n23",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Dervalo Cloud was launched on 25 February 2053."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N24",
+      "category": "conditional",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n24",
+        "target_question": "When was Raveni Dock launched?",
+        "entity": {
+          "canonical_id": "entity-n24",
+          "canonical_name": "Raveni Dock",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n24",
+        "source_id": "synthetic-source-n24",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "If financing had arrived, Raveni Dock would have launched on 26 March 2054."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N25",
+      "category": "rumor",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n25",
+        "target_question": "When was Toveni Hub launched?",
+        "entity": {
+          "canonical_id": "entity-n25",
+          "canonical_name": "Toveni Hub",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n25",
+        "source_id": "synthetic-source-n25",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "An unconfirmed rumor says Toveni Hub was launched on 27 April 2055."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N26",
+      "category": "question",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n26",
+        "target_question": "When was Alveri Note launched?",
+        "entity": {
+          "canonical_id": "entity-n26",
+          "canonical_name": "Alveri Note",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n26",
+        "source_id": "synthetic-source-n26",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Was Alveri Note launched on 28 May 2056?"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N27",
+      "category": "markdown_strike_single_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n27",
+        "target_question": "When was Mervani Arc launched?",
+        "entity": {
+          "canonical_id": "entity-n27",
+          "canonical_name": "Mervani Arc",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n27",
+        "source_id": "synthetic-source-n27",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Mervani Arc was launched on 29 June 2057.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N28",
+      "category": "markdown_strike_cross_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n28",
+        "target_question": "When was Solmeri Peak launched?",
+        "entity": {
+          "canonical_id": "entity-n28",
+          "canonical_name": "Solmeri Peak",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n28",
+        "source_id": "synthetic-source-n28",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~The timeline is listed below. Solmeri Peak was launched on 1 July 2058.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N29",
+      "category": "markdown_strike_cross_multiple_sentences",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n29",
+        "target_question": "When was Kavren Studio launched?",
+        "entity": {
+          "canonical_id": "entity-n29",
+          "canonical_name": "Kavren Studio",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n29",
+        "source_id": "synthetic-source-n29",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~The release note was drafted. The team held an internal rehearsal. Kavren Studio was launched on 2 August 2059. The package includes a guide.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N30",
+      "category": "cross_mark_prefix",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n30",
+        "target_question": "When was Zelvori Beam launched?",
+        "entity": {
+          "canonical_id": "entity-n30",
+          "canonical_name": "Zelvori Beam",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n30",
+        "source_id": "synthetic-source-n30",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "❌ Zelvori Beam was launched on 3 September 2060."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N31",
+      "category": "not_equal_operator",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n31",
+        "target_question": "When was Tarnovi Frame launched?",
+        "entity": {
+          "canonical_id": "entity-n31",
+          "canonical_name": "Tarnovi Frame",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n31",
+        "source_id": "synthetic-source-n31",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tarnovi Frame ≠ launched on 4 October 2061."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N32",
+      "category": "logical_not_prefix",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n32",
+        "target_question": "When was Delvari Gate launched?",
+        "entity": {
+          "canonical_id": "entity-n32",
+          "canonical_name": "Delvari Gate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n32",
+        "source_id": "synthetic-source-n32",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "¬ Delvari Gate was launched on 5 November 2062."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N33",
+      "category": "ballot_x_prefix",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n33",
+        "target_question": "When was Lervani Desk launched?",
+        "entity": {
+          "canonical_id": "entity-n33",
+          "canonical_name": "Lervani Desk",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n33",
+        "source_id": "synthetic-source-n33",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "✗ Lervani Desk was launched on 6 December 2063."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N34",
+      "category": "heavy_ballot_x_prefix",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n34",
+        "target_question": "When was Norlavi Port launched?",
+        "entity": {
+          "canonical_id": "entity-n34",
+          "canonical_name": "Norlavi Port",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n34",
+        "source_id": "synthetic-source-n34",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "✘ Norlavi Port was launched on 7 January 2064."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N35",
+      "category": "combining_long_stroke_full_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n35",
+        "target_question": "When was Sevori Cloud launched?",
+        "entity": {
+          "canonical_id": "entity-n35",
+          "canonical_name": "Sevori Cloud",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n35",
+        "source_id": "synthetic-source-n35",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "S̶e̶v̶o̶r̶i̶ C̶l̶o̶u̶d̶ w̶a̶s̶ l̶a̶u̶n̶c̶h̶e̶d̶ o̶n̶ 8̶ F̶e̶b̶r̶u̶a̶r̶y̶ 2̶0̶6̶5̶.̶"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N36",
+      "category": "combining_short_stroke_launch_predicate",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n36",
+        "target_question": "When was Kelravi Loom launched?",
+        "entity": {
+          "canonical_id": "entity-n36",
+          "canonical_name": "Kelravi Loom",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n36",
+        "source_id": "synthetic-source-n36",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Kelravi Loom was l̵a̵u̵n̵c̵h̵e̵d̵ on 9 March 2066."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N37",
+      "category": "cross_mark_suffix",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n37",
+        "target_question": "When was Valrani Wire launched?",
+        "entity": {
+          "canonical_id": "entity-n37",
+          "canonical_name": "Valrani Wire",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n37",
+        "source_id": "synthetic-source-n37",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Valrani Wire was launched on 10 April 2067. ❌"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N38",
+      "category": "strike_heading_governs_excerpt",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n38",
+        "target_question": "When was Ovelri Edge launched?",
+        "entity": {
+          "canonical_id": "entity-n38",
+          "canonical_name": "Ovelri Edge",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n38",
+        "source_id": "synthetic-source-n38",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "~~Ovelri Edge launch announcement~~"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Ovelri Edge was launched on 11 May 2068."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N39",
+      "category": "explicit_no_prefix",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n39",
+        "target_question": "When was Javrani Path launched?",
+        "entity": {
+          "canonical_id": "entity-n39",
+          "canonical_name": "Javrani Path",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n39",
+        "source_id": "synthetic-source-n39",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "No: Pavren news is incorrect. Javrani Path was not launched on 12 June 2069."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N40",
+      "category": "target_denied_other_affirmative",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n40",
+        "target_question": "When was Dovrani Mesh launched?",
+        "entity": {
+          "canonical_id": "entity-n40",
+          "canonical_name": "Dovrani Mesh",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n40",
+        "source_id": "synthetic-source-n40",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Dovrani Mesh was not launched on 13 July 2070. Sarvilo Mesh was launched on that date."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N41",
+      "category": "cancelled_plan",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n41",
+        "target_question": "When was Calravi Unit launched?",
+        "entity": {
+          "canonical_id": "entity-n41",
+          "canonical_name": "Calravi Unit",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n41",
+        "source_id": "synthetic-source-n41",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Calravi Unit was scheduled to launch on 14 August 2071, but the launch was cancelled."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    },
+    {
+      "case_id": "N42",
+      "category": "quoted_false_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v1-policy",
+        "target_id": "target-n42",
+        "target_question": "When was Merlavi Grid launched?",
+        "entity": {
+          "canonical_id": "entity-n42",
+          "canonical_name": "Merlavi Grid",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "evidence-n42",
+        "source_id": "synthetic-source-n42",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The statement \"Merlavi Grid was launched on 15 September 2072\" is false."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "source_local_only": true
+      }
+    }
+  ]
+}
