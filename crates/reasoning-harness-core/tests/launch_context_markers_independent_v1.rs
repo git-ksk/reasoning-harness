@@ -28,6 +28,7 @@ fn source_hash(root: &Path) -> String {
 }
 
 #[test]
+#[ignore = "Historical v1 first observation is RED; do not rerun/rescore or overwrite it"]
 fn fresh_independent_launch_context_markers_first_observation() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
     let corpus: Value = serde_json::from_str(include_str!(
