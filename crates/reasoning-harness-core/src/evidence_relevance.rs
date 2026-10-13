@@ -1442,10 +1442,17 @@ fn target_owned_launch_frame_with_predicates(
 // organization tokens are not sentence terminators. A period at a target's edge,
 // a trailing abbreviation period, or an unrecognized multi-dot continuation stays
 // a boundary.
+struct LaunchFactualSegmentV17 {
+    text: String,
+    raw: String,
+    makers: Vec<String>,
+    denied: bool,
+}
+
 fn launch_factual_segments_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     value: &str,
-) -> Vec<(String, Vec<String>)> {
+) -> Vec<LaunchFactualSegmentV17> {
     let folded = value.to_ascii_lowercase();
     let mut names = policy
         .entity
@@ -1491,16 +1498,45 @@ fn launch_factual_segments_v17(
     let mut prepared = String::with_capacity(value.len());
     let mut raw_segment = String::with_capacity(value.len());
     let mut segments = Vec::new();
-    let mut finish_segment = |prepared: &mut String, raw: &mut String| {
+    // Preserve strike scope across sentence boundaries. A closing delimiter on
+    // the next statement does not strike that statement's following text.
+    let mut strikes = Vec::new();
+    let mut open = None;
+    for (index, _) in value.match_indices("~~") {
+        if let Some(start) = open.take() {
+            strikes.push(start..index + 2);
+        } else {
+            open = Some(index);
+        }
+    }
+    if let Some(start) = open {
+        strikes.push(start..value.len());
+    }
+    let mut finish_segment = |prepared: &mut String, raw: &mut String, start, end| {
         let makers = launch_maker_objects_v17(raw);
-        segments.extend(
-            normalized_factual_segments(prepared)
-                .into_iter()
-                .map(|segment| (segment, makers.clone())),
-        );
+        let denied = raw.chars().any(launch_denial_marker_v17)
+            || strikes[strikes.partition_point(|span| span.end <= start)..]
+                .iter()
+                .take_while(|span| span.start < end)
+                .any(|span| {
+                    let left = span.start.max(start);
+                    let right = span.end.min(end);
+                    left < right && value[left..right].chars().any(char::is_alphanumeric)
+                });
+        if !raw.trim().is_empty() {
+            // Keep even a marker-only statement so its governing scope is not
+            // lost. The historical normalizer still controls affirmative text.
+            segments.push(LaunchFactualSegmentV17 {
+                text: normalized_factual_segments(prepared).join(" "),
+                raw: raw.clone(),
+                makers,
+                denied,
+            });
+        }
         prepared.clear();
         raw.clear();
     };
+    let mut raw_start = 0;
     for (index, character) in value.char_indices() {
         let keep_period = if character == '.' {
             let inside_name = name_spans
@@ -1537,20 +1573,267 @@ fn launch_factual_segments_v17(
         };
         if !keep_period && ['.', ';', '\n', '\r', '!', '?', '。', '！', '？'].contains(&character)
         {
-            finish_segment(&mut prepared, &mut raw_segment);
+            finish_segment(&mut prepared, &mut raw_segment, raw_start, index);
+            raw_start = index + character.len_utf8();
         } else {
             prepared.push(if keep_period { ' ' } else { character });
             raw_segment.push(character);
         }
     }
-    finish_segment(&mut prepared, &mut raw_segment);
+    finish_segment(&mut prepared, &mut raw_segment, raw_start, value.len());
     segments
+}
+
+fn launch_denial_marker_v17(character: char) -> bool {
+    matches!(character, '≠' | '¬' | '❌' | '✗' | '✘' | '\u{0336}')
+}
+
+// A bounded syntactic other-owner check, not a source trust decision.
+fn launch_named_subject_v17(prefix: &str) -> bool {
+    let words = prefix.split_whitespace().collect::<Vec<_>>();
+    let words = words.strip_prefix(&["The"]).unwrap_or(&words);
+    !words.is_empty()
+        && words.len() <= 6
+        && words.iter().all(|word| {
+            let word = word.trim_matches(|c: char| !c.is_alphanumeric());
+            ![
+                "this",
+                "that",
+                "it",
+                "these",
+                "those",
+                "according",
+                "reportedly",
+                "allegedly",
+                "hypothetically",
+                "if",
+                "unless",
+                "in",
+                "on",
+                "at",
+            ]
+            .contains(&word.to_ascii_lowercase().as_str())
+                && word.chars().next().is_some_and(char::is_uppercase)
+        })
+}
+
+fn launch_explicit_other_context_v17(statement: &str) -> bool {
+    let folded = statement.to_ascii_lowercase();
+    [" about ", " for ", " of "].iter().any(|link| {
+        folded.find(link).is_some_and(|index| {
+            let start = index + link.len();
+            let end = [" is ", " was ", " has ", " remains "]
+                .iter()
+                .filter_map(|predicate| folded[start..].find(predicate))
+                .min()
+                .map_or(statement.len(), |index| start + index);
+            launch_named_subject_v17(&statement[start..end])
+        })
+    })
+}
+
+fn launch_explicit_other_subject_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+) -> bool {
+    let text = normalized(statement);
+    if target_identity_phrases(policy)
+        .iter()
+        .any(|target| normalized_phrase_matches(&text, target))
+    {
+        return false;
+    }
+    // An incidental predicate in "According to reports, it was launched" does
+    // not establish another owner. Require a bounded, visibly named subject.
+    let folded = statement.to_ascii_lowercase();
+    [
+        " was launched",
+        " has been launched",
+        " was introduced",
+        " went live",
+        " is now generally available",
+        " became generally available",
+    ]
+    .iter()
+    .any(|predicate| {
+        folded
+            .find(predicate)
+            .is_some_and(|index| launch_named_subject_v17(&statement[..index]))
+    })
+}
+
+fn launch_governing_context_blocks_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    let targets = target_identity_phrases(policy);
+    for signal in candidate.signals.iter().filter(|signal| {
+        matches!(
+            signal.kind,
+            EvidenceRelevanceSignalKind::SourceTitle
+                | EvidenceRelevanceSignalKind::Heading
+                | EvidenceRelevanceSignalKind::Excerpt
+                | EvidenceRelevanceSignalKind::Fact
+                | EvidenceRelevanceSignalKind::StructuredMetadata
+        )
+    }) {
+        let segments = launch_factual_segments_v17(policy, &signal.text);
+        for (index, segment) in segments.iter().enumerate() {
+            let text = normalized(&segment.raw);
+            let words = text.split_whitespace().collect::<Vec<_>>();
+            let owns_target = targets
+                .iter()
+                .any(|target| normalized_phrase_matches(&text, target));
+            let scope = words.iter().any(|word| {
+                [
+                    "statement",
+                    "statements",
+                    "claim",
+                    "claims",
+                    "assertion",
+                    "announcement",
+                    "example",
+                    "scenario",
+                    "material",
+                ]
+                .contains(word)
+            });
+            let launch = words
+                .iter()
+                .any(|word| ["launch", "launched", "introduced", "available"].contains(word));
+            let adverse = words.iter().enumerate().any(|(index, word)| {
+                if *word == "false"
+                    && words
+                        .get(index + 1)
+                        .is_some_and(|next| ["alarm", "alarms"].contains(next))
+                {
+                    return false;
+                }
+                [
+                    "false",
+                    "falsehood",
+                    "untrue",
+                    "incorrect",
+                    "fabricated",
+                    "debunked",
+                    "refuted",
+                    "rejected",
+                    "retracted",
+                    "retraction",
+                    "withdrawn",
+                    "denied",
+                    "denial",
+                    "fiction",
+                    "fictional",
+                    "fictitious",
+                    "hypothetical",
+                    "counterfactual",
+                    "simulation",
+                    "simulated",
+                    "imaginary",
+                    "pretend",
+                    "mock",
+                    "rehearsal",
+                    "unverified",
+                    "unconfirmed",
+                ]
+                .contains(word)
+            });
+            if owns_target
+                && (segment.denied
+                    || ((scope || launch) && adverse)
+                    || (launch && words.iter().any(|word| ["not", "never"].contains(word))))
+            {
+                return true;
+            }
+            let context_head = words.iter().copied().find(|word| {
+                ![
+                    "the",
+                    "a",
+                    "an",
+                    "this",
+                    "that",
+                    "following",
+                    "preceding",
+                    "previous",
+                    "next",
+                    "launch",
+                    "release",
+                    "fictional",
+                    "hypothetical",
+                    "simulated",
+                ]
+                .contains(word)
+            });
+            let context_subject = context_head.is_some_and(|word| {
+                [
+                    "statement",
+                    "claim",
+                    "assertion",
+                    "announcement",
+                    "example",
+                    "scenario",
+                    "simulation",
+                    "material",
+                ]
+                .contains(&word)
+            });
+            if !owns_target && context_subject && launch_explicit_other_context_v17(&segment.raw) {
+                continue;
+            }
+            let reference = matches!(
+                words.as_slice(),
+                ["this" | "that" | "it", "is" | "was" | "has", ..]
+            ) || context_subject
+                || matches!(
+                    words.as_slice(),
+                    ["the", "following" | "preceding" | "previous" | "next", ..]
+                );
+            let global = matches!(words.as_slice(), ["in", "this" | "the", ..])
+                || matches!(
+                    words.first(),
+                    Some(&"retracted" | &"fictional" | &"hypothetical" | &"simulation")
+                );
+            let marker_only = words.is_empty() && segment.denied;
+            let denied_context = adverse
+                || (context_subject
+                    && words
+                        .windows(2)
+                        .any(|pair| matches!(pair, ["not", "true" | "correct"])));
+            if !((denied_context && (reference || global)) || marker_only) {
+                continue;
+            }
+            // Bind explicit next/preceding references locally. A named other
+            // product cannot retract the target's launch. Missing or ambiguous
+            // antecedents still withhold; no model advice supplies ownership.
+            let next = words
+                .iter()
+                .any(|word| ["following", "next"].contains(word));
+            let neighbor = if next || (marker_only && index == 0) {
+                segments.get(index + 1)
+            } else {
+                index.checked_sub(1).and_then(|i| segments.get(i))
+            };
+            if (reference || marker_only)
+                && neighbor.is_some_and(|neighbor| {
+                    launch_explicit_other_subject_v17(policy, &neighbor.raw)
+                })
+            {
+                continue;
+            }
+            return true;
+        }
+    }
+    false
 }
 
 fn target_owned_launch_fact_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
 ) -> bool {
+    if launch_governing_context_blocks_v17(policy, candidate) {
+        return false;
+    }
     candidate
         .signals
         .iter()
@@ -1563,7 +1846,10 @@ fn target_owned_launch_fact_v17(
             )
         })
         .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
-        .any(|(segment, makers)| {
+        .filter(|segment| !segment.denied)
+        .any(|segment| {
+            let makers = segment.makers;
+            let segment = segment.text;
             let tokens = segment.split_whitespace().collect::<Vec<_>>();
             if tokens.iter().enumerate().any(|(index, word)| {
                 let month_may = *word == "may"
