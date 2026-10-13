@@ -1,0 +1,2386 @@
+{
+  "schema_version": 9,
+  "author_identity": "/root/launch_072_independent",
+  "candidate_commit": "f70d1ada8bd56767af4256c82122b01eb60a9d23",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "6b32d628cf731977b0f637b99646485d7f57d8fc3d9f9fa62b9a5432d09a34a6",
+  "positive_owner_rule": "same-statement canonical or declared alias direct subject/object in supported bounded predicates",
+  "cases": [
+    {
+      "case_id": "P901",
+      "category": "passive_launch_neutral_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P901",
+        "target_question": "When was Wenlora Gate launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P901",
+          "canonical_name": "Wenlora Gate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P901",
+        "source_id": "v9-source-P901",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Published chronology"
+          },
+          {
+            "kind": "fact",
+            "text": "Wenlora Gate was launched on 1 May 2450."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P902",
+      "category": "date_first_actor_object_launch",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P902",
+        "target_question": "When was Asvella Rack launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P902",
+          "canonical_name": "Asvella Rack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P902",
+        "source_id": "v9-source-P902",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "On 2 May 2451, Nelmora Labs launched Asvella Rack. The release record includes a user guide."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P903",
+      "category": "has_been_launched_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P903",
+        "target_question": "When was Teronda Leaf launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P903",
+          "canonical_name": "Teronda Leaf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P903",
+        "source_id": "v9-source-P903",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Teronda Leaf has been launched as of 3 May 2452."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P904",
+      "category": "passive_introduction_fact",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P904",
+        "target_question": "When was Hovella Dial launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P904",
+          "canonical_name": "Hovella Dial",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P904",
+        "source_id": "v9-source-P904",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Hovella Dial was introduced on 4 May 2453."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P905",
+      "category": "introduced_alias_direct_object",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P905",
+        "target_question": "When was Marnora Cabin launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P905",
+          "canonical_name": "Marnora Cabin",
+          "aliases": [
+            "MNCab"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P905",
+        "source_id": "v9-source-P905",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Zenvella Systems introduced MNCab on 5 May 2454."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P906",
+      "category": "went_live_as_of_neutral_followup",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P906",
+        "target_question": "When was Dolonda Prism launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P906",
+          "canonical_name": "Dolonda Prism",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P906",
+        "source_id": "v9-source-P906",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Dolonda Prism went live as of 6 May 2455. The manual is available in the archive."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P907",
+      "category": "active_rollout_metadata",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P907",
+        "target_question": "When was Ivella Map launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P907",
+          "canonical_name": "Ivella Map",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P907",
+        "source_id": "v9-source-P907",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Ivella Map rolled out on 7 May 2456."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P908",
+      "category": "passive_rollout_record_adjunct",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P908",
+        "target_question": "When was Kernora Circle launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P908",
+          "canonical_name": "Kernora Circle",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P908",
+        "source_id": "v9-source-P908",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Kernora Circle was rolled out on 8 May 2457, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P909",
+      "category": "is_generally_available_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P909",
+        "target_question": "When was Molvella Spool launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P909",
+          "canonical_name": "Molvella Spool",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P909",
+        "source_id": "v9-source-P909",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Molvella Spool is generally available as of 9 May 2458."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P910",
+      "category": "is_now_generally_available",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P910",
+        "target_question": "When was Pernora Path launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P910",
+          "canonical_name": "Pernora Path",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P910",
+        "source_id": "v9-source-P910",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Pernora Path is now generally available as of 10 May 2459."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P911",
+      "category": "became_generally_available_metadata",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P911",
+        "target_question": "When was Zovella Loom launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P911",
+          "canonical_name": "Zovella Loom",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P911",
+        "source_id": "v9-source-P911",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Zovella Loom became generally available on 11 May 2460."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P912",
+      "category": "actor_has_made_named_product",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P912",
+        "target_question": "When was Alnora Beam launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P912",
+          "canonical_name": "Alnora Beam",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P912",
+        "source_id": "v9-source-P912",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Fervella Tools has made Alnora Beam generally available as of 12 May 2461."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P913",
+      "category": "entered_general_availability_record_adjunct",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P913",
+        "target_question": "When was Osvella Hatch launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P913",
+          "canonical_name": "Osvella Hatch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P913",
+        "source_id": "v9-source-P913",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Osvella Hatch entered general availability on 13 May 2462, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P914",
+      "category": "reached_ga_neutral_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P914",
+        "target_question": "When was Yernora Panel launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P914",
+          "canonical_name": "Yernora Panel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P914",
+        "source_id": "v9-source-P914",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Product history"
+          },
+          {
+            "kind": "fact",
+            "text": "Yernora Panel reached GA on 14 May 2463."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P915",
+      "category": "dotted_decimal_direct_subject",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P915",
+        "target_question": "When was Mora.Dev Unit 4.2 launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P915",
+          "canonical_name": "Mora.Dev Unit 4.2",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P915",
+        "source_id": "v9-source-P915",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Mora.Dev Unit 4.2 was launched on 15 May 2464."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P916",
+      "category": "alias_direct_object_launched",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P916",
+        "target_question": "When was Senlora Port launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P916",
+          "canonical_name": "Senlora Port",
+          "aliases": [
+            "SLPort"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P916",
+        "source_id": "v9-source-P916",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Tarvella Devices launched SLPort on 16 May 2465."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P917",
+      "category": "separate_same_target_support_question",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P917",
+        "target_question": "When was Noronda Array launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P917",
+          "canonical_name": "Noronda Array",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P917",
+        "source_id": "v9-source-P917",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Does Noronda Array support PDF export? Noronda Array was introduced on 17 May 2466."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P918",
+      "category": "has_a_property_adjacent_false_statement",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P918",
+        "target_question": "When was Velonda Box launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P918",
+          "canonical_name": "Velonda Box",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P918",
+        "source_id": "v9-source-P918",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Velonda Box has a help panel. This statement is false. Velonda Box went live on 18 May 2467."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P919",
+      "category": "separate_negated_included_feature",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P919",
+        "target_question": "When was Geronda Trace launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P919",
+          "canonical_name": "Geronda Trace",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P919",
+        "source_id": "v9-source-P919",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Geronda Trace does not include a timer. Geronda Trace reached GA on 19 May 2468."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P920",
+      "category": "closed_strike_nonlaunch_property",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P920",
+        "target_question": "When was Kelonda Watch launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P920",
+          "canonical_name": "Kelonda Watch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P920",
+        "source_id": "v9-source-P920",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Kelonda Watch supports offline mode.~~ Kelonda Watch entered general availability on 20 May 2469."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P921",
+      "category": "crossed_other_target_then_factual_proof",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P921",
+        "target_question": "When was Alvella Crest launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P921",
+          "canonical_name": "Alvella Crest",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P921",
+        "source_id": "v9-source-P921",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "❌ Maronda Shelf was introduced on 19 May 2470."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Alvella Crest was rolled out on 21 May 2470."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P922",
+      "category": "fictional_foreign_active_launch_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P922",
+        "target_question": "When was Neronda Module launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P922",
+          "canonical_name": "Neronda Module",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P922",
+        "source_id": "v9-source-P922",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Fictional claim: Barvella Tile launched on 20 May 2471."
+          },
+          {
+            "kind": "fact",
+            "text": "Neronda Module was introduced on 22 May 2471."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P923",
+      "category": "denied_foreign_went_live_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P923",
+        "target_question": "When was Zerlora Board launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P923",
+          "canonical_name": "Zerlora Board",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P923",
+        "source_id": "v9-source-P923",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Denied statement: Toronda Field went live on 21 May 2472."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Zerlora Board was launched on 23 May 2472."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P924",
+      "category": "nonfactual_sources_cannot_govern",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P924",
+        "target_question": "When was Jervella Grid launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P924",
+          "canonical_name": "Jervella Grid",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P924",
+        "source_id": "v9-source-P924",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Release reference index"
+          },
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/withdrawn/jervella-grid"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Fictional and hypothetical reports"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Jervella Grid is generally available as of 24 May 2473."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P925",
+      "category": "property_question_heading_alias_ga_proof",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-P925",
+        "target_question": "When was Dernora Light launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-P925",
+          "canonical_name": "Dernora Light",
+          "aliases": [
+            "DNLight"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-P925",
+        "source_id": "v9-source-P925",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Does Dernora Light include an editor?"
+          },
+          {
+            "kind": "fact",
+            "text": "DNLight reached GA on 25 May 2474."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N901",
+      "category": "report_fiction_leading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N901",
+        "target_question": "When was Cerlora Ring launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N901",
+          "canonical_name": "Cerlora Ring",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N901",
+        "source_id": "v9-source-N901",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This report is fictional. Cerlora Ring was launched on 1 May 2480."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N902",
+      "category": "entire_passage_hypothesis_with_foreign_name",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N902",
+        "target_question": "When was Vernora Key launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N902",
+          "canonical_name": "Vernora Key",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N902",
+        "source_id": "v9-source-N902",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "This entire passage is hypothetical. Gervella Loop was introduced on 2 May 2481."
+          },
+          {
+            "kind": "fact",
+            "text": "Vernora Key went live on 3 May 2481."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N903",
+      "category": "plural_launch_claims_retracted_after_foreign_statement",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N903",
+        "target_question": "When was Avonda Stack launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N903",
+          "canonical_name": "Avonda Stack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N903",
+        "source_id": "v9-source-N903",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Avonda Stack reached GA on 4 May 2482. Sorvella Module was launched on 5 May 2482. These launch claims were retracted."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N904",
+      "category": "all_following_statements_false_two_products",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N904",
+        "target_question": "When was Merlora Channel launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N904",
+          "canonical_name": "Merlora Channel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N904",
+        "source_id": "v9-source-N904",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "The following statements are false"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Merlora Channel was introduced on 6 May 2483. Farlora Hub entered general availability on 7 May 2483."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N905",
+      "category": "report_denial_after_feature",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N905",
+        "target_question": "When was Irvella Mirror launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N905",
+          "canonical_name": "Irvella Mirror",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N905",
+        "source_id": "v9-source-N905",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Irvella Mirror was rolled out on 8 May 2484. Irvella Mirror supports PDF export. This report is denied."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N906",
+      "category": "withdrawn_availability_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N906",
+        "target_question": "When was Povella Patch launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N906",
+          "canonical_name": "Povella Patch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N906",
+        "source_id": "v9-source-N906",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Withdrawn availability statement"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Povella Patch became generally available on 9 May 2485."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N907",
+      "category": "named_launch_claim_denied",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N907",
+        "target_question": "When was Terlora Frame launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N907",
+          "canonical_name": "Terlora Frame",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N907",
+        "source_id": "v9-source-N907",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The launch claim for Terlora Frame is denied. Terlora Frame has been launched on 10 May 2486."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N908",
+      "category": "conditional_actor_introduced_object",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N908",
+        "target_question": "When was Orvella Slate launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N908",
+          "canonical_name": "Orvella Slate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N908",
+        "source_id": "v9-source-N908",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "If the agreement was approved, Halnora Labs introduced Orvella Slate on 11 May 2487."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N909",
+      "category": "passive_rollout_question",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N909",
+        "target_question": "When was Erlora Relay launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N909",
+          "canonical_name": "Erlora Relay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N909",
+        "source_id": "v9-source-N909",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Was Erlora Relay rolled out on 12 May 2488?"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N910",
+      "category": "unconfirmed_ga_rumor",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N910",
+        "target_question": "When was Zarnora Wheel launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N910",
+          "canonical_name": "Zarnora Wheel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N910",
+        "source_id": "v9-source-N910",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Unconfirmed rumor: Zarnora Wheel entered general availability on 13 May 2489."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N911",
+      "category": "actor_negated_has_made_object",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N911",
+        "target_question": "When was Nelonda Cove launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N911",
+          "canonical_name": "Nelonda Cove",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N911",
+        "source_id": "v9-source-N911",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Virlora Systems has not made Nelonda Cove generally available on 14 May 2490."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N912",
+      "category": "launch_actor_is_not_launched_target",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N912",
+        "target_question": "When was Beronda Studio launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N912",
+          "canonical_name": "Beronda Studio",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N912",
+        "source_id": "v9-source-N912",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Beronda Studio launched Dolvella Desk on 15 May 2491."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N913",
+      "category": "heading_target_other_product_owner",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N913",
+        "target_question": "When was Kerlora Bay launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N913",
+          "canonical_name": "Kerlora Bay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N913",
+        "source_id": "v9-source-N913",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Kerlora Bay release record"
+          },
+          {
+            "kind": "fact",
+            "text": "Telvella Bay was introduced on 16 May 2492."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N914",
+      "category": "named_record_pronoun_predicate",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N914",
+        "target_question": "When was Salnora Pad launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N914",
+          "canonical_name": "Salnora Pad",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N914",
+        "source_id": "v9-source-N914",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The product named by this record is Salnora Pad. It reached GA on 17 May 2493."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N915",
+      "category": "heading_only_affirmative_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N915",
+        "target_question": "When was Caronda Disk launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N915",
+          "canonical_name": "Caronda Disk",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N915",
+        "source_id": "v9-source-N915",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Caronda Disk is now generally available as of 18 May 2494."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Caronda Disk supports offline mode."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N916",
+      "category": "title_only_launch_neutral_metadata",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N916",
+        "target_question": "When was Lernora Scope launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N916",
+          "canonical_name": "Lernora Scope",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N916",
+        "source_id": "v9-source-N916",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Lernora Scope was launched on 19 May 2495."
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Lernora Scope manual format: PDF"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N917",
+      "category": "url_footer_only_launch",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N917",
+        "target_question": "When was Nevlora Reel launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N917",
+          "canonical_name": "Nevlora Reel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N917",
+        "source_id": "v9-source-N917",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/Nevlora-Reel/launched/2496-05-20"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Nevlora Reel was launched on 20 May 2496."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N918",
+      "category": "strike_spans_multiple_release_sentences",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N918",
+        "target_question": "When was Falvella Port launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N918",
+          "canonical_name": "Falvella Port",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N918",
+        "source_id": "v9-source-N918",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Release record. Falvella Port went live on 21 May 2497. The archive includes a guide.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N919",
+      "category": "cross_prefix_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N919",
+        "target_question": "When was Darlora Leaf launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N919",
+          "canonical_name": "Darlora Leaf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N919",
+        "source_id": "v9-source-N919",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "❌ Darlora Leaf reached GA on 22 May 2498."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N920",
+      "category": "not_equal_launch_predicate",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N920",
+        "target_question": "When was Zeronda Dock launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N920",
+          "canonical_name": "Zeronda Dock",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N920",
+        "source_id": "v9-source-N920",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Zeronda Dock ≠ launched on 23 May 2499."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N921",
+      "category": "logical_not_introduced",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N921",
+        "target_question": "When was Rerlora Prism launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N921",
+          "canonical_name": "Rerlora Prism",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N921",
+        "source_id": "v9-source-N921",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "¬ Rerlora Prism was introduced on 24 May 2500."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N922",
+      "category": "ballot_cross_rollout",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N922",
+        "target_question": "When was Moronda Mote launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N922",
+          "canonical_name": "Moronda Mote",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N922",
+        "source_id": "v9-source-N922",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "✗ Moronda Mote was rolled out on 25 May 2501."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N923",
+      "category": "heavy_cross_governing_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N923",
+        "target_question": "When was Peronda Grid launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N923",
+          "canonical_name": "Peronda Grid",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N923",
+        "source_id": "v9-source-N923",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "✘ Peronda Grid launch claim"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Peronda Grid has been launched on 26 May 2502."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N924",
+      "category": "combining_strike_declared_alias_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N924",
+        "target_question": "When was Zorlora Map launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N924",
+          "canonical_name": "Zorlora Map",
+          "aliases": [
+            "ZRMap"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N924",
+        "source_id": "v9-source-N924",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Z̶R̶M̶a̶p̶ e̶n̶t̶e̶r̶e̶d̶ g̶e̶n̶e̶r̶a̶l̶ a̶v̶a̶i̶l̶a̶b̶i̶l̶i̶t̶y̶ o̶n̶ 2̶7̶ M̶a̶y̶ 2̶5̶0̶3̶.̶"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N925",
+      "category": "struck_target_launch_unstruck_features_and_foreign_launch",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v9-bounded-launch-acceptance",
+        "target_id": "v9-target-N925",
+        "target_question": "When was Ternora Field launched?",
+        "entity": {
+          "canonical_id": "v9-canonical-N925",
+          "canonical_name": "Ternora Field",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v9-evidence-N925",
+        "source_id": "v9-source-N925",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ternora Field includes a timer. ~~Ternora Field was launched on 28 May 2504.~~ Saronda Reel was introduced on 29 May 2504."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    }
+  ]
+}
