@@ -1681,7 +1681,11 @@ fn launch_explicit_other_context_v17(statement: &str) -> bool {
                     "release announcement",
                 ]
                 .iter()
-                .any(|scope| folded[index + possessive.len()..].starts_with(scope))
+                .any(|scope| {
+                    folded[index + possessive.len()..]
+                        .strip_prefix(scope)
+                        .is_some_and(|tail| tail.is_empty() || tail.starts_with(' '))
+                })
         })
     });
     possessive_context
@@ -1755,46 +1759,73 @@ fn launch_explicit_nonlaunch_statement_v17(
         return false;
     }
     let feature_tail = |tail: &[&str], prefix: &[&str]| {
-        !prefix.iter().any(|word| {
-            [
-                "fiction",
-                "fictional",
-                "fictitious",
-                "hypothetical",
-                "simulation",
-                "simulated",
-                "counterfactual",
-                "imaginary",
-                "pretend",
-                "mock",
-                "rehearsal",
-            ]
-            .contains(word)
-        }) && matches!(
-            tail,
-            [
-                "supports"
-                    | "support"
-                    | "includes"
-                    | "include"
-                    | "exports"
-                    | "export"
-                    | "costs"
-                    | "cost"
-                    | "offers"
-                    | "offer"
-                    | "stores"
-                    | "store"
-                    | "provides"
-                    | "provide"
-                    | "lasts"
-                    | "last"
-                    | "uses"
-                    | "use"
-                    | "have",
-                ..
-            ] | ["has", "a" | "an", ..]
-        )
+        let governing_possession = matches!(tail, ["has", "a" | "an", ..])
+            && tail.iter().any(|word| {
+                [
+                    "claim",
+                    "claims",
+                    "statement",
+                    "statements",
+                    "assertion",
+                    "assertions",
+                    "announcement",
+                    "report",
+                    "record",
+                    "records",
+                    "account",
+                    "story",
+                    "scenario",
+                    "example",
+                    "passage",
+                    "description",
+                    "history",
+                    "chronology",
+                    "timeline",
+                ]
+                .contains(word)
+            });
+        !governing_possession
+            && !prefix.iter().any(|word| {
+                [
+                    "fiction",
+                    "fictional",
+                    "fictitious",
+                    "hypothetical",
+                    "simulation",
+                    "simulated",
+                    "counterfactual",
+                    "imaginary",
+                    "pretend",
+                    "mock",
+                    "rehearsal",
+                ]
+                .contains(word)
+            })
+            && matches!(
+                tail,
+                [
+                    "supports"
+                        | "support"
+                        | "includes"
+                        | "include"
+                        | "exports"
+                        | "export"
+                        | "costs"
+                        | "cost"
+                        | "offers"
+                        | "offer"
+                        | "stores"
+                        | "store"
+                        | "provides"
+                        | "provide"
+                        | "lasts"
+                        | "last"
+                        | "uses"
+                        | "use"
+                        | "have",
+                    ..
+                ] | ["has", "a" | "an", ..]
+            )
     };
     // A clear feature predicate keeps fictional characters/false alarms in its
     // object from becoming a disclaimer about a separate launch statement.

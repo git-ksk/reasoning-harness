@@ -389,6 +389,7 @@ fn post_v6_development_controls_and_generic_documentary_disclaimers() {
     }
     check(vec![
         json!({"id":"property-is-launch","signals":[{"kind":"excerpt","text":"Silver Lens has a fictional launch date. Silver Lens was launched in 2026."}],"expected_relevant":false}),
+        json!({"id":"possession-is-claim","signals":[{"kind":"excerpt","text":"Silver Lens has a false claim. Silver Lens was launched in 2026."}],"expected_relevant":false}),
     ]);
 }
 
