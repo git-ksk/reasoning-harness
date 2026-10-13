@@ -1427,6 +1427,11 @@ fn target_owned_launch_frame_with_predicates(
                                 && (!require_direct_subject
                                     || *predicate != ["launched"]
                                     || intransitive_launch_tail_v17(&tail[distance + 1..]))
+                                // New transition frames belong only to the v17
+                                // direct-subject path; historical callers use false.
+                                && (!require_direct_subject
+                                    || !matches!(*predicate, ["entered", "general", "availability"] | ["reached", "ga"])
+                                    || intransitive_launch_tail_v17(&tail[distance + predicate.len()..]))
                                 && (!require_direct_subject
                                     || *predicate != ["is", "generally", "available"]
                                     || made_available_tail_v17(&tail[distance + predicate.len()..]))
@@ -1662,6 +1667,45 @@ fn launch_explicit_other_subject_v17(
     })
 }
 
+fn launch_adverse_context_word_v17(word: &str) -> bool {
+    [
+        "false",
+        "falsehood",
+        "untrue",
+        "incorrect",
+        "fabricated",
+        "debunked",
+        "refuted",
+        "rejected",
+        "retracted",
+        "retraction",
+        "withdrawn",
+        "withdrew",
+        "denied",
+        "denial",
+        "fiction",
+        "fictional",
+        "fictitious",
+        "hypothetical",
+        "counterfactual",
+        "simulation",
+        "simulated",
+        "imaginary",
+        "pretend",
+        "mock",
+        "rehearsal",
+        "unverified",
+        "unconfirmed",
+        "disavowed",
+        "recanted",
+        "inaccurate",
+        "rescinded",
+        "cancelled",
+        "canceled",
+    ]
+    .contains(&word)
+}
+
 fn launch_governing_context_blocks_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -1695,6 +1739,8 @@ fn launch_governing_context_blocks_v17(
                     "example",
                     "scenario",
                     "material",
+                    "story",
+                    "report",
                 ]
                 .contains(word)
             });
@@ -1709,35 +1755,7 @@ fn launch_governing_context_blocks_v17(
                 {
                     return false;
                 }
-                [
-                    "false",
-                    "falsehood",
-                    "untrue",
-                    "incorrect",
-                    "fabricated",
-                    "debunked",
-                    "refuted",
-                    "rejected",
-                    "retracted",
-                    "retraction",
-                    "withdrawn",
-                    "denied",
-                    "denial",
-                    "fiction",
-                    "fictional",
-                    "fictitious",
-                    "hypothetical",
-                    "counterfactual",
-                    "simulation",
-                    "simulated",
-                    "imaginary",
-                    "pretend",
-                    "mock",
-                    "rehearsal",
-                    "unverified",
-                    "unconfirmed",
-                ]
-                .contains(word)
+                launch_adverse_context_word_v17(word)
             });
             if owns_target
                 && (segment.denied
@@ -1775,16 +1793,37 @@ fn launch_governing_context_blocks_v17(
                     "scenario",
                     "simulation",
                     "material",
+                    "story",
+                    "report",
                 ]
                 .contains(&word)
             });
-            if !owns_target && context_subject && launch_explicit_other_context_v17(&segment.raw) {
+            let reporting_reference = scope
+                && words.windows(2).any(|pair| {
+                    matches!(
+                        pair,
+                        [
+                            "retracted"
+                                | "withdrew"
+                                | "withdrawn"
+                                | "denied"
+                                | "refuted"
+                                | "rescinded",
+                            "this" | "that" | "the" | "previous" | "preceding"
+                        ]
+                    )
+                });
+            if !owns_target
+                && (context_subject || reporting_reference)
+                && launch_explicit_other_context_v17(&segment.raw)
+            {
                 continue;
             }
             let reference = matches!(
                 words.as_slice(),
                 ["this" | "that" | "it", "is" | "was" | "has", ..]
             ) || context_subject
+                || reporting_reference
                 || matches!(
                     words.as_slice(),
                     ["the", "following" | "preceding" | "previous" | "next", ..]
@@ -1792,8 +1831,11 @@ fn launch_governing_context_blocks_v17(
             let global = matches!(words.as_slice(), ["in", "this" | "the", ..])
                 || matches!(
                     words.first(),
-                    Some(&"retracted" | &"fictional" | &"hypothetical" | &"simulation")
-                );
+                    Some(&"fictional" | &"hypothetical" | &"simulation")
+                )
+                || words.first().is_some_and(|word| {
+                    launch_adverse_context_word_v17(word) && (scope || launch || words.len() == 1)
+                });
             let marker_only = words.is_empty() && segment.denied;
             let denied_context = adverse
                 || (context_subject
@@ -1855,7 +1897,13 @@ fn target_owned_launch_fact_v17(
                 let month_may = *word == "may"
                     && (index == 0
                         || ["on", "in", "since", "during", "from"].contains(&tokens[index - 1])
-                        || (index >= 2 && tokens[index - 2..index] == ["as", "of"]))
+                        || (index >= 2 && tokens[index - 2..index] == ["as", "of"])
+                        || (index >= 2
+                            && ["on", "in", "since", "during", "from"]
+                                .contains(&tokens[index - 2])
+                            && tokens[index - 1]
+                                .parse::<u32>()
+                                .is_ok_and(|day| (1..=31).contains(&day))))
                     && tokens.get(index + 1).is_some_and(|next| {
                         next.parse::<u32>()
                             .is_ok_and(|number| (1..=9999).contains(&number))
@@ -1965,6 +2013,8 @@ fn target_owned_launch_fact_v17(
                         &["launched"],
                         &["was", "launched"],
                         &["has", "been", "launched"],
+                        &["entered", "general", "availability"],
+                        &["reached", "ga"],
                         &["is", "generally", "available"],
                         &["is", "now", "generally", "available"],
                         &["became", "generally", "available"],

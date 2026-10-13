@@ -190,6 +190,32 @@ fn explicit_other_target_context_and_neutral_false_alarm_description() {
 }
 
 #[test]
+fn post_v1_development_controls_preserve_factual_signal_floor() {
+    // v1's original RED observation/expectations remain immutable. Once seen,
+    // these are development controls, with P04's heading-only expectation
+    // corrected here explicitly, never rescored as independent acceptance.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../fixtures/launch-520-521-independent-v1/corpus.json"
+    ))
+    .unwrap();
+    check(corpus["cases"].as_array().unwrap().iter().map(|case| json!({
+        "id":case["case_id"],"entity":case["policy"]["entity"]["canonical_name"],
+        "aliases":case["policy"]["entity"]["aliases"],"signals":case["candidate"]["signals"],
+        "expected_relevant":case["label"]=="positive" && case["case_id"]!="P04"
+    })).collect());
+    check([
+        "If Silver Lens entered general availability, customers could sign up.",
+        "Silver Lens has not reached GA.",
+        "Silver Lens reached GA according to an unverified rumor.",
+        "Silver Lens reached GA?",
+        "Maple Queue reached GA while Silver Lens remains in preview.",
+        "Documentation for Silver Lens entered general availability.",
+        "Silver Lens reached GA metrics for another product.",
+        "Silver Lens entered general availability equipment markets.",
+    ].into_iter().map(|text|json!({"id":text,"signals":[{"kind":"excerpt","text":text}],"expected_relevant":false})).collect());
+}
+
+#[test]
 fn historical_v29_dispositions_remain_unchanged_for_original_audit() {
     let rows: Vec<Value> =
         include_str!("../../../evaluation/engine-0.7.1-rereview-20261013/results.jsonl")

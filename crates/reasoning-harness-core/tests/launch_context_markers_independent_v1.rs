@@ -12,7 +12,10 @@ use std::path::Path;
 use std::process::Command;
 
 fn create_json(path: &Path, value: &Value) {
-    let mut file = OpenOptions::new().write(true).create_new(true).open(path)
+    let mut file = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(path)
         .unwrap_or_else(|err| panic!("refusing to replace evidence {}: {err}", path.display()));
     serde_json::to_writer_pretty(&mut file, value).unwrap();
     file.write_all(b"\n").unwrap();
@@ -21,41 +24,72 @@ fn create_json(path: &Path, value: &Value) {
 
 fn source_hash(root: &Path) -> String {
     let output = Command::new("shasum")
-        .args(["-a", "256", "crates/reasoning-harness-core/src/evidence_relevance.rs"])
-        .current_dir(root).output().expect("source hash command");
+        .args([
+            "-a",
+            "256",
+            "crates/reasoning-harness-core/src/evidence_relevance.rs",
+        ])
+        .current_dir(root)
+        .output()
+        .expect("source hash command");
     assert!(output.status.success());
-    String::from_utf8(output.stdout).unwrap().split_whitespace().next().unwrap().to_owned()
+    String::from_utf8(output.stdout)
+        .unwrap()
+        .split_whitespace()
+        .next()
+        .unwrap()
+        .to_owned()
 }
 
 #[test]
 #[ignore = "Historical v1 first observation is RED; do not rerun/rescore or overwrite it"]
 fn fresh_independent_launch_context_markers_first_observation() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap();
     let corpus: Value = serde_json::from_str(include_str!(
         "../../../fixtures/launch-520-521-independent-v1/corpus.json"
-    )).unwrap();
+    ))
+    .unwrap();
     let manifest: Value = serde_json::from_str(include_str!(
         "../../../fixtures/launch-520-521-independent-v1/manifest.json"
-    )).unwrap();
+    ))
+    .unwrap();
     let out = root.join("evaluation/launch-520-521-independent-v1");
     fs::create_dir_all(&out).unwrap();
     let before_hash = source_hash(root);
-    assert_eq!(before_hash, corpus["candidate_source_sha256"].as_str().unwrap(), "fixed source changed before test");
-    let head = Command::new("git").args(["rev-parse", "HEAD"]).current_dir(root).output().unwrap();
+    assert_eq!(
+        before_hash,
+        corpus["candidate_source_sha256"].as_str().unwrap(),
+        "fixed source changed before test"
+    );
+    let head = Command::new("git")
+        .args(["rev-parse", "HEAD"])
+        .current_dir(root)
+        .output()
+        .unwrap();
     assert!(head.status.success());
-    create_json(&out.join("first-run-start.json"), &json!({
-        "run_identity": "first-api-execution-only",
-        "author_identity": corpus["author_identity"],
-        "candidate_commit": corpus["candidate_commit"],
-        "candidate_source_sha256": before_hash,
-        "corpus_sha256": manifest["corpus_sha256"],
-        "checkout_head": String::from_utf8(head.stdout).unwrap().trim(),
-        "offline_synthetic": true,
-        "live_provider_acceptance": false,
-        "external_hard_truth_evaluation": false,
-    }));
-    let mut observations = OpenOptions::new().write(true).create_new(true)
-        .open(out.join("first-observations.jsonl")).expect("first observations must be new");
+    create_json(
+        &out.join("first-run-start.json"),
+        &json!({
+            "run_identity": "first-api-execution-only",
+            "author_identity": corpus["author_identity"],
+            "candidate_commit": corpus["candidate_commit"],
+            "candidate_source_sha256": before_hash,
+            "corpus_sha256": manifest["corpus_sha256"],
+            "checkout_head": String::from_utf8(head.stdout).unwrap().trim(),
+            "offline_synthetic": true,
+            "live_provider_acceptance": false,
+            "external_hard_truth_evaluation": false,
+        }),
+    );
+    let mut observations = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(out.join("first-observations.jsonl"))
+        .expect("first observations must be new");
     let mut positive_total = 0usize;
     let mut negative_total = 0usize;
     let mut positive_misses = Vec::new();
@@ -65,16 +99,22 @@ fn fresh_independent_launch_context_markers_first_observation() {
     let mut all_failures = Vec::new();
     for case in corpus["cases"].as_array().unwrap() {
         let id = case["case_id"].as_str().unwrap();
-        let policy: EvidenceRelevanceTargetPolicy = serde_json::from_value(case["policy"].clone()).unwrap();
-        let candidate: EvidenceRelevanceCandidate = serde_json::from_value(case["candidate"].clone()).unwrap();
-        let proposal: EvidenceRelevanceBindingProposal = serde_json::from_value(case["proposal"].clone()).unwrap();
-        let raw: EvidenceLocalQualificationV6 = serde_json::from_value(case["raw"].clone()).unwrap();
+        let policy: EvidenceRelevanceTargetPolicy =
+            serde_json::from_value(case["policy"].clone()).unwrap();
+        let candidate: EvidenceRelevanceCandidate =
+            serde_json::from_value(case["candidate"].clone()).unwrap();
+        let proposal: EvidenceRelevanceBindingProposal =
+            serde_json::from_value(case["proposal"].clone()).unwrap();
+        let raw: EvidenceLocalQualificationV6 =
+            serde_json::from_value(case["raw"].clone()).unwrap();
         let effective_result = derive_effective_evidence_local_qualification_v17(
-            &policy, &candidate, Some(&proposal), Some(&raw),
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
         );
-        let assessment_result = materialize_evidence_relevance_v30(
-            &policy, &candidate, Some(&proposal), Some(&raw),
-        );
+        let assessment_result =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw));
         let (effective, effective_error) = match effective_result {
             Ok(value) => (serde_json::to_value(value).unwrap(), Value::Null),
             Err(err) => (Value::Null, json!(format!("{err:?}"))),
@@ -87,17 +127,31 @@ fn fresh_independent_launch_context_markers_first_observation() {
         let relevant = assessment["disposition"] == "relevant";
         let positive = case["label"] == "positive";
         let error = !effective_error.is_null() || !assessment_error.is_null();
-        let passed = if positive { requested && relevant && !error } else { !requested && !relevant && !error };
+        let passed = if positive {
+            requested && relevant && !error
+        } else {
+            !requested && !relevant && !error
+        };
         if positive {
             positive_total += 1;
-            if !passed { positive_misses.push(id.to_owned()); }
+            if !passed {
+                positive_misses.push(id.to_owned());
+            }
         } else {
             negative_total += 1;
-            if requested { negative_requested_relation.push(id.to_owned()); }
-            if relevant { false_relevant.push(id.to_owned()); }
+            if requested {
+                negative_requested_relation.push(id.to_owned());
+            }
+            if relevant {
+                false_relevant.push(id.to_owned());
+            }
         }
-        if error { api_errors.push(id.to_owned()); }
-        if !passed { all_failures.push(id.to_owned()); }
+        if error {
+            api_errors.push(id.to_owned());
+        }
+        if !passed {
+            all_failures.push(id.to_owned());
+        }
         let observation = json!({
             "case_id": id,
             "input": case,
@@ -112,8 +166,12 @@ fn fresh_independent_launch_context_markers_first_observation() {
         serde_json::to_writer(&mut observations, &observation).unwrap();
         observations.write_all(b"\n").unwrap();
         observations.flush().unwrap();
-        println!("CASE {id}: {} relation={} disposition={}", if passed { "PASS" } else { "FAIL" },
-            effective["relation_scope"], assessment["disposition"]);
+        println!(
+            "CASE {id}: {} relation={} disposition={}",
+            if passed { "PASS" } else { "FAIL" },
+            effective["relation_scope"],
+            assessment["disposition"]
+        );
     }
     observations.sync_all().unwrap();
     let after_hash = source_hash(root);
@@ -142,5 +200,9 @@ fn fresh_independent_launch_context_markers_first_observation() {
     create_json(&out.join("first-summary.json"), &summary);
     println!("{}", serde_json::to_string_pretty(&summary).unwrap());
     assert!(unchanged, "candidate source changed while evaluating");
-    assert!(all_failures.is_empty(), "independent first-observation failures: {}", all_failures.join(", "));
+    assert!(
+        all_failures.is_empty(),
+        "independent first-observation failures: {}",
+        all_failures.join(", ")
+    );
 }
