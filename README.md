@@ -365,7 +365,7 @@ From the next product line onward:
 
 The published split CLI line remains **Reason CLI 0.5.4 on Harness Engine 0.6.1**. The independent source Engine was adopted under a separate CLI release; `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0. Earlier CLI artifacts, including `reason-v0.5.2` on Engine 0.4.2, remain immutable.
 
-See [versioning](docs/versioning.md), the [Reason CLI 0.5.0 roadmap](docs/reason-cli-0.5-roadmap.md), and the [planned Engine 0.7.0 roadmap](docs/engine-0.7.0-roadmap.md) (not implemented or released).
+The independent Engine source patch is [Harness Engine 0.7.1](docs/engine-0.7.1-release.md), including the merged #512/#514/#515 corrections. It does not change published CLI binaries. See [versioning](docs/versioning.md), the [Reason CLI roadmap](docs/reason-cli-0.5-roadmap.md), and the [Engine 0.7 scope and deferred work](docs/engine-0.7.0-roadmap.md).
 
 ## Documentation
 

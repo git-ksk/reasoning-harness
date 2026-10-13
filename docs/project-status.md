@@ -8,11 +8,11 @@ For the preserved long-form provenance ledger, see [Project status history](proj
 
 ## Current release
 
-**Reason CLI 0.5.4 on Harness Engine 0.6.1** is the current published CLI preview; previous `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0. **Harness Engine 0.6.1** is the latest independent source release under `engine-v0.6.1`; Reason CLI 0.5.4 has separately adopted that released Engine.
+**Reason CLI 0.5.4 on Harness Engine 0.6.1** is the current published CLI preview; previous `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0. **Harness Engine 0.7.1** is the independent Engine source patch under `engine-v0.7.1`; Reason CLI 0.5.4 continues to distribute Engine 0.6.1. See [0.7.1 release notes](engine-0.7.1-release.md).
 
 ```text
 Published CLI: Reason CLI 0.5.4 / Harness Engine 0.6.1
-Latest Engine source release: Harness Engine 0.6.1 (`engine-v0.6.1`)
+Latest Engine source release: Harness Engine 0.7.1 (`engine-v0.7.1`)
 ```
 
 `v0.4.2` remains the immutable final release where the CLI and Engine shared one SemVer coordinate. `reason-v0.5.0` shipped the first split general-use CLI, followed by the 0.5.1/0.5.2 patch line on Engine 0.4.2. `reason-v0.5.3` then adopted the independently accepted Engine 0.5.0 under a new CLI coordinate.
@@ -65,7 +65,7 @@ The detailed acceptance plan is in the [Reason CLI 0.5.0 roadmap](reason-cli-0.5
 
 Reason CLI 0.5.4 adopts independently released Harness Engine 0.6.1 under #484, with separate signed four-platform native artifacts and explicit Engine-change consent on 0.5.3 -> 0.5.4 upgrade and reverse rollback. Existing 0.5.3 binaries remain unchanged on Engine 0.5.0.
 
-## Current Engine patch: Harness Engine 0.6.1
+## Previous Engine patch: Harness Engine 0.6.1
 
 The source-only `engine-v0.6.1` release fixes target-owned positive ChangeOrLaunch authority in v17/v30. The original independent v1 FAIL is preserved; separate v2 deterministic acceptance passed 30/30, and Mistral/Google/Groq live acceptance passed 12/12 each (wrong-target Relevant 0, utility miss 0, provider failure 0; [run 37935245178](https://github.com/git-ksk/reasoning-harness/actions/runs/37935245178)). Release PR #482 passed 23/23 CI checks. Frozen MCP v1 retains its stdin-write limitation; supported v2/v3 successors are deadline-bounded. CLI 0.5.4 now distributes Engine 0.6.1; the older CLI 0.5.3 still contains Engine 0.5.0. See [release notes](engine-0.6.1-release.md).
 
@@ -79,13 +79,13 @@ Independent frozen acceptance completed before promotion: #461 holdout run `3596
 
 `engine-v0.6.0` is an independent Engine source release. Published `reason-v0.5.3` binaries remain immutable on Engine 0.5.0; the separate CLI 0.5.4 release has since adopted Engine 0.6.1. See [Engine 0.6.0 release notes](engine-0.6.0-release.md), [Product, engine, and contract versioning](versioning.md), and the [product roadmap](product-roadmap.md).
 
-## Planned Engine 0.7.0 — not yet released
+## Engine 0.7 source releases and deferred work
 
-[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) / [Engine 0.7.0 detailed roadmap](engine-0.7.0-roadmap.md) begin with a frozen Engine 0.6.1 cross-source residual baseline. The [development baseline v1 result](engine-0.7-baseline-v1-result.md) reproduced 29/29 precommitted behavior predictions and one conservative equivalent-wording Conflict without claiming an unsafe hard verdict. Conditional workstreams cover trusted provenance lineage, explicit temporal revision relationships, conflict-preserving source synthesis, and target-local answerability. None is promoted into the released Engine until measurable benefit, separate fresh independent acceptance, and exact-head release gates pass. Existing Engine and CLI versions remain unchanged.
+[Engine 0.7.0](engine-0.7.0-release.md) shipped the opt-in host-reviewed source reconciliation and target-local attributed presentation from #490, with frozen independent fictional-source evidence. The reviewer host remains a development tool; its same-user automated keyring E2E is not independently authenticated human consent.
 
-**#496 reviewer host candidate:** [Local interactive OS-keyring approval](engine-0.7-local-reviewer-v1.md) is in source form with 18/18 synthetic development controls. It is not a universal identity provider, automatic model review, published CLI change, or independently accepted Engine release. Actual OS-keyring user acceptance remains outstanding.
+[Engine 0.7.1](engine-0.7.1-release.md) packages merged #512/#514/#515 successor v17/v30 corrections. Historical v16/v29 and frozen evaluation results remain unchanged. Patch-specific evidence is deterministic and synthetic; no new live-provider or real-user acceptance is claimed.
 
-**#490 development candidate:** [Source reconciliation overlay](engine-0.7-source-reconciliation-v1.md) is additive, host-review-gated, and deterministically tested. Original persisted v1 conflicts, citations and verification remain unchanged; neither CLI integration nor independent provider acceptance has happened.
+[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) and #486 stay open only for explicitly deferred #488 source lineage, #489 trusted supersession and #491 extra answerability/reacquisition. These require measured use cases and separate acceptance before adoption. CLI 0.5.5 / Engine 0.6.1 maintenance remains separate under #506 and awaits physical Windows acceptance.
 
 ## Current trust boundary
 

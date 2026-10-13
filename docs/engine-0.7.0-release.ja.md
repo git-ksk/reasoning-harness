@@ -1,5 +1,7 @@
 # Harness Engine 0.7.0 — 独立ソースリリース候補
 
+> 現在の状況：Engine 0.7.0は2026-10-10に公開済みです。#512/#514/#515を含むソースパッチは[Engine 0.7.1](engine-0.7.1-release.ja.md)です。#488/#489/#491は明示的に保留しています。以下の計画・候補表記は公開前の記録で、0.7.0の最終座標は[公開済みRelease](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.0)を参照してください。
+
 **状態：レビュー中。正式な `engine-v0.7.0` タグ・GitHub ReleaseはCIとリリースゲートの最終確認後にのみ作成。**
 
 ## 配布座標

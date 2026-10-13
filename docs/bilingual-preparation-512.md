@@ -1,5 +1,7 @@
 # Bounded bilingual preparation relevance (#512 / PR #513)
 
+These corrections are included in the [Engine 0.7.1 source patch](engine-0.7.1-release.md). The validation below distinguishes earlier review from the final deterministic follow-up; published CLI adoption remains separate.
+
 This is an unreleased Engine source correction on top of #514/#515. Package
 versions, release tags, Cargo.lock and original provider archives are unchanged.
 

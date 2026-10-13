@@ -14,7 +14,7 @@ Published split CLI:
   Harness Engine 0.6.1
 
 Latest independent Engine source release:
-  Harness Engine 0.6.1 (`engine-v0.6.1`)
+  Harness Engine 0.7.1 (`engine-v0.7.1`)
 
 Latest completed integration:
   Reason CLI 0.5.4 -> Harness Engine 0.6.1 (#484)
@@ -141,28 +141,17 @@ The Engine 0.6.0 milestone and `engine-v0.6.0` release are closed and immutable.
 - **#477 legacy MCP timeout:** preserve the historically frozen v1 adapter and mitigate its unbounded stdin-write limitation by steering supported integrations to the already deadline-bounded v2/v3 successors; add a reproducible v2 blocked-stdin regression. This provider safety follow-up is included in the 0.6.1 **source release** scope. The v1 limitation itself remains a documented migration concern.
 - **#465 CI fixture reliability:** the intermittent legacy MCP subprocess transport test remains tracked separately from semantic correctness and frozen evaluation.
 - **#467 / #470 dependency maintenance:** routine Cargo dependency updates are independent of the Engine semantic acceptance record.
-- **Next Engine source release (planned 0.7.0):** follow Track E and the separately frozen #487 baseline / #492 acceptance; preserve all historical freeze tags, outcomes and releases. The CLI adoption decision and distribution remain separate.
+- **Engine 0.7 source line:** 0.7.0 shipped the accepted source-reconciliation scope; 0.7.1 packages merged #512/#514/#515 corrections. Published CLI adoption remains separate.
 
-## Track E — Harness Engine 0.7.0: evidence reconciliation (PLANNED, not released)
+## Track E — Harness Engine 0.7: released source scope and deferred hypotheses
 
-**[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) · [Epic #486](https://github.com/git-ksk/reasoning-harness/issues/486) · [Detailed roadmap](engine-0.7.0-roadmap.md).** Current published Engine remains **0.6.1**.
+[Engine 0.7.0](engine-0.7.0-release.md) shipped #490 opt-in host-reviewed target-local attributed presentation after #487 baseline, #496 reviewer-host controls and #492 frozen independent fictional-source acceptance. The original Conflict, claims and citations remain intact; model advice cannot authorize a review or establish external truth. Same-user automated keyring E2E is not independently authenticated human approval.
 
-Engine 0.6.1 already has temporal/scope/authority qualification, structured-fact conflict withholding, target-local evidence need, exact source attribution and advisory sufficiency. The **hypothesis** for 0.7.0 is that verified multi-source lineage, temporal revision handling, conflict-safe synthesis and target-level answerability could recover more useful responses *without unsupported truth promotion*. These are not confirmed gaps yet.
+[Engine 0.7.1](engine-0.7.1-release.md) packages the merged #512 bilingual preparation and #514/#515 launch-frame corrections, preserving historical v16/v29, frozen observations and machine contracts. Its patch evidence and limits are documented separately from 0.7.0's provider observation.
 
-1. **P0 [#487](https://github.com/git-ksk/reasoning-harness/issues/487):** **Development baseline measured:** [frozen 0.6.1 v1 result](engine-0.7-baseline-v1-result.md), 29/29 precommitted predictions, 2/2 tests; one observed conservative paraphrase conflict. Release/independent acceptance remains pending.
-2. **P1 [#488](https://github.com/git-ksk/reasoning-harness/issues/488):** If justified, distinguish independent originating evidence from duplicated/unknown source lineage without inventing provenance.
-3. **P1 [#489](https://github.com/git-ksk/reasoning-harness/issues/489):** If justified, reconcile explicit source revisions with as-of/validity windows without newest-wins heuristics.
-4. **P1 [#490](https://github.com/git-ksk/reasoning-harness/issues/490):** If justified, distinguish compatible attribution from disagreement; preserve every material conflict, citation and authority ceiling.
-**#496 development host workflow:** [Interactive local OS-keyring approval](engine-0.7-local-reviewer-v1.md) now has signed review + replay gates and pre-frozen 18-case deterministic results. Physical human approval and measured live/independent value remain pending; no released CLI adoption or Engine 0.7.0 tag.
+[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) / [parent #486](https://github.com/git-ksk/reasoning-harness/issues/486) remain open for explicitly deferred [#488 source lineage](https://github.com/git-ksk/reasoning-harness/issues/488), [#489 trusted revision supersession](https://github.com/git-ksk/reasoning-harness/issues/489) and [#491 additional answerability/reacquisition](https://github.com/git-ksk/reasoning-harness/issues/491). No concrete supported product failure requiring these new mechanisms was established; demonstrate a measured use case and freeze separate acceptance before implementation. They do not block the narrow source patches.
 
-**#490 development status:** [Trusted host-review overlay candidate](engine-0.7-source-reconciliation-v1.md) passes frozen 22-case deterministic development controls, without changing released Engine semantics. Independent live quality and CLI utility have not yet been demonstrated.
-
-5. **P1 [#491](https://github.com/git-ksk/reasoning-harness/issues/491):** If justified, gate source-qualified answers vs bounded acquisition/withholding against target-local required information.
-6. **P0 [#492](https://github.com/git-ksk/reasoning-harness/issues/492):** Freeze candidate and evaluation runner, then write a fresh independent holdout and require deterministic plus separate Mistral/Google/Groq acceptance and exact-head CI before any source tag.
-
-**Required zero-failure gates:** unsupported `Known`/`Supported`, invented independent sources/citations, wrong-target/scope/as-of authority, unproven source supersession, erased material conflict, and replayed external side effects. Product-utility and cost thresholds are fixed from #487 **before** independent evaluation. Incompatible machine or session contracts need explicitly new identities and compatibility tests.
-
-This is an **Engine-only roadmap**. Do not update an existing CLI 0.5.4 binary, release a new CLI tag, or alter historical Engine evaluations as part of this planning milestone. Unsupported feature hypotheses may be dropped after baseline measurement.
+CLI 0.5.4 / Engine 0.6.1 remains the published product pair; #506's isolated CLI 0.5.5 / Engine 0.6.1 candidate awaits physical Windows acceptance. Engine 0.7 CLI adoption is a separate release decision.
 
 ## Promotion rule
 
