@@ -1,5 +1,7 @@
 # Harness Engine 0.7.0 — 複数根拠の整合と回答充足性
 
+> 現在の状況：Engine 0.7.0は2026-10-10に公開済みです。#512/#514/#515を含むソースパッチは[Engine 0.7.1](engine-0.7.1-release.ja.md)です。#488/#489/#491は明示的に保留しています。以下の計画・候補表記は公開前の記録で、0.7.0の最終座標は[公開済みRelease](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.0)を参照してください。
+
 日本語 | [English](engine-0.7.0-roadmap.md)
 
 **状態: 計画策定済み。未実装・未リリース。** [マイルストーン #10](https://github.com/git-ksk/reasoning-harness/milestone/10) · [親Issue #486](https://github.com/git-ksk/reasoning-harness/issues/486)

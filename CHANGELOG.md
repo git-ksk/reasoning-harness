@@ -4,12 +4,18 @@ All notable product-facing changes to the `reason` CLI are recorded here. Resear
 
 The project follows semantic versioning for the executable, with the usual v0.x caveat that product interfaces are still being hardened. Machine-readable contract identities provide a stricter compatibility boundary than the executable version alone.
 
-## Harness Engine [0.7.0] - Release candidate
+## Harness Engine [0.7.1] - 2026-10-13
+
+- #514 / #515: recover target-owned affirmative launch frames with bounded decimal versions and dotted names, preserving negative, ownership, identity and scope guards.
+- #512: bounded Japanese/English AWS Lambda preparation recovery with original punctuation and documentary-context safety checks.
+- Engine-only source patch; historical v16/v29, frozen observations and published CLI 0.5.4 / Engine 0.6.1 artifacts remain unchanged. #488 / #489 / #491 remain deferred. See [release notes](docs/engine-0.7.1-release.md) for validation and limits.
+
+## Harness Engine [0.7.0] - 2026-10-10
 
 - #490: additive opt-in, host-reviewed target-local compatible source presentation while retaining original Conflict, quotations and citations. No automatic published CLI adoption.
 - Frozen independent fictional-source holdout: Mistral +3 / Google +6 / Groq +6 attributed compatible targets; zero hard gate violations and zero provider failures. First results archived immutably.
 - #488 / #489 / #491 additional mechanisms deferred pending a measured product requirement.
-- Engine-only source release; published Reason CLI 0.5.4 / Engine 0.6.1 unchanged. See [release candidate](docs/engine-0.7.0-release.md).
+- Engine-only source release; published Reason CLI 0.5.4 / Engine 0.6.1 unchanged. See [release notes](docs/engine-0.7.0-release.md).
 
 ## [Unreleased]
 

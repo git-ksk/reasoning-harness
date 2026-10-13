@@ -1,8 +1,6 @@
 # Successor launch-source qualification fixes (#514 / #515)
 
-This is an unreleased source candidate after Engine 0.7.0. Published Engine and
-CLI tags, package versions, frozen corpora, and provider observation archives are
-unchanged. An independently reviewed successor release remains a separate gate.
+These corrections are included in the [Engine 0.7.1 source patch](engine-0.7.1-release.md). The development history below predates that release. Historical published Engine/CLI tags, frozen corpora and provider observation archives remain unchanged; CLI adoption is separate.
 
 ## Reproduction and behavior
 

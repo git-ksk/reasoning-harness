@@ -8,11 +8,11 @@
 
 ## 現在のリリース
 
-現在公開済みのsplit CLI previewは **Reason CLI 0.5.4 / Harness Engine 0.6.1** です。従来の0.5.3 / Engine 0.5.0を変更しません。**Harness Engine 0.6.1** を`engine-v0.6.1`として独立source releaseしました。CLI 0.5.4への採用は独立した別リリースとして完了済みです。
+現在公開済みのsplit CLI previewは **Reason CLI 0.5.4 / Harness Engine 0.6.1** です。従来の0.5.3 / Engine 0.5.0を変更しません。独立Engineソースパッチは **Harness Engine 0.7.1**（`engine-v0.7.1`）です。CLI 0.5.4はEngine 0.6.1を継続します。[0.7.1リリースノート](engine-0.7.1-release.ja.md)を参照してください。
 
 ```text
 公開済みCLI: Reason CLI 0.5.4 / Harness Engine 0.6.1
-最新Engine source release: Harness Engine 0.6.1 (`engine-v0.6.1`)
+最新Engine source release: Harness Engine 0.7.1 (`engine-v0.7.1`)
 ```
 
 `v0.4.2`はCLI / Engineが同じSemVerを共有したimmutableな最後のunified releaseです。`reason-v0.5.0`で最初のsplit general-use CLIをreleaseし、0.5.1 / 0.5.2 patch lineはEngine 0.4.2で進めました。`reason-v0.5.3`では独立acceptance済みのEngine 0.5.0を新しいCLI coordinateでadoptしました。
@@ -65,7 +65,7 @@ Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapter�
 
 CLI 0.5.4は#484で独立release済みEngine 0.6.1を採用しました。各OSの署名付きnative配布とEngine-changeの明示許可を維持し、公開済み0.5.3のEngine 0.5.0は不変です。
 
-## 最新Engineパッチ: Harness Engine 0.6.1
+## 以前のEngineパッチ: Harness Engine 0.6.1
 
 `engine-v0.6.1`はv17/v30のlaunch関連性判定で別対象・条件・否定・疑問・架空・未検証の記述からの誤昇格を防ぎます。歴史的なfreeze評価は変更しません。独立v2は30/30、Mistral・Google・Groqのlive acceptanceは各12/12 PASS（誤Relevant 0、utility miss 0、provider failure 0、[run 37935245178](https://github.com/git-ksk/reasoning-harness/actions/runs/37935245178)）。リリースPR #482は23/23 CI PASS。旧MCP v1のstdin-write制限は残り、v2/v3への移行が必要です。公開済みCLI 0.5.4はEngine 0.6.1を搭載し、旧0.5.3はEngine 0.5.0を保持します。[0.6.1リリースノート](engine-0.6.1-release.ja.md)を参照してください。
 
@@ -79,13 +79,13 @@ promotion前に独立freeze済みacceptanceを完了しています。#461 holdo
 
 `engine-v0.6.0`は独立Engine source releaseです。公開済み`reason-v0.5.3` binaryはEngine 0.5.0のままimmutableで、その後CLI 0.5.4がEngine 0.6.1を別releaseで採用しました。[Engine 0.6.0 release notes](engine-0.6.0-release.ja.md)、[バージョニング](versioning.ja.md)、[製品ロードマップ](product-roadmap.ja.md)を参照してください。
 
-## 次期Engine 0.7.0計画 — 未リリース
+## Engine 0.7ソースリリースと保留中の作業
 
-[マイルストーン #10](https://github.com/git-ksk/reasoning-harness/milestone/10) / [詳細ロードマップ](engine-0.7.0-roadmap.ja.md)では、まずEngine 0.6.1の複数ソースに関する実測baselineを固定します。[開発用baseline v1結果](engine-0.7-baseline-v1-result.ja.md)では29/29の事前予測一致と、同義表現が保守的にConflict扱いされる1例を確認していますが、hardな誤判定を発見したとは主張しません。その結果に応じて、出典の系譜、明示改訂時点、矛盾を保つ統合、target別回答充足性を段階的に検証します。改善効果・独立評価・exact-head release gateを満たすまでは未実装候補を公開済みEngineに昇格しません。
+[Engine 0.7.0](engine-0.7.0-release.ja.md)は#490の任意のホスト承認付き出典照合・対象別表示を、固定した独立合成評価とともに公開しました。ローカル承認CLIは開発用です。同じOSユーザーの自動入力によるkeyring E2Eは、独立した人間の承認証明ではありません。
 
-**#496レビュー主体候補：** [ローカルOSキーチェーンと手動承認](engine-0.7-local-reviewer-v1.ja.md)を開発用コードとして追加、固定18件の決定論的テストはPASS。本人が行う物理動作と独立live評価が残り、公開済みCLI・Engineは不変です。
+[Engine 0.7.1](engine-0.7.1-release.ja.md)はマージ済み#512/#514/#515の後継v17/v30修正をまとめます。歴史的v16/v29と凍結済みの結果は維持します。パッチ固有の検証は決定論的・合成データによるもので、新しいlive-provider・実ユーザーacceptanceは主張しません。
 
-**#490の開発候補：** [信頼済みホスト照合view](engine-0.7-source-reconciliation-v1.ja.md)を別契約で追加。従来の保存済みConflict・引用・検証は不変。独立provider評価とCLI連携は未完了です。
+[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10)と#486は、保留した#488の出典系譜、#489の信頼済み改訂関係、#491の追加回答可否・再取得を追跡するためOPENです。採用には具体的な必要性の実測と別acceptanceが必要です。#506のCLI 0.5.5 / Engine 0.6.1保守候補は別工程で、Windows実機確認待ちです。
 
 ## 現在の信頼境界
 

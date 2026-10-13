@@ -1,5 +1,7 @@
 # Harness Engine 0.7.0 — Evidence Reconciliation and Answer Sufficiency
 
+> Current status: Engine 0.7.0 was published on 2026-10-10. [Engine 0.7.1](engine-0.7.1-release.md) is the source patch containing #512/#514/#515. #488/#489/#491 remain explicitly deferred. The planning/candidate text below records the historical pre-release plan; use the [published 0.7.0 release](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.0) for final coordinates.
+
 [日本語](engine-0.7.0-roadmap.ja.md) | English
 
 **Status: planned, not implemented, not released.** [Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) · [Parent Issue #486](https://github.com/git-ksk/reasoning-harness/issues/486)

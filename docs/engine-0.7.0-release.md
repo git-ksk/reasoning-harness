@@ -1,5 +1,7 @@
 # Harness Engine 0.7.0 — Engine-only source release candidate
 
+> Current status: Engine 0.7.0 was published on 2026-10-10. [Engine 0.7.1](engine-0.7.1-release.md) is the source patch containing #512/#514/#515. #488/#489/#491 remain explicitly deferred. The planning/candidate text below records the historical pre-release plan; use the [published 0.7.0 release](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.0) for final coordinates.
+
 **Status: under review. Do not create `engine-v0.7.0` or a GitHub Release until exact-head CI and final release checks pass.**
 
 - Source package: `reasoning-harness-core 0.7.0`, still `publish = false`.

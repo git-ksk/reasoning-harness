@@ -67,9 +67,10 @@
 
 - [プロジェクト状況](project-status.ja.md) — release済み、active work、主要gap。
 - [製品ロードマップ](product-roadmap.ja.md) — 現在のproduct / engine前進track。
-- [Harness Engine 0.7.0計画](engine-0.7.0-roadmap.ja.md) — **計画段階・未リリース**。複数根拠の整合、評価、依存関係、release gate。
-- [Engine 0.7ローカル承認レビューの開発候補v1](engine-0.7-local-reviewer-v1.ja.md) — OSキーチェーン・対話式の手動レビュー、凍結18件の結果。独立評価・配布済みCLIへの反映は未完了。
-- [Engine 0.7出典互換性の開発候補v1](engine-0.7-source-reconciliation-v1.ja.md) — 信頼済みホストの追加view、開発用22件の凍結評価。未リリース。
+- [Harness Engine 0.7計画](engine-0.7.0-roadmap.ja.md) — 公開済み0.7.0の範囲、保留中の機構、歴史的な評価条件。
+- [Harness Engine 0.7.1リリース](engine-0.7.1-release.ja.md) — 現行ソースパッチ、#512/#514/#515修正、検証と限界。
+- [Engine 0.7ローカル承認レビューの開発候補v1](engine-0.7-local-reviewer-v1.ja.md) — 開発用OSキーチェーンレビュー。自動E2Eは独立した人間の承認証明ではなく、配布済みCLIへの反映は別工程。
+- [Engine 0.7出典互換性の開発候補v1](engine-0.7-source-reconciliation-v1.ja.md) — 0.7.0で公開した信頼済みホストの追加viewと開発用22件の凍結評価。
 - [Engine 0.7.0 baseline v1評価](engine-0.7-baseline-v1-result.ja.md) — 凍結した0.6.1の29件の決定論的な開発用測定。独立holdout合格ではありません。
 - [製品ロードマップ](product-roadmap.ja.md) — 現在のproduct / engine前進track。
 - [Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md) — 一般向けterminal productization。
@@ -86,7 +87,7 @@
 - [v36安全性補足](v36-raw-baseline-supplement.ja.md) — release surfaceの5つの安全境界でraw modelとHarnessを追試。
 - [Planner reliability v1結果](planner-reliability-v1-result.ja.md) — #283 action materialization変更前のfrozen #282 repeated-trial baseline。
 - [v0.4.2 final v36 release acceptance](natural-language-e2e-v36-result.ja.md) — immutableなfinal unified / Engine 0.4.2 release evidence。
-- [Harness Engine 0.6.1 release](engine-0.6.1-release.ja.md) — 最新Engine source patch、3モデルの独立安全性acceptanceと旧v1の残存制約。
+- [Harness Engine 0.6.1 release](engine-0.6.1-release.ja.md) — 以前のEngine source patch、3モデルの独立安全性acceptanceと旧v1の残存制約。
 - [Harness Engine 0.6.0 release](engine-0.6.0-release.ja.md) — 0.6.0の独立release基盤とfreeze済み#461/#462/#468/#463 acceptance boundary。
 - [Harness Engine 0.5.0 release](engine-0.5.0-release.ja.md) — 直前の独立Engine coordinate、release boundary、accepted semantic delta。
 - [Harness Engine 0.5.0 final cross-model acceptance](engine-0.5-final-v3-result.ja.md) — current curated model catalog全体を対象にしたfresh final semantic-delta gate。

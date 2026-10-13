@@ -67,9 +67,10 @@ Use the short current views:
 
 - [Project status](project-status.md) — what is released, what is active, and the main known product gaps.
 - [Product roadmap](product-roadmap.md) — current forward product/engine tracks.
-- [Harness Engine 0.7.0 roadmap](engine-0.7.0-roadmap.md) — **planned, unreleased** evidence reconciliation, dependencies, independent evaluation and release gates.
-- [Engine 0.7 local reviewer host development v1](engine-0.7-local-reviewer-v1.md) — manual interactive OS-keyring reviewer bridge, frozen 18-case development report; no independent acceptance or released CLI integration.
-- [Engine 0.7 source reconciliation development v1](engine-0.7-source-reconciliation-v1.md) — **development-only** trusted-review overlay.
+- [Harness Engine 0.7 roadmap](engine-0.7.0-roadmap.md) — published 0.7.0 scope, deferred mechanisms and historical acceptance gates.
+- [Harness Engine 0.7.1 release](engine-0.7.1-release.md) — current source patch, #512/#514/#515 corrections, evidence and limits.
+- [Engine 0.7 local reviewer host development v1](engine-0.7-local-reviewer-v1.md) — development-only OS-keyring reviewer bridge; same-user automated E2E is not independent human consent, and published CLI integration remains separate.
+- [Engine 0.7 source reconciliation development v1](engine-0.7-source-reconciliation-v1.md) — opt-in trusted-review overlay shipped in the 0.7.0 source release.
 - [Engine 0.7.0 baseline v1 result](engine-0.7-baseline-v1-result.md) — frozen 0.6.1 residual baseline (29 deterministic development cases, not independent holdout acceptance).
 - [Product roadmap](product-roadmap.md) — current forward product/engine tracks.
 - [Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md) — general-use terminal productization.
@@ -84,7 +85,7 @@ Start from the current release evidence, then move backward only if you need pro
 
 - [Planner reliability v1 result](planner-reliability-v1-result.md) — frozen #282 repeated-trial baseline before #283 action-materialization changes.
 - [v0.4.2 final v36 release acceptance](natural-language-e2e-v36-result.md) — immutable final unified / Engine 0.4.2 release evidence.
-- [Harness Engine 0.6.1 release](engine-0.6.1-release.md) — latest independent source patch, fresh cross-provider launch safety acceptance, and the residual legacy v1 limitation.
+- [Harness Engine 0.6.1 release](engine-0.6.1-release.md) — historical source patch, fresh cross-provider launch safety acceptance, and the residual legacy v1 limitation.
 - [Harness Engine 0.6.0 release](engine-0.6.0-release.md) — historical 0.6.0 baseline and the frozen #461/#462/#468/#463 acceptance boundary.
 - [Harness Engine 0.5.0 release](engine-0.5.0-release.md) — previous independent Engine coordinate, release boundary, and accepted semantic delta.
 - [Harness Engine 0.5.0 final cross-model acceptance](engine-0.5-final-v3-result.md) — fresh final semantic-delta gate across the current curated model catalog.

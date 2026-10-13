@@ -14,7 +14,7 @@
   Harness Engine 0.6.1
 
 最新の独立Engine source release:
-  Harness Engine 0.6.1 (`engine-v0.6.1`)
+  Harness Engine 0.7.1 (`engine-v0.7.1`)
 
 直近完了した統合:
   Reason CLI 0.5.4 -> Harness Engine 0.6.1 (#484)
@@ -141,28 +141,17 @@ Engine 0.6.0のmilestoneと`engine-v0.6.0` releaseは完了済みで、変更し
 - **#477 legacy MCP timeout:** 歴史的な評価に必要な凍結済みv1実装を変更せず、期限管理された後継v2/v3への移行を推奨します。v2のblocked-stdin回帰テストを追加し、旧v1の期限超過リスクは明示して管理します。この対応は0.6.1 **source release**の対象ですが、Reason CLIリリースは別です。
 - **#465 CI fixture安定化:** legacy MCP subprocess transport testの断続的な失敗は、semantic correctnessやfreeze済みevaluationと分けて追跡します。
 - **#467 / #470 依存関係保守:** 通常のCargo依存更新はEngineのsemantic acceptance記録とは別に管理します。
-- **次のEngine source release（0.7.0計画）:** Track Eで#487のbaselineと#492の独立acceptanceを要求し、過去のfreeze tag・結果・release artifactを保持します。CLI adoptionは別releaseで行います。
+- **Engine 0.7ソース系列:** 0.7.0で出典照合の採用範囲を公開し、0.7.1でマージ済み#512/#514/#515修正をまとめます。配布CLIへの採用は別リリースです。
 
-## トラックE — Harness Engine 0.7.0: 複数根拠の整合（計画段階・未リリース）
+## トラックE — Harness Engine 0.7: 公開ソースと保留中の仮説
 
-**[マイルストーン #10](https://github.com/git-ksk/reasoning-harness/milestone/10) · [親Issue #486](https://github.com/git-ksk/reasoning-harness/issues/486) · [詳細ロードマップ](engine-0.7.0-roadmap.ja.md)。** 現在公開済みのEngineは引き続き **0.6.1** です。
+[Engine 0.7.0](engine-0.7.0-release.ja.md)は、#487 baseline・#496の承認ホスト制御・#492の固定した独立合成評価後、#490の任意のホスト承認付き出典照合・対象別表示を公開しました。元のConflict・claim・引用は維持し、モデルの助言はレビュー許可や外部truthを作りません。同じOSユーザーの自動keyring E2Eは、独立した人間の承認証明ではありません。
 
-Engine 0.6.1には、時点・scope・権威による適合判定、構造化事実の矛盾時のhard receipt保留、target別の根拠取得要否、厳密な出典付き説明、advisoryな充足性判定があります。0.7.0では**出典の系譜、明示的な改訂履歴、矛盾を維持する統合、target別の回答可否**が有用性を高めるかを検証します。現時点では実証済みの欠落ではありません。
+[Engine 0.7.1](engine-0.7.1-release.ja.md)は、マージ済み#512の日英準備記述・#514/#515の発売記述修正をまとめます。歴史的v16/v29、凍結観測、machine契約を維持します。パッチ固有の検証と限界は0.7.0のprovider観測と分けて記録しています。
 
-1. **P0 [#487](https://github.com/git-ksk/reasoning-harness/issues/487)：** **開発用baseline実測済み。** [事前freezeした0.6.1評価v1](engine-0.7-baseline-v1-result.ja.md)で29/29予測一致、テスト2/2 PASS。意味の近い表現をConflict扱いする例を1件再現。独立・liveのrelease評価は未実施。
-2. **P1 [#488](https://github.com/git-ksk/reasoning-harness/issues/488)：** 必要性が確認できた場合、転載元・独立した出所・由来不明を区別。出典の独立性を捏造しない。
-3. **P1 [#489](https://github.com/git-ksk/reasoning-harness/issues/489)：** 必要性が確認できた場合、明示的な改訂関係とas-of・有効時刻を突き合わせる。「新しい方が正しい」は禁止。
-4. **P1 [#490](https://github.com/git-ksk/reasoning-harness/issues/490)：** 必要性が確認できた場合、互換的な説明と不一致を区別し、衝突・引用・authority ceilingを保持。
-**#496開発用レビュー主体：** [OSキーチェーンと明示的な人間承認](engine-0.7-local-reviewer-v1.ja.md)による追加の開発用CLI・署名・再生検証、事前固定18件がPASS。実際の承認動作・live有用性・独立評価は未完了で、正式リリースはしていません。
+[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10)／[親#486](https://github.com/git-ksk/reasoning-harness/issues/486)は、保留した[#488の出典系譜](https://github.com/git-ksk/reasoning-harness/issues/488)、[#489の信頼済み改訂関係](https://github.com/git-ksk/reasoning-harness/issues/489)、[#491の追加回答可否・再取得](https://github.com/git-ksk/reasoning-harness/issues/491)のためOPENです。新機構を必要とする具体的な製品上の失敗は未実証で、実装前に必要性の実測と別acceptanceの固定が必要です。限定的なソースパッチの公開は妨げません。
 
-**#490の開発進捗：** [信頼済みホストレビューを使う追加view](engine-0.7-source-reconciliation-v1.ja.md)の開発用凍結22件をPASS。公開済みEngineへの採用・独立live評価・CLI利用価値の検証は未完了。
-
-5. **P1 [#491](https://github.com/git-ksk/reasoning-harness/issues/491)：** 必要性が確認できた場合、target別の必要情報で限定回答・予算内再取得・保留を制御。
-6. **P0 [#492](https://github.com/git-ksk/reasoning-harness/issues/492)：** candidate/runnerを固定してから新規独立holdoutを作り、deterministicとMistral/Google/Groqの個別評価、exact-head CIをリリース条件にする。
-
-**重大違反の許容数は0：** 根拠なしの`Known`/`Supported`、独立ソース・引用の捏造、対象・scope・時点の混線、未証明の新版優先、衝突の隠蔽、replayの外部副作用。実用性・コストの数値基準は#487後、独立評価の**前**に固定します。非互換なmachine/session contractは別IDと互換テストを必要とします。
-
-これは**Engineの計画のみ**で、CLI 0.5.4の公開済みbinaryや過去のEngine評価は変更しません。実測で有用性を示せない機能候補は見送ります。
+公開済み製品はCLI 0.5.4 / Engine 0.6.1です。#506の分離したCLI 0.5.5 / Engine 0.6.1候補はWindows実機確認待ちです。Engine 0.7のCLI採用は別リリース判断です。
 
 ## 昇格ルール
 
