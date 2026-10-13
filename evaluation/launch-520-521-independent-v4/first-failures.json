@@ -1,0 +1,450 @@
+[
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v4-evidence-P404",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v4-direct-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v4-source-P404",
+      "target_id": "v4-target-P404"
+    },
+    "case_id": "P404",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v4-evidence-P404",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "In the published chronology, Carvilo Horizon was introduced on 15 May 2153."
+          }
+        ],
+        "source_id": "v4-source-P404"
+      },
+      "case_id": "P404",
+      "category": "introduced_neutral_leading_adjunct",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v4-canonical-P404",
+          "canonical_name": "Carvilo Horizon"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v4-direct-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v4-target-P404",
+        "target_question": "When was Carvilo Horizon launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v4-evidence-P405",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v4-direct-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v4-source-P405",
+      "target_id": "v4-target-P405"
+    },
+    "case_id": "P405",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v4-evidence-P405",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Berori Devices introduced Galventa Portal on 16 May 2154."
+          }
+        ],
+        "source_id": "v4-source-P405"
+      },
+      "case_id": "P405",
+      "category": "introduced_direct_object",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v4-canonical-P405",
+          "canonical_name": "Galventa Portal"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v4-direct-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v4-target-P405",
+        "target_question": "When was Galventa Portal launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v4-evidence-P415",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v4-direct-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v4-source-P415",
+      "target_id": "v4-target-P415"
+    },
+    "case_id": "P415",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v4-evidence-P415",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Alvori Instruments launched Morliva Dial on 26 May 2164."
+          }
+        ],
+        "source_id": "v4-source-P415"
+      },
+      "case_id": "P415",
+      "category": "launched_direct_object",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v4-canonical-P415",
+          "canonical_name": "Morliva Dial"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v4-direct-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v4-target-P415",
+        "target_question": "When was Morliva Dial launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v4-evidence-P416",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v4-direct-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v4-source-P416",
+      "target_id": "v4-target-P416"
+    },
+    "case_id": "P416",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v4-evidence-P416",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Why does Helvona Finch use a dial? Helvona Finch was introduced on 27 May 2165."
+          }
+        ],
+        "source_id": "v4-source-P416"
+      },
+      "case_id": "P416",
+      "category": "same_target_why_feature_question",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v4-canonical-P416",
+          "canonical_name": "Helvona Finch"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v4-direct-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v4-target-P416",
+        "target_question": "When was Helvona Finch launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v4-evidence-P417",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v4-direct-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v4-source-P417",
+      "target_id": "v4-target-P417"
+    },
+    "case_id": "P417",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v4-evidence-P417",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The statement that Telriva Kite uses magnesium is false. Telriva Kite went live on 28 May 2166."
+          }
+        ],
+        "source_id": "v4-source-P417"
+      },
+      "case_id": "P417",
+      "category": "same_target_false_material_property",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v4-canonical-P417",
+          "canonical_name": "Telriva Kite"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v4-direct-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v4-target-P417",
+        "target_question": "When was Telriva Kite launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "v4-evidence-N408",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "independent-v4-direct-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "v4-source-N408",
+      "target_id": "v4-target-N408"
+    },
+    "case_id": "N408",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v4-evidence-N408",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "These entries are fictional"
+          },
+          {
+            "kind": "fact",
+            "text": "Yarona Chart became generally available on 14 May 2187."
+          }
+        ],
+        "source_id": "v4-source-N408"
+      },
+      "case_id": "N408",
+      "category": "fictional_plural_entries",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v4-canonical-N408",
+          "canonical_name": "Yarona Chart"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v4-direct-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v4-target-N408",
+        "target_question": "When was Yarona Chart launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  }
+]
