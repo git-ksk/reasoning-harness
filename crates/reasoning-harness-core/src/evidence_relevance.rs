@@ -1646,19 +1646,56 @@ fn launch_named_subject_v17(prefix: &str) -> bool {
         })
 }
 
-fn launch_explicit_other_context_v17(statement: &str) -> bool {
-    let folded = statement.to_ascii_lowercase();
-    [" about ", " for ", " of "].iter().any(|link| {
-        folded.find(link).is_some_and(|index| {
-            let start = index + link.len();
-            let end = [" is ", " was ", " has ", " remains "]
-                .iter()
-                .filter_map(|predicate| folded[start..].find(predicate))
-                .min()
-                .map_or(statement.len(), |index| start + index);
-            launch_named_subject_v17(&statement[start..end])
+fn launch_other_clause_v17(statement: &str) -> &str {
+    let statement = statement
+        .rsplit_once(':')
+        .map_or(statement, |(_, clause)| clause.trim());
+    statement
+        .split_once(',')
+        .map_or(statement, |(prefix, rest)| {
+            if [
+                "in a hypothetical scenario",
+                "in this hypothetical scenario",
+                "in a fictional scenario",
+                "in this fictional scenario",
+            ]
+            .contains(&normalized(prefix).as_str())
+            {
+                rest.trim()
+            } else {
+                statement
+            }
         })
-    })
+}
+
+fn launch_explicit_other_context_v17(statement: &str) -> bool {
+    let statement = launch_other_clause_v17(statement);
+    let folded = statement.to_ascii_lowercase();
+    let possessive_context = ["'s ", "’s "].iter().any(|possessive| {
+        folded.find(possessive).is_some_and(|index| {
+            launch_named_subject_v17(&statement[..index])
+                && [
+                    "launch claim",
+                    "release claim",
+                    "launch announcement",
+                    "release announcement",
+                ]
+                .iter()
+                .any(|scope| folded[index + possessive.len()..].starts_with(scope))
+        })
+    });
+    possessive_context
+        || [" about ", " for ", " of "].iter().any(|link| {
+            folded.find(link).is_some_and(|index| {
+                let start = index + link.len();
+                let end = [" is ", " was ", " has ", " remains "]
+                    .iter()
+                    .filter_map(|predicate| folded[start..].find(predicate))
+                    .min()
+                    .map_or(statement.len(), |index| start + index);
+                launch_named_subject_v17(&statement[start..end])
+            })
+        })
 }
 
 fn launch_explicit_other_subject_v17(
@@ -1674,9 +1711,7 @@ fn launch_explicit_other_subject_v17(
     }
     // An incidental predicate in "According to reports, it was launched" does
     // not establish another owner. Require a bounded, visibly named subject.
-    let statement = statement
-        .rsplit_once(':')
-        .map_or(statement, |(_, clause)| clause.trim());
+    let statement = launch_other_clause_v17(statement);
     let folded = statement.to_ascii_lowercase();
     [
         " was launched",
@@ -1687,6 +1722,10 @@ fn launch_explicit_other_subject_v17(
         " went live",
         " is now generally available",
         " became generally available",
+        " would launch",
+        " could launch",
+        " might launch",
+        " may launch",
     ]
     .iter()
     .any(|predicate| {
@@ -1754,7 +1793,7 @@ fn launch_explicit_nonlaunch_statement_v17(
                     | "use"
                     | "have",
                 ..
-            ] | ["has", "a" | "an", "offline", ..]
+            ] | ["has", "a" | "an", ..]
         )
     };
     // A clear feature predicate keeps fictional characters/false alarms in its
@@ -2009,10 +2048,7 @@ fn launch_governing_context_blocks_v17(
                 || words
                     .first()
                     .is_some_and(|word| launch_adverse_context_word_v17(word));
-            if !owns_target
-                && (context_subject || reporting_reference || global || reference)
-                && launch_explicit_other_context_v17(&segment.raw)
-            {
+            if !owns_target && launch_explicit_other_context_v17(&segment.raw) {
                 continue;
             }
             if segment.denied
@@ -2030,7 +2066,11 @@ fn launch_governing_context_blocks_v17(
                     && words
                         .windows(2)
                         .any(|pair| matches!(pair, ["not", "true" | "correct"])));
-            if !((denied_context && (reference || global)) || marker_only) {
+            let documentary = matches!(
+                signal.kind,
+                EvidenceRelevanceSignalKind::Heading | EvidenceRelevanceSignalKind::SourceTitle
+            );
+            if !((denied_context && (reference || global || scope || documentary)) || marker_only) {
                 continue;
             }
             // Bind explicit next/preceding references locally. A named other
@@ -2049,7 +2089,7 @@ fn launch_governing_context_blocks_v17(
                 ["this" | "that", "statement" | "claim" | "assertion", ..]
                     | [
                         "this" | "that",
-                        "feature",
+                        "feature" | "property",
                         "statement" | "claim" | "assertion",
                         ..
                     ]

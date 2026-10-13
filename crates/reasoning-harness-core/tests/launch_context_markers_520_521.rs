@@ -362,6 +362,37 @@ fn post_v5_development_controls_bind_feature_denials_to_their_antecedent() {
 }
 
 #[test]
+fn post_v6_development_controls_and_generic_documentary_disclaimers() {
+    // v6's first RED score stays immutable; this is development regression.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../fixtures/launch-520-521-independent-v6/corpus.json"
+    ))
+    .unwrap();
+    check(corpus["cases"].as_array().unwrap().iter().map(|case|json!({
+        "id":case["case_id"],"entity":case["policy"]["entity"]["canonical_name"],
+        "aliases":case["policy"]["entity"]["aliases"],"signals":case["candidate"]["signals"],
+        "expected_relevant":case["label"]=="positive"
+    })).collect());
+    for (kind, context) in [
+        ("heading", "A collection of fictional records"),
+        ("source_title", "Historical examples are fabricated"),
+        ("fact", "All entries are hypothetical."),
+    ] {
+        check(vec![
+            json!({"id":context,"signals":[{"kind":kind,"text":context},{"kind":"excerpt","text":"Silver Lens was launched in 2026."}],"expected_relevant":false}),
+        ]);
+    }
+    for kind in ["heading", "source_title", "excerpt", "fact"] {
+        check(vec![
+            json!({"id":kind,"signals":[{"kind":kind,"text":"Correction: Maple Queue's launch claim is false."},{"kind":"excerpt","text":"Silver Lens was launched in 2026."}],"expected_relevant":true}),
+        ]);
+    }
+    check(vec![
+        json!({"id":"property-is-launch","signals":[{"kind":"excerpt","text":"Silver Lens has a fictional launch date. Silver Lens was launched in 2026."}],"expected_relevant":false}),
+    ]);
+}
+
+#[test]
 fn historical_v29_dispositions_remain_unchanged_for_original_audit() {
     let rows: Vec<Value> =
         include_str!("../../../evaluation/engine-0.7.1-rereview-20261013/results.jsonl")
