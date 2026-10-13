@@ -1,0 +1,676 @@
+[
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v3-evidence-P305",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v3-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v3-source-P305",
+      "target_id": "v3-target-P305"
+    },
+    "case_id": "P305",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v3-evidence-P305",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Draleno Loop was rolled out on 21 May 2035."
+          }
+        ],
+        "source_id": "v3-source-P305"
+      },
+      "case_id": "P305",
+      "category": "rolled_out",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v3-entity-P305",
+          "canonical_name": "Draleno Loop"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v3-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v3-target-P305",
+        "target_question": "When was Draleno Loop launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v3-evidence-P307",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v3-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v3-source-P307",
+      "target_id": "v3-target-P307"
+    },
+    "case_id": "P307",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v3-evidence-P307",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Volriso Board is now generally available as of 23 May 2037."
+          }
+        ],
+        "source_id": "v3-source-P307"
+      },
+      "case_id": "P307",
+      "category": "is_now_generally_available",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v3-entity-P307",
+          "canonical_name": "Volriso Board"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v3-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v3-target-P307",
+        "target_question": "When was Volriso Board launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v3-evidence-P313",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v3-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v3-source-P313",
+      "target_id": "v3-target-P313"
+    },
+    "case_id": "P313",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v3-evidence-P313",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Zeromil 9.4 was rolled out on 29 May 2043."
+          }
+        ],
+        "source_id": "v3-source-P313"
+      },
+      "case_id": "P313",
+      "category": "decimal_rolled_out",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v3-entity-P313",
+          "canonical_name": "Zeromil 9.4"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v3-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v3-target-P313",
+        "target_question": "When was Zeromil 9.4 launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v3-evidence-P315",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v3-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v3-source-P315",
+      "target_id": "v3-target-P315"
+    },
+    "case_id": "P315",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v3-evidence-P315",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "How many connectors does Lyrvano Loom support? Lyrvano Loom was launched on 31 May 2045."
+          }
+        ],
+        "source_id": "v3-source-P315"
+      },
+      "case_id": "P315",
+      "category": "same_target_feature_question_before_launch",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v3-entity-P315",
+          "canonical_name": "Lyrvano Loom"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v3-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v3-target-P315",
+        "target_question": "When was Lyrvano Loom launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v3-evidence-P318",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v3-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v3-source-P318",
+      "target_id": "v3-target-P318"
+    },
+    "case_id": "P318",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v3-evidence-P318",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Retracted: Sovreta Signal went live on 1 May 2048."
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Pelvano Capsule was rolled out on 3 May 2048."
+          }
+        ],
+        "source_id": "v3-source-P318"
+      },
+      "case_id": "P318",
+      "category": "other_target_retracted_heading_with_predicate",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v3-entity-P318",
+          "canonical_name": "Pelvano Capsule"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v3-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v3-target-P318",
+        "target_question": "When was Pelvano Capsule launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v3-evidence-P321",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v3-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v3-source-P321",
+      "target_id": "v3-target-P321"
+    },
+    "case_id": "P321",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v3-evidence-P321",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Withdrawn battery-life claim: Rolvano Beam lasts eight days"
+          },
+          {
+            "kind": "fact",
+            "text": "Rolvano Beam went live on 6 May 2051."
+          }
+        ],
+        "source_id": "v3-source-P321"
+      },
+      "case_id": "P321",
+      "category": "same_target_withdrawn_battery_heading",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v3-entity-P321",
+          "canonical_name": "Rolvano Beam"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v3-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v3-target-P321",
+        "target_question": "When was Rolvano Beam launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v3-evidence-P322",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v3-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v3-source-P322",
+      "target_id": "v3-target-P322"
+    },
+    "case_id": "P322",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v3-evidence-P322",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Velmora Parcel was rolled out on 7 May 2052, according to the release record."
+          }
+        ],
+        "source_id": "v3-source-P322"
+      },
+      "case_id": "P322",
+      "category": "rolled_out_bounded_citation_adjunct",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v3-entity-P322",
+          "canonical_name": "Velmora Parcel"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v3-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v3-target-P322",
+        "target_question": "When was Velmora Parcel launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v3-evidence-P323",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v3-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v3-source-P323",
+      "target_id": "v3-target-P323"
+    },
+    "case_id": "P323",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v3-evidence-P323",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ilveta Gallery is the product covered by this record. It was launched on 8 May 2053."
+          }
+        ],
+        "source_id": "v3-source-P323"
+      },
+      "case_id": "P323",
+      "category": "clear_same_target_deictic_subject",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v3-entity-P323",
+          "canonical_name": "Ilveta Gallery"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v3-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v3-target-P323",
+        "target_question": "When was Ilveta Gallery launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "v3-evidence-N306",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "independent-v3-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "v3-source-N306",
+      "target_id": "v3-target-N306"
+    },
+    "case_id": "N306",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v3-evidence-N306",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This dispatch is hypothetical. Ovriela Pond became generally available on 19 May 2065."
+          }
+        ],
+        "source_id": "v3-source-N306"
+      },
+      "case_id": "N306",
+      "category": "hypothetical_dispatch_leading",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v3-entity-N306",
+          "canonical_name": "Ovriela Pond"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v3-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v3-target-N306",
+        "target_question": "When was Ovriela Pond launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  }
+]
