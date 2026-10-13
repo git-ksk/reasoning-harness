@@ -2104,6 +2104,14 @@ fn launch_governing_context_blocks_v17(
                 )
             });
             let reference = matches!(words.first(), Some(&"this" | &"that" | &"these" | &"those"))
+                || matches!(
+                    words.as_slice(),
+                    [
+                        "both" | "all" | "everything",
+                        "is" | "are" | "was" | "were" | "has" | "have",
+                        ..
+                    ]
+                )
                 || words
                     .windows(2)
                     .any(|pair| matches!(pair, ["it", "is" | "was" | "has"]))
@@ -2195,18 +2203,43 @@ fn launch_governing_context_blocks_v17(
                         ..
                     ]
             );
+            let collective_reference = matches!(
+                words.first(),
+                Some(&"these" | &"those" | &"everything" | &"both" | &"all")
+            ) || words.windows(2).any(|pair| pair == ["and", "all"]);
+            let broad_reference = collective_reference
+                || words.iter().any(|word| {
+                    [
+                        "statements",
+                        "claims",
+                        "assertions",
+                        "announcements",
+                        "facts",
+                        "entries",
+                        "records",
+                        "report",
+                        "passage",
+                        "paragraph",
+                        "text",
+                        "content",
+                        "story",
+                        "account",
+                    ]
+                    .contains(word)
+                });
             // An explicit singular reference can deny the adjacent feature
             // statement without retracting a separate launch. Broader report/
             // passage disclaimers and missing antecedents still withhold.
             if !owns_target
                 && local_statement_reference
+                && !broad_reference
                 && neighbor.is_some_and(|neighbor| {
                     launch_explicit_nonlaunch_statement_v17(policy, &normalized(&neighbor.raw))
                 })
             {
                 continue;
             }
-            if (reference || marker_only)
+            if ((reference && !broad_reference) || marker_only)
                 && neighbor.is_some_and(|neighbor| {
                     launch_explicit_other_subject_v17(policy, &neighbor.raw)
                 })
@@ -2445,8 +2478,21 @@ fn target_owned_active_launch_object_v17(
     [" launched ", " introduced "].iter().any(|verb| {
         folded.find(verb).is_some_and(|index| {
             let actor = raw[..index].trim();
-            if !launch_named_subject_v17(actor)
-                || actor
+            let words = actor.split_whitespace().collect::<Vec<_>>();
+            // Reuse the bounded subject adjunct grammar. Keep the original
+            // actor prefix in the complete text match; remove only a recognized
+            // temporal/documentary adjunct for the raw named-actor check.
+            let leading = (1..words.len().min(9))
+                .rev()
+                .find(|end| {
+                    let prefix = normalized(&words[..*end].join(" "));
+                    let prefix = prefix.split_whitespace().collect::<Vec<_>>();
+                    !launch_product_prefix_v17(&prefix) && launch_subject_prefix_v17(&prefix)
+                })
+                .unwrap_or(0);
+            let named_actor = words[leading..].join(" ");
+            if !launch_named_subject_v17(&named_actor)
+                || named_actor
                     .chars()
                     .any(|c| !c.is_alphanumeric() && ![' ', '-', '.'].contains(&c))
             {

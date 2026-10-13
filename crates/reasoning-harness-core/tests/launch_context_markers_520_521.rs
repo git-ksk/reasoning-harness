@@ -441,6 +441,46 @@ fn post_v7_development_controls_keep_foreign_frames_local_and_global_colons_deni
 }
 
 #[test]
+fn post_v8_development_controls_preserve_collective_denials_and_actor_adjuncts() {
+    // v8's original RED first result is immutable; seen cases are development.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../fixtures/launch-520-521-independent-v8/corpus.json"
+    ))
+    .unwrap();
+    check(corpus["cases"].as_array().unwrap().iter().map(|case|json!({
+        "id":case["case_id"],"entity":case["policy"]["entity"]["canonical_name"],
+        "aliases":case["policy"]["entity"]["aliases"],"signals":case["candidate"]["signals"],
+        "expected_relevant":case["label"]=="positive"
+    })).collect());
+    for reference in [
+        "These statements were retracted",
+        "This report is false",
+        "All claims are fictional",
+        "Both were retracted",
+        "All were fictional",
+    ] {
+        check(vec![
+            json!({"id":reference,"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched in 2026. Maple Queue was introduced in 2026. {reference}.")}],"expected_relevant":false}),
+        ]);
+    }
+    for prefix in [
+        "On 2 May 2026,",
+        "As of May 2026,",
+        "In the published chronology,",
+    ] {
+        check(vec![
+            json!({"id":prefix,"signals":[{"kind":"fact","text":format!("{prefix} Maple Instruments launched Silver Lens.")}],"expected_relevant":true}),
+        ]);
+        check(vec![
+            json!({"id":format!("negated:{prefix}"),"signals":[{"kind":"fact","text":format!("{prefix} No Company launched Silver Lens.")}],"expected_relevant":false}),
+        ]);
+    }
+    check(vec![
+        json!({"id":"invented-actor-adjunct","signals":[{"kind":"fact","text":"In an unverified chronology, Maple Instruments launched Silver Lens."}],"expected_relevant":false}),
+    ]);
+}
+
+#[test]
 fn historical_v29_dispositions_remain_unchanged_for_original_audit() {
     let rows: Vec<Value> =
         include_str!("../../../evaluation/engine-0.7.1-rereview-20261013/results.jsonl")
