@@ -1631,6 +1631,38 @@ fn launch_named_subject_v17(prefix: &str) -> bool {
                 "it",
                 "these",
                 "those",
+                "no",
+                "not",
+                "never",
+                "nobody",
+                "none",
+                "nothing",
+                "neither",
+                "nor",
+                "i",
+                "you",
+                "we",
+                "they",
+                "he",
+                "she",
+                "who",
+                "which",
+                "what",
+                "when",
+                "where",
+                "why",
+                "how",
+                "whose",
+                "whom",
+                "did",
+                "does",
+                "do",
+                "will",
+                "would",
+                "may",
+                "might",
+                "could",
+                "can",
                 "according",
                 "reportedly",
                 "allegedly",
@@ -1649,7 +1681,26 @@ fn launch_named_subject_v17(prefix: &str) -> bool {
 fn launch_other_clause_v17(statement: &str) -> &str {
     let statement = statement
         .rsplit_once(':')
-        .map_or(statement, |(_, clause)| clause.trim());
+        .map_or(statement, |(prefix, clause)| {
+            let prefix = normalized(prefix);
+            let words = prefix.split_whitespace().collect::<Vec<_>>();
+            let global = matches!(
+                words.first(),
+                Some(&"this" | &"that" | &"these" | &"those" | &"everything" | &"all")
+            ) || words
+                .iter()
+                .any(|word| ["everything", "entire", "whole"].contains(word))
+                || words.windows(2).any(|pair| {
+                    matches!(
+                        pair,
+                        [
+                            "this" | "that" | "all",
+                            "report" | "passage" | "text" | "content" | "entries" | "statements"
+                        ]
+                    )
+                });
+            if global { statement } else { clause.trim() }
+        });
     statement
         .split_once(',')
         .map_or(statement, |(prefix, rest)| {
@@ -1723,9 +1774,18 @@ fn launch_explicit_other_subject_v17(
         " has not been launched",
         " has been launched",
         " was introduced",
+        " has been introduced",
         " went live",
         " is now generally available",
         " became generally available",
+        " is generally available",
+        " entered general availability",
+        " reached ga",
+        " launched",
+        " introduced",
+        " rolled out",
+        " was rolled out",
+        " has rolled out",
         " would launch",
         " could launch",
         " might launch",
@@ -1733,9 +1793,13 @@ fn launch_explicit_other_subject_v17(
     ]
     .iter()
     .any(|predicate| {
-        folded
-            .find(predicate)
-            .is_some_and(|index| launch_named_subject_v17(&statement[..index]))
+        folded.find(predicate).is_some_and(|index| {
+            folded[index + predicate.len()..]
+                .chars()
+                .next()
+                .is_none_or(|c| !c.is_alphanumeric())
+                && launch_named_subject_v17(&statement[..index])
+        })
     })
 }
 

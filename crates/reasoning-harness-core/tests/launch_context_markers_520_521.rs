@@ -318,6 +318,9 @@ fn post_v4_development_controls_preserve_direct_objects_and_plural_context() {
         "Maple Instruments launched Silver Lens documentation on 26 May 2026.",
         "Maple Instruments launched Silver Lens's portal on 26 May 2026.",
         "Maple Instruments introduced Silver Lens according to an unverified rumor.",
+        "No Company launched Silver Lens in 2026.",
+        "Nobody launched Silver Lens in 2026.",
+        "Who launched Silver Lens in 2026?",
         "The statement that Silver Lens uses magnesium and was launched is false.",
         "In the unverified chronology, Silver Lens was introduced on 26 May 2026.",
         "These entries are fictional. Silver Lens was launched on 26 May 2026.",
@@ -391,6 +394,50 @@ fn post_v6_development_controls_and_generic_documentary_disclaimers() {
         json!({"id":"property-is-launch","signals":[{"kind":"excerpt","text":"Silver Lens has a fictional launch date. Silver Lens was launched in 2026."}],"expected_relevant":false}),
         json!({"id":"possession-is-claim","signals":[{"kind":"excerpt","text":"Silver Lens has a false claim. Silver Lens was launched in 2026."}],"expected_relevant":false}),
     ]);
+}
+
+#[test]
+fn post_v7_development_controls_keep_foreign_frames_local_and_global_colons_denied() {
+    // v7's original RED first observation is preserved without rescoring.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../fixtures/launch-520-521-independent-v7/corpus.json"
+    ))
+    .unwrap();
+    check(corpus["cases"].as_array().unwrap().iter().map(|case|json!({
+        "id":case["case_id"],"entity":case["policy"]["entity"]["canonical_name"],
+        "aliases":case["policy"]["entity"]["aliases"],"signals":case["candidate"]["signals"],
+        "expected_relevant":case["label"]=="positive"
+    })).collect());
+    for prefix in [
+        "Everything below is fictional",
+        "This report is fictional",
+        "Note: all entries are hypothetical",
+        "The entire passage is fabricated",
+    ] {
+        check(vec![
+            json!({"id":prefix,"signals":[{"kind":"heading","text":format!("{prefix}: Maple Queue was launched in 2026.")},{"kind":"fact","text":"Silver Lens was launched in 2026."}],"expected_relevant":false}),
+        ]);
+    }
+    for predicate in [
+        "launched",
+        "was launched",
+        "has been launched",
+        "was introduced",
+        "has been introduced",
+        "rolled out",
+        "was rolled out",
+        "has rolled out",
+        "went live",
+        "is generally available",
+        "is now generally available",
+        "became generally available",
+        "entered general availability",
+        "reached GA",
+    ] {
+        check(vec![
+            json!({"id":predicate,"signals":[{"kind":"heading","text":format!("Fictional release account: Maple Queue {predicate} in 2026.")},{"kind":"fact","text":"Silver Lens was launched in 2026."}],"expected_relevant":true}),
+        ]);
+    }
 }
 
 #[test]
