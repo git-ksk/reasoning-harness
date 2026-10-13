@@ -1,0 +1,25 @@
+{
+  "acceptance_scope": "offline synthetic source-local public-API evaluation; no provider/user/device/production/external-truth acceptance",
+  "api_error_ids": [],
+  "candidate_commit": "19a8faaa582c1d4af7a68972c494b2e29f72d80e",
+  "candidate_source_sha256_after": "1e6293feab2c5eb7428a4427c7de9dc2d635a01fe9de14036db64085ffdde315",
+  "candidate_source_sha256_before": "1e6293feab2c5eb7428a4427c7de9dc2d635a01fe9de14036db64085ffdde315",
+  "corpus_sha256": "b251abf7736f53d9cb3db7740268f7a295f7dd3314fa2dc5daab6bc8ce7e1861",
+  "failed_case_ids": [
+    "P723"
+  ],
+  "false_relevant_ids": [],
+  "negative_cases": 25,
+  "negative_requested_relation_ids": [],
+  "overall_passed": false,
+  "passed_cases": 49,
+  "positive_cases": 25,
+  "positive_miss_ids": [
+    "P723"
+  ],
+  "positive_recall_gate_passed": false,
+  "run_identity": "independent-v7-first-api-execution",
+  "safety_gate_passed": true,
+  "source_unchanged": true,
+  "total_cases": 50
+}
