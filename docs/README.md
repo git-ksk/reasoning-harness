@@ -75,6 +75,7 @@ Use the short current views:
 - [Product roadmap](product-roadmap.md) — current forward product/engine tracks.
 - [Reason CLI 0.5.0 roadmap](reason-cli-0.5-roadmap.md) — general-use terminal productization.
 - [Provider/model retirement and fallback policy](model-retirement-policy.md) — explicit lifecycle state, no silent identity switching, and session pinning.
+- [Release channels and promotion policy](release-policy.md) — normal vs candidate gates, v0.x compatibility, immutable versions and separate Engine/CLI scope.
 - [Versioning](versioning.md) — separate Reason CLI, Harness Engine, and machine-contract coordinates.
 
 The previous long-form ledgers were preserved as [project-status history](project-status-history.md) and [product-roadmap history](product-roadmap-history.md).

@@ -1,6 +1,6 @@
 # プロダクトのサポートと互換性
 
-`reason`はv0.x期間中の外部プレビューCLIです。正しさの責任主体は引き続きnative runtimeにあり、product supportはhuman-readable outputやproviderのマーケティング上の保証ではなく、明示的なCLI/data contractを基準に定義します。
+`reason`は現在、文書化したv0.x互換性方針に従います。公開区分・互換性・配布範囲は別々に決めます。[公開方針](release-policy.ja.md)を参照してください。正しさの責任主体は引き続きnative runtimeにあり、product supportはhuman-readable outputやproviderのマーケティング上の保証ではなく、明示的なCLI/data contractを基準に定義します。
 
 ## サポート対象のプロダクトサーフェス
 
@@ -22,7 +22,7 @@
 - macOS x86_64 / Intel（`macos-15-intel` runner class）;
 - Windows x86_64（`windows-2025` runner class）。
 
-タグ付きリリースでは、これらの各platform class向けにnativeの`reason` executableを1つずつpackageします。他のtargetもcompileできる場合がありますが、matrixに追加されるまではrelease-supportedではありません。
+タグ付きCLI配布では、これらの各platform class向けにnativeの`reason` executableを1つずつpackageします。他のtargetもcompileできる場合がありますが、matrixに追加されるまではrelease-supportedではありません。
 
 ## マシン契約の方針
 
@@ -74,7 +74,9 @@ Provider credentialは`reason-config-v1`では受け付けません。`reason se
 
 ## 安定性ステータス
 
-**Reason CLI 0.5.3 / Harness Engine 0.5.0** が現在のexternal-preview product pairです。`v0.4.2`はimmutableな最後のunified CLI/Engine historical releaseで、0.5.0〜0.5.2のsplit CLI lineはEngine 0.4.2のままimmutableです。Engine 0.5.0は`engine-v0.5.0`として独立acceptance / releaseされた後、`reason-v0.5.3`でadoptされました。admission、authority、verification、finalization、answer safety、MCP non-promotion、session replayは引き続きHarness-ownedです。文書化されたv1.0 readiness gateは満たされていますが、current 0.5.x lineは意図的にstable v1.0の主張ではなく、prerelease/v0.x compatibility promiseのままです。将来のv1.0には通常のprovenance workflowを通じた明示的なversion/tag/release decisionがなお必要です。
+公開済みCLIは **Reason CLI 0.5.4 / Harness Engine 0.6.1** で、従来のGitHubプレリリース表示を履歴として維持します。**Engine 0.7.1**は[公開方針](release-policy.ja.md)に従うEngineソースのみの通常パッチで、このCLIには未採用です。0.xのAPI変更可能性、ソースのみの配布、GitHubプレリリース表示を分け、既存machine契約と必須acceptanceを維持します。
+
+今後の候補版は`0.8.0-rc.1`などのsuffixを付け、未完了の必須検証と解除条件を記載します。通常リリースは、宣言した範囲の条件を満たしてからsuffixなしで公開します。v1.0には公開API・互換性の明示的な判断がなお必要で、GitHubの表示変更だけでその保証を成立させません。
 
 
 product term、machine/runtime identifier、過去のresearch labelの区別については、[用語と命名ルール](terminology.ja.md)を参照してください。

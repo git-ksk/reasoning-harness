@@ -213,11 +213,15 @@ jobs:
           set -euo pipefail
           case "${{ needs.prepare.outputs.tag }}" in
             reason-v*)
-              PRERELEASE_ARGS=()
-              if [[ "${{ needs.prepare.outputs.version }}" == 0.* ]]; then
-                PRERELEASE_ARGS+=(--prerelease)
+              # Release channel is independent of major-zero compatibility.
+              # Strip build metadata before checking the SemVer prerelease part.
+              RELEASE_VERSION="${{ needs.prepare.outputs.version }}"
+              VERSION_WITHOUT_BUILD="${RELEASE_VERSION%%+*}"
+              RELEASE_ARGS=(--prerelease=false --latest=true)
+              if [[ "$VERSION_WITHOUT_BUILD" == *-* ]]; then
+                RELEASE_ARGS=(--prerelease=true --latest=false)
               fi
-              gh release create "${{ needs.prepare.outputs.tag }}" dist/* --verify-tag --generate-notes --title "Reason CLI v${{ needs.prepare.outputs.version }}" "${PRERELEASE_ARGS[@]}"
+              gh release create "${{ needs.prepare.outputs.tag }}" dist/* --verify-tag --generate-notes --title "Reason CLI v${{ needs.prepare.outputs.version }}" "${RELEASE_ARGS[@]}"
               ;;
             *)
               gh release view "${{ needs.prepare.outputs.tag }}" >/dev/null 2>&1 && \

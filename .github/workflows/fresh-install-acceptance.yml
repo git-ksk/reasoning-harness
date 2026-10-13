@@ -77,7 +77,8 @@ jobs:
           ENGINE_VERSION="$(printf '%s' "$META" | python -c 'import json,sys; d=json.load(sys.stdin); print(next(p["version"] for p in d["packages"] if p["name"]=="reasoning-harness-core"))')"
           python - "$CLI_VERSION" <<'PY'
           import sys
-          major, minor, patch = map(int, sys.argv[1].split("."))
+          base_version = sys.argv[1].split("+", 1)[0].split("-", 1)[0]
+          major, minor, patch = map(int, base_version.split("."))
           assert (major, minor) == (0, 5), sys.argv[1]
           assert patch >= 0
           PY

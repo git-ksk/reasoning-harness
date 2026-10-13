@@ -75,6 +75,7 @@
 - [製品ロードマップ](product-roadmap.ja.md) — 現在のproduct / engine前進track。
 - [Reason CLI 0.5.0 ロードマップ](reason-cli-0.5-roadmap.ja.md) — 一般向けterminal productization。
 - [Provider / model retirement と fallback policy](model-retirement-policy.ja.md) — lifecycle state、silent identity switch禁止、session pinning。
+- [公開区分と候補版の昇格方針](release-policy.ja.md) — 通常／候補の条件、0.x互換性、版の固定、Engine/CLIの配布範囲。
 - [バージョニング](versioning.ja.md) — Reason CLI / Harness Engine / machine contractの分離。
 
 従来の長い台帳は[project-status history](project-status-history.ja.md)と[product-roadmap history](product-roadmap-history.ja.md)として保存しています。

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import hashlib, json, tempfile, unittest
+import hashlib, json, os, subprocess, tempfile, textwrap, unittest
 from pathlib import Path
 import sys
 
@@ -65,6 +65,46 @@ class ReleaseProvenanceContractTests(unittest.TestCase):
             self.assertIn("attestation verify", text)
         self.assertIn("GH_HOST=github.com", shell)
         self.assertIn("$env:GH_HOST = 'github.com'", powershell)
+
+    def test_release_workflow_channel_uses_semver_prerelease_not_major_or_build_metadata(self):
+        workflow = (ROOT / ".github/workflows/release-cli.yml").read_text(encoding="utf-8")
+        publish_step = workflow.split("      - name: Create GitHub Release\n", 1)[1]
+        publish_script = textwrap.dedent(publish_step.split("        run: |\n", 1)[1])
+        versions = [
+            ("0.5.5", False),
+            ("1.0.0", False),
+            ("0.5.5-rc.1", True),
+            ("1.0.0-beta.2", True),
+            ("0.5.5+build-42", False),
+            ("0.5.5-rc.1+build-42", True),
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bin_dir = root / "bin"
+            bin_dir.mkdir()
+            capture = root / "gh-args.json"
+            fake_gh = bin_dir / "gh"
+            fake_gh.write_text(
+                "#!/usr/bin/env python3\n"
+                "import json, os, sys\n"
+                "from pathlib import Path\n"
+                "Path(os.environ['RELEASE_CAPTURE_PATH']).write_text(json.dumps(sys.argv[1:]))\n",
+                encoding="utf-8",
+            )
+            fake_gh.chmod(0o755)
+            environment = dict(os.environ, PATH=f"{bin_dir}{os.pathsep}{os.environ['PATH']}",
+                               RELEASE_CAPTURE_PATH=str(capture))
+            for version, prerelease in versions:
+                with self.subTest(version=version):
+                    tag = f"reason-v{version}"
+                    script = publish_script.replace("${{ needs.prepare.outputs.tag }}", tag)
+                    script = script.replace("${{ needs.prepare.outputs.version }}", version)
+                    subprocess.run(["bash", "-c", script], cwd=root, env=environment, check=True)
+                    arguments = json.loads(capture.read_text(encoding="utf-8"))
+                    self.assertEqual(arguments[:3], ["release", "create", tag])
+                    self.assertIn(f"--prerelease={str(prerelease).lower()}", arguments)
+                    self.assertIn(f"--latest={str(not prerelease).lower()}", arguments)
+                    self.assertIn("--verify-tag", arguments)
 
 
 if __name__ == "__main__":

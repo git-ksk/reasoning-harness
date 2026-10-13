@@ -46,3 +46,9 @@ Historical unified tags `v0.1.0` through `v0.4.2` remain immutable. New CLI rele
 Harness Engine 0.7.1 is the independent source patch under `engine-v0.7.1`, following immutable `engine-v0.7.0`. See [release notes](engine-0.7.1-release.md). Published `reason-v0.5.4` binaries still contain Engine 0.6.1; adopting Engine 0.7.1 requires a separate CLI release. Older CLI and Engine artifacts remain immutable.
 
 Current published product pair: Reason CLI 0.5.4 / Harness Engine 0.6.1 under `reason-v0.5.4`. The prior CLI 0.5.3 / Engine 0.5.0 remains immutable; earlier paragraphs document the historical progression.
+
+## Release channels and candidate promotion
+
+[Release policy](release-policy.md) defines normal/prerelease gates separately from v0.x compatibility and Engine/CLI distribution. Future candidate packages and tags use matching `-alpha.N`, `-beta.N` or `-rc.N` suffixes and identify their normal target plus unfinished mandatory checks. Build metadata does not select the prerelease channel.
+
+A planned `0.7.0-rc.1 → 0.7.0` would have represented candidate-to-normal promotion. Actual `engine-v0.7.0` was already published with a bare 0.7.0 package and a legacy GitHub label. Since 0.7.1 contains additional #512/#514/#515 fixes, preserve 0.7.0 and publish the corrected 0.7.1 contents as a normal patch. Correcting 0.7.1's GitHub label does not move its tag, change its source or imply CLI adoption.

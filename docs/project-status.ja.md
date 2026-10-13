@@ -8,7 +8,7 @@
 
 ## 現在のリリース
 
-現在公開済みのsplit CLI previewは **Reason CLI 0.5.4 / Harness Engine 0.6.1** です。従来の0.5.3 / Engine 0.5.0を変更しません。独立Engineソースパッチは **Harness Engine 0.7.1**（`engine-v0.7.1`）です。CLI 0.5.4はEngine 0.6.1を継続します。[0.7.1リリースノート](engine-0.7.1-release.ja.md)を参照してください。
+現在公開済みのsplit CLIは **Reason CLI 0.5.4 / Harness Engine 0.6.1** です。従来の0.5.3 / Engine 0.5.0を変更しません。独立Engineソースの通常パッチは **Harness Engine 0.7.1**（`engine-v0.7.1`）です。CLI 0.5.4はEngine 0.6.1を継続します。[0.7.1リリースノート](engine-0.7.1-release.ja.md)を参照してください。
 
 ```text
 公開済みCLI: Reason CLI 0.5.4 / Harness Engine 0.6.1

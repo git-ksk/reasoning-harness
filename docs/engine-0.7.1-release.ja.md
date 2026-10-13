@@ -5,7 +5,8 @@
 ## リリース座標
 
 - ソースpackage: `reasoning-harness-core 0.7.1`、`publish = false`。
-- tag: `engine-v0.7.1`。固定済み`engine-v0.7.0`に続くソースprerelease。
+- tag: `engine-v0.7.1`。固定済み`engine-v0.7.0`に続く、Engineソースのみの通常パッチ。
+- [公開方針](release-policy.ja.md)：初回のGitHubプレリリース指定は、従来の0.x慣例を引き継いだ区分の誤りとして訂正します。固定したtag・commit・assetは変更しません。tag内の文書は当時のsnapshotを維持し、現在の区分はGitHub説明文と本方針に記録します。
 - 公開済みCLIは **Reason CLI 0.5.4 / Engine 0.6.1** のままです。CLIへの採用とnative配布は別リリースです。#506のCLI 0.5.5 / Engine 0.6.1候補も分離して維持します。
 - 今回のリリース準備は版番号と文書のみを変更し、Engine実装はマージ済みmain `3d712f6f7e76606229e014bd90cb97fbcfc9a6b3`と同一です。
 

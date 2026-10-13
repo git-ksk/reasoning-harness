@@ -371,7 +371,7 @@ exact coordinateと保存済みraw evidenceは[Engine 0.5.0 final-v3 result](doc
 - **Harness Engine** — reasoning / correctness behaviorをversioning。
 - **Machine contract ID** — wire/schema compatibilityを独立してversioning。
 
-公開済みsplit CLIは **Reason CLI 0.5.4 / Harness Engine 0.6.1** です。独立Engineソースパッチは[Harness Engine 0.7.1](docs/engine-0.7.1-release.ja.md)で、マージ済み#512/#514/#515の修正を含みます。CLIへの採用は別リリースです。過去のCLI・Engine artifactは不変です。[Engine 0.7の採用範囲と保留中の作業](docs/engine-0.7.0-roadmap.ja.md)を参照してください。
+公開済みsplit CLIは **Reason CLI 0.5.4 / Harness Engine 0.6.1** です。独立Engineソースパッチは[Harness Engine 0.7.1](docs/engine-0.7.1-release.ja.md)で、マージ済み#512/#514/#515の修正を含みます。CLIへの採用は別リリースです。過去のCLI・Engine artifactは不変です。[Engine 0.7の採用範囲と保留中の作業](docs/engine-0.7.0-roadmap.ja.md)を参照してください。 [公開方針](docs/release-policy.ja.md)で、通常／候補の条件・0.x互換性・ソース／CLI配布を分けています。
 
 詳しくは[バージョニング](docs/versioning.ja.md)と[Reason CLI 0.5.0 ロードマップ](docs/reason-cli-0.5-roadmap.ja.md)を参照してください。
 

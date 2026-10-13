@@ -21,6 +21,8 @@ The project follows semantic versioning for the executable, with the usual v0.x 
 
 ### Changed
 
+- Clarify normal/prerelease readiness independently of v0.x compatibility and source-only distribution. Future CLI publication derives its channel from SemVer prerelease suffixes, not major zero, and keeps candidates out of Latest. Engine 0.7.1 is a normal source patch; its GitHub classification is corrected without changing published tags/assets. See [release policy](docs/release-policy.md).
+
 - Issue #355 decouples the user-facing Reason CLI package version from the Harness Engine (`reasoning-harness-core`) package version. `v0.4.2` remains the final unified historical release; future CLI releases use `reason-vX.Y.Z` tags. Machine contract IDs remain independent compatibility coordinates, and provider crate versions remain internal implementation coordinates rather than a third user-facing product version.
 
 ## [0.5.4] - 2026-10-09

@@ -1,6 +1,6 @@
 # Product support and compatibility
 
-`reason` is an external-preview CLI during v0.x. The native runtime remains the correctness owner; product support is defined around explicit CLI/data contracts rather than human-readable output or provider marketing guarantees.
+`reason` currently follows the documented v0.x compatibility policy. Release channel, compatibility and distribution scope are separate decisions; see [release policy](release-policy.md). The native runtime remains the correctness owner; product support is defined around explicit CLI/data contracts rather than human-readable output or provider marketing guarantees.
 
 ## Supported product surfaces
 
@@ -24,7 +24,7 @@ Every product pull request runs the credential-free `reason` smoke suite on:
 - macOS x86_64 / Intel (`macos-15-intel` runner class);
 - Windows x86_64 (`windows-2025` runner class).
 
-Tagged releases package one native `reason` executable for each of those platform classes. Other targets may compile, but are not release-supported until added to the matrix.
+Tagged CLI distributions package one native `reason` executable for each of those platform classes. Other targets may compile, but are not release-supported until added to the matrix.
 
 ## Machine contract policy
 
@@ -76,7 +76,9 @@ Provider credentials are never accepted in `reason-config-v1`. `reason setup` / 
 
 ## Stability status
 
-**Reason CLI 0.5.3 on Harness Engine 0.5.0** is the current external-preview product pair. `v0.4.2` remains the immutable final unified CLI/Engine historical release, and the 0.5.0-0.5.2 split CLI line remains immutable on Engine 0.4.2. Engine 0.5.0 was independently accepted and released as `engine-v0.5.0`, then adopted by `reason-v0.5.3`. Admission, authority, verification, finalization, answer safety, MCP non-promotion, and session replay remain Harness-owned. The documented v1.0 readiness gate is satisfied, but the current 0.5.x line intentionally remains a prerelease/v0.x compatibility promise rather than a stable v1.0 claim. A future v1.0 still requires an explicit version/tag/release decision through the normal provenance workflow.
+**Reason CLI 0.5.4 / Harness Engine 0.6.1** remains the published CLI pair. Its historical GitHub prerelease label is retained. **Engine 0.7.1** is a normal Engine-only source patch under the [release policy](release-policy.md); it is not adopted by that CLI. Major-zero API evolution, source-only distribution and a GitHub prerelease label are independent. Existing machine contract guarantees and required acceptance still apply.
+
+Future candidates use a SemVer suffix such as `0.8.0-rc.1` and list unfinished required checks plus their exit conditions. Normal releases use bare versions after the declared scope's gates pass. A future v1.0 still requires an explicit public-API/compatibility decision; a GitHub label change alone does not establish that guarantee.
 
 
 For the distinction between product terms, machine/runtime identifiers, and historical research labels, see [Terminology and naming](terminology.md).

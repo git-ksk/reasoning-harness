@@ -19,6 +19,8 @@
 
 ### Changed
 
+- 通常／候補の公開条件を0.x互換性・ソースのみの配布と分離。今後のCLI公開区分はmajor 0ではなくSemVer候補suffixで決め、候補版はLatestにしません。Engine 0.7.1は通常ソースパッチとしてGitHub区分を訂正し、公開済みtag・assetを維持。[公開方針](docs/release-policy.ja.md)を参照。
+
 - Issue #355で、ユーザー向けReason CLI package versionとHarness Engine（`reasoning-harness-core`）package versionを分離。`v0.4.2`は最後のunified historical releaseとして保持し、今後のCLI release tagは`reason-vX.Y.Z`を使う。machine contract IDは独立したcompatibility座標のまま、provider crate versionは第3のユーザー向けversionにはせず内部実装座標として扱う。
 
 ## [0.5.4] - 2026-10-09
