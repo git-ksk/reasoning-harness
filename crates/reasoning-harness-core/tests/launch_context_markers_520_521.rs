@@ -216,6 +216,65 @@ fn post_v1_development_controls_preserve_factual_signal_floor() {
 }
 
 #[test]
+fn post_v2_development_controls_preserve_statement_scope() {
+    // v2's RED first observation is retained. Replaying seen cases is only
+    // development regression coverage, never fresh independent acceptance.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../fixtures/launch-520-521-independent-v2/corpus.json"
+    ))
+    .unwrap();
+    check(corpus["cases"].as_array().unwrap().iter().map(|case|json!({
+        "id":case["case_id"],"entity":case["policy"]["entity"]["canonical_name"],
+        "aliases":case["policy"]["entity"]["aliases"],"signals":case["candidate"]["signals"],
+        "expected_relevant":case["label"]=="positive"
+    })).collect());
+    for heading in [
+        "❌ Launch announcement",
+        "~~Release announcement~~",
+        "Retraction notice",
+    ] {
+        check(vec![
+            json!({"id":heading,"signals":[{"kind":"heading","text":heading},{"kind":"excerpt","text":"Silver Lens was launched in 2026."}],"expected_relevant":false}),
+        ]);
+    }
+    check([
+        "Silver Lens might have been launched according to the release record.",
+        "Silver Lens was launched according to an unverified release record.",
+        "Documentation for Silver Lens was launched according to the release record.",
+        "Silver Lens was launched? It is available according to the release record.",
+    ].into_iter().map(|text|json!({"id":text,"signals":[{"kind":"excerpt","text":text}],"expected_relevant":false})).collect());
+}
+
+#[test]
+fn generic_disclaimer_wrappers_and_passage_references() {
+    for context in [
+        "Erratum: this report is false.",
+        "Note: this announcement was withdrawn.",
+        "What comes next is fictional.",
+        "Everything below is hypothetical.",
+        "This passage is fictional.",
+        "The author stated that this description is false.",
+        "This text is fictional.",
+        "The publisher retracted it.",
+        "Correction note: the claim above was retracted.",
+    ] {
+        check(vec![
+            json!({"id":context,"signals":[{"kind":"excerpt","text":format!("{context} Silver Lens was launched in 2026.")}],"expected_relevant":false}),
+        ]);
+    }
+    for context in [
+        "This model supports fictional characters.",
+        "Note: this model produces false alarms.",
+        "Update: the release includes an editor.",
+        "~~Silver Lens offers offline editing.~~",
+    ] {
+        check(vec![
+            json!({"id":context,"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched in 2026. {context}")}],"expected_relevant":true}),
+        ]);
+    }
+}
+
+#[test]
 fn historical_v29_dispositions_remain_unchanged_for_original_audit() {
     let rows: Vec<Value> =
         include_str!("../../../evaluation/engine-0.7.1-rereview-20261013/results.jsonl")

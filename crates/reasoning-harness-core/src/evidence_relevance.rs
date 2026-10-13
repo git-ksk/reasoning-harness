@@ -1452,6 +1452,7 @@ struct LaunchFactualSegmentV17 {
     raw: String,
     makers: Vec<String>,
     denied: bool,
+    question: bool,
 }
 
 fn launch_factual_segments_v17(
@@ -1517,7 +1518,7 @@ fn launch_factual_segments_v17(
     if let Some(start) = open {
         strikes.push(start..value.len());
     }
-    let mut finish_segment = |prepared: &mut String, raw: &mut String, start, end| {
+    let mut finish_segment = |prepared: &mut String, raw: &mut String, start, end, question| {
         let makers = launch_maker_objects_v17(raw);
         let denied = raw.chars().any(launch_denial_marker_v17)
             || strikes[strikes.partition_point(|span| span.end <= start)..]
@@ -1536,6 +1537,7 @@ fn launch_factual_segments_v17(
                 raw: raw.clone(),
                 makers,
                 denied,
+                question,
             });
         }
         prepared.clear();
@@ -1543,6 +1545,16 @@ fn launch_factual_segments_v17(
     };
     let mut raw_start = 0;
     for (index, character) in value.char_indices() {
+        // An overlay on a preceding sentence terminator belongs to that glyph,
+        // not to the first word of the next independent statement.
+        if character == '\u{0336}'
+            && value[..index]
+                .chars()
+                .next_back()
+                .is_some_and(|previous| ['.', ';', '!', '?', '。', '！', '？'].contains(&previous))
+        {
+            continue;
+        }
         let keep_period = if character == '.' {
             let inside_name = name_spans
                 .iter()
@@ -1578,14 +1590,26 @@ fn launch_factual_segments_v17(
         };
         if !keep_period && ['.', ';', '\n', '\r', '!', '?', '。', '！', '？'].contains(&character)
         {
-            finish_segment(&mut prepared, &mut raw_segment, raw_start, index);
+            finish_segment(
+                &mut prepared,
+                &mut raw_segment,
+                raw_start,
+                index,
+                ['?', '？'].contains(&character),
+            );
             raw_start = index + character.len_utf8();
         } else {
             prepared.push(if keep_period { ' ' } else { character });
             raw_segment.push(character);
         }
     }
-    finish_segment(&mut prepared, &mut raw_segment, raw_start, value.len());
+    finish_segment(
+        &mut prepared,
+        &mut raw_segment,
+        raw_start,
+        value.len(),
+        false,
+    );
     segments
 }
 
@@ -1650,9 +1674,14 @@ fn launch_explicit_other_subject_v17(
     }
     // An incidental predicate in "According to reports, it was launched" does
     // not establish another owner. Require a bounded, visibly named subject.
+    let statement = statement
+        .rsplit_once(':')
+        .map_or(statement, |(_, clause)| clause.trim());
     let folded = statement.to_ascii_lowercase();
     [
         " was launched",
+        " was not launched",
+        " has not been launched",
         " has been launched",
         " was introduced",
         " went live",
@@ -1664,6 +1693,54 @@ fn launch_explicit_other_subject_v17(
         folded
             .find(predicate)
             .is_some_and(|index| launch_named_subject_v17(&statement[..index]))
+    })
+}
+
+fn launch_explicit_nonlaunch_statement_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    text: &str,
+) -> bool {
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    if words.iter().any(|word| {
+        [
+            "launch",
+            "launched",
+            "released",
+            "introduced",
+            "availability",
+            "available",
+            "ga",
+            "fictional",
+            "hypothetical",
+            "simulation",
+        ]
+        .contains(word)
+    }) {
+        return false;
+    }
+    target_identity_phrases(policy).iter().any(|target| {
+        let name = target.split_whitespace().collect::<Vec<_>>();
+        words
+            .windows(name.len())
+            .enumerate()
+            .any(|(index, window)| {
+                if window != name {
+                    return false;
+                }
+                matches!(
+                    &words[index + name.len()..],
+                    [
+                        "supports"
+                            | "includes"
+                            | "exports"
+                            | "costs"
+                            | "offers"
+                            | "stores"
+                            | "provides",
+                        ..
+                    ] | ["has", "a" | "an", "offline", ..]
+                )
+            })
     })
 }
 
@@ -1725,9 +1802,15 @@ fn launch_governing_context_blocks_v17(
         for (index, segment) in segments.iter().enumerate() {
             let text = normalized(&segment.raw);
             let words = text.split_whitespace().collect::<Vec<_>>();
+            if launch_explicit_nonlaunch_statement_v17(policy, &text) {
+                continue;
+            }
             let owns_target = targets
                 .iter()
                 .any(|target| normalized_phrase_matches(&text, target));
+            if !owns_target && launch_explicit_other_subject_v17(policy, &segment.raw) {
+                continue;
+            }
             let scope = words.iter().any(|word| {
                 [
                     "statement",
@@ -1741,6 +1824,16 @@ fn launch_governing_context_blocks_v17(
                     "material",
                     "story",
                     "report",
+                    "account",
+                    "notice",
+                    "passage",
+                    "paragraph",
+                    "text",
+                    "description",
+                    "content",
+                    "fact",
+                    "facts",
+                    "record",
                 ]
                 .contains(word)
             });
@@ -1775,6 +1868,8 @@ fn launch_governing_context_blocks_v17(
                     "preceding",
                     "previous",
                     "next",
+                    "above",
+                    "below",
                     "launch",
                     "release",
                     "fictional",
@@ -1795,6 +1890,16 @@ fn launch_governing_context_blocks_v17(
                     "material",
                     "story",
                     "report",
+                    "account",
+                    "notice",
+                    "passage",
+                    "paragraph",
+                    "text",
+                    "description",
+                    "content",
+                    "fact",
+                    "facts",
+                    "record",
                 ]
                 .contains(&word)
             });
@@ -1813,31 +1918,68 @@ fn launch_governing_context_blocks_v17(
                         ]
                     )
                 });
-            if !owns_target
-                && (context_subject || reporting_reference)
-                && launch_explicit_other_context_v17(&segment.raw)
-            {
-                continue;
-            }
-            let reference = matches!(
-                words.as_slice(),
-                ["this" | "that" | "it", "is" | "was" | "has", ..]
-            ) || context_subject
+            let object_retraction = words.windows(2).any(|pair| {
+                matches!(
+                    pair,
+                    [
+                        "retracted" | "withdrew" | "denied" | "disavowed" | "rescinded",
+                        "it" | "them"
+                    ]
+                )
+            });
+            let reference = object_retraction
+                || matches!(
+                    words.first(),
+                    Some(&"correction" | &"erratum" | &"errata" | &"note" | &"update")
+                )
+                || (matches!(words.first(), Some(&"what" | &"everything" | &"all"))
+                    && words
+                        .iter()
+                        .any(|word| ["follows", "next", "above", "below"].contains(word)))
+                || (scope
+                    && words.iter().any(|word| {
+                        ["this", "that", "above", "below", "preceding", "following"].contains(word)
+                    }))
+                || matches!(words.as_slice(), ["what", "follows", ..])
+                || matches!(
+                    words.as_slice(),
+                    ["this" | "that" | "it", "is" | "was" | "has", ..]
+                )
+                || context_subject
                 || reporting_reference
                 || matches!(
                     words.as_slice(),
-                    ["the", "following" | "preceding" | "previous" | "next", ..]
+                    [
+                        "the",
+                        "following" | "preceding" | "previous" | "next" | "above" | "below",
+                        ..
+                    ]
                 );
             let global = matches!(words.as_slice(), ["in", "this" | "the", ..])
                 || matches!(
                     words.first(),
                     Some(&"fictional" | &"hypothetical" | &"simulation")
                 )
-                || words.first().is_some_and(|word| {
-                    launch_adverse_context_word_v17(word) && (scope || launch || words.len() == 1)
-                });
+                || words
+                    .first()
+                    .is_some_and(|word| launch_adverse_context_word_v17(word));
+            if !owns_target
+                && (context_subject || reporting_reference || global || reference)
+                && launch_explicit_other_context_v17(&segment.raw)
+            {
+                continue;
+            }
+            if segment.denied
+                && matches!(
+                    signal.kind,
+                    EvidenceRelevanceSignalKind::Heading | EvidenceRelevanceSignalKind::SourceTitle
+                )
+            {
+                return true;
+            }
             let marker_only = words.is_empty() && segment.denied;
             let denied_context = adverse
+                || (segment.denied && (context_subject || reference))
                 || (context_subject
                     && words
                         .windows(2)
@@ -1850,7 +1992,7 @@ fn launch_governing_context_blocks_v17(
             // antecedents still withhold; no model advice supplies ownership.
             let next = words
                 .iter()
-                .any(|word| ["following", "next"].contains(word));
+                .any(|word| ["following", "next", "below"].contains(word));
             let neighbor = if next || (marker_only && index == 0) {
                 segments.get(index + 1)
             } else {
@@ -1981,6 +2123,11 @@ fn target_owned_launch_fact_v17(
             }) {
                 return false;
             }
+            let segment = segment
+                .strip_suffix(" according to the release record")
+                .or_else(|| segment.strip_suffix(" according to release record"))
+                .unwrap_or(&segment)
+                .to_owned();
             // A completed preview is temporal context for a present launch,
             // unlike a product that is still only available in preview.
             let segment = [
@@ -2433,11 +2580,12 @@ fn launch_has_target_question_in_factual_signal(
                     | EvidenceRelevanceSignalKind::StructuredMetadata
             )
         })
-        .any(|signal| {
-            signal.text.contains(['?', '？'])
+        .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
+        .any(|segment| {
+            segment.question
                 && targets
                     .iter()
-                    .any(|target| normalized(&signal.text).contains(target))
+                    .any(|target| normalized_phrase_matches(&segment.raw, target))
         })
 }
 
