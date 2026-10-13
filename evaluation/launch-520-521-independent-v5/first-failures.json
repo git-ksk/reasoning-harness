@@ -1,0 +1,76 @@
+[
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v5-evidence-P519",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v5-bounded-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v5-source-P519",
+      "target_id": "v5-target-P519"
+    },
+    "case_id": "P519",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v5-evidence-P519",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Mernova Badge supports face unlock. That feature claim is false. Mernova Badge went live on 26 May 2228."
+          }
+        ],
+        "source_id": "v5-source-P519"
+      },
+      "case_id": "P519",
+      "category": "false_feature_claim_before_actual_launch",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v5-canonical-P519",
+          "canonical_name": "Mernova Badge"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v5-bounded-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v5-target-P519",
+        "target_question": "When was Mernova Badge launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  }
+]
