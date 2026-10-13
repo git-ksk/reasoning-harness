@@ -2044,6 +2044,33 @@ fn launch_governing_context_blocks_v17(
             } else {
                 index.checked_sub(1).and_then(|i| segments.get(i))
             };
+            let local_statement_reference = matches!(
+                words.as_slice(),
+                ["this" | "that", "statement" | "claim" | "assertion", ..]
+                    | [
+                        "this" | "that",
+                        "feature",
+                        "statement" | "claim" | "assertion",
+                        ..
+                    ]
+                    | [
+                        "the",
+                        "preceding" | "previous" | "next" | "following",
+                        "statement" | "claim" | "assertion",
+                        ..
+                    ]
+            );
+            // An explicit singular reference can deny the adjacent feature
+            // statement without retracting a separate launch. Broader report/
+            // passage disclaimers and missing antecedents still withhold.
+            if !owns_target
+                && local_statement_reference
+                && neighbor.is_some_and(|neighbor| {
+                    launch_explicit_nonlaunch_statement_v17(policy, &normalized(&neighbor.raw))
+                })
+            {
+                continue;
+            }
             if (reference || marker_only)
                 && neighbor.is_some_and(|neighbor| {
                     launch_explicit_other_subject_v17(policy, &neighbor.raw)

@@ -330,6 +330,38 @@ fn post_v4_development_controls_preserve_direct_objects_and_plural_context() {
 }
 
 #[test]
+fn post_v5_development_controls_bind_feature_denials_to_their_antecedent() {
+    // Preserve v5's original RED result. These seen cases only guard repairs.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../fixtures/launch-520-521-independent-v5/corpus.json"
+    ))
+    .unwrap();
+    check(corpus["cases"].as_array().unwrap().iter().map(|case|json!({
+        "id":case["case_id"],"entity":case["policy"]["entity"]["canonical_name"],
+        "aliases":case["policy"]["entity"]["aliases"],"signals":case["candidate"]["signals"],
+        "expected_relevant":case["label"]=="positive"
+    })).collect());
+    for text in [
+        "Silver Lens supports face unlock. This report is fictional. Silver Lens went live in 2026.",
+        "Silver Lens was launched in 2026. That feature claim is false.",
+        "That feature claim is false. Silver Lens went live in 2026.",
+        "The following statement is false. Silver Lens went live in 2026.",
+    ] {
+        check(vec![
+            json!({"id":text,"signals":[{"kind":"excerpt","text":text}],"expected_relevant":false}),
+        ]);
+    }
+    for text in [
+        "Silver Lens supports face unlock. That statement is false. Silver Lens went live in 2026.",
+        "Silver Lens went live in 2026. The following claim is false. Silver Lens supports face unlock.",
+    ] {
+        check(vec![
+            json!({"id":text,"signals":[{"kind":"excerpt","text":text}],"expected_relevant":true}),
+        ]);
+    }
+}
+
+#[test]
 fn historical_v29_dispositions_remain_unchanged_for_original_audit() {
     let rows: Vec<Value> =
         include_str!("../../../evaluation/engine-0.7.1-rereview-20261013/results.jsonl")
