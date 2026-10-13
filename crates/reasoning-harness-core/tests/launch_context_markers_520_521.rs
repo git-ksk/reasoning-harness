@@ -299,6 +299,37 @@ fn post_v3_development_controls_keep_unbound_pronouns_withheld() {
 }
 
 #[test]
+fn post_v4_development_controls_preserve_direct_objects_and_plural_context() {
+    // Seen v4 inputs are development controls. Its original RED first result
+    // and unchanged frozen labels remain separate immutable evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../fixtures/launch-520-521-independent-v4/corpus.json"
+    ))
+    .unwrap();
+    check(corpus["cases"].as_array().unwrap().iter().map(|case|json!({
+        "id":case["case_id"],"entity":case["policy"]["entity"]["canonical_name"],
+        "aliases":case["policy"]["entity"]["aliases"],"signals":case["candidate"]["signals"],
+        "expected_relevant":case["label"]=="positive"
+    })).collect());
+    for text in [
+        "If Maple Instruments launched Silver Lens on 26 May 2026.",
+        "Maple Instruments reportedly launched Silver Lens on 26 May 2026.",
+        "Maple Instruments launched documentation for Silver Lens on 26 May 2026.",
+        "Maple Instruments launched Silver Lens documentation on 26 May 2026.",
+        "Maple Instruments launched Silver Lens's portal on 26 May 2026.",
+        "Maple Instruments introduced Silver Lens according to an unverified rumor.",
+        "The statement that Silver Lens uses magnesium and was launched is false.",
+        "In the unverified chronology, Silver Lens was introduced on 26 May 2026.",
+        "These entries are fictional. Silver Lens was launched on 26 May 2026.",
+        "Those records were withdrawn. Silver Lens was launched on 26 May 2026.",
+    ] {
+        check(vec![
+            json!({"id":text,"signals":[{"kind":"excerpt","text":text}],"expected_relevant":false}),
+        ]);
+    }
+}
+
+#[test]
 fn historical_v29_dispositions_remain_unchanged_for_original_audit() {
     let rows: Vec<Value> =
         include_str!("../../../evaluation/engine-0.7.1-rereview-20261013/results.jsonl")

@@ -1750,6 +1750,8 @@ fn launch_explicit_nonlaunch_statement_v17(
                     | "provide"
                     | "lasts"
                     | "last"
+                    | "uses"
+                    | "use"
                     | "have",
                 ..
             ] | ["has", "a" | "an", "offline", ..]
@@ -1848,6 +1850,8 @@ fn launch_governing_context_blocks_v17(
                 [
                     "statement",
                     "statements",
+                    "entries",
+                    "records",
                     "claim",
                     "claims",
                     "assertion",
@@ -1897,6 +1901,8 @@ fn launch_governing_context_blocks_v17(
                     "an",
                     "this",
                     "that",
+                    "these",
+                    "those",
                     "following",
                     "preceding",
                     "previous",
@@ -1914,6 +1920,9 @@ fn launch_governing_context_blocks_v17(
             let context_subject = context_head.is_some_and(|word| {
                 [
                     "statement",
+                    "statements",
+                    "entries",
+                    "records",
                     "claim",
                     "assertion",
                     "announcement",
@@ -1960,7 +1969,7 @@ fn launch_governing_context_blocks_v17(
                     ]
                 )
             });
-            let reference = matches!(words.first(), Some(&"this" | &"that"))
+            let reference = matches!(words.first(), Some(&"this" | &"that" | &"these" | &"those"))
                 || words
                     .windows(2)
                     .any(|pair| matches!(pair, ["it", "is" | "was" | "has"]))
@@ -2069,6 +2078,7 @@ fn target_owned_launch_fact_v17(
         .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
         .filter(|segment| !segment.denied)
         .any(|segment| {
+            let raw = segment.raw;
             let makers = segment.makers;
             let segment = segment.text;
             let tokens = segment.split_whitespace().collect::<Vec<_>>();
@@ -2194,7 +2204,8 @@ fn target_owned_launch_fact_v17(
             // Every current frame needs an owned subject or direct object.
             // Reusing the historical permissive path would let "documentation
             // for TARGET" borrow authority even with an adjacent predicate.
-            target_owned_made_generally_available_v17(policy, &segment, &makers)
+            target_owned_active_launch_object_v17(policy, &raw, &segment)
+                || target_owned_made_generally_available_v17(policy, &segment, &makers)
                 || target_owned_launch_frame_with_predicates(
                     policy,
                     &segment,
@@ -2239,8 +2250,62 @@ fn launch_subject_prefix_v17(prefix: &[&str]) -> bool {
     if let ["release", "confirmed", rest @ ..] = prefix {
         return launch_product_prefix_v17(rest);
     }
+    // A bounded documentary adjunct can introduce a direct subject, but an
+    // arbitrary reporting/conditional clause cannot supply launch authority.
+    if let ["in", "the", rest @ ..] = prefix {
+        let rest = match rest {
+            ["published" | "official" | "dated" | "public", rest @ ..] => rest,
+            rest => rest,
+        };
+        let end = match rest {
+            ["chronology" | "timeline" | "record", ..] => 1,
+            ["release", "record" | "notes", ..] => 2,
+            _ => 0,
+        };
+        if end > 0 && launch_product_prefix_v17(&rest[end..]) {
+            return true;
+        }
+    }
     let temporal_end = launch_temporal_prefix_len_v17(prefix);
     temporal_end > 0 && launch_product_prefix_v17(&prefix[temporal_end..])
+}
+
+// A named actor can launch the exact target as its direct object. Check the
+// raw actor before normalization, and the complete object/tail after it; an
+// embedded report, possessive product, documentation object or delayed object
+// cannot borrow this frame. This helper belongs only to v17/v30.
+fn target_owned_active_launch_object_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    raw: &str,
+    text: &str,
+) -> bool {
+    let folded = raw.to_ascii_lowercase();
+    [" launched ", " introduced "].iter().any(|verb| {
+        folded.find(verb).is_some_and(|index| {
+            let actor = raw[..index].trim();
+            if !launch_named_subject_v17(actor)
+                || actor
+                    .chars()
+                    .any(|c| !c.is_alphanumeric() && ![' ', '-', '.'].contains(&c))
+            {
+                return false;
+            }
+            let head = format!("{} {} ", normalized(actor), verb.trim());
+            let Some(object) = text.strip_prefix(&head) else {
+                return false;
+            };
+            let words = object.split_whitespace().collect::<Vec<_>>();
+            target_identity_phrases(policy).iter().any(|target| {
+                let name = target.split_whitespace().collect::<Vec<_>>();
+                !name.is_empty()
+                    && words.windows(name.len()).enumerate().any(|(i, window)| {
+                        window == name
+                            && launch_product_prefix_v17(&words[..i])
+                            && intransitive_launch_tail_v17(&words[i + name.len()..])
+                    })
+            })
+        })
+    })
 }
 
 fn launch_temporal_prefix_len_v17(tokens: &[&str]) -> usize {
