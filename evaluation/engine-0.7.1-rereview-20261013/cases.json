@@ -1,0 +1,738 @@
+[
+  {
+    "id": "launch-positive",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": true,
+    "policy": "launch"
+  },
+  {
+    "id": "lambda-positive",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected_relevant": true,
+    "policy": "lambda"
+  },
+  {
+    "id": "launch-heading-In this simulation",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-heading-The following statement is false",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "The following statement is false"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-heading-Retracted claim",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "Retracted claim"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-heading-This launch claim is false.",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "This launch claim is false."
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-source_title-In this simulation",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-source_title-The following statement is false",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "The following statement is false"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-source_title-Retracted claim",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "Retracted claim"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-source_title-This launch claim is false.",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "This launch claim is false."
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-structured_metadata-In this simulation",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-structured_metadata-The following statement is false",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "The following statement is false"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-structured_metadata-Retracted claim",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "Retracted claim"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-structured_metadata-This launch claim is false.",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "This launch claim is false."
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-fact-In this simulation",
+    "signals": [
+      {
+        "kind": "fact",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-fact-The following statement is false",
+    "signals": [
+      {
+        "kind": "fact",
+        "text": "The following statement is false"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-fact-Retracted claim",
+    "signals": [
+      {
+        "kind": "fact",
+        "text": "Retracted claim"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-fact-This launch claim is false.",
+    "signals": [
+      {
+        "kind": "fact",
+        "text": "This launch claim is false."
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-excerpt-In this simulation",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-excerpt-The following statement is false",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The following statement is false"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-excerpt-Retracted claim",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Retracted claim"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-excerpt-This launch claim is false.",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "This launch claim is false."
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-enclosing-In this simulation. ",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "In this simulation. Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-enclosing-The following statement is false. ",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "The following statement is false. Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-enclosing-This is a fictional example. ",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "This is a fictional example. Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-enclosing-This claim has been retracted. ",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "This claim has been retracted. Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-neutral-heading",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "Silver Lens product launch"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": true,
+    "policy": "launch"
+  },
+  {
+    "id": "lambda-negative-heading",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "lambda"
+  },
+  {
+    "id": "launch-neutral-source_title",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "Silver Lens product launch"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": true,
+    "policy": "launch"
+  },
+  {
+    "id": "lambda-negative-source_title",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "lambda"
+  },
+  {
+    "id": "launch-neutral-structured_metadata",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "Silver Lens product launch"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": true,
+    "policy": "launch"
+  },
+  {
+    "id": "lambda-negative-structured_metadata",
+    "signals": [
+      {
+        "kind": "structured_metadata",
+        "text": "In this simulation"
+      },
+      {
+        "kind": "excerpt",
+        "text": "If you set provisioned concurrency on a function, Lambda initializes that number of execution environments so that they are prepared to respond immediately to function requests."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "lambda"
+  },
+  {
+    "id": "launch-local-negative-Silver Lens was not launched in 2026.",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was not launched in 2026."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-local-negative-Silver Lens might have been launched in 2026.",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens might have been launched in 2026."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-local-negative-In this simulation Silver Lens was launched in 2026.",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "In this simulation Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-local-negative-Documentation for Silver Lens was launched in 2026.",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Documentation for Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-local-negative-Maple Queue was launched in 2026; Silver Lens remains unavailable.",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Maple Queue was launched in 2026; Silver Lens remains unavailable."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "launch-local-negative-Silver Lens was launched?",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched?"
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch"
+  },
+  {
+    "id": "affirmative-GLM 5.3",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Amazon Bedrock has made the latest version of GLM 5.3 from Z.ai generally available."
+      }
+    ],
+    "expected_relevant": true,
+    "policy": "launch",
+    "entity": "GLM 5.3"
+  },
+  {
+    "id": "governing-denial-GLM 5.3",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "The following statement is false"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Amazon Bedrock has made the latest version of GLM 5.3 from Z.ai generally available."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch",
+    "entity": "GLM 5.3"
+  },
+  {
+    "id": "affirmative-Silver Lens",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens has been launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": true,
+    "policy": "launch",
+    "entity": "Silver Lens"
+  },
+  {
+    "id": "governing-denial-Silver Lens",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "The following statement is false"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens has been launched in 2026 for customers."
+      }
+    ],
+    "expected_relevant": false,
+    "policy": "launch",
+    "entity": "Silver Lens"
+  },
+  {
+    "id": "launch-raw-or-following-~~Silver Lens was launched in 2026.~~",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "~~Silver Lens was launched in 2026.~~"
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "launch-raw-or-following-❌ Silver Lens was launched in 2026.",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "❌ Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "launch-raw-or-following-Silver Lens was launched in 2026 ❌.",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026 ❌."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "launch-raw-or-following-Silver Lens ≠ was launched in 2026.",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens ≠ was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "launch-raw-or-following-Silver Lens ¬ was launched in 2026.",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens ¬ was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "launch-raw-or-following-✗ Silver Lens was launched in 2026.",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "✗ Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "launch-raw-or-following-✘ Silver Lens was launched in 2026.",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "✘ Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "launch-raw-or-following-~~Silver Lens~~ was launched in 2026.",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "~~Silver Lens~~ was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "launch-raw-or-following-Silver Lens was launched in 2026. This statement is false.",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. This statement is false."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "launch-raw-or-following-Silver Lens was launched in 2026. This is a fictional example.",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. This is a fictional example."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "punctuation-GLM 5.3-❌ ",
+    "entity": "GLM 5.3",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "❌ Amazon Bedrock has made the latest version of GLM 5.3 from Z.ai generally available."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "punctuation-GLM 5.3-~~",
+    "entity": "GLM 5.3",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "~~Amazon Bedrock has made the latest version of GLM 5.3 from Z.ai generally available.~~"
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "punctuation-Silver Lens-❌ ",
+    "entity": "Silver Lens",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "❌ Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "punctuation-Silver Lens-~~",
+    "entity": "Silver Lens",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "~~Silver Lens was launched in 2026.~~"
+      }
+    ],
+    "expected_relevant": false
+  }
+]

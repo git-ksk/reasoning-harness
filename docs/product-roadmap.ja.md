@@ -143,13 +143,17 @@ Engine 0.6.0のmilestoneと`engine-v0.6.0` releaseは完了済みで、変更し
 - **#467 / #470 依存関係保守:** 通常のCargo依存更新はEngineのsemantic acceptance記録とは別に管理します。
 - **Engine 0.7ソース系列:** 0.7.0で出典照合の採用範囲を公開し、0.7.1でマージ済み#512/#514/#515修正をまとめます。配布CLIへの採用は別リリースです。
 
-## トラックE — Harness Engine 0.7: 公開ソースと保留中の仮説
+## トラックE — Harness Engine 0.7: 修正パッチと保留中の仮説
 
 [Engine 0.7.0](engine-0.7.0-release.ja.md)は、#487 baseline・#496の承認ホスト制御・#492の固定した独立合成評価後、#490の任意のホスト承認付き出典照合・対象別表示を公開しました。元のConflict・claim・引用は維持し、モデルの助言はレビュー許可や外部truthを作りません。同じOSユーザーの自動keyring E2Eは、独立した人間の承認証明ではありません。
 
 [Engine 0.7.1](engine-0.7.1-release.ja.md)は、マージ済み#512の日英準備記述・#514/#515の発売記述修正をまとめます。歴史的v16/v29、凍結観測、machine契約を維持します。パッチ固有の検証と限界は0.7.0のprovider観測と分けて記録しています。
 
+**次の修正パッチは[Engine 0.7.2計画](engine-0.7.2-roadmap.ja.md)で、未実装・未公開です。** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11)に、[#520 架空・撤回・偽の上位文脈](https://github.com/git-ksk/reasoning-harness/issues/520)と[#521 取り消し線・否定記号](https://github.com/git-ksk/reasoning-harness/issues/521)を置きます。2026-10-13の[再点検記録](../evaluation/engine-0.7.1-rereview-20261013/README.md)では、0.7.1で28＋12件が誤Relevant、同じ入力は公開済み0.7.0のv30で全件Ambiguousでした。肯定7件は保持しています。両修正・肯定／安全性回帰・別作成者の新しい評価・正確な候補での検査を公開条件にします。既存テストの成功で今回の失敗を消しません。後段の誤回答やhard truthへの誤昇格は再現していません。
+
 [Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10)／[親#486](https://github.com/git-ksk/reasoning-harness/issues/486)は、保留した[#488の出典系譜](https://github.com/git-ksk/reasoning-harness/issues/488)、[#489の信頼済み改訂関係](https://github.com/git-ksk/reasoning-harness/issues/489)、[#491の追加回答可否・再取得](https://github.com/git-ksk/reasoning-harness/issues/491)のためOPENです。新機構を必要とする具体的な製品上の失敗は未実証で、実装前に必要性の実測と別acceptanceの固定が必要です。限定的なソースパッチの公開は妨げません。
+
+新規2件が現時点で再現できた0.7系の修正バックログです。保留3件は実験が必要な改善案で、追加の既知不具合3件ではありません。ほかの不具合が皆無とするものでもありません。#465の旧MCP CI安定性と#506のCLI配布検証は別工程です。
 
 公開済み製品はCLI 0.5.4 / Engine 0.6.1です。#506の分離したCLI 0.5.5 / Engine 0.6.1候補はWindows実機確認待ちです。Engine 0.7のCLI採用は別リリース判断です。
 

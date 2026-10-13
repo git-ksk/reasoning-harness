@@ -1,0 +1,9 @@
+{
+  "verified_at_utc": "2026-10-13T06:30:41.147225+00:00",
+  "method": "README portable commands: full unchanged tag archives, separate locked Cargo core builds, Rust 1.88.0; original public-API runners",
+  "engine_070_rows_byte_identical": 56,
+  "engine_071_rows_byte_identical": 56,
+  "reconciliation_071_rows_byte_identical": 22,
+  "runtime_changed": false,
+  "fresh_independent_acceptance": false
+}

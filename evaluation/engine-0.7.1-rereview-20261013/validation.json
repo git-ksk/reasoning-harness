@@ -1,0 +1,57 @@
+{
+  "verified_at_utc": "2026-10-13T04:40:11.732578+00:00",
+  "main_sha": "09000ed89d390709d5c368f672212b87d08254be",
+  "release_tag": "engine-v0.7.1",
+  "release_sha": "344e708150eb158b55144a0228f154ef28f63d6d",
+  "engine_source_identical_to_release": true,
+  "source_sha256": "e2b78736033a236778581ccdaa3d2d5137b599f9b76d4a4cb54b37914c58a76b",
+  "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+  "workspace": {
+    "passed": 1468,
+    "failed": 0,
+    "ignored": 6,
+    "test_binaries": 157,
+    "ignored_names": [
+      "mcp_oauth::tests::native_os_store_round_trip",
+      "mcp_oauth::tests::native_os_store_scoped_delete_does_not_cross_accounts",
+      "secure_credentials::tests::native_os_store_round_trip",
+      "remote_mcp_remove_reports_present_and_absent_credentials_without_cross_account_deletion",
+      "mcp_readonly_v3::tests::official_github_mcp_pinned_image_negotiates_and_generic_result_stays_opaque",
+      "parallel_legacy_mcp_fixtures_preserve_fail_closed_observations"
+    ]
+  },
+  "new_root_authored_synthetic_probes": {
+    "total": 56,
+    "false_positive": 40,
+    "context_failures": 28,
+    "raw_marker_failures": 12,
+    "missed_positives": 0,
+    "previous_070_dispositions_on_40_failures": {
+      "ambiguous": 40
+    }
+  },
+  "source_reconciliation_adversarial_controls": {
+    "passed": 22,
+    "failed": 0
+  },
+  "fixtures": {
+    "cases": 20,
+    "accuracy": 1.0,
+    "unsupported_accepted_claims": 0
+  },
+  "strict_clippy": "PASS",
+  "format": "PASS",
+  "original_archive_exact_hashes": 13,
+  "fresh_independent_or_live_acceptance": false,
+  "modified_tracked_files": false,
+  "files_sha256": {
+    "/private/tmp/engine-07-rereview/probe.rs": "09ab480e86d0b71227e61c7d88c65e2ee1f262f2aae334750f76d50ab4b59cf6",
+    "/private/tmp/engine-07-rereview/cases.json": "7fb71bdc16df5a78624d775db0a2b2fd847d845f9695cd71ef24b08ebe82e67a",
+    "/private/tmp/engine-07-rereview/results.jsonl": "615196bfff1ca3b2c1022cc4b56d4963c1af1eec2d9e20926b14ce4b01b72e30",
+    "/private/tmp/engine-07-rereview/results-070.jsonl": "5f4a5978d25dcc1ce9ea3b7c5552e7bcab3235564c5b33b067da46036d36333b",
+    "/private/tmp/engine-07-rereview/reconciliation.rs": "fe32f43f1bf9a85b8a73e86029f343fdcb888f312edde34017233e8ca06969c8",
+    "/private/tmp/engine-07-rereview/reconciliation-results.jsonl": "ddff3bc6e460cc51ed957d7f6a2b0b8590a66967dd005683f8bd28039ad503b2",
+    "/private/tmp/engine-07-rereview-clippy.log": "26451ef90adf9ad72f836e98f19755a01e55a77c758019365efe564605d49486",
+    "/private/tmp/engine-07-rereview-tests.log": "2dfb9b8da3169e334dfe401ff4e92f748e31d7c1cdc8b406089159a0e20b6848"
+  }
+}
