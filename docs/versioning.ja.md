@@ -46,3 +46,9 @@ CLI 0.5.0 productization milestoneはEngine 0.4.2上でsetup、secure credential
 独立EngineソースパッチはHarness Engine 0.7.1（`engine-v0.7.1`）で、固定済み`engine-v0.7.0`に続きます。[リリースノート](engine-0.7.1-release.ja.md)を参照してください。公開済み`reason-v0.5.4`バイナリはEngine 0.6.1を継続し、Engine 0.7.1の採用には別CLIリリースが必要です。過去のCLI・Engine artifactは不変です。
 
 現在の公開済みproduct pairはReason CLI 0.5.4 / Engine 0.6.1（`reason-v0.5.4`）です。以前の0.5.3 / Engine 0.5.0はimmutableのまま維持します。上記の旧座標は過去の経緯です。
+
+## 公開区分と候補版からの昇格
+
+[公開方針](release-policy.ja.md)で、通常／プレリリースの条件を0.x互換性やEngine/CLI配布と分けて定義します。今後の候補package/tagは`-alpha.N`・`-beta.N`・`-rc.N`を一致させ、目標の通常版と未完了の必須検証を記載します。build metadataでは候補版扱いにしません。
+
+最初から`0.7.0-rc.1 → 0.7.0`とすれば候補から通常公開への昇格を表せました。実際の`engine-v0.7.0`はsuffixなしの0.7.0と従来のGitHub区分で公開済みです。0.7.1には#512/#514/#515の追加修正があるため、0.7.0を維持し、修正版0.7.1を通常パッチとして公開します。0.7.1のGitHub表示訂正でtag・ソースを動かしたり、CLI採用を完了扱いにしたりしません。

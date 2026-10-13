@@ -43,7 +43,7 @@ verifier / trust-root rotationはsupported GitHub CLI / Sigstore trust metadata�
 
 ## Immutable releases
 
-repositoryのimmutable releasesを有効化しています。これはfuture releaseへ適用され、公開後のrelease asset / tag変更をGitHub側でも防ぎます。attestation検証は引き続き必須で、immutability単独をprovenanceの代替にはしません。
+repositoryのimmutable releasesを有効化しています。これはfuture releaseへ適用され、公開後のasset差し替え・tag移動／削除をGitHub側でも防ぎます。説明文・プレリリース／Latest表示は編集可能で、区分訂正は[公開方針](release-policy.ja.md)に従い、ソース・assetを維持します。attestation検証は引き続き必須で、immutability単独をprovenanceの代替にはしません。
 
 ## Historical release
 

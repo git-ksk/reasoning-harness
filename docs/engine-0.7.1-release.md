@@ -5,7 +5,8 @@
 ## Release coordinates
 
 - Source package: `reasoning-harness-core 0.7.1`, `publish = false`.
-- Tag: `engine-v0.7.1`; source prerelease following immutable `engine-v0.7.0`.
+- Tag: `engine-v0.7.1`; normal Engine-only source patch following immutable `engine-v0.7.0`.
+- [Release policy](release-policy.md): the initial GitHub prerelease label was a classification error carried over from the older v0.x convention. It is corrected without changing the immutable tag, commit or assets. Tagged documentation keeps its original snapshot; current classification is recorded in the GitHub notes and this policy.
 - Published Reason CLI remains **0.5.4 / Engine 0.6.1**. CLI adoption and native distribution are separate releases. The CLI 0.5.5 / Engine 0.6.1 candidate remains isolated under #506.
 - This release preparation changes package identity and documentation only; Engine implementation is identical to merged main `3d712f6f7e76606229e014bd90cb97fbcfc9a6b3`.
 

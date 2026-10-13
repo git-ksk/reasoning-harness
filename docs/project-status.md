@@ -8,7 +8,7 @@ For the preserved long-form provenance ledger, see [Project status history](proj
 
 ## Current release
 
-**Reason CLI 0.5.4 on Harness Engine 0.6.1** is the current published CLI preview; previous `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0. **Harness Engine 0.7.1** is the independent Engine source patch under `engine-v0.7.1`; Reason CLI 0.5.4 continues to distribute Engine 0.6.1. See [0.7.1 release notes](engine-0.7.1-release.md).
+**Reason CLI 0.5.4 on Harness Engine 0.6.1** is the current published CLI; previous `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0. **Harness Engine 0.7.1** is the normal independent Engine source patch under `engine-v0.7.1`; Reason CLI 0.5.4 continues to distribute Engine 0.6.1. See [0.7.1 release notes](engine-0.7.1-release.md).
 
 ```text
 Published CLI: Reason CLI 0.5.4 / Harness Engine 0.6.1

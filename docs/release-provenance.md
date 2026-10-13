@@ -43,7 +43,7 @@ Verifier/trust-root rotation is handled by supported GitHub CLI/Sigstore trust m
 
 ## Immutable releases
 
-Repository-level immutable releases are enabled. This applies to future releases and prevents post-publication release/tag mutation at the GitHub layer. Attestation verification remains mandatory; immutability is defense in depth, not a replacement for provenance.
+Repository-level immutable releases are enabled. This applies to future releases and prevents post-publication asset replacement and tag movement/deletion at the GitHub layer. GitHub still permits editing notes and the prerelease/Latest labels; classification corrections must follow the [release policy](release-policy.md) and preserve source/assets. Attestation verification remains mandatory; immutability is defense in depth, not a replacement for provenance.
 
 ## Historical releases
 
