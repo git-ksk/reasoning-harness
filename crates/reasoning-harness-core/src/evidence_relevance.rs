@@ -2143,14 +2143,6 @@ fn launch_governing_context_blocks_v17(
                         ..
                     ]
                 );
-            let global = matches!(words.as_slice(), ["in", "this" | "the", ..])
-                || matches!(
-                    words.first(),
-                    Some(&"fictional" | &"hypothetical" | &"simulation")
-                )
-                || words
-                    .first()
-                    .is_some_and(|word| launch_adverse_context_word_v17(word));
             if !owns_target && launch_explicit_other_context_v17(&segment.raw) {
                 continue;
             }
@@ -2165,15 +2157,13 @@ fn launch_governing_context_blocks_v17(
             let marker_only = words.is_empty() && segment.denied;
             let denied_context = adverse
                 || (segment.denied && (context_subject || reference))
-                || (context_subject
-                    && words
-                        .windows(2)
-                        .any(|pair| matches!(pair, ["not", "true" | "correct"])));
-            let documentary = matches!(
-                signal.kind,
-                EvidenceRelevanceSignalKind::Heading | EvidenceRelevanceSignalKind::SourceTitle
-            );
-            if !((denied_context && (reference || global || scope || documentary)) || marker_only) {
+                || words
+                    .windows(2)
+                    .any(|pair| matches!(pair, ["not", "true" | "correct"]));
+            // A known adverse cue with unresolved scope cannot disappear just
+            // because its reference wording is outside our local grammar.
+            // Clear foreign/feature ownership is excluded above or bound below.
+            if !(denied_context || marker_only) {
                 continue;
             }
             // Bind explicit next/preceding references locally. A named other

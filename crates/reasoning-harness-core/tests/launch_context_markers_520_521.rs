@@ -481,6 +481,31 @@ fn post_v8_development_controls_preserve_collective_denials_and_actor_adjuncts()
 }
 
 #[test]
+fn post_v9_development_controls_withhold_unresolved_adverse_references() {
+    // v9's GREEN first observation remains attached to its original candidate;
+    // the broader root scope checks below require a new fixed-source holdout.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../fixtures/launch-520-521-independent-v9/corpus.json"
+    ))
+    .unwrap();
+    check(corpus["cases"].as_array().unwrap().iter().map(|case|json!({
+        "id":case["case_id"],"entity":case["policy"]["entity"]["canonical_name"],
+        "aliases":case["policy"]["entity"]["aliases"],"signals":case["candidate"]["signals"],
+        "expected_relevant":case["label"]=="positive"
+    })).collect());
+    for denial in [
+        "Both of them were retracted.",
+        "They were both retracted.",
+        "The two of them were withdrawn.",
+        "Both of them are not true.",
+    ] {
+        check(vec![
+            json!({"id":denial,"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched in 2026. Maple Queue was introduced in 2026. {denial}")}],"expected_relevant":false}),
+        ]);
+    }
+}
+
+#[test]
 fn historical_v29_dispositions_remain_unchanged_for_original_audit() {
     let rows: Vec<Value> =
         include_str!("../../../evaluation/engine-0.7.1-rereview-20261013/results.jsonl")
