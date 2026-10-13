@@ -85,7 +85,9 @@ Independent frozen acceptance completed before promotion: #461 holdout run `3596
 
 [Engine 0.7.1](engine-0.7.1-release.md) packages merged #512/#514/#515 successor v17/v30 corrections. Historical v16/v29 and frozen evaluation results remain unchanged. Patch-specific evidence is deterministic and synthetic; no new live-provider or real-user acceptance is claimed.
 
-[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) and #486 stay open only for explicitly deferred #488 source lineage, #489 trusted supersession and #491 extra answerability/reacquisition. These require measured use cases and separate acceptance before adoption. CLI 0.5.5 / Engine 0.6.1 maintenance remains separate under #506 and awaits physical Windows acceptance.
+**Known 0.7.1 regressions:** [#520](https://github.com/git-ksk/reasoning-harness/issues/520) loses governing fictional/retracted/false context; [#521](https://github.com/git-ksk/reasoning-harness/issues/521) strips original strikethrough/negation markers. Both incorrectly qualify launch evidence under v17/v30. The [saved 2026-10-13 audit](../evaluation/engine-0.7.1-rereview-20261013/README.md) reproduces 40 negative failures that were Ambiguous at released 0.7.0 v30; it does not establish downstream wrong answers or hard truth promotion. They form [planned 0.7.2](engine-0.7.2-roadmap.md) / [milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11), **not implemented or released**. Historical releases and observations remain unchanged.
+
+[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) retains explicitly deferred #488 source lineage, #489 trusted supersession and #491 extra answerability/reacquisition; parent #486 links this research and the new corrective patch. The three hypotheses require measured use cases and separate acceptance before adoption. The two new issues are the currently reproduced corrective backlog, not an exhaustive absence-of-defects claim. CLI 0.5.5 / Engine 0.6.1 maintenance remains separate under #506 and awaits physical Windows acceptance.
 
 ## Current trust boundary
 

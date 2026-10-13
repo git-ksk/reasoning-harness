@@ -1,0 +1,75 @@
+{
+  "schema": "engine-0.7.1-rereview-development-evidence-v1",
+  "authorship": "root-authored synthetic audit; not independent acceptance",
+  "reviewed_main": "09000ed89d390709d5c368f672212b87d08254be",
+  "release_071": {
+    "tag": "engine-v0.7.1",
+    "commit": "344e708150eb158b55144a0228f154ef28f63d6d"
+  },
+  "release_070": {
+    "tag": "engine-v0.7.0",
+    "commit": "5c7682d988c18a5a7e7a1954bd2a369cad2e9070"
+  },
+  "original_validation": "validation.json preserves original scratch paths and audit-time state; use these relative paths and hashes for the saved bundle",
+  "groups": {
+    "520_governing_context": [
+      "launch-heading-In this simulation",
+      "launch-heading-The following statement is false",
+      "launch-heading-Retracted claim",
+      "launch-heading-This launch claim is false.",
+      "launch-source_title-In this simulation",
+      "launch-source_title-The following statement is false",
+      "launch-source_title-Retracted claim",
+      "launch-source_title-This launch claim is false.",
+      "launch-structured_metadata-In this simulation",
+      "launch-structured_metadata-The following statement is false",
+      "launch-structured_metadata-Retracted claim",
+      "launch-structured_metadata-This launch claim is false.",
+      "launch-fact-In this simulation",
+      "launch-fact-The following statement is false",
+      "launch-fact-Retracted claim",
+      "launch-fact-This launch claim is false.",
+      "launch-excerpt-In this simulation",
+      "launch-excerpt-The following statement is false",
+      "launch-excerpt-Retracted claim",
+      "launch-excerpt-This launch claim is false.",
+      "launch-enclosing-In this simulation. ",
+      "launch-enclosing-The following statement is false. ",
+      "launch-enclosing-This is a fictional example. ",
+      "launch-enclosing-This claim has been retracted. ",
+      "governing-denial-GLM 5.3",
+      "governing-denial-Silver Lens",
+      "launch-raw-or-following-Silver Lens was launched in 2026. This statement is false.",
+      "launch-raw-or-following-Silver Lens was launched in 2026. This is a fictional example."
+    ],
+    "521_raw_markers": [
+      "launch-raw-or-following-~~Silver Lens was launched in 2026.~~",
+      "launch-raw-or-following-❌ Silver Lens was launched in 2026.",
+      "launch-raw-or-following-Silver Lens was launched in 2026 ❌.",
+      "launch-raw-or-following-Silver Lens ≠ was launched in 2026.",
+      "launch-raw-or-following-Silver Lens ¬ was launched in 2026.",
+      "launch-raw-or-following-✗ Silver Lens was launched in 2026.",
+      "launch-raw-or-following-✘ Silver Lens was launched in 2026.",
+      "launch-raw-or-following-~~Silver Lens~~ was launched in 2026.",
+      "punctuation-GLM 5.3-❌ ",
+      "punctuation-GLM 5.3-~~",
+      "punctuation-Silver Lens-❌ ",
+      "punctuation-Silver Lens-~~"
+    ]
+  },
+  "files_sha256": {
+    "cases.json": "7fb71bdc16df5a78624d775db0a2b2fd847d845f9695cd71ef24b08ebe82e67a",
+    "clippy.log": "26451ef90adf9ad72f836e98f19755a01e55a77c758019365efe564605d49486",
+    "fixtures.json": "808579a083c50b2fb107df3e87e19332825af73367981cc629e5d162fce4ffdf",
+    "probe.rs": "09ab480e86d0b71227e61c7d88c65e2ee1f262f2aae334750f76d50ab4b59cf6",
+    "reconciliation-results.jsonl": "ddff3bc6e460cc51ed957d7f6a2b0b8590a66967dd005683f8bd28039ad503b2",
+    "reconciliation.rs": "fe32f43f1bf9a85b8a73e86029f343fdcb888f312edde34017233e8ca06969c8",
+    "results-070.jsonl": "5f4a5978d25dcc1ce9ea3b7c5552e7bcab3235564c5b33b067da46036d36333b",
+    "results.jsonl": "615196bfff1ca3b2c1022cc4b56d4963c1af1eec2d9e20926b14ce4b01b72e30",
+    "tag-comparison.json": "905a53e4771440f401cbfad48ff5cb26e5ac53ab96f3eb4a67aa41f394382837",
+    "validation.json": "2734d1c1fd04f6fefda330f015fad3e6ff37b366a0a0d5e50b9326bdace2a615",
+    "workspace-tests.log": "2dfb9b8da3169e334dfe401ff4e92f748e31d7c1cdc8b406089159a0e20b6848",
+    "portable-reproduction.log": "db12d564feb4dad4c85eb5aa0383f7b654018a145981ea870b86d1b4d2148742",
+    "portable-validation.json": "12bfaacb8afd14adc0b33d07a415bd5353c97cafc792c1ec2d3148662f37926c"
+  }
+}

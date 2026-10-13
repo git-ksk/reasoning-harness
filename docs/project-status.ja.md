@@ -85,7 +85,9 @@ promotion前に独立freeze済みacceptanceを完了しています。#461 holdo
 
 [Engine 0.7.1](engine-0.7.1-release.ja.md)はマージ済み#512/#514/#515の後継v17/v30修正をまとめます。歴史的v16/v29と凍結済みの結果は維持します。パッチ固有の検証は決定論的・合成データによるもので、新しいlive-provider・実ユーザーacceptanceは主張しません。
 
-[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10)と#486は、保留した#488の出典系譜、#489の信頼済み改訂関係、#491の追加回答可否・再取得を追跡するためOPENです。採用には具体的な必要性の実測と別acceptanceが必要です。#506のCLI 0.5.5 / Engine 0.6.1保守候補は別工程で、Windows実機確認待ちです。
+**0.7.1の既知の回帰:** [#520](https://github.com/git-ksk/reasoning-harness/issues/520)は架空・撤回・偽の上位文脈を失い、[#521](https://github.com/git-ksk/reasoning-harness/issues/521)は原文の取り消し線・否定記号を消します。いずれもv17/v30で発売根拠を誤採用します。[2026-10-13の再点検記録](../evaluation/engine-0.7.1-rereview-20261013/README.md)でnegative40件を再現し、同じ入力は公開済み0.7.0のv30ではAmbiguousでした。後段の誤回答やhard truthへの誤昇格の証明ではありません。[0.7.2計画](engine-0.7.2-roadmap.ja.md)／[Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11)に置き、**未実装・未公開**です。過去の公開版と観測は保持します。
+
+[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10)には保留した#488の出典系譜、#489の信頼済み改訂関係、#491の追加回答可否・再取得を残し、親#486から実証待ちの研究と新しい修正パッチを案内します。3仮説の採用には必要性の実測と別acceptanceが必要です。新規2件が現時点で再現できた修正バックログであり、ほかの不具合が皆無とするものではありません。#506のCLI 0.5.5 / Engine 0.6.1保守候補は別工程で、Windows実機確認待ちです。
 
 ## 現在の信頼境界
 

@@ -143,13 +143,17 @@ The Engine 0.6.0 milestone and `engine-v0.6.0` release are closed and immutable.
 - **#467 / #470 dependency maintenance:** routine Cargo dependency updates are independent of the Engine semantic acceptance record.
 - **Engine 0.7 source line:** 0.7.0 shipped the accepted source-reconciliation scope; 0.7.1 packages merged #512/#514/#515 corrections. Published CLI adoption remains separate.
 
-## Track E — Harness Engine 0.7: released source scope and deferred hypotheses
+## Track E — Harness Engine 0.7: corrective patch and deferred hypotheses
 
 [Engine 0.7.0](engine-0.7.0-release.md) shipped #490 opt-in host-reviewed target-local attributed presentation after #487 baseline, #496 reviewer-host controls and #492 frozen independent fictional-source acceptance. The original Conflict, claims and citations remain intact; model advice cannot authorize a review or establish external truth. Same-user automated keyring E2E is not independently authenticated human approval.
 
 [Engine 0.7.1](engine-0.7.1-release.md) packages the merged #512 bilingual preparation and #514/#515 launch-frame corrections, preserving historical v16/v29, frozen observations and machine contracts. Its patch evidence and limits are documented separately from 0.7.0's provider observation.
 
+**Next corrective patch: [Engine 0.7.2 plan](engine-0.7.2-roadmap.md), not implemented or released.** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) contains [#520 governing fictional/retracted/false context](https://github.com/git-ksk/reasoning-harness/issues/520) and [#521 raw strikethrough/negation markers](https://github.com/git-ksk/reasoning-harness/issues/521). The 2026-10-13 [saved audit](../evaluation/engine-0.7.1-rereview-20261013/README.md) reproduces 28 + 12 false-Relevant cases in 0.7.1, all Ambiguous at released 0.7.0 v30, with 7 positive controls retained. Require both fixes, positive/safety regressions, fresh separately authored acceptance and exact-candidate checks before release. Existing passing tests do not erase this failing observation; no downstream wrong answer or hard truth promotion was demonstrated.
+
 [Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) / [parent #486](https://github.com/git-ksk/reasoning-harness/issues/486) remain open for explicitly deferred [#488 source lineage](https://github.com/git-ksk/reasoning-harness/issues/488), [#489 trusted revision supersession](https://github.com/git-ksk/reasoning-harness/issues/489) and [#491 additional answerability/reacquisition](https://github.com/git-ksk/reasoning-harness/issues/491). No concrete supported product failure requiring these new mechanisms was established; demonstrate a measured use case and freeze separate acceptance before implementation. They do not block the narrow source patches.
+
+The two new issues are the currently reproduced 0.7 corrective backlog; the three deferred items are possible improvements requiring experiments, not three additional confirmed bugs. This is not an exhaustive absence-of-defects claim. #465's legacy MCP CI reliability and #506's CLI distribution gate remain separate.
 
 CLI 0.5.4 / Engine 0.6.1 remains the published product pair; #506's isolated CLI 0.5.5 / Engine 0.6.1 candidate awaits physical Windows acceptance. Engine 0.7 CLI adoption is a separate release decision.
 
