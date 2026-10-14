@@ -56,5 +56,7 @@
   ],
   "state_isolation": "new empty REASON_HOME for every individual CLI/probe/adviser invocation",
   "freeze_reservation": "unique push-only immutable freeze tag, run_attempt1; duplicate same-commit workflow push runs are rejected before credentials",
-  "immutable_execution": "workflow copies frozen suite and workflow into read-only scratch; code/binary hashes checked before every invocation"
+  "immutable_execution": "workflow copies frozen suite and workflow into read-only scratch; code/binary hashes checked before every invocation",
+  "provider_lane_max_minutes": 210,
+  "aggregate_missing_usage": "total null if any missing, separately named observed partial sum and unavailable count"
 }

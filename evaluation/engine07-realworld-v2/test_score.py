@@ -15,7 +15,7 @@ class SafetyScoring(unittest.TestCase):
    e.append({k:x[k] for k in ('id','source','observation','facts')}|{'metadata':{'scope':a['scope'],'provenance_class':a['claimed_authority_class'],'temporal':{'effective_from_unix_seconds':a['observed_at_unix_seconds'],'effective_until_unix_seconds':a['observed_at_unix_seconds']+86400}}})
   claim={'proposition':{'key':key,'value':value},'state':state,'evidence_ids':[x['id'] for x in e]}
   p={'result':{'output_contract':'reason-natural-output-v4','final_outcome':{'artifact':{'evidence':e,'claims':[claim]}},'finalization':{'status':status,'text':key+' = '+value if text else None,'factual_claims':1,'covered_claims':int(state in ('known','supported')),'factual_claim_coverage':int(state in ('known','supported'))}}}
-  trace={'contract':'reason-natural-diagnostic-trace-v1','events':[{'kind':'model_request','request':{}},{'kind':'evidence_admission','admitted_evidence_ids':[x['id'] for x in e]},{'kind':'finalization_state'}]}
+  trace={'contract':'reason-natural-diagnostic-trace-v1','events':[{'kind':'model_request','correlation_id':'r:1','attempt':1,'request':{'task':'test','output_format':{'type':'json_object'},'max_tokens':1024}},{'kind':'model_response','correlation_id':'r:1','attempt':1,'model':'m','response':{'usage':{'input_tokens':5,'output_tokens':7},'provider_attempts':1}},{'kind':'evidence_admission','admitted_evidence_ids':[x['id'] for x in e]},{'kind':'finalization_state'}]}
   journal=[{'response':{'contribution':{'evidence':r}}}]
   return p,trace,journal
  def score(self,case=None,operation=None,**kwargs):
@@ -29,7 +29,7 @@ class SafetyScoring(unittest.TestCase):
   original={'claim_ids':['c:0','c:1'],'citations':cites,'text':text,'status':'conflict'}
   b={'id':case['id'],'engine_version':'0.6.1','binding_count':2,'artifact_unchanged':True,'claims_promoted':False,'replay_equal':True,'unauthorized_reviewed':False,'original':original,'status':'conflict','view':copy.deepcopy(original)}
   c={**copy.deepcopy(b),'engine_version':'0.7.2','status':'reviewed_compatible','view':{'contract_id':'harness-source-reconciliation-target-answer-v1','original':copy.deepcopy(original),'target_answers':[{'target_id':case['id'],'status':'reviewed_compatible','original':copy.deepcopy(original)}]}}
-  return s,b,c,{'equivalent':True,'model_calls':1}
+  return s,b,c,{'equivalent':True,'model_calls':1,'provider':'mistral','requested_model':'m','model':'m','elapsed_ms':1,'operational_failure':None,'usage':{'input_tokens':5,'output_tokens':7},'provider_attempts':1,'response_text':'{"equivalent":true}'}
  def test_answer_requires_matching_authority_and_reference(self):
   self.assertTrue(self.score()['complete_useful_answer'])
   for state in ['unknown','inferred','assumed']:self.assertTrue(self.score(state=state)['hard_violations'])
@@ -86,8 +86,18 @@ class SafetyScoring(unittest.TestCase):
   self.assertIsNone(r['semantic_target_detection_success']);self.assertEqual(r['compatible_display_gain'],0)
  def test_trace_costs_missing_is_unavailable_not_zero(self):
   self.assertIsNone(costs({})['model_calls'])
-  trace={'contract':'reason-natural-diagnostic-trace-v1','events':[{'kind':'model_response','model':'m','latency_ms':3,'response':{'usage':{'input_tokens':5,'output_tokens':7},'provider_attempts':1}}]}
+  trace={'contract':'reason-natural-diagnostic-trace-v1','events':[{'kind':'model_request','correlation_id':'r:1','attempt':1,'request':{'task':'test','output_format':{'type':'json_object'},'max_tokens':1024}},{'kind':'model_response','correlation_id':'r:1','attempt':1,'model':'m','latency_ms':3,'response':{'usage':{'input_tokens':5,'output_tokens':7},'provider_attempts':1}}]}
   r=costs(trace);self.assertEqual((r['model_calls'],r['tokens'],r['provider_attempts']),(1,12,1))
-  trace['events'].append({'kind':'model_failure','failure_class':'quota'})
+  trace['events'].extend([{'kind':'model_request','correlation_id':'r:2','attempt':1,'request':{'task':'test','output_format':{'type':'json_object'},'max_tokens':1024}},{'kind':'model_failure','correlation_id':'r:2','attempt':1,'failure_class':'quota'}])
   r=costs(trace);self.assertEqual(r['model_calls'],2);self.assertIsNone(r['tokens']);self.assertIsNone(r['provider_attempts'])
+ def test_unterminated_model_request_is_incomplete(self):
+  p,t,j=self.normal();t['events']=[e for e in t['events'] if e['kind']!='model_response']
+  r=score_normal(self.corpus,self.case,p,None,t,j);self.assertFalse(r['complete_useful_answer']);self.assertTrue(r['operational_failures']);self.assertIsNone(costs(t)['model_calls'])
+ def test_missing_required_adviser_is_not_zero_call_success(self):
+  c=self.corpus['cases'][3];s,b,p,a=self.helper(c);p['status']='conflict';p['view']['target_answers'][0]['status']='conflict'
+  r=score_helper(c,s,b,p,{})
+  self.assertIn('incomplete_required_adviser_output',r['operational_failures'])
+ def test_unknown_nested_display_fields_never_gain(self):
+  c=self.corpus['cases'][3];s,b,p,a=self.helper(c);p['view']['target_answers'][0]['text']='fabricated'
+  r=score_helper(c,s,b,p,a);self.assertEqual(r['compatible_display_gain'],0);self.assertTrue(r['hard_violations'])
 if __name__=='__main__':unittest.main()

@@ -17,7 +17,7 @@ with tempfile.TemporaryDirectory() as tmp:
         for version in ('0.6.1','0.7.2'):
             result=subprocess.run([str(a.bin_dir.resolve()/('probe-'+version)),str(path)],capture_output=True,check=True)
             outputs.append(json.loads(result.stdout))
-        row=score_helper(case,sources,*outputs,{'equivalent':True,'model_calls':0})
+        row=score_helper(case,sources,*outputs,{'equivalent':True,'model_calls':0},deterministic_reference=True)
         assert not row['hard_violations'],row
         if case['helper_contract_expectation']=='review_eligible':assert row['candidate_status']=='reviewed_compatible',row
         if case['helper_contract_expectation'].startswith('must_refuse'):assert row['review_refusal'] and row['candidate_status']!='reviewed_compatible',row

@@ -14,6 +14,24 @@ def allowed_facts(corpus,case):
     for k,v in host_facts(corpus,case).items():values[k].add(v)
     return values
 
+def trace_complete(trace):
+    if trace.get('contract')!='reason-natural-diagnostic-trace-v1' or not isinstance(trace.get('events'),list):return False
+    requests={};terminals={}
+    for e in trace['events']:
+        if e.get('kind') not in ('model_request','model_response','model_failure'):continue
+        if not isinstance(e.get('correlation_id'),str) or not isinstance(e.get('attempt'),int) or e['attempt']<1:return False
+        key=(e['correlation_id'],e['attempt'])
+        if e['kind']=='model_request':
+            r=e.get('request') or {}
+            if key in requests or not isinstance(r.get('task'),str) or not r['task'] or not isinstance(r.get('output_format'),dict) or r['output_format'].get('type') not in ('text','json_object','json_schema') or not isinstance(r.get('max_tokens'),int) or r['max_tokens']<1:return False
+            requests[key]=e
+        else:
+            if key in terminals:return False
+            if e['kind']=='model_response' and (not isinstance(e.get('response'),dict) or not isinstance(e.get('model'),str)):return False
+            if e['kind']=='model_failure' and not isinstance(e.get('failure_class'),str):return False
+            terminals[key]=e
+    return bool(requests) and set(requests)==set(terminals)
+
 def score_normal(corpus,case,payload,operation=None,trace=None,journal=None):
     violations=[];quality=[];ops=[];assertions=[]
     result=payload.get('result',{}) if isinstance(payload,dict) else {}
@@ -28,9 +46,9 @@ def score_normal(corpus,case,payload,operation=None,trace=None,journal=None):
             if a.get('status') in ('adapter_unavailable','malformed_output','adapter_failed','transport_failure','authentication_failure','permission_denied','negotiation_failure','session_failure','protocol_failure','tool_failed','timed_out','policy_denied','budget_exceeded'):ops.append('resolver_'+a['status'])
     fin=result.get('finalization') or {};text=fin.get('text');status=fin.get('status');allowed=allowed_facts(corpus,case)
     if status not in ('grounded_answer','qualified_partial_answer','unresolved','abstain','requires_verification') or not all(k in fin for k in ('factual_claims','covered_claims','factual_claim_coverage')):ops.append('missing_or_invalid_finalization')
-    trace=trace or {};events=trace.get('events',[])
+    trace=trace or {};events=trace.get('events',[]);events=events if isinstance(events,list) else []
     if trace.get('contract')!='reason-natural-diagnostic-trace-v1' or not isinstance(events,list):ops.append('missing_or_invalid_trace')
-    if not any(e.get('kind')=='model_request' for e in events):ops.append('model_execution_trace_missing')
+    if not trace_complete(trace):ops.append('incomplete_model_request_response_trace')
     for e in events:
         if e.get('kind')=='model_failure':ops.append('model_failure:'+str(e.get('failure_class')))
     if not any(e.get('kind')=='finalization_state' for e in events):ops.append('finalization_trace_missing')
@@ -87,8 +105,14 @@ def score_normal(corpus,case,payload,operation=None,trace=None,journal=None):
     bindings=(artifact.get('source_attribution') or {}).get('bindings',[])
     return {'id':case['id'],'track':'normal_cli','status':status,'assertions':assertions,'hard_violations':sorted(set(violations)),'quality_failures':sorted(set(quality)),'operational_failures':sorted(set(ops)),'complete_useful_answer':complete,'safe_withhold':safe_withhold,'false_abstention':bool(required) and not complete and not ops,'answerable':bool(required),'source_attribution_binding_count':len(bindings),'citation_surface_present':bool(bindings),'known_supported_claims':sum(c.get('state') in ('known','supported') for c in claims)}
 
-def score_helper(case,sources,base,candidate,advice,operation=None):
+def score_helper(case,sources,base,candidate,advice,operation=None,deterministic_reference=False):
     bad=[];ops=[operation] if operation else []
+    identical=sources[0]['quote']==sources[1]['quote'] and sources[0]['scope']==sources[1]['scope'] and sources[0]['source_version']==sources[1]['source_version']
+    if not deterministic_reference:
+        if identical:
+            if advice.get('model_calls')!=0 or not advice.get('skip_reason') or advice.get('equivalent') is not None:ops.append('invalid_identical_adviser_skip')
+        elif not all(k in advice for k in ('provider','requested_model','model_calls','elapsed_ms','equivalent','operational_failure')) or advice.get('model_calls')!=1:ops.append('incomplete_required_adviser_output')
+        elif advice.get('operational_failure') is None and (not isinstance(advice.get('equivalent'),bool) or not all(k in advice for k in ('model','usage','provider_attempts','response_text'))):ops.append('incomplete_successful_adviser_output')
     if advice.get('operational_failure'):ops.append(advice['operational_failure'])
     for engine,p in [('baseline',base),('candidate',candidate)]:
         if not isinstance(p,dict) or p.get('id')!=case['id'] or p.get('engine_version')!=('0.6.1' if engine=='baseline' else '0.7.2') or not all(k in p for k in ('status','original','view','artifact_unchanged','claims_promoted','replay_equal','binding_count','unauthorized_reviewed')):
@@ -110,7 +134,7 @@ def score_helper(case,sources,base,candidate,advice,operation=None):
         if engine=='baseline' and p.get('view')!=original:bad.append('baseline:display_view_changed')
         if engine=='candidate':
             view=p.get('view') or {};answers=view.get('target_answers',[])
-            if view.get('contract_id')!='harness-source-reconciliation-target-answer-v1' or view.get('original')!=original or len(answers)!=1 or answers[0].get('target_id')!=case['id'] or answers[0].get('original')!=original or answers[0].get('status')!=p.get('status') or set(view)!={'contract_id','original','target_answers'}:bad.append('candidate:display_view_changed')
+            if view.get('contract_id')!='harness-source-reconciliation-target-answer-v1' or view.get('original')!=original or len(answers)!=1 or answers[0].get('target_id')!=case['id'] or answers[0].get('original')!=original or answers[0].get('status')!=p.get('status') or set(view)!={'contract_id','original','target_answers'} or (len(answers)==1 and set(answers[0])!={'target_id','status','original'}):bad.append('candidate:display_view_changed')
         for cite in cites:
             bid=cite.get('binding_id');n=0 if bid=='b:0' else 1 if bid=='b:1' else None
             if n is None:bad.append(engine+':unknown_citation_binding');continue
@@ -132,7 +156,7 @@ def score_helper(case,sources,base,candidate,advice,operation=None):
     return {'id':case['id'],'track':'controlled_helper','baseline_status':base.get('status'),'candidate_status':status,'reference_review_authorized':case['helper_reference_review_authorized'],'prebinding_diagnostic_only':diagnostic,'advice_equivalent':advice.get('equivalent'),'advice_correct':advice_correct,'review_refusal':candidate.get('review_refusal'),'hard_violations':sorted(set(bad)),'operational_failures':sorted(set(ops)),'review_eligible':eligible,'compatible_display_gain':int(eligible and base.get('status')=='conflict' and reviewed and not bad and not ops),'semantic_target_detection_success':None if diagnostic else 'not_measured_host_prebinding','model_calls':advice.get('model_calls',0)}
 
 def costs(trace):
-    if trace.get('contract')!='reason-natural-diagnostic-trace-v1' or not isinstance(trace.get('events'),list):return {'available':False,'model_calls':None,'provider_attempts':None,'tokens':None,'provider_latency_ms':None,'models':{},'failures':[],'input_tokens':None,'output_tokens':None}
+    if not trace_complete(trace):return {'available':False,'model_calls':None,'provider_attempts':None,'tokens':None,'provider_latency_ms':None,'models':{},'failures':[],'input_tokens':None,'output_tokens':None}
     out={'available':True,'model_calls':0,'provider_attempts':0,'tokens':0,'provider_latency_ms':0,'models':{},'failures':[],'input_tokens':0,'output_tokens':0}
     counts=collections.Counter();attempts_known=True;tokens_known=True
     for e in trace['events']:
@@ -157,7 +181,7 @@ def summarize(provider,rows,helper):
     normal={}
     for arm in ('0.6.1','0.7.2'):
         selected=[r for r in rows if r['engine']==arm]
-        normal[arm]={'cases':len(selected),'complete_useful_answers':sum(r['complete_useful_answer'] for r in selected),'answerable_cases':sum(r['answerable'] for r in selected),'safe_withholds':sum(r['safe_withhold'] for r in selected),'false_abstentions':sum(r['false_abstention'] for r in selected),'hard_violation_cases':sum(bool(r['hard_violations']) for r in selected),'operational_failure_cases':sum(bool(r['operational_failures']) for r in selected),'citation_surface_cases':sum(r['citation_surface_present'] for r in selected),'model_calls':sum(r['cost']['model_calls'] or 0 for r in selected),'tokens':sum(r['cost']['tokens'] or 0 for r in selected),'cost_unavailable_cases':sum(not r['cost']['available'] for r in selected),'token_usage_unavailable_cases':sum(r['cost']['tokens'] is None for r in selected),'wall_ms':sum(r['wall_ms'] for r in selected)}
+        normal[arm]={'cases':len(selected),'complete_useful_answers':sum(r['complete_useful_answer'] for r in selected),'answerable_cases':sum(r['answerable'] for r in selected),'safe_withholds':sum(r['safe_withhold'] for r in selected),'false_abstentions':sum(r['false_abstention'] for r in selected),'hard_violation_cases':sum(bool(r['hard_violations']) for r in selected),'operational_failure_cases':sum(bool(r['operational_failures']) for r in selected),'citation_surface_cases':sum(r['citation_surface_present'] for r in selected),'model_calls':None if any(r['cost']['model_calls'] is None for r in selected) else sum(r['cost']['model_calls'] for r in selected),'observed_model_calls':sum(r['cost']['model_calls'] or 0 for r in selected),'tokens':None if any(r['cost']['tokens'] is None for r in selected) else sum(r['cost']['tokens'] for r in selected),'observed_tokens':sum(r['cost']['tokens'] or 0 for r in selected),'cost_unavailable_cases':sum(not r['cost']['available'] for r in selected),'token_usage_unavailable_cases':sum(r['cost']['tokens'] is None for r in selected),'wall_ms':sum(r['wall_ms'] for r in selected)}
     regressions=[case_id for case_id in {r['id'] for r in rows} if next((r['complete_useful_answer'] for r in rows if r['id']==case_id and r['engine']=='0.6.1'),False) and not next((r['complete_useful_answer'] for r in rows if r['id']==case_id and r['engine']=='0.7.2'),False)]
     pair_failures=[case_id for case_id in {r['id'] for r in rows} if len([r for r in rows if r['id']==case_id])!=2 or len({json.dumps(r.get('initial_model_request'),sort_keys=True) for r in rows if r['id']==case_id})!=1]
-    return {'provider':provider,'positive_regressions':sorted(regressions),'pair_comparability_failures':sorted(pair_failures),'complete_measurement':len(rows)==48 and len(helper)==24 and not any(r['operational_failures'] for r in rows+helper),'measurement_gate_pass':len(rows)==48 and len(helper)==24 and not regressions and not pair_failures and not any(r['hard_violations'] or r['operational_failures'] for r in rows+helper),'normal_cli':normal,'normal_useful_answer_delta':normal['0.7.2']['complete_useful_answers']-normal['0.6.1']['complete_useful_answers'],'helper':{'cases':len(helper),'hard_violation_cases':sum(bool(r['hard_violations']) for r in helper),'operational_failure_cases':sum(bool(r['operational_failures']) for r in helper),'compatible_display_gains':sum(r['compatible_display_gain'] for r in helper),'diagnostic_prebinding_cases':sum(r['prebinding_diagnostic_only'] for r in helper),'advice_correct':sum(r['advice_correct'] is True for r in helper),'advice_scored':sum(r['advice_correct'] is not None for r in helper),'baseline_model_calls':0,'candidate_model_calls':sum(r['model_calls'] for r in helper),'candidate_tokens_observed':sum((r.get('advice_usage') or {}).get('total_tokens') or ((r.get('advice_usage') or {}).get('input_tokens') or 0)+((r.get('advice_usage') or {}).get('output_tokens') or 0) for r in helper),'candidate_token_usage_unavailable_cases':sum(r['model_calls']>0 and not r.get('advice_usage') for r in helper),'candidate_wall_ms':sum(r.get('candidate_wall_ms',0) for r in helper)},'adoption':'NO_GO','adoption_blockers':['known #520 source relevance regression','root development set; fresh independent holdout absent','real correction/conflict/unknown lineage coverage absent','controlled annotated source acquisition; no open-Web acceptance']}
+    return {'provider':provider,'positive_regressions':sorted(regressions),'pair_comparability_failures':sorted(pair_failures),'complete_measurement':len(rows)==48 and len(helper)==24 and not any(r['operational_failures'] for r in rows+helper),'measurement_gate_pass':len(rows)==48 and len(helper)==24 and not regressions and not pair_failures and not any(r['hard_violations'] or r['operational_failures'] for r in rows+helper),'normal_cli':normal,'normal_useful_answer_delta':normal['0.7.2']['complete_useful_answers']-normal['0.6.1']['complete_useful_answers'],'helper':{'cases':len(helper),'hard_violation_cases':sum(bool(r['hard_violations']) for r in helper),'operational_failure_cases':sum(bool(r['operational_failures']) for r in helper),'compatible_display_gains':sum(r['compatible_display_gain'] for r in helper),'diagnostic_prebinding_cases':sum(r['prebinding_diagnostic_only'] for r in helper),'advice_correct':sum(r['advice_correct'] is True for r in helper),'advice_scored':sum(r['advice_correct'] is not None for r in helper),'baseline_model_calls':0,'candidate_model_calls':sum(r['model_calls'] for r in helper),'candidate_tokens_observed':sum((r.get('advice_usage') or {}).get('total_tokens') or ((r.get('advice_usage') or {}).get('input_tokens') or 0)+((r.get('advice_usage') or {}).get('output_tokens') or 0) for r in helper),'candidate_token_usage_unavailable_cases':sum(r['model_calls']>0 and not ((r.get('advice_usage') or {}).get('total_tokens') is not None or ((r.get('advice_usage') or {}).get('input_tokens') is not None and (r.get('advice_usage') or {}).get('output_tokens') is not None)) for r in helper),'candidate_wall_ms':sum(r.get('candidate_wall_ms',0) for r in helper)},'adoption':'NO_GO','adoption_blockers':['known #520 source relevance regression','root development set; fresh independent holdout absent','real correction/conflict/unknown lineage coverage absent','controlled annotated source acquisition; no open-Web acceptance']}

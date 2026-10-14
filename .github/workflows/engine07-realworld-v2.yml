@@ -61,7 +61,7 @@ jobs:
     needs: preflight
     if: github.event_name == 'push' && github.ref == 'refs/tags/engine07-realworld-development-v2-freeze' && github.run_attempt == 1
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 210
     strategy:
       fail-fast: false
       max-parallel: 3
