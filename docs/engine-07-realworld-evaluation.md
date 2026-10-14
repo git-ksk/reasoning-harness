@@ -20,7 +20,7 @@ Do not sum the denominators or call helper success product E2E. Static search at
 
 ## Canonical protocol preparation
 
-The [machine-readable protocol](../evaluation/engine-07-realworld-protocol-v1.json) precommits sample sizes, hard gates, useful-answer thresholds and task budgets. Its status is **draft pending complete evaluator/host freeze**. No canonical provider observations or independent acceptance cases have been produced. The isolated, deterministic pilot below does not freeze an E2E evaluator.
+The [machine-readable protocol](../evaluation/engine-07-realworld-protocol-v1.json) proposes sample sizes, hard gates, useful-answer thresholds and task budgets to be precommitted at complete evaluator freeze. Its status is **draft pending complete evaluator/host freeze**. No canonical provider observations or independent acceptance cases have been produced. The isolated, deterministic pilot below does not freeze an E2E evaluator.
 
 Before independent authoring: commit complete evaluators, host/adapters, exact engine identities, model IDs/settings, source snapshot schema, paired ordering, provider pacing, timeouts, numeric thresholds and scoring rubric. Freeze SHA-256 manifests. Author 24 fresh disjoint tasks after freeze, separately from 24 development tasks; include at least eight supported positive tasks plus conflicts, revisions, same-origin duplication/missing lineage, missing information, wrong target/scope and control contamination. An independent reviewer must review full sources and expected proposition/scope/time labels before first observation. Models never receive expected labels. Preserve partial/failed first observations; operational repairs use new identities and never silently overwrite/rerun semantic failures.
 
