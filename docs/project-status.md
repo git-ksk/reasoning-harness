@@ -8,16 +8,22 @@ For the preserved long-form provenance ledger, see [Project status history](proj
 
 ## Current release
 
-**Reason CLI 0.5.4 on Harness Engine 0.6.1** is the current published CLI; previous `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0. **Harness Engine 0.7.2** is the normal independent Engine source patch under `engine-v0.7.2`; Reason CLI 0.5.4 continues to distribute Engine 0.6.1. See [0.7.2 release notes](engine-0.7.2-release.md).
+**Reason CLI 0.5.5 on Harness Engine 0.6.1** is the current published CLI; previous `reason-v0.5.3` artifacts remain immutable on Engine 0.5.0. **Harness Engine 0.7.2** is the normal independent Engine source patch under `engine-v0.7.2`; Reason CLI 0.5.5 continues to distribute Engine 0.6.1. See [0.7.2 release notes](engine-0.7.2-release.md).
 
 ```text
-Published CLI: Reason CLI 0.5.4 / Harness Engine 0.6.1
+Published CLI: Reason CLI 0.5.5 / Harness Engine 0.6.1
 Latest Engine source release: Harness Engine 0.7.2 (`engine-v0.7.2`)
 ```
 
 `v0.4.2` remains the immutable final release where the CLI and Engine shared one SemVer coordinate. `reason-v0.5.0` shipped the first split general-use CLI, followed by the 0.5.1/0.5.2 patch line on Engine 0.4.2. `reason-v0.5.3` then adopted the independently accepted Engine 0.5.0 under a new CLI coordinate.
 
 The central trust boundary remains unchanged: model output is an untrusted candidate/renderer, while evidence admission, qualification, verification, bounded resolution, and exposed factual-claim authority remain Harness-owned. The final frozen Engine 0.4.2 natural-language release evaluation passed independently across Mistral, Groq, Gemini 3.5 Flash-Lite, and Gemma 4 31B. See [v36 release acceptance](natural-language-e2e-v36-result.md).
+
+## Next development — evaluate real use first
+
+[#531](https://github.com/git-ksk/reasoning-harness/issues/531) / [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12) order **real-data0.6.1/0.7.2 comparison → necessary fixes → fresh reacceptance → CLI adoption → distribution**. A new present-tense retraction/non-event residual reproduces in published0.7.2; #520 is reopened and adoption is NO-GO. #488/#489/#491 remain conditional on measured need.
+
+Normal question-to-final-answer E2E and opt-in helper evaluation have separate denominators. An actual-tag offline pilot on five real primary excerpts/eleven inputs is complete; canonical three-provider evaluation and fresh independent acceptance are not. Adoption remains0/6. See [plan, gates and pilot evidence](engine-07-realworld-evaluation.md). Published CLI0.5.5 / Engine0.6.1 and #506 package acceptance remain separate.
 
 ## What users can do today
 
@@ -42,7 +48,7 @@ Supported provider adapters include Mistral, Google Gemini/AI Studio, NVIDIA Hos
 
 ## Current product track: Reason CLI 0.5.x
 
-The first split general-use release (`reason-v0.5.0`) has shipped, and the current published patch coordinate is `reason-v0.5.4` on Engine 0.6.1. Older `reason-v0.5.3` (Engine 0.5.0) and `reason-v0.5.2` (Engine 0.4.2) artifacts remain immutable.
+The first split general-use release (`reason-v0.5.0`) has shipped, and the current published patch coordinate is `reason-v0.5.5` on Engine 0.6.1. Older `reason-v0.5.3` (Engine 0.5.0) and `reason-v0.5.2` (Engine 0.4.2) artifacts remain immutable.
 
 The 0.5.0-0.5.2 productization line delivered ordinary terminal usability on the fixed Engine 0.4.2 baseline. Reason CLI 0.5.3 preserved those product surfaces while adopting accepted Engine 0.5.0; CLI 0.5.4 further adopts Engine 0.6.1. The existing product surfaces include:
 
@@ -85,9 +91,9 @@ Independent frozen acceptance completed before promotion: #461 holdout run `3596
 
 [Engine 0.7.1](engine-0.7.1-release.md) packages merged #512/#514/#515 successor v17/v30 corrections. Historical v16/v29 and frozen evaluation results remain unchanged. Patch-specific evidence is deterministic and synthetic; no new live-provider or real-user acceptance is claimed.
 
-**[Engine 0.7.2](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.2) is published as a normal Engine-only source patch**, at `296690a86e049b75ee693ae5032a71504366137c` via [release PR #525](https://github.com/git-ksk/reasoning-harness/pull/525). [#520](https://github.com/git-ksk/reasoning-harness/issues/520) and [#521](https://github.com/git-ksk/reasoning-harness/issues/521) repairs from #523 preserve governing fictional/retracted/false context and original strike/negation markers in v17/v30. Final release-candidate validation passed 1490 workspace tests (0 failures, 8 ignored), strict Clippy, format, 20 fixtures and 13 original archive checks; exact release-PR-head CI 23/23 and merged-source CI 22/22 passed. Fresh separately authored v10 50/50 and historical v16/v29 equality on 597 inputs remain preserved as accepted-source evidence. See [release notes](engine-0.7.2-release.md), [repair report](launch-context-markers-520-521.md) and [0.7.2 roadmap](engine-0.7.2-roadmap.md). [#524](https://github.com/git-ksk/reasoning-harness/issues/524) and [milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) record publication closeout. Prior tags and first failed observations are unchanged. Published CLI remains 0.5.4 / Engine 0.6.1; synthetic/local/CI acceptance does not establish new live-provider correctness, external factual truth or real-user utility.
+**[Engine 0.7.2](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.2) is published as a normal Engine-only source patch**, at `296690a86e049b75ee693ae5032a71504366137c` via [release PR #525](https://github.com/git-ksk/reasoning-harness/pull/525). [#520](https://github.com/git-ksk/reasoning-harness/issues/520) and [#521](https://github.com/git-ksk/reasoning-harness/issues/521) repairs from #523 preserve governing fictional/retracted/false context and original strike/negation markers in v17/v30. Final release-candidate validation passed 1490 workspace tests (0 failures, 8 ignored), strict Clippy, format, 20 fixtures and 13 original archive checks; exact release-PR-head CI 23/23 and merged-source CI 22/22 passed. Fresh separately authored v10 50/50 and historical v16/v29 equality on 597 inputs remain preserved as accepted-source evidence. See [release notes](engine-0.7.2-release.md), [repair report](launch-context-markers-520-521.md) and [0.7.2 roadmap](engine-0.7.2-roadmap.md). [#524](https://github.com/git-ksk/reasoning-harness/issues/524) and [milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) record publication closeout. Prior tags and first failed observations are unchanged. Current published CLI is0.5.5 / Engine0.6.1; synthetic/local/CI acceptance does not establish new live-provider correctness, external factual truth or real-user utility.
 
-[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) retains explicitly deferred #488 source lineage, #489 trusted supersession and #491 extra answerability/reacquisition; parent #486 links this research and the new corrective patch. The three hypotheses require measured use cases and separate acceptance before adoption. The two repaired issues define this corrective scope, not an exhaustive absence-of-defects claim. CLI 0.5.5 / Engine 0.6.1 maintenance remains separate under #506 and awaits physical Windows acceptance.
+[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10) retains explicitly deferred #488 source lineage, #489 trusted supersession and #491 extra answerability/reacquisition; parent #486 links this research and the new corrective patch. The three hypotheses require measured use cases and separate acceptance before adoption. The two repaired issues define this corrective scope, not an exhaustive absence-of-defects claim. CLI 0.5.5 / Engine 0.6.1 is published; #506 retains separate package acceptance.
 
 ## Current trust boundary
 
@@ -106,7 +112,7 @@ The general-use CLI productization work is shipped. Native installation, guided 
 
 Package-manager distribution #375 has completed its physical acceptance: Homebrew 0.5.3 upgrade/tests passed; the WinGet community manifests for Reason CLI 0.5.2 (first publication) and 0.5.4 (latest update) were moderator-approved, merged, and published. On Windows, the default WinGet index resolves 0.5.4 and a fresh install, SHA-256 verification, `reason --version`, and provenance-only update check passed. The `doctor` alias-path diagnostic correction is tracked separately in #504 and has not shipped in the immutable 0.5.4 binary.
 
-Harness Engine 0.6.0 is implementation-, acceptance-, and release-complete through #461/#462/#468/#463 and is published independently as `engine-v0.6.0`. The current distributed CLI is Reason CLI 0.5.4 / Engine 0.6.1. Legacy CLI 0.5.3 binaries retain Engine 0.5.0. #465 remains a separate, non-semantic CI-fixture reliability follow-up rather than an Engine correctness blocker.
+Harness Engine 0.6.0 is implementation-, acceptance-, and release-complete through #461/#462/#468/#463 and is published independently as `engine-v0.6.0`. The current distributed CLI is Reason CLI 0.5.5 / Engine 0.6.1. Legacy CLI 0.5.3 binaries retain Engine 0.5.0. #465 remains a separate, non-semantic CI-fixture reliability follow-up rather than an Engine correctness blocker.
 
 ## Research posture
 

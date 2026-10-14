@@ -1,0 +1,24 @@
+{
+  "suite_id": "engine-07-realworld-pilot-v1",
+  "cases": 11,
+  "primary_excerpt_snapshots": 5,
+  "authentic_primary_positives": 5,
+  "synthetic_mutations": 2,
+  "baseline_mismatches": 4,
+  "candidate_mismatches": 4,
+  "relevance_gains": 0,
+  "positive_regressions": 0,
+  "candidate_false_relevant": 0,
+  "model_calls": 0,
+  "api_tokens": null,
+  "cost": null,
+  "adoption_decision": "NO_GO",
+  "blockers": [
+    "known unrepaired #520",
+    "provider arms not run",
+    "ordinary CLI E2E not measured",
+    "fresh independent acceptance not run"
+  ],
+  "scope": "deterministic common public-API relevance comparison only; no model, acquisition loop or final answer",
+  "representative_error_rate": false
+}
