@@ -68,7 +68,8 @@ Use the short current views:
 - [Project status](project-status.md) — what is released, what is active, and the main known product gaps.
 - [Product roadmap](product-roadmap.md) — current forward product/engine tracks.
 - [Harness Engine 0.7 roadmap](engine-0.7.0-roadmap.md) — published 0.7.0 scope, deferred mechanisms and historical acceptance gates.
-- [Harness Engine 0.7.1 release](engine-0.7.1-release.md) — current source patch, #512/#514/#515 corrections, evidence and limits.
+- [Harness Engine 0.7.1 release](engine-0.7.1-release.md) — previous source patch, #512/#514/#515 corrections, evidence and limits.
+- [Harness Engine 0.7.2 release](engine-0.7.2-release.md) — normal source patch preparation, scope and publication gates under #524.
 - [Harness Engine 0.7.2](engine-0.7.2-roadmap.md) — two launch-relevance regressions repaired and independently accepted; unreleased, publication tracked by #524.
 - [#520/#521 repair evidence](launch-context-markers-520-521.md) — original failed observations, bounded behavior and final source validation.
 - [Engine 0.7 local reviewer host development v1](engine-0.7-local-reviewer-v1.md) — development-only OS-keyring reviewer bridge; same-user automated E2E is not independent human consent, and published CLI integration remains separate.

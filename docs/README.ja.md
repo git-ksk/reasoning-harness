@@ -69,6 +69,7 @@
 - [製品ロードマップ](product-roadmap.ja.md) — 現在のproduct / engine前進track。
 - [Harness Engine 0.7計画](engine-0.7.0-roadmap.ja.md) — 公開済み0.7.0の範囲、保留中の機構、歴史的な評価条件。
 - [Harness Engine 0.7.1リリース](engine-0.7.1-release.ja.md) — 現行ソースパッチ、#512/#514/#515修正、検証と限界。
+- [Harness Engine 0.7.2リリース](engine-0.7.2-release.ja.md) — #524で準備する通常ソースパッチの範囲・公開条件。
 - [Harness Engine 0.7.2](engine-0.7.2-roadmap.ja.md) — 発売根拠の回帰2件を修正・独立評価済み。未公開、公開完了条件は#524。
 - [#520/#521修正の証拠](launch-context-markers-520-521.md) — 元の失敗記録、限定した動作範囲、修正候補の最終検証。
 - [Engine 0.7ローカル承認レビューの開発候補v1](engine-0.7-local-reviewer-v1.ja.md) — 開発用OSキーチェーンレビュー。自動E2Eは独立した人間の承認証明ではなく、配布済みCLIへの反映は別工程。
