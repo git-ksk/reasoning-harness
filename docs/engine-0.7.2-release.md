@@ -5,7 +5,7 @@
 ## Release coordinates
 
 - Package: `reasoning-harness-core 0.7.2`, `publish = false`.
-- Intended tag: `engine-v0.7.2`, a **normal Engine-only source patch** (`prerelease=false`, `latest=false`) under the [release policy](release-policy.md). [#524](https://github.com/git-ksk/reasoning-harness/issues/524) tracks publication; this preparation is not itself a published tag.
+- Published tag: `engine-v0.7.2`, a **normal Engine-only source patch** (`prerelease=false`, `latest=false`) under the [release policy](release-policy.md). Published at `296690a86e049b75ee693ae5032a71504366137c` via [PR #525](https://github.com/git-ksk/reasoning-harness/pull/525); [#524](https://github.com/git-ksk/reasoning-harness/issues/524) records closeout. Tagged documents retain their preparation snapshot; these current notes and the GitHub release record publication.
 - Implementation is identical to accepted [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523), merged at `0e5b3389af61d55422205b83830c634f49d024bd`. This release preparation changes package identity, its lock record, pinned CI/version acceptance expectations and documentation only.
 - `evidence_relevance.rs` SHA-256: `5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5`.
 - Published Reason CLI remains **0.5.4 / Engine 0.6.1**. A source checkout identifies itself as CLI 0.5.4 / Engine 0.7.2. This release distributes no new CLI binary or crates.io package. CLI adoption and #506's CLI 0.5.5 / Engine 0.6.1 candidate remain separate acceptance tracks.
@@ -25,8 +25,19 @@ Accepted source validation: **1,490 PASS / 0 FAIL / 8 ignored**, strict all-targ
 
 This is bounded synthetic, local and CI evidence. No fresh live-provider, external factual-truth, real-user utility, physical-device or independently authenticated human acceptance is claimed. Text recognition may conservatively abstain on unsupported wording. Historical 0.7.0 provider evidence is not new patch acceptance. The separate CLI distribution's Windows physical gate does not apply to this Engine-only source tag.
 
-## Final publication gate
+## Final release verification
 
-Record the exact final release PR head and require locked workspace tests, strict all-target Clippy, format, standard fixtures, original archive and source-checkout version checks. Require final-head CI success, including four-platform CLI, native candidate/no-Rust consumer and lifecycle smoke. Verify the merged source/tree and its CI before tagging that exact merge commit. Implementation must remain byte-identical to accepted #523; old tags and frozen evidence must remain unchanged.
+- [Release PR #525](https://github.com/git-ksk/reasoning-harness/pull/525): exact head `f6c80c1d6c65bd0031ed72733de9a75fe7e9987d`, **23/23 checks SUCCESS**.
+- Published merge `296690a86e049b75ee693ae5032a71504366137c`: **22/22 checks SUCCESS**; merge tree is identical to the verified release head.
+- Final release-candidate local validation: **1,490 PASS / 0 FAIL / 8 ignored**, locked offline workspace, strict all-target Clippy, format, standard fixtures **20/20**, unsupported accepted claims **0**, original archive **13/13**, source-checkout doctor **CLI 0.5.4 / Engine 0.7.2**. The local summary and unchanged-source/hash checks are recorded in PR #525.
+- Implementation is byte-identical to accepted #523. Original frozen evidence and published Engine/CLI tag identities are unchanged. Initial packaging/version-pin CI failures remain visible; the corrected final head passed all checks.
 
-The GitHub release records the tag/merge SHA, release PR and CI links after these gates pass. Engine-only publication requests `latest=false`; the shared GitHub `/releases/latest` endpoint is not a CLI selection API. CLI consumers must use the `reason-v*` namespace and verified CLI/Engine pair. Close #524 and milestone #11 only after verifying actual normal publication.
+- [credential-store-smoke](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132718): SUCCESS.
+- [lifecycle-smoke](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132689): SUCCESS.
+- [ci](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132621): SUCCESS.
+- [fresh-install-acceptance](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132769): SUCCESS.
+- [cli-platform-smoke](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132738): SUCCESS.
+
+This Engine-only normal release requests `latest=false`. GitHub’s shared `/releases/latest` endpoint is not a CLI selection API; consumers must use `reason-v*` and the verified CLI/Engine pair. No new CLI binaries or crates.io package are distributed.
+
+Merged-source macOS Intel CLI attempt1 failed before build because the runner could not connect to or resolve github.com. Only that job was retried once at the unchanged merge commit; the first failure is preserved in [attempt1](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132738/attempts/1). This is an operational CI retry, not independent semantic rescoring.

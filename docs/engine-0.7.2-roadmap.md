@@ -2,7 +2,7 @@
 
 [日本語](engine-0.7.2-roadmap.ja.md) | English
 
-**Source repairs accepted; normal Engine-only release preparation active, not yet published.** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7 parent #486](https://github.com/git-ksk/reasoning-harness/issues/486). Updated 2026-10-14.
+**Published normal Engine-only source patch: [engine-v0.7.2](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.2).** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7 parent #486](https://github.com/git-ksk/reasoning-harness/issues/486). Updated 2026-10-14.
 
 [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523) repairs **two confirmed 0.7.1 relevance regressions** in successor source. Published `engine-v0.7.0` and `engine-v0.7.1` remain immutable. Published Reason CLI 0.5.4 continues to distribute Engine 0.6.1; #506's separate CLI candidate and any Engine 0.7 CLI adoption have their own acceptance.
 
@@ -21,17 +21,17 @@ These are separate fixes with shared safety and positive-recall controls. Both m
 
 See the [repair report](launch-context-markers-520-521.md) and [validation bundle](../evaluation/launch-520-521-final-validation/README.md). Fresh separately authored v10 first observation against fixed source `2f12d4c61546e60d31026d9b691c9eb369c37957` passed 50/50 (25 positives, 25 negatives; zero false Relevant, positive misses or API errors). The v1–v8 RED first observations and original audit remain unchanged.
 
-Locked workspace: 1490 PASS / 0 FAIL / 8 ignored; strict all-target Clippy, format, 20 standard fixtures, 13-file archive and 22 reconciliation controls pass. Full historical v16/v29 outputs are byte-identical to released 0.7.1 for 597 complete inputs. PR #523 exact-head and merged-main CI passed. The dedicated 0.7.2 release PR must separately pass final-head and merged-source checks. This is synthetic/local/CI evidence, not real-user utility or external factual truth.
+Locked workspace: 1490 PASS / 0 FAIL / 8 ignored; strict all-target Clippy, format, 20 standard fixtures, 13-file archive and 22 reconciliation controls pass. Full historical v16/v29 outputs are byte-identical to released 0.7.1 for 597 complete inputs. PR #523 exact-head and merged-main CI passed. The dedicated 0.7.2 release PR subsequently passed final-head and merged-source checks recorded below. This is synthetic/local/CI evidence, not real-user utility or external factual truth.
 
-The dedicated [release closeout #524](https://github.com/git-ksk/reasoning-harness/issues/524) prepares package 0.7.2 and [release notes](engine-0.7.2-release.md). Implementation remains identical to merged #523. Final release-candidate validation, immutable `engine-v0.7.2` publication and post-publication reconciliation remain required; no tag/release or CLI adoption is claimed by this preparation. Milestone #11 stays OPEN until publication.
+[Release PR #525](https://github.com/git-ksk/reasoning-harness/pull/525) packages the unchanged accepted source as 0.7.2. Normal immutable `engine-v0.7.2` is published at `296690a86e049b75ee693ae5032a71504366137c` after final local gates, exact release-head CI 23/23 and merged-source CI 22/22 passed. [Release notes](engine-0.7.2-release.md) and [closeout #524](https://github.com/git-ksk/reasoning-harness/issues/524) record final coordinates and limits. CLI adoption remains separate; milestone #11 is publication-complete.
 
-## Implementation and acceptance order
+## Completed implementation and acceptance order
 
 1. Add committed direct v17/v30 regressions for both issues and preserve this failing observation. Implement only in the successor path; retain historical v16/v29 and frozen artifacts.
 2. Retain factual affirmative launch, publisher attribution, decimal/dotted target and vendor names, bilingual preparation, neutral multi-sentence prose and denial/markers referring only to another target. Keep wrong-target, conditional, question, rumor, fictional and source-binding guards. No blanket multi-sentence or punctuation rejection.
 3. Fix the candidate identity and acceptance criteria before a **fresh, separately authored** negative/positive matrix is executed. Record author/provenance, exact source SHA, first observation and scoring; require zero false Relevant and no positive-recall regression on that matrix. The current 56 cases do not count as fresh independent acceptance. No specific external review service is mandatory.
 4. On the exact candidate, pass locked workspace tests, strict all-target Clippy, formatting, standard fixtures, original archive verification and applicable contract/replay checks. Record provider/operational failures separately; retain source-reconciliation authority and original Conflict/citation preservation.
-5. Use a dedicated source-release PR under the [release policy](release-policy.md). Declare the bounded scope, evidence and limits; complete all required gates before a normal new immutable `engine-v0.7.2` tag. Any candidate publication with unfinished required acceptance needs an explicit prerelease suffix and measurable exit criteria. This roadmap does not authorize or report a release.
+5. Use a dedicated source-release PR under the [release policy](release-policy.md). Declare the bounded scope, evidence and limits; complete all required gates before a normal new immutable `engine-v0.7.2` tag. Any candidate publication with unfinished required acceptance needs an explicit prerelease suffix and measurable exit criteria. The completed release coordinates are recorded above; the original plan alone was not publication evidence.
 
 ## What else remains in the 0.7 line?
 

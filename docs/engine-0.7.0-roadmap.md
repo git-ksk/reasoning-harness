@@ -2,7 +2,7 @@
 
 > Current status: Engine 0.7.0 was published on 2026-10-10. [Engine 0.7.1](engine-0.7.1-release.md) is the source patch containing #512/#514/#515. #488/#489/#491 remain explicitly deferred. The planning/candidate text below records the historical pre-release plan; use the [published 0.7.0 release](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.0) for final coordinates.
 
-> 2026-10-14 maintenance update: successor #520/#521 source repairs and independent acceptance are recorded in [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523). Publication remains under the separate [0.7.2 roadmap](engine-0.7.2-roadmap.md) / [release closeout #524](https://github.com/git-ksk/reasoning-harness/issues/524). Published tags and the historical plan below remain unchanged.
+> 2026-10-14 maintenance update: successor #520/#521 repairs were accepted in [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523) and published as the normal Engine-only [0.7.2 source patch](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.2). See [0.7.2 roadmap](engine-0.7.2-roadmap.md) / [closeout #524](https://github.com/git-ksk/reasoning-harness/issues/524). Earlier tags and the historical plan below remain unchanged.
 
 [日本語](engine-0.7.0-roadmap.ja.md) | English
 

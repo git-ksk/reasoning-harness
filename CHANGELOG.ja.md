@@ -2,11 +2,11 @@
 
 `reason` CLI に関する、製品向けの注目すべき変更を記録する。research-only binary と fixture study の変更は research note に記載する。実行可能ファイルは semantic versioning に従うが、v0.x では product interface を引き続き hardening 中である。machine-readable contract identity は executable version より厳密な compatibility boundary である。
 
-## Harness Engine [0.7.2] - 2026-10-14（公開準備）
+## Harness Engine [0.7.2] - 2026-10-14
 
 - #520: 見出し・title・別文にある架空・撤回・明示的な偽の文脈を保持し、後継v17/v30で肯定的な発売断片だけを受け入れる回帰を修正。
 - #521: 正規化前の取り消し線・否定記号を保持。対象の所有関係、正当な句読点、ドットを含む名前の認識を維持。
-- [#524](https://github.com/git-ksk/reasoning-harness/issues/524)でEngine単独の通常ソースパッチを準備中。最終候補の検証完了後に公開します。歴史的v16/v29、凍結した初回観測、配布CLI 0.5.4 / Engine 0.6.1は維持。採用範囲・検証・限界は[リリースノート](docs/engine-0.7.2-release.ja.md)を参照。
+- 最終候補の検証完了後、`engine-v0.7.2`をEngine単独の通常ソースパッチとして公開済み。[#524](https://github.com/git-ksk/reasoning-harness/issues/524)で完了を記録。歴史的v16/v29、凍結した初回観測、配布CLI 0.5.4 / Engine 0.6.1は維持。採用範囲・検証・限界は[リリースノート](docs/engine-0.7.2-release.ja.md)を参照。
 
 ## Harness Engine [0.7.1] - 2026-10-13
 
