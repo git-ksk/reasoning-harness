@@ -1,0 +1,58 @@
+{
+  "implementation_candidate_commit": "2f12d4c61546e60d31026d9b691c9eb369c37957",
+  "source_sha256": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+  "tested_checkout_head": "3adbe5ca8e0d2ace1dc608c90330e61bc9e988bd",
+  "engine_package_metadata": "0.7.1 (unreleased successor source; dedicated 0.7.2 release pending #524)",
+  "workspace_package_split": {
+    "workspace-accepted.log": {
+      "passed": 1334,
+      "failed": 0,
+      "ignored": 6
+    },
+    "providers-accepted.log": {
+      "passed": 156,
+      "failed": 0,
+      "ignored": 2
+    }
+  },
+  "total_passed": 1490,
+  "total_failed": 0,
+  "total_ignored": 8,
+  "clippy": "PASS --locked --workspace --all-targets -- -D warnings",
+  "format": "PASS",
+  "source_reconciliation_additional_controls": 22,
+  "fixtures": {
+    "passed": 20,
+    "unsupported_accepted_claims": 0
+  },
+  "original_archive_exact_files": 13,
+  "historical_compatibility": {
+    "base_tag": "engine-v0.7.1",
+    "base_commit": "344e708150eb158b55144a0228f154ef28f63d6d",
+    "complete_inputs": 597,
+    "full_v16_v29_byte_identical": true
+  },
+  "fresh_independent_v10": {
+    "acceptance_scope": "offline synthetic source-local public-API evaluation; no provider/user/device/production/external-truth acceptance",
+    "api_error_ids": [],
+    "candidate_commit": "2f12d4c61546e60d31026d9b691c9eb369c37957",
+    "candidate_source_sha256_after": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+    "candidate_source_sha256_before": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+    "corpus_sha256": "a778d971aa2acdb58dd82cf212b887bc4e66ae480b8698b98df3afa0328f7237",
+    "failed_case_ids": [],
+    "false_relevant_ids": [],
+    "negative_cases": 25,
+    "negative_requested_relation_ids": [],
+    "overall_passed": true,
+    "passed_cases": 50,
+    "positive_cases": 25,
+    "positive_miss_ids": [],
+    "positive_recall_gate_passed": true,
+    "run_identity": "independent-v10-first-api-execution",
+    "safety_gate_passed": true,
+    "source_unchanged": true,
+    "total_cases": 50
+  },
+  "earlier_first_results": "v1-v8 RED and v9 GREEN preserved without rescore; later root failures invalidated v9 as final acceptance; distinct matrices, not a rate trend",
+  "scope": "offline synthetic/local fixtures and public APIs; no new live-provider, external factual truth, real-user, device or authenticated human acceptance"
+}

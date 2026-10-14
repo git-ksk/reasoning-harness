@@ -1,0 +1,22 @@
+[
+  {
+    "id": "No Company",
+    "signals": [
+      {
+        "kind": "fact",
+        "text": "No Company launched Silver Lens in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "Nobody",
+    "signals": [
+      {
+        "kind": "fact",
+        "text": "Nobody launched Silver Lens in 2026."
+      }
+    ],
+    "expected_relevant": false
+  }
+]

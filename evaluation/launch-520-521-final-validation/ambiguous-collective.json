@@ -1,0 +1,32 @@
+[
+  {
+    "id": "Both of them were retracted.",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. Maple Queue was introduced in 2026. Both of them were retracted."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "They were both retracted.",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. Maple Queue was introduced in 2026. They were both retracted."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "The two of them were withdrawn.",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. Maple Queue was introduced in 2026. The two of them were withdrawn."
+      }
+    ],
+    "expected_relevant": false
+  }
+]

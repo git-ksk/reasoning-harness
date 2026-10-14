@@ -1,0 +1,12 @@
+{
+  "checked_date": "2026-10-14",
+  "engine-v0.7.0": {
+    "annotated_tag_oid": "068a422c590e6409fedc463fd63b3263e55c4ce7",
+    "peeled_commit": "5c7682d988c18a5a7e7a1954bd2a369cad2e9070"
+  },
+  "engine-v0.7.1": {
+    "annotated_tag_oid": "eed5511d0ded65630310a5bc2b1e99db42462572",
+    "peeled_commit": "344e708150eb158b55144a0228f154ef28f63d6d"
+  },
+  "tag_mutations_performed": false
+}

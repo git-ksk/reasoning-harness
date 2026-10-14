@@ -1,0 +1,5 @@
+use reasoning_harness_core::{EvidenceRelevanceTargetPolicy,EvidenceRelevanceCandidate,EvidenceRelevanceBindingProposal,EvidenceLocalQualificationV6,derive_effective_evidence_local_qualification_v16,materialize_evidence_relevance_v29};
+use serde_json::{Value,json};
+fn main(){let path=std::env::args().nth(1).unwrap();let cases:Vec<Value>=serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap();for c in cases{
+let p:EvidenceRelevanceTargetPolicy=serde_json::from_value(c["policy"].clone()).unwrap();let e:EvidenceRelevanceCandidate=serde_json::from_value(c["candidate"].clone()).unwrap();let proposal:EvidenceRelevanceBindingProposal=serde_json::from_value(c["proposal"].clone()).unwrap();let raw:EvidenceLocalQualificationV6=serde_json::from_value(c["raw"].clone()).unwrap();
+let q=derive_effective_evidence_local_qualification_v16(&p,&e,Some(&proposal),Some(&raw)).unwrap();let a=materialize_evidence_relevance_v29(&p,&e,Some(&proposal),Some(&raw)).unwrap();println!("{}",json!({"id":c["case_id"],"v16":q,"v29":a}));}}

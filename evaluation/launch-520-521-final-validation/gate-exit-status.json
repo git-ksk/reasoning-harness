@@ -1,0 +1,15 @@
+{
+  "source_sha256_before": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+  "checkout_head": "3adbe5ca8e0d2ace1dc608c90330e61bc9e988bd",
+  "source_sha256_after": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+  "checkout_head_after": "3adbe5ca8e0d2ace1dc608c90330e61bc9e988bd",
+  "all_exit_codes_zero": true,
+  "commands": [
+    "locked offline workspace excluding providers",
+    "locked offline providers with one test thread",
+    "locked offline workspace all-target clippy -D warnings",
+    "cargo fmt --all --check",
+    "standard fixture evaluation",
+    "original Engine0.7 archive verification"
+  ]
+}

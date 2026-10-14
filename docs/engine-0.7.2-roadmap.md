@@ -2,9 +2,9 @@
 
 [日本語](engine-0.7.2-roadmap.ja.md) | English
 
-**Planned; not implemented or released.** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7 parent #486](https://github.com/git-ksk/reasoning-harness/issues/486). Updated 2026-10-13.
+**Implemented and independently accepted; not released.** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7 parent #486](https://github.com/git-ksk/reasoning-harness/issues/486). Updated 2026-10-14.
 
-The next Engine source patch addresses **two confirmed 0.7.1 relevance regressions**. Published `engine-v0.7.0` and `engine-v0.7.1` remain immutable. Published Reason CLI 0.5.4 continues to distribute Engine 0.6.1; #506's separate CLI candidate and any Engine 0.7 CLI adoption have their own acceptance.
+[PR #523](https://github.com/git-ksk/reasoning-harness/pull/523) repairs **two confirmed 0.7.1 relevance regressions** in successor source. Published `engine-v0.7.0` and `engine-v0.7.1` remain immutable. Published Reason CLI 0.5.4 continues to distribute Engine 0.6.1; #506's separate CLI candidate and any Engine 0.7 CLI adoption have their own acceptance.
 
 ## Required corrective scope
 
@@ -17,6 +17,14 @@ These are separate fixes with shared safety and positive-recall controls. Both m
 
 [The saved audit](../evaluation/engine-0.7.1-rereview-20261013/README.md) pins source revisions, inputs, public-API reproducers, outputs, hashes and validation logs. In 56 root-authored synthetic cases, 7 positives passed; 49 negatives included 28 context and 12 marker false-Relevant failures, plus 9 correct withholdings. All 40 failing inputs were Ambiguous at **released 0.7.0 v30**. This is development/audit evidence, not independent acceptance or a population error rate.
 
+## Implementation and validation status
+
+See the [repair report](launch-context-markers-520-521.md) and [validation bundle](../evaluation/launch-520-521-final-validation/README.md). Fresh separately authored v10 first observation against fixed source `2f12d4c61546e60d31026d9b691c9eb369c37957` passed 50/50 (25 positives, 25 negatives; zero false Relevant, positive misses or API errors). The v1–v8 RED first observations and original audit remain unchanged.
+
+Locked workspace: 1490 PASS / 0 FAIL / 8 ignored; strict all-target Clippy, format, 20 standard fixtures, 13-file archive and 22 reconciliation controls pass. Full historical v16/v29 outputs are byte-identical to released 0.7.1 for 597 complete inputs. Exact-PR-head CI is tracked on PR #523 and must pass before merge. This is synthetic/local/CI evidence, not real-user utility or external factual truth.
+
+Version bump and immutable `engine-v0.7.2` publication remain under [release closeout #524](https://github.com/git-ksk/reasoning-harness/issues/524). This repair PR retains 0.7.1 package metadata and creates no tag/release/CLI adoption. Milestone #11 stays OPEN until publication.
+
 ## Implementation and acceptance order
 
 1. Add committed direct v17/v30 regressions for both issues and preserve this failing observation. Implement only in the successor path; retain historical v16/v29 and frozen artifacts.
@@ -27,7 +35,7 @@ These are separate fixes with shared safety and positive-recall controls. Both m
 
 ## What else remains in the 0.7 line?
 
-The two issues above are the **currently reproduced corrective backlog**, not proof that all possible defects have been found. The rereview also passed 22 additional source-reconciliation authority/replay controls, existing 1,468 workspace tests (6 existing ignored), strict Clippy, formatting, 20 fixtures and the 13-file frozen archive check. These results cover their tested boundaries; fresh provider, real-user utility and independently authenticated human acceptance were not performed.
+The two issues above are the **reproduced regressions addressed by this patch**, not proof that all possible defects have been found. The rereview also passed 22 additional source-reconciliation authority/replay controls, existing 1,468 workspace tests (6 existing ignored), strict Clippy, formatting, 20 fixtures and the 13-file frozen archive check. These results cover their tested boundaries; fresh provider, real-user utility and independently authenticated human acceptance were not performed.
 
 Three existing feature hypotheses remain deferred outside this patch:
 

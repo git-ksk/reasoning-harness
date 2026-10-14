@@ -1,0 +1,16 @@
+[
+  {
+    "id": "global-colon",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "Everything below is fictional: Maple Queue was launched in 2026."
+      },
+      {
+        "kind": "fact",
+        "text": "Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  }
+]
