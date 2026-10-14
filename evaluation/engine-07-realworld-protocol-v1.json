@@ -1,0 +1,161 @@
+{
+  "suite_id": "engine-07-realworld-protocol-v1",
+  "issue": 531,
+  "milestone": 12,
+  "status": "draft_pending_complete_evaluator_and_host_freeze",
+  "canonical_observations_started": false,
+  "arms": {
+    "baseline": {
+      "version": "0.6.1",
+      "tag": "engine-v0.6.1",
+      "commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e"
+    },
+    "original_candidate": {
+      "version": "0.7.2",
+      "tag": "engine-v0.7.2",
+      "commit": "296690a86e049b75ee693ae5032a71504366137c"
+    }
+  },
+  "providers": {
+    "mistral": {
+      "model": "ministral-8b-2512",
+      "fixture_concurrency": 1,
+      "start_interval_ms": 10500
+    },
+    "google": {
+      "model": "gemini-3.5-flash-lite",
+      "fixture_concurrency": 1,
+      "start_interval_ms": 10500
+    },
+    "groq": {
+      "model": "openai/gpt-oss-120b",
+      "fixture_concurrency": 1,
+      "start_interval_ms": 10500
+    }
+  },
+  "model_settings": {
+    "output_format": "text",
+    "max_tokens_per_advice": 384,
+    "random_seed": "49200 + sum(UTF-8 case ID bytes), same paired requests",
+    "reasoning_preference": "minimize",
+    "temperature": "adapter default; actual request recorded and must match between arms",
+    "provider_internal_wait_ms": 0
+  },
+  "pairing": {
+    "same_host_and_adapters": true,
+    "same_source_pool_order_and_as_of": true,
+    "same_generation_and_acquisition_budget": true,
+    "live_arm_order": "alternate baseline-first/candidate-first by precommitted case index",
+    "replay_track": "same immutable advice/source replay is engine isolation only, not live paired E2E"
+  },
+  "sample": {
+    "development_tasks_per_track": 24,
+    "fresh_independent_tasks_per_track_per_provider": 24,
+    "minimum_supported_positive_tasks": 8,
+    "holdout_authored_after_complete_evaluator_freeze": true,
+    "holdout_disjoint_from_development_products_and_source_documents": true,
+    "complete_denominator_required": true
+  },
+  "families": [
+    "supported positive",
+    "compatible paraphrase",
+    "same-origin duplicate / unknown lineage",
+    "true conflict / scope-different apparent conflict",
+    "revision / historical as-of",
+    "missing required information",
+    "wrong target / scope",
+    "control contamination"
+  ],
+  "gates": {
+    "all_required_providers_individually_pass": true,
+    "hard_safety_violations": 0,
+    "positive_control_regressions": 0,
+    "minimum_complete_useful_answer_net_gain_per_provider": 2,
+    "minimum_helper_qualified_target_net_gain_per_provider": 2,
+    "known_unrepaired_defect": "NO_GO",
+    "missing_arm_or_stage": "NO_GO",
+    "operationally_incomplete_run": "NO_GO",
+    "helper_only_evidence": "NO_GO for CLI adoption",
+    "unsupported_population_accuracy_claims": false,
+    "hard_safety_categories_each_zero": [
+      "unsupported truth / exposed-claim promotion",
+      "invented / misbound quote or citation",
+      "hidden material conflict",
+      "wrong target / scope / as-of leakage",
+      "untrusted review authority",
+      "external acquisition or write side effects on replay"
+    ],
+    "aggregation": "separate provider / track / arm / family; no pooled average hides a failure; baseline failures recorded, candidate hard-gate failure prevents adoption",
+    "go_scope": "CLI adoption requires both complete tracks; helper-only approval is limited controlled API evidence, never product GO"
+  },
+  "budgets": {
+    "e2e_normal_per_task": {
+      "model_calls": 6,
+      "provider_attempts": 12,
+      "acquisition_calls": 4,
+      "reacquisition_rounds": 2,
+      "input_tokens": 24000,
+      "output_tokens": 4096,
+      "elapsed_ms": 180000
+    },
+    "helper_opt_in_per_target": {
+      "model_calls": 1,
+      "provider_attempts": 2,
+      "input_tokens": 4096,
+      "output_tokens": 384,
+      "elapsed_ms": 100000
+    },
+    "e2e_efficiency_per_provider": {
+      "candidate_max_mean_model_calls_added_per_task": 1,
+      "candidate_max_aggregate_token_ratio_to_baseline": 1.25,
+      "candidate_max_p95_elapsed_ratio_to_baseline": 1.5,
+      "zero_or_missing_baseline_denominator": "NO_GO pending a separately precommitted successor protocol, never assume zero cost"
+    }
+  },
+  "metrics": [
+    "unsupported exposed claims",
+    "complete useful answers",
+    "avoidable abstention",
+    "quote/source/version binding",
+    "material conflict preservation",
+    "as-of and supersession correctness",
+    "actual engine invocation",
+    "model and acquisition calls",
+    "provider attempts and failures",
+    "input/output tokens",
+    "elapsed latency",
+    "available price-based cost or unavailable",
+    "unique source / origin-group / task-family denominators",
+    "contract disposition expectation vs human source relevance",
+    "affirmative support vs conflict retention vs authority refusal",
+    "active positive-parent precondition and one-factor ablation counts"
+  ],
+  "authority_boundary": {
+    "expected_labels_hidden_from_model": true,
+    "model_advice_cannot_authorize_review": true,
+    "controlled_test_host_review_is_not_human_or_external_truth": true,
+    "full_source_and_label_review_before_observation": true,
+    "synthetic_mutations_separately_labeled": true,
+    "quote_hash_scope_explicit": true
+  },
+  "freeze_requirements": [
+    "complete E2E and helper evaluators",
+    "same CLI/provider host built against both actual Engine tags",
+    "source snapshot schema and full-context label audit",
+    "all actual model request settings",
+    "protocol and evaluator SHA-256 manifests",
+    "independent author isolation and source disjointness",
+    "first-observation immutable journal and partial-failure retention",
+    "contract expectation / source relevance / affirmative support / conflict / authority axes separated",
+    "active positive-parent preconditions and one-factor ablations",
+    "durable partial stdout/stderr with frozen arm-local input/probe hash checks",
+    "raw snapshot hash, locator, normalization version and derived synthetic lineage"
+  ],
+  "current_blockers": [
+    "published0.7.2 #520 residual",
+    "ordinary runtime wiring trace absent",
+    "complete E2E/helper evaluators not frozen",
+    "development/independent canonical sets absent",
+    "canonical provider arms not run"
+  ]
+}

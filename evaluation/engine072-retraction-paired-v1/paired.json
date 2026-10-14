@@ -1,0 +1,296 @@
+[
+  {
+    "id": "positive-control",
+    "expected_relevant": true,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": false,
+    "positive_recall_gain": true,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "false-control",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "ambiguous",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": false,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "retracted-control",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "ambiguous",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": false,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "retract-present",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": true,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "retract-first-person",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": true,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "deny-present",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": true,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "withdraw-present",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": true,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "did-not-happen",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": true,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "never-happened",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": true,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "not-factual",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": true,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "not-real",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": true,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "fictional-control",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "ambiguous",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": false,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "future-retract",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": true,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  },
+  {
+    "id": "source-title-present",
+    "expected_relevant": false,
+    "baseline_v30": "ambiguous",
+    "candidate_v30": "relevant",
+    "baseline_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "candidate_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "baseline_false_relevant": false,
+    "candidate_false_relevant": true,
+    "positive_recall_gain": false,
+    "positive_regression": false,
+    "historical_v29_equal": true
+  }
+]

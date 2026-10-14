@@ -8,16 +8,22 @@
 
 ## 現在のリリース
 
-現在公開済みのsplit CLIは **Reason CLI 0.5.4 / Harness Engine 0.6.1** です。従来の0.5.3 / Engine 0.5.0を変更しません。独立Engineソースの通常パッチは **Harness Engine 0.7.2**（`engine-v0.7.2`）です。CLI 0.5.4はEngine 0.6.1を継続します。[0.7.2リリースノート](engine-0.7.2-release.ja.md)を参照してください。
+現在公開済みのsplit CLIは **Reason CLI 0.5.5 / Harness Engine 0.6.1** です。従来の0.5.3 / Engine 0.5.0を変更しません。独立Engineソースの通常パッチは **Harness Engine 0.7.2**（`engine-v0.7.2`）です。CLI 0.5.5はEngine 0.6.1を継続します。[0.7.2リリースノート](engine-0.7.2-release.ja.md)を参照してください。
 
 ```text
-公開済みCLI: Reason CLI 0.5.4 / Harness Engine 0.6.1
+公開済みCLI: Reason CLI 0.5.5 / Harness Engine 0.6.1
 最新Engine source release: Harness Engine 0.7.2 (`engine-v0.7.2`)
 ```
 
 `v0.4.2`はCLI / Engineが同じSemVerを共有したimmutableな最後のunified releaseです。`reason-v0.5.0`で最初のsplit general-use CLIをreleaseし、0.5.1 / 0.5.2 patch lineはEngine 0.4.2で進めました。`reason-v0.5.3`では独立acceptance済みのEngine 0.5.0を新しいCLI coordinateでadoptしました。
 
 中心となるtrust boundaryは変わりません。model outputはuntrusted candidate / rendererであり、evidence admission、qualification、verification、bounded resolution、最終的に表示するfactual claimのauthorityはHarness側が持ちます。最終freeze済みEngine 0.4.2 natural-language release evaluationは、Mistral、Groq、Gemini 3.5 Flash-Lite、Gemma 4 31Bを独立にPASSしています。詳細は[v36 release acceptance](natural-language-e2e-v36-result.ja.md)を参照してください。
+
+## 次の開発 — 実戦評価を先行
+
+[#531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)で、**実資料の0.6.1/0.7.2比較 → 必要な修正 → 新規再評価 → CLI採用 → 正式配布**の順に進めます。公開済み0.7.2に現在形の撤回・非実在の判定漏れが再現したため、#520を再オープンし、CLI採用はNO-GOです。#488/#489/#491は測定で必要性が確認できた場合だけ実装します。
+
+通常の質問から最終回答までのE2Eと、任意の資料照合helper評価を分けます。両タグの実ビルドによる実資料5件・11入力の予備比較は完了しましたが、3社の本評価と新しい独立受入は未実施です。採用チェックは0/6。[計画・合格条件・予備結果](engine-07-realworld-evaluation.ja.md)を参照。CLI0.5.5 / Engine0.6.1の公開と#506の配布受入は別工程です。
 
 ## 今できること
 
@@ -42,7 +48,7 @@ Mistral、Google Gemini/AI Studio、NVIDIA Hosted NIM、Groqのprovider adapter�
 
 ## 現在の製品ライン: Reason CLI 0.5.x
 
-最初のsplit general-use release `reason-v0.5.0` はrelease済みで、現在のpatch coordinateは `reason-v0.5.4` / Harness Engine 0.6.1です。旧`reason-v0.5.3`はEngine 0.5.0、`reason-v0.5.2`はEngine 0.4.2のままimmutableです。
+最初のsplit general-use release `reason-v0.5.0` はrelease済みで、現在のpatch coordinateは `reason-v0.5.5` / Harness Engine 0.6.1です。旧`reason-v0.5.3`はEngine 0.5.0、`reason-v0.5.2`はEngine 0.4.2のままimmutableです。
 
 0.5.0〜0.5.2のproductization artifactでは、固定Engine 0.4.2 baseline上で一般利用向けterminal UXを提供しました。CLI 0.5.3がそのproduct surfaceを維持しつつEngine 0.5.0を採用し、CLI 0.5.4ではさらにEngine 0.6.1を採用済みです。
 
@@ -85,9 +91,9 @@ promotion前に独立freeze済みacceptanceを完了しています。#461 holdo
 
 [Engine 0.7.1](engine-0.7.1-release.ja.md)はマージ済み#512/#514/#515の後継v17/v30修正をまとめます。歴史的v16/v29と凍結済みの結果は維持します。パッチ固有の検証は決定論的・合成データによるもので、新しいlive-provider・実ユーザーacceptanceは主張しません。
 
-**[Engine 0.7.2](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.2)をEngine単独の通常ソースパッチとして公開済みです。** [リリースPR #525](https://github.com/git-ksk/reasoning-harness/pull/525)の公開commitは`296690a86e049b75ee693ae5032a71504366137c`。#523で修正した[#520](https://github.com/git-ksk/reasoning-harness/issues/520)の架空・撤回・偽の上位文脈と、[#521](https://github.com/git-ksk/reasoning-harness/issues/521)の元の取り消し線・否定記号をv17/v30で保持します。最終候補はworkspace 1490成功・失敗0・ignore 8、strict Clippy・format・fixture20件・元archive13件を通過。最終PR head CI 23/23、マージ後CI 22/22も成功。受け入れ済みの新規独立v10 50/50、旧v16/v29の597入力byte一致を保持。[リリースノート](engine-0.7.2-release.ja.md)／[修正報告](launch-context-markers-520-521.md)／[0.7.2ロードマップ](engine-0.7.2-roadmap.ja.md)を参照。[#524](https://github.com/git-ksk/reasoning-harness/issues/524)と[Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11)で公開完了を記録します。過去tag・初回失敗は不変。公開CLIは0.5.4 / Engine 0.6.1のままで、合成・ローカル・CIの成功を新しいlive-providerの正しさ、外部truth、実ユーザーの有用性の実証とは扱いません。
+**[Engine 0.7.2](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.2)をEngine単独の通常ソースパッチとして公開済みです。** [リリースPR #525](https://github.com/git-ksk/reasoning-harness/pull/525)の公開commitは`296690a86e049b75ee693ae5032a71504366137c`。#523で修正した[#520](https://github.com/git-ksk/reasoning-harness/issues/520)の架空・撤回・偽の上位文脈と、[#521](https://github.com/git-ksk/reasoning-harness/issues/521)の元の取り消し線・否定記号をv17/v30で保持します。最終候補はworkspace 1490成功・失敗0・ignore 8、strict Clippy・format・fixture20件・元archive13件を通過。最終PR head CI 23/23、マージ後CI 22/22も成功。受け入れ済みの新規独立v10 50/50、旧v16/v29の597入力byte一致を保持。[リリースノート](engine-0.7.2-release.ja.md)／[修正報告](launch-context-markers-520-521.md)／[0.7.2ロードマップ](engine-0.7.2-roadmap.ja.md)を参照。[#524](https://github.com/git-ksk/reasoning-harness/issues/524)と[Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11)で公開完了を記録します。過去tag・初回失敗は不変。現在の公開CLIは0.5.5 / Engine 0.6.1で、合成・ローカル・CIの成功を新しいlive-providerの正しさ、外部truth、実ユーザーの有用性の実証とは扱いません。
 
-[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10)には保留した#488の出典系譜、#489の信頼済み改訂関係、#491の追加回答可否・再取得を残し、親#486から実証待ちの研究と新しい修正パッチを案内します。3仮説の採用には必要性の実測と別acceptanceが必要です。新規2件が現時点で再現できた修正バックログであり、ほかの不具合が皆無とするものではありません。#506のCLI 0.5.5 / Engine 0.6.1保守候補は別工程で、Windows実機確認待ちです。
+[Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10)には保留した#488の出典系譜、#489の信頼済み改訂関係、#491の追加回答可否・再取得を残し、親#486から実証待ちの研究と新しい修正パッチを案内します。3仮説の採用には必要性の実測と別acceptanceが必要です。新規2件が現時点で再現できた修正バックログであり、ほかの不具合が皆無とするものではありません。CLI 0.5.5 / Engine 0.6.1は公開済みで、#506のWinGetなどの配布受入は別工程です。
 
 ## 現在の信頼境界
 
@@ -106,7 +112,7 @@ general-use CLI productizationはrelease済みです。native install、guided s
 
 package-manager distribution #375は実機acceptanceを完了しました。Homebrew 0.5.3のupgrade / testはPASSし、WinGet community manifestもReason CLI 0.5.2（初回）と0.5.4（更新）がmoderator承認・merge・publish済みです。Windows実機ではdefault WinGet indexから0.5.4を取得でき、fresh install・SHA-256照合・`reason --version`・provenance付き非破壊update checkをPASSしました。`doctor`のalias path診断修正は別途#504で追跡し、既存0.5.4 binaryには未反映です。
 
-Harness Engine 0.6.0は#461/#462/#468/#463まで実装・acceptance・release完了で、`engine-v0.6.0`として独立公開します。現在配布中のCLIはReason CLI 0.5.4 / Engine 0.6.1です。旧CLI 0.5.3のEngine 0.5.0は保持します。#465はEngine correctness blockerではなく、non-semanticなCI fixture reliability follow-upとして継続します。
+Harness Engine 0.6.0は#461/#462/#468/#463まで実装・acceptance・release完了で、`engine-v0.6.0`として独立公開します。現在配布中のCLIはReason CLI 0.5.5 / Engine 0.6.1です。旧CLI 0.5.3のEngine 0.5.0は保持します。#465はEngine correctness blockerではなく、non-semanticなCI fixture reliability follow-upとして継続します。
 
 ## 研究方針
 

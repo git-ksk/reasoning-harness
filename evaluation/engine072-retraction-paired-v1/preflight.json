@@ -1,0 +1,25 @@
+{
+  "kind": "seen-data synthetic audit replay / actual-tag paired control, not fresh independent acceptance",
+  "cases_sha256": "3fedf054223797615186c7004a1e4bb6af64825484fb86b072d784d2b006a4cc",
+  "expanded_input_sha256": "5ce6aadc5568859145f1c140721732ecfd8fde9d8d16990ecfffffd1069d265e",
+  "probe_sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+  "model_calls": 0,
+  "identities": {
+    "0.6.1": {
+      "tag": "engine-v0.6.1",
+      "commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+      "evidence_relevance_sha256": "7a9a8e77e90e07dbc1648f1984d25f3fc7d17ff3f90d505431c58dac442ce613",
+      "cargo_lock_sha256": "facddcdef05aa4d7bf1da51a5ee5b880bac744320cb5e41ce6b49629b24d5d6a",
+      "core_rlib_sha256": "b8cc28c9382557283c27b493189cbdfba54859bbea734791f233d5afacad37bb",
+      "probe_binary_sha256": "2d58b8f4985f2b04e31329b78a3ec36744fcd4349956a18bf173d1669eaf3237"
+    },
+    "0.7.2": {
+      "tag": "engine-v0.7.2",
+      "commit": "296690a86e049b75ee693ae5032a71504366137c",
+      "evidence_relevance_sha256": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+      "cargo_lock_sha256": "36df99ef0828ffcdd9ca7b6d45658b42d2fe4cd7265e552672239d9d0934cf2e",
+      "core_rlib_sha256": "694ec50c83c785c603e1b631d7a97046029f02797c88d07c91f2a93a044d6fab",
+      "probe_binary_sha256": "cc6691263f98c85eda9bfbff10b8f148197cdddf4847ab031b6170415eeba002"
+    }
+  }
+}

@@ -1,5 +1,7 @@
 # Roadmap
 
+> Historical engineering/acceptance ledger below. Current direction: [product roadmap](product-roadmap.md) and [#531 Engine0.7 real-world evaluation](engine-07-realworld-evaluation.md). Published CLI is0.5.5 / Engine0.6.1;0.7.2 adoption evaluation is incomplete.
+
 ## Project direction
 
 Reasoning Harness is not trying to become a general-purpose model runner or a second Inspect/lm-eval. Its core differentiator is provider-neutral, authority-aware control of intermediate reasoning: deterministic structure and harness-owned evidence may create hard findings, while model-backed semantic discovery remains soft and observational until independently verified.

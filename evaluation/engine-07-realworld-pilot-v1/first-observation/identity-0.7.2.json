@@ -1,0 +1,35 @@
+{
+  "version": "0.7.2",
+  "tag": "engine-v0.7.2",
+  "commit": "296690a86e049b75ee693ae5032a71504366137c",
+  "core_tree": "d41dcc50608160d95fa754336bc20fcf3a616f7f",
+  "cargo_lock_sha256": "36df99ef0828ffcdd9ca7b6d45658b42d2fe4cd7265e552672239d9d0934cf2e",
+  "evidence_relevance_sha256": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+  "core_rlib_sha256": "694ec50c83c785c603e1b631d7a97046029f02797c88d07c91f2a93a044d6fab",
+  "probe_binary_sha256": "cc6691263f98c85eda9bfbff10b8f148197cdddf4847ab031b6170415eeba002",
+  "archive_sha256": "5a88430f508a7a1af9d7314ae9859a6c9106e1e99c337ffca50ce53e0f106123",
+  "cargo_args": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "-p",
+    "reasoning-harness-core",
+    "--jobs",
+    "2",
+    "--message-format=json"
+  ],
+  "rustc_args": [
+    "rustc",
+    "--edition=2024",
+    "/Users/sawadakousuke/.codex/worktrees/engine07-realworld-eval/reasoning-harness/evaluation/engine-07-realworld-pilot-v1/probe.rs",
+    "--extern",
+    "reasoning_harness_core=/private/tmp/engine-07-pilot-v1-first-build/target-0.7.2/debug/libreasoning_harness_core.rlib",
+    "--extern",
+    "serde_json=/private/tmp/engine-07-pilot-v1-first-build/target-0.7.2/debug/deps/libserde_json-4247b0767bfe4a83.rlib",
+    "-L",
+    "dependency=/private/tmp/engine-07-pilot-v1-first-build/target-0.7.2/debug/deps",
+    "-o",
+    "/private/tmp/engine-07-pilot-v1-first-build/probe-0.7.2"
+  ]
+}

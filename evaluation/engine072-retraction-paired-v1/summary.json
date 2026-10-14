@@ -1,0 +1,14 @@
+{
+  "cases": 14,
+  "positives": 1,
+  "negatives": 13,
+  "baseline_false_relevant": 0,
+  "candidate_false_relevant": 10,
+  "positive_recall_gains": 1,
+  "positive_regressions": 0,
+  "v29_equal_all": true,
+  "candidate_v17_v30_match_original_audit": true,
+  "adoption": "NO_GO",
+  "scope": "seen-data synthetic audit replay / actual-tag paired control, not fresh independent acceptance",
+  "model_calls": 0
+}

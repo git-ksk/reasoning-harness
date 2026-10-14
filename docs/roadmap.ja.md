@@ -1,5 +1,7 @@
 # Roadmap（ロードマップ）
 
+> 以下は過去の開発・受入の詳細記録です。現在の方針は[プロダクトロードマップ](product-roadmap.ja.md)と[#531 Engine0.7実戦評価](engine-07-realworld-evaluation.ja.md)を参照してください。公開CLIは0.5.5 / Engine0.6.1で、0.7.2の採用評価は未完了です。
+
 ## プロジェクトの方向性
 
 Reasoning Harness は汎用モデル runner や第二の Inspect/lm-eval になろうとしているわけではない。その中核となる差別化要因は、provider-neutral かつ authority-aware な中間 reasoning の制御である。deterministic な構造と harness-owned evidence は hard finding を生成し得る一方、model-backed semantic discovery は独立して検証されるまで soft かつ観測的なものに留まる。

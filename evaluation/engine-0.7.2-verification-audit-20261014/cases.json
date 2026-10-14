@@ -1,0 +1,160 @@
+[
+  {
+    "id": "positive-control",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "false-control",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. This claim is false."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "retracted-control",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. The newsroom retracted this claim."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "retract-present",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. The newsroom retracts this claim."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "retract-first-person",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. We retract this claim."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "deny-present",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. The newsroom denies this claim."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "withdraw-present",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. We withdraw this claim."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "did-not-happen",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. That did not happen."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "never-happened",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. This event never happened."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "not-factual",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. This report is not factual."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "not-real",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. This is not a real event."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "fictional-control",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "This is a fictional report. Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "future-retract",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026. We hereby retract the preceding statement."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "source-title-present",
+    "policy": "launch",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "The newsroom retracts this launch claim"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  }
+]
