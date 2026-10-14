@@ -45,6 +45,10 @@ def verify_binaries(bins):
         assert a['binary_sha256']==sha(bins/('reason-'+v)) and a['probe_binary_sha256']==sha(bins/('probe-'+v))
     return identity
 
+def helper_budget_failures(advice):
+    calls=advice.get('model_calls');output=(advice.get('usage') or {}).get('output_tokens');elapsed=advice.get('elapsed_ms')
+    return ['helper_budget_exceeded'] if ((calls is not None and calls>1) or (output is not None and output>384) or (elapsed is not None and elapsed>110000)) else []
+
 class Runner:
     def __init__(self,out,env,delay,bins):self.out=out;self.env=env;self.delay=delay;self.last=0;self.bins=bins
     def journal(self,obj):
@@ -124,7 +128,7 @@ def main():
         candidate_input={**base_input,'advice_equivalent':advice.get('equivalent') is True};dump(candidate_dir/'input.json',candidate_input)
         candidate,cop,cwall=lane.invoke([str(bins/'probe-0.7.2'),str(candidate_dir/'input.json')],candidate_dir,timeout=10)
         row=score_helper(case,sources,base,candidate,advice,bop or aop or cop);row.update(baseline_wall_ms=bwall,candidate_wall_ms=awall+cwall,advice_usage=advice.get('usage'),advice_model=advice.get('model'));row['advice_provider_attempts']=advice.get('provider_attempts')
-        if advice.get('model_calls',0)>1 or (advice.get('usage') or {}).get('output_tokens',0)>384 or advice.get('elapsed_ms',0)>110000:row['operational_failures'].append('helper_budget_exceeded')
+        row['operational_failures'].extend(helper_budget_failures(advice))
         if advice.get('model') and advice['model']!=model:row['operational_failures'].append('unexpected_helper_actual_model')
         if row['operational_failures']:row['compatible_display_gain']=0
         helper.append(row);dump(candidate_dir/'score.json',row)

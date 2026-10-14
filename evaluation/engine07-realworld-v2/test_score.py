@@ -100,4 +100,9 @@ class SafetyScoring(unittest.TestCase):
  def test_unknown_nested_display_fields_never_gain(self):
   c=self.corpus['cases'][3];s,b,p,a=self.helper(c);p['view']['target_answers'][0]['text']='fabricated'
   r=score_helper(c,s,b,p,a);self.assertEqual(r['compatible_display_gain'],0);self.assertTrue(r['hard_violations'])
+ def test_nullable_adviser_usage_does_not_crash_or_invent_zero(self):
+  from run import helper_budget_failures
+  advice={'model_calls':1,'elapsed_ms':10,'usage':{'input_tokens':None,'output_tokens':None,'total_tokens':None}}
+  self.assertEqual(helper_budget_failures(advice),[]);self.assertIsNone(advice['usage']['output_tokens'])
+  advice['usage']['output_tokens']=385;self.assertEqual(helper_budget_failures(advice),['helper_budget_exceeded'])
 if __name__=='__main__':unittest.main()
