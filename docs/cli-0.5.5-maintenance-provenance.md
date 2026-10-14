@@ -12,3 +12,19 @@ Before publishing `reason-v0.5.5`, require:
 - Physical Windows WinGet `Links/reason.exe` diagnosis and published Microsoft community WinGet manifest validation before closing #506. Windows UAC approval for upgrading global `gh` must not be bypassed; direct CLI patch publication can be separated from third-party manifest approval.
 
 No CLI adoption of Engine 0.7.0 is authorized by this ancestry-only merge.
+
+## Release-channel gate follow-up (2026-10-14)
+
+After the initial ancestry marker (#511), the pinned maintenance line gained a
+reviewed release-channel policy/test backport via #527, integrated as
+`5a8fe68639cc854a77120419823231dcd4e36c34`. This new, second-parent-only
+link records that exact release candidate in `main` ancestry **without importing
+any CLI 0.5.5 or Engine 0.6.1 files into the newer `main` source tree**.
+
+Candidate metadata remains Reason CLI 0.5.5 / Harness Engine 0.6.1 /
+providers 0.4.2. The GitHub SemVer publication flags now treat `0.5.5` as a
+normal release while preserving signed manifests and attestation checks.
+This marker is **not publication approval**: required physical Windows WinGet
+alias/path and update acceptance remains blocked by device connectivity. Do not
+mint `reason-v0.5.5` or close #506 until acceptance and exact-candidate release
+gates are complete.
