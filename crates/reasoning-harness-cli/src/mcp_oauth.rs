@@ -1325,10 +1325,10 @@ fn open_browser(url: &str) -> std::io::Result<()> {
     }
     #[cfg(target_os = "windows")]
     {
-        return Command::new("rundll32.exe")
+        Command::new("rundll32.exe")
             .args(["url.dll,FileProtocolHandler", url])
             .spawn()
-            .map(|_| ());
+            .map(|_| ())
     }
     #[cfg(all(unix, not(target_os = "macos")))]
     {
