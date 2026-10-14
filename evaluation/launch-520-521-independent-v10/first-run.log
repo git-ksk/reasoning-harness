@@ -1,0 +1,102 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.24
+   Compiling serde_core v1.0.229
+   Compiling syn v3.0.4
+   Compiling zmij v1.0.23
+   Compiling ref-cast v1.0.27
+   Compiling serde_json v1.0.151
+   Compiling serde v1.0.229
+   Compiling serde_derive v1.0.229
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive_internals v0.30.0
+   Compiling thiserror v2.0.21
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling schemars_derive v1.2.2
+   Compiling thiserror-impl v2.0.21
+   Compiling dyn-clone v1.0.20
+   Compiling schemars v1.2.2
+   Compiling tokio-macros v2.7.2
+   Compiling pin-project-lite v0.2.17
+   Compiling tokio v1.53.2
+   Compiling reasoning-harness-core v0.7.1 (/Users/sawadakousuke/x-code/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 18.84s
+     Running tests/launch_context_markers_independent_v10.rs (target/engine-072-independent-v10/debug/deps/launch_context_markers_independent_v10-171090734a059895)
+
+running 1 test
+CASE P1001: PASS relation="requested_relation" disposition="relevant"
+CASE P1002: PASS relation="requested_relation" disposition="relevant"
+CASE P1003: PASS relation="requested_relation" disposition="relevant"
+CASE P1004: PASS relation="requested_relation" disposition="relevant"
+CASE P1005: PASS relation="requested_relation" disposition="relevant"
+CASE P1006: PASS relation="requested_relation" disposition="relevant"
+CASE P1007: PASS relation="requested_relation" disposition="relevant"
+CASE P1008: PASS relation="requested_relation" disposition="relevant"
+CASE P1009: PASS relation="requested_relation" disposition="relevant"
+CASE P1010: PASS relation="requested_relation" disposition="relevant"
+CASE P1011: PASS relation="requested_relation" disposition="relevant"
+CASE P1012: PASS relation="requested_relation" disposition="relevant"
+CASE P1013: PASS relation="requested_relation" disposition="relevant"
+CASE P1014: PASS relation="requested_relation" disposition="relevant"
+CASE P1015: PASS relation="requested_relation" disposition="relevant"
+CASE P1016: PASS relation="requested_relation" disposition="relevant"
+CASE P1017: PASS relation="requested_relation" disposition="relevant"
+CASE P1018: PASS relation="requested_relation" disposition="relevant"
+CASE P1019: PASS relation="requested_relation" disposition="relevant"
+CASE P1020: PASS relation="requested_relation" disposition="relevant"
+CASE P1021: PASS relation="requested_relation" disposition="relevant"
+CASE P1022: PASS relation="requested_relation" disposition="relevant"
+CASE P1023: PASS relation="requested_relation" disposition="relevant"
+CASE P1024: PASS relation="requested_relation" disposition="relevant"
+CASE P1025: PASS relation="requested_relation" disposition="relevant"
+CASE N1001: PASS relation="unresolved" disposition="ambiguous"
+CASE N1002: PASS relation="unresolved" disposition="ambiguous"
+CASE N1003: PASS relation="unresolved" disposition="ambiguous"
+CASE N1004: PASS relation="unresolved" disposition="ambiguous"
+CASE N1005: PASS relation="unresolved" disposition="ambiguous"
+CASE N1006: PASS relation="unresolved" disposition="ambiguous"
+CASE N1007: PASS relation="unresolved" disposition="ambiguous"
+CASE N1008: PASS relation="unresolved" disposition="ambiguous"
+CASE N1009: PASS relation="unresolved" disposition="ambiguous"
+CASE N1010: PASS relation="unresolved" disposition="ambiguous"
+CASE N1011: PASS relation="unresolved" disposition="ambiguous"
+CASE N1012: PASS relation="unresolved" disposition="ambiguous"
+CASE N1013: PASS relation="unresolved" disposition="ambiguous"
+CASE N1014: PASS relation="unresolved" disposition="ambiguous"
+CASE N1015: PASS relation="unresolved" disposition="ambiguous"
+CASE N1016: PASS relation="unresolved" disposition="ambiguous"
+CASE N1017: PASS relation="unresolved" disposition="ambiguous"
+CASE N1018: PASS relation="unresolved" disposition="ambiguous"
+CASE N1019: PASS relation="unresolved" disposition="ambiguous"
+CASE N1020: PASS relation="unresolved" disposition="ambiguous"
+CASE N1021: PASS relation="unresolved" disposition="ambiguous"
+CASE N1022: PASS relation="unresolved" disposition="ambiguous"
+CASE N1023: PASS relation="unresolved" disposition="ambiguous"
+CASE N1024: PASS relation="unresolved" disposition="ambiguous"
+CASE N1025: PASS relation="unresolved" disposition="ambiguous"
+{
+  "acceptance_scope": "offline synthetic source-local public-API evaluation; no provider/user/device/production/external-truth acceptance",
+  "api_error_ids": [],
+  "candidate_commit": "2f12d4c61546e60d31026d9b691c9eb369c37957",
+  "candidate_source_sha256_after": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+  "candidate_source_sha256_before": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+  "corpus_sha256": "a778d971aa2acdb58dd82cf212b887bc4e66ae480b8698b98df3afa0328f7237",
+  "failed_case_ids": [],
+  "false_relevant_ids": [],
+  "negative_cases": 25,
+  "negative_requested_relation_ids": [],
+  "overall_passed": true,
+  "passed_cases": 50,
+  "positive_cases": 25,
+  "positive_miss_ids": [],
+  "positive_recall_gate_passed": true,
+  "run_identity": "independent-v10-first-api-execution",
+  "safety_gate_passed": true,
+  "source_unchanged": true,
+  "total_cases": 50
+}
+test independent_launch_context_markers_v10 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.65s
+
