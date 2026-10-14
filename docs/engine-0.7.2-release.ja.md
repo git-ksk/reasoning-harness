@@ -5,7 +5,7 @@
 ## リリース座標
 
 - package: `reasoning-harness-core 0.7.2`、`publish = false`。
-- 予定tag: `engine-v0.7.2`。[公開方針](release-policy.ja.md)に沿った**Engine単独の通常ソースパッチ**（`prerelease=false`・`latest=false`）。[#524](https://github.com/git-ksk/reasoning-harness/issues/524)で公開を追跡し、準備自体を公開済みとは扱いません。
+- 公開tag: `engine-v0.7.2`。[公開方針](release-policy.ja.md)に沿った**Engine単独の通常ソースパッチ**（`prerelease=false`・`latest=false`）。[PR #525](https://github.com/git-ksk/reasoning-harness/pull/525)の`296690a86e049b75ee693ae5032a71504366137c`で公開。[#524](https://github.com/git-ksk/reasoning-harness/issues/524)に完了を記録します。tag内文書は準備時点のsnapshotを保持し、現在のノートとGitHubリリースに公開結果を記録します。
 - 実装は受け入れ済み[PR #523](https://github.com/git-ksk/reasoning-harness/pull/523)のマージ`0e5b3389af61d55422205b83830c634f49d024bd`と同一。リリース準備ではpackage版・lock記録・CI／版識別の固定期待値・文書だけを更新します。
 - `evidence_relevance.rs` SHA-256: `5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5`。
 - 公開CLIは**0.5.4 / Engine 0.6.1**を継続。ソースcheckoutはCLI 0.5.4 / Engine 0.7.2ですが、新しいCLI binaryやcrates.io packageは配布しません。CLIへの採用や#506のCLI 0.5.5 / Engine 0.6.1候補は別工程です。
@@ -25,8 +25,19 @@
 
 限定的な合成入力・ローカル・CIの証拠です。新しいlive-provider、外部事実のtruth、実ユーザーの有用性、実機、独立した人間の承認検証は主張しません。未対応の表現では保守的に保留する場合があります。0.7.0の過去provider観測を今回の新規受け入れとは扱いません。別CLI配布のWindows実機条件は、このEngine単独ソースtagの公開条件には含めません。
 
-## 最終公開条件
+## 最終公開確認
 
-専用リリースPRの最終headを記録し、locked workspace、strict all-target Clippy、format、標準fixture、元archive、ソースcheckoutの版識別を確認します。4 platformのCLI、native candidate／Rust不要consumer、lifecycleを含む最終head CIの成功を要求します。マージ後のソース／treeとCIを確認して、その正確なマージcommitにtagを付けます。実装は受け入れ済み#523とbyte同一、過去tagと凍結証拠は不変であることが条件です。
+- [リリースPR #525](https://github.com/git-ksk/reasoning-harness/pull/525)の最終head `f6c80c1d6c65bd0031ed72733de9a75fe7e9987d`: **23/23チェック成功**。
+- 公開merge `296690a86e049b75ee693ae5032a71504366137c`: **22/22チェック成功**。treeは検証済み最終headと同一。
+- 最終候補のローカル検証: locked offline workspace **1,490成功／失敗0／ignore 8**、strict all-target Clippy、format、fixture **20/20**・根拠なし受け入れ0、元archive **13/13**、ソースcheckout doctor **CLI 0.5.4 / Engine 0.7.2**。ローカル集計とソース／hash不変の検査はPR #525に記録。
+- 実装は受け入れ済み#523とbyte同一。元の凍結証拠と既存公開tagは不変。初回の版固定CI失敗は保持し、修正後の最終headで全チェックが成功しました。
 
-GitHubノートへtag／merge SHA、release PR、CIリンクを記録します。Engineソース公開では`latest=false`を要求しますが、共通`/releases/latest`はCLI選択APIではありません。CLI consumerは`reason-v*`と検証済みCLI/Engineの組み合わせを選びます。実際の通常公開を確認した後に#524とMilestone #11を閉じます。
+- [credential-store-smoke](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132718): SUCCESS。
+- [lifecycle-smoke](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132689): SUCCESS。
+- [ci](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132621): SUCCESS。
+- [fresh-install-acceptance](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132769): SUCCESS。
+- [cli-platform-smoke](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132738): SUCCESS。
+
+通常のEngine単独公開として`latest=false`を要求します。共通`/releases/latest`はCLI選択APIではなく、CLI consumerは`reason-v*`と検証済みCLI/Engineの組み合わせを選びます。新しいCLI binaryやcrates.io packageは配布しません。
+
+マージ後macOS Intel CLIの初回はrunnerのgithub.com接続・DNS障害でビルド前に失敗しました。同一commitでそのジョブだけ1回再試行し、[初回記録](https://github.com/git-ksk/reasoning-harness/actions/runs/38494132738/attempts/1)は保持しています。独立した意味評価の採点し直しとは区別します。

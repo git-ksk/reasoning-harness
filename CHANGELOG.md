@@ -4,11 +4,11 @@ All notable product-facing changes to the `reason` CLI are recorded here. Resear
 
 The project follows semantic versioning for the executable, with the usual v0.x caveat that product interfaces are still being hardened. Machine-readable contract identities provide a stricter compatibility boundary than the executable version alone.
 
-## Harness Engine [0.7.2] - 2026-10-14 (release preparation)
+## Harness Engine [0.7.2] - 2026-10-14
 
 - #520: preserve fictional, retracted and explicitly false governing context across headings, titles and sentences before accepting affirmative launch evidence in successor v17/v30.
 - #521: preserve original strikethrough and negation markers before normalization, while retaining target ownership, punctuation and dotted-name controls.
-- Engine-only normal source patch prepared under [#524](https://github.com/git-ksk/reasoning-harness/issues/524); publication requires final release-candidate gates. Historical v16/v29, frozen first observations and distributed CLI 0.5.4 / Engine 0.6.1 remain unchanged. See [release notes](docs/engine-0.7.2-release.md) for accepted scope, evidence and limits.
+- Engine-only normal source patch published as `engine-v0.7.2` after final release-candidate gates; closeout [#524](https://github.com/git-ksk/reasoning-harness/issues/524). Historical v16/v29, frozen first observations and distributed CLI 0.5.4 / Engine 0.6.1 remain unchanged. See [release notes](docs/engine-0.7.2-release.md) for accepted scope, evidence and limits.
 
 ## Harness Engine [0.7.1] - 2026-10-13
 

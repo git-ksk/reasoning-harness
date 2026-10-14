@@ -2,7 +2,7 @@
 
 日本語 | [English](engine-0.7.2-roadmap.md)
 
-**修正ソース受け入れ済み。通常のEngine単独リリースを準備中、未公開。** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7系の親#486](https://github.com/git-ksk/reasoning-harness/issues/486)。更新日: 2026-10-14。
+**Engine単独の通常ソースパッチ[engine-v0.7.2](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.2)を公開済み。** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7系の親#486](https://github.com/git-ksk/reasoning-harness/issues/486)。更新日: 2026-10-14。
 
 [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523)で、**0.7.1で再現した関連性判定の回帰2件**を修正しました。公開済み`engine-v0.7.0`と`engine-v0.7.1`は変更しません。配布中のReason CLI 0.5.4はEngine 0.6.1です。#506の別CLI候補やEngine 0.7のCLI採用には、それぞれ別の検証が必要です。
 
@@ -21,17 +21,17 @@
 
 [修正報告](launch-context-markers-520-521.md)／[検証記録](../evaluation/launch-520-521-final-validation/README.md)。固定ソース候補`2f12d4c61546e60d31026d9b691c9eb369c37957`に対し、別作成者の新規v10初回評価は50/50（肯定25・否定25、誤Relevant・肯定取りこぼし・API error各0）です。v1–v8の初回失敗と元の監査結果は変更せず保持します。
 
-locked workspace 1490 PASS / 0 FAIL / 8 ignored、strict all-target Clippy、format、fixture20件、archive13件、出典照合22件が通過。旧v16/v29は公開済み0.7.1と597個の完全入力で出力全体がbyte一致します。PR #523の最終head・マージ後mainのCIは成功済み。専用0.7.2リリースPRでも最終headとマージ後ソースを検査します。合成入力・ローカル／CIの範囲であり、実利用や外部事実のtruthを実証したものではありません。
+locked workspace 1490 PASS / 0 FAIL / 8 ignored、strict all-target Clippy、format、fixture20件、archive13件、出典照合22件が通過。旧v16/v29は公開済み0.7.1と597個の完全入力で出力全体がbyte一致します。PR #523の最終head・マージ後mainのCIは成功済み。専用0.7.2リリースPRでも最終headとマージ後ソースを検査し、上記の通り成功しました。合成入力・ローカル／CIの範囲であり、実利用や外部事実のtruthを実証したものではありません。
 
-専用の[公開完了条件 #524](https://github.com/git-ksk/reasoning-harness/issues/524)でpackage 0.7.2と[リリースノート](engine-0.7.2-release.ja.md)を準備しています。実装はマージ済み#523と不変。最終候補の検証、新しいimmutableな`engine-v0.7.2`公開、公開後の状況反映が必要です。準備だけでtag・公開・CLI採用を完了扱いにせず、Milestone #11は公開までOPENです。
+[リリースPR #525](https://github.com/git-ksk/reasoning-harness/pull/525)で受け入れ済みソースを変更せず0.7.2へ版更新しました。最終ローカル検証・最終PR head CI 23/23・マージ後CI 22/22成功後、`296690a86e049b75ee693ae5032a71504366137c`に新しいimmutableな`engine-v0.7.2`を通常公開済み。[リリースノート](engine-0.7.2-release.ja.md)／[公開完了条件 #524](https://github.com/git-ksk/reasoning-harness/issues/524)に最終座標と限界を記録。CLI採用は別工程で、Milestone #11の公開範囲は完了です。
 
-## 実装・受け入れの順序
+## 完了した実装・受け入れの順序
 
 1. 両Issueのv17/v30直接回帰を追加し、今回の失敗記録を保持する。変更は後継経路に限定し、歴史的v16/v29と凍結済みartifactを維持する。
 2. 肯定の発売文、提供元の付記、小数・ドット付きの製品／ベンダー名、日英の準備記述、中立の複数文、別対象だけへの否定・記号を保護する。別対象・条件・疑問・噂・架空・出典bindingの既存ガードも維持する。複数文や句読点を一律に拒否しない。
 3. 候補の版と採点条件を固定後、**別の作成者による新しい**negative／positive評価を初回実行する。作成者・provenance・正確なsource SHA・初回観測・採点を記録し、誤Relevant 0と肯定例の認識退行なしを必須にする。今回の56件を新しい独立評価へ読み替えない。特定の外部レビューサービスは必須にしない。
 4. 正確な候補でlocked workspace tests、strict all-target Clippy、format、標準fixture、元archive、該当する契約／replay検査をPASSさせる。provider／運用失敗は別集計し、出典照合の権限境界と元のConflict・引用の保持も確認する。
-5. [公開方針](release-policy.ja.md)に沿った専用ソースリリースPRで、限定範囲・証拠・限界を明記する。必要条件を満たしてから新しいimmutableな`engine-v0.7.2`を通常公開する。必須acceptanceが残る候補を公開する場合は、明示的なプレリリース接尾辞と昇格条件を付ける。この計画は公開の実施や完了を意味しない。
+5. [公開方針](release-policy.ja.md)に沿った専用ソースリリースPRで、限定範囲・証拠・限界を明記する。必要条件を満たしてから新しいimmutableな`engine-v0.7.2`を通常公開する。必須acceptanceが残る候補を公開する場合は、明示的なプレリリース接尾辞と昇格条件を付ける。計画だけを公開の証拠とはせず、完了した公開座標を上記に記録する。
 
 ## 0.7系でほかに残るもの
 

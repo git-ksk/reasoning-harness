@@ -14,7 +14,7 @@
   Harness Engine 0.6.1
 
 最新の独立Engine source release:
-  Harness Engine 0.7.1 (`engine-v0.7.1`)
+  Harness Engine 0.7.2 (`engine-v0.7.2`)
 
 直近完了した統合:
   Reason CLI 0.5.4 -> Harness Engine 0.6.1 (#484)
@@ -149,11 +149,11 @@ Engine 0.6.0のmilestoneと`engine-v0.6.0` releaseは完了済みで、変更し
 
 [Engine 0.7.1](engine-0.7.1-release.ja.md)は、マージ済み#512の日英準備記述・#514/#515の発売記述修正をまとめます。歴史的v16/v29、凍結観測、machine契約を維持します。パッチ固有の検証と限界は0.7.0のprovider観測と分けて記録しています。
 
-**[#524](https://github.com/git-ksk/reasoning-harness/issues/524)でEngine 0.7.2の通常ソースリリースを準備中、未公開です。** package表記は0.7.2で、実装はマージ済み[PR #523](https://github.com/git-ksk/reasoning-harness/pull/523)から不変。[#520](https://github.com/git-ksk/reasoning-harness/issues/520)の架空・撤回・偽の文脈と、[#521](https://github.com/git-ksk/reasoning-harness/issues/521)の取り消し線・否定記号をv17/v30で保持します。[修正報告](launch-context-markers-520-521.md)に新規独立v10 50/50、workspace 1490件、旧v16/v29の597入力byte一致を保存。元の監査・初回失敗は不変です。[リリースノート](engine-0.7.2-release.ja.md)／[0.7.2ロードマップ](engine-0.7.2-roadmap.ja.md)に採用範囲と最終条件を記載し、[Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11)は公開まで開いたままにします。公開済み0.7.1には元の回帰が残り、タグを変更しません。合成・ローカル評価を外部の真実性、後段の誤回答、live-providerの正しさ、実ユーザーの有用性の実証とは扱いません。
+**[Engine 0.7.2](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.2)をEngine単独の通常ソースパッチとして公開済みです。** [リリースPR #525](https://github.com/git-ksk/reasoning-harness/pull/525)の公開commitは`296690a86e049b75ee693ae5032a71504366137c`。#523で修正した[#520](https://github.com/git-ksk/reasoning-harness/issues/520)の架空・撤回・偽の上位文脈と、[#521](https://github.com/git-ksk/reasoning-harness/issues/521)の元の取り消し線・否定記号をv17/v30で保持します。最終候補はworkspace 1490成功・失敗0・ignore 8、strict Clippy・format・fixture20件・元archive13件を通過。最終PR head CI 23/23、マージ後CI 22/22も成功。受け入れ済みの新規独立v10 50/50、旧v16/v29の597入力byte一致を保持。[リリースノート](engine-0.7.2-release.ja.md)／[修正報告](launch-context-markers-520-521.md)／[0.7.2ロードマップ](engine-0.7.2-roadmap.ja.md)を参照。[#524](https://github.com/git-ksk/reasoning-harness/issues/524)と[Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11)で公開完了を記録します。過去tag・初回失敗は不変。公開CLIは0.5.4 / Engine 0.6.1のままで、合成・ローカル・CIの成功を新しいlive-providerの正しさ、外部truth、実ユーザーの有用性の実証とは扱いません。
 
 [Milestone #10](https://github.com/git-ksk/reasoning-harness/milestone/10)／[親#486](https://github.com/git-ksk/reasoning-harness/issues/486)は、保留した[#488の出典系譜](https://github.com/git-ksk/reasoning-harness/issues/488)、[#489の信頼済み改訂関係](https://github.com/git-ksk/reasoning-harness/issues/489)、[#491の追加回答可否・再取得](https://github.com/git-ksk/reasoning-harness/issues/491)のためOPENです。新機構を必要とする具体的な製品上の失敗は未実証で、実装前に必要性の実測と別acceptanceの固定が必要です。限定的なソースパッチの公開は妨げません。
 
-新規2件が現時点で再現できた0.7系の修正バックログです。保留3件は実験が必要な改善案で、追加の既知不具合3件ではありません。ほかの不具合が皆無とするものでもありません。#465の旧MCP CI安定性と#506のCLI配布検証は別工程です。
+修正した2件が0.7.2の修正範囲です。保留3件は実験が必要な改善案で、追加の既知不具合3件ではありません。ほかの不具合が皆無とするものでもありません。#465の旧MCP CI安定性と#506のCLI配布検証は別工程です。
 
 公開済み製品はCLI 0.5.4 / Engine 0.6.1です。#506の分離したCLI 0.5.5 / Engine 0.6.1候補はWindows実機確認待ちです。Engine 0.7のCLI採用は別リリース判断です。
 
