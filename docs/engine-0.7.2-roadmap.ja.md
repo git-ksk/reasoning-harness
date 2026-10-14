@@ -2,7 +2,7 @@
 
 日本語 | [English](engine-0.7.2-roadmap.md)
 
-**修正実装・独立評価完了。未リリース。** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7系の親#486](https://github.com/git-ksk/reasoning-harness/issues/486)。更新日: 2026-10-14。
+**修正ソース受け入れ済み。通常のEngine単独リリースを準備中、未公開。** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7系の親#486](https://github.com/git-ksk/reasoning-harness/issues/486)。更新日: 2026-10-14。
 
 [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523)で、**0.7.1で再現した関連性判定の回帰2件**を修正しました。公開済み`engine-v0.7.0`と`engine-v0.7.1`は変更しません。配布中のReason CLI 0.5.4はEngine 0.6.1です。#506の別CLI候補やEngine 0.7のCLI採用には、それぞれ別の検証が必要です。
 
@@ -21,9 +21,9 @@
 
 [修正報告](launch-context-markers-520-521.md)／[検証記録](../evaluation/launch-520-521-final-validation/README.md)。固定ソース候補`2f12d4c61546e60d31026d9b691c9eb369c37957`に対し、別作成者の新規v10初回評価は50/50（肯定25・否定25、誤Relevant・肯定取りこぼし・API error各0）です。v1–v8の初回失敗と元の監査結果は変更せず保持します。
 
-locked workspace 1490 PASS / 0 FAIL / 8 ignored、strict all-target Clippy、format、fixture20件、archive13件、出典照合22件が通過。旧v16/v29は公開済み0.7.1と597個の完全入力で出力全体がbyte一致します。正確なPR headのCIはPR上で確認し、必須チェック成功後にマージします。合成入力・ローカル／CIの範囲であり、実利用や外部事実のtruthを実証したものではありません。
+locked workspace 1490 PASS / 0 FAIL / 8 ignored、strict all-target Clippy、format、fixture20件、archive13件、出典照合22件が通過。旧v16/v29は公開済み0.7.1と597個の完全入力で出力全体がbyte一致します。PR #523の最終head・マージ後mainのCIは成功済み。専用0.7.2リリースPRでも最終headとマージ後ソースを検査します。合成入力・ローカル／CIの範囲であり、実利用や外部事実のtruthを実証したものではありません。
 
-バージョン更新と新しい`engine-v0.7.2`の公開は[公開完了条件 #524](https://github.com/git-ksk/reasoning-harness/issues/524)に残します。今回の修正PRではpackage metadataを0.7.1のまま保持し、タグ・公開・CLI採用は行いません。Milestone #11は公開までOPENです。
+専用の[公開完了条件 #524](https://github.com/git-ksk/reasoning-harness/issues/524)でpackage 0.7.2と[リリースノート](engine-0.7.2-release.ja.md)を準備しています。実装はマージ済み#523と不変。最終候補の検証、新しいimmutableな`engine-v0.7.2`公開、公開後の状況反映が必要です。準備だけでtag・公開・CLI採用を完了扱いにせず、Milestone #11は公開までOPENです。
 
 ## 実装・受け入れの順序
 

@@ -2,7 +2,7 @@
 
 [日本語](engine-0.7.2-roadmap.ja.md) | English
 
-**Implemented and independently accepted; not released.** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7 parent #486](https://github.com/git-ksk/reasoning-harness/issues/486). Updated 2026-10-14.
+**Source repairs accepted; normal Engine-only release preparation active, not yet published.** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7 parent #486](https://github.com/git-ksk/reasoning-harness/issues/486). Updated 2026-10-14.
 
 [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523) repairs **two confirmed 0.7.1 relevance regressions** in successor source. Published `engine-v0.7.0` and `engine-v0.7.1` remain immutable. Published Reason CLI 0.5.4 continues to distribute Engine 0.6.1; #506's separate CLI candidate and any Engine 0.7 CLI adoption have their own acceptance.
 
@@ -21,9 +21,9 @@ These are separate fixes with shared safety and positive-recall controls. Both m
 
 See the [repair report](launch-context-markers-520-521.md) and [validation bundle](../evaluation/launch-520-521-final-validation/README.md). Fresh separately authored v10 first observation against fixed source `2f12d4c61546e60d31026d9b691c9eb369c37957` passed 50/50 (25 positives, 25 negatives; zero false Relevant, positive misses or API errors). The v1–v8 RED first observations and original audit remain unchanged.
 
-Locked workspace: 1490 PASS / 0 FAIL / 8 ignored; strict all-target Clippy, format, 20 standard fixtures, 13-file archive and 22 reconciliation controls pass. Full historical v16/v29 outputs are byte-identical to released 0.7.1 for 597 complete inputs. Exact-PR-head CI is tracked on PR #523 and must pass before merge. This is synthetic/local/CI evidence, not real-user utility or external factual truth.
+Locked workspace: 1490 PASS / 0 FAIL / 8 ignored; strict all-target Clippy, format, 20 standard fixtures, 13-file archive and 22 reconciliation controls pass. Full historical v16/v29 outputs are byte-identical to released 0.7.1 for 597 complete inputs. PR #523 exact-head and merged-main CI passed. The dedicated 0.7.2 release PR must separately pass final-head and merged-source checks. This is synthetic/local/CI evidence, not real-user utility or external factual truth.
 
-Version bump and immutable `engine-v0.7.2` publication remain under [release closeout #524](https://github.com/git-ksk/reasoning-harness/issues/524). This repair PR retains 0.7.1 package metadata and creates no tag/release/CLI adoption. Milestone #11 stays OPEN until publication.
+The dedicated [release closeout #524](https://github.com/git-ksk/reasoning-harness/issues/524) prepares package 0.7.2 and [release notes](engine-0.7.2-release.md). Implementation remains identical to merged #523. Final release-candidate validation, immutable `engine-v0.7.2` publication and post-publication reconciliation remain required; no tag/release or CLI adoption is claimed by this preparation. Milestone #11 stays OPEN until publication.
 
 ## Implementation and acceptance order
 
