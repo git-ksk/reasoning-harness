@@ -28,3 +28,9 @@ This marker is **not publication approval**: required physical Windows WinGet
 alias/path and update acceptance remains blocked by device connectivity. Do not
 mint `reason-v0.5.5` or close #506 until acceptance and exact-candidate release
 gates are complete.
+
+## Final WinGet Clippy patch ancestry (2026-10-14)
+
+The final CLI 0.5.5 / Engine 0.6.1 candidate `ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7` includes PR #529, a Windows-only `clippy::needless_return` cleanup in the OAuth browser opener. Its PR gate passed 22/22 checks, and local Rust 1.88.0 strict Windows Clippy, fmt, CLI tests (203 passed, three ignored) and macOS Clippy, fmt, CLI tests (208 passed, three ignored) passed. The prior candidate `5a8fe68639cc854a77120419823231dcd4e36c34` remains preserved in history.
+
+The final candidate is recorded only as an additional merge parent using `git merge -s ours`: the source files on `main` retain Engine 0.7.2 and are **not** replaced with the maintenance branch's Engine 0.6.1. Publication still requires the exact-head four-OS maintenance workflow and main-ancestry gate, followed by release artifact/attestation verification. Do not treat this ancestry marker as WinGet official index acceptance or as permission to close #506 before physical 0.5.4→0.5.5 upgrade E2E.
