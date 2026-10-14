@@ -1,0 +1,13 @@
+{
+  "main_commit": "27737ead2b0dfeddcdcebff608e8957bd263c4e0",
+  "pinned_commit": "4cae9326bcc3e210c3250f05772d84f00e41b645",
+  "depth20_missing_object_exit": 128,
+  "explicit_depth1_fetch_verified": true,
+  "scope": "clean local file-transport shallow repository reproduces exact missing-object boundary; CI run38587414946 confirms remote symptom",
+  "issue": 533,
+  "failed_ci_head": "6afb4d28c78f54f6512d6af51ef75f1fbe383fed",
+  "failed_ci_run": 38587414946,
+  "failed_job": 115932987185,
+  "remote_exact_pinned_fetch_verified": true,
+  "remote": "https://github.com/git-ksk/reasoning-harness.git"
+}
