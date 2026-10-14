@@ -1,0 +1,2374 @@
+{
+  "schema_version": 7,
+  "author_identity": "/root/launch_072_independent",
+  "candidate_commit": "19a8faaa582c1d4af7a68972c494b2e29f72d80e",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "1e6293feab2c5eb7428a4427c7de9dc2d635a01fe9de14036db64085ffdde315",
+  "positive_owner_rule": "same-statement canonical or declared alias direct subject/object in supported bounded predicates",
+  "cases": [
+    {
+      "case_id": "P701",
+      "category": "passive_launch_neutral_installation_note",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P701",
+        "target_question": "When was Ensora Mote launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P701",
+          "canonical_name": "Ensora Mote",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P701",
+        "source_id": "v7-source-P701",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ensora Mote was launched on 4 May 2330. Installation notes follow the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P702",
+      "category": "has_been_launched_as_of_under_neutral_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P702",
+        "target_question": "When was Ulvessa Kite launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P702",
+          "canonical_name": "Ulvessa Kite",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P702",
+        "source_id": "v7-source-P702",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Published product timeline"
+          },
+          {
+            "kind": "fact",
+            "text": "Ulvessa Kite has been launched as of 5 May 2331."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P703",
+      "category": "passive_introduction_neutral_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P703",
+        "target_question": "When was Aldori Pad launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P703",
+          "canonical_name": "Aldori Pad",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P703",
+        "source_id": "v7-source-P703",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Launch dates"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Aldori Pad was introduced on 6 May 2332."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P704",
+      "category": "introduced_declared_alias_object",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P704",
+        "target_question": "When was Wesora Port launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P704",
+          "canonical_name": "Wesora Port",
+          "aliases": [
+            "WPort"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P704",
+        "source_id": "v7-source-P704",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Nindori Labs introduced WPort on 7 May 2333."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P705",
+      "category": "went_live_in_structured_metadata",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P705",
+        "target_question": "When was Delsora Watch launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P705",
+          "canonical_name": "Delsora Watch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P705",
+        "source_id": "v7-source-P705",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Delsora Watch went live on 8 May 2334."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P706",
+      "category": "active_rollout_with_record_adjunct",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P706",
+        "target_question": "When was Elvori Spool launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P706",
+          "canonical_name": "Elvori Spool",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P706",
+        "source_id": "v7-source-P706",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Elvori Spool rolled out on 9 May 2335, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P707",
+      "category": "passive_rollout_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P707",
+        "target_question": "When was Kinsora Array launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P707",
+          "canonical_name": "Kinsora Array",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P707",
+        "source_id": "v7-source-P707",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Kinsora Array was rolled out as of 10 May 2336."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P708",
+      "category": "is_now_generally_available",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P708",
+        "target_question": "When was Pravessa Grid launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P708",
+          "canonical_name": "Pravessa Grid",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P708",
+        "source_id": "v7-source-P708",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Pravessa Grid is now generally available as of 11 May 2337."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P709",
+      "category": "became_generally_available_neutral_documentation_note",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P709",
+        "target_question": "When was Tesora Board launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P709",
+          "canonical_name": "Tesora Board",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P709",
+        "source_id": "v7-source-P709",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tesora Board became generally available on 12 May 2338. Its documentation has a separate index."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P710",
+      "category": "entered_general_availability_fact",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P710",
+        "target_question": "When was Irdori Shelf launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P710",
+          "canonical_name": "Irdori Shelf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P710",
+        "source_id": "v7-source-P710",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Irdori Shelf entered general availability on 13 May 2339."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P711",
+      "category": "reached_ga_on_date",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P711",
+        "target_question": "When was Avsora Loom launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P711",
+          "canonical_name": "Avsora Loom",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P711",
+        "source_id": "v7-source-P711",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Avsora Loom reached GA on 14 May 2340."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P712",
+      "category": "actor_has_made_object_generally_available",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P712",
+        "target_question": "When was Cendori Module launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P712",
+          "canonical_name": "Cendori Module",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P712",
+        "source_id": "v7-source-P712",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Falvessa Systems has made Cendori Module generally available as of 15 May 2341."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P713",
+      "category": "actor_launched_named_object_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P713",
+        "target_question": "When was Belsora Crest launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P713",
+          "canonical_name": "Belsora Crest",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P713",
+        "source_id": "v7-source-P713",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Mavdori Devices launched Belsora Crest as of 16 May 2342."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P714",
+      "category": "dotted_decimal_passive_introduction",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P714",
+        "target_question": "When was Iro.Dev Lumen 7.5 launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P714",
+          "canonical_name": "Iro.Dev Lumen 7.5",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P714",
+        "source_id": "v7-source-P714",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Iro.Dev Lumen 7.5 was introduced on 17 May 2343."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P715",
+      "category": "declared_alias_has_been_launched_record_adjunct",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P715",
+        "target_question": "When was Seldori Hub launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P715",
+          "canonical_name": "Seldori Hub",
+          "aliases": [
+            "SRHub"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P715",
+        "source_id": "v7-source-P715",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "SRHub has been launched on 18 May 2344, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P716",
+      "category": "neutral_title_heading_and_factual_proof",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P716",
+        "target_question": "When was Veressa Dock launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P716",
+          "canonical_name": "Veressa Dock",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P716",
+        "source_id": "v7-source-P716",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Version archive"
+          },
+          {
+            "kind": "heading",
+            "text": "Release timeline"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Veressa Dock launched on 19 May 2345."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P717",
+      "category": "separate_editor_feature_question",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P717",
+        "target_question": "When was Dorvessa Reel launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P717",
+          "canonical_name": "Dorvessa Reel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P717",
+        "source_id": "v7-source-P717",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Does Dorvessa Reel include an editor? Dorvessa Reel was launched on 20 May 2346."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P718",
+      "category": "has_an_property_adjacent_false_claim",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P718",
+        "target_question": "When was Kelvori Bay launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P718",
+          "canonical_name": "Kelvori Bay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P718",
+        "source_id": "v7-source-P718",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Kelvori Bay has an export menu. This claim is false. Kelvori Bay was introduced on 21 May 2347."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P719",
+      "category": "support_property_adjacent_denied_statement",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P719",
+        "target_question": "When was Nelsora Ring launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P719",
+          "canonical_name": "Nelsora Ring",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P719",
+        "source_id": "v7-source-P719",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Nelsora Ring supports PDF export. That statement is denied. Nelsora Ring reached GA on 22 May 2348."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P720",
+      "category": "included_property_adjacent_withdrawn_feature_claim",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P720",
+        "target_question": "When was Taldori Trace launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P720",
+          "canonical_name": "Taldori Trace",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P720",
+        "source_id": "v7-source-P720",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Taldori Trace includes a timer. This feature claim was withdrawn. Taldori Trace was rolled out on 23 May 2349."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P721",
+      "category": "closed_same_target_property_strike",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P721",
+        "target_question": "When was Lavsora Route launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P721",
+          "canonical_name": "Lavsora Route",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P721",
+        "source_id": "v7-source-P721",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Lavsora Route offers offline mode.~~ Lavsora Route went live on 24 May 2350."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P722",
+      "category": "crossed_has_an_property_then_named_launch",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P722",
+        "target_question": "When was Gelsora Field launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P722",
+          "canonical_name": "Gelsora Field",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P722",
+        "source_id": "v7-source-P722",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "❌ Gelsora Field has an offline editor. Gelsora Field was launched on 25 May 2351."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P723",
+      "category": "fictional_heading_explicit_other_target_predicate",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P723",
+        "target_question": "When was Vensora Channel launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P723",
+          "canonical_name": "Vensora Channel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P723",
+        "source_id": "v7-source-P723",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Fictional release account: Peressa Brick launched on 24 May 2352."
+          },
+          {
+            "kind": "fact",
+            "text": "Vensora Channel entered general availability on 26 May 2352."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P724",
+      "category": "url_navigation_without_authority",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P724",
+        "target_question": "When was Zelvori Dial launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P724",
+          "canonical_name": "Zelvori Dial",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P724",
+        "source_id": "v7-source-P724",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/hypothetical/zelvori-dial"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Retracted reports and fictional release dates"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Zelvori Dial was introduced on 27 May 2353."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P725",
+      "category": "other_target_denial_then_named_object_launch",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-P725",
+        "target_question": "When was Adessa Stack launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-P725",
+          "canonical_name": "Adessa Stack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-P725",
+        "source_id": "v7-source-P725",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Orsora Kite was not launched in April. Veldori Systems launched Adessa Stack on 28 May 2354."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N701",
+      "category": "broad_report_fiction_leading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N701",
+        "target_question": "When was Birvessa Cloud launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N701",
+          "canonical_name": "Birvessa Cloud",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N701",
+        "source_id": "v7-source-N701",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This report is fictional. Birvessa Cloud reached GA on 1 May 2360."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N702",
+      "category": "plural_hypothetical_statements_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N702",
+        "target_question": "When was Ondori Tile launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N702",
+          "canonical_name": "Ondori Tile",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N702",
+        "source_id": "v7-source-N702",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "These statements are hypothetical"
+          },
+          {
+            "kind": "fact",
+            "text": "Ondori Tile was introduced on 2 May 2361."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N703",
+      "category": "broad_passage_fiction_trailing",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N703",
+        "target_question": "When was Darsora Finch launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N703",
+          "canonical_name": "Darsora Finch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N703",
+        "source_id": "v7-source-N703",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Darsora Finch was launched on 3 May 2362. This passage is fictional."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N704",
+      "category": "whole_report_retraction_after_feature",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N704",
+        "target_question": "When was Celdori Gate launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N704",
+          "canonical_name": "Celdori Gate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N704",
+        "source_id": "v7-source-N704",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Celdori Gate went live on 4 May 2363. Celdori Gate includes a timer. The whole report was retracted."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N705",
+      "category": "false_claim_title_governs_object_introduction",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N705",
+        "target_question": "When was Parsora Axis launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N705",
+          "canonical_name": "Parsora Axis",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N705",
+        "source_id": "v7-source-N705",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "False introduction claim"
+          },
+          {
+            "kind": "fact",
+            "text": "Javessa Labs introduced Parsora Axis on 5 May 2364."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N706",
+      "category": "named_launch_claim_denied_leading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N706",
+        "target_question": "When was Fendori Board launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N706",
+          "canonical_name": "Fendori Board",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N706",
+        "source_id": "v7-source-N706",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The launch claim for Fendori Board is denied. Fendori Board launched on 6 May 2365."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N707",
+      "category": "withdrawn_release_heading_governs_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N707",
+        "target_question": "When was Yelsora Pulse launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N707",
+          "canonical_name": "Yelsora Pulse",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N707",
+        "source_id": "v7-source-N707",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Withdrawn release statement"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Yelsora Pulse became generally available on 7 May 2366."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N708",
+      "category": "closed_strike_full_rollout",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N708",
+        "target_question": "When was Nelvessa Leaf launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N708",
+          "canonical_name": "Nelvessa Leaf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N708",
+        "source_id": "v7-source-N708",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Nelvessa Leaf was rolled out on 8 May 2367.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N709",
+      "category": "unclosed_strike_after_neutral_label",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N709",
+        "target_question": "When was Ildori Scope launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N709",
+          "canonical_name": "Ildori Scope",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N709",
+        "source_id": "v7-source-N709",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Archive entry: ~~Ildori Scope was introduced on 9 May 2368."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N710",
+      "category": "cross_prefix_launch",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N710",
+        "target_question": "When was Rensora Wheel launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N710",
+          "canonical_name": "Rensora Wheel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N710",
+        "source_id": "v7-source-N710",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "❌ Rensora Wheel was launched on 10 May 2369."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N711",
+      "category": "not_equal_available_predicate",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N711",
+        "target_question": "When was Kaldori Shelf launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N711",
+          "canonical_name": "Kaldori Shelf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N711",
+        "source_id": "v7-source-N711",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Kaldori Shelf ≠ generally available as of 11 May 2370."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N712",
+      "category": "logical_not_went_live",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N712",
+        "target_question": "When was Bervori Cabin launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N712",
+          "canonical_name": "Bervori Cabin",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N712",
+        "source_id": "v7-source-N712",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "¬ Bervori Cabin went live on 12 May 2371."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N713",
+      "category": "ballot_cross_reached_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N713",
+        "target_question": "When was Jelsora Studio launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N713",
+          "canonical_name": "Jelsora Studio",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N713",
+        "source_id": "v7-source-N713",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "✗ Jelsora Studio reached GA on 13 May 2372."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N714",
+      "category": "heavy_cross_governing_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N714",
+        "target_question": "When was Torvessa Path launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N714",
+          "canonical_name": "Torvessa Path",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N714",
+        "source_id": "v7-source-N714",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "✘ Torvessa Path launch record"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Torvessa Path has been launched on 14 May 2373."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N715",
+      "category": "combining_strike_full_ga_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N715",
+        "target_question": "When was Gindori Atlas launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N715",
+          "canonical_name": "Gindori Atlas",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N715",
+        "source_id": "v7-source-N715",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "G̵i̵n̵d̵o̵r̵i̵ A̵t̵l̵a̵s̵ e̵n̵t̵e̵r̵e̵d̵ g̵e̵n̵e̵r̵a̵l̵ a̵v̵a̵i̵l̵a̵b̵i̵l̵i̵t̵y̵ o̵n̵ 1̵5̵ M̵a̵y̵ 2̵3̵7̵4̵.̵"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N716",
+      "category": "feature_unstruck_launch_struck",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N716",
+        "target_question": "When was Lersora Patch launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N716",
+          "canonical_name": "Lersora Patch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N716",
+        "source_id": "v7-source-N716",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Lersora Patch includes a timer. ~~Lersora Patch went live on 16 May 2375.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N717",
+      "category": "target_launch_question",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N717",
+        "target_question": "When was Nardori Loop launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N717",
+          "canonical_name": "Nardori Loop",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N717",
+        "source_id": "v7-source-N717",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Was Nardori Loop launched on 17 May 2376?"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N718",
+      "category": "object_launch_condition",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N718",
+        "target_question": "When was Elsora Light launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N718",
+          "canonical_name": "Elsora Light",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N718",
+        "source_id": "v7-source-N718",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "If the agreement was approved, Vardori Labs launched Elsora Light on 18 May 2377."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N719",
+      "category": "passive_introduction_negation",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N719",
+        "target_question": "When was Velvessa Panel launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N719",
+          "canonical_name": "Velvessa Panel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N719",
+        "source_id": "v7-source-N719",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Velvessa Panel was not introduced on 19 May 2378."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N720",
+      "category": "unconfirmed_rollout_rumor",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N720",
+        "target_question": "When was Pindori Prism launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N720",
+          "canonical_name": "Pindori Prism",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N720",
+        "source_id": "v7-source-N720",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Unconfirmed rumor: Pindori Prism was rolled out on 20 May 2379."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N721",
+      "category": "actor_target_has_made_other_product_available",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N721",
+        "target_question": "When was Neldori Systems launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N721",
+          "canonical_name": "Neldori Systems",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N721",
+        "source_id": "v7-source-N721",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Neldori Systems has made Corvessa Bay generally available on 21 May 2380."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N722",
+      "category": "cross_sentence_named_record_pronoun",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N722",
+        "target_question": "When was Pelsora Module launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N722",
+          "canonical_name": "Pelsora Module",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N722",
+        "source_id": "v7-source-N722",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This record names Pelsora Module. It has been launched on 22 May 2381."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N723",
+      "category": "title_only_positive_with_feature_body",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N723",
+        "target_question": "When was Eldori Port launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N723",
+          "canonical_name": "Eldori Port",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N723",
+        "source_id": "v7-source-N723",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Eldori Port entered general availability on 23 May 2382."
+          },
+          {
+            "kind": "heading",
+            "text": "Documentation"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Eldori Port supports PDF export."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N724",
+      "category": "url_and_footer_only_affirmative",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N724",
+        "target_question": "When was Sarsora Key launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N724",
+          "canonical_name": "Sarsora Key",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N724",
+        "source_id": "v7-source-N724",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/Sarsora-Key/launched/2383-05-24"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Sarsora Key was launched on 24 May 2383."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N725",
+      "category": "heading_target_other_named_ga_owner",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v7-bounded-acceptance",
+        "target_id": "v7-target-N725",
+        "target_question": "When was Veldori Frame launched?",
+        "entity": {
+          "canonical_id": "v7-canonical-N725",
+          "canonical_name": "Veldori Frame",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v7-evidence-N725",
+        "source_id": "v7-source-N725",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Veldori Frame general availability notes"
+          },
+          {
+            "kind": "fact",
+            "text": "Dervessa Frame reached GA on 25 May 2384."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    }
+  ]
+}

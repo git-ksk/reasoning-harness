@@ -1,0 +1,2382 @@
+{
+  "schema_version": 8,
+  "author_identity": "/root/launch_072_independent",
+  "candidate_commit": "bcf65d9b2f0edb88c05780e4322a633c720d8a8a",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "69f3e3116ae0a887cf5b83401d2355485edc5dd877a983c94587c3f1cbb00322",
+  "positive_owner_rule": "same-statement canonical or declared alias direct subject/object in supported bounded predicates",
+  "cases": [
+    {
+      "case_id": "P801",
+      "category": "passive_launch_record_adjunct_neutral_followup",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P801",
+        "target_question": "When was Evanto Beam launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P801",
+          "canonical_name": "Evanto Beam",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P801",
+        "source_id": "v8-source-P801",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Evanto Beam was launched on 1 May 2390, according to the release record. The archive includes the manual."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P802",
+      "category": "date_first_actor_launches_named_object",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P802",
+        "target_question": "When was Evranto Shelf launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P802",
+          "canonical_name": "Evranto Shelf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P802",
+        "source_id": "v8-source-P802",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "On 2 May 2391, Calbora Labs launched Evranto Shelf."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P803",
+      "category": "passive_introduction_factual_signal",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P803",
+        "target_question": "When was Kibora Ring launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P803",
+          "canonical_name": "Kibora Ring",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P803",
+        "source_id": "v8-source-P803",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Kibora Ring was introduced on 3 May 2392."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P804",
+      "category": "introduced_declared_alias_object",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P804",
+        "target_question": "When was Savanto Tile launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P804",
+          "canonical_name": "Savanto Tile",
+          "aliases": [
+            "SVTile"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P804",
+        "source_id": "v8-source-P804",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Belbora Systems introduced SVTile on 4 May 2393."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P805",
+      "category": "has_been_launched_date",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P805",
+        "target_question": "When was Feranto Clock launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P805",
+          "canonical_name": "Feranto Clock",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P805",
+        "source_id": "v8-source-P805",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Feranto Clock has been launched on 5 May 2394."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P806",
+      "category": "went_live_as_of_neutral_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P806",
+        "target_question": "When was Nivanto Gate launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P806",
+          "canonical_name": "Nivanto Gate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P806",
+        "source_id": "v8-source-P806",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Availability dates"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Nivanto Gate went live as of 6 May 2395."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P807",
+      "category": "active_rollout_fact",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P807",
+        "target_question": "When was Parbora Map launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P807",
+          "canonical_name": "Parbora Map",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P807",
+        "source_id": "v8-source-P807",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Parbora Map rolled out on 7 May 2396."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P808",
+      "category": "passive_rollout_neutral_followup",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P808",
+        "target_question": "When was Ravanto Cradle launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P808",
+          "canonical_name": "Ravanto Cradle",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P808",
+        "source_id": "v8-source-P808",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Ravanto Cradle was rolled out on 8 May 2397. The manual lists system requirements."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P809",
+      "category": "is_generally_available_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P809",
+        "target_question": "When was Selbora Leaf launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P809",
+          "canonical_name": "Selbora Leaf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P809",
+        "source_id": "v8-source-P809",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Selbora Leaf is generally available as of 9 May 2398."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P810",
+      "category": "is_now_generally_available",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P810",
+        "target_question": "When was Varanto Grid launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P810",
+          "canonical_name": "Varanto Grid",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P810",
+        "source_id": "v8-source-P810",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Varanto Grid is now generally available as of 10 May 2399."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P811",
+      "category": "became_generally_available_record_adjunct",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P811",
+        "target_question": "When was Ovbora Pulse launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P811",
+          "canonical_name": "Ovbora Pulse",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P811",
+        "source_id": "v8-source-P811",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Ovbora Pulse became generally available on 11 May 2400, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P812",
+      "category": "actor_has_made_direct_object",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P812",
+        "target_question": "When was Melbora Trace launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P812",
+          "canonical_name": "Melbora Trace",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P812",
+        "source_id": "v8-source-P812",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tervanto Labs has made Melbora Trace generally available on 12 May 2401."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P813",
+      "category": "entered_general_availability_with_neutral_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P813",
+        "target_question": "When was Irvanto Board launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P813",
+          "canonical_name": "Irvanto Board",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P813",
+        "source_id": "v8-source-P813",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Product archive"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Irvanto Board entered general availability on 13 May 2402."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P814",
+      "category": "reached_ga_in_metadata",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P814",
+        "target_question": "When was Nerbora Port launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P814",
+          "canonical_name": "Nerbora Port",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P814",
+        "source_id": "v8-source-P814",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Nerbora Port reached GA on 14 May 2403."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P815",
+      "category": "dotted_decimal_declared_alias_launch",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P815",
+        "target_question": "When was Avo.Tools Loom 9.2 launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P815",
+          "canonical_name": "Avo.Tools Loom 9.2",
+          "aliases": [
+            "ATL92"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P815",
+        "source_id": "v8-source-P815",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "ATL92 was launched on 15 May 2404."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P816",
+      "category": "separate_feature_count_question",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P816",
+        "target_question": "When was Nolbora Desk launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P816",
+          "canonical_name": "Nolbora Desk",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P816",
+        "source_id": "v8-source-P816",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "How many timers does Nolbora Desk include? Nolbora Desk went live on 16 May 2405."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P817",
+      "category": "has_an_property_adjacent_false_statement",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P817",
+        "target_question": "When was Elbora Prism launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P817",
+          "canonical_name": "Elbora Prism",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P817",
+        "source_id": "v8-source-P817",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Elbora Prism has an export panel. That property statement is false. Elbora Prism was introduced on 17 May 2406."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P818",
+      "category": "separate_negated_feature_before_ga",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P818",
+        "target_question": "When was Dervanto Cabin launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P818",
+          "canonical_name": "Dervanto Cabin",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P818",
+        "source_id": "v8-source-P818",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Dervanto Cabin does not support PDF export. Dervanto Cabin entered general availability on 18 May 2407."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P819",
+      "category": "struck_same_target_included_feature",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P819",
+        "target_question": "When was Volbora Field launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P819",
+          "canonical_name": "Volbora Field",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P819",
+        "source_id": "v8-source-P819",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Volbora Field includes a navigation panel.~~ Volbora Field reached GA on 19 May 2408."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P820",
+      "category": "marked_other_target_launch_then_target_proof",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P820",
+        "target_question": "When was Tavanto Key launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P820",
+          "canonical_name": "Tavanto Key",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P820",
+        "source_id": "v8-source-P820",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "❌ Rilbora Array was launched on 18 May 2409. Tavanto Key was launched on 20 May 2409."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P821",
+      "category": "fictional_foreign_passive_introduction_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P821",
+        "target_question": "When was Avbora Relay launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P821",
+          "canonical_name": "Avbora Relay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P821",
+        "source_id": "v8-source-P821",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Fictional statement: Serlano Prism was introduced on 19 May 2410."
+          },
+          {
+            "kind": "fact",
+            "text": "Avbora Relay became generally available on 21 May 2410."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P822",
+      "category": "denied_foreign_active_launch_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P822",
+        "target_question": "When was Jervanto Hatch launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P822",
+          "canonical_name": "Jervanto Hatch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P822",
+        "source_id": "v8-source-P822",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Denied launch claim: Merlino Kite launched on 20 May 2411."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Jervanto Hatch was rolled out on 22 May 2411."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P823",
+      "category": "hypothetical_foreign_active_rollout_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P823",
+        "target_question": "When was Velbora Wheel launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P823",
+          "canonical_name": "Velbora Wheel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P823",
+        "source_id": "v8-source-P823",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Hypothetical statement: Torlano Grid rolled out on 21 May 2412."
+          },
+          {
+            "kind": "fact",
+            "text": "Velbora Wheel went live on 23 May 2412."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P824",
+      "category": "url_and_footer_without_governing_authority",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P824",
+        "target_question": "When was Kervanto Box launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P824",
+          "canonical_name": "Kervanto Box",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P824",
+        "source_id": "v8-source-P824",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/fictional/kervanto-box"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Denied launch claims"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Kervanto Box has been launched as of 24 May 2413."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P825",
+      "category": "feature_question_heading_and_object_proof",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-P825",
+        "target_question": "When was Alvbora Module launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-P825",
+          "canonical_name": "Alvbora Module",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-P825",
+        "source_id": "v8-source-P825",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Does Alvbora Module support PDF export?"
+          },
+          {
+            "kind": "fact",
+            "text": "Nervanto Labs launched Alvbora Module on 25 May 2414."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N801",
+      "category": "all_following_fiction_governs_despite_foreign_subject",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N801",
+        "target_question": "When was Laranto Path launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N801",
+          "canonical_name": "Laranto Path",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N801",
+        "source_id": "v8-source-N801",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "All following launch statements are fictional: Corlano Ring launched on 1 May 2420."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Laranto Path was introduced on 2 May 2420."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N802",
+      "category": "whole_report_hypothesis_with_foreign_launch_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N802",
+        "target_question": "When was Nelbora Bay launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N802",
+          "canonical_name": "Nelbora Bay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N802",
+        "source_id": "v8-source-N802",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "This entire report is hypothetical. Calvanto Board went live on 2 May 2421."
+          },
+          {
+            "kind": "fact",
+            "text": "Nelbora Bay reached GA on 3 May 2421."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N803",
+      "category": "plural_statements_retracted_after_two_products",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N803",
+        "target_question": "When was Rilvanto Panel launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N803",
+          "canonical_name": "Rilvanto Panel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N803",
+        "source_id": "v8-source-N803",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Rilvanto Panel was launched on 4 May 2422. Sorbora Cove was introduced on 5 May 2422. These statements were retracted."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N804",
+      "category": "false_launch_heading_direct_proof",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N804",
+        "target_question": "When was Toranto Signal launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N804",
+          "canonical_name": "Toranto Signal",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N804",
+        "source_id": "v8-source-N804",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "False launch statement"
+          },
+          {
+            "kind": "fact",
+            "text": "Toranto Signal has been launched on 6 May 2423."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N805",
+      "category": "named_denied_launch_before_affirmative",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N805",
+        "target_question": "When was Kalbora Hatch launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N805",
+          "canonical_name": "Kalbora Hatch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N805",
+        "source_id": "v8-source-N805",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The launch claim about Kalbora Hatch is denied. Kalbora Hatch went live on 7 May 2424."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N806",
+      "category": "report_fiction_after_launch_and_feature",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N806",
+        "target_question": "When was Gervanto Spool launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N806",
+          "canonical_name": "Gervanto Spool",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N806",
+        "source_id": "v8-source-N806",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Gervanto Spool became generally available on 8 May 2425. Gervanto Spool supports exports. This report is fictional."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N807",
+      "category": "withdrawn_claim_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N807",
+        "target_question": "When was Dalbora Brick launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N807",
+          "canonical_name": "Dalbora Brick",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N807",
+        "source_id": "v8-source-N807",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Withdrawn availability claim"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Dalbora Brick entered general availability on 9 May 2426."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N808",
+      "category": "cross_prefix_introduction",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N808",
+        "target_question": "When was Viranto Mote launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N808",
+          "canonical_name": "Viranto Mote",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N808",
+        "source_id": "v8-source-N808",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "❌ Viranto Mote was introduced on 10 May 2427."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N809",
+      "category": "not_equal_reached_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N809",
+        "target_question": "When was Berbora Thread launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N809",
+          "canonical_name": "Berbora Thread",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N809",
+        "source_id": "v8-source-N809",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Berbora Thread ≠ reached GA on 11 May 2428."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N810",
+      "category": "logical_not_has_been_launched",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N810",
+        "target_question": "When was Talvanto Array launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N810",
+          "canonical_name": "Talvanto Array",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N810",
+        "source_id": "v8-source-N810",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "¬ Talvanto Array has been launched on 12 May 2429."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N811",
+      "category": "ballot_cross_rollout_suffix",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N811",
+        "target_question": "When was Serbora Cabin launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N811",
+          "canonical_name": "Serbora Cabin",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N811",
+        "source_id": "v8-source-N811",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Serbora Cabin was rolled out on 13 May 2430 ✗"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N812",
+      "category": "heavy_cross_governs_heading_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N812",
+        "target_question": "When was Olivanto Patch launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N812",
+          "canonical_name": "Olivanto Patch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N812",
+        "source_id": "v8-source-N812",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "✘ Olivanto Patch general availability record"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Olivanto Patch reached GA on 14 May 2431."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N813",
+      "category": "strike_scope_across_release_sentences",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N813",
+        "target_question": "When was Pavbora Mirror launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N813",
+          "canonical_name": "Pavbora Mirror",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N813",
+        "source_id": "v8-source-N813",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Draft entry. Pavbora Mirror is now generally available as of 15 May 2432. The guide has a troubleshooting appendix.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N814",
+      "category": "combining_strike_full_introduction",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N814",
+        "target_question": "When was Devanto Crest launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N814",
+          "canonical_name": "Devanto Crest",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N814",
+        "source_id": "v8-source-N814",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "D̶e̶v̶a̶n̶t̶o̶ C̶r̶e̶s̶t̶ w̶a̶s̶ i̶n̶t̶r̶o̶d̶u̶c̶e̶d̶ o̶n̶ 1̶6̶ M̶a̶y̶ 2̶4̶3̶3̶.̶"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N815",
+      "category": "struck_launch_unstruck_same_target_property",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N815",
+        "target_question": "When was Ulvbora Frame launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N815",
+          "canonical_name": "Ulvbora Frame",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N815",
+        "source_id": "v8-source-N815",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Ulvbora Frame was launched on 17 May 2434.~~ Ulvbora Frame has an export panel."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N816",
+      "category": "actor_object_introduction_question",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N816",
+        "target_question": "When was Roranto Finch launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N816",
+          "canonical_name": "Roranto Finch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N816",
+        "source_id": "v8-source-N816",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Did Zalbora Labs introduce Roranto Finch on 18 May 2435?"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N817",
+      "category": "conditional_actor_has_made_target_available",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N817",
+        "target_question": "When was Elvanto Line launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N817",
+          "canonical_name": "Elvanto Line",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N817",
+        "source_id": "v8-source-N817",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "If the license was approved, Melvanto Systems has made Elvanto Line generally available on 19 May 2436."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N818",
+      "category": "unconfirmed_introduction_rumor",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N818",
+        "target_question": "When was Harbora Scope launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N818",
+          "canonical_name": "Harbora Scope",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N818",
+        "source_id": "v8-source-N818",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Unconfirmed rumor: Harbora Scope was introduced on 20 May 2437."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N819",
+      "category": "actor_did_not_launch_object",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N819",
+        "target_question": "When was Zeranto Reel launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N819",
+          "canonical_name": "Zeranto Reel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N819",
+        "source_id": "v8-source-N819",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Darlano Devices did not launch Zeranto Reel on 21 May 2438."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N820",
+      "category": "actor_target_introduces_other_product",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N820",
+        "target_question": "When was Varlano Labs launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N820",
+          "canonical_name": "Varlano Labs",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N820",
+        "source_id": "v8-source-N820",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Varlano Labs introduced Terbora Tile on 22 May 2439."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N821",
+      "category": "heading_target_other_direct_factual_owner",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N821",
+        "target_question": "When was Alranto Beam launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N821",
+          "canonical_name": "Alranto Beam",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N821",
+        "source_id": "v8-source-N821",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Alranto Beam release archive"
+          },
+          {
+            "kind": "fact",
+            "text": "Morvanto Beam was rolled out on 23 May 2440."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N822",
+      "category": "named_record_then_pronoun_only_predicate",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N822",
+        "target_question": "When was Perbora Dial launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N822",
+          "canonical_name": "Perbora Dial",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N822",
+        "source_id": "v8-source-N822",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The record names Perbora Dial as the product. It went live on 24 May 2441."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N823",
+      "category": "heading_only_ga_feature_excerpt",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N823",
+        "target_question": "When was Fervanto Shelf launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N823",
+          "canonical_name": "Fervanto Shelf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N823",
+        "source_id": "v8-source-N823",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Fervanto Shelf entered general availability on 25 May 2442."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Fervanto Shelf includes a timer."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N824",
+      "category": "title_only_launch_neutral_metadata",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N824",
+        "target_question": "When was Yelbora Rack launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N824",
+          "canonical_name": "Yelbora Rack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N824",
+        "source_id": "v8-source-N824",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Yelbora Rack was launched on 26 May 2443."
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Yelbora Rack documentation format: HTML"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N825",
+      "category": "url_navigation_only_release_assertion",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "target_id": "v8-target-N825",
+        "target_question": "When was Cerlano Note launched?",
+        "entity": {
+          "canonical_id": "v8-canonical-N825",
+          "canonical_name": "Cerlano Note",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v8-evidence-N825",
+        "source_id": "v8-source-N825",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/Cerlano-Note/rolled-out/2444-05-27"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Cerlano Note was rolled out on 27 May 2444."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    }
+  ]
+}

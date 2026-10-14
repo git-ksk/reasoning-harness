@@ -1,0 +1,16 @@
+{
+  "fixtures/launch-520-521-independent-v6/corpus.json": "8a184964fecf0ab1dbe29a5d77bea4d37435c5bf3d8a3f3c6c129b5c7a0df230",
+  "fixtures/launch-520-521-independent-v6/manifest.json": "5885e9dd5e7742d544a2001085bdb3319b1caef2b97b8eceae7298cdfd00d0a3",
+  "fixtures/launch-520-521-independent-v6/author_corpus.py": "0886ca572dc415100b5a3246b467070a51c40b6c4f33b51a185254598269ae87",
+  "fixtures/launch-520-521-independent-v6/PROTOCOL.md": "2b186d12c4b4ccd125a7464e2b72d00acad111be06f51df1a77b602d4478fc15",
+  "crates/reasoning-harness-core/tests/launch_context_markers_independent_v6.rs": "9f50802a0c8d39e7acd4aba310b24fe2cce3aa578aa1f4607cde64e788d3f777",
+  "evaluation/launch-520-521-independent-v6/README.md": "a9a1f5c802ca87633a6a65cde97d49827aaf9cb4bb473c6269f34922264bc15e",
+  "evaluation/launch-520-521-independent-v6/REPORT.md": "6cd582b28bf853bbb671aa7ca5b8e22e7c238705f977aa1d870282e618e2ad32",
+  "evaluation/launch-520-521-independent-v6/first-failures.json": "def284a988f961450bf12de18b07999e04c261c2b2d554323e0b787e9e18a37e",
+  "evaluation/launch-520-521-independent-v6/first-observations.jsonl": "aae31075432e6d19d6c7daf9521958338ec0e3a152513feead8dd96fb5412afc",
+  "evaluation/launch-520-521-independent-v6/first-run-exit-status.txt": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c",
+  "evaluation/launch-520-521-independent-v6/first-run-start.json": "d64df648aea245272476cff23f72584dd9cedc2d993dee87507529edfaa9c5f2",
+  "evaluation/launch-520-521-independent-v6/first-run.log": "cf2d4dcd22e6ca0400dc1aa690f80da92665da04120eb3c2525d030b9a779642",
+  "evaluation/launch-520-521-independent-v6/first-summary.json": "387acd4fcb01782fb2fa51be0b8d423442b596e2d6c701d67aebd78b518fef66",
+  "evaluation/launch-520-521-independent-v6/freeze.json": "42861882aa257e4b34e1d06ed0fed84242d795bf85297010825c79ee48b3c86f"
+}

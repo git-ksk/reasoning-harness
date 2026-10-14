@@ -1,0 +1,2476 @@
+{
+  "schema_version": 4,
+  "author_identity": "/root/launch_072_independent",
+  "candidate_commit": "48ac1ba8aba655aa73d192962d7996bcc997c5e0",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "2b32a1e4a721cb169b15420e113ad91808476380ff912c12b46c029f8f81684d",
+  "positive_owner_rule": "policy canonical name or declared alias owns predicate in the same actual statement; no cross-sentence pronoun bridging",
+  "cases": [
+    {
+      "case_id": "P401",
+      "category": "date_first_passive_launch",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P401",
+        "target_question": "When was Orymena Compass launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P401",
+          "canonical_name": "Orymena Compass",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P401",
+        "source_id": "v4-source-P401",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "On 12 May 2150, Orymena Compass was launched."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P402",
+      "category": "active_launch_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P402",
+        "target_question": "When was Siventa Helix launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P402",
+          "canonical_name": "Siventa Helix",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P402",
+        "source_id": "v4-source-P402",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Siventa Helix launched as of 13 May 2151."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P403",
+      "category": "has_been_launched_record_adjunct",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P403",
+        "target_question": "When was Avriona Desk launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P403",
+          "canonical_name": "Avriona Desk",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P403",
+        "source_id": "v4-source-P403",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Avriona Desk has been launched on 14 May 2152, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P404",
+      "category": "introduced_neutral_leading_adjunct",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P404",
+        "target_question": "When was Carvilo Horizon launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P404",
+          "canonical_name": "Carvilo Horizon",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P404",
+        "source_id": "v4-source-P404",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "In the published chronology, Carvilo Horizon was introduced on 15 May 2153."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P405",
+      "category": "introduced_direct_object",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P405",
+        "target_question": "When was Galventa Portal launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P405",
+          "canonical_name": "Galventa Portal",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P405",
+        "source_id": "v4-source-P405",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Berori Devices introduced Galventa Portal on 16 May 2154."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P406",
+      "category": "went_live_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P406",
+        "target_question": "When was Mivrona Harbor launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P406",
+          "canonical_name": "Mivrona Harbor",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P406",
+        "source_id": "v4-source-P406",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Mivrona Harbor went live as of 17 May 2155."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P407",
+      "category": "active_rollout",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P407",
+        "target_question": "When was Fervena Scope launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P407",
+          "canonical_name": "Fervena Scope",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P407",
+        "source_id": "v4-source-P407",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Fervena Scope rolled out on 18 May 2156."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P408",
+      "category": "passive_rollout_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P408",
+        "target_question": "When was Valrino Vessel launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P408",
+          "canonical_name": "Valrino Vessel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P408",
+        "source_id": "v4-source-P408",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Valrino Vessel was rolled out as of 19 May 2157."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P409",
+      "category": "generally_available_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P409",
+        "target_question": "When was Dorvena Gate launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P409",
+          "canonical_name": "Dorvena Gate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P409",
+        "source_id": "v4-source-P409",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Dorvena Gate is generally available as of 20 May 2158."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P410",
+      "category": "now_generally_available",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P410",
+        "target_question": "When was Zirona Pattern launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P410",
+          "canonical_name": "Zirona Pattern",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P410",
+        "source_id": "v4-source-P410",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Zirona Pattern is now generally available as of 21 May 2159."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P411",
+      "category": "became_generally_available",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P411",
+        "target_question": "When was Olevra Panel launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P411",
+          "canonical_name": "Olevra Panel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P411",
+        "source_id": "v4-source-P411",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Olevra Panel became generally available on 22 May 2160."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P412",
+      "category": "has_made_direct_object_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P412",
+        "target_question": "When was Varnilo Canvas launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P412",
+          "canonical_name": "Varnilo Canvas",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P412",
+        "source_id": "v4-source-P412",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Pelora Systems has made Varnilo Canvas generally available as of 23 May 2161."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P413",
+      "category": "hyphenated_policy_alias_ga",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P413",
+        "target_question": "When was Belvona Field launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P413",
+          "canonical_name": "Belvona Field",
+          "aliases": [
+            "BV-Field"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P413",
+        "source_id": "v4-source-P413",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "BV-Field entered general availability on 24 May 2162."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P414",
+      "category": "dotted_decimal_reached_ga",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P414",
+        "target_question": "When was Cerona.Dev Kit 3.9 launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P414",
+          "canonical_name": "Cerona.Dev Kit 3.9",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P414",
+        "source_id": "v4-source-P414",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Cerona.Dev Kit 3.9 reached GA on 25 May 2163."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P415",
+      "category": "launched_direct_object",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P415",
+        "target_question": "When was Morliva Dial launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P415",
+          "canonical_name": "Morliva Dial",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P415",
+        "source_id": "v4-source-P415",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Alvori Instruments launched Morliva Dial on 26 May 2164."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P416",
+      "category": "same_target_why_feature_question",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P416",
+        "target_question": "When was Helvona Finch launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P416",
+          "canonical_name": "Helvona Finch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P416",
+        "source_id": "v4-source-P416",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Why does Helvona Finch use a dial? Helvona Finch was introduced on 27 May 2165."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P417",
+      "category": "same_target_false_material_property",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P417",
+        "target_question": "When was Telriva Kite launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P417",
+          "canonical_name": "Telriva Kite",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P417",
+        "source_id": "v4-source-P417",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The statement that Telriva Kite uses magnesium is false. Telriva Kite went live on 28 May 2166."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P418",
+      "category": "closed_property_strike_before_semicolon_launch",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P418",
+        "target_question": "When was Corlena Beacon launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P418",
+          "canonical_name": "Corlena Beacon",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P418",
+        "source_id": "v4-source-P418",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Corlena Beacon offers a blue finish~~; Corlena Beacon was launched on 29 May 2167."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P419",
+      "category": "crossed_other_target_then_named_rollout",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P419",
+        "target_question": "When was Lurvona Shell launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P419",
+          "canonical_name": "Lurvona Shell",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P419",
+        "source_id": "v4-source-P419",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "❌ Raveli Disk was introduced on 28 May 2168.\nLurvona Shell was rolled out on 30 May 2168."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P420",
+      "category": "fiction_heading_explicit_other_target",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P420",
+        "target_question": "When was Serniva Orchard launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P420",
+          "canonical_name": "Serniva Orchard",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P420",
+        "source_id": "v4-source-P420",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Fictional summary for Brevori Dial"
+          },
+          {
+            "kind": "fact",
+            "text": "Serniva Orchard reached GA on 31 May 2169."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P421",
+      "category": "denied_other_target_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P421",
+        "target_question": "When was Mirvena Watch launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P421",
+          "canonical_name": "Mirvena Watch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P421",
+        "source_id": "v4-source-P421",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Correction: Govrila Deck was not introduced in April."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Mirvena Watch entered general availability on 1 May 2170."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P422",
+      "category": "retracted_language_property_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P422",
+        "target_question": "When was Averona Desk launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P422",
+          "canonical_name": "Averona Desk",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P422",
+        "source_id": "v4-source-P422",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Retracted claim: Averona Desk supports seven languages"
+          },
+          {
+            "kind": "fact",
+            "text": "Averona Desk was rolled out on 2 May 2171."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P423",
+      "category": "url_marker_cannot_veto_alias_fact",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P423",
+        "target_question": "When was Novrila Brick launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P423",
+          "canonical_name": "Novrila Brick",
+          "aliases": [
+            "NBrick"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P423",
+        "source_id": "v4-source-P423",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://release.example.invalid/withdrawn/novrila-brick"
+          },
+          {
+            "kind": "fact",
+            "text": "NBrick reached GA on 3 May 2172."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P424",
+      "category": "navigation_not_governing_introduction",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P424",
+        "target_question": "When was Zalvena Cabin launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P424",
+          "canonical_name": "Zalvena Cabin",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P424",
+        "source_id": "v4-source-P424",
+        "signals": [
+          {
+            "kind": "navigation_or_footer",
+            "text": "¬ Fictional notices and denied rollout dates"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Zalvena Cabin was introduced on 4 May 2173."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P425",
+      "category": "heading_feature_question_not_launch_question",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P425",
+        "target_question": "When was Ermona Channel launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P425",
+          "canonical_name": "Ermona Channel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P425",
+        "source_id": "v4-source-P425",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Does Ermona Channel include a timer?"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Ermona Channel was launched on 5 May 2174."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P426",
+      "category": "metadata_direct_name_and_record_adjunct",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-P426",
+        "target_question": "When was Alriva.Tools Patch 4.8 launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-P426",
+          "canonical_name": "Alriva.Tools Patch 4.8",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-P426",
+        "source_id": "v4-source-P426",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Alriva.Tools Patch 4.8 archival index"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Alriva.Tools Patch 4.8 was rolled out on 6 May 2175, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N401",
+      "category": "fictional_briefing_leading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N401",
+        "target_question": "When was Pavrona Arc launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N401",
+          "canonical_name": "Pavrona Arc",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N401",
+        "source_id": "v4-source-N401",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This briefing is fictional. Pavrona Arc was introduced on 7 May 2180."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N402",
+      "category": "hypothetical_bulletin_trailing",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N402",
+        "target_question": "When was Delvena Light launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N402",
+          "canonical_name": "Delvena Light",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N402",
+        "source_id": "v4-source-N402",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Delvena Light went live on 8 May 2181. This bulletin is hypothetical."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N403",
+      "category": "false_heading_actor_launch",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N403",
+        "target_question": "When was Berona Route launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N403",
+          "canonical_name": "Berona Route",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N403",
+        "source_id": "v4-source-N403",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "False report"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Nolori Devices launched Berona Route on 9 May 2182."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N404",
+      "category": "named_denied_title_governs_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N404",
+        "target_question": "When was Ivrila Cone launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N404",
+          "canonical_name": "Ivrila Cone",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N404",
+        "source_id": "v4-source-N404",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Denied: Ivrila Cone availability claim"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Ivrila Cone reached GA on 10 May 2183."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N405",
+      "category": "retraction_following_statement_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N405",
+        "target_question": "When was Rolvona Badge launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N405",
+          "canonical_name": "Rolvona Badge",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N405",
+        "source_id": "v4-source-N405",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Retraction of the following statement"
+          },
+          {
+            "kind": "fact",
+            "text": "Rolvona Badge was rolled out on 11 May 2184."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N406",
+      "category": "withdrawn_description_trailing",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N406",
+        "target_question": "When was Uvrina Layer launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N406",
+          "canonical_name": "Uvrina Layer",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N406",
+        "source_id": "v4-source-N406",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Uvrina Layer entered general availability on 12 May 2185. This description was withdrawn."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N407",
+      "category": "hypothetical_next_paragraph",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N407",
+        "target_question": "When was Jelvena Grid launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N407",
+          "canonical_name": "Jelvena Grid",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N407",
+        "source_id": "v4-source-N407",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The next paragraph is hypothetical. Jelvena Grid has been launched on 13 May 2186."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N408",
+      "category": "fictional_plural_entries",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N408",
+        "target_question": "When was Yarona Chart launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N408",
+          "canonical_name": "Yarona Chart",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N408",
+        "source_id": "v4-source-N408",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "These entries are fictional"
+          },
+          {
+            "kind": "fact",
+            "text": "Yarona Chart became generally available on 14 May 2187."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N409",
+      "category": "cross_suffix_before_period",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N409",
+        "target_question": "When was Civrila Signal launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N409",
+          "canonical_name": "Civrila Signal",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N409",
+        "source_id": "v4-source-N409",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Civrila Signal was launched on 15 May 2188 ❌."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N410",
+      "category": "logical_not_alias_introduction",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N410",
+        "target_question": "When was Kovrena Lens launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N410",
+          "canonical_name": "Kovrena Lens",
+          "aliases": [
+            "KVL"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N410",
+        "source_id": "v4-source-N410",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "¬ KVL was introduced on 16 May 2189."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N411",
+      "category": "not_equal_reached_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N411",
+        "target_question": "When was Malvona Unit launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N411",
+          "canonical_name": "Malvona Unit",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N411",
+        "source_id": "v4-source-N411",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Malvona Unit ≠ reached GA on 17 May 2190."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N412",
+      "category": "ballot_cross_heading_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N412",
+        "target_question": "When was Tervina Rack launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N412",
+          "canonical_name": "Tervina Rack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N412",
+        "source_id": "v4-source-N412",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "✗ Tervina Rack launch record"
+          },
+          {
+            "kind": "fact",
+            "text": "Tervina Rack launched on 18 May 2191."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N413",
+      "category": "heavy_cross_title_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N413",
+        "target_question": "When was Gelmona Deck launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N413",
+          "canonical_name": "Gelmona Deck",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N413",
+        "source_id": "v4-source-N413",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "✘ Gelmona Deck rollout notice"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Gelmona Deck was rolled out on 19 May 2192."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N414",
+      "category": "combining_full_claim_stroke",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N414",
+        "target_question": "When was Osriva Ring launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N414",
+          "canonical_name": "Osriva Ring",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N414",
+        "source_id": "v4-source-N414",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "O̶s̶r̶i̶v̶a̶ R̶i̶n̶g̶ i̶s̶ n̶o̶w̶ g̶e̶n̶e̶r̶a̶l̶l̶y̶ a̶v̶a̶i̶l̶a̶b̶l̶e̶ a̶s̶ o̶f̶ 2̶0̶ M̶a̶y̶ 2̶1̶9̶3̶.̶"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N415",
+      "category": "strike_spans_fact_and_following_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N415",
+        "target_question": "When was Zevrona Stack launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N415",
+          "canonical_name": "Zevrona Stack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N415",
+        "source_id": "v4-source-N415",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Release entry: Zevrona Stack entered general availability on 21 May 2194. The archive then listed a migration guide.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N416",
+      "category": "unclosed_original_markdown_strike",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N416",
+        "target_question": "When was Nevlina Scroll launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N416",
+          "canonical_name": "Nevlina Scroll",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N416",
+        "source_id": "v4-source-N416",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Nevlina Scroll was introduced on 22 May 2195."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N417",
+      "category": "rollout_if_condition",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N417",
+        "target_question": "When was Farvona Trace launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N417",
+          "canonical_name": "Farvona Trace",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N417",
+        "source_id": "v4-source-N417",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "If the supplier accepted the contract, Farvona Trace was rolled out on 23 May 2196."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N418",
+      "category": "now_generally_available_question",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N418",
+        "target_question": "When was Virena Loom launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N418",
+          "canonical_name": "Virena Loom",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N418",
+        "source_id": "v4-source-N418",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Is Virena Loom now generally available as of 24 May 2197?"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N419",
+      "category": "has_made_negation",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N419",
+        "target_question": "When was Carona Folder launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N419",
+          "canonical_name": "Carona Folder",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N419",
+        "source_id": "v4-source-N419",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Volriva Labs has not made Carona Folder generally available as of 25 May 2198."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N420",
+      "category": "reached_ga_unconfirmed_rumor",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N420",
+        "target_question": "When was Lelmona Capsule launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N420",
+          "canonical_name": "Lelmona Capsule",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N420",
+        "source_id": "v4-source-N420",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Unconfirmed rumor: Lelmona Capsule reached GA on 26 May 2199."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N421",
+      "category": "launching_actor_is_not_launched_target",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N421",
+        "target_question": "When was Nervona Industries launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N421",
+          "canonical_name": "Nervona Industries",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N421",
+        "source_id": "v4-source-N421",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Nervona Industries launched Hilriva Field on 27 May 2200."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N422",
+      "category": "cross_sentence_pronoun_with_named_record",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N422",
+        "target_question": "When was Solrena Relay launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N422",
+          "canonical_name": "Solrena Relay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N422",
+        "source_id": "v4-source-N422",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This release record names Solrena Relay as its subject. It was rolled out on 28 May 2201."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N423",
+      "category": "affirmative_heading_without_factual_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N423",
+        "target_question": "When was Gavrila Wave launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N423",
+          "canonical_name": "Gavrila Wave",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N423",
+        "source_id": "v4-source-N423",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Gavrila Wave is now generally available as of 29 May 2202."
+          },
+          {
+            "kind": "fact",
+            "text": "Gavrila Wave installation guide: 12 pages."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N424",
+      "category": "affirmative_title_url_navigation_only",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N424",
+        "target_question": "When was Elvona Vessel launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N424",
+          "canonical_name": "Elvona Vessel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N424",
+        "source_id": "v4-source-N424",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Elvona Vessel went live on 30 May 2203."
+          },
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/elvona-vessel/went-live"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Elvona Vessel availability chronology"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N425",
+      "category": "url_and_footer_only_named_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N425",
+        "target_question": "When was Pervina Circle launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N425",
+          "canonical_name": "Pervina Circle",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N425",
+        "source_id": "v4-source-N425",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/Pervina-Circle/launched/2204-05-31"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Pervina Circle has been launched on 31 May 2204."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N426",
+      "category": "target_property_other_product_introduction",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v4-direct-launch-policy",
+        "target_id": "v4-target-N426",
+        "target_question": "When was Telmona Rail launched?",
+        "entity": {
+          "canonical_id": "v4-canonical-N426",
+          "canonical_name": "Telmona Rail",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v4-evidence-N426",
+        "source_id": "v4-source-N426",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Telmona Rail has a matte finish. Rovrila Grove was introduced on 1 May 2205."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    }
+  ]
+}

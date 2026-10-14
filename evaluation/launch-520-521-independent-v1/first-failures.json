@@ -1,0 +1,762 @@
+[
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "evidence-p04",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v1-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "synthetic-source-p04",
+      "target_id": "target-p04"
+    },
+    "case_id": "P04",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "evidence-p04",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Tavren Cloud was launched on 11 July 2033."
+          },
+          {
+            "kind": "excerpt",
+            "text": "The release includes a collaboration workspace."
+          }
+        ],
+        "source_id": "synthetic-source-p04"
+      },
+      "case_id": "P04",
+      "category": "affirmative_heading",
+      "expected": {
+        "source_local_only": true,
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "entity-p04",
+          "canonical_name": "Tavren Cloud"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v1-policy",
+        "relation": "change_or_launch",
+        "target_id": "target-p04",
+        "target_question": "When was Tavren Cloud launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "evidence-p14",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v1-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "synthetic-source-p14",
+      "target_id": "target-p14"
+    },
+    "case_id": "P14",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "evidence-p14",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Osven Pilot was not launched in May. Leriva Forge was launched on 21 May 2043."
+          }
+        ],
+        "source_id": "synthetic-source-p14"
+      },
+      "case_id": "P14",
+      "category": "other_target_denial_before",
+      "expected": {
+        "source_local_only": true,
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "entity-p14",
+          "canonical_name": "Leriva Forge"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v1-policy",
+        "relation": "change_or_launch",
+        "target_id": "target-p14",
+        "target_question": "When was Leriva Forge launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "evidence-p21",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v1-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "synthetic-source-p21",
+      "target_id": "target-p21"
+    },
+    "case_id": "P21",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "evidence-p21",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Talvori Kit entered general availability on 28 December 2050."
+          }
+        ],
+        "source_id": "synthetic-source-p21"
+      },
+      "case_id": "P21",
+      "category": "ga_full_phrase",
+      "expected": {
+        "source_local_only": true,
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "entity-p21",
+          "canonical_name": "Talvori Kit"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v1-policy",
+        "relation": "change_or_launch",
+        "target_id": "target-p21",
+        "target_question": "When was Talvori Kit launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "evidence-p22",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v1-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "synthetic-source-p22",
+      "target_id": "target-p22"
+    },
+    "case_id": "P22",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "evidence-p22",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Cenora Grid reached GA on 29 January 2051."
+          }
+        ],
+        "source_id": "synthetic-source-p22"
+      },
+      "case_id": "P22",
+      "category": "ga_short_form",
+      "expected": {
+        "source_local_only": true,
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "entity-p22",
+          "canonical_name": "Cenora Grid"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v1-policy",
+        "relation": "change_or_launch",
+        "target_id": "target-p22",
+        "target_question": "When was Cenora Grid launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "evidence-n03",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v1-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "synthetic-source-n03",
+      "target_id": "target-n03"
+    },
+    "case_id": "N03",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "evidence-n03",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "False claim"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Tovari Desk was launched on 5 June 2033."
+          }
+        ],
+        "source_id": "synthetic-source-n03"
+      },
+      "case_id": "N03",
+      "category": "false_heading",
+      "expected": {
+        "source_local_only": true,
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "entity-n03",
+          "canonical_name": "Tovari Desk"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v1-policy",
+        "relation": "change_or_launch",
+        "target_id": "target-n03",
+        "target_question": "When was Tovari Desk launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "evidence-n04",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v1-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "synthetic-source-n04",
+      "target_id": "target-n04"
+    },
+    "case_id": "N04",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "evidence-n04",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Denied launch claim"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Ralven Port was launched on 6 July 2034."
+          }
+        ],
+        "source_id": "synthetic-source-n04"
+      },
+      "case_id": "N04",
+      "category": "denied_heading",
+      "expected": {
+        "source_local_only": true,
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "entity-n04",
+          "canonical_name": "Ralven Port"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v1-policy",
+        "relation": "change_or_launch",
+        "target_id": "target-n04",
+        "target_question": "When was Ralven Port launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "evidence-n06",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v1-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "synthetic-source-n06",
+      "target_id": "target-n06"
+    },
+    "case_id": "N06",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "evidence-n06",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Withdrawn release statement"
+          },
+          {
+            "kind": "fact",
+            "text": "Nelvori Edge was launched on 8 September 2036."
+          }
+        ],
+        "source_id": "synthetic-source-n06"
+      },
+      "case_id": "N06",
+      "category": "withdrawn_heading",
+      "expected": {
+        "source_local_only": true,
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "entity-n06",
+          "canonical_name": "Nelvori Edge"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v1-policy",
+        "relation": "change_or_launch",
+        "target_id": "target-n06",
+        "target_question": "When was Nelvori Edge launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "evidence-n08",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v1-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "synthetic-source-n08",
+      "target_id": "target-n08"
+    },
+    "case_id": "N08",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "evidence-n08",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Koravi Tide was launched on 10 November 2038. This release story is fictional."
+          }
+        ],
+        "source_id": "synthetic-source-n08"
+      },
+      "case_id": "N08",
+      "category": "fictional_trailing_sentence",
+      "expected": {
+        "source_local_only": true,
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "entity-n08",
+          "canonical_name": "Koravi Tide"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v1-policy",
+        "relation": "change_or_launch",
+        "target_id": "target-n08",
+        "target_question": "When was Koravi Tide launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "evidence-n16",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v1-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "synthetic-source-n16",
+      "target_id": "target-n16"
+    },
+    "case_id": "N16",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "evidence-n16",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tervani Wire was launched on 18 July 2046. The publisher retracted this release statement."
+          }
+        ],
+        "source_id": "synthetic-source-n16"
+      },
+      "case_id": "N16",
+      "category": "retracted_trailing_sentence",
+      "expected": {
+        "source_local_only": true,
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "entity-n16",
+          "canonical_name": "Tervani Wire"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v1-policy",
+        "relation": "change_or_launch",
+        "target_id": "target-n16",
+        "target_question": "When was Tervani Wire launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "evidence-n18",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v1-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "synthetic-source-n18",
+      "target_id": "target-n18"
+    },
+    "case_id": "N18",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "evidence-n18",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "False launch report"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Cavrani Leaf was launched on 20 September 2048."
+          }
+        ],
+        "source_id": "synthetic-source-n18"
+      },
+      "case_id": "N18",
+      "category": "false_title_metadata",
+      "expected": {
+        "source_local_only": true,
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "entity-n18",
+          "canonical_name": "Cavrani Leaf"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v1-policy",
+        "relation": "change_or_launch",
+        "target_id": "target-n18",
+        "target_question": "When was Cavrani Leaf launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  }
+]

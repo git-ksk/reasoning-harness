@@ -1,0 +1,150 @@
+[
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v8-evidence-P802",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v8-local-global-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v8-source-P802",
+      "target_id": "v8-target-P802"
+    },
+    "case_id": "P802",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v8-evidence-P802",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "On 2 May 2391, Calbora Labs launched Evranto Shelf."
+          }
+        ],
+        "source_id": "v8-source-P802"
+      },
+      "case_id": "P802",
+      "category": "date_first_actor_launches_named_object",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v8-canonical-P802",
+          "canonical_name": "Evranto Shelf"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v8-target-P802",
+        "target_question": "When was Evranto Shelf launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "v8-evidence-N803",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "independent-v8-local-global-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "v8-source-N803",
+      "target_id": "v8-target-N803"
+    },
+    "case_id": "N803",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v8-evidence-N803",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Rilvanto Panel was launched on 4 May 2422. Sorbora Cove was introduced on 5 May 2422. These statements were retracted."
+          }
+        ],
+        "source_id": "v8-source-N803"
+      },
+      "case_id": "N803",
+      "category": "plural_statements_retracted_after_two_products",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v8-canonical-N803",
+          "canonical_name": "Rilvanto Panel"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v8-local-global-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v8-target-N803",
+        "target_question": "When was Rilvanto Panel launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  }
+]

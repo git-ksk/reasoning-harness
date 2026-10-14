@@ -2,7 +2,7 @@
 
 > 現在の状況：Engine 0.7.0は2026-10-10に公開済みです。#512/#514/#515を含むソースパッチは[Engine 0.7.1](engine-0.7.1-release.ja.md)です。#488/#489/#491は明示的に保留しています。以下の計画・候補表記は公開前の記録で、0.7.0の最終座標は[公開済みRelease](https://github.com/git-ksk/reasoning-harness/releases/tag/engine-v0.7.0)を参照してください。
 
-> 2026-10-13保守更新：0.7.1で再現した回帰#520/#521は、別の[0.7.2修正計画](engine-0.7.2-roadmap.ja.md)／[Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11)で追跡します。新しい公開や保留機能の実装完了は意味しません。
+> 2026-10-14保守更新：#520/#521の後継ソース修正と独立評価は[PR #523](https://github.com/git-ksk/reasoning-harness/pull/523)で完了。別の[0.7.2計画](engine-0.7.2-roadmap.ja.md)／[公開完了条件 #524](https://github.com/git-ksk/reasoning-harness/issues/524)で公開を追跡します。過去のタグと以下の歴史的計画は変更しません。
 
 日本語 | [English](engine-0.7.0-roadmap.md)
 

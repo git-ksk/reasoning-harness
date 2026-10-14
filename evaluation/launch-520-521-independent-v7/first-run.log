@@ -1,0 +1,116 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.24
+   Compiling serde_core v1.0.229
+   Compiling syn v3.0.4
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling ref-cast v1.0.27
+   Compiling serde v1.0.229
+   Compiling serde_derive v1.0.229
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive_internals v0.30.0
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling thiserror v2.0.21
+   Compiling schemars_derive v1.2.2
+   Compiling thiserror-impl v2.0.21
+   Compiling dyn-clone v1.0.20
+   Compiling schemars v1.2.2
+   Compiling tokio-macros v2.7.2
+   Compiling pin-project-lite v0.2.17
+   Compiling tokio v1.53.2
+   Compiling reasoning-harness-core v0.7.1 (/Users/sawadakousuke/x-code/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 19.33s
+     Running tests/launch_context_markers_independent_v7.rs (target/engine-072-independent-v7/debug/deps/launch_context_markers_independent_v7-edd88ea2b1ea2edc)
+
+running 1 test
+CASE P701: PASS relation="requested_relation" disposition="relevant"
+CASE P702: PASS relation="requested_relation" disposition="relevant"
+CASE P703: PASS relation="requested_relation" disposition="relevant"
+CASE P704: PASS relation="requested_relation" disposition="relevant"
+CASE P705: PASS relation="requested_relation" disposition="relevant"
+CASE P706: PASS relation="requested_relation" disposition="relevant"
+CASE P707: PASS relation="requested_relation" disposition="relevant"
+CASE P708: PASS relation="requested_relation" disposition="relevant"
+CASE P709: PASS relation="requested_relation" disposition="relevant"
+CASE P710: PASS relation="requested_relation" disposition="relevant"
+CASE P711: PASS relation="requested_relation" disposition="relevant"
+CASE P712: PASS relation="requested_relation" disposition="relevant"
+CASE P713: PASS relation="requested_relation" disposition="relevant"
+CASE P714: PASS relation="requested_relation" disposition="relevant"
+CASE P715: PASS relation="requested_relation" disposition="relevant"
+CASE P716: PASS relation="requested_relation" disposition="relevant"
+CASE P717: PASS relation="requested_relation" disposition="relevant"
+CASE P718: PASS relation="requested_relation" disposition="relevant"
+CASE P719: PASS relation="requested_relation" disposition="relevant"
+CASE P720: PASS relation="requested_relation" disposition="relevant"
+CASE P721: PASS relation="requested_relation" disposition="relevant"
+CASE P722: PASS relation="requested_relation" disposition="relevant"
+CASE P723: FAIL relation="unresolved" disposition="ambiguous"
+CASE P724: PASS relation="requested_relation" disposition="relevant"
+CASE P725: PASS relation="requested_relation" disposition="relevant"
+CASE N701: PASS relation="unresolved" disposition="ambiguous"
+CASE N702: PASS relation="unresolved" disposition="ambiguous"
+CASE N703: PASS relation="unresolved" disposition="ambiguous"
+CASE N704: PASS relation="unresolved" disposition="ambiguous"
+CASE N705: PASS relation="unresolved" disposition="ambiguous"
+CASE N706: PASS relation="unresolved" disposition="ambiguous"
+CASE N707: PASS relation="unresolved" disposition="ambiguous"
+CASE N708: PASS relation="unresolved" disposition="ambiguous"
+CASE N709: PASS relation="unresolved" disposition="ambiguous"
+CASE N710: PASS relation="unresolved" disposition="ambiguous"
+CASE N711: PASS relation="unresolved" disposition="ambiguous"
+CASE N712: PASS relation="unresolved" disposition="ambiguous"
+CASE N713: PASS relation="unresolved" disposition="ambiguous"
+CASE N714: PASS relation="unresolved" disposition="ambiguous"
+CASE N715: PASS relation="unresolved" disposition="ambiguous"
+CASE N716: PASS relation="unresolved" disposition="ambiguous"
+CASE N717: PASS relation="unresolved" disposition="ambiguous"
+CASE N718: PASS relation="unresolved" disposition="ambiguous"
+CASE N719: PASS relation="unresolved" disposition="ambiguous"
+CASE N720: PASS relation="unresolved" disposition="ambiguous"
+CASE N721: PASS relation="unresolved" disposition="ambiguous"
+CASE N722: PASS relation="unresolved" disposition="ambiguous"
+CASE N723: PASS relation="unresolved" disposition="ambiguous"
+CASE N724: PASS relation="unresolved" disposition="ambiguous"
+CASE N725: PASS relation="unresolved" disposition="ambiguous"
+{
+  "acceptance_scope": "offline synthetic source-local public-API evaluation; no provider/user/device/production/external-truth acceptance",
+  "api_error_ids": [],
+  "candidate_commit": "19a8faaa582c1d4af7a68972c494b2e29f72d80e",
+  "candidate_source_sha256_after": "1e6293feab2c5eb7428a4427c7de9dc2d635a01fe9de14036db64085ffdde315",
+  "candidate_source_sha256_before": "1e6293feab2c5eb7428a4427c7de9dc2d635a01fe9de14036db64085ffdde315",
+  "corpus_sha256": "b251abf7736f53d9cb3db7740268f7a295f7dd3314fa2dc5daab6bc8ce7e1861",
+  "failed_case_ids": [
+    "P723"
+  ],
+  "false_relevant_ids": [],
+  "negative_cases": 25,
+  "negative_requested_relation_ids": [],
+  "overall_passed": false,
+  "passed_cases": 49,
+  "positive_cases": 25,
+  "positive_miss_ids": [
+    "P723"
+  ],
+  "positive_recall_gate_passed": false,
+  "run_identity": "independent-v7-first-api-execution",
+  "safety_gate_passed": true,
+  "source_unchanged": true,
+  "total_cases": 50
+}
+
+thread 'independent_launch_context_markers_v7' panicked at crates/reasoning-harness-core/tests/launch_context_markers_independent_v7.rs:222:5:
+independent v7 failures: P723
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test independent_launch_context_markers_v7 ... FAILED
+
+failures:
+
+failures:
+    independent_launch_context_markers_v7
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.63s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_independent_v7`

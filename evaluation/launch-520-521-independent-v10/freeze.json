@@ -1,0 +1,11 @@
+{
+  "author_identity": "/root/launch_072_independent",
+  "freeze_commit": "bc204c26d9c9815f591aedb6b51b1a181ac13f7d",
+  "candidate_commit": "2f12d4c61546e60d31026d9b691c9eb369c37957",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+  "corpus_sha256": "a778d971aa2acdb58dd82cf212b887bc4e66ae480b8698b98df3afa0328f7237",
+  "pre_execution_v10_compilations": 0,
+  "pre_execution_v10_api_calls": 0,
+  "command": "LAUNCH_INDEPENDENT_V10_RECORD_FIRST=1 CARGO_INCREMENTAL=0 CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0 CARGO_TARGET_DIR=target/engine-072-independent-v10 cargo test -p reasoning-harness-core --test launch_context_markers_independent_v10 --jobs 2 -- --nocapture"
+}

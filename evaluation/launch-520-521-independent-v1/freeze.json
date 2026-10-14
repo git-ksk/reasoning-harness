@@ -1,0 +1,12 @@
+{
+  "author_identity": "/root/launch_072_independent",
+  "freeze_commit": "1feccdf4f500d5585219d9f1b0e1187c407de536",
+  "candidate_commit": "049be6542d95539e275d9a44a5bac89835b43834",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "c9d18f43633665191b18af5c5d79cc535b7914be66e91651ea4788bd18a41736",
+  "corpus_sha256": "7303baa54b2a64176bbd7192d640d0dc3f263c146c886f80fabb36dcf9d9c833",
+  "pre_execution_api_calls": 0,
+  "pre_execution_compilations": 0,
+  "command": "CARGO_INCREMENTAL=0 CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0 CARGO_TARGET_DIR=target/engine-072-independent-v1 cargo test -p reasoning-harness-core --test launch_context_markers_independent_v1 --jobs 2 -- --nocapture",
+  "debug_settings_note": "nonsemantic settings requested by root after disk space recovery"
+}

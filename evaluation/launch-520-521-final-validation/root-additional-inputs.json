@@ -1,0 +1,54 @@
+[
+  {
+    "id": "same-target-other-feature",
+    "signals": [
+      {
+        "kind": "excerpt",
+        "text": "~~Silver Lens supports exporting.~~ Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": true
+  },
+  {
+    "id": "title-symbol",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "\u274c Launch announcement"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "title-strike",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "~~Release announcement~~"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "retraction-notice",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "Retraction notice"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  }
+]

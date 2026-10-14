@@ -1,0 +1,2374 @@
+{
+  "schema_version": 6,
+  "author_identity": "/root/launch_072_independent",
+  "candidate_commit": "0cf240469f5b81ccc93ecb9d8dec53e85f3cff8b",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "e0b4f91248ee6d4746835ecc19a9df8549b3de95733db754978b3de6f9826434",
+  "positive_owner_rule": "same-statement policy canonical name or declared alias as direct subject/object; no pronoun bridging",
+  "cases": [
+    {
+      "case_id": "P601",
+      "category": "passive_launch_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P601",
+        "target_question": "When was Cirlume Portal launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P601",
+          "canonical_name": "Cirlume Portal",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P601",
+        "source_id": "v6-source-P601",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Cirlume Portal was launched as of 2 May 2270."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P602",
+      "category": "date_first_active_launch",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P602",
+        "target_question": "When was Nolvira Stack launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P602",
+          "canonical_name": "Nolvira Stack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P602",
+        "source_id": "v6-source-P602",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "On 3 May 2271, Nolvira Stack launched."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P603",
+      "category": "introduced_with_neutral_followup",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P603",
+        "target_question": "When was Barlumi Shelf launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P603",
+          "canonical_name": "Barlumi Shelf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P603",
+        "source_id": "v6-source-P603",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Barlumi Shelf was introduced on 4 May 2272. The reference manual has a glossary."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P604",
+      "category": "introduced_direct_object_with_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P604",
+        "target_question": "When was Torvena Dock launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P604",
+          "canonical_name": "Torvena Dock",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P604",
+        "source_id": "v6-source-P604",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Product introduction record"
+          },
+          {
+            "kind": "fact",
+            "text": "Zelmuri Labs introduced Torvena Dock on 5 May 2273."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P605",
+      "category": "went_live_as_of_in_metadata",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P605",
+        "target_question": "When was Velumi Badge launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P605",
+          "canonical_name": "Velumi Badge",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P605",
+        "source_id": "v6-source-P605",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Velumi Badge went live as of 6 May 2274."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P606",
+      "category": "active_rollout_on_date",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P606",
+        "target_question": "When was Avlira Reel launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P606",
+          "canonical_name": "Avlira Reel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P606",
+        "source_id": "v6-source-P606",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Avlira Reel rolled out on 7 May 2275."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P607",
+      "category": "passive_rollout_citation_adjunct",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P607",
+        "target_question": "When was Rovlumi Channel launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P607",
+          "canonical_name": "Rovlumi Channel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P607",
+        "source_id": "v6-source-P607",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Rovlumi Channel was rolled out on 8 May 2276, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P608",
+      "category": "generally_available_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P608",
+        "target_question": "When was Cerumi Cradle launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P608",
+          "canonical_name": "Cerumi Cradle",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P608",
+        "source_id": "v6-source-P608",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Cerumi Cradle is generally available as of 9 May 2277."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P609",
+      "category": "actor_made_named_product_available",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P609",
+        "target_question": "When was Helvira Scope launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P609",
+          "canonical_name": "Helvira Scope",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P609",
+        "source_id": "v6-source-P609",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Morlumi Systems has made Helvira Scope generally available on 10 May 2278."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P610",
+      "category": "became_generally_available_with_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P610",
+        "target_question": "When was Pervumi Canvas launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P610",
+          "canonical_name": "Pervumi Canvas",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P610",
+        "source_id": "v6-source-P610",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Released product timeline"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Pervumi Canvas became generally available on 11 May 2279."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P611",
+      "category": "entered_general_availability_metadata",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P611",
+        "target_question": "When was Erlumi Stone launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P611",
+          "canonical_name": "Erlumi Stone",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P611",
+        "source_id": "v6-source-P611",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Erlumi Stone entered general availability on 12 May 2280."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P612",
+      "category": "reached_ga_neutral_followup",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P612",
+        "target_question": "When was Sovlira Cabin launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P612",
+          "canonical_name": "Sovlira Cabin",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P612",
+        "source_id": "v6-source-P612",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Sovlira Cabin reached GA on 13 May 2281. The release record includes a checksum list."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P613",
+      "category": "dotted_declared_alias_subject",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P613",
+        "target_question": "When was Ari.Dev Thread 6.2 launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P613",
+          "canonical_name": "Ari.Dev Thread 6.2",
+          "aliases": [
+            "Ari.Thread"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P613",
+        "source_id": "v6-source-P613",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Ari.Thread was launched on 14 May 2282."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P614",
+      "category": "declared_alias_direct_object",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P614",
+        "target_question": "When was Lorumi Patch 8.1 launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P614",
+          "canonical_name": "Lorumi Patch 8.1",
+          "aliases": [
+            "LP81"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P614",
+        "source_id": "v6-source-P614",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Nelvumi Devices launched LP81 on 15 May 2283."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P615",
+      "category": "has_been_launched_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P615",
+        "target_question": "When was Zorlira Watch launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P615",
+          "canonical_name": "Zorlira Watch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P615",
+        "source_id": "v6-source-P615",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Zorlira Watch has been launched as of 16 May 2284."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P616",
+      "category": "adjacent_feature_claim_denied",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P616",
+        "target_question": "When was Darlumi Board launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P616",
+          "canonical_name": "Darlumi Board",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P616",
+        "source_id": "v6-source-P616",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Darlumi Board includes a navigation panel. That claim was denied. Darlumi Board was introduced on 17 May 2285."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P617",
+      "category": "adjacent_feature_statement_retracted",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P617",
+        "target_question": "When was Varlira Bay launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P617",
+          "canonical_name": "Varlira Bay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P617",
+        "source_id": "v6-source-P617",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Varlira Bay supports PDF export. This statement was retracted. Varlira Bay entered general availability on 18 May 2286."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P618",
+      "category": "adjacent_property_claim_false",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P618",
+        "target_question": "When was Nerumi Finch launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P618",
+          "canonical_name": "Nerumi Finch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P618",
+        "source_id": "v6-source-P618",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Nerumi Finch has a red finish. This property claim is false. Nerumi Finch went live on 19 May 2287."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P619",
+      "category": "adjacent_feature_statement_hypothetical",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P619",
+        "target_question": "When was Rilvumi Leaf launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P619",
+          "canonical_name": "Rilvumi Leaf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P619",
+        "source_id": "v6-source-P619",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Rilvumi Leaf includes a help overlay. That statement is hypothetical. Rilvumi Leaf was rolled out on 20 May 2288."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P620",
+      "category": "separate_same_target_export_question",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P620",
+        "target_question": "When was Ferlira Module launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P620",
+          "canonical_name": "Ferlira Module",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P620",
+        "source_id": "v6-source-P620",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Does Ferlira Module support PDF export? Ferlira Module is now generally available as of 21 May 2289."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P621",
+      "category": "withdrawn_other_target_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P621",
+        "target_question": "When was Olvumi Pulse launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P621",
+          "canonical_name": "Olvumi Pulse",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P621",
+        "source_id": "v6-source-P621",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Withdrawn release statement for Dalvuri Trace"
+          },
+          {
+            "kind": "fact",
+            "text": "Olvumi Pulse reached GA on 22 May 2290."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P622",
+      "category": "same_target_property_closed_strike",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P622",
+        "target_question": "When was Qerlumi Atlas launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P622",
+          "canonical_name": "Qerlumi Atlas",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P622",
+        "source_id": "v6-source-P622",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Qerlumi Atlas offers offline search.~~ Qerlumi Atlas was launched on 23 May 2291."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P623",
+      "category": "marked_nonlaunch_fact_then_named_launch_signal",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P623",
+        "target_question": "When was Alvumi Shelf launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P623",
+          "canonical_name": "Alvumi Shelf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P623",
+        "source_id": "v6-source-P623",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "❌ Alvumi Shelf supports face unlock."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Alvumi Shelf went live on 24 May 2292."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P624",
+      "category": "nonfactual_context_without_governing_authority",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P624",
+        "target_question": "When was Velvuri Harbor launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P624",
+          "canonical_name": "Velvuri Harbor",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P624",
+        "source_id": "v6-source-P624",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Release archive index"
+          },
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/retracted/velvuri-harbor"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Fictional reports"
+          },
+          {
+            "kind": "fact",
+            "text": "Velvuri Harbor was introduced on 25 May 2293."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P625",
+      "category": "feature_question_heading_direct_object_metadata",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-P625",
+        "target_question": "When was Berlira Spindle launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-P625",
+          "canonical_name": "Berlira Spindle",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-P625",
+        "source_id": "v6-source-P625",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Does Berlira Spindle include a timer?"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Torvumi Labs introduced Berlira Spindle on 26 May 2294."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N601",
+      "category": "broad_report_fiction_leading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N601",
+        "target_question": "When was Jerlumi Forge launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N601",
+          "canonical_name": "Jerlumi Forge",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N601",
+        "source_id": "v6-source-N601",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This report is fictional. Jerlumi Forge was introduced on 1 May 2300."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N602",
+      "category": "broad_passage_hypothesis_after_feature",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N602",
+        "target_question": "When was Farvuri Pattern launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N602",
+          "canonical_name": "Farvuri Pattern",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N602",
+        "source_id": "v6-source-N602",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Farvuri Pattern includes a help viewer. This passage is hypothetical. Farvuri Pattern was launched on 2 May 2301."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N603",
+      "category": "broad_report_retraction_after_feature",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N603",
+        "target_question": "When was Molumi Drum launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N603",
+          "canonical_name": "Molumi Drum",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N603",
+        "source_id": "v6-source-N603",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Molumi Drum entered general availability on 3 May 2302. Molumi Drum supports exports. This report has been retracted."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N604",
+      "category": "governing_false_heading_with_feature_interposed",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N604",
+        "target_question": "When was Terlira Key launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N604",
+          "canonical_name": "Terlira Key",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N604",
+        "source_id": "v6-source-N604",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "False launch claim"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Terlira Key has a matte finish. Terlira Key went live on 4 May 2303."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N605",
+      "category": "adjacent_launch_claim_false",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N605",
+        "target_question": "When was Calvumi Tide launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N605",
+          "canonical_name": "Calvumi Tide",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N605",
+        "source_id": "v6-source-N605",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Calvumi Tide was rolled out on 5 May 2304. That claim is false."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N606",
+      "category": "adjacent_launch_statement_withdrawn",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N606",
+        "target_question": "When was Dervuri Slate launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N606",
+          "canonical_name": "Dervuri Slate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N606",
+        "source_id": "v6-source-N606",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Dervuri Slate reached GA on 6 May 2305. This statement was withdrawn."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N607",
+      "category": "adjacent_launch_statement_fictional_after_feature",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N607",
+        "target_question": "When was Galumi Field launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N607",
+          "canonical_name": "Galumi Field",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N607",
+        "source_id": "v6-source-N607",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Galumi Field includes an editor. Galumi Field was introduced on 7 May 2306. That statement is fictional."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N608",
+      "category": "broad_passage_hypothetical_title",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N608",
+        "target_question": "When was Sarlira Beam launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N608",
+          "canonical_name": "Sarlira Beam",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N608",
+        "source_id": "v6-source-N608",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "This passage is hypothetical"
+          },
+          {
+            "kind": "fact",
+            "text": "Sarlira Beam is now generally available as of 8 May 2307."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N609",
+      "category": "launch_if_condition",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N609",
+        "target_question": "When was Kevlumi Brick launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N609",
+          "canonical_name": "Kevlumi Brick",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N609",
+        "source_id": "v6-source-N609",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "If the launch license was granted, Kevlumi Brick was launched on 9 May 2308."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N610",
+      "category": "direct_object_introduction_question",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N610",
+        "target_question": "When was Nelvuri Circle launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N610",
+          "canonical_name": "Nelvuri Circle",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N610",
+        "source_id": "v6-source-N610",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Did Arlumi Labs introduce Nelvuri Circle on 10 May 2309?"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N611",
+      "category": "generally_available_unconfirmed_rumor",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N611",
+        "target_question": "When was Vorlumi Parcel launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N611",
+          "canonical_name": "Vorlumi Parcel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N611",
+        "source_id": "v6-source-N611",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Unconfirmed rumor: Vorlumi Parcel became generally available on 11 May 2310."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N612",
+      "category": "actor_did_not_launch_target",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N612",
+        "target_question": "When was Alrlumi Deck launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N612",
+          "canonical_name": "Alrlumi Deck",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N612",
+        "source_id": "v6-source-N612",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Belvuri Systems did not launch Alrlumi Deck on 12 May 2311."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N613",
+      "category": "actor_target_made_other_product_available",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N613",
+        "target_question": "When was Yerlumi Systems launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N613",
+          "canonical_name": "Yerlumi Systems",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N613",
+        "source_id": "v6-source-N613",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Yerlumi Systems has made Rolvuri Hub generally available on 13 May 2312."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N614",
+      "category": "heading_target_other_product_factual_owner",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N614",
+        "target_question": "When was Helvuri Board launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N614",
+          "canonical_name": "Helvuri Board",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N614",
+        "source_id": "v6-source-N614",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Helvuri Board availability notes"
+          },
+          {
+            "kind": "fact",
+            "text": "Varlumi Board reached GA on 14 May 2313."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N615",
+      "category": "named_record_then_unbound_pronoun_launch",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N615",
+        "target_question": "When was Kelumi Ring launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N615",
+          "canonical_name": "Kelumi Ring",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N615",
+        "source_id": "v6-source-N615",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This record concerns Kelumi Ring. It was launched on 15 May 2314."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N616",
+      "category": "source_title_only_affirmative_feature_body",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N616",
+        "target_question": "When was Cerlira Switch launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N616",
+          "canonical_name": "Cerlira Switch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N616",
+        "source_id": "v6-source-N616",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Cerlira Switch was introduced on 16 May 2315."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Cerlira Switch includes an export menu."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N617",
+      "category": "heading_only_ga_neutral_metadata",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N617",
+        "target_question": "When was Zerlumi Layer launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N617",
+          "canonical_name": "Zerlumi Layer",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N617",
+        "source_id": "v6-source-N617",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Zerlumi Layer reached GA on 17 May 2316."
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Zerlumi Layer manual format: Markdown"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N618",
+      "category": "url_navigation_only_available_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N618",
+        "target_question": "When was Perlira Light launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N618",
+          "canonical_name": "Perlira Light",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N618",
+        "source_id": "v6-source-N618",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/Perlira-Light/general-availability/2317-05-18"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Perlira Light is now generally available as of 18 May 2317."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N619",
+      "category": "markdown_strike_across_three_sentences",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N619",
+        "target_question": "When was Lelvumi Scope launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N619",
+          "canonical_name": "Lelvumi Scope",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N619",
+        "source_id": "v6-source-N619",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Publication draft. Lelvumi Scope was rolled out on 19 May 2318. A migration guide was attached.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N620",
+      "category": "cross_prefix_general_availability",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N620",
+        "target_question": "When was Morvuri Note launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N620",
+          "canonical_name": "Morvuri Note",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N620",
+        "source_id": "v6-source-N620",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "❌ Morvuri Note entered general availability on 20 May 2319."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N621",
+      "category": "not_equal_launch_relation",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N621",
+        "target_question": "When was Rerlumi Dial launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N621",
+          "canonical_name": "Rerlumi Dial",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N621",
+        "source_id": "v6-source-N621",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Rerlumi Dial ≠ launched on 21 May 2320."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N622",
+      "category": "logical_not_reached_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N622",
+        "target_question": "When was Tolumi Gate launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N622",
+          "canonical_name": "Tolumi Gate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N622",
+        "source_id": "v6-source-N622",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "¬ Tolumi Gate reached GA on 22 May 2321."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N623",
+      "category": "ballot_cross_introduction_suffix",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N623",
+        "target_question": "When was Narlira Loop launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N623",
+          "canonical_name": "Narlira Loop",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N623",
+        "source_id": "v6-source-N623",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Narlira Loop was introduced on 23 May 2322 ✗"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N624",
+      "category": "heavy_cross_launch_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N624",
+        "target_question": "When was Velumi Flask launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N624",
+          "canonical_name": "Velumi Flask",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N624",
+        "source_id": "v6-source-N624",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "✘ Velumi Flask launch claim"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Velumi Flask has been launched on 24 May 2323."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N625",
+      "category": "combining_strike_target_other_product_unstruck",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v6-statement-launch-policy",
+        "target_id": "v6-target-N625",
+        "target_question": "When was Sorlumi Dock launched?",
+        "entity": {
+          "canonical_id": "v6-canonical-N625",
+          "canonical_name": "Sorlumi Dock",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v6-evidence-N625",
+        "source_id": "v6-source-N625",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "S̶o̶r̶l̶u̶m̶i̶ D̶o̶c̶k̶ w̶e̶n̶t̶ l̶i̶v̶e̶ o̶n̶ 2̶5̶ M̶a̶y̶ 2̶3̶2̶4̶.̶ Parlumi Anchor was launched on 26 May 2324."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    }
+  ]
+}

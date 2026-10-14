@@ -1,0 +1,3192 @@
+{
+  "schema_version": 2,
+  "author_identity": "/root/launch_072_independent",
+  "candidate_commit": "de47d3ae4573bdfeaebae45be56c3595c06f683c",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "c2f119030c718af66f872f913bf697951c33eace9067cec9bbcdbd5bca0d4f17",
+  "authority_contract": "Only excerpt, fact and structured_metadata furnish factual proof. Heading/source_title govern; URL/navigation cannot prove or govern factual claims.",
+  "cases": [
+    {
+      "case_id": "P201",
+      "category": "launch_day_before_may",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P201",
+        "target_question": "When was Brisano Vault launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P201",
+          "canonical_name": "Brisano Vault",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P201",
+        "source_id": "independent-v2-source-P201",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Brisano Vault was launched on 7 May 2081, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P202",
+      "category": "entered_general_availability_may",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P202",
+        "target_question": "When was Pelvoro Pulse launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P202",
+          "canonical_name": "Pelvoro Pulse",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P202",
+        "source_id": "independent-v2-source-P202",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Pelvoro Pulse entered general availability on 6 May 2082."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P203",
+      "category": "reached_ga_may",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P203",
+        "target_question": "When was Nuvessa Board launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P203",
+          "canonical_name": "Nuvessa Board",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P203",
+        "source_id": "independent-v2-source-P203",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Nuvessa Board reached GA on 5 May 2083."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P204",
+      "category": "neutral_sentence_before_proof",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P204",
+        "target_question": "When was Rindavo Shelf launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P204",
+          "canonical_name": "Rindavo Shelf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P204",
+        "source_id": "independent-v2-source-P204",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The release archive has moved to a new address. Rindavo Shelf was launched on 4 May 2084."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P205",
+      "category": "neutral_sentence_after_ga",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P205",
+        "target_question": "When was Carvessa Gate launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P205",
+          "canonical_name": "Carvessa Gate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P205",
+        "source_id": "independent-v2-source-P205",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Carvessa Gate entered general availability on 3 May 2085. The manual is divided into eight chapters."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P206",
+      "category": "factual_metadata_with_neutral_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P206",
+        "target_question": "When was Sorvilo Relay launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P206",
+          "canonical_name": "Sorvilo Relay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P206",
+        "source_id": "independent-v2-source-P206",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Availability history"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Sorvilo Relay reached GA on 2 May 2086."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P207",
+      "category": "dotted_alias",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P207",
+        "target_question": "When was Kivrano Panel launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P207",
+          "canonical_name": "Kivrano Panel",
+          "aliases": [
+            "Kiv.Panel"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P207",
+        "source_id": "independent-v2-source-P207",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Kiv.Panel entered general availability on 1 May 2087."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P208",
+      "category": "decimal_ga",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P208",
+        "target_question": "When was Zovella 6.3 launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P208",
+          "canonical_name": "Zovella 6.3",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P208",
+        "source_id": "independent-v2-source-P208",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Zovella 6.3 reached GA on 19 May 2088."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P209",
+      "category": "dotted_vendor_entered_ga",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P209",
+        "target_question": "When was Cirri.Labs Nera launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P209",
+          "canonical_name": "Cirri.Labs Nera",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P209",
+        "source_id": "independent-v2-source-P209",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Cirri.Labs Nera entered general availability on 18 May 2089."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P210",
+      "category": "dotted_decimal_launch",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P210",
+        "target_question": "When was Danvoro.Route 5.6 launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P210",
+          "canonical_name": "Danvoro.Route 5.6",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P210",
+        "source_id": "independent-v2-source-P210",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The archive covers two product families. Danvoro.Route 5.6 was launched on 17 May 2090. A separate appendix lists contributors."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P211",
+      "category": "neutral_question_in_preceding_sentence",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P211",
+        "target_question": "When was Falvessa Bay launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P211",
+          "canonical_name": "Falvessa Bay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P211",
+        "source_id": "independent-v2-source-P211",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Where is the support guide? Falvessa Bay was launched on 16 May 2091."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P212",
+      "category": "other_subject_negative_before_may",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P212",
+        "target_question": "When was Hesvoro Rack launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P212",
+          "canonical_name": "Hesvoro Rack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P212",
+        "source_id": "independent-v2-source-P212",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Bralune Frame was not launched in April. Hesvoro Rack was launched on 15 May 2092."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P213",
+      "category": "other_subject_withdrawn_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P213",
+        "target_question": "When was Volmessa Rail launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P213",
+          "canonical_name": "Volmessa Rail",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P213",
+        "source_id": "independent-v2-source-P213",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Withdrawn claim about Ruvani Cove"
+          },
+          {
+            "kind": "fact",
+            "text": "Volmessa Rail was launched on 14 May 2093."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P214",
+      "category": "other_subject_false_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P214",
+        "target_question": "When was Penvaro Lane launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P214",
+          "canonical_name": "Penvaro Lane",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P214",
+        "source_id": "independent-v2-source-P214",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "False claim about Doravi Deck"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Penvaro Lane entered general availability on 13 May 2094."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P215",
+      "category": "other_subject_hypothetical_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P215",
+        "target_question": "When was Zanvessa Key launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P215",
+          "canonical_name": "Zanvessa Key",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P215",
+        "source_id": "independent-v2-source-P215",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Hypothetical launch scenario for Elviro Scope"
+          },
+          {
+            "kind": "fact",
+            "text": "Zanvessa Key reached GA on 12 May 2095."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P216",
+      "category": "other_subject_fiction_sentence",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P216",
+        "target_question": "When was Talmero Stack launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P216",
+          "canonical_name": "Talmero Stack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P216",
+        "source_id": "independent-v2-source-P216",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The story about Veyrani Lock is fictional. Talmero Stack entered general availability on 11 May 2096."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P217",
+      "category": "other_subject_denial_after_ga",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P217",
+        "target_question": "When was Kinvaro Pad launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P217",
+          "canonical_name": "Kinvaro Pad",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P217",
+        "source_id": "independent-v2-source-P217",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Kinvaro Pad reached GA on 10 May 2097. Halvuna Bridge was not launched that month."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P218",
+      "category": "closed_strike_other_subject_before",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P218",
+        "target_question": "When was Mesvoro Lane launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P218",
+          "canonical_name": "Mesvoro Lane",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P218",
+        "source_id": "independent-v2-source-P218",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Juvrani Hatch entered general availability on 8 May 2098.~~ Mesvoro Lane was launched on 9 May 2098."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P219",
+      "category": "cross_other_subject_different_signal",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P219",
+        "target_question": "When was Bervessa Ring launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P219",
+          "canonical_name": "Bervessa Ring",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P219",
+        "source_id": "independent-v2-source-P219",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "❌ Gavloro Shell reached GA on 7 May 2099."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Bervessa Ring entered general availability on 8 May 2099."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P220",
+      "category": "not_equal_other_subject",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P220",
+        "target_question": "When was Covrano Mark launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P220",
+          "canonical_name": "Covrano Mark",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P220",
+        "source_id": "independent-v2-source-P220",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Osrani Jet ≠ launched on 5 May 2100. Covrano Mark was launched on 7 May 2100."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P221",
+      "category": "logical_not_other_subject",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P221",
+        "target_question": "When was Larvessa Tile launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P221",
+          "canonical_name": "Larvessa Tile",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P221",
+        "source_id": "independent-v2-source-P221",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "¬ (Fravilo Point was launched on 4 May 2101). Larvessa Tile was launched on 6 May 2101."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P222",
+      "category": "combining_strike_other_subject",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P222",
+        "target_question": "When was Desvoro Byte launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P222",
+          "canonical_name": "Desvoro Byte",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P222",
+        "source_id": "independent-v2-source-P222",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "P̶a̶v̶n̶o̶r̶i̶ C̶h̶a̶r̶t̶ w̶a̶s̶ l̶a̶u̶n̶c̶h̶e̶d̶ o̶n̶ 3̶ M̶a̶y̶ 2̶1̶0̶2̶.̶ Desvoro Byte reached GA on 5 May 2102."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P223",
+      "category": "other_subject_named_denial_trailing",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P223",
+        "target_question": "When was Tavmessa Wave launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P223",
+          "canonical_name": "Tavmessa Wave",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P223",
+        "source_id": "independent-v2-source-P223",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tavmessa Wave entered general availability on 4 May 2103. The publisher denied the launch report about Xavrani Cone."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P224",
+      "category": "nonfactual_url_context_cannot_govern",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P224",
+        "target_question": "When was Nermero Deck launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P224",
+          "canonical_name": "Nermero Deck",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P224",
+        "source_id": "independent-v2-source-P224",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://release.example.invalid/hypothetical/nermero-deck"
+          },
+          {
+            "kind": "heading",
+            "text": "Project chronology"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Nermero Deck was launched on 3 May 2104."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P225",
+      "category": "nonfactual_footer_cannot_govern",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P225",
+        "target_question": "When was Varnessa Cove launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P225",
+          "canonical_name": "Varnessa Cove",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P225",
+        "source_id": "independent-v2-source-P225",
+        "signals": [
+          {
+            "kind": "navigation_or_footer",
+            "text": "Retractions and fictional release scenarios"
+          },
+          {
+            "kind": "fact",
+            "text": "Varnessa Cove reached GA on 2 May 2105."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P226",
+      "category": "title_anchor_and_alias_factual_proof",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P226",
+        "target_question": "When was Belmero Dock launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P226",
+          "canonical_name": "Belmero Dock",
+          "aliases": [
+            "BMD"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P226",
+        "source_id": "independent-v2-source-P226",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Belmero Dock release timeline"
+          },
+          {
+            "kind": "excerpt",
+            "text": "BMD was launched on 1 May 2106."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P227",
+      "category": "active_intransitive_launch",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P227",
+        "target_question": "When was Osvessa Pond launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P227",
+          "canonical_name": "Osvessa Pond",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P227",
+        "source_id": "independent-v2-source-P227",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Osvessa Pond launched on 21 May 2107. Its user guide was published separately."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P228",
+      "category": "dotted_vendor_decimal_ga_with_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P228",
+        "target_question": "When was Firro.Tools Sera 7.2 launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P228",
+          "canonical_name": "Firro.Tools Sera 7.2",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P228",
+        "source_id": "independent-v2-source-P228",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Firro.Tools Sera 7.2 availability notes"
+          },
+          {
+            "kind": "fact",
+            "text": "Firro.Tools Sera 7.2 reached GA on 20 May 2108."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P229",
+      "category": "same_target_strike_on_nonlaunch_statement",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P229",
+        "target_question": "When was Kelmora Tap launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P229",
+          "canonical_name": "Kelmora Tap",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P229",
+        "source_id": "independent-v2-source-P229",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Kelmora Tap includes an offline editor.~~ Kelmora Tap was launched on 22 May 2109."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P230",
+      "category": "same_target_cross_on_nonlaunch_statement",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P230",
+        "target_question": "When was Almora Plane launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P230",
+          "canonical_name": "Almora Plane",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P230",
+        "source_id": "independent-v2-source-P230",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "❌ Almora Plane supports XML export. Almora Plane entered general availability on 23 May 2109."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P231",
+      "category": "same_target_false_heading_nonlaunch_statement",
+      "label": "positive",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-P231",
+        "target_question": "When was Jermoro Sink launched?",
+        "entity": {
+          "canonical_id": "canonical-for-P231",
+          "canonical_name": "Jermoro Sink",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P231",
+        "source_id": "independent-v2-source-P231",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "False claim: Jermoro Sink has an offline mode"
+          },
+          {
+            "kind": "fact",
+            "text": "Jermoro Sink reached GA on 24 May 2109."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N201",
+      "category": "false_named_title_governs",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N201",
+        "target_question": "When was Auvessa Crate launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N201",
+          "canonical_name": "Auvessa Crate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N201",
+        "source_id": "independent-v2-source-N201",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "False: Auvessa Crate launch report"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Auvessa Crate was launched on 19 May 2110."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N202",
+      "category": "denial_sentence_heading_governs_fact",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N202",
+        "target_question": "When was Darmero Cone launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N202",
+          "canonical_name": "Darmero Cone",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N202",
+        "source_id": "independent-v2-source-N202",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "This launch claim is denied"
+          },
+          {
+            "kind": "fact",
+            "text": "Darmero Cone was launched on 18 May 2111."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N203",
+      "category": "withdrawn_title_governs_excerpt",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N203",
+        "target_question": "When was Culvoro Loop launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N203",
+          "canonical_name": "Culvoro Loop",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N203",
+        "source_id": "independent-v2-source-N203",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Release statement withdrawn"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Culvoro Loop entered general availability on 17 May 2112."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N204",
+      "category": "retraction_notice_governs_metadata",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N204",
+        "target_question": "When was Zelmero Jet launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N204",
+          "canonical_name": "Zelmero Jet",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N204",
+        "source_id": "independent-v2-source-N204",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Retraction notice"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Zelmero Jet reached GA on 16 May 2113."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N205",
+      "category": "fictional_heading_governs_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N205",
+        "target_question": "When was Nivessa Scope launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N205",
+          "canonical_name": "Nivessa Scope",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N205",
+        "source_id": "independent-v2-source-N205",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Fictional scenario: Nivessa Scope rollout"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Nivessa Scope reached GA on 15 May 2114."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N206",
+      "category": "hypothetical_title_governs_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N206",
+        "target_question": "When was Savrano Plate launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N206",
+          "canonical_name": "Savrano Plate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N206",
+        "source_id": "independent-v2-source-N206",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Hypothetical availability timeline for Savrano Plate"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Savrano Plate entered general availability on 14 May 2115."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N207",
+      "category": "fictional_leading_without_release_noun",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N207",
+        "target_question": "When was Jevessa Rack launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N207",
+          "canonical_name": "Jevessa Rack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N207",
+        "source_id": "independent-v2-source-N207",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "What follows is fictional. Jevessa Rack was launched on 13 May 2116."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N208",
+      "category": "withdrawn_preceding_sentence_reference",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N208",
+        "target_question": "When was Morvoro Point launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N208",
+          "canonical_name": "Morvoro Point",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N208",
+        "source_id": "independent-v2-source-N208",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Morvoro Point was launched on 12 May 2117. The preceding launch sentence was withdrawn."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N209",
+      "category": "false_correction_trailing",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N209",
+        "target_question": "When was Kelmessa Coin launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N209",
+          "canonical_name": "Kelmessa Coin",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N209",
+        "source_id": "independent-v2-source-N209",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Kelmessa Coin was launched on 11 May 2118. Correction: this launch report is false."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N210",
+      "category": "denied_above_ga_reference",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N210",
+        "target_question": "When was Tesrano Pool launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N210",
+          "canonical_name": "Tesrano Pool",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N210",
+        "source_id": "independent-v2-source-N210",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tesrano Pool reached GA on 10 May 2119. The above GA claim was denied."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N211",
+      "category": "fictional_account_trailing_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N211",
+        "target_question": "When was Duvessa Pipe launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N211",
+          "canonical_name": "Duvessa Pipe",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N211",
+        "source_id": "independent-v2-source-N211",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Duvessa Pipe entered general availability on 9 May 2120. This account is fictional."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N212",
+      "category": "hypothetical_leading_availability",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N212",
+        "target_question": "When was Rulmoro Board launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N212",
+          "canonical_name": "Rulmoro Board",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N212",
+        "source_id": "independent-v2-source-N212",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This is a hypothetical availability timeline. Rulmoro Board entered general availability on 8 May 2121."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N213",
+      "category": "strike_governs_two_sentences",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N213",
+        "target_question": "When was Casvessa Drum launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N213",
+          "canonical_name": "Casvessa Drum",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N213",
+        "source_id": "independent-v2-source-N213",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Availability record: Casvessa Drum reached GA on 7 May 2122. This record supersedes the earlier draft.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N214",
+      "category": "cross_heading_governs_fact",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N214",
+        "target_question": "When was Permero Reel launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N214",
+          "canonical_name": "Permero Reel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N214",
+        "source_id": "independent-v2-source-N214",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "❌ Permero Reel release record"
+          },
+          {
+            "kind": "fact",
+            "text": "Permero Reel was launched on 6 May 2123."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N215",
+      "category": "not_equal_launch_predicate",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N215",
+        "target_question": "When was Wavessa Moor launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N215",
+          "canonical_name": "Wavessa Moor",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N215",
+        "source_id": "independent-v2-source-N215",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Wavessa Moor ≠ launched on 5 May 2124."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N216",
+      "category": "logical_not_parenthesized_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N216",
+        "target_question": "When was Hulvoro Pod launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N216",
+          "canonical_name": "Hulvoro Pod",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N216",
+        "source_id": "independent-v2-source-N216",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "¬ (Hulvoro Pod entered general availability on 4 May 2125)."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N217",
+      "category": "ballot_cross_suffix_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N217",
+        "target_question": "When was Lovessa Stack launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N217",
+          "canonical_name": "Lovessa Stack",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N217",
+        "source_id": "independent-v2-source-N217",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Lovessa Stack reached GA on 3 May 2126 ✗"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N218",
+      "category": "heavy_cross_prefix_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N218",
+        "target_question": "When was Vesmero Bin launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N218",
+          "canonical_name": "Vesmero Bin",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N218",
+        "source_id": "independent-v2-source-N218",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "✘ Vesmero Bin entered general availability on 2 May 2127."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N219",
+      "category": "combining_long_stroke_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N219",
+        "target_question": "When was Zulvoro Trace launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N219",
+          "canonical_name": "Zulvoro Trace",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N219",
+        "source_id": "independent-v2-source-N219",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Z̶u̶l̶v̶o̶r̶o̶ T̶r̶a̶c̶e̶ r̶e̶a̶c̶h̶e̶d̶ G̶A̶ o̶n̶ 1̶ M̶a̶y̶ 2̶1̶2̶8̶.̶"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N220",
+      "category": "strike_scope_across_newline_and_sentence",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N220",
+        "target_question": "When was Lanvessa Sort launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N220",
+          "canonical_name": "Lanvessa Sort",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N220",
+        "source_id": "independent-v2-source-N220",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Obsolete publication draft.\nThe archive was prepared for the press. Lanvessa Sort was launched on 21 May 2129.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N221",
+      "category": "entered_ga_question",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N221",
+        "target_question": "When was Quivoro Fold launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N221",
+          "canonical_name": "Quivoro Fold",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N221",
+        "source_id": "independent-v2-source-N221",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Did Quivoro Fold enter general availability on 20 May 2130?"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N222",
+      "category": "entered_ga_counterfactual",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N222",
+        "target_question": "When was Balmessa Spur launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N222",
+          "canonical_name": "Balmessa Spur",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N222",
+        "source_id": "independent-v2-source-N222",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Balmessa Spur would have entered general availability on 19 May 2131 if approval had arrived."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N223",
+      "category": "reached_ga_if_condition",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N223",
+        "target_question": "When was Remvoro Shard launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N223",
+          "canonical_name": "Remvoro Shard",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N223",
+        "source_id": "independent-v2-source-N223",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "If the regulator approved the project, Remvoro Shard reached GA on 18 May 2132."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N224",
+      "category": "never_entered_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N224",
+        "target_question": "When was Zenvessa Shelf launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N224",
+          "canonical_name": "Zenvessa Shelf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N224",
+        "source_id": "independent-v2-source-N224",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Zenvessa Shelf never entered general availability on 17 May 2133."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N225",
+      "category": "not_reached_ga",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N225",
+        "target_question": "When was Kovmero Rise launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N225",
+          "canonical_name": "Kovmero Rise",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N225",
+        "source_id": "independent-v2-source-N225",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Kovmero Rise has not reached GA on 16 May 2134."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N226",
+      "category": "ga_misattributed_other_subject",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N226",
+        "target_question": "When was Dilmessa Curl launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N226",
+          "canonical_name": "Dilmessa Curl",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N226",
+        "source_id": "independent-v2-source-N226",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Dilmessa Curl availability archive"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Gelmoro Curl entered general availability on 15 May 2135."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N227",
+      "category": "unconfirmed_ga_rumor",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N227",
+        "target_question": "When was Felmessa Box launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N227",
+          "canonical_name": "Felmessa Box",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N227",
+        "source_id": "independent-v2-source-N227",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "It is an unconfirmed rumor that Felmessa Box reached GA on 14 May 2136."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N228",
+      "category": "rumor_labeled_launch",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N228",
+        "target_question": "When was Tanmoro Fin launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N228",
+          "canonical_name": "Tanmoro Fin",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N228",
+        "source_id": "independent-v2-source-N228",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Rumor: Tanmoro Fin was launched on 13 May 2137."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N229",
+      "category": "wrong_target_excerpt_heading_anchor",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N229",
+        "target_question": "When was Carmessa Tile launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N229",
+          "canonical_name": "Carmessa Tile",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N229",
+        "source_id": "independent-v2-source-N229",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Carmessa Tile project notes"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Jalmoro Tile was launched on 12 May 2138."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N230",
+      "category": "heading_affirmative_without_factual_proof",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N230",
+        "target_question": "When was Silvessa Grove launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N230",
+          "canonical_name": "Silvessa Grove",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N230",
+        "source_id": "independent-v2-source-N230",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Silvessa Grove entered general availability on 11 May 2139."
+          },
+          {
+            "kind": "excerpt",
+            "text": "The archive lists three documentation formats."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N231",
+      "category": "title_affirmative_without_factual_proof",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N231",
+        "target_question": "When was Mulmero Bond launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N231",
+          "canonical_name": "Mulmero Bond",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N231",
+        "source_id": "independent-v2-source-N231",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Mulmero Bond reached GA on 10 May 2140."
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Archive language: English; section: availability"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N232",
+      "category": "url_claim_without_factual_proof",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N232",
+        "target_question": "When was Bolvessa Patch launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N232",
+          "canonical_name": "Bolvessa Patch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N232",
+        "source_id": "independent-v2-source-N232",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://news.example.invalid/Bolvessa-Patch-entered-general-availability-on-9-May-2141"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Bolvessa Patch availability"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N233",
+      "category": "footer_affirmative_without_factual_proof",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N233",
+        "target_question": "When was Nalmoro Orbit launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N233",
+          "canonical_name": "Nalmoro Orbit",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N233",
+        "source_id": "independent-v2-source-N233",
+        "signals": [
+          {
+            "kind": "navigation_or_footer",
+            "text": "Nalmoro Orbit reached GA on 8 May 2142."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N234",
+      "category": "title_proof_and_factual_question",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N234",
+        "target_question": "When was Hervessa Gate launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N234",
+          "canonical_name": "Hervessa Gate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N234",
+        "source_id": "independent-v2-source-N234",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Hervessa Gate was launched on 7 May 2143."
+          },
+          {
+            "kind": "excerpt",
+            "text": "When was Hervessa Gate launched?"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N235",
+      "category": "planned_launch_only",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N235",
+        "target_question": "When was Polmero Glide launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N235",
+          "canonical_name": "Polmero Glide",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N235",
+        "source_id": "independent-v2-source-N235",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Polmero Glide is scheduled to launch on 6 May 2144."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N236",
+      "category": "topic_mention_no_assertion",
+      "label": "negative",
+      "policy": {
+        "policy_id": "launch-independent-v2-policy",
+        "target_id": "entity-for-N236",
+        "target_question": "When was Yalmessa Park launched?",
+        "entity": {
+          "canonical_id": "canonical-for-N236",
+          "canonical_name": "Yalmessa Park",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N236",
+        "source_id": "independent-v2-source-N236",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This index discusses the launch date of Yalmessa Park and links to a separate announcement."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    }
+  ]
+}

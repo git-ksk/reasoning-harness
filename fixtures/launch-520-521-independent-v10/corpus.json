@@ -1,0 +1,2377 @@
+{
+  "schema_version": 10,
+  "author_identity": "/root/launch_072_independent",
+  "candidate_commit": "2f12d4c61546e60d31026d9b691c9eb369c37957",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+  "positive_owner_rule": "same-statement canonical or declared alias direct subject/object in supported bounded predicates",
+  "adverse_scope_rule": "known negative/fiction/retraction cue with unresolved scope withholds; explicit foreign/property-local scope remains local",
+  "cases": [
+    {
+      "case_id": "P1001",
+      "category": "passive_launch_neutral_followup",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1001",
+        "target_question": "When was Kavento Vale launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1001",
+          "canonical_name": "Kavento Vale",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1001",
+        "source_id": "v10-source-P1001",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Kavento Vale was launched on 1 May 2510. The manual contains installation instructions."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1002",
+      "category": "date_first_actor_object_launch",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1002",
+        "target_question": "When was Orelina Frame launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1002",
+          "canonical_name": "Orelina Frame",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1002",
+        "source_id": "v10-source-P1002",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "On 2 May 2511, Navelto Labs launched Orelina Frame."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1003",
+      "category": "actor_introduced_named_object",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1003",
+        "target_question": "When was Tivento Leaf launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1003",
+          "canonical_name": "Tivento Leaf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1003",
+        "source_id": "v10-source-P1003",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Belinto Systems introduced Tivento Leaf on 3 May 2512."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1004",
+      "category": "declared_alias_direct_launch_subject",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1004",
+        "target_question": "When was Marelina Gate launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1004",
+          "canonical_name": "Marelina Gate",
+          "aliases": [
+            "MGate"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1004",
+        "source_id": "v10-source-P1004",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "MGate launched on 4 May 2513."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1005",
+      "category": "passive_introduction_metadata",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1005",
+        "target_question": "When was Dovento Desk launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1005",
+          "canonical_name": "Dovento Desk",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1005",
+        "source_id": "v10-source-P1005",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Dovento Desk was introduced on 5 May 2514."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1006",
+      "category": "has_been_launched_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1006",
+        "target_question": "When was Elinto Prism launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1006",
+          "canonical_name": "Elinto Prism",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1006",
+        "source_id": "v10-source-P1006",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Elinto Prism has been launched as of 6 May 2515."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1007",
+      "category": "went_live_as_of_neutral_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1007",
+        "target_question": "When was Parelina Loop launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1007",
+          "canonical_name": "Parelina Loop",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1007",
+        "source_id": "v10-source-P1007",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Availability timeline"
+          },
+          {
+            "kind": "fact",
+            "text": "Parelina Loop went live as of 7 May 2516."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1008",
+      "category": "active_rollout_metadata",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1008",
+        "target_question": "When was Zivento Patch launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1008",
+          "canonical_name": "Zivento Patch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1008",
+        "source_id": "v10-source-P1008",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Zivento Patch rolled out on 8 May 2517."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1009",
+      "category": "passive_rollout_record_adjunct",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1009",
+        "target_question": "When was Larelina Bay launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1009",
+          "canonical_name": "Larelina Bay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1009",
+        "source_id": "v10-source-P1009",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Larelina Bay was rolled out on 9 May 2518, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1010",
+      "category": "generally_available_as_of",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1010",
+        "target_question": "When was Servento Dial launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1010",
+          "canonical_name": "Servento Dial",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1010",
+        "source_id": "v10-source-P1010",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Servento Dial is generally available as of 10 May 2519."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1011",
+      "category": "now_generally_available_metadata",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1011",
+        "target_question": "When was Novento Ring launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1011",
+          "canonical_name": "Novento Ring",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1011",
+        "source_id": "v10-source-P1011",
+        "signals": [
+          {
+            "kind": "structured_metadata",
+            "text": "Novento Ring is now generally available as of 11 May 2520."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1012",
+      "category": "became_generally_available_neutral_followup",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1012",
+        "target_question": "When was Carinto Track launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1012",
+          "canonical_name": "Carinto Track",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1012",
+        "source_id": "v10-source-P1012",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Carinto Track became generally available on 12 May 2521. The release record links a guide."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1013",
+      "category": "actor_has_made_named_product",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1013",
+        "target_question": "When was Varelina Slate launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1013",
+          "canonical_name": "Varelina Slate",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1013",
+        "source_id": "v10-source-P1013",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Yervento Tools has made Varelina Slate generally available on 13 May 2522."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1014",
+      "category": "entered_general_availability_fact",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1014",
+        "target_question": "When was Fervento Shelf launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1014",
+          "canonical_name": "Fervento Shelf",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1014",
+        "source_id": "v10-source-P1014",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Fervento Shelf entered general availability on 14 May 2523."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1015",
+      "category": "dotted_decimal_reached_ga",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1015",
+        "target_question": "When was Arel.Dev Board 5.3 launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1015",
+          "canonical_name": "Arel.Dev Board 5.3",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1015",
+        "source_id": "v10-source-P1015",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Arel.Dev Board 5.3 reached GA on 15 May 2524."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1016",
+      "category": "declared_alias_under_neutral_source_structure",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1016",
+        "target_question": "When was Narelina Cove launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1016",
+          "canonical_name": "Narelina Cove",
+          "aliases": [
+            "NCove"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1016",
+        "source_id": "v10-source-P1016",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Reference archive"
+          },
+          {
+            "kind": "heading",
+            "text": "Product release record"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "NCove was introduced on 16 May 2525."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1017",
+      "category": "separate_feature_support_question",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1017",
+        "target_question": "When was Torinto Mote launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1017",
+          "canonical_name": "Torinto Mote",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1017",
+        "source_id": "v10-source-P1017",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Does Torinto Mote support PDF export? Torinto Mote entered general availability on 17 May 2526."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1018",
+      "category": "has_a_property_adjacent_false_claim",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1018",
+        "target_question": "When was Alvento Port launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1018",
+          "canonical_name": "Alvento Port",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1018",
+        "source_id": "v10-source-P1018",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Alvento Port has a help panel. That property claim is false. Alvento Port was launched on 18 May 2527."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1019",
+      "category": "separate_negative_feature",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1019",
+        "target_question": "When was Serlina Key launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1019",
+          "canonical_name": "Serlina Key",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1019",
+        "source_id": "v10-source-P1019",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Serlina Key does not include an editor. Serlina Key went live on 19 May 2528."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1020",
+      "category": "closed_strike_same_target_feature_only",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1020",
+        "target_question": "When was Darelina Module launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1020",
+          "canonical_name": "Darelina Module",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1020",
+        "source_id": "v10-source-P1020",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Darelina Module includes a timer.~~ Darelina Module reached GA on 20 May 2529."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1021",
+      "category": "crossed_foreign_launch_then_object_introduction",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1021",
+        "target_question": "When was Ivinto Watch launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1021",
+          "canonical_name": "Ivinto Watch",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1021",
+        "source_id": "v10-source-P1021",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "❌ Morento Desk was launched on 19 May 2530. Farelina Labs introduced Ivinto Watch on 21 May 2530."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1022",
+      "category": "fictional_foreign_active_launch_heading",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1022",
+        "target_question": "When was Urelina Wheel launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1022",
+          "canonical_name": "Urelina Wheel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1022",
+        "source_id": "v10-source-P1022",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Fictional statement: Zarelto Bay launched on 20 May 2531."
+          },
+          {
+            "kind": "fact",
+            "text": "Urelina Wheel was rolled out on 22 May 2531."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1023",
+      "category": "denied_foreign_passive_introduction_title",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1023",
+        "target_question": "When was Kelinto Spool launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1023",
+          "canonical_name": "Kelinto Spool",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1023",
+        "source_id": "v10-source-P1023",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Denied claim: Vervento Gate was introduced on 21 May 2532."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Kelinto Spool became generally available on 23 May 2532."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1024",
+      "category": "url_footer_no_governing_authority",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1024",
+        "target_question": "When was Ravento Grid launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1024",
+          "canonical_name": "Ravento Grid",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1024",
+        "source_id": "v10-source-P1024",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/retracted/ravento-grid"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Fictional release records"
+          },
+          {
+            "kind": "fact",
+            "text": "Ravento Grid has been launched on 24 May 2533, according to the release record."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "P1025",
+      "category": "feature_question_heading_actor_object_ga",
+      "label": "positive",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-P1025",
+        "target_question": "When was Orelto Light launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-P1025",
+          "canonical_name": "Orelto Light",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-P1025",
+        "source_id": "v10-source-P1025",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Does Orelto Light include a timer?"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Tarinto Systems has made Orelto Light generally available as of 25 May 2534."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1001",
+      "category": "whole_report_fiction",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1001",
+        "target_question": "When was Barelina Field launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1001",
+          "canonical_name": "Barelina Field",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1001",
+        "source_id": "v10-source-N1001",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "This report is fictional. Barelina Field was introduced on 1 May 2540."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1002",
+      "category": "entire_passage_hypothesis_with_foreign_subject",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1002",
+        "target_question": "When was Dervento Crest launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1002",
+          "canonical_name": "Dervento Crest",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1002",
+        "source_id": "v10-source-N1002",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "This entire passage is hypothetical. Calinto Frame went live on 2 May 2541."
+          },
+          {
+            "kind": "fact",
+            "text": "Dervento Crest reached GA on 3 May 2541."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1003",
+      "category": "plural_retraction_after_two_release_claims",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1003",
+        "target_question": "When was Nerinto Array launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1003",
+          "canonical_name": "Nerinto Array",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1003",
+        "source_id": "v10-source-N1003",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Nerinto Array was launched on 4 May 2542. Salvento Rack entered general availability on 5 May 2542. These statements were retracted."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1004",
+      "category": "unresolved_subset_false_claims",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1004",
+        "target_question": "When was Parinto Cabin launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1004",
+          "canonical_name": "Parinto Cabin",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1004",
+        "source_id": "v10-source-N1004",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Parinto Cabin went live on 6 May 2543. Elvento Shelf was introduced on 7 May 2543. Some of these claims are false."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1005",
+      "category": "unresolved_retracted_reference",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1005",
+        "target_question": "When was Vervina Beam launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1005",
+          "canonical_name": "Vervina Beam",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1005",
+        "source_id": "v10-source-N1005",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Vervina Beam entered general availability on 8 May 2544. Qarelina Hub was launched on 9 May 2544. Something above was retracted."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1006",
+      "category": "unresolved_one_fictional_statement",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1006",
+        "target_question": "When was Alrinto Reel launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1006",
+          "canonical_name": "Alrinto Reel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1006",
+        "source_id": "v10-source-N1006",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Alrinto Reel was rolled out on 10 May 2545. Harvento Cove reached GA on 11 May 2545. One of the statements is fictional."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1007",
+      "category": "named_launch_claim_denied_before_proof",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1007",
+        "target_question": "When was Zarelina Board launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1007",
+          "canonical_name": "Zarelina Board",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1007",
+        "source_id": "v10-source-N1007",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The launch claim for Zarelina Board is denied. Zarelina Board has been launched on 12 May 2546."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1008",
+      "category": "withdrawn_availability_title",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1008",
+        "target_question": "When was Lervento Ring launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1008",
+          "canonical_name": "Lervento Ring",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1008",
+        "source_id": "v10-source-N1008",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Withdrawn availability statement"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Lervento Ring is now generally available as of 13 May 2547."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1009",
+      "category": "conditional_actor_launch_object",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1009",
+        "target_question": "When was Cerinto Pattern launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1009",
+          "canonical_name": "Cerinto Pattern",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1009",
+        "source_id": "v10-source-N1009",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "If the approval was granted, Jolvento Labs launched Cerinto Pattern on 14 May 2548."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1010",
+      "category": "entered_general_availability_question",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1010",
+        "target_question": "When was Nelinto Dock launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1010",
+          "canonical_name": "Nelinto Dock",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1010",
+        "source_id": "v10-source-N1010",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Did Nelinto Dock enter general availability on 15 May 2549?"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1011",
+      "category": "unconfirmed_rollout_rumor",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1011",
+        "target_question": "When was Garvento Loop launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1011",
+          "canonical_name": "Garvento Loop",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1011",
+        "source_id": "v10-source-N1011",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Unconfirmed rumor: Garvento Loop rolled out on 16 May 2550."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1012",
+      "category": "actor_has_not_made_object_available",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1012",
+        "target_question": "When was Porinto Channel launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1012",
+          "canonical_name": "Porinto Channel",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1012",
+        "source_id": "v10-source-N1012",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Serento Systems has not made Porinto Channel generally available on 17 May 2551."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1013",
+      "category": "introducing_actor_is_not_introduced_target",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1013",
+        "target_question": "When was Yarelina Labs launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1013",
+          "canonical_name": "Yarelina Labs",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1013",
+        "source_id": "v10-source-N1013",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Yarelina Labs introduced Terinto Stone on 18 May 2552."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1014",
+      "category": "heading_target_other_product_factual_owner",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1014",
+        "target_question": "When was Corinto Desk launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1014",
+          "canonical_name": "Corinto Desk",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1014",
+        "source_id": "v10-source-N1014",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Corinto Desk release notes"
+          },
+          {
+            "kind": "fact",
+            "text": "Wervento Desk was launched on 19 May 2553."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1015",
+      "category": "named_record_pronoun_only_predicate",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1015",
+        "target_question": "When was Mervento Prism launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1015",
+          "canonical_name": "Mervento Prism",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1015",
+        "source_id": "v10-source-N1015",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "The product named in this record is Mervento Prism. It was introduced on 20 May 2554."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1016",
+      "category": "heading_only_ga_with_feature_excerpt",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1016",
+        "target_question": "When was Zerinto Port launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1016",
+          "canonical_name": "Zerinto Port",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1016",
+        "source_id": "v10-source-N1016",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Zerinto Port reached GA on 21 May 2555."
+          },
+          {
+            "kind": "excerpt",
+            "text": "Zerinto Port has a help panel."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1017",
+      "category": "title_only_launch_with_neutral_metadata",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1017",
+        "target_question": "When was Arelina Scope launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1017",
+          "canonical_name": "Arelina Scope",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1017",
+        "source_id": "v10-source-N1017",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Arelina Scope was launched on 22 May 2556."
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Arelina Scope documentation format: Markdown"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1018",
+      "category": "url_navigation_only_positive_claim",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1018",
+        "target_question": "When was Velinto Relay launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1018",
+          "canonical_name": "Velinto Relay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1018",
+        "source_id": "v10-source-N1018",
+        "signals": [
+          {
+            "kind": "canonical_url",
+            "text": "https://example.invalid/Velinto-Relay/introduced/2557-05-23"
+          },
+          {
+            "kind": "navigation_or_footer",
+            "text": "Velinto Relay was introduced on 23 May 2557."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1019",
+      "category": "markdown_strike_multi_sentence_scope",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1019",
+        "target_question": "When was Kerinto Tile launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1019",
+          "canonical_name": "Kerinto Tile",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1019",
+        "source_id": "v10-source-N1019",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Release record. Kerinto Tile entered general availability on 24 May 2558. The guide lists migration steps.~~"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1020",
+      "category": "cross_prefix_launched",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1020",
+        "target_question": "When was Harelina Bay launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1020",
+          "canonical_name": "Harelina Bay",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1020",
+        "source_id": "v10-source-N1020",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "❌ Harelina Bay was launched on 25 May 2559."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1021",
+      "category": "not_equal_general_availability",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1021",
+        "target_question": "When was Tervina Pulse launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1021",
+          "canonical_name": "Tervina Pulse",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1021",
+        "source_id": "v10-source-N1021",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tervina Pulse ≠ generally available as of 26 May 2560."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1022",
+      "category": "logical_not_rollout",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1022",
+        "target_question": "When was Merinto Frame launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1022",
+          "canonical_name": "Merinto Frame",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1022",
+        "source_id": "v10-source-N1022",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "¬ Merinto Frame was rolled out on 27 May 2561."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1023",
+      "category": "ballot_cross_ga_suffix",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1023",
+        "target_question": "When was Larelto Field launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1023",
+          "canonical_name": "Larelto Field",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1023",
+        "source_id": "v10-source-N1023",
+        "signals": [
+          {
+            "kind": "fact",
+            "text": "Larelto Field reached GA on 28 May 2562 ✗"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1024",
+      "category": "heavy_cross_governing_heading",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1024",
+        "target_question": "When was Rervento Module launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1024",
+          "canonical_name": "Rervento Module",
+          "aliases": []
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1024",
+        "source_id": "v10-source-N1024",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "✘ Rervento Module launch record"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Rervento Module has been launched on 29 May 2563."
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    },
+    {
+      "case_id": "N1025",
+      "category": "combining_strike_declared_alias",
+      "label": "negative",
+      "policy": {
+        "policy_id": "independent-v10-bounded-scope-acceptance",
+        "target_id": "v10-target-N1025",
+        "target_question": "When was Fora.Dev Desk 4.5 launched?",
+        "entity": {
+          "canonical_id": "v10-canonical-N1025",
+          "canonical_name": "Fora.Dev Desk 4.5",
+          "aliases": [
+            "FD45"
+          ]
+        },
+        "relation": "change_or_launch",
+        "identity_requirement": "require_harness_anchor",
+        "assessment_budget": {
+          "max_model_attempts": 2,
+          "max_tokens": 192,
+          "max_elapsed_ms": 90000
+        }
+      },
+      "candidate": {
+        "evidence_id": "v10-evidence-N1025",
+        "source_id": "v10-source-N1025",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "F̶D̶4̶5̶ w̶e̶n̶t̶ l̶i̶v̶e̶ o̶n̶ 3̶0̶ M̶a̶y̶ 2̶5̶6̶4̶.̶"
+          }
+        ]
+      },
+      "proposal": {
+        "target_binding": "exact",
+        "relation_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      },
+      "expected": {
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant",
+        "claim_scope": "source_local_only"
+      }
+    }
+  ]
+}

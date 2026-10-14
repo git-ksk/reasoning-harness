@@ -1,0 +1,980 @@
+[
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "independent-v2-evidence-P201",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "independent-v2-source-P201",
+      "target_id": "entity-for-P201"
+    },
+    "case_id": "P201",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P201",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Brisano Vault was launched on 7 May 2081, according to the release record."
+          }
+        ],
+        "source_id": "independent-v2-source-P201"
+      },
+      "case_id": "P201",
+      "category": "launch_day_before_may",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-P201",
+          "canonical_name": "Brisano Vault"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-P201",
+        "target_question": "When was Brisano Vault launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "independent-v2-evidence-P211",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "independent-v2-source-P211",
+      "target_id": "entity-for-P211"
+    },
+    "case_id": "P211",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P211",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Where is the support guide? Falvessa Bay was launched on 16 May 2091."
+          }
+        ],
+        "source_id": "independent-v2-source-P211"
+      },
+      "case_id": "P211",
+      "category": "neutral_question_in_preceding_sentence",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-P211",
+          "canonical_name": "Falvessa Bay"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-P211",
+        "target_question": "When was Falvessa Bay launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "independent-v2-evidence-P213",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "independent-v2-source-P213",
+      "target_id": "entity-for-P213"
+    },
+    "case_id": "P213",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P213",
+        "signals": [
+          {
+            "kind": "source_title",
+            "text": "Withdrawn claim about Ruvani Cove"
+          },
+          {
+            "kind": "fact",
+            "text": "Volmessa Rail was launched on 14 May 2093."
+          }
+        ],
+        "source_id": "independent-v2-source-P213"
+      },
+      "case_id": "P213",
+      "category": "other_subject_withdrawn_title",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-P213",
+          "canonical_name": "Volmessa Rail"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-P213",
+        "target_question": "When was Volmessa Rail launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "independent-v2-evidence-P214",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "independent-v2-source-P214",
+      "target_id": "entity-for-P214"
+    },
+    "case_id": "P214",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P214",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "False claim about Doravi Deck"
+          },
+          {
+            "kind": "excerpt",
+            "text": "Penvaro Lane entered general availability on 13 May 2094."
+          }
+        ],
+        "source_id": "independent-v2-source-P214"
+      },
+      "case_id": "P214",
+      "category": "other_subject_false_heading",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-P214",
+          "canonical_name": "Penvaro Lane"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-P214",
+        "target_question": "When was Penvaro Lane launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "independent-v2-evidence-P222",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "independent-v2-source-P222",
+      "target_id": "entity-for-P222"
+    },
+    "case_id": "P222",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P222",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "P̶a̶v̶n̶o̶r̶i̶ C̶h̶a̶r̶t̶ w̶a̶s̶ l̶a̶u̶n̶c̶h̶e̶d̶ o̶n̶ 3̶ M̶a̶y̶ 2̶1̶0̶2̶.̶ Desvoro Byte reached GA on 5 May 2102."
+          }
+        ],
+        "source_id": "independent-v2-source-P222"
+      },
+      "case_id": "P222",
+      "category": "combining_strike_other_subject",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-P222",
+          "canonical_name": "Desvoro Byte"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-P222",
+        "target_question": "When was Desvoro Byte launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "independent-v2-evidence-P229",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "independent-v2-source-P229",
+      "target_id": "entity-for-P229"
+    },
+    "case_id": "P229",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P229",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "~~Kelmora Tap includes an offline editor.~~ Kelmora Tap was launched on 22 May 2109."
+          }
+        ],
+        "source_id": "independent-v2-source-P229"
+      },
+      "case_id": "P229",
+      "category": "same_target_strike_on_nonlaunch_statement",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-P229",
+          "canonical_name": "Kelmora Tap"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-P229",
+        "target_question": "When was Kelmora Tap launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "independent-v2-evidence-P230",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "independent-v2-source-P230",
+      "target_id": "entity-for-P230"
+    },
+    "case_id": "P230",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P230",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "❌ Almora Plane supports XML export. Almora Plane entered general availability on 23 May 2109."
+          }
+        ],
+        "source_id": "independent-v2-source-P230"
+      },
+      "case_id": "P230",
+      "category": "same_target_cross_on_nonlaunch_statement",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-P230",
+          "canonical_name": "Almora Plane"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-P230",
+        "target_question": "When was Almora Plane launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "independent-v2-evidence-P231",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "independent-v2-source-P231",
+      "target_id": "entity-for-P231"
+    },
+    "case_id": "P231",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-P231",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "False claim: Jermoro Sink has an offline mode"
+          },
+          {
+            "kind": "fact",
+            "text": "Jermoro Sink reached GA on 24 May 2109."
+          }
+        ],
+        "source_id": "independent-v2-source-P231"
+      },
+      "case_id": "P231",
+      "category": "same_target_false_heading_nonlaunch_statement",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-P231",
+          "canonical_name": "Jermoro Sink"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-P231",
+        "target_question": "When was Jermoro Sink launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "independent-v2-evidence-N204",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "independent-v2-source-N204",
+      "target_id": "entity-for-N204"
+    },
+    "case_id": "N204",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N204",
+        "signals": [
+          {
+            "kind": "heading",
+            "text": "Retraction notice"
+          },
+          {
+            "kind": "structured_metadata",
+            "text": "Zelmero Jet reached GA on 16 May 2113."
+          }
+        ],
+        "source_id": "independent-v2-source-N204"
+      },
+      "case_id": "N204",
+      "category": "retraction_notice_governs_metadata",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-N204",
+          "canonical_name": "Zelmero Jet"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-N204",
+        "target_question": "When was Zelmero Jet launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "independent-v2-evidence-N207",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "independent-v2-source-N207",
+      "target_id": "entity-for-N207"
+    },
+    "case_id": "N207",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N207",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "What follows is fictional. Jevessa Rack was launched on 13 May 2116."
+          }
+        ],
+        "source_id": "independent-v2-source-N207"
+      },
+      "case_id": "N207",
+      "category": "fictional_leading_without_release_noun",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-N207",
+          "canonical_name": "Jevessa Rack"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-N207",
+        "target_question": "When was Jevessa Rack launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "independent-v2-evidence-N209",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "independent-v2-source-N209",
+      "target_id": "entity-for-N209"
+    },
+    "case_id": "N209",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N209",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Kelmessa Coin was launched on 11 May 2118. Correction: this launch report is false."
+          }
+        ],
+        "source_id": "independent-v2-source-N209"
+      },
+      "case_id": "N209",
+      "category": "false_correction_trailing",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-N209",
+          "canonical_name": "Kelmessa Coin"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-N209",
+        "target_question": "When was Kelmessa Coin launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "independent-v2-evidence-N210",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "independent-v2-source-N210",
+      "target_id": "entity-for-N210"
+    },
+    "case_id": "N210",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N210",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Tesrano Pool reached GA on 10 May 2119. The above GA claim was denied."
+          }
+        ],
+        "source_id": "independent-v2-source-N210"
+      },
+      "case_id": "N210",
+      "category": "denied_above_ga_reference",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-N210",
+          "canonical_name": "Tesrano Pool"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-N210",
+        "target_question": "When was Tesrano Pool launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  },
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "relevant",
+      "evidence_id": "independent-v2-evidence-N211",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "model_assisted",
+      "policy_id": "launch-independent-v2-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "source_id": "independent-v2-source-N211",
+      "target_id": "entity-for-N211"
+    },
+    "case_id": "N211",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "independent-v2-evidence-N211",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Duvessa Pipe entered general availability on 9 May 2120. This account is fictional."
+          }
+        ],
+        "source_id": "independent-v2-source-N211"
+      },
+      "case_id": "N211",
+      "category": "fictional_account_trailing_ga",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "not_requested_relation",
+        "v30_disposition": "not_relevant"
+      },
+      "label": "negative",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "canonical-for-N211",
+          "canonical_name": "Duvessa Pipe"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "launch-independent-v2-policy",
+        "relation": "change_or_launch",
+        "target_id": "entity-for-N211",
+        "target_question": "When was Duvessa Pipe launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": true,
+    "requested_relation": true
+  }
+]

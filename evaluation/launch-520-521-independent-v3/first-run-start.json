@@ -1,0 +1,10 @@
+{
+  "author_identity": "/root/launch_072_independent",
+  "candidate_commit": "fdd630e1085ab3994e3397de0646741313cfd15c",
+  "candidate_source_sha256": "63493029537f8e66762332e118090abbbce5fdf1481e22b7df57124ab12b2c32",
+  "checkout_head": "0bbd47f91a1e4daa07d4ac9b569375b8f21c9212",
+  "corpus_sha256": "07ebc8839e742c4715f9b58611ac688184cf93faa9a6005392c5d4a3d4b50659",
+  "external_hard_truth_evaluation": false,
+  "offline_synthetic": true,
+  "run_identity": "independent-v3-first-api-execution"
+}

@@ -2,9 +2,9 @@
 
 日本語 | [English](engine-0.7.2-roadmap.md)
 
-**計画段階・未実装・未リリース。** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7系の親#486](https://github.com/git-ksk/reasoning-harness/issues/486)。更新日: 2026-10-13。
+**修正実装・独立評価完了。未リリース。** [Milestone #11](https://github.com/git-ksk/reasoning-harness/milestone/11) · [0.7系の親#486](https://github.com/git-ksk/reasoning-harness/issues/486)。更新日: 2026-10-14。
 
-次のEngineソースパッチでは、**0.7.1で再現した関連性判定の回帰2件**を直します。公開済み`engine-v0.7.0`と`engine-v0.7.1`は変更しません。配布中のReason CLI 0.5.4はEngine 0.6.1です。#506の別CLI候補やEngine 0.7のCLI採用には、それぞれ別の検証が必要です。
+[PR #523](https://github.com/git-ksk/reasoning-harness/pull/523)で、**0.7.1で再現した関連性判定の回帰2件**を修正しました。公開済み`engine-v0.7.0`と`engine-v0.7.1`は変更しません。配布中のReason CLI 0.5.4はEngine 0.6.1です。#506の別CLI候補やEngine 0.7のCLI採用には、それぞれ別の検証が必要です。
 
 ## 必須の修正範囲
 
@@ -17,6 +17,14 @@
 
 [保存した再点検記録](../evaluation/engine-0.7.1-rereview-20261013/README.md)に、版・入力・public API再現コード・出力・hash・検証ログがあります。root作成の合成56件で、肯定7件は成功しました。negative49件は上位文脈28件・記号12件が誤Relevant、残り9件は保留です。同じ40入力は**公開済み0.7.0のv30**ではAmbiguousでした。これは開発・監査用の証拠で、独立評価や実利用の不具合率ではありません。
 
+## 修正と検証の到達点
+
+[修正報告](launch-context-markers-520-521.md)／[検証記録](../evaluation/launch-520-521-final-validation/README.md)。固定ソース候補`2f12d4c61546e60d31026d9b691c9eb369c37957`に対し、別作成者の新規v10初回評価は50/50（肯定25・否定25、誤Relevant・肯定取りこぼし・API error各0）です。v1–v8の初回失敗と元の監査結果は変更せず保持します。
+
+locked workspace 1490 PASS / 0 FAIL / 8 ignored、strict all-target Clippy、format、fixture20件、archive13件、出典照合22件が通過。旧v16/v29は公開済み0.7.1と597個の完全入力で出力全体がbyte一致します。正確なPR headのCIはPR上で確認し、必須チェック成功後にマージします。合成入力・ローカル／CIの範囲であり、実利用や外部事実のtruthを実証したものではありません。
+
+バージョン更新と新しい`engine-v0.7.2`の公開は[公開完了条件 #524](https://github.com/git-ksk/reasoning-harness/issues/524)に残します。今回の修正PRではpackage metadataを0.7.1のまま保持し、タグ・公開・CLI採用は行いません。Milestone #11は公開までOPENです。
+
 ## 実装・受け入れの順序
 
 1. 両Issueのv17/v30直接回帰を追加し、今回の失敗記録を保持する。変更は後継経路に限定し、歴史的v16/v29と凍結済みartifactを維持する。
@@ -27,7 +35,7 @@
 
 ## 0.7系でほかに残るもの
 
-上記2件が**現時点で再現できた修正バックログ**です。すべての不具合を発見した証明ではありません。再点検では、出典照合の権限／replayの追加22件、既存workspace 1,468件（既存ignore 6件）、strict Clippy、format、fixture20件、凍結archive13件の照合も成功しました。成功はその検査範囲に限り、新しいprovider・実ユーザーの有用性・独立した人間の承認検証は未実施です。
+上記2件が**今回のパッチで対応した再現済みの回帰**です。すべての不具合を発見した証明ではありません。再点検では、出典照合の権限／replayの追加22件、既存workspace 1,468件（既存ignore 6件）、strict Clippy、format、fixture20件、凍結archive13件の照合も成功しました。成功はその検査範囲に限り、新しいprovider・実ユーザーの有用性・独立した人間の承認検証は未実施です。
 
 既存の機能仮説3件は、このパッチの外で保留します。
 

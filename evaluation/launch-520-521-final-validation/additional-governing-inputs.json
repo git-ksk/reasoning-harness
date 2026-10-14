@@ -1,0 +1,44 @@
+[
+  {
+    "id": "heading:A collection of fictional records",
+    "signals": [
+      {
+        "kind": "heading",
+        "text": "A collection of fictional records"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "source_title:Historical examples are fabricated",
+    "signals": [
+      {
+        "kind": "source_title",
+        "text": "Historical examples are fabricated"
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  },
+  {
+    "id": "fact:All entries are hypothetical.",
+    "signals": [
+      {
+        "kind": "fact",
+        "text": "All entries are hypothetical."
+      },
+      {
+        "kind": "excerpt",
+        "text": "Silver Lens was launched in 2026."
+      }
+    ],
+    "expected_relevant": false
+  }
+]

@@ -1427,6 +1427,11 @@ fn target_owned_launch_frame_with_predicates(
                                 && (!require_direct_subject
                                     || *predicate != ["launched"]
                                     || intransitive_launch_tail_v17(&tail[distance + 1..]))
+                                // New transition frames belong only to the v17
+                                // direct-subject path; historical callers use false.
+                                && (!require_direct_subject
+                                    || !matches!(*predicate, ["entered", "general", "availability"] | ["reached", "ga"])
+                                    || intransitive_launch_tail_v17(&tail[distance + predicate.len()..]))
                                 && (!require_direct_subject
                                     || *predicate != ["is", "generally", "available"]
                                     || made_available_tail_v17(&tail[distance + predicate.len()..]))
@@ -1442,10 +1447,18 @@ fn target_owned_launch_frame_with_predicates(
 // organization tokens are not sentence terminators. A period at a target's edge,
 // a trailing abbreviation period, or an unrecognized multi-dot continuation stays
 // a boundary.
+struct LaunchFactualSegmentV17 {
+    text: String,
+    raw: String,
+    makers: Vec<String>,
+    denied: bool,
+    question: bool,
+}
+
 fn launch_factual_segments_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     value: &str,
-) -> Vec<(String, Vec<String>)> {
+) -> Vec<LaunchFactualSegmentV17> {
     let folded = value.to_ascii_lowercase();
     let mut names = policy
         .entity
@@ -1491,17 +1504,57 @@ fn launch_factual_segments_v17(
     let mut prepared = String::with_capacity(value.len());
     let mut raw_segment = String::with_capacity(value.len());
     let mut segments = Vec::new();
-    let mut finish_segment = |prepared: &mut String, raw: &mut String| {
+    // Preserve strike scope across sentence boundaries. A closing delimiter on
+    // the next statement does not strike that statement's following text.
+    let mut strikes = Vec::new();
+    let mut open = None;
+    for (index, _) in value.match_indices("~~") {
+        if let Some(start) = open.take() {
+            strikes.push(start..index + 2);
+        } else {
+            open = Some(index);
+        }
+    }
+    if let Some(start) = open {
+        strikes.push(start..value.len());
+    }
+    let mut finish_segment = |prepared: &mut String, raw: &mut String, start, end, question| {
         let makers = launch_maker_objects_v17(raw);
-        segments.extend(
-            normalized_factual_segments(prepared)
-                .into_iter()
-                .map(|segment| (segment, makers.clone())),
-        );
+        let denied = raw.chars().any(launch_denial_marker_v17)
+            || strikes[strikes.partition_point(|span| span.end <= start)..]
+                .iter()
+                .take_while(|span| span.start < end)
+                .any(|span| {
+                    let left = span.start.max(start);
+                    let right = span.end.min(end);
+                    left < right && value[left..right].chars().any(char::is_alphanumeric)
+                });
+        if !raw.trim().is_empty() {
+            // Keep even a marker-only statement so its governing scope is not
+            // lost. The historical normalizer still controls affirmative text.
+            segments.push(LaunchFactualSegmentV17 {
+                text: normalized_factual_segments(prepared).join(" "),
+                raw: raw.clone(),
+                makers,
+                denied,
+                question,
+            });
+        }
         prepared.clear();
         raw.clear();
     };
+    let mut raw_start = 0;
     for (index, character) in value.char_indices() {
+        // An overlay on a preceding sentence terminator belongs to that glyph,
+        // not to the first word of the next independent statement.
+        if character == '\u{0336}'
+            && value[..index]
+                .chars()
+                .next_back()
+                .is_some_and(|previous| ['.', ';', '!', '?', '。', '！', '？'].contains(&previous))
+        {
+            continue;
+        }
         let keep_period = if character == '.' {
             let inside_name = name_spans
                 .iter()
@@ -1537,20 +1590,665 @@ fn launch_factual_segments_v17(
         };
         if !keep_period && ['.', ';', '\n', '\r', '!', '?', '。', '！', '？'].contains(&character)
         {
-            finish_segment(&mut prepared, &mut raw_segment);
+            finish_segment(
+                &mut prepared,
+                &mut raw_segment,
+                raw_start,
+                index,
+                ['?', '？'].contains(&character),
+            );
+            raw_start = index + character.len_utf8();
         } else {
             prepared.push(if keep_period { ' ' } else { character });
             raw_segment.push(character);
         }
     }
-    finish_segment(&mut prepared, &mut raw_segment);
+    finish_segment(
+        &mut prepared,
+        &mut raw_segment,
+        raw_start,
+        value.len(),
+        false,
+    );
     segments
+}
+
+fn launch_denial_marker_v17(character: char) -> bool {
+    matches!(character, '≠' | '¬' | '❌' | '✗' | '✘' | '\u{0336}')
+}
+
+// A bounded syntactic other-owner check, not a source trust decision.
+fn launch_named_subject_v17(prefix: &str) -> bool {
+    let words = prefix.split_whitespace().collect::<Vec<_>>();
+    let words = words.strip_prefix(&["The"]).unwrap_or(&words);
+    !words.is_empty()
+        && words.len() <= 6
+        && words.iter().all(|word| {
+            let word = word.trim_matches(|c: char| !c.is_alphanumeric());
+            ![
+                "this",
+                "that",
+                "it",
+                "these",
+                "those",
+                "no",
+                "not",
+                "never",
+                "nobody",
+                "none",
+                "nothing",
+                "neither",
+                "nor",
+                "i",
+                "you",
+                "we",
+                "they",
+                "he",
+                "she",
+                "who",
+                "which",
+                "what",
+                "when",
+                "where",
+                "why",
+                "how",
+                "whose",
+                "whom",
+                "did",
+                "does",
+                "do",
+                "will",
+                "would",
+                "may",
+                "might",
+                "could",
+                "can",
+                "according",
+                "reportedly",
+                "allegedly",
+                "hypothetically",
+                "if",
+                "unless",
+                "in",
+                "on",
+                "at",
+            ]
+            .contains(&word.to_ascii_lowercase().as_str())
+                && word.chars().next().is_some_and(char::is_uppercase)
+        })
+}
+
+fn launch_other_clause_v17(statement: &str) -> &str {
+    let statement = statement
+        .rsplit_once(':')
+        .map_or(statement, |(prefix, clause)| {
+            let prefix = normalized(prefix);
+            let words = prefix.split_whitespace().collect::<Vec<_>>();
+            let global = matches!(
+                words.first(),
+                Some(&"this" | &"that" | &"these" | &"those" | &"everything" | &"all")
+            ) || words
+                .iter()
+                .any(|word| ["everything", "entire", "whole"].contains(word))
+                || words.windows(2).any(|pair| {
+                    matches!(
+                        pair,
+                        [
+                            "this" | "that" | "all",
+                            "report" | "passage" | "text" | "content" | "entries" | "statements"
+                        ]
+                    )
+                });
+            if global { statement } else { clause.trim() }
+        });
+    statement
+        .split_once(',')
+        .map_or(statement, |(prefix, rest)| {
+            if [
+                "in a hypothetical scenario",
+                "in this hypothetical scenario",
+                "in a fictional scenario",
+                "in this fictional scenario",
+            ]
+            .contains(&normalized(prefix).as_str())
+            {
+                rest.trim()
+            } else {
+                statement
+            }
+        })
+}
+
+fn launch_explicit_other_context_v17(statement: &str) -> bool {
+    let statement = launch_other_clause_v17(statement);
+    let folded = statement.to_ascii_lowercase();
+    let possessive_context = ["'s ", "’s "].iter().any(|possessive| {
+        folded.find(possessive).is_some_and(|index| {
+            launch_named_subject_v17(&statement[..index])
+                && [
+                    "launch claim",
+                    "release claim",
+                    "launch announcement",
+                    "release announcement",
+                ]
+                .iter()
+                .any(|scope| {
+                    folded[index + possessive.len()..]
+                        .strip_prefix(scope)
+                        .is_some_and(|tail| tail.is_empty() || tail.starts_with(' '))
+                })
+        })
+    });
+    possessive_context
+        || [" about ", " for ", " of "].iter().any(|link| {
+            folded.find(link).is_some_and(|index| {
+                let start = index + link.len();
+                let end = [" is ", " was ", " has ", " remains "]
+                    .iter()
+                    .filter_map(|predicate| folded[start..].find(predicate))
+                    .min()
+                    .map_or(statement.len(), |index| start + index);
+                launch_named_subject_v17(&statement[start..end])
+            })
+        })
+}
+
+fn launch_explicit_other_subject_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+) -> bool {
+    let text = normalized(statement);
+    if target_identity_phrases(policy)
+        .iter()
+        .any(|target| normalized_phrase_matches(&text, target))
+    {
+        return false;
+    }
+    // An incidental predicate in "According to reports, it was launched" does
+    // not establish another owner. Require a bounded, visibly named subject.
+    let statement = launch_other_clause_v17(statement);
+    let folded = statement.to_ascii_lowercase();
+    [
+        " was launched",
+        " was not launched",
+        " has not been launched",
+        " has been launched",
+        " was introduced",
+        " has been introduced",
+        " went live",
+        " is now generally available",
+        " became generally available",
+        " is generally available",
+        " entered general availability",
+        " reached ga",
+        " launched",
+        " introduced",
+        " rolled out",
+        " was rolled out",
+        " has rolled out",
+        " would launch",
+        " could launch",
+        " might launch",
+        " may launch",
+    ]
+    .iter()
+    .any(|predicate| {
+        folded.find(predicate).is_some_and(|index| {
+            folded[index + predicate.len()..]
+                .chars()
+                .next()
+                .is_none_or(|c| !c.is_alphanumeric())
+                && launch_named_subject_v17(&statement[..index])
+        })
+    })
+}
+
+fn launch_explicit_nonlaunch_statement_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    text: &str,
+) -> bool {
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    if words.iter().any(|word| {
+        [
+            "launch",
+            "launched",
+            "released",
+            "introduced",
+            "availability",
+            "available",
+            "ga",
+        ]
+        .contains(word)
+    }) {
+        return false;
+    }
+    let feature_tail = |tail: &[&str], prefix: &[&str]| {
+        let governing_possession = matches!(tail, ["has", "a" | "an", ..])
+            && tail.iter().any(|word| {
+                [
+                    "claim",
+                    "claims",
+                    "statement",
+                    "statements",
+                    "assertion",
+                    "assertions",
+                    "announcement",
+                    "report",
+                    "record",
+                    "records",
+                    "account",
+                    "story",
+                    "scenario",
+                    "example",
+                    "passage",
+                    "description",
+                    "history",
+                    "chronology",
+                    "timeline",
+                ]
+                .contains(word)
+            });
+        !governing_possession
+            && !prefix.iter().any(|word| {
+                [
+                    "fiction",
+                    "fictional",
+                    "fictitious",
+                    "hypothetical",
+                    "simulation",
+                    "simulated",
+                    "counterfactual",
+                    "imaginary",
+                    "pretend",
+                    "mock",
+                    "rehearsal",
+                ]
+                .contains(word)
+            })
+            && matches!(
+                tail,
+                [
+                    "supports"
+                        | "support"
+                        | "includes"
+                        | "include"
+                        | "exports"
+                        | "export"
+                        | "costs"
+                        | "cost"
+                        | "offers"
+                        | "offer"
+                        | "stores"
+                        | "store"
+                        | "provides"
+                        | "provide"
+                        | "lasts"
+                        | "last"
+                        | "uses"
+                        | "use"
+                        | "have",
+                    ..
+                ] | ["has", "a" | "an", ..]
+            )
+    };
+    // A clear feature predicate keeps fictional characters/false alarms in its
+    // object from becoming a disclaimer about a separate launch statement.
+    if let [
+        "this" | "that",
+        "model" | "product" | "service" | "system",
+        tail @ ..,
+    ] = words.as_slice()
+        && feature_tail(tail, &words[..2])
+    {
+        return true;
+    }
+    target_identity_phrases(policy).iter().any(|target| {
+        let name = target.split_whitespace().collect::<Vec<_>>();
+        words
+            .windows(name.len())
+            .enumerate()
+            .any(|(index, window)| {
+                window == name && feature_tail(&words[index + name.len()..], &words[..index])
+            })
+    })
+}
+
+fn launch_adverse_context_word_v17(word: &str) -> bool {
+    [
+        "false",
+        "falsehood",
+        "untrue",
+        "incorrect",
+        "fabricated",
+        "debunked",
+        "refuted",
+        "rejected",
+        "retracted",
+        "retraction",
+        "withdrawn",
+        "withdrew",
+        "denied",
+        "denial",
+        "fiction",
+        "fictional",
+        "fictitious",
+        "hypothetical",
+        "counterfactual",
+        "simulation",
+        "simulated",
+        "imaginary",
+        "pretend",
+        "mock",
+        "rehearsal",
+        "unverified",
+        "unconfirmed",
+        "disavowed",
+        "recanted",
+        "inaccurate",
+        "rescinded",
+        "cancelled",
+        "canceled",
+    ]
+    .contains(&word)
+}
+
+fn launch_governing_context_blocks_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+) -> bool {
+    let targets = target_identity_phrases(policy);
+    for signal in candidate.signals.iter().filter(|signal| {
+        matches!(
+            signal.kind,
+            EvidenceRelevanceSignalKind::SourceTitle
+                | EvidenceRelevanceSignalKind::Heading
+                | EvidenceRelevanceSignalKind::Excerpt
+                | EvidenceRelevanceSignalKind::Fact
+                | EvidenceRelevanceSignalKind::StructuredMetadata
+        )
+    }) {
+        let segments = launch_factual_segments_v17(policy, &signal.text);
+        for (index, segment) in segments.iter().enumerate() {
+            let text = normalized(&segment.raw);
+            let words = text.split_whitespace().collect::<Vec<_>>();
+            if launch_explicit_nonlaunch_statement_v17(policy, &text) {
+                continue;
+            }
+            let owns_target = targets
+                .iter()
+                .any(|target| normalized_phrase_matches(&text, target));
+            if !owns_target && launch_explicit_other_subject_v17(policy, &segment.raw) {
+                continue;
+            }
+            let scope = words.iter().any(|word| {
+                [
+                    "statement",
+                    "statements",
+                    "entries",
+                    "records",
+                    "claim",
+                    "claims",
+                    "assertion",
+                    "announcement",
+                    "example",
+                    "scenario",
+                    "material",
+                    "story",
+                    "report",
+                    "account",
+                    "notice",
+                    "passage",
+                    "paragraph",
+                    "text",
+                    "description",
+                    "content",
+                    "fact",
+                    "facts",
+                    "record",
+                ]
+                .contains(word)
+            });
+            let launch = words
+                .iter()
+                .any(|word| ["launch", "launched", "introduced", "available"].contains(word));
+            let adverse = words.iter().enumerate().any(|(index, word)| {
+                if *word == "false"
+                    && words
+                        .get(index + 1)
+                        .is_some_and(|next| ["alarm", "alarms"].contains(next))
+                {
+                    return false;
+                }
+                launch_adverse_context_word_v17(word)
+            });
+            if owns_target
+                && (segment.denied
+                    || ((scope || launch) && adverse)
+                    || (launch && words.iter().any(|word| ["not", "never"].contains(word))))
+            {
+                return true;
+            }
+            let context_head = words.iter().copied().find(|word| {
+                ![
+                    "the",
+                    "a",
+                    "an",
+                    "this",
+                    "that",
+                    "these",
+                    "those",
+                    "following",
+                    "preceding",
+                    "previous",
+                    "next",
+                    "above",
+                    "below",
+                    "launch",
+                    "release",
+                    "fictional",
+                    "hypothetical",
+                    "simulated",
+                ]
+                .contains(word)
+            });
+            let context_subject = context_head.is_some_and(|word| {
+                [
+                    "statement",
+                    "statements",
+                    "entries",
+                    "records",
+                    "claim",
+                    "assertion",
+                    "announcement",
+                    "example",
+                    "scenario",
+                    "simulation",
+                    "material",
+                    "story",
+                    "report",
+                    "account",
+                    "notice",
+                    "passage",
+                    "paragraph",
+                    "text",
+                    "description",
+                    "content",
+                    "fact",
+                    "facts",
+                    "record",
+                ]
+                .contains(&word)
+            });
+            let reporting_reference = scope
+                && words.windows(2).any(|pair| {
+                    matches!(
+                        pair,
+                        [
+                            "retracted"
+                                | "withdrew"
+                                | "withdrawn"
+                                | "denied"
+                                | "refuted"
+                                | "rescinded",
+                            "this" | "that" | "the" | "previous" | "preceding"
+                        ]
+                    )
+                });
+            let object_retraction = words.windows(2).any(|pair| {
+                matches!(
+                    pair,
+                    [
+                        "retracted" | "withdrew" | "denied" | "disavowed" | "rescinded",
+                        "it" | "them"
+                    ]
+                )
+            });
+            let reference = matches!(words.first(), Some(&"this" | &"that" | &"these" | &"those"))
+                || matches!(
+                    words.as_slice(),
+                    [
+                        "both" | "all" | "everything",
+                        "is" | "are" | "was" | "were" | "has" | "have",
+                        ..
+                    ]
+                )
+                || words
+                    .windows(2)
+                    .any(|pair| matches!(pair, ["it", "is" | "was" | "has"]))
+                || object_retraction
+                || matches!(
+                    words.first(),
+                    Some(&"correction" | &"erratum" | &"errata" | &"note" | &"update")
+                )
+                || (matches!(words.first(), Some(&"what" | &"everything" | &"all"))
+                    && words
+                        .iter()
+                        .any(|word| ["follows", "next", "above", "below"].contains(word)))
+                || (scope
+                    && words.iter().any(|word| {
+                        ["this", "that", "above", "below", "preceding", "following"].contains(word)
+                    }))
+                || matches!(words.as_slice(), ["what", "follows", ..])
+                || matches!(
+                    words.as_slice(),
+                    ["this" | "that" | "it", "is" | "was" | "has", ..]
+                )
+                || context_subject
+                || reporting_reference
+                || matches!(
+                    words.as_slice(),
+                    [
+                        "the",
+                        "following" | "preceding" | "previous" | "next" | "above" | "below",
+                        ..
+                    ]
+                );
+            if !owns_target && launch_explicit_other_context_v17(&segment.raw) {
+                continue;
+            }
+            if segment.denied
+                && matches!(
+                    signal.kind,
+                    EvidenceRelevanceSignalKind::Heading | EvidenceRelevanceSignalKind::SourceTitle
+                )
+            {
+                return true;
+            }
+            let marker_only = words.is_empty() && segment.denied;
+            let denied_context = adverse
+                || (segment.denied && (context_subject || reference))
+                || words
+                    .windows(2)
+                    .any(|pair| matches!(pair, ["not", "true" | "correct"]));
+            // A known adverse cue with unresolved scope cannot disappear just
+            // because its reference wording is outside our local grammar.
+            // Clear foreign/feature ownership is excluded above or bound below.
+            if !(denied_context || marker_only) {
+                continue;
+            }
+            // Bind explicit next/preceding references locally. A named other
+            // product cannot retract the target's launch. Missing or ambiguous
+            // antecedents still withhold; no model advice supplies ownership.
+            let next = words
+                .iter()
+                .any(|word| ["following", "next", "below"].contains(word));
+            let neighbor = if next || (marker_only && index == 0) {
+                segments.get(index + 1)
+            } else {
+                index.checked_sub(1).and_then(|i| segments.get(i))
+            };
+            let local_statement_reference = matches!(
+                words.as_slice(),
+                ["this" | "that", "statement" | "claim" | "assertion", ..]
+                    | [
+                        "this" | "that",
+                        "feature" | "property",
+                        "statement" | "claim" | "assertion",
+                        ..
+                    ]
+                    | [
+                        "the",
+                        "preceding" | "previous" | "next" | "following",
+                        "statement" | "claim" | "assertion",
+                        ..
+                    ]
+            );
+            let collective_reference = matches!(
+                words.first(),
+                Some(&"these" | &"those" | &"everything" | &"both" | &"all")
+            ) || words.windows(2).any(|pair| pair == ["and", "all"]);
+            let broad_reference = collective_reference
+                || words.iter().any(|word| {
+                    [
+                        "statements",
+                        "claims",
+                        "assertions",
+                        "announcements",
+                        "facts",
+                        "entries",
+                        "records",
+                        "report",
+                        "passage",
+                        "paragraph",
+                        "text",
+                        "content",
+                        "story",
+                        "account",
+                    ]
+                    .contains(word)
+                });
+            // An explicit singular reference can deny the adjacent feature
+            // statement without retracting a separate launch. Broader report/
+            // passage disclaimers and missing antecedents still withhold.
+            if !owns_target
+                && local_statement_reference
+                && !broad_reference
+                && neighbor.is_some_and(|neighbor| {
+                    launch_explicit_nonlaunch_statement_v17(policy, &normalized(&neighbor.raw))
+                })
+            {
+                continue;
+            }
+            if ((reference && !broad_reference) || marker_only)
+                && neighbor.is_some_and(|neighbor| {
+                    launch_explicit_other_subject_v17(policy, &neighbor.raw)
+                })
+            {
+                continue;
+            }
+            return true;
+        }
+    }
+    false
 }
 
 fn target_owned_launch_fact_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
 ) -> bool {
+    if launch_governing_context_blocks_v17(policy, candidate) {
+        return false;
+    }
     candidate
         .signals
         .iter()
@@ -1563,13 +2261,28 @@ fn target_owned_launch_fact_v17(
             )
         })
         .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
-        .any(|(segment, makers)| {
+        .filter(|segment| !segment.denied)
+        .any(|segment| {
+            let raw = segment.raw;
+            let makers = segment.makers;
+            let segment = segment.text;
             let tokens = segment.split_whitespace().collect::<Vec<_>>();
             if tokens.iter().enumerate().any(|(index, word)| {
                 let month_may = *word == "may"
                     && (index == 0
                         || ["on", "in", "since", "during", "from"].contains(&tokens[index - 1])
-                        || (index >= 2 && tokens[index - 2..index] == ["as", "of"]))
+                        || (index >= 2 && tokens[index - 2..index] == ["as", "of"])
+                        || (index >= 3
+                            && tokens[index - 3..index - 1] == ["as", "of"]
+                            && tokens[index - 1]
+                                .parse::<u32>()
+                                .is_ok_and(|day| (1..=31).contains(&day)))
+                        || (index >= 2
+                            && ["on", "in", "since", "during", "from"]
+                                .contains(&tokens[index - 2])
+                            && tokens[index - 1]
+                                .parse::<u32>()
+                                .is_ok_and(|day| (1..=31).contains(&day))))
                     && tokens.get(index + 1).is_some_and(|next| {
                         next.parse::<u32>()
                             .is_ok_and(|number| (1..=9999).contains(&number))
@@ -1647,6 +2360,11 @@ fn target_owned_launch_fact_v17(
             }) {
                 return false;
             }
+            let segment = segment
+                .strip_suffix(" according to the release record")
+                .or_else(|| segment.strip_suffix(" according to release record"))
+                .unwrap_or(&segment)
+                .to_owned();
             // A completed preview is temporal context for a present launch,
             // unlike a product that is still only available in preview.
             let segment = [
@@ -1671,7 +2389,8 @@ fn target_owned_launch_fact_v17(
             // Every current frame needs an owned subject or direct object.
             // Reusing the historical permissive path would let "documentation
             // for TARGET" borrow authority even with an adjacent predicate.
-            target_owned_made_generally_available_v17(policy, &segment, &makers)
+            target_owned_active_launch_object_v17(policy, &raw, &segment)
+                || target_owned_made_generally_available_v17(policy, &segment, &makers)
                 || target_owned_launch_frame_with_predicates(
                     policy,
                     &segment,
@@ -1679,6 +2398,8 @@ fn target_owned_launch_fact_v17(
                         &["launched"],
                         &["was", "launched"],
                         &["has", "been", "launched"],
+                        &["entered", "general", "availability"],
+                        &["reached", "ga"],
                         &["is", "generally", "available"],
                         &["is", "now", "generally", "available"],
                         &["became", "generally", "available"],
@@ -1686,6 +2407,7 @@ fn target_owned_launch_fact_v17(
                         &["was", "introduced"],
                         &["has", "been", "introduced"],
                         &["rolled", "out"],
+                        &["was", "rolled", "out"],
                     ],
                     0,
                     true,
@@ -1713,8 +2435,75 @@ fn launch_subject_prefix_v17(prefix: &[&str]) -> bool {
     if let ["release", "confirmed", rest @ ..] = prefix {
         return launch_product_prefix_v17(rest);
     }
+    // A bounded documentary adjunct can introduce a direct subject, but an
+    // arbitrary reporting/conditional clause cannot supply launch authority.
+    if let ["in", "the", rest @ ..] = prefix {
+        let rest = match rest {
+            ["published" | "official" | "dated" | "public", rest @ ..] => rest,
+            rest => rest,
+        };
+        let end = match rest {
+            ["chronology" | "timeline" | "record", ..] => 1,
+            ["release", "record" | "notes", ..] => 2,
+            _ => 0,
+        };
+        if end > 0 && launch_product_prefix_v17(&rest[end..]) {
+            return true;
+        }
+    }
     let temporal_end = launch_temporal_prefix_len_v17(prefix);
     temporal_end > 0 && launch_product_prefix_v17(&prefix[temporal_end..])
+}
+
+// A named actor can launch the exact target as its direct object. Check the
+// raw actor before normalization, and the complete object/tail after it; an
+// embedded report, possessive product, documentation object or delayed object
+// cannot borrow this frame. This helper belongs only to v17/v30.
+fn target_owned_active_launch_object_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    raw: &str,
+    text: &str,
+) -> bool {
+    let folded = raw.to_ascii_lowercase();
+    [" launched ", " introduced "].iter().any(|verb| {
+        folded.find(verb).is_some_and(|index| {
+            let actor = raw[..index].trim();
+            let words = actor.split_whitespace().collect::<Vec<_>>();
+            // Reuse the bounded subject adjunct grammar. Keep the original
+            // actor prefix in the complete text match; remove only a recognized
+            // temporal/documentary adjunct for the raw named-actor check.
+            let leading = (1..words.len().min(9))
+                .rev()
+                .find(|end| {
+                    let prefix = normalized(&words[..*end].join(" "));
+                    let prefix = prefix.split_whitespace().collect::<Vec<_>>();
+                    !launch_product_prefix_v17(&prefix) && launch_subject_prefix_v17(&prefix)
+                })
+                .unwrap_or(0);
+            let named_actor = words[leading..].join(" ");
+            if !launch_named_subject_v17(&named_actor)
+                || named_actor
+                    .chars()
+                    .any(|c| !c.is_alphanumeric() && ![' ', '-', '.'].contains(&c))
+            {
+                return false;
+            }
+            let head = format!("{} {} ", normalized(actor), verb.trim());
+            let Some(object) = text.strip_prefix(&head) else {
+                return false;
+            };
+            let words = object.split_whitespace().collect::<Vec<_>>();
+            target_identity_phrases(policy).iter().any(|target| {
+                let name = target.split_whitespace().collect::<Vec<_>>();
+                !name.is_empty()
+                    && words.windows(name.len()).enumerate().any(|(i, window)| {
+                        window == name
+                            && launch_product_prefix_v17(&words[..i])
+                            && intransitive_launch_tail_v17(&words[i + name.len()..])
+                    })
+            })
+        })
+    })
 }
 
 fn launch_temporal_prefix_len_v17(tokens: &[&str]) -> usize {
@@ -2097,11 +2886,13 @@ fn launch_has_target_question_in_factual_signal(
                     | EvidenceRelevanceSignalKind::StructuredMetadata
             )
         })
-        .any(|signal| {
-            signal.text.contains(['?', '？'])
+        .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
+        .any(|segment| {
+            segment.question
+                && !launch_explicit_nonlaunch_statement_v17(policy, &normalized(&segment.raw))
                 && targets
                     .iter()
-                    .any(|target| normalized(&signal.text).contains(target))
+                    .any(|target| normalized_phrase_matches(&segment.raw, target))
         })
 }
 

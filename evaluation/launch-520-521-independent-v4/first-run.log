@@ -1,0 +1,131 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.24
+   Compiling syn v3.0.4
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling serde_json v1.0.151
+   Compiling ref-cast v1.0.27
+   Compiling serde v1.0.229
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive v1.0.229
+   Compiling serde_derive_internals v0.30.0
+   Compiling thiserror v2.0.21
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling schemars_derive v1.2.2
+   Compiling thiserror-impl v2.0.21
+   Compiling dyn-clone v1.0.20
+   Compiling schemars v1.2.2
+   Compiling tokio-macros v2.7.2
+   Compiling pin-project-lite v0.2.17
+   Compiling tokio v1.53.2
+   Compiling reasoning-harness-core v0.7.1 (/Users/sawadakousuke/x-code/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 18.85s
+     Running tests/launch_context_markers_independent_v4.rs (target/engine-072-independent-v4/debug/deps/launch_context_markers_independent_v4-fab2fec67a61a26a)
+
+running 1 test
+CASE P401: PASS relation="requested_relation" disposition="relevant"
+CASE P402: PASS relation="requested_relation" disposition="relevant"
+CASE P403: PASS relation="requested_relation" disposition="relevant"
+CASE P404: FAIL relation="unresolved" disposition="ambiguous"
+CASE P405: FAIL relation="unresolved" disposition="ambiguous"
+CASE P406: PASS relation="requested_relation" disposition="relevant"
+CASE P407: PASS relation="requested_relation" disposition="relevant"
+CASE P408: PASS relation="requested_relation" disposition="relevant"
+CASE P409: PASS relation="requested_relation" disposition="relevant"
+CASE P410: PASS relation="requested_relation" disposition="relevant"
+CASE P411: PASS relation="requested_relation" disposition="relevant"
+CASE P412: PASS relation="requested_relation" disposition="relevant"
+CASE P413: PASS relation="requested_relation" disposition="relevant"
+CASE P414: PASS relation="requested_relation" disposition="relevant"
+CASE P415: FAIL relation="unresolved" disposition="ambiguous"
+CASE P416: FAIL relation="unresolved" disposition="ambiguous"
+CASE P417: FAIL relation="unresolved" disposition="ambiguous"
+CASE P418: PASS relation="requested_relation" disposition="relevant"
+CASE P419: PASS relation="requested_relation" disposition="relevant"
+CASE P420: PASS relation="requested_relation" disposition="relevant"
+CASE P421: PASS relation="requested_relation" disposition="relevant"
+CASE P422: PASS relation="requested_relation" disposition="relevant"
+CASE P423: PASS relation="requested_relation" disposition="relevant"
+CASE P424: PASS relation="requested_relation" disposition="relevant"
+CASE P425: PASS relation="requested_relation" disposition="relevant"
+CASE P426: PASS relation="requested_relation" disposition="relevant"
+CASE N401: PASS relation="unresolved" disposition="ambiguous"
+CASE N402: PASS relation="unresolved" disposition="ambiguous"
+CASE N403: PASS relation="unresolved" disposition="ambiguous"
+CASE N404: PASS relation="unresolved" disposition="ambiguous"
+CASE N405: PASS relation="unresolved" disposition="ambiguous"
+CASE N406: PASS relation="unresolved" disposition="ambiguous"
+CASE N407: PASS relation="unresolved" disposition="ambiguous"
+CASE N408: FAIL relation="requested_relation" disposition="relevant"
+CASE N409: PASS relation="unresolved" disposition="ambiguous"
+CASE N410: PASS relation="unresolved" disposition="ambiguous"
+CASE N411: PASS relation="unresolved" disposition="ambiguous"
+CASE N412: PASS relation="unresolved" disposition="ambiguous"
+CASE N413: PASS relation="unresolved" disposition="ambiguous"
+CASE N414: PASS relation="unresolved" disposition="ambiguous"
+CASE N415: PASS relation="unresolved" disposition="ambiguous"
+CASE N416: PASS relation="unresolved" disposition="ambiguous"
+CASE N417: PASS relation="unresolved" disposition="ambiguous"
+CASE N418: PASS relation="unresolved" disposition="ambiguous"
+CASE N419: PASS relation="unresolved" disposition="ambiguous"
+CASE N420: PASS relation="unresolved" disposition="ambiguous"
+CASE N421: PASS relation="unresolved" disposition="ambiguous"
+CASE N422: PASS relation="unresolved" disposition="ambiguous"
+CASE N423: PASS relation="unresolved" disposition="ambiguous"
+CASE N424: PASS relation="unresolved" disposition="ambiguous"
+CASE N425: PASS relation="unresolved" disposition="ambiguous"
+CASE N426: PASS relation="unresolved" disposition="ambiguous"
+{
+  "acceptance_scope": "offline synthetic source-local public-API evaluation; no provider/user/device/production/external-truth acceptance",
+  "api_error_ids": [],
+  "candidate_commit": "48ac1ba8aba655aa73d192962d7996bcc997c5e0",
+  "candidate_source_sha256_after": "2b32a1e4a721cb169b15420e113ad91808476380ff912c12b46c029f8f81684d",
+  "candidate_source_sha256_before": "2b32a1e4a721cb169b15420e113ad91808476380ff912c12b46c029f8f81684d",
+  "corpus_sha256": "9fc73d42ad202af5416f365e5d938b6a690bb2181081b68a703ec2c9d28cb917",
+  "failed_case_ids": [
+    "P404",
+    "P405",
+    "P415",
+    "P416",
+    "P417",
+    "N408"
+  ],
+  "false_relevant_ids": [
+    "N408"
+  ],
+  "negative_cases": 26,
+  "negative_requested_relation_ids": [
+    "N408"
+  ],
+  "overall_passed": false,
+  "passed_cases": 46,
+  "positive_cases": 26,
+  "positive_miss_ids": [
+    "P404",
+    "P405",
+    "P415",
+    "P416",
+    "P417"
+  ],
+  "positive_recall_gate_passed": false,
+  "run_identity": "independent-v4-first-api-execution",
+  "safety_gate_passed": false,
+  "source_unchanged": true,
+  "total_cases": 52
+}
+
+thread 'independent_launch_context_markers_v4' panicked at crates/reasoning-harness-core/tests/launch_context_markers_independent_v4.rs:222:5:
+independent v4 failures: P404, P405, P415, P416, P417, N408
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test independent_launch_context_markers_v4 ... FAILED
+
+failures:
+
+failures:
+    independent_launch_context_markers_v4
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.66s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_independent_v4`

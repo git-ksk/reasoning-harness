@@ -1,0 +1,76 @@
+[
+  {
+    "assessment_error": null,
+    "assessment_v30": {
+      "contract_id": "reason-evidence-relevance-binding-proposal-v5",
+      "disposition": "ambiguous",
+      "evidence_id": "v6-evidence-P618",
+      "materialization_policy_id": "target-evidence-relevance-binding-materialization-v30",
+      "path": "conservative_fallback",
+      "policy_id": "independent-v6-statement-launch-policy",
+      "reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "source_id": "v6-source-P618",
+      "target_id": "v6-target-P618"
+    },
+    "case_id": "P618",
+    "effective_error": null,
+    "effective_v17": {
+      "identity_scope": "exact_target",
+      "relation_scope": "unresolved",
+      "scope_risk": "none"
+    },
+    "input": {
+      "candidate": {
+        "evidence_id": "v6-evidence-P618",
+        "signals": [
+          {
+            "kind": "excerpt",
+            "text": "Nerumi Finch has a red finish. This property claim is false. Nerumi Finch went live on 19 May 2287."
+          }
+        ],
+        "source_id": "v6-source-P618"
+      },
+      "case_id": "P618",
+      "category": "adjacent_property_claim_false",
+      "expected": {
+        "claim_scope": "source_local_only",
+        "v17_relation_scope": "requested_relation",
+        "v30_disposition": "relevant"
+      },
+      "label": "positive",
+      "policy": {
+        "assessment_budget": {
+          "max_elapsed_ms": 90000,
+          "max_model_attempts": 2,
+          "max_tokens": 192
+        },
+        "entity": {
+          "aliases": [],
+          "canonical_id": "v6-canonical-P618",
+          "canonical_name": "Nerumi Finch"
+        },
+        "identity_requirement": "require_harness_anchor",
+        "policy_id": "independent-v6-statement-launch-policy",
+        "relation": "change_or_launch",
+        "target_id": "v6-target-P618",
+        "target_question": "When was Nerumi Finch launched?"
+      },
+      "proposal": {
+        "relation_binding": "exact",
+        "target_binding": "exact"
+      },
+      "raw": {
+        "identity_scope": "exact_target",
+        "relation_scope": "requested_relation",
+        "scope_risk": "none"
+      }
+    },
+    "passed": false,
+    "relevant": false,
+    "requested_relation": false
+  }
+]

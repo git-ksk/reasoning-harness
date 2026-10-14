@@ -1,0 +1,12 @@
+{
+  "author_identity": "/root/launch_072_independent",
+  "freeze_commit": "fd313614009061eb46ab24e817c00f6aa8cf8070",
+  "candidate_commit": "bcf65d9b2f0edb88c05780e4322a633c720d8a8a",
+  "candidate_source_path": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+  "candidate_source_sha256": "69f3e3116ae0a887cf5b83401d2355485edc5dd877a983c94587c3f1cbb00322",
+  "corpus_sha256": "0283ed080ff0ca4cda1562359175bca7fd0859ab4980b776f1a9ed821d9c3e0b",
+  "pre_execution_v8_compilations": 0,
+  "pre_execution_v8_api_calls": 0,
+  "command": "LAUNCH_INDEPENDENT_V8_RECORD_FIRST=1 CARGO_INCREMENTAL=0 CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0 CARGO_TARGET_DIR=target/engine-072-independent-v8 cargo test -p reasoning-harness-core --test launch_context_markers_independent_v8 --jobs 2 -- --nocapture",
+  "resume_note": "Prior authoring interruption happened before runner/protocol/freeze execution; saved corpus preserved; no earlier v8 API run."
+}
