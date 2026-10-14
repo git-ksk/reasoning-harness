@@ -6,7 +6,7 @@
 
 - package: `reasoning-harness-core 0.7.2`、`publish = false`。
 - 予定tag: `engine-v0.7.2`。[公開方針](release-policy.ja.md)に沿った**Engine単独の通常ソースパッチ**（`prerelease=false`・`latest=false`）。[#524](https://github.com/git-ksk/reasoning-harness/issues/524)で公開を追跡し、準備自体を公開済みとは扱いません。
-- 実装は受け入れ済み[PR #523](https://github.com/git-ksk/reasoning-harness/pull/523)のマージ`0e5b3389af61d55422205b83830c634f49d024bd`と同一。リリース準備ではpackage版・lock記録・文書だけを更新します。
+- 実装は受け入れ済み[PR #523](https://github.com/git-ksk/reasoning-harness/pull/523)のマージ`0e5b3389af61d55422205b83830c634f49d024bd`と同一。リリース準備ではpackage版・lock記録・CI／版識別の固定期待値・文書だけを更新します。
 - `evidence_relevance.rs` SHA-256: `5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5`。
 - 公開CLIは**0.5.4 / Engine 0.6.1**を継続。ソースcheckoutはCLI 0.5.4 / Engine 0.7.2ですが、新しいCLI binaryやcrates.io packageは配布しません。CLIへの採用や#506のCLI 0.5.5 / Engine 0.6.1候補は別工程です。
 

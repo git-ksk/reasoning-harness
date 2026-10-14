@@ -6,7 +6,7 @@
 
 - Package: `reasoning-harness-core 0.7.2`, `publish = false`.
 - Intended tag: `engine-v0.7.2`, a **normal Engine-only source patch** (`prerelease=false`, `latest=false`) under the [release policy](release-policy.md). [#524](https://github.com/git-ksk/reasoning-harness/issues/524) tracks publication; this preparation is not itself a published tag.
-- Implementation is identical to accepted [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523), merged at `0e5b3389af61d55422205b83830c634f49d024bd`. This release preparation changes package identity, its lock record and documentation only.
+- Implementation is identical to accepted [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523), merged at `0e5b3389af61d55422205b83830c634f49d024bd`. This release preparation changes package identity, its lock record, pinned CI/version acceptance expectations and documentation only.
 - `evidence_relevance.rs` SHA-256: `5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5`.
 - Published Reason CLI remains **0.5.4 / Engine 0.6.1**. A source checkout identifies itself as CLI 0.5.4 / Engine 0.7.2. This release distributes no new CLI binary or crates.io package. CLI adoption and #506's CLI 0.5.5 / Engine 0.6.1 candidate remain separate acceptance tracks.
 
