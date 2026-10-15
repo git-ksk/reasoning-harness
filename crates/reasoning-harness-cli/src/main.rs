@@ -12,6 +12,7 @@ mod mcp_oauth;
 mod model_catalog;
 mod progress;
 mod project_trust;
+mod run_diagnostics;
 mod secure_credentials;
 mod setup;
 mod terminal_presentation;
@@ -629,11 +630,33 @@ struct InvestigationIntentGenerationCall<'a> {
     requested_model: &'a str,
 }
 
+#[cfg(test)]
+struct DiagnosticTestAdapter(Box<dyn ModelAdapter>);
+
+#[cfg(test)]
+impl ModelAdapter for DiagnosticTestAdapter {
+    fn generate<'a>(
+        &'a self,
+        request: ModelRequest,
+    ) -> std::pin::Pin<
+        Box<
+            dyn std::future::Future<
+                    Output = Result<reasoning_harness_core::ModelResponse, ModelError>,
+                > + Send
+                + 'a,
+        >,
+    > {
+        self.0.generate(request)
+    }
+}
+
 enum LiveGenerator {
     Mistral(MistralAdapter),
     Google(GoogleAdapter),
     Groq(GroqAdapter),
     Nvidia(NvidiaAdapter),
+    #[cfg(test)]
+    Test(DiagnosticTestAdapter),
 }
 
 struct LiveGeneratorInitError {
@@ -682,6 +705,8 @@ impl LiveGenerator {
             Self::Google(adapter) => adapter,
             Self::Groq(adapter) => adapter,
             Self::Nvidia(adapter) => adapter,
+            #[cfg(test)]
+            Self::Test(adapter) => adapter,
         }
     }
 
@@ -707,6 +732,11 @@ impl LiveGenerator {
             }
             Self::Nvidia(adapter) => {
                 generate_with_adapter(adapter, "nvidia", requested_model, input, max_tokens, seed)
+                    .await
+            }
+            #[cfg(test)]
+            Self::Test(adapter) => {
+                generate_with_adapter(adapter, "groq", requested_model, input, max_tokens, seed)
                     .await
             }
         }
@@ -920,6 +950,8 @@ impl LiveGenerator {
             Self::Google(_) => "google",
             Self::Groq(_) => "groq",
             Self::Nvidia(_) => "nvidia",
+            #[cfg(test)]
+            Self::Test(_) => "groq",
         }
     }
 
@@ -983,6 +1015,22 @@ impl LiveGenerator {
                     adapter,
                     FinalRenderCall {
                         provider: "nvidia",
+                        requested_model,
+                        task,
+                        artifact,
+                        verdict,
+                        max_tokens,
+                        seed,
+                    },
+                )
+                .await
+            }
+            #[cfg(test)]
+            Self::Test(adapter) => {
+                render_final_with_adapter(
+                    adapter,
+                    FinalRenderCall {
+                        provider: "groq",
                         requested_model,
                         task,
                         artifact,
@@ -3860,6 +3908,8 @@ async fn execute_natural_inner(
     args: NaturalArgs,
     seed: Option<NaturalExecutionSeed>,
     cancellation: SubprocessCancellation,
+    failure_context: run_diagnostics::SharedRunDiagnostics,
+    make_generator: impl FnOnce(Provider, &str) -> Result<LiveGenerator, LiveGeneratorInitError>,
 ) -> Result<NaturalOutput, CliError> {
     let diagnostic_trace_path = args.diagnostic_trace.clone();
     let task = args
@@ -3974,10 +4024,14 @@ async fn execute_natural_inner(
     let mut diagnostic_trace = diagnostic_trace_path
         .as_ref()
         .map(|_| DiagnosticTraceRecorder::new(provider_name(provider), &model, args.seed));
-    let generator = LiveGenerator::try_from_provider(provider, &model)
-        .map_err(|error| CliError::new(error.failure_class, error.message))?;
+    if let (Some(path), Some(trace)) = (diagnostic_trace_path, diagnostic_trace.as_mut()) {
+        trace.preserve_on_exit(path, failure_context.clone());
+    }
     let mut usage_tracker =
         usage_budget::UsageTracker::new(usage_budget, args.session_usage_baseline.clone())?;
+    usage_tracker.preserve_on_exit(failure_context);
+    let generator = make_generator(provider, &model)
+        .map_err(|error| CliError::new(error.failure_class, error.message))?;
     let initial_generation_phase = DiagnosticPhase::new("initial_generation", None);
     let initial_max_tokens = usage_tracker.cap_next_model_tokens(resolved.max_tokens)?;
     progress.phase("Planning", "waiting on provider for the initial candidate");
@@ -3998,6 +4052,8 @@ async fn execute_natural_inner(
         .await
         .map_err(|failure| {
             progress.failure(&failure);
+            // Preserve observed attempts even when generation never returned a candidate.
+            let _ = usage_tracker.record_failure(&failure);
             CliError::new(failure.failure_class, format_generation_failure(&failure))
         })?;
     progress.provider(&generation);
@@ -4535,11 +4591,8 @@ async fn execute_natural_inner(
         rendering,
         rendering_failure,
     };
-    if let (Some(path), Some(trace)) = (diagnostic_trace_path.as_deref(), diagnostic_trace.as_ref())
-    {
-        if let Err(error) = trace.write_to_path(path) {
-            eprintln!("[reason] diagnostic trace write failed: {error}");
-        }
+    if let Some(trace) = diagnostic_trace.as_mut() {
+        trace.mark_completed();
     }
     Ok(output)
 }
@@ -4568,11 +4621,25 @@ async fn execute_natural(
     seed: Option<NaturalExecutionSeed>,
 ) -> Result<NaturalOutput, CliError> {
     let cancellation = progress::CancellationRun::begin()?;
-    await_cancellable_operation(
+    let context = run_diagnostics::SharedRunDiagnostics::default();
+    let result = await_cancellable_operation(
         &cancellation,
-        execute_natural_inner(args, seed, cancellation.subprocess_token()),
+        execute_natural_inner(
+            args,
+            seed,
+            cancellation.subprocess_token(),
+            context.clone(),
+            LiveGenerator::try_from_provider,
+        ),
     )
-    .await
+    .await;
+    result.map_err(|mut error| {
+        error.partial_diagnostics = context
+            .lock()
+            .unwrap_or_else(|error| error.into_inner())
+            .partial(error.failure_class);
+        error
+    })
 }
 
 async fn run_natural(args: NaturalArgs) -> Result<(), CliError> {
@@ -4828,6 +4895,7 @@ struct CliError {
     failure_class: &'static str,
     message: String,
     emitted: bool,
+    partial_diagnostics: Option<Box<run_diagnostics::PartialRunObservation>>,
 }
 
 impl CliError {
@@ -4836,6 +4904,7 @@ impl CliError {
             failure_class,
             message: message.into(),
             emitted: false,
+            partial_diagnostics: None,
         }
     }
 
@@ -4844,6 +4913,7 @@ impl CliError {
             failure_class,
             message: message.into(),
             emitted: true,
+            partial_diagnostics: None,
         }
     }
 }
@@ -4879,6 +4949,22 @@ struct ProductFailureOutput {
     status: &'static str,
     failure: ProductFailure,
     remediation: ProductRemediation,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    partial_diagnostics: Option<Box<run_diagnostics::PartialRunObservation>>,
+}
+
+impl ProductFailureOutput {
+    fn from_error(command: &'static str, error: &CliError) -> Self {
+        Self {
+            status: "failed",
+            failure: ProductFailure {
+                failure_class: error.failure_class,
+                message: error.message.clone(),
+            },
+            remediation: product_remediation(command, error.failure_class),
+            partial_diagnostics: error.partial_diagnostics.clone(),
+        }
+    }
 }
 
 fn product_remediation(command: &str, failure_class: &str) -> ProductRemediation {
@@ -5110,6 +5196,30 @@ fn print_product_failure_human(command: Option<&str>, error: &CliError) {
         human_result_trust(remediation.result_trust)
     );
     eprintln!("Next: {}", remediation.next_command);
+    if let Some(partial) = &error.partial_diagnostics {
+        if let Some(usage) = &partial.usage {
+            eprintln!(
+                "Observed usage (incomplete run): {} model operations, {} provider attempts; total tokens: {}{}",
+                usage.run.model_calls,
+                usage.run.provider_attempts,
+                usage
+                    .run
+                    .total_tokens
+                    .map_or_else(|| "unavailable".into(), |tokens| tokens.to_string()),
+                if partial.usage_is_lower_bound {
+                    "; counters are lower bounds"
+                } else {
+                    ""
+                }
+            );
+        }
+        if let Some(written) = partial.trace_written {
+            eprintln!(
+                "Partial diagnostic trace: {}",
+                if written { "saved" } else { "write failed" }
+            );
+        }
+    }
 }
 
 fn generated_session_thread_id() -> String {
@@ -6435,11 +6545,9 @@ async fn reason_main() -> ExitCode {
         Err(error) => {
             if !error.emitted {
                 if let Some(context) = error_context.filter(|context| context.json) {
-                    if let Err(serialization_error) = print_product_failure_json(
-                        context.command,
-                        error.failure_class,
-                        &error.message,
-                    ) {
+                    if let Err(serialization_error) =
+                        print_product_failure_json(context.command, &error)
+                    {
                         eprintln!("{serialization_error}");
                     }
                 } else {
@@ -9296,22 +9404,8 @@ fn read_json<T: DeserializeOwned>(path: &PathBuf) -> Result<T, String> {
     serde_json::from_slice(&bytes).map_err(|error| format!("{label}: {error}"))
 }
 
-fn print_product_failure_json(
-    command: &'static str,
-    failure_class: &'static str,
-    message: &str,
-) -> Result<(), String> {
-    print_product_json(
-        command,
-        &ProductFailureOutput {
-            status: "failed",
-            failure: ProductFailure {
-                failure_class,
-                message: message.to_string(),
-            },
-            remediation: product_remediation(command, failure_class),
-        },
-    )
+fn print_product_failure_json(command: &'static str, error: &CliError) -> Result<(), String> {
+    print_product_json(command, &ProductFailureOutput::from_error(command, error))
 }
 
 fn print_product_json(command: &'static str, result: &impl Serialize) -> Result<(), String> {
@@ -9928,6 +10022,7 @@ mod candidate_json_tests {
                     message: "bad input".into(),
                 },
                 remediation: product_remediation("run", "input"),
+                partial_diagnostics: None,
             },
         })
         .unwrap();

@@ -60,3 +60,7 @@ The result is labelled **estimated model cost**. Missing token reporting means n
 ## Setup live check
 
 `reason setup --live-check` sends a real provider request and may consume quota or incur provider cost. Interactive setup asks before running it; non-interactive help/JSON output also carries this disclosure. The check remains bounded to a minimal response.
+
+## Usage on failed runs
+
+After #535, source builds preserve observed usage in a failed natural invocation's optional `result.partial_diagnostics.usage`; `complete` remains false. Budget enforcement and the original `usage_budget_exceeded` / `usage_budget_unmeasurable` failure stay unchanged. Missing token totals remain unavailable. On cancellation, completed-operation counters are lower bounds and total-token/currency estimates are omitted because an in-flight request may have been billed. This diagnostic field does not create a successful answer or a managed-session checkpoint. Published CLI0.5.5 artifacts remain unchanged.

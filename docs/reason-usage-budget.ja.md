@@ -60,3 +60,7 @@ reason "TASK" \
 ## setup live check
 
 `reason setup --live-check`は実provider requestを送るためquota消費や課金が発生し得ます。interactive setupは実行前に確認し、non-interactive help/JSON outputにもこのdisclosureを残します。check自体はminimal responseへboundedされています。
+
+## 失敗した実行の使用量
+
+#535の修正後のソースでは、自然言語実行が失敗しても、観測済み使用量を任意の `result.partial_diagnostics.usage` に残します。`complete` はfalseのままで、予算制限と元の `usage_budget_exceeded` / `usage_budget_unmeasurable` は維持します。providerが返さなかったtoken数は補いません。キャンセル時は未完了リクエストが課金される可能性があるため、完了した操作数を下限値と明示し、合計token・金額の推定を省きます。成功回答やセッションのチェックポイントは作りません。公開済みCLI0.5.5の配布物は変わりません。

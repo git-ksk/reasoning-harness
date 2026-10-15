@@ -159,6 +159,7 @@ pub(super) struct UsageTracker {
     budget: UsageBudget,
     baseline: Option<UsageTotals>,
     run: UsageTotals,
+    failure_context: Option<crate::run_diagnostics::SharedRunDiagnostics>,
 }
 
 impl UsageTracker {
@@ -173,9 +174,17 @@ impl UsageTracker {
             budget,
             baseline,
             run: UsageTotals::default(),
+            failure_context: None,
         };
         tracker.check_current_limits()?;
         Ok(tracker)
+    }
+
+    pub(super) fn preserve_on_exit(
+        &mut self,
+        context: crate::run_diagnostics::SharedRunDiagnostics,
+    ) {
+        self.failure_context = Some(context);
     }
 
     fn combined(&self) -> UsageTotals {
@@ -343,6 +352,15 @@ impl UsageTracker {
             budget: self.budget.clone(),
             estimated_model_cost_usd,
             pricing_source: self.budget.pricing_source.clone(),
+        }
+    }
+}
+
+impl Drop for UsageTracker {
+    fn drop(&mut self) {
+        if let Some(context) = self.failure_context.as_ref() {
+            let mut snapshot = context.lock().unwrap_or_else(|error| error.into_inner());
+            snapshot.usage = Some(self.report());
         }
     }
 }
