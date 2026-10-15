@@ -1300,6 +1300,18 @@ fn typed_refs_cannot_borrow_a_different_property_or_erase_a_missing_owner() {
     let mut cases = Vec::new();
     for (text, expected) in [
         (
+            "Object: the button-width claim for Silver Lens. The object is withdrawn.",
+            true,
+        ),
+        (
+            "Object: the launch claim for Silver Lens. The object is withdrawn.",
+            false,
+        ),
+        (
+            "Object: the button-width claim for Silver Lens. The subject is withdrawn.",
+            false,
+        ),
+        (
             "Object: the button-width claim for Silver Lens. Silver Lens was launched. We withdraw this claim.",
             false,
         ),

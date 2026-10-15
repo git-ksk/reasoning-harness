@@ -3818,10 +3818,13 @@ fn launch_typed_reference_v17(
     }) {
         return None;
     }
-    if !words
+    let pointer = words
         .iter()
         .any(|word| ["this", "that", "its", "it"].contains(word))
-    {
+        || words
+            .windows(2)
+            .any(|pair| matches!(pair, ["the", "object" | "subject" | "item"]));
+    if !pointer {
         return None;
     }
     let label = words
