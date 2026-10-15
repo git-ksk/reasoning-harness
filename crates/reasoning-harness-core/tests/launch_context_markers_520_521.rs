@@ -1417,3 +1417,138 @@ fn opaque_clip_name_cannot_clear_input_or_actual_context_gaps() {
         );
     }
 }
+
+#[test]
+fn engine073_independent_v10_seen_replay_preserves_full_scope() {
+    // Keep v9's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v10/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn typed_owner_resolution_requires_one_complete_owner_and_no_target_denial() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        (
+            "Object: a launch statement. Owner supplement: Maple Queue. Author reply: I deny this object.",
+            true,
+        ),
+        (
+            "Object: a launch statement. Owner supplement: Silver Lens. Author reply: I deny this object.",
+            false,
+        ),
+        (
+            "Object: a launch statement. Owner supplement: Absent. Author reply: I deny this object.",
+            false,
+        ),
+        (
+            "Object: a launch statement. Owner supplement: Unknown Owner. Author reply: I deny this object.",
+            false,
+        ),
+        (
+            "Object: a launch statement. Owner supplement: Maple Queue. Owner supplement: Cedar Bolt. Author reply: I deny this object.",
+            false,
+        ),
+        (
+            "Object: a launch statement. Owner supplement: Maple Queue. Owner supplement: Maple Queue. Author reply: I deny this object.",
+            true,
+        ),
+        (
+            "Object: the launch statement for Silver Lens. Owner supplement: Maple Queue. Author reply: I deny this object.",
+            false,
+        ),
+        (
+            "Object: an unspecified launch statement. Owner supplement: Maple Queue. Author reply: I deny this object.",
+            false,
+        ),
+        (
+            "Silver Lens's launch claim is denied. Object: a launch statement. Owner supplement: Maple Queue. Author reply: I deny this object.",
+            false,
+        ),
+        (
+            "Owner supplement: Maple Queue. Owner supplement: Cedar Bolt. Author reply: I deny its launch claim.",
+            false,
+        ),
+        (
+            "Object: a launch statement. Owner supplement: Maple Queue or Silver Lens. Author reply: I deny this object.",
+            false,
+        ),
+        (
+            "Object: a launch statement. Owner supplement: Maple Queue. We retract the entire report.",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}
+
+#[test]
+fn complete_property_apposition_cannot_overrule_event_or_whole_report_scope() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        (
+            "I retract that claim—the complete surface-material statement for the physical launch cover on Silver Lens.",
+            true,
+        ),
+        (
+            "The claim about Silver Lens is denied—specifically, the physical thickness statement for the launch panel on Silver Lens.",
+            true,
+        ),
+        (
+            "I retract the launch claim—the surface-material statement for the physical launch cover on Silver Lens.",
+            false,
+        ),
+        (
+            "I retract the entire report—the surface-material statement for the physical launch cover on Silver Lens.",
+            false,
+        ),
+        (
+            "I retract that claim—the surface-material statement and the launch statement for Silver Lens.",
+            false,
+        ),
+        (
+            "Object: the launch claim for Silver Lens. I retract that claim—the surface-material statement for the physical launch cover on Silver Lens.",
+            false,
+        ),
+        ("The denial concerns the document title font.", true),
+        ("The denial concerns the launch statement.", false),
+        ("The denial concerns the same unspecified property.", false),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}

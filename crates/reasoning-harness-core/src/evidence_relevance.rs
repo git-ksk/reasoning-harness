@@ -1924,6 +1924,18 @@ fn launch_component_head_v17(head: &str) -> bool {
         "seals",
         "selector",
         "selectors",
+        "panel",
+        "panels",
+        "collar",
+        "collars",
+        "label",
+        "labels",
+        "cover",
+        "covers",
+        "wheel",
+        "wheels",
+        "ring",
+        "rings",
     ]
     .contains(&head)
 }
@@ -2404,7 +2416,7 @@ fn launch_specific_property_object_v17(
     let specific_document = specific_page
         || object
             .windows(2)
-            .any(|pair| matches!(pair, ["document", "length" | "count" | "size"]));
+            .any(|pair| matches!(pair, ["document", "length" | "count" | "size" | "title"]));
     let specific_content = object.last() == Some(&"content") && object.len() > 1;
     !object.is_empty()
         && object.iter().any(|word| {
@@ -3190,6 +3202,53 @@ fn launch_declared_foreign_object_v17(
     }) {
         return false;
     }
+    if let Some((label, value)) = statement.split_once(':') {
+        let label = normalized(label);
+        if label
+            .split_whitespace()
+            .collect::<Vec<_>>()
+            .windows(2)
+            .any(|pair| pair == ["owner", "supplement"])
+            && launch_typed_owner_v17(policy, value)
+                .is_some_and(|(_, scope)| scope == LaunchTypedScopeV17::Excluded)
+        {
+            return true;
+        }
+    }
+    if let Some((_, rest)) = statement.split_once(" names ") {
+        if let Some((owner, suffix)) = rest.split_once(',') {
+            let suffix = normalized(suffix);
+            let words = suffix.split_whitespace().collect::<Vec<_>>();
+            if launch_named_subject_v17(owner.trim())
+                && !target_identity_phrases(policy)
+                    .iter()
+                    .any(|target| normalized_phrase_matches(owner, target))
+                && words.contains(&"owner")
+                && words.iter().all(|word| {
+                    [
+                        "the",
+                        "full",
+                        "owner",
+                        "of",
+                        "retracted",
+                        "withdrawn",
+                        "denied",
+                        "launch",
+                        "release",
+                        "object",
+                        "subject",
+                        "item",
+                        "claim",
+                        "statement",
+                        "assertion",
+                    ]
+                    .contains(word)
+                })
+            {
+                return true;
+            }
+        }
+    }
     let foreign = |owner: &str| {
         launch_named_subject_v17(owner)
             && !target_identity_phrases(policy)
@@ -3200,9 +3259,17 @@ fn launch_declared_foreign_object_v17(
         let prefix = &words[..words.iter().position(|word| *word == "is").unwrap_or(0)];
         if prefix.contains(&"owner")
             && prefix.iter().any(|word| launch_retraction_word_v17(word))
-            && prefix
-                .iter()
-                .any(|word| ["claim", "statement", "assertion"].contains(word))
+            && prefix.iter().any(|word| {
+                [
+                    "claim",
+                    "statement",
+                    "assertion",
+                    "object",
+                    "subject",
+                    "item",
+                ]
+                .contains(word)
+            })
         {
             let owner = statement[index + 4..].trim();
             let owner = if let Some((owner, comparison)) = owner.split_once(',') {
@@ -3437,8 +3504,20 @@ fn launch_property_scope_reference_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     statement: &str,
     neighbor: &LaunchFactualSegmentV17,
+    typed_neighbor_excluded: bool,
 ) -> bool {
-    if !(launch_explicit_property_context_v17(policy, &neighbor.raw)
+    let nominal = normalized(statement);
+    let complete_nominal = [
+        "the denial concerns ",
+        "the withdrawal concerns ",
+        "the retraction concerns ",
+    ]
+    .iter()
+    .any(|prefix| nominal.starts_with(prefix));
+    if !(complete_nominal
+        || typed_neighbor_excluded
+        || launch_property_apposition_v17(policy, &neighbor.raw)
+        || launch_explicit_property_context_v17(policy, &neighbor.raw)
         || launch_explicit_nonlaunch_statement_v17(policy, &normalized(&neighbor.raw)))
     {
         return false;
@@ -3479,6 +3558,22 @@ fn launch_property_scope_reference_v17(
     let Some(scope) = words
         .iter()
         .position(|word| ["concerns", "concern", "about", "concerning"].contains(word))
+        .or_else(|| {
+            words
+                .windows(4)
+                .position(|frame| {
+                    matches!(
+                        frame,
+                        [
+                            "limits" | "limit",
+                            "the",
+                            "denial" | "withdrawal" | "retraction",
+                            "to"
+                        ]
+                    )
+                })
+                .map(|i| i + 3)
+        })
         .or_else(|| {
             (words.contains(&"subject")
                 && words.iter().any(|word| launch_retraction_word_v17(word)))
@@ -3648,6 +3743,41 @@ fn launch_typed_object_scope_v17(
         .iter()
         .any(|target| normalized_phrase_matches(value, target))
     {
+        let folded = value.to_ascii_lowercase();
+        for link in [" belonging to ", " for ", " of "] {
+            if let Some(index) = folded.rfind(link) {
+                let prefix = normalized(&value[..index]);
+                let words = prefix.split_whitespace().collect::<Vec<_>>();
+                if words
+                    .iter()
+                    .any(|word| ["launch", "release"].contains(word))
+                    && words
+                        .iter()
+                        .any(|word| ["claim", "statement", "assertion"].contains(word))
+                    && words.iter().all(|word| {
+                        [
+                            "a",
+                            "an",
+                            "the",
+                            "launch",
+                            "release",
+                            "claim",
+                            "statement",
+                            "assertion",
+                        ]
+                        .contains(word)
+                    })
+                    && launch_named_subject_v17(value[index + link.len()..].trim())
+                {
+                    return Scope::Excluded;
+                }
+            }
+        }
+    }
+    if !targets
+        .iter()
+        .any(|target| normalized_phrase_matches(value, target))
+    {
         if launch_explicit_other_subject_v17(policy, value.trim_matches(['"', '“', '”']))
             || launch_explicit_other_context_v17(value)
             || launch_retraction_other_object_v17(policy, &format!("We withdraw {value}"))
@@ -3715,6 +3845,18 @@ fn launch_typed_object_scope_v17(
             return Scope::Excluded;
         }
     }
+    if let Some(head) = words
+        .iter()
+        .position(|word| ["claim", "statement", "assertion", "specification"].contains(word))
+    {
+        if matches!(words.get(head + 1), Some(&"for" | &"of" | &"on")) {
+            let mut property = words[..head].to_vec();
+            property.extend_from_slice(&words[head + 2..]);
+            if launch_specific_property_object_v17(policy, &property) {
+                return Scope::Excluded;
+            }
+        }
+    }
     if matches!(
         words.last(),
         Some(&"claim" | &"statement" | &"assertion" | &"specification" | &"property")
@@ -3744,11 +3886,141 @@ fn launch_typed_object_scope_v17(
     }
 }
 
+// Complete typed owner supplements are finite local declarations. They do not
+// confer truth or override a directly target-owned event/denial. Conflicting or
+// absent owners leave an otherwise unowned launch object unresolved.
+fn launch_typed_owner_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    value: &str,
+) -> Option<(String, LaunchTypedScopeV17)> {
+    let value = value.trim().trim_matches(['"', '“', '”']);
+    let unavailable = normalized(value);
+    if unavailable.split_whitespace().any(|word| {
+        [
+            "absent",
+            "unknown",
+            "missing",
+            "omitted",
+            "unspecified",
+            "unassigned",
+            "unidentified",
+            "none",
+            "no",
+            "not",
+            "never",
+            "either",
+            "or",
+            "and",
+            "both",
+            "all",
+        ]
+        .contains(&word)
+    }) {
+        return None;
+    }
+    let folded = value.to_ascii_lowercase();
+    let owner = if launch_named_subject_v17(value) {
+        value
+    } else if let Some(index) = folded.rfind(" is ") {
+        let prefix = normalized(&value[..index]);
+        let words = prefix.split_whitespace().collect::<Vec<_>>();
+        if !words.contains(&"owner")
+            || !words.iter().any(|word| {
+                [
+                    "object",
+                    "subject",
+                    "item",
+                    "claim",
+                    "statement",
+                    "assertion",
+                ]
+                .contains(word)
+            })
+            || !words.iter().all(|word| {
+                [
+                    "the",
+                    "full",
+                    "product",
+                    "owner",
+                    "of",
+                    "this",
+                    "that",
+                    "retracted",
+                    "withdrawn",
+                    "denied",
+                    "launch",
+                    "release",
+                    "object",
+                    "subject",
+                    "item",
+                    "claim",
+                    "statement",
+                    "assertion",
+                ]
+                .contains(word)
+            })
+        {
+            return None;
+        }
+        value[index + 4..].trim()
+    } else if let Some(index) = folded.find(" owns ") {
+        let suffix = normalized(&value[index + 6..]);
+        let words = suffix.split_whitespace().collect::<Vec<_>>();
+        if !words.iter().any(|word| {
+            [
+                "object",
+                "subject",
+                "item",
+                "claim",
+                "statement",
+                "assertion",
+            ]
+            .contains(word)
+        }) || !words.iter().all(|word| {
+            [
+                "the",
+                "this",
+                "that",
+                "retracted",
+                "withdrawn",
+                "denied",
+                "launch",
+                "release",
+                "object",
+                "subject",
+                "item",
+                "claim",
+                "statement",
+                "assertion",
+            ]
+            .contains(word)
+        }) {
+            return None;
+        }
+        value[..index].trim()
+    } else {
+        return None;
+    };
+    if !launch_named_subject_v17(owner) {
+        return None;
+    }
+    let scope = if target_identity_phrases(policy)
+        .iter()
+        .any(|target| normalized_phrase_matches(owner, target))
+    {
+        LaunchTypedScopeV17::Launch
+    } else {
+        LaunchTypedScopeV17::Excluded
+    };
+    Some((normalized(owner), scope))
+}
+
 fn launch_typed_objects_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
 ) -> Vec<LaunchTypedObjectV17> {
-    candidate
+    use LaunchTypedScopeV17 as Scope;
+    let declarations = candidate
         .signals
         .iter()
         .filter(|signal| {
@@ -3763,44 +4035,132 @@ fn launch_typed_objects_v17(
         .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
         .filter_map(|segment| {
             let (label, value) = segment.raw.split_once(':')?;
-            let label = normalized(label);
-            let scope = if label == "owner supplement" {
-                if normalized(value).split_whitespace().any(|word| {
-                    [
-                        "absent",
-                        "unknown",
-                        "missing",
-                        "omitted",
-                        "unassigned",
-                        "unidentified",
-                        "unspecified",
-                        "none",
-                        "not",
-                        "never",
-                        "no",
-                        "either",
-                        "or",
-                    ]
-                    .contains(&word)
-                }) || !launch_named_subject_v17(value.trim())
-                {
-                    LaunchTypedScopeV17::Unresolved
-                } else if target_identity_phrases(policy)
-                    .iter()
-                    .any(|target| normalized_phrase_matches(value, target))
-                {
-                    LaunchTypedScopeV17::Launch
-                } else {
-                    LaunchTypedScopeV17::Excluded
-                }
-            } else if ["object", "subject", "item"].contains(&label.as_str()) {
-                launch_typed_object_scope_v17(policy, value)
-            } else {
+            Some((normalized(label), value.trim().to_owned()))
+        })
+        .collect::<Vec<_>>();
+    let owner_label = |label: &str| {
+        let words = label.split_whitespace().collect::<Vec<_>>();
+        words.windows(2).any(|pair| pair == ["owner", "supplement"])
+            && words.iter().all(|word| {
+                [
+                    "owner",
+                    "supplement",
+                    "adjacent",
+                    "immediately",
+                    "after",
+                    "for",
+                    "the",
+                    "following",
+                    "reply",
+                ]
+                .contains(word)
+            })
+    };
+    let owners = declarations
+        .iter()
+        .filter(|(label, _)| owner_label(label))
+        .map(|(_, value)| launch_typed_owner_v17(policy, value))
+        .collect::<Vec<_>>();
+    let unique_foreign_owner = !owners.is_empty()
+        && owners.iter().all(|owner| {
+            owner.as_ref().is_some_and(|(name, scope)| {
+                *scope == Scope::Excluded
+                    && owners
+                        .first()
+                        .and_then(Option::as_ref)
+                        .is_some_and(|first| first.0 == *name)
+            })
+        });
+    declarations
+        .into_iter()
+        .filter_map(|(label, value)| {
+            if owner_label(&label) {
+                return Some(LaunchTypedObjectV17 {
+                    label: "owner supplement".to_owned(),
+                    scope: launch_typed_owner_v17(policy, &value).map_or(
+                        Scope::Unresolved,
+                        |(_, scope)| {
+                            if scope == Scope::Excluded && !unique_foreign_owner {
+                                Scope::Unresolved
+                            } else {
+                                scope
+                            }
+                        },
+                    ),
+                });
+            }
+            if !["object", "subject", "item"].contains(&label.as_str()) {
                 return None;
-            };
+            }
+            let mut scope = launch_typed_object_scope_v17(policy, &value);
+            // Only a bounded unowned typed launch frame can use the explicit owner
+            // supplement. A canonical target owner or mixed/unknown scope never can.
+            let text = normalized(&value);
+            let unowned = [
+                "a launch statement",
+                "a launch claim",
+                "a release statement",
+                "a release claim",
+                "the launch statement of the product named in that owner supplement",
+                "the named owner s launch statement",
+            ]
+            .contains(&text.as_str());
+            if unique_foreign_owner && unowned {
+                scope = Scope::Excluded;
+            }
             Some(LaunchTypedObjectV17 { label, scope })
         })
         .collect()
+}
+
+fn launch_complete_nominal_property_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+) -> bool {
+    let property_words = launch_property_words_v17(policy, statement);
+    let text = property_words.join(" ");
+    [
+        "the denial concerns ",
+        "the withdrawal concerns ",
+        "the retraction concerns ",
+    ]
+    .iter()
+    .any(|prefix| {
+        text.strip_prefix(prefix).is_some_and(|topic| {
+            launch_specific_property_object_v17(
+                policy,
+                &topic.split_whitespace().collect::<Vec<_>>(),
+            )
+        })
+    })
+}
+
+fn launch_property_apposition_v17(policy: &EvidenceRelevanceTargetPolicy, statement: &str) -> bool {
+    let Some((head, value)) = statement.split_once(['—', '–']) else {
+        return false;
+    };
+    let head_text = normalized(head);
+    let words = head_text.split_whitespace().collect::<Vec<_>>();
+    if !words.iter().any(|word| launch_retraction_word_v17(word))
+        || words.iter().any(|word| {
+            [
+                "launch", "release", "event", "report", "all", "whole", "entire", "and", "or",
+            ]
+            .contains(word)
+        })
+        || !words
+            .iter()
+            .any(|word| ["claim", "statement", "assertion"].contains(word))
+    {
+        return false;
+    }
+    let value = value
+        .trim()
+        .strip_prefix("specifically,")
+        .or_else(|| value.trim().strip_prefix("specifically "))
+        .unwrap_or(value.trim())
+        .trim();
+    launch_typed_object_scope_v17(policy, value) == LaunchTypedScopeV17::Excluded
 }
 
 fn launch_typed_reference_v17(
@@ -3860,6 +4220,9 @@ fn launch_typed_reference_v17(
         return None;
     }
     if selected.is_empty() {
+        if label.is_none() && launch_property_apposition_v17(policy, statement) {
+            return Some(true);
+        }
         return label.map(|_| false);
     }
     let parts = statement.split(['—', '–', ',']).collect::<Vec<_>>();
@@ -4023,6 +4386,16 @@ fn launch_governing_context_blocks_v17(
             {
                 return true;
             }
+            if launch_complete_nominal_property_v17(policy, &segment.raw) {
+                continue;
+            }
+            if typed_objects
+                .iter()
+                .all(|object| object.scope != LaunchTypedScopeV17::Launch)
+                && launch_property_apposition_v17(policy, &segment.raw)
+            {
+                continue;
+            }
             if let Some(excluded) = launch_typed_reference_v17(
                 policy,
                 &segment.raw,
@@ -4052,7 +4425,18 @@ fn launch_governing_context_blocks_v17(
                     .checked_sub(1)
                     .and_then(|index| segments.get(index))
                     .is_some_and(|neighbor| {
-                        launch_property_scope_reference_v17(policy, &segment.raw, neighbor)
+                        launch_property_scope_reference_v17(
+                            policy,
+                            &segment.raw,
+                            neighbor,
+                            launch_typed_reference_v17(
+                                policy,
+                                &neighbor.raw,
+                                &typed_objects,
+                                index.checked_sub(2).and_then(|i| segments.get(i)),
+                                Some(segment),
+                            ) == Some(true),
+                        )
                     })
             {
                 continue;
