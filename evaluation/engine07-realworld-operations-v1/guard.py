@@ -68,6 +68,8 @@ class ProviderArmGuard:
             self.latch = 'unknown_failure_class'
         if outcome.failure_class is FailureClass.QUOTA:
             self.latch = 'typed_quota'
+        elif outcome.failure_class is FailureClass.CANCELLED:
+            self.latch = 'cancelled_operation'
         capacity = isinstance(outcome.failure_class, FailureClass) and outcome.failure_class in CAPACITY_FAILURES
         self.consecutive_capacity_failures = self.consecutive_capacity_failures + 1 if capacity else 0
         if self.consecutive_capacity_failures >= 2 and self.latch is None:
