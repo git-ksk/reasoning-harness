@@ -1,5 +1,5 @@
 import unittest
-from guard import ProviderArmGuard, Outcome
+from guard import ProviderArmGuard, Outcome, FailureClass
 
 class GuardTests(unittest.TestCase):
     def test_known_exhaustion_starts_no_request(self):
@@ -9,18 +9,18 @@ class GuardTests(unittest.TestCase):
         self.assertFalse(decision.allowed);self.assertIsNone(value);self.assertEqual(guard.started_invocations,0)
     def test_first_quota_suppresses_candidate_helper_and_remaining_cases(self):
         guard=ProviderArmGuard(token_budget=100);calls=[]
-        def quota(): calls.append(1);return Outcome('quota',None,1), 'original failure'
+        def quota(): calls.append(1);return Outcome(FailureClass.QUOTA,None,1), 'original failure'
         self.assertEqual(guard.invoke(20,quota)[1],'original failure')
         for _ in range(60):self.assertFalse(guard.invoke(20,quota)[0].allowed)
         self.assertEqual(len(calls),1);self.assertEqual(guard.latch,'typed_quota')
     def test_two_correlated_capacity_failures_latch(self):
         guard=ProviderArmGuard(token_budget=100)
-        for failure in ('rate_limit','provider_unavailable'):
+        for failure in (FailureClass.RATE_LIMIT,FailureClass.PROVIDER_UNAVAILABLE):
             guard.invoke(20,lambda:(Outcome(failure,1,1),None))
         self.assertFalse(guard.before_invocation(20).allowed)
     def test_success_resets_consecutive_capacity_counter(self):
         guard=ProviderArmGuard(token_budget=100)
-        for failure in ('timeout',None,'timeout'):
+        for failure in (FailureClass.TIMEOUT,None,FailureClass.TIMEOUT):
             guard.invoke(20,lambda:(Outcome(failure,1,1),None))
         self.assertIsNone(guard.latch)
     def test_unknown_usage_stops_instead_of_assuming_zero(self):

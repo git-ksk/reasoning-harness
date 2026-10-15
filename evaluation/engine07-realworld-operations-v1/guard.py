@@ -1,11 +1,29 @@
 """Provider-arm control for the next frozen runner. No network calls or retries."""
 from dataclasses import dataclass, asdict
+from enum import Enum
 
-CAPACITY_FAILURES = frozenset(('rate_limit', 'provider_unavailable', 'timeout', 'wall_timeout'))
+class FailureClass(str, Enum):
+    QUOTA = 'quota'
+    RATE_LIMIT = 'rate_limit'
+    PROVIDER_UNAVAILABLE = 'provider_unavailable'
+    TIMEOUT = 'timeout'
+    WALL_TIMEOUT = 'wall_timeout'
+    USAGE_BUDGET_EXCEEDED = 'usage_budget_exceeded'
+    USAGE_BUDGET_UNMEASURABLE = 'usage_budget_unmeasurable'
+    CANCELLED = 'cancelled'
+    CREDENTIALS = 'credentials'
+    TRANSPORT = 'transport'
+    PROVIDER_ERROR = 'provider_error'
+    PROTOCOL = 'protocol'
+    UNSUPPORTED_CAPABILITY = 'unsupported_capability'
+    UNKNOWN = 'unknown_failure'
+
+CAPACITY_FAILURES = frozenset((FailureClass.RATE_LIMIT, FailureClass.PROVIDER_UNAVAILABLE,
+                               FailureClass.TIMEOUT, FailureClass.WALL_TIMEOUT))
 
 @dataclass(frozen=True)
 class Outcome:
-    failure_class: str | None
+    failure_class: FailureClass | None
     tokens: int | None
     provider_attempts: int | None
 
@@ -44,9 +62,13 @@ class ProviderArmGuard:
         if not self.inflight:
             raise RuntimeError('no admitted invocation to account')
         self.inflight = False
-        if outcome.failure_class == 'quota':
+        if outcome.failure_class is not None and (
+            not isinstance(outcome.failure_class, FailureClass) or outcome.failure_class is FailureClass.UNKNOWN
+        ):
+            self.latch = 'unknown_failure_class'
+        if outcome.failure_class is FailureClass.QUOTA:
             self.latch = 'typed_quota'
-        capacity = outcome.failure_class in CAPACITY_FAILURES
+        capacity = isinstance(outcome.failure_class, FailureClass) and outcome.failure_class in CAPACITY_FAILURES
         self.consecutive_capacity_failures = self.consecutive_capacity_failures + 1 if capacity else 0
         if self.consecutive_capacity_failures >= 2 and self.latch is None:
             self.latch = 'two_consecutive_capacity_failures'
