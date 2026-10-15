@@ -1,0 +1,66 @@
+{
+  "identity": "engine073-launch-independent-v5",
+  "purpose": "New independent synthetic narrow #520 launch-context source-fix check, separate from #531 real-document 24 questions, release/CLI adoption and provider/model/final-answer E2E.",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate": {
+    "source_sha": "7e107f1c2c71cf55cd395d2b3aecb889e4f166a1",
+    "evidence_relevance_rs_sha256": "939f9b788666a61da59b558cbc03f7741dd5e96e698951823f736bbedf6d4d1c",
+    "package_version": "0.7.2",
+    "identity": "Immutable source SHA identifies candidate; package metadata remains pre-release."
+  },
+  "prior_exposure": {
+    "known": "V2/v3/v4 were authored and observed by this evaluator; they are seen development controls. V1 failed operationally before semantic observation. All prior first results/files remain unchanged.",
+    "parent_reported_development": "Parent reports historical/full/development and seen-v2/v3/v4 replay PASS; evaluator has not read those root implementation/tests/corpora or independently rerun them.",
+    "unread": "Production Engine implementation, parent/root tests, historical/other corpora and fixtures.",
+    "new_authoring": "New complete interview/reply/quote/relative-clause/possessive/artifact/correspondence-reference controls after candidate freeze; no prior case text was copied and renamed."
+  },
+  "design": {
+    "cases": 60,
+    "positive": "Retain v17 requested_relation and v30 Relevant for factual launch with neutral context or explicit other-product/non-launch-property/activity denial/retraction/withdrawal. This does not approve the truth of the other property.",
+    "negative": "Do not permit requested_relation or Relevant where current/present/first-person launch denial/retraction/withdrawal/non-event concerns the same target/claim, or the launch correction owner/referent is unresolved.",
+    "matched_pairs": 30,
+    "fictional_targets": 30,
+    "real_documents": 0,
+    "affirmative": "Separate canonical target as direct subject: TARGET was launched. No novel affirmative predicate, arbitrary number/AST, aliases or preparation feature.",
+    "ambiguity": "Eight explicitly unresolved launch-correction cases li5-044,li5-048,li5-050,li5-052,li5-054,li5-056,li5-058,li5-060 are negative before observations. No forced ambiguous positive. pre-freeze-scope-review.json records the rationale.",
+    "raw_prebinding": "Optimistic exact/exact proposal and exact_target/requested_relation/none raw in every case; tests correction of unsafe prebinding, not model extraction.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "labels": "Offline evaluator-controlled expectations excluded from Engine inputs, not externally human-approved/universal truth."
+  },
+  "scoring": {
+    "code": "Byte-identical inherited score.py SHA256 9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3; no lowered/permissive rules.",
+    "positive": "effective_v17.relation_scope == requested_relation AND v30.disposition == relevant",
+    "negative": "effective_v17.relation_scope != requested_relation AND v30.disposition != relevant",
+    "v29": "Diagnostic only.",
+    "PASS": "60/60 outcomes; zero negative requested_relation/Relevant; zero withheld positive; no incomplete/duplicate/foreign/malformed/unexpected rows; exit0 and empty stderr.",
+    "v17_v30_distinction": "Negative v30 Ambiguous with v17 requested_relation still violates the unchanged negative joint gate; do not conflate that with v30 false-Relevant.",
+    "failure": "Operational errors are not safety successes. Retain first raw/FAIL without retries, rescoring, label edits or output overwrite."
+  },
+  "stages": {
+    "static": "Count/required-fields/positive budget/label exclusion/direct supported target-subject signal/inherited code syntax/unchanged prior hashes; no Engine/semantic observation.",
+    "freeze": "Complete labels/inputs/protocol/scoring/probe/recorder and candidate/source/core/serde/executable hashes before first semantic Engine invocation.",
+    "semantic": "One deterministic public v17/v29/v30 probe process for the 60 cases; no semantic sentinel, model or provider.",
+    "score": "One application of inherited fixed scorer on preserved first raw.",
+    "receipt": "Verify prior/frozen files unchanged and record all-version final artifact manifest."
+  },
+  "execution": {
+    "provider_API_calls": 0,
+    "oracle": false,
+    "additional_agents": false,
+    "cargo": false,
+    "identity_check": "Immediately before invocation verify actual HEAD/source hash (bytes only), actual linked core rlib/serde/probe and complete frozen files.",
+    "build_limit": "Parent supplied completed core build for fixed source. Evaluator independently hash-checks/links with rustc; no independent rebuild or production source inspection."
+  },
+  "limits": [
+    "Synthetic controlled bounded English launch-context API source-fix check only; #531 primary-source acquisition/final answer/provider acceptance and release/CLI adoption remain unperformed here.",
+    "Candidate only, no baseline delta; prior-set percentages are not comparable improvement measurements.",
+    "60 scenarios are 30 matched pairs, not independent documents or exhaustive grammar/reference coverage.",
+    "Does not assess other property truth, aliases, arbitrary reference AST, new affirmative predicates, temporal reasoning or preparation/future-release behavior.",
+    "Serialized model_relevant/model_ambiguous reasons do not imply actual model calls.",
+    "V5 becomes consumed after first semantic observation and subsequent use is regression/development only."
+  ]
+}

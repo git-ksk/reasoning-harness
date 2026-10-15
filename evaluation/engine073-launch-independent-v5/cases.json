@@ -1,0 +1,3382 @@
+{
+  "schema": "engine073-launch-independent-v5",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "cases": [
+    {
+      "id": "li5-001",
+      "pair_id": "v5-pair-01",
+      "polarity": "positive",
+      "axis": "interview_explicit_retraction_answer",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The publisher answer itself explicitly identifies the torque or launch object, without relying on dialogue-role inference.",
+      "input": {
+        "id": "li5-001",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-01",
+          "target_question": "Was Altohaven Mosaic launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-01",
+            "canonical_name": "Altohaven Mosaic",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-001-evidence",
+          "source_id": "li5-001-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Altohaven Mosaic was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Interview transcript. Interviewer: What do you retract? Publisher: I retract the torque-ceiling claim about Altohaven Mosaic. My answer concerns torque."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-002",
+      "pair_id": "v5-pair-01",
+      "polarity": "negative",
+      "axis": "interview_explicit_retraction_answer",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The publisher answer itself explicitly identifies the torque or launch object, without relying on dialogue-role inference.",
+      "input": {
+        "id": "li5-002",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-01",
+          "target_question": "Was Altohaven Mosaic launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-01",
+            "canonical_name": "Altohaven Mosaic",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-002-evidence",
+          "source_id": "li5-002-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Altohaven Mosaic was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Interview transcript. Interviewer: What do you retract? Publisher: I retract the launch claim about Altohaven Mosaic. My answer concerns launch."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-003",
+      "pair_id": "v5-pair-02",
+      "polarity": "positive",
+      "axis": "current_reply_repeated_object",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The operative clause repeats a named non-launch property or launch, fixing scope directly.",
+      "input": {
+        "id": "li5-003",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-02",
+          "target_question": "Was Beechvale Rune launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-02",
+            "canonical_name": "Beechvale Rune",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-003-evidence",
+          "source_id": "li5-003-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Current author reply preserved in the record"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Beechvale Rune was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Author: We retract the seam-width assertion for Beechvale Rune; it is the seam-width assertion that this reply corrects."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-004",
+      "pair_id": "v5-pair-02",
+      "polarity": "negative",
+      "axis": "current_reply_repeated_object",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The operative clause repeats a named non-launch property or launch, fixing scope directly.",
+      "input": {
+        "id": "li5-004",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-02",
+          "target_question": "Was Beechvale Rune launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-02",
+            "canonical_name": "Beechvale Rune",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-004-evidence",
+          "source_id": "li5-004-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Current author reply preserved in the record"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Beechvale Rune was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Author: We retract the launch assertion for Beechvale Rune; it is the launch assertion that this reply corrects."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-005",
+      "pair_id": "v5-pair-03",
+      "polarity": "positive",
+      "axis": "author_letter_intervening_relative_phrase",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The full content clause names the same target and either its maintenance requirement or its launch; intervening guide text does not change that object.",
+      "input": {
+        "id": "li5-005",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-03",
+          "target_question": "Was Caspian Trellis launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-03",
+            "canonical_name": "Caspian Trellis",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-005-evidence",
+          "source_id": "li5-005-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Letter from the author: I withdraw the statement, printed in the maintenance guide, that Caspian Trellis requires oil every week. The subject of the withdrawn statement is the maintenance interval."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Caspian Trellis was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-006",
+      "pair_id": "v5-pair-03",
+      "polarity": "negative",
+      "axis": "author_letter_intervening_relative_phrase",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The full content clause names the same target and either its maintenance requirement or its launch; intervening guide text does not change that object.",
+      "input": {
+        "id": "li5-006",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-03",
+          "target_question": "Was Caspian Trellis launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-03",
+            "canonical_name": "Caspian Trellis",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-006-evidence",
+          "source_id": "li5-006-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Letter from the author: I withdraw the statement, printed in the release guide, that Caspian Trellis was launched. The subject of the withdrawn statement is launch."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Caspian Trellis was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-007",
+      "pair_id": "v5-pair-04",
+      "polarity": "positive",
+      "axis": "attributed_present_quoted_denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The current attributed statement explicitly denies a coating claim or the target launch, rather than merely reporting an old unendorsed launch.",
+      "input": {
+        "id": "li5-007",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-04",
+          "target_question": "Was Dawnridge Capsule launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-04",
+            "canonical_name": "Dawnridge Capsule",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-007-evidence",
+          "source_id": "li5-007-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Current bulletin quotes the publisher directly"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Dawnridge Capsule was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The publisher writes: \"We deny the statement that Dawnridge Capsule has an enamel coating.\" The quoted denial concerns enamel coating."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-008",
+      "pair_id": "v5-pair-04",
+      "polarity": "negative",
+      "axis": "attributed_present_quoted_denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The current attributed statement explicitly denies a coating claim or the target launch, rather than merely reporting an old unendorsed launch.",
+      "input": {
+        "id": "li5-008",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-04",
+          "target_question": "Was Dawnridge Capsule launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-04",
+            "canonical_name": "Dawnridge Capsule",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-008-evidence",
+          "source_id": "li5-008-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Current bulletin quotes the publisher directly"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Dawnridge Capsule was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The publisher writes: \"We deny the statement that Dawnridge Capsule was launched.\" The quoted denial concerns launch."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-009",
+      "pair_id": "v5-pair-05",
+      "polarity": "positive",
+      "axis": "parenthesized_current_author_annotation",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "Parentheses enclose an explicit first-person retraction with a clear property or launch object.",
+      "input": {
+        "id": "li5-009",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-05",
+          "target_question": "Was Equinox Coffer launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-05",
+            "canonical_name": "Equinox Coffer",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-009-evidence",
+          "source_id": "li5-009-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Print-proof marginal annotation"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Equinox Coffer was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The publisher adds the following current annotation: (I retract the assertion about the resin content of Equinox Coffer.) The annotation concerns material composition."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-010",
+      "pair_id": "v5-pair-05",
+      "polarity": "negative",
+      "axis": "parenthesized_current_author_annotation",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "Parentheses enclose an explicit first-person retraction with a clear property or launch object.",
+      "input": {
+        "id": "li5-010",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-05",
+          "target_question": "Was Equinox Coffer launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-05",
+            "canonical_name": "Equinox Coffer",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-010-evidence",
+          "source_id": "li5-010-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Print-proof marginal annotation"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Equinox Coffer was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The publisher adds the following current annotation: (I retract the assertion that Equinox Coffer was launched.) The annotation concerns launch."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-011",
+      "pair_id": "v5-pair-06",
+      "polarity": "positive",
+      "axis": "illustration_alt_text_withdrawn_object",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The exact withdrawn text and its following topic are supplied, so the object is not inferred from a numeric reference.",
+      "input": {
+        "id": "li5-011",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-06",
+          "target_question": "Was Fablethorn Slate launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-06",
+            "canonical_name": "Fablethorn Slate",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-011-evidence",
+          "source_id": "li5-011-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Alt-text correction for the illustration"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Fablethorn Slate was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Withdrawn text: \"Fablethorn Slate has knurled edges.\" The author withdraws that knurled-edge statement."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-012",
+      "pair_id": "v5-pair-06",
+      "polarity": "negative",
+      "axis": "illustration_alt_text_withdrawn_object",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The exact withdrawn text and its following topic are supplied, so the object is not inferred from a numeric reference.",
+      "input": {
+        "id": "li5-012",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-06",
+          "target_question": "Was Fablethorn Slate launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-06",
+            "canonical_name": "Fablethorn Slate",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-012-evidence",
+          "source_id": "li5-012-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Alt-text correction for the illustration"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Fablethorn Slate was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Withdrawn text: \"Fablethorn Slate was launched.\" The author withdraws that launch statement."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-013",
+      "pair_id": "v5-pair-07",
+      "polarity": "positive",
+      "axis": "service_discussion_current_reply",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The publisher reply explicitly names the denied proposition; the customer question does not supply a new affirmative predicate.",
+      "input": {
+        "id": "li5-013",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-07",
+          "target_question": "Was Garnetwharf Lens launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-07",
+            "canonical_name": "Garnetwharf Lens",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-013-evidence",
+          "source_id": "li5-013-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Garnetwharf Lens was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Service-guide discussion. Customer: Is the service schedule accurate? Publisher reply: I deny that Garnetwharf Lens requires weekly lubrication; this is a denial of that service-schedule claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-014",
+      "pair_id": "v5-pair-07",
+      "polarity": "negative",
+      "axis": "service_discussion_current_reply",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The publisher reply explicitly names the denied proposition; the customer question does not supply a new affirmative predicate.",
+      "input": {
+        "id": "li5-014",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-07",
+          "target_question": "Was Garnetwharf Lens launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-07",
+            "canonical_name": "Garnetwharf Lens",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-014-evidence",
+          "source_id": "li5-014-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Garnetwharf Lens was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Release-guide discussion. Customer: Is the release account accurate? Publisher reply: I deny that Garnetwharf Lens was launched; this is a denial of that launch claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-015",
+      "pair_id": "v5-pair-08",
+      "polarity": "positive",
+      "axis": "editor_author_exchange_corroborated_topic",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The author clause and editor topic echo identify the same explicit object, which is non-launch or launch.",
+      "input": {
+        "id": "li5-015",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-08",
+          "target_question": "Was Harrowmere Beacon launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-08",
+            "canonical_name": "Harrowmere Beacon",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-015-evidence",
+          "source_id": "li5-015-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Harrowmere Beacon was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Editor: Which assertion is withdrawn? Author: We withdraw the hinge-angle range claim for Harrowmere Beacon. Editor: The response is recorded as a correction of hinge-angle range."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-016",
+      "pair_id": "v5-pair-08",
+      "polarity": "negative",
+      "axis": "editor_author_exchange_corroborated_topic",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The author clause and editor topic echo identify the same explicit object, which is non-launch or launch.",
+      "input": {
+        "id": "li5-016",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-08",
+          "target_question": "Was Harrowmere Beacon launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-08",
+            "canonical_name": "Harrowmere Beacon",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-016-evidence",
+          "source_id": "li5-016-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Harrowmere Beacon was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Editor: Which assertion is withdrawn? Author: We withdraw the launch claim for Harrowmere Beacon. Editor: The response is recorded as a correction of launch."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-017",
+      "pair_id": "v5-pair-09",
+      "polarity": "positive",
+      "axis": "topic_then_repeated_full_denial",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "Both sentences independently identify the denied object, without pronoun or entry-label dependence.",
+      "input": {
+        "id": "li5-017",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-09",
+          "target_question": "Was Ivorybrook Axle launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-09",
+            "canonical_name": "Ivorybrook Axle",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-017-evidence",
+          "source_id": "li5-017-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Question-and-answer summary"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Ivorybrook Axle was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The following denial concerns the rotation-speed claim for Ivorybrook Axle. We deny the rotation-speed claim for Ivorybrook Axle."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-018",
+      "pair_id": "v5-pair-09",
+      "polarity": "negative",
+      "axis": "topic_then_repeated_full_denial",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "Both sentences independently identify the denied object, without pronoun or entry-label dependence.",
+      "input": {
+        "id": "li5-018",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-09",
+          "target_question": "Was Ivorybrook Axle launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-09",
+            "canonical_name": "Ivorybrook Axle",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-018-evidence",
+          "source_id": "li5-018-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Question-and-answer summary"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Ivorybrook Axle was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The following denial concerns the launch claim for Ivorybrook Axle. We deny the launch claim for Ivorybrook Axle."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-019",
+      "pair_id": "v5-pair-10",
+      "polarity": "positive",
+      "axis": "intervening_attribution_withdraw_that_clause",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "A direct that-clause makes the withdrawal object explicit despite the intervening attribution.",
+      "input": {
+        "id": "li5-019",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-10",
+          "target_question": "Was Jasperdale Loom launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-10",
+            "canonical_name": "Jasperdale Loom",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-019-evidence",
+          "source_id": "li5-019-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "We withdraw the claim, previously printed in the operating guide, that Jasperdale Loom supports magnetic mounting. The correction concerns mounting support."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Jasperdale Loom was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-020",
+      "pair_id": "v5-pair-10",
+      "polarity": "negative",
+      "axis": "intervening_attribution_withdraw_that_clause",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "A direct that-clause makes the withdrawal object explicit despite the intervening attribution.",
+      "input": {
+        "id": "li5-020",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-10",
+          "target_question": "Was Jasperdale Loom launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-10",
+            "canonical_name": "Jasperdale Loom",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-020-evidence",
+          "source_id": "li5-020-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "We withdraw the claim, previously printed in the release history, that Jasperdale Loom was launched. The correction concerns launch."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Jasperdale Loom was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-021",
+      "pair_id": "v5-pair-11",
+      "polarity": "positive",
+      "axis": "possessive_hereby_retracted_subject",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The possessive phrase owns an explicit specification or launch statement; the second sentence confirms its topic.",
+      "input": {
+        "id": "li5-021",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-11",
+          "target_question": "Was Kelpwood Ring launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-11",
+            "canonical_name": "Kelpwood Ring",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-021-evidence",
+          "source_id": "li5-021-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Kelpwood Ring was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Kelpwood Ring's acoustic-noise specification is hereby retracted by the author. The retracted specification concerns sound level."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-022",
+      "pair_id": "v5-pair-11",
+      "polarity": "negative",
+      "axis": "possessive_hereby_retracted_subject",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The possessive phrase owns an explicit specification or launch statement; the second sentence confirms its topic.",
+      "input": {
+        "id": "li5-022",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-11",
+          "target_question": "Was Kelpwood Ring launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-11",
+            "canonical_name": "Kelpwood Ring",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-022-evidence",
+          "source_id": "li5-022-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Kelpwood Ring was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Kelpwood Ring's launch statement is hereby retracted by the author. The retracted statement concerns launch."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-023",
+      "pair_id": "v5-pair-12",
+      "polarity": "positive",
+      "axis": "contracted_was_not_same_or_other_predicate",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The contraction is a denial of the existing was-launched proposition in the negative; chrome finish is a different property in the positive.",
+      "input": {
+        "id": "li5-023",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-12",
+          "target_question": "Was Lucentford Wedge launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-12",
+            "canonical_name": "Lucentford Wedge",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-023-evidence",
+          "source_id": "li5-023-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Author current correction"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Lucentford Wedge was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Lucentford Wedge wasn't finished with chrome. I issue this as a correction of the chrome-finish claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-024",
+      "pair_id": "v5-pair-12",
+      "polarity": "negative",
+      "axis": "contracted_was_not_same_or_other_predicate",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The contraction is a denial of the existing was-launched proposition in the negative; chrome finish is a different property in the positive.",
+      "input": {
+        "id": "li5-024",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-12",
+          "target_question": "Was Lucentford Wedge launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-12",
+            "canonical_name": "Lucentford Wedge",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-024-evidence",
+          "source_id": "li5-024-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Author current correction"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Lucentford Wedge was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Lucentford Wedge wasn't launched. I issue this as a correction of the launch claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-025",
+      "pair_id": "v5-pair-13",
+      "polarity": "positive",
+      "axis": "activity_log_did_not_happen",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The expressly absent activity is an endurance test or launch; this is not a new affirmative launch predicate.",
+      "input": {
+        "id": "li5-025",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-13",
+          "target_question": "Was Marigoldhill Rail launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-13",
+            "canonical_name": "Marigoldhill Rail",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-025-evidence",
+          "source_id": "li5-025-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Author correction to the activity log"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Marigoldhill Rail was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The endurance test for Marigoldhill Rail did not happen. This current correction concerns the endurance-test account."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-026",
+      "pair_id": "v5-pair-13",
+      "polarity": "negative",
+      "axis": "activity_log_did_not_happen",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The expressly absent activity is an endurance test or launch; this is not a new affirmative launch predicate.",
+      "input": {
+        "id": "li5-026",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-13",
+          "target_question": "Was Marigoldhill Rail launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-13",
+            "canonical_name": "Marigoldhill Rail",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-026-evidence",
+          "source_id": "li5-026-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Author correction to the activity log"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Marigoldhill Rail was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The launch of Marigoldhill Rail did not happen. This current correction concerns the launch account."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-027",
+      "pair_id": "v5-pair-14",
+      "polarity": "positive",
+      "axis": "existential_no_event_statement",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "An explicit existential non-event denies drop testing or the target launch; it does not ask for support of a new affirmative relation.",
+      "input": {
+        "id": "li5-027",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-14",
+          "target_question": "Was Nimbuscove Prism launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-14",
+            "canonical_name": "Nimbuscove Prism",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-027-evidence",
+          "source_id": "li5-027-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "There has been no drop test of Nimbuscove Prism. The publisher issues this statement about drop testing."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Nimbuscove Prism was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-028",
+      "pair_id": "v5-pair-14",
+      "polarity": "negative",
+      "axis": "existential_no_event_statement",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "An explicit existential non-event denies drop testing or the target launch; it does not ask for support of a new affirmative relation.",
+      "input": {
+        "id": "li5-028",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-14",
+          "target_question": "Was Nimbuscove Prism launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-14",
+            "canonical_name": "Nimbuscove Prism",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-028-evidence",
+          "source_id": "li5-028-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "There has been no launch of Nimbuscove Prism. The publisher issues this statement about launch."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Nimbuscove Prism was launched."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-029",
+      "pair_id": "v5-pair-15",
+      "polarity": "positive",
+      "axis": "contact_route_vs_propositional_content",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "Withdrawing a contact address is neutral about launch; withdrawing the target launch statement is not.",
+      "input": {
+        "id": "li5-029",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-15",
+          "target_question": "Was Orielwood Pivot launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-15",
+            "canonical_name": "Orielwood Pivot",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-029-evidence",
+          "source_id": "li5-029-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Publisher contact-information change"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Orielwood Pivot was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The old mailing address was withdrawn. This notice concerns the address used for correspondence."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-030",
+      "pair_id": "v5-pair-15",
+      "polarity": "negative",
+      "axis": "contact_route_vs_propositional_content",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "Withdrawing a contact address is neutral about launch; withdrawing the target launch statement is not.",
+      "input": {
+        "id": "li5-030",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-15",
+          "target_question": "Was Orielwood Pivot launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-15",
+            "canonical_name": "Orielwood Pivot",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-030-evidence",
+          "source_id": "li5-030-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Publisher launch-statement change"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Orielwood Pivot was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The launch statement for Orielwood Pivot was withdrawn. This notice concerns the content of that launch statement."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-031",
+      "pair_id": "v5-pair-16",
+      "polarity": "positive",
+      "axis": "diagram_link_vs_launch_statement",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The positive action removes a link artifact rather than a launch proposition; the negative explicitly withdraws the proposition.",
+      "input": {
+        "id": "li5-031",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-16",
+          "target_question": "Was Petrelford Clasp launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-16",
+            "canonical_name": "Petrelford Clasp",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-031-evidence",
+          "source_id": "li5-031-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Petrelford Clasp was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "We withdraw the download link associated with the spare-parts diagram. This action concerns that diagram link alone."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-032",
+      "pair_id": "v5-pair-16",
+      "polarity": "negative",
+      "axis": "diagram_link_vs_launch_statement",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The positive action removes a link artifact rather than a launch proposition; the negative explicitly withdraws the proposition.",
+      "input": {
+        "id": "li5-032",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-16",
+          "target_question": "Was Petrelford Clasp launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-16",
+            "canonical_name": "Petrelford Clasp",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-032-evidence",
+          "source_id": "li5-032-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Petrelford Clasp was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "We withdraw the launch statement associated with Petrelford Clasp. This action concerns that launch statement."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-033",
+      "pair_id": "v5-pair-17",
+      "polarity": "positive",
+      "axis": "contents_reindexing_vs_author_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "Contents order and typography are neutral; the current first-person retraction names the target launch.",
+      "input": {
+        "id": "li5-033",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-17",
+          "target_question": "Was Quillhaven Tuner launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-17",
+            "canonical_name": "Quillhaven Tuner",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-033-evidence",
+          "source_id": "li5-033-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Archive administrator message"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Quillhaven Tuner was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The table-of-contents rows were reordered. The administrator also changed the page-number typography."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-034",
+      "pair_id": "v5-pair-17",
+      "polarity": "negative",
+      "axis": "contents_reindexing_vs_author_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "Contents order and typography are neutral; the current first-person retraction names the target launch.",
+      "input": {
+        "id": "li5-034",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-17",
+          "target_question": "Was Quillhaven Tuner launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-17",
+            "canonical_name": "Quillhaven Tuner",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-034-evidence",
+          "source_id": "li5-034-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Author current message"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Quillhaven Tuner was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "I retract the launch assertion printed here about Quillhaven Tuner. This message concerns that launch assertion."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-035",
+      "pair_id": "v5-pair-18",
+      "polarity": "positive",
+      "axis": "navigation_artifact_vs_history_assertion",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The direct withdrawal object distinguishes a navigation artifact from the target launch fact.",
+      "input": {
+        "id": "li5-035",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-18",
+          "target_question": "Was Rosethorn Latch launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-18",
+            "canonical_name": "Rosethorn Latch",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-035-evidence",
+          "source_id": "li5-035-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Rosethorn Latch was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "A navigation link for the warranty policy has been withdrawn. The notice concerns that navigation link, rather than a product-history statement."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-036",
+      "pair_id": "v5-pair-18",
+      "polarity": "negative",
+      "axis": "navigation_artifact_vs_history_assertion",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The direct withdrawal object distinguishes a navigation artifact from the target launch fact.",
+      "input": {
+        "id": "li5-036",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-18",
+          "target_question": "Was Rosethorn Latch launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-18",
+            "canonical_name": "Rosethorn Latch",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-036-evidence",
+          "source_id": "li5-036-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Rosethorn Latch was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The launch assertion for Rosethorn Latch has been withdrawn. The notice concerns that product-history statement, rather than a navigation link."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-037",
+      "pair_id": "v5-pair-19",
+      "polarity": "positive",
+      "axis": "named_publisher_current_quote_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The quoted denial itself names its product, independently of the publisher attribution.",
+      "input": {
+        "id": "li5-037",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-19",
+          "target_question": "Was Stonefern Knob launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-19",
+            "canonical_name": "Stonefern Knob",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-037-evidence",
+          "source_id": "li5-037-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Stonefern Knob was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The publisher of Granitepetal Chime sends a current message: \"I deny that Granitepetal Chime was launched.\" The message is about Granitepetal Chime."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-038",
+      "pair_id": "v5-pair-19",
+      "polarity": "negative",
+      "axis": "named_publisher_current_quote_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The quoted denial itself names its product, independently of the publisher attribution.",
+      "input": {
+        "id": "li5-038",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-19",
+          "target_question": "Was Stonefern Knob launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-19",
+            "canonical_name": "Stonefern Knob",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-038-evidence",
+          "source_id": "li5-038-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Stonefern Knob was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The publisher of Stonefern Knob sends a current message: \"I deny that Stonefern Knob was launched.\" The message is about Stonefern Knob."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-039",
+      "pair_id": "v5-pair-20",
+      "polarity": "positive",
+      "axis": "possessive_owner_with_neighbor_reference",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The operative possessive explicitly identifies the launch owner; the neighboring record is context, not a reference-resolution requirement.",
+      "input": {
+        "id": "li5-039",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-20",
+          "target_question": "Was Tamariskfield Ruler launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-20",
+            "canonical_name": "Tamariskfield Ruler",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-039-evidence",
+          "source_id": "li5-039-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Tamariskfield Ruler was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "We retract Granitepetal Chime's launch assertion, which appeared beside the record about Tamariskfield Ruler. The retracted assertion belongs to Granitepetal Chime."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-040",
+      "pair_id": "v5-pair-20",
+      "polarity": "negative",
+      "axis": "possessive_owner_with_neighbor_reference",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The operative possessive explicitly identifies the launch owner; the neighboring record is context, not a reference-resolution requirement.",
+      "input": {
+        "id": "li5-040",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-20",
+          "target_question": "Was Tamariskfield Ruler launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-20",
+            "canonical_name": "Tamariskfield Ruler",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-040-evidence",
+          "source_id": "li5-040-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Tamariskfield Ruler was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "We retract Tamariskfield Ruler's launch assertion, which appeared beside the record about Granitepetal Chime. The retracted assertion belongs to Tamariskfield Ruler."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-041",
+      "pair_id": "v5-pair-21",
+      "polarity": "positive",
+      "axis": "topic_and_final_owner_in_author_reply",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "Both the topic phrase and final sentence explicitly identify the owner of the withdrawn launch statement.",
+      "input": {
+        "id": "li5-041",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-21",
+          "target_question": "Was Umbralhaven Hook launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-21",
+            "canonical_name": "Umbralhaven Hook",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-041-evidence",
+          "source_id": "li5-041-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Insert containing the author current reply"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Umbralhaven Hook was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "On the topic of Granitepetal Chime's launch, I withdraw the previous statement. The withdrawn launch statement is about Granitepetal Chime."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-042",
+      "pair_id": "v5-pair-21",
+      "polarity": "negative",
+      "axis": "topic_and_final_owner_in_author_reply",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "Both the topic phrase and final sentence explicitly identify the owner of the withdrawn launch statement.",
+      "input": {
+        "id": "li5-042",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-21",
+          "target_question": "Was Umbralhaven Hook launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-21",
+            "canonical_name": "Umbralhaven Hook",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-042-evidence",
+          "source_id": "li5-042-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Insert containing the author current reply"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Umbralhaven Hook was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "On the topic of Umbralhaven Hook's launch, I withdraw the previous statement. The withdrawn launch statement is about Umbralhaven Hook."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-043",
+      "pair_id": "v5-pair-22",
+      "polarity": "positive",
+      "axis": "multi_product_reply_object_or_owner_missing",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The positive gives a direct property object for the canonical target; the negative expressly omits the launch claim owner among several products.",
+      "input": {
+        "id": "li5-043",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-22",
+          "target_question": "Was Violetbay Panel launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-22",
+            "canonical_name": "Violetbay Panel",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-043-evidence",
+          "source_id": "li5-043-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Discussion covers Violetbay Panel, Granitepetal Chime, and Reedlantern Arc"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Violetbay Panel was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Editor: Which property is corrected? Author: We deny that Violetbay Panel has a clockwise-only spindle. This denial concerns spindle direction."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-044",
+      "pair_id": "v5-pair-22",
+      "polarity": "negative",
+      "axis": "multi_product_reply_object_or_owner_missing",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The positive gives a direct property object for the canonical target; the negative expressly omits the launch claim owner among several products.",
+      "input": {
+        "id": "li5-044",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-22",
+          "target_question": "Was Violetbay Panel launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-22",
+            "canonical_name": "Violetbay Panel",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-044-evidence",
+          "source_id": "li5-044-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Discussion covers Violetbay Panel, Granitepetal Chime, and Reedlantern Arc"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Violetbay Panel was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Editor: Which launch claim is corrected? Author: We deny one launch claim in this discussion. Our reply does not identify which product owns the denied claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-045",
+      "pair_id": "v5-pair-23",
+      "polarity": "positive",
+      "axis": "personal_claim_and_explicit_exclusion",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The direct claim object and exclusion distinguish calibration from launch; no fact about calibration itself is approved.",
+      "input": {
+        "id": "li5-045",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-23",
+          "target_question": "Was Whimbrelmere Rotor launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-23",
+            "canonical_name": "Whimbrelmere Rotor",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-045-evidence",
+          "source_id": "li5-045-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Whimbrelmere Rotor was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "I retract my temperature-calibration claim about Whimbrelmere Rotor. This message revises the calibration claim; it is not a correction of a release-history event."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-046",
+      "pair_id": "v5-pair-23",
+      "polarity": "negative",
+      "axis": "personal_claim_and_explicit_exclusion",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The direct claim object and exclusion distinguish calibration from launch; no fact about calibration itself is approved.",
+      "input": {
+        "id": "li5-046",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-23",
+          "target_question": "Was Whimbrelmere Rotor launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-23",
+            "canonical_name": "Whimbrelmere Rotor",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-046-evidence",
+          "source_id": "li5-046-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Whimbrelmere Rotor was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "I retract my launch claim about Whimbrelmere Rotor. This message revises that launch claim; it is not a correction of a calibration value."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-047",
+      "pair_id": "v5-pair-24",
+      "polarity": "positive",
+      "axis": "correspondence_denial_owner_absent",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The positive explicitly identifies a different property and its owner; the negative omits the launch claim owner.",
+      "input": {
+        "id": "li5-047",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-24",
+          "target_question": "Was Xericgrove Dial launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-24",
+            "canonical_name": "Xericgrove Dial",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-047-evidence",
+          "source_id": "li5-047-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Xericgrove Dial was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "We deny the calibration claim about Xericgrove Dial discussed in this correspondence. The denial is limited to the calibration claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-048",
+      "pair_id": "v5-pair-24",
+      "polarity": "negative",
+      "axis": "correspondence_denial_owner_absent",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The positive explicitly identifies a different property and its owner; the negative omits the launch claim owner.",
+      "input": {
+        "id": "li5-048",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-24",
+          "target_question": "Was Xericgrove Dial launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-24",
+            "canonical_name": "Xericgrove Dial",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-048-evidence",
+          "source_id": "li5-048-synthetic-source",
+          "signals": [
+            {
+              "kind": "excerpt",
+              "text": "Xericgrove Dial was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "We deny the launch claim discussed in this correspondence. The correspondence omits the product name of the denied launch claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-049",
+      "pair_id": "v5-pair-25",
+      "polarity": "positive",
+      "axis": "enclosure_list_vs_unowned_withdrawal",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "An enclosure list is neutral; an unowned launch withdrawal cannot authorize the target launch relation.",
+      "input": {
+        "id": "li5-049",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-25",
+          "target_question": "Was Yellowfen Bridge launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-25",
+            "canonical_name": "Yellowfen Bridge",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-049-evidence",
+          "source_id": "li5-049-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Publisher letter listing enclosures"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Yellowfen Bridge was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Two enclosures accompany this letter: a glossary and a typesetting guide. The list describes the enclosed documents."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-050",
+      "pair_id": "v5-pair-25",
+      "polarity": "negative",
+      "axis": "enclosure_list_vs_unowned_withdrawal",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "An enclosure list is neutral; an unowned launch withdrawal cannot authorize the target launch relation.",
+      "input": {
+        "id": "li5-050",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-25",
+          "target_question": "Was Yellowfen Bridge launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-25",
+            "canonical_name": "Yellowfen Bridge",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-050-evidence",
+          "source_id": "li5-050-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Publisher letter listing a withdrawal"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Yellowfen Bridge was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "A launch assertion in one enclosure is withdrawn. The letter and its enclosure list omit the product name for the withdrawn assertion."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-051",
+      "pair_id": "v5-pair-26",
+      "polarity": "positive",
+      "axis": "transcript_explicit_property_or_lost_referent",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The positive object is explicit and non-launch; the negative explicitly records the lost product referent.",
+      "input": {
+        "id": "li5-051",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-26",
+          "target_question": "Was Zirconwood Coil launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-26",
+            "canonical_name": "Zirconwood Coil",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-051-evidence",
+          "source_id": "li5-051-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Current author transcript"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Zirconwood Coil was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Author: I retract the declaration about Zirconwood Coil's cord length. Transcript note: the corrected topic is cord length."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-052",
+      "pair_id": "v5-pair-26",
+      "polarity": "negative",
+      "axis": "transcript_explicit_property_or_lost_referent",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The positive object is explicit and non-launch; the negative explicitly records the lost product referent.",
+      "input": {
+        "id": "li5-052",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-26",
+          "target_question": "Was Zirconwood Coil launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-26",
+            "canonical_name": "Zirconwood Coil",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-052-evidence",
+          "source_id": "li5-052-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Current author transcript"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Zirconwood Coil was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "Author: I retract that launch claim. Transcript note: the product referent was lost from the recording."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-053",
+      "pair_id": "v5-pair-27",
+      "polarity": "positive",
+      "axis": "detached_signature_page_scope",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "Signature-page layout is neutral; the present first-person launch withdrawal has an expressly omitted owner.",
+      "input": {
+        "id": "li5-053",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-27",
+          "target_question": "Was Adlerbay Valve launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-27",
+            "canonical_name": "Adlerbay Valve",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-053-evidence",
+          "source_id": "li5-053-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Signature page administration"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Adlerbay Valve was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The signature page now displays the author initials. This update concerns the signature-page layout."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-054",
+      "pair_id": "v5-pair-27",
+      "polarity": "negative",
+      "axis": "detached_signature_page_scope",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "Signature-page layout is neutral; the present first-person launch withdrawal has an expressly omitted owner.",
+      "input": {
+        "id": "li5-054",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-27",
+          "target_question": "Was Adlerbay Valve launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-27",
+            "canonical_name": "Adlerbay Valve",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-054-evidence",
+          "source_id": "li5-054-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Signature page current withdrawal"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Adlerbay Valve was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "I withdraw the launch announcement. This signature page omits the name of the product whose launch is withdrawn."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-055",
+      "pair_id": "v5-pair-28",
+      "polarity": "positive",
+      "axis": "joint_response_named_property_or_unknown_launch",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The positive explicitly names another product and property; the launch withdrawal in the negative is unassigned between products.",
+      "input": {
+        "id": "li5-055",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-28",
+          "target_question": "Was Briarwick Spool launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-28",
+            "canonical_name": "Briarwick Spool",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-055-evidence",
+          "source_id": "li5-055-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Current joint response about Briarwick Spool and Granitepetal Chime"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Briarwick Spool was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "We deny a rope-material claim for Granitepetal Chime. This reply addresses the rope-material claim for Granitepetal Chime."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-056",
+      "pair_id": "v5-pair-28",
+      "polarity": "negative",
+      "axis": "joint_response_named_property_or_unknown_launch",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The positive explicitly names another product and property; the launch withdrawal in the negative is unassigned between products.",
+      "input": {
+        "id": "li5-056",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-28",
+          "target_question": "Was Briarwick Spool launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-28",
+            "canonical_name": "Briarwick Spool",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-056-evidence",
+          "source_id": "li5-056-synthetic-source",
+          "signals": [
+            {
+              "kind": "source_title",
+              "text": "Current joint response about Briarwick Spool and Granitepetal Chime"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Briarwick Spool was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "We retract one launch claim. Our reply does not identify which product owns that launch claim."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-057",
+      "pair_id": "v5-pair-29",
+      "polarity": "positive",
+      "axis": "attachment_contrast_vs_unidentified_launch",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "Illustration contrast is neutral; an attached current launch withdrawal has no identified owner.",
+      "input": {
+        "id": "li5-057",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-29",
+          "target_question": "Was Cedarstrand Bar launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-29",
+            "canonical_name": "Cedarstrand Bar",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-057-evidence",
+          "source_id": "li5-057-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Message about the attached illustration"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Cedarstrand Bar was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The illustration attachment now uses greyscale shading. The author message concerns illustration contrast."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-058",
+      "pair_id": "v5-pair-29",
+      "polarity": "negative",
+      "axis": "attachment_contrast_vs_unidentified_launch",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "Illustration contrast is neutral; an attached current launch withdrawal has no identified owner.",
+      "input": {
+        "id": "li5-058",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-29",
+          "target_question": "Was Cedarstrand Bar launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-29",
+            "canonical_name": "Cedarstrand Bar",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-058-evidence",
+          "source_id": "li5-058-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Message about the attached withdrawal"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Cedarstrand Bar was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "The launch statement in the attached notice is withdrawn by its author. The attachment does not identify the product of that launch statement."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-059",
+      "pair_id": "v5-pair-30",
+      "polarity": "positive",
+      "axis": "indexer_footnote_vs_orphan_retraction",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "rationale": "The source-location note is neutral; an explicitly owner-missing launch retraction requires withholding.",
+      "input": {
+        "id": "li5-059",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-30",
+          "target_question": "Was Dovehollow Crown launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-30",
+            "canonical_name": "Dovehollow Crown",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-059-evidence",
+          "source_id": "li5-059-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Source-location footnote"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Dovehollow Crown was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "This footnote gives the shelf code and binding colour of the archived page. It is an indexer note."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    },
+    {
+      "id": "li5-060",
+      "pair_id": "v5-pair-30",
+      "polarity": "negative",
+      "axis": "indexer_footnote_vs_orphan_retraction",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "rationale": "The source-location note is neutral; an explicitly owner-missing launch retraction requires withholding.",
+      "input": {
+        "id": "li5-060",
+        "policy": {
+          "policy_id": "independent-v5-launch-policy",
+          "target_id": "v5-fictional-target-30",
+          "target_question": "Was Dovehollow Crown launched?",
+          "entity": {
+            "canonical_id": "v5-fictional-target-30",
+            "canonical_name": "Dovehollow Crown",
+            "aliases": []
+          },
+          "relation": "change_or_launch",
+          "identity_requirement": "require_harness_anchor",
+          "assessment_budget": {
+            "max_model_attempts": 2,
+            "max_tokens": 192,
+            "max_elapsed_ms": 90000
+          }
+        },
+        "candidate": {
+          "evidence_id": "li5-060-evidence",
+          "source_id": "li5-060-synthetic-source",
+          "signals": [
+            {
+              "kind": "heading",
+              "text": "Orphan correction footnote"
+            },
+            {
+              "kind": "excerpt",
+              "text": "Dovehollow Crown was launched."
+            },
+            {
+              "kind": "excerpt",
+              "text": "I retract the launch assertion mentioned here. The product name is omitted from this correction footnote."
+            }
+          ]
+        },
+        "proposal": {
+          "target_binding": "exact",
+          "relation_binding": "exact"
+        },
+        "raw": {
+          "identity_scope": "exact_target",
+          "relation_scope": "requested_relation",
+          "scope_risk": "none"
+        }
+      }
+    }
+  ]
+}

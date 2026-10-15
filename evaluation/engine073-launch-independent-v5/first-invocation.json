@@ -1,0 +1,51 @@
+{
+  "state": "finished",
+  "utc": "2026-10-15T13:00:23.471898+00:00",
+  "command": [
+    "/private/tmp/engine073-launch-independent-v5-probe/probe",
+    "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/evaluation/engine073-launch-independent-v5/inputs.json"
+  ],
+  "pre_invocation_identity": {
+    "verified_utc": "2026-10-15T13:00:20.060045+00:00",
+    "head": "7e107f1c2c71cf55cd395d2b3aecb889e4f166a1",
+    "artifacts": {
+      "evidence_relevance_source": {
+        "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+        "sha256": "939f9b788666a61da59b558cbc03f7741dd5e96e698951823f736bbedf6d4d1c"
+      },
+      "core_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+        "sha256": "69a325c0ff64264161c09f2dfe67e410fa4bfd3c9a8dd3681a32dbafd35ff2a1"
+      },
+      "serde_json_rlib": {
+        "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+        "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68"
+      },
+      "probe_executable": {
+        "path": "/private/tmp/engine073-launch-independent-v5-probe/probe",
+        "sha256": "d542e695e8f8057cbbc96336654158ac97eaa7bd76358fe38b289a9bea6b1b04"
+      }
+    },
+    "frozen_files": {
+      "author_cases.py": "2b8c86e95d0fe956f54f869acbd691501d15e9d5a47b224938395a36f0d36691",
+      "cases.json": "9cad5a2fca13d5869e72e26c817fea616eb708d2fff772aedea37e3df25c5f4f",
+      "inputs.json": "fbae5fc6b5c888fadd531a803efdde24d22efa36f02024569fc42d278e738bcf",
+      "protocol.json": "1fe186c7310d2f21e09f5f95448acadaf95ec7e2f4958747dc88e98ca587b671",
+      "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+      "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+      "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+      "static_preflight.py": "f35c8f52da08494d129528709c4365b749b0f9357ee3a22a76d3006650bd1a9f",
+      "static-preflight.json": "865bc2c41d80861ba81f9567d8cd7d6a476c4e2c3dc05935d47f98e41caada6a",
+      "pre-freeze-scope-review.json": "c7d174f10ecbc76468856fd2dee35d663dfdcad7547570680f087410b70cc847",
+      "predecessor-artifact-hashes.json": "3f50f13a03e7e4c9bd212618a9407ff7d90a8ed5c92b1134cb2329d94eacb4a4"
+    },
+    "manifest_sha256": "36aea95c26a491b762915d3e0acc27376aa9acecbbd15a40d7957923cdb9c3ba"
+  },
+  "returncode": 0,
+  "execution_error": null,
+  "elapsed_seconds": 3.411264833062887,
+  "provider_calls": 0,
+  "retries": 0,
+  "stdout_sha256": "879cb76b349a35f1e033271d21779048927004fca4956f2104fe6e02823d285f",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

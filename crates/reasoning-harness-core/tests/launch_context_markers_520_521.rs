@@ -743,6 +743,45 @@ fn engine073_independent_v4_seen_replay_preserves_full_scope() {
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
+#[test]
+fn engine073_independent_v5_seen_replay_preserves_full_scope() {
+    // Keep v5's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v5/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
 
 #[test]
 fn explicit_property_context_cannot_hide_global_or_launch_denials() {
@@ -821,6 +860,47 @@ fn limited_property_notice_cannot_override_launch_or_unresolved_retraction() {
             {"kind":"excerpt","text":"Silver Lens was launched in 2026."},
             {"kind":"excerpt","text":format!("{text} The notice applies only to that physical specification.")}
         ],"expected_relevant":expected}));
+    }
+    check(cases);
+}
+
+#[test]
+fn contracted_non_events_and_generic_objects_preserve_the_launch_boundary() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        ("Silver Lens wasn't launched.", false),
+        ("Silver Lens hasn't been launched.", false),
+        ("There has been no launch of Silver Lens.", false),
+        ("No launch has occurred for Silver Lens.", false),
+        ("We don't retract the Silver Lens launch claim.", true),
+        ("We hereby retract the preceding statement.", false),
+        ("The two of them were withdrawn.", false),
+        ("We retract this sentence.", false),
+        ("We withdraw the declaration.", false),
+        ("We retract the findings.", false),
+        ("We withdraw this source content.", false),
+        ("We withdraw the download link.", true),
+        ("The old mailing address was withdrawn.", true),
+        (
+            "We deny the assertion about the resin content of Silver Lens.",
+            true,
+        ),
+        ("Maple Queue wasn't launched.", true),
+        ("There has been no launch of Maple Queue.", true),
+        (
+            "We retract Maple Queue's launch assertion, which appeared beside the record about Silver Lens.",
+            true,
+        ),
+        (
+            "We retract Silver Lens's launch assertion, which appeared beside the record about Maple Queue.",
+            false,
+        ),
+        (
+            "We retract Maple Queue's launch assertion, which also retracts the launch statement about Silver Lens.",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched in 2026."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
     }
     check(cases);
 }

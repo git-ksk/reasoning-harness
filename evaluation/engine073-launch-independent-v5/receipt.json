@@ -1,0 +1,92 @@
+{
+  "identity": "engine073-launch-independent-v5",
+  "recorded_utc": "2026-10-15T13:03:01.345624+00:00",
+  "candidate_source_sha": "7e107f1c2c71cf55cd395d2b3aecb889e4f166a1",
+  "manifest_sha256": "36aea95c26a491b762915d3e0acc27376aa9acecbbd15a40d7957923cdb9c3ba",
+  "pre_invocation_guard_matches_manifest": true,
+  "frozen_files_unchanged": true,
+  "v1_v4_all_artifacts_unchanged": true,
+  "static_stage": {
+    "outcome": "PASS",
+    "Engine_invocations": 0,
+    "semantic_observations": 0
+  },
+  "first_semantic_result": {
+    "identity": "engine073-launch-independent-v5",
+    "candidate_source_sha": "7e107f1c2c71cf55cd395d2b3aecb889e4f166a1",
+    "manifest_sha256": "36aea95c26a491b762915d3e0acc27376aa9acecbbd15a40d7957923cdb9c3ba",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 43,
+    "failed": 17,
+    "incomplete": 0,
+    "positive_passed": 15,
+    "negative_passed": 28,
+    "negative_v17_requested_relation_violations": 2,
+    "negative_v30_relevant_violations": 2,
+    "positive_v17_withheld": 15,
+    "positive_v30_withheld": 15,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "879cb76b349a35f1e033271d21779048927004fca4956f2104fe6e02823d285f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "53d95aab33af4091e5986a8bab94cfd0945bb064219080291bd1b3fe9f1a4e60"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "negative_v17_requested_relation_violation_ids": [
+    "li5-024",
+    "li5-028"
+  ],
+  "negative_v30_relevant_violation_ids": [
+    "li5-024",
+    "li5-028"
+  ],
+  "positive_withheld_ids": [
+    "li5-001",
+    "li5-005",
+    "li5-007",
+    "li5-009",
+    "li5-011",
+    "li5-013",
+    "li5-021",
+    "li5-029",
+    "li5-031",
+    "li5-035",
+    "li5-039",
+    "li5-041",
+    "li5-043",
+    "li5-047",
+    "li5-051"
+  ],
+  "first_probe_invocations": 1,
+  "scorer_applications": 1,
+  "retries": 0,
+  "rescoring": 0,
+  "post_observation_label_changes": 0,
+  "provider_API_calls": 0,
+  "files": {
+    "README.md": "3c8f06ea25907fae556fded6ee2c109fc8fb65bc2a9c2ff73f8d3d2cfc13fbce",
+    "author_cases.py": "2b8c86e95d0fe956f54f869acbd691501d15e9d5a47b224938395a36f0d36691",
+    "cases.json": "9cad5a2fca13d5869e72e26c817fea616eb708d2fff772aedea37e3df25c5f4f",
+    "first-invocation.json": "53d95aab33af4091e5986a8bab94cfd0945bb064219080291bd1b3fe9f1a4e60",
+    "first-invocation.started.json": "7de874485eaba7f831fff91ffdb78ad32d2b64ef1629467dfcfa1ed33acc7982",
+    "first-results.json": "ad8497ee067e84d17367734719a477873c8562a03064bb22a78c306dd8e808f7",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "first-summary.json": "f812535c19028972ba104f2da1360d3c6542af65cc83256f2fd89ed771ef562c",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first.stdout.jsonl": "879cb76b349a35f1e033271d21779048927004fca4956f2104fe6e02823d285f",
+    "inputs.json": "fbae5fc6b5c888fadd531a803efdde24d22efa36f02024569fc42d278e738bcf",
+    "manifest.json": "36aea95c26a491b762915d3e0acc27376aa9acecbbd15a40d7957923cdb9c3ba",
+    "pre-freeze-scope-review.json": "c7d174f10ecbc76468856fd2dee35d663dfdcad7547570680f087410b70cc847",
+    "predecessor-artifact-hashes.json": "3f50f13a03e7e4c9bd212618a9407ff7d90a8ed5c92b1134cb2329d94eacb4a4",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "1fe186c7310d2f21e09f5f95448acadaf95ec7e2f4958747dc88e98ca587b671",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "865bc2c41d80861ba81f9567d8cd7d6a476c4e2c3dc05935d47f98e41caada6a",
+    "static_preflight.py": "f35c8f52da08494d129528709c4365b749b0f9357ee3a22a76d3006650bd1a9f"
+  }
+}
