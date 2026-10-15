@@ -15,3 +15,15 @@ The new guard shares one instance across normal baseline, candidate and helper i
 Before the next live freeze, wire and test the guard in the real runner (including normal/helper transitions), pin the repaired CLI diagnostic host, calculate a practical arm reserve/self-budget from first observations, and use graceful cancellation before a bounded hard kill. #535 preserves early returns and cooperative cancellation; no destructor can flush a process killed by SIGKILL. Google v3's 16 wall timeouts therefore remain incomplete.
 
 Run offline: `python3 -m unittest discover -s evaluation/engine07-realworld-operations-v1 -p 'test_*.py'`. This module makes **zero** model/API calls. It is preparation evidence, not provider recovery or Engine acceptance.
+
+## Post-observation independent operational review
+
+The independent reviewer reproduced a connection hazard: the ordinary CLI emits `quota` while the helper emits `provider_Quota`. A raw string must not reach the guard as a trusted failure class, especially after #536 makes some failed-run usage available. `bridge.py` now maps each exact envelope to `FailureClass`; the guard stops on unknown/non-enum classes even when usage is known. Fourteen additional offline controls include actual first Groq archives (47 normal quota/1 unmeasurable and13 helper quota/2 success), known partial usage, malformed frames and cancelled lower-bound accounting. These are representation/accounting replays, not a semantic rescore or new provider observation.
+
+There are26 offline tests in total. Real-runner integration, loading the persisted start prohibition/recovery model, durable reserve/inflight/latch persistence and first-run-only restart protection remain mandatory before any new live identity. The standalone bridge is not a claim that these remaining pieces are implemented. Frozen v2/v3 observations and the original12-test guard review remain preserved in history.
+
+Repair review also reproduced cancellation with known usage and a successful contract combined with an explicit cancelled status. Canonical cancellation now always latches; its claimed totals are not accepted as complete. A success envelope cannot carry a failure/interruption/status frame. Three further controls cover these normal/helper contradictions without provider calls.
+
+The normal bridge also requires the producer's per-invocation `usage.run.tracked_from_session_start` to be true. Missing/untracked run totals are unavailable. A separate legacy session's incomplete history does not erase measured current-run usage. Three additional controls verify both cases and a real successful normal envelope. None of this authenticates semantic correctness.
+
+Independent final repair review of `5688fef33970e4021afe28eafef3e7d48ce92de3` reran all26 controls successfully and found no remaining bridge-scope blocker. This leaves the separate live-runner/durability/headroom gates open.
