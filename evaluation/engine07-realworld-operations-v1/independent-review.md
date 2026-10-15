@@ -1,0 +1,17 @@
+# Independent operational review
+
+The separately authorized reviewer completed a read-only follow-up of main `27431652fd1873b8f764e8ba178605514e2255ac`, the private first Groq artifact and prior v17/holdout-v5 controls. It independently reran12 offline tests, made zero provider calls, and did not read production Engine implementation or historical holdout corpora. This is operational design review; fresh acceptance and Groq recovery remain unperformed.
+
+Actual v3 classes:47 normal `quota` plus1 `usage_budget_unmeasurable`; helper13 `provider_Quota` plus2 successful calls. All47 normal quota messages identify TPD200000. Observed used-token values199088–199764 left only236–912 tokens at those failures; requested725–1675. A minute limit/interval, short retry hint or two tiny successes cannot establish headroom for all48 normal invocations and helpers. Account identifiers are not included here.
+
+The reviewer reproduced that noncanonical strings `Quota`/`provider_Quota` with known usage could bypass the original guard's quota latch. Commit `9cf33ef96699654eddb33ebce3f8384f3a81a1a3` adds exact normal/helper bridges and a canonical enum; unknown or unbridged classes now stop even when token usage is known. Eight additional offline tests include the real first-artifact representations. Independent review of this repair is pending at this document's initial commit.
+
+Before the next live freeze, all of the following are required:
+
+- Integrate one shared instance across baseline/candidate/helper. `Decision.allowed` means admission to start, not a successful observation. Score the triggering failure and every suppressed planned row as incomplete; exercise these transitions end to end.
+- Freeze a conservative reserve for the entire callback, including all logical operations/generations/HTTP attempts. The current guard checks reserve before admission and stops after an actual budget overspend; it does not hard-cap callback consumption. Log reserve, remaining accounting and plan identity, and prove callback bounds. The sum of48 nominal28096-token normal ceilings is1348608 before helpers or possible post-response overshoot; historical55K/70K/4K/300s values are not automatically transferable. A token budget is not a currency hard cap.
+- `observed_tokens` is only the known partial sum. If accounting is unknown/in flight, publish full totals as null and preserve usage completeness separately; never refund unresolved capacity or infer that zero observed tokens means zero billed usage.
+- Persist write-ahead reserve/inflight/latch/events with fsync before requests. Process death/SIGKILL bypasses in-memory exception handling; restart must fail closed on an unresolved operation and must not create a fresh unlatched guard. Use #536 diagnostics and bounded graceful cancellation before hard kill.
+- Load `groq-state.json` and verify quota account/model scope before credentials. Recovery/admission must use an actual-usage/refill anchor and invalidate modeled headroom when material shared organization usage is unknown or intervenes. Repository concurrency groups do not prove organization-wide idleness. No time-only or readiness-probe-only quota reset.
+
+These integration/durability/admission requirements remain **unimplemented** in the standalone component. README/results correctly state this; no new live identity is authorized by these unit tests or this review.
