@@ -1,0 +1,1590 @@
+{
+  "summary": {
+    "identity": "engine073-launch-independent-v10",
+    "candidate_source_sha": "e06c4ec5505644250669df97860ebbe9ccc5cde8",
+    "manifest_sha256": "7f88fb2a6d409d637814fed28c3a159f9bba3ce9b0f8e85e18e25bf79345ea4e",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 43,
+    "failed": 17,
+    "incomplete": 0,
+    "positive_passed": 13,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 17,
+    "positive_v30_withheld": 17,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "dce3530c9a1f79dd5550739e00528540e66dd638896ae6d13e779e30c08c8b5d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "ddb0b32fb39a70123193206f69bb8dc2faa51c865e0d7398eabadc17b3536c3a"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "cases": [
+    {
+      "id": "li10-001",
+      "pair_id": "v10-pair-01",
+      "polarity": "positive",
+      "axis": "heading_object_denial_and_neutral_publication_note",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-002",
+      "pair_id": "v10-pair-01",
+      "polarity": "negative",
+      "axis": "heading_object_denial_and_neutral_publication_note",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-003",
+      "pair_id": "v10-pair-02",
+      "polarity": "positive",
+      "axis": "quoted_subject_with_same_type_withdrawal",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-004",
+      "pair_id": "v10-pair-02",
+      "polarity": "negative",
+      "axis": "quoted_subject_with_same_type_withdrawal",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-005",
+      "pair_id": "v10-pair-03",
+      "polarity": "positive",
+      "axis": "item_with_complete_owner_and_dimension_apposition",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-006",
+      "pair_id": "v10-pair-03",
+      "polarity": "negative",
+      "axis": "item_with_complete_owner_and_dimension_apposition",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-007",
+      "pair_id": "v10-pair-04",
+      "polarity": "positive",
+      "axis": "same_object_article_reference_and_selected_owner",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-008",
+      "pair_id": "v10-pair-04",
+      "polarity": "negative",
+      "axis": "same_object_article_reference_and_selected_owner",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-009",
+      "pair_id": "v10-pair-05",
+      "polarity": "positive",
+      "axis": "complete_clip_name_property_vs_explicit_non_event",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-010",
+      "pair_id": "v10-pair-05",
+      "polarity": "negative",
+      "axis": "complete_clip_name_property_vs_explicit_non_event",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-011",
+      "pair_id": "v10-pair-06",
+      "polarity": "positive",
+      "axis": "item_reply_with_following_complete_owner_supplement",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-012",
+      "pair_id": "v10-pair-06",
+      "polarity": "negative",
+      "axis": "item_reply_with_following_complete_owner_supplement",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-013",
+      "pair_id": "v10-pair-07",
+      "polarity": "positive",
+      "axis": "separately_typed_property_cues_vs_additional_unknown_launch",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-014",
+      "pair_id": "v10-pair-07",
+      "polarity": "negative",
+      "axis": "separately_typed_property_cues_vs_additional_unknown_launch",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-015",
+      "pair_id": "v10-pair-08",
+      "polarity": "positive",
+      "axis": "complete_property_apposition_vs_unselected_event_apposition",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-016",
+      "pair_id": "v10-pair-08",
+      "polarity": "negative",
+      "axis": "complete_property_apposition_vs_unselected_event_apposition",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-017",
+      "pair_id": "v10-pair-09",
+      "polarity": "positive",
+      "axis": "document_subject_denial_with_layout_footer",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-018",
+      "pair_id": "v10-pair-09",
+      "polarity": "negative",
+      "axis": "document_subject_denial_with_layout_footer",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-019",
+      "pair_id": "v10-pair-10",
+      "polarity": "positive",
+      "axis": "canonical_clip_complete_context_vs_actual_owner_gap",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-020",
+      "pair_id": "v10-pair-10",
+      "polarity": "negative",
+      "axis": "canonical_clip_complete_context_vs_actual_owner_gap",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-021",
+      "pair_id": "v10-pair-11",
+      "polarity": "positive",
+      "axis": "adjacent_heading_owner_for_typed_object_reply",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-022",
+      "pair_id": "v10-pair-11",
+      "polarity": "negative",
+      "axis": "adjacent_heading_owner_for_typed_object_reply",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-023",
+      "pair_id": "v10-pair-12",
+      "polarity": "positive",
+      "axis": "foreign_object_and_separately_owned_subject",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-024",
+      "pair_id": "v10-pair-12",
+      "polarity": "negative",
+      "axis": "foreign_object_and_separately_owned_subject",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-025",
+      "pair_id": "v10-pair-13",
+      "polarity": "positive",
+      "axis": "property_item_before_foreign_or_target_launch_object",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-026",
+      "pair_id": "v10-pair-13",
+      "polarity": "negative",
+      "axis": "property_item_before_foreign_or_target_launch_object",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-027",
+      "pair_id": "v10-pair-14",
+      "polarity": "positive",
+      "axis": "canonical_clip_title_and_typed_item_context",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "positive_candidate_safe_to_accept"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-028",
+      "pair_id": "v10-pair-14",
+      "polarity": "negative",
+      "axis": "canonical_clip_title_and_typed_item_context",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-029",
+      "pair_id": "v10-pair-15",
+      "polarity": "positive",
+      "axis": "same_subject_with_explicit_printed_type_clarification",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-030",
+      "pair_id": "v10-pair-15",
+      "polarity": "negative",
+      "axis": "same_subject_with_explicit_printed_type_clarification",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-031",
+      "pair_id": "v10-pair-16",
+      "polarity": "positive",
+      "axis": "quotation_then_typed_item_then_same_type_reply",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-032",
+      "pair_id": "v10-pair-16",
+      "polarity": "negative",
+      "axis": "quotation_then_typed_item_then_same_type_reply",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-033",
+      "pair_id": "v10-pair-17",
+      "polarity": "positive",
+      "axis": "subject_heading_and_quote_type_agreement_or_conflict",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-034",
+      "pair_id": "v10-pair-17",
+      "polarity": "negative",
+      "axis": "subject_heading_and_quote_type_agreement_or_conflict",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-035",
+      "pair_id": "v10-pair-18",
+      "polarity": "positive",
+      "axis": "locally_bound_object_vs_distant_property_and_missing_reply_context",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-036",
+      "pair_id": "v10-pair-18",
+      "polarity": "negative",
+      "axis": "locally_bound_object_vs_distant_property_and_missing_reply_context",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-037",
+      "pair_id": "v10-pair-19",
+      "polarity": "positive",
+      "axis": "fully_explained_compound_property_item_apposition",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-038",
+      "pair_id": "v10-pair-19",
+      "polarity": "negative",
+      "axis": "fully_explained_compound_property_item_apposition",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-039",
+      "pair_id": "v10-pair-20",
+      "polarity": "positive",
+      "axis": "post_reply_owner_supplement_selected_or_mixed",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-040",
+      "pair_id": "v10-pair-20",
+      "polarity": "negative",
+      "axis": "post_reply_owner_supplement_selected_or_mixed",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-041",
+      "pair_id": "v10-pair-21",
+      "polarity": "positive",
+      "axis": "two_local_typed_properties_vs_ownerless_second_subject",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-042",
+      "pair_id": "v10-pair-21",
+      "polarity": "negative",
+      "axis": "two_local_typed_properties_vs_ownerless_second_subject",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-043",
+      "pair_id": "v10-pair-22",
+      "polarity": "positive",
+      "axis": "generic_claim_with_adjacent_complete_font_or_event_quote",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-044",
+      "pair_id": "v10-pair-22",
+      "polarity": "negative",
+      "axis": "generic_claim_with_adjacent_complete_font_or_event_quote",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-045",
+      "pair_id": "v10-pair-23",
+      "polarity": "positive",
+      "axis": "ledger_item_heading_with_foreign_or_unselected_confirmation",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-046",
+      "pair_id": "v10-pair-23",
+      "polarity": "negative",
+      "axis": "ledger_item_heading_with_foreign_or_unselected_confirmation",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-047",
+      "pair_id": "v10-pair-24",
+      "polarity": "positive",
+      "axis": "target_event_subject_before_safe_property_object",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-048",
+      "pair_id": "v10-pair-24",
+      "polarity": "negative",
+      "axis": "target_event_subject_before_safe_property_object",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-049",
+      "pair_id": "v10-pair-25",
+      "polarity": "positive",
+      "axis": "complete_title_owner_with_same_item_reply",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-050",
+      "pair_id": "v10-pair-25",
+      "polarity": "negative",
+      "axis": "complete_title_owner_with_same_item_reply",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-051",
+      "pair_id": "v10-pair-26",
+      "polarity": "positive",
+      "axis": "generic_target_claim_with_complete_property_or_event_apposition",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-052",
+      "pair_id": "v10-pair-26",
+      "polarity": "negative",
+      "axis": "generic_target_claim_with_complete_property_or_event_apposition",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-053",
+      "pair_id": "v10-pair-27",
+      "polarity": "positive",
+      "axis": "full_clip_name_vs_explicitly_missing_launch_owner_sentence",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-054",
+      "pair_id": "v10-pair-27",
+      "polarity": "negative",
+      "axis": "full_clip_name_vs_explicitly_missing_launch_owner_sentence",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_blocking_cue_present",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-055",
+      "pair_id": "v10-pair-28",
+      "polarity": "positive",
+      "axis": "typed_item_and_quoted_owner_agreement_or_conflict",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "effective_relation_scope": "requested_relation",
+      "v30_disposition": "relevant",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "positive_target_local_binding_confirmed",
+        "model_relevant"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-056",
+      "pair_id": "v10-pair-28",
+      "polarity": "negative",
+      "axis": "typed_item_and_quoted_owner_agreement_or_conflict",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-057",
+      "pair_id": "v10-pair-29",
+      "polarity": "positive",
+      "axis": "document_property_object_and_second_subject_with_neutral_printer_note",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-058",
+      "pair_id": "v10-pair-29",
+      "polarity": "negative",
+      "axis": "document_property_object_and_second_subject_with_neutral_printer_note",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    },
+    {
+      "id": "li10-059",
+      "pair_id": "v10-pair-30",
+      "polarity": "positive",
+      "axis": "safe_subject_before_fully_owned_foreign_or_target_item",
+      "expected": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "status": "fail"
+    },
+    {
+      "id": "li10-060",
+      "pair_id": "v10-pair-30",
+      "polarity": "negative",
+      "axis": "safe_subject_before_fully_owned_foreign_or_target_item",
+      "expected": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "observed": {
+        "v17_requested_relation": false,
+        "v30_relevant": false
+      },
+      "effective_relation_scope": "unresolved",
+      "v30_disposition": "ambiguous",
+      "v30_reasons": [
+        "harness_canonical_name_anchor",
+        "local_qualification_disagreement",
+        "model_ambiguous"
+      ],
+      "checks": {
+        "v17_requested_relation": true,
+        "v30_relevant": true
+      },
+      "status": "pass"
+    }
+  ]
+}

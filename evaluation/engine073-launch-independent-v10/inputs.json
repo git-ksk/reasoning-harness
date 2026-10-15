@@ -1,0 +1,2694 @@
+[
+  {
+    "id": "li10-001",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-01",
+      "target_question": "Was Amberwick Latch launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-01",
+        "canonical_name": "Amberwick Latch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-001-evidence",
+      "source_id": "li10-001-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Object: the physical launch-panel width statement for Amberwick Latch"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Amberwick Latch was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Editorial correction: that object is denied. The width specification is the object of this notice. Publisher note: this notice was typeset in two columns."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-002",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-01",
+      "target_question": "Was Amberwick Latch launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-01",
+        "canonical_name": "Amberwick Latch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-002-evidence",
+      "source_id": "li10-002-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Object: the product launch statement for Amberwick Latch"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Amberwick Latch was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Editorial correction: that object is denied. The product launch statement is the object of this notice. Publisher note: this notice was typeset in two columns."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-003",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-02",
+      "target_question": "Was Broomhaven Gauge launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-02",
+        "canonical_name": "Broomhaven Gauge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-003-evidence",
+      "source_id": "li10-003-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Specification erratum. Subject: \"The launch collar on Broomhaven Gauge is copper.\" This subject is withdrawn. The withdrawal concerns the quoted collar-material specification."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Broomhaven Gauge was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-004",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-02",
+      "target_question": "Was Broomhaven Gauge launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-02",
+        "canonical_name": "Broomhaven Gauge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-004-evidence",
+      "source_id": "li10-004-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Specification erratum. Subject: \"Broomhaven Gauge was launched.\" This subject is withdrawn. The withdrawal concerns the quoted product launch statement."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Broomhaven Gauge was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-005",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-03",
+      "target_question": "Was Cedarhollow Lens launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-03",
+        "canonical_name": "Cedarhollow Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-005-evidence",
+      "source_id": "li10-005-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cedarhollow Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: a physical dimension assertion for Cedarhollow Lens. We deny the item, namely the height statement for the release button on Cedarhollow Lens. This is a button-height correction."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-006",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-03",
+      "target_question": "Was Cedarhollow Lens launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-03",
+        "canonical_name": "Cedarhollow Lens",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-006-evidence",
+      "source_id": "li10-006-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cedarhollow Lens was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: a launch assertion for Cedarhollow Lens. We deny the item, namely the product launch statement for Cedarhollow Lens. This is a launch-event correction."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-007",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-04",
+      "target_question": "Was Duneford Platen launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-04",
+        "canonical_name": "Duneford Platen",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-007-evidence",
+      "source_id": "li10-007-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Duneford Platen was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Publisher routing card. Object: the launch claim belonging to Sablemere Gimbal. The object is retracted. Routing note: the full product owner of the retracted object is Sablemere Gimbal."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-008",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-04",
+      "target_question": "Was Duneford Platen launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-04",
+        "canonical_name": "Duneford Platen",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-008-evidence",
+      "source_id": "li10-008-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Duneford Platen was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Publisher routing card. Object: a launch claim belonging to either Duneford Platen or Sablemere Gimbal. The object is retracted. Routing note: no choice between the two product owners was recorded."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-009",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-05",
+      "target_question": "Was Elmharbour Clip launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-05",
+        "canonical_name": "Elmharbour Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-009-evidence",
+      "source_id": "li10-009-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Product identifier: Elmharbour Clip"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Elmharbour Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the physical release-socket width specification for Elmharbour Clip. We deny this subject. This is a socket-width property correction; Elmharbour Clip is the complete product name."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-010",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-05",
+      "target_question": "Was Elmharbour Clip launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-05",
+        "canonical_name": "Elmharbour Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-010-evidence",
+      "source_id": "li10-010-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Product identifier: Elmharbour Clip"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Elmharbour Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The launch of Elmharbour Clip did not happen. This current notice denies the launch event; Elmharbour Clip is the complete product name."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-011",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-06",
+      "target_question": "Was Fallowmere Wheel launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-06",
+        "canonical_name": "Fallowmere Wheel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-011-evidence",
+      "source_id": "li10-011-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Item: a launch statement. Author reply: \"I deny the item.\" Owner supplement immediately after the reply: the owner of this item is Sablemere Gimbal. The item concerns Sablemere Gimbal's launch."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Fallowmere Wheel was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-012",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-06",
+      "target_question": "Was Fallowmere Wheel launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-06",
+        "canonical_name": "Fallowmere Wheel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-012-evidence",
+      "source_id": "li10-012-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Item: a launch statement. Author reply: \"I deny the item.\" Owner supplement immediately after the reply: absent. The owner of this launch item was not supplied."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Fallowmere Wheel was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-013",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-07",
+      "target_question": "Was Goldwharf Panel launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-07",
+        "canonical_name": "Goldwharf Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-013-evidence",
+      "source_id": "li10-013-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Goldwharf Panel was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the printed launch-label font statement for Goldwharf Panel. I withdraw this object. Subject: the physical release-handle width statement for Goldwharf Panel. I deny the subject. These are separate printed-font and physical-width corrections."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-014",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-07",
+      "target_question": "Was Goldwharf Panel launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-07",
+        "canonical_name": "Goldwharf Panel",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-014-evidence",
+      "source_id": "li10-014-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Goldwharf Panel was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the printed launch-label font statement for Goldwharf Panel. I withdraw this object. Subject: an additional launch statement whose product owner is not recorded. I deny the subject. This is a separate launch correction with an unidentified owner."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-015",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-08",
+      "target_question": "Was Heatherlake Loom launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-08",
+        "canonical_name": "Heatherlake Loom",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-015-evidence",
+      "source_id": "li10-015-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Heatherlake Loom was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Author correction: I retract that claim—the complete surface-material statement for the physical launch cover on Heatherlake Loom. The apposition identifies only this physical material claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-016",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-08",
+      "target_question": "Was Heatherlake Loom launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-08",
+        "canonical_name": "Heatherlake Loom",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-016-evidence",
+      "source_id": "li10-016-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Heatherlake Loom was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Author correction: I retract that claim—either the surface-material statement for the launch cover on Heatherlake Loom or the product launch statement for Heatherlake Loom. The apposition does not choose which claim is retracted."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-017",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-09",
+      "target_question": "Was Irisquay Valve launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-09",
+        "canonical_name": "Irisquay Valve",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-017-evidence",
+      "source_id": "li10-017-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Subject: the document title-font specification for Irisquay Valve"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Irisquay Valve was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The subject is denied by its author. Footer: the erratum has a wide left margin. The denial concerns the document title font."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-018",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-09",
+      "target_question": "Was Irisquay Valve launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-09",
+        "canonical_name": "Irisquay Valve",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-018-evidence",
+      "source_id": "li10-018-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Subject: the product launch statement for Irisquay Valve"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Irisquay Valve was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The subject is denied by its author. Footer: the erratum has a wide left margin. The denial concerns the product launch."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-019",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-10",
+      "target_question": "Was Juniperbank Clip launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-10",
+        "canonical_name": "Juniperbank Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-019-evidence",
+      "source_id": "li10-019-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Complete product name: Juniperbank Clip"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Juniperbank Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the release-button surface-colour specification for Juniperbank Clip. That object is withdrawn. The object is only the button-colour specification."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-020",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-10",
+      "target_question": "Was Juniperbank Clip launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-10",
+        "canonical_name": "Juniperbank Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-020-evidence",
+      "source_id": "li10-020-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Complete product name: Juniperbank Clip"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Juniperbank Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: a launch statement. That object is withdrawn. The paragraph naming the product is missing from this excerpt; the owner of the withdrawn launch object is unavailable."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "context_gap"
+    }
+  },
+  {
+    "id": "li10-021",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-11",
+      "target_question": "Was Kestrelford Tray launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-11",
+        "canonical_name": "Kestrelford Tray",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-021-evidence",
+      "source_id": "li10-021-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Owner supplement for the following reply: Sablemere Gimbal"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Kestrelford Tray was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch statement of the product named in that owner supplement. Author reply: \"I retract the object.\" The reply belongs to the fully named owner above."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-022",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-11",
+      "target_question": "Was Kestrelford Tray launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-11",
+        "canonical_name": "Kestrelford Tray",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-022-evidence",
+      "source_id": "li10-022-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Owner supplement for the following reply: Kestrelford Tray"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Kestrelford Tray was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch statement of the product named in that owner supplement. Author reply: \"I retract the object.\" The reply belongs to the fully named owner above."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-023",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-12",
+      "target_question": "Was Larchhaven Pedal launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-12",
+        "canonical_name": "Larchhaven Pedal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-023-evidence",
+      "source_id": "li10-023-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Larchhaven Pedal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch statement for Sablemere Gimbal. We retract this object. Subject: the physical launch-wheel diameter statement for Larchhaven Pedal. We deny this subject. Each correction has its own complete product owner."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-024",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-12",
+      "target_question": "Was Larchhaven Pedal launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-12",
+        "canonical_name": "Larchhaven Pedal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-024-evidence",
+      "source_id": "li10-024-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Larchhaven Pedal was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch statement for Sablemere Gimbal. We retract this object. Subject: the launch statement for Larchhaven Pedal. We deny this subject. Each correction has its own complete product owner."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-025",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-13",
+      "target_question": "Was Mallowbridge Sensor launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-13",
+        "canonical_name": "Mallowbridge Sensor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-025-evidence",
+      "source_id": "li10-025-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Mallowbridge Sensor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch-indicator colour claim for Mallowbridge Sensor. The item is denied. Object: the launch claim for Sablemere Gimbal. The object is withdrawn. The first correction is indicator colour and the second belongs to Sablemere Gimbal."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-026",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-13",
+      "target_question": "Was Mallowbridge Sensor launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-13",
+        "canonical_name": "Mallowbridge Sensor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-026-evidence",
+      "source_id": "li10-026-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Mallowbridge Sensor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch-indicator colour claim for Mallowbridge Sensor. The item is denied. Object: the launch claim for Mallowbridge Sensor. The object is withdrawn. The first correction is indicator colour and the second is the target launch."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-027",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-14",
+      "target_question": "Was Nettleharbour Clip launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-14",
+        "canonical_name": "Nettleharbour Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-027-evidence",
+      "source_id": "li10-027-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Complete canonical product name: Nettleharbour Clip"
+        },
+        {
+          "kind": "heading",
+          "text": "Erratum about physical properties"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Nettleharbour Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the material specification for the release latch on Nettleharbour Clip. I retract this item. The item is latch material, and Nettleharbour Clip is the full product name."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-028",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-14",
+      "target_question": "Was Nettleharbour Clip launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-14",
+        "canonical_name": "Nettleharbour Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-028-evidence",
+      "source_id": "li10-028-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Complete canonical product name: Nettleharbour Clip"
+        },
+        {
+          "kind": "heading",
+          "text": "Erratum about a launch statement"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Nettleharbour Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch statement for Nettleharbour Clip. I retract this item. The item is the product launch, and Nettleharbour Clip is the full product name."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-029",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-15",
+      "target_question": "Was Oatmeadow Hub launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-15",
+        "canonical_name": "Oatmeadow Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-029-evidence",
+      "source_id": "li10-029-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Oatmeadow Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the printed launch-key font-size assertion for Oatmeadow Hub. The subject is withdrawn. Author clarification: this subject describes the font size of printed key text, not a product event."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-030",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-15",
+      "target_question": "Was Oatmeadow Hub launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-15",
+        "canonical_name": "Oatmeadow Hub",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-030-evidence",
+      "source_id": "li10-030-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Oatmeadow Hub was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the launch assertion for Oatmeadow Hub. The subject is withdrawn. Author clarification: this subject describes the product event, not printed key text."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-031",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-16",
+      "target_question": "Was Pinewharf Seal launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-16",
+        "canonical_name": "Pinewharf Seal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-031-evidence",
+      "source_id": "li10-031-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Quotation supplied with the correction: \"The release lever on Pinewharf Seal is black.\" Item: this complete lever-colour quotation. Author response: \"We deny the item.\" The object of denial is lever colour."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Pinewharf Seal was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-032",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-16",
+      "target_question": "Was Pinewharf Seal launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-16",
+        "canonical_name": "Pinewharf Seal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-032-evidence",
+      "source_id": "li10-032-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Quotation supplied with the correction: \"Pinewharf Seal was launched.\" Item: this complete launch quotation. Author response: \"We deny the item.\" The object of denial is the product launch."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Pinewharf Seal was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-033",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-17",
+      "target_question": "Was Quartzford Collar launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-17",
+        "canonical_name": "Quartzford Collar",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-033-evidence",
+      "source_id": "li10-033-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Subject: the physical launch-cover thickness claim for Quartzford Collar"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quartzford Collar was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quoted claim: \"The launch cover on Quartzford Collar is thin.\" Author reply: \"I withdraw the subject.\" The subject is the cover-thickness property."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-034",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-17",
+      "target_question": "Was Quartzford Collar launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-17",
+        "canonical_name": "Quartzford Collar",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-034-evidence",
+      "source_id": "li10-034-synthetic-record",
+      "signals": [
+        {
+          "kind": "heading",
+          "text": "Subject: the launch claim for Quartzford Collar"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quartzford Collar was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quoted claim: \"The launch cover on Quartzford Collar is thin.\" Author reply: \"I withdraw the subject.\" The subject is the target launch even though the quotation concerns cover thickness."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-035",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-18",
+      "target_question": "Was Rosehaven Spindle launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-18",
+        "canonical_name": "Rosehaven Spindle",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-035-evidence",
+      "source_id": "li10-035-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Rosehaven Spindle was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the launch claim for Sablemere Gimbal. Author reply: \"I withdraw this object.\" Owner supplement: Sablemere Gimbal, the sole product owner of this object."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-036",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-18",
+      "target_question": "Was Rosehaven Spindle launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-18",
+        "canonical_name": "Rosehaven Spindle",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-036-evidence",
+      "source_id": "li10-036-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Earlier document-property note: launch-label font for Rosehaven Spindle"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Rosehaven Spindle was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Publication record: pages were stapled at the top. Delivery record: the envelope was sealed."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Author reply: \"I withdraw that claim.\" The local sentence identifying the claim is missing. The reply may concern a launch claim; its owner and type are not supplied."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "context_gap"
+    }
+  },
+  {
+    "id": "li10-037",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-19",
+      "target_question": "Was Saffronmere Lever launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-19",
+        "canonical_name": "Saffronmere Lever",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-037-evidence",
+      "source_id": "li10-037-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Item: a physical specification claim for Saffronmere Lever. We retract this item, namely the width and height specification for the release pedal on Saffronmere Lever. Both dimensions concern that physical pedal."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Saffronmere Lever was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-038",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-19",
+      "target_question": "Was Saffronmere Lever launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-19",
+        "canonical_name": "Saffronmere Lever",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-038-evidence",
+      "source_id": "li10-038-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Item: a product event claim for Saffronmere Lever. We retract this item, namely the launch statement for Saffronmere Lever. The claim concerns that product launch event."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Saffronmere Lever was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-039",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-20",
+      "target_question": "Was Thistlebay Rotor launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-20",
+        "canonical_name": "Thistlebay Rotor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-039-evidence",
+      "source_id": "li10-039-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Thistlebay Rotor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: a launch statement. Author response: \"I deny that object.\" Adjacent owner supplement: Sablemere Gimbal owns the denied launch statement. No second owner is assigned."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-040",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-20",
+      "target_question": "Was Thistlebay Rotor launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-20",
+        "canonical_name": "Thistlebay Rotor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-040-evidence",
+      "source_id": "li10-040-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Thistlebay Rotor was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: a launch statement. Author response: \"I deny that object.\" Adjacent owner supplement: the statement may belong to Thistlebay Rotor or Sablemere Gimbal; the owner is not selected."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-041",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-21",
+      "target_question": "Was Uplandquay Frame launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-21",
+        "canonical_name": "Uplandquay Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-041-evidence",
+      "source_id": "li10-041-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Uplandquay Frame was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the release-panel material claim for Uplandquay Frame. This object is retracted. Subject: the document page-count statement for Uplandquay Frame. That subject is denied. Both corrections are independently typed non-launch properties."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-042",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-21",
+      "target_question": "Was Uplandquay Frame launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-21",
+        "canonical_name": "Uplandquay Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-042-evidence",
+      "source_id": "li10-042-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Uplandquay Frame was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the release-panel material claim for Uplandquay Frame. This object is retracted. Subject: a launch statement with an unidentified product owner. That subject is denied. The second correction is independently a launch claim with unknown ownership."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-043",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-22",
+      "target_question": "Was Violetford Cradle launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-22",
+        "canonical_name": "Violetford Cradle",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-043-evidence",
+      "source_id": "li10-043-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Quoted statement: \"The launch-selector text on Violetford Cradle uses a large font.\" Author reply: \"We retract that claim.\" The adjacent quotation is the printed-font statement being retracted."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Violetford Cradle was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-044",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-22",
+      "target_question": "Was Violetford Cradle launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-22",
+        "canonical_name": "Violetford Cradle",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-044-evidence",
+      "source_id": "li10-044-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Quoted statement: \"Violetford Cradle was launched.\" Author reply: \"We retract that claim.\" The adjacent quotation is the product launch statement being retracted."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Violetford Cradle was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-045",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-23",
+      "target_question": "Was Willowbank Coupler launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-23",
+        "canonical_name": "Willowbank Coupler",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-045-evidence",
+      "source_id": "li10-045-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publisher correction ledger"
+        },
+        {
+          "kind": "heading",
+          "text": "Item: the launch statement for Sablemere Gimbal"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Willowbank Coupler was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The item is retracted. Confirmation: Sablemere Gimbal is the complete owner of this item. Layout note: the ledger uses a narrow right margin."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-046",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-23",
+      "target_question": "Was Willowbank Coupler launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-23",
+        "canonical_name": "Willowbank Coupler",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-046-evidence",
+      "source_id": "li10-046-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Publisher correction ledger"
+        },
+        {
+          "kind": "heading",
+          "text": "Item: a launch statement involving either Willowbank Coupler or Sablemere Gimbal"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Willowbank Coupler was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The item is retracted. Confirmation: the owner of this item was not chosen. Layout note: the ledger uses a narrow right margin."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-047",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-24",
+      "target_question": "Was Xanthicmead Dock launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-24",
+        "canonical_name": "Xanthicmead Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-047-evidence",
+      "source_id": "li10-047-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Xanthicmead Dock was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the launch-ring surface-colour assertion for Xanthicmead Dock. We deny the subject. Object: the printed release-key font assertion for Xanthicmead Dock. We withdraw the object. Both are specifications, separately named and typed."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-048",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-24",
+      "target_question": "Was Xanthicmead Dock launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-24",
+        "canonical_name": "Xanthicmead Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-048-evidence",
+      "source_id": "li10-048-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Xanthicmead Dock was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the launch assertion for Xanthicmead Dock. We deny the subject. Object: the printed release-key font assertion for Xanthicmead Dock. We withdraw the object. The first correction is product launch and the second is typography."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-049",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-25",
+      "target_question": "Was Yarrowhaven Coil launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-25",
+        "canonical_name": "Yarrowhaven Coil",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-049-evidence",
+      "source_id": "li10-049-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Owner supplement: Sablemere Gimbal"
+        },
+        {
+          "kind": "heading",
+          "text": "Item: the named owner's launch statement"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Yarrowhaven Coil was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Author reply: \"I retract that item.\" The title names Sablemere Gimbal, the full owner of the retracted launch item."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-050",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-25",
+      "target_question": "Was Yarrowhaven Coil launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-25",
+        "canonical_name": "Yarrowhaven Coil",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-050-evidence",
+      "source_id": "li10-050-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Owner supplement: Yarrowhaven Coil"
+        },
+        {
+          "kind": "heading",
+          "text": "Item: the named owner's launch statement"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Yarrowhaven Coil was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Author reply: \"I retract that item.\" The title names Yarrowhaven Coil, the full owner of the retracted launch item."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-051",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-26",
+      "target_question": "Was Zirconwharf Ring launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-26",
+        "canonical_name": "Zirconwharf Ring",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-051-evidence",
+      "source_id": "li10-051-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The claim about Zirconwharf Ring is denied—specifically, the physical thickness statement for the launch panel on Zirconwharf Ring. This complete apposition limits the denial to panel thickness."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Zirconwharf Ring was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-052",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-26",
+      "target_question": "Was Zirconwharf Ring launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-26",
+        "canonical_name": "Zirconwharf Ring",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-052-evidence",
+      "source_id": "li10-052-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "The claim about Zirconwharf Ring is denied—specifically, the product launch statement for Zirconwharf Ring. This complete apposition identifies the launch event."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Zirconwharf Ring was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-053",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-27",
+      "target_question": "Was Acornfield Clip launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-27",
+        "canonical_name": "Acornfield Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-053-evidence",
+      "source_id": "li10-053-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Full product name: Acornfield Clip"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Acornfield Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the physical launch-button height claim for Acornfield Clip. We deny the object. The height of this physical button is the only correction here."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-054",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-27",
+      "target_question": "Was Acornfield Clip launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-27",
+        "canonical_name": "Acornfield Clip",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-054-evidence",
+      "source_id": "li10-054-synthetic-record",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Full product name: Acornfield Clip"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Acornfield Clip was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: a launch statement. We deny the object. This excerpt omits the owner sentence; the product owner of the denied launch object is unknown."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "context_gap"
+    }
+  },
+  {
+    "id": "li10-055",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-28",
+      "target_question": "Was Bramblequay Board launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-28",
+        "canonical_name": "Bramblequay Board",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-055-evidence",
+      "source_id": "li10-055-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Bramblequay Board was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch statement for Sablemere Gimbal. Source quotation: \"Sablemere Gimbal was launched.\" I withdraw this item. The item belongs solely to Sablemere Gimbal."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-056",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-28",
+      "target_question": "Was Bramblequay Board launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-28",
+        "canonical_name": "Bramblequay Board",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-056-evidence",
+      "source_id": "li10-056-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Bramblequay Board was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Item: the launch statement for Bramblequay Board. Source quotation: \"Sablemere Gimbal was launched.\" I withdraw this item. The item declaration names the target while the quotation names another product; their scopes conflict."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-057",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-29",
+      "target_question": "Was Cowslipford Scanner launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-29",
+        "canonical_name": "Cowslipford Scanner",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-057-evidence",
+      "source_id": "li10-057-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cowslipford Scanner was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the document page-count claim for Cowslipford Scanner. We retract that object. Subject: the release-cover colour statement for Cowslipford Scanner. We deny this subject. Printer note: both corrections are printed on cream paper."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-058",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-29",
+      "target_question": "Was Cowslipford Scanner launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-29",
+        "canonical_name": "Cowslipford Scanner",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-058-evidence",
+      "source_id": "li10-058-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Cowslipford Scanner was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Object: the document page-count claim for Cowslipford Scanner. We retract that object. Subject: the launch statement for Cowslipford Scanner. We deny this subject. Printer note: both corrections are printed on cream paper."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-059",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-30",
+      "target_question": "Was Dogrosehaven Prism launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-30",
+        "canonical_name": "Dogrosehaven Prism",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-059-evidence",
+      "source_id": "li10-059-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Dogrosehaven Prism was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the printed launch-label colour statement for Dogrosehaven Prism. That subject is denied. Item: the launch statement for Sablemere Gimbal. This item is withdrawn. The first correction is printed colour and the second launch owner is Sablemere Gimbal."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li10-060",
+    "policy": {
+      "policy_id": "independent-v10-launch-policy",
+      "target_id": "v10-fictional-target-30",
+      "target_question": "Was Dogrosehaven Prism launched?",
+      "entity": {
+        "canonical_id": "v10-fictional-target-30",
+        "canonical_name": "Dogrosehaven Prism",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li10-060-evidence",
+      "source_id": "li10-060-synthetic-record",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Dogrosehaven Prism was launched."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Subject: the printed launch-label colour statement for Dogrosehaven Prism. That subject is denied. Item: the launch statement for Dogrosehaven Prism. This item is withdrawn. The first correction is printed colour and the second launch owner is Dogrosehaven Prism."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]
