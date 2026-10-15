@@ -1,0 +1,106 @@
+{
+  "identity": "engine073-launch-independent-v3",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "frozen_utc": "2026-10-15T12:03:18.055011+00:00",
+  "candidate": {
+    "source_sha": "d8c777656688339f915a0f80a0b8af422c50ee7d",
+    "package_version": "0.7.2",
+    "source_file": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "source_sha256": "ef8a6539d79f73cfb6b3b5b9ff89b8b5d75cb0e43f5bf0f692f8f0de21830c22",
+    "identity_note": "Source SHA identifies this unreleased candidate, not the still-0.7.2 package metadata."
+  },
+  "frozen_files": {
+    "author_cases.py": "94c2d922e5fcbad71d8f1584e02427b96af61395f7767c17e9fcc507ae0b4e80",
+    "cases.json": "5ab93959fdfdaeb4e64f1ba3ee6199a7819e37ba2f7252c8a0353a66d0e107a5",
+    "inputs.json": "f3cc99a110a71d26d636f7cf39bf2fe75a333edfab16ba726d932d462f46f123",
+    "protocol.json": "b945410392dc717613a47dd3d956cd691b0e4344aed2d161c5d8ec1cb57eca62",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "static_preflight.py": "72865faf3671651d445026b32246e58b6e3593724597e8b524c53c2949c25a60",
+    "static-preflight.json": "3eadf3391527cd32b9736b0864968a79414529ba2ddb3721c0037fc9703412e5",
+    "pre-freeze-scope-review.json": "87bf35ad3336550df82529d9422f11032e5c8da0aa4690a6c1ebe74291159d48",
+    "predecessor-artifact-hashes.json": "d7e889db822f6e6a08355ef20435564c1db246f0e07069eecb2cce3d6bebfaca"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "ef8a6539d79f73cfb6b3b5b9ff89b8b5d75cb0e43f5bf0f692f8f0de21830c22",
+      "bytes": 561795
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+      "sha256": "950248fe0e0514e10dfd432404c1a2755f4e0b68eaf367e5f5dae7552d301a39",
+      "bytes": 72039368
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68",
+      "bytes": 3436712
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v3-probe/probe",
+      "sha256": "1942521e7ba6b3d49eeb1fb728bcc645ae2fc712b62d6147fc76337a002aa342",
+      "bytes": 2689592
+    }
+  },
+  "corpus": {
+    "file": "cases.json",
+    "engine_input": "inputs.json",
+    "count": 60,
+    "positive": 30,
+    "negative": 30,
+    "matched_pairs": 30,
+    "canonical_targets": 30,
+    "new_authorship": true,
+    "real_documents": 0,
+    "known_v2_seen_development": true,
+    "scope_notes": "protocol.json and pre-freeze-scope-review.json"
+  },
+  "probe": {
+    "source": "probe.rs",
+    "origin": "Previously authorized generic probe, unchanged; no old semantic fixtures read for this v3 authoring.",
+    "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+    "shared_target_modified": false,
+    "parent_supplied_build": true,
+    "independent_rebuild": false
+  },
+  "scoring": {
+    "file": "score.py",
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_from_v2_byte_identical": true,
+    "protocol": "protocol.json",
+    "precommitted_before_first_API": true,
+    "label_changes_after_first_observation": false,
+    "semantic_retries": 0
+  },
+  "stages": {
+    "static_preflight": "PASS; 60 complete inputs; 0 Engine invocations/semantic observations.",
+    "semantic_observation": "Not yet executed at freeze; exactly one planned 60-case first invocation.",
+    "semantic_sentinel": "None in v3; static input-contract validation is clearly separate from semantic observation."
+  },
+  "preserved_predecessors": {
+    "hashes": "predecessor-artifact-hashes.json",
+    "v1_manifest_sha256": "71f9d1008f4e0d74703306b38a07f7593b8da0ac83006b9a4fd51a7a43f0392c",
+    "v2_manifest_sha256": "e9a3bbbb1d23936539704e27ce6b73b6fa6b09ba0796c595129391f1e2ec77df",
+    "unchanged_at_static_preflight": true
+  },
+  "isolation": {
+    "production_implementation_inspected": false,
+    "old_root_tests_v10_fixtures_corpora_inspected": false,
+    "v2_known_and_seen": true,
+    "oracle": false,
+    "additional_agents": false,
+    "provider_API_calls": 0,
+    "Git_mutations": 0,
+    "cargo_invocations": 0
+  },
+  "first_result_records": [
+    "first-invocation.started.json",
+    "first-invocation.json",
+    "first.stdout.jsonl",
+    "first.stderr.txt",
+    "first-results.json",
+    "first-summary.json"
+  ]
+}

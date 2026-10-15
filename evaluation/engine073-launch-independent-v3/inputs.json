@@ -1,0 +1,2734 @@
+[
+  {
+    "id": "li3-001",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-01",
+      "target_question": "Was Aerolune Slate launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-01",
+        "canonical_name": "Aerolune Slate",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-001-evidence",
+      "source_id": "li3-001-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Aerolune Slate was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "A — Release history: Launch assertion recorded for Aerolune Slate.\nB — A separate removable-panel claim for Aerolune Slate.\nAuthor decision: I retract statement B, the removable-panel claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-002",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-01",
+      "target_question": "Was Aerolune Slate launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-01",
+        "canonical_name": "Aerolune Slate",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-002-evidence",
+      "source_id": "li3-002-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Aerolune Slate was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "A — Release history: Launch assertion recorded for Aerolune Slate.\nB — A separate removable-panel claim for Aerolune Slate.\nAuthor decision: I retract statement A, the launch claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-003",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-02",
+      "target_question": "Was Berylfen Keypad launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-02",
+        "canonical_name": "Berylfen Keypad",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-003-evidence",
+      "source_id": "li3-003-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Two-product release ledger"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Berylfen Keypad was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Main entry: Launch assertion recorded for Berylfen Keypad.\nCompanion entry: Pondstone Anchor was launched on 14 March 2023.\nCurrent publisher note: We deny the companion launch claim for Pondstone Anchor."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-004",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-02",
+      "target_question": "Was Berylfen Keypad launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-02",
+        "canonical_name": "Berylfen Keypad",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-004-evidence",
+      "source_id": "li3-004-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Two-product release ledger"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Berylfen Keypad was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Main entry: Launch assertion recorded for Berylfen Keypad.\nCompanion entry: Pondstone Anchor was launched on 14 March 2023.\nCurrent publisher note: We deny the main launch claim for Berylfen Keypad."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-005",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-03",
+      "target_question": "Was Calderbrook Meter launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-03",
+        "canonical_name": "Calderbrook Meter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-005-evidence",
+      "source_id": "li3-005-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Calderbrook Meter was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Calderbrook Meter."
+        },
+        {
+          "kind": "excerpt",
+          "text": "[Publisher amendment]\nAs the author, I withdraw the carrying-strap claim for Calderbrook Meter."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-006",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-03",
+      "target_question": "Was Calderbrook Meter launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-03",
+        "canonical_name": "Calderbrook Meter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-006-evidence",
+      "source_id": "li3-006-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Calderbrook Meter was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Calderbrook Meter."
+        },
+        {
+          "kind": "excerpt",
+          "text": "[Publisher amendment]\nAs the author, I withdraw the claim that Calderbrook Meter was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-007",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-04",
+      "target_question": "Was Duskmarsh Console launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-04",
+        "canonical_name": "Duskmarsh Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-007-evidence",
+      "source_id": "li3-007-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Retraction applies to the storage-format claim for Duskmarsh Console"
+        },
+        {
+          "kind": "heading",
+          "text": "Release-history entry"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Duskmarsh Console was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Duskmarsh Console."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-008",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-04",
+      "target_question": "Was Duskmarsh Console launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-04",
+        "canonical_name": "Duskmarsh Console",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-008-evidence",
+      "source_id": "li3-008-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Retraction applies to the launch claim for Duskmarsh Console"
+        },
+        {
+          "kind": "heading",
+          "text": "Release-history entry"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Duskmarsh Console was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Duskmarsh Console."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-009",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-05",
+      "target_question": "Was Eiderfall Badge launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-05",
+        "canonical_name": "Eiderfall Badge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-009-evidence",
+      "source_id": "li3-009-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Accuracy bulletin"
+        },
+        {
+          "kind": "heading",
+          "text": "Statement withdrawn: the oxygen-sensor specification for Eiderfall Badge"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Eiderfall Badge was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Eiderfall Badge."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-010",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-05",
+      "target_question": "Was Eiderfall Badge launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-05",
+        "canonical_name": "Eiderfall Badge",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-010-evidence",
+      "source_id": "li3-010-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Accuracy bulletin"
+        },
+        {
+          "kind": "heading",
+          "text": "Statement withdrawn: the assertion that Eiderfall Badge was launched"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Eiderfall Badge was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Eiderfall Badge."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-011",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-06",
+      "target_question": "Was Flaxgarden Terminal launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-06",
+        "canonical_name": "Flaxgarden Terminal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-011-evidence",
+      "source_id": "li3-011-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Flaxgarden Terminal was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Publisher annotation: The launch statement above appears in this record. We deny the separate battery-life assertion for Flaxgarden Terminal."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-012",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-06",
+      "target_question": "Was Flaxgarden Terminal launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-06",
+        "canonical_name": "Flaxgarden Terminal",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-012-evidence",
+      "source_id": "li3-012-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Flaxgarden Terminal was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Publisher annotation: The launch statement above appears in this record. We deny that launch assertion."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-013",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-07",
+      "target_question": "Was Gorsehill Reader launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-07",
+        "canonical_name": "Gorsehill Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-013-evidence",
+      "source_id": "li3-013-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Gorsehill Reader was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Gorsehill Reader.\nRegister administration: The entry was moved from cabinet 4 to cabinet 5. This note concerns filing."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-014",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-07",
+      "target_question": "Was Gorsehill Reader launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-07",
+        "canonical_name": "Gorsehill Reader",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-014-evidence",
+      "source_id": "li3-014-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Gorsehill Reader was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Gorsehill Reader.\nRegister administration: The archive owner now retracts the launch statement recorded here."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-015",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-08",
+      "target_question": "Was Hearthmere Switch launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-08",
+        "canonical_name": "Hearthmere Switch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-015-evidence",
+      "source_id": "li3-015-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Hearthmere Switch was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Release-history line: Launch assertion recorded for Hearthmere Switch.\nPresent correction: The photoshoot for Hearthmere Switch did not occur."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-016",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-08",
+      "target_question": "Was Hearthmere Switch launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-08",
+        "canonical_name": "Hearthmere Switch",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-016-evidence",
+      "source_id": "li3-016-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Hearthmere Switch was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Release-history line: Launch assertion recorded for Hearthmere Switch.\nPresent correction: The launch of Hearthmere Switch did not occur."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-017",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-09",
+      "target_question": "Was Irisbay Module launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-09",
+        "canonical_name": "Irisbay Module",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-017-evidence",
+      "source_id": "li3-017-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Irisbay Module was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Register entry 9: Launch assertion recorded for Irisbay Module.\nOur correction concerns the alleged event: The museum tour for Irisbay Module never occurred."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-018",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-09",
+      "target_question": "Was Irisbay Module launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-09",
+        "canonical_name": "Irisbay Module",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-018-evidence",
+      "source_id": "li3-018-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Irisbay Module was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Register entry 9: Launch assertion recorded for Irisbay Module.\nOur correction concerns the alleged event: The launch of Irisbay Module never occurred."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-019",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-10",
+      "target_question": "Was Jadegrove Speaker launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-10",
+        "canonical_name": "Jadegrove Speaker",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-019-evidence",
+      "source_id": "li3-019-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jadegrove Speaker was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Current record: Launch assertion recorded for Jadegrove Speaker.\nLog annotation: No guided tour for Jadegrove Speaker occurred."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-020",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-10",
+      "target_question": "Was Jadegrove Speaker launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-10",
+        "canonical_name": "Jadegrove Speaker",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-020-evidence",
+      "source_id": "li3-020-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Jadegrove Speaker was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Current record: Launch assertion recorded for Jadegrove Speaker.\nLog annotation: No launch for Jadegrove Speaker occurred."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-021",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-11",
+      "target_question": "Was Kitehaven Tracker launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-11",
+        "canonical_name": "Kitehaven Tracker",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-021-evidence",
+      "source_id": "li3-021-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Today I deny the warranty claim concerning Kitehaven Tracker.\nRelease history follows: Launch assertion recorded for Kitehaven Tracker."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Kitehaven Tracker was launched on 14 March 2023."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-022",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-11",
+      "target_question": "Was Kitehaven Tracker launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-11",
+        "canonical_name": "Kitehaven Tracker",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-022-evidence",
+      "source_id": "li3-022-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Today I deny the launch claim concerning Kitehaven Tracker.\nRelease history follows: Launch assertion recorded for Kitehaven Tracker."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Kitehaven Tracker was launched on 14 March 2023."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-023",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-12",
+      "target_question": "Was Lindenreach Frame launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-12",
+        "canonical_name": "Lindenreach Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-023-evidence",
+      "source_id": "li3-023-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Lindenreach Frame was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Entry North: Launch assertion recorded for Lindenreach Frame.\nEntry South: Pondstone Anchor was launched on 14 March 2023.\nSigned amendment: I withdraw the launch claim for Pondstone Anchor; this withdrawal concerns Pondstone Anchor alone."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-024",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-12",
+      "target_question": "Was Lindenreach Frame launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-12",
+        "canonical_name": "Lindenreach Frame",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-024-evidence",
+      "source_id": "li3-024-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Lindenreach Frame was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Entry North: Launch assertion recorded for Lindenreach Frame.\nEntry South: Pondstone Anchor was launched on 14 March 2023.\nSigned amendment: I withdraw the launch claim for Lindenreach Frame; this withdrawal concerns Lindenreach Frame alone."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-025",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-13",
+      "target_question": "Was Mossfjord Scanner launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-13",
+        "canonical_name": "Mossfjord Scanner",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-025-evidence",
+      "source_id": "li3-025-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Entry D water-resistance claim for Mossfjord Scanner is denied"
+        },
+        {
+          "kind": "heading",
+          "text": "Entry C — Release history"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Mossfjord Scanner was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Entry C: Launch assertion recorded for Mossfjord Scanner."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-026",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-13",
+      "target_question": "Was Mossfjord Scanner launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-13",
+        "canonical_name": "Mossfjord Scanner",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-026-evidence",
+      "source_id": "li3-026-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Entry C launch claim for Mossfjord Scanner is denied"
+        },
+        {
+          "kind": "heading",
+          "text": "Entry C — Release history"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Mossfjord Scanner was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Entry C: Launch assertion recorded for Mossfjord Scanner."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-027",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-14",
+      "target_question": "Was Nettleford Dock launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-14",
+        "canonical_name": "Nettleford Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-027-evidence",
+      "source_id": "li3-027-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We now file this release-history entry under cabinet seven: Launch assertion recorded for Nettleford Dock.\nThe archive identifier is R-14."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Nettleford Dock was launched on 14 March 2023."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-028",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-14",
+      "target_question": "Was Nettleford Dock launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-14",
+        "canonical_name": "Nettleford Dock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-028-evidence",
+      "source_id": "li3-028-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "We now retract this release-history entry: Launch assertion recorded for Nettleford Dock.\nThe archive identifier is R-14."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Nettleford Dock was launched on 14 March 2023."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-029",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-15",
+      "target_question": "Was Opalmead Sensor launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-15",
+        "canonical_name": "Opalmead Sensor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-029-evidence",
+      "source_id": "li3-029-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Opalmead Sensor was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Opalmead Sensor. I deny only the phrase \"Opalmead Sensor includes a stylus\"; that phrase belongs to the accessories note."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-030",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-15",
+      "target_question": "Was Opalmead Sensor launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-15",
+        "canonical_name": "Opalmead Sensor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-030-evidence",
+      "source_id": "li3-030-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Opalmead Sensor was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Opalmead Sensor. I deny the phrase \"Opalmead Sensor was launched on 14 March 2023\"; that phrase belongs to this release note."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-031",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-16",
+      "target_question": "Was Pebblehaven Recorder launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-16",
+        "canonical_name": "Pebblehaven Recorder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-031-evidence",
+      "source_id": "li3-031-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Pebblehaven Recorder was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Pebblehaven Recorder.\nFor accuracy, the publisher withdraws the fabric-cover claim about Pebblehaven Recorder."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-032",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-16",
+      "target_question": "Was Pebblehaven Recorder launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-16",
+        "canonical_name": "Pebblehaven Recorder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-032-evidence",
+      "source_id": "li3-032-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Pebblehaven Recorder was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Pebblehaven Recorder.\nFor accuracy, the publisher withdraws the launch claim about Pebblehaven Recorder."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-033",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-17",
+      "target_question": "Was Quartzgrove Projector launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-17",
+        "canonical_name": "Quartzgrove Projector",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-033-evidence",
+      "source_id": "li3-033-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Editorial decision for the current register"
+        },
+        {
+          "kind": "heading",
+          "text": "Current denial: the solar-cell claim for Quartzgrove Projector"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quartzgrove Projector was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Quartzgrove Projector."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-034",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-17",
+      "target_question": "Was Quartzgrove Projector launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-17",
+        "canonical_name": "Quartzgrove Projector",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-034-evidence",
+      "source_id": "li3-034-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Editorial decision for the current register"
+        },
+        {
+          "kind": "heading",
+          "text": "Current denial: the launch claim for Quartzgrove Projector"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Quartzgrove Projector was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Quartzgrove Projector."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-035",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-18",
+      "target_question": "Was Rillbrook Counter launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-18",
+        "canonical_name": "Rillbrook Counter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-035-evidence",
+      "source_id": "li3-035-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Rillbrook Counter was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Register Alpha contains two release assertions.\n- Launch assertion recorded for Rillbrook Counter.\n- Pondstone Anchor was launched on 14 March 2023.\nPublisher notice: A separate spelling correction is pending."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-036",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-18",
+      "target_question": "Was Rillbrook Counter launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-18",
+        "canonical_name": "Rillbrook Counter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-036-evidence",
+      "source_id": "li3-036-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Rillbrook Counter was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Register Alpha contains two release assertions.\n- Launch assertion recorded for Rillbrook Counter.\n- Pondstone Anchor was launched on 14 March 2023.\nPublisher notice: We retract a launch assertion above; the notice does not identify the entry."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-037",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-19",
+      "target_question": "Was Sorrelvale Receiver launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-19",
+        "canonical_name": "Sorrelvale Receiver",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-037-evidence",
+      "source_id": "li3-037-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Sorrelvale Receiver was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Three launch entries are listed in this order.\nFirst: Launch assertion recorded for Sorrelvale Receiver.\nSecond: Pondstone Anchor was launched on 14 March 2023.\nThird: Riverglass Node was launched on 14 March 2023.\nAuthor note: I withdraw the cardboard-sleeve claim for Sorrelvale Receiver in the separate accessory list."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-038",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-19",
+      "target_question": "Was Sorrelvale Receiver launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-19",
+        "canonical_name": "Sorrelvale Receiver",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-038-evidence",
+      "source_id": "li3-038-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Sorrelvale Receiver was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Three launch entries are listed in this order.\nFirst: Launch assertion recorded for Sorrelvale Receiver.\nSecond: Pondstone Anchor was launched on 14 March 2023.\nThird: Riverglass Node was launched on 14 March 2023.\nAuthor note: I withdraw one launch claim in this list; this notice does not say which one."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-039",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-20",
+      "target_question": "Was Tansyfield Printer launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-20",
+        "canonical_name": "Tansyfield Printer",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-039-evidence",
+      "source_id": "li3-039-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Storage-location notice for this release-history entry"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Tansyfield Printer was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Tansyfield Printer. The record is held in drawer 20."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-040",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-20",
+      "target_question": "Was Tansyfield Printer launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-20",
+        "canonical_name": "Tansyfield Printer",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-040-evidence",
+      "source_id": "li3-040-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Retraction notice for an unspecified release-history entry"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Tansyfield Printer was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Tansyfield Printer. The notice provides no entry identifier."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-041",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-21",
+      "target_question": "Was Ulmusbay Charger launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-21",
+        "canonical_name": "Ulmusbay Charger",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-041-evidence",
+      "source_id": "li3-041-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ulmusbay Charger was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch entries in the publisher register: Launch assertion recorded for Ulmusbay Charger. Pondstone Anchor was launched on 14 March 2023.\nThe publisher denies the power-cable specification for Pondstone Anchor."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-042",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-21",
+      "target_question": "Was Ulmusbay Charger launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-21",
+        "canonical_name": "Ulmusbay Charger",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-042-evidence",
+      "source_id": "li3-042-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ulmusbay Charger was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch entries in the publisher register: Launch assertion recorded for Ulmusbay Charger. Pondstone Anchor was launched on 14 March 2023.\nThe publisher denies its launch claim, without naming the product."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-043",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-22",
+      "target_question": "Was Velvetfen Monitor launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-22",
+        "canonical_name": "Velvetfen Monitor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-043-evidence",
+      "source_id": "li3-043-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Two launch assertions in the current bulletin"
+        },
+        {
+          "kind": "heading",
+          "text": "Cable specification withdrawn; the two release entries follow"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Velvetfen Monitor was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Velvetfen Monitor. Pondstone Anchor was launched on 14 March 2023."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-044",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-22",
+      "target_question": "Was Velvetfen Monitor launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-22",
+        "canonical_name": "Velvetfen Monitor",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-044-evidence",
+      "source_id": "li3-044-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Two launch assertions in the current bulletin"
+        },
+        {
+          "kind": "heading",
+          "text": "A launch statement is withdrawn; its referent was not recorded"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Velvetfen Monitor was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Velvetfen Monitor. Pondstone Anchor was launched on 14 March 2023."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-045",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-23",
+      "target_question": "Was Wrenmeadow Adapter launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-23",
+        "canonical_name": "Wrenmeadow Adapter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-045-evidence",
+      "source_id": "li3-045-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Release-history register with one launch assertion"
+        },
+        {
+          "kind": "heading",
+          "text": "We withdraw the typography note attached to this register"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Wrenmeadow Adapter was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Wrenmeadow Adapter."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-046",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-23",
+      "target_question": "Was Wrenmeadow Adapter launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-23",
+        "canonical_name": "Wrenmeadow Adapter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-046-evidence",
+      "source_id": "li3-046-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Release-history register with one launch assertion"
+        },
+        {
+          "kind": "heading",
+          "text": "We retract the single launch assertion in this register"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Wrenmeadow Adapter was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Wrenmeadow Adapter."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-047",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-24",
+      "target_question": "Was Xanthicove Clock launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-24",
+        "canonical_name": "Xanthicove Clock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-047-evidence",
+      "source_id": "li3-047-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Xanthicove Clock was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Publisher record: Launch assertion recorded for Xanthicove Clock.\nAs its publisher, I deny that Xanthicove Clock uses a lithium module."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-048",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-24",
+      "target_question": "Was Xanthicove Clock launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-24",
+        "canonical_name": "Xanthicove Clock",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-048-evidence",
+      "source_id": "li3-048-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Xanthicove Clock was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Publisher record: Launch assertion recorded for Xanthicove Clock.\nAs its publisher, I deny that Xanthicove Clock was launched."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-049",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-25",
+      "target_question": "Was Yewgarden Router launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-25",
+        "canonical_name": "Yewgarden Router",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-049-evidence",
+      "source_id": "li3-049-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Yewgarden Router cable-length correction"
+        },
+        {
+          "kind": "heading",
+          "text": "We withdraw our cable-length statement"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Yewgarden Router was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Yewgarden Router."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-050",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-25",
+      "target_question": "Was Yewgarden Router launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-25",
+        "canonical_name": "Yewgarden Router",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-050-evidence",
+      "source_id": "li3-050-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Yewgarden Router launch correction"
+        },
+        {
+          "kind": "heading",
+          "text": "We withdraw our launch statement"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Yewgarden Router was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Yewgarden Router."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-051",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-26",
+      "target_question": "Was Zephyrgrove Camera launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-26",
+        "canonical_name": "Zephyrgrove Camera",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-051-evidence",
+      "source_id": "li3-051-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zephyrgrove Camera was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Branch A concerns Zephyrgrove Camera: Launch assertion recorded for Zephyrgrove Camera.\nBranch B concerns Pondstone Anchor: Pondstone Anchor was launched on 14 March 2023.\nBranch correction: We retract Branch B's launch claim about Pondstone Anchor."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-052",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-26",
+      "target_question": "Was Zephyrgrove Camera launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-26",
+        "canonical_name": "Zephyrgrove Camera",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-052-evidence",
+      "source_id": "li3-052-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Zephyrgrove Camera was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Branch A concerns Zephyrgrove Camera: Launch assertion recorded for Zephyrgrove Camera.\nBranch B concerns Pondstone Anchor: Pondstone Anchor was launched on 14 March 2023.\nBranch correction: We retract Branch A's launch claim about Zephyrgrove Camera."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-053",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-27",
+      "target_question": "Was Ashenford Pointer launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-27",
+        "canonical_name": "Ashenford Pointer",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-053-evidence",
+      "source_id": "li3-053-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ashenford Pointer was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The register makes two statements. First: Launch assertion recorded for Ashenford Pointer. Second: it lists a charging-socket claim for Ashenford Pointer.\nI retract the latter statement, the charging-socket claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-054",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-27",
+      "target_question": "Was Ashenford Pointer launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-27",
+        "canonical_name": "Ashenford Pointer",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-054-evidence",
+      "source_id": "li3-054-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Ashenford Pointer was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "The register makes two statements. First: Launch assertion recorded for Ashenford Pointer. Second: it lists a charging-socket claim for Ashenford Pointer.\nI retract the former statement, the launch claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-055",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-28",
+      "target_question": "Was Brackenmere Decoder launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-28",
+        "canonical_name": "Brackenmere Decoder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-055-evidence",
+      "source_id": "li3-055-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Brackenmere Decoder was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Brackenmere Decoder.\nA reader asked about the headphones claim for Brackenmere Decoder. The publisher now denies that headphones claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-056",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-28",
+      "target_question": "Was Brackenmere Decoder launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-28",
+        "canonical_name": "Brackenmere Decoder",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-056-evidence",
+      "source_id": "li3-056-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Brackenmere Decoder was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Brackenmere Decoder.\nA reader asked about the launch claim for Brackenmere Decoder. The publisher now denies that launch claim."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-057",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-29",
+      "target_question": "Was Chervilbay Filter launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-29",
+        "canonical_name": "Chervilbay Filter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-057-evidence",
+      "source_id": "li3-057-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Chervilbay Filter was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Release line 29: Launch assertion recorded for Chervilbay Filter.\nThe invoice-template claim for Chervilbay Filter is hereby withdrawn by its author."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-058",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-29",
+      "target_question": "Was Chervilbay Filter launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-29",
+        "canonical_name": "Chervilbay Filter",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-058-evidence",
+      "source_id": "li3-058-synthetic-source",
+      "signals": [
+        {
+          "kind": "excerpt",
+          "text": "Chervilbay Filter was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Release line 29: Launch assertion recorded for Chervilbay Filter.\nThe launch claim for Chervilbay Filter is hereby withdrawn by its author."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-059",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-30",
+      "target_question": "Was Driftwoodreach Timer launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-30",
+        "canonical_name": "Driftwoodreach Timer",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-059-evidence",
+      "source_id": "li3-059-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Launch archive record"
+        },
+        {
+          "kind": "heading",
+          "text": "Record status: indexed"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Driftwoodreach Timer was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Driftwoodreach Timer.\n\nNo revision is recorded for this launch assertion. The index entry is complete."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  },
+  {
+    "id": "li3-060",
+    "policy": {
+      "policy_id": "independent-v3-launch-policy",
+      "target_id": "v3-fictional-target-30",
+      "target_question": "Was Driftwoodreach Timer launched on 14 March 2023?",
+      "entity": {
+        "canonical_id": "v3-fictional-target-30",
+        "canonical_name": "Driftwoodreach Timer",
+        "aliases": []
+      },
+      "relation": "change_or_launch",
+      "identity_requirement": "require_harness_anchor",
+      "assessment_budget": {
+        "max_model_attempts": 2,
+        "max_tokens": 192,
+        "max_elapsed_ms": 90000
+      }
+    },
+    "candidate": {
+      "evidence_id": "li3-060-evidence",
+      "source_id": "li3-060-synthetic-source",
+      "signals": [
+        {
+          "kind": "source_title",
+          "text": "Launch archive record"
+        },
+        {
+          "kind": "heading",
+          "text": "Record status: indexed"
+        },
+        {
+          "kind": "excerpt",
+          "text": "Driftwoodreach Timer was launched on 14 March 2023."
+        },
+        {
+          "kind": "excerpt",
+          "text": "Launch assertion recorded for Driftwoodreach Timer.\n\nRevision notice: This launch assertion is withdrawn by the author. The index entry is complete."
+        }
+      ]
+    },
+    "proposal": {
+      "target_binding": "exact",
+      "relation_binding": "exact"
+    },
+    "raw": {
+      "identity_scope": "exact_target",
+      "relation_scope": "requested_relation",
+      "scope_risk": "none"
+    }
+  }
+]

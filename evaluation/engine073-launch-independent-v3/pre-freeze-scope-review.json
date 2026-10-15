@@ -1,0 +1,20 @@
+{
+  "phase": "pre-freeze scope review; semantic observations 0",
+  "reason": "Parent clarified bounded API scope before freeze. Entry/statement numbering must not introduce a new required affirmative launch grammar or trusted reference AST.",
+  "decisions": [
+    "Every case carries one separate Excerpt exactly canonical_name + was launched on 14 March 2023.",
+    "Labeled copies of the target affirmative in surrounding context are replaced by a non-predicate descriptor; the standalone signal supplies launch.",
+    "All positives use neutral context or an expressly different property/product, independent of any entry identifier.",
+    "Unidentified retraction/withdrawal/denial referents among launch claims remain negative withhold expectations.",
+    "No alternate affirmative launch predicates, preparation, alias mapping or property-fact approval are required."
+  ],
+  "unresolved_reference_negative_ids": [
+    "li3-036",
+    "li3-038",
+    "li3-040",
+    "li3-042",
+    "li3-044"
+  ],
+  "ambiguous_positive_expectations": 0,
+  "post_observation_label_changes": 0
+}

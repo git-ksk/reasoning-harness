@@ -665,11 +665,58 @@ fn engine073_independent_v2_seen_replay_preserves_full_scope() {
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
+#[test]
+fn engine073_independent_v3_seen_replay_preserves_full_scope() {
+    // Keep v3's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v3/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
 
 #[test]
 fn explicit_property_context_cannot_hide_global_or_launch_denials() {
     for text in [
         "Silver Lens was launched in 2026. No launch of Silver Lens took place.",
+        "Silver Lens was launched in 2026. No launch for Silver Lens occurred.",
+        "Silver Lens was launched in 2026. We retract the original claim.",
+        "Silver Lens was launched in 2026. We withdraw the new claim.",
+        "Silver Lens was launched in 2026. We retract the exact claim.",
+        "Silver Lens was launched in 2026. We withdraw the specified claim.",
+        "Silver Lens was launched in 2026. The truth report is withdrawn.",
+        "Silver Lens was launched in 2026. We withdraw the debut claim.",
+        "Silver Lens was launched in 2026. Maple Queue was launched in 2026. We withdraw one launch claim in this list.",
         "Silver Lens was launched in 2026. The launch did not take place.",
         "Silver Lens was launched in 2026. There was no launch.",
         "Silver Lens was launched in 2026. This was not an actual event.",
@@ -694,10 +741,22 @@ fn explicit_property_context_cannot_hide_global_or_launch_denials() {
         "We deny that Silver Lens is made from titanium. Silver Lens was launched in 2026.",
         "Silver Lens was launched in 2026. We retract the warranty claim.",
         "Silver Lens was launched in 2026. Its pricing report is not factual.",
+        "Silver Lens was launched in 2026. This claim has not been withdrawn.",
+        "Silver Lens was launched in 2026. The carrying-strap claim for Silver Lens is withdrawn.",
         "Silver Lens was launched in 2026. Silver Lens's packaging claim is false.",
     ] {
         check(vec![
             json!({"id":text,"signals":[{"kind":"excerpt","text":text}],"expected_relevant":true}),
         ]);
     }
+}
+
+#[test]
+fn scoped_object_preserves_full_target_and_alias_names() {
+    check(vec![
+        json!({"id":"article-owner","entity":"The Arc","signals":[{"kind":"excerpt","text":"The Arc was launched in 2026. The Arc claim is withdrawn."}],"expected_relevant":false}),
+        json!({"id":"article-property","entity":"The Arc","signals":[{"kind":"excerpt","text":"The Arc was launched in 2026. The Arc warranty claim is withdrawn."}],"expected_relevant":true}),
+        json!({"id":"longer-alias-owner","entity":"Cedar","aliases":["Cedar LTS"],"signals":[{"kind":"excerpt","text":"Cedar was launched in 2026. Cedar LTS claim is withdrawn."}],"expected_relevant":false}),
+        json!({"id":"longer-alias-property","entity":"Cedar","aliases":["Cedar LTS"],"signals":[{"kind":"excerpt","text":"Cedar was launched in 2026. Cedar LTS warranty claim is withdrawn."}],"expected_relevant":true}),
+    ]);
 }
