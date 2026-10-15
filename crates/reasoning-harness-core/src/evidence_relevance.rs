@@ -3707,6 +3707,7 @@ enum LaunchTypedScopeV17 {
 struct LaunchTypedObjectV17 {
     label: String,
     scope: LaunchTypedScopeV17,
+    foreign_event: bool,
 }
 
 // A finite local Object/Subject/Item frame is not a general reference graph.
@@ -4077,6 +4078,7 @@ fn launch_typed_objects_v17(
             if owner_label(&label) {
                 return Some(LaunchTypedObjectV17 {
                     label: "owner supplement".to_owned(),
+                    foreign_event: unique_foreign_owner,
                     scope: launch_typed_owner_v17(policy, &value).map_or(
                         Scope::Unresolved,
                         |(_, scope)| {
@@ -4108,7 +4110,26 @@ fn launch_typed_objects_v17(
             if unique_foreign_owner && unowned {
                 scope = Scope::Excluded;
             }
-            Some(LaunchTypedObjectV17 { label, scope })
+            let event_words = launch_property_words_v17(policy, &value);
+            let words = event_words.iter().map(String::as_str).collect::<Vec<_>>();
+            let explicit_event = words.windows(2).any(|pair| {
+                matches!(
+                    pair,
+                    ["launch" | "release", "claim" | "statement" | "assertion"]
+                        | ["was" | "is" | "been", "launched" | "released"]
+                )
+            });
+            let foreign_event = scope == Scope::Excluded
+                && ((unique_foreign_owner && unowned)
+                    || (explicit_event
+                        && !target_identity_phrases(policy)
+                            .iter()
+                            .any(|target| normalized_phrase_matches(&value, target))));
+            Some(LaunchTypedObjectV17 {
+                label,
+                scope,
+                foreign_event,
+            })
         })
         .collect()
 }
@@ -4144,7 +4165,31 @@ fn launch_property_apposition_v17(policy: &EvidenceRelevanceTargetPolicy, statem
     if !words.iter().any(|word| launch_retraction_word_v17(word))
         || words.iter().any(|word| {
             [
-                "launch", "release", "event", "report", "all", "whole", "entire", "and", "or",
+                "launch",
+                "release",
+                "launched",
+                "released",
+                "introduced",
+                "available",
+                "event",
+                "report",
+                "all",
+                "whole",
+                "entire",
+                "and",
+                "or",
+                "because",
+                "although",
+                "while",
+                "when",
+                "if",
+                "unless",
+                "since",
+                "whereas",
+                "but",
+                "despite",
+                "before",
+                "after",
             ]
             .contains(word)
         })
@@ -4257,6 +4302,86 @@ fn launch_typed_reference_v17(
             launch_typed_object_scope_v17(policy, value) == Scope::Excluded
                 && !selected.iter().any(|object| object.scope == Scope::Launch),
         );
+    }
+    // An exclusion describes one complete retraction clause. It cannot swallow
+    // a target event denial in a reason/contrast/timing clause or appended text.
+    let event_reference = selected.iter().all(|object| object.foreign_event);
+    if words.iter().any(|word| {
+        [
+            "launched",
+            "released",
+            "introduced",
+            "available",
+            "because",
+            "although",
+            "while",
+            "when",
+            "if",
+            "unless",
+            "since",
+            "whereas",
+            "but",
+            "despite",
+            "before",
+            "after",
+        ]
+        .contains(word)
+    }) || (!event_reference
+        && words
+            .iter()
+            .any(|word| ["launch", "release", "event"].contains(word)))
+    {
+        return None;
+    }
+    let verb = words
+        .iter()
+        .position(|word| launch_retraction_word_v17(word))
+        .unwrap();
+    let tail = &words[verb + 1..];
+    let plain_tail = tail.iter().all(|word| {
+        [
+            "this",
+            "that",
+            "its",
+            "it",
+            "the",
+            "object",
+            "subject",
+            "item",
+            "claim",
+            "statement",
+            "assertion",
+            "event",
+            "launch",
+            "release",
+            "about",
+            "of",
+            "by",
+            "author",
+            "editor",
+            "publisher",
+            "newsroom",
+            "hereby",
+            "formally",
+            "explicitly",
+            "only",
+            "now",
+        ]
+        .contains(word)
+    });
+    let property_tail = matches!(
+        tail.last(),
+        Some(&"object" | &"subject" | &"item" | &"claim" | &"statement" | &"assertion")
+    ) && !event_reference
+        && {
+            let mut topic = &tail[..tail.len() - 1];
+            while matches!(topic.first(), Some(&"this" | &"that" | &"the" | &"its")) {
+                topic = &topic[1..];
+            }
+            launch_specific_property_object_v17(policy, topic) || topic == ["material"]
+        };
+    if !(plain_tail || property_tail) {
+        return None;
     }
     if label.is_none() {
         let typed_neighbor = |neighbor: &LaunchFactualSegmentV17| {

@@ -1463,6 +1463,10 @@ fn typed_owner_resolution_requires_one_complete_owner_and_no_target_denial() {
     let mut cases = Vec::new();
     for (text, expected) in [
         (
+            "Object: the launch claim belonging to Maple Queue. This launch claim is denied.",
+            true,
+        ),
+        (
             "Object: a launch statement. Owner supplement: Maple Queue. Author reply: I deny this object.",
             true,
         ),
@@ -1549,6 +1553,24 @@ fn complete_property_apposition_cannot_overrule_event_or_whole_report_scope() {
         ("The denial concerns the same unspecified property.", false),
     ] {
         cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}
+
+#[test]
+fn typed_scope_exclusion_requires_one_complete_retraction_clause() {
+    let mut cases = Vec::new();
+    for text in [
+        "Object: the button-width claim for Silver Lens. We retract this object because Silver Lens was not launched.",
+        "Object: the button-width claim for Silver Lens. We retract this object although Silver Lens was never launched.",
+        "Object: the button-width claim for Silver Lens. Silver Lens was never launched before we deny this object.",
+        "Object: the button-width claim for Silver Lens. We retract this object given that Silver Lens was never launched.",
+        "Object: the button-width claim for Silver Lens. This launch claim is denied.",
+        "Object: the button-width claim for Silver Lens. The object is denied while Silver Lens was never launched.",
+        "Object: the button-width claim for Silver Lens. We deny this object alongside the launch claim for Silver Lens.",
+        "Silver Lens was not launched while I retract that claim—the physical cover-width claim for Silver Lens.",
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":false}));
     }
     check(cases);
 }
