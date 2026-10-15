@@ -1,0 +1,13 @@
+# Independent pre-execution design review — development v2
+
+Reviewed frozen source `107c05dc3f2ffe20ea2116db84a69e57e85a1389` before external model observations. The reviewer was a separate previously authorized agent; no Oracle was used. This is evaluator/source-label review, not fresh independent acceptance or human authentication.
+
+Scope: new v2 evaluator/data/protocol/workflow; eight privately retained raw/normalized captured documents. Production Engine implementation, historical holdouts and fixes were excluded. Reviewer performed no file edits, provider calls, Git changes or independent holdout authoring.
+
+The reviewer independently verified all8 raw/normalized hashes and reconstruction,18 authentic quote byte spans/hashes and source context. Revisions distinguished document snapshot hash, software version, migration evaluation context and retrieval time. Reused24 scenarios /17 distinct normal questions /8 documents /4 publisher origins remain separate denominators.
+
+Before freeze, review corrected duplicate-origin answerability labels, synthetic factual-content/control/authority separation, invalid helper prebinding interpretation, one-response atomic admission bias, and false-PASS paths involving missing acquisition/claim links, missing finalization/trace, unsupported uncertain output, forged or absent citations, changed displayed view, unterminated model requests, missing adviser output and nullable usage. Independent final validation:18 unit tests PASS and manifest validation PASS. Parent additionally built both actual cores in the common released CLI host, verified versions, exercised24 deterministic helper cases and every resolver slot without model calls. Those binary checks are parent evidence, not newly performed by the independent reviewer.
+
+Final disposition: no remaining blocker to the bounded development measurement was found in reviewed surfaces. The shared Linux preflight must still pass before credentials. Fixed-tag first push, run-attempt/duplicate protection, independent provider lanes, per-invocation empty state, read-only frozen execution, hash checks and raw/partial journal preservation were reviewed. Lane timeout210min covers summed individual budgets plus upload margin. Missing usage remains unavailable/null and partial sums are explicitly named.
+
+Limitations: the normal track is conditioned on curated extracted facts/scope; helper target bindings/reference review are host-owned. Six helper missing/wrong-target cases are diagnostic only. This set does not cover actual same-time conflict, unknown lineage, real corrections/retractions or fresh disjoint acceptance. #520 continues to block adoption. Review completion cannot mark those gates complete.

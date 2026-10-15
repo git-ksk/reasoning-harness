@@ -1,0 +1,34 @@
+{
+  "verified": true,
+  "publication_derivative": true,
+  "model_calls_performed": 0,
+  "results": [
+    {
+      "provider": "mistral",
+      "raw_file_hash_checks": 222,
+      "publication_redaction_hash_checks": 0,
+      "invocations": 111,
+      "normal_rows": 48,
+      "helper_rows": 24,
+      "summary_matches_frozen_scorer": true
+    },
+    {
+      "provider": "google",
+      "raw_file_hash_checks": 222,
+      "publication_redaction_hash_checks": 0,
+      "invocations": 111,
+      "normal_rows": 48,
+      "helper_rows": 24,
+      "summary_matches_frozen_scorer": true
+    },
+    {
+      "provider": "groq",
+      "raw_file_hash_checks": 222,
+      "publication_redaction_hash_checks": 47,
+      "invocations": 111,
+      "normal_rows": 48,
+      "helper_rows": 24,
+      "summary_matches_frozen_scorer": true
+    }
+  ]
+}

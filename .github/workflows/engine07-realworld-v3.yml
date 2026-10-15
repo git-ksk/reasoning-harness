@@ -1,0 +1,109 @@
+name: engine07-realworld-v3
+on:
+  pull_request:
+    paths:
+      - 'evaluation/engine07-realworld-v3/**'
+      - '.github/workflows/engine07-realworld-v3.yml'
+  push:
+    tags: ['engine07-realworld-development-v3-freeze']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.88.0'
+      - uses: Swatinem/rust-cache@v2
+      - name: Reserve unique first push identity before any live credentials
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api 'repos/${{ github.repository }}/actions/runs?event=push&head_sha=${{ github.sha }}&per_page=100' > /tmp/engine07-realworld-reservation.json
+          python3 - <<'PYGUARD'
+          import json,os
+          runs=json.load(open('/tmp/engine07-realworld-reservation.json'))['workflow_runs']
+          matching=[r for r in runs if r['path']=='.github/workflows/engine07-realworld-v3.yml']
+          assert len(matching)==1 and str(matching[0]['id'])==os.environ['GITHUB_RUN_ID']
+          assert os.environ['GITHUB_RUN_ATTEMPT']=='1'
+          PYGUARD
+      - name: Validate frozen development surface without credentials
+        run: |
+          set -euo pipefail
+          python3 evaluation/engine07-realworld-v3/run.py --validate-only
+          python3 -m unittest discover -s evaluation/engine07-realworld-v3 -p 'test_*.py' -v
+          python3 scripts/validate_cross_model_concurrency_policy.py
+      - name: Build both exact released cores in the same released CLI host
+        run: |
+          set -euo pipefail
+          python3 evaluation/engine07-realworld-v3/build.py --repo . --work-dir /tmp/engine07-realworld-v3-build --fetch-dependencies
+      - name: Verify actual deterministic helper contracts
+        run: python3 evaluation/engine07-realworld-v3/preflight.py --bin-dir /tmp/engine07-realworld-v3-build/bin
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: engine07-realworld-v3-build-${{ github.run_id }}
+          path: |
+            /tmp/engine07-realworld-v3-build/bin/
+            /tmp/engine07-realworld-v3-build/build-*.stderr
+            /tmp/engine07-realworld-v3-build/build-*.jsonl
+          if-no-files-found: warn
+          retention-days: 30
+  live:
+    needs: preflight
+    if: github.event_name == 'push' && github.ref == 'refs/tags/engine07-realworld-development-v3-freeze' && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 210
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        provider: [mistral, google, groq]
+    concurrency:
+      group: ${{ matrix.provider == 'mistral' && 'reasoning-harness-mistral-live' || format('engine07-realworld-{0}-live', matrix.provider) }}
+      cancel-in-progress: false
+    name: live-${{ matrix.provider }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v8
+        with:
+          name: engine07-realworld-v3-build-${{ github.run_id }}
+          path: /tmp/engine07-realworld-v3-build
+      - name: Copy the frozen execution surface into read-only scratch
+        run: |
+          set -euo pipefail
+          mkdir /tmp/engine07-realworld-v3-source
+          git archive HEAD evaluation/engine07-realworld-v3 .github/workflows/engine07-realworld-v3.yml | tar -x -C /tmp/engine07-realworld-v3-source
+          chmod -R a-w /tmp/engine07-realworld-v3-source
+      - name: Reprove frozen source and binary identity before credentials
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$(git rev-parse 'engine07-realworld-development-v3-freeze^{commit}')"
+          chmod a-w,+x /tmp/engine07-realworld-v3-build/bin/reason-* /tmp/engine07-realworld-v3-build/bin/probe-* /tmp/engine07-realworld-v3-build/bin/adviser
+          PYTHONDONTWRITEBYTECODE=1 python3 /tmp/engine07-realworld-v3-source/evaluation/engine07-realworld-v3/run.py --validate-only
+          PYTHONDONTWRITEBYTECODE=1 python3 /tmp/engine07-realworld-v3-source/evaluation/engine07-realworld-v3/preflight.py --bin-dir /tmp/engine07-realworld-v3-build/bin
+      - name: First live paired observation
+        env:
+          ENGINE07_EXECUTION_COMMIT: ${{ github.sha }}
+          MISTRAL_API_KEY: ${{ matrix.provider == 'mistral' && secrets.MISTRAL_API_KEY || '' }}
+          GEMINI_API_KEY: ${{ matrix.provider == 'google' && secrets.GEMINI_API_KEY || '' }}
+          GROQ_API_KEY: ${{ matrix.provider == 'groq' && secrets.GROQ_API_KEY || '' }}
+        run: PYTHONDONTWRITEBYTECODE=1 python3 /tmp/engine07-realworld-v3-source/evaluation/engine07-realworld-v3/run.py --provider '${{ matrix.provider }}' --bin-dir /tmp/engine07-realworld-v3-build/bin --output '/tmp/engine07-realworld-v3-${{ matrix.provider }}'
+      - name: Preserve first raw results including incomplete or failed cases
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: engine07-realworld-v3-${{ matrix.provider }}-${{ github.run_id }}
+          path: /tmp/engine07-realworld-v3-${{ matrix.provider }}/
+          if-no-files-found: warn
+          retention-days: 30

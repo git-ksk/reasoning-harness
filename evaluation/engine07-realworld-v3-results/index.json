@@ -1,0 +1,334 @@
+{
+  "identity": "engine07-realworld-development-v3-first-results",
+  "freeze_commit": "7432710f61d747595cb8498aa2dea9e44d2ff7fb",
+  "run_id": 38659305389,
+  "run_attempt": 1,
+  "source_release_tags_immutable": true,
+  "adoption": "NO_GO",
+  "no_rescore_or_semantic_rerun": true,
+  "private_original_location": "primary Git common directory / private-evaluation-artifacts / engine07-realworld-v3 (not tracked)",
+  "build_artifact_id": 11938212853,
+  "build_original_zip_sha256": "a0ffbaf9ce868fa359a702b8c5ec9dce8ca739062215a6c88c9d1d449feac59d",
+  "providers": {
+    "mistral": {
+      "artifact_id": 11938803359,
+      "artifact_url": "https://github.com/git-ksk/reasoning-harness/actions/runs/38659305389/artifacts/11938803359",
+      "original_zip_sha256": "ce6239bc2bdc30d9ba8148bcab08640fb34d4cc4b7d3c5861130fde32975c79b",
+      "published_archive": "archives/mistral.zip",
+      "published_zip_sha256": "ce6239bc2bdc30d9ba8148bcab08640fb34d4cc4b7d3c5861130fde32975c79b",
+      "publication_redacted_files": 0,
+      "publication_redaction_scope": "provider account identifier only; original retained privately and by GitHub; score and summary files unchanged",
+      "summary": {
+        "provider": "mistral",
+        "positive_regressions": [
+          "rw03-node-positive"
+        ],
+        "pair_comparability_failures": [
+          "rw05-node-paraphrase"
+        ],
+        "complete_measurement": false,
+        "measurement_gate_pass": false,
+        "normal_cli": {
+          "0.6.1": {
+            "cases": 24,
+            "complete_useful_answers": 5,
+            "answerable_cases": 18,
+            "safe_withholds": 2,
+            "false_abstentions": 11,
+            "hard_violation_cases": 0,
+            "operational_failure_cases": 6,
+            "citation_surface_cases": 0,
+            "logical_model_operations": null,
+            "adapter_generate_calls": null,
+            "observed_adapter_generate_calls": 169,
+            "tokens": null,
+            "observed_tokens": 145404,
+            "cost_unavailable_cases": 2,
+            "token_usage_unavailable_cases": 2,
+            "wall_ms": 385277
+          },
+          "0.7.2": {
+            "cases": 24,
+            "complete_useful_answers": 5,
+            "answerable_cases": 18,
+            "safe_withholds": 2,
+            "false_abstentions": 11,
+            "hard_violation_cases": 0,
+            "operational_failure_cases": 6,
+            "citation_surface_cases": 0,
+            "logical_model_operations": null,
+            "adapter_generate_calls": null,
+            "observed_adapter_generate_calls": 168,
+            "tokens": null,
+            "observed_tokens": 140206,
+            "cost_unavailable_cases": 1,
+            "token_usage_unavailable_cases": 1,
+            "wall_ms": 353709
+          }
+        },
+        "normal_useful_answer_delta": 0,
+        "helper": {
+          "cases": 24,
+          "hard_violation_cases": 0,
+          "operational_failure_cases": 0,
+          "compatible_display_gains": 2,
+          "diagnostic_prebinding_cases": 6,
+          "advice_correct": 10,
+          "advice_scored": 15,
+          "baseline_model_calls": 0,
+          "candidate_model_calls": 15,
+          "candidate_tokens_observed": 7183,
+          "candidate_token_usage_unavailable_cases": 0,
+          "candidate_wall_ms": 8324
+        },
+        "adoption": "NO_GO",
+        "adoption_blockers": [
+          "known #520 source relevance regression",
+          "root development set; fresh independent holdout absent",
+          "real correction/conflict/unknown lineage coverage absent",
+          "controlled annotated source acquisition; no open-Web acceptance"
+        ]
+      },
+      "raw_finalization_statuses": {
+        "0.6.1": {
+          "grounded_answer": 5,
+          "requires_verification": 16,
+          "no_final_result": 2,
+          "unresolved": 1
+        },
+        "0.7.2": {
+          "grounded_answer": 5,
+          "requires_verification": 17,
+          "no_final_result": 1,
+          "unresolved": 1
+        }
+      },
+      "typed_process_failure_counts": {
+        "usage_budget_unmeasurable": 3
+      },
+      "normal_operational_reasons": {
+        "finalization_trace_missing": 3,
+        "incomplete_model_request_response_trace": 3,
+        "missing_final_artifact": 3,
+        "missing_or_invalid_finalization": 3,
+        "missing_or_invalid_trace": 3,
+        "missing_output_contract": 3,
+        "process_exit_1": 3,
+        "source_acquisition_not_observed": 8,
+        "cost_trace_unavailable": 3,
+        "logical_usage_unavailable": 3,
+        "resolver_malformed_output": 4
+      },
+      "helper_operational_reasons": {}
+    },
+    "google": {
+      "artifact_id": 11940793157,
+      "artifact_url": "https://github.com/git-ksk/reasoning-harness/actions/runs/38659305389/artifacts/11940793157",
+      "original_zip_sha256": "ec548791ed41809f298b89e28f3c9fbb3acf0933544b3d29b4c1771a7c75ebf1",
+      "published_archive": "archives/google.zip",
+      "published_zip_sha256": "ec548791ed41809f298b89e28f3c9fbb3acf0933544b3d29b4c1771a7c75ebf1",
+      "publication_redacted_files": 0,
+      "publication_redaction_scope": "provider account identifier only; original retained privately and by GitHub; score and summary files unchanged",
+      "summary": {
+        "provider": "google",
+        "positive_regressions": [],
+        "pair_comparability_failures": [],
+        "complete_measurement": false,
+        "measurement_gate_pass": false,
+        "normal_cli": {
+          "0.6.1": {
+            "cases": 24,
+            "complete_useful_answers": 14,
+            "answerable_cases": 18,
+            "safe_withholds": 1,
+            "false_abstentions": 1,
+            "hard_violation_cases": 0,
+            "operational_failure_cases": 8,
+            "citation_surface_cases": 0,
+            "logical_model_operations": null,
+            "adapter_generate_calls": null,
+            "observed_adapter_generate_calls": 100,
+            "tokens": null,
+            "observed_tokens": 75032,
+            "cost_unavailable_cases": 8,
+            "token_usage_unavailable_cases": 8,
+            "wall_ms": 1975793
+          },
+          "0.7.2": {
+            "cases": 24,
+            "complete_useful_answers": 14,
+            "answerable_cases": 18,
+            "safe_withholds": 1,
+            "false_abstentions": 1,
+            "hard_violation_cases": 0,
+            "operational_failure_cases": 8,
+            "citation_surface_cases": 0,
+            "logical_model_operations": null,
+            "adapter_generate_calls": null,
+            "observed_adapter_generate_calls": 100,
+            "tokens": null,
+            "observed_tokens": 75032,
+            "cost_unavailable_cases": 8,
+            "token_usage_unavailable_cases": 8,
+            "wall_ms": 1972943
+          }
+        },
+        "normal_useful_answer_delta": 0,
+        "helper": {
+          "cases": 24,
+          "hard_violation_cases": 0,
+          "operational_failure_cases": 5,
+          "compatible_display_gains": 2,
+          "diagnostic_prebinding_cases": 6,
+          "advice_correct": 10,
+          "advice_scored": 15,
+          "baseline_model_calls": 0,
+          "candidate_model_calls": 15,
+          "candidate_tokens_observed": 4741,
+          "candidate_token_usage_unavailable_cases": 5,
+          "candidate_wall_ms": 14582
+        },
+        "adoption": "NO_GO",
+        "adoption_blockers": [
+          "known #520 source relevance regression",
+          "root development set; fresh independent holdout absent",
+          "real correction/conflict/unknown lineage coverage absent",
+          "controlled annotated source acquisition; no open-Web acceptance"
+        ]
+      },
+      "raw_finalization_statuses": {
+        "0.6.1": {
+          "grounded_answer": 14,
+          "unresolved": 2,
+          "no_final_result": 8
+        },
+        "0.7.2": {
+          "grounded_answer": 14,
+          "unresolved": 2,
+          "no_final_result": 8
+        }
+      },
+      "typed_process_failure_counts": {
+        "non_json_terminal_output": 16
+      },
+      "normal_operational_reasons": {
+        "finalization_trace_missing": 16,
+        "incomplete_model_request_response_trace": 16,
+        "missing_final_artifact": 16,
+        "missing_or_invalid_finalization": 16,
+        "missing_or_invalid_trace": 16,
+        "missing_output_contract": 16,
+        "wall_timeout": 16,
+        "cost_trace_unavailable": 16,
+        "logical_usage_unavailable": 16,
+        "source_acquisition_not_observed": 13
+      },
+      "helper_operational_reasons": {
+        "provider_RateLimit": 5
+      }
+    },
+    "groq": {
+      "artifact_id": 11939040262,
+      "artifact_url": "https://github.com/git-ksk/reasoning-harness/actions/runs/38659305389/artifacts/11939040262",
+      "original_zip_sha256": "44b3e25d2bb2cf64f2676a893e11db0344a9b87f59dad57d30095ed39847ac0f",
+      "published_archive": "archives/groq.redacted.zip",
+      "published_zip_sha256": "ffbb90ffb1550f18de7928469ca74a8394fdaaf7da64d55b9c7d34ed437d64dc",
+      "publication_redacted_files": 47,
+      "publication_redaction_scope": "provider account identifier only; original retained privately and by GitHub; score and summary files unchanged",
+      "summary": {
+        "provider": "groq",
+        "positive_regressions": [],
+        "pair_comparability_failures": [],
+        "complete_measurement": false,
+        "measurement_gate_pass": false,
+        "normal_cli": {
+          "0.6.1": {
+            "cases": 24,
+            "complete_useful_answers": 0,
+            "answerable_cases": 18,
+            "safe_withholds": 0,
+            "false_abstentions": 0,
+            "hard_violation_cases": 0,
+            "operational_failure_cases": 24,
+            "citation_surface_cases": 0,
+            "logical_model_operations": null,
+            "adapter_generate_calls": null,
+            "observed_adapter_generate_calls": 0,
+            "tokens": null,
+            "observed_tokens": 0,
+            "cost_unavailable_cases": 24,
+            "token_usage_unavailable_cases": 24,
+            "wall_ms": 3366
+          },
+          "0.7.2": {
+            "cases": 24,
+            "complete_useful_answers": 0,
+            "answerable_cases": 18,
+            "safe_withholds": 0,
+            "false_abstentions": 0,
+            "hard_violation_cases": 0,
+            "operational_failure_cases": 24,
+            "citation_surface_cases": 0,
+            "logical_model_operations": null,
+            "adapter_generate_calls": null,
+            "observed_adapter_generate_calls": 0,
+            "tokens": null,
+            "observed_tokens": 0,
+            "cost_unavailable_cases": 24,
+            "token_usage_unavailable_cases": 24,
+            "wall_ms": 13136
+          }
+        },
+        "normal_useful_answer_delta": 0,
+        "helper": {
+          "cases": 24,
+          "hard_violation_cases": 0,
+          "operational_failure_cases": 13,
+          "compatible_display_gains": 0,
+          "diagnostic_prebinding_cases": 6,
+          "advice_correct": 2,
+          "advice_scored": 15,
+          "baseline_model_calls": 0,
+          "candidate_model_calls": 15,
+          "candidate_tokens_observed": 1272,
+          "candidate_token_usage_unavailable_cases": 13,
+          "candidate_wall_ms": 3149
+        },
+        "adoption": "NO_GO",
+        "adoption_blockers": [
+          "known #520 source relevance regression",
+          "root development set; fresh independent holdout absent",
+          "real correction/conflict/unknown lineage coverage absent",
+          "controlled annotated source acquisition; no open-Web acceptance"
+        ]
+      },
+      "raw_finalization_statuses": {
+        "0.6.1": {
+          "no_final_result": 24
+        },
+        "0.7.2": {
+          "no_final_result": 24
+        }
+      },
+      "typed_process_failure_counts": {
+        "quota": 47,
+        "usage_budget_unmeasurable": 1
+      },
+      "normal_operational_reasons": {
+        "finalization_trace_missing": 48,
+        "incomplete_model_request_response_trace": 48,
+        "missing_final_artifact": 48,
+        "missing_or_invalid_finalization": 48,
+        "missing_or_invalid_trace": 48,
+        "missing_output_contract": 48,
+        "process_exit_1": 48,
+        "source_acquisition_not_observed": 48,
+        "cost_trace_unavailable": 48,
+        "logical_usage_unavailable": 48
+      },
+      "helper_operational_reasons": {
+        "provider_Quota": 13
+      }
+    }
+  }
+}

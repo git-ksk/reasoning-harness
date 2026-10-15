@@ -4,6 +4,12 @@
 
 Status: **in progress / adoption NO-GO**, 2026-10-15 JST. [Issue #531](https://github.com/git-ksk/reasoning-harness/issues/531), [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12). The published product is Reason CLI0.5.5 / Engine0.6.1. Engine0.7.2 is an independent source release, not an adopted CLI Engine.
 
+## First development comparisons completed; acceptance remains incomplete
+
+[First v2/v3 results and limits](engine07-realworld-development-results.md) record both three-provider observations, exact source/build identities, preserved raw archives and verification. Both frozen runs FAIL; normal useful-answer gain was0 for Mistral/Google in v3 and Groq was quota-blocked. Opt-in helper display gain was2 for Mistral/Google, separately. No full safety, citation, fresh independent or adoption acceptance is claimed.
+
+[PR #534](https://github.com/git-ksk/reasoning-harness/pull/534) contains the frozen evaluators and [pre-execution design review](../evaluation/engine07-realworld-v2-review.md). The practical corpus is agent/host-curated from8 official documents/4 publishers,24 reused scenarios/17 normal questions; automatic extraction/open-Web quality and actual correction/conflict/unknown-lineage coverage remain untested. [#535](https://github.com/git-ksk/reasoning-harness/issues/535) fixes failure diagnostic loss in new source. [Next-run operational controls](../evaluation/engine07-realworld-operations-v1/README.md) are offline-tested; they must be wired into a new runner. Known daily-quota exhaustion blocks additional Groq starts. #520 still requires a pinned successor and fresh acceptance. Adoption checklist1/6: development comparison and NO-GO record only.
+
 ## Ordered work
 
 1. Measure immutable Engine0.6.1 (`4abee90f0501f0d8fc09b453a0b45c942fbed69e`) and0.7.2 (`296690a86e049b75ee693ae5032a71504366137c`) on identical real-source tasks. Separate development calibration, fresh independent acceptance, and model/provider failures.
@@ -20,7 +26,7 @@ Do not sum the denominators or call helper success product E2E. Static search at
 
 ## Canonical protocol preparation
 
-The [machine-readable protocol](../evaluation/engine-07-realworld-protocol-v1.json) proposes sample sizes, hard gates, useful-answer thresholds and task budgets to be precommitted at complete evaluator freeze. Its status is **draft pending complete evaluator/host freeze**. No canonical provider observations or independent acceptance cases have been produced. The isolated, deterministic pilot below does not freeze an E2E evaluator.
+The [machine-readable protocol](../evaluation/engine-07-realworld-protocol-v1.json) proposes sample sizes, hard gates, useful-answer thresholds and task budgets to be precommitted at complete evaluator freeze. Its status is **draft pending complete evaluator/host freeze**. It remains the broader acceptance draft; both separate development evaluators above are frozen and their first failed observations are preserved. No fresh independent acceptance cases have been produced. The isolated pilot below remains historical preparation evidence.
 
 Before independent authoring: commit complete evaluators, host/adapters, exact engine identities, model IDs/settings, source snapshot schema, paired ordering, provider pacing, timeouts, numeric thresholds and scoring rubric. Freeze SHA-256 manifests. Author 24 fresh disjoint tasks after freeze, separately from 24 development tasks; include at least eight supported positive tasks plus conflicts, revisions, same-origin duplication/missing lineage, missing information, wrong target/scope and control contamination. An independent reviewer must review full sources and expected proposition/scope/time labels before first observation. Models never receive expected labels. Preserve partial/failed first observations; operational repairs use new identities and never silently overwrite/rerun semantic failures.
 
@@ -35,10 +41,10 @@ Only perform expensive canonical runs once required stages and known source-safe
 
 The pilot uses optimistic fixed **untrusted** proposal/raw qualification to stress deterministic floors. It performs zero model/API calls; token/cost metrics are unavailable. It neither measures the new cross-source reconciliation surface nor authenticates an actual reviewer. Quote SHA-256 is explicitly the short UTF-8 excerpt hash, not the full live page or a publisher signature. Same-publisher documents do not become independent corroboration.
 
-## Adoption checklist — 0/6
+## Adoption checklist — 1/6
 
 - [ ] Required real-data/provider evaluation complete.
-- [ ] Paired baseline/candidate results and evidence limits recorded.
+- [x] Paired development baseline/candidate results, evidence limits and NO-GO decision recorded.
 - [ ] Necessary repairs and regression/fresh reacceptance complete, including #520.
 - [ ] Exact accepted Engine selected.
 - [ ] Dedicated CLI integration PR, CI and applicable local/device E2E accepted.
