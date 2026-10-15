@@ -1254,3 +1254,154 @@ fn typed_component_quotes_cannot_erase_launch_or_whole_source_denials() {
     }
     check(cases);
 }
+
+#[test]
+fn engine073_independent_v9_seen_replay_preserves_full_scope() {
+    // Keep v9's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v9/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn typed_refs_cannot_borrow_a_different_property_or_erase_a_missing_owner() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        (
+            "Object: the button-width claim for Silver Lens. Silver Lens was launched. We withdraw this claim.",
+            false,
+        ),
+        (
+            "Item: the document page-count claim for Silver Lens. I withdraw that item—the launch claim for Silver Lens.",
+            false,
+        ),
+        (
+            "Owner supplement: Absent. Author reply: I deny its launch claim.",
+            false,
+        ),
+        ("No owner of the retracted statement is Maple Queue.", false),
+        (
+            "Subject: the launch statement for Silver Lens. We deny the statement about this subject.",
+            false,
+        ),
+        (
+            "Object: the button-width claim for Silver Lens. We withdraw that object.",
+            true,
+        ),
+        (
+            "Object: the button-width claim for Silver Lens. Subject: the launch statement for Silver Lens. We withdraw that claim.",
+            false,
+        ),
+        (
+            "Object: the launch claim for Silver Lens. Quoted text: The release handle is brass. We retract this object.",
+            false,
+        ),
+        (
+            "Item: an unspecified launch claim. We withdraw this item.",
+            false,
+        ),
+        (
+            "Object: the button-width claim for Silver Lens. We withdraw the entire report.",
+            false,
+        ),
+        (
+            "Item: a singular claim. That claim, namely the button-width statement for Silver Lens, is withdrawn.",
+            true,
+        ),
+        (
+            "Item: the launch claim for Silver Lens. That claim, namely the button-width statement for Silver Lens, is withdrawn.",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    cases.push(json!({"id":"generic_reference_cannot_borrow_metadata_object","signals":[{"kind":"source_title","text":"Object: the button-width claim for Silver Lens"},{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":"We retract this claim."}],"expected_relevant":false}));
+    check(cases);
+}
+
+#[test]
+fn opaque_clip_name_cannot_clear_input_or_actual_context_gaps() {
+    let case = json!({"entity":"Silver Clip","signals":[{"kind":"excerpt","text":"Silver Clip was launched."},{"kind":"excerpt","text":"Subject: release-knob material on Silver Clip. Author reply: I retract the claim about this subject. Owner supplement: Silver Clip; the subject is mechanical-knob material."}]});
+    let (policy, candidate, proposal, raw) = inputs(&case);
+    assert_eq!(
+        materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+            .unwrap()
+            .disposition,
+        Disposition::Relevant
+    );
+    for risk in [
+        reasoning_harness_core::EvidenceLocalBlockingReason::ContextGap,
+        reasoning_harness_core::EvidenceLocalBlockingReason::IdentityMapping,
+        reasoning_harness_core::EvidenceLocalBlockingReason::OwnershipScope,
+    ] {
+        let mut raw = raw;
+        raw.scope_risk = risk;
+        assert_ne!(
+            derive_effective_evidence_local_qualification_v17(
+                &policy,
+                &candidate,
+                Some(&proposal),
+                Some(&raw)
+            )
+            .unwrap()
+            .scope_risk,
+            reasoning_harness_core::EvidenceLocalBlockingReason::None
+        );
+        assert_ne!(
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition,
+            Disposition::Relevant
+        );
+    }
+    for text in [
+        "The paragraph is clipped and the product owner is omitted.",
+        "The required material is outside this excerpt.",
+    ] {
+        let mut candidate = candidate.clone();
+        candidate
+            .signals
+            .push(reasoning_harness_core::EvidenceRelevanceSignal {
+                kind: reasoning_harness_core::EvidenceRelevanceSignalKind::Excerpt,
+                text: text.to_owned(),
+            });
+        assert_ne!(
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition,
+            Disposition::Relevant
+        );
+    }
+}

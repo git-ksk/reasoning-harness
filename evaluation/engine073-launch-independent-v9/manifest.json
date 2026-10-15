@@ -1,0 +1,106 @@
+{
+  "identity": "engine073-launch-independent-v9",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "frozen_utc": "2026-10-15T22:46:42.463688+00:00",
+  "candidate": {
+    "source_sha": "92293072c686dc4000855816322ed58b3df905c8",
+    "package_version": "0.7.2",
+    "source_file": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "source_sha256": "644627ea637cac355d20b6ecd62131ecfad690e653ffcacdd7f72c1f9fce69c8",
+    "identity_note": "Fixed unreleased source SHA identifies candidate; package version alone does not."
+  },
+  "frozen_files": {
+    "author_cases.py": "229fc742e8b681cdb0054a5701b5b02f22b8bce83ef36869f7c3962f37b93365",
+    "cases.json": "ec4e3cb2063eb79ed026bebae12334cd28ea6c4c5317119d5d773c4dc3101264",
+    "inputs.json": "b5851c915ee65eda6f768fdf3c1cd52d6387d6c21e321ca68da424962532650d",
+    "protocol.json": "a0d66873ad74675dd46820b88c59bb4d9b40a828f96ded066595f06bfc3e75be",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "static_preflight.py": "ba6682ae65c7a7bb3bd5791e5ce346a96580159c13458ba30b1edac598d728c0",
+    "static-preflight.json": "a0482480f9458103f561eb0b47f2f90fca4e79bc0c297f57d21b2a18405cca29",
+    "pre-freeze-scope-review.json": "7c2d4dfed48654b853e10b1ccdf68f3af2bb6c22e3d5ceddb1e320ef34402ee2",
+    "immutable-predecessor-check.json": "fa7080394987b1f64758109418121d30c060ab2b501b78c076c09f34620d4afd",
+    "predecessor-artifact-hashes.json": "1470d9a96319976aaf10ab8f50a5102bbe71de8e8495e317516f39f5d83d8b5d"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "644627ea637cac355d20b6ecd62131ecfad690e653ffcacdd7f72c1f9fce69c8",
+      "bytes": 610652
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+      "sha256": "eb1a1317fd693e7b65fb3502f190e69defe3500294637f9886b088dbbe17b83d",
+      "bytes": 73137760
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68",
+      "bytes": 3436712
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v9-probe/probe",
+      "sha256": "2cb4cd72eef3851f8a497ac43ce944efca338fef7ed35b93e70ca7456c514fa0",
+      "bytes": 3021352
+    }
+  },
+  "corpus": {
+    "file": "cases.json",
+    "complete_engine_input": "inputs.json",
+    "count": 60,
+    "positive": 30,
+    "negative": 30,
+    "matched_pairs": 30,
+    "canonical_targets": 30,
+    "real_documents": 0,
+    "new_after_candidate_fixed": true,
+    "old_sets_seen": true,
+    "new_boundary": "Typed Object/Subject/Item, concrete quote/apposition, adjacent author-reply owner supplement, competing property/launch/owner and additional-unknown-cue boundaries. Direct canonical was launched fact, no new predicate/graph/AST."
+  },
+  "probe": {
+    "source": "probe.rs",
+    "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "inherited_byte_identical": true,
+    "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+    "parent_supplied_fixed_build": true,
+    "independent_rebuild": false,
+    "shared_target_changes": 0
+  },
+  "scoring": {
+    "file": "score.py",
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "protocol": "protocol.json",
+    "precommitted_before_first_API": true,
+    "positive": "requested_relation AND Relevant",
+    "negative": "not requested_relation AND not Relevant",
+    "both_required": true,
+    "permissive_change": false,
+    "post_observation_label_changes": 0,
+    "retries": 0
+  },
+  "stages": {
+    "static": "STATIC_ONLY PASS;60 complete inputs;Engine/semantic0.",
+    "semantic": "Not run at freeze;one planned first60 deterministic v17/v29/v30 process.",
+    "semantic_sentinel": "None."
+  },
+  "preserved_predecessors": {
+    "hashes": "predecessor-artifact-hashes.json",
+    "v1_v8_unchanged_at_static_preflight": true,
+    "external_anchor_sha256": "2187a8668e249c74389db2c1481d875014e70ddb9d9f1e229299b6a5da13b4ea",
+    "anchored_verified_files": 168,
+    "anchor_check": "immutable-predecessor-check.json"
+  },
+  "isolation": {
+    "production_implementation_read": false,
+    "parent_tests_historical_other_corpora_fixtures_read": false,
+    "old_sets_known_seen": true,
+    "Oracle": false,
+    "additional_agents": false,
+    "external_provider_API_calls": 0,
+    "Git_mutations": 0,
+    "cargo_invocations": 0
+  },
+  "first_result_contract": "Exclusive first raw/started/finished and one unchanged inherited scoring; keep labels/criteria and first failures. Save final receipt/hashes/README without rerun."
+}
