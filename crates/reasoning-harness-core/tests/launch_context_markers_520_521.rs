@@ -525,3 +525,103 @@ fn historical_v29_dispositions_remain_unchanged_for_original_audit() {
         );
     }
 }
+
+#[test]
+fn published_072_retraction_residuals_are_seen_development_controls() {
+    check(
+        serde_json::from_str(include_str!(
+            "../../../evaluation/engine-0.7.2-verification-audit-20261014/cases.json"
+        ))
+        .unwrap(),
+    );
+}
+
+#[test]
+fn successor_retraction_and_non_event_contexts_preserve_scope() {
+    let launch = "Silver Lens was launched in 2026.";
+    let mut cases = Vec::new();
+    for context in [
+        "The newsroom retracts this claim.",
+        "We retract this claim.",
+        "We hereby retract the preceding statement.",
+        "The newsroom denies this claim.",
+        "We deny it.",
+        "We withdraw this claim.",
+        "The publisher withdraws it.",
+        "This event never happened.",
+        "That did not happen.",
+        "That didn't happen.",
+        "The launch never took place.",
+        "This report is not factual.",
+        "This is not a real event.",
+        "This event did not occur.",
+        "The Silver Lens launch did not happen.",
+    ] {
+        for kind in [
+            "excerpt",
+            "fact",
+            "heading",
+            "source_title",
+            "structured_metadata",
+        ] {
+            for before in [true, false] {
+                let signals = if kind == "excerpt" {
+                    json!([{"kind":kind,"text":if before {format!("{context} {launch}")} else {format!("{launch} {context}")}}])
+                } else if before {
+                    json!([{"kind":kind,"text":context},{"kind":"excerpt","text":launch}])
+                } else {
+                    json!([{"kind":"excerpt","text":launch},{"kind":kind,"text":context}])
+                };
+                cases.push(json!({"id":format!("{kind}:{before}:{context}"),"signals":signals,"expected_relevant":false}));
+            }
+        }
+    }
+    for context in [
+        "We do not retract this claim.",
+        "The publisher does not deny it.",
+        "We never withdraw this claim.",
+        "We don't retract this claim.",
+        "We do not hereby retract this claim.",
+        "The publisher doesn't withdraw it.",
+        "The model supports retractable lenses.",
+        "The model supports withdrawal of consent.",
+        "Silver Lens supports fictional events that never happened.",
+        "Maple Queue's launch claim is retracted.",
+        "We retract Maple Queue's launch claim.",
+        "We withdraw the launch claim about Maple Queue.",
+        "The launch claim about Maple Queue is not factual.",
+        "Maple Queue was launched in 2026. We retract this claim.",
+        "Maple Queue was launched in 2026. We deny it.",
+        "Silver Lens supports face unlock. We withdraw it.",
+        "Maple Queue was launched in 2026. That did not happen.",
+        "Maple Queue was launched in 2026. This event never happened.",
+        "Silver Lens supports face unlock. We retract this claim.",
+    ] {
+        cases.push(json!({"id":context,"signals":[{"kind":"excerpt","text":format!("{launch} {context}")}],"expected_relevant":true}));
+    }
+    // An explicit singular local denial can govern a feature or another target;
+    // broad or unresolved disclaimers must still withhold the launch.
+    for text in [
+        "Silver Lens supports face unlock. We retract this claim. Silver Lens was launched in 2026.",
+        "Silver Lens was launched in 2026. We retract the following statement. Silver Lens supports face unlock.",
+        "Silver Lens was launched in 2026. Maple Queue was introduced in 2026. We retract this claim.",
+    ] {
+        cases.push(
+            json!({"id":text,"signals":[{"kind":"excerpt","text":text}],"expected_relevant":true}),
+        );
+    }
+    for text in [
+        "Silver Lens was launched in 2026. Maple Queue was introduced in 2026. We retract all these claims.",
+        "Silver Lens supports face unlock. We retract this report. Silver Lens was launched in 2026.",
+        "Silver Lens was launched in 2026. We retract Maple Queue's launch claim and this claim.",
+        "Silver Lens was launched in 2026. Maple Queue was introduced in 2026. We withdraw them.",
+        "Silver Lens was launched in 2026. We retract Maple Queue's launch claim, including this claim.",
+        "Silver Lens was launched in 2026. Silver Lens supports face unlock. We retract this claim and that claim.",
+        "Silver Lens was launched in 2026. Maple Queue was introduced in 2026. That did not happen and neither did the preceding event.",
+    ] {
+        cases.push(
+            json!({"id":text,"signals":[{"kind":"excerpt","text":text}],"expected_relevant":false}),
+        );
+    }
+    check(cases);
+}

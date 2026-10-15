@@ -1913,6 +1913,98 @@ fn launch_explicit_nonlaunch_statement_v17(
     })
 }
 
+// Inflected reporting verbs share the same scope rules. A publisher/author is
+// the reporter, not an unrelated product owner; bind the denied object below.
+fn launch_retraction_word_v17(word: &str) -> bool {
+    [
+        "retract",
+        "retracts",
+        "retracted",
+        "deny",
+        "denies",
+        "denied",
+        "withdraw",
+        "withdraws",
+        "withdrew",
+        "withdrawn",
+        "refute",
+        "refutes",
+        "refuted",
+        "disavow",
+        "disavows",
+        "disavowed",
+        "recant",
+        "recants",
+        "recanted",
+        "rescind",
+        "rescinds",
+        "rescinded",
+    ]
+    .contains(&word)
+}
+
+fn launch_retraction_negated_v17(prefix: &[&str]) -> bool {
+    let end = prefix
+        .iter()
+        .rposition(|word| !["hereby", "formally", "explicitly"].contains(word))
+        .map_or(0, |index| index + 1);
+    let prefix = &prefix[..end];
+    matches!(prefix.last(), Some(&"not" | &"never"))
+        || prefix.ends_with(&["no", "longer"])
+        || [
+            "don", "doesn", "didn", "won", "wouldn", "haven", "hasn", "hadn", "isn", "aren",
+            "wasn", "weren",
+        ]
+        .iter()
+        .any(|auxiliary| prefix.ends_with(&[auxiliary, "t"]))
+}
+
+fn launch_non_event_context_v17(words: &[&str]) -> bool {
+    words.windows(2).any(|pair| {
+        matches!(
+            pair,
+            ["never", "happened" | "occurred"] | ["not", "factual"]
+        )
+    }) || words.windows(3).any(|triple| {
+        matches!(
+            triple,
+            ["did" | "does", "not", "happen" | "occur"]
+                | ["didn" | "doesn", "t", "happen" | "occur"]
+                | ["never", "took", "place"]
+                | ["not", "real", "event"]
+        )
+    }) || words
+        .windows(4)
+        .any(|words| matches!(words, ["not", "a", "real", "event"]))
+}
+
+// Only a complete, clearly foreign denied object is an exclusion. Coordinated
+// or unresolved additional objects may govern the target and stay withheld.
+fn launch_retraction_other_object_v17(statement: &str) -> bool {
+    let folded = statement.to_ascii_lowercase();
+    folded
+        .split_whitespace()
+        .filter(|word| launch_retraction_word_v17(word))
+        .any(|verb| {
+            folded.find(&format!(" {verb} ")).is_some_and(|index| {
+                let object = statement[index + verb.len() + 2..].trim();
+                let folded_object = object.to_ascii_lowercase();
+                ["'s ", "’s "].iter().any(|possessive| {
+                    folded_object.find(possessive).is_some_and(|index| {
+                        launch_named_subject_v17(&object[..index])
+                            && [
+                                "launch claim",
+                                "release claim",
+                                "launch announcement",
+                                "release announcement",
+                            ]
+                            .contains(&folded_object[index + possessive.len()..].trim())
+                    })
+                })
+            })
+        })
+}
+
 fn launch_adverse_context_word_v17(word: &str) -> bool {
     [
         "false",
@@ -1921,13 +2013,8 @@ fn launch_adverse_context_word_v17(word: &str) -> bool {
         "incorrect",
         "fabricated",
         "debunked",
-        "refuted",
         "rejected",
-        "retracted",
         "retraction",
-        "withdrawn",
-        "withdrew",
-        "denied",
         "denial",
         "fiction",
         "fictional",
@@ -1942,10 +2029,7 @@ fn launch_adverse_context_word_v17(word: &str) -> bool {
         "rehearsal",
         "unverified",
         "unconfirmed",
-        "disavowed",
-        "recanted",
         "inaccurate",
-        "rescinded",
         "cancelled",
         "canceled",
     ]
@@ -1982,6 +2066,7 @@ fn launch_governing_context_blocks_v17(
             }
             let scope = words.iter().any(|word| {
                 [
+                    "event",
                     "statement",
                     "statements",
                     "entries",
@@ -2020,7 +2105,10 @@ fn launch_governing_context_blocks_v17(
                     return false;
                 }
                 launch_adverse_context_word_v17(word)
+                    || (launch_retraction_word_v17(word)
+                        && !launch_retraction_negated_v17(&words[..index]))
             });
+            let non_event = launch_non_event_context_v17(&words);
             if owns_target
                 && (segment.denied
                     || ((scope || launch) && adverse)
@@ -2053,6 +2141,7 @@ fn launch_governing_context_blocks_v17(
             });
             let context_subject = context_head.is_some_and(|word| {
                 [
+                    "event",
                     "statement",
                     "statements",
                     "entries",
@@ -2081,27 +2170,11 @@ fn launch_governing_context_blocks_v17(
             });
             let reporting_reference = scope
                 && words.windows(2).any(|pair| {
-                    matches!(
-                        pair,
-                        [
-                            "retracted"
-                                | "withdrew"
-                                | "withdrawn"
-                                | "denied"
-                                | "refuted"
-                                | "rescinded",
-                            "this" | "that" | "the" | "previous" | "preceding"
-                        ]
-                    )
+                    launch_retraction_word_v17(pair[0])
+                        && ["this", "that", "the", "previous", "preceding"].contains(&pair[1])
                 });
             let object_retraction = words.windows(2).any(|pair| {
-                matches!(
-                    pair,
-                    [
-                        "retracted" | "withdrew" | "denied" | "disavowed" | "rescinded",
-                        "it" | "them"
-                    ]
-                )
+                launch_retraction_word_v17(pair[0]) && ["it", "them"].contains(&pair[1])
             });
             let reference = matches!(words.first(), Some(&"this" | &"that" | &"these" | &"those"))
                 || matches!(
@@ -2143,7 +2216,10 @@ fn launch_governing_context_blocks_v17(
                         ..
                     ]
                 );
-            if !owns_target && launch_explicit_other_context_v17(&segment.raw) {
+            if !owns_target
+                && (launch_explicit_other_context_v17(&segment.raw)
+                    || launch_retraction_other_object_v17(&segment.raw))
+            {
                 continue;
             }
             if segment.denied
@@ -2156,6 +2232,7 @@ fn launch_governing_context_blocks_v17(
             }
             let marker_only = words.is_empty() && segment.denied;
             let denied_context = adverse
+                || non_event
                 || (segment.denied && (context_subject || reference))
                 || words
                     .windows(2)
@@ -2177,27 +2254,46 @@ fn launch_governing_context_blocks_v17(
             } else {
                 index.checked_sub(1).and_then(|i| segments.get(i))
             };
-            let local_statement_reference = matches!(
-                words.as_slice(),
-                ["this" | "that", "statement" | "claim" | "assertion", ..]
-                    | [
+            let local_statement_reference = (object_retraction && words.contains(&"it"))
+                || words.windows(2).any(|pair| {
+                    matches!(
+                        pair,
+                        [
+                            "this" | "that",
+                            "statement" | "claim" | "assertion" | "event"
+                        ]
+                    )
+                })
+                || words.windows(3).any(|triple| {
+                    matches!(
+                        triple,
+                        [
+                            "the",
+                            "preceding" | "previous" | "next" | "following",
+                            "statement" | "claim" | "assertion" | "event"
+                        ]
+                    )
+                })
+                || (non_event && matches!(words.first(), Some(&"this" | &"that" | &"it")))
+                || matches!(
+                    words.as_slice(),
+                    [
                         "this" | "that",
                         "feature" | "property",
                         "statement" | "claim" | "assertion",
                         ..
                     ]
-                    | [
-                        "the",
-                        "preceding" | "previous" | "next" | "following",
-                        "statement" | "claim" | "assertion",
-                        ..
-                    ]
-            );
-            let collective_reference = matches!(
-                words.first(),
-                Some(&"these" | &"those" | &"everything" | &"both" | &"all")
-            ) || words.windows(2).any(|pair| pair == ["and", "all"]);
+                );
+            let collective_reference = (object_retraction && words.contains(&"them"))
+                || matches!(
+                    words.first(),
+                    Some(&"these" | &"those" | &"everything" | &"both" | &"all")
+                )
+                || words.windows(2).any(|pair| pair == ["and", "all"]);
             let broad_reference = collective_reference
+                || words
+                    .iter()
+                    .any(|word| ["and", "or", "including", "neither"].contains(word))
                 || words.iter().any(|word| {
                     [
                         "statements",
