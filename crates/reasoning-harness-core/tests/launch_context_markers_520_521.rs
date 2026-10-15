@@ -704,6 +704,45 @@ fn engine073_independent_v3_seen_replay_preserves_full_scope() {
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
+#[test]
+fn engine073_independent_v4_seen_replay_preserves_full_scope() {
+    // Keep v4's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v4/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
 
 #[test]
 fn explicit_property_context_cannot_hide_global_or_launch_denials() {
@@ -759,4 +798,29 @@ fn scoped_object_preserves_full_target_and_alias_names() {
         json!({"id":"longer-alias-owner","entity":"Cedar","aliases":["Cedar LTS"],"signals":[{"kind":"excerpt","text":"Cedar was launched in 2026. Cedar LTS claim is withdrawn."}],"expected_relevant":false}),
         json!({"id":"longer-alias-property","entity":"Cedar","aliases":["Cedar LTS"],"signals":[{"kind":"excerpt","text":"Cedar was launched in 2026. Cedar LTS warranty claim is withdrawn."}],"expected_relevant":true}),
     ]);
+}
+
+#[test]
+fn limited_property_notice_cannot_override_launch_or_unresolved_retraction() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        (
+            "We retract the refraction specification for Silver Lens.",
+            true,
+        ),
+        ("We retract the launch claim for Silver Lens.", false),
+        ("We retract the launch claim.", false),
+        ("We retract the statement.", false),
+        (
+            "The entire report is retracted: the refraction specification is withdrawn.",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[
+            {"kind":"source_title","text":"Limited retraction in the abstract"},
+            {"kind":"excerpt","text":"Silver Lens was launched in 2026."},
+            {"kind":"excerpt","text":format!("{text} The notice applies only to that physical specification.")}
+        ],"expected_relevant":expected}));
+    }
+    check(cases);
 }

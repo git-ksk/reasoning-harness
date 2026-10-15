@@ -1775,6 +1775,24 @@ fn launch_explicit_other_subject_v17(
     {
         return false;
     }
+    let clause = launch_other_clause_v17(statement).trim();
+    let folded = clause.to_ascii_lowercase();
+    if !text
+        .split_whitespace()
+        .any(|word| ["and", "or", "but", "including", "neither"].contains(&word))
+    {
+        for prefix in [
+            "the assertion that ",
+            "the claim that ",
+            "the statement that ",
+            "an assertion that ",
+        ] {
+            if let Some(embedded) = folded.strip_prefix(prefix) {
+                let offset = clause.len() - embedded.len();
+                return launch_explicit_other_subject_v17(policy, &clause[offset..]);
+            }
+        }
+    }
     // An incidental predicate in "According to reports, it was launched" does
     // not establish another owner. Require a bounded, visibly named subject.
     let statement = launch_other_clause_v17(statement);
@@ -1911,6 +1929,7 @@ fn launch_explicit_nonlaunch_statement_v17(
                     ..
                 ] | ["has", "a" | "an", ..]
                     | ["is" | "was", "made", "from" | "of", ..]
+                    | ["is" | "was", "sealed", "against", ..]
             )
     };
     // A clear feature predicate keeps fictional characters/false alarms in its
@@ -2119,6 +2138,15 @@ fn launch_scope_or_reference_word_v17(word: &str) -> bool {
         "aforementioned",
         "unidentified",
         "unspecified",
+        "unknown",
+        "missing",
+        "omitted",
+        "unavailable",
+        "something",
+        "anything",
+        "nothing",
+        "nonexistent",
+        "unreal",
     ]
     .contains(&word)
         || launch_adverse_context_word_v17(word)
@@ -2190,7 +2218,10 @@ fn launch_explicit_property_context_v17(
                 .windows(2)
                 .any(|pair| matches!(pair, ["not", "true" | "correct"])))
     };
-    if clause != original && broad_adverse(&original_words) {
+    if statement.rsplit_once(':').is_some_and(|(prefix, _)| {
+        let text = normalized(prefix);
+        broad_adverse(&text.split_whitespace().collect::<Vec<_>>())
+    }) {
         return false;
     }
     let adverse = original_words
@@ -2224,6 +2255,10 @@ fn launch_explicit_property_context_v17(
             "specification",
             "note",
             "correction",
+            "table",
+            "line",
+            "permission",
+            "license",
         ]
         .contains(word)
     }) {
@@ -2231,7 +2266,7 @@ fn launch_explicit_property_context_v17(
         let reporting = prefix
             .iter()
             .rposition(|word| launch_retraction_word_v17(word));
-        if reporting.is_some_and(|verb| broad_adverse(&prefix[..verb])) {
+        if reporting.is_some_and(|verb| broad_adverse(&prefix[..=verb])) {
             return false;
         }
         let nominal = prefix
@@ -2246,10 +2281,34 @@ fn launch_explicit_property_context_v17(
             .or_else(|| {
                 prefix
                     .windows(2)
-                    .position(|pair| matches!(pair, ["retraction" | "withdrawal" | "denial", "of"]))
+                    .position(|pair| {
+                        matches!(
+                            pair,
+                            [
+                                "retraction" | "withdrawal" | "denial",
+                                "of" | "for" | "about" | "concerning" | "concerns"
+                            ]
+                        )
+                    })
                     .map(|index| index + 2)
             });
-        let mut object = &prefix[reporting.map(|verb| verb + 1).or(nominal).unwrap_or(0)..];
+        let declared_scope = if prefix.contains(&"scope")
+            && prefix
+                .iter()
+                .any(|word| ["retraction", "withdrawal", "denial"].contains(word))
+        {
+            prefix
+                .iter()
+                .rposition(|word| *word == "is")
+                .map(|index| index + 1)
+        } else {
+            None
+        };
+        let mut object = &prefix[reporting
+            .map(|verb| verb + 1)
+            .or(nominal)
+            .or(declared_scope)
+            .unwrap_or(0)..];
         // An appositive supplies the explicit object type, not an arbitrary
         // numbered reference graph. "statement B, the cable claim" is local.
         if let Some(article) = object.iter().rposition(|word| *word == "the") {
@@ -2292,6 +2351,20 @@ fn launch_explicit_property_context_v17(
             }
         }
         object = &object[trim_determiners(object)..];
+        if matches!(
+            object,
+            ["product" | "model" | "service" | "system", "s", ..]
+        ) {
+            object = &object[2..];
+        }
+        if let [
+            "assertion" | "claim" | "statement",
+            "about" | "concerning",
+            rest @ ..,
+        ] = object
+        {
+            object = &rest[trim_determiners(rest)..];
+        }
         return object
             .iter()
             .any(|word| !["feature", "property"].contains(word))
@@ -2299,6 +2372,23 @@ fn launch_explicit_property_context_v17(
                 .iter()
                 .filter(|word| !["feature", "property"].contains(word))
                 .any(|word| launch_scope_or_reference_word_v17(word));
+    }
+    if let Some(start) = words
+        .windows(2)
+        .position(|pair| pair == ["text", "describing"])
+        && let Some(attribute) = words[start + 2..].iter().position(|word| *word == "as")
+    {
+        let owner_end = start + 2 + attribute;
+        let owner = words[start + 2..owner_end].join(" ");
+        let value = &words[owner_end + 1..];
+        if target_identity_phrases(policy).contains(&owner)
+            && !value.is_empty()
+            && !value
+                .iter()
+                .any(|word| launch_scope_or_reference_word_v17(word))
+        {
+            return true;
+        }
     }
     // A named non-launch event with explicit owner + occurrence predicate is
     // independent of the launch. Bare "this event" remains unresolved.
@@ -2478,6 +2568,9 @@ fn launch_retraction_other_object_v17(
                         "our statement ",
                         "the statement ",
                         "this claim ",
+                        "the assertion ",
+                        "our assertion ",
+                        "this assertion ",
                     ]
                     .contains(&prefix)
                         && launch_explicit_other_subject_v17(policy, &object[index + 5..])
@@ -2535,6 +2628,98 @@ fn launch_adverse_context_word_v17(word: &str) -> bool {
     .contains(&word)
 }
 
+fn launch_property_scope_reference_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+    neighbor: &LaunchFactualSegmentV17,
+) -> bool {
+    if !launch_explicit_property_context_v17(policy, &neighbor.raw) {
+        return false;
+    }
+    let text = normalized(statement);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    let Some(scope) = words
+        .iter()
+        .position(|word| ["concerns", "concern"].contains(word))
+    else {
+        return false;
+    };
+    if !words[..scope]
+        .iter()
+        .any(|word| ["retraction", "withdrawal", "denial"].contains(word))
+        || !matches!(words.last(), Some(&"only" | &"alone"))
+    {
+        return false;
+    }
+    let topic = &words[scope + 1..words.len() - 1];
+    !topic.is_empty()
+        && !topic
+            .iter()
+            .any(|word| launch_scope_or_reference_word_v17(word))
+        && normalized_phrase_matches(&neighbor.raw, &topic.join(" "))
+}
+
+fn launch_limited_property_notice_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    text: &str,
+) -> bool {
+    let text = normalized(text);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    if !matches!(
+        words.as_slice(),
+        ["limited", "retraction" | "withdrawal" | "denial", ..]
+    ) || words.iter().any(|word| {
+        [
+            "launch",
+            "release",
+            "claim",
+            "statement",
+            "assertion",
+            "report",
+            "text",
+            "this",
+            "that",
+            "all",
+            "everything",
+            "entire",
+            "whole",
+        ]
+        .contains(word)
+    }) || target_identity_phrases(policy)
+        .iter()
+        .any(|target| normalized_phrase_matches(&text, target))
+    {
+        return false;
+    }
+    let factual = candidate
+        .signals
+        .iter()
+        .filter(|signal| {
+            matches!(
+                signal.kind,
+                EvidenceRelevanceSignalKind::Excerpt | EvidenceRelevanceSignalKind::Fact
+            )
+        })
+        .flat_map(|signal| launch_factual_segments_v17(policy, &signal.text))
+        .collect::<Vec<_>>();
+    let explicit_limit = factual.iter().any(|segment| {
+        let text = normalized(&segment.raw);
+        text.contains("applies only to that physical specification")
+    });
+    explicit_limit
+        && factual
+            .iter()
+            .any(|segment| launch_explicit_property_context_v17(policy, &segment.raw))
+        && factual.iter().all(|segment| {
+            let text = normalized(&segment.raw);
+            let words = text.split_whitespace().collect::<Vec<_>>();
+            !words.iter().any(|word| {
+                launch_retraction_word_v17(word) || launch_adverse_context_word_v17(word)
+            }) || launch_explicit_property_context_v17(policy, &segment.raw)
+        })
+}
+
 fn launch_governing_context_blocks_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -2550,12 +2735,25 @@ fn launch_governing_context_blocks_v17(
                 | EvidenceRelevanceSignalKind::StructuredMetadata
         )
     }) {
+        if matches!(
+            signal.kind,
+            EvidenceRelevanceSignalKind::SourceTitle | EvidenceRelevanceSignalKind::Heading
+        ) && launch_limited_property_notice_v17(policy, candidate, &signal.text)
+        {
+            continue;
+        }
         let segments = launch_factual_segments_v17(policy, &signal.text);
         for (index, segment) in segments.iter().enumerate() {
             let text = normalized(&segment.raw);
             let words = text.split_whitespace().collect::<Vec<_>>();
             if launch_explicit_nonlaunch_statement_v17(policy, &text)
                 || launch_explicit_property_context_v17(policy, &segment.raw)
+                || index
+                    .checked_sub(1)
+                    .and_then(|index| segments.get(index))
+                    .is_some_and(|neighbor| {
+                        launch_property_scope_reference_v17(policy, &segment.raw, neighbor)
+                    })
             {
                 continue;
             }
@@ -7793,10 +7991,11 @@ pub fn derive_effective_evidence_local_qualification_v17(
     // Older historical v11/v23 semantics still consume the immutable coarse
     // frames; this guard applies only to the current successor path (v17/v30).
     if policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
-        && effective.scope_risk == Risk::None
         && effective.relation_scope == EvidenceLocalRelationScope::RequestedRelation
-        && (launch_has_target_question_in_factual_signal(policy, candidate)
-            || !target_owned_launch_fact_v17(policy, candidate))
+        && (launch_governing_context_blocks_v17(policy, candidate)
+            || (effective.scope_risk == Risk::None
+                && (launch_has_target_question_in_factual_signal(policy, candidate)
+                    || !target_owned_launch_fact_v17(policy, candidate))))
     {
         effective.relation_scope = EvidenceLocalRelationScope::Unresolved;
     }
