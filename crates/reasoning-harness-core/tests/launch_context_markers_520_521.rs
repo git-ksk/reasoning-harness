@@ -821,6 +821,45 @@ fn engine073_independent_v6_seen_replay_preserves_full_scope() {
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
+#[test]
+fn engine073_independent_v7_seen_replay_preserves_full_scope() {
+    // Keep v7's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v7/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
 
 #[test]
 fn explicit_property_context_cannot_hide_global_or_launch_denials() {
@@ -995,4 +1034,86 @@ fn explicit_compound_properties_cannot_mask_launch_or_unresolved_objects() {
         cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched in 2026."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
     }
     check(cases);
+}
+
+#[test]
+fn component_properties_do_not_erase_event_or_source_denials() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        (
+            "We deny the physical launch-button specification for Silver Lens. This denial concerns the hardware button, not the product-history event.",
+            true,
+        ),
+        (
+            "We deny the launch claim for Silver Lens. This denial concerns the hardware button, not the product-history event.",
+            false,
+        ),
+        ("I deny that Silver Lens's release latch is brass.", true),
+        ("We retract the launch date claim for Silver Lens.", false),
+        ("We withdraw the release claim for Silver Lens.", false),
+        (
+            "We withdraw the launch-button width claim for Silver Lens. No actual launch of Silver Lens occurred.",
+            false,
+        ),
+        (
+            "The entire report is false: We withdraw the launch-button width claim for Silver Lens.",
+            false,
+        ),
+        (
+            "We withdraw the launch claim for Maple Queue. The withdrawn launch owner is explicitly Maple Queue.",
+            true,
+        ),
+        (
+            "We withdraw a launch claim. No owner is explicitly Maple Queue.",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched in 2026."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}
+
+#[test]
+fn foreign_non_event_context_cannot_clear_raw_risks_or_missing_target_ownership() {
+    let case = json!({"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":"Silver Lens and Maple Queue are different products. No launch of Maple Queue occurred. The omitted event is the launch of Maple Queue."}]});
+    let (policy, candidate, proposal, raw) = inputs(&case);
+    assert_eq!(
+        materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+            .unwrap()
+            .disposition,
+        Disposition::Relevant
+    );
+    for risk in [
+        reasoning_harness_core::EvidenceLocalBlockingReason::ContextGap,
+        reasoning_harness_core::EvidenceLocalBlockingReason::IdentityMapping,
+        reasoning_harness_core::EvidenceLocalBlockingReason::OwnershipScope,
+    ] {
+        let mut raw = raw;
+        raw.scope_risk = risk;
+        let qualified = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        assert_ne!(
+            qualified.scope_risk,
+            reasoning_harness_core::EvidenceLocalBlockingReason::None
+        );
+        assert_ne!(
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap()
+                .disposition,
+            Disposition::Relevant
+        );
+    }
+    let missing = json!({"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":"Silver Lens and Maple Queue share a product row. The product owner column is omitted. No launch of Maple Queue occurred."}]});
+    let (policy, candidate, proposal, raw) = inputs(&missing);
+    assert_ne!(
+        materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+            .unwrap()
+            .disposition,
+        Disposition::Relevant
+    );
 }

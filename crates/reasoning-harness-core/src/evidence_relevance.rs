@@ -1728,6 +1728,10 @@ fn launch_explicit_other_context_v17(statement: &str) -> bool {
                 && [
                     "launch claim",
                     "release claim",
+                    "launch assertion",
+                    "release assertion",
+                    "launch statement",
+                    "release statement",
                     "launch announcement",
                     "release announcement",
                 ]
@@ -1740,30 +1744,67 @@ fn launch_explicit_other_context_v17(statement: &str) -> bool {
         })
     });
     possessive_context
-        || [" about ", " for ", " of ", " belongs to "]
-            .iter()
-            .any(|link| {
-                folded.find(link).is_some_and(|index| {
-                    let start = index + link.len();
-                    let end = [
-                        " is ",
-                        " was ",
-                        " has ",
-                        " remains ",
-                        " never ",
-                        " did ",
-                        " does ",
-                        " took ",
-                        " happened",
-                        " occurred",
-                    ]
-                    .iter()
-                    .filter_map(|predicate| folded[start..].find(predicate))
-                    .min()
-                    .map_or(statement.len(), |index| start + index);
-                    launch_named_subject_v17(&statement[start..end])
-                })
+        || [
+            " about ",
+            " for ",
+            " of ",
+            " belongs to ",
+            " concerns ",
+            " owner as ",
+            " owner is ",
+        ]
+        .iter()
+        .any(|link| {
+            folded.find(link).is_some_and(|index| {
+                if link.contains("owner")
+                    && normalized(&statement[..index])
+                        .split_whitespace()
+                        .any(|word| {
+                            [
+                                "no",
+                                "not",
+                                "never",
+                                "unassigned",
+                                "unknown",
+                                "unnamed",
+                                "missing",
+                                "omitted",
+                                "unspecified",
+                            ]
+                            .contains(&word)
+                        })
+                {
+                    return false;
+                }
+                let start = index + link.len();
+                let end = [
+                    " is ",
+                    " was ",
+                    " has ",
+                    " remains ",
+                    " never ",
+                    " did ",
+                    " does ",
+                    " took ",
+                    " happened",
+                    " occurred",
+                ]
+                .iter()
+                .filter_map(|predicate| folded[start..].find(predicate))
+                .min()
+                .map_or(statement.len(), |index| start + index);
+                let subject = statement[start..end].trim();
+                let subject = subject
+                    .strip_suffix(" alone")
+                    .or_else(|| subject.strip_suffix(" only"))
+                    .unwrap_or(subject);
+                let subject = subject
+                    .strip_prefix("explicitly ")
+                    .or_else(|| subject.strip_prefix("solely "))
+                    .unwrap_or(subject);
+                launch_named_subject_v17(subject)
             })
+        })
 }
 
 fn launch_explicit_other_subject_v17(
@@ -1834,11 +1875,86 @@ fn launch_explicit_other_subject_v17(
     })
 }
 
+// These heads name components/document objects, not release events. The
+// qualifier is only used inside a scoped property grammar; target names stay
+// opaque so a canonical "Launch Button" cannot become its own property.
+fn launch_component_head_v17(head: &str) -> bool {
+    [
+        "button",
+        "buttons",
+        "icon",
+        "icons",
+        "lever",
+        "levers",
+        "switch",
+        "switches",
+        "latch",
+        "latches",
+        "key",
+        "keys",
+        "indicator",
+        "indicators",
+        "coating",
+        "coatings",
+        "bulletin",
+        "bulletins",
+        "banner",
+        "banners",
+        "section",
+        "sections",
+        "handle",
+        "valve",
+        "pedal",
+        "trigger",
+        "pin",
+        "spring",
+        "sensor",
+        "knob",
+    ]
+    .contains(&head)
+}
+
+fn launch_component_qualifier_v17(words: &[&str], index: usize) -> bool {
+    ["launch", "release"].contains(&words[index])
+        && words
+            .get(index + 1)
+            .is_some_and(|head| launch_component_head_v17(head))
+}
+
+fn launch_property_words_v17(policy: &EvidenceRelevanceTargetPolicy, text: &str) -> Vec<String> {
+    let text = normalized(text);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    let mut named = vec![false; words.len()];
+    for target in target_identity_phrases(policy) {
+        let name = target.split_whitespace().collect::<Vec<_>>();
+        for (index, window) in words.windows(name.len()).enumerate() {
+            if window == name {
+                named[index..index + name.len()].fill(true);
+            }
+        }
+    }
+    words
+        .iter()
+        .enumerate()
+        .map(|(index, word)| {
+            if !named[index] && launch_component_qualifier_v17(&words, index) {
+                "component".to_owned()
+            } else {
+                (*word).to_owned()
+            }
+        })
+        .collect()
+}
+
 fn launch_explicit_nonlaunch_statement_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     text: &str,
 ) -> bool {
-    let words = text.split_whitespace().collect::<Vec<_>>();
+    let property_words = launch_property_words_v17(policy, text);
+    let words = property_words
+        .iter()
+        .map(String::as_str)
+        .collect::<Vec<_>>();
     if words.iter().any(|word| {
         [
             "launch",
@@ -1955,7 +2071,19 @@ fn launch_explicit_nonlaunch_statement_v17(
             .windows(name.len())
             .enumerate()
             .any(|(index, window)| {
-                window == name && feature_tail(&words[index + name.len()..], &words[..index])
+                let tail = &words[index + name.len()..];
+                let property = if tail.first() == Some(&"s") {
+                    tail[1..]
+                        .iter()
+                        .position(|word| ["is", "was", "are", "were"].contains(word))
+                        .is_some_and(|predicate| {
+                            launch_specific_property_object_v17(policy, &tail[1..predicate + 1])
+                                && feature_tail(&["has", "a", "feature"], &words[..index])
+                        })
+                } else {
+                    false
+                };
+                window == name && (feature_tail(tail, &words[..index]) || property)
             })
     })
 }
@@ -2247,6 +2375,19 @@ fn launch_specific_property_object_v17(
     }) {
         object.remove(0);
     }
+    let specific_material = object.iter().any(|word| {
+        [
+            "physical",
+            "mechanical",
+            "hardware",
+            "electrical",
+            "manufacturing",
+        ]
+        .contains(word)
+    }) && object.iter().any(|word| launch_component_head_v17(word));
+    let specific_page = object
+        .windows(2)
+        .any(|pair| matches!(pair, ["page", "count" | "number" | "numbering" | "length"]));
     let specific_content = object.last() == Some(&"content") && object.len() > 1;
     !object.is_empty()
         && object.iter().any(|word| {
@@ -2264,7 +2405,9 @@ fn launch_specific_property_object_v17(
                 .contains(word)
             })
             .any(|word| {
-                !(specific_content && *word == "content")
+                !((specific_content && *word == "content")
+                    || (specific_page && *word == "page")
+                    || (specific_material && *word == "material"))
                     && launch_scope_or_reference_word_v17(word)
             })
 }
@@ -2386,8 +2529,11 @@ fn launch_explicit_property_context_v17(
 ) -> bool {
     let original = normalized(statement);
     let original_words = original.split_whitespace().collect::<Vec<_>>();
-    let clause = normalized(launch_other_clause_v17(statement));
-    let words = clause.split_whitespace().collect::<Vec<_>>();
+    let property_words = launch_property_words_v17(policy, launch_other_clause_v17(statement));
+    let words = property_words
+        .iter()
+        .map(String::as_str)
+        .collect::<Vec<_>>();
     if launch_coordinated_property_objects_v17(policy, statement) {
         return true;
     }
@@ -2522,11 +2668,13 @@ fn launch_explicit_property_context_v17(
                         .map(|index| index + 2)
                 })
         });
-        let declared_scope = if prefix.contains(&"scope")
-            && prefix
-                .iter()
-                .any(|word| ["retraction", "withdrawal", "denial"].contains(word))
-        {
+        let declared_scope = if prefix
+            .iter()
+            .any(|word| ["scope", "object", "subject"].contains(word))
+            && prefix.iter().any(|word| {
+                ["retraction", "withdrawal", "denial"].contains(word)
+                    || launch_retraction_word_v17(word)
+            }) {
             prefix
                 .iter()
                 .rposition(|word| *word == "is")
@@ -2534,10 +2682,9 @@ fn launch_explicit_property_context_v17(
         } else {
             None
         };
-        let mut object = &prefix[reporting
-            .map(|verb| verb + 1)
+        let mut object = &prefix[declared_scope
+            .or_else(|| reporting.map(|verb| verb + 1))
             .or(nominal)
-            .or(declared_scope)
             .unwrap_or(0)..];
         if object
             .iter()
@@ -2903,6 +3050,10 @@ fn launch_retraction_other_object_v17(
                         && launch_explicit_other_subject_v17(policy, &object[index + 5..])
                 });
                 embedded
+                    || (!target_identity_phrases(policy)
+                        .iter()
+                        .any(|target| normalized_phrase_matches(object, target))
+                        && launch_explicit_other_context_v17(object))
                     || ["'s ", "’s "].iter().any(|possessive| {
                         folded_object.find(possessive).is_some_and(|index| {
                             launch_named_subject_v17(&object[..index])
@@ -3005,7 +3156,7 @@ fn launch_property_scope_reference_v17(
     }
     let Some(scope) = words
         .iter()
-        .position(|word| ["concerns", "concern"].contains(word))
+        .position(|word| ["concerns", "concern", "about", "concerning"].contains(word))
         .or_else(|| {
             (words.contains(&"subject")
                 && words.iter().any(|word| launch_retraction_word_v17(word)))
@@ -3015,12 +3166,49 @@ fn launch_property_scope_reference_v17(
     else {
         return false;
     };
+    if words[..scope].iter().any(|word| {
+        [
+            "launch",
+            "launched",
+            "release",
+            "released",
+            "and",
+            "or",
+            "all",
+            "everything",
+            "entire",
+            "whole",
+        ]
+        .contains(word)
+    }) {
+        return false;
+    }
     if !words[..scope].iter().any(|word| {
         ["retraction", "withdrawal", "denial"].contains(word) || launch_retraction_word_v17(word)
     }) {
         return false;
     }
     let mut topic = &words[scope + 1..];
+    if let Some(contrast) = topic.iter().position(|word| *word == "not") {
+        if !topic[contrast + 1..].iter().all(|word| {
+            [
+                "the",
+                "a",
+                "an",
+                "product",
+                "history",
+                "event",
+                "launch",
+                "release",
+                "claim",
+                "statement",
+            ]
+            .contains(word)
+        }) {
+            return false;
+        }
+        topic = &topic[..contrast];
+    }
     if matches!(topic.last(), Some(&"only" | &"alone")) {
         topic = &topic[..topic.len() - 1];
     }
@@ -3191,6 +3379,9 @@ fn launch_governing_context_blocks_v17(
             let scope = words.iter().any(|word| {
                 [
                     "event",
+                    "retraction",
+                    "withdrawal",
+                    "denial",
                     "statement",
                     "statements",
                     "entries",
@@ -3268,6 +3459,9 @@ fn launch_governing_context_blocks_v17(
             let context_subject = context_head.is_some_and(|word| {
                 [
                     "event",
+                    "retraction",
+                    "withdrawal",
+                    "denial",
                     "statement",
                     "statements",
                     "entries",
@@ -8353,6 +8547,82 @@ pub fn derive_effective_evidence_local_qualification_v16(
     Ok(effective)
 }
 
+fn launch_foreign_context_view_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    candidate: &EvidenceRelevanceCandidate,
+    proposal: Option<&EvidenceRelevanceBindingProposal>,
+    raw: Option<&EvidenceLocalQualificationV6>,
+) -> Result<Option<EvidenceRelevanceCandidate>, EvidenceRelevanceError> {
+    use EvidenceLocalBlockingReason as Risk;
+    use EvidenceLocalIdentityScope as Identity;
+    if policy.relation != EvidenceRelevanceRelationKind::ChangeOrLaunch
+        || !raw.is_some_and(|raw| {
+            raw.scope_risk == Risk::None
+                && raw.identity_scope == Identity::ExactTarget
+                && raw.relation_scope == EvidenceLocalRelationScope::RequestedRelation
+        })
+        || !proposal.is_some_and(|proposal| {
+            proposal.target_binding == EvidenceRelevanceBinding::Exact
+                && proposal.relation_binding == EvidenceRelevanceBinding::Exact
+        })
+        || deterministic_omitted_ownership_identity_gap(candidate)
+        || !target_owned_launch_fact_v17(policy, candidate)
+    {
+        return Ok(None);
+    }
+    let full = derive_effective_evidence_local_qualification_v16(policy, candidate, proposal, raw)?;
+    if full.scope_risk != Risk::ContextGap || full.identity_scope != Identity::ExactTarget {
+        return Ok(None);
+    }
+    let targets = target_identity_phrases(policy);
+    let mut view = candidate.clone();
+    let mut removed = false;
+    view.signals = candidate
+        .signals
+        .iter()
+        .filter_map(|signal| {
+            if !matches!(
+                signal.kind,
+                EvidenceRelevanceSignalKind::Excerpt | EvidenceRelevanceSignalKind::Fact
+            ) {
+                return Some(signal.clone());
+            }
+            let kept = launch_factual_segments_v17(policy, &signal.text)
+                .into_iter()
+                .filter_map(|segment| {
+                    if !targets
+                        .iter()
+                        .any(|target| normalized_phrase_matches(&segment.raw, target))
+                        && (launch_explicit_other_subject_v17(policy, &segment.raw)
+                            || launch_explicit_other_context_v17(&segment.raw)
+                            || launch_retraction_other_object_v17(policy, &segment.raw))
+                    {
+                        removed = true;
+                        None
+                    } else {
+                        Some(segment.raw)
+                    }
+                })
+                .collect::<Vec<_>>();
+            if kept.is_empty() {
+                None
+            } else {
+                let mut signal = signal.clone();
+                signal.text = kept.join(". ");
+                Some(signal)
+            }
+        })
+        .collect();
+    if !removed {
+        return Ok(None);
+    }
+    let scoped = derive_effective_evidence_local_qualification_v16(policy, &view, proposal, raw)?;
+    Ok(
+        (scoped.scope_risk == Risk::None && scoped.identity_scope == Identity::ExactTarget)
+            .then_some(view),
+    )
+}
+
 pub fn derive_effective_evidence_local_qualification_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     candidate: &EvidenceRelevanceCandidate,
@@ -8365,9 +8635,16 @@ pub fn derive_effective_evidence_local_qualification_v17(
     let mut effective =
         derive_effective_evidence_local_qualification_v16(policy, candidate, proposal, raw)?;
 
+    if effective.scope_risk == Risk::ContextGap
+        && launch_foreign_context_view_v17(policy, candidate, proposal, raw)?.is_some()
+    {
+        effective.scope_risk = Risk::None;
+    }
+
     // Recover only a locally proven launch from exact independent bindings and
-    // an anchored exact identity. Never clear a risk, explicit absence, or an
-    // alternate relation. This is successor-only; v16/v29 stay frozen.
+    // an anchored exact identity. Raw/remaining risk, explicit absence and
+    // alternate relations stay authoritative. A proven foreign event's omitted
+    // occurrence is not omitted target context. This is successor-only; v16/v29 stay frozen.
     if policy.relation == EvidenceRelevanceRelationKind::ChangeOrLaunch
         && effective.scope_risk == Risk::None
         && effective.identity_scope == Identity::ExactTarget
@@ -9049,9 +9326,17 @@ pub fn materialize_evidence_relevance_v30(
     } else {
         materialize_evidence_relevance_v23
     };
+    let scoped_candidate = if effective.scope_risk == EvidenceLocalBlockingReason::None
+        && effective.relation_scope == Relation::RequestedRelation
+        && locally_proven_successor_relation
+    {
+        launch_foreign_context_view_v17(policy, candidate, proposal, raw_qualification)?
+    } else {
+        None
+    };
     let mut assessment = materialize(
         policy,
-        candidate,
+        scoped_candidate.as_ref().unwrap_or(candidate),
         effective_proposal.as_ref(),
         Some(&effective),
     )?;

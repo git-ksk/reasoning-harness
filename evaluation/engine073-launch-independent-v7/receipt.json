@@ -1,0 +1,102 @@
+{
+  "identity": "engine073-launch-independent-v7",
+  "recorded_utc": "2026-10-15T14:00:57.284295+00:00",
+  "candidate_source_sha": "a80391e7daaa59832dee24e5ebed351ed3e02980",
+  "manifest_sha256": "a5caaf9680b6635bf1223d6d0a22517fc5e8a274424babac3b60f2526854fed5",
+  "pre_invocation_guard_matches_manifest": true,
+  "frozen_files_unchanged": true,
+  "v1_v6_all_artifacts_unchanged": true,
+  "static_stage": {
+    "outcome": "PASS",
+    "Engine_invocations": 0,
+    "semantic_observations": 0
+  },
+  "first_semantic_result": {
+    "identity": "engine073-launch-independent-v7",
+    "candidate_source_sha": "a80391e7daaa59832dee24e5ebed351ed3e02980",
+    "manifest_sha256": "a5caaf9680b6635bf1223d6d0a22517fc5e8a274424babac3b60f2526854fed5",
+    "outcome": "FAIL",
+    "planned_cases": 60,
+    "observed_cases": 60,
+    "passed": 41,
+    "failed": 19,
+    "incomplete": 0,
+    "positive_passed": 11,
+    "negative_passed": 30,
+    "negative_v17_requested_relation_violations": 0,
+    "negative_v30_relevant_violations": 0,
+    "positive_v17_withheld": 18,
+    "positive_v30_withheld": 19,
+    "operational_errors": [],
+    "raw": {
+      "stdout_sha256": "69608d7b23238e95cb61bfb8a5fcb283a0239f6470a1159bbfb6f3bc8f3f907b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "invocation_sha256": "390b953f810ef880768eb1e7ee7dda622584302062ca38eb3ddfd78012ce1ecb"
+    },
+    "provider_calls": 0,
+    "retries": 0,
+    "scope": "Independent synthetic candidate API check only; not #531 real-world or release/CLI acceptance."
+  },
+  "negative_v17_requested_relation_violation_ids": [],
+  "negative_v30_relevant_violation_ids": [],
+  "positive_nonrelevant_ids": [
+    "li7-001",
+    "li7-007",
+    "li7-011",
+    "li7-019",
+    "li7-021",
+    "li7-023",
+    "li7-025",
+    "li7-027",
+    "li7-029",
+    "li7-031",
+    "li7-033",
+    "li7-037",
+    "li7-039",
+    "li7-045",
+    "li7-047",
+    "li7-049",
+    "li7-051",
+    "li7-055",
+    "li7-057"
+  ],
+  "positive_nonrelevant_dispositions": {
+    "ambiguous": 18,
+    "irrelevant": 1
+  },
+  "positive_irrelevant_ids": [
+    "li7-021"
+  ],
+  "positive_requested_but_ambiguous_ids": [
+    "li7-019"
+  ],
+  "first_probe_invocations": 1,
+  "scorer_applications": 1,
+  "causal_ablation_performed": false,
+  "retries": 0,
+  "rescoring": 0,
+  "post_result_label_changes": 0,
+  "provider_API_calls": 0,
+  "files": {
+    "README.md": "53aedc081b729841e309aa11c1f13ab3dd48e7f17e0e8f33aef1f5b1b78446bd",
+    "author_cases.py": "1eb9a19ca2a7e4277904c3c16cce03bdf696f26a8ced035496d31d999fe96f27",
+    "cases.json": "6783f7a43614b92d6d0bfc049543a4dcb8e32d42602a40af27f27e4e5ac7a10a",
+    "first-invocation.json": "390b953f810ef880768eb1e7ee7dda622584302062ca38eb3ddfd78012ce1ecb",
+    "first-invocation.started.json": "56436d6e91121b781d147551e9762dc42bd294ea73e405a703081d0a52f984e7",
+    "first-results.json": "3a7d33e96beeb94f7983f50ee8ad14708bd04806ccc507651dce82a7066949b1",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "first-summary.json": "d4b0a3787d60abb373b32a07690c7d7c9b97b9238eb7170da03f365dd51bb0b4",
+    "first.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "first.stdout.jsonl": "69608d7b23238e95cb61bfb8a5fcb283a0239f6470a1159bbfb6f3bc8f3f907b",
+    "inputs.json": "809269919365ff2f437aff574ba31fd7952ae45bebf5c8d7b37b93473857c6ed",
+    "manifest.json": "a5caaf9680b6635bf1223d6d0a22517fc5e8a274424babac3b60f2526854fed5",
+    "paired-name-scope.json": "6ac9e355d23ae11f1f39210b15383510abbe787ace32c35878d0ca45c5e5f364",
+    "pre-freeze-scope-review.json": "bbedeafd4821691a9fb596b11a6eb0d670351f914516f995031d2b0381027962",
+    "predecessor-artifact-hashes.json": "1fc7928eff45034c26e3a15f33e7add56d0a1afd767064b15fc0d23f80cfb93f",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "protocol.json": "a2172776b30688d82d9d65e6dc3de1c0875709ca3cb40205254c324825ee4fa4",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "static-preflight.json": "b4c0f362eebf5878f2a9e16ae6a9e1510b8685c18d37ac9fcf47b2c33c0ddc81",
+    "static_preflight.py": "e1ac2f3d11a1295e3bcef1a18a789066f206d937ab7177ee7c3052ca477ad994"
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "authority": "Evaluator-owned synthetic identity design, not universal external product truth.",
+  "identity_rule": "Each full name denotes a different fictional product; shared first token supplies no alias/hierarchy relationship. All actual target policies have no aliases.",
+  "pairs": [
+    {
+      "target": "Alderhelm Lens",
+      "other_product": "Alderhelm Rail"
+    },
+    {
+      "target": "Birchhaven Valve",
+      "other_product": "Birchhaven Coupler"
+    },
+    {
+      "target": "Citrusmoor Plate",
+      "other_product": "Citrusmoor Shim"
+    },
+    {
+      "target": "Dovewick Relay",
+      "other_product": "Dovewick Sensor"
+    },
+    {
+      "target": "Elderfield Hub",
+      "other_product": "Elderfield Knob"
+    },
+    {
+      "target": "Flintmarsh Dial",
+      "other_product": "Flintmarsh Nozzle"
+    },
+    {
+      "target": "Goldhaven Loom",
+      "other_product": "Goldhaven Capsule"
+    },
+    {
+      "target": "Heatherquay Ring",
+      "other_product": "Heatherquay Lever"
+    },
+    {
+      "target": "Ivyshore Gauge",
+      "other_product": "Ivyshore Coffer"
+    },
+    {
+      "target": "Jadewood Crown",
+      "other_product": "Jadewood Cradle"
+    },
+    {
+      "target": "Kestrelbrook Panel",
+      "other_product": "Kestrelbrook Cap"
+    },
+    {
+      "target": "Lindenbay Spindle",
+      "other_product": "Lindenbay Bracket"
+    },
+    {
+      "target": "Meadowrift Frame",
+      "other_product": "Meadowrift Key"
+    },
+    {
+      "target": "Nutmegwood Console",
+      "other_product": "Nutmegwood Tuner"
+    },
+    {
+      "target": "Oakenford Dock",
+      "other_product": "Oakenford Slider"
+    },
+    {
+      "target": "Ploverhaven Switch",
+      "other_product": "Ploverhaven Pointer"
+    },
+    {
+      "target": "Quillmeadow Terminal",
+      "other_product": "Quillmeadow Filter"
+    },
+    {
+      "target": "Reedhaven Board",
+      "other_product": "Reedhaven Meter"
+    },
+    {
+      "target": "Sedgewharf Reader",
+      "other_product": "Sedgewharf Drum"
+    },
+    {
+      "target": "Tawnybrook Recorder",
+      "other_product": "Tawnybrook Scanner"
+    },
+    {
+      "target": "Umberquay Seal",
+      "other_product": "Umberquay Handle"
+    },
+    {
+      "target": "Violetmere Rotor",
+      "other_product": "Violetmere Valve"
+    },
+    {
+      "target": "Windgrove Chassis",
+      "other_product": "Windgrove Panel"
+    },
+    {
+      "target": "Xanthicfield Bearing",
+      "other_product": "Xanthicfield Rack"
+    },
+    {
+      "target": "Yewhaven Clip",
+      "other_product": "Yewhaven Base"
+    },
+    {
+      "target": "Zinniaquay Sprocket",
+      "other_product": "Zinniaquay Harness"
+    },
+    {
+      "target": "Amberlake Flange",
+      "other_product": "Amberlake Socket"
+    },
+    {
+      "target": "Brookhaven Ferrule",
+      "other_product": "Brookhaven Spool"
+    },
+    {
+      "target": "Copperford Pedal",
+      "other_product": "Copperford Rail"
+    },
+    {
+      "target": "Dawnmeadow Actuator",
+      "other_product": "Dawnmeadow Loom"
+    }
+  ]
+}
