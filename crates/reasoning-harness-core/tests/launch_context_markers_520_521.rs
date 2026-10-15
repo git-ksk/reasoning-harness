@@ -782,6 +782,45 @@ fn engine073_independent_v5_seen_replay_preserves_full_scope() {
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
+#[test]
+fn engine073_independent_v6_seen_replay_preserves_full_scope() {
+    // Keep v6's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v6/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
 
 #[test]
 fn explicit_property_context_cannot_hide_global_or_launch_denials() {
@@ -899,6 +938,59 @@ fn contracted_non_events_and_generic_objects_preserve_the_launch_boundary() {
             "We retract Maple Queue's launch assertion, which also retracts the launch statement about Silver Lens.",
             false,
         ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched in 2026."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}
+
+#[test]
+fn explicit_compound_properties_cannot_mask_launch_or_unresolved_objects() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        ("No actual launch of Silver Lens occurred.", false),
+        (
+            "The entire article is withdrawn: We withdraw Maple Queue's launch claim.",
+            false,
+        ),
+        (
+            "The entire report is false: We withdraw Maple Queue's launch claim.",
+            false,
+        ),
+        (
+            "A withdrawn report: We withdraw Maple Queue's launch claim.",
+            false,
+        ),
+        (
+            "A withdrawn report: We withdraw both the thread-pitch claim and the friction-coefficient claim.",
+            false,
+        ),
+        (
+            "The report is false: We withdraw both the thread-pitch claim and the friction-coefficient claim.",
+            false,
+        ),
+        ("No real launch of Silver Lens happened.", false),
+        (
+            "We withdraw both the thread-pitch claim about Silver Lens and the friction-coefficient claim about Silver Lens.",
+            true,
+        ),
+        (
+            "We withdraw both the thread-pitch claim about Silver Lens and the launch claim about Silver Lens.",
+            false,
+        ),
+        (
+            "We withdraw both the thread-pitch claim about Silver Lens and the preceding claim.",
+            false,
+        ),
+        (
+            "We withdraw both the thread-pitch claim about Silver Lens and the friction-coefficient claim about Silver Lens. Both withdrawn objects are named in this sentence. No actual launch of Silver Lens occurred.",
+            false,
+        ),
+        (
+            "We withdraw the lead-content claim for Silver Lens. The service benchmark for Silver Lens never happened.",
+            true,
+        ),
+        ("The report for Silver Lens did not take place.", false),
     ] {
         cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched in 2026."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
     }

@@ -2314,6 +2314,72 @@ fn launch_plain_property_object_v17(
     }) && launch_specific_property_object_v17(policy, object)
 }
 
+fn launch_broad_adverse_context_v17(words: &[&str]) -> bool {
+    words.iter().any(|word| {
+        [
+            "report",
+            "passage",
+            "paragraph",
+            "text",
+            "content",
+            "story",
+            "account",
+            "article",
+            "document",
+            "source",
+        ]
+        .contains(word)
+    }) && (words
+        .iter()
+        .any(|word| launch_adverse_context_word_v17(word) || launch_retraction_word_v17(word))
+        || launch_non_event_context_v17(words)
+        || words
+            .windows(2)
+            .any(|pair| matches!(pair, ["not", "true" | "correct"])))
+}
+
+fn launch_coordinated_property_objects_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+) -> bool {
+    if statement.rsplit_once(':').is_some_and(|(prefix, _)| {
+        let text = normalized(prefix);
+        launch_broad_adverse_context_v17(&text.split_whitespace().collect::<Vec<_>>())
+    }) {
+        return false;
+    }
+    let text = normalized(launch_other_clause_v17(statement));
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    let Some(join) = words.iter().position(|word| *word == "and") else {
+        return false;
+    };
+    if words.iter().filter(|word| **word == "and").count() != 1
+        || words
+            .iter()
+            .any(|word| ["or", "but", "including", "neither"].contains(word))
+    {
+        return false;
+    }
+    let Some(verb) = words[..join]
+        .iter()
+        .position(|word| launch_retraction_word_v17(word))
+    else {
+        return false;
+    };
+    let mut left = &words[verb + 1..join];
+    if left.first() == Some(&"both") {
+        left = &left[1..];
+    }
+    let prefix = words[..=verb].join(" ");
+    !left.is_empty()
+        && join + 1 < words.len()
+        && launch_explicit_property_context_v17(policy, &format!("{prefix} {}", left.join(" ")))
+        && launch_explicit_property_context_v17(
+            policy,
+            &format!("{prefix} {}", words[join + 1..].join(" ")),
+        )
+}
+
 fn launch_explicit_property_context_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     statement: &str,
@@ -2322,6 +2388,9 @@ fn launch_explicit_property_context_v17(
     let original_words = original.split_whitespace().collect::<Vec<_>>();
     let clause = normalized(launch_other_clause_v17(statement));
     let words = clause.split_whitespace().collect::<Vec<_>>();
+    if launch_coordinated_property_objects_v17(policy, statement) {
+        return true;
+    }
     // Scope exclusions apply to a complete object, never one side of a
     // coordinated launch/global disclaimer. A colon label cannot erase one.
     if words.iter().any(|word| {
@@ -2358,29 +2427,10 @@ fn launch_explicit_property_context_v17(
     }) {
         return false;
     }
-    let broad_adverse = |words: &[&str]| {
-        words.iter().any(|word| {
-            [
-                "report",
-                "passage",
-                "paragraph",
-                "text",
-                "content",
-                "story",
-                "account",
-            ]
-            .contains(word)
-        }) && (words
-            .iter()
-            .any(|word| launch_adverse_context_word_v17(word) || launch_retraction_word_v17(word))
-            || launch_non_event_context_v17(words)
-            || words
-                .windows(2)
-                .any(|pair| matches!(pair, ["not", "true" | "correct"])))
-    };
+
     if statement.rsplit_once(':').is_some_and(|(prefix, _)| {
         let text = normalized(prefix);
-        broad_adverse(&text.split_whitespace().collect::<Vec<_>>())
+        launch_broad_adverse_context_v17(&text.split_whitespace().collect::<Vec<_>>())
     }) {
         return false;
     }
@@ -2430,7 +2480,7 @@ fn launch_explicit_property_context_v17(
         let reporting = prefix
             .iter()
             .rposition(|word| launch_retraction_word_v17(word));
-        if reporting.is_some_and(|verb| broad_adverse(&prefix[..=verb])) {
+        if reporting.is_some_and(|verb| launch_broad_adverse_context_v17(&prefix[..=verb])) {
             return false;
         }
         let limited = prefix
@@ -2553,20 +2603,7 @@ fn launch_explicit_property_context_v17(
         {
             object = &rest[trim_determiners(rest)..];
         }
-        return object.iter().any(|word| {
-            ![
-                "feature", "property", "product", "model", "service", "system",
-            ]
-            .contains(word)
-        }) && !object
-            .iter()
-            .filter(|word| {
-                ![
-                    "feature", "property", "product", "model", "service", "system",
-                ]
-                .contains(word)
-            })
-            .any(|word| launch_scope_or_reference_word_v17(word));
+        return launch_specific_property_object_v17(policy, object);
     }
     if let Some(start) = words
         .windows(2)
@@ -2597,13 +2634,13 @@ fn launch_explicit_property_context_v17(
             .position(|word| !["the", "a", "an", "our", "no"].contains(word))
             .unwrap_or(subject.len());
         let subject = &subject[start..];
-        return !subject.is_empty()
-            && !subject
+        return launch_specific_property_object_v17(policy, subject)
+            && (words[link + 1..]
                 .iter()
-                .any(|word| launch_scope_or_reference_word_v17(word))
-            && words[link + 1..]
-                .iter()
-                .any(|word| ["occur", "occurred", "happen", "happened"].contains(word));
+                .any(|word| ["occur", "occurred", "happen", "happened"].contains(word))
+                || words[link + 1..]
+                    .windows(2)
+                    .any(|words| words == ["take", "place"] || words == ["took", "place"]));
     }
     false
 }
@@ -2735,10 +2772,20 @@ fn launch_non_event_context_v17(words: &[&str]) -> bool {
         }
     }
     let words = expanded.as_slice();
-    let no_event = words.windows(2).enumerate().any(|(index, pair)| {
-        matches!(pair, ["no", "launch" | "event" | "release"])
+    let no_event = words.iter().enumerate().any(|(index, word)| {
+        if *word != "no" {
+            return false;
+        }
+        let mut noun = index + 1;
+        while words
+            .get(noun)
+            .is_some_and(|word| ["actual", "real", "genuine", "confirmed"].contains(word))
+        {
+            noun += 1;
+        }
+        matches!(words.get(noun), Some(&"launch" | &"event" | &"release"))
             && (matches!(
-                &words[index + 2..],
+                &words[noun + 1..],
                 [] | ["took", "place"]
                     | ["ever", "took", "place"]
                     | [
@@ -2746,9 +2793,9 @@ fn launch_non_event_context_v17(words: &[&str]) -> bool {
                         ..
                     ]
             ) || (words
-                .get(index + 2)
+                .get(noun + 1)
                 .is_some_and(|word| ["of", "for", "about"].contains(word))
-                && words.len() > index + 3))
+                && words.len() > noun + 2))
     });
     no_event
         || words.windows(2).any(|pair| {
@@ -2925,6 +2972,37 @@ fn launch_property_scope_reference_v17(
     }
     let text = normalized(statement);
     let words = text.split_whitespace().collect::<Vec<_>>();
+    if matches!(words.first(), Some(&"both" | &"these" | &"those"))
+        && words.contains(&"objects")
+        && words
+            .iter()
+            .any(|word| ["named", "listed", "specified"].contains(word))
+        && words.iter().all(|word| {
+            [
+                "both",
+                "these",
+                "those",
+                "the",
+                "withdrawn",
+                "retracted",
+                "objects",
+                "are",
+                "were",
+                "named",
+                "listed",
+                "specified",
+                "in",
+                "this",
+                "that",
+                "sentence",
+                "above",
+                "below",
+            ]
+            .contains(word)
+        })
+    {
+        return true;
+    }
     let Some(scope) = words
         .iter()
         .position(|word| ["concerns", "concern"].contains(word))
@@ -3047,6 +3125,48 @@ fn launch_governing_context_blocks_v17(
                     .any(|word| ["launch", "launched", "release", "released"].contains(word))
             {
                 continue;
+            }
+            // Whole-source denial precedes local exclusions. A nominal
+            // fictional foreign launch frame and a directly quoted property
+            // object have bounded local scope; neither is a whole-source denial.
+            if segment
+                .raw
+                .rsplit_once(':')
+                .is_some_and(|(prefix, clause)| {
+                    let prefix = normalized(prefix);
+                    let words = prefix.split_whitespace().collect::<Vec<_>>();
+                    if !launch_broad_adverse_context_v17(&words) {
+                        return false;
+                    }
+                    let global = words.iter().any(|word| {
+                        [
+                            "this",
+                            "that",
+                            "these",
+                            "those",
+                            "entire",
+                            "whole",
+                            "everything",
+                            "all",
+                            "is",
+                            "are",
+                            "was",
+                            "were",
+                            "has",
+                            "have",
+                        ]
+                        .contains(word)
+                            || launch_retraction_word_v17(word)
+                    });
+                    let foreign_frame =
+                        !global && launch_explicit_other_subject_v17(policy, &segment.raw);
+                    let quoted_property = prefix == "withdrawn text"
+                        && clause.trim_start().starts_with(['"', '“', '‘'])
+                        && launch_explicit_nonlaunch_statement_v17(policy, &text);
+                    !(foreign_frame || quoted_property)
+                })
+            {
+                return true;
             }
             if launch_explicit_nonlaunch_statement_v17(policy, &text)
                 || launch_explicit_property_context_v17(policy, &segment.raw)
