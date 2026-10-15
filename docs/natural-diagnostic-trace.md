@@ -29,3 +29,11 @@ A future successor evaluator may pass a unique path per live invocation, for exa
 ```
 
 and include that directory in its existing artifact upload. This is artifact plumbing only: evaluator/scoring/metric semantics and the frozen measurement ruler must remain unchanged. Do not rerun or rescore a frozen acceptance solely to obtain a trace.
+
+## Failed and interrupted runs (#535)
+
+In the repaired source, an opted-in trace is written on early return and cooperative cancellation as well as success. `completion_status` is `partial` until the natural operation finishes, then `completed`. A failed JSON result retains its original failure class and adds optional `partial_diagnostics`: `complete: false`, observed `usage`, trace-write status and any pending adapter generations. This is failure telemetry, never a final answer or a committed session turn.
+
+Logical model operations and adapter generations are different counters. Completed provider attempts/tokens remain measured values; missing provider usage stays unavailable. Cancellation may leave a billed request in flight: usage counters are explicitly lower bounds, total tokens and estimated currency cost are unavailable, and no response is invented. A trace-write error is reported without replacing the original failure. Configuration errors before recording starts do not fabricate diagnostics.
+
+This is a source repair; immutable CLI0.5.5 binaries and prior evaluation artifacts are unchanged. Cooperative cancellation can flush a trace; SIGKILL, power loss or a process crash cannot guarantee a final flush. Evaluators must retain stdout/stderr and their external invocation journal as well.

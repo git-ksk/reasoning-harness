@@ -1,7 +1,7 @@
 use std::{
     fs,
     future::Future,
-    path::Path,
+    path::{Path, PathBuf},
     pin::Pin,
     sync::{
         Mutex,
@@ -115,6 +115,20 @@ impl ModelAdapter for DiagnosticModelAdapter<'_> {
     }
 }
 
+impl Drop for DiagnosticTraceRecorder {
+    fn drop(&mut self) {
+        if let Some((path, context)) = self.persistence.as_ref() {
+            let result = self.write_to_path(path);
+            if let Err(error) = &result {
+                eprintln!("[reason] diagnostic trace write failed: {error}");
+            }
+            let mut snapshot = context.lock().unwrap_or_else(|error| error.into_inner());
+            snapshot.trace_written = Some(result.is_ok());
+            snapshot.pending_adapter_generations = Some(self.pending_generations());
+        }
+    }
+}
+
 fn diagnostic_model_error_class(kind: ModelErrorKind) -> &'static str {
     match kind {
         ModelErrorKind::Credentials => "credentials",
@@ -140,6 +154,10 @@ pub struct DiagnosticTraceRecorder {
     next_sequence: usize,
     #[serde(skip)]
     next_correlation: usize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    completion_status: Option<&'static str>,
+    #[serde(skip)]
+    persistence: Option<(PathBuf, crate::run_diagnostics::SharedRunDiagnostics)>,
 }
 
 #[derive(Debug, Serialize)]
@@ -251,7 +269,41 @@ impl DiagnosticTraceRecorder {
             events: Vec::new(),
             next_sequence: 0,
             next_correlation: 0,
+            completion_status: None,
+            persistence: None,
         }
+    }
+
+    pub(super) fn preserve_on_exit(
+        &mut self,
+        path: PathBuf,
+        context: crate::run_diagnostics::SharedRunDiagnostics,
+    ) {
+        self.completion_status = Some("partial");
+        self.persistence = Some((path, context));
+    }
+
+    pub(super) fn mark_completed(&mut self) {
+        self.completion_status = Some("completed");
+    }
+
+    fn pending_generations(&self) -> usize {
+        let requests = self
+            .events
+            .iter()
+            .filter(|event| matches!(event, DiagnosticEvent::ModelRequest { .. }))
+            .count();
+        let finished = self
+            .events
+            .iter()
+            .filter(|event| {
+                matches!(
+                    event,
+                    DiagnosticEvent::ModelResponse { .. } | DiagnosticEvent::ModelFailure { .. }
+                )
+            })
+            .count();
+        requests.saturating_sub(finished)
     }
 
     pub fn next_correlation_id(&mut self, phase: DiagnosticPhase) -> String {
