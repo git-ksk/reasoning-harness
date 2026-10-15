@@ -38,6 +38,9 @@ def outcome_from_normal(payload):
     else:
         failure = FailureClass.UNKNOWN
         usage = {}
+    # UsageTotals.run is per invocation; an incomplete legacy *session* is separate.
+    if usage.get('tracked_from_session_start') is not True:
+        usage = {}
     return Outcome(failure, usage.get('total_tokens'), usage.get('provider_attempts'))
 
 def outcome_from_helper(payload):
