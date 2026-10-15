@@ -1,0 +1,41 @@
+{
+  "host_tag": "reason-v0.5.5",
+  "host_commit": "ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7",
+  "probe_sha256": "7e360628c4c33e1bb527f023ee8349dc26e1c5191051c419966705ace39c9d5a",
+  "adviser_sha256": "055b1384751d329aef7a885219fb19218f3b329902784a7270f750c487724df0",
+  "build_script_sha256": "2236e2e398ba88add8e7be2adb9cd460e3620d8282cbb8ea54b91825f88ceb2c",
+  "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)\nbinary: rustc\ncommit-hash: 6b00bc3880198600130e1cf62b8f8a93494488cc\ncommit-date: 2025-06-23\nhost: x86_64-unknown-linux-gnu\nrelease: 1.88.0\nLLVM version: 20.1.5\n",
+  "arms": {
+    "0.6.1": {
+      "engine_commit": "4abee90f0501f0d8fc09b453a0b45c942fbed69e",
+      "engine_tree": "fa32450addcbe9dfa3ad74f6ef8e94fbc7eda119",
+      "engine_manifest_sha256": "6a439993241dce3b18e3ea9582a80229dbc379a6396b8d9375fcdd0262bca377",
+      "engine_relevance_sha256": "7a9a8e77e90e07dbc1648f1984d25f3fc7d17ff3f90d505431c58dac442ce613",
+      "host_lock_sha256": "f88ccd550b5356ea654aeab9c231427e44be6228f9cdb473cfd39da21912b0b6",
+      "cli_main_sha256": "c2889dc17fa0366960d8dbe2706544437e4c26f3e40947e9195bbc96e5a6d82e",
+      "versions": {
+        "cli": "0.5.5",
+        "engine": "0.6.1"
+      },
+      "doctor_live_check": false,
+      "binary_sha256": "f8c0fa6b6bc410431e375cb344876dc09884189ed6415b8ec172b0737205c105",
+      "probe_binary_sha256": "c6a86013c7d97fcb09714aae848f9ed4ad6fc95bce5e418d018c889f282b56c5"
+    },
+    "0.7.2": {
+      "engine_commit": "296690a86e049b75ee693ae5032a71504366137c",
+      "engine_tree": "d41dcc50608160d95fa754336bc20fcf3a616f7f",
+      "engine_manifest_sha256": "bc12979567bbf45b6d314bd45751a28acbd1b0f55207df5f813bc46f065a1f06",
+      "engine_relevance_sha256": "5343e722618721e58ad6a24b12c55c1272eb3c581bb3ada26b24d8596dfebbf5",
+      "host_lock_sha256": "b2b6dc407654217055ace18b805b2ffaa8abb242b5e84699af1ad00037e403f6",
+      "cli_main_sha256": "c2889dc17fa0366960d8dbe2706544437e4c26f3e40947e9195bbc96e5a6d82e",
+      "versions": {
+        "cli": "0.5.5",
+        "engine": "0.7.2"
+      },
+      "doctor_live_check": false,
+      "binary_sha256": "29d9a949565e074558a46de0978113b034a3762b69551ebdd0c268f7ea4added",
+      "probe_binary_sha256": "233b572b677e0483dc380debf4b2599a1a853c29bd93e00869f7e847e4617fbf"
+    }
+  },
+  "adviser_binary_sha256": "05be4642a30ffaa9052d1480de7543e1ad6ad439acd13fa0614acd17f5298112"
+}

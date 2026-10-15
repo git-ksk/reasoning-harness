@@ -30,7 +30,7 @@ Final unified historical release:
 
 [#531](https://github.com/git-ksk/reasoning-harness/issues/531) / [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12) order **real-data0.6.1/0.7.2 comparison → necessary fixes → fresh reacceptance → CLI adoption → distribution**. A new present-tense retraction/non-event residual reproduces in published0.7.2; #520 is reopened and adoption is NO-GO. #488/#489/#491 remain conditional on measured need.
 
-Normal question-to-final-answer E2E and opt-in helper evaluation have separate denominators. An actual-tag offline pilot on five real primary excerpts/eleven inputs is complete; canonical three-provider evaluation and fresh independent acceptance are not. Adoption remains0/6. See [plan, gates and pilot evidence](engine-07-realworld-evaluation.md). Published CLI0.5.5 / Engine0.6.1 and #506 package acceptance remain separate.
+Normal question-to-final-answer E2E and opt-in helper evaluation have separate denominators. [First three-provider development v2/v3 results](engine07-realworld-development-results.md) are recorded; both FAIL with incomplete measurement. No normal-answer utility gain is established; helper display gain2 for Mistral/Google is separate. Groq daily quota is exhausted and additional starts are blocked. #535 diagnostics, wiring next-run operational controls, a pinned #520 successor and fresh independent acceptance remain. Adoption1/6 (comparison record only). Published CLI0.5.5 / Engine0.6.1 and #506 package acceptance remain separate.
 
 ## Product goal
 

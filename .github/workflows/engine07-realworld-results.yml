@@ -1,0 +1,28 @@
+name: Engine 0.7 practical first-results integrity
+on:
+  pull_request:
+    paths:
+      - 'evaluation/engine07-realworld-v2-results/**'
+      - 'evaluation/engine07-realworld-v3-results/**'
+      - 'evaluation/engine07-realworld-operations-v1/**'
+      - 'scripts/verify_engine07_realworld_results.py'
+      - '.github/workflows/engine07-realworld-results.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'evaluation/engine07-realworld-v2-results/**'
+      - 'evaluation/engine07-realworld-v3-results/**'
+      - 'evaluation/engine07-realworld-operations-v1/**'
+      - 'scripts/verify_engine07_realworld_results.py'
+      - '.github/workflows/engine07-realworld-results.yml'
+permissions:
+  contents: read
+jobs:
+  verify-first-results:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify first public archives without credentials or model calls
+        run: python3 scripts/verify_engine07_realworld_results.py
+      - name: Verify next-run quota and accounting guard without network
+        run: python3 -m unittest discover -s evaluation/engine07-realworld-operations-v1 -p 'test_*.py'
