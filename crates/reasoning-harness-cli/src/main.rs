@@ -4027,11 +4027,11 @@ async fn execute_natural_inner(
     if let (Some(path), Some(trace)) = (diagnostic_trace_path, diagnostic_trace.as_mut()) {
         trace.preserve_on_exit(path, failure_context.clone());
     }
+    let generator = make_generator(provider, &model)
+        .map_err(|error| CliError::new(error.failure_class, error.message))?;
     let mut usage_tracker =
         usage_budget::UsageTracker::new(usage_budget, args.session_usage_baseline.clone())?;
     usage_tracker.preserve_on_exit(failure_context);
-    let generator = make_generator(provider, &model)
-        .map_err(|error| CliError::new(error.failure_class, error.message))?;
     let initial_generation_phase = DiagnosticPhase::new("initial_generation", None);
     let initial_max_tokens = usage_tracker.cap_next_model_tokens(resolved.max_tokens)?;
     progress.phase("Planning", "waiting on provider for the initial candidate");
