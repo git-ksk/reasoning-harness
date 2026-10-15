@@ -1910,6 +1910,18 @@ fn launch_component_head_v17(head: &str) -> bool {
         "spring",
         "sensor",
         "knob",
+        "socket",
+        "sockets",
+        "lock",
+        "locks",
+        "cradle",
+        "cradles",
+        "port",
+        "ports",
+        "aperture",
+        "apertures",
+        "seal",
+        "seals",
     ]
     .contains(&head)
 }
@@ -2359,7 +2371,7 @@ fn launch_specific_property_object_v17(
                 }
             } else if end == object.len()
                 && start > 0
-                && ["of", "for", "about"].contains(&object[start - 1])
+                && ["of", "for", "about", "on"].contains(&object[start - 1])
             {
                 object.truncate(start - 1);
             }
@@ -2481,6 +2493,50 @@ fn launch_broad_adverse_context_v17(words: &[&str]) -> bool {
             .any(|pair| matches!(pair, ["not", "true" | "correct"])))
 }
 
+fn launch_declared_property_scope_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    words: &[&str],
+) -> bool {
+    let Some(predicate) = words.iter().rposition(|word| *word == "is") else {
+        return false;
+    };
+    let prefix = &words[..predicate];
+    prefix
+        .iter()
+        .any(|word| ["object", "subject", "scope", "item"].contains(word))
+        && prefix.iter().any(|word| {
+            ["retraction", "withdrawal", "denial"].contains(word)
+                || launch_retraction_word_v17(word)
+        })
+        && !prefix.iter().any(|word| {
+            [
+                "launch",
+                "launched",
+                "release",
+                "released",
+                "and",
+                "or",
+                "all",
+                "both",
+                "entire",
+                "whole",
+                "report",
+                "article",
+                "source",
+                "text",
+                "not",
+                "never",
+                "unknown",
+                "missing",
+                "omitted",
+                "unspecified",
+                "unassigned",
+            ]
+            .contains(word)
+        })
+        && launch_specific_property_object_v17(policy, &words[predicate + 1..])
+}
+
 fn launch_coordinated_property_objects_v17(
     policy: &EvidenceRelevanceTargetPolicy,
     statement: &str,
@@ -2502,6 +2558,13 @@ fn launch_coordinated_property_objects_v17(
             .any(|word| ["or", "but", "including", "neither"].contains(word))
     {
         return false;
+    }
+    if let ["its", "subject", "is", topic @ ..] = &words[join + 1..] {
+        if launch_specific_property_object_v17(policy, topic)
+            && launch_explicit_property_context_v17(policy, &words[..join].join(" "))
+        {
+            return true;
+        }
     }
     let Some(verb) = words[..join]
         .iter()
@@ -2589,6 +2652,23 @@ fn launch_explicit_property_context_v17(
     if !adverse {
         return false;
     }
+    if launch_declared_property_scope_v17(policy, &words) {
+        return true;
+    }
+    if statement.rsplit_once(':').is_some_and(|(_, clause)| {
+        clause.trim_start().starts_with(['"', '“', '‘'])
+            && words
+                .iter()
+                .position(|word| ["is", "was", "are", "were"].contains(word))
+                .is_some_and(|predicate| {
+                    launch_specific_property_object_v17(policy, &words[..predicate])
+                        && !words[predicate + 1..]
+                            .iter()
+                            .any(|word| launch_scope_or_reference_word_v17(word))
+                })
+    }) {
+        return true;
+    }
     if launch_plain_property_object_v17(policy, &words) {
         return true;
     }
@@ -2670,7 +2750,7 @@ fn launch_explicit_property_context_v17(
         });
         let declared_scope = if prefix
             .iter()
-            .any(|word| ["scope", "object", "subject"].contains(word))
+            .any(|word| ["scope", "object", "subject", "item"].contains(word))
             && prefix.iter().any(|word| {
                 ["retraction", "withdrawal", "denial"].contains(word)
                     || launch_retraction_word_v17(word)
@@ -3075,6 +3155,217 @@ fn launch_retraction_other_object_v17(
         })
 }
 
+// These declarations bind one explicit owner/object. They cannot erase a
+// directly target-owned denial, a collective disclaimer or a missing owner.
+fn launch_declared_foreign_object_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+) -> bool {
+    let folded = statement.to_ascii_lowercase();
+    let text = normalized(statement);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    if words.iter().any(|word| {
+        [
+            "and",
+            "or",
+            "both",
+            "all",
+            "whole",
+            "entire",
+            "unknown",
+            "missing",
+            "omitted",
+            "unassigned",
+            "not",
+            "never",
+        ]
+        .contains(word)
+    }) {
+        return false;
+    }
+    let foreign = |owner: &str| {
+        launch_named_subject_v17(owner)
+            && !target_identity_phrases(policy)
+                .iter()
+                .any(|target| normalized_phrase_matches(owner, target))
+    };
+    if let Some(index) = folded.find(" is ") {
+        let prefix = &words[..words.iter().position(|word| *word == "is").unwrap_or(0)];
+        if prefix.contains(&"owner")
+            && prefix.iter().any(|word| launch_retraction_word_v17(word))
+            && prefix
+                .iter()
+                .any(|word| ["claim", "statement", "assertion"].contains(word))
+        {
+            let owner = statement[index + 4..].trim();
+            let owner = if let Some((owner, comparison)) = owner.split_once(',') {
+                let comparison = normalized(comparison);
+                if !target_identity_phrases(policy).iter().any(|target| {
+                    comparison.strip_prefix("a different product from ") == Some(target.as_str())
+                }) {
+                    return false;
+                }
+                owner.trim()
+            } else {
+                owner
+            };
+            if foreign(owner) {
+                return true;
+            }
+        }
+    }
+    if target_identity_phrases(policy)
+        .iter()
+        .any(|target| normalized_phrase_matches(statement, target))
+    {
+        return false;
+    }
+    if let Some(index) = folded.find("retraction applies to ") {
+        let prefix = normalized(&statement[..index]);
+        if prefix
+            .split_whitespace()
+            .all(|word| ["the", "a", "active", "current"].contains(&word))
+            && launch_explicit_other_context_v17(
+                &statement[index + "retraction applies to ".len()..],
+            )
+        {
+            return true;
+        }
+    }
+    let apposition = statement.split('—').collect::<Vec<_>>();
+    if let [head, object, predicate] = apposition.as_slice() {
+        let head = normalized(head);
+        let predicate = normalized(predicate);
+        let object = object
+            .trim()
+            .strip_prefix("specifically ")
+            .unwrap_or(object.trim());
+        if [
+            "this claim",
+            "that claim",
+            "this statement",
+            "that statement",
+            "this assertion",
+            "that assertion",
+        ]
+        .contains(&head.as_str())
+            && predicate.split_whitespace().any(launch_retraction_word_v17)
+            && launch_explicit_other_context_v17(object)
+        {
+            return true;
+        }
+    }
+    false
+}
+
+fn launch_resolved_foreign_reference_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+    previous: Option<&LaunchFactualSegmentV17>,
+    next: Option<&LaunchFactualSegmentV17>,
+) -> bool {
+    let targets = target_identity_phrases(policy);
+    let text = normalized(statement);
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    if targets
+        .iter()
+        .any(|target| normalized_phrase_matches(statement, target))
+        || !words.iter().any(|word| launch_retraction_word_v17(word))
+        || !words
+            .iter()
+            .any(|word| ["this", "that", "its", "it"].contains(word))
+        || !words
+            .iter()
+            .any(|word| ["claim", "statement", "assertion", "event"].contains(word))
+        || words.iter().any(|word| {
+            [
+                "and",
+                "or",
+                "all",
+                "both",
+                "whole",
+                "entire",
+                "unknown",
+                "missing",
+                "omitted",
+                "unassigned",
+                "unspecified",
+                "claims",
+                "statements",
+                "report",
+                "paragraph",
+                "text",
+            ]
+            .contains(word)
+        })
+    {
+        return false;
+    }
+    if previous.is_some_and(|previous| {
+        targets
+            .iter()
+            .any(|target| normalized_phrase_matches(&previous.raw, target))
+    }) {
+        return false;
+    }
+    let framed = statement
+        .split_once(':')
+        .is_some_and(|(prefix, _)| normalized(prefix).ends_with("reply"));
+    let previous_foreign = previous.is_some_and(|previous| {
+        !targets
+            .iter()
+            .any(|target| normalized_phrase_matches(&previous.raw, target))
+            && (launch_explicit_other_subject_v17(policy, &previous.raw)
+                || launch_explicit_other_context_v17(&previous.raw)
+                || previous
+                    .raw
+                    .rsplit_once(':')
+                    .is_some_and(|(prefix, clause)| {
+                        let prefix = normalized(prefix);
+                        !prefix.split_whitespace().any(|word| {
+                            launch_retraction_word_v17(word)
+                                || launch_adverse_context_word_v17(word)
+                        }) && launch_explicit_other_subject_v17(
+                            policy,
+                            clause.trim().trim_matches(['"', '“', '”']),
+                        )
+                    }))
+    });
+    if !(framed || previous_foreign) {
+        return false;
+    }
+    next.is_some_and(|next| {
+        let text = normalized(&next.raw);
+        let words = text.split_whitespace().collect::<Vec<_>>();
+        !words.iter().any(|word| {
+            [
+                "not",
+                "never",
+                "unknown",
+                "missing",
+                "omitted",
+                "unspecified",
+                "unassigned",
+                "and",
+                "or",
+                "both",
+                "all",
+            ]
+            .contains(word)
+        }) && (launch_declared_foreign_object_v17(policy, &next.raw)
+            || (!targets
+                .iter()
+                .any(|target| normalized_phrase_matches(&next.raw, target))
+                && words
+                    .iter()
+                    .any(|word| ["claim", "statement", "assertion"].contains(word))
+                && words
+                    .iter()
+                    .any(|word| launch_retraction_word_v17(word) || *word == "reply")
+                && launch_explicit_other_context_v17(&next.raw)))
+    })
+}
+
 fn launch_adverse_context_word_v17(word: &str) -> bool {
     [
         "false",
@@ -3202,6 +3493,8 @@ fn launch_property_scope_reference_v17(
                 "release",
                 "claim",
                 "statement",
+                "occurrence",
+                "of",
             ]
             .contains(word)
         }) {
@@ -3355,6 +3648,16 @@ fn launch_governing_context_blocks_v17(
                 })
             {
                 return true;
+            }
+            if launch_declared_foreign_object_v17(policy, &segment.raw)
+                || launch_resolved_foreign_reference_v17(
+                    policy,
+                    &segment.raw,
+                    index.checked_sub(1).and_then(|i| segments.get(i)),
+                    segments.get(index + 1),
+                )
+            {
+                continue;
             }
             if launch_explicit_nonlaunch_statement_v17(policy, &text)
                 || launch_explicit_property_context_v17(policy, &segment.raw)

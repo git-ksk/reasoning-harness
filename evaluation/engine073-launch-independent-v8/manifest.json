@@ -1,0 +1,106 @@
+{
+  "identity": "engine073-launch-independent-v8",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "frozen_utc": "2026-10-15T14:39:06.714782+00:00",
+  "candidate": {
+    "source_sha": "dd5b4884a23979399ab1f03110855d84d36aa28d",
+    "package_version": "0.7.2",
+    "source_file": "crates/reasoning-harness-core/src/evidence_relevance.rs",
+    "source_sha256": "afdf620781b2d65c1b02ee9469d7169efd6d4d8825fbf0a597625b5213ba98d2",
+    "identity_note": "Immutable source SHA identifies fixed unreleased candidate."
+  },
+  "frozen_files": {
+    "author_cases.py": "36ffd8cd58748d069ada589e668dc9aa96fbe1880bdffc787e00c8f0dd01432c",
+    "cases.json": "106405f47e091d9378fd0e9bb8a7eaea2ab4eeee58e0cf9bf049fa9c366d8289",
+    "inputs.json": "0604e2d55a5f81b8abfe536ca7672e98da7278f5487bec72067e9a524df99d99",
+    "protocol.json": "88228989cf29a54112935523e7bab3e816af53170c3b7e7aea5f74e0eaa4ae72",
+    "probe.rs": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "score.py": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "first-run.py": "b7e521fb087822acc054aec8c12c08a81d42bae678fd3f3cea4cad57625e8635",
+    "static_preflight.py": "1c1da478ad59f6b896c6809e4703c4cca3d9b3d15972ab096ec5f525399a5434",
+    "static-preflight.json": "da8e1cffd63c5bc9b4765403197175289928655f49f03d7c5a0fb6258cdc7821",
+    "pre-freeze-scope-review.json": "106f47a174136fdf9eb75c1531ec9204db0351dacbf20fef65c629ac00cac8e4",
+    "immutable-predecessor-check.json": "f9560cd289e768a1e519c798dd0c93b31f7c6be7ff8a37bcbcf7353923062fd1",
+    "predecessor-artifact-hashes.json": "d8afa58276fc269fd9911cf2521d44d03f104023f8e6fbad363579fd80790640"
+  },
+  "checked_artifacts": {
+    "evidence_relevance_source": {
+      "path": "/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core/src/evidence_relevance.rs",
+      "sha256": "afdf620781b2d65c1b02ee9469d7169efd6d4d8825fbf0a597625b5213ba98d2",
+      "bytes": 600700
+    },
+    "core_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libreasoning_harness_core-876be67fd4b1ef90.rlib",
+      "sha256": "4cfbea545fccdd564d841ab93265460dcfec6ecae5b60f0e1cb663478987370b",
+      "bytes": 72988384
+    },
+    "serde_json_rlib": {
+      "path": "/private/tmp/engine073-target/debug/deps/libserde_json-fdb0c033eb5b5773.rlib",
+      "sha256": "6790acd878f7472babebca4ae5c0e9e4dcaab113f41c3a212935db0380a2bd68",
+      "bytes": 3436712
+    },
+    "probe_executable": {
+      "path": "/private/tmp/engine073-launch-independent-v8-probe/probe",
+      "sha256": "da6c2729d6e76cb43cf86f19bd9fa05511992a1bf72edd6d7aaadf84068a5fcc",
+      "bytes": 2964488
+    }
+  },
+  "corpus": {
+    "file": "cases.json",
+    "complete_engine_input": "inputs.json",
+    "count": 60,
+    "positive": 30,
+    "negative": 30,
+    "matched_pairs": 30,
+    "canonical_targets": 30,
+    "real_documents": 0,
+    "new_after_candidate_fixed": true,
+    "old_sets_seen": true,
+    "new_boundary": "Unique explicitly resolved local claim/event references versus unbound launch references, with component and full-owner scopes. No new affirmative predicate/AST/alias/time reasoning."
+  },
+  "probe": {
+    "source": "probe.rs",
+    "sha256": "18d24664f5851f2bf63e9e440c49e3500468a5f8bb183e71abfd122c1d89ea8d",
+    "inherited_byte_identical": true,
+    "rustc": "rustc 1.88.0 (6b00bc388 2025-06-23)",
+    "parent_supplied_fixed_build": true,
+    "independent_rebuild": false,
+    "shared_target_changes": 0
+  },
+  "scoring": {
+    "file": "score.py",
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "inherited_byte_identical": true,
+    "protocol": "protocol.json",
+    "precommitted_before_first_API": true,
+    "positive": "requested_relation AND Relevant",
+    "negative": "not requested_relation AND not Relevant",
+    "both_required": true,
+    "permissive_change": false,
+    "post_observation_label_changes": 0,
+    "retries": 0
+  },
+  "stages": {
+    "static": "STATIC_ONLY PASS;60 complete inputs;Engine/semantic0.",
+    "semantic": "Not yet run at freeze;one planned first60 deterministic v17/v29/v30 process.",
+    "semantic_sentinel": "None."
+  },
+  "preserved_predecessors": {
+    "hashes": "predecessor-artifact-hashes.json",
+    "v1_v7_unchanged_at_static_preflight": true,
+    "external_anchor_sha256": "3c9b31690d2d7b5247690f07ef79d550b3d41e703479551e511bb92f0eedea32",
+    "anchored_verified_files": 146,
+    "anchor_check": "immutable-predecessor-check.json"
+  },
+  "isolation": {
+    "production_implementation_read": false,
+    "parent_tests_historical_other_corpora_fixtures_read": false,
+    "old_sets_known_seen": true,
+    "Oracle": false,
+    "additional_agents": false,
+    "external_provider_API_calls": 0,
+    "Git_mutations": 0,
+    "cargo_invocations": 0
+  },
+  "first_result_contract": "Exclusive raw/started/finished and one inherited scoring application; retain initial failures and full labels unchanged; final artifact receipt."
+}

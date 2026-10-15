@@ -1117,3 +1117,140 @@ fn foreign_non_event_context_cannot_clear_raw_risks_or_missing_target_ownership(
         Disposition::Relevant
     );
 }
+
+#[test]
+fn engine073_independent_v8_seen_replay_preserves_full_scope() {
+    // Keep v8's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v8/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn explicit_local_owner_resolution_cannot_erase_target_or_collective_denials() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        (
+            "The owner of the retracted statement is Maple Queue, a different product from Silver Lens whose launch claim is withdrawn.",
+            false,
+        ),
+        (
+            "Silver Lens was launched. Author reply: I deny its launch claim. The reply explicitly identifies its launch-claim owner as Maple Queue.",
+            false,
+        ),
+        (
+            "Author reply: I deny its launch claim. The reply explicitly identifies its launch-claim owner as Maple Queue.",
+            true,
+        ),
+        (
+            "I deny Silver Lens's launch claim. The owner of the denied statement is Maple Queue.",
+            false,
+        ),
+        (
+            "We retract all claims. The owner of the retracted statement is Maple Queue.",
+            false,
+        ),
+        (
+            "We retract this claim. No owner of the retracted statement is Maple Queue.",
+            false,
+        ),
+        (
+            "The active retraction applies to Maple Queue's launch statement.",
+            true,
+        ),
+        (
+            "The active retraction applies to Silver Lens's launch statement.",
+            false,
+        ),
+        (
+            "That claim—specifically the launch claim for Maple Queue—is withdrawn by the publisher.",
+            true,
+        ),
+        (
+            "That claim—specifically the launch claim for Silver Lens—is withdrawn by the publisher.",
+            false,
+        ),
+        (
+            "The entire report is false: The active retraction applies to Maple Queue's launch statement.",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}
+
+#[test]
+fn typed_component_quotes_cannot_erase_launch_or_whole_source_denials() {
+    let mut cases = Vec::new();
+    for (text, expected) in [
+        ("The unknown retraction object is socket plating.", false),
+        (
+            "I deny this statement: \"The release handle is made of aluminium, the whole article is withdrawn.\"",
+            false,
+        ),
+        (
+            "I deny this statement about Silver Lens: \"The release handle is made of aluminium.\"",
+            true,
+        ),
+        (
+            "I deny this statement about Silver Lens: \"Silver Lens was launched.\"",
+            false,
+        ),
+        (
+            "The entire report is withdrawn: \"The release handle is made of aluminium.\"",
+            false,
+        ),
+        (
+            "We deny this property statement: \"Silver Lens's launch socket is nickel plated.\" The object of denial is socket plating.",
+            true,
+        ),
+        (
+            "The retracted item is this seal-width claim, and its subject is physical seal width.",
+            true,
+        ),
+        (
+            "The retracted item is this launch claim, and its subject is physical seal width.",
+            false,
+        ),
+        (
+            "The retracted item is the preceding claim, and its subject is physical seal width.",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":text,"signals":[{"kind":"excerpt","text":"Silver Lens was launched."},{"kind":"excerpt","text":text}],"expected_relevant":expected}));
+    }
+    check(cases);
+}

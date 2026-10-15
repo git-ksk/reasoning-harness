@@ -1,0 +1,78 @@
+{
+  "identity": "engine073-launch-independent-v8",
+  "purpose": "Independent bounded synthetic #520 source confirmation, separate from #531 real-primary-source24 and provider/final-answer/CLI/release adoption.",
+  "author": "independent evaluator /root/engine07_realworld_independent",
+  "candidate": {
+    "source_sha": "dd5b4884a23979399ab1f03110855d84d36aa28d",
+    "evidence_relevance_rs_sha256": "afdf620781b2d65c1b02ee9469d7169efd6d4d8825fbf0a597625b5213ba98d2",
+    "package_version": "0.7.2",
+    "identity": "Fixed source SHA, not unreleased package version, identifies candidate."
+  },
+  "prior_exposure": {
+    "known": "V2-v7 authored/observed and now seen development; v1 operational failure had no semantics. All first files unchanged.",
+    "parent_reported": "Parent build/strictClippy/47 related tests PASS not independently read/rerun here.",
+    "unread": "Production implementation, parent tests, historical/other corpora/fixtures.",
+    "fresh": "New local-referent/owner/component scope compositions after candidate fixed, not copied/renamed prior blocks; adaptive iterative successor testing acknowledged."
+  },
+  "design": {
+    "cases": 60,
+    "positive": "The factual launch retains requested_relation and Relevant under explicit different-owner or non-launch property/activity/artifact/neutral corrections. Component modifiers already within declared source scope are clearly physical; no property truth approved.",
+    "negative": "A current same-target/claim withdrawal/retraction/denial/explicit non-event or unresolved launch owner/referent must remove requested_relation and prevent Relevant.",
+    "matched_pairs": 30,
+    "canonical_targets": 30,
+    "real_documents": 0,
+    "affirmative": "One separate exact canonical TARGET was launched Excerpt. No other positive launch predicate, arbitrary number/AST, alias/hierarchy, temporal or preparation behavior required.",
+    "local_reference": "Adjacent or explicit complete claim/event quotation, apposition, paragraph owner/type or final owner restatement supplies unique local scope. Unresolved/two-candidate local references are negative; no general arbitrary graph resolution demanded.",
+    "unknown_ids": [
+      "li8-046",
+      "li8-048",
+      "li8-050",
+      "li8-052",
+      "li8-054",
+      "li8-056",
+      "li8-058",
+      "li8-060"
+    ],
+    "scope_precommit": "pre-freeze-scope-review.json before first semantics; no forced ambiguous positive, no post-result reinterpretation.",
+    "binding": "Optimistic exact/exact proposal and exact_target/requested_relation/none raw in all cases; core must correct unsafe qualification. Not model binding/extraction.",
+    "budget": {
+      "max_model_attempts": 2,
+      "max_tokens": 192,
+      "max_elapsed_ms": 90000
+    },
+    "labels": "Evaluator-controlled offline expectations excluded from Engine input, not external universally/human-approved truth."
+  },
+  "scoring": {
+    "byte_identical_inherited": true,
+    "sha256": "9a9941bf7ab3ea8ac22e1c851940197fdf3ef65ffb975c1b6fc2ddaa0130f4e3",
+    "positive": "effective_v17.relation_scope == requested_relation AND v30.disposition == relevant",
+    "negative": "effective_v17.relation_scope != requested_relation AND v30.disposition != relevant",
+    "v29": "Diagnostic only.",
+    "PASS": "All60 fixed expectations, no unsafe requested_relation/Relevant and no withheld positive; no missing/duplicate/foreign/malformed/unexpected row; exit0/empty stderr.",
+    "joint_gate": "Negative requested_relation with v30 Ambiguous still fails v17; maintain both negative and positive requirements.",
+    "immutable": "No lowered/permissive rule, retry, rescoring, post-result label/input/scorer edit or raw overwrite. Errors not counted safety success."
+  },
+  "stages": {
+    "static": "Schema/count/nonzero budget/full direct supported fact/label exclusion/inherited code/prior hash checks; Engine/semantic0.",
+    "freeze": "Complete corpus/labels/inputs/scoring/probe/protocol/recorder and actual source/core/serde/executable hashes before first API.",
+    "semantic": "One first60 deterministic v17/v29/v30 process, no semantic sentinel/model/provider.",
+    "score": "One unchanged scorer application on first raw.",
+    "receipt": "Reverify all old/frozen files and save all-version final artifact hash/first result."
+  },
+  "execution": {
+    "external_provider_API_calls": 0,
+    "Oracle": false,
+    "additional_agents": false,
+    "cargo": false,
+    "identity": "Immediately before invocation verify actual HEAD, hash-only source and linked core/serde/probe plus full frozen file identities.",
+    "build_provenance": "Parent supplied fixed completed core; evaluator hash-checks/links with rustc, no independent rebuild or production source reading."
+  },
+  "limits": [
+    "Narrow synthetic source API check, not #531 real acquired documents/final answers, provider/quota/headroom/cost, CLI or release acceptance.",
+    "Candidate only; no baseline delta or cross-set percentage improvement proof.",
+    "60 scenarios are30 pairs, not60 documents/exhaustive language/coreference proof.",
+    "Other-property truth, arbitrary graph/numeric AST, alias/hierarchy, new positive predicates, temporal/preparation reasoning excluded.",
+    "Serialized model reason labels do not imply model calls.",
+    "V8 consumed after first observation, later use seen development/regression."
+  ]
+}
