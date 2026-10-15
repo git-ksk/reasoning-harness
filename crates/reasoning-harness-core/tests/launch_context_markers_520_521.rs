@@ -625,3 +625,79 @@ fn successor_retraction_and_non_event_contexts_preserve_scope() {
     }
     check(cases);
 }
+
+#[test]
+fn engine073_independent_v2_seen_replay_preserves_full_scope() {
+    // Keep v2's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v2/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn explicit_property_context_cannot_hide_global_or_launch_denials() {
+    for text in [
+        "Silver Lens was launched in 2026. No launch of Silver Lens took place.",
+        "Silver Lens was launched in 2026. The launch did not take place.",
+        "Silver Lens was launched in 2026. There was no launch.",
+        "Silver Lens was launched in 2026. This was not an actual event.",
+        "Silver Lens was launched in 2026. This wasn't a real event.",
+        "Silver Lens was launched in 2026. That never actually happened.",
+        "Silver Lens was launched in 2026. The launch did not really take place.",
+        "Silver Lens was launched in 2026. Withdrawal of this launch claim.",
+        "Silver Lens was launched in 2026. We retract the packaging claim and this launch claim.",
+        "Silver Lens was launched in 2026. The report is fictional because the packaging claim is withdrawn.",
+        "Silver Lens was launched in 2026. The report is fictional because we retract the packaging claim.",
+        "Silver Lens was launched in 2026. This report is not true because we withdraw the packaging claim.",
+        "Silver Lens was launched in 2026. This report is false because we deny that Silver Lens is made from titanium.",
+        "Silver Lens was launched in 2026. We retract our claim that Maple Queue was launched and this claim.",
+    ] {
+        check(vec![
+            json!({"id":text,"signals":[{"kind":"excerpt","text":text}],"expected_relevant":false}),
+        ]);
+    }
+    for text in [
+        "No launch of Maple Queue took place. Silver Lens was launched in 2026.",
+        "Silver Lens was launched in 2026. No launch delay took place.",
+        "We deny that Silver Lens is made from titanium. Silver Lens was launched in 2026.",
+        "Silver Lens was launched in 2026. We retract the warranty claim.",
+        "Silver Lens was launched in 2026. Its pricing report is not factual.",
+        "Silver Lens was launched in 2026. Silver Lens's packaging claim is false.",
+    ] {
+        check(vec![
+            json!({"id":text,"signals":[{"kind":"excerpt","text":text}],"expected_relevant":true}),
+        ]);
+    }
+}

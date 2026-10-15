@@ -1743,11 +1743,22 @@ fn launch_explicit_other_context_v17(statement: &str) -> bool {
         || [" about ", " for ", " of "].iter().any(|link| {
             folded.find(link).is_some_and(|index| {
                 let start = index + link.len();
-                let end = [" is ", " was ", " has ", " remains "]
-                    .iter()
-                    .filter_map(|predicate| folded[start..].find(predicate))
-                    .min()
-                    .map_or(statement.len(), |index| start + index);
+                let end = [
+                    " is ",
+                    " was ",
+                    " has ",
+                    " remains ",
+                    " never ",
+                    " did ",
+                    " does ",
+                    " took ",
+                    " happened",
+                    " occurred",
+                ]
+                .iter()
+                .filter_map(|predicate| folded[start..].find(predicate))
+                .min()
+                .map_or(statement.len(), |index| start + index);
                 launch_named_subject_v17(&statement[start..end])
             })
         })
@@ -1848,7 +1859,17 @@ fn launch_explicit_nonlaunch_statement_v17(
                 ]
                 .contains(word)
             });
+        let governing_prefix = prefix.iter().any(|word| {
+            ["report", "passage", "text", "content", "story", "account"].contains(word)
+        }) && (prefix
+            .iter()
+            .any(|word| launch_adverse_context_word_v17(word) || launch_retraction_word_v17(word))
+            || launch_non_event_context_v17(prefix)
+            || prefix
+                .windows(2)
+                .any(|pair| matches!(pair, ["not", "true" | "correct"])));
         !governing_possession
+            && !governing_prefix
             && !prefix.iter().any(|word| {
                 [
                     "fiction",
@@ -1889,12 +1910,13 @@ fn launch_explicit_nonlaunch_statement_v17(
                         | "have",
                     ..
                 ] | ["has", "a" | "an", ..]
+                    | ["is" | "was", "made", "from" | "of", ..]
             )
     };
     // A clear feature predicate keeps fictional characters/false alarms in its
     // object from becoming a disclaimer about a separate launch statement.
     if let [
-        "this" | "that",
+        "this" | "that" | "the",
         "model" | "product" | "service" | "system",
         tail @ ..,
     ] = words.as_slice()
@@ -1910,6 +1932,112 @@ fn launch_explicit_nonlaunch_statement_v17(
             .any(|(index, window)| {
                 window == name && feature_tail(&words[index + name.len()..], &words[..index])
             })
+    })
+}
+
+fn launch_explicit_property_context_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    words: &[&str],
+) -> bool {
+    if words.iter().any(|word| {
+        [
+            "launch",
+            "launched",
+            "release",
+            "released",
+            "introduced",
+            "availability",
+            "available",
+            "ga",
+            "event",
+            "rollout",
+            "introduction",
+            "and",
+            "or",
+            "but",
+            "including",
+            "neither",
+        ]
+        .contains(word)
+    }) {
+        return false;
+    }
+    let targets = target_identity_phrases(policy);
+    words.windows(2).enumerate().any(|(index, pair)| {
+        if ![
+            "packaging",
+            "price",
+            "pricing",
+            "color",
+            "colour",
+            "weight",
+            "material",
+            "materials",
+            "dimensions",
+            "size",
+            "performance",
+            "warranty",
+            "battery",
+            "capacity",
+        ]
+        .contains(&pair[0])
+            || !["claim", "statement", "assertion", "report"].contains(&pair[1])
+        {
+            return false;
+        }
+        let prefix = &words[..index];
+        let reporting = prefix
+            .iter()
+            .rposition(|word| launch_retraction_word_v17(word));
+        if let Some(verb) = reporting {
+            let before = &prefix[..verb];
+            if before.iter().any(|word| {
+                launch_adverse_context_word_v17(word) || launch_retraction_word_v17(word)
+            }) || launch_non_event_context_v17(before)
+                || before
+                    .windows(2)
+                    .any(|pair| matches!(pair, ["not", "true" | "correct"]))
+            {
+                return false;
+            }
+        }
+        let owner = reporting.map_or(prefix, |verb| &prefix[verb + 1..]);
+        let trimmed = owner
+            .iter()
+            .position(|word| {
+                ![
+                    "the", "a", "an", "this", "that", "its", "our", "their", "entire", "whole",
+                ]
+                .contains(word)
+            })
+            .map_or(&owner[owner.len()..], |index| &owner[index..]);
+        let owned = trimmed.is_empty()
+            || [owner, trimmed].iter().any(|owner| {
+                let owner = owner.join(" ");
+                targets
+                    .iter()
+                    .any(|target| *target == owner || format!("{target} s") == owner)
+            });
+        let tail = &words[index + 2..];
+        // A separate clause or broad reference is not part of a property-only
+        // retraction. Accept only the bounded reporting predicate's remainder.
+        owned
+            && tail.iter().all(|word| {
+                [
+                    "is", "was", "has", "been", "now", "not", "true", "correct", "factual",
+                ]
+                .contains(word)
+                    || launch_retraction_word_v17(word)
+                    || launch_adverse_context_word_v17(word)
+            })
+            && (reporting.is_some()
+                || tail.iter().any(|word| {
+                    launch_retraction_word_v17(word) || launch_adverse_context_word_v17(word)
+                })
+                || launch_non_event_context_v17(tail)
+                || tail
+                    .windows(2)
+                    .any(|pair| matches!(pair, ["not", "true" | "correct"])))
     })
 }
 
@@ -1960,28 +2088,83 @@ fn launch_retraction_negated_v17(prefix: &[&str]) -> bool {
 }
 
 fn launch_non_event_context_v17(words: &[&str]) -> bool {
-    words.windows(2).any(|pair| {
-        matches!(
-            pair,
-            ["never", "happened" | "occurred"] | ["not", "factual"]
-        )
-    }) || words.windows(3).any(|triple| {
-        matches!(
-            triple,
-            ["did" | "does", "not", "happen" | "occur"]
-                | ["didn" | "doesn", "t", "happen" | "occur"]
-                | ["never", "took", "place"]
-                | ["not", "real", "event"]
-        )
-    }) || words
-        .windows(4)
-        .any(|words| matches!(words, ["not", "a", "real", "event"]))
+    // Preserve the same event predicate through ordinary contraction/adverb
+    // spelling; this does not turn a negated feature into a negated launch.
+    let mut expanded = Vec::with_capacity(words.len());
+    let mut index = 0;
+    while index < words.len() {
+        let word = words[index];
+        if ["actually", "really", "truly", "ever"].contains(&word) {
+            index += 1;
+            continue;
+        }
+        if let Some(auxiliary) = [
+            ("didn", "did"),
+            ("doesn", "does"),
+            ("wasn", "was"),
+            ("weren", "were"),
+            ("isn", "is"),
+            ("aren", "are"),
+        ]
+        .iter()
+        .find_map(|(contracted, expanded)| {
+            (word == *contracted && words.get(index + 1) == Some(&"t")).then_some(*expanded)
+        }) {
+            expanded.extend([auxiliary, "not"]);
+            index += 2;
+        } else {
+            expanded.push(word);
+            index += 1;
+        }
+    }
+    let words = expanded.as_slice();
+    let no_event = words.windows(2).enumerate().any(|(index, pair)| {
+        matches!(pair, ["no", "launch" | "event" | "release"])
+            && (matches!(
+                &words[index + 2..],
+                [] | ["took", "place"] | ["ever", "took", "place"]
+            ) || (words.get(index + 2) == Some(&"of")
+                && (words.ends_with(&["took", "place"])
+                    || matches!(words.last(), Some(&"happened" | &"occurred")))))
+    });
+    no_event
+        || words.windows(2).any(|pair| {
+            matches!(
+                pair,
+                ["never", "happened" | "occurred"] | ["not", "factual"]
+            )
+        })
+        || words.windows(3).any(|triple| {
+            matches!(
+                triple,
+                ["did" | "does", "not", "happen" | "occur"]
+                    | ["didn" | "doesn", "t", "happen" | "occur"]
+                    | ["never", "took", "place"]
+                    | ["not", "real" | "actual", "event"]
+            )
+        })
+        || words.windows(4).any(|words| {
+            matches!(
+                words,
+                ["not", "a" | "an", "real" | "actual", "event"]
+                    | ["did" | "didn", "not" | "t", "take", "place"]
+            )
+        })
 }
 
 // Only a complete, clearly foreign denied object is an exclusion. Coordinated
 // or unresolved additional objects may govern the target and stay withheld.
-fn launch_retraction_other_object_v17(statement: &str) -> bool {
+fn launch_retraction_other_object_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+) -> bool {
     let folded = statement.to_ascii_lowercase();
+    if normalized(statement)
+        .split_whitespace()
+        .any(|word| ["and", "or", "but", "including", "neither"].contains(&word))
+    {
+        return false;
+    }
     folded
         .split_whitespace()
         .filter(|word| launch_retraction_word_v17(word))
@@ -1989,18 +2172,32 @@ fn launch_retraction_other_object_v17(statement: &str) -> bool {
             folded.find(&format!(" {verb} ")).is_some_and(|index| {
                 let object = statement[index + verb.len() + 2..].trim();
                 let folded_object = object.to_ascii_lowercase();
-                ["'s ", "’s "].iter().any(|possessive| {
-                    folded_object.find(possessive).is_some_and(|index| {
-                        launch_named_subject_v17(&object[..index])
-                            && [
-                                "launch claim",
-                                "release claim",
-                                "launch announcement",
-                                "release announcement",
-                            ]
-                            .contains(&folded_object[index + possessive.len()..].trim())
+                let embedded = folded_object.find("that ").is_some_and(|index| {
+                    let prefix = &folded_object[..index];
+                    [
+                        "",
+                        "our claim ",
+                        "the claim ",
+                        "our statement ",
+                        "the statement ",
+                        "this claim ",
+                    ]
+                    .contains(&prefix)
+                        && launch_explicit_other_subject_v17(policy, &object[index + 5..])
+                });
+                embedded
+                    || ["'s ", "’s "].iter().any(|possessive| {
+                        folded_object.find(possessive).is_some_and(|index| {
+                            launch_named_subject_v17(&object[..index])
+                                && [
+                                    "launch claim",
+                                    "release claim",
+                                    "launch announcement",
+                                    "release announcement",
+                                ]
+                                .contains(&folded_object[index + possessive.len()..].trim())
+                        })
                     })
-                })
             })
         })
 }
@@ -2015,6 +2212,11 @@ fn launch_adverse_context_word_v17(word: &str) -> bool {
         "debunked",
         "rejected",
         "retraction",
+        "withdrawal",
+        "refutation",
+        "disavowal",
+        "recantation",
+        "rescission",
         "denial",
         "fiction",
         "fictional",
@@ -2055,7 +2257,9 @@ fn launch_governing_context_blocks_v17(
         for (index, segment) in segments.iter().enumerate() {
             let text = normalized(&segment.raw);
             let words = text.split_whitespace().collect::<Vec<_>>();
-            if launch_explicit_nonlaunch_statement_v17(policy, &text) {
+            if launch_explicit_nonlaunch_statement_v17(policy, &text)
+                || launch_explicit_property_context_v17(policy, &words)
+            {
                 continue;
             }
             let owns_target = targets
@@ -2218,7 +2422,7 @@ fn launch_governing_context_blocks_v17(
                 );
             if !owns_target
                 && (launch_explicit_other_context_v17(&segment.raw)
-                    || launch_retraction_other_object_v17(&segment.raw))
+                    || launch_retraction_other_object_v17(policy, &segment.raw))
             {
                 continue;
             }
