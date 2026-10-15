@@ -6,6 +6,8 @@
 
 [PR #523](https://github.com/git-ksk/reasoning-harness/pull/523)で、**0.7.1で再現した関連性判定の回帰2件**を修正しました。公開済み`engine-v0.7.0`と`engine-v0.7.1`は変更しません。配布中のReason CLI 0.5.4はEngine 0.6.1です。#506の別CLI候補やEngine 0.7のCLI採用には、それぞれ別の検証が必要です。
 
+現在の後継作業は[Engine0.7.3ロードマップ](engine-0.7.3-roadmap.ja.md)／[#538](https://github.com/git-ksk/reasoning-harness/issues/538)です。以下の公開0.7.2履歴は保持します。
+
 ## 公開後の追跡 — 2026-10-15 JST
 
 0.7.2の公開と以下の当時の受入記録は保持します。追加監査で現在形の撤回・非実在の取りこぼしを再現したため、#520を再オープンし、[#531の実戦評価・採用計画](engine-07-realworld-evaluation.ja.md)へ移しました。公開0.7.2のCLI採用はNO-GO。修正は新しい後継候補で行い、元tagと初回結果は変更しません。

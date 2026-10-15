@@ -26,11 +26,11 @@
 
 `v0.4.2`が最後のunified historical releaseです。split CLI lineは`reason-v0.5.5`（Harness Engine 0.6.1）まで進み、CLI / Engine / machine-contract identityは独立して進みます。`reason-v0.5.2`はEngine 0.4.2のままimmutableで、`reason-v0.5.3`が独立release済みEngine 0.5.0をadoptしました。[バージョニング](versioning.ja.md)を参照してください。
 
-## 次の開発 — 実戦評価を先行
+## 次の開発 — Engine0.7.3の修正と再評価
 
-[#531](https://github.com/git-ksk/reasoning-harness/issues/531)／[Milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12)で、**実資料の0.6.1/0.7.2比較 → 必要な修正 → 新規再評価 → CLI採用 → 正式配布**の順に進めます。公開済み0.7.2に現在形の撤回・非実在の判定漏れが再現したため、#520を再オープンし、CLI採用はNO-GOです。#488/#489/#491は測定で必要性が確認できた場合だけ実装します。
+[0.7.3ロードマップ](engine-0.7.3-roadmap.ja.md)／[計画 #538](https://github.com/git-ksk/reasoning-harness/issues/538)／[評価 #531](https://github.com/git-ksk/reasoning-harness/issues/531)で、**#520修正 → 安全なrunner・通常経路の接続確認 → 小規模開発確認 → 新規独立の実資料受入 → ソース公開 → 専用CLI採用・配布**の順に進めます。0.7.3は未公開の計画です。0.7.2の公開物・比較結果は保持し、残存不具合があるため採用不可です。#488/#489/#491は実測で必要な場合だけ実装します。
 
-通常回答と明示有効化した補助APIは別集計です。[開発用v2/v3の初回3社比較](engine07-realworld-development-results.ja.md)を実施しましたが、両評価は不合格・測定不十分です。通常回答の改善は未確認、補助表示はMistral・Googleで各2件増加。Groqは日次quota枯渇中のため追加起動を止めています。#535の診断保持修正、停止制御の新runnerへの組み込み、#520の後継修正、新しい独立受入が残ります。採用は1/6（比較記録のみ）。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
+[初回v2/v3の結果](engine07-realworld-development-results.ja.md)は不合格・不完全のままです。#535の診断保持はmerge済み、#537の停止制御・変換は26オフラインテスト合格ですが、新runnerへの組み込みは未完了。Groqは日次枯渇のため追加起動を止めています。通常回答の改善と新規独立受入は未確認、採用1/6は開発比較・限界・NO-GO記録のみです。公開CLI0.5.5 / Engine0.6.1と#506の配布受入は別工程です。
 
 ## 製品目標
 

@@ -1,6 +1,6 @@
 # Roadmap（ロードマップ）
 
-> 以下は過去の開発・受入の詳細記録です。現在の方針は[プロダクトロードマップ](product-roadmap.ja.md)と[#531 Engine0.7実戦評価](engine-07-realworld-evaluation.ja.md)を参照してください。公開CLIは0.5.5 / Engine0.6.1で、0.7.2の採用評価は未完了です。
+> 以下は過去の開発・受入の詳細記録です。現在の方針は[プロダクトロードマップ](product-roadmap.ja.md)と[#531 Engine0.7実戦評価](engine-07-realworld-evaluation.ja.md)を参照してください。公開CLIは0.5.5 / Engine0.6.1で、0.7.2の採用評価は未完了です。 後継計画：[Engine0.7.3](engine-0.7.3-roadmap.ja.md)。
 
 ## プロジェクトの方向性
 

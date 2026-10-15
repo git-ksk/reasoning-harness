@@ -26,11 +26,11 @@ Final unified historical release:
 
 `v0.4.2` is the final unified historical release. The split CLI line is active through `reason-v0.5.5` (Harness Engine 0.6.1); CLI, Engine, and machine-contract identities advance independently. `reason-v0.5.2` remains immutable on Engine 0.4.2, while `reason-v0.5.3` adopts the independently released Engine 0.5.0. See [versioning](versioning.md).
 
-## Next development — evaluate real use first
+## Next development — Engine0.7.3 repair and re-evaluation
 
-[#531](https://github.com/git-ksk/reasoning-harness/issues/531) / [milestone #12](https://github.com/git-ksk/reasoning-harness/milestone/12) order **real-data0.6.1/0.7.2 comparison → necessary fixes → fresh reacceptance → CLI adoption → distribution**. A new present-tense retraction/non-event residual reproduces in published0.7.2; #520 is reopened and adoption is NO-GO. #488/#489/#491 remain conditional on measured need.
+[0.7.3 roadmap](engine-0.7.3-roadmap.md) / [plan #538](https://github.com/git-ksk/reasoning-harness/issues/538) / [evaluation #531](https://github.com/git-ksk/reasoning-harness/issues/531) define **#520 repair → safe runner and actual normal-path wiring → small development checks → fresh independent real-source acceptance → source release → dedicated CLI adoption/distribution**.0.7.3 is planned and unpublished;0.7.2 remains an immutable historical comparison arm and its residual blocks adoption. #488/#489/#491 remain conditional.
 
-Normal question-to-final-answer E2E and opt-in helper evaluation have separate denominators. [First three-provider development v2/v3 results](engine07-realworld-development-results.md) are recorded; both FAIL with incomplete measurement. No normal-answer utility gain is established; helper display gain2 for Mistral/Google is separate. Groq daily quota is exhausted and additional starts are blocked. #535 diagnostics, wiring next-run operational controls, a pinned #520 successor and fresh independent acceptance remain. Adoption1/6 (comparison record only). Published CLI0.5.5 / Engine0.6.1 and #506 package acceptance remain separate.
+[First v2/v3 results](engine07-realworld-development-results.md) remain FAIL/incomplete. #535 diagnostic retention is merged; #537 operational bridge passes26 offline tests, but live runner integration is pending. Groq daily exhaustion still blocks starts. No normal-answer utility gain or fresh independent acceptance is established; adoption1/6 records development comparison/limits/NO-GO only. Published CLI0.5.5 / Engine0.6.1 and #506 package acceptance remain separate.
 
 ## Product goal
 
