@@ -1,0 +1,144 @@
+{
+  "schema_version": "reason-config-v1",
+  "resolution": {
+    "investigation": {
+      "capabilities": [
+        {
+          "id": "realworld-v3-source-0",
+          "kind": "external_command",
+          "program": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "args": [
+            "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-v3/resolver.py",
+            "--corpus",
+            "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-v3/corpus.json",
+            "--case",
+            "rw03-node-positive",
+            "--slot",
+            "0",
+            "--journal",
+            "/private/tmp/engine073-cli-path-preparation-v1/run-candidate/resolver.jsonl"
+          ],
+          "read_only": true,
+          "supported_fact_keys": [
+            "node.buffer.uint8array"
+          ],
+          "timeout_ms": 5000,
+          "max_response_bytes": 65536,
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "node"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "captured-current"
+                ]
+              }
+            },
+            "evaluation_time_unix_seconds": 1792019642,
+            "sources": {
+              "node-subclass": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "node"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "captured-current"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "realworld-v3-source-1",
+          "kind": "external_command",
+          "program": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "args": [
+            "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-v3/resolver.py",
+            "--corpus",
+            "/Users/sawadakousuke/.codex/worktrees/engine073-safe-runner/reasoning-harness/evaluation/engine07-realworld-v3/corpus.json",
+            "--case",
+            "rw03-node-positive",
+            "--slot",
+            "1",
+            "--journal",
+            "/private/tmp/engine073-cli-path-preparation-v1/run-candidate/resolver.jsonl"
+          ],
+          "read_only": true,
+          "supported_fact_keys": [
+            "node.buffer.uint8array"
+          ],
+          "timeout_ms": 5000,
+          "max_response_bytes": 65536,
+          "admission": {
+            "authority_ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            },
+            "minimum_authority_class": "primary",
+            "required_scope": {
+              "product": {
+                "kind": "values",
+                "values": [
+                  "node"
+                ]
+              },
+              "release": {
+                "kind": "values",
+                "values": [
+                  "captured-current"
+                ]
+              }
+            },
+            "evaluation_time_unix_seconds": 1792019642,
+            "sources": {
+              "node-subclass": {
+                "authority_class": "primary",
+                "max_age_seconds": 86400,
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "node"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "captured-current"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "max_actions": 4,
+      "max_no_progress_rounds": 2,
+      "max_rounds": 3,
+      "max_targets": 3,
+      "planner_max_tokens": 256
+    }
+  }
+}

@@ -1,0 +1,21 @@
+# Offline CLI path and fixed-response preparation — first v1
+
+This is development/diagnostic evidence for #540/#531, not a new canonical real-source or provider acceptance run. No external model/provider HTTP request was made. The original v3 first observations, labels, scorer and evaluator were not modified, reexecuted or rescored.
+
+## What ran
+
+The same released CLI0.5.5 host `ec6e55ff95b8364f9a5d09b8bbfe0ecc0c9d19d7` was built with actual Engine0.6.1 `4abee90f0501f0d8fc09b453a0b45c942fbed69e` and development successor `5edd26f25cfb55f9acee49c6f2b78308a1ed48b7`. The latter is not accepted or released as0.7.3; package metadata remains0.7.2. CLI main is byte-identical in both builds and to the host. Shared provider source has one compile-time fixture patch: its complete Mistral generation body is replaced by a local transcript adapter with no HTTP fallback. A dummy fixture string satisfies environment credential validation; no real key lookup or provider authentication is needed. This is an instrumented host, not an untouched signed distribution binary or live adapter acceptance.
+
+All public APIs in each Engine's evidence_relevance.rs were instrumented to log calls. A direct positive-control public probe confirms both v17/v30 counters work (365/446 total public API calls baseline/candidate). The ordinary natural-language task, initial grounding, investigation planner/action, local read-only resolver acquisition, regeneration and final rendering then ran as real CLI subprocesses. One NEW controlled Node.js scenario supplies the same five fixed local model responses to both arms. Both arms issue identical model requests and get identical controlled responses, acquire one source and produce the same grounded final text `node.buffer.uint8array = true`. Their ordinary-path public relevance API calls are0. This finding is limited to this exact host, pins and task; it is not proof of arbitrary CLI-path absence, real-world accuracy or useful-answer improvement.
+
+A new create-new guarded execution then schedules both actual offline CLI binaries through the PR541 operational runner's same provider/model guard. Both rows complete, with synthetic known150 tokens/5 callbacks each, shared charged reservations300, unknown usage0 and semantic acceptance NOT_SCORED. Synthetic token figures describe this fixed local transcript only: they are NOT live callback/retry/input bounds or a billed-cost cap. Actual provider calls remain0.
+
+## Limits and original Mistral rw03
+
+The saved v3 rw03 first initial request is the same, but response summary metadata differs at multiple later stages. Its model_response records contain no response body, so an exact replay of all original provider responses is unavailable. The five responses here are explicitly new controlled fixtures derived from the public fact and protocol; they do not reconstruct/retry the old observation. Thus the old useful-answer difference cannot be attributed solely to Engine from that first run. This controlled pair isolates one response sequence and does not prove the original failure's complete cause.
+
+The helper's display gain is separate from ordinary final-answer utility. A dedicated CLI adoption/integration PR must explicitly select and connect accepted Engine behavior before claiming product benefit. #531 fresh24 real-source/provider results remain0/24, adoption1/6, and Groq remains stopped. This evidence does not recover Groq headroom, close #540's remaining independent-review/numeric-live-freeze gates or release/adopt Engine0.7.3.
+
+## Reproducibility and immutability
+
+`verified-result.json` pins source/main/provider/instrumentation/binaries and positive controls. `first-*.py` preserve the exact one-off commands used with their original absolute temporary/source paths. They intentionally use create-new outputs and must not be rerun into these first paths; a subsequent execution requires new identifiers and paths. Source archives and binaries remain temporary build products, not published artifacts. The static public v3 corpus/resolver and public unchanged Engine probe were read only. Saved stdout, stderr, traces, requests/responses, guarded events/reserves and hashes retain the first observations.

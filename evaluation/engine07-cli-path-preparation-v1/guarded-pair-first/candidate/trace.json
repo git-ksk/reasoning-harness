@@ -1,0 +1,1095 @@
+{
+  "contract": "reason-natural-diagnostic-trace-v1",
+  "provider": "mistral",
+  "model": "ministral-8b-2512",
+  "seed": 531003,
+  "events": [
+    {
+      "kind": "model_request",
+      "sequence": 0,
+      "correlation_id": "0000-initial_generation-r-na",
+      "phase": "initial_generation",
+      "attempt": 1,
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "structured_mode": "json_schema",
+      "request": {
+        "max_tokens": 1024,
+        "output_format": {
+          "name": "reasoning_candidate",
+          "schema": {
+            "$defs": {
+              "CandidateClaim": {
+                "properties": {
+                  "evidence_ids": {
+                    "default": [],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "proposed_state": {
+                    "$ref": "#/$defs/EpistemicState"
+                  },
+                  "proposition": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/Proposition"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "statement": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "statement",
+                  "proposed_state"
+                ],
+                "type": "object"
+              },
+              "EpistemicState": {
+                "enum": [
+                  "known",
+                  "supported",
+                  "inferred",
+                  "assumed",
+                  "contradicted",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              "Inference": {
+                "properties": {
+                  "conclusion_claim_id": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "method": {
+                    "type": "string"
+                  },
+                  "premise_claim_ids": {
+                    "default": [],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "id",
+                  "conclusion_claim_id",
+                  "method"
+                ],
+                "type": "object"
+              },
+              "Proposition": {
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "key",
+                  "value"
+                ],
+                "type": "object"
+              }
+            },
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "claims": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/CandidateClaim"
+                },
+                "type": "array"
+              },
+              "inferences": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Inference"
+                },
+                "type": "array"
+              }
+            },
+            "title": "ReasoningCandidate",
+            "type": "object"
+          },
+          "type": "json_schema"
+        },
+        "random_seed": 531003,
+        "system": "You are a candidate generator inside a reasoning harness. Return only the requested structured candidate. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support.",
+        "task": "Task:\nAccording to the captured current Node.js documentation, are Buffer instances Uint8Array instances?\n\nHarness-owned hypotheses:\n[]\n\nHarness-owned explicit assumptions:\n[]\n\nHarness-owned evidence requirements:\n[]\n\nHarness-owned authority policy:\n{\n  \"ranks\": {}\n}\n\nHarness-owned evidence:\n[]\n\nGenerate candidate claims and inference edges. Evaluate supplied hypotheses when present; do not alter their key/value pair. Explicit assumptions may be used as premises, but do not treat them as verified facts. Evidence qualification metadata and authority policy are context only; never claim authority over them."
+      }
+    },
+    {
+      "kind": "model_response",
+      "sequence": 1,
+      "correlation_id": "0000-initial_generation-r-na",
+      "phase": "initial_generation",
+      "attempt": 1,
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "latency_ms": 5,
+      "response": {
+        "model": "ministral-8b-2512",
+        "usage": {
+          "input_tokens": 20,
+          "output_tokens": 10,
+          "total_tokens": 30
+        },
+        "provider_attempts": 1,
+        "finish_reason": "stop",
+        "bytes": 212,
+        "structured": true,
+        "trailing_text_omitted": false,
+        "value": {
+          "claims": [
+            {
+              "evidence_ids": [],
+              "id": "node-buffer",
+              "proposed_state": "unknown",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "statement": "The Buffer subtype requires verification."
+            }
+          ],
+          "inferences": []
+        }
+      }
+    },
+    {
+      "kind": "candidate_state",
+      "sequence": 2,
+      "phase": "initial_generation",
+      "candidate": {
+        "claims": [
+          {
+            "evidence_ids": [],
+            "id": "node-buffer",
+            "proposed_state": "unknown",
+            "proposition": {
+              "key": "node.buffer.uint8array",
+              "value": "true"
+            },
+            "statement": "The Buffer subtype requires verification."
+          }
+        ],
+        "inferences": []
+      }
+    },
+    {
+      "kind": "grounding_state",
+      "sequence": 3,
+      "phase": "initial_grounding",
+      "outcome": {
+        "artifact": {
+          "adversarial_findings": [],
+          "assumption_findings": [],
+          "assumptions": [],
+          "authority_policy": {
+            "ranks": {}
+          },
+          "candidate_diagnostics": [],
+          "claims": [
+            {
+              "evidence_ids": [],
+              "id": "node-buffer",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "state": "unknown",
+              "statement": "The Buffer subtype requires verification."
+            }
+          ],
+          "evidence": [],
+          "evidence_qualification_findings": [],
+          "evidence_requirements": [],
+          "hypotheses": [],
+          "inferences": [],
+          "task": "According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?",
+          "verification_receipts": []
+        },
+        "verdict": "unknown"
+      }
+    },
+    {
+      "kind": "model_request",
+      "sequence": 4,
+      "correlation_id": "0001-investigation_plan-r-na",
+      "phase": "investigation_plan",
+      "attempt": 1,
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "structured_mode": "json_schema",
+      "request": {
+        "max_tokens": 256,
+        "output_format": {
+          "name": "reason-investigation-plan-v1",
+          "schema": {
+            "$defs": {
+              "ModelFacingExactInvestigationTargetProposal": {
+                "additionalProperties": false,
+                "properties": {
+                  "expected_fact_key": {
+                    "enum": [
+                      "node.buffer.uint8array"
+                    ],
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "question": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "question",
+                  "expected_fact_key"
+                ],
+                "type": "object"
+              }
+            },
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "additionalProperties": false,
+            "description": "Schema-only model-facing contract for the narrow shared exact read-only fact family. Runtime\nparsing deliberately remains `InvestigationPlanProposal`, so provider fallback/unconstrained\noutput is retained exactly instead of being repaired or inferred by Harness.",
+            "properties": {
+              "targets": {
+                "items": {
+                  "$ref": "#/$defs/ModelFacingExactInvestigationTargetProposal"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "targets"
+            ],
+            "title": "ModelFacingExactInvestigationPlanProposal",
+            "type": "object"
+          },
+          "type": "json_schema"
+        },
+        "random_seed": 531003,
+        "reasoning_preference": "minimize",
+        "system": "You are an untrusted investigation planner inside a verification harness. Return only the requested structured plan. Propose bounded questions to investigate; do not answer them, invent evidence, claim authority, select write capabilities, or decide correctness. For every target, expected_fact_key is required and must be exactly the Harness-configured key `node.buffer.uint8array`. Do not omit, alter, normalize, or substitute this key.",
+        "task": "User task:\nAccording to the captured current Node.js documentation, are Buffer instances Uint8Array instances?\n\nHarness-configured read-only capability descriptors:\n[\n  {\n    \"id\": \"realworld-v3-source-0\",\n    \"adapter\": \"investigation_external_command_v1\",\n    \"read_only\": true,\n    \"supported_fact_keys\": [\n      \"node.buffer.uint8array\"\n    ]\n  },\n  {\n    \"id\": \"realworld-v3-source-1\",\n    \"adapter\": \"investigation_external_command_v1\",\n    \"read_only\": true,\n    \"supported_fact_keys\": [\n      \"node.buffer.uint8array\"\n    ]\n  }\n]\n\nFor every target, expected_fact_key is required and must be exactly the Harness-configured key `node.buffer.uint8array`. Do not omit, alter, normalize, or substitute this key.\n\nPropose concise investigation targets. Targets are untrusted planning objects, not hypotheses or verified facts. Do not include tool arguments, evidence, identity claims, authority classes, answers, or verdicts."
+      }
+    },
+    {
+      "kind": "model_response",
+      "sequence": 5,
+      "correlation_id": "0001-investigation_plan-r-na",
+      "phase": "investigation_plan",
+      "attempt": 1,
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "latency_ms": 5,
+      "response": {
+        "model": "ministral-8b-2512",
+        "usage": {
+          "input_tokens": 20,
+          "output_tokens": 10,
+          "total_tokens": 30
+        },
+        "provider_attempts": 1,
+        "finish_reason": "stop",
+        "bytes": 145,
+        "structured": true,
+        "trailing_text_omitted": false,
+        "value": {
+          "targets": [
+            {
+              "expected_fact_key": "node.buffer.uint8array",
+              "id": "realworld-v3-source-0",
+              "question": "Are Buffer instances Uint8Array instances?"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "model_request",
+      "sequence": 6,
+      "correlation_id": "0002-investigation_action-r-1",
+      "phase": "investigation_action",
+      "round": 1,
+      "attempt": 1,
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "structured_mode": "json_schema",
+      "request": {
+        "max_tokens": 256,
+        "output_format": {
+          "name": "reason-investigation-action-v1",
+          "schema": {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "description": "Schema-only model-facing contract. Runtime parsing deliberately remains the broader\n`InvestigationActionProposal` so unconstrained/provider-fallback output is still retained\nexactly and rejected by Harness-owned validation instead of being repaired or inferred.",
+            "oneOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "action": {
+                    "const": "acquire",
+                    "type": "string"
+                  },
+                  "capability_id": {
+                    "const": "realworld-v3-source-0",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "target_id": {
+                    "const": "realworld-v3-source-0",
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "action",
+                  "target_id",
+                  "capability_id"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "action": {
+                    "const": "acquire",
+                    "type": "string"
+                  },
+                  "capability_id": {
+                    "const": "realworld-v3-source-1",
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "target_id": {
+                    "const": "realworld-v3-source-0",
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "action",
+                  "target_id",
+                  "capability_id"
+                ],
+                "type": "object"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "action": {
+                    "const": "stop",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "action"
+                ],
+                "type": "object"
+              }
+            ],
+            "title": "ModelFacingInvestigationActionProposal"
+          },
+          "type": "json_schema"
+        },
+        "random_seed": 531004,
+        "reasoning_preference": "minimize",
+        "system": "You are an untrusted action selector inside a bounded investigation harness. Return only the requested structured action. An acquire action requires a non-empty existing target_id and a non-empty existing read-only capability_id. A stop action must omit both target_id and capability_id. Never create or edit a query, target, capability, identity context, evidence, authority, or verdict. The Harness validates every action and owns admission, verification, budgets, and correctness.",
+        "task": "User task:\nAccording to the captured current Node.js documentation, are Buffer instances Uint8Array instances?\n\nCanonical Harness investigation targets:\n[\n  {\n    \"id\": \"realworld-v3-source-0\",\n    \"question\": \"Are Buffer instances Uint8Array instances?\",\n    \"expected_fact_key\": \"node.buffer.uint8array\",\n    \"origin\": \"model_proposed_untrusted\"\n  }\n]\n\nConfigured capability descriptors:\n[\n  {\n    \"id\": \"realworld-v3-source-0\",\n    \"adapter\": \"investigation_external_command_v1\",\n    \"read_only\": true,\n    \"supported_fact_keys\": [\n      \"node.buffer.uint8array\"\n    ]\n  },\n  {\n    \"id\": \"realworld-v3-source-1\",\n    \"adapter\": \"investigation_external_command_v1\",\n    \"read_only\": true,\n    \"supported_fact_keys\": [\n      \"node.buffer.uint8array\"\n    ]\n  }\n]\n\nPrior typed action outcomes:\n[]\n\nPrior typed action validation rejections:\n[]\n\nSelect exactly one acquire action using existing IDs or stop. For acquire, include both non-empty target_id and capability_id. For stop, omit both IDs. Prefer an untried capability for an unresolved target after no_result, ambiguous, rejected_evidence, or operational_failure. Correct any prior typed validation rejection instead of repeating the same invalid proposal. Never repeat an identical target/capability pair."
+      }
+    },
+    {
+      "kind": "model_response",
+      "sequence": 7,
+      "correlation_id": "0002-investigation_action-r-1",
+      "phase": "investigation_action",
+      "round": 1,
+      "attempt": 1,
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "latency_ms": 5,
+      "response": {
+        "model": "ministral-8b-2512",
+        "usage": {
+          "input_tokens": 20,
+          "output_tokens": 10,
+          "total_tokens": 30
+        },
+        "provider_attempts": 1,
+        "finish_reason": "stop",
+        "bytes": 96,
+        "structured": true,
+        "trailing_text_omitted": false,
+        "value": {
+          "action": "acquire",
+          "capability_id": "realworld-v3-source-1",
+          "target_id": "realworld-v3-source-0"
+        }
+      }
+    },
+    {
+      "kind": "evidence_admission",
+      "sequence": 8,
+      "phase": "evidence_admission",
+      "round": 1,
+      "target_id": "realworld-v3-source-0",
+      "capability_id": "realworld-v3-source-1",
+      "admitted_evidence_ids": [
+        "snapshot:rw03-node-positive:1"
+      ],
+      "fact_keys": [
+        "node.buffer.uint8array"
+      ]
+    },
+    {
+      "kind": "model_request",
+      "sequence": 9,
+      "correlation_id": "0003-post_investigation_regeneration-r-1",
+      "phase": "post_investigation_regeneration",
+      "round": 1,
+      "attempt": 1,
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "structured_mode": "json_schema",
+      "request": {
+        "max_tokens": 1024,
+        "output_format": {
+          "name": "reasoning_candidate",
+          "schema": {
+            "$defs": {
+              "CandidateClaim": {
+                "properties": {
+                  "evidence_ids": {
+                    "default": [],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "proposed_state": {
+                    "$ref": "#/$defs/EpistemicState"
+                  },
+                  "proposition": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/Proposition"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "statement": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "statement",
+                  "proposed_state"
+                ],
+                "type": "object"
+              },
+              "EpistemicState": {
+                "enum": [
+                  "known",
+                  "supported",
+                  "inferred",
+                  "assumed",
+                  "contradicted",
+                  "unknown"
+                ],
+                "type": "string"
+              },
+              "Inference": {
+                "properties": {
+                  "conclusion_claim_id": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "method": {
+                    "type": "string"
+                  },
+                  "premise_claim_ids": {
+                    "default": [],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "id",
+                  "conclusion_claim_id",
+                  "method"
+                ],
+                "type": "object"
+              },
+              "Proposition": {
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "key",
+                  "value"
+                ],
+                "type": "object"
+              }
+            },
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "claims": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/CandidateClaim"
+                },
+                "type": "array"
+              },
+              "inferences": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Inference"
+                },
+                "type": "array"
+              }
+            },
+            "title": "ReasoningCandidate",
+            "type": "object"
+          },
+          "type": "json_schema"
+        },
+        "random_seed": 541004,
+        "system": "You are a candidate generator inside a reasoning harness. Return only the requested structured candidate. Epistemic states are proposals, not verdicts. Use only evidence IDs supplied by the harness; do not invent evidence, sources, or observations. When harness evidence contains structured facts, attach a proposition only for a direct key=value claim that can be checked against those facts. If the supplied evidence cannot support a claim, propose unknown or assumed instead of fabricating support.",
+        "task": "Task:\nAccording to the captured current Node.js documentation, are Buffer instances Uint8Array instances?\n\nHarness-owned hypotheses:\n[]\n\nHarness-owned explicit assumptions:\n[]\n\nHarness-owned evidence requirements:\n[]\n\nHarness-owned authority policy:\n{\n  \"ranks\": {\n    \"primary\": 20,\n    \"reference_host\": 20,\n    \"untrusted\": 0\n  }\n}\n\nHarness-owned evidence:\n[\n  {\n    \"id\": \"snapshot:rw03-node-positive:1\",\n    \"source\": \"node-subclass\",\n    \"observation\": \"{\\\"context_summary\\\": \\\"Captured current Node.js Buffer documentation describes its relationship to Uint8Array.\\\", \\\"document_id\\\": \\\"node-buffer\\\", \\\"locator\\\": \\\"Buffer / Introduction\\\", \\\"origin_group\\\": \\\"nodejs-project\\\", \\\"quote\\\": \\\"The Buffer class is a subclass of JavaScript's <Uint8Array> class\\\", \\\"scope\\\": {\\\"product\\\": \\\"node\\\", \\\"release\\\": \\\"captured-current\\\"}, \\\"source_version\\\": \\\"sha256:23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47\\\", \\\"synthetic_mutation\\\": false, \\\"url\\\": \\\"https://nodejs.org/api/buffer.html\\\"}\",\n    \"facts\": {\n      \"node.buffer.uint8array\": \"true\"\n    },\n    \"metadata\": {\n      \"temporal\": {\n        \"effective_from_unix_seconds\": 1792019640,\n        \"effective_until_unix_seconds\": 1792106040\n      },\n      \"scope\": {\n        \"product\": {\n          \"kind\": \"values\",\n          \"values\": [\n            \"node\"\n          ]\n        },\n        \"release\": {\n          \"kind\": \"values\",\n          \"values\": [\n            \"captured-current\"\n          ]\n        }\n      },\n      \"provenance_class\": \"primary\"\n    }\n  }\n]\n\nGenerate candidate claims and inference edges. Evaluate supplied hypotheses when present; do not alter their key/value pair. Explicit assumptions may be used as premises, but do not treat them as verified facts. Evidence qualification metadata and authority policy are context only; never claim authority over them."
+      }
+    },
+    {
+      "kind": "model_response",
+      "sequence": 10,
+      "correlation_id": "0003-post_investigation_regeneration-r-1",
+      "phase": "post_investigation_regeneration",
+      "round": 1,
+      "attempt": 1,
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "latency_ms": 7,
+      "response": {
+        "model": "ministral-8b-2512",
+        "usage": {
+          "input_tokens": 20,
+          "output_tokens": 10,
+          "total_tokens": 30
+        },
+        "provider_attempts": 1,
+        "finish_reason": "stop",
+        "bytes": 246,
+        "structured": true,
+        "trailing_text_omitted": false,
+        "value": {
+          "claims": [
+            {
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ],
+              "id": "node-buffer",
+              "proposed_state": "supported",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "statement": "Buffer instances are Uint8Array instances."
+            }
+          ],
+          "inferences": []
+        }
+      }
+    },
+    {
+      "kind": "candidate_state",
+      "sequence": 11,
+      "phase": "post_investigation_regeneration",
+      "round": 1,
+      "candidate": {
+        "claims": [
+          {
+            "evidence_ids": [
+              "snapshot:rw03-node-positive:1"
+            ],
+            "id": "node-buffer",
+            "proposed_state": "supported",
+            "proposition": {
+              "key": "node.buffer.uint8array",
+              "value": "true"
+            },
+            "statement": "Buffer instances are Uint8Array instances."
+          },
+          {
+            "evidence_ids": [
+              "snapshot:rw03-node-positive:1"
+            ],
+            "id": "harness_investigation_admitted_fact_1",
+            "proposed_state": "assumed",
+            "proposition": {
+              "key": "node.buffer.uint8array",
+              "value": "true"
+            },
+            "statement": "node.buffer.uint8array = true"
+          }
+        ],
+        "inferences": []
+      }
+    },
+    {
+      "kind": "grounding_state",
+      "sequence": 12,
+      "phase": "post_investigation_grounding",
+      "round": 1,
+      "outcome": {
+        "artifact": {
+          "adversarial_findings": [],
+          "assumption_findings": [],
+          "assumptions": [],
+          "authority_policy": {
+            "ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            }
+          },
+          "candidate_diagnostics": [],
+          "claims": [
+            {
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ],
+              "id": "node-buffer",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "state": "supported",
+              "statement": "node.buffer.uint8array = true"
+            },
+            {
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ],
+              "id": "harness_investigation_admitted_fact_1",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "state": "supported",
+              "statement": "node.buffer.uint8array = true"
+            }
+          ],
+          "evidence": [
+            {
+              "facts": {
+                "node.buffer.uint8array": "true"
+              },
+              "id": "snapshot:rw03-node-positive:1",
+              "metadata": {
+                "provenance_class": "primary",
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "node"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "captured-current"
+                    ]
+                  }
+                },
+                "temporal": {
+                  "effective_from_unix_seconds": 1792019640,
+                  "effective_until_unix_seconds": 1792106040
+                }
+              },
+              "observation": "{\"context_summary\": \"Captured current Node.js Buffer documentation describes its relationship to Uint8Array.\", \"document_id\": \"node-buffer\", \"locator\": \"Buffer / Introduction\", \"origin_group\": \"nodejs-project\", \"quote\": \"The Buffer class is a subclass of JavaScript's <Uint8Array> class\", \"scope\": {\"product\": \"node\", \"release\": \"captured-current\"}, \"source_version\": \"sha256:23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47\", \"synthetic_mutation\": false, \"url\": \"https://nodejs.org/api/buffer.html\"}",
+              "source": "node-subclass"
+            }
+          ],
+          "evidence_qualification_findings": [],
+          "evidence_requirements": [],
+          "hypotheses": [],
+          "inferences": [],
+          "task": "According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?",
+          "verification_receipts": [
+            {
+              "claim_id": "node-buffer",
+              "conclusion": "supported",
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ],
+              "id": "structured_fact_equality:node-buffer",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "verifier": "structured_fact_equality"
+            },
+            {
+              "claim_id": "harness_investigation_admitted_fact_1",
+              "conclusion": "supported",
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ],
+              "id": "structured_fact_equality:harness_investigation_admitted_fact_1",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "verifier": "structured_fact_equality"
+            }
+          ]
+        },
+        "verdict": "accept"
+      }
+    },
+    {
+      "kind": "grounding_state",
+      "sequence": 13,
+      "phase": "pre_final_render_artifact",
+      "outcome": {
+        "artifact": {
+          "adversarial_findings": [],
+          "assumption_findings": [],
+          "assumptions": [],
+          "authority_policy": {
+            "ranks": {
+              "primary": 20,
+              "reference_host": 20,
+              "untrusted": 0
+            }
+          },
+          "candidate_diagnostics": [],
+          "claims": [
+            {
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ],
+              "id": "node-buffer",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "state": "supported",
+              "statement": "node.buffer.uint8array = true"
+            },
+            {
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ],
+              "id": "harness_investigation_admitted_fact_1",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "state": "supported",
+              "statement": "node.buffer.uint8array = true"
+            }
+          ],
+          "evidence": [
+            {
+              "facts": {
+                "node.buffer.uint8array": "true"
+              },
+              "id": "snapshot:rw03-node-positive:1",
+              "metadata": {
+                "provenance_class": "primary",
+                "scope": {
+                  "product": {
+                    "kind": "values",
+                    "values": [
+                      "node"
+                    ]
+                  },
+                  "release": {
+                    "kind": "values",
+                    "values": [
+                      "captured-current"
+                    ]
+                  }
+                },
+                "temporal": {
+                  "effective_from_unix_seconds": 1792019640,
+                  "effective_until_unix_seconds": 1792106040
+                }
+              },
+              "observation": "{\"context_summary\": \"Captured current Node.js Buffer documentation describes its relationship to Uint8Array.\", \"document_id\": \"node-buffer\", \"locator\": \"Buffer / Introduction\", \"origin_group\": \"nodejs-project\", \"quote\": \"The Buffer class is a subclass of JavaScript's <Uint8Array> class\", \"scope\": {\"product\": \"node\", \"release\": \"captured-current\"}, \"source_version\": \"sha256:23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47\", \"synthetic_mutation\": false, \"url\": \"https://nodejs.org/api/buffer.html\"}",
+              "source": "node-subclass"
+            }
+          ],
+          "evidence_qualification_findings": [],
+          "evidence_requirements": [],
+          "hypotheses": [],
+          "inferences": [],
+          "task": "According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?",
+          "verification_receipts": [
+            {
+              "claim_id": "node-buffer",
+              "conclusion": "supported",
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ],
+              "id": "structured_fact_equality:node-buffer",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "verifier": "structured_fact_equality"
+            },
+            {
+              "claim_id": "harness_investigation_admitted_fact_1",
+              "conclusion": "supported",
+              "evidence_ids": [
+                "snapshot:rw03-node-positive:1"
+              ],
+              "id": "structured_fact_equality:harness_investigation_admitted_fact_1",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              },
+              "verifier": "structured_fact_equality"
+            }
+          ]
+        },
+        "verdict": "accept"
+      }
+    },
+    {
+      "kind": "model_request",
+      "sequence": 14,
+      "correlation_id": "0004-final_render-r-1",
+      "phase": "final_render",
+      "round": 1,
+      "attempt": 1,
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "structured_mode": "json_schema",
+      "request": {
+        "max_tokens": 1024,
+        "output_format": {
+          "name": "final_answer_candidate",
+          "schema": {
+            "$defs": {
+              "FinalAnswerClaim": {
+                "properties": {
+                  "mode": {
+                    "$ref": "#/$defs/FinalClaimMode"
+                  },
+                  "proposition": {
+                    "$ref": "#/$defs/Proposition"
+                  }
+                },
+                "required": [
+                  "proposition",
+                  "mode"
+                ],
+                "type": "object"
+              },
+              "FinalClaimMode": {
+                "enum": [
+                  "grounded",
+                  "uncertain"
+                ],
+                "type": "string"
+              },
+              "Proposition": {
+                "properties": {
+                  "key": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "key",
+                  "value"
+                ],
+                "type": "object"
+              }
+            },
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "additionalProperties": false,
+            "properties": {
+              "factual_claims": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/FinalAnswerClaim"
+                },
+                "type": "array"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text",
+              "factual_claims"
+            ],
+            "title": "FinalAnswerCandidate",
+            "type": "object"
+          },
+          "type": "json_schema"
+        },
+        "random_seed": 531003,
+        "system": "You are the final-answer renderer inside a reasoning harness. Return only the requested structured final-answer candidate. You may summarize verified artifact state, but you do not own truth authority. Every factual proposition you intend to communicate must be listed in factual_claims. Mark a proposition grounded only when the artifact state is known or supported; otherwise mark it uncertain. Do not invent evidence, receipts, facts, or authority. The text field is advisory renderer output and is not the correctness-guaranteed exposed answer; the Harness deterministically constructs that surface from accepted factual_claims. If the artifact cannot support a useful factual answer, say so plainly and return no unsupported grounded claim.",
+        "task": "User task:\nAccording to the captured current Node.js documentation, are Buffer instances Uint8Array instances?\n\nHarness verdict:\nAccept\n\nVerified reasoning artifact:\n{\n  \"task\": \"According to the captured current Node.js documentation, are Buffer instances Uint8Array instances?\",\n  \"evidence\": [\n    {\n      \"id\": \"snapshot:rw03-node-positive:1\",\n      \"source\": \"node-subclass\",\n      \"observation\": \"{\\\"context_summary\\\": \\\"Captured current Node.js Buffer documentation describes its relationship to Uint8Array.\\\", \\\"document_id\\\": \\\"node-buffer\\\", \\\"locator\\\": \\\"Buffer / Introduction\\\", \\\"origin_group\\\": \\\"nodejs-project\\\", \\\"quote\\\": \\\"The Buffer class is a subclass of JavaScript's <Uint8Array> class\\\", \\\"scope\\\": {\\\"product\\\": \\\"node\\\", \\\"release\\\": \\\"captured-current\\\"}, \\\"source_version\\\": \\\"sha256:23f92fc924708065b4998712ee080dda049e9fd2b4e16558b396d68694d6fa47\\\", \\\"synthetic_mutation\\\": false, \\\"url\\\": \\\"https://nodejs.org/api/buffer.html\\\"}\",\n      \"facts\": {\n        \"node.buffer.uint8array\": \"true\"\n      },\n      \"metadata\": {\n        \"temporal\": {\n          \"effective_from_unix_seconds\": 1792019640,\n          \"effective_until_unix_seconds\": 1792106040\n        },\n        \"scope\": {\n          \"product\": {\n            \"kind\": \"values\",\n            \"values\": [\n              \"node\"\n            ]\n          },\n          \"release\": {\n            \"kind\": \"values\",\n            \"values\": [\n              \"captured-current\"\n            ]\n          }\n        },\n        \"provenance_class\": \"primary\"\n      }\n    }\n  ],\n  \"hypotheses\": [],\n  \"assumptions\": [],\n  \"evidence_requirements\": [],\n  \"authority_policy\": {\n    \"ranks\": {\n      \"primary\": 20,\n      \"reference_host\": 20,\n      \"untrusted\": 0\n    }\n  },\n  \"candidate_diagnostics\": [],\n  \"verification_receipts\": [\n    {\n      \"id\": \"structured_fact_equality:node-buffer\",\n      \"verifier\": \"structured_fact_equality\",\n      \"proposition\": {\n        \"key\": \"node.buffer.uint8array\",\n        \"value\": \"true\"\n      },\n      \"claim_id\": \"node-buffer\",\n      \"conclusion\": \"supported\",\n      \"evidence_ids\": [\n        \"snapshot:rw03-node-positive:1\"\n      ]\n    },\n    {\n      \"id\": \"structured_fact_equality:harness_investigation_admitted_fact_1\",\n      \"verifier\": \"structured_fact_equality\",\n      \"proposition\": {\n        \"key\": \"node.buffer.uint8array\",\n        \"value\": \"true\"\n      },\n      \"claim_id\": \"harness_investigation_admitted_fact_1\",\n      \"conclusion\": \"supported\",\n      \"evidence_ids\": [\n        \"snapshot:rw03-node-positive:1\"\n      ]\n    }\n  ],\n  \"adversarial_findings\": [],\n  \"assumption_findings\": [],\n  \"evidence_qualification_findings\": [],\n  \"claims\": [\n    {\n      \"id\": \"node-buffer\",\n      \"statement\": \"node.buffer.uint8array = true\",\n      \"state\": \"supported\",\n      \"proposition\": {\n        \"key\": \"node.buffer.uint8array\",\n        \"value\": \"true\"\n      },\n      \"evidence_ids\": [\n        \"snapshot:rw03-node-positive:1\"\n      ]\n    },\n    {\n      \"id\": \"harness_investigation_admitted_fact_1\",\n      \"statement\": \"node.buffer.uint8array = true\",\n      \"state\": \"supported\",\n      \"proposition\": {\n        \"key\": \"node.buffer.uint8array\",\n        \"value\": \"true\"\n      },\n      \"evidence_ids\": [\n        \"snapshot:rw03-node-positive:1\"\n      ]\n    }\n  ],\n  \"inferences\": []\n}\n\nRender a concise natural-language answer and declare every intended factual proposition in factual_claims. The Harness will expose only its deterministic rendering of accepted factual_claims; renderer text is advisory and cannot add or strengthen exposed assertions."
+      }
+    },
+    {
+      "kind": "model_response",
+      "sequence": 15,
+      "correlation_id": "0004-final_render-r-1",
+      "phase": "final_render",
+      "round": 1,
+      "attempt": 1,
+      "provider": "mistral",
+      "model": "ministral-8b-2512",
+      "latency_ms": 8,
+      "response": {
+        "model": "ministral-8b-2512",
+        "usage": {
+          "input_tokens": 20,
+          "output_tokens": 10,
+          "total_tokens": 30
+        },
+        "provider_attempts": 1,
+        "finish_reason": "stop",
+        "bytes": 154,
+        "structured": true,
+        "trailing_text_omitted": false,
+        "value": {
+          "factual_claims": [
+            {
+              "mode": "grounded",
+              "proposition": {
+                "key": "node.buffer.uint8array",
+                "value": "true"
+              }
+            }
+          ],
+          "text": "Buffer instances are Uint8Array instances."
+        }
+      }
+    },
+    {
+      "kind": "final_render_state",
+      "sequence": 16,
+      "phase": "final_render",
+      "round": 1,
+      "source": "model",
+      "candidate": {
+        "factual_claims": [
+          {
+            "mode": "grounded",
+            "proposition": {
+              "key": "node.buffer.uint8array",
+              "value": "true"
+            }
+          }
+        ],
+        "text": "Buffer instances are Uint8Array instances."
+      }
+    },
+    {
+      "kind": "finalization_state",
+      "sequence": 17,
+      "phase": "finalization",
+      "round": 1,
+      "stage": "renderer_candidate",
+      "result": {
+        "covered_claims": 1,
+        "factual_claim_coverage": 1.0,
+        "factual_claims": 1,
+        "status": "grounded_answer",
+        "text": "node.buffer.uint8array = true",
+        "uncovered_propositions": []
+      }
+    },
+    {
+      "kind": "answer_safety_state",
+      "sequence": 18,
+      "phase": "answer_safety",
+      "round": 1,
+      "observation": {
+        "observation": {
+          "decidability": {
+            "disposition": "permit",
+            "reasons": []
+          },
+          "disposition": "preserve_baseline",
+          "latency_ms": 0,
+          "reasons": [],
+          "runtime": {
+            "configuration_id": "verified-target-answer-gate-v1",
+            "decidability_contract": "deterministic-explicit-typed-preconditions-v1",
+            "identity_version": "answer-safety-identity-v1",
+            "profile": "verified_target_v1",
+            "requirement_policy": "claim-local-answer-sufficiency-requirements-v1",
+            "rollback_configuration_id": "d3-sufficiency-answer-gate-v2",
+            "sufficiency_contract": "evidence-sufficiency-coordinate-rsd1-v1"
+          },
+          "target": {
+            "key": "node.buffer.uint8array",
+            "value": "true"
+          },
+          "trusted_verification_short_circuit": true
+        },
+        "render_round": 1
+      }
+    },
+    {
+      "kind": "finalization_state",
+      "sequence": 19,
+      "phase": "finalization",
+      "round": 1,
+      "stage": "answer_safety",
+      "result": {
+        "covered_claims": 1,
+        "factual_claim_coverage": 1.0,
+        "factual_claims": 1,
+        "status": "grounded_answer",
+        "text": "node.buffer.uint8array = true",
+        "uncovered_propositions": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "event": "observed",
+  "state": {
+    "charged_reservations": 300,
+    "current_reserve": null,
+    "groq_state_sha256": null,
+    "guard": {
+      "events": [
+        {
+          "decision": {
+            "allowed": true,
+            "reason": null
+          },
+          "event": "admission",
+          "started_invocations": 1
+        },
+        {
+          "event": "observation",
+          "latch": null,
+          "observed_tokens": 150,
+          "outcome": {
+            "failure_class": null,
+            "provider_attempts": 5,
+            "tokens": 150
+          }
+        },
+        {
+          "decision": {
+            "allowed": true,
+            "reason": null
+          },
+          "event": "admission",
+          "started_invocations": 2
+        },
+        {
+          "event": "observation",
+          "latch": null,
+          "observed_tokens": 300,
+          "outcome": {
+            "failure_class": null,
+            "provider_attempts": 5,
+            "tokens": 150
+          }
+        }
+      ],
+      "inflight": false,
+      "latch": null,
+      "observed_tokens": 300,
+      "started_invocations": 2,
+      "token_budget": 300
+    },
+    "known_provider_attempts": 10,
+    "known_total_tokens": 300,
+    "model": "ministral-8b-2512",
+    "provider": "mistral",
+    "rows": [
+      {
+        "admission": {
+          "allowed": true,
+          "reason": null
+        },
+        "arm": "baseline",
+        "complete": true,
+        "contract": "normal",
+        "id": "baseline",
+        "operational_failure": null,
+        "outcome": {
+          "failure_class": null,
+          "provider_attempts": 5,
+          "tokens": 150
+        },
+        "partial_diagnostics_observed": null,
+        "reserve": 150,
+        "returncode": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "07fd0110a05b35eee1d20ad5c117730d3517f8d1d53fc4b9fb94ce4db18c65d7",
+        "termination": null,
+        "wall_ms": 132
+      },
+      {
+        "admission": {
+          "allowed": true,
+          "reason": null
+        },
+        "arm": "candidate",
+        "complete": true,
+        "contract": "normal",
+        "id": "candidate",
+        "operational_failure": null,
+        "outcome": {
+          "failure_class": null,
+          "provider_attempts": 5,
+          "tokens": 150
+        },
+        "partial_diagnostics_observed": null,
+        "reserve": 150,
+        "returncode": 0,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "003d95de10061a4fe7b3c621f3dcb2f298001d1b10f29157f3dfae085d6b00be",
+        "termination": null,
+        "wall_ms": 132
+      }
+    ],
+    "schema": "engine07-durable-arm-v1",
+    "sequence": 5,
+    "unknown_usage_rows": 0
+  }
+}

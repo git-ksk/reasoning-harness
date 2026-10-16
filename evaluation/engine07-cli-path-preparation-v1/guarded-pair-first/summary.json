@@ -1,0 +1,57 @@
+{
+  "charged_reservations": 300,
+  "complete": true,
+  "known_provider_attempts": 10,
+  "known_total_tokens": 300,
+  "latch": null,
+  "rows": [
+    {
+      "admission": {
+        "allowed": true,
+        "reason": null
+      },
+      "arm": "baseline",
+      "complete": true,
+      "contract": "normal",
+      "id": "baseline",
+      "operational_failure": null,
+      "outcome": {
+        "failure_class": null,
+        "provider_attempts": 5,
+        "tokens": 150
+      },
+      "partial_diagnostics_observed": null,
+      "reserve": 150,
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "07fd0110a05b35eee1d20ad5c117730d3517f8d1d53fc4b9fb94ce4db18c65d7",
+      "termination": null,
+      "wall_ms": 132
+    },
+    {
+      "admission": {
+        "allowed": true,
+        "reason": null
+      },
+      "arm": "candidate",
+      "complete": true,
+      "contract": "normal",
+      "id": "candidate",
+      "operational_failure": null,
+      "outcome": {
+        "failure_class": null,
+        "provider_attempts": 5,
+        "tokens": 150
+      },
+      "partial_diagnostics_observed": null,
+      "reserve": 150,
+      "returncode": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "003d95de10061a4fe7b3c621f3dcb2f298001d1b10f29157f3dfae085d6b00be",
+      "termination": null,
+      "wall_ms": 132
+    }
+  ],
+  "semantic_acceptance": "NOT_SCORED",
+  "unknown_usage_rows": 0
+}
