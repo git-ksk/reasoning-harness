@@ -5138,19 +5138,33 @@ fn launch_adverse_segments_v17(
 
 fn launch_unavailable_owner_note_v17(statement: &str) -> bool {
     let text = normalized(statement);
-    [
-        "owner is not stated",
-        "owner is not named",
-        "owner is not identified",
-        "owner is not specified",
-        "owner is unknown",
-        "owner is unspecified",
-        "owner remains unknown",
-        "owner is missing",
-        "owner is omitted",
-    ]
-    .iter()
-    .any(|marker| text.contains(marker))
+    let words = text.split_whitespace().collect::<Vec<_>>();
+    let no_additional_owner = words.windows(3).any(|words| {
+        matches!(
+            words,
+            ["no", "second" | "additional" | "other" | "further", "owner"]
+        )
+    });
+    words.contains(&"owner")
+        && ((words.contains(&"no") && !no_additional_owner)
+            || words.iter().any(|word| {
+                [
+                    "not",
+                    "never",
+                    "unknown",
+                    "unstated",
+                    "unspecified",
+                    "unidentified",
+                    "unnamed",
+                    "unrecorded",
+                    "unavailable",
+                    "missing",
+                    "omitted",
+                    "absent",
+                    "withheld",
+                ]
+                .contains(word)
+            }))
 }
 
 fn launch_complete_foreign_denial_report_v17(
@@ -5692,6 +5706,11 @@ fn launch_governing_context_blocks_v17(
                     [
                         "and",
                         "or",
+                        // A different claim is not the adjacent foreign claim.
+                        "other",
+                        "another",
+                        "different",
+                        "additional",
                         "including",
                         "neither",
                         "list",

@@ -2267,3 +2267,38 @@ fn coordinated_typed_retraction_requires_every_named_role_to_be_safe() {
     cases.push(json!({"id":"missing-second-role","signals":[{"kind":"excerpt","text":"Silver Lens was launched. Object: the colour of Silver Lens cap. We withdraw the Object and the Subject."}],"expected_relevant":false}));
     check(cases);
 }
+
+#[test]
+fn foreign_antecedent_cannot_bind_a_different_or_unknown_owned_launch() {
+    let mut cases = Vec::new();
+    for reference in [
+        "that other launch claim",
+        "another launch claim",
+        "a different launch claim",
+        "that launch claim",
+    ] {
+        for note in [
+            "its owner was not specified",
+            "the other launch claim has no named owner",
+            "the owner of that other claim is unstated",
+            "its owner is not stated",
+        ] {
+            cases.push(json!({"id":format!("unknown:{reference}:{note}"),"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. We retract the claim about the colour of Silver Lens button, and we deny the launch of Maple Queue. We also withdraw {reference}; {note}.")}],"expected_relevant":false}));
+        }
+        if reference != "that launch claim" {
+            cases.push(json!({"id":format!("distinct:{reference}"),"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. We deny the launch of Maple Queue. We withdraw {reference}.")}],"expected_relevant":false}));
+        }
+    }
+    cases.push(json!({"id":"adjacent-same-foreign-claim","signals":[{"kind":"excerpt","text":"Silver Lens was launched. We deny the launch of Maple Queue. We withdraw that launch claim."}],"expected_relevant":true}));
+    for qualifier in [
+        "No second owner is assigned.",
+        "No other owner is named.",
+        "No additional owner is listed.",
+    ] {
+        cases.push(json!({"id":format!("unique-owner:{qualifier}"),"signals":[
+            {"kind":"excerpt","text":"Silver Lens was launched."},
+            {"kind":"excerpt","text":format!("Object: a launch statement. Author response: \"I deny that object.\" Adjacent owner supplement: Maple Queue owns the denied launch statement. {qualifier}")}
+        ],"expected_relevant":true}));
+    }
+    check(cases);
+}
