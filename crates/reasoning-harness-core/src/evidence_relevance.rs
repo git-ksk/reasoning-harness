@@ -3812,6 +3812,7 @@ struct LaunchTypedObjectV17 {
     label: String,
     scope: LaunchTypedScopeV17,
     foreign_event: bool,
+    declared_value: String,
 }
 
 // A finite local Object/Subject/Item frame is not a general reference graph.
@@ -3824,7 +3825,7 @@ fn launch_complete_property_proposition_v17(
     let words = property.iter().map(String::as_str).collect::<Vec<_>>();
     let Some(predicate) = words
         .iter()
-        .position(|word| ["is", "was", "are", "were"].contains(word))
+        .position(|word| ["is", "was", "are", "were", "uses", "use"].contains(word))
     else {
         return false;
     };
@@ -4363,6 +4364,7 @@ fn launch_typed_objects_v17(
             if let Some(role) = launch_owner_frame_role_v17(label) {
                 let usable = role.is_none() && unique_foreign_owner(None);
                 return Some(LaunchTypedObjectV17 {
+                    declared_value: value.to_owned(),
                     label: "owner supplement".to_owned(),
                     foreign_event: usable,
                     scope: launch_typed_owner_v17(policy, value).map_or(
@@ -4429,13 +4431,18 @@ fn launch_typed_objects_v17(
             }
             let event_words = launch_property_words_v17(policy, value);
             let words = event_words.iter().map(String::as_str).collect::<Vec<_>>();
-            let explicit_event = words.windows(2).any(|pair| {
-                matches!(
-                    pair,
-                    ["launch" | "release", "claim" | "statement" | "assertion"]
-                        | ["was" | "is" | "been", "launched" | "released"]
-                )
-            });
+            let nominal_foreign_event = value
+                .strip_prefix("the launch of ")
+                .or_else(|| value.strip_prefix("the release of "))
+                .is_some_and(launch_named_subject_v17);
+            let explicit_event = nominal_foreign_event
+                || words.windows(2).any(|pair| {
+                    matches!(
+                        pair,
+                        ["launch" | "release", "claim" | "statement" | "assertion"]
+                            | ["was" | "is" | "been", "launched" | "released"]
+                    )
+                });
             let foreign_event = scope == Scope::Excluded
                 && (owner_bound
                     || (explicit_event
@@ -4446,9 +4453,146 @@ fn launch_typed_objects_v17(
                 label: label.clone(),
                 scope,
                 foreign_event,
+                declared_value: value.to_owned(),
             })
         })
         .collect()
+}
+
+// Recognize complete finite correction frames, rather than excluding any
+// sentence that happens to mention a physical attribute.
+fn launch_property_correction_frame_v17(
+    policy: &EvidenceRelevanceTargetPolicy,
+    statement: &str,
+) -> bool {
+    let original = normalized(statement);
+    let words = original.split_whitespace().collect::<Vec<_>>();
+    let property = |value: &str| {
+        if launch_complete_property_proposition_v17(policy, value) {
+            return true;
+        }
+        let words = launch_property_words_v17(policy, value);
+        let mut words = words.iter().map(String::as_str).collect::<Vec<_>>();
+        if let Some(claim) = words.iter().position(|word| *word == "claim") {
+            // Only an attribute-qualified nominal claim, never a bare claim.
+            if claim == 0
+                || !words[..claim].iter().any(|word| {
+                    [
+                        "colour",
+                        "color",
+                        "font",
+                        "material",
+                        "width",
+                        "height",
+                        "thickness",
+                        "title",
+                    ]
+                    .contains(word)
+                })
+            {
+                return false;
+            }
+            words.remove(claim);
+            if matches!(words.get(claim), Some(&"about" | &"on" | &"concerning")) {
+                words[claim] = "of";
+            }
+        }
+        if words.iter().any(|word| {
+            [
+                "is", "was", "are", "were", "does", "do", "did", "not", "never", "exist", "exists",
+                "existed", "and", "or", "but", "that", "which", "who", "while", "when", "before",
+                "after", "because",
+            ]
+            .contains(word)
+        }) {
+            return false;
+        }
+        words.iter().any(|word| {
+            [
+                "colour",
+                "color",
+                "font",
+                "material",
+                "width",
+                "height",
+                "thickness",
+                "title",
+                "typography",
+                "length",
+                "size",
+                "weight",
+            ]
+            .contains(word)
+        }) && launch_specific_property_object_v17(policy, &words)
+    };
+    if let Some((head, value)) = statement.split_once(", ") {
+        if let Some((value, predicate)) = value.rsplit_once(", ") {
+            if matches!(
+                normalized(head).as_str(),
+                "the other claim" | "the other statement" | "the other assertion"
+            ) && matches!(
+                normalized(predicate).as_str(),
+                "is withdrawn"
+                    | "is also withdrawn"
+                    | "is retracted"
+                    | "is also retracted"
+                    | "is denied"
+                    | "is also denied"
+            ) {
+                return property(value);
+            }
+        }
+    }
+    if let Some(verb) = words
+        .iter()
+        .position(|word| launch_retraction_word_v17(word))
+    {
+        if words[..verb]
+            .iter()
+            .all(|word| ["we", "i", "hereby", "formally"].contains(word))
+        {
+            let mut object = &words[verb + 1..];
+            if matches!(
+                object,
+                ["the", "statement" | "claim" | "assertion", "that", ..]
+            ) {
+                object = &object[3..];
+            }
+            if !object.is_empty() && property(&object.join(" ")) {
+                return true;
+            }
+        }
+        if verb + 1 == words.len() {
+            let mut subject = &words[..verb];
+            if matches!(subject.last(), Some(&"separately" | &"also")) {
+                subject = &subject[..subject.len() - 1];
+            }
+            if matches!(subject.last(), Some(&"is" | &"was" | &"are" | &"were")) {
+                subject = &subject[..subject.len() - 1];
+                if !subject.is_empty() && property(&subject.join(" ")) {
+                    return true;
+                }
+            }
+        }
+    }
+    for actor in ["the author", "the editor", "the publisher", "the newsroom"] {
+        for verb in ["reports", "records", "states"] {
+            for nominal in [
+                "a withdrawal of ",
+                "the withdrawal of ",
+                "a retraction of ",
+                "the retraction of ",
+                "a denial of ",
+                "the denial of ",
+            ] {
+                let prefix = format!("{actor} {verb} {nominal}");
+                if let Some(value) = original.strip_prefix(&prefix) {
+                    return property(value);
+                }
+            }
+        }
+    }
+    false
 }
 
 fn launch_complete_nominal_property_v17(
@@ -4475,6 +4619,13 @@ fn launch_complete_nominal_property_v17(
         "the denial concerns ",
         "the withdrawal concerns ",
         "the retraction concerns ",
+        "this denial concerns ",
+        "this withdrawal concerns ",
+        "this retraction concerns ",
+        "the denied detail is ",
+        "this withdrawal is limited to ",
+        "this retraction is limited to ",
+        "this denial is limited to ",
     ]
     .iter()
     .any(|prefix| {
@@ -4562,6 +4713,8 @@ fn launch_typed_reference_v17(
     let statement = statement
         .strip_suffix(" described in the heading")
         .or_else(|| statement.strip_suffix(" described in the source title"))
+        .or_else(|| statement.strip_suffix(" in the heading"))
+        .or_else(|| statement.strip_suffix(" in the source title"))
         .unwrap_or(statement);
     let text = normalized(statement);
     let words = text.split_whitespace().collect::<Vec<_>>();
@@ -4575,6 +4728,23 @@ fn launch_typed_reference_v17(
         let words = property.iter().map(String::as_str).collect::<Vec<_>>();
         if launch_specific_property_object_v17(policy, &words) {
             return launch_typed_reference_v17(policy, head, objects, previous, next);
+        }
+    }
+    if let ["we" | "i", verb, "the", left, "and", "the", right] = words.as_slice() {
+        if launch_retraction_word_v17(verb)
+            && ["object", "subject", "item"].contains(left)
+            && ["object", "subject", "item"].contains(right)
+        {
+            return Some([left, right].iter().all(|label| {
+                let matching = objects
+                    .iter()
+                    .filter(|object| object.label == **label)
+                    .collect::<Vec<_>>();
+                !matching.is_empty()
+                    && matching
+                        .iter()
+                        .all(|object| object.scope == Scope::Excluded)
+            }));
         }
     }
     let pointer = words
@@ -4673,6 +4843,16 @@ fn launch_typed_reference_v17(
             .or_else(|| value.trim().strip_prefix("specifically "))
             .or_else(|| value.trim().strip_prefix("and only "))
             .unwrap_or(value.trim());
+        if let Some(owner) = value.strip_prefix("the event claim owned by ") {
+            if launch_named_subject_v17(owner) {
+                let expected = format!("the launch of {}", normalized(owner));
+                return Some(selected.iter().all(|object| {
+                    object.foreign_event
+                        && object.scope == Scope::Excluded
+                        && normalized(&object.declared_value) == expected
+                }));
+            }
+        }
         return Some(
             launch_typed_object_scope_v17(policy, value) == Scope::Excluded
                 && !selected.iter().any(|object| object.scope == Scope::Launch),
@@ -4815,9 +4995,10 @@ fn launch_adverse_segments_v17(
     text: &str,
 ) -> Vec<LaunchFactualSegmentV17> {
     let reporting = |text: &str| {
-        normalized(text)
-            .split_whitespace()
-            .any(launch_retraction_word_v17)
+        normalized(text).split_whitespace().any(|word| {
+            launch_retraction_word_v17(word)
+                || ["withdrawal", "retraction", "denial"].contains(&word)
+        })
     };
     let mut output = Vec::new();
     for segment in launch_factual_segments_v17(policy, text) {
@@ -4898,7 +5079,7 @@ fn launch_adverse_segments_v17(
                 loop {
                     let folded = raw.to_ascii_lowercase();
                     if target_identity_phrases(policy).iter().any(|target| {
-                        normalized(&raw)
+                        normalized(raw)
                             .strip_prefix(target)
                             .is_some_and(|tail| tail.is_empty() || tail.starts_with(' '))
                     }) {
@@ -5206,7 +5387,9 @@ fn launch_governing_context_blocks_v17(
             {
                 continue;
             }
-            if launch_complete_nominal_property_v17(policy, &segment.raw) {
+            if launch_complete_nominal_property_v17(policy, &segment.raw)
+                || launch_property_correction_frame_v17(policy, &segment.raw)
+            {
                 continue;
             }
             if typed_objects

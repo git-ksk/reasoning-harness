@@ -2166,3 +2166,104 @@ fn measured_property_denial_does_not_clear_launch_or_existence_denial() {
     }
     check(cases);
 }
+
+#[test]
+fn engine073_independent_v16_seen_replay_preserves_full_scope() {
+    // Keep v16's first FAIL unchanged. This replay is development evidence.
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../evaluation/engine073-launch-independent-v16/cases.json"
+    ))
+    .unwrap();
+    let mut failures = Vec::new();
+    for case in corpus["cases"].as_array().unwrap() {
+        let input = &case["input"];
+        let policy = serde_json::from_value(input["policy"].clone()).unwrap();
+        let candidate = serde_json::from_value(input["candidate"].clone()).unwrap();
+        let proposal = serde_json::from_value(input["proposal"].clone()).unwrap();
+        let raw = serde_json::from_value(input["raw"].clone()).unwrap();
+        let qualification = derive_effective_evidence_local_qualification_v17(
+            &policy,
+            &candidate,
+            Some(&proposal),
+            Some(&raw),
+        )
+        .unwrap();
+        let assessment =
+            materialize_evidence_relevance_v30(&policy, &candidate, Some(&proposal), Some(&raw))
+                .unwrap();
+        if (qualification.relation_scope == Relation::RequestedRelation)
+            != case["expected"]["v17_requested_relation"]
+                .as_bool()
+                .unwrap()
+            || (assessment.disposition == Disposition::Relevant)
+                != case["expected"]["v30_relevant"].as_bool().unwrap()
+        {
+            failures.push(format!(
+                "{}: {qualification:?}, {:?}",
+                case["id"], assessment.disposition
+            ));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+#[test]
+fn complete_correction_frames_cannot_swallow_scope_or_owner_conflicts() {
+    let mut cases = Vec::new();
+    for correction in [
+        "We withdraw the statement that the manual title of Silver Lens uses blue ink.",
+        "The material of Silver Lens pad is separately withdrawn.",
+        "The editor reports a withdrawal of the printed font claim on Silver Lens label.",
+    ] {
+        cases.push(json!({"id":format!("property:{correction}"),"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. {correction}")}],"expected_relevant":true}));
+        for denial in [
+            "We deny that Silver Lens was launched.",
+            "The editor records that Silver Lens does not exist.",
+            "We withdraw the whole source.",
+            "We also withdraw an unowned launch claim; its owner is not identified.",
+        ] {
+            cases.push(json!({"id":format!("compound:{correction}:{denial}"),"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. {correction} {denial}")}],"expected_relevant":false}));
+        }
+    }
+    for (subject, owner, expected) in [
+        ("the launch of Maple Queue", "Maple Queue", true),
+        ("the launch of Silver Lens", "Maple Queue", false),
+        ("the launch of Maple Queue", "Silver Lens", false),
+        ("the launch of Maple Queue", "Pine Hall", false),
+        ("an unowned launch claim", "Maple Queue", false),
+    ] {
+        cases.push(json!({"id":format!("apposition:{subject}:{owner}"),"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. Subject: {subject}. We withdraw this Subject, the event claim owned by {owner}.")}],"expected_relevant":expected}));
+    }
+    check(cases);
+}
+
+#[test]
+fn coordinated_typed_retraction_requires_every_named_role_to_be_safe() {
+    let mut cases = Vec::new();
+    for (object, subject, expected) in [
+        (
+            "the colour of Silver Lens cap",
+            "the launch of Maple Queue",
+            true,
+        ),
+        (
+            "the colour of Silver Lens cap",
+            "the launch of Silver Lens",
+            false,
+        ),
+        (
+            "the launch of Silver Lens",
+            "the launch of Maple Queue",
+            false,
+        ),
+        (
+            "the colour of Silver Lens cap",
+            "an unowned launch claim",
+            false,
+        ),
+    ] {
+        cases.push(json!({"id":format!("two-roles:{object}:{subject}"),"signals":[{"kind":"excerpt","text":format!("Silver Lens was launched. Object: {object}. Subject: {subject}. We withdraw the Object and the Subject.")}],"expected_relevant":expected}));
+    }
+    cases.push(json!({"id":"missing-second-role","signals":[{"kind":"excerpt","text":"Silver Lens was launched. Object: the colour of Silver Lens cap. We withdraw the Object and the Subject."}],"expected_relevant":false}));
+    check(cases);
+}
