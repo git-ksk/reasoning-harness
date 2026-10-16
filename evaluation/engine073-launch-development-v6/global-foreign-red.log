@@ -1,0 +1,23 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.59s
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-target/debug/deps/launch_context_markers_520_521-b0e02a47023b9070)
+
+running 1 test
+test explicit_compound_properties_cannot_mask_launch_or_unresolved_objects ... FAILED
+
+failures:
+
+---- explicit_compound_properties_cannot_mask_launch_or_unresolved_objects stdout ----
+
+thread 'explicit_compound_properties_cannot_mask_launch_or_unresolved_objects' panicked at crates/reasoning-harness-core/tests/launch_context_markers_520_521.rs:66:5:
+"The entire report is false: We withdraw Maple Queue's launch claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"A withdrawn report: We withdraw Maple Queue's launch claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    explicit_compound_properties_cannot_mask_launch_or_unresolved_objects
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 25 filtered out; finished in 0.24s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_520_521`

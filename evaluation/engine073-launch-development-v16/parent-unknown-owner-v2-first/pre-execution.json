@@ -1,0 +1,8 @@
+{
+  "source_sha": "f3f1362c33bb4483de97607c4f7854162bfa148f",
+  "expected": "all4 not requested/relevant; unknown independent owner cannot borrow prior foreign owner",
+  "design_correction": "v1 retained original additional signals and did not isolate variants; preserved without overwrite. v2 has exactly one complete excerpt per case.",
+  "input_sha256": "e20a2922cec2484b07f74f8ae5404375eeea0df46314dc1065e085aa7d611593",
+  "executable_sha256": "5fa6894deb6eb75631c0e0254f64dec9dcc01665e2101d30d9103166bd2b0907",
+  "provider_calls": 0
+}

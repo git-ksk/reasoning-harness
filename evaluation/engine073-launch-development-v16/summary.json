@@ -1,0 +1,103 @@
+{
+  "source_sha": "f3f1362c33bb4483de97607c4f7854162bfa148f",
+  "source_file_sha256": "bd2afb064d28a258a6de57de7594c1186e470de77bcd52eefeab0d3b1579255b",
+  "historical_complete_equality": 597,
+  "original_audit": 14,
+  "known_seen_regression": {
+    "v2": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v8": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v9": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v10": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v12": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v13": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v14": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v15": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v16": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "provider_calls": 0,
+  "fresh_independent_acceptance": false,
+  "core_rlib_sha256": "f7dcc1b2db4453e139cafadc0895a1c0553d8eeff08ee9c21d4b0cd3cd6573f8",
+  "focused_tests": 72,
+  "workspace": {
+    "passed": 1536,
+    "failed": 0,
+    "ignored": 8
+  },
+  "clippy": "PASS",
+  "fmt": "PASS",
+  "fixtures_cases": 20,
+  "original_archive_files": 13,
+  "root_compound_boundaries": {
+    "cases": 4,
+    "withheld": 4
+  },
+  "cli_adoption": "NO_GO",
+  "full_real_source_acceptance_complete": false,
+  "parent_unknown_owner_boundary": {
+    "cases": 4,
+    "unsafe": 3,
+    "withheld": 1,
+    "first_design_error_retained": true
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "source_sha": "f3f1362c33bb4483de97607c4f7854162bfa148f",
+  "expected": "all4 not requested/relevant; genuinely unspecified independent launch owner cannot borrow prior foreign owner",
+  "input_sha256": "4c8ca795e259e7ed9883ce5094d0f81acc339120f75ffcfb023089cfaa2b90ba",
+  "executable_sha256": "5fa6894deb6eb75631c0e0254f64dec9dcc01665e2101d30d9103166bd2b0907",
+  "provider_calls": 0
+}

@@ -1,0 +1,7 @@
+{
+  "source_commit": "06d6c0b8ce28adec71f688a44dfef7624df2ab3b",
+  "source_file_sha256": "d6811361889b8815c4a1234fbdb60309e9e122c88cc6dcd5cc0aa3eec947d39c",
+  "probe_binary_sha256": "cc64e9063a5260180d88307d91e0319fc70345e9ff8f930910720d6fdc687b0c",
+  "build": "Parent-built static public API probe before source edits; original command recorded in session. Reuses pinned successor5 binary, not current debug rlib.",
+  "scope": "Seen development ablation, not independent rescore or new acceptance."
+}

@@ -1,0 +1,23 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-target/debug/deps/launch_context_markers_520_521-b0e02a47023b9070)
+
+running 1 test
+test typed_refs_cannot_borrow_a_different_property_or_erase_a_missing_owner ... FAILED
+
+failures:
+
+---- typed_refs_cannot_borrow_a_different_property_or_erase_a_missing_owner stdout ----
+
+thread 'typed_refs_cannot_borrow_a_different_property_or_erase_a_missing_owner' panicked at crates/reasoning-harness-core/tests/launch_context_markers_520_521.rs:66:5:
+"Object: the button-width claim for Silver Lens. Silver Lens was launched. We withdraw this claim.": expected=false, relation=RequestedRelation, disposition=Relevant
+"generic_reference_cannot_borrow_metadata_object": expected=false, relation=RequestedRelation, disposition=Relevant
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    typed_refs_cannot_borrow_a_different_property_or_erase_a_missing_owner
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 34 filtered out; finished in 0.35s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_520_521`

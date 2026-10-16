@@ -1,0 +1,41 @@
+{
+  "source_sha": "dd5b4884a23979399ab1f03110855d84d36aa28d",
+  "source_file_sha256": "afdf620781b2d65c1b02ee9469d7169efd6d4d8825fbf0a597625b5213ba98d2",
+  "historical_complete_equality": 597,
+  "original_audit": 14,
+  "known_seen_regression": {
+    "v2": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v3": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v4": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v5": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v6": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    },
+    "v7": {
+      "cases": 60,
+      "passed": 60,
+      "mismatches": []
+    }
+  },
+  "provider_calls": 0,
+  "fresh_independent_acceptance": false,
+  "core_rlib_sha256": "4cfbea545fccdd564d841ab93265460dcfec6ecae5b60f0e1cb663478987370b"
+}

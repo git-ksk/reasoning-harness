@@ -1,0 +1,64 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.05s
+     Running tests/bilingual_preparation_512.rs (/private/tmp/engine073-target/debug/deps/bilingual_preparation_512-68a092f85784e403)
+
+running 8 tests
+test previous_review_false_positives_do_not_supply_preparation_authority ... ok
+test japanese_preparation_bridge_preserves_historical_contracts ... ok
+test preparation_bridge_does_not_erase_unsupported_source_punctuation ... ok
+test preparation_bridge_does_not_expand_other_question_or_entity_contracts ... ok
+test preparation_bridge_preserves_signal_and_qualification_boundaries ... ok
+test preparation_bridge_requires_one_complete_lambda_owned_statement ... ok
+test preparation_bridge_preserves_governing_documentary_context ... ok
+test preparation_bridge_preserves_enclosing_factual_context ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.27s
+
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-target/debug/deps/launch_context_markers_520_521-b0e02a47023b9070)
+
+running 20 tests
+test explicit_other_target_context_and_neutral_false_alarm_description ... ok
+test generic_disclaimer_wrappers_and_passage_references ... ok
+test explicit_property_context_cannot_hide_global_or_launch_denials ... ok
+test historical_v29_dispositions_remain_unchanged_for_original_audit ... ok
+test governing_context_and_original_marker_boundaries ... ok
+test post_v3_development_controls_keep_unbound_pronouns_withheld ... ok
+test original_audit_56_cases_preserve_positives_and_withhold_40_regressions ... ok
+test engine073_independent_v2_seen_replay_preserves_full_scope ... ok
+test post_v1_development_controls_preserve_factual_signal_floor ... ok
+test scoped_object_preserves_full_target_and_alias_names ... ok
+test post_v4_development_controls_preserve_direct_objects_and_plural_context ... ok
+test published_072_retraction_residuals_are_seen_development_controls ... ok
+test post_v5_development_controls_bind_feature_denials_to_their_antecedent ... ok
+test post_v2_development_controls_preserve_statement_scope ... ok
+test post_v6_development_controls_and_generic_documentary_disclaimers ... ok
+test post_v9_development_controls_withhold_unresolved_adverse_references ... ok
+test post_v8_development_controls_preserve_collective_denials_and_actor_adjuncts ... ok
+test post_v7_development_controls_keep_foreign_frames_local_and_global_colons_denied ... ok
+test engine073_independent_v3_seen_replay_preserves_full_scope ... ok
+test successor_retraction_and_non_event_contexts_preserve_scope ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.64s
+
+     Running tests/launch_context_markers_independent_v10.rs (/private/tmp/engine073-target/debug/deps/launch_context_markers_independent_v10-dbd13ed4ac516422)
+
+running 1 test
+test independent_launch_context_markers_v10 ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.69s
+
+     Running tests/launch_source_frames_514_515.rs (/private/tmp/engine073-target/debug/deps/launch_source_frames_514_515-873412586c54603b)
+
+running 9 tests
+test recall_preserves_aliases_and_never_joins_signals ... ok
+test historical_v16_v29_recall_remains_unchanged ... ok
+test issue514_affirmative_launch_predicates ... ok
+test launch_recall_requires_factual_signal_identity_and_no_risk ... ok
+test issue515_dotted_names_and_decimal_versions ... ok
+test additional_launch_control_corpus ... ok
+test affirmative_ga_adjuncts_require_complete_owned_frames ... ok
+test issue514_launch_negatives ... ok
+test issue515_punctuation_must_not_borrow_predicates ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.94s
+

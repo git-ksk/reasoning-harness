@@ -1,0 +1,31 @@
+{
+  "implementation_candidate": "b6c1598655a826b3eb5d3527d613dd50ed8b9bbc",
+  "candidate_source_sha256": "8acd799ae90a1407320b8899a437e0d0db3c2104a60a90db138fd76dd601a6f8",
+  "package_metadata": "0.7.2; unpromoted 0.7.3 successor",
+  "root_authored_seen_development": true,
+  "provider_api_calls": 0,
+  "original_audit": {
+    "positive_relevant": 1,
+    "negative_withheld": 13,
+    "negative_false_relevant_before": 10,
+    "negative_false_relevant_after": 0,
+    "cases": 14
+  },
+  "historical_compatibility": {
+    "cases": 597,
+    "complete_v16_v29_byte_equality": true,
+    "reference": "evaluation/launch-520-521-final-validation/historical-base.jsonl"
+  },
+  "focused_tests": 33,
+  "workspace": {
+    "passed": 1498,
+    "failed": 0,
+    "ignored": 8
+  },
+  "clippy": "PASS",
+  "fmt": "PASS",
+  "fixtures_cases": 20,
+  "original_archive_files": 13,
+  "full_real_source_acceptance_complete": false,
+  "cli_adoption": "NO_GO"
+}

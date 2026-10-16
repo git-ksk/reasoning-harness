@@ -1,0 +1,69 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized] target(s) in 10.40s
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-target/debug/deps/launch_context_markers_520_521-e481f9b596de9638)
+
+running 46 tests
+test complete_property_apposition_cannot_overrule_event_or_whole_report_scope ... ok
+test component_properties_do_not_erase_event_or_source_denials ... ok
+test contracted_non_events_and_generic_objects_preserve_the_launch_boundary ... ok
+test canonical_name_notes_and_scope_annotations_do_not_erase_conflicts_or_gaps ... ok
+test engine073_independent_v2_seen_replay_preserves_full_scope ... ok
+test engine073_independent_v5_seen_replay_preserves_full_scope ... ok
+test engine073_independent_v6_seen_replay_preserves_full_scope ... ok
+test engine073_independent_v4_seen_replay_preserves_full_scope ... ok
+test explicit_compound_properties_cannot_mask_launch_or_unresolved_objects ... ok
+test engine073_independent_v3_seen_replay_preserves_full_scope ... ok
+test engine073_independent_v10_seen_replay_preserves_full_scope ... ok
+test explicit_other_target_context_and_neutral_false_alarm_description ... ok
+test foreign_non_event_context_cannot_clear_raw_risks_or_missing_target_ownership ... ok
+test explicit_local_owner_resolution_cannot_erase_target_or_collective_denials ... ok
+test generic_disclaimer_wrappers_and_passage_references ... ok
+test engine073_independent_v12_seen_replay_preserves_full_scope ... ok
+test limited_property_notice_cannot_override_launch_or_unresolved_retraction ... ok
+test opaque_clip_name_cannot_clear_input_or_actual_context_gaps ... ok
+test engine073_independent_v14_seen_replay_preserves_full_scope ... FAILED
+test engine073_independent_v7_seen_replay_preserves_full_scope ... ok
+test explicit_property_context_cannot_hide_global_or_launch_denials ... ok
+test historical_v29_dispositions_remain_unchanged_for_original_audit ... ok
+test positive_reporting_shells_preserve_every_inner_denial_scope ... ok
+test engine073_independent_v8_seen_replay_preserves_full_scope ... ok
+test governing_context_and_original_marker_boundaries ... ok
+test engine073_independent_v13_seen_replay_preserves_full_scope ... ok
+test original_audit_56_cases_preserve_positives_and_withhold_40_regressions ... ok
+test post_v1_development_controls_preserve_factual_signal_floor ... ok
+test post_v3_development_controls_keep_unbound_pronouns_withheld ... ok
+test post_v4_development_controls_preserve_direct_objects_and_plural_context ... ok
+test published_072_retraction_residuals_are_seen_development_controls ... ok
+test scoped_object_preserves_full_target_and_alias_names ... ok
+test post_v5_development_controls_bind_feature_denials_to_their_antecedent ... ok
+test role_owner_frames_do_not_cross_bind_or_retype_property_as_event ... ok
+test separated_adverse_clauses_all_need_proven_non_target_scope ... ok
+test post_v6_development_controls_and_generic_documentary_disclaimers ... ok
+test typed_component_quotes_cannot_erase_launch_or_whole_source_denials ... ok
+test typed_scope_exclusion_requires_one_complete_retraction_clause ... ok
+test post_v2_development_controls_preserve_statement_scope ... ok
+test engine073_independent_v9_seen_replay_preserves_full_scope ... ok
+test post_v9_development_controls_withhold_unresolved_adverse_references ... ok
+test typed_owner_resolution_requires_one_complete_owner_and_no_target_denial ... ok
+test post_v8_development_controls_preserve_collective_denials_and_actor_adjuncts ... ok
+test post_v7_development_controls_keep_foreign_frames_local_and_global_colons_denied ... ok
+test typed_refs_cannot_borrow_a_different_property_or_erase_a_missing_owner ... ok
+test successor_retraction_and_non_event_contexts_preserve_scope ... ok
+
+failures:
+
+---- engine073_independent_v14_seen_replay_preserves_full_scope stdout ----
+
+thread 'engine073_independent_v14_seen_replay_preserves_full_scope' panicked at crates/reasoning-harness-core/tests/launch_context_markers_520_521.rs:1933:5:
+"li14-001": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+"li14-031": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: RequestedRelation, scope_risk: ContextGap }, Ambiguous
+"li14-047": EvidenceLocalQualificationV6 { identity_scope: ExactTarget, relation_scope: Unresolved, scope_risk: None }, Ambiguous
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    engine073_independent_v14_seen_replay_preserves_full_scope
+
+test result: FAILED. 45 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.69s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_520_521`

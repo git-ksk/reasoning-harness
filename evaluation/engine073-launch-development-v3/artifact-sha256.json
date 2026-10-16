@@ -1,0 +1,15 @@
+{
+  "README.md": "28f2bd40136413a06f9b0db9a19dc27f23eb4e1e1cfdb9a96d1e9665be67f96b",
+  "archive.log": "e7f28b11075e6743aa71e5e393a2bf64528e6244197d2e6e53b13a18a2b683da",
+  "clippy.log": "4aea241704b20f6186dbef17cad01d987a9a873888ea8a7b63f25bd01ada59b4",
+  "fixtures.json": "808579a083c50b2fb107df3e87e19332825af73367981cc629e5d162fce4ffdf",
+  "fmt.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "focused-after.log": "9c45536f2fc00435dbe1982386e4c02de38f56a942d421563a40e0f19d652cd5",
+  "historical-current.jsonl": "9f378662ae651f7c7a2394d7c00c918c9eec7701628ccd339c6d2d181fba47f5",
+  "original-audit-after.jsonl": "5c32b97127644a0be7094ba23cf629349bed75aa91e995897ec61870bd98d83b",
+  "providers.log": "91cddb7bb2d125b0194d468ab81a4c91f6fcae82a7e4c6bbc6f2e29e72a02dce",
+  "seen-independent-v2-after.jsonl": "acc897a23e50d0575b3fec4025d6cee1b8cf45bb770327a4275e0792f15e7f56",
+  "seen-independent-v3-after.jsonl": "f7211277b5a04466ee10ad50ee715a497a7e3112baa3fde6f644042736d48129",
+  "summary.json": "9c44cde00943053774e8ca23c852e965ea722fb646170afa8a1f37144227600c",
+  "workspace.log": "dc3b7fcc594fc87829f31e10c9fe949b76d6e90aabe84447863319f1978f2ea7"
+}

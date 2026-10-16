@@ -1,0 +1,53 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.24
+   Compiling quote v1.0.47
+   Compiling serde_core v1.0.229
+   Compiling zmij v1.0.23
+   Compiling syn v3.0.4
+   Compiling ref-cast v1.0.27
+   Compiling serde v1.0.229
+   Compiling serde_json v1.0.151
+   Compiling serde_derive v1.0.229
+   Compiling ref-cast-impl v1.0.27
+   Compiling serde_derive_internals v0.30.0
+   Compiling memchr v2.8.3
+   Compiling thiserror v2.0.21
+   Compiling itoa v1.0.18
+   Compiling schemars_derive v1.2.2
+   Compiling thiserror-impl v2.0.21
+   Compiling dyn-clone v1.0.20
+   Compiling schemars v1.2.2
+   Compiling tokio-macros v2.7.2
+   Compiling pin-project-lite v0.2.17
+   Compiling tokio v1.53.2
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 25.39s
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-target/debug/deps/launch_context_markers_520_521-b0e02a47023b9070)
+
+running 1 test
+test published_072_retraction_residuals_are_seen_development_controls ... FAILED
+
+failures:
+
+---- published_072_retraction_residuals_are_seen_development_controls stdout ----
+
+thread 'published_072_retraction_residuals_are_seen_development_controls' panicked at crates/reasoning-harness-core/tests/launch_context_markers_520_521.rs:66:5:
+"retract-present": expected=false, relation=RequestedRelation, disposition=Relevant
+"retract-first-person": expected=false, relation=RequestedRelation, disposition=Relevant
+"deny-present": expected=false, relation=RequestedRelation, disposition=Relevant
+"withdraw-present": expected=false, relation=RequestedRelation, disposition=Relevant
+"did-not-happen": expected=false, relation=RequestedRelation, disposition=Relevant
+"never-happened": expected=false, relation=RequestedRelation, disposition=Relevant
+"not-factual": expected=false, relation=RequestedRelation, disposition=Relevant
+"not-real": expected=false, relation=RequestedRelation, disposition=Relevant
+"future-retract": expected=false, relation=RequestedRelation, disposition=Relevant
+"source-title-present": expected=false, relation=RequestedRelation, disposition=Relevant
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    published_072_retraction_residuals_are_seen_development_controls
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 14 filtered out; finished in 0.14s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_520_521`

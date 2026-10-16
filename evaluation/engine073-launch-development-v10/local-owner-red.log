@@ -1,0 +1,23 @@
+   Compiling reasoning-harness-core v0.7.2 (/Users/sawadakousuke/.codex/worktrees/engine073-retraction-safety/reasoning-harness/crates/reasoning-harness-core)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running tests/launch_context_markers_520_521.rs (/private/tmp/engine073-target/debug/deps/launch_context_markers_520_521-b0e02a47023b9070)
+
+running 1 test
+test explicit_local_owner_resolution_cannot_erase_target_or_collective_denials ... FAILED
+
+failures:
+
+---- explicit_local_owner_resolution_cannot_erase_target_or_collective_denials stdout ----
+
+thread 'explicit_local_owner_resolution_cannot_erase_target_or_collective_denials' panicked at crates/reasoning-harness-core/tests/launch_context_markers_520_521.rs:66:5:
+"The owner of the retracted statement is Maple Queue, a different product from Silver Lens whose launch claim is withdrawn.": expected=false, relation=RequestedRelation, disposition=Relevant
+"Silver Lens was launched. Author reply: I deny its launch claim. The reply explicitly identifies its launch-claim owner as Maple Queue.": expected=false, relation=RequestedRelation, disposition=Relevant
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    explicit_local_owner_resolution_cannot_erase_target_or_collective_denials
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 31 filtered out; finished in 0.23s
+
+error: test failed, to rerun pass `-p reasoning-harness-core --test launch_context_markers_520_521`
